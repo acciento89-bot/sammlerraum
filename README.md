@@ -354,7 +354,84 @@ Sammlerraum muss auch als vollständig privater Sammlungsmanager sinnvoll nutzba
 
 ---
 
-## 8. Bisherige Produktprinzipien
+## 8. Wunschliste, Dubletten und Tausch-/Verkaufsstatus
+
+### Festgelegt: Wunschliste + Dubletten + vorbereiteter Handelsstatus
+
+Sammlerraum bildet bereits in Version 1 wichtige Sammler-Workflows ab, ohne daraus sofort einen vollständigen Marktplatz zu machen.
+
+### Wunschliste
+
+Nutzer können gesuchte Sammlerstücke auf eine Wunschliste setzen.
+
+Mögliche Informationen:
+
+- gewünschtes Objekt;
+- Kategorie und Sammlung;
+- gewünschte Variante/Edition;
+- gewünschter Zustand;
+- optionaler Zielpreis;
+- Priorität;
+- Notiz;
+- Referenzbild bzw. Produktreferenz, sofern rechtlich und technisch zulässig.
+
+Ein Wunschlisten-Eintrag ist kein vorhandenes Sammlerstück und wird daher getrennt vom eigenen Bestand gespeichert.
+
+### Dubletten
+
+Vorhandene Sammlerstücke können als Dublette bzw. mehrfach vorhanden gekennzeichnet werden.
+
+Sammlerraum muss dabei unterscheiden können zwischen:
+
+- einem Bestandseintrag mit Stückzahl;
+- mehreren tatsächlich getrennt erfassten Exemplaren;
+- gezielt als Dublette markierten Exemplaren.
+
+Das ist wichtig, weil verschiedene Exemplare desselben Motivs unterschiedliche Zustände, Gradings, Kaufpreise, Bilder oder Seriennummern haben können.
+
+### Verfügbarkeitsstatus eines eigenen Stücks
+
+Für einzelne Sammlerstücke kann ein Handelsstatus gesetzt werden:
+
+- **Nicht verfügbar**;
+- **Tauschbereit**;
+- **Verkaufsbereit**.
+
+Der Standard ist **Nicht verfügbar**.
+
+Dieser Status allein stellt noch kein rechtsverbindliches Verkaufsangebot dar.
+
+### Sichtbarkeit und Datenschutz
+
+Tausch- oder Verkaufsbereitschaft wird nur bei Inhalten angezeigt, die aufgrund ihrer Sichtbarkeit überhaupt vom jeweiligen Betrachter gesehen werden dürfen.
+
+Ein privates Stück wird durch den Handelsstatus niemals öffentlich.
+
+### Vorbereitung für spätere Ausbaustufe
+
+Das Datenmodell soll spätere Funktionen ermöglichen, ohne sie bereits in Version 1 vollständig umzusetzen:
+
+- Tauschangebote;
+- Kaufanfragen;
+- Preisangebote;
+- Match zwischen Wunschliste und Dubletten;
+- Marktplatz-Inserate;
+- Transaktionsstatus.
+
+### V1-Abgrenzung
+
+Nicht Bestandteil dieses ersten Schritts:
+
+- Zahlungsabwicklung zwischen Mitgliedern;
+- Treuhand/Escrow;
+- Versandabwicklung;
+- Käuferschutz;
+- Verkäuferbewertungen;
+- verbindlicher Checkout zwischen Sammlern.
+
+---
+
+## 9. Bisherige Produktprinzipien
 
 - private Nutzung muss vollständig möglich sein;
 - Öffentlichkeit ist **Opt-in**, nicht Standard;
@@ -368,7 +445,7 @@ Sammlerraum muss auch als vollständig privater Sammlungsmanager sinnvoll nutzba
 
 ---
 
-## 9. Noch offen
+## 10. Noch offen
 
 Folgende Bereiche werden im weiteren Produktdesign festgelegt:
 
@@ -377,8 +454,6 @@ Folgende Bereiche werden im weiteren Produktdesign festgelegt:
 - Zustandsbewertung
 - Seriennummern und Echtheitsnachweise
 - Tags und freie Felder
-- Dubletten
-- Wunschlisten
 - Teilen einzelner Sammlungen
 - Such- und Filterlogik
 - Import / Export
@@ -394,7 +469,7 @@ Folgende Bereiche werden im weiteren Produktdesign festgelegt:
 
 ---
 
-## 10. Dokumentationsregel
+## 11. Dokumentationsregel
 
 Neue, vom Nutzer bestätigte Produktentscheidungen werden in dieser README ergänzt, damit der Projektstand unabhängig von der Chatlänge erhalten bleibt.
 
