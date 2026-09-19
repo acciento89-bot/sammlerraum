@@ -2533,7 +2533,143 @@ PostgreSQL dient für V1 als Queue-Backend, aber die fachlichen Module hängen n
 
 ---
 
-## 32. Bisherige Produktprinzipien
+## 32. Medien- und Dateispeicher
+
+### Festgelegt: Storage-Abstraktion + persistenter lokaler Storage für V1
+
+Sammlerraum kapselt Datei- und Medienspeicherung hinter einer internen Storage-Schnittstelle.
+
+### Storage-Architektur
+
+```
+MediaService
+    ↓
+StorageProvider
+    ├── LocalPersistentStorage   ← V1
+    └── S3CompatibleStorage      ← später möglich
+```
+
+Die Fachlogik darf nicht direkt von einem bestimmten Dateisystem oder Storage-Anbieter abhängen.
+
+Für Version 1 wird persistenter lokaler Docker-Storage verwendet.
+
+### Geschützte Dateiauslieferung
+
+Private oder geschützte Dateien werden nicht über frei erratbare öffentliche Dateipfade ausgeliefert.
+
+Stattdessen erfolgt der Zugriff über kontrollierte Endpunkte wie:
+
+```
+/api/v1/media/<asset-id>
+```
+
+Vor Auslieferung prüft das Backend insbesondere:
+
+- eingeloggten Nutzer;
+- Eigentum bzw. Sammlungsrolle;
+- Sichtbarkeit;
+- Dokumenttyp;
+- Blockierungen;
+- Moderationszustand;
+- weitere Policy-Regeln.
+
+### Bildverarbeitung
+
+Originalbilder bleiben erhalten.
+
+Der Background Worker erzeugt optimierte Varianten, z. B.:
+
+```
+original
+thumbnail
+medium
+large
+```
+
+Dadurch müssen Listen, Community-Feeds und Vorschaubereiche keine unnötig großen Originaldateien laden.
+
+Vorgesehen sind außerdem:
+
+- echte Dateitypprüfung statt bloßer Dateiendung;
+- Bild-Decoding zur Validierung;
+- Größenlimits;
+- Pixel-/Megapixel-Limits;
+- Entfernen unnötiger EXIF-Metadaten, insbesondere GPS;
+- moderne Auslieferungsformate wie WebP/AVIF, soweit sinnvoll.
+
+### Dokumente
+
+Kaufbelege, Zertifikate, Versicherungsunterlagen und weitere Dateien werden getrennt von normalen Bildern behandelt.
+
+Vorgesehen sind:
+
+- erlaubte Dateitypen;
+- Größenlimits;
+- MIME-/Magic-Byte-Prüfung;
+- sichere interne Dateinamen bzw. UUIDs;
+- kein direktes Ausführen hochgeladener Inhalte;
+- Quarantäne-/Prüfmechanismen für verdächtige Dateien.
+
+### Datenmodell
+
+Dateiobjekt und fachliche Zuordnung werden getrennt modelliert.
+
+Beispiel:
+
+```
+MediaAsset
+├── storageKey
+├── mimeType
+├── size
+├── checksum
+├── width / height
+└── processingStatus
+
+MediaLink
+├── itemId
+├── purpose
+├── visibility
+├── sortOrder
+└── caption
+```
+
+Dadurch kann dieselbe Storage-Schicht unter anderem verwenden:
+
+- Sammlerstück-Bilder;
+- Dokumente;
+- Profilbilder;
+- Katalogbilder;
+- Versicherungsunterlagen;
+- spätere Community-Medien.
+
+### Backups und Restore
+
+PostgreSQL und Dateispeicher werden als zusammengehöriger Produktdatenbestand behandelt.
+
+Vorgesehen sind:
+
+- regelmäßige Datenbank-Backups;
+- regelmäßige Storage-Backups;
+- definierter Restore-Prozess;
+- tatsächliche Restore-Tests.
+
+Ein Restore darf nicht zu einem Datenbankzustand führen, dessen referenzierte Dateien fehlen.
+
+### Löschung und Bereinigung
+
+Dateien werden nicht blind sofort endgültig gelöscht, sobald eine einzelne Referenz entfernt wird.
+
+Ein Bereinigungsjob darf eine Datei erst endgültig entfernen, wenn:
+
+- keine gültige Referenz mehr existiert;
+- keine Aufbewahrungsregel entgegensteht;
+- keine Wiederherstellungs-/Papierkorbfrist mehr läuft.
+
+Dadurch werden sowohl Datenverlust als auch dauerhafte Dateileichen vermieden.
+
+---
+
+## 33. Bisherige Produktprinzipien
 
 - private Nutzung muss vollständig möglich sein;
 - Öffentlichkeit ist **Opt-in**, nicht Standard;
@@ -2547,7 +2683,7 @@ PostgreSQL dient für V1 als Queue-Backend, aber die fachlichen Module hängen n
 
 ---
 
-## 33. Noch offen
+## 34. Noch offen
 
 Folgende Bereiche werden im weiteren Produktdesign festgelegt:
 
@@ -2558,7 +2694,7 @@ Folgende Bereiche werden im weiteren Produktdesign festgelegt:
 
 ---
 
-## 34. Dokumentationsregel
+## 35. Dokumentationsregel
 
 Neue, vom Nutzer bestätigte Produktentscheidungen werden in dieser README ergänzt, damit der Projektstand unabhängig von der Chatlänge erhalten bleibt.
 
