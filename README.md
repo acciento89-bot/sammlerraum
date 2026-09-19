@@ -2268,7 +2268,158 @@ JSON kann ergänzend für klar abgegrenzte Metadaten oder externe Rohdaten verwe
 
 ---
 
-## 30. Bisherige Produktprinzipien
+## 30. API, Berechtigungen und Sichtbarkeit
+
+### Festgelegt: Versionierte REST-API + zentrale Policy-Schicht
+
+Sammlerraum verwendet eine klar versionierte REST-API.
+
+Beispielstruktur:
+
+```
+/api/v1/auth/...
+/api/v1/collections/...
+/api/v1/items/...
+/api/v1/catalog/...
+/api/v1/community/...
+/api/v1/valuations/...
+/api/v1/imports/...
+/api/v1/notifications/...
+```
+
+GraphQL ist für Version 1 ausdrücklich nicht vorgesehen.
+
+### Gemeinsame Service-Schicht
+
+Web-Oberfläche und API verwenden dieselbe fachliche Logik.
+
+Der grundlegende Ablauf lautet:
+
+```
+Route / Server Action
+        ↓
+Validation
+        ↓
+Authorization
+        ↓
+Domain Service
+        ↓
+Repository / Database
+```
+
+Geschäftsregeln dürfen nicht ausschließlich in React-Komponenten oder anderem Client-Code liegen.
+
+### Zentrale Berechtigungslogik
+
+Berechtigungen werden nicht durch verstreute Einzelprüfungen umgesetzt, sondern über eine zentrale Policy-Schicht.
+
+Sie berücksichtigt insbesondere:
+
+- Owner / Admin / Editor / Viewer;
+- Eigentümer und Sammlungszugehörigkeit;
+- private / öffentliche / nicht gelistete Sichtbarkeit;
+- Vererbung innerhalb der Sammlungshierarchie;
+- Blockierungen;
+- Moderationszustand;
+- Premium-Berechtigungen;
+- sensible Dokumenttypen;
+- interne Daten wie Lagerorte, Audit-Logs und Versicherungsinformationen.
+
+Typische Policies sind beispielsweise:
+
+```
+canViewItem(...)
+canEditItem(...)
+canDeleteItem(...)
+canViewDocument(...)
+canComment(...)
+canManageMembers(...)
+```
+
+### Server-seitig erzwungene Sichtbarkeit
+
+Private Inhalte dürfen nicht ausgeliefert werden, nur weil jemand eine interne ID oder UUID kennt.
+
+Dies gilt unter anderem für:
+
+- private Sammlerstücke;
+- Kaufbelege;
+- Rechnungen;
+- Lagerorte;
+- Versicherungs-/Policendaten;
+- private Notizen;
+- Audit-Logs;
+- nicht freigegebene Wertdaten;
+- private Medien und Dokumente.
+
+Sichtbarkeit wird im Backend geprüft und nicht nur im Frontend ausgeblendet.
+
+### Validierung
+
+Alle externen Eingaben werden serverseitig gegen definierte Schemas geprüft.
+
+Dazu gehören insbesondere:
+
+- API-Requests;
+- Formulare;
+- Imports;
+- Webhooks;
+- AI-Ergebnisse;
+- externe Marktpreisdaten.
+
+### OpenAPI
+
+Für die öffentliche/interne Client-API wird eine OpenAPI-Spezifikation gepflegt oder aus den verbindlichen Schemas generiert.
+
+Ziel:
+
+- stabile API-Verträge;
+- dokumentierte Request-/Response-Formate;
+- Grundlage für spätere Swift-/Kotlin-Clients;
+- weniger Drift zwischen Web und nativen Apps.
+
+### Einheitliches Fehlerformat
+
+API-Endpunkte verwenden ein einheitliches Fehlerformat.
+
+Beispiel:
+
+```json
+{
+  "error": {
+    "code": "ITEM_NOT_FOUND",
+    "message": "...",
+    "requestId": "..."
+  }
+}
+```
+
+Interne Stacktraces, Datenbankdetails oder sensible technische Informationen werden nicht an Clients ausgegeben.
+
+### Race Conditions und Idempotenz
+
+Kritische Vorgänge verwenden Datenbanktransaktionen, Constraints und bei Bedarf Idempotency Keys.
+
+Besonders relevant für:
+
+- Rollenwechsel;
+- Einladungen;
+- Imports;
+- Dubletten-Zusammenführung;
+- Premium-/Billing-Webhooks;
+- Katalogfreigaben;
+- Marktpreis-Synchronisation;
+- Hintergrundjobs.
+
+### REST-Grundsatz
+
+REST wird für V1 bevorzugt, weil es für Web und spätere native Apps ausreichend klar, dokumentierbar und gut kontrollierbar ist.
+
+Eine spätere zusätzliche Schnittstellentechnologie ist möglich, aber nicht Bestandteil des V1-Designs.
+
+---
+
+## 31. Bisherige Produktprinzipien
 
 - private Nutzung muss vollständig möglich sein;
 - Öffentlichkeit ist **Opt-in**, nicht Standard;
@@ -2282,7 +2433,7 @@ JSON kann ergänzend für klar abgegrenzte Metadaten oder externe Rohdaten verwe
 
 ---
 
-## 31. Noch offen
+## 32. Noch offen
 
 Folgende Bereiche werden im weiteren Produktdesign festgelegt:
 
@@ -2293,7 +2444,7 @@ Folgende Bereiche werden im weiteren Produktdesign festgelegt:
 
 ---
 
-## 32. Dokumentationsregel
+## 33. Dokumentationsregel
 
 Neue, vom Nutzer bestätigte Produktentscheidungen werden in dieser README ergänzt, damit der Projektstand unabhängig von der Chatlänge erhalten bleibt.
 
