@@ -2683,18 +2683,133 @@ Dadurch werden sowohl Datenverlust als auch dauerhafte Dateileichen vermieden.
 
 ---
 
-## 34. Noch offen
+## 34. Zustandsbewertung und Grading
+
+### Festgelegt: Kategorieabhängige Zustandsmodelle + getrenntes externes Grading
+
+Sammlerraum verwendet **keine einzige globale Zustandsskala** für alle Sammlerbereiche.
+
+Jede Kategorie kann ein eigenes fachlich passendes Zustandsschema besitzen.
+
+### Beispiele
+
+#### Trading Cards
+
+Mögliche Zustandsstufen:
+
+- Mint;
+- Near Mint;
+- Excellent;
+- Good;
+- Played;
+- Poor.
+
+#### Vinyl
+
+Mögliche Stufen:
+
+- M;
+- NM;
+- VG+;
+- VG;
+- G;
+- F;
+- P.
+
+Bei Bedarf können Platte und Cover getrennt bewertet werden.
+
+#### Uhren
+
+Mögliche Stufen:
+
+- ungetragen;
+- sehr gut;
+- gut;
+- gebraucht;
+- stark gebraucht;
+- restaurierungsbedürftig.
+
+#### Münzen
+
+Für Münzen werden passende numismatische Zustandsmodelle verwendet, abhängig von Markt, Kategorie und verwendeter Vorlage.
+
+### Zustand und Grading bleiben getrennt
+
+Eine eigene Zustandseinschätzung ist nicht dasselbe wie ein externes Grading.
+
+Beispiel:
+
+```
+Eigene Zustandseinschätzung: Near Mint
+PSA-Grading: 9
+```
+
+Beide Werte werden separat gespeichert.
+
+### Grading-Modell
+
+Ein externer Grading-Datensatz kann insbesondere enthalten:
+
+```
+Grading
+├── provider
+├── grade
+├── certificateNo
+├── gradedAt
+└── verificationUrl
+```
+
+Mögliche Anbieter sind z. B.:
+
+- PSA;
+- BGS;
+- CGC;
+- weitere fachlich etablierte Anbieter.
+
+### Zustands-Historie
+
+Änderungen des Zustands werden nicht stillschweigend überschrieben.
+
+Historisiert werden mindestens:
+
+- vorheriger Zustand;
+- neuer Zustand;
+- Zeitpunkt;
+- Bearbeiter;
+- optionale Begründung.
+
+Der Verlauf wird zusätzlich im Audit-Log sichtbar.
+
+### Kategorieübergreifende Vergleichbarkeit
+
+Intern kann ergänzend eine grobe normalisierte Qualitätsstufe verwendet werden, z. B. für:
+
+- Filter;
+- Statistiken;
+- Smart Collections;
+- übergreifende Auswertungen.
+
+Diese interne Normalisierung ersetzt **nicht** die fachliche Zustandsbezeichnung und wird nicht als vermeintlich exakte Übersetzung zwischen unterschiedlichen Sammlerstandards dargestellt.
+
+### Eigene Zustandsschemata
+
+Für spezielle oder frei definierte Sammlungen können Nutzer eigene Zustandsoptionen anlegen.
+
+Benutzerdefinierte Schemata verändern nicht die offiziellen Kategorie-Vorlagen anderer Nutzer.
+
+---
+
+## 35. Noch offen
 
 Folgende Bereiche werden im weiteren Produktdesign festgelegt:
 
 - Objekt-/Gegenstandsmodell
-- Zustandsbewertung
 - Teilen einzelner Sammlungen
 - Marktplatz-/Tausch-Ausbaustufe
 
 ---
 
-## 35. Dokumentationsregel
+## 36. Dokumentationsregel
 
 Neue, vom Nutzer bestätigte Produktentscheidungen werden in dieser README ergänzt, damit der Projektstand unabhängig von der Chatlänge erhalten bleibt.
 
