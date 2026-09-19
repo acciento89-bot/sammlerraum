@@ -1914,7 +1914,83 @@ Die kostenlose manuelle Wertpflege bleibt davon unabhängig nutzbar.
 
 ---
 
-## 27. Bisherige Produktprinzipien
+## 27. Release-Umfang Version 1
+
+### Festgelegt: Vollständiger Funktionsumfang bereits in V1
+
+Version 1 von Sammlerraum umfasst **alle bisher verbindlich festgelegten Produktbereiche**.
+
+Es wird bewusst kein künstlich reduziertes MVP veröffentlicht.
+
+### V1 umfasst insbesondere
+
+- private und öffentliche Sammlungen;
+- mehrere Sammlungen und hierarchische Teil-Sammlungen;
+- universelles Datenmodell mit Kategorie-Vorlagen;
+- manuelle Erfassung;
+- Barcode-/ISBN-/EAN-Erkennung;
+- Foto-/AI-Unterstützung;
+- Bilder, Dokumente und Nachweise;
+- Kaufpreis, eigene Werte und Wert-Historie;
+- mehrere externe Marktpreisquellen;
+- Quellenvergleich;
+- globalen Referenzkatalog;
+- Community-gestützte Katalogpflege;
+- Wunschlisten;
+- Dubletten;
+- Tausch-/Verkaufsstatus;
+- öffentliche Profile;
+- Folgen;
+- Likes/Favoriten;
+- Kommentare;
+- Melden und Blockieren;
+- Moderation;
+- gemeinsame Sammlungen mit Rollen;
+- Tags;
+- benutzerdefinierte Felder;
+- CSV-/Excel-Import und -Export;
+- Importprofile;
+- erweiterte Suche und Filter;
+- Smart Collections;
+- Sammler-Dashboard und Statistiken;
+- Lagerorte;
+- QR-/Barcode-Labels;
+- Versicherungsmodus;
+- PDF-/Excel-/CSV-Bestandsberichte;
+- Audit-Log und Wiederherstellung;
+- Freemium/Premium;
+- E-Mail/Passwort, Apple, Google und Passkeys;
+- In-App- und E-Mail-Benachrichtigungen;
+- DE/EN;
+- responsive Web-App;
+- API-/Backend-Basis für spätere iOS-/Android-Apps;
+- Docker-/PostgreSQL-/Portainer-Betrieb;
+- persistente Medien;
+- Backups und Restore-Prozess.
+
+### Entwicklungsstrategie
+
+Obwohl alles zu V1 gehört, wird die Implementierung intern in klar abgegrenzte Bauphasen zerlegt.
+
+Ziel ist:
+
+- saubere Architektur statt schneller Wegwerf-Prototypen;
+- testbare Module;
+- stabile Datenmigrationen;
+- durchgängige Berechtigungsprüfung;
+- reproduzierbare Deployments;
+- vollständige Integrationstests;
+- keine Veröffentlichung eines halbfertigen Teilprodukts.
+
+### Release-Grundsatz
+
+Sammlerraum.de wird erst als V1 veröffentlicht, wenn der vollständige vereinbarte Funktionsumfang integriert, getestet und produktionsreif ist.
+
+Ein langer Entwicklungszeitraum ist ausdrücklich akzeptiert, wenn dadurch Qualität, Datenintegrität, Sicherheit und Wartbarkeit verbessert werden.
+
+---
+
+## 28. Bisherige Produktprinzipien
 
 - private Nutzung muss vollständig möglich sein;
 - Öffentlichkeit ist **Opt-in**, nicht Standard;
@@ -1928,7 +2004,7 @@ Die kostenlose manuelle Wertpflege bleibt davon unabhängig nutzbar.
 
 ---
 
-## 28. Noch offen
+## 29. Noch offen
 
 Folgende Bereiche werden im weiteren Produktdesign festgelegt:
 
@@ -1939,7 +2015,7 @@ Folgende Bereiche werden im weiteren Produktdesign festgelegt:
 
 ---
 
-## 29. Dokumentationsregel
+## 30. Dokumentationsregel
 
 Neue, vom Nutzer bestätigte Produktentscheidungen werden in dieser README ergänzt, damit der Projektstand unabhängig von der Chatlänge erhalten bleibt.
 
