@@ -1089,7 +1089,103 @@ Das Datenmodell muss neue Filtertypen später ergänzen können, ohne bestehende
 
 ---
 
-## 18. Bisherige Produktprinzipien
+## 18. Dashboard und Statistiken
+
+### Festgelegt: Vollwertiges Sammler-Dashboard
+
+Sammlerraum erhält ein persönliches Dashboard, das nicht nur Bestandszahlen zeigt, sondern den Zustand und die Entwicklung der eigenen Sammlung verständlich zusammenfasst.
+
+### Kernkennzahlen
+
+Vorgesehen sind mindestens:
+
+- Gesamtzahl der Sammlerstücke;
+- Anzahl der Sammlungen und Teil-Sammlungen;
+- Summe der dokumentierten Kaufkosten;
+- aktueller eigener Schätzwert;
+- verfügbarer externer Marktwert;
+- absolute und prozentuale Wertveränderung;
+- Anzahl der Dubletten;
+- Anzahl der Wunschlisten-Einträge;
+- Anzahl tauschbereiter und verkaufsbereiter Stücke.
+
+Eigene Schätzwerte und externe Marktwerte bleiben auch im Dashboard klar voneinander getrennt.
+
+### Wertentwicklung
+
+Das Dashboard zeigt historische Entwicklungen, soweit Daten vorhanden sind.
+
+Beispiele:
+
+- Gesamtwert über Zeit;
+- Kaufkosten gegenüber aktuellem Wert;
+- Wertentwicklung pro Sammlung;
+- stärkste Wertsteigerungen;
+- stärkste Wertverluste;
+- neue Marktpreisänderungen.
+
+Fehlende Marktpreisdaten dürfen nicht durch erfundene oder geschätzte Werte ersetzt werden.
+
+### Sammlungsanalyse
+
+Mögliche Auswertungen:
+
+- größte Sammlungen;
+- wertvollste Sammlungen;
+- wertvollste Einzelstücke;
+- Verteilung nach Kategorie;
+- Verteilung nach Hersteller/Serie/Set;
+- Verteilung nach Zustand;
+- Verteilung nach Grading-Anbieter und Grading-Note;
+- Käufe nach Jahr/Monat;
+- Neuzugänge.
+
+### Datenqualität
+
+Das Dashboard soll auch auf unvollständige Daten hinweisen können.
+
+Beispiele:
+
+- Stücke ohne Foto;
+- Stücke ohne Wert;
+- fehlende Kaufdaten;
+- fehlende Kategorie;
+- Stücke ohne Zustand;
+- nicht vollständig ausgefüllte Kategorie-Vorlagen;
+- fehlende Nachweise bei entsprechend markierten Objekten.
+
+Diese Hinweise dienen als Arbeitsliste und nicht als Zwang.
+
+### Wunschliste und Dubletten
+
+Vorgesehen sind Übersichten zu:
+
+- offenen Wunschlisten-Einträgen;
+- erfüllten Wünschen;
+- Dubletten;
+- möglichen späteren Wunschlisten-/Dubletten-Matches.
+
+### Persönliche Meilensteine
+
+Sammlerraum kann persönliche Meilensteine darstellen, z. B.:
+
+- 100. Sammlerstück;
+- neue Sammlung begonnen;
+- Sammlung vervollständigt;
+- bestimmter dokumentierter Gesamtwert erreicht;
+- Wunschliste teilweise oder vollständig erfüllt.
+
+Meilensteine sind informativ und dürfen nicht in manipulative Gamification oder Kaufdruck ausarten.
+
+### Free / Premium
+
+Basiskennzahlen bleiben für Free-Nutzer sinnvoll nutzbar.
+
+Erweiterte historische Analysen, umfangreiche Marktpreis-Auswertungen und tiefergehende Statistiken können Bestandteil von Premium sein.
+
+---
+
+## 19. Bisherige Produktprinzipien
 
 - private Nutzung muss vollständig möglich sein;
 - Öffentlichkeit ist **Opt-in**, nicht Standard;
@@ -1103,20 +1199,19 @@ Das Datenmodell muss neue Filtertypen später ergänzen können, ohne bestehende
 
 ---
 
-## 19. Noch offen
+## 20. Noch offen
 
 Folgende Bereiche werden im weiteren Produktdesign festgelegt:
 
 - Objekt-/Gegenstandsmodell
 - Zustandsbewertung
 - Teilen einzelner Sammlungen
-- Statistik und Sammlungswert
 - Hosting / Datenbank / Bildspeicherung
 - Marktplatz-/Tausch-Ausbaustufe
 
 ---
 
-## 20. Dokumentationsregel
+## 21. Dokumentationsregel
 
 Neue, vom Nutzer bestätigte Produktentscheidungen werden in dieser README ergänzt, damit der Projektstand unabhängig von der Chatlänge erhalten bleibt.
 
