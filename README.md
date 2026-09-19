@@ -165,7 +165,70 @@ Der Nutzer behält die Kontrolle über die endgültig gespeicherten Daten.
 
 ---
 
-## 5. Bisherige Produktprinzipien
+## 5. Wertverwaltung und Marktpreise
+
+### Festgelegt: Eigene Werte + Historie + optionale externe Marktpreise
+
+Sammlerraum verwaltet den finanziellen Wert eines Sammlerstücks mehrstufig.
+
+### Eigene Werte
+
+Pro Sammlerstück können insbesondere gepflegt werden:
+
+- Kaufpreis;
+- Kaufdatum;
+- Währung;
+- eigener aktueller Schätzwert;
+- optionaler Kommentar zur Bewertung.
+
+### Wert-Historie
+
+Bewertungen werden historisiert, damit die Entwicklung eines Stücks und der gesamten Sammlung nachvollziehbar bleibt.
+
+Mögliche Ansichten:
+
+- aktueller Sammlungswert;
+- Veränderung über Zeit;
+- Wert pro Sammlung/Teil-Sammlung;
+- Differenz zwischen Kaufpreis und aktuellem Wert;
+- historische Einzelwerte eines Objekts.
+
+Historische Werte dürfen nicht einfach überschrieben werden, wenn eine neue Bewertung erfasst wird.
+
+### Externe Marktpreise
+
+Für Kategorien mit verlässlichen Datenquellen können externe Marktwerte ergänzt werden.
+
+Beispiele möglicher Kategorien:
+
+- Trading Cards;
+- Comics;
+- Uhren;
+- Münzen;
+- weitere Bereiche mit belastbaren Markt- oder Verkaufsdaten.
+
+Sammlerraum bleibt jedoch **vollständig funktionsfähig ohne externe Preisquelle**.
+
+Wenn keine belastbare Quelle verfügbar ist:
+
+- kann der Nutzer Werte selbst eintragen;
+- Sammlerraum erfindet keine Marktpreise;
+- AI darf einen Marktwert nicht ohne verlässliche Datenquelle als Tatsache darstellen.
+
+### Trennung der Wertarten
+
+Eigene Schätzung und externer Marktwert werden getrennt gespeichert und gekennzeichnet.
+
+So bleibt nachvollziehbar:
+
+- was der Nutzer selbst bewertet hat;
+- welcher Wert von einer externen Quelle stammt;
+- wann der jeweilige Wert ermittelt wurde;
+- welche Quelle verwendet wurde.
+
+---
+
+## 6. Bisherige Produktprinzipien
 
 - private Nutzung muss vollständig möglich sein;
 - Öffentlichkeit ist **Opt-in**, nicht Standard;
@@ -179,14 +242,13 @@ Der Nutzer behält die Kontrolle über die endgültig gespeicherten Daten.
 
 ---
 
-## 6. Noch offen
+## 7. Noch offen
 
 Folgende Bereiche werden im weiteren Produktdesign festgelegt:
 
 - Objekt-/Gegenstandsmodell
 - Bilder pro Sammlerstück
 - Zustandsbewertung
-- Kaufpreis / aktueller Wert / Wertentwicklung
 - Seriennummern und Echtheitsnachweise
 - Tags und freie Felder
 - Dubletten
@@ -209,7 +271,7 @@ Folgende Bereiche werden im weiteren Produktdesign festgelegt:
 
 ---
 
-## 7. Dokumentationsregel
+## 8. Dokumentationsregel
 
 Neue, vom Nutzer bestätigte Produktentscheidungen werden in dieser README ergänzt, damit der Projektstand unabhängig von der Chatlänge erhalten bleibt.
 
