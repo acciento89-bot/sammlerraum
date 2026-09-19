@@ -431,7 +431,93 @@ Nicht Bestandteil dieses ersten Schritts:
 
 ---
 
-## 9. Bisherige Produktprinzipien
+## 9. Bilder, Dokumente und Nachweise
+
+### Festgelegt: Strukturierte Medienverwaltung pro Sammlerstück
+
+Jedes Sammlerstück kann mehrere Medien und Dokumente besitzen. Diese werden nicht als eine einzige ungeordnete Dateiliste behandelt, sondern nach Zweck strukturiert.
+
+### Bilder
+
+Vorgesehen sind:
+
+- ein **Titelbild** als primäre Darstellung des Stücks;
+- eine **Bildergalerie** mit mehreren Detailaufnahmen;
+- frei sortierbare Reihenfolge;
+- optionale Bildbeschreibungen;
+- spätere Unterstützung für Detailansichten und Zoom.
+
+Typische Fotos können z. B. zeigen:
+
+- Vorderseite;
+- Rückseite;
+- Seriennummer;
+- Signatur;
+- Verpackung;
+- Zubehör;
+- Schäden oder besondere Merkmale.
+
+### Kaufbelege
+
+Kaufbelege werden als eigene Dokumentart geführt.
+
+Mögliche Metadaten:
+
+- Kaufdatum;
+- Händler/Verkäufer;
+- Kaufpreis;
+- Währung;
+- Belegdatum;
+- Notiz.
+
+Kaufbelege sind standardmäßig **privat** und werden nicht automatisch mit öffentlich sichtbaren Sammlerstücken geteilt.
+
+### Echtheits- und Grading-Nachweise
+
+Unterstützt werden strukturierte Nachweise wie:
+
+- Echtheitszertifikate;
+- Grading-Zertifikate;
+- Zertifikatsnummern;
+- Grading-Anbieter;
+- Prüfberichte;
+- Herkunfts-/Provenienzunterlagen.
+
+Dokumente können mit passenden strukturierten Feldern am Sammlerstück verknüpft werden.
+
+### Weitere private Dateien
+
+Zusätzlich können weitere sammlungsrelevante Dateien hinterlegt werden, z. B.:
+
+- Garantien;
+- Versicherungsunterlagen;
+- Rechnungen;
+- Expertisen;
+- Restaurierungsunterlagen;
+- sonstige persönliche Dokumentation.
+
+### Datenschutz und Sichtbarkeit
+
+Dokumente und Nachweise erhalten eine eigene Sichtbarkeit und sind **nicht automatisch öffentlich**, nur weil das zugehörige Sammlerstück öffentlich ist.
+
+Insbesondere bleiben standardmäßig privat:
+
+- Kaufbelege;
+- Rechnungen;
+- Adressdaten;
+- personenbezogene Dokumente;
+- Versicherungsunterlagen;
+- interne Notizen.
+
+Öffentliche Nachweise müssen vom Nutzer ausdrücklich freigegeben werden.
+
+### Technischer Grundsatz
+
+Medien und Dokumente werden als eigene Objekte mit Typ, Sichtbarkeit, Metadaten und Zuordnung gespeichert. Dadurch bleiben spätere Funktionen wie Dokumentvorschau, OCR, Zertifikatsprüfung oder Export möglich, ohne das Kernmodell neu bauen zu müssen.
+
+---
+
+## 10. Bisherige Produktprinzipien
 
 - private Nutzung muss vollständig möglich sein;
 - Öffentlichkeit ist **Opt-in**, nicht Standard;
@@ -445,14 +531,12 @@ Nicht Bestandteil dieses ersten Schritts:
 
 ---
 
-## 10. Noch offen
+## 11. Noch offen
 
 Folgende Bereiche werden im weiteren Produktdesign festgelegt:
 
 - Objekt-/Gegenstandsmodell
-- Bilder pro Sammlerstück
 - Zustandsbewertung
-- Seriennummern und Echtheitsnachweise
 - Tags und freie Felder
 - Teilen einzelner Sammlungen
 - Such- und Filterlogik
@@ -469,7 +553,7 @@ Folgende Bereiche werden im weiteren Produktdesign festgelegt:
 
 ---
 
-## 11. Dokumentationsregel
+## 12. Dokumentationsregel
 
 Neue, vom Nutzer bestätigte Produktentscheidungen werden in dieser README ergänzt, damit der Projektstand unabhängig von der Chatlänge erhalten bleibt.
 
