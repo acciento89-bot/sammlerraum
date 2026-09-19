@@ -2799,17 +2799,177 @@ Benutzerdefinierte Schemata verändern nicht die offiziellen Kategorie-Vorlagen 
 
 ---
 
-## 35. Noch offen
+## 35. Sammlerstück-Grundmodell
+
+### Festgelegt: Persönliches Exemplar als zentraler fachlicher Datensatz
+
+Jedes konkrete Sammlerstück wird als eigener `CollectibleItem`-Datensatz modelliert.
+
+Beispielstruktur:
+
+```
+CollectibleItem
+├── id
+├── collectionId
+├── collectionNodeId
+├── catalogEntryId? / catalogVariantId?
+├── title
+├── description
+├── quantity
+├── acquisitionType
+├── purchase / acquisition data
+├── condition
+├── grading
+├── visibility
+├── tradeStatus
+├── storageLocation
+├── tags
+├── customFields
+├── media
+├── documents
+├── valuations
+├── insurance
+├── provenance
+└── audit/history
+```
+
+### Menge oder einzelne Exemplare
+
+Sammlerraum unterstützt beide Modelle:
+
+1. **Mengenobjekt**
+   - für mehrere praktisch austauschbare Exemplare;
+   - Beispiel: 20 identische Stücke mit derselben relevanten Beschreibung.
+
+2. **Einzelobjekte**
+   - für Exemplare mit eigenen Merkmalen;
+   - z. B. unterschiedliche Seriennummern, Zustände, Gradings, Kaufpreise, Bilder oder Provenienz.
+
+Ein Mengenobjekt kann später in einzelne Exemplare aufgeteilt werden.
+
+### Erwerbsart
+
+Nicht jedes Sammlerstück wird gekauft.
+
+Unterstützte Erwerbsarten umfassen mindestens:
+
+- gekauft;
+- Geschenk;
+- geerbt;
+- getauscht;
+- gefunden;
+- selbst hergestellt;
+- sonstiges.
+
+Die Eingabemaske kann je nach Erwerbsart passende Felder einblenden.
+
+### Erwerbsdaten
+
+Mögliche Daten:
+
+- Erwerbsdatum;
+- Kaufpreis;
+- Währung;
+- Händler/Quelle;
+- Verkäufer;
+- Notiz;
+- verknüpfter Kaufbeleg.
+
+### Provenienz
+
+Die Herkunfts-/Besitzgeschichte kann über eigene Einträge gepflegt werden.
+
+Beispiel:
+
+```
+ProvenanceEntry
+├── date
+├── type
+├── source
+├── description
+└── linkedDocument
+```
+
+Beispiele:
+
+- 2018 – gekauft bei Händler X;
+- 2023 – restauriert durch Werkstatt Y;
+- 2025 – geerbt;
+- Zertifikat oder Rechnung als verknüpfter Nachweis.
+
+### Identifikatoren
+
+Ein Sammlerstück kann mehrere Kennungen besitzen.
+
+Beispiele:
+
+- Seriennummer;
+- Zertifikatsnummer;
+- EAN / UPC;
+- ISBN;
+- Katalognummer;
+- Hersteller-Referenz;
+- interne Sammler-ID;
+- frei definierte Kennung.
+
+Diese Kennungen werden über eine eigene strukturierte `ItemIdentifier`-Relation gespeichert und nicht als große Menge fest verdrahteter Spalten.
+
+### Vollständigkeitsstatus
+
+Sammlerraum kann optional einen Datenvollständigkeitsstatus berechnen.
+
+Mögliche Hinweise:
+
+- Basisdaten fehlen;
+- kein Bild;
+- kein Zustand;
+- kein Erwerbsdatum;
+- kein Wert;
+- fehlender Nachweis.
+
+Diese Hinweise unterstützen die Datenpflege, blockieren aber das Speichern eines Stücks nicht.
+
+### Öffentliche Beschreibung und private Notizen
+
+Es werden mindestens zwei Textbereiche getrennt:
+
+- öffentliche bzw. freigabefähige Beschreibung;
+- private Notizen.
+
+Private Notizen werden niemals automatisch öffentlich, nur weil das Sammlerstück öffentlich oder nicht gelistet ist.
+
+### Lebenszyklus
+
+Mindestens folgende Zeitpunkte können gespeichert werden:
+
+- erstellt am;
+- zuletzt geändert;
+- erworben am;
+- optional verkauft/getauscht/abgegeben am;
+- archiviert am.
+
+Ein Stück, das die Sammlung verlässt, muss nicht gelöscht werden.
+
+Es kann archiviert bzw. als abgegeben markiert werden, damit unter anderem erhalten bleiben:
+
+- Kaufhistorie;
+- Verkaufs-/Tauschhistorie;
+- Wertverlauf;
+- Provenienz;
+- Audit-Verlauf.
+
+---
+
+## 36. Noch offen
 
 Folgende Bereiche werden im weiteren Produktdesign festgelegt:
 
-- Objekt-/Gegenstandsmodell
 - Teilen einzelner Sammlungen
 - Marktplatz-/Tausch-Ausbaustufe
 
 ---
 
-## 36. Dokumentationsregel
+## 37. Dokumentationsregel
 
 Neue, vom Nutzer bestätigte Produktentscheidungen werden in dieser README ergänzt, damit der Projektstand unabhängig von der Chatlänge erhalten bleibt.
 
