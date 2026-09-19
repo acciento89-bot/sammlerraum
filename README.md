@@ -1479,7 +1479,101 @@ Die Standortverwaltung ist Teil des persönlichen Inventars und unabhängig von 
 
 ---
 
-## 22. Bisherige Produktprinzipien
+## 22. Versicherung und Bestandsnachweise
+
+### Festgelegt: Strukturierter Versicherungsmodus + exportierbare Bestandsberichte
+
+Sammlerraum unterstützt Nutzer dabei, wertvolle Sammlungen für eigene Unterlagen oder Versicherungszwecke nachvollziehbar zu dokumentieren.
+
+### Versicherungsdaten
+
+Für Sammlungen und einzelne Sammlerstücke können optionale Versicherungsinformationen hinterlegt werden.
+
+Mögliche Felder:
+
+- versicherter Wert;
+- Bewertungsstichtag;
+- Versicherer;
+- Policen-/Vertragsreferenz;
+- versicherte Sammlung;
+- besondere Deckungshinweise;
+- Kommentar/Notiz.
+
+Versicherungsdaten sind standardmäßig **privat**.
+
+### Nachweise
+
+Versicherungsrelevante Dokumente können strukturiert mit Sammlungen oder Stücken verknüpft werden.
+
+Beispiele:
+
+- Kaufbelege;
+- Rechnungen;
+- Echtheitszertifikate;
+- Grading-Nachweise;
+- Gutachten;
+- Expertisen;
+- Versicherungsunterlagen;
+- Fotos des Zustands;
+- Provenienz-Dokumente.
+
+### Bestandsbericht
+
+Sammlerraum kann einen exportierbaren Bestandsbericht erzeugen.
+
+Der Bericht kann je nach Auswahl enthalten:
+
+- Sammlungsname;
+- Objektbezeichnung;
+- Kategorie;
+- Referenz-/Katalognummer;
+- Seriennummer;
+- Zustand;
+- Grading;
+- Kaufdatum;
+- Kaufpreis;
+- eigener Schätzwert;
+- externer Marktwert;
+- versicherter Wert;
+- Bewertungsstichtag;
+- ausgewählte Bilder;
+- ausgewählte Nachweise;
+- Lagerort, nur wenn vom Nutzer ausdrücklich gewünscht.
+
+### Exportformate
+
+Vorgesehen sind mindestens:
+
+- PDF-Bericht;
+- Excel-/XLSX-Auswertung;
+- CSV für strukturierte Weiterverarbeitung.
+
+### Datenschutz
+
+Sensible Informationen werden nicht automatisch in einen Export aufgenommen.
+
+Der Nutzer entscheidet explizit, ob z. B. folgende Angaben enthalten sein sollen:
+
+- Versicherer;
+- Policennummer;
+- Lagerort;
+- Kaufbelege;
+- personenbezogene Dokumente;
+- private Notizen.
+
+### Stichtagsprinzip
+
+Ein Versicherungsbericht kann einen festen Stichtag besitzen.
+
+Dadurch bleibt nachvollziehbar, auf welchem Datenstand ein Bericht basiert, auch wenn sich Werte oder Bestand später ändern.
+
+### Grundsatz
+
+Sammlerraum stellt Dokumentations- und Exportfunktionen bereit, übernimmt aber keine eigene versicherungsrechtliche Bewertung und ersetzt kein professionelles Gutachten.
+
+---
+
+## 23. Bisherige Produktprinzipien
 
 - private Nutzung muss vollständig möglich sein;
 - Öffentlichkeit ist **Opt-in**, nicht Standard;
@@ -1493,7 +1587,7 @@ Die Standortverwaltung ist Teil des persönlichen Inventars und unabhängig von 
 
 ---
 
-## 23. Noch offen
+## 24. Noch offen
 
 Folgende Bereiche werden im weiteren Produktdesign festgelegt:
 
@@ -1505,7 +1599,7 @@ Folgende Bereiche werden im weiteren Produktdesign festgelegt:
 
 ---
 
-## 24. Dokumentationsregel
+## 25. Dokumentationsregel
 
 Neue, vom Nutzer bestätigte Produktentscheidungen werden in dieser README ergänzt, damit der Projektstand unabhängig von der Chatlänge erhalten bleibt.
 
