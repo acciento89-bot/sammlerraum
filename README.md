@@ -126,7 +126,46 @@ Ziel ist, sowohl kleine Sammlungen als auch sehr große Sammlungsbestände sinnv
 
 ---
 
-## 4. Bisherige Produktprinzipien
+## 4. Erfassung von Sammlerstücken
+
+### Festgelegt: Manuell + Barcode + AI-Fotoerkennung
+
+Sammlerstücke können auf drei Wegen angelegt werden:
+
+1. **Manuelle Eingabe**
+   - über die zur Kategorie passende Eingabemaske;
+   - inklusive freier Felder für Sonderfälle.
+
+2. **Barcode-/Code-Erkennung**
+   - EAN/UPC;
+   - ISBN;
+   - weitere strukturierte Produktcodes, sofern sinnvoll und verfügbar.
+
+3. **Foto-/AI-Unterstützung**
+   - Nutzer lädt ein oder mehrere Fotos hoch;
+   - Sammlerraum analysiert das Objekt und schlägt passende Metadaten vor;
+   - mögliche Vorschläge: Name, Hersteller, Serie/Set, Jahrgang, Kategorie und weitere erkennbare Merkmale;
+   - der Nutzer bestätigt oder korrigiert die vorgeschlagenen Daten vor dem Speichern.
+
+### Sicherheits-/Qualitätsregel
+
+AI-Ausgaben sind **Vorschläge**, keine automatisch bestätigten Tatsachen.
+
+Insbesondere dürfen folgende Angaben nicht ungeprüft als Fakt übernommen werden:
+
+- Echtheit;
+- Seltenheit;
+- Marktwert;
+- Zustand;
+- Grading;
+- Edition/Variante, wenn visuell nicht eindeutig;
+- Herkunft/Provenienz.
+
+Der Nutzer behält die Kontrolle über die endgültig gespeicherten Daten.
+
+---
+
+## 5. Bisherige Produktprinzipien
 
 - private Nutzung muss vollständig möglich sein;
 - Öffentlichkeit ist **Opt-in**, nicht Standard;
@@ -140,7 +179,7 @@ Ziel ist, sowohl kleine Sammlungen als auch sehr große Sammlungsbestände sinnv
 
 ---
 
-## 5. Noch offen
+## 6. Noch offen
 
 Folgende Bereiche werden im weiteren Produktdesign festgelegt:
 
@@ -170,7 +209,7 @@ Folgende Bereiche werden im weiteren Produktdesign festgelegt:
 
 ---
 
-## 6. Dokumentationsregel
+## 7. Dokumentationsregel
 
 Neue, vom Nutzer bestätigte Produktentscheidungen werden in dieser README ergänzt, damit der Projektstand unabhängig von der Chatlänge erhalten bleibt.
 
