@@ -228,7 +228,57 @@ So bleibt nachvollziehbar:
 
 ---
 
-## 6. Bisherige Produktprinzipien
+## 6. Sichtbarkeit und Teilen
+
+### Festgelegt: Privat + Öffentlich + Nicht gelistet
+
+Sammlerraum unterstützt drei Sichtbarkeitsstufen:
+
+1. **Privat**
+   - nur für den Besitzer sichtbar;
+   - nicht im öffentlichen Profil;
+   - nicht in Suche oder Community-Feed;
+   - nicht über einen öffentlichen Link aufrufbar.
+
+2. **Öffentlich**
+   - im öffentlichen Profil sichtbar;
+   - grundsätzlich in Suche, Community-Bereichen und öffentlichen Sammlungsansichten auffindbar;
+   - über einen normalen öffentlichen Link teilbar.
+
+3. **Nicht gelistet**
+   - über einen direkten Link sichtbar;
+   - nicht im öffentlichen Profil gelistet;
+   - nicht in Suche, Feed oder öffentlichen Entdeckungsseiten auffindbar.
+
+### Sichtbarkeit auf mehreren Ebenen
+
+Die Sichtbarkeit gilt sowohl für:
+
+- ganze Sammlungen;
+- Teil-Sammlungen/Unterordner;
+- einzelne Sammlerstücke.
+
+Ein einzelnes Stück kann restriktiver eingestellt werden als die übergeordnete Sammlung.
+
+Beispiel:
+
+```
+Pokémon                 → öffentlich
+├── Base Set            → öffentlich
+│   ├── Karte A         → öffentlich
+│   ├── Karte B         → nicht gelistet
+│   └── Karte C         → privat
+```
+
+### Vererbungsregel
+
+Untergeordnete Inhalte erben standardmäßig die Sichtbarkeit der übergeordneten Sammlung, können aber vom Nutzer explizit restriktiver eingestellt werden.
+
+Eine private übergeordnete Sammlung darf nicht versehentlich durch ein öffentlich markiertes Unterobjekt nach außen sichtbar werden. Die effektiv sichtbare Stufe wird daher immer aus der gesamten Hierarchie abgeleitet.
+
+---
+
+## 7. Bisherige Produktprinzipien
 
 - private Nutzung muss vollständig möglich sein;
 - Öffentlichkeit ist **Opt-in**, nicht Standard;
@@ -242,7 +292,7 @@ So bleibt nachvollziehbar:
 
 ---
 
-## 7. Noch offen
+## 8. Noch offen
 
 Folgende Bereiche werden im weiteren Produktdesign festgelegt:
 
@@ -262,7 +312,6 @@ Folgende Bereiche werden im weiteren Produktdesign festgelegt:
 - Monetarisierung
 - Free-/Premium-Grenzen
 - Authentifizierung
-- Datenschutz / Sichtbarkeitsmodell
 - technische Architektur
 - Hosting / Datenbank / Bildspeicherung
 - DE/EN
@@ -271,7 +320,7 @@ Folgende Bereiche werden im weiteren Produktdesign festgelegt:
 
 ---
 
-## 8. Dokumentationsregel
+## 9. Dokumentationsregel
 
 Neue, vom Nutzer bestätigte Produktentscheidungen werden in dieser README ergänzt, damit der Projektstand unabhängig von der Chatlänge erhalten bleibt.
 
