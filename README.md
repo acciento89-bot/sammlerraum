@@ -1006,7 +1006,90 @@ Browser-Push ist für Version 1 **nicht erforderlich**. Die Architektur darf ein
 
 ---
 
-## 17. Bisherige Produktprinzipien
+## 17. Suche, Filter und Smart Collections
+
+### Festgelegt: Erweiterte Suche + speicherbare dynamische Ansichten
+
+Sammlerraum erhält eine leistungsfähige Suche, die auch bei großen Sammlungen nutzbar bleibt.
+
+### Suche
+
+Die Suche soll mindestens berücksichtigen können:
+
+- Titel/Name;
+- Hersteller;
+- Serie/Set;
+- Kategorie;
+- Tags;
+- benutzerdefinierte Felder;
+- Serien-/Zertifikatsnummern;
+- Notizen, soweit vom Nutzer gewünscht;
+- Wunschlisten-Einträge.
+
+### Erweiterte Filter
+
+Filter können abhängig von Kategorie und vorhandenem Datenmodell kombiniert werden.
+
+Beispiele:
+
+- Sammlung / Teil-Sammlung;
+- Kategorie;
+- Hersteller;
+- Jahrgang;
+- Zustand;
+- Grading-Anbieter;
+- Grading-Note;
+- Kaufpreis;
+- aktueller eigener Wert;
+- externer Marktwert;
+- Wertspanne;
+- Tags;
+- Dublette;
+- Wunschliste;
+- Tauschbereit;
+- Verkaufsbereit;
+- Sichtbarkeit;
+- mit/ohne Foto;
+- mit/ohne Dokumente;
+- mit/ohne Kaufbeleg;
+- Erfassungsdatum;
+- letzter Bearbeitungszeitpunkt.
+
+### Smart Collections
+
+Nutzer können eine Filterkombination als **Smart Collection** speichern.
+
+Eine Smart Collection enthält keine duplizierten Sammlerstücke, sondern eine gespeicherte Abfrage auf den bestehenden Bestand.
+
+Beispiele:
+
+- „Alle PSA 10 Pokémon“;
+- „Alle Stücke über 500 €“;
+- „Alle Dubletten“;
+- „Tauschbereit“;
+- „Ohne Foto“;
+- „2026 gekauft“;
+- „Wertsteigerung über 20 %“;
+- „Noch nicht vollständig erfasst“.
+
+Wenn ein Sammlerstück später die Filterbedingungen erfüllt oder nicht mehr erfüllt, aktualisiert sich die Smart Collection automatisch.
+
+### Abgrenzung
+
+Smart Collections ersetzen nicht die echte Sammlungs-/Unterordnerstruktur.
+
+- echte Sammlung = bewusst organisierter Bestand;
+- Smart Collection = dynamische, gespeicherte Sicht auf vorhandene Daten.
+
+### Architekturgrundsatz
+
+Filterdefinitionen werden strukturiert gespeichert und nicht als schwer wartbare freie Abfragestrings.
+
+Das Datenmodell muss neue Filtertypen später ergänzen können, ohne bestehende Smart Collections unbrauchbar zu machen.
+
+---
+
+## 18. Bisherige Produktprinzipien
 
 - private Nutzung muss vollständig möglich sein;
 - Öffentlichkeit ist **Opt-in**, nicht Standard;
@@ -1020,21 +1103,20 @@ Browser-Push ist für Version 1 **nicht erforderlich**. Die Architektur darf ein
 
 ---
 
-## 18. Noch offen
+## 19. Noch offen
 
 Folgende Bereiche werden im weiteren Produktdesign festgelegt:
 
 - Objekt-/Gegenstandsmodell
 - Zustandsbewertung
 - Teilen einzelner Sammlungen
-- Such- und Filterlogik
 - Statistik und Sammlungswert
 - Hosting / Datenbank / Bildspeicherung
 - Marktplatz-/Tausch-Ausbaustufe
 
 ---
 
-## 19. Dokumentationsregel
+## 20. Dokumentationsregel
 
 Neue, vom Nutzer bestätigte Produktentscheidungen werden in dieser README ergänzt, damit der Projektstand unabhängig von der Chatlänge erhalten bleibt.
 
