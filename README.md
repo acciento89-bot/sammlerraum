@@ -517,7 +517,78 @@ Medien und Dokumente werden als eigene Objekte mit Typ, Sichtbarkeit, Metadaten 
 
 ---
 
-## 10. Bisherige Produktprinzipien
+## 10. Tags und benutzerdefinierte Felder
+
+### Festgelegt: Vorlagen + freie Tags + eigene Felder pro Sammlung
+
+Sammlerraum kombiniert strukturierte Kategorie-Vorlagen mit flexiblen Erweiterungen durch den Nutzer.
+
+### Kategorie-Vorlagen
+
+Typische Sammlerbereiche besitzen weiterhin vorgefertigte Felder, damit häufige Angaben schnell und einheitlich erfasst werden können.
+
+### Freie Tags
+
+Nutzer können Sammlerstücke mit frei definierbaren Tags versehen.
+
+Beispiele:
+
+- signiert;
+- limitiert;
+- Fehlprägung;
+- Convention;
+- Geschenk;
+- restauriert;
+- Erstauflage;
+- Lieblingsstück.
+
+Tags dienen insbesondere für:
+
+- Suche;
+- Filter;
+- Gruppierung;
+- spätere Smart Collections bzw. dynamische Ansichten.
+
+### Benutzerdefinierte Felder pro Sammlung
+
+Zusätzlich kann der Nutzer eigene Felder für eine Sammlung definieren.
+
+Beispiele:
+
+- „Signiert von“;
+- „Convention“;
+- „Regal“;
+- „Custom Grade“;
+- „Edition“;
+- „Provenienz-Code“;
+- „Versicherungsnummer“.
+
+Ein einmal definiertes Feld kann für alle Stücke der jeweiligen Sammlung wiederverwendet werden.
+
+### Feldtypen
+
+Das Datenmodell soll mindestens folgende Feldtypen unterstützen:
+
+- kurzer Text;
+- langer Text;
+- Zahl;
+- Dezimalzahl;
+- Datum;
+- Ja/Nein;
+- Auswahlfeld;
+- Mehrfachauswahl;
+- URL;
+- Währung/Geldwert.
+
+### Grundsatz
+
+Benutzerdefinierte Felder ergänzen das Standardschema, ersetzen aber nicht die strukturierten Kernfelder, die für Suche, Wertanalyse, Community oder spätere Markt-Funktionen benötigt werden.
+
+Eigene Felder bleiben an die jeweilige Sammlung gebunden und dürfen das Datenmodell anderer Nutzer oder Kategorien nicht verändern.
+
+---
+
+## 11. Bisherige Produktprinzipien
 
 - private Nutzung muss vollständig möglich sein;
 - Öffentlichkeit ist **Opt-in**, nicht Standard;
@@ -531,13 +602,12 @@ Medien und Dokumente werden als eigene Objekte mit Typ, Sichtbarkeit, Metadaten 
 
 ---
 
-## 11. Noch offen
+## 12. Noch offen
 
 Folgende Bereiche werden im weiteren Produktdesign festgelegt:
 
 - Objekt-/Gegenstandsmodell
 - Zustandsbewertung
-- Tags und freie Felder
 - Teilen einzelner Sammlungen
 - Such- und Filterlogik
 - Import / Export
@@ -553,7 +623,7 @@ Folgende Bereiche werden im weiteren Produktdesign festgelegt:
 
 ---
 
-## 12. Dokumentationsregel
+## 13. Dokumentationsregel
 
 Neue, vom Nutzer bestätigte Produktentscheidungen werden in dieser README ergänzt, damit der Projektstand unabhängig von der Chatlänge erhalten bleibt.
 
