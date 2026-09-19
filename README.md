@@ -3,6 +3,7 @@
 > **Status:** Produktdesign in Arbeit  
 > **Repository:** `acciento89-bot/sammlerraum`  
 > **Stand:** 19.09.2026
+> **Konsolidierte Design-Spezifikation:** `docs/superpowers/specs/2026-09-19-sammlerraum-design.md`
 
 Sammlerraum.de wird eine universelle Plattform zur digitalen Verwaltung privater Sammlungen mit optionalen Community-Funktionen und später vorbereiteten Marktplatz-/Tauschfunktionen.
 
