@@ -50,6 +50,7 @@
 11. `2026-09-19-11-ai-assisted-capture.md` — provider abstraction, photo analysis, structured suggestions, human confirmation.
 12. `2026-09-19-12-premium-billing.md` — entitlements, Stripe adapter, checkout/portal/webhooks, plan limits.
 13. `2026-09-19-13-integration-hardening-release.md` — E2E, security, backup/restore, production compose, release gates.
+14. `2026-09-19-14-seo-search-console.md` — technical SEO, public UGC indexing policy, bilingual category landing pages, Lighthouse, Google Search Console.
 
 ## Cross-Plan Interfaces
 
@@ -64,4 +65,4 @@
 
 ## Completion Rule
 
-The master plan is complete only when every child plan is green, the final release plan passes all release criteria in the approved spec, and the production deployment can be restored from backups without losing database or media state.
+The master plan is complete only when every child plan is green, the final release plan passes all release criteria in the approved spec, the production deployment can be restored from backups without losing database or media state, and the SEO/Search Console phase has verified production indexability rules plus successful sitemap submission for `sammlerraum.de`.
