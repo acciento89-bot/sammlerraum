@@ -588,7 +588,83 @@ Eigene Felder bleiben an die jeweilige Sammlung gebunden und dürfen das Datenmo
 
 ---
 
-## 11. Bisherige Produktprinzipien
+## 11. Import und Export
+
+### Festgelegt: CSV + Excel + wiederverwendbare Importprofile
+
+Sammlerraum unterstützt den Umstieg von bestehenden Listen und Tabellen, damit Nutzer ihre Sammlung nicht vollständig neu erfassen müssen.
+
+### Export
+
+Vorgesehen sind mindestens:
+
+- CSV-Export;
+- Excel-/XLSX-Export.
+
+Exportiert werden können abhängig vom gewählten Umfang:
+
+- eine einzelne Sammlung;
+- eine Teil-Sammlung;
+- gefilterte Sammlerstücke;
+- der vollständige eigene Bestand;
+- Wunschlisten;
+- Wert- und Bestandsdaten.
+
+Private Dokumentdateien werden nicht automatisch in Tabellenexporte eingebettet.
+
+### Import
+
+Unterstützt werden mindestens:
+
+- CSV-Dateien;
+- Excel-/XLSX-Dateien.
+
+Beim Import erhält der Nutzer eine Vorschau und ordnet Quellspalten den Feldern von Sammlerraum zu.
+
+Beispiele:
+
+```
+Meine Tabelle             Sammlerraum
+------------------------------------------------
+Artikelname             → Titel
+Hersteller              → Hersteller
+Kaufdatum               → Kaufdatum
+Preis                    → Kaufpreis
+Schublade                → eigenes Feld „Schublade“
+```
+
+Vor dem endgültigen Import müssen Validierungsfehler, nicht zugeordnete Pflichtfelder und erkannte Dubletten nachvollziehbar angezeigt werden.
+
+### Importprofile
+
+Eine einmal vorgenommene Feldzuordnung kann als Importprofil gespeichert und erneut verwendet werden.
+
+Das ermöglicht unter anderem:
+
+- wiederkehrende Imports aus derselben eigenen Tabelle;
+- vorbereitete Profile für bekannte Sammlerlisten;
+- spätere spezielle Importer für externe Plattformen oder Katalogformate.
+
+Importprofile dürfen nur dann für externe Dienste angeboten werden, wenn Format, Nutzungsbedingungen und Datenzugriff technisch und rechtlich belastbar sind.
+
+### Datenqualität
+
+Importe dürfen bestehende Daten nicht stillschweigend überschreiben.
+
+Bei möglichen Konflikten oder Dubletten muss der Nutzer entscheiden können, ob ein Datensatz:
+
+- neu angelegt;
+- übersprungen;
+- mit einem bestehenden Stück zusammengeführt;
+- oder als separates Exemplar importiert wird.
+
+### Grundsatz
+
+Sammlerraum verwendet ein eigenes kanonisches internes Datenmodell. Importformate werden auf dieses Modell abgebildet, damit die Plattform nicht von einer einzelnen externen Tabellen- oder Anbieterstruktur abhängig wird.
+
+---
+
+## 12. Bisherige Produktprinzipien
 
 - private Nutzung muss vollständig möglich sein;
 - Öffentlichkeit ist **Opt-in**, nicht Standard;
@@ -602,7 +678,7 @@ Eigene Felder bleiben an die jeweilige Sammlung gebunden und dürfen das Datenmo
 
 ---
 
-## 12. Noch offen
+## 13. Noch offen
 
 Folgende Bereiche werden im weiteren Produktdesign festgelegt:
 
@@ -610,7 +686,6 @@ Folgende Bereiche werden im weiteren Produktdesign festgelegt:
 - Zustandsbewertung
 - Teilen einzelner Sammlungen
 - Such- und Filterlogik
-- Import / Export
 - Statistik und Sammlungswert
 - Monetarisierung
 - Free-/Premium-Grenzen
@@ -623,7 +698,7 @@ Folgende Bereiche werden im weiteren Produktdesign festgelegt:
 
 ---
 
-## 13. Dokumentationsregel
+## 14. Dokumentationsregel
 
 Neue, vom Nutzer bestätigte Produktentscheidungen werden in dieser README ergänzt, damit der Projektstand unabhängig von der Chatlänge erhalten bleibt.
 
