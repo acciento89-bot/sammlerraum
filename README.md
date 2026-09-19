@@ -664,7 +664,80 @@ Sammlerraum verwendet ein eigenes kanonisches internes Datenmodell. Importformat
 
 ---
 
-## 12. Bisherige Produktprinzipien
+## 12. Monetarisierung
+
+### Festgelegt: Dauerhaft nutzbares Free-Modell + Premium-Ausbaustufe
+
+Sammlerraum folgt einem Freemium-Modell.
+
+Die kostenlose Version bleibt dauerhaft sinnvoll nutzbar. Nutzer sollen ihre Sammlung nicht nur während einer Testphase verwalten können.
+
+### Free
+
+Die Free-Stufe deckt die Kernnutzung ab.
+
+Vorgesehen sind insbesondere:
+
+- Anlegen und Verwalten eigener Sammlungen;
+- mehrere Sammlungen und Teil-Sammlungen;
+- Erfassung eigener Sammlerstücke;
+- Basis-Bilder pro Stück;
+- Wunschliste;
+- Dublettenverwaltung;
+- Basis-Community-Funktionen;
+- öffentliche/private/nicht gelistete Sichtbarkeit;
+- grundlegende Suche und Filter;
+- manuelle Werteingabe.
+
+Free kann hinsichtlich Umfang begrenzt werden, z. B. durch:
+
+- maximale Anzahl an Sammlerstücken;
+- geringere Anzahl an Bildern/Dokumenten je Stück;
+- geringere Import-/Export-Kontingente;
+- begrenzte AI-Nutzung.
+
+Die konkreten Limits werden später anhand Kostenstruktur und Nutzungswert festgelegt.
+
+### Premium
+
+Premium erweitert Sammlerraum für größere oder intensiver gepflegte Sammlungen.
+
+Vorgesehene Premium-Vorteile können sein:
+
+- deutlich mehr oder unbegrenzt viele Sammlerstücke;
+- mehr Bilder pro Stück;
+- zusätzliche Dokumente und Nachweise;
+- vollständige Wert-Historie;
+- externe Marktpreisquellen;
+- AI-gestützte Fotoerkennung mit höherem Kontingent;
+- erweiterte Statistiken und Sammlungsanalysen;
+- Excel-Import/-Export;
+- umfangreichere Importprofile;
+- erweiterte Such- und Filterfunktionen;
+- Komfortfunktionen für große Sammlungen.
+
+### Grundsätze
+
+- kein Zwangsabo nach kurzer Testphase;
+- bestehende Free-Daten bleiben erhalten;
+- Premium darf Kernfunktionen nicht künstlich unbrauchbar machen;
+- kostenintensive Funktionen wie AI oder externe Marktpreisdaten dürfen fair kontingentiert werden;
+- Community-Grundfunktionen bleiben grundsätzlich auch ohne Premium nutzbar.
+
+### Noch offen
+
+Später festzulegen:
+
+- Name der Premium-Stufe;
+- Monats-/Jahrespreis;
+- konkrete Free-Limits;
+- konkrete Premium-Limits;
+- eventuelle Lifetime-Option;
+- Zahlungsanbieter und Billing-Architektur.
+
+---
+
+## 13. Bisherige Produktprinzipien
 
 - private Nutzung muss vollständig möglich sein;
 - Öffentlichkeit ist **Opt-in**, nicht Standard;
@@ -678,7 +751,7 @@ Sammlerraum verwendet ein eigenes kanonisches internes Datenmodell. Importformat
 
 ---
 
-## 13. Noch offen
+## 14. Noch offen
 
 Folgende Bereiche werden im weiteren Produktdesign festgelegt:
 
@@ -687,8 +760,6 @@ Folgende Bereiche werden im weiteren Produktdesign festgelegt:
 - Teilen einzelner Sammlungen
 - Such- und Filterlogik
 - Statistik und Sammlungswert
-- Monetarisierung
-- Free-/Premium-Grenzen
 - Authentifizierung
 - technische Architektur
 - Hosting / Datenbank / Bildspeicherung
@@ -698,7 +769,7 @@ Folgende Bereiche werden im weiteren Produktdesign festgelegt:
 
 ---
 
-## 14. Dokumentationsregel
+## 15. Dokumentationsregel
 
 Neue, vom Nutzer bestätigte Produktentscheidungen werden in dieser README ergänzt, damit der Projektstand unabhängig von der Chatlänge erhalten bleibt.
 
