@@ -323,3 +323,116 @@ Expected: PASS.
 git add apps/web/src/app/api/v1 packages/domain/src/authz
 git commit -m "feat: expose collection and item APIs"
 ```
+
+---
+
+### Task 7: Add responsive collection and item management UI
+
+**Files:**
+- Create: `apps/web/src/app/[locale]/(app)/collections/page.tsx`
+- Create: `apps/web/src/app/[locale]/(app)/collections/[collectionId]/page.tsx`
+- Create: `apps/web/src/app/[locale]/(app)/items/new/page.tsx`
+- Create: `apps/web/src/app/[locale]/(app)/items/[itemId]/page.tsx`
+- Create: `apps/web/src/components/items/item-form.tsx`
+- Create: `apps/web/src/components/items/code-scanner.tsx`
+- Create: `apps/web/e2e/collections-items.spec.ts`
+- Modify: `apps/web/messages/de.json`
+- Modify: `apps/web/messages/en.json`
+
+**Interfaces:**
+- Consumes: collection/item/custom-field/location APIs.
+- Produces: mobile/desktop flows to create hierarchy, add/edit/archive items, manage identifiers/tags/custom fields, assign locations, and capture codes.
+
+- [ ] **Step 1: Write failing E2E flow**
+
+```ts
+test("collector creates a nested collection and item with custom field and location", async ({ page }) => {
+  await loginSeedUser(page, "de");
+  await createCollectionInUi(page, "Pokémon");
+  await createSubcollectionInUi(page, "Base Set");
+  await createCustomFieldInUi(page, "Edition", "SHORT_TEXT");
+  await createLocationInUi(page, ["Wohnzimmer", "Vitrine", "Fach 2"]);
+  await createItemInUi(page, { title: "Glurak", edition: "1st", location: "Fach 2" });
+  await expect(page.getByText("Glurak")).toBeVisible();
+});
+```
+
+- [ ] **Step 2: Run and confirm failure**
+
+Run: `pnpm --filter @sammlerraum/web exec playwright test e2e/collections-items.spec.ts`  
+Expected: FAIL.
+
+- [ ] **Step 3: Implement responsive UI**
+
+Use accessible tree/navigation controls, explicit visibility selector, separate public description/private notes, canonical money/date inputs, and progressive disclosure for advanced fields.
+
+`code-scanner.tsx` uses the browser `BarcodeDetector` API when available and always exposes manual EAN/UPC/ISBN entry as fallback. Scanner output is only an identifier proposal until the user confirms it.
+
+- [ ] **Step 4: Run E2E/build**
+
+Run:
+```bash
+pnpm --filter @sammlerraum/web exec playwright test e2e/collections-items.spec.ts
+pnpm --filter @sammlerraum/web build
+```
+
+Expected: PASS in mobile and desktop projects.
+
+- [ ] **Step 5: Commit**
+
+```bash
+git add apps/web
+git commit -m "feat: add collection and item management UI"
+```
+
+---
+
+### Task 8: Add printable storage labels and scan-to-location flow
+
+**Files:**
+- Create: `packages/domain/src/locations/label-service.ts`
+- Create: `packages/domain/src/locations/label-service.test.ts`
+- Create: `apps/web/src/app/[locale]/(app)/locations/[locationId]/label/page.tsx`
+- Create: `apps/web/src/app/l/[token]/page.tsx`
+- Create: `apps/web/e2e/location-labels.spec.ts`
+
+**Interfaces:**
+- Consumes: storage locations and stable QR token.
+- Produces: printable QR label and scan target that resolves to the authorized location view.
+
+- [ ] **Step 1: Write failing token/privacy test**
+
+```ts
+it("resolves a valid label token but never exposes private location contents to an unauthorized actor", async () => {
+  const resolved = await service.resolveLabelToken(location.labelToken);
+  expect(resolved.locationId).toBe(location.id);
+  await expect(service.getLocationContentsForActor(location.id, anonymousActor))
+    .rejects.toMatchObject({ code: "NOT_FOUND" });
+});
+```
+
+- [ ] **Step 2: Run and confirm failure**
+
+Run: `pnpm vitest run packages/domain/src/locations/label-service.test.ts`  
+Expected: FAIL.
+
+- [ ] **Step 3: Implement labels**
+
+Generate QR content as `${APP_ORIGIN}/l/${token}` using a cryptographically random stable token unrelated to database sequence IDs. Printable view contains QR, human-readable location name, and short internal code; it never prints item values or private notes.
+
+- [ ] **Step 4: Run tests/E2E**
+
+Run:
+```bash
+pnpm vitest run packages/domain/src/locations/label-service.test.ts
+pnpm --filter @sammlerraum/web exec playwright test e2e/location-labels.spec.ts
+```
+
+Expected: PASS.
+
+- [ ] **Step 5: Commit**
+
+```bash
+git add packages/domain/src/locations apps/web
+git commit -m "feat: add printable storage QR labels"
+```
