@@ -2101,7 +2101,174 @@ Microservices sind für V1 ausdrücklich **nicht** vorgesehen.
 
 ---
 
-## 29. Bisherige Produktprinzipien
+## 29. Datenmodell-Grundstruktur
+
+### Festgelegt: Globales Referenzobjekt und persönliches Exemplar strikt getrennt
+
+Sammlerraum trennt globale Katalogdaten von den individuellen Exemplaren der Nutzer.
+
+### Account- und Profilbereich
+
+```
+User
+├── Profile
+├── AuthIdentity
+├── Passkey
+├── Subscription
+└── NotificationPreference
+```
+
+Authentifizierungsdaten, öffentliche Profildaten und Premium-/Benachrichtigungseinstellungen bleiben fachlich getrennt.
+
+### Sammlungen und Struktur
+
+```
+Collection
+├── CollectionMember
+├── CollectionNode
+├── CustomFieldDefinition
+├── StorageLocation
+└── SmartCollection
+```
+
+Eine Sammlung kann mehrere Mitglieder besitzen.
+
+`CollectionNode` bildet die echte hierarchische Struktur einer Sammlung ab.
+
+`SmartCollection` speichert dagegen nur eine dynamische Filterdefinition und dupliziert keine Sammlerstücke.
+
+### Globaler Referenzkatalog
+
+```
+CatalogEntry
+├── CatalogVariant
+├── CatalogAttribute
+├── ExternalIdentifier
+└── CatalogRevision
+```
+
+Ein globaler Katalogeintrag beschreibt ein allgemein bekanntes Objekt oder eine definierte Variante.
+
+Beispiel:
+
+```
+Pokémon Charizard
+└── Base Set
+    └── 1st Edition
+```
+
+Globale Daten enthalten keine nutzerspezifischen Kauf-, Lager-, Zustands- oder Besitzinformationen.
+
+### Persönliches Exemplar
+
+```
+CollectibleItem
+├── optional CatalogEntry / CatalogVariant
+├── ItemAttribute
+├── CustomFieldValue
+├── Tag
+├── MediaAsset
+├── Document
+├── Provenance
+├── Grading
+├── Purchase
+├── StorageLocation
+└── Visibility
+```
+
+Ein `CollectibleItem` ist immer das konkrete Exemplar eines Nutzers bzw. einer Sammlung.
+
+Beispiel:
+
+Das globale Referenzobjekt kann „Charizard Base Set 1st Edition“ sein.
+
+Das persönliche Exemplar besitzt separat:
+
+- individuellen Zustand;
+- eigene PSA-/Grading-Note;
+- Zertifikatsnummer;
+- Kaufdatum;
+- Kaufpreis;
+- persönliche Fotos;
+- Provenienz;
+- Lagerort;
+- Sichtbarkeit;
+- Wertverlauf.
+
+Mehrere Nutzer können auf denselben globalen Referenzeintrag verweisen, ohne persönliche Daten miteinander zu vermischen.
+
+### Werte
+
+```
+Valuation
+├── ManualValuation
+├── ExternalMarketPoint
+├── InsuranceValue
+└── HistoricalSnapshot
+```
+
+Eigene Bewertungen, externe Marktdaten und Versicherungswerte bleiben unterscheidbar und historisierbar.
+
+### Wunschliste und Handelsvorbereitung
+
+```
+WishlistEntry
+TradeStatus
+DuplicateRelation
+```
+
+Wunschlisten-Einträge sind nicht identisch mit vorhandenen Exemplaren.
+
+Dubletten können sowohl über identische Referenzobjekte als auch über explizite Nutzerzuordnung erkannt bzw. markiert werden.
+
+### Community
+
+```
+Follow
+Favorite
+Comment
+Block
+Report
+```
+
+Community-Interaktionen werden von Sammlungs- und Katalogdaten getrennt modelliert.
+
+### Systemobjekte
+
+```
+AuditEvent
+Notification
+ImportJob
+ExportJob
+AIJob
+```
+
+Langlaufende Prozesse und Audit-Ereignisse erhalten eigene persistente Modelle.
+
+### Strukturierte statt rein JSON-basierte Daten
+
+Sammlerraum speichert nicht das gesamte fachliche Modell in frei geformten JSON-Dokumenten.
+
+Häufig gesuchte und fachlich zentrale Daten bleiben als echte typisierte Datenbankfelder bzw. Relationen erhalten.
+
+Flexible Kategorie- und Nutzerfelder werden über typisierte Attributmodelle abgebildet.
+
+Dadurch bleiben insbesondere folgende Funktionen performant und wartbar:
+
+- Suche;
+- Filter;
+- Smart Collections;
+- Statistiken;
+- Marktpreis-Zuordnung;
+- Datenmigrationen;
+- Import/Export;
+- spätere API-Erweiterungen.
+
+JSON kann ergänzend für klar abgegrenzte Metadaten oder externe Rohdaten verwendet werden, ersetzt aber nicht das kanonische fachliche Datenmodell.
+
+---
+
+## 30. Bisherige Produktprinzipien
 
 - private Nutzung muss vollständig möglich sein;
 - Öffentlichkeit ist **Opt-in**, nicht Standard;
@@ -2115,7 +2282,7 @@ Microservices sind für V1 ausdrücklich **nicht** vorgesehen.
 
 ---
 
-## 30. Noch offen
+## 31. Noch offen
 
 Folgende Bereiche werden im weiteren Produktdesign festgelegt:
 
@@ -2126,7 +2293,7 @@ Folgende Bereiche werden im weiteren Produktdesign festgelegt:
 
 ---
 
-## 31. Dokumentationsregel
+## 32. Dokumentationsregel
 
 Neue, vom Nutzer bestätigte Produktentscheidungen werden in dieser README ergänzt, damit der Projektstand unabhängig von der Chatlänge erhalten bleibt.
 
