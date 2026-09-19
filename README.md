@@ -1299,7 +1299,93 @@ Sammlerraum bleibt auch für einzigartige, selbstgefertigte, historische oder ni
 
 ---
 
-## 20. Bisherige Produktprinzipien
+## 20. Gemeinsame Sammlungen und Rollen
+
+### Festgelegt: Kollaborative Sammlungen mit Rollenmodell
+
+Sammlungen können nicht nur einer einzelnen Person zur privaten Verwaltung dienen, sondern auch gemeinsam gepflegt werden.
+
+### Rollen
+
+Mindestens folgende Rollen sind vorgesehen:
+
+- **Owner**
+  - besitzt die Sammlung;
+  - kann Rollen vergeben;
+  - kann Eigentümerschaft übertragen;
+  - kann Sammlung löschen;
+  - verwaltet zentrale Einstellungen und Premium-relevante Funktionen.
+
+- **Admin**
+  - verwaltet Mitglieder und Rollen unterhalb Owner;
+  - kann Sammlungsstruktur, Inhalte und Einstellungen bearbeiten;
+  - kann Moderationsaufgaben innerhalb der Sammlung übernehmen.
+
+- **Editor**
+  - kann Sammlerstücke anlegen, bearbeiten und strukturieren;
+  - kann Medien und Dokumente hinzufügen;
+  - kann je nach Berechtigung Werte, Tags und benutzerdefinierte Felder pflegen.
+
+- **Viewer**
+  - kann die freigegebenen Inhalte ansehen;
+  - darf keine Daten verändern.
+
+### Einladungen
+
+Mitglieder können über sichere Einladungen hinzugefügt werden.
+
+Vorgesehen sind:
+
+- Einladung per E-Mail;
+- Einladungsstatus;
+- Ablaufzeit;
+- Widerruf;
+- Annahme nur durch den vorgesehenen Account bzw. verifizierte Identität.
+
+### Berechtigungsgrundsatz
+
+Berechtigungen werden serverseitig geprüft.
+
+Ein Client darf niemals allein entscheiden, ob eine Aktion erlaubt ist.
+
+Rollen und Rechte müssen mindestens für folgende Bereiche berücksichtigt werden:
+
+- Sammlung bearbeiten;
+- Unterordner verwalten;
+- Sammlerstücke anlegen/ändern/löschen;
+- Medien/Dokumente;
+- Sichtbarkeit;
+- Kommentare;
+- Import/Export;
+- Wertdaten;
+- Mitgliederverwaltung;
+- Premium-/Billing-Funktionen.
+
+### Eigentum und Verantwortlichkeit
+
+Jede kollaborative Sammlung besitzt genau einen Owner.
+
+Andere Mitglieder erhalten Zugriff über Rollen, aber keine implizite Eigentümerschaft an den Daten.
+
+### Sichtbarkeit
+
+Interne Rollen sind von öffentlicher Sichtbarkeit getrennt.
+
+Eine private Sammlung bleibt privat, auch wenn mehrere Nutzer daran arbeiten.
+
+### Spätere Nutzungsszenarien
+
+Das Modell unterstützt später insbesondere:
+
+- Familien-Sammlungen;
+- gemeinsame Sammlungen von Paaren;
+- Vereine;
+- Sammlergruppen;
+- gemeinschaftlich gepflegte Nachlässe oder Archive.
+
+---
+
+## 21. Bisherige Produktprinzipien
 
 - private Nutzung muss vollständig möglich sein;
 - Öffentlichkeit ist **Opt-in**, nicht Standard;
@@ -1313,7 +1399,7 @@ Sammlerraum bleibt auch für einzigartige, selbstgefertigte, historische oder ni
 
 ---
 
-## 21. Noch offen
+## 22. Noch offen
 
 Folgende Bereiche werden im weiteren Produktdesign festgelegt:
 
@@ -1325,7 +1411,7 @@ Folgende Bereiche werden im weiteren Produktdesign festgelegt:
 
 ---
 
-## 22. Dokumentationsregel
+## 23. Dokumentationsregel
 
 Neue, vom Nutzer bestätigte Produktentscheidungen werden in dieser README ergänzt, damit der Projektstand unabhängig von der Chatlänge erhalten bleibt.
 
