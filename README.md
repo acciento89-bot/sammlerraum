@@ -1738,7 +1738,83 @@ Persistente Daten dürfen niemals an den Lebenszyklus eines einzelnen App-Contai
 
 ---
 
-## 25. Bisherige Produktprinzipien
+## 25. AI-Architektur
+
+### Festgelegt: Provider-Abstraktion mit zunächst einem produktiven Anbieter
+
+Sammlerraum erhält eine eigene AI-Schicht im Backend.
+
+Die Anwendung bindet AI-Funktionen nicht direkt an UI-Komponenten oder einen einzelnen Anbieter, sondern verwendet eine interne Provider-Schnittstelle.
+
+### Erste produktive Nutzung
+
+Zum Start wird ein konkreter AI-Anbieter produktiv integriert.
+
+Die Architektur bleibt jedoch so aufgebaut, dass später weitere Anbieter ergänzt oder einzelne Aufgaben lokal ausgeführt werden können.
+
+### Typische AI-Aufgaben
+
+Vorgesehen sind insbesondere:
+
+- Fotoanalyse zur Objekterkennung;
+- Vorschläge für Kategorie und Unterkategorie;
+- Vorschläge für Hersteller, Serie/Set, Jahrgang und weitere Metadaten;
+- Erkennung sichtbarer Identifikatoren;
+- Unterstützung bei der Zuordnung zu einem globalen Referenzobjekt;
+- strukturierte Extraktion aus Bildern oder Dokumenten, sofern sinnvoll und rechtlich zulässig;
+- spätere Unterstützung bei Katalogpflege und Datenbereinigung.
+
+### Provider-Schnittstelle
+
+Die interne AI-Schicht soll mindestens kapseln:
+
+- Anbieter/Modell;
+- Request-Aufbau;
+- strukturierte Antwortschemas;
+- Timeouts;
+- Retries;
+- Fehlerbehandlung;
+- Kosten-/Nutzungserfassung;
+- Rate Limits;
+- Logging ohne unnötige Speicherung sensibler Nutzerdaten.
+
+Fachlogik darf nicht von anbieterspezifischen Antwortformaten abhängen.
+
+### Qualitäts- und Sicherheitsgrundsatz
+
+AI-Ergebnisse werden als Vorschläge behandelt.
+
+Insbesondere folgende Aussagen dürfen nicht allein aufgrund eines AI-Modells als gesicherte Fakten übernommen werden:
+
+- Echtheit;
+- Marktwert;
+- Seltenheit;
+- Provenienz;
+- Grading;
+- Zustand;
+- exakte Edition/Variante bei unklarer visueller Evidenz.
+
+Der Nutzer bestätigt oder korrigiert relevante Vorschläge vor der dauerhaften Übernahme.
+
+### Datenschutz
+
+Private Bilder und Dokumente dürfen nur für die vom Nutzer ausgelöste Funktion an einen externen AI-Anbieter übermittelt werden.
+
+Vorgesehen sind:
+
+- Datenminimierung;
+- keine unnötige Weitergabe kompletter Dokumente;
+- transparente Datenschutzhinweise;
+- klare Trennung zwischen AI-Verarbeitung und öffentlichen Inhalten;
+- keine Verwendung privater Nutzerdaten für eigene Modelltrainings ohne ausdrückliche Rechtsgrundlage und Einwilligung.
+
+### Austauschbarkeit
+
+Ein späterer Wechsel des AI-Anbieters oder eine Kombination aus Cloud- und lokalen Modellen darf keine Änderung des fachlichen Sammlungsdatenmodells erfordern.
+
+---
+
+## 26. Bisherige Produktprinzipien
 
 - private Nutzung muss vollständig möglich sein;
 - Öffentlichkeit ist **Opt-in**, nicht Standard;
@@ -1752,7 +1828,7 @@ Persistente Daten dürfen niemals an den Lebenszyklus eines einzelnen App-Contai
 
 ---
 
-## 26. Noch offen
+## 27. Noch offen
 
 Folgende Bereiche werden im weiteren Produktdesign festgelegt:
 
@@ -1763,7 +1839,7 @@ Folgende Bereiche werden im weiteren Produktdesign festgelegt:
 
 ---
 
-## 27. Dokumentationsregel
+## 28. Dokumentationsregel
 
 Neue, vom Nutzer bestätigte Produktentscheidungen werden in dieser README ergänzt, damit der Projektstand unabhängig von der Chatlänge erhalten bleibt.
 
