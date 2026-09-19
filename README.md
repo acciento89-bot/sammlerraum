@@ -2419,7 +2419,121 @@ Eine spätere zusätzliche Schnittstellentechnologie ist möglich, aber nicht Be
 
 ---
 
-## 31. Bisherige Produktprinzipien
+## 31. Background Jobs und Queue
+
+### Festgelegt: PostgreSQL-basierte Queue + separater Worker
+
+Langlaufende oder asynchrone Aufgaben werden nicht innerhalb normaler HTTP-Requests ausgeführt.
+
+Die Architektur besteht aus:
+
+```
+Next.js Web
+    │
+    ├── normale Requests → PostgreSQL
+    │
+    └── längere Aufgaben → Job Queue
+                            │
+                            ▼
+                      Worker-Prozess
+                            │
+             ┌──────────────┼──────────────┐
+             ▼              ▼              ▼
+            AI           Media        Market Data
+             │              │              │
+             └──────────────┴──────────────┘
+                            │
+                       PostgreSQL
+```
+
+### Queue-Technik
+
+Für V1 wird eine **PostgreSQL-basierte Job-Queue** verwendet, z. B. über eine robuste Library wie `pg-boss`.
+
+Dadurch bleibt die Infrastruktur schlank und benötigt nicht zwingend einen zusätzlichen Redis-Dienst.
+
+Die Queue wird über eine interne Abstraktionsschicht angesprochen, damit ein späterer Wechsel auf Redis/BullMQ oder eine andere Queue-Technik möglich bleibt.
+
+### Typische Job-Arten
+
+- AI-Fotoanalyse;
+- Bildverarbeitung;
+- Marktpreisabrufe;
+- Katalog-Synchronisation;
+- CSV-/Excel-Importe;
+- Exporte;
+- PDF-Erzeugung;
+- E-Mail-Versand;
+- Benachrichtigungen;
+- periodische Statistiken;
+- Wartungs-/Bereinigungsjobs;
+- spätere Push-Zustellung.
+
+### Job-Zustände
+
+Mindestens:
+
+- `QUEUED`;
+- `PROCESSING`;
+- `SUCCEEDED`;
+- `FAILED`;
+- `CANCELLED`.
+
+Zusätzlich können gespeichert werden:
+
+- Fortschritt 0–100 %;
+- aktueller Verarbeitungsschritt;
+- Retry-Anzahl;
+- letzter Fehler;
+- Erstellungszeit;
+- Startzeit;
+- Endzeit;
+- Initiator;
+- betroffener Datensatz.
+
+### Fortschritt
+
+Längere Jobs wie Imports oder Exporte sollen ihren Fortschritt für die UI melden können.
+
+Beispiel:
+
+```
+742 / 1.250 Objekte verarbeitet
+```
+
+### Idempotenz
+
+Wichtige Jobs müssen wiederholbar sein, ohne doppelte Daten oder Seiteneffekte zu erzeugen.
+
+Besonders relevant für:
+
+- Imports;
+- E-Mail-Versand;
+- Marktpreis-Synchronisierung;
+- AI-Auswertung;
+- Bildvarianten;
+- Katalog-Sync;
+- Billing-Webhooks.
+
+### Retries und Fehlerbehandlung
+
+Fehlgeschlagene Jobs erhalten kontrollierte Wiederholungsversuche.
+
+Dauerhaft fehlgeschlagene Jobs bleiben nachvollziehbar und dürfen nicht stillschweigend verschwinden.
+
+### Concurrency
+
+Schwere Job-Klassen können getrennte Concurrency-Limits erhalten.
+
+Dadurch können z. B. viele AI- oder Bildjobs nicht gleichzeitig sämtliche Serverressourcen blockieren.
+
+### Grundsatz
+
+PostgreSQL dient für V1 als Queue-Backend, aber die fachlichen Module hängen nicht direkt von einer konkreten Queue-Library ab.
+
+---
+
+## 32. Bisherige Produktprinzipien
 
 - private Nutzung muss vollständig möglich sein;
 - Öffentlichkeit ist **Opt-in**, nicht Standard;
@@ -2433,7 +2547,7 @@ Eine spätere zusätzliche Schnittstellentechnologie ist möglich, aber nicht Be
 
 ---
 
-## 32. Noch offen
+## 33. Noch offen
 
 Folgende Bereiche werden im weiteren Produktdesign festgelegt:
 
@@ -2444,7 +2558,7 @@ Folgende Bereiche werden im weiteren Produktdesign festgelegt:
 
 ---
 
-## 33. Dokumentationsregel
+## 34. Dokumentationsregel
 
 Neue, vom Nutzer bestätigte Produktentscheidungen werden in dieser README ergänzt, damit der Projektstand unabhängig von der Chatlänge erhalten bleibt.
 
