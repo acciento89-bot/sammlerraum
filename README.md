@@ -791,7 +791,71 @@ Eine Login-E-Mail-Adresse wird niemals automatisch als öffentliche Kontaktadres
 
 ---
 
-## 14. Bisherige Produktprinzipien
+## 14. Plattformstrategie
+
+### Festgelegt: Responsive Web-App zuerst, native Apps vorbereitet
+
+Sammlerraum startet als **responsive Web-Anwendung unter Sammlerraum.de**.
+
+Die Web-App wird so umgesetzt, dass sie auf Desktop, Tablet und Smartphone vollständig nutzbar ist.
+
+### Web zuerst
+
+Version 1 konzentriert sich auf:
+
+- Desktop-Browser;
+- Tablet-Browser;
+- mobile Browser;
+- responsive Navigation und Eingabemasken;
+- Kamera-Zugriff, soweit Browser und Gerät dies unterstützen;
+- Barcode-/Code-Erfassung im Web, soweit technisch zuverlässig möglich;
+- Upload von Fotos und Dokumenten direkt vom Mobilgerät.
+
+### Architektur für spätere iOS-/Android-Apps
+
+Backend, Datenmodell und Berechtigungslogik werden von Anfang an **client-unabhängig** aufgebaut.
+
+Native Apps sollen später dieselben zentralen Dienste verwenden können, insbesondere:
+
+- Authentifizierung;
+- Sammlungen;
+- Sammlerstücke;
+- Medien;
+- Wunschlisten;
+- Community;
+- Wert-Historie;
+- Marktpreisdaten;
+- Benachrichtigungen;
+- Premium-/Billing-Status.
+
+Geschäftslogik darf deshalb nicht ausschließlich in Web-Komponenten implementiert werden.
+
+### API-Grundsatz
+
+Die Web-App nutzt klar abgegrenzte Server-/API-Schnittstellen, die später auch native Clients bedienen können.
+
+Autorisierung, Sichtbarkeit und Berechtigungen werden serverseitig geprüft und nicht dem Client überlassen.
+
+### Spätere native Apps
+
+iOS und Android sind ausdrücklich vorgesehen, aber **nicht Bestandteil des ersten Releases**.
+
+Native Apps können später insbesondere Vorteile bieten bei:
+
+- Kamera und Barcode-Scanner;
+- Push-Benachrichtigungen;
+- Foto-Workflows;
+- Offline-/Caching-Funktionen;
+- systemnahen Passkeys;
+- Teilen aus anderen Apps.
+
+### Grundsatz
+
+Web-first bedeutet **keine Wegwerf-Weblösung**. Die erste Version bildet bereits die produktive Plattformbasis, auf der spätere Clients aufsetzen.
+
+---
+
+## 15. Bisherige Produktprinzipien
 
 - private Nutzung muss vollständig möglich sein;
 - Öffentlichkeit ist **Opt-in**, nicht Standard;
@@ -805,7 +869,7 @@ Eine Login-E-Mail-Adresse wird niemals automatisch als öffentliche Kontaktadres
 
 ---
 
-## 15. Noch offen
+## 16. Noch offen
 
 Folgende Bereiche werden im weiteren Produktdesign festgelegt:
 
@@ -814,15 +878,13 @@ Folgende Bereiche werden im weiteren Produktdesign festgelegt:
 - Teilen einzelner Sammlungen
 - Such- und Filterlogik
 - Statistik und Sammlungswert
-- technische Architektur
 - Hosting / Datenbank / Bildspeicherung
 - DE/EN
-- spätere Apps für iOS/Android
 - Marktplatz-/Tausch-Ausbaustufe
 
 ---
 
-## 16. Dokumentationsregel
+## 17. Dokumentationsregel
 
 Neue, vom Nutzer bestätigte Produktentscheidungen werden in dieser README ergänzt, damit der Projektstand unabhängig von der Chatlänge erhalten bleibt.
 
