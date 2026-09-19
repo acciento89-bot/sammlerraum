@@ -1234,7 +1234,9 @@ Sammlerraum V1 ist erst releasefähig, wenn:
 13. Produktion über Docker/Portainer reproduzierbar deploybar ist;
 14. Healthchecks und Logs verfügbar sind;
 15. die kritischen End-to-End-Pfade grün sind;
-16. kein vollständiger Nutzer-Marktplatz oder Nutzer-zu-Nutzer-Checkout versehentlich aktiviert ist.
+16. kein vollständiger Nutzer-Marktplatz oder Nutzer-zu-Nutzer-Checkout versehentlich aktiviert ist;
+17. technische SEO-Regeln für DE/EN, private/unlisted Inhalte, öffentliche Community-Seiten, Sitemaps und Canonicals getestet sind;
+18. `sammlerraum.de` als Google-Search-Console-Domain-Property verifiziert und die Produktions-Sitemap erfolgreich eingereicht ist.
 
 ---
 
@@ -1278,7 +1280,8 @@ Die Planungsphase muss mindestens getrennt behandeln:
 10. Community/Moderation/Notifications;
 11. AI-assisted capture;
 12. Premium/Billing;
-13. vollständige Integration, Hardening, Backup/Restore und Release-QA.
+13. vollständige Integration, Hardening, Backup/Restore und Release-QA;
+14. technische SEO, öffentliche Indexierungsregeln, Kategorie-Landingpages und Google Search Console.
 
 Alle Phasen arbeiten gegen dieselben in diesem Dokument definierten Domänengrenzen.
 
@@ -1291,3 +1294,7 @@ Diese Spezifikation ist die konsolidierte fachliche und technische Grundlage fü
 Die README bleibt der laufende Entscheidungsverlauf.
 
 Bei Widersprüchen zwischen älteren Konzeptnotizen und dieser freigegebenen Spezifikation gilt nach Freigabe dieses Dokuments die Spezifikation, sofern eine spätere ausdrücklich bestätigte Änderung nichts anderes festlegt.
+
+### SEO-Erweiterung
+
+Die ergänzende, ebenfalls verbindliche SEO-/Search-Console-Spezifikation liegt unter `docs/superpowers/specs/2026-09-19-seo-search-console-design.md`. Sie erweitert diese V1-Spezifikation insbesondere um die Trennung zwischen öffentlicher Sammlerraum-Sichtbarkeit und externer Suchmaschinenindexierung. Öffentliche nutzergenerierte Inhalte werden standardmäßig **nicht** von Suchmaschinen indexiert; externe Indexierung ist eine ausdrückliche Profil-Option und kann PRIVATE/UNLISTED-/Moderationsregeln niemals überschreiben.
