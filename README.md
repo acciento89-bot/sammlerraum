@@ -855,7 +855,92 @@ Web-first bedeutet **keine Wegwerf-Weblösung**. Die erste Version bildet bereit
 
 ---
 
-## 15. Bisherige Produktprinzipien
+## 15. Internationalisierung
+
+### Festgelegt: Deutsch + Englisch von Anfang an
+
+Sammlerraum wird von Beginn an vollständig zweisprachig umgesetzt.
+
+Unterstützte Sprachen zum Start:
+
+- Deutsch;
+- Englisch.
+
+### UI und Systemtexte
+
+Alle sichtbaren Texte werden über eine zentrale Internationalisierungsschicht verwaltet.
+
+Dazu gehören insbesondere:
+
+- Navigation;
+- Formulare;
+- Buttons;
+- Fehlermeldungen;
+- E-Mails;
+- Benachrichtigungen;
+- Onboarding;
+- Preis- und Premium-Seiten;
+- Community-Funktionen;
+- Import-/Export-Assistenten;
+- Hilfetexte.
+
+Texte dürfen nicht fest in Komponenten verdrahtet werden.
+
+### Kategorie-Vorlagen
+
+Auch Kategorie-Vorlagen werden übersetzbar modelliert.
+
+Beispiel:
+
+```
+DE: Hersteller
+EN: Manufacturer
+
+DE: Zustand
+EN: Condition
+```
+
+Technische Feldschlüssel bleiben sprachneutral und stabil.
+
+### Benutzerinhalte
+
+Vom Nutzer eingegebene Inhalte werden nicht automatisch übersetzt.
+
+Beispiele:
+
+- Sammlungsname;
+- Beschreibung;
+- Notizen;
+- Kommentare;
+- benutzerdefinierte Felder.
+
+Eine spätere optionale Übersetzungsfunktion kann darauf aufbauen, ist aber kein Bestandteil der Grundfunktion.
+
+### URLs und öffentliche Seiten
+
+Öffentliche Marketing- und Informationsseiten erhalten saubere DE-/EN-Strukturen.
+
+Die eigentlichen Objekt-IDs und internen Daten bleiben sprachneutral, damit Links und Datenmodell nicht an eine einzelne Sprache gekoppelt sind.
+
+### Locale-abhängige Darstellung
+
+Mindestens folgende Werte werden locale-gerecht dargestellt:
+
+- Datum;
+- Uhrzeit;
+- Dezimalzahlen;
+- Tausendertrennzeichen;
+- Währungen.
+
+Gespeicherte Daten bleiben davon unabhängig in einem kanonischen Format.
+
+### Grundsatz
+
+Internationalisierung ist Bestandteil der Architektur und keine spätere Nachrüstung.
+
+---
+
+## 16. Bisherige Produktprinzipien
 
 - private Nutzung muss vollständig möglich sein;
 - Öffentlichkeit ist **Opt-in**, nicht Standard;
@@ -869,7 +954,7 @@ Web-first bedeutet **keine Wegwerf-Weblösung**. Die erste Version bildet bereit
 
 ---
 
-## 16. Noch offen
+## 17. Noch offen
 
 Folgende Bereiche werden im weiteren Produktdesign festgelegt:
 
@@ -879,12 +964,11 @@ Folgende Bereiche werden im weiteren Produktdesign festgelegt:
 - Such- und Filterlogik
 - Statistik und Sammlungswert
 - Hosting / Datenbank / Bildspeicherung
-- DE/EN
 - Marktplatz-/Tausch-Ausbaustufe
 
 ---
 
-## 17. Dokumentationsregel
+## 18. Dokumentationsregel
 
 Neue, vom Nutzer bestätigte Produktentscheidungen werden in dieser README ergänzt, damit der Projektstand unabhängig von der Chatlänge erhalten bleibt.
 
