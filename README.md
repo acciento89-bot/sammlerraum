@@ -278,7 +278,83 @@ Eine private übergeordnete Sammlung darf nicht versehentlich durch ein öffentl
 
 ---
 
-## 7. Bisherige Produktprinzipien
+## 7. Community
+
+### Festgelegt: Profile + Folgen + Favoriten + Kommentare + Moderation
+
+Sammlerraum erhält eine optionale Community-Ebene für Nutzer, die ihre Sammlungen öffentlich zeigen möchten.
+
+### Öffentliche Profile
+
+Ein Nutzer kann ein öffentliches Sammlerprofil führen.
+
+Mögliche Inhalte:
+
+- Profilbild;
+- Anzeigename;
+- Kurzbeschreibung/Bio;
+- öffentlich sichtbare Sammlungen;
+- öffentlich sichtbare Sammlerstücke;
+- Follower-/Following-Beziehungen;
+- Favoriten/Likes;
+- optionale Sammler-Schwerpunkte.
+
+Private Inhalte bleiben unabhängig vom öffentlichen Profil geschützt.
+
+### Folgen
+
+Nutzer können anderen öffentlichen Profilen folgen.
+
+Dies bildet später die Grundlage für:
+
+- einen persönlichen Community-Feed;
+- neue öffentliche Sammlungen;
+- neu veröffentlichte Sammlerstücke;
+- Updates von gefolgten Sammlern.
+
+### Likes / Favoriten
+
+Öffentliche Sammlungen und Sammlerstücke können favorisiert bzw. geliked werden.
+
+Favoriten dürfen keine private Sichtbarkeit umgehen.
+
+### Kommentare
+
+Kommentare können bei öffentlichen Sammlungen und öffentlichen Sammlerstücken aktiviert werden.
+
+Der Eigentümer kann Kommentare:
+
+- grundsätzlich erlauben;
+- pro Sammlung deaktivieren;
+- bei einzelnen Stücken deaktivieren.
+
+Nicht gelistete Inhalte können nur dann kommentiert werden, wenn der direkte Zugriff erlaubt ist und Kommentare für das Objekt aktiviert sind.
+
+Private Inhalte besitzen keine öffentliche Kommentarfunktion.
+
+### Moderation und Sicherheit
+
+Von Anfang an vorgesehen:
+
+- Kommentar melden;
+- Nutzer melden;
+- Nutzer blockieren;
+- eigene Kommentare löschen;
+- Kommentare auf eigenen Inhalten moderieren;
+- Kommentare für Inhalte deaktivieren;
+- serverseitige Schutzmaßnahmen gegen Spam/Missbrauch.
+
+Blockierte Nutzer dürfen keine direkten Community-Interaktionen mit dem blockierenden Nutzer durchführen.
+
+### Grundsatz
+
+Community-Funktionen sind **optional**.
+
+Sammlerraum muss auch als vollständig privater Sammlungsmanager sinnvoll nutzbar bleiben.
+
+---
+
+## 8. Bisherige Produktprinzipien
 
 - private Nutzung muss vollständig möglich sein;
 - Öffentlichkeit ist **Opt-in**, nicht Standard;
@@ -292,7 +368,7 @@ Eine private übergeordnete Sammlung darf nicht versehentlich durch ein öffentl
 
 ---
 
-## 8. Noch offen
+## 9. Noch offen
 
 Folgende Bereiche werden im weiteren Produktdesign festgelegt:
 
@@ -303,8 +379,6 @@ Folgende Bereiche werden im weiteren Produktdesign festgelegt:
 - Tags und freie Felder
 - Dubletten
 - Wunschlisten
-- öffentliche Profile
-- Folgen / Likes / Kommentare
 - Teilen einzelner Sammlungen
 - Such- und Filterlogik
 - Import / Export
@@ -320,7 +394,7 @@ Folgende Bereiche werden im weiteren Produktdesign festgelegt:
 
 ---
 
-## 9. Dokumentationsregel
+## 10. Dokumentationsregel
 
 Neue, vom Nutzer bestätigte Produktentscheidungen werden in dieser README ergänzt, damit der Projektstand unabhängig von der Chatlänge erhalten bleibt.
 
