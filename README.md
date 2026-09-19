@@ -1385,7 +1385,101 @@ Das Modell unterstützt später insbesondere:
 
 ---
 
-## 21. Bisherige Produktprinzipien
+## 21. Lagerorte und physische Organisation
+
+### Festgelegt: Hierarchische Lagerorte + QR-/Barcode-Labels
+
+Sammlerraum bildet nicht nur digitale Sammlungen ab, sondern hilft auch dabei, physische Bestände schnell wiederzufinden.
+
+### Hierarchische Lagerorte
+
+Lagerorte können mehrstufig aufgebaut werden.
+
+Beispiele:
+
+```
+Wohnzimmer
+└── Vitrine
+    └── Fach 2
+```
+
+oder:
+
+```
+Keller
+└── Regal A
+    └── Box 4
+        └── Einsatz 2
+```
+
+Ein Sammlerstück kann einem konkreten Lagerort zugeordnet werden.
+
+### Lagerort-Typen
+
+Mögliche Typen sind beispielsweise:
+
+- Raum;
+- Schrank;
+- Vitrine;
+- Regal;
+- Fach;
+- Box;
+- Ordner;
+- Schublade;
+- Tresor;
+- frei definierter Lagerort.
+
+Die Hierarchie bleibt flexibel und wird nicht auf eine feste Anzahl Ebenen begrenzt.
+
+### QR-/Barcode-Labels
+
+Lagerorte können ein eigenes scanbares Label erhalten.
+
+Beim Scannen eines Labels soll Sammlerraum direkt den zugehörigen Lagerort öffnen und dessen Inhalt anzeigen.
+
+Mögliche Funktionen:
+
+- Inhalt eines Lagerorts anzeigen;
+- neues Stück direkt diesem Lagerort zuordnen;
+- Stück in einen anderen Lagerort verschieben;
+- Lagerort-Details bearbeiten;
+- Bestandsprüfung unterstützen.
+
+### Labels
+
+Sammlerraum kann druckbare Labels erzeugen.
+
+Vorgesehen sind mindestens:
+
+- QR-Code;
+- menschenlesbarer Kurzname;
+- eindeutige interne Kennung.
+
+Später können zusätzliche Barcode-Formate ergänzt werden, wenn dies für bestimmte Scanner oder Etikettendrucker sinnvoll ist.
+
+### Standort-Historie
+
+Änderungen des Lagerorts können historisiert werden, damit nachvollziehbar bleibt, wann ein Stück verschoben wurde.
+
+### Datenschutz
+
+Ein interner physischer Lagerort wird **nicht automatisch öffentlich**, auch wenn ein Sammlerstück öffentlich sichtbar ist.
+
+Bezeichnungen wie:
+
+- „Tresor“;
+- genaue Wohnungsbereiche;
+- interne Box-/Regalnummern;
+
+bleiben standardmäßig private Bestandsinformationen.
+
+### Grundsatz
+
+Die Standortverwaltung ist Teil des persönlichen Inventars und unabhängig von öffentlicher Community-Darstellung.
+
+---
+
+## 22. Bisherige Produktprinzipien
 
 - private Nutzung muss vollständig möglich sein;
 - Öffentlichkeit ist **Opt-in**, nicht Standard;
@@ -1399,7 +1493,7 @@ Das Modell unterstützt später insbesondere:
 
 ---
 
-## 22. Noch offen
+## 23. Noch offen
 
 Folgende Bereiche werden im weiteren Produktdesign festgelegt:
 
@@ -1411,7 +1505,7 @@ Folgende Bereiche werden im weiteren Produktdesign festgelegt:
 
 ---
 
-## 23. Dokumentationsregel
+## 24. Dokumentationsregel
 
 Neue, vom Nutzer bestätigte Produktentscheidungen werden in dieser README ergänzt, damit der Projektstand unabhängig von der Chatlänge erhalten bleibt.
 
