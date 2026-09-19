@@ -3086,11 +3086,129 @@ Eine detaillierte Besucherüberwachung ist standardmäßig nicht vorgesehen.
 
 ---
 
-## 37. Noch offen
+## 37. Marktplatz- und Tausch-Ausbaustufe
 
-Folgende Bereiche werden im weiteren Produktdesign festgelegt:
+### Festgelegt: V1 bereitet Handel vollständig vor, echter Checkout folgt später
 
-- Marktplatz-/Tausch-Ausbaustufe
+Sammlerraum Version 1 enthält bereits die sammlungsbezogenen Grundlagen für späteren Handel:
+
+- Wunschlisten;
+- Dubletten;
+- Status `nicht verfügbar`;
+- Status `tauschbereit`;
+- Status `verkaufsbereit`;
+- öffentliche Profile;
+- Community;
+- globale Katalogobjekte;
+- strukturierte Freigaben.
+
+In V1 findet **keine Zahlungsabwicklung zwischen Nutzern** statt.
+
+### Spätere Handelsobjekte
+
+Das Datenmodell und die IDs werden so vorbereitet, dass später unter anderem folgende Objekte ergänzt werden können:
+
+```
+Listing
+├── seller
+├── item
+├── type            # SALE / TRADE / SALE_OR_TRADE
+├── askingPrice?
+├── currency?
+├── conditionSnapshot
+├── description
+├── status
+└── createdAt
+
+TradeOffer
+├── sender
+├── recipient
+├── offeredItems[]
+├── requestedItems[]
+├── optionalCashAdjustment
+└── status
+
+PurchaseInquiry
+Offer
+Transaction
+```
+
+### Snapshot-Prinzip
+
+Ein Inserat speichert einen Snapshot der für das Angebot relevanten Zustands- und Objektdaten.
+
+Eine spätere Änderung des zugrunde liegenden Sammlerstücks darf nicht stillschweigend die Bedeutung eines bereits veröffentlichten Angebots verändern.
+
+### Wunschlisten-Matching
+
+Später kann Sammlerraum passende Konstellationen erkennen.
+
+Beispiel:
+
+- Nutzer A sucht Referenzobjekt X;
+- Nutzer B besitzt X als Dublette;
+- Nutzer B hat dieses Exemplar als tauschbereit markiert.
+
+Das System darf daraus einen Match-Hinweis erzeugen, aber niemals automatisch einen Kontakt, Handel oder Vertragsabschluss auslösen.
+
+### Marktpreise
+
+Externe Marktpreisdaten dürfen als Orientierung dienen.
+
+Der tatsächliche Angebots- oder Verkaufspreis wird vom Verkäufer festgelegt.
+
+### Strukturierte Handelskommunikation
+
+Eine spätere Handelsfunktion soll zunächst über strukturierte Vorgänge arbeiten:
+
+- Anfrage;
+- Angebot;
+- Gegenangebot;
+- Annahme;
+- Ablehnung;
+- optionaler Nachrichtentext.
+
+Ein vollständig freier Handelschat ist nicht Voraussetzung für die erste Marktplatz-Ausbaustufe.
+
+### Zahlungen als eigenes Subsystem
+
+Wenn Sammlerraum später echte Käufe oder bezahlte Transaktionen zwischen Mitgliedern ermöglicht, wird dies als eigenes Subsystem entworfen.
+
+Mindestens zu berücksichtigen sind dann:
+
+```
+Order
+Payment
+Refund
+Shipping
+Dispute
+Payout
+```
+
+Vor Aktivierung müssen insbesondere geklärt werden:
+
+- Zahlungsanbieter;
+- Verkäuferidentifizierung/KYC, soweit erforderlich;
+- Plattformhaftung;
+- Gebührenmodell;
+- Verbraucherschutz;
+- Steuer- und Reportingpflichten;
+- Rückerstattungen;
+- Streitfälle;
+- Betrugsschutz;
+- Versand- und Nachweislogik.
+
+### Architekturgrundsatz
+
+Die V1-Grenzen werden so gewählt, dass später der Pfad
+
+```
+CollectibleItem → Listing → Offer → Transaction
+```
+
+ergänzt werden kann, ohne das Kernmodell von Sammlungen und Exemplaren neu aufzubauen.
+
+Der vollständige Marktplatz mit Zahlungen bleibt eine spätere Produktphase.
 
 ---
 
