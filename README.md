@@ -1990,7 +1990,118 @@ Ein langer Entwicklungszeitraum ist ausdrücklich akzeptiert, wenn dadurch Quali
 
 ---
 
-## 28. Bisherige Produktprinzipien
+## 28. Systemarchitektur
+
+### Festgelegt: Modularer Monolith + separater Background Worker
+
+Sammlerraum wird als modularer Monolith aufgebaut.
+
+Die Anwendung bleibt in einer gemeinsamen Codebasis, wird aber fachlich in klar abgegrenzte Module getrennt.
+
+### Fachmodule
+
+Vorgesehen sind mindestens:
+
+- Identity & Accounts;
+- Collections;
+- Catalog;
+- Items;
+- Media & Documents;
+- Valuation;
+- Market Data;
+- AI;
+- Community;
+- Collaboration;
+- Wishlist & Trading;
+- Search;
+- Imports / Exports;
+- Insurance;
+- Notifications;
+- Billing;
+- Moderation;
+- Audit.
+
+### Web- und API-Schicht
+
+Die Web-Anwendung wird mit **Next.js + TypeScript** umgesetzt.
+
+Geschäftslogik wird nicht ausschließlich in UI-Komponenten implementiert.
+
+Serverseitige APIs/Services bilden die zentrale fachliche Logik, damit spätere iOS-/Android-Apps dieselben Regeln und Daten verwenden können.
+
+### Background Worker
+
+Langlaufende oder asynchrone Aufgaben werden über einen separaten Worker verarbeitet.
+
+Dazu gehören insbesondere:
+
+- AI-Fotoanalyse;
+- Marktpreisabrufe;
+- CSV-/Excel-Importe;
+- Exporte und PDF-Erzeugung;
+- Bildverarbeitung;
+- E-Mail-Versand;
+- Benachrichtigungen;
+- Katalog-Synchronisation;
+- periodische Statistiken;
+- Wartungs- und Bereinigungsjobs.
+
+### Job Queue
+
+Web und Worker kommunizieren für Hintergrundaufgaben über eine Job-Queue.
+
+Jobs erhalten mindestens:
+
+- Typ;
+- Payload;
+- Status;
+- Versuchsanzahl;
+- Fehlerzustand;
+- Zeitstempel;
+- Bezug zu Nutzer/Objekt, soweit erforderlich.
+
+Fehlgeschlagene Jobs müssen wiederholbar und nachvollziehbar sein.
+
+### Datenbank
+
+PostgreSQL bleibt die zentrale relationale Datenbank.
+
+Die Module teilen sich zunächst dieselbe Datenbank, besitzen aber klar abgegrenzte Tabellen/Modelle und Service-Grenzen.
+
+Direkte unkontrollierte Querabhängigkeiten zwischen Modulen werden vermieden.
+
+### Berechtigungen
+
+RBAC, Eigentum, Sichtbarkeit und Datenschutz werden serverseitig geprüft.
+
+Kein Client darf allein entscheiden, ob ein Nutzer Daten lesen oder verändern darf.
+
+### Medien
+
+Dateispeicherung wird hinter einer Storage-Abstraktion gekapselt.
+
+Die erste produktive Implementierung nutzt persistenten self-hosted Storage, kann später aber auf objektbasierten Storage migriert werden.
+
+### Deployment
+
+Docker Compose enthält mindestens getrennte Services für:
+
+- Web;
+- Worker;
+- PostgreSQL;
+- Queue/Infrastruktur, falls erforderlich.
+
+Persistente Daten liegen außerhalb kurzlebiger Container.
+
+### Entwicklungsgrundsatz
+
+Die Architektur soll spätere Auslagerungen einzelner Module ermöglichen, ohne Sammlerraum von Anfang an in Microservices zu zerschneiden.
+
+Microservices sind für V1 ausdrücklich **nicht** vorgesehen.
+
+---
+
+## 29. Bisherige Produktprinzipien
 
 - private Nutzung muss vollständig möglich sein;
 - Öffentlichkeit ist **Opt-in**, nicht Standard;
@@ -2004,7 +2115,7 @@ Ein langer Entwicklungszeitraum ist ausdrücklich akzeptiert, wenn dadurch Quali
 
 ---
 
-## 29. Noch offen
+## 30. Noch offen
 
 Folgende Bereiche werden im weiteren Produktdesign festgelegt:
 
@@ -2015,7 +2126,7 @@ Folgende Bereiche werden im weiteren Produktdesign festgelegt:
 
 ---
 
-## 30. Dokumentationsregel
+## 31. Dokumentationsregel
 
 Neue, vom Nutzer bestätigte Produktentscheidungen werden in dieser README ergänzt, damit der Projektstand unabhängig von der Chatlänge erhalten bleibt.
 
