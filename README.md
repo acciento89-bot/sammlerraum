@@ -1814,7 +1814,107 @@ Ein späterer Wechsel des AI-Anbieters oder eine Kombination aus Cloud- und loka
 
 ---
 
-## 26. Bisherige Produktprinzipien
+## 26. Marktpreisquellen und Quellenvergleich
+
+### Festgelegt: Mehrere externe Preisquellen mit transparenter Herkunft
+
+Sammlerraum kann pro Kategorie mehrere externe Marktpreisquellen anbinden und deren Werte getrennt speichern.
+
+Es gibt **keinen einzigen undurchsichtigen „Sammlerraum-Marktwert“**, wenn unterschiedliche Quellen verfügbar sind.
+
+### Quellenmodell
+
+Jeder externe Preisdatensatz enthält mindestens:
+
+- Datenquelle;
+- Referenz zum globalen Katalogobjekt bzw. zur erkannten Variante;
+- Zeitpunkt der Ermittlung;
+- Währung;
+- Preis bzw. Preisbereich;
+- Datenart;
+- Qualitäts-/Vertrauensmetadaten, sofern verfügbar.
+
+Mögliche Datenarten sind beispielsweise:
+
+- letzter Verkauf;
+- durchschnittlicher Verkaufspreis;
+- Median;
+- Angebotspreis;
+- Preisbereich;
+- Katalogwert;
+- Händlerpreis.
+
+Diese Arten dürfen nicht ohne Kennzeichnung miteinander vermischt werden.
+
+### Quellenvergleich
+
+Wenn mehrere Quellen vorliegen, kann der Nutzer diese nebeneinander vergleichen.
+
+Beispiel:
+
+```
+Quelle A   Median verkaufter Artikel   420 €
+Quelle B   letzter Verkauf             445 €
+Quelle C   aktueller Angebotspreis     499 €
+```
+
+Sammlerraum darf daraus nicht automatisch eine vermeintlich exakte Wahrheit ableiten.
+
+Eine optionale aggregierte Orientierung kann später angeboten werden, muss aber Methodik und zugrunde liegende Quellen transparent machen.
+
+### Kategorieabhängige Anbieter
+
+Preisquellen werden modular pro Sammlerbereich angebunden.
+
+Beispiele:
+
+- Trading Cards;
+- Comics;
+- Uhren;
+- Münzen;
+- Vinyl;
+- weitere Kategorien mit belastbaren Datenanbietern.
+
+Nicht jede Kategorie muss externe Marktdaten besitzen.
+
+### Historisierung
+
+Externe Werte werden historisiert, damit Preisentwicklungen nachvollziehbar bleiben.
+
+Ein neuer Datenpunkt überschreibt nicht stillschweigend den vorherigen.
+
+### Datenqualität
+
+Vor Übernahme externer Preise muss möglichst eindeutig geklärt sein, welche Variante bewertet wird.
+
+Relevant können beispielsweise sein:
+
+- Edition;
+- Sprache;
+- Zustand;
+- Grading-Anbieter;
+- Grading-Note;
+- Jahrgang;
+- Referenznummer;
+- Variantenmerkmale.
+
+Bei unklarer Zuordnung wird der Wert als unsicher gekennzeichnet oder nicht automatisch übernommen.
+
+### Recht und Nutzung
+
+Externe Daten werden nur eingebunden, wenn API-Zugriff, Lizenz, Nutzungsbedingungen und Speicherung dies erlauben.
+
+Web-Scraping wird nicht als stillschweigende Standardlösung vorausgesetzt.
+
+### Kosten und Premium
+
+Kostenpflichtige Marktpreisquellen können Bestandteil von Premium sein oder durch faire Kontingente begrenzt werden.
+
+Die kostenlose manuelle Wertpflege bleibt davon unabhängig nutzbar.
+
+---
+
+## 27. Bisherige Produktprinzipien
 
 - private Nutzung muss vollständig möglich sein;
 - Öffentlichkeit ist **Opt-in**, nicht Standard;
@@ -1828,7 +1928,7 @@ Ein späterer Wechsel des AI-Anbieters oder eine Kombination aus Cloud- und loka
 
 ---
 
-## 27. Noch offen
+## 28. Noch offen
 
 Folgende Bereiche werden im weiteren Produktdesign festgelegt:
 
@@ -1839,7 +1939,7 @@ Folgende Bereiche werden im weiteren Produktdesign festgelegt:
 
 ---
 
-## 28. Dokumentationsregel
+## 29. Dokumentationsregel
 
 Neue, vom Nutzer bestätigte Produktentscheidungen werden in dieser README ergänzt, damit der Projektstand unabhängig von der Chatlänge erhalten bleibt.
 
