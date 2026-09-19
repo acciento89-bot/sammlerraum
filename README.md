@@ -1573,7 +1573,91 @@ Sammlerraum stellt Dokumentations- und Exportfunktionen bereit, übernimmt aber 
 
 ---
 
-## 23. Bisherige Produktprinzipien
+## 23. Änderungsverlauf und Audit-Log
+
+### Festgelegt: Vollständiger Verlauf für wichtige Änderungen
+
+Sammlerraum protokolliert relevante Änderungen an Sammlungen und Sammlerstücken nachvollziehbar.
+
+### Protokollierte Änderungen
+
+Mindestens folgende Änderungen sollen historisiert werden:
+
+- Titel/Name;
+- Kategorie und Sammlung;
+- Zustand;
+- Grading und Grading-Anbieter;
+- Kaufpreis und Kaufdatum;
+- eigener Schätzwert;
+- externer Marktwert;
+- versicherter Wert;
+- Lagerort;
+- Sichtbarkeit;
+- Tausch-/Verkaufsstatus;
+- Tags;
+- benutzerdefinierte Felder;
+- Medien und Dokumente;
+- Nachweise;
+- Besitzer-/Rollenänderungen;
+- Import-bedingte Änderungen;
+- Lösch- und Wiederherstellungsaktionen.
+
+### Audit-Daten
+
+Ein Eintrag enthält mindestens:
+
+- Zeitpunkt;
+- Art der Änderung;
+- betroffener Datensatz;
+- vorheriger Wert;
+- neuer Wert;
+- ausführender Nutzer bzw. Systemprozess;
+- Quelle der Änderung, z. B. manuell, Import, API, AI-Vorschlag oder Marktpreis-Update.
+
+### Wiederherstellung
+
+Für geeignete Änderungen soll eine gezielte Wiederherstellung möglich sein.
+
+Beispiele:
+
+- Zustand auf vorherigen Wert zurücksetzen;
+- versehentlich geänderten Lagerort wiederherstellen;
+- Sichtbarkeit zurücksetzen;
+- frühere Metadaten wiederherstellen.
+
+Nicht jede Aktion wird automatisch rückgängig gemacht. Kritische oder irreversible Vorgänge benötigen eine klare Bestätigung.
+
+### Löschungen
+
+Wo sinnvoll, werden Datensätze zunächst soft-deleted bzw. in einen Papierkorb verschoben, bevor sie endgültig entfernt werden.
+
+Der Audit-Verlauf darf selbst nicht stillschweigend mitgelöscht werden, sofern gesetzliche oder datenschutzrechtliche Vorgaben dem nicht entgegenstehen.
+
+### Gemeinsame Sammlungen
+
+Bei kollaborativen Sammlungen ist nachvollziehbar, welches Mitglied welche Änderung vorgenommen hat.
+
+Owner und berechtigte Admins können den Änderungsverlauf einsehen.
+
+### Systemänderungen
+
+Automatische Änderungen werden klar als solche gekennzeichnet, z. B.:
+
+- Marktpreis-Import;
+- AI-gestützter Vorschlag;
+- Datenmigration;
+- Importjob;
+- Moderationsaktion.
+
+### Grundsatz
+
+Der Audit-Log dient Nachvollziehbarkeit, Zusammenarbeit und Datenintegrität.
+
+Er darf nicht dazu verwendet werden, gelöschte personenbezogene Daten unbegrenzt gegen den erklärten Löschwunsch eines Nutzers aufzubewahren.
+
+---
+
+## 24. Bisherige Produktprinzipien
 
 - private Nutzung muss vollständig möglich sein;
 - Öffentlichkeit ist **Opt-in**, nicht Standard;
@@ -1587,7 +1671,7 @@ Sammlerraum stellt Dokumentations- und Exportfunktionen bereit, übernimmt aber 
 
 ---
 
-## 24. Noch offen
+## 25. Noch offen
 
 Folgende Bereiche werden im weiteren Produktdesign festgelegt:
 
@@ -1599,7 +1683,7 @@ Folgende Bereiche werden im weiteren Produktdesign festgelegt:
 
 ---
 
-## 25. Dokumentationsregel
+## 26. Dokumentationsregel
 
 Neue, vom Nutzer bestätigte Produktentscheidungen werden in dieser README ergänzt, damit der Projektstand unabhängig von der Chatlänge erhalten bleibt.
 
