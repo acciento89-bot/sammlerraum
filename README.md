@@ -940,7 +940,73 @@ Internationalisierung ist Bestandteil der Architektur und keine spätere Nachrü
 
 ---
 
-## 16. Bisherige Produktprinzipien
+## 16. Benachrichtigungen
+
+### Festgelegt: In-App + E-Mail, Push vorbereitet
+
+Sammlerraum unterstützt zum Start zwei produktive Benachrichtigungskanäle:
+
+- **In-App-Benachrichtigungen**
+- **E-Mail-Benachrichtigungen**
+
+Zusätzlich wird die Architektur so vorbereitet, dass spätere native iOS-/Android-Apps **Push-Benachrichtigungen** erhalten können, ohne das Benachrichtigungssystem neu bauen zu müssen.
+
+### In-App
+
+Im Sammlerraum-Konto gibt es ein Benachrichtigungszentrum mit mindestens:
+
+- ungelesen/gelesen;
+- Zeitstempel;
+- Typ;
+- Ziel-Link;
+- Möglichkeit, Benachrichtigungen gesammelt als gelesen zu markieren.
+
+Mögliche Ereignisse:
+
+- neuer Follower;
+- Like/Favorit auf eigenem Inhalt;
+- neuer Kommentar;
+- Antwort auf eigenen Kommentar;
+- Meldungs-/Moderationsstatus;
+- Wert- oder Marktpreis-Update;
+- Import abgeschlossen oder fehlgeschlagen;
+- Sicherheitsereignisse;
+- Premium-/Billing-Ereignisse;
+- spätere Tausch-/Verkaufsanfragen.
+
+### E-Mail
+
+E-Mail wird für relevante Ereignisse eingesetzt, insbesondere:
+
+- E-Mail-Verifizierung;
+- Passwort-Wiederherstellung;
+- sicherheitsrelevante Hinweise;
+- wichtige Account-Änderungen;
+- optional abonnierte Community-Zusammenfassungen;
+- Import-/Export-Abschluss;
+- Premium-/Billing-Mitteilungen.
+
+### Präferenzen
+
+Nutzer können nicht-sicherheitskritische Benachrichtigungen nach Kategorie und Kanal ein- oder ausschalten.
+
+Sicherheitsrelevante Systemmeldungen dürfen nicht vollständig deaktivierbar sein, wenn sie für Kontoschutz oder rechtliche Kommunikation erforderlich sind.
+
+### Push-Vorbereitung
+
+Das Benachrichtigungsmodell wird kanalunabhängig aufgebaut.
+
+Ein Ereignis erzeugt zunächst eine interne Benachrichtigung. Zustellkanäle wie E-Mail oder später Push werden über getrennte Zustellmechanismen bedient.
+
+Dadurch können spätere native Apps Push erhalten, ohne Geschäftslogik doppelt zu implementieren.
+
+### Web-Push
+
+Browser-Push ist für Version 1 **nicht erforderlich**. Die Architektur darf eine spätere Ergänzung ermöglichen, ohne daraus jetzt zusätzliche Komplexität zu machen.
+
+---
+
+## 17. Bisherige Produktprinzipien
 
 - private Nutzung muss vollständig möglich sein;
 - Öffentlichkeit ist **Opt-in**, nicht Standard;
@@ -954,7 +1020,7 @@ Internationalisierung ist Bestandteil der Architektur und keine spätere Nachrü
 
 ---
 
-## 17. Noch offen
+## 18. Noch offen
 
 Folgende Bereiche werden im weiteren Produktdesign festgelegt:
 
@@ -968,7 +1034,7 @@ Folgende Bereiche werden im weiteren Produktdesign festgelegt:
 
 ---
 
-## 18. Dokumentationsregel
+## 19. Dokumentationsregel
 
 Neue, vom Nutzer bestätigte Produktentscheidungen werden in dieser README ergänzt, damit der Projektstand unabhängig von der Chatlänge erhalten bleibt.
 
