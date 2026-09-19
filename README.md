@@ -1185,7 +1185,121 @@ Erweiterte historische Analysen, umfangreiche Marktpreis-Auswertungen und tiefer
 
 ---
 
-## 19. Bisherige Produktprinzipien
+## 19. Globaler Referenzkatalog und Community-Pflege
+
+### Festgelegt: Globaler Katalog + eigene Exemplare + moderierte Community-Korrekturen
+
+Sammlerraum unterscheidet zwischen einem **globalen Referenzobjekt** und dem **konkreten Exemplar eines Nutzers**.
+
+### Globales Referenzobjekt
+
+Ein globales Katalogobjekt beschreibt ein allgemein bekanntes Sammlerstück unabhängig vom Besitzer.
+
+Beispiele:
+
+- eine bestimmte Pokémon-Karte;
+- eine konkrete Münzausgabe;
+- eine Uhr mit bestimmter Referenz;
+- ein bestimmtes Comic-Heft;
+- eine bestimmte Vinyl-Ausgabe;
+- eine Sammelfigur in definierter Edition.
+
+Mögliche globale Daten:
+
+- offizieller Name/Titel;
+- Hersteller/Herausgeber;
+- Serie/Set;
+- Katalog-/Referenznummer;
+- Erscheinungsjahr;
+- Variante/Edition;
+- Sprache;
+- technische Merkmale;
+- offizielle oder allgemein etablierte Identifikatoren;
+- Referenzbilder, sofern rechtlich zulässig;
+- Kategorie-spezifische Stammdaten.
+
+### Persönliches Exemplar
+
+Das konkrete Stück eines Nutzers bleibt ein eigenes Objekt und verweist optional auf einen globalen Katalogeintrag.
+
+Exemplar-spezifische Daten sind insbesondere:
+
+- eigener Zustand;
+- eigenes Grading;
+- Seriennummer;
+- Kaufdatum;
+- Kaufpreis;
+- eigene Bilder;
+- Dokumente;
+- Provenienz;
+- persönlicher Schätzwert;
+- Lagerort;
+- Sichtbarkeit;
+- Tausch-/Verkaufsstatus;
+- Notizen.
+
+Mehrere Nutzer können also dasselbe globale Referenzobjekt besitzen, ohne ihre individuellen Daten miteinander zu vermischen.
+
+### Nicht katalogisierte Objekte
+
+Ein Sammlerstück muss nicht zwingend bereits im globalen Katalog existieren.
+
+Nutzer können weiterhin vollständig eigene Stücke erfassen.
+
+Aus solchen Einträgen kann später ein Vorschlag für einen neuen globalen Katalogeintrag entstehen.
+
+### Community-gestützte Katalogpflege
+
+Nutzer können Änderungen oder neue Katalogeinträge vorschlagen.
+
+Beispiele:
+
+- fehlende Variante ergänzen;
+- Erscheinungsjahr korrigieren;
+- Katalognummer ergänzen;
+- Übersetzung verbessern;
+- falsche Zuordnung melden;
+- neuen Referenzeintrag vorschlagen.
+
+Änderungen werden nicht ungeprüft direkt in globale Stammdaten geschrieben.
+
+### Moderation und Qualitätssicherung
+
+Vorgesehen sind:
+
+- Änderungsvorschläge mit nachvollziehbarem Änderungsverlauf;
+- Quellen-/Belegangaben, wenn für die Korrektur relevant;
+- Moderationsstatus;
+- Annahme/Ablehnung;
+- Versionshistorie globaler Katalogdaten;
+- Rücknahme fehlerhafter Änderungen;
+- Schutz vor Spam und Vandalismus.
+
+Später kann ein Vertrauens-/Rollenmodell für erfahrene Katalogpfleger ergänzt werden.
+
+### Datenherkunft
+
+Globale Katalogdaten sollen ihre Herkunft nachvollziehbar machen können.
+
+Mögliche Quellen:
+
+- offizielle Herstellerdaten;
+- lizenzierte APIs;
+- öffentliche Datensätze;
+- verifizierte Community-Beiträge;
+- manuell gepflegte Referenzdaten.
+
+Daten aus externen Quellen dürfen nur übernommen werden, wenn Nutzung, Lizenz und Aktualisierung rechtlich und technisch zulässig sind.
+
+### Grundsatz
+
+Der globale Katalog dient als **Referenz und Beschleuniger**, nicht als Zwang.
+
+Sammlerraum bleibt auch für einzigartige, selbstgefertigte, historische oder nicht katalogisierbare Sammlerstücke vollständig nutzbar.
+
+---
+
+## 20. Bisherige Produktprinzipien
 
 - private Nutzung muss vollständig möglich sein;
 - Öffentlichkeit ist **Opt-in**, nicht Standard;
@@ -1199,7 +1313,7 @@ Erweiterte historische Analysen, umfangreiche Marktpreis-Auswertungen und tiefer
 
 ---
 
-## 20. Noch offen
+## 21. Noch offen
 
 Folgende Bereiche werden im weiteren Produktdesign festgelegt:
 
@@ -1211,7 +1325,7 @@ Folgende Bereiche werden im weiteren Produktdesign festgelegt:
 
 ---
 
-## 21. Dokumentationsregel
+## 22. Dokumentationsregel
 
 Neue, vom Nutzer bestätigte Produktentscheidungen werden in dieser README ergänzt, damit der Projektstand unabhängig von der Chatlänge erhalten bleibt.
 
