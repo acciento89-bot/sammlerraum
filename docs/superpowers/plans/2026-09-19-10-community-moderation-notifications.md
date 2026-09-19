@@ -372,6 +372,7 @@ git commit -m "feat: add community wishlist and notification UI"
 **Files:**
 - Create: `apps/web/src/app/[locale]/@[handle]/page.tsx`
 - Create: `apps/web/src/app/[locale]/@[handle]/[collectionSlug]/page.tsx`
+- Create: `apps/web/src/app/[locale]/@[handle]/[collectionSlug]/items/[itemId]/page.tsx`
 - Create: `packages/domain/src/notifications/community-event-handlers.ts`
 - Create: `packages/domain/src/notifications/community-event-handlers.test.ts`
 - Modify: `packages/domain/src/dashboard/dashboard-service.ts`
@@ -380,7 +381,7 @@ git commit -m "feat: add community wishlist and notification UI"
 
 **Interfaces:**
 - Consumes: public profile, collection visibility, follow/favorite/comment/wishlist events, dashboard service.
-- Produces: stable public profile/collection URLs, idempotent community notifications, wishlist/duplicate dashboard metrics and milestone inputs.
+- Produces: stable public profile/collection/item URLs, idempotent community notifications, wishlist/duplicate dashboard metrics and milestone inputs.
 
 - [ ] **Step 1: Write failing event-deduplication and privacy tests**
 
@@ -403,7 +404,7 @@ Expected: FAIL.
 
 - [ ] **Step 3: Implement handlers and public routes**
 
-Emit notifications for follow, favorite, comment/reply, moderation status, import/export completion, and later billing/security hooks through stable event keys. Public profile routes expose only public collections/items, never login email or private statistics. Public collection URLs use owner handle + stable collection slug with collision-safe suffix generation.
+Emit notifications for follow, favorite, comment/reply, moderation status, import/export completion, and later billing/security hooks through stable event keys. Public profile routes expose only public collections/items, never login email or private statistics. Public collection URLs use owner handle + stable collection slug with collision-safe suffix generation. Add a stable public item route under `/<locale>/@<handle>/<collectionSlug>/items/<itemId>` that resolves only effectively PUBLIC items and returns 404 for private/unlisted/inaccessible descendants.
 
 Extend dashboard data with wishlist progress, duplicate count, and milestone candidates such as item-count thresholds and completed collections; milestones remain informational only.
 
