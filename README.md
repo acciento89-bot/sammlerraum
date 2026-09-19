@@ -737,7 +737,61 @@ Später festzulegen:
 
 ---
 
-## 13. Bisherige Produktprinzipien
+## 13. Authentifizierung und Account-Modell
+
+### Festgelegt: Klassischer Login + Social Login + Passkeys
+
+Sammlerraum unterstützt mehrere sichere Anmeldewege, damit Nutzer nicht an eine einzelne Login-Methode gebunden sind.
+
+### Unterstützte Login-Methoden
+
+- **E-Mail + Passwort**
+- **Sign in with Apple**
+- **Google Login**
+- **Passkeys / WebAuthn**
+
+Passkeys werden als zusätzliche moderne und passwortlose Anmeldung angeboten, nicht als einzige Zugangsmöglichkeit.
+
+### Account-Verknüpfung
+
+Mehrere Login-Methoden können demselben Sammlerraum-Account zugeordnet werden.
+
+Beispiel:
+
+- Registrierung mit E-Mail und Passwort;
+- später Apple-Konto verknüpfen;
+- anschließend Passkey auf dem eigenen Gerät hinzufügen.
+
+Sammlerraum darf bei identischer E-Mail-Adresse nicht blind zwei Konten zusammenführen. Verknüpfungen müssen sicher verifiziert werden.
+
+### Account-Sicherheit
+
+Vorgesehen sind:
+
+- sichere Passwort-Hashes;
+- E-Mail-Verifizierung;
+- Passwort-Zurücksetzen;
+- Passkey-Verwaltung;
+- Verwaltung verbundener Login-Anbieter;
+- aktive Sitzungen anzeigen und widerrufen;
+- Schutz gegen Brute-Force- und Credential-Stuffing-Angriffe;
+- sichere Session-Cookies und serverseitige Autorisierungsprüfung.
+
+### Account-Wiederherstellung
+
+Nutzer müssen auch dann wieder Zugriff erhalten können, wenn ein Passkey oder Social-Login-Anbieter nicht mehr verfügbar ist.
+
+Daher bleibt mindestens ein verifizierter Wiederherstellungsweg erforderlich.
+
+### Grundsatz
+
+Authentifizierung und Identität werden sauber von öffentlichen Profilinformationen getrennt.
+
+Eine Login-E-Mail-Adresse wird niemals automatisch als öffentliche Kontaktadresse angezeigt.
+
+---
+
+## 14. Bisherige Produktprinzipien
 
 - private Nutzung muss vollständig möglich sein;
 - Öffentlichkeit ist **Opt-in**, nicht Standard;
@@ -751,7 +805,7 @@ Später festzulegen:
 
 ---
 
-## 14. Noch offen
+## 15. Noch offen
 
 Folgende Bereiche werden im weiteren Produktdesign festgelegt:
 
@@ -760,7 +814,6 @@ Folgende Bereiche werden im weiteren Produktdesign festgelegt:
 - Teilen einzelner Sammlungen
 - Such- und Filterlogik
 - Statistik und Sammlungswert
-- Authentifizierung
 - technische Architektur
 - Hosting / Datenbank / Bildspeicherung
 - DE/EN
@@ -769,7 +822,7 @@ Folgende Bereiche werden im weiteren Produktdesign festgelegt:
 
 ---
 
-## 15. Dokumentationsregel
+## 16. Dokumentationsregel
 
 Neue, vom Nutzer bestätigte Produktentscheidungen werden in dieser README ergänzt, damit der Projektstand unabhängig von der Chatlänge erhalten bleibt.
 
