@@ -2960,16 +2960,141 @@ Es kann archiviert bzw. als abgegeben markiert werden, damit unter anderem erhal
 
 ---
 
-## 36. Noch offen
+## 36. Teilen und gezielte Freigaben
+
+### Festgelegt: Öffentlich + nicht gelistet + private Freigabelinks + granulare Rechte
+
+Sammlerraum unterstützt mehrere Arten, Sammlungen und einzelne Stücke gezielt zu teilen.
+
+### Öffentliche Links
+
+Öffentliche Sammlungen erhalten stabile, gut teilbare URLs.
+
+Beispiel:
+
+```
+sammlerraum.de/@piotr/pokemon
+```
+
+Öffentliche Stücke innerhalb einer öffentlichen Sammlung können direkt geteilt werden.
+
+### Nicht gelistete Links
+
+Nicht gelistete Inhalte erhalten einen nicht erratbaren Freigabelink.
+
+Beispiel:
+
+```
+sammlerraum.de/share/<token>
+```
+
+Diese Inhalte erscheinen nicht:
+
+- in der öffentlichen Suche;
+- im Profil;
+- im Community-Feed;
+- in Entdeckungsansichten.
+
+### Private Freigabelinks
+
+Auch private Sammlungen oder Stücke können gezielt temporär freigegeben werden, ohne ihre Grundsichtbarkeit auf öffentlich zu ändern.
+
+Eine private Freigabe kann optional besitzen:
+
+- Ablaufdatum;
+- jederzeitigen Widerruf;
+- Passwort/PIN;
+- Nur-Lesen-Modus;
+- Bilder anzeigen/ausblenden;
+- Werte anzeigen/ausblenden;
+- ausgewählte Dokumente anzeigen/ausblenden;
+- Download/Export erlauben oder sperren.
+
+Beispiel:
+
+> Sammlung für 7 Tage für einen Versicherungsberater freigeben, inklusive Werte und ausgewählter Nachweise.
+
+### Personenbezogene Freigabe
+
+Ein registrierter Nutzer kann expliziten Zugriff erhalten, ohne Mitglied der Sammlung zu werden.
+
+Unterschied:
+
+```
+CollectionMember
+→ dauerhafte Zusammenarbeit mit Rollen
+
+CollectionShare
+→ gezielte Freigabe zum Ansehen
+```
+
+So kann z. B. ein Gutachter, Freund oder Interessent Zugriff erhalten, ohne in das Rollenmodell der Sammlung aufgenommen zu werden.
+
+### Granulare Feldauswahl
+
+Freigaben können festlegen, welche Daten sichtbar sind.
+
+Beispiel:
+
+```
+✓ Titel / Beschreibung
+✓ Bilder
+✓ Zustand
+✓ Grading
+✓ Marktwerte
+☐ Kaufpreis
+☐ Verkäufer
+☐ Lagerort
+☐ private Notizen
+☐ Versicherungsdaten
+☐ Kaufbelege
+```
+
+Private Notizen und exakte Lagerorte bleiben standardmäßig ausgeschlossen.
+
+### Einzelne Stücke
+
+Dasselbe Freigabemodell gilt auch für einzelne Sammlerstücke.
+
+Beispiel:
+
+> Nur diese Uhr inklusive Zertifikat für den Gutachter freigeben.
+
+### Sicherheitsmodell
+
+Jede Freigabe besitzt mindestens:
+
+- interne ID;
+- kryptografisch sicheren Token;
+- Ersteller;
+- Erstellzeit;
+- optionales Ablaufdatum;
+- Widerrufsstatus;
+- Berechtigungsumfang.
+
+Bei Widerruf wird die Freigabe sofort ungültig.
+
+### Audit
+
+Mindestens folgende Aktionen werden protokolliert:
+
+- Freigabe erstellt;
+- Freigabe geändert;
+- Freigabe widerrufen.
+
+Eine detaillierte Besucherüberwachung ist standardmäßig nicht vorgesehen.
+
+---
+
+## 37. Noch offen
 
 Folgende Bereiche werden im weiteren Produktdesign festgelegt:
 
-- Teilen einzelner Sammlungen
 - Marktplatz-/Tausch-Ausbaustufe
 
 ---
 
-## 37. Dokumentationsregel
+## 38. Dokumentationsregel
 
 Neue, vom Nutzer bestätigte Produktentscheidungen werden in dieser README ergänzt, damit der Projektstand unabhängig von der Chatlänge erhalten bleibt.
 
