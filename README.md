@@ -1657,7 +1657,88 @@ Er darf nicht dazu verwendet werden, gelöschte personenbezogene Daten unbegrenz
 
 ---
 
-## 24. Bisherige Produktprinzipien
+## 24. Hosting und Betrieb
+
+### Festgelegt: Docker / Self-Hosted / PostgreSQL / Portainer
+
+Sammlerraum wird auf eigener Server-Infrastruktur betrieben.
+
+### Betriebsmodell
+
+Vorgesehen sind:
+
+- Docker-basierte Services;
+- PostgreSQL als primäre relationale Datenbank;
+- persistenter Datei-/Medienspeicher;
+- Deployment aus GitHub;
+- Betrieb und Redeploy über Portainer;
+- reproduzierbare Produktionskonfiguration über Docker Compose.
+
+### Datenbank
+
+PostgreSQL dient als zentrale persistente Datenbank für insbesondere:
+
+- Accounts und Authentifizierung;
+- Sammlungen und Sammlerstücke;
+- Rollen und Berechtigungen;
+- Community-Daten;
+- Wert-Historien;
+- Audit-Logs;
+- Benachrichtigungen;
+- Katalogdaten;
+- Import-/Export-Jobs;
+- Premium-/Billing-Status.
+
+Datenbankdaten werden in einem eigenen persistenten Volume gespeichert.
+
+### Medien und Dokumente
+
+Bilder, Kaufbelege, Zertifikate und andere Dateien werden nicht flüchtig im Container-Dateisystem abgelegt.
+
+Vorgesehen ist ein persistenter Medien-/Dateispeicher mit:
+
+- stabilen internen IDs;
+- getrennten Metadaten in PostgreSQL;
+- serverseitiger Zugriffskontrolle;
+- Backups;
+- klarer Trennung zwischen privaten und öffentlich freigegebenen Dateien.
+
+Das Speicherbackend soll so gekapselt werden, dass ein späterer Wechsel zu objektbasiertem Storage möglich bleibt, ohne das fachliche Datenmodell umzubauen.
+
+### Deployment
+
+Produktionsänderungen laufen über GitHub und werden anschließend durch die Server-/Portainer-Infrastruktur ausgerollt.
+
+Deployment muss mindestens berücksichtigen:
+
+- Datenbankmigrationen;
+- persistente Volumes;
+- Secrets/Environment-Variablen;
+- Healthchecks;
+- reproduzierbare Builds;
+- Rollback-fähige Releases.
+
+### Backups
+
+Für produktive Daten sind regelmäßige Backups vorgesehen.
+
+Mindestens abzusichern sind:
+
+- PostgreSQL;
+- Medien/Dokumente;
+- relevante Konfigurationen/Secrets außerhalb des Repositories.
+
+Backup- und Restore-Prozesse müssen getestet werden und dürfen nicht nur theoretisch dokumentiert sein.
+
+### Grundsatz
+
+Container können jederzeit neu gebaut oder ersetzt werden, ohne dass produktive Daten verloren gehen.
+
+Persistente Daten dürfen niemals an den Lebenszyklus eines einzelnen App-Containers gekoppelt sein.
+
+---
+
+## 25. Bisherige Produktprinzipien
 
 - private Nutzung muss vollständig möglich sein;
 - Öffentlichkeit ist **Opt-in**, nicht Standard;
@@ -1671,19 +1752,18 @@ Er darf nicht dazu verwendet werden, gelöschte personenbezogene Daten unbegrenz
 
 ---
 
-## 25. Noch offen
+## 26. Noch offen
 
 Folgende Bereiche werden im weiteren Produktdesign festgelegt:
 
 - Objekt-/Gegenstandsmodell
 - Zustandsbewertung
 - Teilen einzelner Sammlungen
-- Hosting / Datenbank / Bildspeicherung
 - Marktplatz-/Tausch-Ausbaustufe
 
 ---
 
-## 26. Dokumentationsregel
+## 27. Dokumentationsregel
 
 Neue, vom Nutzer bestätigte Produktentscheidungen werden in dieser README ergänzt, damit der Projektstand unabhängig von der Chatlänge erhalten bleibt.
 
