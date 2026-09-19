@@ -1,10 +1,14 @@
 # Sammlerraum.de
 
-> **Status:** Produktdesign in Arbeit  
+> **Status:** Design freigegeben – Implementierung vollständig geplant  
 > **Repository:** `acciento89-bot/sammlerraum`  
 > **Stand:** 19.09.2026
 > **Konsolidierte Design-Spezifikation:** `docs/superpowers/specs/2026-09-19-sammlerraum-design.md`
+> **SEO/Search-Console-Spezifikation:** `docs/superpowers/specs/2026-09-19-seo-search-console-design.md`
 > **Implementierungsplan:** `docs/superpowers/plans/2026-09-19-sammlerraum-v1-master-plan.md`
+> **Fortschritts-Ledger:** `docs/superpowers/SAMMLERRAUM-V1-LEDGER.md`
+> **Work-Startauftrag:** `docs/superpowers/SAMMLERRAUM-WORK-START-PROMPT.md`
+> **Gesamtumfang:** 14 Phasen / 91 reviewbare Implementierungs-Tasks
 
 Sammlerraum.de wird eine universelle Plattform zur digitalen Verwaltung privater Sammlungen mit optionalen Community-Funktionen und später vorbereiteten Marktplatz-/Tauschfunktionen.
 
@@ -3214,7 +3218,80 @@ Der vollständige Marktplatz mit Zahlungen bleibt eine spätere Produktphase.
 
 ---
 
-## 38. Dokumentationsregel
+## 38. SEO und Google Search Console
+
+### Festgelegt: Technisches SEO + privacy-safe Community-Indexierung + Search Console
+
+Sammlerraum erhält eine eigene SEO-/Search-Console-Phase.
+
+Dabei werden drei Bereiche getrennt:
+
+- **SSO:** Google-/Apple-Anmeldung und Account-Verknüpfung;
+- **SEO:** Suchmaschinenoptimierung der öffentlichen Website;
+- **Google Search Console:** Verifizierung, Sitemap, Indexierungs- und Performance-Monitoring.
+
+### Öffentliche Marketing-Seiten
+
+DE/EN-Marketingseiten erhalten unter anderem:
+
+- Canonicals;
+- gegenseitige hreflang-Links;
+- Open-Graph-/Social-Metadaten;
+- strukturierte Daten;
+- saubere Sitemaps;
+- Lighthouse-/Core-Web-Vitals-Prüfungen;
+- kuratierte Landingpages für wichtige Sammlungsarten.
+
+### Öffentliche Community-Inhalte
+
+Öffentlich sichtbar bedeutet **nicht automatisch extern indexierbar**.
+
+Die Suchmaschinenindexierung öffentlicher Nutzerinhalte ist eine eigene Profil-Option und standardmäßig deaktiviert.
+
+Nur wenn der Nutzer die externe Indexierung ausdrücklich aktiviert hat, dürfen effektiv **PUBLIC** sichtbare Profile, Sammlungen und Stücke in Suchmaschinen-Sitemaps aufgenommen werden.
+
+Folgende Inhalte bleiben immer ausgeschlossen:
+
+- PRIVATE;
+- UNLISTED;
+- Inhalte unter privaten Vorfahren;
+- moderationsbedingt ausgeblendete Inhalte;
+- Share-/Invite-/Reset-/Verification-Tokens;
+- private Medien/Dokumente;
+- interne Such-/Filterkombinationen;
+- App-/Account-/API-Routen.
+
+Die Suchmaschinenoption kann niemals eine restriktivere Sammlerraum-Sichtbarkeit überschreiben.
+
+### Google Search Console
+
+Für `sammlerraum.de` wird eine Domain Property per DNS verifiziert.
+
+Danach werden insbesondere geprüft:
+
+- `https://sammlerraum.de/sitemap.xml`;
+- DE-/EN-Startseiten;
+- Kategorie-Landingpages;
+- später repräsentative, ausdrücklich indexierbare öffentliche Profile/Sammlungen;
+- Google-selected Canonical;
+- Page Indexing;
+- Core Web Vitals;
+- HTTPS;
+- Manual Actions / Security Issues.
+
+Der von Google ausgegebene DNS-Verifizierungstoken wird nicht im Repository gespeichert.
+
+Die verbindliche Detail-Spezifikation liegt unter:
+
+`docs/superpowers/specs/2026-09-19-seo-search-console-design.md`
+
+Der Implementierungsplan liegt unter:
+
+`docs/superpowers/plans/2026-09-19-14-seo-search-console.md`
+
+---
+
+## 39. Dokumentationsregel
 
 Neue, vom Nutzer bestätigte Produktentscheidungen werden in dieser README ergänzt, damit der Projektstand unabhängig von der Chatlänge erhalten bleibt.
 
