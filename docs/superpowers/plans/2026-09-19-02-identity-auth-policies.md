@@ -270,7 +270,7 @@ git commit -m "feat: standardize API validation and errors"
   - `authorize(actor, action, resource): AuthorizationDecision`
   - `assertAuthorized(...): void`
 
-- [ ] **Step 1: Write failing deny-by-default tests**
+- [x] **Step 1: Write failing deny-by-default tests**
 
 ```ts
 it("denies an unknown action by default", () => {
@@ -288,24 +288,24 @@ it("does not let public child visibility override a private ancestor", () => {
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run packages/domain/src/authz/policy.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement initial policy core**
+- [x] **Step 3: Implement initial policy core**
 
 Define action union now for:
 `profile.view`, `collection.view`, `collection.edit`, `item.view`, `item.edit`, `document.view`, `comment.create`, `members.manage`.
 
 Unknown actions/resources deny. Later plans add resource-specific facts without bypassing the engine.
 
-- [ ] **Step 4: Run policy tests**
+- [x] **Step 4: Run policy tests**
 
 Run: `pnpm vitest run packages/domain/src/authz/policy.test.ts`  
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/domain/src/authz
