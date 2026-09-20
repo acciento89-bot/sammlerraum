@@ -379,7 +379,7 @@ git commit -m "test: cover authentication and publish OpenAPI"
 - Consumes: Better Auth, profile service, session/recovery APIs.
 - Produces: complete DE/EN registration, login, social login entry points, passkey management, profile editing, and session revocation UI.
 
-- [ ] **Step 1: Extend the failing E2E test**
+- [x] **Step 1: Extend the failing E2E test**
 
 ```ts
 test("user can register, edit public profile, add a passkey, and revoke another session", async ({ page }) => {
@@ -393,16 +393,16 @@ test("user can register, edit public profile, add a passkey, and revoke another 
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm --filter @sammlerraum/web exec playwright test e2e/auth.spec.ts`  
 Expected: FAIL because the pages/components do not exist.
 
-- [ ] **Step 3: Implement the UI**
+- [x] **Step 3: Implement the UI**
 
 Use only translation keys for visible copy. Password fields use browser password-manager semantics. Social buttons initiate Better Auth Google/Apple flows. Passkey controls expose add/remove only after re-authentication where required. Security page never renders raw tokens or provider secrets.
 
-- [ ] **Step 4: Run E2E and build**
+- [x] **Step 4: Run E2E and build**
 
 Run:
 ```bash
@@ -412,7 +412,7 @@ pnpm --filter @sammlerraum/web build
 
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add apps/web

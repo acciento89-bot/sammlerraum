@@ -10,8 +10,8 @@ This is the handoff/status file for long-running implementation. Update it after
 | Phase | Plan | Tasks | Status | Next |
 |---|---|---:|---|---|
 | 01 | Platform Foundation | 6 | complete (6/6) | — |
-| 02 | Identity, Auth & Policies | 7 | in progress (6/7) | Task 7 |
-| 03 | Collections, Items, Fields & Locations | 8 | not started | Task 1 |
+| 02 | Identity, Auth & Policies | 7 | complete (7/7) | — |
+| 03 | Collections, Items, Fields & Locations | 8 | in progress (0/8) | Task 1 |
 | 04 | Media & Documents | 6 | not started | Task 1 |
 | 05 | Catalog, Condition & Grading | 7 | not started | Task 1 |
 | 06 | Valuations & Market Data | 6 | not started | Task 1 |
@@ -278,3 +278,13 @@ Every completed and independently reviewed task must be checked off in its detai
 
 - Candidate `fd1f3e9`; CI35526201946/job106118675673 passed126unit/15integration/build and3 browser cases. Remaining case passed OAuth handoff and created its passkey, then ambiguous device-name text matched both name and remove button.
 - Presence/absence and removal selectors use exact names; remaining spec selectors audited against rendered text. No assertions removed/product changes. Scoped review approved; localcollection/typecheck/lint green. Awaiting complete4/4 browser gate; Task7 unchecked.
+
+### Phase 02 Task 7 and phase regression — COMPLETE
+
+- Final tested remote `e1e38f88c370e2d50434c63c3ac979a391f2f449`; implementation `b3266a8`, verified test corrections `aaa8d11`/`fd1f3e9`/`e1e38f8`.
+- Full CI SUCCESS: https://github.com/acciento89-bot/sammlerraum/actions/runs/35526502084 (job106119479979).
+- Broad phase regression:126 unit/static tests passed; dedicated integration run15 passed including5 real DB cases; all4 real PostgreSQL/Chromium auth journeys passed (33.3s), none skipped. Migrations, lint, typecheck, workspace build, Compose, web and worker Docker builds passed.
+- Browser coverage includes real verification/reset mail through strict TLS fixture, DE/EN/social entry points, profile creation, virtual-WebAuthn enrollment/sign-in/removal, server-stale reauth and refreshed current session, and another-session revocation.
+- Fresh task review plus scoped fix reviews approved, all5 product findings and3 evidenced CI-test defects fixed. No open review findings. Task7 boxes checked; Phase02 complete7/7.
+- Live Google/Apple callback/consent and real SMTP remain explicitly documented external blockers; they do not block Phase03. No production deployment/provider action occurred.
+- Next: Phase03 Task1 collection hierarchy/membership schema. Completion documentation only uses [skip ci]; tested code unchanged.
