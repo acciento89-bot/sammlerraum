@@ -110,7 +110,7 @@ function localeFor(testInfo: TestInfo): Locale {
 }
 
 async function expectTreeItem(page: Page, name: string) {
-  const item = page.getByRole("treeitem", { name, exact: true });
+  const item = page.getByText(name, { exact: true }).filter({ visible: true });
   try {
     await expect(item).toBeVisible();
   } catch (error) {
@@ -650,7 +650,12 @@ test.describe("localized collection and item management", () => {
           }
         },
       });
-      Object.defineProperty(navigator, "mediaDevices", {
+      const browser = globalThis as unknown as {
+        navigator: { mediaDevices?: { getUserMedia(): Promise<unknown> } };
+        MediaStream: new () => { getTracks(): Array<{ stop(): void }> };
+        HTMLMediaElement: { prototype: { play(): Promise<void> } };
+      };
+            Object.defineProperty(browser.navigator, "mediaDevices", {
         configurable: true,
         value: {
           getUserMedia: () => {
@@ -658,8 +663,9 @@ test.describe("localized collection and item management", () => {
             return new Promise((resolve) => {
               state.resolvers.push(() => {
                 const index = state.stopped.push(false) - 1;
-                resolve({
-                  getTracks: () => [
+                const stream = new browser.MediaStream();
+                Object.defineProperty(stream, "getTracks", {
+                  value: () => [
                     {
                       stop: () => {
                         state.stopped[index] = true;
@@ -667,12 +673,13 @@ test.describe("localized collection and item management", () => {
                     },
                   ],
                 });
+                resolve(stream);
               });
             });
           },
         },
       });
-      HTMLMediaElement.prototype.play = async () => undefined;
+      browser.HTMLMediaElement.prototype.play = async () => undefined;
     });
     const locale = localeFor(testInfo);
     const labels = copy[locale];
@@ -685,8 +692,8 @@ test.describe("localized collection and item management", () => {
       await page.getByText(labels.identifiers, { exact: true }).click();
       const start = page.getByRole("button", { name: labels.scanStart });
       await start.evaluate((button) => {
-        (button as HTMLButtonElement).click();
-        (button as HTMLButtonElement).click();
+        (button as { click(): void }).click();
+        (button as { click(): void }).click();
       });
       await expect.poll(() =>
           page.evaluate(

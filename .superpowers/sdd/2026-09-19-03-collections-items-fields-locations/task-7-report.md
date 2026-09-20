@@ -61,4 +61,6 @@ Local exec disconnected during implementation, so work continued through atomic 
 - Production changes are limited to extracting and reusing the prior currency, integer, tag, and display behavior unchanged so focused unit tests exercise the same code paths.
 - Currency ruling: repository plans and ledger define ISO 4217 currency-specific minor units, with no universal two-decimal scale. JPY therefore uses zero fractional digits and KWD three; stored integers will not be migrated or rescaled.
 - The earlier draft JPY display expectation was removed before RED. Focused JPY/KWD parse and display tests now exercise the confirmed scale while the implementation still ignores their currency argument.
-- RED CI has not yet run for the currency-scale additions. No implementation fix has begun.
+- Actual unit RED: PR CI `35545268926`, job `106169929959`, failed nine focused cases with 224 existing tests passing and 20 database skips. JPY `123` became `12300`; KWD three-decimal input was rejected; the seven earlier currency/integer/tag/localization regressions also failed.
+- Batch 1 fixes use currency-specific ISO minor-unit exponents, exact BigInt quotient/remainder conversion, full safe-integer parsing, escaped comma tags, and exact locale display for canonical DATE/DECIMAL/MONEY values. No stored value is migrated or rescaled.
+- Browser production findings R1/R4/R6/R8/R9 remain intentionally unfixed pending their actual browser RED.

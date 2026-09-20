@@ -198,7 +198,7 @@
     "tradeStatusRESERVED": "Reserved",
     "organization": "Organization",
     "tags": "Tags",
-    "tagsHelp": "Separate multiple tags with commas.",
+    "tagsHelp": "Separate tags with commas; escape a comma inside a tag with \\,.",
     "location": "Location",
     "noLocation": "No location",
     "identifiers": "Identifiers and code capture",

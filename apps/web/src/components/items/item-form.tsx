@@ -184,7 +184,10 @@ export function ItemForm({
     const form = new FormData(event.currentTarget);
     let purchaseAmountMinor: number | null;
     try {
-      purchaseAmountMinor = minorUnits(String(form.get("purchaseAmount") ?? ""));
+      purchaseAmountMinor = minorUnits(
+        String(form.get("purchaseAmount") ?? ""),
+        String(form.get("purchaseCurrency") ?? "EUR"),
+      );
     } catch {
       setError(t("moneyInvalid"));
       setSaving(false);
@@ -325,7 +328,7 @@ export function ItemForm({
         <p className="form-intro">{t("intro")}</p>
       </header>
 
-      {item && metadata && <ItemSummary item={item} metadata={metadata} fields={fields} t={t} />}
+      {item && metadata && <ItemSummary item={item} metadata={metadata} fields={fields} locale={locale} t={t} />}
       {inactive && (
         <p className="notice">{t(item?.disposedAt ? "disposedNotice" : "archivedNotice")}</p>
       )}
@@ -449,7 +452,7 @@ export function ItemForm({
                   <input
                     name="purchaseAmount"
                     inputMode="decimal"
-                    defaultValue={majorUnits(item?.purchaseAmountMinor ?? null)}
+                    defaultValue={majorUnits(item?.purchaseAmountMinor ?? null, item?.purchaseCurrency ?? "EUR")}
                     placeholder="0.00"
                   />
                 </label>
@@ -638,9 +641,10 @@ function customValue(field: CustomFieldDefinition, form: FormData): CanonicalCus
     case "MULTI_SELECT":
       return form.getAll(name).map(String);
     case "MONEY": {
-      const amountMinor = minorUnits(String(form.get(`${name}-amount`) ?? ""));
+      const currency = String(form.get(`${name}-currency`) ?? "");
+      const amountMinor = minorUnits(String(form.get(`${name}-amount`) ?? ""), currency);
       if (amountMinor === null) throw new Error("money");
-      return { amountMinor, currency: String(form.get(`${name}-currency`) ?? "") };
+      return { amountMinor, currency };
     }
   }
 }
@@ -727,7 +731,7 @@ function CustomFieldControl({
           <input
             name={`${name}-amount`}
             inputMode="decimal"
-            defaultValue={money ? majorUnits(money.amountMinor) : ""}
+            defaultValue={money ? majorUnits(money.amountMinor, money.currency) : ""}
           />
         </label>
         <label>
@@ -769,11 +773,13 @@ function CustomFieldControl({
 function ItemSummary({
   metadata,
   fields,
+  locale,
   t,
 }: {
   item: CollectibleItem;
   metadata: ItemMetadata;
   fields: CustomFieldDefinition[];
+  locale: "de" | "en";
   t: Translation;
 }) {
   return (
@@ -782,7 +788,7 @@ function ItemSummary({
         const field = fields.find((candidate) => candidate.id === record.fieldDefinitionId);
         return field ? (
           <p key={record.fieldDefinitionId}>
-            {field.name}: {displayCustomFieldValue(record.value)}
+            {field.name}: {displayCustomFieldValue(record.value, field.type, locale)}
           </p>
         ) : null;
       })}
