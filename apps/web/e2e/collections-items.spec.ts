@@ -50,6 +50,7 @@ const copy = {
     archive: "Archivieren",
     archivedMessage: "Stück archiviert.",
     savedDetails: "Gespeicherte Zusatzdaten",
+    setCustomField: "Wert verwenden",
   },
   en: {
     collectionName: "Collection name",
@@ -92,6 +93,7 @@ const copy = {
     archive: "Archive",
     archivedMessage: "Item archived.",
     savedDetails: "Saved additional details",
+    setCustomField: "Use value",
   },
 } as const;
 
@@ -292,7 +294,13 @@ test.describe("localized collection and item management", () => {
       await page.getByRole("button", { name: labels.scanConfirm }).click();
       await expect(page.getByLabel(labels.identifierValue)).toHaveValue("9783161484100");
       await page.getByLabel(labels.identifierValue).fill("4006381333931");
-      await page.getByLabel("Edition").fill("1st");
+      const editionField = page
+        .locator(".custom-field")
+        .filter({ has: page.getByLabel("Edition", { exact: true }) });
+      await editionField
+        .getByRole("checkbox", { name: labels.setCustomField, exact: true })
+        .check();
+      await editionField.getByLabel("Edition", { exact: true }).fill("1st");
       await page.getByLabel(labels.location).selectOption({ label: "Fach 2" });
       const itemCreated = page.waitForResponse(
         (response) =>
