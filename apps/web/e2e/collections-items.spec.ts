@@ -380,7 +380,7 @@ test.describe("localized collection and item management", () => {
       await prisma.itemLocationHistory.deleteMany({ where: { assignedById: collector.userId } });
       await prisma.user.deleteMany({ where: { id: collector.userId } });
     }
-
+  });
 
   test("unrelated edits preserve nested placement, currencies, and canonical tags", async ({
     page,
@@ -688,9 +688,7 @@ test.describe("localized collection and item management", () => {
         (button as HTMLButtonElement).click();
         (button as HTMLButtonElement).click();
       });
-      await expect
-        .soft
-        .poll(() =>
+      await expect.poll(() =>
           page.evaluate(
             () =>
               (globalThis as unknown as { __scannerRegression: { requests: number } })
@@ -732,6 +730,5 @@ test.describe("localized collection and item management", () => {
     } finally {
       await cleanupCollector(collector.userId);
     }
-  });
   });
 });

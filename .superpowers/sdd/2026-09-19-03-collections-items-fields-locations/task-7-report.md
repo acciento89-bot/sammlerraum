@@ -53,3 +53,10 @@ Local exec disconnected during implementation, so work continued through atomic 
 - The failure-only formatter diagnostic was skipped on the clean run, as intended.
 - Self-review is complete against the Task 7 brief. No Task 7 code concern remains. A recurrent pre-existing profile-save timing failure appeared in some PR authentication runs, while push runs on the same source passed all four authentication journeys; no unrelated auth change was made.
 - Independent Task 7 review has not yet been performed; the controller owns that next gate.
+
+## Independent review fix round 1
+
+- Fresh independent review at `3083241` returned SPEC FAIL / QUALITY FAIL with nine must-fix findings.
+- RED regressions now cover all nine findings: async nested-node preservation; non-default ISO currency and comma-tag round trips; exponent-form integers; rejected core and partially rejected metadata retry; native keyboard hierarchy semantics; exact locale-aware DATE/DECIMAL/MONEY display; concurrent scanner acquisition/disposal; and zero writes before all custom-field validation succeeds.
+- Production changes are limited to extracting and reusing the prior currency, integer, tag, and display behavior unchanged so focused unit tests exercise the same code paths.
+- RED CI has not yet run for this round. No implementation fix has begun.
