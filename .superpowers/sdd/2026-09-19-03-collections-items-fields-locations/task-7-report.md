@@ -4,12 +4,12 @@
 
 - Tests-only snapshot: `2a7a63903295113ff0527de501c5311c52603480`.
 - Corrected auth-fixture snapshot: `04cd66043facf72604ec97c76a7d622b04420199`.
-- Initial CI run `35538632152` was **not** accepted as behavior RED because database-backed Better Auth rate-limit buckets were exhausted before the feature boundary.
+- Initial CI run `35538632152` was not accepted as behavior RED because database-backed auth rate-limit buckets were exhausted before the feature boundary.
 - Valid feature RED: CI `35539057867`, job `106153245432`, against `04cd660`. Both collectors completed real HTTP 200 sign-in and reached the localized profile route. Desktop then failed because `Sammlungen` did not exist; mobile failed because `Collections` did not exist.
 - Production implementation began only after that valid feature RED.
 - Self-review reproduced a money boundary bug in the old arithmetic: `9007199254740990` minor units rendered as `90071992547409.91` and parsed back one cent higher.
-- Isolated money RED: CI `35541104290`, job `106158800685`, against `9df3b183`. The new unit file ran three tests; the max-minus-one roundtrip failed with expected `90071992547409.90`, received `90071992547409.91`; max-safe passed. Overall: 223 passed, 1 failed, 20 database-gated skips.
-- The GREEN successor changes only the money conversion implementation: decimal input is accumulated with `BigInt` and range-checked, while display uses integer quotient/remainder. The regression tests are unchanged.
+- Isolated money RED: CI `35541104290`, job `106158800685`, against `9df3b183`. The max-minus-one roundtrip failed with expected `90071992547409.90`, received `90071992547409.91`; overall 223 passed, 1 failed, 20 database-gated skips.
+- Money GREEN: CI `35541233171`, job `106159163627`, against `3fc2201`. All three money tests passed and the full unit suite reported 224 passed. That run then stopped at a Prettier-only warning for the helper's wrapped expression; this checkpoint applies only Prettier's obvious one-line form and leaves tests/behavior unchanged.
 
 ## Implementation
 
@@ -33,4 +33,4 @@ The local exec runtime disconnected during the first production UI checkpoint. U
 - CI `35540491109`, job `106157121355`: package typechecks passed; exposed two web exact-optional-property errors.
 - CI `35540686118`, job `106157649498`: every unit, lint, typecheck, build, database, and existing auth gate passed; Task 7 reached UI and exposed a strict heading-locator ambiguity. Locators were scoped semantically.
 
-A fresh full regular CI run of the GREEN successor is required before completion.
+A fresh full regular CI run is required before completion.
