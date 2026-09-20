@@ -40,7 +40,7 @@
 - Consumes: authenticated user ID.
 - Produces: `createCollection`, `createCollectionNode`, `moveCollectionNode`, `getAncestorVisibility`.
 
-- [ ] **Step 1: Write failing cycle test**
+- [x] **Step 1: Write failing cycle test**
 
 ```ts
 it("rejects moving a node below its own descendant", async () => {
@@ -49,16 +49,16 @@ it("rejects moving a node below its own descendant", async () => {
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run packages/domain/src/collections/collection-service.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Add models and service**
+- [x] **Step 3: Add models and service**
 
 Add enums `Visibility = PRIVATE | UNLISTED | PUBLIC`, models `Collection`, `CollectionNode`, and owner relation. Nodes use `parentId` adjacency. Before moves, execute a recursive CTE that gathers descendants and reject when target parent is among them.
 
-- [ ] **Step 4: Run migration and tests**
+- [x] **Step 4: Run migration and tests**
 
 Run:
 ```bash
@@ -68,7 +68,7 @@ pnpm vitest run packages/domain/src/collections/collection-service.test.ts
 
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/db packages/domain/src/collections packages/contracts/src/collections.ts
@@ -89,7 +89,7 @@ git commit -m "feat: add collection hierarchy"
 - Consumes: collection membership/ownership, collection node.
 - Produces: `createItem`, `updateItem`, `archiveItem`, `splitQuantityItem`.
 
-- [ ] **Step 1: Write failing quantity split test**
+- [x] **Step 1: Write failing quantity split test**
 
 ```ts
 it("splits a quantity item without changing total quantity", async () => {
@@ -99,18 +99,18 @@ it("splits a quantity item without changing total quantity", async () => {
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run packages/domain/src/items/item-service.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Add item model and service**
+- [x] **Step 3: Add item model and service**
 
 Add `CollectibleItem` with title, public description, private notes, quantity > 0, acquisition type enum, acquisition date, purchase amount as integer minor units plus ISO currency, visibility, trade status, archived/disposed timestamps.
 
 Splitting runs in one transaction and rejects split counts <= 0 or >= current quantity.
 
-- [ ] **Step 4: Run migration and tests**
+- [x] **Step 4: Run migration and tests**
 
 Run:
 ```bash
@@ -120,7 +120,7 @@ pnpm vitest run packages/domain/src/items/item-service.test.ts
 
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/db packages/domain/src/items packages/contracts/src/items.ts
@@ -141,7 +141,7 @@ git commit -m "feat: add collectible item lifecycle"
 - Consumes: item ID.
 - Produces: `setItemIdentifiers(itemId, identifiers)`, `setItemTags(itemId, tags)`.
 
-- [ ] **Step 1: Write failing identifier normalization tests**
+- [x] **Step 1: Write failing identifier normalization tests**
 
 ```ts
 it("normalizes EAN values without removing meaningful leading zeroes", async () => {
@@ -152,21 +152,21 @@ it("normalizes EAN values without removing meaningful leading zeroes", async () 
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run packages/domain/src/items/identifier-service.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement models**
+- [x] **Step 3: Implement models**
 
 Add `ItemIdentifier(type, value, normalizedValue)`, `Tag`, and item-tag join table. Unique constraints must be scoped to item/type/value, not global across all owners.
 
-- [ ] **Step 4: Run tests**
+- [x] **Step 4: Run tests**
 
 Run: `pnpm vitest run packages/domain/src/items`  
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/db packages/domain/src/items
@@ -187,7 +187,7 @@ git commit -m "feat: add item identifiers and tags"
 - Consumes: collection ID, item ID.
 - Produces: `createFieldDefinition`, `setFieldValue`, `validateFieldValue`.
 
-- [ ] **Step 1: Write failing type test**
+- [x] **Step 1: Write failing type test**
 
 ```ts
 it("rejects text supplied to a number field", async () => {
@@ -196,18 +196,18 @@ it("rejects text supplied to a number field", async () => {
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run packages/domain/src/custom-fields/custom-field-service.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement typed values**
+- [x] **Step 3: Implement typed values**
 
 Field types: `SHORT_TEXT`, `LONG_TEXT`, `INTEGER`, `DECIMAL`, `DATE`, `BOOLEAN`, `SINGLE_SELECT`, `MULTI_SELECT`, `URL`, `MONEY`.
 
 Store canonical typed values in dedicated nullable columns on `CustomFieldValue` plus constraints in service validation; do not serialize every value into one free-form JSON blob.
 
-- [ ] **Step 4: Run tests and migrate**
+- [x] **Step 4: Run tests and migrate**
 
 Run:
 ```bash
@@ -217,7 +217,7 @@ pnpm vitest run packages/domain/src/custom-fields
 
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/db packages/domain/src/custom-fields packages/contracts/src/custom-fields.ts
@@ -238,7 +238,7 @@ git commit -m "feat: add typed custom fields"
 - Consumes: collection ID/item ID.
 - Produces: `createLocation`, `moveLocation`, `assignItemLocation`, `getLocationContents`.
 
-- [ ] **Step 1: Write failing privacy and cycle tests**
+- [x] **Step 1: Write failing privacy and cycle tests**
 
 ```ts
 it("keeps storage location out of the public item DTO", async () => {
@@ -252,21 +252,21 @@ it("rejects a storage location hierarchy cycle", async () => {
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run packages/domain/src/locations/location-service.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement models and service**
+- [x] **Step 3: Implement models and service**
 
 Add `StorageLocation` adjacency tree, location type, stable QR token/ID, and `ItemLocationHistory`. Assignment writes both the current foreign key and history record in one transaction.
 
-- [ ] **Step 4: Run tests**
+- [x] **Step 4: Run tests**
 
 Run: `pnpm vitest run packages/domain/src/locations`  
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/db packages/domain/src/locations packages/contracts/src/locations.ts
@@ -289,7 +289,7 @@ git commit -m "feat: add hierarchical storage locations"
 - Consumes: contracts + domain services + policy engine.
 - Produces: collection/item CRUD API.
 
-- [ ] **Step 1: Write failing private-ancestor API test**
+- [x] **Step 1: Write failing private-ancestor API test**
 
 ```ts
 it("returns 404 for anonymous access to a public item under a private ancestor", async () => {
@@ -298,16 +298,16 @@ it("returns 404 for anonymous access to a public item under a private ancestor",
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run apps/web/src/app/api/v1/items/item-api.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement thin routes and policy facts**
+- [x] **Step 3: Implement thin routes and policy facts**
 
 Routes validate Zod contracts, load actor/resource facts, call `assertAuthorized`, then call domain services. For unauthorized private resources, return 404 rather than confirming existence.
 
-- [ ] **Step 4: Run API and domain tests**
+- [x] **Step 4: Run API and domain tests**
 
 Run:
 ```bash
@@ -317,7 +317,7 @@ pnpm --filter @sammlerraum/web build
 
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add apps/web/src/app/api/v1 packages/domain/src/authz

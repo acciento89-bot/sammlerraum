@@ -1,0 +1,22 @@
+{
+  "name": "@sammlerraum/contracts",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./errors": "./src/errors.ts",
+    "./collections": "./src/collections.ts",
+    "./custom-fields": "./src/custom-fields.ts",
+    "./items": "./src/items.ts",
+    "./locations": "./src/locations.ts",
+    "./openapi": "./src/openapi.ts",
+    "./profile": "./src/profile.ts"
+  },
+  "scripts": {
+    "build": "pnpm typecheck",
+    "lint": "prettier --check .",
+    "typecheck": "tsc --noEmit --project ../../tsconfig.base.json"
+  },
+  "dependencies": {
+    "zod": "4.1.11"
+  }
+}

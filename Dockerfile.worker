@@ -1,0 +1,21 @@
+FROM node:24.19.0-bookworm-slim AS base
+ENV PNPM_HOME=/pnpm
+ENV PATH=$PNPM_HOME:$PATH
+RUN corepack enable && corepack prepare pnpm@10.17.1 --activate
+WORKDIR /app
+
+FROM base AS build
+COPY . .
+RUN pnpm install --frozen-lockfile
+RUN DATABASE_URL=postgresql://build:build@127.0.0.1:5432/sammlerraum_build \
+    pnpm --filter @sammlerraum/db prisma generate
+RUN pnpm --filter @sammlerraum/worker build
+
+FROM node:24.19.0-bookworm-slim AS runtime
+ENV NODE_ENV=production
+WORKDIR /app
+RUN mkdir -p /data/uploads && chown node:node /data/uploads
+COPY --from=build --chown=node:node /app/apps/worker/dist/worker.cjs ./dist/worker.cjs
+USER node
+EXPOSE 3001
+CMD ["node", "dist/worker.cjs"]

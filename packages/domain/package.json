@@ -1,0 +1,30 @@
+{
+  "name": "@sammlerraum/domain",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./api/resource-query": "./src/api/resource-query.ts",
+    "./authz/policy": "./src/authz/policy.ts",
+    "./authz/types": "./src/authz/types.ts",
+    "./collections/collection-service": "./src/collections/collection-service.ts",
+    "./custom-fields/custom-field-service": "./src/custom-fields/custom-field-service.ts",
+    "./items/item-service": "./src/items/item-service.ts",
+    "./items/item-query": "./src/items/item-query.ts",
+    "./locations/location-service": "./src/locations/location-service.ts",
+    "./identity/profile-service": "./src/identity/profile-service.ts",
+    "./identity/security-service": "./src/identity/security-service.ts",
+    "./items/identifier-service": "./src/items/identifier-service.ts",
+    "./items/tag-service": "./src/items/tag-service.ts"
+  },
+  "scripts": {
+    "build": "pnpm typecheck",
+    "lint": "prettier --check .",
+    "typecheck": "tsc --noEmit --project ../../tsconfig.base.json"
+  },
+  "dependencies": {
+    "@sammlerraum/contracts": "workspace:*"
+  },
+  "devDependencies": {
+    "@sammlerraum/db": "workspace:*"
+  }
+}

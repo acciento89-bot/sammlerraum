@@ -1,0 +1,386 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Visibility {
+  PRIVATE
+  UNLISTED
+  PUBLIC
+}
+
+enum AcquisitionType {
+  PURCHASE
+  GIFT
+  TRADE
+  INHERITANCE
+  FOUND
+  OTHER
+}
+
+enum TradeStatus {
+  NOT_FOR_TRADE
+  OPEN_TO_TRADE
+  FOR_SALE
+  RESERVED
+}
+
+enum CustomFieldType {
+  SHORT_TEXT
+  LONG_TEXT
+  INTEGER
+  DECIMAL
+  DATE
+  BOOLEAN
+  SINGLE_SELECT
+  MULTI_SELECT
+  URL
+  MONEY
+}
+
+enum LocationType {
+  ROOM
+  CABINET
+  SHELF
+  DRAWER
+  BOX
+  OTHER
+}
+
+model SystemMetadata {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt
+}
+
+model UserProfile {
+  userId        String   @id
+  handle        String   @unique
+  displayName   String
+  bio           String?
+  avatarAssetId String?  @db.Uuid
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id                         String                @id
+  name                       String
+  email                      String
+  emailVerified              Boolean               @default(false)
+  image                      String?
+  createdAt                  DateTime              @default(now())
+  updatedAt                  DateTime              @updatedAt
+  sessions                   Session[]
+  accounts                   Account[]
+  passkeys                   Passkey[]
+  profile                    UserProfile?
+  collections                Collection[]
+  tags                       Tag[]
+  storageLocations           StorageLocation[]
+  locationHistoryAssignments ItemLocationHistory[] @relation("LocationHistoryAssignee")
+
+  @@unique([email])
+  @@map("user")
+}
+
+model Collection {
+  id                     String                  @id @default(uuid()) @db.Uuid
+  ownerId                String
+  name                   String
+  visibility             Visibility              @default(PRIVATE)
+  createdAt              DateTime                @default(now())
+  updatedAt              DateTime                @updatedAt
+  deletedAt              DateTime?
+  owner                  User                    @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  nodes                  CollectionNode[]
+  items                  CollectibleItem[]
+  customFieldDefinitions CustomFieldDefinition[]
+
+  @@unique([id, ownerId])
+  @@index([ownerId])
+  @@index([ownerId, deletedAt])
+}
+
+model CollectionNode {
+  id           String            @id @default(uuid()) @db.Uuid
+  collectionId String            @db.Uuid
+  parentId     String?           @db.Uuid
+  name         String
+  visibility   Visibility        @default(PRIVATE)
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+  collection   Collection        @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  parent       CollectionNode?   @relation("CollectionHierarchy", fields: [parentId, collectionId], references: [id, collectionId], onDelete: Restrict)
+  children     CollectionNode[]  @relation("CollectionHierarchy")
+  items        CollectibleItem[]
+
+  @@unique([id, collectionId])
+  @@index([collectionId])
+  @@index([parentId, collectionId])
+}
+
+model CollectibleItem {
+  id                  String                @id @default(uuid()) @db.Uuid
+  collectionId        String                @db.Uuid
+  ownerId             String
+  nodeId              String?               @db.Uuid
+  storageLocationId   String?               @db.Uuid
+  title               String
+  publicDescription   String?
+  privateNotes        String?
+  quantity            Int                   @default(1)
+  acquisitionType     AcquisitionType       @default(OTHER)
+  acquisitionDate     DateTime?             @db.Date
+  purchaseAmountMinor BigInt?
+  purchaseCurrency    String?               @db.Char(3)
+  visibility          Visibility            @default(PRIVATE)
+  tradeStatus         TradeStatus           @default(NOT_FOR_TRADE)
+  archivedAt          DateTime?
+  disposedAt          DateTime?
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime              @updatedAt
+  deletedAt           DateTime?
+  collection          Collection            @relation(fields: [collectionId, ownerId], references: [id, ownerId], onDelete: Cascade)
+  node                CollectionNode?       @relation(fields: [nodeId, collectionId], references: [id, collectionId], onDelete: Restrict)
+  storageLocation     StorageLocation?      @relation(fields: [storageLocationId, ownerId], references: [id, ownerId], onDelete: Restrict)
+  locationHistory     ItemLocationHistory[]
+  identifiers         ItemIdentifier[]
+  itemTags            ItemTag[]
+  customFieldValues   CustomFieldValue[]
+
+  @@unique([id, collectionId])
+  @@unique([id, ownerId])
+  @@index([collectionId])
+  @@index([collectionId, deletedAt])
+  @@index([nodeId, collectionId])
+  @@index([storageLocationId, ownerId])
+}
+
+model StorageLocation {
+  id          String                @id @default(uuid()) @db.Uuid
+  ownerId     String
+  parentId    String?               @db.Uuid
+  name        String
+  type        LocationType          @default(OTHER)
+  visibility  Visibility            @default(PRIVATE)
+  qrToken     String                @unique @db.VarChar(43)
+  createdAt   DateTime              @default(now())
+  updatedAt   DateTime              @updatedAt
+  owner       User                  @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  parent      StorageLocation?      @relation("StorageLocationHierarchy", fields: [parentId, ownerId], references: [id, ownerId], onDelete: Restrict)
+  children    StorageLocation[]     @relation("StorageLocationHierarchy")
+  items       CollectibleItem[]
+  historyFrom ItemLocationHistory[] @relation("HistoryFromLocation")
+  historyTo   ItemLocationHistory[] @relation("HistoryToLocation")
+
+  @@unique([id, ownerId])
+  @@index([ownerId])
+  @@index([parentId, ownerId])
+}
+
+model ItemLocationHistory {
+  id             String           @id @default(uuid()) @db.Uuid
+  itemId         String           @db.Uuid
+  ownerId        String
+  fromLocationId String?          @db.Uuid
+  toLocationId   String?          @db.Uuid
+  assignedById   String
+  movedAt        DateTime         @default(now())
+  item           CollectibleItem  @relation(fields: [itemId, ownerId], references: [id, ownerId], onDelete: Cascade)
+  fromLocation   StorageLocation? @relation("HistoryFromLocation", fields: [fromLocationId, ownerId], references: [id, ownerId], onDelete: Restrict)
+  toLocation     StorageLocation? @relation("HistoryToLocation", fields: [toLocationId, ownerId], references: [id, ownerId], onDelete: Restrict)
+  assignedBy     User             @relation("LocationHistoryAssignee", fields: [assignedById], references: [id], onDelete: Restrict)
+
+  @@index([itemId, movedAt])
+  @@index([fromLocationId, ownerId])
+  @@index([toLocationId, ownerId])
+  @@index([assignedById])
+}
+
+model CustomFieldDefinition {
+  id             String              @id @default(uuid()) @db.Uuid
+  collectionId   String              @db.Uuid
+  name           String
+  normalizedName String
+  type           CustomFieldType
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+  collection     Collection          @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  options        CustomFieldOption[]
+  values         CustomFieldValue[]
+
+  @@unique([collectionId, normalizedName])
+  @@unique([id, collectionId])
+  @@unique([id, collectionId, type])
+  @@index([collectionId])
+}
+
+model CustomFieldOption {
+  id                String                        @id @default(uuid()) @db.Uuid
+  fieldDefinitionId String                        @db.Uuid
+  value             String
+  normalizedValue   String
+  position          Int
+  fieldDefinition   CustomFieldDefinition         @relation(fields: [fieldDefinitionId], references: [id], onDelete: Cascade)
+  singleValues      CustomFieldValue[]            @relation("SingleSelectOption")
+  multiValues       CustomFieldMultiSelectValue[]
+
+  @@unique([fieldDefinitionId, normalizedValue])
+  @@unique([fieldDefinitionId, position])
+  @@unique([id, fieldDefinitionId])
+  @@index([fieldDefinitionId])
+}
+
+model CustomFieldValue {
+  itemId               String                        @db.Uuid
+  fieldDefinitionId    String                        @db.Uuid
+  collectionId         String                        @db.Uuid
+  fieldType            CustomFieldType
+  shortTextValue       String?                       @db.VarChar(255)
+  longTextValue        String?
+  integerValue         BigInt?
+  decimalValue         Decimal?                      @db.Decimal(38, 18)
+  dateValue            DateTime?                     @db.Date
+  booleanValue         Boolean?
+  singleSelectOptionId String?                       @db.Uuid
+  urlValue             String?                       @db.VarChar(2048)
+  moneyAmountMinor     BigInt?
+  moneyCurrency        String?                       @db.Char(3)
+  createdAt            DateTime                      @default(now())
+  updatedAt            DateTime                      @updatedAt
+  item                 CollectibleItem               @relation(fields: [itemId, collectionId], references: [id, collectionId], onDelete: Cascade)
+  fieldDefinition      CustomFieldDefinition         @relation(fields: [fieldDefinitionId, collectionId, fieldType], references: [id, collectionId, type], onDelete: Cascade)
+  singleSelectOption   CustomFieldOption?            @relation("SingleSelectOption", fields: [singleSelectOptionId, fieldDefinitionId], references: [id, fieldDefinitionId], onDelete: Cascade)
+  multiSelectValues    CustomFieldMultiSelectValue[]
+
+  @@id([itemId, fieldDefinitionId])
+  @@index([fieldDefinitionId, collectionId, fieldType])
+  @@index([singleSelectOptionId, fieldDefinitionId])
+}
+
+model CustomFieldMultiSelectValue {
+  itemId            String            @db.Uuid
+  fieldDefinitionId String            @db.Uuid
+  optionId          String            @db.Uuid
+  position          Int
+  value             CustomFieldValue  @relation(fields: [itemId, fieldDefinitionId], references: [itemId, fieldDefinitionId], onDelete: Cascade)
+  option            CustomFieldOption @relation(fields: [optionId, fieldDefinitionId], references: [id, fieldDefinitionId], onDelete: Cascade)
+
+  @@id([itemId, fieldDefinitionId, optionId])
+  @@unique([itemId, fieldDefinitionId, position])
+  @@index([optionId, fieldDefinitionId])
+}
+
+model ItemIdentifier {
+  id              String          @id @default(uuid()) @db.Uuid
+  itemId          String          @db.Uuid
+  type            String
+  value           String
+  normalizedValue String
+  item            CollectibleItem @relation(fields: [itemId], references: [id], onDelete: Cascade)
+
+  @@unique([itemId, type, normalizedValue])
+}
+
+model Tag {
+  id             String    @id @default(uuid()) @db.Uuid
+  ownerId        String
+  name           String
+  normalizedName String
+  owner          User      @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  itemTags       ItemTag[]
+
+  @@unique([ownerId, normalizedName])
+}
+
+model ItemTag {
+  itemId String          @db.Uuid
+  tagId  String          @db.Uuid
+  item   CollectibleItem @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  tag    Tag             @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([itemId, tagId])
+  @@index([tagId])
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+  @@index([userId])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@index([userId])
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
+  @@map("verification")
+}
+
+model Passkey {
+  id           String    @id
+  name         String?
+  publicKey    String
+  userId       String
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  credentialID String
+  counter      Int
+  deviceType   String
+  backedUp     Boolean
+  transports   String?
+  createdAt    DateTime?
+  aaguid       String?
+
+  @@index([userId])
+  @@index([credentialID])
+  @@map("passkey")
+}
+
+model RateLimit {
+  id          String @id
+  key         String
+  count       Int
+  lastRequest BigInt
+
+  @@unique([key])
+  @@map("rateLimit")
+}

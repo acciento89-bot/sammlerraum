@@ -1,0 +1,147 @@
+name: CI
+
+on:
+  push:
+    branches: ["main", "work/sammlerraum-v1"]
+  pull_request:
+    branches: ["main"]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    env:
+      NODE_ENV: test
+      DATABASE_URL: postgresql://test:test@localhost:5432/sammlerraum_test
+      APP_ORIGIN: http://localhost:3000
+      NEXT_PUBLIC_APP_ORIGIN: https://example.invalid
+      UPLOADS_DIR: /tmp/sammlerraum-test-uploads
+      LOG_LEVEL: info
+      WORKER_HEALTH_PORT: "3001"
+      BETTER_AUTH_SECRET: test-only-secret-that-is-at-least-thirty-two-characters
+      GOOGLE_CLIENT_ID: test-google-client-id
+      GOOGLE_CLIENT_SECRET: test-google-client-secret
+      APPLE_CLIENT_ID: test-apple-client-id
+      APPLE_CLIENT_SECRET: test-apple-client-secret
+      SMTP_HOST: smtp.example.invalid
+      SMTP_PORT: "587"
+      SMTP_SECURE: "false"
+      SMTP_USER: test-smtp-user
+      SMTP_PASSWORD: test-smtp-password
+      SMTP_FROM: noreply@example.invalid
+      POSTGRES_DB: sammlerraum_test
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: test
+    services:
+      postgres:
+        image: postgres:17-bookworm
+        env:
+          POSTGRES_DB: sammlerraum_test
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U test -d sammlerraum_test"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.17.1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @sammlerraum/db prisma generate
+      - name: Apply PostgreSQL migrations
+        run: pnpm --filter @sammlerraum/db prisma migrate deploy
+      - run: pnpm test
+      - name: Lint workspace
+        id: lint
+        run: pnpm lint
+      - name: Capture exact Task 7 formatting diff
+        if: ${{ failure() && steps.lint.outcome == 'failure' }}
+        run: |
+          pnpm --filter @sammlerraum/web exec prettier --write \
+            src/app/globals.css \
+            'src/app/[locale]/(app)/collections/page.tsx' \
+            'src/app/[locale]/(app)/collections/[collectionId]/page.tsx' \
+            'src/app/[locale]/(app)/items/new/page.tsx' \
+            'src/app/[locale]/(app)/items/[itemId]/page.tsx' \
+            src/components/collections/collections-manager.tsx \
+            src/components/collections/collection-detail.tsx \
+            src/components/items/item-form.tsx \
+            src/components/items/item-form-values.ts \
+            src/components/items/item-form-values.test.ts \
+            src/components/items/code-scanner.tsx \
+            e2e/collections-items.spec.ts \
+            messages/de.json \
+            messages/en.json
+          node --input-type=module <<'NODE'
+          import { execFileSync } from "node:child_process";
+          import { readFile } from "node:fs/promises";
+          const allowed = new Set([
+            "apps/web/src/app/globals.css",
+            "apps/web/src/app/[locale]/(app)/collections/page.tsx",
+            "apps/web/src/app/[locale]/(app)/collections/[collectionId]/page.tsx",
+            "apps/web/src/app/[locale]/(app)/items/new/page.tsx",
+            "apps/web/src/app/[locale]/(app)/items/[itemId]/page.tsx",
+            "apps/web/src/components/collections/collections-manager.tsx",
+            "apps/web/src/components/collections/collection-detail.tsx",
+            "apps/web/src/components/items/item-form.tsx",
+            "apps/web/src/components/items/item-form-values.ts",
+            "apps/web/src/components/items/item-form-values.test.ts",
+            "apps/web/src/components/items/code-scanner.tsx",
+            "apps/web/e2e/collections-items.spec.ts",
+            "apps/web/messages/de.json",
+            "apps/web/messages/en.json",
+          ]);
+          const changed = execFileSync("git", ["diff", "--name-only", "--", "apps/web"], {
+            encoding: "utf8",
+          })
+            .trim()
+            .split("\n")
+            .filter((file) => allowed.has(file));
+          for (const file of changed) {
+            const content = await readFile(file);
+            console.log(JSON.stringify({ file, base64: content.toString("base64") }));
+          }
+          NODE
+      - run: pnpm typecheck
+      - name: Build workspace
+        env:
+          NODE_ENV: production
+        run: pnpm build
+      - name: Run real database health and pg-boss singleton integration tests
+        run: >-
+          RUN_DATABASE_INTEGRATION=1 pnpm vitest run
+          packages/db/src/postgres.integration.test.ts
+          packages/queue/src/postgres.integration.test.ts
+          packages/domain/src/identity/profile-service.test.ts
+          packages/domain/src/identity/security-service.test.ts
+          packages/domain/src/collections/collection-service.test.ts
+          packages/domain/src/items/item-service.test.ts
+          packages/domain/src/items/identifier-service.test.ts
+          packages/domain/src/custom-fields/custom-field-service.test.ts
+          packages/domain/src/locations/location-service.test.ts
+          apps/web/src/lib/security-service.integration.test.ts
+          apps/web/src/app/api/v1/items/resource-route.integration.test.ts
+      - name: Install Chromium for authentication journeys
+        run: pnpm --filter @sammlerraum/web exec playwright install --with-deps chromium
+      - name: Run authentication browser journeys
+        run: >-
+          RUN_AUTH_E2E=1 pnpm --filter @sammlerraum/web exec playwright test
+          e2e/auth.spec.ts
+      - name: Run collection and item browser journeys
+        run: >-
+          RUN_AUTH_E2E=1 pnpm --filter @sammlerraum/web exec playwright test
+          e2e/collections-items.spec.ts --workers=1
+      - run: bash scripts/verify-compose.sh
+      - run: docker build -f Dockerfile.web --build-arg NEXT_PUBLIC_APP_ORIGIN=https://example.invalid .
+      - run: docker build -f Dockerfile.worker .
