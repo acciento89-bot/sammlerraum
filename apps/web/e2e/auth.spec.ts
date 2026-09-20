@@ -54,7 +54,9 @@ async function registerWithPassword(page: Page, locale: "de" | "en") {
   await page.goto(`/${locale}/login`);
   await page.getByLabel(locale === "de" ? "E-Mail-Adresse" : "Email address").fill(email);
   await page.getByLabel(locale === "de" ? "Passwort" : "Password").fill(password);
-  await page.getByRole("button", { name: locale === "de" ? "Anmelden" : "Sign in" }).click();
+  await page
+    .getByRole("button", { name: locale === "de" ? "Anmelden" : "Sign in", exact: true })
+    .click();
   await expect(page).toHaveURL(new RegExp(`/${locale}/account/profile$`));
 
   return { email, password };
@@ -69,7 +71,7 @@ async function signInAnotherSession(
   await page.goto("/de/login");
   await page.getByLabel("E-Mail-Adresse").fill(credentials.email);
   await page.getByLabel("Passwort").fill(credentials.password);
-  await page.getByRole("button", { name: "Anmelden" }).click();
+  await page.getByRole("button", { name: "Anmelden", exact: true }).click();
   await expect(page).toHaveURL(/\/de\/account\/profile$/);
   return context;
 }
@@ -211,7 +213,7 @@ test.describe("localized authentication and account UI", () => {
     await expect(page).toHaveURL(/\/de\/login$/);
     await page.getByLabel("E-Mail-Adresse").fill(credentials.email);
     await page.getByLabel("Passwort", { exact: true }).fill(newPassword);
-    await page.getByRole("button", { name: "Anmelden" }).click();
+    await page.getByRole("button", { name: "Anmelden", exact: true }).click();
     await expect(page).toHaveURL(/\/de\/account\/profile$/);
   });
 
@@ -245,20 +247,30 @@ test.describe("localized authentication and account UI", () => {
     await expect(page.getByRole("heading", { name: "Aktive Sitzungen" })).toBeVisible();
     await expect(page.getByRole("button", { name: "Google verbinden" })).toBeVisible();
     await expect(page.getByRole("button", { name: "Apple verbinden" })).toBeVisible();
-    const linkRequest = page.waitForRequest(
-      (request) =>
-        request.url().endsWith("/api/auth/link-social") &&
-        request.postDataJSON().provider === "google",
+    await page.route("https://accounts.google.com/**", async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: "text/html",
+        body: "<h1>OAuth provider handoff</h1>",
+      });
+    });
+    const linkResponse = page.waitForResponse(
+      (response) =>
+        response.url().endsWith("/api/auth/link-social") &&
+        response.request().postDataJSON().provider === "google",
     );
+    const providerHandoff = page.waitForURL((url) => url.hostname === "accounts.google.com");
     await page.getByRole("button", { name: "Google verbinden" }).click();
-    await linkRequest;
+    expect((await linkResponse).ok()).toBe(true);
+    await providerHandoff;
+    await expect(page.getByRole("heading", { name: "OAuth provider handoff" })).toBeVisible();
     await page.goto("/de/account/security");
     await page.getByLabel("Passkey-Name").fill("Testgerät");
     await page.getByRole("button", { name: "Passkey hinzufügen" }).click();
-    await expect(page.getByText("Testgerät")).toBeVisible();
+    await expect(page.getByText("Testgerät", { exact: true })).toBeVisible();
 
     await makeSessionsStale(credentials.email);
-    await page.getByRole("button", { name: "Testgerät entfernen" }).click();
+    await page.getByRole("button", { name: "Testgerät entfernen", exact: true }).click();
     await expect(page.getByRole("heading", { name: "Sicherheitsaktion bestätigen" })).toBeVisible();
     await page.getByLabel("Aktuelles Passwort").fill(credentials.password);
     await page.getByRole("button", { name: "Erneut anmelden" }).click();
@@ -286,8 +298,8 @@ test.describe("localized authentication and account UI", () => {
         .getByRole("button", { name: "Sitzung widerrufen" })
         .click();
       await expect(sessions).toHaveCount(1);
-      await page.getByRole("button", { name: "Testgerät entfernen" }).click();
-      await expect(page.getByText("Testgerät")).not.toBeVisible();
+      await page.getByRole("button", { name: "Testgerät entfernen", exact: true }).click();
+      await expect(page.getByText("Testgerät", { exact: true })).not.toBeVisible();
     } finally {
       await otherContext.close();
     }

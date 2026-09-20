@@ -1,4 +1,8 @@
 import { describe, expect, it, vi } from "vitest";
+import { createTranslator } from "next-intl";
+
+import de from "../../../messages/de.json";
+import en from "../../../messages/en.json";
 
 import {
   authView,
@@ -31,6 +35,19 @@ describe("account UI state", () => {
     expect(providerTranslationKey("google")).toBe("providerGoogle");
     expect(providerTranslationKey("apple")).toBe("providerApple");
   });
+
+  it.each([
+    ["de", de, ["Passwort", "Google", "Apple"]],
+    ["en", en, ["Password", "Google", "Apple"]],
+  ] as const)(
+    "resolves provider labels from the %s Security catalog",
+    (locale, messages, labels) => {
+      const t = createTranslator({ locale, messages, namespace: "Security" });
+      expect(
+        ["credential", "google", "apple"].map((provider) => t(providerTranslationKey(provider))),
+      ).toEqual(labels);
+    },
+  );
 
   it("reloads sessions and establishes a new deadline after reauthentication", async () => {
     const reloadSessions = vi.fn().mockResolvedValue(undefined);

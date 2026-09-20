@@ -10,8 +10,8 @@ This is the handoff/status file for long-running implementation. Update it after
 | Phase | Plan | Tasks | Status | Next |
 |---|---|---:|---|---|
 | 01 | Platform Foundation | 6 | complete (6/6) | — |
-| 02 | Identity, Auth & Policies | 7 | in progress (6/7) | Task 7 |
-| 03 | Collections, Items, Fields & Locations | 8 | not started | Task 1 |
+| 02 | Identity, Auth & Policies | 7 | complete (7/7) | — |
+| 03 | Collections, Items, Fields & Locations | 8 | in progress (0/8) | Task 1 |
 | 04 | Media & Documents | 6 | not started | Task 1 |
 | 05 | Catalog, Condition & Grading | 7 | not started | Task 1 |
 | 06 | Valuations & Market Data | 6 | not started | Task 1 |
@@ -251,3 +251,40 @@ Every completed and independently reviewed task must be checked off in its detai
 - Local syntax/format/typecheck checks pass. Local browser run cannot establish meaningful RED because Chromium/PostgreSQL are absent; GitHub CI must demonstrate missing UI failure before implementation.
 - Runtime-generated one-day localhost certificate/key remain in test temporary files; no committed credentials or production mail bypass.
 - Checkpoint is intentionally failing and not reviewed completion. No Task7 checkbox is ticked.
+
+### Phase 02 Task 7 — reviewed UI candidate, CI pending
+
+- Tests-only RED remote `8d358da1096102ae9763de465b3b9674ebb5fb83`; CI35524209712/job106113423059 proved3 browser failures on absent UI while existing API smoke passed. No implementation preceded this meaningful RED.
+- Complete DE/EN login/register/profile/security UI, verify/resend/reset, Google/Apple sign-in/link entry points, passkey add/sign-in/remove, own-profile create/update, sanitized methods/sessions and guarded revocation. Safe handle conflicts; no login-email-derived public handle.
+- Test-only local TLS SMTP captures real Next verification/reset mail, with runtime-generated temporary cert/key and trust only in Next test child; production TLS/verification unchanged. Live providers remain the documented external blockers.
+- Local118 tests passed/5 gated DB skips plus workspace typecheck, web lint/productionbuild. Backend RED missing own-profile/methods interfaces and duplicate-handle conflict then GREEN; final focused20pass/2DBskips.
+- Fresh review found reset-to-login transition, expired freshness/error mapping, stale session list after reauth, provider labels and profile error presentation. All5 fixed; scoped rereview caught provider-key namespace regression, reproduced with actual catalogs then fixed. Final8/8 state/catalog tests pass including controller rerun.
+- Fresh spec/quality rereview APPROVED after2 fixrounds; no open findings. Final real PostgreSQL/Chromium/browser GREEN remains required before checkoff.
+- Ruling: stale-session response makes reauth visible; client expiry timer improves UI while server remains authority. Password reauth reloads sanitized sessions and current marker; OAuth/passkey sign-in retain native supported routes — avoids trusting UI state; cost if wrong: additional provider-specific reauth UX.
+- Ruling: actual-browser automation uses virtual WebAuthn and mocked third-party handoff; live consent/callback checks remain external and do not block independent work — no credentials fabricated; cost if wrong: live integration adjustments.
+- Final-fix checkpoint `0d4836a` preserved first fixround before catalog-only correction; task completion remains unchecked pending CI.
+
+### Phase 02 Task 7 — CI verification correction 1
+
+- Candidate `b3266a8`; CI35525565857/job106116994979 passed126 unit tests,15 dedicated integration tests including5 real DB cases, lint/typecheck/build. Browser2 passed/2 failed because password button substring selector also matched passkey sign-in.
+- Three password-submit selectors now use exact accessible names; no coverage removed. Playwright lists all4 cases, typecheck/lint pass. Scoped review approved selector-only correction. Real browser rerun still required; Task7 unchecked.
+
+### Phase 02 Task 7 — CI verification correction 2
+
+- Candidate `aaa8d11`; CI35525870450/job106117791780 passed126unit/15integration/build and3 of4 browser journeys including password reset. Last journey raced a pending Google-link redirect with immediate navigation back.
+- Test now waits for actual successful link-social response and deterministic external Google handoff navigation/DOM before returning. Only external provider destination mocked; no sleeps, production changes or removed assertions. Scoped review approved;4cases discovered,lint/typecheck green. Final CI remains required; unchecked.
+
+### Phase 02 Task 7 — CI verification correction 3
+
+- Candidate `fd1f3e9`; CI35526201946/job106118675673 passed126unit/15integration/build and3 browser cases. Remaining case passed OAuth handoff and created its passkey, then ambiguous device-name text matched both name and remove button.
+- Presence/absence and removal selectors use exact names; remaining spec selectors audited against rendered text. No assertions removed/product changes. Scoped review approved; localcollection/typecheck/lint green. Awaiting complete4/4 browser gate; Task7 unchecked.
+
+### Phase 02 Task 7 and phase regression — COMPLETE
+
+- Final tested remote `e1e38f88c370e2d50434c63c3ac979a391f2f449`; implementation `b3266a8`, verified test corrections `aaa8d11`/`fd1f3e9`/`e1e38f8`.
+- Full CI SUCCESS: https://github.com/acciento89-bot/sammlerraum/actions/runs/35526502084 (job106119479979).
+- Broad phase regression:126 unit/static tests passed; dedicated integration run15 passed including5 real DB cases; all4 real PostgreSQL/Chromium auth journeys passed (33.3s), none skipped. Migrations, lint, typecheck, workspace build, Compose, web and worker Docker builds passed.
+- Browser coverage includes real verification/reset mail through strict TLS fixture, DE/EN/social entry points, profile creation, virtual-WebAuthn enrollment/sign-in/removal, server-stale reauth and refreshed current session, and another-session revocation.
+- Fresh task review plus scoped fix reviews approved, all5 product findings and3 evidenced CI-test defects fixed. No open review findings. Task7 boxes checked; Phase02 complete7/7.
+- Live Google/Apple callback/consent and real SMTP remain explicitly documented external blockers; they do not block Phase03. No production deployment/provider action occurred.
+- Next: Phase03 Task1 collection hierarchy/membership schema. Completion documentation only uses [skip ci]; tested code unchanged.
