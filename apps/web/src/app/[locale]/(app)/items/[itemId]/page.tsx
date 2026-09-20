@@ -2,8 +2,8 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { setRequestLocale } from "next-intl/server";
 
-import { ItemForm } from "../../../../../../components/items/item-form";
-import { auth } from "../../../../../../lib/auth";
+import { ItemForm } from "../../../../../components/items/item-form";
+import { auth } from "../../../../../lib/auth";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;

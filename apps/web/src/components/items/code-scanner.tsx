@@ -32,13 +32,13 @@ export function CodeScanner({
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const [scanning, setScanning] = useState(false);
   const [proposal, setProposal] = useState("");
-  const [error, setError] = useState("");
+  const [error, setError] = useState("");\n  const [supported, setSupported] = useState(false);
   const Detector = (
     globalThis as typeof globalThis & {
       BarcodeDetector?: BarcodeDetectorConstructor;
     }
   ).BarcodeDetector;
-  const supported = Boolean(Detector && navigator.mediaDevices?.getUserMedia);
+
 
   function stop() {
     if (timer.current) clearTimeout(timer.current);
@@ -48,7 +48,7 @@ export function CodeScanner({
     setScanning(false);
   }
 
-  useEffect(() => stop, []);
+  useEffect(() => {\n    setSupported(\n      Boolean(Detector && typeof navigator !== "undefined" && navigator.mediaDevices?.getUserMedia),\n    );\n    return stop;\n  }, []);
 
   async function start() {
     if (!Detector || !video.current) return;

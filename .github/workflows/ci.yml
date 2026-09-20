@@ -63,6 +63,43 @@ jobs:
         run: pnpm --filter @sammlerraum/db prisma migrate deploy
       - run: pnpm test
       - run: pnpm lint
+      - name: Capture exact Prettier output for Task 7 recovery
+        if: failure()
+        run: |
+          pnpm --filter @sammlerraum/web exec prettier --write \
+            src/app/globals.css \
+            'src/app/[locale]/(app)/collections/page.tsx' \
+            'src/app/[locale]/(app)/collections/[collectionId]/page.tsx' \
+            'src/app/[locale]/(app)/items/new/page.tsx' \
+            'src/app/[locale]/(app)/items/[itemId]/page.tsx' \
+            src/components/collections/collections-manager.tsx \
+            src/components/collections/collection-detail.tsx \
+            src/components/items/item-form.tsx \
+            src/components/items/code-scanner.tsx \
+            e2e/collections-items.spec.ts \
+            messages/de.json \
+            messages/en.json
+          node --input-type=module <<'NODE'
+          import { readFile } from "node:fs/promises";
+          const files = [
+            "apps/web/src/app/globals.css",
+            "apps/web/src/app/[locale]/(app)/collections/page.tsx",
+            "apps/web/src/app/[locale]/(app)/collections/[collectionId]/page.tsx",
+            "apps/web/src/app/[locale]/(app)/items/new/page.tsx",
+            "apps/web/src/app/[locale]/(app)/items/[itemId]/page.tsx",
+            "apps/web/src/components/collections/collections-manager.tsx",
+            "apps/web/src/components/collections/collection-detail.tsx",
+            "apps/web/src/components/items/item-form.tsx",
+            "apps/web/src/components/items/code-scanner.tsx",
+            "apps/web/e2e/collections-items.spec.ts",
+            "apps/web/messages/de.json",
+            "apps/web/messages/en.json",
+          ];
+          for (const file of files) {
+            const content = await readFile(file);
+            console.log(JSON.stringify({ file, base64: content.toString("base64") }));
+          }
+          NODE
       - run: pnpm typecheck
       - name: Build workspace
         env:
