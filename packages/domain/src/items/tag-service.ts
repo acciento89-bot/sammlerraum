@@ -99,7 +99,10 @@ async function lockOwnedItem(
 }
 
 export function createTagService(database: TagDatabase, actorUserId: string) {
-  async function setItemTags(itemIdInput: string, tagsInput: readonly string[]): Promise<ItemTag[]> {
+  async function setItemTags(
+    itemIdInput: string,
+    tagsInput: readonly string[],
+  ): Promise<ItemTag[]> {
     const itemId = CollectibleItemSchema.shape.id.parse(itemIdInput);
     const tags = parseTags(tagsInput);
 

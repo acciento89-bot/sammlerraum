@@ -87,9 +87,9 @@ function normalizeIdentifier(input: ItemIdentifierInput): Omit<IdentifierCreateD
   return { type, value, normalizedValue };
 }
 
-function parseIdentifiers(inputs: readonly ItemIdentifierInput[]): Array<
-  Omit<IdentifierCreateData, "itemId">
-> {
+function parseIdentifiers(
+  inputs: readonly ItemIdentifierInput[],
+): Array<Omit<IdentifierCreateData, "itemId">> {
   if (!Array.isArray(inputs) || inputs.length > 100) {
     throw new IdentifierServiceError("IDENTIFIERS_INVALID");
   }
