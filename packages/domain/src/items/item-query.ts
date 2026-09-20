@@ -56,6 +56,7 @@ export function createItemQuery(database: ItemQueryDatabase) {
           item."visibility" AS "itemVisibility",
           item."archivedAt",
           item."disposedAt",
+          item."deletedAt",
           item."nodeId" AS "itemNodeId",
           item."collectionId",
           collection."ownerId",
@@ -63,6 +64,8 @@ export function createItemQuery(database: ItemQueryDatabase) {
         FROM "CollectibleItem" item
         JOIN "Collection" collection ON collection."id" = item."collectionId"
         WHERE item."id" = ${itemId}::uuid
+          AND item."deletedAt" IS NULL
+          AND collection."deletedAt" IS NULL
       ),
       ancestry AS (
         SELECT

@@ -2,8 +2,10 @@ export type PolicyAction =
   | "profile.view"
   | "collection.view"
   | "collection.edit"
+  | "collection.delete"
   | "item.view"
   | "item.edit"
+  | "item.delete"
   | "document.view"
   | "comment.create"
   | "members.manage";

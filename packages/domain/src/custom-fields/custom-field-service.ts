@@ -371,7 +371,9 @@ export function createCustomFieldService(database: CustomFieldDatabase, actorUse
         const collections = await transaction.$queryRaw<Array<{ id: string }>>`
           SELECT "id"
           FROM "Collection"
-          WHERE "id" = ${definition.collectionId}::uuid AND "ownerId" = ${actorUserId}
+          WHERE "id" = ${definition.collectionId}::uuid
+            AND "ownerId" = ${actorUserId}
+            AND "deletedAt" IS NULL
           FOR UPDATE
         `;
         if (collections.length !== 1) {
@@ -444,6 +446,8 @@ export function createCustomFieldService(database: CustomFieldDatabase, actorUse
           WHERE item."id" = ${itemId}::uuid
             AND definition."id" = ${fieldDefinitionId}::uuid
             AND collection."ownerId" = ${actorUserId}
+            AND item."deletedAt" IS NULL
+            AND collection."deletedAt" IS NULL
           FOR UPDATE OF item, definition
         `;
         const field = fields[0];

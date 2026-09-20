@@ -55,3 +55,6 @@ export const LocationContentsSchema = z.object({
   items: z.array(LocationContentItemSchema),
 });
 export type LocationContents = z.infer<typeof LocationContentsSchema>;
+
+export const MoveLocationInputSchema = z.object({ parentId: LocationIdSchema.nullable() });
+export const AssignItemLocationInputSchema = z.object({ locationId: LocationIdSchema.nullable() });

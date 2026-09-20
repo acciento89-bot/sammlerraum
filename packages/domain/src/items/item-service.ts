@@ -30,6 +30,7 @@ type StoredItem = {
   tradeStatus: TradeStatus;
   archivedAt: Date | string | null;
   disposedAt: Date | string | null;
+  deletedAt?: Date | string | null;
 };
 
 const itemSelect = {
@@ -49,6 +50,7 @@ const itemSelect = {
   tradeStatus: true,
   archivedAt: true,
   disposedAt: true,
+  deletedAt: true,
 } as const;
 
 type ItemWriteData = {
@@ -70,6 +72,7 @@ type ItemWriteData = {
 type ItemUpdateData = Partial<Omit<ItemWriteData, "collectionId">> & {
   archivedAt?: Date;
   disposedAt?: Date;
+  deletedAt?: Date;
 };
 
 type ItemTransaction = {
@@ -155,7 +158,7 @@ async function lockOwnedCollection(
   const rows = await transaction.$queryRaw<Array<{ id: string }>>`
     SELECT "id"
     FROM "Collection"
-    WHERE "id" = ${collectionId}::uuid AND "ownerId" = ${actorUserId}
+    WHERE "id" = ${collectionId}::uuid AND "ownerId" = ${actorUserId} AND "deletedAt" IS NULL
     FOR UPDATE
   `;
   if (rows.length !== 1) throw new ItemServiceError("COLLECTION_NOT_FOUND");
@@ -186,7 +189,10 @@ async function lockOwnedItem(
       item."disposedAt"
     FROM "CollectibleItem" item
     JOIN "Collection" collection ON collection."id" = item."collectionId"
-    WHERE item."id" = ${itemId}::uuid AND collection."ownerId" = ${actorUserId}
+    WHERE item."id" = ${itemId}::uuid
+      AND collection."ownerId" = ${actorUserId}
+      AND item."deletedAt" IS NULL
+      AND collection."deletedAt" IS NULL
     FOR UPDATE OF item
   `;
   const item = rows[0];
@@ -321,6 +327,21 @@ export function createItemService(
     );
   }
 
+  async function deleteItem(itemIdInput: string): Promise<void> {
+    const itemId = CollectibleItemSchema.shape.id.parse(itemIdInput);
+    await database.$transaction(
+      async (transaction) => {
+        const existing = await lockOwnedItem(transaction, itemId, actorUserId);
+        await transaction.collectibleItem.update({
+          where: { id: existing.id },
+          data: { deletedAt: now(), tradeStatus: "NOT_FOR_TRADE" },
+          select: itemSelect,
+        });
+      },
+      { isolationLevel: "ReadCommitted" },
+    );
+  }
+
   async function splitQuantityItem(
     itemIdInput: string,
     splitQuantityInput: number,
@@ -370,5 +391,5 @@ export function createItemService(
     );
   }
 
-  return { createItem, updateItem, archiveItem, splitQuantityItem };
+  return { createItem, updateItem, archiveItem, deleteItem, splitQuantityItem };
 }

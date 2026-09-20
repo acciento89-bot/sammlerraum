@@ -81,6 +81,7 @@ jobs:
           packages/domain/src/custom-fields/custom-field-service.test.ts
           packages/domain/src/locations/location-service.test.ts
           apps/web/src/lib/security-service.integration.test.ts
+          apps/web/src/app/api/v1/items/resource-route.integration.test.ts
       - name: Install Chromium for authentication journeys
         run: pnpm --filter @sammlerraum/web exec playwright install --with-deps chromium
       - name: Run authentication browser journeys
