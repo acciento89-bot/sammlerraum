@@ -28,8 +28,8 @@ export function CodeScanner({
   disabled?: boolean;
 }) {
   const video = useRef<HTMLVideoElement>(null);
-  const stream = useRef<MediaStream>();
-  const timer = useRef<ReturnType<typeof setTimeout>>();
+  const stream = useRef<MediaStream | undefined>(undefined);
+  const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const [scanning, setScanning] = useState(false);
   const [proposal, setProposal] = useState("");
   const [error, setError] = useState("");

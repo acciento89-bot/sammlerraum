@@ -8,14 +8,17 @@
 - Valid RED: CI run `35539057867`, job `106153245432`, against `04cd660`. Both seeded collectors completed real HTTP 200 password sign-in and reached the localized profile route. Desktop then failed because the `Sammlungen` heading did not exist; mobile failed because the `Collections` heading did not exist.
 - Production implementation began only after that valid RED.
 
-## Implementation progress
+## Implementation
 
-- Added authenticated localized routes for collection listing/detail and item creation/detail.
-- Added the collection list/create client and collection hierarchy management client.
-- The collection detail includes collection update/soft deletion, nested node creation and atomic metadata/move updates, all ten custom-field definition types, nested location creation/moves, and item navigation.
+- Authenticated DE/EN pages for collection listing/detail and item create/edit.
+- Responsive collection creation/settings/soft deletion and accessible nested collection tree with atomic node metadata/move updates.
+- Definition controls for all ten custom-field types and canonical option labels.
+- Nested private-by-default storage location creation/moves and item location assignment.
+- Item create/edit/archive/delete with separate public description and private notes, canonical calendar date, Decimal string, and per-unit minor-money conversion.
+- Multiple identifiers, tags, all ten custom-field value controls, and idempotent metadata replacement.
+- Manual EAN/UPC/ISBN entry is always present. BarcodeDetector is progressive enhancement; detected values remain proposals until explicit confirmation.
+- Multi-endpoint saves retain the created item ID. A retry patches that item rather than posting a duplicate. A successfully assigned location updates the retry baseline immediately, avoiding `ITEM_LOCATION_UNCHANGED`.
 
-## Recovery note
+## Recovery and verification status
 
-The local exec runtime disconnected during the first production UI checkpoint. The GitHub checkpoint reconstructs accepted files from their exact patch inputs. The failed local `collection-detail.tsx` write was regenerated through the connector in the next atomic checkpoint.
-
-No local compile, test, lint, or build claim is made for UI changes made while the runtime is offline. Remote CI and later restored-runtime verification remain required.
+The local exec runtime disconnected during the first production UI checkpoint. UI work was reconstructed and continued through atomic GitHub checkpoint trees. No local compile, test, lint, build, or GREEN claim is made for connector-only UI changes. Remote CI and later restored-runtime verification remain required.

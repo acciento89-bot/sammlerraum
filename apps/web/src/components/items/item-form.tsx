@@ -15,7 +15,7 @@ import type { StorageLocation } from "@sammlerraum/contracts/locations";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent, type ReactNode } from "react";
 
 import { errorMessage } from "../collections/collections-manager";
 import { CodeScanner } from "./code-scanner";
@@ -639,7 +639,7 @@ function CustomFieldControl({
 }) {
   const name = `field-${field.id}`;
   const enabled = value !== undefined;
-  const wrapper = (control: React.ReactNode) => (
+  const wrapper = (control: ReactNode) => (
     <div className="custom-field">
       <label className="checkbox-label">
         <input type="checkbox" name={`field-enabled-${field.id}`} defaultChecked={enabled} />
