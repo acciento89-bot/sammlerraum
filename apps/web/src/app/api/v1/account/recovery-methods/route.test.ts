@@ -15,7 +15,9 @@ describe("account recovery-method route", () => {
       freshAgeSeconds: 300,
     });
 
-    const response = await handlers.GET(new Request("https://example.test/api/v1/account/recovery-methods"));
+    const response = await handlers.GET(
+      new Request("https://example.test/api/v1/account/recovery-methods"),
+    );
 
     expect(response.status).toBe(200);
     expect(response.headers.get("cache-control")).toBe("no-store");
@@ -29,7 +31,7 @@ describe("account recovery-method route", () => {
         user: { id: "trusted-user" },
         session: { id: "fresh-session", createdAt: new Date("2026-09-20T00:00:00.000Z") },
       }),
-      service: { removeLoginMethod },
+      service: { listLoginMethods: vi.fn(), removeLoginMethod },
       appOrigin: "https://example.test",
       now: () => new Date("2026-09-20T00:01:00.000Z"),
       freshAgeSeconds: 300,
@@ -56,7 +58,7 @@ describe("account recovery-method route", () => {
         user: { id: "user-1" },
         session: { id: "old-session", createdAt: new Date("2026-09-19T00:00:00.000Z") },
       }),
-      service: { removeLoginMethod },
+      service: { listLoginMethods: vi.fn(), removeLoginMethod },
       appOrigin: "https://example.test",
       now: () => new Date("2026-09-20T00:00:00.000Z"),
       freshAgeSeconds: 300,

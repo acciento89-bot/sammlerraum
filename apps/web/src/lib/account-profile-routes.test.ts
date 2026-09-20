@@ -15,16 +15,27 @@ describe("own profile route", () => {
       service: { getOwnProfile: vi.fn(), upsertOwnProfile },
       appOrigin: "https://example.test",
     });
-    const response = await handlers.PUT(new Request("https://example.test/api/v1/account/profile", {
-      method: "PUT",
-      headers: { origin: "https://example.test", "content-type": "application/json" },
-      body: JSON.stringify({ handle: "sammler", displayName: "Sammler", bio: null, avatarAssetId: null, userId: "attacker" }),
-    }));
+    const response = await handlers.PUT(
+      new Request("https://example.test/api/v1/account/profile", {
+        method: "PUT",
+        headers: { origin: "https://example.test", "content-type": "application/json" },
+        body: JSON.stringify({
+          handle: "sammler",
+          displayName: "Sammler",
+          bio: null,
+          avatarAssetId: null,
+          userId: "attacker",
+        }),
+      }),
+    );
 
     expect(response.status).toBe(200);
     expect(response.headers.get("cache-control")).toBe("no-store");
     expect(upsertOwnProfile).toHaveBeenCalledWith("trusted-user", {
-      handle: "sammler", displayName: "Sammler", bio: null, avatarAssetId: null,
+      handle: "sammler",
+      displayName: "Sammler",
+      bio: null,
+      avatarAssetId: null,
     });
   });
 });

@@ -42,6 +42,13 @@ function normalizeHandle(handle: string): string {
   return handle.trim().toLowerCase();
 }
 
+export class ProfileServiceError extends Error {
+  constructor(readonly code: "HANDLE_TAKEN") {
+    super("Profile handle is already in use");
+    this.name = "ProfileServiceError";
+  }
+}
+
 export function createProfileService(database: ProfileDatabase) {
   return {
     async getPublicProfile(handle: string): Promise<PublicProfile | null> {
@@ -62,12 +69,25 @@ export function createProfileService(database: ProfileDatabase) {
 
     async upsertOwnProfile(userId: string, input: UpdateOwnProfileInput): Promise<PublicProfile> {
       const data = PublicProfileSchema.parse({ ...input, handle: normalizeHandle(input.handle) });
-      const profile = await database.userProfile.upsert({
-        where: { userId },
-        create: { userId, ...data },
-        update: data,
-        select: publicProfileSelect,
-      });
+      let profile: ProfileRecord;
+      try {
+        profile = await database.userProfile.upsert({
+          where: { userId },
+          create: { userId, ...data },
+          update: data,
+          select: publicProfileSelect,
+        });
+      } catch (error) {
+        if (
+          typeof error === "object" &&
+          error !== null &&
+          "code" in error &&
+          error.code === "P2002"
+        ) {
+          throw new ProfileServiceError("HANDLE_TAKEN");
+        }
+        throw error;
+      }
       return PublicProfileSchema.parse(profile);
     },
 

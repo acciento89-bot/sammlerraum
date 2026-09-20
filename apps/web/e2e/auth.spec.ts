@@ -229,6 +229,14 @@ test.describe("localized authentication and account UI", () => {
     await expect(page.getByRole("heading", { name: "Aktive Sitzungen" })).toBeVisible();
     await expect(page.getByRole("button", { name: "Google verbinden" })).toBeVisible();
     await expect(page.getByRole("button", { name: "Apple verbinden" })).toBeVisible();
+    const linkRequest = page.waitForRequest(
+      (request) =>
+        request.url().endsWith("/api/auth/link-social") &&
+        request.postDataJSON().provider === "google",
+    );
+    await page.getByRole("button", { name: "Google verbinden" }).click();
+    await linkRequest;
+    await page.goto("/de/account/security");
     await page.getByLabel("Passkey-Name").fill("Testgerät");
     await page.getByRole("button", { name: "Passkey hinzufügen" }).click();
     await expect(page.getByText("Testgerät")).toBeVisible();

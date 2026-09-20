@@ -104,10 +104,31 @@ describe("profile service", () => {
       avatarAssetId: null,
     });
 
-    expect(upsert).toHaveBeenCalledWith(expect.objectContaining({
-      where: { userId: "trusted-user" },
-      create: expect.objectContaining({ userId: "trusted-user", handle: "new-sammler" }),
-    }));
+    expect(upsert).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { userId: "trusted-user" },
+        create: expect.objectContaining({ userId: "trusted-user", handle: "new-sammler" }),
+      }),
+    );
+  });
+
+  it("maps a duplicate handle to a safe domain conflict", async () => {
+    const service = createProfileService({
+      userProfile: {
+        findUnique: vi.fn(),
+        update: vi.fn(),
+        upsert: vi.fn().mockRejectedValue({ code: "P2002", meta: { target: ["handle"] } }),
+      },
+    });
+
+    await expect(
+      service.upsertOwnProfile("user-1", {
+        handle: "sammler",
+        displayName: "Sammler",
+        bio: null,
+        avatarAssetId: null,
+      }),
+    ).rejects.toMatchObject({ code: "HANDLE_TAKEN" });
   });
 });
 

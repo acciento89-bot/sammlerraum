@@ -3,6 +3,7 @@
   "private": true,
   "type": "module",
   "exports": {
+    "./identity/profile-service": "./src/identity/profile-service.ts",
     "./identity/security-service": "./src/identity/security-service.ts"
   },
   "scripts": {

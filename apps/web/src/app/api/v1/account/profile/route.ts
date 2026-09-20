@@ -9,7 +9,8 @@ async function handlers() {
     import("@sammlerraum/config/server"),
   ]);
   return createProfileRouteHandlers({
-    getSession: (headers) => auth.api.getSession({ headers, query: { disableCookieCache: true, disableRefresh: true } }),
+    getSession: (headers) =>
+      auth.api.getSession({ headers, query: { disableCookieCache: true, disableRefresh: true } }),
     service: createProfileService(prisma),
     appOrigin: serverEnv.APP_ORIGIN,
   });
@@ -17,5 +18,9 @@ async function handlers() {
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
-export async function GET(request: Request) { return (await handlers()).GET(request); }
-export async function PUT(request: Request) { return (await handlers()).PUT(request); }
+export async function GET(request: Request) {
+  return (await handlers()).GET(request);
+}
+export async function PUT(request: Request) {
+  return (await handlers()).PUT(request);
+}

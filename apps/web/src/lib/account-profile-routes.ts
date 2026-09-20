@@ -1,5 +1,6 @@
 import { UpdateOwnProfileSchema } from "@sammlerraum/contracts/profile";
 import { ApiError } from "@sammlerraum/contracts/errors";
+import { ProfileServiceError } from "@sammlerraum/domain/identity/profile-service";
 
 import { apiRoute } from "./api/route-handler";
 
@@ -7,7 +8,10 @@ type Dependencies = {
   getSession(headers: Headers): Promise<{ user: { id: string } } | null>;
   service: {
     getOwnProfile(userId: string): Promise<unknown>;
-    upsertOwnProfile(userId: string, input: ReturnType<typeof UpdateOwnProfileSchema.parse>): Promise<unknown>;
+    upsertOwnProfile(
+      userId: string,
+      input: ReturnType<typeof UpdateOwnProfileSchema.parse>,
+    ): Promise<unknown>;
   };
   appOrigin: string;
 };
@@ -39,10 +43,17 @@ export function createProfileRouteHandlers(dependencies: Dependencies) {
       const session = await dependencies.getSession(request.headers);
       if (!session) throw new ApiError("UNAUTHORIZED", 401, "Authentication required");
       const input = UpdateOwnProfileSchema.parse(await body(request));
-      return Response.json(
-        { profile: await dependencies.service.upsertOwnProfile(session.user.id, input) },
-        { headers: noStoreHeaders },
-      );
+      try {
+        return Response.json(
+          { profile: await dependencies.service.upsertOwnProfile(session.user.id, input) },
+          { headers: noStoreHeaders },
+        );
+      } catch (error) {
+        if (error instanceof ProfileServiceError) {
+          throw new ApiError("HANDLE_TAKEN", 409, "Profile handle is already in use");
+        }
+        throw error;
+      }
     }),
   };
 }

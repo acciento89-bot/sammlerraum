@@ -132,6 +132,7 @@ const next = spawn(
     env: {
       ...process.env,
       APP_ORIGIN: "http://localhost:3000",
+      NODE_EXTRA_CA_CERTS: certificatePath,
       SMTP_HOST: "localhost",
       SMTP_PORT: String(smtpPort),
       SMTP_SECURE: "true",

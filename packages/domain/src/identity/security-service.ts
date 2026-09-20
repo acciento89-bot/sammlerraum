@@ -110,13 +110,26 @@ export function createSecurityService(database: SecurityDatabase, now = () => ne
           ]);
           if (!user) return [];
           return [
-            ...(user.emailVerified && accounts.some((account) => account.providerId === "credential" && account.password !== null)
+            ...(user.emailVerified &&
+            accounts.some(
+              (account) => account.providerId === "credential" && account.password !== null,
+            )
               ? [{ id: "password", type: "password" as const, provider: "credential", name: null }]
               : []),
             ...accounts
               .filter((account) => verifiedOAuthProviders.has(account.providerId))
-              .map((account) => ({ id: `account:${account.id}`, type: "provider" as const, provider: account.providerId, name: null })),
-            ...passkeys.map((passkey) => ({ id: `passkey:${passkey.id}`, type: "passkey" as const, provider: "passkey", name: passkey.name ?? null })),
+              .map((account) => ({
+                id: `account:${account.id}`,
+                type: "provider" as const,
+                provider: account.providerId,
+                name: null,
+              })),
+            ...passkeys.map((passkey) => ({
+              id: `passkey:${passkey.id}`,
+              type: "passkey" as const,
+              provider: "passkey",
+              name: passkey.name ?? null,
+            })),
           ];
         },
         { isolationLevel: "ReadCommitted" },
