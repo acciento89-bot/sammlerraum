@@ -10,7 +10,7 @@ This is the handoff/status file for long-running implementation. Update it after
 | Phase | Plan | Tasks | Status | Next |
 |---|---|---:|---|---|
 | 01 | Platform Foundation | 6 | complete (6/6) | — |
-| 02 | Identity, Auth & Policies | 7 | Task 2 reviewed; CI pending (1/7) | Task 2 gate |
+| 02 | Identity, Auth & Policies | 7 | in progress (2/7) | Task 3 |
 | 03 | Collections, Items, Fields & Locations | 8 | not started | Task 1 |
 | 04 | Media & Documents | 6 | not started | Task 1 |
 | 05 | Catalog, Condition & Grading | 7 | not started | Task 1 |
@@ -161,3 +161,11 @@ Every completed and independently reviewed task must be checked off in its detai
 - Fresh reviewer found SMTP downgrade and plaintext ID-token storage. Both fixed and scoped rereview spec/quality APPROVED; no findings remain. TLS certificate validation mandatory; account create/update hooks drop unused ID tokens, actual BetterAuth adapter persistence test proves absence. Access/refresh encryption retained.
 - Code candidate saved for PostgreSQL17 migrate deploy, integration and Docker CI. Task2 remains unchecked until CI passes; live provider/SMTP checks remain external blockers.
 - Task3 must implement recovery-guarded removal; default account unlink/passkey-delete paths are disabled meanwhile.
+
+### Phase 02 Task 2 — IMPLEMENTATION COMPLETE
+
+- Reviewed implementation saved at `2ff2bf62eb7b4b4edae041dd9f3967bd02b12b5c`.
+- Full CI SUCCESS: https://github.com/acciento89-bot/sammlerraum/actions/runs/35518105269 (job106097369426).
+- All3 migrations applied on PostgreSQL17;69 unit/static tests passed; dedicated integration run5 passed (3 real DB tests plus2 profile units). Lint/typecheck/workspace build/Compose and both Docker builds passed.
+- Fresh spec/quality review approved after both security findings fixed and tested. Task2 boxes checked. No live Google/Apple/SMTP success claimed; external configuration blockers above remain.
+- Next:Task3 account session/recovery controls. Docs-only completion commit [skip ci], same tested code.
