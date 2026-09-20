@@ -54,7 +54,9 @@ async function registerWithPassword(page: Page, locale: "de" | "en") {
   await page.goto(`/${locale}/login`);
   await page.getByLabel(locale === "de" ? "E-Mail-Adresse" : "Email address").fill(email);
   await page.getByLabel(locale === "de" ? "Passwort" : "Password").fill(password);
-  await page.getByRole("button", { name: locale === "de" ? "Anmelden" : "Sign in" }).click();
+  await page
+    .getByRole("button", { name: locale === "de" ? "Anmelden" : "Sign in", exact: true })
+    .click();
   await expect(page).toHaveURL(new RegExp(`/${locale}/account/profile$`));
 
   return { email, password };
@@ -69,7 +71,7 @@ async function signInAnotherSession(
   await page.goto("/de/login");
   await page.getByLabel("E-Mail-Adresse").fill(credentials.email);
   await page.getByLabel("Passwort").fill(credentials.password);
-  await page.getByRole("button", { name: "Anmelden" }).click();
+  await page.getByRole("button", { name: "Anmelden", exact: true }).click();
   await expect(page).toHaveURL(/\/de\/account\/profile$/);
   return context;
 }
@@ -211,7 +213,7 @@ test.describe("localized authentication and account UI", () => {
     await expect(page).toHaveURL(/\/de\/login$/);
     await page.getByLabel("E-Mail-Adresse").fill(credentials.email);
     await page.getByLabel("Passwort", { exact: true }).fill(newPassword);
-    await page.getByRole("button", { name: "Anmelden" }).click();
+    await page.getByRole("button", { name: "Anmelden", exact: true }).click();
     await expect(page).toHaveURL(/\/de\/account\/profile$/);
   });
 

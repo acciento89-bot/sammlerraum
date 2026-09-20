@@ -263,3 +263,8 @@ Every completed and independently reviewed task must be checked off in its detai
 - Ruling: stale-session response makes reauth visible; client expiry timer improves UI while server remains authority. Password reauth reloads sanitized sessions and current marker; OAuth/passkey sign-in retain native supported routes — avoids trusting UI state; cost if wrong: additional provider-specific reauth UX.
 - Ruling: actual-browser automation uses virtual WebAuthn and mocked third-party handoff; live consent/callback checks remain external and do not block independent work — no credentials fabricated; cost if wrong: live integration adjustments.
 - Final-fix checkpoint `0d4836a` preserved first fixround before catalog-only correction; task completion remains unchecked pending CI.
+
+### Phase 02 Task 7 — CI verification correction 1
+
+- Candidate `b3266a8`; CI35525565857/job106116994979 passed126 unit tests,15 dedicated integration tests including5 real DB cases, lint/typecheck/build. Browser2 passed/2 failed because password button substring selector also matched passkey sign-in.
+- Three password-submit selectors now use exact accessible names; no coverage removed. Playwright lists all4 cases, typecheck/lint pass. Scoped review approved selector-only correction. Real browser rerun still required; Task7 unchecked.
