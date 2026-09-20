@@ -12,12 +12,10 @@ const otherItemId = "00000000-0000-4000-8000-000000000002";
 describe("item identifier service", () => {
   it("normalizes EAN values without removing meaningful leading zeroes", async () => {
     let createdIdentifiers: Array<Record<string, string>> = [];
-    const createMany = vi.fn(
-      async ({ data }: { data: Array<Record<string, string>> }) => {
-        createdIdentifiers = data;
-        return { count: data.length };
-      },
-    );
+    const createMany = vi.fn(async ({ data }: { data: Array<Record<string, string>> }) => {
+      createdIdentifiers = data;
+      return { count: data.length };
+    });
     const transaction = {
       $queryRaw: vi.fn().mockResolvedValue([{ id: itemId }]),
       itemIdentifier: {
@@ -32,8 +30,8 @@ describe("item identifier service", () => {
       },
     };
     const database = {
-      $transaction: vi.fn(
-        async <T>(operation: (tx: typeof transaction) => Promise<T>) => operation(transaction),
+      $transaction: vi.fn(async <T>(operation: (tx: typeof transaction) => Promise<T>) =>
+        operation(transaction),
       ),
     };
     const service = createIdentifierService(
@@ -96,8 +94,8 @@ describe("item identifier service", () => {
       },
     };
     const database = {
-      $transaction: vi.fn(
-        async <T>(operation: (tx: typeof transaction) => Promise<T>) => operation(transaction),
+      $transaction: vi.fn(async <T>(operation: (tx: typeof transaction) => Promise<T>) =>
+        operation(transaction),
       ),
     };
     const service = createIdentifierService(
@@ -141,17 +139,15 @@ describe("item identifier service", () => {
 
 describe("item tag service", () => {
   it("normalizes, de-duplicates, and reuses tags within the trusted owner scope", async () => {
-    const upsert = vi.fn(
-      async ({ create }: { create: Record<string, string> }) => ({
-        id:
-          create.normalizedName === "signed"
-            ? "00000000-0000-4000-8000-000000000010"
-            : "00000000-0000-4000-8000-000000000011",
-        ownerId: create.ownerId,
-        name: create.name,
-        normalizedName: create.normalizedName,
-      }),
-    );
+    const upsert = vi.fn(async ({ create }: { create: Record<string, string> }) => ({
+      id:
+        create.normalizedName === "signed"
+          ? "00000000-0000-4000-8000-000000000010"
+          : "00000000-0000-4000-8000-000000000011",
+      ownerId: create.ownerId,
+      name: create.name,
+      normalizedName: create.normalizedName,
+    }));
     const createMany = vi.fn().mockResolvedValue({ count: 2 });
     const transaction = {
       $queryRaw: vi.fn().mockResolvedValue([{ id: itemId }]),
@@ -162,17 +158,13 @@ describe("item tag service", () => {
       },
     };
     const database = {
-      $transaction: vi.fn(
-        async <T>(operation: (tx: typeof transaction) => Promise<T>) => operation(transaction),
+      $transaction: vi.fn(async <T>(operation: (tx: typeof transaction) => Promise<T>) =>
+        operation(transaction),
       ),
     };
     const service = createTagService(database as unknown as TagDatabase, "trusted-owner");
 
-    const saved = await service.setItemTags(itemId, [
-      " Signed ",
-      "signed",
-      "  Mint   Condition ",
-    ]);
+    const saved = await service.setItemTags(itemId, [" Signed ", "signed", "  Mint   Condition "]);
 
     expect(saved).toMatchObject([
       { ownerId: "trusted-owner", name: "Signed", normalizedName: "signed" },
@@ -353,9 +345,7 @@ describe.runIf(runIntegration)("identifier and tag PostgreSQL integration", () =
                   createMany: async () => {
                     throw new Error("fixture identifier insert failure");
                   },
-                  findMany: transaction.itemIdentifier.findMany.bind(
-                    transaction.itemIdentifier,
-                  ),
+                  findMany: transaction.itemIdentifier.findMany.bind(transaction.itemIdentifier),
                 },
               }),
             options,

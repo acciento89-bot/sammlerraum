@@ -66,10 +66,8 @@ jobs:
       - name: Apply PostgreSQL migrations
         run: pnpm --filter @sammlerraum/db prisma migrate deploy
       - run: pnpm test
-      - name: Print canonical formatting for identifier service tests
-        run: pnpm exec prettier packages/domain/src/items/identifier-service.test.ts
-      - run: pnpm typecheck
       - run: pnpm lint
+      - run: pnpm typecheck
       - name: Build workspace
         env:
           NODE_ENV: production
