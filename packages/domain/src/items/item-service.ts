@@ -16,6 +16,7 @@ import {
 type StoredItem = {
   id: string;
   collectionId: string;
+  ownerId: string;
   nodeId: string | null;
   title: string;
   publicDescription: string | null;
@@ -34,6 +35,7 @@ type StoredItem = {
 const itemSelect = {
   id: true,
   collectionId: true,
+  ownerId: true,
   nodeId: true,
   title: true,
   publicDescription: true,
@@ -51,6 +53,7 @@ const itemSelect = {
 
 type ItemWriteData = {
   collectionId: string;
+  ownerId: string;
   nodeId: string | null;
   title: string;
   publicDescription: string | null;
@@ -167,6 +170,7 @@ async function lockOwnedItem(
     SELECT
       item."id",
       item."collectionId",
+      item."ownerId",
       item."nodeId",
       item."title",
       item."publicDescription",
@@ -227,6 +231,7 @@ export function createItemService(
         const item = await transaction.collectibleItem.create({
           data: {
             collectionId: data.collectionId,
+            ownerId: actorUserId,
             nodeId: data.nodeId,
             title: data.title,
             publicDescription: data.publicDescription,
@@ -340,6 +345,7 @@ export function createItemService(
         const created = await transaction.collectibleItem.create({
           data: {
             collectionId: item.collectionId,
+            ownerId: item.ownerId,
             nodeId: item.nodeId,
             title: item.title,
             publicDescription: item.publicDescription,

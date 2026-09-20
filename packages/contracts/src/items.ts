@@ -138,6 +138,17 @@ export const CollectibleItemSchema = z.object({
 });
 export type CollectibleItem = z.infer<typeof CollectibleItemSchema>;
 
+// Public responses are constructed from this whitelist. Protected ownership,
+// acquisition, document, valuation, and storage fields are intentionally absent.
+export const PublicItemSchema = z.object({
+  id: ItemIdSchema,
+  title: ItemTitleSchema,
+  publicDescription: OptionalTextSchema,
+  quantity: z.number().int().positive().max(2_147_483_647),
+  tradeStatus: TradeStatusSchema,
+});
+export type PublicItem = z.infer<typeof PublicItemSchema>;
+
 export const SplitQuantityInputSchema = z.number().int().positive().max(2_147_483_647);
 
 export const SplitQuantityResultSchema = z.object({

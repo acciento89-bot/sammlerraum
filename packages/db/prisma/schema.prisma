@@ -41,6 +41,15 @@ enum CustomFieldType {
   MONEY
 }
 
+enum LocationType {
+  ROOM
+  CABINET
+  SHELF
+  DRAWER
+  BOX
+  OTHER
+}
+
 model SystemMetadata {
   key       String   @id
   value     String
@@ -72,6 +81,8 @@ model User {
   profile       UserProfile?
   collections   Collection[]
   tags          Tag[]
+  storageLocations StorageLocation[]
+  locationHistoryAssignments ItemLocationHistory[] @relation("LocationHistoryAssignee")
 
   @@unique([email])
   @@map("user")
@@ -90,6 +101,7 @@ model Collection {
   customFieldDefinitions CustomFieldDefinition[]
 
   @@index([ownerId])
+  @@unique([id, ownerId])
 }
 
 model CollectionNode {
@@ -113,7 +125,9 @@ model CollectionNode {
 model CollectibleItem {
   id                  String             @id @default(uuid()) @db.Uuid
   collectionId        String             @db.Uuid
+  ownerId             String
   nodeId              String?            @db.Uuid
+  storageLocationId   String?            @db.Uuid
   title               String
   publicDescription   String?
   privateNotes        String?
@@ -128,15 +142,60 @@ model CollectibleItem {
   disposedAt          DateTime?
   createdAt           DateTime           @default(now())
   updatedAt           DateTime           @updatedAt
-  collection          Collection         @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  collection          Collection         @relation(fields: [collectionId, ownerId], references: [id, ownerId], onDelete: Cascade)
   node                CollectionNode?    @relation(fields: [nodeId, collectionId], references: [id, collectionId], onDelete: Restrict)
+  storageLocation     StorageLocation?   @relation(fields: [storageLocationId, ownerId], references: [id, ownerId], onDelete: Restrict)
+  locationHistory     ItemLocationHistory[]
   identifiers         ItemIdentifier[]
   itemTags            ItemTag[]
   customFieldValues   CustomFieldValue[]
 
   @@unique([id, collectionId])
+  @@unique([id, ownerId])
   @@index([collectionId])
   @@index([nodeId, collectionId])
+  @@index([storageLocationId, ownerId])
+}
+
+model StorageLocation {
+  id             String                @id @default(uuid()) @db.Uuid
+  ownerId        String
+  parentId       String?               @db.Uuid
+  name           String
+  type           LocationType          @default(OTHER)
+  visibility     Visibility            @default(PRIVATE)
+  qrToken        String                @unique @db.VarChar(43)
+  createdAt      DateTime              @default(now())
+  updatedAt      DateTime              @updatedAt
+  owner          User                  @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  parent         StorageLocation?      @relation("StorageLocationHierarchy", fields: [parentId, ownerId], references: [id, ownerId], onDelete: Restrict)
+  children       StorageLocation[]     @relation("StorageLocationHierarchy")
+  items          CollectibleItem[]
+  historyFrom    ItemLocationHistory[] @relation("HistoryFromLocation")
+  historyTo      ItemLocationHistory[] @relation("HistoryToLocation")
+
+  @@unique([id, ownerId])
+  @@index([ownerId])
+  @@index([parentId, ownerId])
+}
+
+model ItemLocationHistory {
+  id             String           @id @default(uuid()) @db.Uuid
+  itemId         String           @db.Uuid
+  ownerId        String
+  fromLocationId String?          @db.Uuid
+  toLocationId   String?          @db.Uuid
+  assignedById   String
+  movedAt        DateTime         @default(now())
+  item           CollectibleItem  @relation(fields: [itemId, ownerId], references: [id, ownerId], onDelete: Cascade)
+  fromLocation   StorageLocation? @relation("HistoryFromLocation", fields: [fromLocationId, ownerId], references: [id, ownerId], onDelete: Restrict)
+  toLocation     StorageLocation? @relation("HistoryToLocation", fields: [toLocationId, ownerId], references: [id, ownerId], onDelete: Restrict)
+  assignedBy     User             @relation("LocationHistoryAssignee", fields: [assignedById], references: [id], onDelete: Restrict)
+
+  @@index([itemId, movedAt])
+  @@index([fromLocationId, ownerId])
+  @@index([toLocationId, ownerId])
+  @@index([assignedById])
 }
 
 model CustomFieldDefinition {
