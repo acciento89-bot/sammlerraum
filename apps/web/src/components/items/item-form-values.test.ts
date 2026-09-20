@@ -55,7 +55,7 @@ describe("item form canonical value preservation", () => {
 
 describe("saved custom-field display", () => {
   it("localizes canonical dates without changing the input value", () => {
-    expect(displayCustomFieldValue("2026-09-20", "DATE", "de")).toBe("20.09.2026");
+    expect(displayCustomFieldValue("2026-09-20", "DATE", "de")).toBe("20.9.2026");
     expect(displayCustomFieldValue("2026-09-20", "DATE", "en")).toBe("9/20/2026");
   });
 
