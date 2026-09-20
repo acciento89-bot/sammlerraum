@@ -1,0 +1,61 @@
+name: CI
+
+on:
+  push:
+    branches: ["feature/**"]
+  pull_request:
+    branches: ["feature/**"]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    env:
+      NODE_ENV: test
+      DATABASE_URL: postgresql://test:test@localhost:5432/sammlerraum_test
+      APP_ORIGIN: http://localhost:3000
+      NEXT_PUBLIC_APP_ORIGIN: http://localhost:3000
+      UPLOADS_DIR: /tmp/sammlerraum-test-uploads
+      LOG_LEVEL: info
+      WORKER_HEALTH_PORT: "3001"
+      POSTGRES_DB: sammlerraum_test
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: test
+    services:
+      postgres:
+        image: postgres:17-bookworm
+        env:
+          POSTGRES_DB: sammlerraum_test
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U test -d sammlerraum_test"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.17.1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @sammlerraum/db prisma generate
+      - name: Apply PostgreSQL migrations
+        run: pnpm --filter @sammlerraum/db prisma migrate deploy
+      - run: pnpm test
+      - run: pnpm lint
+      - run: pnpm typecheck
+      - run: pnpm build
+      - name: Run real database health and pg-boss singleton integration tests
+        run: RUN_DATABASE_INTEGRATION=1 pnpm vitest run packages/db/src/postgres.integration.test.ts packages/queue/src/postgres.integration.test.ts
+      - run: bash scripts/verify-compose.sh
+      - run: docker build -f Dockerfile.web .
+      - run: docker build -f Dockerfile.worker .
