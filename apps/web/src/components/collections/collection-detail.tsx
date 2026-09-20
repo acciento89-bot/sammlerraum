@@ -338,10 +338,7 @@ export function CollectionDetail({
         </section>
 
         <section className="management-card wide" aria-labelledby="items-heading">
-          <div className="section-heading-row">
-            <h2 id="items-heading">{t("items")}</h2>
-            <Link href={`/${locale}/items/new?collectionId=${collectionId}`}>{t("addItem")}</Link>
-          </div>
+          <h2 id="items-heading">{t("items")}</h2>
           {data.items.length === 0 ? (
             <p className="empty-state">{t("noItems")}</p>
           ) : (
