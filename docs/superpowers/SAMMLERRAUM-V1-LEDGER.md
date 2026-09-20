@@ -327,6 +327,18 @@ Every completed and independently reviewed task must be checked off in its detai
 
 - Hierarchy implementation remote `f1ef9fe2f04a083aa331a6ad4188e01b59fe9c8a`; final regression-fixed tested code `da330457ea18aab0b47d03bc4b1ca4c56be4227b`.
 - Full CI SUCCESS: https://github.com/acciento89-bot/sammlerraum/actions/runs/35528856401 (job106125740859).
--137 unit/static tests passed; dedicated integration29 passed including9 actual DB cases (4 new hierarchy cases). All4 browser journeys passed33.6s, including explicit nonredirecting reauth+DELETE204 regression. Migrations/lint/typecheck/workspace build/Compose/both Docker builds passed.
+- 137 unit/static tests passed; dedicated integration29 passed including9 actual DB cases (4 new hierarchy cases). All4 browser journeys passed33.6s, including explicit nonredirecting reauth+DELETE204 regression. Migrations/lint/typecheck/workspace build/Compose/both Docker builds passed.
 - Hierarchy fresh spec/quality review approved without findings. Auth regression root-cause fix separately reviewed and verified; no open findings. Task1 checked off; next Task2 collectible item lifecycle/acquisition/quantity split.
 - Documentation-only completion with [skip ci]; tested code unchanged. No production/provider actions.
+
+### Phase 03 Task 2 — reviewed item lifecycle candidate, CI pending
+
+- Base `509c104`; coherent schema/service/test checkpoint `a0389cd99453db6d10aa20cf02cd28eb0a9664f3` exact remote tree verified.
+- Added CollectibleItem, acquisition/trade enums, public description/private notes, positive quantity, canonical DATE, safe minor-unit money, visibility and lifecycle timestamps; new additive `20260920204000_collectible_items` migration with same-collection node FK, indexes and quantity/money checks. Published migrations unchanged.
+- Owner-scoped create/update/archive/split use short ReadCommitted transactions and fresh item row locks. Split preserves quantity and acquisition unit price, rejects invalid/inactive counts, and rolls back decrement if creation fails.
+- Ruling: purchaseAmountMinor is per-unit acquisition price, JS-safe nonnegative integer at boundary and BIGINT in DB; split copies unit price so quantity*price total stays constant — differing purchase prices remain separate rows; cost if wrong: unit-vs-lot migration/UX relabel. Future UI must label this as unit price.
+- Ruling: bounded acquisition enum PURCHASE/GIFT/TRADE/INHERITANCE/FOUND/OTHER; trade metadata NOT_FOR_TRADE/OPEN_TO_TRADE/FOR_SALE/RESERVED, no checkout behavior — satisfies acquisition and sale/trade status; cost if wrong: additive enum refinement.
+- Ruling: archivedAt/disposedAt are independent; archiving a disposed item is valid, splitting either inactive state is rejected — plan requires both dates but no exclusivity; cost if wrong: explicit lifecycle refinement.
+- Initial split RED missing module thenGREEN; added behavior tests observed7 expected failures before implementation; FOR_SALE/disposed archival corrections separately RED→GREEN. Final9unit/3DBskips; full146unit/12DBskips, lint/typecheck/configured productionbuild/Prisma validate+generate/rootformat green. Controller focused9/9 pass.
+- Tiny existing pnpm-workspace quote formatting normalized; no content change. Required migrate dev attempted once, unavailable local PostgreSQL prevented apply. Three real DB cases in CI cover concurrency/conservation, rollback, ownership/FKs/DB constraints and canonical DTOs.
+- Fresh reviewer spec/quality APPROVED with no findings. Task remains unchecked until real PostgreSQL17 migration/integration and full CI pass.
