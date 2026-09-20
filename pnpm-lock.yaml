@@ -38,6 +38,9 @@ importers:
       '@sammlerraum/db':
         specifier: workspace:*
         version: link:../../packages/db
+      '@sammlerraum/domain':
+        specifier: workspace:*
+        version: link:../../packages/domain
       better-auth:
         specifier: 1.7.5
         version: 1.7.5(@prisma/client@7.10.0(prisma@7.10.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@5.9.2))(typescript@5.9.2))(mysql2@3.15.3)(next@16.3.5(@types/node@24.5.2)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(pg@8.23.0)(prisma@7.10.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@5.9.2))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(vitest@3.2.7(@types/node@24.5.2)(jiti@2.7.0))

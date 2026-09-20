@@ -108,7 +108,7 @@ git commit -m "feat: add privacy-safe user profiles"
 - Consumes: auth env vars, Prisma.
 - Produces: `auth`, Better Auth route handler, passkey/social provider configuration.
 
-- [ ] **Step 1: Write failing auth configuration test**
+- [x] **Step 1: Write failing auth configuration test**
 
 ```ts
 it("enables required authentication methods", () => {
@@ -121,12 +121,12 @@ it("enables required authentication methods", () => {
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run apps/web/src/lib/auth.test.ts`  
 Expected: FAIL because `buildAuthOptions` does not exist.
 
-- [ ] **Step 3: Implement auth options**
+- [x] **Step 3: Implement auth options**
 
 Use the Better Auth Prisma adapter. Enable email/password, email verification, Google, Apple, and passkey plugin. Generate the Better Auth schema additions using the Better Auth CLI and commit the resulting explicit Prisma models/migration.
 
@@ -142,7 +142,7 @@ APPLE_CLIENT_SECRET
 
 No secret values go into `.env.example`.
 
-- [ ] **Step 4: Run auth tests and Prisma validation**
+- [x] **Step 4: Run auth tests and Prisma validation**
 
 Run:
 ```bash
@@ -153,7 +153,7 @@ pnpm --filter @sammlerraum/web build
 
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add apps/web packages/config packages/db .env.example
