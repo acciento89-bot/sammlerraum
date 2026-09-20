@@ -6,11 +6,7 @@ import type {
   CustomFieldDefinition,
   CustomFieldType,
 } from "@sammlerraum/contracts/custom-fields";
-import type {
-  AcquisitionType,
-  CollectibleItem,
-  TradeStatus,
-} from "@sammlerraum/contracts/items";
+import type { AcquisitionType, CollectibleItem, TradeStatus } from "@sammlerraum/contracts/items";
 import type { StorageLocation } from "@sammlerraum/contracts/locations";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -42,13 +38,18 @@ const acquisitionTypes: AcquisitionType[] = [
   "FOUND",
   "OTHER",
 ];
-const tradeStatuses: TradeStatus[] = [
-  "NOT_FOR_TRADE",
-  "OPEN_TO_TRADE",
-  "FOR_SALE",
-  "RESERVED",
+const tradeStatuses: TradeStatus[] = ["NOT_FOR_TRADE", "OPEN_TO_TRADE", "FOR_SALE", "RESERVED"];
+const identifierTypes = [
+  "EAN",
+  "UPC",
+  "ISBN",
+  "SERIAL",
+  "CERTIFICATE",
+  "CATALOG",
+  "MANUFACTURER",
+  "INTERNAL",
+  "OTHER",
 ];
-const identifierTypes = ["EAN", "UPC", "ISBN", "SERIAL", "CERTIFICATE", "CATALOG", "MANUFACTURER", "INTERNAL", "OTHER"];
 
 async function read<T>(url: string): Promise<T> {
   const response = await fetch(url, { cache: "no-store" });
@@ -119,7 +120,9 @@ export function ItemForm({
             type,
             value,
           }));
-          setIdentifiers(loadedIdentifiers?.length ? loadedIdentifiers : [{ type: "EAN", value: "" }]);
+          setIdentifiers(
+            loadedIdentifiers?.length ? loadedIdentifiers : [{ type: "EAN", value: "" }],
+          );
           const locationId = itemBody.metadata?.location?.id ?? null;
           setInitialLocationId(locationId);
         } else if (!initialCollectionId && collectionBody.collections[0]) {
@@ -319,7 +322,9 @@ export function ItemForm({
   return (
     <section className="management-shell">
       <nav className="management-nav" aria-label={common("navigation")}>
-        <Link href={collectionId ? `/${locale}/collections/${collectionId}` : `/${locale}/collections`}>
+        <Link
+          href={collectionId ? `/${locale}/collections/${collectionId}` : `/${locale}/collections`}
+        >
           {t("back")}
         </Link>
       </nav>
@@ -330,7 +335,9 @@ export function ItemForm({
       </header>
 
       {item && metadata && <ItemSummary item={item} metadata={metadata} fields={fields} t={t} />}
-      {inactive && <p className="notice">{t(item?.disposedAt ? "disposedNotice" : "archivedNotice")}</p>}
+      {inactive && (
+        <p className="notice">{t(item?.disposedAt ? "disposedNotice" : "archivedNotice")}</p>
+      )}
       {status && (
         <p className="success" role="status">
           {status}
@@ -394,7 +401,11 @@ export function ItemForm({
             </label>
             <label>
               {t("privateNotes")}
-              <textarea name="privateNotes" defaultValue={item?.privateNotes ?? ""} maxLength={10000} />
+              <textarea
+                name="privateNotes"
+                defaultValue={item?.privateNotes ?? ""}
+                maxLength={10000}
+              />
               <span className="field-help">{t("privateNotesHelp")}</span>
             </label>
             <div className="form-row">
@@ -435,7 +446,11 @@ export function ItemForm({
               </label>
               <label>
                 {t("acquisitionDate")}
-                <input name="acquisitionDate" type="date" defaultValue={item?.acquisitionDate ?? ""} />
+                <input
+                  name="acquisitionDate"
+                  type="date"
+                  defaultValue={item?.acquisitionDate ?? ""}
+                />
               </label>
               <div className="form-row">
                 <label>
@@ -568,7 +583,12 @@ export function ItemForm({
               <summary>{t("customFields")}</summary>
               <fieldset disabled={inactive || saving} className="details-fields custom-fields">
                 {fields.map((field) => (
-                  <CustomFieldControl key={field.id} field={field} value={valueByField.get(field.id)} t={t} />
+                  <CustomFieldControl
+                    key={field.id}
+                    field={field}
+                    value={valueByField.get(field.id)}
+                    t={t}
+                  />
                 ))}
               </fieldset>
             </details>
@@ -580,7 +600,12 @@ export function ItemForm({
             </button>
             {item && (
               <>
-                <button className="secondary-button" type="button" disabled={inactive} onClick={archive}>
+                <button
+                  className="secondary-button"
+                  type="button"
+                  disabled={inactive}
+                  onClick={archive}
+                >
                   {t("archive")}
                 </button>
                 <button className="danger-button" type="button" onClick={remove}>
@@ -686,7 +711,12 @@ function CustomFieldControl({
         <legend>{field.name}</legend>
         {field.options.map((option) => (
           <label className="checkbox-label" key={option}>
-            <input name={name} type="checkbox" value={option} defaultChecked={selected.includes(option)} />
+            <input
+              name={name}
+              type="checkbox"
+              value={option}
+              defaultChecked={selected.includes(option)}
+            />
             {option}
           </label>
         ))}
@@ -721,7 +751,13 @@ function CustomFieldControl({
     );
   }
   const inputType =
-    field.type === "DATE" ? "date" : field.type === "URL" ? "url" : field.type === "INTEGER" ? "number" : "text";
+    field.type === "DATE"
+      ? "date"
+      : field.type === "URL"
+        ? "url"
+        : field.type === "INTEGER"
+          ? "number"
+          : "text";
   return wrapper(
     <label>
       {field.name}
@@ -751,7 +787,11 @@ function ItemSummary({
     <section className="management-card item-summary" aria-label={t("savedDetails")}>
       {metadata.customFieldValues.map((record) => {
         const field = fields.find((candidate) => candidate.id === record.fieldDefinitionId);
-        return field ? <p key={record.fieldDefinitionId}>{field.name}: {displayValue(record.value)}</p> : null;
+        return field ? (
+          <p key={record.fieldDefinitionId}>
+            {field.name}: {displayValue(record.value)}
+          </p>
+        ) : null;
       })}
       {metadata.location && <p>{metadata.location.name}</p>}
       {metadata.identifiers.length > 0 && (
