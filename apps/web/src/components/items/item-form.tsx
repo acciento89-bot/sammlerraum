@@ -659,7 +659,7 @@ function CustomFieldControl({
   t,
 }: {
   field: CustomFieldDefinition;
-  value?: CanonicalCustomFieldValue;
+  value: CanonicalCustomFieldValue | undefined;
   t: Translation;
 }) {
   const name = `field-${field.id}`;

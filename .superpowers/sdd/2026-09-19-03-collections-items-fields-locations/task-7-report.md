@@ -26,6 +26,6 @@ The local exec runtime disconnected during the first production UI checkpoint. U
 
 The first remote candidate CI `35539878520` passed unit tests and stopped at formatting. Diagnostic run `35540178029`, job `106156292758`, produced exactly the twelve expected UTF-8 files; those formatter outputs were persisted byte-for-byte and the temporary diagnostic step removed.
 
-Regular CI `35540346353`, job `106156735744`, then passed lint and failed typecheck only because the E2E init callback referenced DOM global names while server-only package typechecks do not load DOM libraries. The callback now accesses browser-only constructors through an explicit structural `globalThis` type inside `page.addInitScript`; no server TypeScript library or strictness setting changed.
+Regular CI `35540346353`, job `106156735744`, passed lint and exposed browser-global references under server-only package typechecks. Those were replaced with a structural `globalThis` type. CI `35540491109`, job `106157121355`, then passed package typechecks and reported only two web strict optional-property errors. The request options now omit absent headers/body instead of assigning `undefined`, and the custom-field control explicitly accepts its required possibly-undefined value.
 
 No full-test, build, or browser GREEN claim is made yet. A fresh regular CI run is required.

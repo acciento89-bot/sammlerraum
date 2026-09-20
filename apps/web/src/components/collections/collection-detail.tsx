@@ -89,11 +89,12 @@ export function CollectionDetail({
 
   async function mutate(url: string, method: string, body?: unknown) {
     setError("");
-    const response = await fetch(url, {
-      method,
-      headers: body === undefined ? undefined : { "content-type": "application/json" },
-      body: body === undefined ? undefined : JSON.stringify(body),
-    });
+    const request: RequestInit = { method };
+    if (body !== undefined) {
+      request.headers = { "content-type": "application/json" };
+      request.body = JSON.stringify(body);
+    }
+    const response = await fetch(url, request);
     if (!response.ok) {
       setError(await errorMessage(response, common("error")));
       return false;
