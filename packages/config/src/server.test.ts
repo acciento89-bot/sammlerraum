@@ -18,8 +18,18 @@ describe("parseServerEnv", () => {
     expect(parseServerEnv(validEnvironment)).toEqual({
       ...validEnvironment,
       LOG_LEVEL: "info",
+      WORKER_HEALTH_PORT: 3001,
     });
   });
+
+  it.each(["0", "65536", "3.5", "not-a-port"])(
+    "rejects invalid WORKER_HEALTH_PORT %s",
+    (WORKER_HEALTH_PORT) => {
+      expect(() => parseServerEnv({ ...validEnvironment, WORKER_HEALTH_PORT })).toThrow(
+        EnvironmentConfigurationError,
+      );
+    },
+  );
 
   it.each([
     ["NODE_ENV", "staging"],

@@ -308,7 +308,7 @@ git commit -m "feat: establish PostgreSQL foundation"
   - `QueueClient.enqueue<T>(name: string, payload: T, options?: EnqueueOptions): Promise<string>`
   - `WorkerRegistry.register<T>(name: string, handler: JobHandler<T>): void`
 
-- [ ] **Step 1: Write the failing queue contract test**
+- [x] **Step 1: Write the failing queue contract test**
 
 ```ts
 import { describe, expect, it } from "vitest";
@@ -324,12 +324,12 @@ describe("QueueClient", () => {
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run packages/queue/src/pg-boss-queue.test.ts`  
 Expected: FAIL because queue interfaces/testing implementation do not exist.
 
-- [ ] **Step 3: Implement interfaces and pg-boss adapter**
+- [x] **Step 3: Implement interfaces and pg-boss adapter**
 
 ```ts
 export type EnqueueOptions = {
@@ -347,14 +347,14 @@ export type JobHandler<T> = (payload: T) => Promise<void>;
 
 The pg-boss adapter maps `singletonKey` to pg-boss singleton behavior and defaults `retryLimit` to 5.
 
-- [ ] **Step 4: Add worker startup and run tests**
+- [x] **Step 4: Add worker startup and run tests**
 
 `apps/worker/src/main.ts` starts the queue, registers handlers from a registry, logs readiness, and exits non-zero on unrecoverable startup configuration/database errors.
 
 Run: `pnpm vitest run packages/queue`  
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/queue apps/worker

@@ -9,7 +9,7 @@ This is the handoff/status file for long-running implementation. Update it after
 
 | Phase | Plan | Tasks | Status | Next |
 |---|---|---:|---|---|
-| 01 | Platform Foundation | 6 | in progress (3/6 recovered) | Task 4 |
+| 01 | Platform Foundation | 6 | in progress (4/6 recovered) | Task 5 |
 | 02 | Identity, Auth & Policies | 7 | not started | Task 1 |
 | 03 | Collections, Items, Fields & Locations | 8 | not started | Task 1 |
 | 04 | Media & Documents | 6 | not started | Task 1 |
@@ -90,3 +90,13 @@ Every completed and independently reviewed task must be checked off in its detai
 - Controller db tests5/5; prior full suite25/25 before new regression; typecheck/lint, frozen pnpm10.17.1 install, staged diff check passed.
 - No live PostgreSQL migration/query: Docker/psql unavailable. Integration verification remains open.
 - Commit: feat: establish PostgreSQL foundation (recovered).
+
+### Recovered Phase 01 Task 4
+
+- Task 3 remote commit: `761b44d`.
+- Fresh implementer/reviewer, spec+quality Approved with no findings; prior pg-boss and worker regression fixes preserved.
+- RED missing modules/port validation/CLI export; GREEN 45 full tests, controller15 queue/worker tests; recursive typecheck/lint/build and diff check passed.
+- pg-boss12.33.2 exclusive persisted-policy verification, active singleton recovery without resend, generic error listeners, sticky unhealthy startup state.
+- Real worker dev/build/start, CJS production runner, probeable loopback health endpoint; built-bundle fake-dependency smoke200 and clean lifecycle stop.
+- No live PostgreSQL/container verification claimed; remaining infrastructure gate recorded.
+- Commit: feat: add PostgreSQL queue and worker runtime (recovered).
