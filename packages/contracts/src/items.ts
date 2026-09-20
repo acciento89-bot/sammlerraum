@@ -18,8 +18,19 @@ export const TradeStatusSchema = z.enum(["NOT_FOR_TRADE", "OPEN_TO_TRADE", "FOR_
 export type TradeStatus = z.infer<typeof TradeStatusSchema>;
 
 const ItemIdSchema = z.string().uuid();
-const ItemTitleSchema = z.string().trim().min(1).max(200);
-const OptionalTextSchema = z.string().trim().min(1).max(10_000).nullable();
+const ItemTitleSchema = z
+  .string()
+  .trim()
+  .min(1)
+  .max(200)
+  .refine((value) => !value.includes("\u0000"), "NUL is not allowed");
+const OptionalTextSchema = z
+  .string()
+  .trim()
+  .min(1)
+  .max(10_000)
+  .refine((value) => !value.includes("\u0000"), "NUL is not allowed")
+  .nullable();
 
 function isCanonicalCalendarDate(value: string): boolean {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;

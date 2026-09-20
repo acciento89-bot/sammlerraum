@@ -90,6 +90,47 @@ describe.runIf(runIntegration)("collection/item route PostgreSQL integration", (
         item: { id: item.id, privateNotes: "owner only" },
       });
 
+      const customFields = dependencies.createCustomFieldService(ownerId);
+      const decimalCases = [
+        {
+          definition: await customFields.createFieldDefinition({
+            collectionId: collection.id,
+            name: "Tiny decimal",
+            type: "DECIMAL",
+          }),
+          value: "0.0000001",
+        },
+        {
+          definition: await customFields.createFieldDefinition({
+            collectionId: collection.id,
+            name: "Precise decimal",
+            type: "DECIMAL",
+          }),
+          value: "99999999999999999999.999999999999999999",
+        },
+      ];
+      for (const decimalCase of decimalCases) {
+        await customFields.setFieldValue(item.id, decimalCase.definition.id, decimalCase.value);
+      }
+      const decimalRead = await itemHandlers.GET_ITEM(
+        new Request(`https://sammlerraum.example/api/v1/items/${item.id}`),
+        item.id,
+      );
+      const decimalBody = (await decimalRead.json()) as {
+        metadata: {
+          customFieldValues: Array<{ fieldDefinitionId: string; value: unknown }>;
+        };
+      };
+      for (const decimalCase of decimalCases) {
+        const returned = decimalBody.metadata.customFieldValues.find(
+          (value) => value.fieldDefinitionId === decimalCase.definition.id,
+        );
+        expect(returned?.value).toBe(decimalCase.value);
+        await expect(
+          customFields.setFieldValue(item.id, decimalCase.definition.id, returned?.value),
+        ).resolves.toMatchObject({ value: decimalCase.value });
+      }
+
       const deleted = await itemHandlers.DELETE_ITEM(
         new Request(`https://sammlerraum.example/api/v1/items/${item.id}`, {
           method: "DELETE",

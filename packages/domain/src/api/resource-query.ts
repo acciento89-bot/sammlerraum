@@ -19,6 +19,7 @@ import {
 import { StorageLocationSchema, type StorageLocation } from "@sammlerraum/contracts/locations";
 
 import { createTrustedResourceFacts, type ResourceFacts } from "../authz/types";
+import { validateFieldValue } from "../custom-fields/custom-field-service";
 
 export type ResourceQueryDatabase = {
   $queryRaw<T>(query: TemplateStringsArray, ...values: unknown[]): Promise<T>;
@@ -79,6 +80,20 @@ function safeNumber(value: bigint | number): number {
   const result = typeof value === "bigint" ? Number(value) : value;
   if (!Number.isSafeInteger(result)) throw new RangeError("Stored money is outside the safe range");
   return result;
+}
+
+function canonicalStoredDecimal(value: unknown): string {
+  const ordinary =
+    typeof value === "string"
+      ? value
+      : typeof value === "object" &&
+          value !== null &&
+          "toFixed" in value &&
+          typeof value.toFixed === "function"
+        ? value.toFixed()
+        : null;
+  if (ordinary === null) throw new TypeError("Stored decimal has an invalid representation");
+  return validateFieldValue("DECIMAL", ordinary) as string;
 }
 
 function itemDto(row: ItemRow): CollectibleItem {
@@ -376,7 +391,7 @@ export function createResourceQuery(database: ResourceQueryDatabase) {
             : row.fieldType === "INTEGER"
               ? safeNumber(row.integerValue as bigint | number)
               : row.fieldType === "DECIMAL"
-                ? String(row.decimalValue)
+                ? canonicalStoredDecimal(row.decimalValue)
                 : row.fieldType === "DATE"
                   ? dateOnly(row.dateValue as Date | string)
                   : row.fieldType === "BOOLEAN"

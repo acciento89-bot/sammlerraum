@@ -193,4 +193,95 @@ describe("item API", () => {
     expect(updateItem).toHaveBeenCalledWith(itemId, { title: "Charizard" });
     await expect(response.json()).resolves.toEqual({ item: updated });
   });
+
+  it.each([
+    ["title", { title: "bad\u0000title" }],
+    ["public description", { title: "Valid", publicDescription: "bad\u0000description" }],
+    ["private notes", { title: "Valid", privateNotes: "bad\u0000notes" }],
+  ])("rejects NUL in item %s before persistence", async (_label, invalidFields) => {
+    const createItem = vi.fn();
+    const loadCollection = vi.fn();
+    const handlers = createItemRouteHandlers({
+      appOrigin: "https://sammlerraum.example",
+      getSession: vi.fn().mockResolvedValue({ user: { id: ownerId } }),
+      getPublicItem: vi.fn(),
+      loadItem: vi.fn(),
+      loadCollection,
+      createItemService: vi.fn().mockReturnValue({ createItem }),
+    });
+
+    const response = await handlers.POST_ITEM(
+      new Request("https://sammlerraum.example/api/v1/items", {
+        method: "POST",
+        headers: {
+          origin: "https://sammlerraum.example",
+          "content-type": "application/json",
+          "x-request-id": "item-nul-request",
+        },
+        body: JSON.stringify({ collectionId, ...invalidFields }),
+      }),
+    );
+
+    expect(response.status).toBe(400);
+    expect(response.headers.get("cache-control")).toBe("no-store");
+    expect(response.headers.get("x-request-id")).toBe("item-nul-request");
+    await expect(response.json()).resolves.toMatchObject({
+      error: { code: "VALIDATION_ERROR", requestId: "item-nul-request" },
+    });
+    expect(loadCollection).not.toHaveBeenCalled();
+    expect(createItem).not.toHaveBeenCalled();
+  });
+
+  it("preserves legitimate newlines in item descriptions and notes", async () => {
+    const created = {
+      ...privateItem,
+      title: "Multiline item",
+      publicDescription: "Line one\nLine two",
+      privateNotes: "Private one\nPrivate two",
+    };
+    const createItem = vi.fn().mockResolvedValue(created);
+    const handlers = createItemRouteHandlers({
+      appOrigin: "https://sammlerraum.example",
+      getSession: vi.fn().mockResolvedValue({ user: { id: ownerId } }),
+      getPublicItem: vi.fn(),
+      loadItem: vi.fn(),
+      loadCollection: vi.fn().mockResolvedValue({
+        collection: { id: collectionId, name: "Cards", visibility: "PRIVATE" },
+        facts: createTrustedResourceFacts({
+          type: "COLLECTION",
+          ownerId,
+          visibility: "PRIVATE",
+          ancestorVisibility: [],
+          role: null,
+          moderation: "VISIBLE",
+          interactionBlocked: false,
+        }),
+      }),
+      createItemService: vi.fn().mockReturnValue({ createItem }),
+    });
+
+    const response = await handlers.POST_ITEM(
+      new Request("https://sammlerraum.example/api/v1/items", {
+        method: "POST",
+        headers: {
+          origin: "https://sammlerraum.example",
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({
+          collectionId,
+          title: "Multiline item",
+          publicDescription: "Line one\nLine two",
+          privateNotes: "Private one\nPrivate two",
+        }),
+      }),
+    );
+
+    expect(response.status).toBe(201);
+    expect(createItem).toHaveBeenCalledWith(
+      expect.objectContaining({
+        publicDescription: "Line one\nLine two",
+        privateNotes: "Private one\nPrivate two",
+      }),
+    );
+  });
 });

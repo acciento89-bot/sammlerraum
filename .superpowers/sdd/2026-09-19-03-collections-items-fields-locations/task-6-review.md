@@ -1,12 +1,14 @@
 # Phase 03 Task 6 — independent SPEC + QUALITY review
 
-Reviewed candidate: `d744045f18eb2a0504dd1c9924a9778095d43b51`.
+Initial reviewed candidate: `d744045f18eb2a0504dd1c9924a9778095d43b51`.
+Reviewed fix candidate: `3dcc973f593509b888cce98bbd160883559671bc`.
 Scope base: `a3ccc67f3528fc5ac5696789cb989ea377b7d2fe`.
 
-**SPEC: FAIL — changes required for F1 and F2.**
-**QUALITY: FAIL — two concrete findings; no additional findings.**
+**SPEC: PASS — F1 and F2 resolved.**
+**QUALITY: PASS — no open code findings or fix-induced breakage found.**
+Actual PostgreSQL integration and full CI remain the controller's completion gate.
 
-## Findings
+## Initial findings — both resolved in fix round 1
 
 ### F1 — P2: DECIMAL owner reads do not preserve the canonical write contract
 
@@ -38,4 +40,14 @@ Required correction: reject NUL in the shared collection/node and item free-text
 - Existing test evidence is accepted as reported, not represented as rerun by this review. Only focused new defect reproductions ran: `corepack pnpm@10.17.1 vitest run --config /tmp/task-6-review-vitest.config.mjs` (2 expected failures: F1/F2). Transient reproduction source is `/tmp/task-6-review-repro.test.ts`; it does not change implementation or tracked tests.
 - Actual PostgreSQL integration/full CI remains the controller's gate. The PGlite invalid-text reproduction is explicitly not a replacement for that gate. No commits, refs, canonical ledger, or implementation files were changed by this reviewer.
 
-Rereview should verify both corrections and their focused regression evidence. Full task approval remains blocked until F1/F2 are resolved and the controller's existing CI gate passes.
+## Scoped re-review — fix round 1
+
+Reviewed the seven-file fix diff and updated implementation report. The supplied staged tree matched `3ee564856be869957d816cc1f7750a9b69ac503d`; local HEAD subsequently matched the persisted fix commit `3dcc973f593509b888cce98bbd160883559671bc`. Scope was F1/F2 and breakage introduced by their corrections, without reopening unrelated task work.
+
+- **F1 resolved:** `canonicalStoredDecimal` obtains exact ordinary notation through Decimal `toFixed()` and reuses the canonical DECIMAL validator, without conversion to Number. New unit cases cover `0.0000001` and the full numeric(38,18) precision boundary. The existing real-DB route case now also writes, reads, and resubmits both values; execution of that extension remains a CI gate.
+- **F2 resolved:** shared collection/node and item text validators reject NUL for create/update/read contracts. Five HTTP regressions assert 400, the safe validation envelope, request ID, no-store, and no writer calls. Item creation additionally stops before collection loading; node creation correctly authorizes the collection before body validation. The positive description/notes case retains legitimate multiline text.
+- Independently reran only the two original reviewer reproductions against the fix: **2/2 passed** (previously 2/2 failed). The Decimal assertion now preserves the accepted write value and the actual collection route/domain reproduction returns 400 before the PostgreSQL-invalid write.
+- Accepted implementer evidence: combined focused tests 17 passed; expanded required scope 93 passed with 15 DB-gated skips; lint/typecheck/diff checks and final production web build passed. These reported suites were not redundantly rerun by this reviewer.
+- No implementation files, tracked tests, commits, refs, or canonical ledger were changed by the reviewer. The implementer also corrected the report wording: the no-resource-loader claim applies to item creation, while node creation authorizes the collection before validating its body.
+
+No open code findings remain. SPEC and QUALITY approve this fixed candidate; final task checkoff still requires the controller's actual PostgreSQL/full-CI result.

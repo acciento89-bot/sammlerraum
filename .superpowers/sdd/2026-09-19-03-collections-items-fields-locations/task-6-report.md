@@ -2,10 +2,11 @@
 
 ## Status
 
-Self-reviewed local candidate. The required local tests, lint, typecheck, Prisma generation/schema
-formatting and web production build pass. The new real PostgreSQL route/service integration test is
+Independent review found two P2 defects; both now have observed RED→GREEN regressions and fixes in
+the local candidate. The required local tests, lint, typecheck, Prisma generation/schema formatting
+and web production build pass. The extended real PostgreSQL route/service integration test is
 registered in CI and intentionally skipped locally because this workspace has no PostgreSQL service.
-Task completion therefore still requires the migrated PostgreSQL CI gate to pass.
+Task completion still requires scoped rereview and the migrated PostgreSQL CI gate to pass.
 
 No ledger, task checkbox, commit, push, provider, or live-environment action was performed by this
 implementer.
@@ -108,10 +109,25 @@ Additional policy RED→GREEN:
 - RED: `collection.delete` returned `NO_POLICY`.
 - GREEN: 24/24 passed after explicit owner-only collection/item deletion actions were added.
 
+Independent-review fixes RED→GREEN:
+
+- F1 RED: owner metadata serialized a valid Prisma Decimal `0.0000001` as rejected exponent form
+  `1e-7`; the numeric(38,18) precision-limit case remained ordinary notation. GREEN: stored Decimal
+  values use exact `toFixed()` output and then the existing canonical DECIMAL validator, without a
+  JavaScript Number conversion. Focused tiny and precision-limit round trips pass 2/2.
+- F2 RED: NUL-containing collection/node names passed route validation and returned 201 with the
+  mocked writer; NUL-containing item title/public description/private notes passed validation and
+  proceeded to a 500 in the focused boundary setup. GREEN: the five requests return the standard
+  400 validation envelope with request ID and no-store, no writer is called, item-create requests
+  also stop before the collection loader, and legitimate description/note newlines still persist
+  unchanged.
+- Combined focused GREEN command: 17/17 passed across resource-query and collection/item HTTP tests.
+
 Final local evidence:
 
-- Required domain/API scope: 85 passed, 15 database-gated skips.
-- Full unit/static suite: 213 passed, 20 database-gated skips.
+- Required expanded domain/API scope after review fixes: 93 passed, 15 database-gated skips.
+- Pre-review full unit/static suite: 213 passed, 20 database-gated skips; review fixes were then
+  covered by the required expanded task scope above.
 - `corepack pnpm@10.17.1 lint` — pass.
 - `corepack pnpm@10.17.1 typecheck` — pass.
 - Prisma generate/format and pre-task-schema-to-current-schema diff — pass; diff contains exactly two
@@ -123,8 +139,9 @@ Final local evidence:
 The CI-gated PostgreSQL test uses real route handlers, resource loaders, policy facts, and domain
 services to verify PRIVATE and UNLISTED ancestor 404 behavior, owner-only private fields, item soft
 deletion, retained collection contents, collection soft deletion, and prevention of direct service
-bypass after deletion. `.github/workflows/ci.yml` runs it with `RUN_DATABASE_INTEGRATION=1` after
-migrations are deployed.
+bypass after deletion. It now also writes, reads, and resubmits tiny and numeric(38,18)-limit DECIMAL
+values through the real custom-field service and owner GET handler. `.github/workflows/ci.yml` runs
+it with `RUN_DATABASE_INTEGRATION=1` after migrations are deployed.
 
 ## Implementer self-review findings resolved
 
@@ -137,5 +154,5 @@ migrations are deployed.
 - Domain validation/duplicate/state errors initially fell through to 500 in some auxiliary routes.
   They now map to stable 400 or 409 envelopes while not-found errors remain non-disclosing 404s.
 
-No open local code finding remains. The remaining completion gate is the full CI run with the actual
-PostgreSQL integration test and final controller review.
+The two independent-review findings are fixed locally. The remaining completion gates are scoped
+rereview and the full CI run with the actual PostgreSQL integration test.
