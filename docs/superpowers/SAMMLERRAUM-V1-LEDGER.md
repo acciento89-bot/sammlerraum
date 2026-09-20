@@ -13,7 +13,7 @@ This is the handoff/status file for long-running implementation. Update it after
 |---|---|---:|---|---|
 | 01 | Platform Foundation | 6 | complete (6/6) | — |
 | 02 | Identity, Auth & Policies | 7 | complete (7/7) | — |
-| 03 | Collections, Items, Fields & Locations | 8 | in progress (3/8) | Task 4 |
+| 03 | Collections, Items, Fields & Locations | 8 | in progress (4/8) | Task 5 |
 | 04 | Media & Documents | 6 | not started | Task 1 |
 | 05 | Catalog, Condition & Grading | 7 | not started | Task 1 |
 | 06 | Valuations & Market Data | 6 | not started | Task 1 |
@@ -46,9 +46,10 @@ This is the handoff/status file for long-running implementation. Update it after
 - [x] P03 T01 — Collection and hierarchy models
 - [x] P03 T02 — Collectible items, acquisition lifecycle and quantity splitting
 - [x] P03 T03 — Structured identifiers and tags
-- [ ] P03 T04 — Typed custom field definitions and values
+- [x] P03 T04 — Typed custom field definitions and values
+- [ ] P03 T05 — Hierarchical storage locations and movement history
 
-**Verified completion: 16/91 tasks.** Later tasks remain open as listed in the phase table and detail plans.
+**Verified completion: 17/91 tasks.** Later tasks remain open as listed in the phase table and detail plans.
 
 ## Update rule
 
@@ -386,3 +387,18 @@ Every completed and independently reviewed task must be checked off in its detai
 - Ruling: exact focused task commands were executed for RED/GREEN; permanent CI retains full suite plus explicit real DB invocation without duplicate focused/item unit steps — preserves verification while removing triplicate runs; cost if wrong: restore explicit CI steps.
 - Runtime disconnected after Task2. Remote GitHub trees/commits and Actions preserved implementation/TDD/review until runtime recovered; fresh checkout matched remote exactly. No completed work was lost. Approved report snapshots preserved on checkpoint branch `1ec2a8968f18fdd44b82695597d0b10cd2beaec2`.
 - Task3 checked off; next Task4 typed custom fields. The user-requested main ledger and feature ledger are synchronized; code remains on the feature branch, no production/provider action.
+
+### Phase 03 Task 4 — COMPLETE
+
+- Implementation `8de56cd2ba832d8ad26fc983082e3ad4ca60c2b2`; reviewed test correction/final tested code `8c3aac8eefe58b2ca5e1cf0cb9847be7a6b09f85`.
+- All10 required field types, collection-scoped definitions/options, dedicated typed columns, same-collection/type composite FKs, typed-shape/range checks and relational ordered selections. Owner-scoped short transactions; absent/foreign/cross-collection targets share CUSTOM_FIELD_NOT_FOUND. No public projection or routes introduced.
+- Additive `20260920223000_custom_fields` migration: all25 generated schema-diff statements present plus4 intentional check constraints; published migrations unchanged. Prisma format/validate/generate passed. Required local migrate-dev attempted once; unavailable PostgreSQL resolved by actual CI deployment/round-trips.
+- Actual TDD: missing-service RED;26 validation failures;6 persistence/authorization failures;2 date/normalized-name edge failures, all followed by GREEN. Local35 focused,52 focused-plus-items and189 full unit tests passed; lint/typecheck passed.
+- Fresh review spec PASS; two quality findings fixed: Prisma7.10 adapter maps PG check SQLSTATE23514 to P2039 rather than assumedP2004, now test asserts structured driver cause and exact CustomFieldValue_typedShape_check; fixture cleanup starts before setup and registers each owner immediately. Scoped rereview spec/quality PASS, no findings remain.
+- Full final CI SUCCESS: https://github.com/acciento89-bot/sammlerraum/actions/runs/35534527758 (job106141041269).
+- 189 unit/static tests passed; dedicated integration88 passed including16 actual DB cases; all4 browser journeys passed32.5s. Migration/lint/typecheck/workspace build/Compose/both Docker builds passed. Database case exercises all10 types, clearing, selection order, ownership, cross-collection service/FK rejection and typed-shape checks.
+- Ruling: DECIMAL API values are canonical strings bounded by numeric(38,18), rejecting excess precision instead of rounding — avoids JavaScript precision loss; cost if wrong: explicit future precision migration/contracts adjustment.
+- Ruling: INTEGER is a safe integer number; MONEY uses existing nonnegative safe amountMinor plus supported uppercase ISO currency; DATE is a real YYYY-MM-DD from year0001 — consistent canonical boundaries; cost if wrong: additive validation/contract refinement.
+- Ruling: selection API values use canonical option labels, persisted as definition-scoped option IDs; multi-select order retained and duplicates removed — supports current create/set API without premature edit semantics; cost if wrong: later versioned option-edit API.
+- Ruling: null explicitly clears/deletes a value row; empty multi-select is a present valid selection — avoids ambiguous all-null scalar values; cost if wrong: clearing contract adjustment.
+- Approved report/review snapshot `c20b7fc7317df6d2d2cf59807657eb4356daf753` on checkpoint branch. Task4 checked off; next Task5 hierarchical private locations/history. Main and feature ledgers synchronized; no deployment/provider action.
