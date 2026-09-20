@@ -310,7 +310,7 @@ export function CollectionDetail({
             />
             <label>
               {t("locationType")}
-              <select name="type" defaultValue="OTHER">
+              <select aria-label={t("locationType")} name="type" defaultValue="OTHER">
                 {locationTypes.map((type) => (
                   <option key={type} value={type}>
                     {t(`locationType${type}`)}
@@ -414,7 +414,7 @@ function ParentSelect<T extends TreeRecord>({
   return (
     <label>
       {label}
-      <select name={name} defaultValue={value}>
+      <select aria-label={label} name={name} defaultValue={value}>
         <option value="">{none}</option>
         {records
           .filter((record) => record.id !== exclude)
