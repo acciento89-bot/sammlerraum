@@ -15,6 +15,7 @@ const copy = {
     createCollection: "Sammlung anlegen",
     subcollectionName: "Name der Teilsammlung",
     createSubcollection: "Teilsammlung anlegen",
+    hierarchy: "Sammlungshierarchie",
     customFieldName: "Feldname",
     customFieldType: "Feldtyp",
     shortText: "Kurzer Text",
@@ -58,6 +59,7 @@ const copy = {
     createCollection: "Create collection",
     subcollectionName: "Subcollection name",
     createSubcollection: "Create subcollection",
+    hierarchy: "Collection hierarchy",
     customFieldName: "Field name",
     customFieldType: "Field type",
     shortText: "Short text",
@@ -239,6 +241,12 @@ test.describe("localized collection and item management", () => {
       await page.getByRole("button", { name: labels.createSubcollection }).click();
       expect((await nodeCreated).status()).toBe(201);
       await expectTreeItem(page, "Base Set");
+      const hierarchy = page.getByRole("region", { name: labels.hierarchy, exact: true });
+      await expect.soft(hierarchy.getByRole("list")).toBeVisible();
+      const nodeDisclosure = hierarchy.getByText("Base Set", { exact: true });
+      await nodeDisclosure.focus();
+      await page.keyboard.press("Enter");
+      await expect(nodeDisclosure.locator("..")).toHaveAttribute("open", "");
 
       await page.getByLabel(labels.customFieldName).fill("Edition");
       await page.getByLabel(labels.customFieldType).selectOption({ label: labels.shortText });
