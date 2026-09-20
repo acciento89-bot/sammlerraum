@@ -10,7 +10,7 @@ This is the handoff/status file for long-running implementation. Update it after
 | Phase | Plan | Tasks | Status | Next |
 |---|---|---:|---|---|
 | 01 | Platform Foundation | 6 | complete (6/6) | — |
-| 02 | Identity, Auth & Policies | 7 | in progress (4/7) | Task 5 |
+| 02 | Identity, Auth & Policies | 7 | Task 5 reviewed; CI pending (4/7) | Task 5 gate |
 | 03 | Collections, Items, Fields & Locations | 8 | not started | Task 1 |
 | 04 | Media & Documents | 6 | not started | Task 1 |
 | 05 | Catalog, Condition & Grading | 7 | not started | Task 1 |
@@ -205,3 +205,15 @@ Every completed and independently reviewed task must be checked off in its detai
 - 85 unit/static tests passed; dedicated integration run12 passed including5 actual DB tests. All migrations/lint/typecheck/workspace build/Compose and both Docker builds passed.
 - Fresh spec/quality review approved after immutable-header regression fixed; no findings remain. Task4 checked off; next Task5 deny-by-default policies.
 - Completion docs-only with [skip ci], identical tested code.
+
+### Phase 02 Task 5 — reviewed policy candidate, CI pending
+
+- Base remote `e16db46`; final-fix WIP checkpoint `9aa2767` exact tree verified.
+- Exact8-action deny-by-default core; trusted immutable facts, action/resource matching, effective ancestor visibility, actor-bound roles, protected-document/public moderation guards, generic403 assertion.
+- TDD RED missing policy; initial97tests/5DBskips and workspace gates green. Review identified private-profile membership overgrant and tests hitting earlier guards; both fixed with RED3 failures then GREEN23/23 including controller rerun. Typecheck/lint/diff checks pass.
+- Fresh scoped rereview spec/quality APPROVED; no findings remain. Task stays unchecked until full CI.
+- Ruling: facts constructors validate/clone/freeze and privately mark server-derived facts; HTTP/worker loaders must rebuild identity, full ancestry, resource-scoped membership, block/moderation facts from authoritative state — prevents trusting request JSON; cost if wrong: constructor/loader integration rework.
+- Ruling: collection editing/member management initially Owner/Admin; item editing Owner/Admin/Editor; member reads Owner/Admin/Editor/Viewer with actor-bound assignment; PROFILE always role:null and only owner/effective-public view — collection roles must not authorize profiles; cost if wrong: explicit role-matrix adjustment in owning phase.
+- Ruling: public grant requires PUBLIC resource and every ancestor plus VISIBLE moderation; protected documents have an additional no-public guard. Document-specific visibility and selected grants belong to Phase04/09 loaders/policies — parent visibility is insufficient; cost if wrong: additive document fact refinement.
+- Ruling: comments need authenticated visible read access, enabled comments and no interaction block; unknown/malformed/action-kind mismatches return NO_POLICY; assertion always genericFORBIDDEN — no resource-fact disclosure; cost if wrong: explicit new policy branches.
+- Ruling: SEO index preference is excluded from authorization, while share/invitation/premium/richer moderation grants remain denied until their owning phases add complete facts — preserves phase scope and privacy; cost if wrong: later additive facts/branches, never implicit public-by-ID UNLISTED.
