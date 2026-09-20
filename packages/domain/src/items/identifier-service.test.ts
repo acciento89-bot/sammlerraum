@@ -3,10 +3,7 @@ import { randomUUID } from "node:crypto";
 import { createPrismaClient } from "@sammlerraum/db/create-client";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 
-import {
-  createIdentifierService,
-  type IdentifierDatabase,
-} from "./identifier-service";
+import { createIdentifierService, type IdentifierDatabase } from "./identifier-service";
 import { createTagService, type TagDatabase } from "./tag-service";
 
 const itemId = "00000000-0000-4000-8000-000000000001";
@@ -14,19 +11,23 @@ const otherItemId = "00000000-0000-4000-8000-000000000002";
 
 describe("item identifier service", () => {
   it("normalizes EAN values without removing meaningful leading zeroes", async () => {
-    const createMany = vi.fn().mockResolvedValue({ count: 1 });
+    let createdIdentifiers: Array<Record<string, string>> = [];
+    const createMany = vi.fn(
+      async ({ data }: { data: Array<Record<string, string>> }) => {
+        createdIdentifiers = data;
+        return { count: data.length };
+      },
+    );
     const transaction = {
       $queryRaw: vi.fn().mockResolvedValue([{ id: itemId }]),
       itemIdentifier: {
         deleteMany: vi.fn().mockResolvedValue({ count: 0 }),
         createMany,
-        findMany: vi.fn().mockImplementation(async () =>
-          createMany.mock.calls[0]![0].data.map(
-            (row: Record<string, string>, index: number) => ({
-              id: `00000000-0000-4000-8000-00000000001${index}`,
-              ...row,
-            }),
-          ),
+        findMany: vi.fn(async () =>
+          createdIdentifiers.map((row, index) => ({
+            id: `00000000-0000-4000-8000-00000000001${index}`,
+            ...row,
+          })),
         ),
       },
     };
@@ -64,7 +65,7 @@ describe("item identifier service", () => {
     });
   });
 
-  it("replaces identifiers atomically after locking an item owned by the trusted actor", async () => {
+  it("atomically replaces identifiers after locking the owned item", async () => {
     const calls: string[] = [];
     const transaction = {
       $queryRaw: vi.fn().mockImplementation(async () => {
@@ -140,9 +141,8 @@ describe("item identifier service", () => {
 
 describe("item tag service", () => {
   it("normalizes, de-duplicates, and reuses tags within the trusted owner scope", async () => {
-    const upsert = vi
-      .fn()
-      .mockImplementation(async ({ where, create }: { where: unknown; create: Record<string, string> }) => ({
+    const upsert = vi.fn(
+      async ({ create }: { create: Record<string, string> }) => ({
         id:
           create.normalizedName === "signed"
             ? "00000000-0000-4000-8000-000000000010"
@@ -150,8 +150,8 @@ describe("item tag service", () => {
         ownerId: create.ownerId,
         name: create.name,
         normalizedName: create.normalizedName,
-        where,
-      }));
+      }),
+    );
     const createMany = vi.fn().mockResolvedValue({ count: 2 });
     const transaction = {
       $queryRaw: vi.fn().mockResolvedValue([{ id: itemId }]),
@@ -259,7 +259,7 @@ describe.runIf(runIntegration)("identifier and tag PostgreSQL integration", () =
     const item = await prisma!.collectibleItem.create({
       data: { collectionId: collection.id, title: `${label} item` },
     });
-    return { ownerId, itemId: item.id };
+    return { ownerId, collectionId: collection.id, itemId: item.id };
   }
 
   it("scopes identifier uniqueness to an item and tags to an owner", async () => {
@@ -275,6 +275,9 @@ describe.runIf(runIntegration)("identifier and tag PostgreSQL integration", () =
     );
     const firstTags = createTagService(prisma! as unknown as TagDatabase, first.ownerId);
     const secondTags = createTagService(prisma! as unknown as TagDatabase, second.ownerId);
+    const sameOwnerItem = await prisma!.collectibleItem.create({
+      data: { collectionId: first.collectionId, title: "First owner second item" },
+    });
 
     try {
       await expect(
@@ -287,8 +290,14 @@ describe.runIf(runIntegration)("identifier and tag PostgreSQL integration", () =
           { type: "EAN", value: "0123456789012" },
         ]),
       ).resolves.toMatchObject([{ normalizedValue: "0123456789012" }]);
+      await expect(
+        firstIdentifiers.setItemIdentifiers(sameOwnerItem.id, [
+          { type: "EAN", value: "0123456789012" },
+        ]),
+      ).resolves.toMatchObject([{ normalizedValue: "0123456789012" }]);
 
       await firstTags.setItemTags(first.itemId, [" Signed "]);
+      await firstTags.setItemTags(sameOwnerItem.id, ["signed"]);
       await secondTags.setItemTags(second.itemId, ["signed"]);
 
       const matchingTags = await prisma!.tag.findMany({
