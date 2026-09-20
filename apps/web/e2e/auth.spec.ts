@@ -247,13 +247,23 @@ test.describe("localized authentication and account UI", () => {
     await expect(page.getByRole("heading", { name: "Aktive Sitzungen" })).toBeVisible();
     await expect(page.getByRole("button", { name: "Google verbinden" })).toBeVisible();
     await expect(page.getByRole("button", { name: "Apple verbinden" })).toBeVisible();
-    const linkRequest = page.waitForRequest(
-      (request) =>
-        request.url().endsWith("/api/auth/link-social") &&
-        request.postDataJSON().provider === "google",
+    await page.route("https://accounts.google.com/**", async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: "text/html",
+        body: "<h1>OAuth provider handoff</h1>",
+      });
+    });
+    const linkResponse = page.waitForResponse(
+      (response) =>
+        response.url().endsWith("/api/auth/link-social") &&
+        response.request().postDataJSON().provider === "google",
     );
+    const providerHandoff = page.waitForURL((url) => url.hostname === "accounts.google.com");
     await page.getByRole("button", { name: "Google verbinden" }).click();
-    await linkRequest;
+    expect((await linkResponse).ok()).toBe(true);
+    await providerHandoff;
+    await expect(page.getByRole("heading", { name: "OAuth provider handoff" })).toBeVisible();
     await page.goto("/de/account/security");
     await page.getByLabel("Passkey-Name").fill("Testgerät");
     await page.getByRole("button", { name: "Passkey hinzufügen" }).click();

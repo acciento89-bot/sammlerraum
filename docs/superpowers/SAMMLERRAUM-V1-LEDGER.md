@@ -268,3 +268,8 @@ Every completed and independently reviewed task must be checked off in its detai
 
 - Candidate `b3266a8`; CI35525565857/job106116994979 passed126 unit tests,15 dedicated integration tests including5 real DB cases, lint/typecheck/build. Browser2 passed/2 failed because password button substring selector also matched passkey sign-in.
 - Three password-submit selectors now use exact accessible names; no coverage removed. Playwright lists all4 cases, typecheck/lint pass. Scoped review approved selector-only correction. Real browser rerun still required; Task7 unchecked.
+
+### Phase 02 Task 7 — CI verification correction 2
+
+- Candidate `aaa8d11`; CI35525870450/job106117791780 passed126unit/15integration/build and3 of4 browser journeys including password reset. Last journey raced a pending Google-link redirect with immediate navigation back.
+- Test now waits for actual successful link-social response and deterministic external Google handoff navigation/DOM before returning. Only external provider destination mocked; no sleeps, production changes or removed assertions. Scoped review approved;4cases discovered,lint/typecheck green. Final CI remains required; unchecked.
