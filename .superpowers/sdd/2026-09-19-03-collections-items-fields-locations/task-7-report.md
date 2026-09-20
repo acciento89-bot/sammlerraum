@@ -20,18 +20,19 @@
 - Item create/edit/archive/delete with separate public description/private notes, explicit purchase price per unit, canonical dates, visibility, trade status, and quantity.
 - Multiple identifiers and tags.
 - Manual EAN/UPC/ISBN is always available. BarcodeDetector is progressive enhancement; output remains a proposal until confirmation.
-- Multi-endpoint saves retain the created item ID for retry. Successful location assignment updates its retry baseline.
+- Multi-endpoint saves retain the created item ID for retry; successful location assignment updates its retry baseline.
 - Desktop/mobile E2E also covers scanner confirmation, editing, archiving, and inactive save state.
 
 ## Recovery and verification evidence
 
 Local exec disconnected during implementation, so work continued through atomic GitHub checkpoint trees.
 
-- CI `35539878520`: unit tests passed; stopped at formatting.
-- Formatter diagnostic CI `35540178029`, job `106156292758`: emitted twelve exact files, persisted byte-for-byte; diagnostic removed.
-- CI `35540346353`: lint passed; found browser names under server-only typechecks.
-- CI `35540491109`: package typechecks passed; found two exact-optional web errors.
-- CI `35540686118`: unit/lint/type/build/database/auth passed; Task 7 exposed a locator ambiguity, then locators were scoped semantically.
-- CI `35541369868`, job `106159537206`: all 224 unit tests and lint passed; strict typecheck found one unchecked required regex capture in the money helper. This checkpoint explicitly narrows that capture; the only other capture is optional and defaulted.
+- CI `35539878520`: unit passed; formatting finding.
+- Formatter diagnostic CI `35540178029`, job `106156292758`: emitted twelve exact files; outputs persisted byte-for-byte; diagnostic removed.
+- CI `35540346353`: lint passed; browser names under server-only typechecks corrected.
+- CI `35540491109`: package typechecks passed; two exact-optional web errors corrected.
+- CI `35540686118`: unit/lint/type/build/database/auth passed; initial heading locator ambiguity corrected.
+- CI `35541369868`: all 224 unit tests and lint passed; unchecked regex capture corrected.
+- CI `35541518501`: every gate through existing authentication journeys passed. Both Task 7 projects reached the collections list; navigation timed out because the exact accessible name is `Pokémon Privat` / `Pokémon Private`, including the visible privacy label. The test now matches that full localized name and asserts the preceding POST returned 201. Tree-item locators are exact so nested descendants cannot create partial-name ambiguity.
 
 A fresh full regular CI run is required before completion.
