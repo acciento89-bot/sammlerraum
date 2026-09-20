@@ -21,12 +21,18 @@ type ProfileRecord = {
 type ProfileDatabase = {
   userProfile: {
     findUnique(args: {
-      where: { handle: string };
+      where: { handle: string } | { userId: string };
       select: typeof publicProfileSelect;
     }): Promise<ProfileRecord | null>;
     update(args: {
       where: { userId: string };
       data: UpdateOwnProfileInput;
+      select: typeof publicProfileSelect;
+    }): Promise<ProfileRecord>;
+    upsert(args: {
+      where: { userId: string };
+      create: UpdateOwnProfileInput & { userId: string };
+      update: UpdateOwnProfileInput;
       select: typeof publicProfileSelect;
     }): Promise<ProfileRecord>;
   };
@@ -44,6 +50,25 @@ export function createProfileService(database: ProfileDatabase) {
         select: publicProfileSelect,
       });
       return profile === null ? null : PublicProfileSchema.parse(profile);
+    },
+
+    async getOwnProfile(userId: string): Promise<PublicProfile | null> {
+      const profile = await database.userProfile.findUnique({
+        where: { userId },
+        select: publicProfileSelect,
+      });
+      return profile === null ? null : PublicProfileSchema.parse(profile);
+    },
+
+    async upsertOwnProfile(userId: string, input: UpdateOwnProfileInput): Promise<PublicProfile> {
+      const data = PublicProfileSchema.parse({ ...input, handle: normalizeHandle(input.handle) });
+      const profile = await database.userProfile.upsert({
+        where: { userId },
+        create: { userId, ...data },
+        update: data,
+        select: publicProfileSelect,
+      });
+      return PublicProfileSchema.parse(profile);
     },
 
     async updateOwnProfile(userId: string, input: UpdateOwnProfileInput): Promise<PublicProfile> {

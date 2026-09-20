@@ -76,7 +76,9 @@ jobs:
           packages/domain/src/identity/profile-service.test.ts
           packages/domain/src/identity/security-service.test.ts
           apps/web/src/lib/security-service.integration.test.ts
-      - name: Run password authentication API smoke
+      - name: Install Chromium for authentication journeys
+        run: pnpm --filter @sammlerraum/web exec playwright install --with-deps chromium
+      - name: Run authentication browser journeys
         run: >-
           RUN_AUTH_E2E=1 pnpm --filter @sammlerraum/web exec playwright test
           e2e/auth.spec.ts

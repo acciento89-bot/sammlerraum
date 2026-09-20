@@ -326,7 +326,7 @@ git commit -m "feat: add deny-by-default authorization policies"
 - Consumes: Zod contracts.
 - Produces: `GET /api/openapi.json`, Playwright login/session smoke.
 
-- [ ] **Step 1: Write failing OpenAPI registration test**
+- [x] **Step 1: Write failing OpenAPI registration test**
 
 ```ts
 it("contains the account session endpoint", () => {
@@ -335,16 +335,16 @@ it("contains the account session endpoint", () => {
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run packages/contracts/src/openapi.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement OpenAPI generation and E2E**
+- [x] **Step 3: Implement OpenAPI generation and E2E**
 
 Generate OpenAPI from registered Zod schemas. Add Playwright coverage for password registration/login and authenticated session listing. Social and passkey UI flows can use provider/browser mocks in CI; their server configuration remains integration-tested.
 
-- [ ] **Step 4: Run the auth suite**
+- [x] **Step 4: Run the auth suite**
 
 Run:
 ```bash
@@ -354,7 +354,7 @@ pnpm --filter @sammlerraum/web exec playwright test e2e/auth.spec.ts
 
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/contracts apps/web/e2e apps/web/src/app/api/openapi.json .github/workflows/ci.yml

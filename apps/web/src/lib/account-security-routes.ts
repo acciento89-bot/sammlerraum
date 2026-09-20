@@ -23,7 +23,10 @@ type SessionRouteDependencies = {
 
 type RecoveryRouteDependencies = {
   getSession(headers: Headers): Promise<TrustedSession | null>;
-  service: { removeLoginMethod(userId: string, methodId: string): Promise<void> };
+  service: {
+    listLoginMethods(userId: string): Promise<unknown[]>;
+    removeLoginMethod(userId: string, methodId: string): Promise<void>;
+  };
   appOrigin: string;
   freshAgeSeconds: number;
   now?: () => Date;
@@ -79,6 +82,13 @@ export function createSessionRouteHandlers(dependencies: SessionRouteDependencie
 
 export function createRecoveryMethodRouteHandlers(dependencies: RecoveryRouteDependencies) {
   return {
+    GET: apiRoute(async (request: Request): Promise<Response> => {
+      const session = await dependencies.getSession(request.headers);
+      if (!session) throw new ApiError("UNAUTHORIZED", 401, "Authentication required");
+      const methods = await dependencies.service.listLoginMethods(session.user.id);
+      return Response.json({ methods }, { headers: noStoreHeaders });
+    }),
+
     DELETE: apiRoute(async (request: Request): Promise<Response> => {
       if (!hasSameOrigin(request, dependencies.appOrigin)) {
         throw new ApiError("FORBIDDEN", 403, "Cross-origin request rejected");

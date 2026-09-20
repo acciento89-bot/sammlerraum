@@ -19,7 +19,7 @@ type AccountRow = {
   password: string | null;
 };
 
-type PasskeyRow = { id: string };
+type PasskeyRow = { id: string; name?: string | null };
 
 type DeleteResult = { count: number };
 
@@ -41,7 +41,10 @@ type SecurityTransaction = {
     }): Promise<DeleteResult>;
   };
   passkey: {
-    findMany(args: { where: { userId: string }; select: { id: true } }): Promise<PasskeyRow[]>;
+    findMany(args: {
+      where: { userId: string };
+      select: { id: true; name?: true };
+    }): Promise<PasskeyRow[]>;
     deleteMany(args: { where: { id: string; userId: string } }): Promise<DeleteResult>;
   };
 };
@@ -94,6 +97,32 @@ function sanitizeUserAgentLabel(userAgent: string | null): string | null {
 
 export function createSecurityService(database: SecurityDatabase, now = () => new Date()) {
   return {
+    async listLoginMethods(userId: string) {
+      return database.$transaction(
+        async (transaction) => {
+          const [user, accounts, passkeys] = await Promise.all([
+            transaction.user.findUnique({ where: { id: userId }, select: { emailVerified: true } }),
+            transaction.account.findMany({
+              where: { userId },
+              select: { id: true, providerId: true, password: true },
+            }),
+            transaction.passkey.findMany({ where: { userId }, select: { id: true, name: true } }),
+          ]);
+          if (!user) return [];
+          return [
+            ...(user.emailVerified && accounts.some((account) => account.providerId === "credential" && account.password !== null)
+              ? [{ id: "password", type: "password" as const, provider: "credential", name: null }]
+              : []),
+            ...accounts
+              .filter((account) => verifiedOAuthProviders.has(account.providerId))
+              .map((account) => ({ id: `account:${account.id}`, type: "provider" as const, provider: account.providerId, name: null })),
+            ...passkeys.map((passkey) => ({ id: `passkey:${passkey.id}`, type: "passkey" as const, provider: "passkey", name: passkey.name ?? null })),
+          ];
+        },
+        { isolationLevel: "ReadCommitted" },
+      );
+    },
+
     async listSessions(userId: string, currentSessionId: string): Promise<SessionMetadata[]> {
       const sessions = await database.session.findMany({
         where: { userId, expiresAt: { gt: now() } },
