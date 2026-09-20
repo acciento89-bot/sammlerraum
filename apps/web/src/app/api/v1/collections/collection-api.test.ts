@@ -70,4 +70,49 @@ describe("collection API", () => {
     expect(response.headers.get("cache-control")).toBe("no-store");
     expect(deleteCollection).toHaveBeenCalledWith(collection.id);
   });
+
+  it.each([
+    ["collection", "POST_COLLECTION", { name: "bad\u0000name" }],
+    ["node", "POST_NODE", { name: "bad\u0000name" }],
+  ] as const)("rejects a NUL in a %s name before persistence", async (_kind, operation, body) => {
+    const createCollection = vi.fn();
+    const createCollectionNode = vi.fn();
+    const handlers = createCollectionRouteHandlers(
+      dependencies({
+        getSession: vi.fn().mockResolvedValue({ user: { id: ownerId } }),
+        createCollectionService: vi.fn().mockReturnValue({
+          createCollection,
+          createCollectionNode,
+        }),
+      }),
+    );
+    const request = new Request(
+      operation === "POST_COLLECTION"
+        ? "https://sammlerraum.example/api/v1/collections"
+        : `https://sammlerraum.example/api/v1/collections/${collection.id}/nodes`,
+      {
+        method: "POST",
+        headers: {
+          origin: "https://sammlerraum.example",
+          "content-type": "application/json",
+          "x-request-id": "nul-request",
+        },
+        body: JSON.stringify(body),
+      },
+    );
+
+    const response =
+      operation === "POST_COLLECTION"
+        ? await handlers.POST_COLLECTION(request)
+        : await handlers.POST_NODE(request, collection.id);
+
+    expect(response.status).toBe(400);
+    expect(response.headers.get("cache-control")).toBe("no-store");
+    expect(response.headers.get("x-request-id")).toBe("nul-request");
+    await expect(response.json()).resolves.toMatchObject({
+      error: { code: "VALIDATION_ERROR", requestId: "nul-request" },
+    });
+    expect(createCollection).not.toHaveBeenCalled();
+    expect(createCollectionNode).not.toHaveBeenCalled();
+  });
 });

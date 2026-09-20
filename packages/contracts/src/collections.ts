@@ -3,7 +3,12 @@ import { z } from "zod";
 export const VisibilitySchema = z.enum(["PRIVATE", "UNLISTED", "PUBLIC"]);
 export type Visibility = z.infer<typeof VisibilitySchema>;
 
-const CollectionNameSchema = z.string().trim().min(1).max(120);
+const CollectionNameSchema = z
+  .string()
+  .trim()
+  .min(1)
+  .max(120)
+  .refine((value) => !value.includes("\u0000"), "NUL is not allowed");
 const CollectionIdSchema = z.string().uuid();
 
 export const CreateCollectionInputSchema = z.object({
