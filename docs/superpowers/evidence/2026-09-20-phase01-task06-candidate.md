@@ -101,3 +101,38 @@ The three findings from the first review are resolved:
 Fresh rereview verification passed: `CI=true corepack pnpm vitest run packages/testing/src/production-config.test.ts` reports 1 file and 5/5 tests passing, and `git diff --cached --check` exits 0. I did not repeat broad suites.
 
 Docker and PostgreSQL remain unavailable locally. Compose rendering under Docker, both clean image builds, migration deployment, live database health, live pg-boss singleton behavior, and container startup/health remain **pending GitHub CI validation**. That pending live validation is not a code defect, but this approval must not be treated as a completed Task 6 claim.
+
+
+## Final gate completion
+
+# Task 6 review
+
+## Verdict
+
+**APPROVED.** No blocking or non-blocking findings remain in the reviewed scope, and all required local and remote gates have now passed for reviewed commit `79b0f55`.
+
+## Review-fix assessment
+
+The three findings from the first review are resolved:
+
+- `docker-compose.yml:32,37,63,67` now fixes both applications' `UPLOADS_DIR` at `/data/uploads`, exactly matching the shared named-volume mount. `.env.example:3` clarifies that its different path applies to a local process rather than a Compose container.
+- `docker-compose.yml:65,74` now fixes both the worker listener and health probe at internal port 3001, eliminating the configurable-port mismatch.
+- `Dockerfile.web:8,13,16` now requires a non-empty `NEXT_PUBLIC_APP_ORIGIN` build argument and supplies it to `next build`. `docker-compose.yml:22-23` wires the deployment value into the image build and no longer presents that inlined value as mutable runtime configuration. `.github/workflows/ci.yml:63` supplies the deliberate non-production `https://example.invalid` value for the clean CI image build.
+
+`packages/testing/src/production-config.test.ts:35-71` covers all three regressions directly, including exact upload-path alignment, fixed worker-port alignment, the required web build argument, removal of the hardcoded loopback origin, Compose build-argument wiring, and the explicit CI value.
+
+## Spec and quality assessment
+
+- **Clean-image Prisma generation:** Pass by inspection. Both Dockerfiles install from the frozen lockfile and provide the build-only datasource required by `packages/db/prisma.config.ts` before generation.
+- **Next standalone runtime:** Pass by inspection and supplied artifact evidence. The runtime copies the standalone tree and `.next/static` into the paths expected by `apps/web/server.js`; the application has no `public` tree requiring another copy.
+- **Worker CJS runtime:** Pass for the available local scope. The generated bundle contains the Prisma client and WASM payload, and the supplied smoke reaches controlled database startup failure rather than a missing module or runtime asset.
+- **Secrets and mounts:** Pass. No production credential or source bind mount is embedded. `.dockerignore` excludes environment, registry, key/certificate, secret-directory, dependency, and generated-output material. PostgreSQL and actual application uploads use persistent named volumes.
+- **CI workflow:** Pass by inspection. Push and pull-request branches match the active repository flow. Service credentials, workflow `DATABASE_URL`, and the Vitest setup URL agree. Migrations precede opt-in live integration tests. The workspace production build overrides the job-level test environment with `NODE_ENV: production`, and both clean image builds remain explicit gates.
+
+## Verification status
+
+Fresh rereview verification passed: `CI=true corepack pnpm vitest run packages/testing/src/production-config.test.ts` reports 1 file and 5/5 tests passing, and `git diff --cached --check` exits 0. I did not repeat broad suites.
+
+GitHub Actions run [35515621740](https://github.com/acciento89-bot/sammlerraum/actions/runs/35515621740), job `106090953281`, completed successfully for reviewed commit `79b0f55`. Its successful steps covered the frozen install, Prisma generation, PostgreSQL 17 migration deployment, full test/lint/typecheck/production-build sequence, live database-health and pg-boss singleton integration tests, Compose verification, and both clean Docker image builds. The remote run used the same reviewed code, so all Task 6 gates are satisfied.
+
+CI logs confirmed60 unit/static tests +2 live database/queue tests. Phase01 complete.
