@@ -22,6 +22,16 @@ describe("item form money conversion", () => {
   it("rejects the first amount beyond the safe minor-unit contract", () => {
     expect(() => minorUnits("90071992547409.92")).toThrow("money");
   });
+
+  it("uses zero fractional digits for JPY minor units", () => {
+    expect(minorUnits("123", "JPY")).toBe(123);
+    expect(majorUnits(123, "JPY")).toBe("123");
+  });
+
+  it("uses three fractional digits for KWD minor units", () => {
+    expect(minorUnits("1.234", "KWD")).toBe(1234);
+    expect(majorUnits(1234, "KWD")).toBe("1.234");
+  });
 });
 
 describe("item form canonical value preservation", () => {

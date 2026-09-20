@@ -59,4 +59,6 @@ Local exec disconnected during implementation, so work continued through atomic 
 - Fresh independent review at `3083241` returned SPEC FAIL / QUALITY FAIL with nine must-fix findings.
 - RED regressions now cover all nine findings: async nested-node preservation; non-default ISO currency and comma-tag round trips; exponent-form integers; rejected core and partially rejected metadata retry; native keyboard hierarchy semantics; exact locale-aware DATE/DECIMAL/MONEY display; concurrent scanner acquisition/disposal; and zero writes before all custom-field validation succeeds.
 - Production changes are limited to extracting and reusing the prior currency, integer, tag, and display behavior unchanged so focused unit tests exercise the same code paths.
-- RED CI has not yet run for this round. No implementation fix has begun.
+- Currency ruling: repository plans and ledger define ISO 4217 currency-specific minor units, with no universal two-decimal scale. JPY therefore uses zero fractional digits and KWD three; stored integers will not be migrated or rescaled.
+- The earlier draft JPY display expectation was removed before RED. Focused JPY/KWD parse and display tests now exercise the confirmed scale while the implementation still ignores their currency argument.
+- RED CI has not yet run for the currency-scale additions. No implementation fix has begun.
