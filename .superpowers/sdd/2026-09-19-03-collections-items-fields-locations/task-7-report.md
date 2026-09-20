@@ -46,4 +46,10 @@ Local exec disconnected during implementation, so work continued through atomic 
 - Static review of the remaining item flow found that a new custom-field value is ignored unless its field-specific `Wert verwenden` / `Use value` checkbox is checked. The E2E now enables Edition within its own custom-field container before entering `1st`, matching the form's explicit opt-in contract and remaining stable if more fields are added.
 - Push CI `35543820136`, job `106166105069`, passed unit 224, lint, typecheck, build, database 106, and all four authentication journeys. Both Task 7 projects then created and reopened the item with its location and identifier, failing exactly because `Edition: 1st` was absent; this confirms the unchecked-field diagnosis above. PR run `35543822426`, job `106166111058`, had the recurrent profile-save authentication flake while the push run on the same code passed all authentication journeys.
 
-A fresh full regular CI run is required before completion.
+## Final verification and self-review
+
+- Promoted source SHA `ddcd8e4d0e10eeab1f36ffc2f20b61cca77554e4` passed full CI `35544063289`, job `106166749645`: 224 unit tests, 106 dedicated integration tests including 20 actual-database tests, all four authentication journeys, and both Task 7 management projects (desktop DE and mobile EN). Lint, typecheck, build, migrations, Compose validation, and web/worker Docker builds also passed.
+- The two localized management flows completed collection, nested node, custom field, three-level location, item creation, scanner proposal confirmation, identifier/tag/custom-field/location persistence, edit, archive, and inactive-save assertions in 25.5 seconds.
+- The failure-only formatter diagnostic was skipped on the clean run, as intended.
+- Self-review is complete against the Task 7 brief. No Task 7 code concern remains. A recurrent pre-existing profile-save timing failure appeared in some PR authentication runs, while push runs on the same source passed all four authentication journeys; no unrelated auth change was made.
+- Independent Task 7 review has not yet been performed; the controller owns that next gate.
