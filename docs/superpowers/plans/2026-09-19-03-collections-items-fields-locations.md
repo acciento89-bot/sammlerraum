@@ -238,7 +238,7 @@ git commit -m "feat: add typed custom fields"
 - Consumes: collection ID/item ID.
 - Produces: `createLocation`, `moveLocation`, `assignItemLocation`, `getLocationContents`.
 
-- [ ] **Step 1: Write failing privacy and cycle tests**
+- [x] **Step 1: Write failing privacy and cycle tests**
 
 ```ts
 it("keeps storage location out of the public item DTO", async () => {
@@ -252,21 +252,21 @@ it("rejects a storage location hierarchy cycle", async () => {
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run packages/domain/src/locations/location-service.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement models and service**
+- [x] **Step 3: Implement models and service**
 
 Add `StorageLocation` adjacency tree, location type, stable QR token/ID, and `ItemLocationHistory`. Assignment writes both the current foreign key and history record in one transaction.
 
-- [ ] **Step 4: Run tests**
+- [x] **Step 4: Run tests**
 
 Run: `pnpm vitest run packages/domain/src/locations`  
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/db packages/domain/src/locations packages/contracts/src/locations.ts
