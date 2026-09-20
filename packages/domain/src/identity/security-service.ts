@@ -62,7 +62,7 @@ export type SecurityDatabase = {
   };
   $transaction<T>(
     operation: (transaction: SecurityTransaction) => Promise<T>,
-    options: { isolationLevel: "Serializable" },
+    options: { isolationLevel: "ReadCommitted" },
   ): Promise<T>;
 };
 
@@ -196,7 +196,7 @@ export function createSecurityService(database: SecurityDatabase, now = () => ne
             throw new SecurityServiceError("LOGIN_METHOD_NOT_FOUND", "Login method not found");
           }
         },
-        { isolationLevel: "Serializable" },
+        { isolationLevel: "ReadCommitted" },
       );
     },
   };

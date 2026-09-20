@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { createSessionRouteHandlers } from "./route";
+import { createSessionRouteHandlers } from "../../../../../lib/account-security-routes";
 
 const session = {
   user: { id: "user-1" },

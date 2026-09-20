@@ -208,7 +208,11 @@ describe.runIf(runIntegration)("security service PostgreSQL integration", () => 
         service.removeLoginMethod(userId, `account:${google.id}`),
       ]);
       expect(results.filter((result) => result.status === "fulfilled")).toHaveLength(1);
-      expect(results.filter((result) => result.status === "rejected")).toHaveLength(1);
+      const rejected = results.filter((result) => result.status === "rejected");
+      expect(rejected).toHaveLength(1);
+      expect(rejected[0]).toMatchObject({
+        reason: { code: "RECOVERY_METHOD_REQUIRED" },
+      });
       expect(await prisma!.account.count({ where: { userId } })).toBe(1);
     } finally {
       await prisma!.user.delete({ where: { id: userId } });
