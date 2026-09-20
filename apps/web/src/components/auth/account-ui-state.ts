@@ -31,6 +31,10 @@ export async function finishReauthentication(
   return now + 5 * 60_000;
 }
 
+export function inPlacePasswordCredentials(email: string, password: string) {
+  return { email, password };
+}
+
 export function profileFeedback(ok: boolean) {
   return ok
     ? ({ kind: "success", role: "status" } as const)

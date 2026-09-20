@@ -8,6 +8,7 @@ import {
   authView,
   classifySecurityFailure,
   finishReauthentication,
+  inPlacePasswordCredentials,
   profileFeedback,
   providerTranslationKey,
   remainingFreshMilliseconds,
@@ -55,6 +56,13 @@ describe("account UI state", () => {
       finishReauthentication(async () => ({ error: null }), reloadSessions, 10_000),
     ).resolves.toBe(310_000);
     expect(reloadSessions).toHaveBeenCalledOnce();
+  });
+
+  it("builds in-place password reauthentication without a redirect callback", () => {
+    expect(inPlacePasswordCredentials("sammler@example.com", "secret-password")).toEqual({
+      email: "sammler@example.com",
+      password: "secret-password",
+    });
   });
 
   it("presents profile failures as alerts instead of success statuses", () => {

@@ -11,7 +11,7 @@ This is the handoff/status file for long-running implementation. Update it after
 |---|---|---:|---|---|
 | 01 | Platform Foundation | 6 | complete (6/6) | — |
 | 02 | Identity, Auth & Policies | 7 | complete (7/7) | — |
-| 03 | Collections, Items, Fields & Locations | 8 | in progress (0/8) | Task 1 |
+| 03 | Collections, Items, Fields & Locations | 8 | in progress (1/8) | Task 2 |
 | 04 | Media & Documents | 6 | not started | Task 1 |
 | 05 | Catalog, Condition & Grading | 7 | not started | Task 1 |
 | 06 | Valuations & Market Data | 6 | not started | Task 1 |
@@ -288,3 +288,45 @@ Every completed and independently reviewed task must be checked off in its detai
 - Fresh task review plus scoped fix reviews approved, all5 product findings and3 evidenced CI-test defects fixed. No open review findings. Task7 boxes checked; Phase02 complete7/7.
 - Live Google/Apple callback/consent and real SMTP remain explicitly documented external blockers; they do not block Phase03. No production deployment/provider action occurred.
 - Next: Phase03 Task1 collection hierarchy/membership schema. Completion documentation only uses [skip ci]; tested code unchanged.
+
+### Phase 03 execution rulings from existing detail-plan preflight
+
+- Ruling: Task1 canonical moveCollectionNode also exposes the plan-example moveNode alias to the same implementation — resolves naming mismatch without duplicate logic; cost if wrong: compatibility alias removal.
+- Ruling: owner-authorized writes now; Phase09 adds authoritative resource-scoped membership — no caller-provided roles; cost if wrong: later policy adapter refinement.
+- Ruling: Tasks3/5 add owned additive migrations despite omitted migration commands — schema changes must deploy; cost if wrong: migration correction before publication only.
+- Ruling: Task5 introduces privacy-safe public item projection required by its test, reused in Task6; Task6 includes thin customfield/location/identifier/tag endpoints consumed by Task7 — resolves producer/consumer omissions without reducing scope; cost if wrong: interface organization refactor.
+- Ruling: Task7 requires actual mobile/desktop browser gates; scanner result remains an unconfirmed identifier proposal — matches full plan; cost if wrong: testfixture adjustments.
+- Ruling: internal label-token resolution may identify a location, but public scan routes authorize before any metadata/redirect disclosure; token alone grants no access — preserves privacy; cost if wrong: resolver interface refinement.
+- Ruling: hierarchy mutations lock the owned collection root before descendant validation/write in short ReadCommitted transactions — prevents concurrent inverse cycles; cost if wrong: lock granularity refinement.
+- Ruling: absent local PostgreSQL/Docker, schema-diff migration generation/validation runs locally and real migration/integration runs in CI before checkoff — no published migration rewrites; cost if wrong: CI correction latency.
+
+### Phase 03 Task 1 — hierarchy candidate, real database gate pending
+
+- Base `6ebbc1a`; coherent schema/integration WIP `8af748b59117cc21ee242a44e36d495a3aec7636`.
+- Added Visibility/Collection/CollectionNode, PRIVATE defaults, indexed owner/collection/composite same-collection parent FKs; additive migration `20260920195000_collections_hierarchy`. Prisma schema valid and generated migration byte-matches final schema diff.
+- Trusted-actor owner-scoped services create collection/node, moveNode/moveCollectionNode and internal root-first full ancestry visibility. Root row locks serialize mutations; recursive queries track visited UUID paths and reject corrupted/cyclic ancestry. UNLISTED never becomes PUBLIC.
+- Initial missing-module cycle test RED thenGREEN; final10 unit tests pass/4DBskips. Additional mutation regressions proved foreign-parent/missing-root/descendant-cycle guards after their implementation; these mutation checks are not represented as tests preceding those guards.
+- Full local136 tests passed/9DBskips; lint/typecheck/configured productionbuild, Prisma format/validate/generate and diff checks pass. Controller focused10/10 pass. Local migrate dev attempted once, unavailable PostgreSQL prevented execution.
+- Four real CI cases: recursive descendant rejection, cross-collection service+FK rejection, full UNLISTED ancestry, simultaneous inverse moves. Task stays unchecked until migration and these cases succeed.
+- Fresh reviewer spec/quality APPROVED with no findings. Reviewed candidate ready for full CI; no completion claim before real DB gate.
+
+### Phase 03 Task 1 — hierarchy DB gate passed; auth regression diagnostic pending
+
+- Candidate `f1ef9fe`; CI35528009956/job106123468688 applied new migration and passed136unit/29dedicated integration tests, including4 new hierarchy DB cases. Typecheck/lint/build passed.
+- Existing auth browser journey intermittently left2 sessions after post-reauth revoke (expected1);3 other cases passed, whereas previous phase gate had4/4 success. Root cause is not established; no hierarchy defect inferred.
+- Original auth implementer investigated, added safe exact DELETE-response204 assertion before existing DOM assertion to distinguish server failure from stale UI. Scoped reviewer approved diagnostic; no product/security changes or sensitive logging. Full gate remains open, Task1 unchecked.
+
+### Phase 03 Task 1 — auth regression root cause fixed, CI pending
+
+- Diagnostic `c5fdcf1`, CI35528352241/job106124380928: no matching session DELETE response after reauth;3 browser cases passed. This narrowed the failure to client navigation/request execution.
+- Verified installed Better Auth1.7.5: email sign-in callbackURL returns redirect:true and client plugin sets window.location.href. In-place security reauth supplied callbackURL while concurrently reloading session state; pending navigation interrupted the next action.
+- Reauth now supplies only email/password, preserving normal login/reset/OAuth redirects. New test observedRED thenGREEN; full137 unit tests pass/9DBskips; focusedcontroller9/9, lint/typecheck/collection pass.
+- Browser regression asserts actual reauth redirect:false/noURL/stablelocation, refreshed sessions, DELETE204 and final count1. Scoped reviewer approved causal minimal fix without new findings; fullCI still required before Task1 checkoff.
+
+### Phase 03 Task 1 — COMPLETE
+
+- Hierarchy implementation remote `f1ef9fe2f04a083aa331a6ad4188e01b59fe9c8a`; final regression-fixed tested code `da330457ea18aab0b47d03bc4b1ca4c56be4227b`.
+- Full CI SUCCESS: https://github.com/acciento89-bot/sammlerraum/actions/runs/35528856401 (job106125740859).
+-137 unit/static tests passed; dedicated integration29 passed including9 actual DB cases (4 new hierarchy cases). All4 browser journeys passed33.6s, including explicit nonredirecting reauth+DELETE204 regression. Migrations/lint/typecheck/workspace build/Compose/both Docker builds passed.
+- Hierarchy fresh spec/quality review approved without findings. Auth regression root-cause fix separately reviewed and verified; no open findings. Task1 checked off; next Task2 collectible item lifecycle/acquisition/quantity split.
+- Documentation-only completion with [skip ci]; tested code unchanged. No production/provider actions.

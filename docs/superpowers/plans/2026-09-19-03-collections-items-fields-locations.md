@@ -40,7 +40,7 @@
 - Consumes: authenticated user ID.
 - Produces: `createCollection`, `createCollectionNode`, `moveCollectionNode`, `getAncestorVisibility`.
 
-- [ ] **Step 1: Write failing cycle test**
+- [x] **Step 1: Write failing cycle test**
 
 ```ts
 it("rejects moving a node below its own descendant", async () => {
@@ -49,16 +49,16 @@ it("rejects moving a node below its own descendant", async () => {
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run packages/domain/src/collections/collection-service.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Add models and service**
+- [x] **Step 3: Add models and service**
 
 Add enums `Visibility = PRIVATE | UNLISTED | PUBLIC`, models `Collection`, `CollectionNode`, and owner relation. Nodes use `parentId` adjacency. Before moves, execute a recursive CTE that gathers descendants and reject when target parent is among them.
 
-- [ ] **Step 4: Run migration and tests**
+- [x] **Step 4: Run migration and tests**
 
 Run:
 ```bash
@@ -68,7 +68,7 @@ pnpm vitest run packages/domain/src/collections/collection-service.test.ts
 
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/db packages/domain/src/collections packages/contracts/src/collections.ts

@@ -182,19 +182,37 @@ export function createCollectionService(database: CollectionDatabase, actorUserI
           }
         }
 
-        const descendants = await transaction.$queryRaw<Array<{ id: string }>>`
+        const descendants = await transaction.$queryRaw<
+          Array<{ id: string; collectionId: string; cycle: boolean }>
+        >`
           WITH RECURSIVE descendants AS (
-            SELECT "id"
+            SELECT
+              "id",
+              "collectionId",
+              ARRAY["id"] AS path,
+              false AS cycle
             FROM "CollectionNode"
             WHERE "id" = ${nodeId}::uuid AND "collectionId" = ${source.collectionId}::uuid
             UNION ALL
-            SELECT child."id"
+            SELECT
+              child."id",
+              child."collectionId",
+              parent.path || child."id",
+              child."id" = ANY(parent.path)
             FROM "CollectionNode" child
             JOIN descendants parent ON child."parentId" = parent."id"
-            WHERE child."collectionId" = ${source.collectionId}::uuid
+            WHERE NOT parent.cycle
           )
-          SELECT "id" FROM descendants
+          SELECT "id", "collectionId", cycle FROM descendants
         `;
+        if (
+          descendants.some(
+            (descendant) =>
+              descendant.cycle === true || descendant.collectionId !== source.collectionId,
+          )
+        ) {
+          throw new CollectionServiceError("COLLECTION_HIERARCHY_INVALID");
+        }
         if (
           data.parentId !== null &&
           descendants.some((descendant) => descendant.id === data.parentId)

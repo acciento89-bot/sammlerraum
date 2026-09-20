@@ -39,18 +39,21 @@ describe("collection service", () => {
   it("rejects moving a node below its own descendant", async () => {
     const parentId = "00000000-0000-4000-8000-000000000001";
     const childId = "00000000-0000-4000-8000-000000000002";
+    const collectionId = "00000000-0000-4000-8000-000000000010";
+    let rawCalls = 0;
     const transaction = {
       collection: {
-        findUnique: async () => ({ id: "00000000-0000-4000-8000-000000000010" }),
+        findUnique: async () => ({ id: collectionId }),
       },
       collectionNode: {
         findUnique: async ({ where }: { where: { id: string } }) => ({
           id: where.id,
-          collectionId: "00000000-0000-4000-8000-000000000010",
+          collectionId,
         }),
         updateMany: async () => ({ count: 1 }),
       },
-      $queryRaw: async () => [{ id: childId }],
+      $queryRaw: async () =>
+        rawCalls++ === 0 ? [{ id: collectionId }] : [{ id: childId, collectionId, cycle: false }],
     };
     const database = {
       $transaction: async <T>(operation: (tx: typeof transaction) => Promise<T>) =>
@@ -64,6 +67,42 @@ describe("collection service", () => {
     await expect(service.moveNode(parentId, { parentId: childId })).rejects.toMatchObject({
       code: "COLLECTION_HIERARCHY_CYCLE",
     });
+  });
+
+  it("fails closed when the descendant query finds an existing hierarchy cycle", async () => {
+    const nodeId = "00000000-0000-4000-8000-000000000001";
+    const collectionId = "00000000-0000-4000-8000-000000000010";
+    let rawCalls = 0;
+    let updates = 0;
+    const transaction = {
+      collectionNode: {
+        findUnique: async () => ({ id: nodeId, collectionId }),
+        updateMany: async () => {
+          updates += 1;
+          return { count: 1 };
+        },
+      },
+      $queryRaw: async () =>
+        rawCalls++ === 0
+          ? [{ id: collectionId }]
+          : [
+              { id: nodeId, collectionId, cycle: false },
+              { id: nodeId, collectionId, cycle: true },
+            ],
+    };
+    const database = {
+      $transaction: async <T>(operation: (tx: typeof transaction) => Promise<T>) =>
+        operation(transaction),
+    };
+    const service = createCollectionService(
+      database as unknown as CollectionDatabase,
+      "owner-user-id",
+    );
+
+    await expect(service.moveCollectionNode(nodeId, { parentId: null })).rejects.toMatchObject({
+      code: "COLLECTION_HIERARCHY_INVALID",
+    });
+    expect(updates).toBe(0);
   });
 
   it("creates a private node only below a parent in the actor's collection", async () => {
