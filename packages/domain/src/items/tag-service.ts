@@ -1,13 +1,13 @@
 import { CollectibleItemSchema } from "@sammlerraum/contracts/items";
 
-export type ItemTag = {
+export type StoredTag = {
   id: string;
   ownerId: string;
   name: string;
   normalizedName: string;
 };
 
-type TagCreateData = Omit<ItemTag, "id">;
+type TagCreateData = Omit<StoredTag, "id">;
 
 type TagTransaction = {
   tag: {
@@ -20,7 +20,7 @@ type TagTransaction = {
       };
       create: TagCreateData;
       update: Record<string, never>;
-    }): Promise<ItemTag>;
+    }): Promise<StoredTag>;
   };
   itemTag: {
     deleteMany(args: { where: { itemId: string } }): Promise<{ count: number }>;
@@ -54,6 +54,9 @@ export class TagServiceError extends Error {
 
 function normalizeTag(value: string): { name: string; normalizedName: string } {
   if (typeof value !== "string") {
+    throw new TagServiceError("TAGS_INVALID");
+  }
+  if (value.includes("\u0000")) {
     throw new TagServiceError("TAGS_INVALID");
   }
   const name = value.normalize("NFKC").trim().replace(/\s+/gu, " ");
@@ -102,7 +105,7 @@ export function createTagService(database: TagDatabase, actorUserId: string) {
   async function setItemTags(
     itemIdInput: string,
     tagsInput: readonly string[],
-  ): Promise<ItemTag[]> {
+  ): Promise<StoredTag[]> {
     const itemId = CollectibleItemSchema.shape.id.parse(itemIdInput);
     const tags = parseTags(tagsInput);
 
@@ -111,25 +114,38 @@ export function createTagService(database: TagDatabase, actorUserId: string) {
         await lockOwnedItem(transaction, itemId, actorUserId);
         await transaction.itemTag.deleteMany({ where: { itemId } });
 
-        const saved: ItemTag[] = [];
-        for (const tag of tags) {
-          saved.push(
-            await transaction.tag.upsert({
-              where: {
-                ownerId_normalizedName: {
-                  ownerId: actorUserId,
-                  normalizedName: tag.normalizedName,
-                },
-              },
-              create: {
+        const tagsInLockOrder = [...tags].sort((left, right) =>
+          left.normalizedName < right.normalizedName
+            ? -1
+            : left.normalizedName > right.normalizedName
+              ? 1
+              : 0,
+        );
+        const savedByNormalizedName = new Map<string, StoredTag>();
+        for (const tag of tagsInLockOrder) {
+          const savedTag = await transaction.tag.upsert({
+            where: {
+              ownerId_normalizedName: {
                 ownerId: actorUserId,
-                name: tag.name,
                 normalizedName: tag.normalizedName,
               },
-              update: {},
-            }),
-          );
+            },
+            create: {
+              ownerId: actorUserId,
+              name: tag.name,
+              normalizedName: tag.normalizedName,
+            },
+            update: {},
+          });
+          savedByNormalizedName.set(tag.normalizedName, savedTag);
         }
+        const saved = tags.map((tag) => {
+          const savedTag = savedByNormalizedName.get(tag.normalizedName);
+          if (!savedTag) {
+            throw new Error("Tag replacement did not persist every row");
+          }
+          return savedTag;
+        });
         if (saved.length > 0) {
           await transaction.itemTag.createMany({
             data: saved.map((tag) => ({ itemId, tagId: tag.id })),
