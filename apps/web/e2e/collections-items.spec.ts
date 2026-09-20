@@ -43,6 +43,12 @@ const copy = {
     email: "E-Mail-Adresse",
     password: "Passwort",
     signIn: "Anmelden",
+    identifiers: "Kennungen und Code-Erfassung",
+    scanStart: "Code scannen",
+    scanProposal: "Erkannter Vorschlag",
+    scanConfirm: "Vorschlag übernehmen",
+    archive: "Archivieren",
+    archivedMessage: "Stück archiviert.",
   },
   en: {
     collectionName: "Collection name",
@@ -78,6 +84,12 @@ const copy = {
     email: "Email address",
     password: "Password",
     signIn: "Sign in",
+    identifiers: "Identifiers and code capture",
+    scanStart: "Scan code",
+    scanProposal: "Detected proposal",
+    scanConfirm: "Accept proposal",
+    archive: "Archive",
+    archivedMessage: "Item archived.",
   },
 } as const;
 
@@ -163,6 +175,21 @@ test.describe("localized collection and item management", () => {
   test("collector creates a nested collection and item with custom field and location", async ({
     page,
   }, testInfo) => {
+    await page.addInitScript(() => {
+      Object.defineProperty(window, "BarcodeDetector", {
+        configurable: true,
+        value: class {
+          async detect() {
+            return [{ rawValue: "9783161484100" }];
+          }
+        },
+      });
+      Object.defineProperty(navigator, "mediaDevices", {
+        configurable: true,
+        value: { getUserMedia: async () => new MediaStream() },
+      });
+      HTMLMediaElement.prototype.play = async () => undefined;
+    });
     const locale = localeFor(testInfo);
     const labels = copy[locale];
     const collector = await seedTestCollector();
@@ -204,7 +231,13 @@ test.describe("localized collection and item management", () => {
       await page.getByLabel(labels.unitPrice).fill("12.34");
       await page.getByLabel(labels.currency).selectOption("EUR");
       await page.getByLabel(labels.tags).fill("holo, favorite");
+      await page.getByText(labels.identifiers, { exact: true }).click();
       await page.getByLabel(labels.identifierType).selectOption("EAN");
+      await page.getByRole("button", { name: labels.scanStart }).click();
+      await expect(page.getByText(labels.scanProposal)).toBeVisible();
+      await expect(page.getByLabel(labels.identifierValue)).toHaveValue("");
+      await page.getByRole("button", { name: labels.scanConfirm }).click();
+      await expect(page.getByLabel(labels.identifierValue)).toHaveValue("9783161484100");
       await page.getByLabel(labels.identifierValue).fill("4006381333931");
       await page.getByLabel("Edition").fill("1st");
       await page.getByLabel(labels.location).selectOption({ label: "Fach 2" });
@@ -214,6 +247,14 @@ test.describe("localized collection and item management", () => {
       await expect(page.getByText("Edition: 1st")).toBeVisible();
       await expect(page.getByText("Fach 2", { exact: true })).toBeVisible();
       await expect(page.getByText("4006381333931", { exact: true })).toBeVisible();
+
+      await page.getByLabel(labels.title).fill("Glurak – edited");
+      await page.getByRole("button", { name: labels.saveItem }).click();
+      await expect(page.getByRole("heading", { name: "Glurak – edited" })).toBeVisible();
+      page.once("dialog", (dialog) => dialog.accept());
+      await page.getByRole("button", { name: labels.archive }).click();
+      await expect(page.getByText(labels.archivedMessage)).toBeVisible();
+      await expect(page.getByRole("button", { name: labels.saveItem })).toBeDisabled();
     } finally {
       await prisma.itemLocationHistory.deleteMany({ where: { assignedById: collector.userId } });
       await prisma.user.deleteMany({ where: { id: collector.userId } });

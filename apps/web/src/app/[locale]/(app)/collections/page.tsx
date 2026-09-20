@@ -2,8 +2,8 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { setRequestLocale } from "next-intl/server";
 
-import { CollectionsManager } from "../../../../../components/collections/collections-manager";
-import { auth } from "../../../../../lib/auth";
+import { CollectionsManager } from "../../../../components/collections/collections-manager";
+import { auth } from "../../../../lib/auth";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
