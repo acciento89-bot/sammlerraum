@@ -3,8 +3,21 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "pnpm typecheck",
-    "lint": "prettier --check .",
-    "typecheck": "tsc --noEmit --project ../../tsconfig.base.json"
+    "build": "next build",
+    "dev": "next dev",
+    "lint": "prettier --check src messages package.json next.config.ts tsconfig.json",
+    "start": "next start",
+    "typecheck": "tsc --noEmit --project tsconfig.json"
+  },
+  "dependencies": {
+    "@sammlerraum/db": "workspace:*",
+    "next": "16.3.5",
+    "next-intl": "4.14.5",
+    "react": "19.3.0",
+    "react-dom": "19.3.0"
+  },
+  "devDependencies": {
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3"
   }
 }

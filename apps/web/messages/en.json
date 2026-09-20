@@ -1,0 +1,18 @@
+{
+  "Shell": {
+    "brand": "Sammlerraum",
+    "tagline": "Preserving collections together",
+    "home": "Home",
+    "language": "Language",
+    "german": "Deutsch",
+    "english": "English",
+    "footer": "Sammlerraum – a quiet place for remarkable things."
+  },
+  "Home": {
+    "eyebrow": "Digital collection archive",
+    "title": "What matters to us deserves a good place.",
+    "intro": "Sammlerraum helps document collections clearly and preserve the stories behind them.",
+    "status": "The platform is being prepared.",
+    "detail": "The first tools for collections, objects, and shared work are coming soon."
+  }
+}

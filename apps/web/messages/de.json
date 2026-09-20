@@ -1,0 +1,18 @@
+{
+  "Shell": {
+    "brand": "Sammlerraum",
+    "tagline": "Sammlungen gemeinsam bewahren",
+    "home": "Startseite",
+    "language": "Sprache",
+    "german": "Deutsch",
+    "english": "English",
+    "footer": "Sammlerraum – ein ruhiger Ort für besondere Dinge."
+  },
+  "Home": {
+    "eyebrow": "Digitales Sammlungsarchiv",
+    "title": "Was uns wichtig ist, verdient einen guten Platz.",
+    "intro": "Sammlerraum hilft dabei, Sammlungen übersichtlich zu dokumentieren und ihre Geschichten zu bewahren.",
+    "status": "Die Plattform wird vorbereitet.",
+    "detail": "Erste Funktionen für Sammlungen, Objekte und gemeinsame Arbeit folgen bald."
+  }
+}
