@@ -99,6 +99,20 @@ function localeFor(testInfo: TestInfo): Locale {
   return testInfo.project.name === "mobile" ? "en" : "de";
 }
 
+async function expectTreeItem(page: Page, name: string) {
+  const item = page.getByRole("treeitem", { name, exact: true });
+  try {
+    await expect(item).toBeVisible();
+  } catch (error) {
+    const main = page.locator("main");
+    const [text, aria] = await Promise.all([main.innerText(), main.ariaSnapshot()]);
+    const original = error instanceof Error ? error.message : String(error);
+    throw new Error(
+      `${original}\nUI text: ${text.slice(0, 2000)}\nARIA: ${aria.slice(0, 3000)}`,
+    );
+  }
+}
+
 const databaseUrl = process.env.DATABASE_URL ?? "";
 const databaseName = (() => {
   try {
@@ -219,8 +233,12 @@ test.describe("localized collection and item management", () => {
       await page.getByRole("link", { name: `Pokémon ${labels.private}`, exact: true }).click();
 
       await page.getByLabel(labels.subcollectionName).fill("Base Set");
+      const nodeCreated = page.waitForResponse(
+        (response) => response.url().endsWith("/nodes") && response.request().method() === "POST",
+      );
       await page.getByRole("button", { name: labels.createSubcollection }).click();
-      await expect(page.getByRole("treeitem", { name: "Base Set", exact: true })).toBeVisible();
+      expect((await nodeCreated).status()).toBe(201);
+      await expectTreeItem(page, "Base Set");
 
       await page.getByLabel(labels.customFieldName).fill("Edition");
       await page.getByLabel(labels.customFieldType).selectOption({ label: labels.shortText });
@@ -240,8 +258,13 @@ test.describe("localized collection and item management", () => {
             .getByLabel(labels.locationParent, { exact: true })
             .selectOption({ label: parent });
         }
+        const locationCreated = page.waitForResponse(
+          (response) =>
+            response.url().endsWith("/api/v1/locations") && response.request().method() === "POST",
+        );
         await locationSection.getByRole("button", { name: labels.createLocation }).click();
-        await expect(page.getByRole("treeitem", { name, exact: true })).toBeVisible();
+        expect((await locationCreated).status()).toBe(201);
+        await expectTreeItem(page, name);
       };
       await createLocation("Wohnzimmer", labels.room);
       await createLocation("Vitrine", labels.cabinet, "Wohnzimmer");

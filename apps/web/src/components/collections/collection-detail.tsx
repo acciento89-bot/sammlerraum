@@ -376,12 +376,20 @@ function RecordTree<T extends TreeRecord>({
     if (children.length === 0) return null;
     return (
       <ul role={parentId === null ? "tree" : "group"} className="management-tree">
-        {children.map((record) => (
-          <li role="treeitem" key={record.id}>
-            {render(record)}
-            {branch(record.id)}
-          </li>
-        ))}
+        {children.map((record) => {
+          const hasChildren = records.some((candidate) => candidate.parentId === record.id);
+          return (
+            <li
+              aria-expanded={hasChildren ? true : undefined}
+              aria-label={record.name}
+              role="treeitem"
+              key={record.id}
+            >
+              {render(record)}
+              {branch(record.id)}
+            </li>
+          );
+        })}
       </ul>
     );
   }
