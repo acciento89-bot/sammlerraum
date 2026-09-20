@@ -8,7 +8,10 @@ import { ZodError } from "zod";
 
 import { getRequestId } from "../request-id";
 
-export type ApiRouteHandler = (request: Request) => Response | Promise<Response>;
+export type ApiRouteHandler<Args extends unknown[] = []> = (
+  request: Request,
+  ...args: Args
+) => Response | Promise<Response>;
 
 const MAX_VALIDATION_ISSUES = 16;
 const INTERNAL_ERROR_MESSAGE = "An unexpected error occurred";
@@ -41,12 +44,12 @@ function validationMetadata(error: ZodError): ApiValidationErrorEnvelope["valida
   return { issues, truncated: error.issues.length > MAX_VALIDATION_ISSUES };
 }
 
-export function apiRoute(handler: ApiRouteHandler): ApiRouteHandler {
-  return async (request) => {
+export function apiRoute<Args extends unknown[]>(handler: ApiRouteHandler<Args>): ApiRouteHandler<Args> {
+  return async (request, ...args) => {
     const requestId = getRequestId(request.headers);
 
     try {
-      const response = await handler(request);
+      const response = await handler(request, ...args);
       const headers = new Headers(response.headers);
       headers.set("x-request-id", requestId);
       return new Response(response.body, {

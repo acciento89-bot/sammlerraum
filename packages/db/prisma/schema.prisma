@@ -121,7 +121,6 @@ model CollectionNode {
 
   @@unique([id, collectionId])
   @@index([collectionId])
-  @@index([collectionId, deletedAt])
   @@index([parentId, collectionId])
 }
 
@@ -157,6 +156,7 @@ model CollectibleItem {
   @@unique([id, collectionId])
   @@unique([id, ownerId])
   @@index([collectionId])
+  @@index([collectionId, deletedAt])
   @@index([nodeId, collectionId])
   @@index([storageLocationId, ownerId])
 }

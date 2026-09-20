@@ -285,5 +285,82 @@ export function createResourceQuery(database: ResourceQueryDatabase) {
     return rows.map((row) => StorageLocationSchema.parse(row));
   }
 
-  return { loadCollection, loadNode, loadItem, listCollections, listNodes, listItems, listCustomFields, listLocations };
+  async function getItemMetadata(itemId: string, ownerId: string) {
+    const id = CollectibleItemSchema.shape.id.parse(itemId);
+    const [identifiers, tags, fieldValues, selectedOptions, locations] = await Promise.all([
+      database.$queryRaw<Array<{ id: string; itemId: string; type: string; value: string; normalizedValue: string }>>`
+        SELECT identifier."id", identifier."itemId", identifier."type", identifier."value", identifier."normalizedValue"
+        FROM "ItemIdentifier" identifier
+        JOIN "CollectibleItem" item ON item."id" = identifier."itemId"
+        JOIN "Collection" collection ON collection."id" = item."collectionId"
+        WHERE identifier."itemId" = ${id}::uuid AND item."ownerId" = ${ownerId}
+          AND item."deletedAt" IS NULL AND collection."deletedAt" IS NULL
+        ORDER BY identifier."type", identifier."normalizedValue"
+      `,
+      database.$queryRaw<Array<{ id: string; name: string }>>`
+        SELECT tag."id", tag."name" FROM "Tag" tag
+        JOIN "ItemTag" item_tag ON item_tag."tagId" = tag."id"
+        JOIN "CollectibleItem" item ON item."id" = item_tag."itemId"
+        JOIN "Collection" collection ON collection."id" = item."collectionId"
+        WHERE item_tag."itemId" = ${id}::uuid AND item."ownerId" = ${ownerId}
+          AND item."deletedAt" IS NULL AND collection."deletedAt" IS NULL
+        ORDER BY tag."normalizedName"
+      `,
+      database.$queryRaw<Array<Record<string, unknown> & { fieldDefinitionId: string; fieldType: CustomFieldType }>>`
+        SELECT value.*, option."value" AS "singleSelectValue"
+        FROM "CustomFieldValue" value
+        JOIN "CollectibleItem" item ON item."id" = value."itemId"
+        JOIN "Collection" collection ON collection."id" = item."collectionId"
+        LEFT JOIN "CustomFieldOption" option ON option."id" = value."singleSelectOptionId"
+        WHERE value."itemId" = ${id}::uuid AND item."ownerId" = ${ownerId}
+          AND item."deletedAt" IS NULL AND collection."deletedAt" IS NULL
+        ORDER BY value."fieldDefinitionId"
+      `,
+      database.$queryRaw<Array<{ fieldDefinitionId: string; value: string }>>`
+        SELECT selected."fieldDefinitionId", option."value"
+        FROM "CustomFieldMultiSelectValue" selected
+        JOIN "CustomFieldOption" option ON option."id" = selected."optionId"
+        JOIN "CollectibleItem" item ON item."id" = selected."itemId"
+        JOIN "Collection" collection ON collection."id" = item."collectionId"
+        WHERE selected."itemId" = ${id}::uuid AND item."ownerId" = ${ownerId}
+          AND item."deletedAt" IS NULL AND collection."deletedAt" IS NULL
+        ORDER BY selected."fieldDefinitionId", selected."position"
+      `,
+      database.$queryRaw<StorageLocation[]>`
+        SELECT location."id", location."parentId", location."name", location."type", location."visibility", location."qrToken"
+        FROM "CollectibleItem" item
+        JOIN "Collection" collection ON collection."id" = item."collectionId"
+        JOIN "StorageLocation" location ON location."id" = item."storageLocationId" AND location."ownerId" = item."ownerId"
+        WHERE item."id" = ${id}::uuid AND item."ownerId" = ${ownerId}
+          AND item."deletedAt" IS NULL AND collection."deletedAt" IS NULL
+      `,
+    ]);
+    const multiByField = new Map<string, string[]>();
+    for (const option of selectedOptions) {
+      const current = multiByField.get(option.fieldDefinitionId) ?? [];
+      current.push(option.value);
+      multiByField.set(option.fieldDefinitionId, current);
+    }
+    const values = fieldValues.map((row) => {
+      const value = row.fieldType === "SHORT_TEXT" ? row.shortTextValue
+        : row.fieldType === "LONG_TEXT" ? row.longTextValue
+        : row.fieldType === "INTEGER" ? safeNumber(row.integerValue as bigint | number)
+        : row.fieldType === "DECIMAL" ? String(row.decimalValue)
+        : row.fieldType === "DATE" ? dateOnly(row.dateValue as Date | string)
+        : row.fieldType === "BOOLEAN" ? row.booleanValue
+        : row.fieldType === "SINGLE_SELECT" ? row.singleSelectValue
+        : row.fieldType === "MULTI_SELECT" ? (multiByField.get(row.fieldDefinitionId) ?? [])
+        : row.fieldType === "URL" ? row.urlValue
+        : { amountMinor: safeNumber(row.moneyAmountMinor as bigint | number), currency: row.moneyCurrency };
+      return { fieldDefinitionId: row.fieldDefinitionId, type: row.fieldType, value };
+    });
+    return {
+      identifiers,
+      tags: tags.map((tag) => tag.name),
+      customFieldValues: values,
+      location: locations[0] ? StorageLocationSchema.parse(locations[0]) : null,
+    };
+  }
+
+  return { loadCollection, loadNode, loadItem, listCollections, listNodes, listItems, listCustomFields, listLocations, getItemMetadata };
 }
