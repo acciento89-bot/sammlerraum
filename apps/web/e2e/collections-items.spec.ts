@@ -234,8 +234,7 @@ test.describe("localized collection and item management", () => {
 
       await page.getByLabel(labels.subcollectionName).fill("Base Set");
       const nodeCreated = page.waitForResponse(
-        (response) =>
-          response.url().endsWith("/nodes") && response.request().method() === "POST",
+        (response) => response.url().endsWith("/nodes") && response.request().method() === "POST",
       );
       await page.getByRole("button", { name: labels.createSubcollection }).click();
       expect((await nodeCreated).status()).toBe(201);
@@ -261,8 +260,7 @@ test.describe("localized collection and item management", () => {
         }
         const locationCreated = page.waitForResponse(
           (response) =>
-            response.url().endsWith("/api/v1/locations") &&
-            response.request().method() === "POST",
+            response.url().endsWith("/api/v1/locations") && response.request().method() === "POST",
         );
         await locationSection.getByRole("button", { name: labels.createLocation }).click();
         expect((await locationCreated).status()).toBe(201);
