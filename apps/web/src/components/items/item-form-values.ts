@@ -1,3 +1,10 @@
+import type {
+  CanonicalCustomFieldValue,
+  CustomFieldType,
+} from "@sammlerraum/contracts/custom-fields";
+
+export const itemCurrencyOptions = ["EUR", "USD", "CHF", "GBP"] as const;
+
 export function minorUnits(input: string): number | null {
   if (input.trim() === "") return null;
   const normalized = input.trim().replace(",", ".");
@@ -17,4 +24,30 @@ export function majorUnits(amount: number | null): string {
   const whole = Math.floor(amount / 100);
   const cents = amount % 100;
   return `${whole}.${String(cents).padStart(2, "0")}`;
+}
+
+export function integerCustomFieldValue(input: string): number {
+  return Number.parseInt(input, 10);
+}
+
+export function tagsInputValue(tags: string[]): string {
+  return tags.join(", ");
+}
+
+export function tagsFromInput(input: string): string[] {
+  return input
+    .split(",")
+    .map((tag) => tag.trim())
+    .filter(Boolean);
+}
+
+export function displayCustomFieldValue(
+  value: CanonicalCustomFieldValue,
+  _type?: CustomFieldType,
+  _locale?: "de" | "en",
+): string {
+  if (Array.isArray(value)) return value.join(", ");
+  if (typeof value === "object") return `${majorUnits(value.amountMinor)} ${value.currency}`;
+  if (typeof value === "boolean") return value ? "✓" : "—";
+  return String(value);
 }
