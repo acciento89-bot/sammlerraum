@@ -580,7 +580,9 @@ test.describe("localized collection and item management", () => {
     try {
       await loginTestCollector(page, locale, collector);
       const { collection } = await createCollectionApi(page, "Validation");
-      await writeApi(
+      const { customField: countDefinition } = await writeApi<{
+        customField: { id: string };
+      }>(
         page,
         "POST",
         "/api/v1/collections/" + collection.id + "/custom-fields",
@@ -611,6 +613,17 @@ test.describe("localized collection and item management", () => {
         .getByRole("checkbox", { name: labels.setCustomField, exact: true })
         .check();
 
+      let releaseEarlyPut = () => undefined;
+      const earlyPutBlocked = new Promise<void>((resolve) => {
+        releaseEarlyPut = () => resolve();
+      });
+      await page.route(
+        "**/api/v1/items/*/custom-fields/" + countDefinition.id,
+        async (route) => {
+          await earlyPutBlocked;
+          await route.continue();
+        },
+      );
       const mutations: string[] = [];
       page.on("request", (request) => {
         if (
@@ -624,6 +637,7 @@ test.describe("localized collection and item management", () => {
       await expect(page.getByRole("alert")).toContainText(labels.fieldInvalid);
       await page.waitForTimeout(250);
       expect(mutations).toEqual([]);
+      releaseEarlyPut();
     } finally {
       await cleanupCollector(collector.userId);
     }
