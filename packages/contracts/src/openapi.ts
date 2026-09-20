@@ -27,6 +27,21 @@ const ApiErrorSchema = z
     description: "Stable client-safe API error envelope.",
   });
 
+const ApiValidationErrorSchema = ApiErrorSchema.extend({
+  validation: z.object({
+    issues: z.array(
+      z.object({
+        location: z.enum(["request", "field"]),
+        code: z.string(),
+      }),
+    ),
+    truncated: z.boolean(),
+  }),
+}).register(schemaRegistry, {
+  id: "ApiValidationError",
+  description: "Client-safe request validation error envelope.",
+});
+
 const AccountSessionSchema = z
   .object({
     id: z.string(),
@@ -108,7 +123,9 @@ export function buildOpenApiDocument(): OpenApiDocument {
             "204": { description: "Session revoked" },
             "400": {
               description: "Invalid request",
-              content: { "application/json": { schema: schemaReference("ApiError") } },
+              content: {
+                "application/json": { schema: schemaReference("ApiValidationError") },
+              },
             },
             "401": {
               description: "Authentication required",

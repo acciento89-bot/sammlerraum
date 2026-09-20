@@ -38,7 +38,9 @@ test.describe("password authentication API", () => {
 
       const verificationUrl = server.verificationUrlFor(email);
       expect(verificationUrl).toMatch(
-        new RegExp(`^${server.origin.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}/api/auth/verify-email\\?`),
+        new RegExp(
+          `^${server.origin.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}/api/auth/verify-email\\?`,
+        ),
       );
       const verification = await request.get(verificationUrl, { maxRedirects: 0 });
       expect([200, 302]).toContain(verification.status());
