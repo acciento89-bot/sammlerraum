@@ -13,7 +13,7 @@ This is the handoff/status file for long-running implementation. Update it after
 |---|---|---:|---|---|
 | 01 | Platform Foundation | 6 | complete (6/6) | — |
 | 02 | Identity, Auth & Policies | 7 | complete (7/7) | — |
-| 03 | Collections, Items, Fields & Locations | 8 | in progress (2/8) | Task 3 |
+| 03 | Collections, Items, Fields & Locations | 8 | in progress (3/8) | Task 4 |
 | 04 | Media & Documents | 6 | not started | Task 1 |
 | 05 | Catalog, Condition & Grading | 7 | not started | Task 1 |
 | 06 | Valuations & Market Data | 6 | not started | Task 1 |
@@ -45,9 +45,10 @@ This is the handoff/status file for long-running implementation. Update it after
 - [x] P02 T07 — Localized authentication, profile and security UI
 - [x] P03 T01 — Collection and hierarchy models
 - [x] P03 T02 — Collectible items, acquisition lifecycle and quantity splitting
-- [ ] P03 T03 — Structured identifiers and tags (implementation/review in progress)
+- [x] P03 T03 — Structured identifiers and tags
+- [ ] P03 T04 — Typed custom field definitions and values
 
-**Verified completion: 15/91 tasks.** Later tasks remain open as listed in the phase table and detail plans.
+**Verified completion: 16/91 tasks.** Later tasks remain open as listed in the phase table and detail plans.
 
 ## Update rule
 
@@ -373,3 +374,15 @@ Every completed and independently reviewed task must be checked off in its detai
 - Full CI SUCCESS: https://github.com/acciento89-bot/sammlerraum/actions/runs/35530315747 (job106129631374).
 - 146 unit/static tests passed; dedicated integration41 passed including12 actual DB cases (3 new item cases). All4 browser journeys passed26.6s. Migration/lint/typecheck/workspace build/Compose/both Docker builds passed.
 - Fresh spec/quality review approved without findings. Task2 checked off; next Task3 structured identifiers/tags. Completion documentation only uses [skip ci]; tested code unchanged.
+
+### Phase 03 Task 3 — COMPLETE
+
+- Initial tests-only RED `87b3e99`, CI35531276807/job106132190916: exact focused command failed on missing identifier-service. Implementation `312b53e1`; canonical formatter correction `f5fea02`; review fixes `897ebe6` and `64768d5`.
+- Additive `20260920213000_item_identifiers_tags` migration, item/type/normalized-value identifier uniqueness, owner-scoped reusable tags and join rows. Leading zeroes preserved; owner-filtered item row locks and short ReadCommitted atomic replacements; foreign/missing items share safe errors.
+- Fresh review: spec PASS, initial quality findings fixed. Canonical tag acquisition prevents reverse-list deadlocks; NUL rejected before DB; collision-proof identifier tuple keys; StoredTag DTO name; fixture cleanup from setup start; redundant permanent CI runs removed. Second scoped review caught mixed-type ordering regression, reproduced RED then fixed GREEN; final spec/quality PASS with no findings.
+- Review-fix RED: three expected failures; focused GREEN7/7, then mixed-order RED and GREEN8/8. Local items16 passed, lint/typecheck/diff check clean. Actual DB tests cover owner isolation, cross-item/cross-owner identifier reuse, rollback and reversed-order concurrent tag writes.
+- Full final CI SUCCESS: https://github.com/acciento89-bot/sammlerraum/actions/runs/35532984136 (job106136853293), tested commit `64768d5729e53f76198a014af0ae1747abce1564`.
+- 154 unit/static tests passed; dedicated integration52 passed including15 actual DB cases (3 identifier/tag cases); all4 browser journeys passed28.4s. Migration/lint/typecheck/workspace build/Compose/both Docker builds passed.
+- Ruling: exact focused task commands were executed for RED/GREEN; permanent CI retains full suite plus explicit real DB invocation without duplicate focused/item unit steps — preserves verification while removing triplicate runs; cost if wrong: restore explicit CI steps.
+- Runtime disconnected after Task2. Remote GitHub trees/commits and Actions preserved implementation/TDD/review until runtime recovered; fresh checkout matched remote exactly. No completed work was lost. Approved report snapshots preserved on checkpoint branch `1ec2a8968f18fdd44b82695597d0b10cd2beaec2`.
+- Task3 checked off; next Task4 typed custom fields. The user-requested main ledger and feature ledger are synchronized; code remains on the feature branch, no production/provider action.
