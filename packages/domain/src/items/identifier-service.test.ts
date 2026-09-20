@@ -63,6 +63,45 @@ describe("item identifier service", () => {
     });
   });
 
+  it("preserves caller order when identifier types are interleaved", async () => {
+    let createdIdentifiers: Array<Record<string, string>> = [];
+    const transaction = {
+      $queryRaw: vi.fn().mockResolvedValue([{ id: itemId }]),
+      itemIdentifier: {
+        deleteMany: vi.fn().mockResolvedValue({ count: 0 }),
+        createMany: vi.fn(async ({ data }: { data: Array<Record<string, string>> }) => {
+          createdIdentifiers = data;
+          return { count: data.length };
+        }),
+        findMany: vi.fn(async () =>
+          createdIdentifiers.map((row, index) => ({
+            id: `00000000-0000-4000-8000-00000000001${index}`,
+            ...row,
+          })),
+        ),
+      },
+    };
+    const service = createIdentifierService(
+      {
+        $transaction: async <T>(operation: (tx: typeof transaction) => Promise<T>) =>
+          operation(transaction),
+      } as unknown as IdentifierDatabase,
+      "trusted-owner",
+    );
+
+    const saved = await service.setItemIdentifiers(itemId, [
+      { type: "EAN", value: "001" },
+      { type: "ISBN", value: "ISBN-2" },
+      { type: "EAN", value: "003" },
+    ]);
+
+    expect(saved.map(({ type, value }) => ({ type, value }))).toEqual([
+      { type: "EAN", value: "001" },
+      { type: "ISBN", value: "ISBN-2" },
+      { type: "EAN", value: "003" },
+    ]);
+  });
+
   it("atomically replaces identifiers after locking the owned item", async () => {
     const calls: string[] = [];
     const transaction = {

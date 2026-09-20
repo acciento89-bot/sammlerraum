@@ -97,17 +97,24 @@ function parseIdentifiers(
     throw new IdentifierServiceError("IDENTIFIERS_INVALID");
   }
 
-  const identifiersByType = new Map<string, Map<string, Omit<IdentifierCreateData, "itemId">>>();
+  const identifiers: Array<Omit<IdentifierCreateData, "itemId">> = [];
+  const identifierPositionsByType = new Map<string, Map<string, number>>();
   for (const input of inputs) {
     const identifier = normalizeIdentifier(input);
-    let identifiersByValue = identifiersByType.get(identifier.type);
-    if (!identifiersByValue) {
-      identifiersByValue = new Map();
-      identifiersByType.set(identifier.type, identifiersByValue);
+    let positionsByValue = identifierPositionsByType.get(identifier.type);
+    if (!positionsByValue) {
+      positionsByValue = new Map();
+      identifierPositionsByType.set(identifier.type, positionsByValue);
     }
-    identifiersByValue.set(identifier.normalizedValue, identifier);
+    const existingPosition = positionsByValue.get(identifier.normalizedValue);
+    if (existingPosition === undefined) {
+      positionsByValue.set(identifier.normalizedValue, identifiers.length);
+      identifiers.push(identifier);
+    } else {
+      identifiers[existingPosition] = identifier;
+    }
   }
-  return [...identifiersByType.values()].flatMap((identifiers) => [...identifiers.values()]);
+  return identifiers;
 }
 
 async function lockOwnedItem(
