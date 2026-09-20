@@ -59,10 +59,6 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm --filter @sammlerraum/db prisma generate
-      - name: Run identifier and tag service focused tests
-        run: pnpm vitest run packages/domain/src/items/identifier-service.test.ts
-      - name: Run item domain tests
-        run: pnpm vitest run packages/domain/src/items
       - name: Apply PostgreSQL migrations
         run: pnpm --filter @sammlerraum/db prisma migrate deploy
       - run: pnpm test

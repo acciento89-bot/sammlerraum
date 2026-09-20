@@ -71,6 +71,9 @@ function normalizeIdentifier(input: ItemIdentifierInput): Omit<IdentifierCreateD
   ) {
     throw new IdentifierServiceError("IDENTIFIERS_INVALID");
   }
+  if (input.type.includes("\u0000") || input.value.includes("\u0000")) {
+    throw new IdentifierServiceError("IDENTIFIERS_INVALID");
+  }
 
   const type = normalizeWhitespace(input.type).toUpperCase();
   const value = normalizeWhitespace(input.value);
@@ -94,12 +97,24 @@ function parseIdentifiers(
     throw new IdentifierServiceError("IDENTIFIERS_INVALID");
   }
 
-  const identifiers = new Map<string, Omit<IdentifierCreateData, "itemId">>();
+  const identifiers: Array<Omit<IdentifierCreateData, "itemId">> = [];
+  const identifierPositionsByType = new Map<string, Map<string, number>>();
   for (const input of inputs) {
     const identifier = normalizeIdentifier(input);
-    identifiers.set(`${identifier.type}\u0000${identifier.normalizedValue}`, identifier);
+    let positionsByValue = identifierPositionsByType.get(identifier.type);
+    if (!positionsByValue) {
+      positionsByValue = new Map();
+      identifierPositionsByType.set(identifier.type, positionsByValue);
+    }
+    const existingPosition = positionsByValue.get(identifier.normalizedValue);
+    if (existingPosition === undefined) {
+      positionsByValue.set(identifier.normalizedValue, identifiers.length);
+      identifiers.push(identifier);
+    } else {
+      identifiers[existingPosition] = identifier;
+    }
   }
-  return [...identifiers.values()];
+  return identifiers;
 }
 
 async function lockOwnedItem(
@@ -141,16 +156,17 @@ export function createIdentifierService(database: IdentifierDatabase, actorUserI
           where: { itemId },
           select: identifierSelect,
         });
-        const byKey = new Map(
-          saved.map((identifier) => [
-            `${identifier.type}\u0000${identifier.normalizedValue}`,
-            identifier,
-          ]),
-        );
+        const savedByType = new Map<string, Map<string, StoredIdentifier>>();
+        for (const identifier of saved) {
+          let savedByValue = savedByType.get(identifier.type);
+          if (!savedByValue) {
+            savedByValue = new Map();
+            savedByType.set(identifier.type, savedByValue);
+          }
+          savedByValue.set(identifier.normalizedValue, identifier);
+        }
         return identifiers.map((identifier) => {
-          const savedIdentifier = byKey.get(
-            `${identifier.type}\u0000${identifier.normalizedValue}`,
-          );
+          const savedIdentifier = savedByType.get(identifier.type)?.get(identifier.normalizedValue);
           if (!savedIdentifier) {
             throw new Error("Identifier replacement did not persist every row");
           }

@@ -5,6 +5,8 @@
 **Canonical product/system spec:** `docs/superpowers/specs/2026-09-19-sammlerraum-design.md`  
 **SEO/Search Console spec:** `docs/superpowers/specs/2026-09-19-seo-search-console-design.md`
 
+**Implementation branch:** [`work/sammlerraum-v1`](https://github.com/acciento89-bot/sammlerraum/tree/work/sammlerraum-v1) · [Draft PR #1](https://github.com/acciento89-bot/sammlerraum/pull/1). This ledger tracks verified implementation on that branch; code has not been merged into main or deployed. The ledger on main is synchronized after each verified task completion.
+
 This is the handoff/status file for long-running implementation. Update it after every completed and reviewed task.
 
 | Phase | Plan | Tasks | Status | Next |
@@ -26,6 +28,27 @@ This is the handoff/status file for long-running implementation. Update it after
 
 **Total:** 91 implementation tasks.
 
+## Verified task checklist
+
+- [x] P01 T01 — Workspace and test harness
+- [x] P01 T02 — Validated environment configuration
+- [x] P01 T03 — Prisma/PostgreSQL and database health
+- [x] P01 T04 — Queue abstraction and worker runtime
+- [x] P01 T05 — Next.js shell, DE/EN, request IDs and health
+- [x] P01 T06 — Docker Compose and CI
+- [x] P02 T01 — Identity/profile schema and privacy-safe service
+- [x] P02 T02 — Password, Google, Apple and passkey adapters (live provider blockers below)
+- [x] P02 T03 — Session/recovery management constraints
+- [x] P02 T04 — Shared API errors and request validation
+- [x] P02 T05 — Deny-by-default policy engine
+- [x] P02 T06 — OpenAPI and auth E2E smoke
+- [x] P02 T07 — Localized authentication, profile and security UI
+- [x] P03 T01 — Collection and hierarchy models
+- [x] P03 T02 — Collectible items, acquisition lifecycle and quantity splitting
+- [ ] P03 T03 — Structured identifiers and tags (implementation/review in progress)
+
+**Verified completion: 15/91 tasks.** Later tasks remain open as listed in the phase table and detail plans.
+
 ## Update rule
 
 After each task is implemented, tested, reviewed and committed:
@@ -33,6 +56,7 @@ After each task is implemented, tested, reviewed and committed:
 1. tick that task's boxes in its plan;
 2. update this ledger's Status/Next cell;
 3. append the implementation commit and review outcome below;
+   synchronize this ledger to main after each verified completion, as explicitly requested by the user; implementation continues on the feature branch;
 4. do not mark a phase complete until all tasks in that phase are green;
 5. when an external credential/provider action blocks only one task, record it as an external blocker and continue with the next independent task instead of stopping the entire project;
 6. production deployment, Search Console DNS verification, live Stripe/provider actions and any irreversible external change require explicit user approval.

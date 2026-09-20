@@ -12,12 +12,10 @@ const otherItemId = "00000000-0000-4000-8000-000000000002";
 describe("item identifier service", () => {
   it("normalizes EAN values without removing meaningful leading zeroes", async () => {
     let createdIdentifiers: Array<Record<string, string>> = [];
-    const createMany = vi.fn(
-      async ({ data }: { data: Array<Record<string, string>> }) => {
-        createdIdentifiers = data;
-        return { count: data.length };
-      },
-    );
+    const createMany = vi.fn(async ({ data }: { data: Array<Record<string, string>> }) => {
+      createdIdentifiers = data;
+      return { count: data.length };
+    });
     const transaction = {
       $queryRaw: vi.fn().mockResolvedValue([{ id: itemId }]),
       itemIdentifier: {
@@ -32,8 +30,8 @@ describe("item identifier service", () => {
       },
     };
     const database = {
-      $transaction: vi.fn(
-        async <T>(operation: (tx: typeof transaction) => Promise<T>) => operation(transaction),
+      $transaction: vi.fn(async <T>(operation: (tx: typeof transaction) => Promise<T>) =>
+        operation(transaction),
       ),
     };
     const service = createIdentifierService(
@@ -63,6 +61,45 @@ describe("item identifier service", () => {
         },
       ],
     });
+  });
+
+  it("preserves caller order when identifier types are interleaved", async () => {
+    let createdIdentifiers: Array<Record<string, string>> = [];
+    const transaction = {
+      $queryRaw: vi.fn().mockResolvedValue([{ id: itemId }]),
+      itemIdentifier: {
+        deleteMany: vi.fn().mockResolvedValue({ count: 0 }),
+        createMany: vi.fn(async ({ data }: { data: Array<Record<string, string>> }) => {
+          createdIdentifiers = data;
+          return { count: data.length };
+        }),
+        findMany: vi.fn(async () =>
+          createdIdentifiers.map((row, index) => ({
+            id: `00000000-0000-4000-8000-00000000001${index}`,
+            ...row,
+          })),
+        ),
+      },
+    };
+    const service = createIdentifierService(
+      {
+        $transaction: async <T>(operation: (tx: typeof transaction) => Promise<T>) =>
+          operation(transaction),
+      } as unknown as IdentifierDatabase,
+      "trusted-owner",
+    );
+
+    const saved = await service.setItemIdentifiers(itemId, [
+      { type: "EAN", value: "001" },
+      { type: "ISBN", value: "ISBN-2" },
+      { type: "EAN", value: "003" },
+    ]);
+
+    expect(saved.map(({ type, value }) => ({ type, value }))).toEqual([
+      { type: "EAN", value: "001" },
+      { type: "ISBN", value: "ISBN-2" },
+      { type: "EAN", value: "003" },
+    ]);
   });
 
   it("atomically replaces identifiers after locking the owned item", async () => {
@@ -96,8 +133,8 @@ describe("item identifier service", () => {
       },
     };
     const database = {
-      $transaction: vi.fn(
-        async <T>(operation: (tx: typeof transaction) => Promise<T>) => operation(transaction),
+      $transaction: vi.fn(async <T>(operation: (tx: typeof transaction) => Promise<T>) =>
+        operation(transaction),
       ),
     };
     const service = createIdentifierService(
@@ -137,21 +174,35 @@ describe("item identifier service", () => {
     expect(deleteMany).not.toHaveBeenCalled();
     expect(createMany).not.toHaveBeenCalled();
   });
+
+  it("rejects NUL in identifier types and values before opening a transaction", async () => {
+    const database = { $transaction: vi.fn() };
+    const service = createIdentifierService(
+      database as unknown as IdentifierDatabase,
+      "trusted-owner",
+    );
+
+    await expect(
+      service.setItemIdentifiers(itemId, [{ type: "EAN\u0000", value: "0123456789012" }]),
+    ).rejects.toMatchObject({ code: "IDENTIFIERS_INVALID" });
+    await expect(
+      service.setItemIdentifiers(itemId, [{ type: "EAN", value: "012345\u00006789012" }]),
+    ).rejects.toMatchObject({ code: "IDENTIFIERS_INVALID" });
+    expect(database.$transaction).not.toHaveBeenCalled();
+  });
 });
 
 describe("item tag service", () => {
-  it("normalizes, de-duplicates, and reuses tags within the trusted owner scope", async () => {
-    const upsert = vi.fn(
-      async ({ create }: { create: Record<string, string> }) => ({
-        id:
-          create.normalizedName === "signed"
-            ? "00000000-0000-4000-8000-000000000010"
-            : "00000000-0000-4000-8000-000000000011",
-        ownerId: create.ownerId,
-        name: create.name,
-        normalizedName: create.normalizedName,
-      }),
-    );
+  it("acquires normalized tags canonically while preserving caller order", async () => {
+    const upsert = vi.fn(async ({ create }: { create: Record<string, string> }) => ({
+      id:
+        create.normalizedName === "signed"
+          ? "00000000-0000-4000-8000-000000000010"
+          : "00000000-0000-4000-8000-000000000011",
+      ownerId: create.ownerId,
+      name: create.name,
+      normalizedName: create.normalizedName,
+    }));
     const createMany = vi.fn().mockResolvedValue({ count: 2 });
     const transaction = {
       $queryRaw: vi.fn().mockResolvedValue([{ id: itemId }]),
@@ -162,17 +213,13 @@ describe("item tag service", () => {
       },
     };
     const database = {
-      $transaction: vi.fn(
-        async <T>(operation: (tx: typeof transaction) => Promise<T>) => operation(transaction),
+      $transaction: vi.fn(async <T>(operation: (tx: typeof transaction) => Promise<T>) =>
+        operation(transaction),
       ),
     };
     const service = createTagService(database as unknown as TagDatabase, "trusted-owner");
 
-    const saved = await service.setItemTags(itemId, [
-      " Signed ",
-      "signed",
-      "  Mint   Condition ",
-    ]);
+    const saved = await service.setItemTags(itemId, [" Signed ", "signed", "  Mint   Condition "]);
 
     expect(saved).toMatchObject([
       { ownerId: "trusted-owner", name: "Signed", normalizedName: "signed" },
@@ -186,13 +233,13 @@ describe("item tag service", () => {
       where: {
         ownerId_normalizedName: {
           ownerId: "trusted-owner",
-          normalizedName: "signed",
+          normalizedName: "mint condition",
         },
       },
       create: {
         ownerId: "trusted-owner",
-        name: "Signed",
-        normalizedName: "signed",
+        name: "Mint Condition",
+        normalizedName: "mint condition",
       },
       update: {},
     });
@@ -233,6 +280,16 @@ describe("item tag service", () => {
     expect(deleteMany).not.toHaveBeenCalled();
     expect(upsert).not.toHaveBeenCalled();
   });
+
+  it("rejects NUL in tag names before opening a transaction", async () => {
+    const database = { $transaction: vi.fn() };
+    const service = createTagService(database as unknown as TagDatabase, "trusted-owner");
+
+    await expect(service.setItemTags(itemId, ["signed\u0000copy"])).rejects.toMatchObject({
+      code: "TAGS_INVALID",
+    });
+    expect(database.$transaction).not.toHaveBeenCalled();
+  });
 });
 
 const runIntegration = process.env.RUN_DATABASE_INTEGRATION === "1";
@@ -243,7 +300,7 @@ describe.runIf(runIntegration)("identifier and tag PostgreSQL integration", () =
   beforeAll(async () => prisma?.$connect());
   afterAll(async () => prisma?.$disconnect());
 
-  async function createOwnerAndItem(label: string) {
+  async function createOwnerAndItem(label: string, cleanupOwnerIds: string[]) {
     const ownerId = randomUUID();
     await prisma!.user.create({
       data: {
@@ -253,6 +310,7 @@ describe.runIf(runIntegration)("identifier and tag PostgreSQL integration", () =
         emailVerified: true,
       },
     });
+    cleanupOwnerIds.push(ownerId);
     const collection = await prisma!.collection.create({
       data: { ownerId, name: `${label} collection` },
     });
@@ -263,23 +321,25 @@ describe.runIf(runIntegration)("identifier and tag PostgreSQL integration", () =
   }
 
   it("scopes identifier uniqueness to an item and tags to an owner", async () => {
-    const first = await createOwnerAndItem("First");
-    const second = await createOwnerAndItem("Second");
-    const firstIdentifiers = createIdentifierService(
-      prisma! as unknown as IdentifierDatabase,
-      first.ownerId,
-    );
-    const secondIdentifiers = createIdentifierService(
-      prisma! as unknown as IdentifierDatabase,
-      second.ownerId,
-    );
-    const firstTags = createTagService(prisma! as unknown as TagDatabase, first.ownerId);
-    const secondTags = createTagService(prisma! as unknown as TagDatabase, second.ownerId);
-    const sameOwnerItem = await prisma!.collectibleItem.create({
-      data: { collectionId: first.collectionId, title: "First owner second item" },
-    });
+    const cleanupOwnerIds: string[] = [];
 
     try {
+      const first = await createOwnerAndItem("First", cleanupOwnerIds);
+      const second = await createOwnerAndItem("Second", cleanupOwnerIds);
+      const firstIdentifiers = createIdentifierService(
+        prisma! as unknown as IdentifierDatabase,
+        first.ownerId,
+      );
+      const secondIdentifiers = createIdentifierService(
+        prisma! as unknown as IdentifierDatabase,
+        second.ownerId,
+      );
+      const firstTags = createTagService(prisma! as unknown as TagDatabase, first.ownerId);
+      const secondTags = createTagService(prisma! as unknown as TagDatabase, second.ownerId);
+      const sameOwnerItem = await prisma!.collectibleItem.create({
+        data: { collectionId: first.collectionId, title: "First owner second item" },
+      });
+
       await expect(
         firstIdentifiers.setItemIdentifiers(first.itemId, [
           { type: "EAN", value: "0123456789012" },
@@ -321,19 +381,91 @@ describe.runIf(runIntegration)("identifier and tag PostgreSQL integration", () =
       ).resolves.toMatchObject([{ normalizedValue: "0123456789012" }]);
     } finally {
       await prisma!.user.deleteMany({
-        where: { id: { in: [first.ownerId, second.ownerId] } },
+        where: { id: { in: cleanupOwnerIds } },
       });
     }
   });
 
-  it("rolls back an identifier replacement when its insert fails", async () => {
-    const fixture = await createOwnerAndItem("Rollback");
-    const service = createIdentifierService(
-      prisma! as unknown as IdentifierDatabase,
-      fixture.ownerId,
-    );
+  it("completes reverse-order overlapping tag replacements without a deadlock", async () => {
+    const cleanupOwnerIds: string[] = [];
 
     try {
+      const fixture = await createOwnerAndItem("Concurrent tags", cleanupOwnerIds);
+      const secondItem = await prisma!.collectibleItem.create({
+        data: { collectionId: fixture.collectionId, title: "Concurrent tags second item" },
+      });
+      await prisma!.tag.createMany({
+        data: [
+          { ownerId: fixture.ownerId, name: "Alpha", normalizedName: "alpha" },
+          { ownerId: fixture.ownerId, name: "Zulu", normalizedName: "zulu" },
+        ],
+      });
+
+      let firstUpsertCount = 0;
+      let releaseFirstUpserts = () => {};
+      const bothFirstUpsertsStarted = new Promise<void>((resolve) => {
+        releaseFirstUpserts = resolve;
+      });
+
+      function createCoordinatedTagDatabase(): TagDatabase {
+        return {
+          $transaction: async <T>(
+            operation: (transaction: Record<string, unknown>) => Promise<T>,
+            options: { isolationLevel: "ReadCommitted" },
+          ) =>
+            prisma!.$transaction(async (transaction) => {
+              let firstUpsert = true;
+              return operation({
+                $queryRaw: transaction.$queryRaw.bind(transaction),
+                tag: {
+                  upsert: async (args: Parameters<typeof transaction.tag.upsert>[0]) => {
+                    const tag = await transaction.tag.upsert(args);
+                    if (firstUpsert) {
+                      firstUpsert = false;
+                      firstUpsertCount += 1;
+                      if (firstUpsertCount === 2) {
+                        releaseFirstUpserts();
+                      }
+                      await Promise.race([
+                        bothFirstUpsertsStarted,
+                        new Promise<void>((resolve) => setTimeout(resolve, 250)),
+                      ]);
+                    }
+                    return tag;
+                  },
+                },
+                itemTag: {
+                  deleteMany: transaction.itemTag.deleteMany.bind(transaction.itemTag),
+                  createMany: transaction.itemTag.createMany.bind(transaction.itemTag),
+                },
+              });
+            }, options),
+        } as unknown as TagDatabase;
+      }
+
+      const firstService = createTagService(createCoordinatedTagDatabase(), fixture.ownerId);
+      const secondService = createTagService(createCoordinatedTagDatabase(), fixture.ownerId);
+      const [firstSaved, secondSaved] = await Promise.all([
+        firstService.setItemTags(fixture.itemId, ["Alpha", "Zulu"]),
+        secondService.setItemTags(secondItem.id, ["Zulu", "Alpha"]),
+      ]);
+
+      expect(firstSaved.map((tag) => tag.normalizedName)).toEqual(["alpha", "zulu"]);
+      expect(secondSaved.map((tag) => tag.normalizedName)).toEqual(["zulu", "alpha"]);
+    } finally {
+      await prisma!.user.deleteMany({ where: { id: { in: cleanupOwnerIds } } });
+    }
+  });
+
+  it("rolls back an identifier replacement when its insert fails", async () => {
+    const cleanupOwnerIds: string[] = [];
+
+    try {
+      const fixture = await createOwnerAndItem("Rollback", cleanupOwnerIds);
+      const service = createIdentifierService(
+        prisma! as unknown as IdentifierDatabase,
+        fixture.ownerId,
+      );
       await service.setItemIdentifiers(fixture.itemId, [
         { type: "CERTIFICATE", value: "ORIGINAL-01" },
       ]);
@@ -353,9 +485,7 @@ describe.runIf(runIntegration)("identifier and tag PostgreSQL integration", () =
                   createMany: async () => {
                     throw new Error("fixture identifier insert failure");
                   },
-                  findMany: transaction.itemIdentifier.findMany.bind(
-                    transaction.itemIdentifier,
-                  ),
+                  findMany: transaction.itemIdentifier.findMany.bind(transaction.itemIdentifier),
                 },
               }),
             options,
@@ -381,7 +511,7 @@ describe.runIf(runIntegration)("identifier and tag PostgreSQL integration", () =
         },
       ]);
     } finally {
-      await prisma!.user.delete({ where: { id: fixture.ownerId } });
+      await prisma!.user.deleteMany({ where: { id: { in: cleanupOwnerIds } } });
     }
   });
 });
