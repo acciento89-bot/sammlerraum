@@ -5,7 +5,7 @@
   "scripts": {
     "build": "next build",
     "dev": "next dev",
-    "lint": "prettier --check src messages package.json next.config.ts tsconfig.json",
+    "lint": "prettier --check src e2e messages package.json next.config.ts playwright.config.ts tsconfig.json",
     "start": "next start",
     "typecheck": "tsc --noEmit --project tsconfig.json"
   },
@@ -26,6 +26,7 @@
     "zod": "4.6.5"
   },
   "devDependencies": {
+    "@playwright/test": "1.63.0",
     "@types/nodemailer": "8.0.2",
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3"

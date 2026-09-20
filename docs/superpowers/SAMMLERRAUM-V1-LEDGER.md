@@ -225,3 +225,14 @@ Every completed and independently reviewed task must be checked off in its detai
 - 108 unit/static tests passed; dedicated integration run12 passed including5 real DB tests. Migrations, lint/typecheck/workspace build, Compose and both Docker builds passed.
 - Fresh spec/quality review approved after profile-role overgrant and test-path gaps fixed. No findings remain. Task5 checked off; next Task6 OpenAPI/auth smoke.
 - Completion docs-only with [skip ci]; tested code unchanged.
+
+### Phase 02 Task 6 — reviewed OpenAPI/auth smoke candidate, CI pending
+
+- Base remote `de05da4`; final-fix checkpoint `e9a324b3904a92d5fafacd81024140fc75c7358d` exact tree verified.
+- Zod registry generates OpenAPI3.1 at `/api/openapi.json`; session metadata only, safe error alternatives/500, deployed HTTP/HTTPS cookie name.
+- Playwright HTTP smoke exercises real Better Auth/Prisma/session handler: registration, captured verification mail, rejection before verification, verification, login and authenticated sanitized session list. Mail capture exists only in test dependency injection; no production bypass.
+- TDD RED missing builder/route/harness, then local111 tests passed/5 DB-skips, lint/typecheck/build green. Review found400-envelope mismatch, HTTPS-cookie mismatch and setup-failure resource leak; all fixed with RED→GREEN regressions. Focused9/9, lint/typecheck green; controller reran5 relevant tests.
+- Fresh scoped review spec/quality APPROVED, all3 findings addressed. Playwright discovery restricted to e2e specs after reproducible discovery failure.
+- Ruling: Task6 tests real handlers over a loopback HTTP harness; Task7 adds actual Next/browser UI journeys once pages exist — respects task order; cost if wrong: additional dispatch integration coverage.
+- Ruling: no local PostgreSQL; GitHub CI must execute `RUN_AUTH_E2E=1` against migrated PostgreSQL17 with a passed, not skipped, test before completion — local skip is not success evidence; cost if wrong: CI/harness correction.
+- Task remains unchecked until full CI and real auth smoke succeed.

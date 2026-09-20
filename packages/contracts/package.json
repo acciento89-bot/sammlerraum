@@ -4,6 +4,7 @@
   "type": "module",
   "exports": {
     "./errors": "./src/errors.ts",
+    "./openapi": "./src/openapi.ts",
     "./profile": "./src/profile.ts"
   },
   "scripts": {
