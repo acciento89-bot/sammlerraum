@@ -49,6 +49,7 @@ const copy = {
     scanConfirm: "Vorschlag übernehmen",
     archive: "Archivieren",
     archivedMessage: "Stück archiviert.",
+    savedDetails: "Gespeicherte Zusatzdaten",
   },
   en: {
     collectionName: "Collection name",
@@ -90,6 +91,7 @@ const copy = {
     scanConfirm: "Accept proposal",
     archive: "Archive",
     archivedMessage: "Item archived.",
+    savedDetails: "Saved additional details",
   },
 } as const;
 
@@ -203,11 +205,13 @@ test.describe("localized collection and item management", () => {
     try {
       await loginTestCollector(page, locale, collector);
       await page.goto(`/${locale}/collections`);
-      await expect(page.getByRole("heading", { name: labels.collections })).toBeVisible();
+      await expect(
+        page.getByRole("heading", { level: 1, name: labels.collections, exact: true }),
+      ).toBeVisible();
       await page.getByLabel(labels.collectionName).fill("Pokémon");
       await page.getByLabel(labels.visibility).selectOption("PRIVATE");
       await page.getByRole("button", { name: labels.createCollection }).click();
-      await page.getByRole("link", { name: "Pokémon" }).click();
+      await page.getByRole("link", { name: "Pokémon", exact: true }).click();
 
       await page.getByLabel(labels.subcollectionName).fill("Base Set");
       await page.getByRole("button", { name: labels.createSubcollection }).click();
@@ -218,11 +222,20 @@ test.describe("localized collection and item management", () => {
       await page.getByRole("button", { name: labels.createCustomField }).click();
       await expect(page.getByText("Edition", { exact: true })).toBeVisible();
 
+      const locationSection = page
+        .getByRole("heading", { name: labels.createLocation, exact: true })
+        .locator("..");
       const createLocation = async (name: string, type: string, parent?: string) => {
-        await page.getByLabel(labels.locationName).fill(name);
-        await page.getByLabel(labels.locationType).selectOption({ label: type });
-        if (parent) await page.getByLabel(labels.locationParent).selectOption({ label: parent });
-        await page.getByRole("button", { name: labels.createLocation }).click();
+        await locationSection.getByLabel(labels.locationName, { exact: true }).fill(name);
+        await locationSection.getByLabel(labels.locationType, { exact: true }).selectOption({
+          label: type,
+        });
+        if (parent) {
+          await locationSection
+            .getByLabel(labels.locationParent, { exact: true })
+            .selectOption({ label: parent });
+        }
+        await locationSection.getByRole("button", { name: labels.createLocation }).click();
         await expect(page.getByRole("treeitem", { name })).toBeVisible();
       };
       await createLocation("Wohnzimmer", labels.room);
@@ -249,14 +262,19 @@ test.describe("localized collection and item management", () => {
       await page.getByLabel(labels.location).selectOption({ label: "Fach 2" });
       await page.getByRole("button", { name: labels.saveItem }).click();
 
-      await expect(page.getByRole("heading", { name: "Glurak" })).toBeVisible();
-      await expect(page.getByText("Edition: 1st")).toBeVisible();
-      await expect(page.getByText("Fach 2", { exact: true })).toBeVisible();
-      await expect(page.getByText("4006381333931", { exact: true })).toBeVisible();
+      await expect(
+        page.getByRole("heading", { level: 1, name: "Glurak", exact: true }),
+      ).toBeVisible();
+      const savedDetails = page.getByRole("region", { name: labels.savedDetails });
+      await expect(savedDetails.getByText("Edition: 1st", { exact: true })).toBeVisible();
+      await expect(savedDetails.getByText("Fach 2", { exact: true })).toBeVisible();
+      await expect(savedDetails.getByText("4006381333931", { exact: true })).toBeVisible();
 
       await page.getByLabel(labels.title).fill("Glurak – edited");
       await page.getByRole("button", { name: labels.saveItem }).click();
-      await expect(page.getByRole("heading", { name: "Glurak – edited" })).toBeVisible();
+      await expect(
+        page.getByRole("heading", { level: 1, name: "Glurak – edited", exact: true }),
+      ).toBeVisible();
       page.once("dialog", (dialog) => dialog.accept());
       await page.getByRole("button", { name: labels.archive }).click();
       await expect(page.getByText(labels.archivedMessage)).toBeVisible();

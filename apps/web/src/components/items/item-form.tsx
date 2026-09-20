@@ -15,6 +15,7 @@ import { useEffect, useState, type FormEvent, type ReactNode } from "react";
 
 import { errorMessage } from "../collections/collections-manager";
 import { CodeScanner } from "./code-scanner";
+import { majorUnits, minorUnits } from "./item-form-values";
 
 type Identifier = { type: string; value: string };
 type ItemMetadata = {
@@ -55,21 +56,6 @@ async function read<T>(url: string): Promise<T> {
   const response = await fetch(url, { cache: "no-store" });
   if (!response.ok) throw response;
   return response.json() as Promise<T>;
-}
-
-function minorUnits(input: string): number | null {
-  if (input.trim() === "") return null;
-  const normalized = input.trim().replace(",", ".");
-  const match = /^(\d+)(?:\.(\d{1,2}))?$/.exec(normalized);
-  if (!match) throw new Error("money");
-  const amount = Number(match[1]) * 100 + Number((match[2] ?? "").padEnd(2, "0"));
-  if (!Number.isSafeInteger(amount)) throw new Error("money");
-  return amount;
-}
-
-function majorUnits(amount: number | null): string {
-  if (amount === null) return "";
-  return (amount / 100).toFixed(2);
 }
 
 export function ItemForm({

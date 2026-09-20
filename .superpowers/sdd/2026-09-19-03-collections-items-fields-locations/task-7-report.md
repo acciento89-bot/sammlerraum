@@ -26,6 +26,8 @@ The local exec runtime disconnected during the first production UI checkpoint. U
 
 The first remote candidate CI `35539878520` passed unit tests and stopped at formatting. Diagnostic run `35540178029`, job `106156292758`, produced exactly the twelve expected UTF-8 files; those formatter outputs were persisted byte-for-byte and the temporary diagnostic step removed.
 
-Regular CI `35540346353`, job `106156735744`, passed lint and exposed browser-global references under server-only package typechecks. Those were replaced with a structural `globalThis` type. CI `35540491109`, job `106157121355`, then passed package typechecks and reported only two web strict optional-property errors. The request options now omit absent headers/body instead of assigning `undefined`, and the custom-field control explicitly accepts its required possibly-undefined value.
+Regular CI `35540346353`, job `106156735744`, passed lint and exposed browser-global references under server-only package typechecks. CI `35540491109`, job `106157121355`, then passed package typechecks and reported only two web strict optional-property errors. Those type boundaries were corrected without changing compiler settings.
 
-No full-test, build, or browser GREEN claim is made yet. A fresh regular CI run is required.
+CI `35540686118`, job `106157649498`, passed every unit, lint, typecheck, build, real-database, and existing four-auth-journey gate. Both Task 7 projects reached the new UI and failed only because the heading locator matched both a level-one title and a nested heading by substring. Locators are now scoped to the intended level-one heading, location-creation section, and saved-details region. The duplicate secondary Add item link was removed to keep one unambiguous primary action.
+
+A fresh regular CI run is required before any GREEN claim.
