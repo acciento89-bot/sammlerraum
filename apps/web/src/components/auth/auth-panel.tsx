@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { useState, type FormEvent } from "react";
 
 import { authClient } from "../../lib/auth-client";
+import { authView } from "./account-ui-state";
 
 type Props = { locale: "de" | "en"; mode: "login" | "register" };
 
@@ -18,6 +19,8 @@ export function AuthPanel({ locale, mode }: Props) {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [forgot, setForgot] = useState(false);
+  const [resetComplete, setResetComplete] = useState(false);
+  const view = authView(token, resetComplete);
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -65,7 +68,10 @@ export function AuthPanel({ locale, mode }: Props) {
     event.preventDefault();
     const password = String(new FormData(event.currentTarget).get("newPassword") ?? "");
     const result = await authClient.resetPassword({ newPassword: password, token: token ?? "" });
-    setMessage(result.error ? t("genericError") : t("resetDone"));
+    if (result.error) return setMessage(t("genericError"));
+    setResetComplete(true);
+    router.replace(`/${locale}/login`);
+    setMessage(t("resetDone"));
   }
 
   async function passkeySignIn() {
@@ -80,7 +86,7 @@ export function AuthPanel({ locale, mode }: Props) {
         <p className="eyebrow">{t("eyebrow")}</p>
         <h1 id="auth-title">{t(mode === "login" ? "loginTitle" : "registerTitle")}</h1>
         <p className="form-intro">{t(mode === "login" ? "loginIntro" : "registerIntro")}</p>
-        {token ? (
+        {view === "reset" ? (
           <form className="form-stack" onSubmit={resetPassword}>
             <label>
               {t("newPassword")}

@@ -1,8 +1,14 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { authClient } from "../../lib/auth-client";
+import {
+  classifySecurityFailure,
+  finishReauthentication,
+  providerTranslationKey,
+  remainingFreshMilliseconds,
+} from "./account-ui-state";
 
 type Method = {
   id: string;
@@ -20,13 +26,13 @@ type Session = {
 
 export function PasskeyManager({
   email,
-  initiallyFresh,
+  initialFreshUntil,
   locale,
   initialMethods,
   initialSessions,
 }: {
   email: string;
-  initiallyFresh: boolean;
+  initialFreshUntil: number;
   locale: string;
   initialMethods: Method[];
   initialSessions: Session[];
@@ -36,7 +42,15 @@ export function PasskeyManager({
   const [sessions, setSessions] = useState(initialSessions);
   const [name, setName] = useState("");
   const [error, setError] = useState("");
-  const [fresh, setFresh] = useState(initiallyFresh);
+  const [freshUntil, setFreshUntil] = useState(initialFreshUntil);
+  const [fresh, setFresh] = useState(remainingFreshMilliseconds(initialFreshUntil) > 0);
+  useEffect(() => {
+    const remaining = remainingFreshMilliseconds(freshUntil);
+    setFresh(remaining > 0);
+    if (remaining === 0) return;
+    const timer = window.setTimeout(() => setFresh(false), remaining);
+    return () => window.clearTimeout(timer);
+  }, [freshUntil]);
   async function reloadMethods() {
     const response = await fetch("/api/v1/account/recovery-methods", { cache: "no-store" });
     if (response.ok) setMethods((await response.json()).methods);
@@ -56,8 +70,15 @@ export function PasskeyManager({
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ methodId: id }),
     });
-    if (response.ok) await reloadMethods();
-    else setError(t("recoveryRequired"));
+    if (response.ok) return reloadMethods();
+    const body = (await response.json().catch(() => null)) as { error?: { code?: string } } | null;
+    const failure = classifySecurityFailure(body?.error?.code ?? "");
+    if (failure === "reauthenticate") {
+      setFreshUntil(0);
+      setFresh(false);
+      setError(t("reauthRequired"));
+    } else if (failure === "recovery-required") setError(t("recoveryRequired"));
+    else setError(t("error"));
   }
   async function revoke(id: string) {
     const response = await fetch("/api/v1/account/sessions", {
@@ -68,19 +89,27 @@ export function PasskeyManager({
     if (response.ok) setSessions((all) => all.filter((session) => session.id !== id));
     else setError(t("error"));
   }
+  async function reloadSessions() {
+    const response = await fetch("/api/v1/account/sessions", { cache: "no-store" });
+    if (response.ok) setSessions((await response.json()).sessions);
+  }
   async function link(provider: "google" | "apple") {
     await authClient.linkSocial({ provider, callbackURL: `/${locale}/account/security` });
   }
   async function reauthenticate(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const password = String(new FormData(event.currentTarget).get("reauthPassword") ?? "");
-    const result = await authClient.signIn.email({
-      email,
-      password,
-      callbackURL: `/${locale}/account/security`,
-    });
-    if (result.error) setError(t("error"));
-    else setFresh(true);
+    const deadline = await finishReauthentication(
+      () =>
+        authClient.signIn.email({ email, password, callbackURL: `/${locale}/account/security` }),
+      reloadSessions,
+    );
+    if (deadline === null) setError(t("error"));
+    else {
+      setError("");
+      setFreshUntil(deadline);
+      setFresh(true);
+    }
   }
   return (
     <div className="security-grid">
@@ -109,16 +138,10 @@ export function PasskeyManager({
             .filter((m) => m.type !== "passkey")
             .map((method) => (
               <li key={method.id}>
-                <span>
-                  {method.provider === "credential"
-                    ? t("password")
-                    : method.provider === "google"
-                      ? "Google"
-                      : "Apple"}
-                </span>
+                <span>{t(providerTranslationKey(method.provider))}</span>
                 {fresh && method.type === "provider" && (
                   <button onClick={() => removeMethod(method.id)}>
-                    {t("removeProvider", { provider: method.provider })}
+                    {t("removeProvider", { provider: t(providerTranslationKey(method.provider)) })}
                   </button>
                 )}
               </li>

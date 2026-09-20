@@ -24,6 +24,9 @@
     "name": "Name",
     "email": "Email address",
     "password": "Password",
+    "providerPassword": "Password",
+    "providerGoogle": "Google",
+    "providerApple": "Apple",
     "login": "Sign in",
     "register": "Register",
     "checkEmail": "Check your email inbox now.",
@@ -85,6 +88,7 @@
     "reauthTitle": "Confirm security action",
     "reauthIntro": "Sign in again before removing sign-in methods.",
     "reauthPassword": "Current password",
-    "reauth": "Sign in again"
+    "reauth": "Sign in again",
+    "reauthRequired": "Please sign in again to complete this security action."
   }
 }

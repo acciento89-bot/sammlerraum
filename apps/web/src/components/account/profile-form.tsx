@@ -2,6 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { useState, type FormEvent } from "react";
+import { profileFeedback } from "../auth/account-ui-state";
 
 type Profile = {
   handle: string;
@@ -12,10 +13,12 @@ type Profile = {
 
 export function ProfileForm({ profile }: { profile: Profile | null }) {
   const t = useTranslations("Profile");
-  const [message, setMessage] = useState("");
+  const [feedback, setFeedback] = useState<
+    { message: string; kind: "success" | "error"; role: "status" | "alert" } | undefined
+  >();
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setMessage("");
+    setFeedback(undefined);
     const data = new FormData(event.currentTarget);
     const response = await fetch("/api/v1/account/profile", {
       method: "PUT",
@@ -27,7 +30,10 @@ export function ProfileForm({ profile }: { profile: Profile | null }) {
         avatarAssetId: null,
       }),
     });
-    setMessage(response.ok ? t("saved") : t("error"));
+    setFeedback({
+      message: response.ok ? t("saved") : t("error"),
+      ...profileFeedback(response.ok),
+    });
   }
   return (
     <form className="form-stack" onSubmit={submit}>
@@ -54,9 +60,9 @@ export function ProfileForm({ profile }: { profile: Profile | null }) {
         <textarea name="bio" defaultValue={profile?.bio ?? ""} maxLength={500} />
       </label>
       <button type="submit">{t("save")}</button>
-      {message && (
-        <p role="status" className="success">
-          {message}
+      {feedback && (
+        <p role={feedback.role} className={feedback.kind}>
+          {feedback.message}
         </p>
       )}
     </form>

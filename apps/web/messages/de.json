@@ -24,6 +24,9 @@
     "name": "Name",
     "email": "E-Mail-Adresse",
     "password": "Passwort",
+    "providerPassword": "Passwort",
+    "providerGoogle": "Google",
+    "providerApple": "Apple",
     "login": "Anmelden",
     "register": "Registrieren",
     "checkEmail": "Prüfe jetzt dein E-Mail-Postfach.",
@@ -85,6 +88,7 @@
     "reauthTitle": "Sicherheitsaktion bestätigen",
     "reauthIntro": "Melde dich erneut an, bevor du Anmeldemethoden entfernst.",
     "reauthPassword": "Aktuelles Passwort",
-    "reauth": "Erneut anmelden"
+    "reauth": "Erneut anmelden",
+    "reauthRequired": "Bitte melde dich erneut an, um diese Sicherheitsaktion auszuführen."
   }
 }

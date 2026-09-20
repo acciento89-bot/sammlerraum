@@ -40,7 +40,7 @@ export default async function SecurityPage({
       </header>
       <PasskeyManager
         email={session.user.email}
-        initiallyFresh={Date.now() - new Date(session.session.createdAt).getTime() < 5 * 60_000}
+        initialFreshUntil={new Date(session.session.createdAt).getTime() + 5 * 60_000}
         locale={locale}
         initialMethods={methods}
         initialSessions={sessions.map((item) => ({

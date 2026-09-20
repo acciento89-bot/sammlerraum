@@ -2,6 +2,8 @@
 
 Sammlerraum exposes Better Auth at `${APP_ORIGIN}/api/auth`. Set every variable below in the web runtime environment; the web process fails closed when any auth or SMTP variable is absent or invalid.
 
+The localized account UI is available at `/{locale}/login`, `/{locale}/register`, `/{locale}/account/profile`, and `/{locale}/account/security` for `de` and `en`. Login and registration redirect authenticated users to their profile. Profile and security routes resolve the session on the server and redirect anonymous requests to the localized login page.
+
 | Variable | Purpose |
 | --- | --- |
 | `BETTER_AUTH_SECRET` | Random signing/encryption secret of at least 32 characters. Generate a production value with `openssl rand -base64 32`. |
@@ -34,3 +36,17 @@ Same-email social sign-in never links an existing account implicitly. A signed-i
 Account-security mutations use the guarded `/api/v1/account/recovery-methods` route; the native Better Auth unlink and passkey-delete paths remain disabled. A verified recovery factor is one of: a password credential whose owning user has a verified email, a persisted Google or Apple account created after that provider's completed OAuth flow, or a persisted passkey created after successful WebAuthn registration. The service locks the owning user row and checks the post-removal factor count inside one transaction, so concurrent requests cannot remove the final factor.
 
 Session management uses stable database session IDs and returns only creation time, last-seen time, a sanitized user-agent label, and whether the row is the current session. Better Auth's native session-list and revocation paths remain disabled so callers cannot receive or submit raw session tokens. Tokens, password hashes, passkey material, provider account IDs, and OAuth secrets are never returned. Session and recovery responses are `no-store`. Cookie-authenticated mutations require an exact same-origin `Origin` header; recovery-method removal also requires a session created within the last five minutes. The session cookie cache remains disabled, so deleting a session row takes effect on the next Better Auth `getSession` call.
+
+## Browser verification
+
+Apply the PostgreSQL migrations before running the authentication journeys, then install Chromium and run the guarded suite:
+
+```bash
+corepack pnpm@10.17.1 --filter @sammlerraum/db prisma migrate deploy
+corepack pnpm@10.17.1 --filter @sammlerraum/web exec playwright install --with-deps chromium
+RUN_AUTH_E2E=1 corepack pnpm@10.17.1 --filter @sammlerraum/web exec playwright test e2e/auth.spec.ts
+```
+
+The browser suite starts the real Next application at `http://localhost:3000`, uses the migrated PostgreSQL database, and exercises registration, email verification and resend, password login/reset, profile creation, WebAuthn registration and sign-in through a Chromium virtual authenticator, connected-provider entry points, and revocation of another session. Its SMTP server is a test-only implicit-TLS fixture. It creates a one-day certificate and private key under `/tmp`, passes that certificate only to the spawned Next test process through `NODE_EXTRA_CA_CERTS`, and keeps certificate verification enabled. It does not add a mail-capture route, verification bypass, or production email branch.
+
+Google and Apple requests in automation stop after confirming the real Better Auth client request. Complete provider consent and callback journeys manually with live provider credentials in a non-production environment. Verify that explicit linking returns to `/{locale}/account/security`, that removing a provider cannot remove the final verified recovery method, and that no provider secret or OAuth token appears in HTML, browser logs, or API responses.
