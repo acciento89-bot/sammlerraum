@@ -62,7 +62,57 @@ jobs:
       - name: Apply PostgreSQL migrations
         run: pnpm --filter @sammlerraum/db prisma migrate deploy
       - run: pnpm test
-      - run: pnpm lint
+      - name: Lint workspace
+        id: lint
+        run: pnpm lint
+      - name: Capture exact Task 7 formatting diff
+        if: ${{ failure() && steps.lint.outcome == 'failure' }}
+        run: |
+          pnpm --filter @sammlerraum/web exec prettier --write \
+            src/app/globals.css \
+            'src/app/[locale]/(app)/collections/page.tsx' \
+            'src/app/[locale]/(app)/collections/[collectionId]/page.tsx' \
+            'src/app/[locale]/(app)/items/new/page.tsx' \
+            'src/app/[locale]/(app)/items/[itemId]/page.tsx' \
+            src/components/collections/collections-manager.tsx \
+            src/components/collections/collection-detail.tsx \
+            src/components/items/item-form.tsx \
+            src/components/items/item-form-values.ts \
+            src/components/items/item-form-values.test.ts \
+            src/components/items/code-scanner.tsx \
+            e2e/collections-items.spec.ts \
+            messages/de.json \
+            messages/en.json
+          node --input-type=module <<'NODE'
+          import { execFileSync } from "node:child_process";
+          import { readFile } from "node:fs/promises";
+          const allowed = new Set([
+            "apps/web/src/app/globals.css",
+            "apps/web/src/app/[locale]/(app)/collections/page.tsx",
+            "apps/web/src/app/[locale]/(app)/collections/[collectionId]/page.tsx",
+            "apps/web/src/app/[locale]/(app)/items/new/page.tsx",
+            "apps/web/src/app/[locale]/(app)/items/[itemId]/page.tsx",
+            "apps/web/src/components/collections/collections-manager.tsx",
+            "apps/web/src/components/collections/collection-detail.tsx",
+            "apps/web/src/components/items/item-form.tsx",
+            "apps/web/src/components/items/item-form-values.ts",
+            "apps/web/src/components/items/item-form-values.test.ts",
+            "apps/web/src/components/items/code-scanner.tsx",
+            "apps/web/e2e/collections-items.spec.ts",
+            "apps/web/messages/de.json",
+            "apps/web/messages/en.json",
+          ]);
+          const changed = execFileSync("git", ["diff", "--name-only", "--", "apps/web"], {
+            encoding: "utf8",
+          })
+            .trim()
+            .split("\n")
+            .filter((file) => allowed.has(file));
+          for (const file of changed) {
+            const content = await readFile(file);
+            console.log(JSON.stringify({ file, base64: content.toString("base64") }));
+          }
+          NODE
       - run: pnpm typecheck
       - name: Build workspace
         env:
