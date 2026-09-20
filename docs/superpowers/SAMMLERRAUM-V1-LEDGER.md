@@ -10,7 +10,7 @@ This is the handoff/status file for long-running implementation. Update it after
 | Phase | Plan | Tasks | Status | Next |
 |---|---|---:|---|---|
 | 01 | Platform Foundation | 6 | complete (6/6) | — |
-| 02 | Identity, Auth & Policies | 7 | Task 5 reviewed; CI pending (4/7) | Task 5 gate |
+| 02 | Identity, Auth & Policies | 7 | in progress (5/7) | Task 6 |
 | 03 | Collections, Items, Fields & Locations | 8 | not started | Task 1 |
 | 04 | Media & Documents | 6 | not started | Task 1 |
 | 05 | Catalog, Condition & Grading | 7 | not started | Task 1 |
@@ -217,3 +217,11 @@ Every completed and independently reviewed task must be checked off in its detai
 - Ruling: public grant requires PUBLIC resource and every ancestor plus VISIBLE moderation; protected documents have an additional no-public guard. Document-specific visibility and selected grants belong to Phase04/09 loaders/policies — parent visibility is insufficient; cost if wrong: additive document fact refinement.
 - Ruling: comments need authenticated visible read access, enabled comments and no interaction block; unknown/malformed/action-kind mismatches return NO_POLICY; assertion always genericFORBIDDEN — no resource-fact disclosure; cost if wrong: explicit new policy branches.
 - Ruling: SEO index preference is excluded from authorization, while share/invitation/premium/richer moderation grants remain denied until their owning phases add complete facts — preserves phase scope and privacy; cost if wrong: later additive facts/branches, never implicit public-by-ID UNLISTED.
+
+### Phase 02 Task 5 — COMPLETE
+
+- Reviewed code remote `8c7d09fa495ff07ed17b9b09cba6bf5bdf242b97`.
+- Full CI SUCCESS: https://github.com/acciento89-bot/sammlerraum/actions/runs/35521737050 (job106106879087).
+- 108 unit/static tests passed; dedicated integration run12 passed including5 real DB tests. Migrations, lint/typecheck/workspace build, Compose and both Docker builds passed.
+- Fresh spec/quality review approved after profile-role overgrant and test-path gaps fixed. No findings remain. Task5 checked off; next Task6 OpenAPI/auth smoke.
+- Completion docs-only with [skip ci]; tested code unchanged.
