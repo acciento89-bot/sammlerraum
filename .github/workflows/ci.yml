@@ -59,6 +59,8 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm --filter @sammlerraum/db prisma generate
+      - name: Run identifier and tag service focused tests
+        run: pnpm vitest run packages/domain/src/items/identifier-service.test.ts
       - name: Apply PostgreSQL migrations
         run: pnpm --filter @sammlerraum/db prisma migrate deploy
       - run: pnpm test
@@ -77,6 +79,7 @@ jobs:
           packages/domain/src/identity/security-service.test.ts
           packages/domain/src/collections/collection-service.test.ts
           packages/domain/src/items/item-service.test.ts
+          packages/domain/src/items/identifier-service.test.ts
           apps/web/src/lib/security-service.integration.test.ts
       - name: Install Chromium for authentication journeys
         run: pnpm --filter @sammlerraum/web exec playwright install --with-deps chromium
