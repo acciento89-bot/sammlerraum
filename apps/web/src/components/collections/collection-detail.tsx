@@ -1,10 +1,7 @@
 "use client";
 
 import type { Collection, CollectionNode } from "@sammlerraum/contracts/collections";
-import type {
-  CustomFieldDefinition,
-  CustomFieldType,
-} from "@sammlerraum/contracts/custom-fields";
+import type { CustomFieldDefinition, CustomFieldType } from "@sammlerraum/contracts/custom-fields";
 import type { CollectibleItem } from "@sammlerraum/contracts/items";
 import type { LocationType, StorageLocation } from "@sammlerraum/contracts/locations";
 import Link from "next/link";
@@ -158,11 +155,11 @@ export function CollectionDetail({
       .split("\n")
       .map((option) => option.trim())
       .filter(Boolean);
-    const saved = await mutate(
-      `/api/v1/collections/${collectionId}/custom-fields`,
-      "POST",
-      { name: form.get("name"), type: form.get("type"), options },
-    );
+    const saved = await mutate(`/api/v1/collections/${collectionId}/custom-fields`, "POST", {
+      name: form.get("name"),
+      type: form.get("type"),
+      options,
+    });
     if (saved) {
       element.reset();
       setFieldType("SHORT_TEXT");

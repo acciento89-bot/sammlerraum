@@ -40,7 +40,6 @@ export function CodeScanner({
     }
   ).BarcodeDetector;
 
-
   function stop() {
     if (timer.current) clearTimeout(timer.current);
     stream.current?.getTracks().forEach((track) => track.stop());
