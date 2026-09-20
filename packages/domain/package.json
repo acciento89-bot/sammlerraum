@@ -4,6 +4,7 @@
   "type": "module",
   "exports": {
     "./collections/collection-service": "./src/collections/collection-service.ts",
+    "./custom-fields/custom-field-service": "./src/custom-fields/custom-field-service.ts",
     "./items/item-service": "./src/items/item-service.ts",
     "./identity/profile-service": "./src/identity/profile-service.ts",
     "./identity/security-service": "./src/identity/security-service.ts",

@@ -28,6 +28,19 @@ enum TradeStatus {
   RESERVED
 }
 
+enum CustomFieldType {
+  SHORT_TEXT
+  LONG_TEXT
+  INTEGER
+  DECIMAL
+  DATE
+  BOOLEAN
+  SINGLE_SELECT
+  MULTI_SELECT
+  URL
+  MONEY
+}
+
 model SystemMetadata {
   key       String   @id
   value     String
@@ -65,15 +78,16 @@ model User {
 }
 
 model Collection {
-  id         String            @id @default(uuid()) @db.Uuid
-  ownerId    String
-  name       String
-  visibility Visibility        @default(PRIVATE)
-  createdAt  DateTime          @default(now())
-  updatedAt  DateTime          @updatedAt
-  owner      User              @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  nodes      CollectionNode[]
-  items      CollectibleItem[]
+  id                     String                  @id @default(uuid()) @db.Uuid
+  ownerId                String
+  name                   String
+  visibility             Visibility              @default(PRIVATE)
+  createdAt              DateTime                @default(now())
+  updatedAt              DateTime                @updatedAt
+  owner                  User                    @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  nodes                  CollectionNode[]
+  items                  CollectibleItem[]
+  customFieldDefinitions CustomFieldDefinition[]
 
   @@index([ownerId])
 }
@@ -97,30 +111,106 @@ model CollectionNode {
 }
 
 model CollectibleItem {
-  id                  String          @id @default(uuid()) @db.Uuid
-  collectionId        String          @db.Uuid
-  nodeId              String?         @db.Uuid
+  id                  String             @id @default(uuid()) @db.Uuid
+  collectionId        String             @db.Uuid
+  nodeId              String?            @db.Uuid
   title               String
   publicDescription   String?
   privateNotes        String?
-  quantity            Int             @default(1)
-  acquisitionType     AcquisitionType @default(OTHER)
-  acquisitionDate     DateTime?       @db.Date
+  quantity            Int                @default(1)
+  acquisitionType     AcquisitionType    @default(OTHER)
+  acquisitionDate     DateTime?          @db.Date
   purchaseAmountMinor BigInt?
-  purchaseCurrency    String?         @db.Char(3)
-  visibility          Visibility      @default(PRIVATE)
-  tradeStatus         TradeStatus     @default(NOT_FOR_TRADE)
+  purchaseCurrency    String?            @db.Char(3)
+  visibility          Visibility         @default(PRIVATE)
+  tradeStatus         TradeStatus        @default(NOT_FOR_TRADE)
   archivedAt          DateTime?
   disposedAt          DateTime?
-  createdAt           DateTime        @default(now())
-  updatedAt           DateTime        @updatedAt
-  collection          Collection      @relation(fields: [collectionId], references: [id], onDelete: Cascade)
-  node                CollectionNode? @relation(fields: [nodeId, collectionId], references: [id, collectionId], onDelete: Restrict)
+  createdAt           DateTime           @default(now())
+  updatedAt           DateTime           @updatedAt
+  collection          Collection         @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  node                CollectionNode?    @relation(fields: [nodeId, collectionId], references: [id, collectionId], onDelete: Restrict)
   identifiers         ItemIdentifier[]
   itemTags            ItemTag[]
+  customFieldValues   CustomFieldValue[]
 
+  @@unique([id, collectionId])
   @@index([collectionId])
   @@index([nodeId, collectionId])
+}
+
+model CustomFieldDefinition {
+  id             String              @id @default(uuid()) @db.Uuid
+  collectionId   String              @db.Uuid
+  name           String
+  normalizedName String
+  type           CustomFieldType
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+  collection     Collection          @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  options        CustomFieldOption[]
+  values         CustomFieldValue[]
+
+  @@unique([collectionId, normalizedName])
+  @@unique([id, collectionId])
+  @@unique([id, collectionId, type])
+  @@index([collectionId])
+}
+
+model CustomFieldOption {
+  id                String                        @id @default(uuid()) @db.Uuid
+  fieldDefinitionId String                        @db.Uuid
+  value             String
+  normalizedValue   String
+  position          Int
+  fieldDefinition   CustomFieldDefinition         @relation(fields: [fieldDefinitionId], references: [id], onDelete: Cascade)
+  singleValues      CustomFieldValue[]            @relation("SingleSelectOption")
+  multiValues       CustomFieldMultiSelectValue[]
+
+  @@unique([fieldDefinitionId, normalizedValue])
+  @@unique([fieldDefinitionId, position])
+  @@unique([id, fieldDefinitionId])
+  @@index([fieldDefinitionId])
+}
+
+model CustomFieldValue {
+  itemId               String                        @db.Uuid
+  fieldDefinitionId    String                        @db.Uuid
+  collectionId         String                        @db.Uuid
+  fieldType            CustomFieldType
+  shortTextValue       String?                       @db.VarChar(255)
+  longTextValue        String?
+  integerValue         BigInt?
+  decimalValue         Decimal?                      @db.Decimal(38, 18)
+  dateValue            DateTime?                     @db.Date
+  booleanValue         Boolean?
+  singleSelectOptionId String?                       @db.Uuid
+  urlValue             String?                       @db.VarChar(2048)
+  moneyAmountMinor     BigInt?
+  moneyCurrency        String?                       @db.Char(3)
+  createdAt            DateTime                      @default(now())
+  updatedAt            DateTime                      @updatedAt
+  item                 CollectibleItem               @relation(fields: [itemId, collectionId], references: [id, collectionId], onDelete: Cascade)
+  fieldDefinition      CustomFieldDefinition         @relation(fields: [fieldDefinitionId, collectionId, fieldType], references: [id, collectionId, type], onDelete: Cascade)
+  singleSelectOption   CustomFieldOption?            @relation("SingleSelectOption", fields: [singleSelectOptionId, fieldDefinitionId], references: [id, fieldDefinitionId], onDelete: Cascade)
+  multiSelectValues    CustomFieldMultiSelectValue[]
+
+  @@id([itemId, fieldDefinitionId])
+  @@index([fieldDefinitionId, collectionId, fieldType])
+  @@index([singleSelectOptionId, fieldDefinitionId])
+}
+
+model CustomFieldMultiSelectValue {
+  itemId            String            @db.Uuid
+  fieldDefinitionId String            @db.Uuid
+  optionId          String            @db.Uuid
+  position          Int
+  value             CustomFieldValue  @relation(fields: [itemId, fieldDefinitionId], references: [itemId, fieldDefinitionId], onDelete: Cascade)
+  option            CustomFieldOption @relation(fields: [optionId, fieldDefinitionId], references: [id, fieldDefinitionId], onDelete: Cascade)
+
+  @@id([itemId, fieldDefinitionId, optionId])
+  @@unique([itemId, fieldDefinitionId, position])
+  @@index([optionId, fieldDefinitionId])
 }
 
 model ItemIdentifier {
