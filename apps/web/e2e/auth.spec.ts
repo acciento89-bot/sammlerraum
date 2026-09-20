@@ -31,17 +31,18 @@ test.describe("password authentication API", () => {
       });
       expect(registration.ok()).toBe(true);
 
-      const unverifiedLogin = await request.post(`${server.origin}/api/auth/sign-in/email`, {
-        data: { email, password },
-      });
-      expect(unverifiedLogin.status()).toBe(403);
-
       const verificationUrl = server.verificationUrlFor(email);
       expect(verificationUrl).toMatch(
         new RegExp(
           `^${server.origin.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}/api/auth/verify-email\\?`,
         ),
       );
+
+      const unverifiedLogin = await request.post(`${server.origin}/api/auth/sign-in/email`, {
+        data: { email, password },
+      });
+      expect(unverifiedLogin.status()).toBe(403);
+
       const verification = await request.get(verificationUrl, { maxRedirects: 0 });
       expect([200, 302]).toContain(verification.status());
 

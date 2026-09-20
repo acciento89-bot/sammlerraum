@@ -70,6 +70,10 @@ const RevokeAccountSessionSchema = z
   });
 
 const schemaReference = (name: string) => ({ $ref: `#/components/schemas/${name}` });
+const errorResponse = (description: string, schema = "ApiError") => ({
+  description,
+  content: { "application/json": { schema: schemaReference(schema) } },
+});
 
 export type OpenApiDocument = {
   openapi: "3.1.0";
@@ -81,11 +85,18 @@ export type OpenApiDocument = {
   };
 };
 
-export function buildOpenApiDocument(): OpenApiDocument {
+type OpenApiDocumentOptions = {
+  appOrigin?: string;
+};
+
+export function buildOpenApiDocument({
+  appOrigin = "https://example.invalid",
+}: OpenApiDocumentOptions = {}): OpenApiDocument {
   const { schemas } = z.toJSONSchema(schemaRegistry, {
     target: "draft-2020-12",
     uri: (id) => `#/components/schemas/${id}`,
   });
+  const secureCookiePrefix = new URL(appOrigin).protocol === "https:" ? "__Secure-" : "";
 
   return {
     openapi: "3.1.0",
@@ -107,6 +118,7 @@ export function buildOpenApiDocument(): OpenApiDocument {
               description: "Authentication required",
               content: { "application/json": { schema: schemaReference("ApiError") } },
             },
+            "500": errorResponse("Unexpected server error"),
           },
         },
         delete: {
@@ -124,7 +136,11 @@ export function buildOpenApiDocument(): OpenApiDocument {
             "400": {
               description: "Invalid request",
               content: {
-                "application/json": { schema: schemaReference("ApiValidationError") },
+                "application/json": {
+                  schema: {
+                    oneOf: [schemaReference("ApiError"), schemaReference("ApiValidationError")],
+                  },
+                },
               },
             },
             "401": {
@@ -139,13 +155,18 @@ export function buildOpenApiDocument(): OpenApiDocument {
               description: "Session not found",
               content: { "application/json": { schema: schemaReference("ApiError") } },
             },
+            "500": errorResponse("Unexpected server error"),
           },
         },
       },
     },
     components: {
       securitySchemes: {
-        sessionCookie: { type: "apiKey", in: "cookie", name: "better-auth.session_token" },
+        sessionCookie: {
+          type: "apiKey",
+          in: "cookie",
+          name: `${secureCookiePrefix}better-auth.session_token`,
+        },
       },
       schemas,
     },

@@ -59,6 +59,13 @@ async function sendWebResponse(response: ServerResponse, webResponse: Response):
   response.end(Buffer.from(await webResponse.arrayBuffer()));
 }
 
+async function closeServer(server: ReturnType<typeof createServer>): Promise<void> {
+  if (!server.listening) return;
+  await new Promise<void>((resolve, reject) => {
+    server.close((error) => (error === undefined ? resolve() : reject(error)));
+  });
+}
+
 export async function startAuthApiServer(databaseUrl: string): Promise<AuthApiServer> {
   if (databaseUrl.length === 0) throw new Error("DATABASE_URL is required for the auth E2E test");
 
@@ -78,76 +85,78 @@ export async function startAuthApiServer(databaseUrl: string): Promise<AuthApiSe
     }
   });
 
-  await new Promise<void>((resolve, reject) => {
-    server.once("error", reject);
-    server.listen(0, "127.0.0.1", () => {
-      server.off("error", reject);
-      resolve();
-    });
-  });
-
-  const address = server.address();
-  if (address === null || typeof address === "string") {
-    await prisma.$disconnect();
-    throw new Error("Auth E2E server did not expose a TCP address");
-  }
-  const origin = `http://127.0.0.1:${address.port}`;
-  const verificationUrls = new Map<string, string>();
-
-  const { buildAuthOptions } = await import("../../src/lib/auth");
-  const auth = betterAuth(
-    buildAuthOptions(
-      {
-        APP_ORIGIN: origin,
-        BETTER_AUTH_SECRET: "auth-e2e-secret-that-is-at-least-thirty-two-characters",
-        GOOGLE_CLIENT_ID: "auth-e2e-google-client-id",
-        GOOGLE_CLIENT_SECRET: "auth-e2e-google-client-secret",
-        APPLE_CLIENT_ID: "auth-e2e-apple-client-id",
-        APPLE_CLIENT_SECRET: "auth-e2e-apple-client-secret",
-      },
-      {
-        database: prismaAdapter(prisma, { provider: "postgresql" }),
-        sendEmail: async (message) => {
-          if (message.subject !== "Verify your Sammlerraum email") return;
-          const url = message.text.match(/https?:\/\/\S+/)?.[0];
-          if (url === undefined) throw new Error("Verification email did not contain a URL");
-          verificationUrls.set(message.to, url);
-        },
-      },
-    ),
-  );
-  const sessionHandlers = createSessionRouteHandlers({
-    getSession: (headers) =>
-      auth.api.getSession({ headers, query: { disableCookieCache: true, disableRefresh: true } }),
-    service: createSecurityService(prisma as unknown as SecurityDatabase),
-    appOrigin: origin,
-  });
-
-  handleRequest = async (request) => {
-    const { pathname } = new URL(request.url);
-    if (pathname.startsWith("/api/auth/")) return auth.handler(request);
-    if (pathname === "/api/v1/account/sessions" && request.method === "GET") {
-      return sessionHandlers.GET(request);
-    }
-    return new Response(null, { status: 404 });
-  };
-
-  return {
-    origin,
-    verificationUrlFor(email) {
-      const url = verificationUrls.get(email);
-      if (url === undefined) throw new Error("No verification email was captured");
-      return url;
-    },
-    async removeUser(email) {
-      verificationUrls.delete(email);
-      await prisma.user.deleteMany({ where: { email } });
-    },
-    async close() {
-      await new Promise<void>((resolve, reject) => {
-        server.close((error) => (error === undefined ? resolve() : reject(error)));
+  try {
+    await new Promise<void>((resolve, reject) => {
+      server.once("error", reject);
+      server.listen(0, "127.0.0.1", () => {
+        server.off("error", reject);
+        resolve();
       });
-      await prisma.$disconnect();
-    },
-  };
+    });
+
+    const address = server.address();
+    if (address === null || typeof address === "string") {
+      throw new Error("Auth E2E server did not expose a TCP address");
+    }
+    const origin = `http://127.0.0.1:${address.port}`;
+    const verificationUrls = new Map<string, string>();
+
+    const { buildAuthOptions } = await import("../../src/lib/auth");
+    const auth = betterAuth(
+      buildAuthOptions(
+        {
+          APP_ORIGIN: origin,
+          BETTER_AUTH_SECRET: "auth-e2e-secret-that-is-at-least-thirty-two-characters",
+          GOOGLE_CLIENT_ID: "auth-e2e-google-client-id",
+          GOOGLE_CLIENT_SECRET: "auth-e2e-google-client-secret",
+          APPLE_CLIENT_ID: "auth-e2e-apple-client-id",
+          APPLE_CLIENT_SECRET: "auth-e2e-apple-client-secret",
+        },
+        {
+          database: prismaAdapter(prisma, { provider: "postgresql" }),
+          sendEmail: async (message) => {
+            if (message.subject !== "Verify your Sammlerraum email") return;
+            const url = message.text.match(/https?:\/\/\S+/)?.[0];
+            if (url === undefined) throw new Error("Verification email did not contain a URL");
+            verificationUrls.set(message.to, url);
+          },
+        },
+      ),
+    );
+    const sessionHandlers = createSessionRouteHandlers({
+      getSession: (headers) =>
+        auth.api.getSession({ headers, query: { disableCookieCache: true, disableRefresh: true } }),
+      service: createSecurityService(prisma as unknown as SecurityDatabase),
+      appOrigin: origin,
+    });
+
+    handleRequest = async (request) => {
+      const { pathname } = new URL(request.url);
+      if (pathname.startsWith("/api/auth/")) return auth.handler(request);
+      if (pathname === "/api/v1/account/sessions" && request.method === "GET") {
+        return sessionHandlers.GET(request);
+      }
+      return new Response(null, { status: 404 });
+    };
+
+    return {
+      origin,
+      verificationUrlFor(email) {
+        const url = verificationUrls.get(email);
+        if (url === undefined) throw new Error("No verification email was captured");
+        return url;
+      },
+      async removeUser(email) {
+        verificationUrls.delete(email);
+        await prisma.user.deleteMany({ where: { email } });
+      },
+      async close() {
+        await closeServer(server);
+        await prisma.$disconnect();
+      },
+    };
+  } catch (error) {
+    await Promise.allSettled([closeServer(server), prisma.$disconnect()]);
+    throw error;
+  }
 }
