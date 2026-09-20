@@ -1,6 +1,6 @@
 # Platform Foundation Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** Create the production-grade Sammlerraum workspace, web/worker processes, PostgreSQL foundation, shared contracts/config, i18n shell, queue abstraction, Docker setup, and CI.
 
@@ -49,7 +49,7 @@
 - Consumes: none.
 - Produces: workspace package names `@sammlerraum/config`, `@sammlerraum/contracts`, `@sammlerraum/db`, `@sammlerraum/queue`, `@sammlerraum/domain`, `@sammlerraum/testing`.
 
-- [ ] **Step 1: Write the failing workspace smoke test**
+- [x] **Step 1: Write the failing workspace smoke test**
 
 Create `packages/testing/src/workspace.test.ts`:
 
@@ -66,12 +66,12 @@ describe("workspace", () => {
 });
 ```
 
-- [ ] **Step 2: Run the test and verify it fails**
+- [x] **Step 2: Run the test and verify it fails**
 
 Run: `pnpm vitest run packages/testing/src/workspace.test.ts`  
 Expected: FAIL because the workspace/package files do not exist yet.
 
-- [ ] **Step 3: Create the workspace manifests**
+- [x] **Step 3: Create the workspace manifests**
 
 Root `package.json` must include:
 
@@ -112,12 +112,12 @@ packages:
 
 Create package manifests with the exact package names listed under **Produces** plus `@sammlerraum/web` and `@sammlerraum/worker`.
 
-- [ ] **Step 4: Install dependencies and run the smoke test**
+- [x] **Step 4: Install dependencies and run the smoke test**
 
 Run: `pnpm install && pnpm vitest run packages/testing/src/workspace.test.ts`  
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add package.json pnpm-lock.yaml pnpm-workspace.yaml .nvmrc tsconfig.base.json vitest.workspace.ts apps packages

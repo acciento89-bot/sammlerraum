@@ -9,7 +9,7 @@ This is the handoff/status file for long-running implementation. Update it after
 
 | Phase | Plan | Tasks | Status | Next |
 |---|---|---:|---|---|
-| 01 | Platform Foundation | 6 | not started | Task 1 |
+| 01 | Platform Foundation | 6 | in progress (1/6 recovered) | Task 2 |
 | 02 | Identity, Auth & Policies | 7 | not started | Task 1 |
 | 03 | Collections, Items, Fields & Locations | 8 | not started | Task 1 |
 | 04 | Media & Documents | 6 | not started | Task 1 |
@@ -61,3 +61,11 @@ Recorded review fixes to preserve:
 - Task 5: DE/EN shell, cookie-over-Accept-Language preference, bounded request IDs, database-aware 200/503; unsupported locale must return 404. Last smoke logged Next NoFallbackError despite 404, requiring investigation.
 
 Local runtime previously lacked Docker/psql. Live database/container validation was not performed and remains a real gate, not a pass.
+
+### Recovered Phase 01 Task 1
+
+- Fresh implementer and fresh independent reviewer; spec/quality PASS without findings.
+- Actual RED: Vitest 3.2.7 smoke assertion failed before manifests. GREEN: 1/1 passed after implementation; controller rerun passed.
+- Frozen pnpm10.17.1 install, eight-package typecheck/lint/scaffold build, formatting and manifest assertions passed.
+- Root project config removes workspace deprecation; generated outputs/secrets ignored. Real dev targets remain Tasks4/5 dependencies.
+- Commit: chore: scaffold Sammlerraum workspace (recovered).

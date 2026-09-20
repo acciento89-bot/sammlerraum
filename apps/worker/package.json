@@ -1,0 +1,10 @@
+{
+  "name": "@sammlerraum/worker",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "pnpm typecheck",
+    "lint": "prettier --check .",
+    "typecheck": "tsc --noEmit --project ../../tsconfig.base.json"
+  }
+}
