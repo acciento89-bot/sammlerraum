@@ -176,7 +176,13 @@ test.describe("localized collection and item management", () => {
     page,
   }, testInfo) => {
     await page.addInitScript(() => {
-      Object.defineProperty(window, "BarcodeDetector", {
+      const browser = globalThis as unknown as {
+        BarcodeDetector?: unknown;
+        navigator: { mediaDevices?: { getUserMedia(): Promise<unknown> } };
+        MediaStream: new () => unknown;
+        HTMLMediaElement: { prototype: { play(): Promise<void> } };
+      };
+      Object.defineProperty(browser, "BarcodeDetector", {
         configurable: true,
         value: class {
           async detect() {
@@ -184,11 +190,11 @@ test.describe("localized collection and item management", () => {
           }
         },
       });
-      Object.defineProperty(navigator, "mediaDevices", {
+      Object.defineProperty(browser.navigator, "mediaDevices", {
         configurable: true,
-        value: { getUserMedia: async () => new MediaStream() },
+        value: { getUserMedia: async () => new browser.MediaStream() },
       });
-      HTMLMediaElement.prototype.play = async () => undefined;
+      browser.HTMLMediaElement.prototype.play = async () => undefined;
     });
     const locale = localeFor(testInfo);
     const labels = copy[locale];
