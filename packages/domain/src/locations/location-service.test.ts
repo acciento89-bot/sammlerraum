@@ -127,6 +127,86 @@ describe("location service", () => {
     expect(calls).toEqual(["lock-item", "find-location", "update-item", "create-history"]);
   });
 
+  it("rejects reassignment to the current location without writing false history", async () => {
+    const updateMany = vi.fn();
+    const createHistory = vi.fn();
+    const transaction = {
+      $queryRaw: vi
+        .fn()
+        .mockResolvedValue([{ id: itemId, ownerId, storageLocationId: locationId }]),
+      storageLocation: {
+        findUnique: vi.fn().mockResolvedValue({ id: locationId, ownerId }),
+      },
+      collectibleItem: { updateMany },
+      itemLocationHistory: { create: createHistory },
+    };
+    const service = createLocationService(
+      {
+        $transaction: async <T>(operation: (tx: typeof transaction) => Promise<T>) =>
+          operation(transaction),
+      } as unknown as LocationDatabase,
+      ownerId,
+    );
+
+    await expect(service.assignItemLocation(itemId, locationId)).rejects.toMatchObject({
+      code: "ITEM_LOCATION_UNCHANGED",
+    });
+    expect(updateMany).not.toHaveBeenCalled();
+    expect(createHistory).not.toHaveBeenCalled();
+  });
+
+  it("records real movement and unassignment with their previous location", async () => {
+    let currentLocation: string | null = locationId;
+    const histories: Array<Record<string, unknown>> = [];
+    const transaction = {
+      $queryRaw: vi.fn(async () => [{ id: itemId, ownerId, storageLocationId: currentLocation }]),
+      storageLocation: {
+        findUnique: vi.fn(async ({ where }: { where: { id: string } }) => ({
+          id: where.id,
+          ownerId,
+        })),
+      },
+      collectibleItem: {
+        updateMany: vi.fn(async ({ data }: { data: { storageLocationId: string | null } }) => {
+          currentLocation = data.storageLocationId;
+          return { count: 1 };
+        }),
+      },
+      itemLocationHistory: {
+        create: vi.fn(async ({ data }: { data: Record<string, unknown> }) => {
+          histories.push(data);
+          return {
+            id: histories.length === 1 ? childId : "00000000-0000-4000-8000-000000000005",
+            movedAt: new Date("2026-09-20T12:00:00.000Z"),
+            ...data,
+          };
+        }),
+      },
+    };
+    const service = createLocationService(
+      {
+        $transaction: async <T>(operation: (tx: typeof transaction) => Promise<T>) =>
+          operation(transaction),
+      } as unknown as LocationDatabase,
+      ownerId,
+    );
+
+    await expect(service.assignItemLocation(itemId, childId)).resolves.toMatchObject({
+      fromLocationId: locationId,
+      toLocationId: childId,
+    });
+    expect(currentLocation).toBe(childId);
+    await expect(service.assignItemLocation(itemId, null)).resolves.toMatchObject({
+      fromLocationId: childId,
+      toLocationId: null,
+    });
+    expect(currentLocation).toBeNull();
+    expect(histories).toMatchObject([
+      { fromLocationId: locationId, toLocationId: childId },
+      { fromLocationId: childId, toLocationId: null },
+    ]);
+  });
+
   it("rolls back the item assignment when history persistence fails", async () => {
     let storedLocation: string | null = null;
     const database = {
@@ -357,6 +437,7 @@ describe.runIf(runIntegration)("location PostgreSQL integration", () => {
       const own = createLocationService(prisma! as unknown as LocationDatabase, firstOwner);
       const other = createLocationService(prisma! as unknown as LocationDatabase, secondOwner);
       const ownLocation = await own.createLocation({ name: "Own", type: "CABINET" });
+      const secondOwnLocation = await own.createLocation({ name: "Other shelf", type: "SHELF" });
       const foreignLocation = await other.createLocation({ name: "Foreign", type: "BOX" });
 
       await expect(own.assignItemLocation(item.id, foreignLocation.id)).rejects.toMatchObject({
@@ -418,7 +499,36 @@ describe.runIf(runIntegration)("location PostgreSQL integration", () => {
           data: { storageLocationId: foreignLocation.id },
         }),
       ).rejects.toBeDefined();
+
+      const movement = await own.assignItemLocation(item.id, secondOwnLocation.id);
+      await expect(
+        prisma!.collectibleItem.findUnique({ where: { id: item.id } }),
+      ).resolves.toMatchObject({ storageLocationId: secondOwnLocation.id });
+      await expect(
+        prisma!.itemLocationHistory.findUnique({ where: { id: movement.id } }),
+      ).resolves.toMatchObject({
+        itemId: item.id,
+        fromLocationId: ownLocation.id,
+        toLocationId: secondOwnLocation.id,
+      });
+
+      const unassignment = await own.assignItemLocation(item.id, null);
+      await expect(
+        prisma!.collectibleItem.findUnique({ where: { id: item.id } }),
+      ).resolves.toMatchObject({ storageLocationId: null });
+      await expect(
+        prisma!.itemLocationHistory.findUnique({ where: { id: unassignment.id } }),
+      ).resolves.toMatchObject({
+        itemId: item.id,
+        fromLocationId: secondOwnLocation.id,
+        toLocationId: null,
+      });
     } finally {
+      // History deliberately restricts assignee deletion so attribution is not erased implicitly.
+      // This fixture therefore removes its own history rows before its users.
+      await prisma!.itemLocationHistory.deleteMany({
+        where: { assignedById: { in: cleanup } },
+      });
       await prisma!.user.deleteMany({ where: { id: { in: cleanup } } });
     }
   });

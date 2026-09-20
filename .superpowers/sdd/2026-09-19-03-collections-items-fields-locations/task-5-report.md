@@ -108,7 +108,7 @@ changed. Dependencies were restored with
 
 Fresh local evidence after implementation:
 
-- focused location test: 12 unit tests passed, 3 PostgreSQL tests skipped without the integration
+- focused location test: 14 unit tests passed, 3 PostgreSQL tests skipped without the integration
   gate;
 - focused location/item/custom-field/identifier regression set: 64 passed, 10 database-gated
   tests skipped;
@@ -127,3 +127,27 @@ PostgreSQL tests cover real recursive cycle detection and concurrent inverse mov
 foreign-key ownership boundaries; transaction rollback when history insertion fails; current FK
 plus history persistence; and positive/negative full-ancestry public projections. Applying the
 migration and running those actual-PostgreSQL tests remains the controller CI gate.
+
+## PostgreSQL fixture cleanup ruling
+
+The first controller PostgreSQL run applied the migration and passed the Task 5 production
+assertions, then failed while deleting the assignment test's user fixtures. The movement history
+still referenced its actor through `ItemLocationHistory.assignedById`, whose `ON DELETE RESTRICT`
+behavior intentionally prevents silent loss of audit attribution. The test teardown now explicitly
+deletes its own movement-history fixtures before deleting users. The production foreign key and
+published migration remain unchanged. Product-level account deletion and any later anonymization
+or retention policy are outside Task 5 and must explicitly decide how retained actor attribution is
+handled rather than weakening this protected-history boundary incidentally.
+
+## Review fix round 1
+
+The reviewer identified that the original unchanged-assignment guard covered only `null` to
+`null`. A new focused regression failed because assigning an item from location X back to X reached
+the update/history writes instead of returning `ITEM_LOCATION_UNCHANGED`. The service now compares
+the complete old and requested location values and rejects every unchanged assignment before any
+write. The regression also asserts that neither the item update nor history insert is called.
+
+Focused coverage now exercises a real X-to-Y move followed by Y-to-null unassignment and checks
+both the current location and each history endpoint. The gated PostgreSQL assignment test performs
+the same sequence against actual foreign keys, while retaining the prior forced-history-failure
+rollback assertion. No migration or schema change was needed for these review fixes.
