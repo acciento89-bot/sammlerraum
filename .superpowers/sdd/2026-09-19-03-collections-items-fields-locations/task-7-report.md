@@ -18,12 +18,14 @@
 - Multiple identifiers, tags, all ten custom-field value controls, and idempotent metadata replacement.
 - Manual EAN/UPC/ISBN entry is always present. BarcodeDetector is progressive enhancement; detected values remain proposals until explicit confirmation.
 - Multi-endpoint saves retain the created item ID. A retry patches that item rather than posting a duplicate. A successfully assigned location updates the retry baseline immediately, avoiding `ITEM_LOCATION_UNCHANGED`.
-- The desktop/mobile browser flow now also checks scanner proposal confirmation, item editing, archiving, and the inactive save state.
+- The desktop/mobile browser flow also checks scanner proposal confirmation, item editing, archiving, and the inactive save state.
 
 ## Recovery and verification status
 
 The local exec runtime disconnected during the first production UI checkpoint. UI work was reconstructed and continued through atomic GitHub checkpoint trees.
 
-The first remote candidate CI `35539878520` passed unit tests and stopped at the formatting gate. A failure-only diagnostic preserved the original failing lint gate and emitted exact Prettier results. Diagnostic run `35540178029`, job `106156292758`, produced exactly the twelve expected UTF-8 files; those formatter outputs were decoded and persisted byte-for-byte. The temporary diagnostic workflow step was then removed.
+The first remote candidate CI `35539878520` passed unit tests and stopped at formatting. Diagnostic run `35540178029`, job `106156292758`, produced exactly the twelve expected UTF-8 files; those formatter outputs were persisted byte-for-byte and the temporary diagnostic step removed.
 
-No compile, full-test, build, or browser GREEN claim is made yet for this candidate. A fresh unmodified CI run is required.
+Regular CI `35540346353`, job `106156735744`, then passed lint and failed typecheck only because the E2E init callback referenced DOM global names while server-only package typechecks do not load DOM libraries. The callback now accesses browser-only constructors through an explicit structural `globalThis` type inside `page.addInitScript`; no server TypeScript library or strictness setting changed.
+
+No full-test, build, or browser GREEN claim is made yet. A fresh regular CI run is required.
