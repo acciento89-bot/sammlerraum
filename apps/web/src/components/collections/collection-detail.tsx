@@ -310,7 +310,7 @@ export function CollectionDetail({
             />
             <label>
               {t("locationType")}
-              <select name="type" defaultValue="OTHER">
+              <select aria-label={t("locationType")} name="type" defaultValue="OTHER">
                 {locationTypes.map((type) => (
                   <option key={type} value={type}>
                     {t(`locationType${type}`)}
