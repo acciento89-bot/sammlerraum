@@ -11,7 +11,7 @@ This is the handoff/status file for long-running implementation. Update it after
 |---|---|---:|---|---|
 | 01 | Platform Foundation | 6 | complete (6/6) | — |
 | 02 | Identity, Auth & Policies | 7 | complete (7/7) | — |
-| 03 | Collections, Items, Fields & Locations | 8 | in progress (1/8) | Task 2 |
+| 03 | Collections, Items, Fields & Locations | 8 | in progress (2/8) | Task 3 |
 | 04 | Media & Documents | 6 | not started | Task 1 |
 | 05 | Catalog, Condition & Grading | 7 | not started | Task 1 |
 | 06 | Valuations & Market Data | 6 | not started | Task 1 |
@@ -342,3 +342,10 @@ Every completed and independently reviewed task must be checked off in its detai
 - Initial split RED missing module thenGREEN; added behavior tests observed7 expected failures before implementation; FOR_SALE/disposed archival corrections separately RED→GREEN. Final9unit/3DBskips; full146unit/12DBskips, lint/typecheck/configured productionbuild/Prisma validate+generate/rootformat green. Controller focused9/9 pass.
 - Tiny existing pnpm-workspace quote formatting normalized; no content change. Required migrate dev attempted once, unavailable local PostgreSQL prevented apply. Three real DB cases in CI cover concurrency/conservation, rollback, ownership/FKs/DB constraints and canonical DTOs.
 - Fresh reviewer spec/quality APPROVED with no findings. Task remains unchecked until real PostgreSQL17 migration/integration and full CI pass.
+
+### Phase 03 Task 2 — COMPLETE
+
+- Reviewed/tested remote `62139df7e413c63d52719740fc09aac615af2d41`.
+- Full CI SUCCESS: https://github.com/acciento89-bot/sammlerraum/actions/runs/35530315747 (job106129631374).
+- 146 unit/static tests passed; dedicated integration41 passed including12 actual DB cases (3 new item cases). All4 browser journeys passed26.6s. Migration/lint/typecheck/workspace build/Compose/both Docker builds passed.
+- Fresh spec/quality review approved without findings. Task2 checked off; next Task3 structured identifiers/tags. Completion documentation only uses [skip ci]; tested code unchanged.
