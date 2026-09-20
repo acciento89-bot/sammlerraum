@@ -198,7 +198,7 @@
     "tradeStatusRESERVED": "Reserviert",
     "organization": "Organisation",
     "tags": "Tags",
-    "tagsHelp": "Mehrere Tags durch Kommas trennen.",
+    "tagsHelp": "Mehrere Tags durch Kommas trennen; Kommas im Tag mit \\, schützen.",
     "location": "Lagerort",
     "noLocation": "Kein Lagerort",
     "identifiers": "Kennungen und Code-Erfassung",
