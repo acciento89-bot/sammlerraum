@@ -95,6 +95,7 @@ model Collection {
   visibility             Visibility              @default(PRIVATE)
   createdAt              DateTime                @default(now())
   updatedAt              DateTime                @updatedAt
+  deletedAt              DateTime?
   owner                  User                    @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   nodes                  CollectionNode[]
   items                  CollectibleItem[]
@@ -102,6 +103,7 @@ model Collection {
 
   @@unique([id, ownerId])
   @@index([ownerId])
+  @@index([ownerId, deletedAt])
 }
 
 model CollectionNode {
@@ -119,6 +121,7 @@ model CollectionNode {
 
   @@unique([id, collectionId])
   @@index([collectionId])
+  @@index([collectionId, deletedAt])
   @@index([parentId, collectionId])
 }
 
@@ -142,6 +145,7 @@ model CollectibleItem {
   disposedAt          DateTime?
   createdAt           DateTime              @default(now())
   updatedAt           DateTime              @updatedAt
+  deletedAt           DateTime?
   collection          Collection            @relation(fields: [collectionId, ownerId], references: [id, ownerId], onDelete: Cascade)
   node                CollectionNode?       @relation(fields: [nodeId, collectionId], references: [id, collectionId], onDelete: Restrict)
   storageLocation     StorageLocation?      @relation(fields: [storageLocationId, ownerId], references: [id, ownerId], onDelete: Restrict)

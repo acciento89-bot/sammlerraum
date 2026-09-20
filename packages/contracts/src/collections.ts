@@ -19,6 +19,14 @@ export const CollectionSchema = z.object({
 });
 export type Collection = z.infer<typeof CollectionSchema>;
 
+export const UpdateCollectionInputSchema = z
+  .object({
+    name: CollectionNameSchema.optional(),
+    visibility: VisibilitySchema.optional(),
+  })
+  .refine((input) => Object.keys(input).length > 0, "At least one collection field is required");
+export type UpdateCollectionInput = z.infer<typeof UpdateCollectionInputSchema>;
+
 export const CreateCollectionNodeInputSchema = z.object({
   collectionId: CollectionIdSchema,
   parentId: CollectionIdSchema.nullable().default(null),
@@ -35,6 +43,15 @@ export const CollectionNodeSchema = z.object({
   visibility: VisibilitySchema,
 });
 export type CollectionNode = z.infer<typeof CollectionNodeSchema>;
+
+export const UpdateCollectionNodeInputSchema = z
+  .object({
+    parentId: CollectionIdSchema.nullable().optional(),
+    name: CollectionNameSchema.optional(),
+    visibility: VisibilitySchema.optional(),
+  })
+  .refine((input) => Object.keys(input).length > 0, "At least one node field is required");
+export type UpdateCollectionNodeInput = z.infer<typeof UpdateCollectionNodeInputSchema>;
 
 export const MoveCollectionNodeInputSchema = z.object({
   parentId: CollectionIdSchema.nullable(),

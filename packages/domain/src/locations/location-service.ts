@@ -92,7 +92,12 @@ export type LocationDatabase = {
   };
   collectibleItem: {
     findMany(args: {
-      where: { storageLocationId: string; ownerId: string };
+      where: {
+        storageLocationId: string;
+        ownerId: string;
+        deletedAt: null;
+        collection: { deletedAt: null };
+      };
       select: { id: true; collectionId: true; title: true; quantity: true };
       orderBy: { title: "asc" };
     }): Promise<Array<{ id: string; collectionId: string; title: string; quantity: number }>>;
@@ -252,6 +257,11 @@ export function createLocationService(database: LocationDatabase, actorUserId: s
           SELECT item."id", item."ownerId", item."storageLocationId"
           FROM "CollectibleItem" item
           WHERE item."id" = ${itemId}::uuid AND item."ownerId" = ${actorUserId}
+            AND item."deletedAt" IS NULL
+            AND EXISTS (
+              SELECT 1 FROM "Collection" collection
+              WHERE collection."id" = item."collectionId" AND collection."deletedAt" IS NULL
+            )
           FOR UPDATE
         `;
         const item = rows[0];
@@ -295,7 +305,12 @@ export function createLocationService(database: LocationDatabase, actorUserId: s
         orderBy: { name: "asc" },
       }),
       database.collectibleItem.findMany({
-        where: { storageLocationId: locationId, ownerId: actorUserId },
+        where: {
+          storageLocationId: locationId,
+          ownerId: actorUserId,
+          deletedAt: null,
+          collection: { deletedAt: null },
+        },
         select: { id: true, collectionId: true, title: true, quantity: true },
         orderBy: { title: "asc" },
       }),

@@ -5,12 +5,16 @@ import {
   CreateCollectionInputSchema,
   CreateCollectionNodeInputSchema,
   MoveCollectionNodeInputSchema,
+  UpdateCollectionInputSchema,
+  UpdateCollectionNodeInputSchema,
   type AncestorVisibility,
   type Collection,
   type CollectionNode,
   type CreateCollectionInput,
   type CreateCollectionNodeInput,
   type MoveCollectionNodeInput,
+  type UpdateCollectionInput,
+  type UpdateCollectionNodeInput,
   type Visibility,
 } from "@sammlerraum/contracts/collections";
 
@@ -101,7 +105,7 @@ async function lockOwnedCollection(
   const locked = await transaction.$queryRaw<Array<{ id: string }>>`
     SELECT "id"
     FROM "Collection"
-    WHERE "id" = ${collectionId}::uuid AND "ownerId" = ${actorUserId}
+    WHERE "id" = ${collectionId}::uuid AND "ownerId" = ${actorUserId} AND "deletedAt" IS NULL
     FOR UPDATE
   `;
   if (locked.length !== 1) {
@@ -143,6 +147,83 @@ export function createCollectionService(database: CollectionDatabase, actorUserI
           select: collectionNodeSelect,
         });
         return CollectionNodeSchema.parse(node);
+      },
+      { isolationLevel: "ReadCommitted" },
+    );
+  }
+
+  async function updateCollection(
+    collectionIdInput: string,
+    input: UpdateCollectionInput,
+  ): Promise<Collection> {
+    const collectionId = CollectionSchema.shape.id.parse(collectionIdInput);
+    const data = UpdateCollectionInputSchema.parse(input);
+    return database.$transaction(
+      async (transaction) => {
+        await lockOwnedCollection(transaction, collectionId, actorUserId);
+        const rows = await transaction.$queryRaw<Collection[]>`
+          UPDATE "Collection"
+          SET
+            "name" = COALESCE(${data.name ?? null}, "name"),
+            "visibility" = COALESCE(${data.visibility ?? null}::"Visibility", "visibility"),
+            "updatedAt" = CURRENT_TIMESTAMP
+          WHERE "id" = ${collectionId}::uuid AND "ownerId" = ${actorUserId} AND "deletedAt" IS NULL
+          RETURNING "id", "name", "visibility"
+        `;
+        const updated = rows[0];
+        if (!updated) throw new CollectionServiceError("COLLECTION_NOT_FOUND");
+        return CollectionSchema.parse(updated);
+      },
+      { isolationLevel: "ReadCommitted" },
+    );
+  }
+
+  async function deleteCollection(collectionIdInput: string): Promise<void> {
+    const collectionId = CollectionSchema.shape.id.parse(collectionIdInput);
+    await database.$transaction(
+      async (transaction) => {
+        await lockOwnedCollection(transaction, collectionId, actorUserId);
+        const rows = await transaction.$queryRaw<Array<{ id: string }>>`
+          UPDATE "Collection"
+          SET "deletedAt" = CURRENT_TIMESTAMP, "updatedAt" = CURRENT_TIMESTAMP
+          WHERE "id" = ${collectionId}::uuid AND "ownerId" = ${actorUserId} AND "deletedAt" IS NULL
+          RETURNING "id"
+        `;
+        if (rows.length !== 1) throw new CollectionServiceError("COLLECTION_NOT_FOUND");
+      },
+      { isolationLevel: "ReadCommitted" },
+    );
+  }
+
+  async function updateCollectionNode(
+    nodeIdInput: string,
+    input: UpdateCollectionNodeInput,
+  ): Promise<CollectionNode> {
+    const nodeId = CollectionNodeSchema.shape.id.parse(nodeIdInput);
+    const data = UpdateCollectionNodeInputSchema.parse(input);
+    if (data.parentId !== undefined) {
+      await moveCollectionNode(nodeId, { parentId: data.parentId });
+    }
+    return database.$transaction(
+      async (transaction) => {
+        const source = await transaction.collectionNode.findUnique({
+          where: { id: nodeId },
+          select: { id: true, collectionId: true },
+        });
+        if (!source) throw new CollectionServiceError("COLLECTION_NODE_NOT_FOUND");
+        await lockOwnedCollection(transaction, source.collectionId, actorUserId);
+        const rows = await transaction.$queryRaw<CollectionNode[]>`
+          UPDATE "CollectionNode"
+          SET
+            "name" = COALESCE(${data.name ?? null}, "name"),
+            "visibility" = COALESCE(${data.visibility ?? null}::"Visibility", "visibility"),
+            "updatedAt" = CURRENT_TIMESTAMP
+          WHERE "id" = ${nodeId}::uuid AND "collectionId" = ${source.collectionId}::uuid
+          RETURNING "id", "collectionId", "parentId", "name", "visibility"
+        `;
+        const updated = rows[0];
+        if (!updated) throw new CollectionServiceError("COLLECTION_NODE_NOT_FOUND");
+        return CollectionNodeSchema.parse(updated);
       },
       { isolationLevel: "ReadCommitted" },
     );
@@ -275,7 +356,7 @@ export function createCollectionService(database: CollectionDatabase, actorUserI
         ancestry.depth
       FROM "Collection" collection
       LEFT JOIN ancestry ON true
-      WHERE collection."id" = ${collectionId}::uuid
+      WHERE collection."id" = ${collectionId}::uuid AND collection."deletedAt" IS NULL
       ORDER BY ancestry.depth DESC NULLS LAST
     `;
     if (rows.length === 0) {
@@ -309,7 +390,10 @@ export function createCollectionService(database: CollectionDatabase, actorUserI
 
   return {
     createCollection,
+    updateCollection,
+    deleteCollection,
     createCollectionNode,
+    updateCollectionNode,
     moveCollectionNode,
     moveNode: moveCollectionNode,
     getAncestorVisibility,

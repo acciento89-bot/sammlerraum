@@ -156,3 +156,15 @@ export const SplitQuantityResultSchema = z.object({
   created: CollectibleItemSchema,
 });
 export type SplitQuantityResult = z.infer<typeof SplitQuantityResultSchema>;
+
+export const ItemIdentifierInputSchema = z.object({
+  type: z.string().min(1).max(64),
+  value: z.string().min(1).max(512),
+});
+export const SetItemIdentifiersInputSchema = z.object({
+  identifiers: z.array(ItemIdentifierInputSchema).max(100),
+});
+export const SetItemTagsInputSchema = z.object({
+  tags: z.array(z.string().min(1).max(100)).max(100),
+});
+export const SplitItemInputSchema = z.object({ quantity: SplitQuantityInputSchema });

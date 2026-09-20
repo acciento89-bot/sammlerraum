@@ -78,3 +78,5 @@ export type CustomFieldValueRecord = {
   type: CustomFieldType;
   value: CanonicalCustomFieldValue;
 };
+
+export const SetCustomFieldValueInputSchema = z.object({ value: z.unknown() });
