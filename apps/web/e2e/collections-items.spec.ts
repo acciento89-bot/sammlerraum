@@ -212,14 +212,11 @@ test.describe("localized collection and item management", () => {
       await page.getByLabel(labels.visibility).selectOption("PRIVATE");
       const collectionCreated = page.waitForResponse(
         (response) =>
-          response.url().endsWith("/api/v1/collections") &&
-          response.request().method() === "POST",
+          response.url().endsWith("/api/v1/collections") && response.request().method() === "POST",
       );
       await page.getByRole("button", { name: labels.createCollection }).click();
       expect((await collectionCreated).status()).toBe(201);
-      await page
-        .getByRole("link", { name: `Pokémon ${labels.private}`, exact: true })
-        .click();
+      await page.getByRole("link", { name: `Pokémon ${labels.private}`, exact: true }).click();
 
       await page.getByLabel(labels.subcollectionName).fill("Base Set");
       await page.getByRole("button", { name: labels.createSubcollection }).click();
