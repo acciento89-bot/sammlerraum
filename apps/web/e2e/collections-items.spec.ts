@@ -107,9 +107,7 @@ async function expectTreeItem(page: Page, name: string) {
     const main = page.locator("main");
     const [text, aria] = await Promise.all([main.innerText(), main.ariaSnapshot()]);
     const original = error instanceof Error ? error.message : String(error);
-    throw new Error(
-      `${original}\nUI text: ${text.slice(0, 2000)}\nARIA: ${aria.slice(0, 3000)}`,
-    );
+    throw new Error(`${original}\nUI text: ${text.slice(0, 2000)}\nARIA: ${aria.slice(0, 3000)}`);
   }
 }
 
