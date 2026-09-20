@@ -379,7 +379,7 @@ git commit -m "feat: add PostgreSQL queue and worker runtime"
 - Consumes: `checkDatabaseHealth`.
 - Produces: locale-aware shell, `GET /api/health`, `getRequestId(headers): string`.
 
-- [ ] **Step 1: Write the failing health tests**
+- [x] **Step 1: Write the failing health tests**
 
 ```ts
 import { describe, expect, it } from "vitest";
@@ -396,12 +396,12 @@ describe("health payload", () => {
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run apps/web/src/app/api/health/route.test.ts`  
 Expected: FAIL because health builder does not exist.
 
-- [ ] **Step 3: Implement locale routing and health**
+- [x] **Step 3: Implement locale routing and health**
 
 Use `next-intl` with supported locales exactly `["de", "en"]`. The root language selection redirects to a deterministic locale using explicit preference/cookie first and Accept-Language second.
 
@@ -409,7 +409,7 @@ Health returns HTTP 200 for healthy and HTTP 503 for degraded database state.
 
 Request IDs use incoming `x-request-id` only when it matches `^[A-Za-z0-9._-]{1,128}$`; otherwise generate `crypto.randomUUID()`.
 
-- [ ] **Step 4: Run focused tests and production build**
+- [x] **Step 4: Run focused tests and production build**
 
 Run:
 ```bash
@@ -419,7 +419,7 @@ pnpm --filter @sammlerraum/web build
 
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add apps/web

@@ -31,7 +31,7 @@ describe("createTestDatabaseClient", () => {
   });
 
   it("rejects an actual production process despite a test override", async () => {
-    process.env.NODE_ENV = "production";
+    Object.assign(process.env, { NODE_ENV: "production" });
     const { createTestDatabaseClient } = await import("@sammlerraum/db/test-database");
 
     expect(() =>

@@ -9,7 +9,7 @@ This is the handoff/status file for long-running implementation. Update it after
 
 | Phase | Plan | Tasks | Status | Next |
 |---|---|---:|---|---|
-| 01 | Platform Foundation | 6 | in progress (4/6 recovered) | Task 5 |
+| 01 | Platform Foundation | 6 | in progress (5/6) | Task 6 |
 | 02 | Identity, Auth & Policies | 7 | not started | Task 1 |
 | 03 | Collections, Items, Fields & Locations | 8 | not started | Task 1 |
 | 04 | Media & Documents | 6 | not started | Task 1 |
@@ -100,3 +100,13 @@ Every completed and independently reviewed task must be checked off in its detai
 - Real worker dev/build/start, CJS production runner, probeable loopback health endpoint; built-bundle fake-dependency smoke200 and clean lifecycle stop.
 - No live PostgreSQL/container verification claimed; remaining infrastructure gate recorded.
 - Commit: feat: add PostgreSQL queue and worker runtime (recovered).
+
+### Phase 01 Task 5 — localized web shell and health
+
+- Task 4 remote commit: `15c9754`; intermediate Task5 WIP separately backed up as `98ca825` on work/sammlerraum-v1-checkpoint.
+- Next16.3.5/React19.3.0/next-intl4.14.5 localized DE/EN shell, cookie/Accept-Language/de locale negotiation, invalid locale404, safe request IDs, DB-aware health200/503 with no-store.
+- TDD RED/GREEN; controller focused10/10, full suite55/55; typecheck/lint/production build and real next start smoke passed.
+- Smoke verifies DE and EN content/cookies, cookie precedence, unsupported locale404 without fallback warnings, unreachable DB503 and request-ID preservation/generation.
+- Fresh independent reviewer: spec+quality Approved without findings; TSX coverage and strict TS options verified.
+- Task1 web dev dependency resolved with actual Next dev/build/start.
+- Commit: feat: add localized web shell and health endpoint.

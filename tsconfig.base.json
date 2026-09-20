@@ -11,5 +11,6 @@
     "skipLibCheck": true,
     "types": ["node", "vitest"]
   },
-  "include": ["apps/**/*.ts", "packages/**/*.ts", "vitest*.ts"]
+  "include": ["apps/**/*.ts", "packages/**/*.ts", "vitest*.ts"],
+  "exclude": ["**/.next/**", "**/dist/**", "**/node_modules/**"]
 }
