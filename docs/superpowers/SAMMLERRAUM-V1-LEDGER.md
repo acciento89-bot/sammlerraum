@@ -10,7 +10,7 @@ This is the handoff/status file for long-running implementation. Update it after
 | Phase | Plan | Tasks | Status | Next |
 |---|---|---:|---|---|
 | 01 | Platform Foundation | 6 | complete (6/6) | — |
-| 02 | Identity, Auth & Policies | 7 | in progress (2/7) | Task 3 |
+| 02 | Identity, Auth & Policies | 7 | in progress (3/7) | Task 4 |
 | 03 | Collections, Items, Fields & Locations | 8 | not started | Task 1 |
 | 04 | Media & Documents | 6 | not started | Task 1 |
 | 05 | Catalog, Condition & Grading | 7 | not started | Task 1 |
@@ -169,3 +169,21 @@ Every completed and independently reviewed task must be checked off in its detai
 - All3 migrations applied on PostgreSQL17;69 unit/static tests passed; dedicated integration run5 passed (3 real DB tests plus2 profile units). Lint/typecheck/workspace build/Compose and both Docker builds passed.
 - Fresh spec/quality review approved after both security findings fixed and tested. Task2 boxes checked. No live Google/Apple/SMTP success claimed; external configuration blockers above remain.
 - Next:Task3 account session/recovery controls. Docs-only completion commit [skip ci], same tested code.
+
+### Phase 02 Task 3 — reviewed account-security candidate, CI pending
+
+- Base remote `6463899`; current WIP checkpoint `ad2a579` includes final route-export and row-lock changes, exact tree verified.
+- Prisma-backed owned stable-ID session listing/revocation, strict sanitized metadata, same-origin no-store account APIs, fresh-session guard for factor removal.
+- Last verified login/recovery factor protected atomically by per-user PostgreSQL row lock at ReadCommitted; native bypass/removal/token-session endpoints disabled.
+- TDD RED missing service plus native-path/sanitization/transaction regressions. Local78 tests passed,5 DB-gated skipped; focused controller12 passed,2 DB-gated skipped. Lint/typecheck/build/frozen install/Prisma validate/diff check passed.
+- Fresh reviewer: spec APPROVED, quality APPROVED, zero findings. Candidate saved for real PostgreSQL concurrent-removal and BetterAuth getSession-after-revocation tests in CI; task stays unchecked until these pass.
+- Verified factor definition: persisted password with verified owner email; configured Google/Apple account after provider flow; verified registered passkey. Unknown providers do not count.
+- Ruling: temporary API error mapping isolated in account-security-routes.ts until Task4 shared wrapper — preserves planned ordering; cost if wrong: small wrapper integration rework.
+
+### Phase 02 Task 3 — COMPLETE
+
+- Reviewed code remote `468c4c8b4e57f0c8404f62fad1d703fab1aa8014`.
+- Full CI SUCCESS: https://github.com/acciento89-bot/sammlerraum/actions/runs/35519395789 (job106100740769).
+- 78 unit/static tests passed; dedicated integration run12 passed, including5 actual DB tests. PostgreSQL confirmed concurrent removals retain one verified factor and BetterAuth getSession returns null after stable-ID revocation.
+- Migrations, lint/typecheck/build, Compose and both Docker builds passed. Fresh independent spec/quality review approved with zero findings.
+- Task3 checked off; next Task4 shared API validation/errors. Docs-only completion preserves tested code.

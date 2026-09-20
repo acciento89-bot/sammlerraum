@@ -3,6 +3,7 @@
   "private": true,
   "type": "module",
   "exports": {
+    "./errors": "./src/errors.ts",
     "./profile": "./src/profile.ts"
   },
   "scripts": {

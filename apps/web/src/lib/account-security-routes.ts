@@ -2,6 +2,10 @@ import {
   SecurityServiceError,
   type SessionMetadata,
 } from "@sammlerraum/domain/identity/security-service";
+import { ApiError } from "@sammlerraum/contracts/errors";
+import { z } from "zod";
+
+import { apiRoute } from "./api/route-handler";
 
 export type TrustedSession = {
   user: { id: string };
@@ -26,9 +30,15 @@ type RecoveryRouteDependencies = {
 };
 
 const noStoreHeaders = { "cache-control": "no-store" };
+const sessionIdSchema = z.object({ sessionId: z.string().min(1) });
+const recoveryMethodIdSchema = z.object({ methodId: z.string().min(1) });
 
-function errorResponse(code: string, status: number, message: string): Response {
-  return Response.json({ error: { code, message } }, { status, headers: noStoreHeaders });
+async function parseJson(request: Request): Promise<unknown> {
+  try {
+    return await request.json();
+  } catch {
+    throw new ApiError("VALIDATION_ERROR", 400, "Request validation failed");
+  }
 }
 
 function hasSameOrigin(request: Request, appOrigin: string): boolean {
@@ -38,67 +48,51 @@ function hasSameOrigin(request: Request, appOrigin: string): boolean {
 
 export function createSessionRouteHandlers(dependencies: SessionRouteDependencies) {
   return {
-    async GET(request: Request): Promise<Response> {
+    GET: apiRoute(async (request: Request): Promise<Response> => {
       const session = await dependencies.getSession(request.headers);
-      if (!session) return errorResponse("UNAUTHORIZED", 401, "Authentication required");
+      if (!session) throw new ApiError("UNAUTHORIZED", 401, "Authentication required");
       const sessions = await dependencies.service.listSessions(session.user.id, session.session.id);
       return Response.json({ sessions }, { headers: noStoreHeaders });
-    },
+    }),
 
-    async DELETE(request: Request): Promise<Response> {
+    DELETE: apiRoute(async (request: Request): Promise<Response> => {
       if (!hasSameOrigin(request, dependencies.appOrigin)) {
-        return errorResponse("FORBIDDEN", 403, "Cross-origin request rejected");
+        throw new ApiError("FORBIDDEN", 403, "Cross-origin request rejected");
       }
       const session = await dependencies.getSession(request.headers);
-      if (!session) return errorResponse("UNAUTHORIZED", 401, "Authentication required");
+      if (!session) throw new ApiError("UNAUTHORIZED", 401, "Authentication required");
 
-      let sessionId: unknown;
-      try {
-        ({ sessionId } = (await request.json()) as { sessionId?: unknown });
-      } catch {
-        return errorResponse("INVALID_REQUEST", 400, "Invalid JSON body");
-      }
-      if (typeof sessionId !== "string" || sessionId.length === 0) {
-        return errorResponse("INVALID_REQUEST", 400, "sessionId is required");
-      }
+      const { sessionId } = sessionIdSchema.parse(await parseJson(request));
 
       try {
         await dependencies.service.revokeSession(session.user.id, sessionId);
         return new Response(null, { status: 204, headers: noStoreHeaders });
       } catch (error) {
         if (error instanceof SecurityServiceError && error.code === "SESSION_NOT_FOUND") {
-          return errorResponse(error.code, 404, error.message);
+          throw new ApiError("SESSION_NOT_FOUND", 404, "Session not found");
         }
         throw error;
       }
-    },
+    }),
   };
 }
 
 export function createRecoveryMethodRouteHandlers(dependencies: RecoveryRouteDependencies) {
   return {
-    async DELETE(request: Request): Promise<Response> {
+    DELETE: apiRoute(async (request: Request): Promise<Response> => {
       if (!hasSameOrigin(request, dependencies.appOrigin)) {
-        return errorResponse("FORBIDDEN", 403, "Cross-origin request rejected");
+        throw new ApiError("FORBIDDEN", 403, "Cross-origin request rejected");
       }
       const session = await dependencies.getSession(request.headers);
-      if (!session) return errorResponse("UNAUTHORIZED", 401, "Authentication required");
+      if (!session) throw new ApiError("UNAUTHORIZED", 401, "Authentication required");
 
       const now = (dependencies.now ?? (() => new Date()))().getTime();
       const sessionAge = now - new Date(session.session.createdAt).getTime();
       if (sessionAge < 0 || sessionAge >= dependencies.freshAgeSeconds * 1_000) {
-        return errorResponse("SESSION_NOT_FRESH", 403, "Recent authentication required");
+        throw new ApiError("SESSION_NOT_FRESH", 403, "Recent authentication required");
       }
 
-      let methodId: unknown;
-      try {
-        ({ methodId } = (await request.json()) as { methodId?: unknown });
-      } catch {
-        return errorResponse("INVALID_REQUEST", 400, "Invalid JSON body");
-      }
-      if (typeof methodId !== "string" || methodId.length === 0) {
-        return errorResponse("INVALID_REQUEST", 400, "methodId is required");
-      }
+      const { methodId } = recoveryMethodIdSchema.parse(await parseJson(request));
 
       try {
         await dependencies.service.removeLoginMethod(session.user.id, methodId);
@@ -106,10 +100,14 @@ export function createRecoveryMethodRouteHandlers(dependencies: RecoveryRouteDep
       } catch (error) {
         if (error instanceof SecurityServiceError) {
           const status = error.code === "RECOVERY_METHOD_REQUIRED" ? 409 : 404;
-          return errorResponse(error.code, status, error.message);
+          const message =
+            error.code === "RECOVERY_METHOD_REQUIRED"
+              ? "At least one recovery method is required"
+              : "Login method not found";
+          throw new ApiError(error.code, status, message);
         }
         throw error;
       }
-    },
+    }),
   };
 }

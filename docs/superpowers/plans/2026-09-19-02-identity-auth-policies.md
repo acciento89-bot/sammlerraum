@@ -174,7 +174,7 @@ git commit -m "feat: add password social and passkey authentication"
 - Consumes: Better Auth session/passkey/account data.
 - Produces: `listSessions`, `revokeSession`, `removeLoginMethod` with last-recovery protection.
 
-- [ ] **Step 1: Write failing last-recovery test**
+- [x] **Step 1: Write failing last-recovery test**
 
 ```ts
 it("refuses to remove the final verified recovery method", async () => {
@@ -183,21 +183,21 @@ it("refuses to remove the final verified recovery method", async () => {
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run packages/domain/src/identity/security-service.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement security service**
+- [x] **Step 3: Implement security service**
 
 Count verified login/recovery factors before removal. Revoke sessions by stable session ID owned by the user. Return sanitized session metadata: created time, last seen time, user agent label, current-session flag; never return token hashes.
 
-- [ ] **Step 4: Run tests**
+- [x] **Step 4: Run tests**
 
 Run: `pnpm vitest run packages/domain/src/identity/security-service.test.ts`  
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/domain apps/web/src/app/api/v1/account
