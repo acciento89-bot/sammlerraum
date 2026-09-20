@@ -6,6 +6,7 @@ import { authClient } from "../../lib/auth-client";
 import {
   classifySecurityFailure,
   finishReauthentication,
+  inPlacePasswordCredentials,
   providerTranslationKey,
   remainingFreshMilliseconds,
 } from "./account-ui-state";
@@ -100,8 +101,7 @@ export function PasskeyManager({
     event.preventDefault();
     const password = String(new FormData(event.currentTarget).get("reauthPassword") ?? "");
     const deadline = await finishReauthentication(
-      () =>
-        authClient.signIn.email({ email, password, callbackURL: `/${locale}/account/security` }),
+      () => authClient.signIn.email(inPlacePasswordCredentials(email, password)),
       reloadSessions,
     );
     if (deadline === null) setError(t("error"));

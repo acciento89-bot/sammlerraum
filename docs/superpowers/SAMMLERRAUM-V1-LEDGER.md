@@ -315,3 +315,10 @@ Every completed and independently reviewed task must be checked off in its detai
 - Candidate `f1ef9fe`; CI35528009956/job106123468688 applied new migration and passed136unit/29dedicated integration tests, including4 new hierarchy DB cases. Typecheck/lint/build passed.
 - Existing auth browser journey intermittently left2 sessions after post-reauth revoke (expected1);3 other cases passed, whereas previous phase gate had4/4 success. Root cause is not established; no hierarchy defect inferred.
 - Original auth implementer investigated, added safe exact DELETE-response204 assertion before existing DOM assertion to distinguish server failure from stale UI. Scoped reviewer approved diagnostic; no product/security changes or sensitive logging. Full gate remains open, Task1 unchecked.
+
+### Phase 03 Task 1 — auth regression root cause fixed, CI pending
+
+- Diagnostic `c5fdcf1`, CI35528352241/job106124380928: no matching session DELETE response after reauth;3 browser cases passed. This narrowed the failure to client navigation/request execution.
+- Verified installed Better Auth1.7.5: email sign-in callbackURL returns redirect:true and client plugin sets window.location.href. In-place security reauth supplied callbackURL while concurrently reloading session state; pending navigation interrupted the next action.
+- Reauth now supplies only email/password, preserving normal login/reset/OAuth redirects. New test observedRED thenGREEN; full137 unit tests pass/9DBskips; focusedcontroller9/9, lint/typecheck/collection pass.
+- Browser regression asserts actual reauth redirect:false/noURL/stablelocation, refreshed sessions, DELETE204 and final count1. Scoped reviewer approved causal minimal fix without new findings; fullCI still required before Task1 checkoff.

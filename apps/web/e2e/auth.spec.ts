@@ -273,7 +273,22 @@ test.describe("localized authentication and account UI", () => {
     await page.getByRole("button", { name: "Testgerät entfernen", exact: true }).click();
     await expect(page.getByRole("heading", { name: "Sicherheitsaktion bestätigen" })).toBeVisible();
     await page.getByLabel("Aktuelles Passwort").fill(credentials.password);
+    const securityURL = page.url();
+    const reauthenticationResponse = page.waitForResponse(
+      (response) =>
+        response.url().endsWith("/api/auth/sign-in/email") &&
+        response.request().method() === "POST",
+    );
     await page.getByRole("button", { name: "Erneut anmelden" }).click();
+    const reauthentication = await reauthenticationResponse;
+    expect(reauthentication.ok()).toBe(true);
+    const reauthenticationBody = (await reauthentication.json()) as {
+      redirect?: boolean;
+      url?: unknown;
+    };
+    expect(reauthenticationBody.redirect).toBe(false);
+    expect(reauthenticationBody.url).toBeUndefined();
+    await expect(page).toHaveURL(securityURL);
     const refreshedSessions = page.getByTestId("account-session");
     await expect(refreshedSessions).toHaveCount(2);
     await expect(refreshedSessions.filter({ hasText: "Diese Sitzung" })).toHaveCount(1);
