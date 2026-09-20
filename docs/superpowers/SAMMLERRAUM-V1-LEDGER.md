@@ -10,7 +10,7 @@ This is the handoff/status file for long-running implementation. Update it after
 | Phase | Plan | Tasks | Status | Next |
 |---|---|---:|---|---|
 | 01 | Platform Foundation | 6 | complete (6/6) | — |
-| 02 | Identity, Auth & Policies | 7 | Task 3 reviewed; CI pending (2/7) | Task 3 gate |
+| 02 | Identity, Auth & Policies | 7 | in progress (3/7) | Task 4 |
 | 03 | Collections, Items, Fields & Locations | 8 | not started | Task 1 |
 | 04 | Media & Documents | 6 | not started | Task 1 |
 | 05 | Catalog, Condition & Grading | 7 | not started | Task 1 |
@@ -179,3 +179,11 @@ Every completed and independently reviewed task must be checked off in its detai
 - Fresh reviewer: spec APPROVED, quality APPROVED, zero findings. Candidate saved for real PostgreSQL concurrent-removal and BetterAuth getSession-after-revocation tests in CI; task stays unchecked until these pass.
 - Verified factor definition: persisted password with verified owner email; configured Google/Apple account after provider flow; verified registered passkey. Unknown providers do not count.
 - Ruling: temporary API error mapping isolated in account-security-routes.ts until Task4 shared wrapper — preserves planned ordering; cost if wrong: small wrapper integration rework.
+
+### Phase 02 Task 3 — COMPLETE
+
+- Reviewed code remote `468c4c8b4e57f0c8404f62fad1d703fab1aa8014`.
+- Full CI SUCCESS: https://github.com/acciento89-bot/sammlerraum/actions/runs/35519395789 (job106100740769).
+- 78 unit/static tests passed; dedicated integration run12 passed, including5 actual DB tests. PostgreSQL confirmed concurrent removals retain one verified factor and BetterAuth getSession returns null after stable-ID revocation.
+- Migrations, lint/typecheck/build, Compose and both Docker builds passed. Fresh independent spec/quality review approved with zero findings.
+- Task3 checked off; next Task4 shared API validation/errors. Docs-only completion preserves tested code.
