@@ -7,9 +7,13 @@ import { apiRoute } from "./route-handler";
 
 function executeTestRoute(
   handler: (request: Request) => Response | Promise<Response>,
-  headers?: HeadersInit,
+  headers?: Record<string, string>,
 ): Promise<Response> {
-  return apiRoute(handler)(new Request("https://example.test/api/test", { headers }));
+  const request = new Request(
+    "https://example.test/api/test",
+    headers === undefined ? undefined : { headers },
+  );
+  return Promise.resolve(apiRoute(handler)(request));
 }
 
 describe("apiRoute", () => {
@@ -38,7 +42,7 @@ describe("apiRoute", () => {
       error.cause = { query: "select secret_token from session" };
       throw error;
     });
-    const body = await response.json();
+    const body = (await response.json()) as { error: { requestId: string } };
 
     expect(response.status).toBe(500);
     expect(response.headers.get("x-request-id")).toBe(body.error.requestId);
@@ -65,8 +69,12 @@ describe("apiRoute", () => {
         items: Array.from({ length: 30 }, (_, index) => `secret-${index}`),
         attributes: { [submittedSecret]: "raw-secret-value" },
       });
+      return Response.json({ ok: true });
     });
-    const body = await response.json();
+    const body = (await response.json()) as {
+      error: { code: string; message: string; requestId: string };
+      validation: { issues: Array<{ location: string; code: string }>; truncated: boolean };
+    };
     const serialized = JSON.stringify(body);
 
     expect(response.status).toBe(400);
@@ -78,9 +86,7 @@ describe("apiRoute", () => {
     });
     expect(body.validation.issues.length).toBeLessThanOrEqual(16);
     expect(body.validation.issues).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({ location: "field", code: "too_small" }),
-      ]),
+      expect.arrayContaining([expect.objectContaining({ location: "field", code: "too_small" })]),
     );
     expect(body.validation.truncated).toBe(true);
     expect(serialized).not.toContain(submittedSecret);
@@ -100,5 +106,16 @@ describe("apiRoute", () => {
     expect(response.headers.get("cache-control")).toBe("no-store");
     expect(response.headers.get("x-request-id")).toBe("success-request");
     expect(await response.json()).toEqual({ ok: true });
+  });
+
+  it("preserves redirects whose original headers are immutable", async () => {
+    const response = await executeTestRoute(
+      () => Response.redirect("https://example.test/sign-in", 307),
+      { "x-request-id": "redirect-request" },
+    );
+
+    expect(response.status).toBe(307);
+    expect(response.headers.get("location")).toBe("https://example.test/sign-in");
+    expect(response.headers.get("x-request-id")).toBe("redirect-request");
   });
 });

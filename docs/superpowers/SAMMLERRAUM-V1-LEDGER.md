@@ -10,7 +10,7 @@ This is the handoff/status file for long-running implementation. Update it after
 | Phase | Plan | Tasks | Status | Next |
 |---|---|---:|---|---|
 | 01 | Platform Foundation | 6 | complete (6/6) | — |
-| 02 | Identity, Auth & Policies | 7 | in progress (3/7) | Task 4 |
+| 02 | Identity, Auth & Policies | 7 | in progress (4/7) | Task 5 |
 | 03 | Collections, Items, Fields & Locations | 8 | not started | Task 1 |
 | 04 | Media & Documents | 6 | not started | Task 1 |
 | 05 | Catalog, Condition & Grading | 7 | not started | Task 1 |
@@ -187,3 +187,21 @@ Every completed and independently reviewed task must be checked off in its detai
 - 78 unit/static tests passed; dedicated integration run12 passed, including5 actual DB tests. PostgreSQL confirmed concurrent removals retain one verified factor and BetterAuth getSession returns null after stable-ID revocation.
 - Migrations, lint/typecheck/build, Compose and both Docker builds passed. Fresh independent spec/quality review approved with zero findings.
 - Task3 checked off; next Task4 shared API validation/errors. Docs-only completion preserves tested code.
+
+### Phase 02 Task 4 — reviewed API-error candidate, CI pending
+
+- Base remote `8648aef`; initial coherent WIP checkpoint `b870f3b`.
+- Shared ApiError/contracts/apiRoute; exact code/message/requestId error object, matching header, generic unknown500 and safe validation400, malformed JSON400. Integrated actual account APIs preserving all Task3 security checks and no-store/status/success semantics.
+- TDD RED missing contracts plus5 account-integration failures; GREEN initial84 tests/5DB skips, lint/typecheck/frozen install/webbuild.
+- Fresh reviewer found immutable Response headers causing valid redirects to become500. Reproduced RED with realResponse.redirect, copied response/headers, GREEN11/11 including controller rerun; typecheck clean. Scoped rereview spec/quality APPROVED, no findings remain.
+- Ruling: validation metadata is a bounded sibling object (max16 coarse location/code issues); raw paths may contain submitted record keys and are omitted — preserves privacy and exact error object; cost if wrong: future schema-derived field mapping for richer inline UX.
+- Ruling: web uses already-resolved Zod4.6.5 peer, contracts retain4.1.11; error contracts have no Zod runtime dependency — avoids duplicate peergraph; cost if wrong: future version alignment.
+- Candidate saved for full CI; task remains unchecked until gate succeeds.
+
+### Phase 02 Task 4 — COMPLETE
+
+- Reviewed code remote `411a0a98de0f43cda432b31228642987a32a2716`.
+- Full CI SUCCESS: https://github.com/acciento89-bot/sammlerraum/actions/runs/35520453660 (job106103504446).
+- 85 unit/static tests passed; dedicated integration run12 passed including5 actual DB tests. All migrations/lint/typecheck/workspace build/Compose and both Docker builds passed.
+- Fresh spec/quality review approved after immutable-header regression fixed; no findings remain. Task4 checked off; next Task5 deny-by-default policies.
+- Completion docs-only with [skip ci], identical tested code.

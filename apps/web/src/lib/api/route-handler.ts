@@ -47,8 +47,13 @@ export function apiRoute(handler: ApiRouteHandler): ApiRouteHandler {
 
     try {
       const response = await handler(request);
-      response.headers.set("x-request-id", requestId);
-      return response;
+      const headers = new Headers(response.headers);
+      headers.set("x-request-id", requestId);
+      return new Response(response.body, {
+        status: response.status,
+        statusText: response.statusText,
+        headers,
+      });
     } catch (error) {
       if (error instanceof ApiError) return errorResponse(error, requestId);
       if (error instanceof ZodError) {
@@ -58,10 +63,7 @@ export function apiRoute(handler: ApiRouteHandler): ApiRouteHandler {
           validationMetadata(error),
         );
       }
-      return errorResponse(
-        new ApiError("INTERNAL_ERROR", 500, INTERNAL_ERROR_MESSAGE),
-        requestId,
-      );
+      return errorResponse(new ApiError("INTERNAL_ERROR", 500, INTERNAL_ERROR_MESSAGE), requestId);
     }
   };
 }

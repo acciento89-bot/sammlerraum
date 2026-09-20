@@ -217,7 +217,7 @@ git commit -m "feat: add account session and recovery controls"
 - Consumes: Zod, request ID utility.
 - Produces: `apiRoute(handler)`, `ApiError`, exact error envelope.
 
-- [ ] **Step 1: Write failing error-envelope test**
+- [x] **Step 1: Write failing error-envelope test**
 
 ```ts
 it("maps domain errors to the public envelope without a stack", async () => {
@@ -234,21 +234,21 @@ it("maps domain errors to the public envelope without a stack", async () => {
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run apps/web/src/lib/api/route-handler.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement route wrapper**
+- [x] **Step 3: Implement route wrapper**
 
 Unknown exceptions return code `INTERNAL_ERROR`, HTTP 500, generic message, and request ID. Zod errors return `VALIDATION_ERROR`, HTTP 400, plus field issue metadata safe for clients.
 
-- [ ] **Step 4: Run tests**
+- [x] **Step 4: Run tests**
 
 Run: `pnpm vitest run apps/web/src/lib/api/route-handler.test.ts`  
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/contracts apps/web/src/lib/api
