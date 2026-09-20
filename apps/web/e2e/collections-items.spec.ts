@@ -48,7 +48,7 @@ const copy = {
     scanStart: "Code scannen",
     scanStop: "Scanner stoppen",
     actionError: "Die Aktion ist fehlgeschlagen.",
-    fieldInvalid: "Bitte prüfe die benutzerdefinierten Felder."
+    fieldInvalid: "Bitte prüfe die benutzerdefinierten Felder.",
     scanProposal: "Erkannter Vorschlag",
     scanConfirm: "Vorschlag übernehmen",
     archive: "Archivieren",
@@ -95,7 +95,7 @@ const copy = {
     scanStart: "Scan code",
     scanStop: "Stop scanner",
     actionError: "The action failed.",
-    fieldInvalid: "Check the custom fields."
+    fieldInvalid: "Check the custom fields.",
     scanProposal: "Detected proposal",
     scanConfirm: "Accept proposal",
     archive: "Archive",
