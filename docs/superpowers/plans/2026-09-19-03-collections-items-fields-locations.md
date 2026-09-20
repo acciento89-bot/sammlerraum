@@ -141,7 +141,7 @@ git commit -m "feat: add collectible item lifecycle"
 - Consumes: item ID.
 - Produces: `setItemIdentifiers(itemId, identifiers)`, `setItemTags(itemId, tags)`.
 
-- [ ] **Step 1: Write failing identifier normalization tests**
+- [x] **Step 1: Write failing identifier normalization tests**
 
 ```ts
 it("normalizes EAN values without removing meaningful leading zeroes", async () => {
@@ -152,21 +152,21 @@ it("normalizes EAN values without removing meaningful leading zeroes", async () 
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run packages/domain/src/items/identifier-service.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement models**
+- [x] **Step 3: Implement models**
 
 Add `ItemIdentifier(type, value, normalizedValue)`, `Tag`, and item-tag join table. Unique constraints must be scoped to item/type/value, not global across all owners.
 
-- [ ] **Step 4: Run tests**
+- [x] **Step 4: Run tests**
 
 Run: `pnpm vitest run packages/domain/src/items`  
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/db packages/domain/src/items
