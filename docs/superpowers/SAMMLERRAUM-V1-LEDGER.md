@@ -10,7 +10,7 @@ This is the handoff/status file for long-running implementation. Update it after
 | Phase | Plan | Tasks | Status | Next |
 |---|---|---:|---|---|
 | 01 | Platform Foundation | 6 | complete (6/6) | — |
-| 02 | Identity, Auth & Policies | 7 | Task 1 reviewed; CI pending | Task 1 gate |
+| 02 | Identity, Auth & Policies | 7 | in progress (1/7) | Task 2 |
 | 03 | Collections, Items, Fields & Locations | 8 | not started | Task 1 |
 | 04 | Media & Documents | 6 | not started | Task 1 |
 | 05 | Catalog, Condition & Grading | 7 | not started | Task 1 |
@@ -140,3 +140,11 @@ Every completed and independently reviewed task must be checked off in its detai
 - Ruling: UserProfile stores unique scalar userId until Task2 creates auth User and adds FK — preserves task sequence; cost if wrong: additive relation adjustment.
 - Ruling: local migrate dev cannot connect because PostgreSQL is unavailable; Prisma generated additive SQL offline, real PostgreSQL17 migrate deploy and persistence test run in CI — cost if wrong: generator parity rework. Published initial migration unchanged.
 - Ruling: package exports/dependencies and explicit CI test invocation updated as supporting files — necessary for real adapter coverage; cost if wrong: reversible supporting-file rework.
+
+### Phase 02 Task 1 — COMPLETE
+
+- Reviewed implementation secured at `970649762a9394f1857fde858c36bb76044f5319`.
+- Full CI SUCCESS: https://github.com/acciento89-bot/sammlerraum/actions/runs/35516444676 (job106093088492).
+- PostgreSQL17 applied identity_profile migration;62 unit/static tests passed; dedicated integration run5 passed (3 real DB tests plus2 profile unit tests). Lint/typecheck/build, Compose and both Docker builds passed.
+- Fresh review spec/quality approved without findings; required database gate resolved. Task1 boxes checked, next Task2.
+- Completion is docs-only with [skip ci]; code remains identical to successful CI commit.

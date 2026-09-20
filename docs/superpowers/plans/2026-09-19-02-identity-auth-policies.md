@@ -40,7 +40,7 @@
 - Consumes: Prisma.
 - Produces: `getPublicProfile(handle): Promise<PublicProfile | null>`, `updateOwnProfile(userId, input)`.
 
-- [ ] **Step 1: Write failing privacy test**
+- [x] **Step 1: Write failing privacy test**
 
 ```ts
 it("never exposes login email in the public profile projection", async () => {
@@ -55,12 +55,12 @@ it("never exposes login email in the public profile projection", async () => {
 });
 ```
 
-- [ ] **Step 2: Run test and confirm failure**
+- [x] **Step 2: Run test and confirm failure**
 
 Run: `pnpm vitest run packages/domain/src/identity/profile-service.test.ts`  
 Expected: FAIL because profile service/schema do not exist.
 
-- [ ] **Step 3: Add models and service**
+- [x] **Step 3: Add models and service**
 
 Add `UserProfile` with unique normalized `handle`, `displayName`, `bio`, `avatarAssetId`, timestamps. Keep login email in auth-owned user data, not profile output.
 
@@ -75,7 +75,7 @@ export const PublicProfileSchema = z.object({
 });
 ```
 
-- [ ] **Step 4: Run tests and migrate**
+- [x] **Step 4: Run tests and migrate**
 
 Run:
 ```bash
@@ -85,7 +85,7 @@ pnpm vitest run packages/domain/src/identity/profile-service.test.ts
 
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/db packages/domain packages/contracts
