@@ -309,3 +309,9 @@ Every completed and independently reviewed task must be checked off in its detai
 - Full local136 tests passed/9DBskips; lint/typecheck/configured productionbuild, Prisma format/validate/generate and diff checks pass. Controller focused10/10 pass. Local migrate dev attempted once, unavailable PostgreSQL prevented execution.
 - Four real CI cases: recursive descendant rejection, cross-collection service+FK rejection, full UNLISTED ancestry, simultaneous inverse moves. Task stays unchecked until migration and these cases succeed.
 - Fresh reviewer spec/quality APPROVED with no findings. Reviewed candidate ready for full CI; no completion claim before real DB gate.
+
+### Phase 03 Task 1 — hierarchy DB gate passed; auth regression diagnostic pending
+
+- Candidate `f1ef9fe`; CI35528009956/job106123468688 applied new migration and passed136unit/29dedicated integration tests, including4 new hierarchy DB cases. Typecheck/lint/build passed.
+- Existing auth browser journey intermittently left2 sessions after post-reauth revoke (expected1);3 other cases passed, whereas previous phase gate had4/4 success. Root cause is not established; no hierarchy defect inferred.
+- Original auth implementer investigated, added safe exact DELETE-response204 assertion before existing DOM assertion to distinguish server failure from stale UI. Scoped reviewer approved diagnostic; no product/security changes or sensitive logging. Full gate remains open, Task1 unchecked.

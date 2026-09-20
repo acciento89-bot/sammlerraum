@@ -277,10 +277,16 @@ test.describe("localized authentication and account UI", () => {
     const refreshedSessions = page.getByTestId("account-session");
     await expect(refreshedSessions).toHaveCount(2);
     await expect(refreshedSessions.filter({ hasText: "Diese Sitzung" })).toHaveCount(1);
+    const firstRevocationResponse = page.waitForResponse(
+      (response) =>
+        response.url().endsWith("/api/v1/account/sessions") &&
+        response.request().method() === "DELETE",
+    );
     await refreshedSessions
       .filter({ hasNotText: "Diese Sitzung" })
       .getByRole("button", { name: "Sitzung widerrufen" })
       .click();
+    expect((await firstRevocationResponse).status()).toBe(204);
     await expect(refreshedSessions).toHaveCount(1);
 
     await page.getByRole("button", { name: "Abmelden" }).click();
