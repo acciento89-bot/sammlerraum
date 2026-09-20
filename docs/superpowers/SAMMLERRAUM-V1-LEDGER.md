@@ -251,3 +251,15 @@ Every completed and independently reviewed task must be checked off in its detai
 - Local syntax/format/typecheck checks pass. Local browser run cannot establish meaningful RED because Chromium/PostgreSQL are absent; GitHub CI must demonstrate missing UI failure before implementation.
 - Runtime-generated one-day localhost certificate/key remain in test temporary files; no committed credentials or production mail bypass.
 - Checkpoint is intentionally failing and not reviewed completion. No Task7 checkbox is ticked.
+
+### Phase 02 Task 7 — reviewed UI candidate, CI pending
+
+- Tests-only RED remote `8d358da1096102ae9763de465b3b9674ebb5fb83`; CI35524209712/job106113423059 proved3 browser failures on absent UI while existing API smoke passed. No implementation preceded this meaningful RED.
+- Complete DE/EN login/register/profile/security UI, verify/resend/reset, Google/Apple sign-in/link entry points, passkey add/sign-in/remove, own-profile create/update, sanitized methods/sessions and guarded revocation. Safe handle conflicts; no login-email-derived public handle.
+- Test-only local TLS SMTP captures real Next verification/reset mail, with runtime-generated temporary cert/key and trust only in Next test child; production TLS/verification unchanged. Live providers remain the documented external blockers.
+- Local118 tests passed/5 gated DB skips plus workspace typecheck, web lint/productionbuild. Backend RED missing own-profile/methods interfaces and duplicate-handle conflict then GREEN; final focused20pass/2DBskips.
+- Fresh review found reset-to-login transition, expired freshness/error mapping, stale session list after reauth, provider labels and profile error presentation. All5 fixed; scoped rereview caught provider-key namespace regression, reproduced with actual catalogs then fixed. Final8/8 state/catalog tests pass including controller rerun.
+- Fresh spec/quality rereview APPROVED after2 fixrounds; no open findings. Final real PostgreSQL/Chromium/browser GREEN remains required before checkoff.
+- Ruling: stale-session response makes reauth visible; client expiry timer improves UI while server remains authority. Password reauth reloads sanitized sessions and current marker; OAuth/passkey sign-in retain native supported routes — avoids trusting UI state; cost if wrong: additional provider-specific reauth UX.
+- Ruling: actual-browser automation uses virtual WebAuthn and mocked third-party handoff; live consent/callback checks remain external and do not block independent work — no credentials fabricated; cost if wrong: live integration adjustments.
+- Final-fix checkpoint `0d4836a` preserved first fixround before catalog-only correction; task completion remains unchecked pending CI.

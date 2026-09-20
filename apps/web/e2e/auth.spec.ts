@@ -2,6 +2,7 @@ import { randomUUID } from "node:crypto";
 import { readFile, rm } from "node:fs/promises";
 
 import { expect, test, type Browser, type Page } from "@playwright/test";
+import { createPrismaClient } from "@sammlerraum/db/create-client";
 
 import { startAuthApiServer, type AuthApiServer } from "./support/auth-api-server";
 
@@ -71,6 +72,20 @@ async function signInAnotherSession(
   await page.getByRole("button", { name: "Anmelden" }).click();
   await expect(page).toHaveURL(/\/de\/account\/profile$/);
   return context;
+}
+
+async function makeSessionsStale(email: string) {
+  const prisma = createPrismaClient(process.env.DATABASE_URL ?? "");
+  await prisma.$connect();
+  try {
+    const user = await prisma.user.findUniqueOrThrow({ where: { email }, select: { id: true } });
+    await prisma.session.updateMany({
+      where: { userId: user.id },
+      data: { createdAt: new Date(Date.now() - 10 * 60_000) },
+    });
+  } finally {
+    await prisma.$disconnect();
+  }
 }
 
 test.describe("password authentication API", () => {
@@ -193,6 +208,7 @@ test.describe("localized authentication and account UI", () => {
     await page.getByLabel("Neues Passwort").fill(newPassword);
     await page.getByRole("button", { name: "Passwort speichern" }).click();
     await expect(page.getByText("Passwort wurde geändert.")).toBeVisible();
+    await expect(page).toHaveURL(/\/de\/login$/);
     await page.getByLabel("E-Mail-Adresse").fill(credentials.email);
     await page.getByLabel("Passwort", { exact: true }).fill(newPassword);
     await page.getByRole("button", { name: "Anmelden" }).click();
@@ -229,9 +245,31 @@ test.describe("localized authentication and account UI", () => {
     await expect(page.getByRole("heading", { name: "Aktive Sitzungen" })).toBeVisible();
     await expect(page.getByRole("button", { name: "Google verbinden" })).toBeVisible();
     await expect(page.getByRole("button", { name: "Apple verbinden" })).toBeVisible();
+    const linkRequest = page.waitForRequest(
+      (request) =>
+        request.url().endsWith("/api/auth/link-social") &&
+        request.postDataJSON().provider === "google",
+    );
+    await page.getByRole("button", { name: "Google verbinden" }).click();
+    await linkRequest;
+    await page.goto("/de/account/security");
     await page.getByLabel("Passkey-Name").fill("Testgerät");
     await page.getByRole("button", { name: "Passkey hinzufügen" }).click();
     await expect(page.getByText("Testgerät")).toBeVisible();
+
+    await makeSessionsStale(credentials.email);
+    await page.getByRole("button", { name: "Testgerät entfernen" }).click();
+    await expect(page.getByRole("heading", { name: "Sicherheitsaktion bestätigen" })).toBeVisible();
+    await page.getByLabel("Aktuelles Passwort").fill(credentials.password);
+    await page.getByRole("button", { name: "Erneut anmelden" }).click();
+    const refreshedSessions = page.getByTestId("account-session");
+    await expect(refreshedSessions).toHaveCount(2);
+    await expect(refreshedSessions.filter({ hasText: "Diese Sitzung" })).toHaveCount(1);
+    await refreshedSessions
+      .filter({ hasNotText: "Diese Sitzung" })
+      .getByRole("button", { name: "Sitzung widerrufen" })
+      .click();
+    await expect(refreshedSessions).toHaveCount(1);
 
     await page.getByRole("button", { name: "Abmelden" }).click();
     await expect(page).toHaveURL(/\/de\/login$/);

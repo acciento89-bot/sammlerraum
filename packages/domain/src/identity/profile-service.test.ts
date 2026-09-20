@@ -22,7 +22,7 @@ describe("profile service", () => {
   it("never exposes login email in the public profile projection", async () => {
     const findUnique = vi.fn().mockResolvedValue(profileRecord());
     const service = createProfileService({
-      userProfile: { findUnique, update: vi.fn() },
+      userProfile: { findUnique, update: vi.fn(), upsert: vi.fn() },
     });
 
     const result = await service.getPublicProfile("sammler");
@@ -53,7 +53,7 @@ describe("profile service", () => {
       avatarAssetId: null,
     });
     const service = createProfileService({
-      userProfile: { findUnique: vi.fn(), update },
+      userProfile: { findUnique: vi.fn(), update, upsert: vi.fn() },
     });
 
     await expect(
@@ -84,6 +84,51 @@ describe("profile service", () => {
         avatarAssetId: true,
       },
     });
+  });
+
+  it("creates an initial profile from explicit public fields for the trusted user", async () => {
+    const upsert = vi.fn().mockResolvedValue({
+      handle: "new-sammler",
+      displayName: "Sammler",
+      bio: null,
+      avatarAssetId: null,
+    });
+    const service = createProfileService({
+      userProfile: { findUnique: vi.fn(), update: vi.fn(), upsert },
+    });
+
+    await service.upsertOwnProfile("trusted-user", {
+      handle: "  NEW-SAMMLER ",
+      displayName: "Sammler",
+      bio: null,
+      avatarAssetId: null,
+    });
+
+    expect(upsert).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { userId: "trusted-user" },
+        create: expect.objectContaining({ userId: "trusted-user", handle: "new-sammler" }),
+      }),
+    );
+  });
+
+  it("maps a duplicate handle to a safe domain conflict", async () => {
+    const service = createProfileService({
+      userProfile: {
+        findUnique: vi.fn(),
+        update: vi.fn(),
+        upsert: vi.fn().mockRejectedValue({ code: "P2002", meta: { target: ["handle"] } }),
+      },
+    });
+
+    await expect(
+      service.upsertOwnProfile("user-1", {
+        handle: "sammler",
+        displayName: "Sammler",
+        bio: null,
+        avatarAssetId: null,
+      }),
+    ).rejects.toMatchObject({ code: "HANDLE_TAKEN" });
   });
 });
 

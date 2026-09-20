@@ -17,7 +17,7 @@ type State = {
     token?: string;
   }>;
   accounts: Array<{ id: string; userId: string; providerId: string; password: string | null }>;
-  passkeys: Array<{ id: string; userId: string }>;
+  passkeys: Array<{ id: string; userId: string; name?: string | null }>;
 };
 
 function fakeDatabase(state: State): SecurityDatabase {
@@ -89,6 +89,19 @@ function initialState(): State {
 }
 
 describe("security service", () => {
+  it("lists only safe verified recovery method metadata", async () => {
+    const state = initialState();
+    state.accounts.push({ id: "google-1", userId: "user-1", providerId: "google", password: null });
+    state.passkeys.push({ id: "passkey-1", userId: "user-1", name: "Laptop" });
+    const service = createSecurityService(fakeDatabase(state));
+
+    await expect(service.listLoginMethods("user-1")).resolves.toEqual([
+      { id: "password", type: "password", provider: "credential", name: null },
+      { id: "account:google-1", type: "provider", provider: "google", name: null },
+      { id: "passkey:passkey-1", type: "passkey", provider: "passkey", name: "Laptop" },
+    ]);
+  });
+
   it("refuses to remove the final verified recovery method", async () => {
     const state = initialState();
     const service = createSecurityService(fakeDatabase(state));

@@ -3,6 +3,27 @@ import { describe, expect, it, vi } from "vitest";
 import { createRecoveryMethodRouteHandlers } from "../../../../../lib/account-security-routes";
 
 describe("account recovery-method route", () => {
+  it("lists sanitized methods for the authenticated account", async () => {
+    const listLoginMethods = vi.fn().mockResolvedValue([{ id: "password", type: "password" }]);
+    const handlers = createRecoveryMethodRouteHandlers({
+      getSession: vi.fn().mockResolvedValue({
+        user: { id: "trusted-user" },
+        session: { id: "fresh-session", createdAt: new Date() },
+      }),
+      service: { listLoginMethods, removeLoginMethod: vi.fn() },
+      appOrigin: "https://example.test",
+      freshAgeSeconds: 300,
+    });
+
+    const response = await handlers.GET(
+      new Request("https://example.test/api/v1/account/recovery-methods"),
+    );
+
+    expect(response.status).toBe(200);
+    expect(response.headers.get("cache-control")).toBe("no-store");
+    expect(listLoginMethods).toHaveBeenCalledWith("trusted-user");
+  });
+
   it("uses the authenticated actor instead of accepting a user id from the body", async () => {
     const removeLoginMethod = vi.fn().mockResolvedValue(undefined);
     const handlers = createRecoveryMethodRouteHandlers({
@@ -10,7 +31,7 @@ describe("account recovery-method route", () => {
         user: { id: "trusted-user" },
         session: { id: "fresh-session", createdAt: new Date("2026-09-20T00:00:00.000Z") },
       }),
-      service: { removeLoginMethod },
+      service: { listLoginMethods: vi.fn(), removeLoginMethod },
       appOrigin: "https://example.test",
       now: () => new Date("2026-09-20T00:01:00.000Z"),
       freshAgeSeconds: 300,
@@ -37,7 +58,7 @@ describe("account recovery-method route", () => {
         user: { id: "user-1" },
         session: { id: "old-session", createdAt: new Date("2026-09-19T00:00:00.000Z") },
       }),
-      service: { removeLoginMethod },
+      service: { listLoginMethods: vi.fn(), removeLoginMethod },
       appOrigin: "https://example.test",
       now: () => new Date("2026-09-20T00:00:00.000Z"),
       freshAgeSeconds: 300,

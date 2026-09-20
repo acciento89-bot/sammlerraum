@@ -13,7 +13,6 @@ export default defineConfig({
           command: "node e2e/support/browser-test-server.mjs",
           env: {
             E2E_MAILBOX_PATH: "/tmp/sammlerraum-auth-e2e-mailbox.json",
-            NODE_EXTRA_CA_CERTS: "/tmp/sammlerraum-auth-e2e-cert.pem",
             RUN_AUTH_E2E: "1",
           },
           reuseExistingServer: !process.env.CI,
