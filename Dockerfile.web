@@ -1,0 +1,30 @@
+FROM node:24.19.0-bookworm-slim AS base
+ENV PNPM_HOME=/pnpm
+ENV PATH=$PNPM_HOME:$PATH
+RUN corepack enable && corepack prepare pnpm@10.17.1 --activate
+WORKDIR /app
+
+FROM base AS build
+ARG NEXT_PUBLIC_APP_ORIGIN
+COPY . .
+RUN pnpm install --frozen-lockfile
+RUN DATABASE_URL=postgresql://build:build@127.0.0.1:5432/sammlerraum_build \
+    pnpm --filter @sammlerraum/db prisma generate
+RUN test -n "$NEXT_PUBLIC_APP_ORIGIN"
+RUN DATABASE_URL=postgresql://build:build@127.0.0.1:5432/sammlerraum_build \
+    APP_ORIGIN=http://127.0.0.1:3000 \
+    NEXT_PUBLIC_APP_ORIGIN=$NEXT_PUBLIC_APP_ORIGIN \
+    UPLOADS_DIR=/tmp/sammlerraum-build-uploads \
+    pnpm --filter @sammlerraum/web build
+
+FROM node:24.19.0-bookworm-slim AS runtime
+ENV NODE_ENV=production
+ENV PORT=3000
+ENV HOSTNAME=0.0.0.0
+WORKDIR /app
+RUN mkdir -p /data/uploads && chown node:node /data/uploads
+COPY --from=build --chown=node:node /app/apps/web/.next/standalone ./
+COPY --from=build --chown=node:node /app/apps/web/.next/static ./apps/web/.next/static
+USER node
+EXPOSE 3000
+CMD ["node", "apps/web/server.js"]

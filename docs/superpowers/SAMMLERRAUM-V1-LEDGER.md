@@ -110,3 +110,12 @@ Every completed and independently reviewed task must be checked off in its detai
 - Fresh independent reviewer: spec+quality Approved without findings; TSX coverage and strict TS options verified.
 - Task1 web dev dependency resolved with actual Next dev/build/start.
 - Commit: feat: add localized web shell and health endpoint.
+
+### Phase 01 Task 6 — reviewed candidate, CI validation pending
+
+- Task 5 remote commit: `1e213ff`; tasks1–5 checked off and secured. Draft PR: https://github.com/acciento89-bot/sammlerraum/pull/1.
+- Docker/Compose/CI implemented. Static RED/GREEN and local test/typecheck/lint/build checks passed; controller final production-config tests5/5.
+- Fresh review found upload persistence mismatch, worker probe-port mismatch and baked public origin. All reproduced/fixed; scoped rereview approved CODE CANDIDATE only.
+- Uploads always /data/uploads in Compose matching shared volume; worker listener/probe3001; required public origin build argument wired consistently. Runtime secrets remain external.
+- CI candidate is backed up now to run real PostgreSQL17 migrations/health/queue and both Docker builds. Task6 remains unchecked until those gates pass.
+- Intermediate checkpoints are not completion evidence. Last WIP checkpoint before review:3e05277 on work/sammlerraum-v1-checkpoint.
