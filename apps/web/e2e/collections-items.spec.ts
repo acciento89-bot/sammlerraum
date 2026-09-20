@@ -210,12 +210,20 @@ test.describe("localized collection and item management", () => {
       ).toBeVisible();
       await page.getByLabel(labels.collectionName).fill("Pokémon");
       await page.getByLabel(labels.visibility).selectOption("PRIVATE");
+      const collectionCreated = page.waitForResponse(
+        (response) =>
+          response.url().endsWith("/api/v1/collections") &&
+          response.request().method() === "POST",
+      );
       await page.getByRole("button", { name: labels.createCollection }).click();
-      await page.getByRole("link", { name: "Pokémon", exact: true }).click();
+      expect((await collectionCreated).status()).toBe(201);
+      await page
+        .getByRole("link", { name: `Pokémon ${labels.private}`, exact: true })
+        .click();
 
       await page.getByLabel(labels.subcollectionName).fill("Base Set");
       await page.getByRole("button", { name: labels.createSubcollection }).click();
-      await expect(page.getByRole("treeitem", { name: "Base Set" })).toBeVisible();
+      await expect(page.getByRole("treeitem", { name: "Base Set", exact: true })).toBeVisible();
 
       await page.getByLabel(labels.customFieldName).fill("Edition");
       await page.getByLabel(labels.customFieldType).selectOption({ label: labels.shortText });
@@ -236,7 +244,7 @@ test.describe("localized collection and item management", () => {
             .selectOption({ label: parent });
         }
         await locationSection.getByRole("button", { name: labels.createLocation }).click();
-        await expect(page.getByRole("treeitem", { name })).toBeVisible();
+        await expect(page.getByRole("treeitem", { name, exact: true })).toBeVisible();
       };
       await createLocation("Wohnzimmer", labels.room);
       await createLocation("Vitrine", labels.cabinet, "Wohnzimmer");
