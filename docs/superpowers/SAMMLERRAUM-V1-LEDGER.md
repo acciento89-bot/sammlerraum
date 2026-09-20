@@ -13,7 +13,7 @@ This is the handoff/status file for long-running implementation. Update it after
 |---|---|---:|---|---|
 | 01 | Platform Foundation | 6 | complete (6/6) | — |
 | 02 | Identity, Auth & Policies | 7 | complete (7/7) | — |
-| 03 | Collections, Items, Fields & Locations | 8 | in progress (4/8) | Task 5 |
+| 03 | Collections, Items, Fields & Locations | 8 | in progress (5/8) | Task 6 |
 | 04 | Media & Documents | 6 | not started | Task 1 |
 | 05 | Catalog, Condition & Grading | 7 | not started | Task 1 |
 | 06 | Valuations & Market Data | 6 | not started | Task 1 |
@@ -47,9 +47,10 @@ This is the handoff/status file for long-running implementation. Update it after
 - [x] P03 T02 — Collectible items, acquisition lifecycle and quantity splitting
 - [x] P03 T03 — Structured identifiers and tags
 - [x] P03 T04 — Typed custom field definitions and values
-- [ ] P03 T05 — Hierarchical storage locations and movement history
+- [x] P03 T05 — Hierarchical storage locations and movement history
+- [ ] P03 T06 — Collection/item REST APIs and policy enforcement
 
-**Verified completion: 17/91 tasks.** Later tasks remain open as listed in the phase table and detail plans.
+**Verified completion: 18/91 tasks.** Later tasks remain open as listed in the phase table and detail plans.
 
 ## Update rule
 
@@ -402,3 +403,23 @@ Every completed and independently reviewed task must be checked off in its detai
 - Ruling: selection API values use canonical option labels, persisted as definition-scoped option IDs; multi-select order retained and duplicates removed — supports current create/set API without premature edit semantics; cost if wrong: later versioned option-edit API.
 - Ruling: null explicitly clears/deletes a value row; empty multi-select is a present valid selection — avoids ambiguous all-null scalar values; cost if wrong: clearing contract adjustment.
 - Approved report/review snapshot `c20b7fc7317df6d2d2cf59807657eb4356daf753` on checkpoint branch. Task4 checked off; next Task5 hierarchical private locations/history. Main and feature ledgers synchronized; no deployment/provider action.
+
+### Phase 03 Task 5 — COMPLETE
+
+- Implementation `e3e463e5df5a5f8efa48938326ed29198c026ba7`; final reviewed/tested fix `971cec14d7e14c9058599fa52993713eeb3ca9c4`.
+- Owner-scoped private-default location trees, stable UUID/256-bit QR token, owner-row-locked cycle-safe moves, owner-only direct contents, atomic current-location FK plus movement history. Additive `20260920233000_storage_locations` migration backfills item ownerId from collection and enforces composite ownership FKs; published migrations unchanged.
+- Explicit-whitelist public item query uses one recursive database statement plus trusted policy facts, rejecting PRIVATE/UNLISTED at item/collection/any ancestor, corrupt or incomplete ancestry and inactive items. No locations, tokens, history, notes or purchase/insurance/document data in public DTO.
+- Actual RED missing item-query before implementation;201 initial unit tests passed. Review reproduced same-location assignment bug RED, then rejected all unchanged assignments before writes; added X-to-Y and Y-to-null current/history tests with rollback coverage. Final203 unit tests passed; lint/typecheck/Prisma validate/generate/diff clean.
+- Fresh review found restricted-history fixture teardown, false X-to-X history and missing movement/unassignment coverage. All3 fixed; scoped rereview SPEC PASS / QUALITY PASS with no findings. No schema constraints weakened or published migration rewritten.
+- Full final CI SUCCESS: https://github.com/acciento89-bot/sammlerraum/actions/runs/35536014090 (job106145057618).
+- 203 unit/static tests passed; dedicated integration105 passed including19 actual DB cases (3 location cases); all4 browser journeys passed35.1s. Migration/lint/typecheck/workspace build/Compose/both Docker builds passed.
+- Ruling: locations belong to an owner and may span that owner's collections; item ownerId is backfilled and FK-bound to collection ownership — prevents cross-owner location/history links at DB level; cost if wrong: explicit future ownership-transfer workflow.
+- Ruling: location types ROOM/CABINET/SHELF/DRAWER/BOX/OTHER; creation defaults PRIVATE; QR token stays stable and never grants access — matches physical hierarchy and protected scan flow; cost if wrong: additive type refinement.
+- Ruling: unchanged assignment returns ITEM_LOCATION_UNCHANGED without any history/write — history records real movement; cost if wrong: explicit idempotent success contract refinement.
+- Ruling: history assignedBy FK retains RESTRICT semantics; fixtures explicitly delete their history before users. Future account deletion must explicitly resolve retained history before removing actors — preserves audit references; cost if wrong: additive anonymization/deletion policy in its owning phase.
+- Public DTO currently exposes only id/title/publicDescription/quantity/tradeStatus. Task6 must reuse this authoritative projection. Label/scan rendering remains Task8; token alone is never sufficient authorization.
+- Approved report snapshot `dd30a011eacf884ed07b248bbe17485f25b58706` on checkpoint branch. Task5 checked off; next Task6 APIs. Main and feature ledgers synchronized; no production/provider action.
+
+### Phase 03 Task 6 interface ruling
+
+- Ruling: the plan requires collection/item CRUD but earlier services cover only creation, hierarchy moves and item updates/archive. Task6 adds the minimal missing domain reads/updates and reversible soft-delete support needed by those routes; deletion uses deletedAt, excludes deleted resources/ancestors from normal/public reads, and does not hard-delete collection contents. Phase09 adds audited deletion/restore/conflict handling around this same state — reconciles CRUD with spec26's trash/restore requirement; cost if wrong: additive lifecycle/API adjustment, never lost collection data.
