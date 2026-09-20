@@ -273,3 +273,8 @@ Every completed and independently reviewed task must be checked off in its detai
 
 - Candidate `aaa8d11`; CI35525870450/job106117791780 passed126unit/15integration/build and3 of4 browser journeys including password reset. Last journey raced a pending Google-link redirect with immediate navigation back.
 - Test now waits for actual successful link-social response and deterministic external Google handoff navigation/DOM before returning. Only external provider destination mocked; no sleeps, production changes or removed assertions. Scoped review approved;4cases discovered,lint/typecheck green. Final CI remains required; unchecked.
+
+### Phase 02 Task 7 — CI verification correction 3
+
+- Candidate `fd1f3e9`; CI35526201946/job106118675673 passed126unit/15integration/build and3 browser cases. Remaining case passed OAuth handoff and created its passkey, then ambiguous device-name text matched both name and remove button.
+- Presence/absence and removal selectors use exact names; remaining spec selectors audited against rendered text. No assertions removed/product changes. Scoped review approved; localcollection/typecheck/lint green. Awaiting complete4/4 browser gate; Task7 unchecked.

@@ -267,10 +267,10 @@ test.describe("localized authentication and account UI", () => {
     await page.goto("/de/account/security");
     await page.getByLabel("Passkey-Name").fill("Testgerät");
     await page.getByRole("button", { name: "Passkey hinzufügen" }).click();
-    await expect(page.getByText("Testgerät")).toBeVisible();
+    await expect(page.getByText("Testgerät", { exact: true })).toBeVisible();
 
     await makeSessionsStale(credentials.email);
-    await page.getByRole("button", { name: "Testgerät entfernen" }).click();
+    await page.getByRole("button", { name: "Testgerät entfernen", exact: true }).click();
     await expect(page.getByRole("heading", { name: "Sicherheitsaktion bestätigen" })).toBeVisible();
     await page.getByLabel("Aktuelles Passwort").fill(credentials.password);
     await page.getByRole("button", { name: "Erneut anmelden" }).click();
@@ -298,8 +298,8 @@ test.describe("localized authentication and account UI", () => {
         .getByRole("button", { name: "Sitzung widerrufen" })
         .click();
       await expect(sessions).toHaveCount(1);
-      await page.getByRole("button", { name: "Testgerät entfernen" }).click();
-      await expect(page.getByText("Testgerät")).not.toBeVisible();
+      await page.getByRole("button", { name: "Testgerät entfernen", exact: true }).click();
+      await expect(page.getByText("Testgerät", { exact: true })).not.toBeVisible();
     } finally {
       await otherContext.close();
     }
