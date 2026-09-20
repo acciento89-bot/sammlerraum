@@ -1,4 +1,7 @@
-import { describe, expect, it, vi } from "vitest";
+import { randomUUID } from "node:crypto";
+
+import { createPrismaClient } from "@sammlerraum/db/create-client";
+import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 
 import {
   createCustomFieldService,
@@ -17,7 +20,7 @@ describe("custom field service", () => {
     const transaction = {
       $queryRaw: vi.fn().mockResolvedValue([{ type: "INTEGER" }]),
       customFieldOption: { findMany: vi.fn().mockResolvedValue([]) },
-      customFieldValue: { delete: vi.fn(), upsert: vi.fn() },
+      customFieldValue: { deleteMany: vi.fn(), upsert: vi.fn() },
       customFieldMultiSelectValue: { deleteMany: vi.fn(), createMany: vi.fn() },
     };
     const service = createCustomFieldService(
@@ -66,6 +69,7 @@ describe("custom field service", () => {
     ["DECIMAL", "0.1234567890123456789", []],
     ["DECIMAL", "123456789012345678901234567890123456789", []],
     ["DATE", "2023-02-29", []],
+    ["DATE", "0000-01-01", []],
     ["SINGLE_SELECT", "Unknown", ["Mint", "Used"]],
     ["MULTI_SELECT", ["Unknown"], ["Mint", "Used"]],
     ["URL", "javascript:alert(1)", []],
@@ -156,6 +160,23 @@ describe("custom field service", () => {
         name: "Condition",
         type: "MULTI_SELECT",
         options: ["Mint", "  mint  "],
+      }),
+    ).rejects.toMatchObject({ code: "CUSTOM_FIELD_DEFINITION_INVALID" });
+    expect(database.$transaction).not.toHaveBeenCalled();
+  });
+
+  it("rejects a definition name that exceeds its limit after Unicode normalization", async () => {
+    const database = { $transaction: vi.fn() };
+    const service = createCustomFieldService(
+      database as unknown as CustomFieldDatabase,
+      "trusted-owner",
+    );
+
+    await expect(
+      service.createFieldDefinition({
+        collectionId,
+        name: "ﬃ".repeat(50),
+        type: "SHORT_TEXT",
       }),
     ).rejects.toMatchObject({ code: "CUSTOM_FIELD_DEFINITION_INVALID" });
     expect(database.$transaction).not.toHaveBeenCalled();
@@ -283,5 +304,196 @@ describe("custom field service", () => {
       message: "Custom field target not found",
     });
     expect(upsert).not.toHaveBeenCalled();
+  });
+});
+
+const runIntegration = process.env.RUN_DATABASE_INTEGRATION === "1";
+const databaseUrl = process.env.DATABASE_URL ?? "";
+const prisma = runIntegration ? createPrismaClient(databaseUrl) : undefined;
+
+describe.runIf(runIntegration)("custom field PostgreSQL integration", () => {
+  beforeAll(async () => prisma?.$connect());
+  afterAll(async () => prisma?.$disconnect());
+
+  async function createOwner(label: string) {
+    const ownerId = randomUUID();
+    await prisma!.user.create({
+      data: {
+        id: ownerId,
+        name: label,
+        email: `${ownerId}@example.test`,
+        emailVerified: true,
+      },
+    });
+    return ownerId;
+  }
+
+  it("round-trips every typed column and enforces owner and same-collection boundaries", async () => {
+    const ownerId = await createOwner("Custom field owner");
+    const otherOwnerId = await createOwner("Other custom field owner");
+    try {
+      const collection = await prisma!.collection.create({
+        data: { ownerId, name: "Typed values" },
+      });
+      const otherCollection = await prisma!.collection.create({
+        data: { ownerId, name: "Other collection" },
+      });
+      const item = await prisma!.collectibleItem.create({
+        data: { collectionId: collection.id, title: "Typed specimen" },
+      });
+      const owner = createCustomFieldService(prisma! as unknown as CustomFieldDatabase, ownerId);
+      const other = createCustomFieldService(
+        prisma! as unknown as CustomFieldDatabase,
+        otherOwnerId,
+      );
+      const definitions = await Promise.all([
+        owner.createFieldDefinition({
+          collectionId: collection.id,
+          name: "Short",
+          type: "SHORT_TEXT",
+        }),
+        owner.createFieldDefinition({
+          collectionId: collection.id,
+          name: "Long",
+          type: "LONG_TEXT",
+        }),
+        owner.createFieldDefinition({
+          collectionId: collection.id,
+          name: "Integer",
+          type: "INTEGER",
+        }),
+        owner.createFieldDefinition({
+          collectionId: collection.id,
+          name: "Decimal",
+          type: "DECIMAL",
+        }),
+        owner.createFieldDefinition({ collectionId: collection.id, name: "Date", type: "DATE" }),
+        owner.createFieldDefinition({
+          collectionId: collection.id,
+          name: "Boolean",
+          type: "BOOLEAN",
+        }),
+        owner.createFieldDefinition({
+          collectionId: collection.id,
+          name: "Single",
+          type: "SINGLE_SELECT",
+          options: ["Mint", "Used"],
+        }),
+        owner.createFieldDefinition({
+          collectionId: collection.id,
+          name: "Multi",
+          type: "MULTI_SELECT",
+          options: ["Signed", "Numbered"],
+        }),
+        owner.createFieldDefinition({ collectionId: collection.id, name: "URL", type: "URL" }),
+        owner.createFieldDefinition({ collectionId: collection.id, name: "Money", type: "MONEY" }),
+      ]);
+      const byName = new Map(definitions.map((definition) => [definition.name, definition]));
+      const definition = (name: string) => {
+        const found = byName.get(name);
+        if (!found) throw new Error(`Missing ${name} test definition`);
+        return found;
+      };
+
+      await owner.setFieldValue(item.id, definition("Short").id, " Stamp ");
+      await owner.setFieldValue(item.id, definition("Long").id, "Detailed provenance");
+      await owner.setFieldValue(item.id, definition("Integer").id, 12);
+      await owner.setFieldValue(item.id, definition("Decimal").id, "0012.3400");
+      await owner.setFieldValue(item.id, definition("Date").id, "2024-02-29");
+      await owner.setFieldValue(item.id, definition("Boolean").id, true);
+      await owner.setFieldValue(item.id, definition("Single").id, "mint");
+      await owner.setFieldValue(item.id, definition("Multi").id, ["Numbered", "Signed"]);
+      await owner.setFieldValue(item.id, definition("URL").id, "https://example.com/catalog?q=1");
+      await owner.setFieldValue(item.id, definition("Money").id, {
+        amountMinor: 12_500,
+        currency: "EUR",
+      });
+
+      const stored = await prisma!.customFieldValue.findMany({
+        where: { itemId: item.id },
+        include: {
+          fieldDefinition: true,
+          singleSelectOption: true,
+          multiSelectValues: { include: { option: true }, orderBy: { position: "asc" } },
+        },
+      });
+      const storedByName = new Map(stored.map((value) => [value.fieldDefinition.name, value]));
+      expect(stored).toHaveLength(10);
+      expect(storedByName.get("Short")).toMatchObject({ shortTextValue: "Stamp" });
+      expect(storedByName.get("Long")).toMatchObject({ longTextValue: "Detailed provenance" });
+      expect(storedByName.get("Integer")).toMatchObject({ integerValue: 12n });
+      expect(storedByName.get("Decimal")?.decimalValue?.toString()).toBe("12.34");
+      expect(storedByName.get("Date")?.dateValue?.toISOString().slice(0, 10)).toBe("2024-02-29");
+      expect(storedByName.get("Boolean")).toMatchObject({ booleanValue: true });
+      expect(storedByName.get("Single")?.singleSelectOption).toMatchObject({ value: "Mint" });
+      expect(
+        storedByName.get("Multi")?.multiSelectValues.map((entry) => entry.option.value),
+      ).toEqual(["Numbered", "Signed"]);
+      expect(storedByName.get("URL")).toMatchObject({
+        urlValue: "https://example.com/catalog?q=1",
+      });
+      expect(storedByName.get("Money")).toMatchObject({
+        moneyAmountMinor: 12_500n,
+        moneyCurrency: "EUR",
+      });
+
+      await expect(
+        other.createFieldDefinition({
+          collectionId: collection.id,
+          name: "Stolen definition",
+          type: "SHORT_TEXT",
+        }),
+      ).rejects.toMatchObject({ code: "COLLECTION_NOT_FOUND" });
+      await expect(
+        other.setFieldValue(item.id, definition("Short").id, "stolen"),
+      ).rejects.toMatchObject({ code: "CUSTOM_FIELD_NOT_FOUND" });
+
+      const crossCollection = await owner.createFieldDefinition({
+        collectionId: otherCollection.id,
+        name: "Cross collection",
+        type: "SHORT_TEXT",
+      });
+      await expect(owner.setFieldValue(item.id, crossCollection.id, "wrong")).rejects.toMatchObject(
+        {
+          code: "CUSTOM_FIELD_NOT_FOUND",
+        },
+      );
+      await expect(
+        prisma!.customFieldValue.create({
+          data: {
+            itemId: item.id,
+            fieldDefinitionId: crossCollection.id,
+            collectionId: otherCollection.id,
+            fieldType: "SHORT_TEXT",
+            shortTextValue: "wrong",
+          },
+        }),
+      ).rejects.toMatchObject({ code: "P2003" });
+
+      await expect(owner.setFieldValue(item.id, definition("Short").id, null)).resolves.toBeNull();
+      await expect(
+        prisma!.customFieldValue.findUnique({
+          where: {
+            itemId_fieldDefinitionId: {
+              itemId: item.id,
+              fieldDefinitionId: definition("Short").id,
+            },
+          },
+        }),
+      ).resolves.toBeNull();
+      await expect(
+        prisma!.customFieldValue.create({
+          data: {
+            itemId: item.id,
+            fieldDefinitionId: definition("Short").id,
+            collectionId: collection.id,
+            fieldType: "SHORT_TEXT",
+            integerValue: 12n,
+          },
+        }),
+      ).rejects.toMatchObject({ code: "P2004" });
+    } finally {
+      await prisma!.user.deleteMany({ where: { id: { in: [ownerId, otherOwnerId] } } });
+    }
   });
 });

@@ -165,7 +165,7 @@ function canonicalDecimal(value: string): string {
 }
 
 function isCanonicalCalendarDate(value: string): boolean {
-  if (!/^\d{4}-\d{2}-\d{2}$/u.test(value)) return false;
+  if (!/^\d{4}-\d{2}-\d{2}$/u.test(value) || value.startsWith("0000-")) return false;
   const date = new Date(`${value}T00:00:00.000Z`);
   return !Number.isNaN(date.valueOf()) && date.toISOString().slice(0, 10) === value;
 }
@@ -271,7 +271,10 @@ function parseDefinition(input: CreateCustomFieldDefinitionInput): {
   if (!parsed.success || parsed.data.name.includes("\u0000")) {
     throw new CustomFieldServiceError("CUSTOM_FIELD_DEFINITION_INVALID");
   }
-  const name = parsed.data.name.normalize("NFKC");
+  const name = parsed.data.name.normalize("NFKC").trim().replace(/\s+/gu, " ");
+  if (name.length === 0 || name.length > 120) {
+    throw new CustomFieldServiceError("CUSTOM_FIELD_DEFINITION_INVALID");
+  }
   const normalizedName = name.toLocaleLowerCase("und");
   const seen = new Set<string>();
   const options = parsed.data.options.map((inputOption, position) => {

@@ -65,7 +65,12 @@ export const CustomFieldMoneyValueSchema = z
   .strict();
 export type CustomFieldMoneyValue = z.infer<typeof CustomFieldMoneyValueSchema>;
 
-export type CanonicalCustomFieldValue = string | number | boolean | string[] | CustomFieldMoneyValue;
+export type CanonicalCustomFieldValue =
+  | string
+  | number
+  | boolean
+  | string[]
+  | CustomFieldMoneyValue;
 
 export type CustomFieldValueRecord = {
   itemId: string;
