@@ -35,4 +35,9 @@ Local exec disconnected during implementation, so work continued through atomic 
 - CI `35541369868`: all 224 unit tests and lint passed; unchecked regex capture corrected.
 - CI `35541518501`: every gate through existing authentication journeys passed. Both Task 7 projects reached the collections list; navigation timed out because the exact accessible name is `Pokémon Privat` / `Pokémon Private`, including the visible privacy label. The test now matches that full localized name and asserts the preceding POST returned 201. Tree-item locators are exact so nested descendants cannot create partial-name ambiguity.
 
+- CI `35542044956` reached the Task 7 flows after all earlier gates passed; exact collection creation and navigation passed.
+- CI `35542386162`, job `106162268056`, stopped at lint after adding explicit tree-item accessibility and bounded failure diagnostics; no behavior result was claimed.
+- Formatter diagnostic CI `35542518284`, job `106162635021`, emitted exactly one changed file, `apps/web/e2e/collections-items.spec.ts`; that formatter output is persisted byte-for-byte.
+- Ruling: while local exec remains unavailable, the workflow retains an explicit-source formatter diagnostic that runs only when the original lint step has already failed. It does not make lint or later gates pass. A clean candidate must still pass the ordinary lint/full gate; remove the diagnostic if it causes unexpected cost or behavior.
+
 A fresh full regular CI run is required before completion.
