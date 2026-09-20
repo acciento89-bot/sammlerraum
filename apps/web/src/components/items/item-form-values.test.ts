@@ -56,8 +56,8 @@ describe("saved custom-field display", () => {
   });
 
   it("localizes maximum-safe-cent money without losing cents", () => {
-    const value = { amountMinor: Number.MAX_SAFE_INTEGER, currency: "JPY" };
-    expect(displayCustomFieldValue(value, "MONEY", "de")).toBe("90.071.992.547.409,91 JPY");
-    expect(displayCustomFieldValue(value, "MONEY", "en")).toBe("90,071,992,547,409.91 JPY");
+    const value = { amountMinor: Number.MAX_SAFE_INTEGER, currency: "EUR" };
+    expect(displayCustomFieldValue(value, "MONEY", "de")).toBe("90.071.992.547.409,91 EUR");
+    expect(displayCustomFieldValue(value, "MONEY", "en")).toBe("90,071,992,547,409.91 EUR");
   });
 });
