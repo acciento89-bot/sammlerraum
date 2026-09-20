@@ -88,6 +88,10 @@ jobs:
         run: >-
           RUN_AUTH_E2E=1 pnpm --filter @sammlerraum/web exec playwright test
           e2e/auth.spec.ts
+      - name: Run collection and item browser journeys
+        run: >-
+          RUN_AUTH_E2E=1 pnpm --filter @sammlerraum/web exec playwright test
+          e2e/collections-items.spec.ts --workers=1
       - run: bash scripts/verify-compose.sh
       - run: docker build -f Dockerfile.web --build-arg NEXT_PUBLIC_APP_ORIGIN=https://example.invalid .
       - run: docker build -f Dockerfile.worker .

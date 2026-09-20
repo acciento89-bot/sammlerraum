@@ -30,3 +30,12 @@ Ruling: Task6 missingCRUDdomain interfaces receive minimumreads/updates/reversib
 Task 6: in progress (BASEa3ccc67; freshimplementer p03_t06_implement, exactbrief task-6-brief.md).
 
 Task 6: candidate d744045 saved on GitHub; initial full CI35537471423/job106148958190 passed (213 unit,106 integration including20 actual DB,4 browser,all builds). Fresh reviewer p03_t06_review: SPEC/QUALITY FAIL with two P2 findings (Decimal canonical roundtrip; NUL request validation). Fix round1/5 dispatched to original implementer p03_t06_implement. No task checkoff until fixes reviewed and final CI passes. Main ledger verified18/91,blob6b3a7e14.
+
+Task 6: fix round1/5 (2 addressed,0 open; code3dcc973).
+Task 6: complete (implementationd744045, final3dcc973, completion5180e06; SPEC/QUALITY PASS; CI35538114677/job106150706721,221unit106integration20actualDB4browser35.5s all builds).
+Main ledger f74d52f and feature5180e06 verified identical blob7ffd6e59,19 checked tasks. Approved report checkpointc2231d0.
+Task 7: in progress (BASE5180e06; exact brief task-7-brief.md).
+Task7 fresh implementer: p03_t07_implement (sol/high); tests-only actual browser RED gate requested before implementation. Controller commits/checkpoints via GitHub.
+Task7 tests-only checkpoint2a7a639,tree446b8339,CI35538632152 in progress for actual RED. No production UI edits yet.
+Task7 initial CI35538632152 failed in login/registration due shared persistent test rate-limit buckets; NOT accepted feature RED. Test-only isolation correction04cd660 (safe _test/nonproduction guard, seeded verified credential, real UI login200, scoped history/user cleanup); CI35539057867 pending valid featureRED.
+Task7 VALID RED confirmed04cd660 in CI35539057867/job106153245432: desktopDE and mobileEN both passed real login200/profile checks then failed missing collection heading at line173. Implementation released to original agent p03_t07_implement.

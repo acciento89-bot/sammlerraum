@@ -13,7 +13,7 @@ This is the handoff/status file for long-running implementation. Update it after
 |---|---|---:|---|---|
 | 01 | Platform Foundation | 6 | complete (6/6) | — |
 | 02 | Identity, Auth & Policies | 7 | complete (7/7) | — |
-| 03 | Collections, Items, Fields & Locations | 8 | in progress (5/8) | Task 6 |
+| 03 | Collections, Items, Fields & Locations | 8 | in progress (6/8) | Task 7 |
 | 04 | Media & Documents | 6 | not started | Task 1 |
 | 05 | Catalog, Condition & Grading | 7 | not started | Task 1 |
 | 06 | Valuations & Market Data | 6 | not started | Task 1 |
@@ -48,9 +48,10 @@ This is the handoff/status file for long-running implementation. Update it after
 - [x] P03 T03 — Structured identifiers and tags
 - [x] P03 T04 — Typed custom field definitions and values
 - [x] P03 T05 — Hierarchical storage locations and movement history
-- [ ] P03 T06 — Collection/item REST APIs and policy enforcement
+- [x] P03 T06 — Collection/item REST APIs and policy enforcement
+- [ ] P03 T07 — Responsive collection and item management UI
 
-**Verified completion: 18/91 tasks.** Later tasks remain open as listed in the phase table and detail plans.
+**Verified completion: 19/91 tasks.** Later tasks remain open as listed in the phase table and detail plans.
 
 ## Update rule
 
@@ -423,3 +424,15 @@ Every completed and independently reviewed task must be checked off in its detai
 ### Phase 03 Task 6 interface ruling
 
 - Ruling: the plan requires collection/item CRUD but earlier services cover only creation, hierarchy moves and item updates/archive. Task6 adds the minimal missing domain reads/updates and reversible soft-delete support needed by those routes; deletion uses deletedAt, excludes deleted resources/ancestors from normal/public reads, and does not hard-delete collection contents. Phase09 adds audited deletion/restore/conflict handling around this same state — reconciles CRUD with spec26's trash/restore requirement; cost if wrong: additive lifecycle/API adjustment, never lost collection data.
+
+
+### Phase 03 Task 6 — COMPLETE
+
+- Implementation `d744045f18eb2a0504dd1c9924a9778095d43b51`; final reviewed/tested fix `3dcc973f593509b888cce98bbd160883559671bc`.
+- Thin collection/item CRUD and hierarchy/custom-field/identifier/tag/location endpoints use shared Zod validation, fresh server sessions, DB-derived trusted policy facts, exact-Origin mutation checks, safe errors/request IDs and no-store responses. Owner-only writes; unauthorized private resources return404; public items reuse the explicit safe whitelist and full ancestor rules.
+- Additive `20260920234500_collection_item_soft_delete` migration adds reversible deletedAt state and indexes. Collection deletion retains contents; deleted items/collections/ancestors disappear from normal/public reads and direct service writes reject deleted targets. Published migrations unchanged; Phase09 owns audited restore/conflict workflows.
+- Actual initial RED private-ancestor API test failed on missing route factory, then GREEN; delete-action policy RED followed by GREEN24/24. Additional implementation coverage is recorded as later coverage, not misrepresented as tests-first.
+- Fresh independent review found two P2 defects, both reproduced RED and fixed GREEN: exact non-exponent Decimal read/write roundtrips without Number conversion; NUL rejection for collection/node names and item free text before persistence while preserving legitimate newlines. Focused regressions17/17; required expanded scope93 passed with15 local DB-gated skips. Reviewer original reproductions now2/2 pass. Final SPEC PASS / QUALITY PASS; no open findings.
+- Full final CI SUCCESS: https://github.com/acciento89-bot/sammlerraum/actions/runs/35538114677 (job106150706721).
+- 221 unit/static tests passed; dedicated integration106 passed including20 actual DB cases; all4 browser journeys passed35.5s. Migrations/lint/typecheck/workspace build/Compose/both Docker builds passed. Real route integration covers private/unlisted ancestry, owner metadata, tiny/precision-limit Decimal resubmission, soft deletion/content retention and direct-service bypass rejection.
+- Approved report/review snapshot `c2231d0c0289fd0b73c84875ba62e82bd42428a1` on checkpoint branch. Task6 checked off; next Task7 responsive DE/EN collection/item management UI. Main and feature ledgers synchronized; code remains on feature branch, no production/provider action.
