@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { useEffect, useState, type FormEvent } from "react";
 
 type ApiErrorBody = { error?: { requestId?: string } };
+type Translation = (key: string) => string;
 
 export function CollectionsManager({ locale }: { locale: "de" | "en" }) {
   const t = useTranslations("Collections");
@@ -114,7 +115,7 @@ export function VisibilitySelect({
   label: string;
   name: string;
   value?: Visibility;
-  t: ReturnType<typeof useTranslations>;
+  t: Translation;
 }) {
   return (
     <label>
