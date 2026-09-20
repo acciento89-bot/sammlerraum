@@ -414,7 +414,7 @@ function ParentSelect<T extends TreeRecord>({
   return (
     <label>
       {label}
-      <select name={name} defaultValue={value}>
+      <select aria-label={label} name={name} defaultValue={value}>
         <option value="">{none}</option>
         {records
           .filter((record) => record.id !== exclude)
