@@ -2,6 +2,8 @@ import { z } from "zod";
 
 import { VisibilitySchema } from "./collections";
 
+export type { Visibility } from "./collections";
+
 export const AcquisitionTypeSchema = z.enum([
   "PURCHASE",
   "GIFT",
@@ -12,7 +14,7 @@ export const AcquisitionTypeSchema = z.enum([
 ]);
 export type AcquisitionType = z.infer<typeof AcquisitionTypeSchema>;
 
-export const TradeStatusSchema = z.enum(["NOT_FOR_TRADE", "OPEN_TO_TRADE", "RESERVED"]);
+export const TradeStatusSchema = z.enum(["NOT_FOR_TRADE", "OPEN_TO_TRADE", "FOR_SALE", "RESERVED"]);
 export type TradeStatus = z.infer<typeof TradeStatusSchema>;
 
 const ItemIdSchema = z.string().uuid();
@@ -29,19 +31,20 @@ export const AcquisitionDateSchema = z
   .string()
   .refine(isCanonicalCalendarDate, "Expected a real calendar date in YYYY-MM-DD form");
 
-export const CanonicalTimestampSchema = z
-  .string()
-  .refine((value) => {
-    const date = new Date(value);
-    return !Number.isNaN(date.valueOf()) && date.toISOString() === value;
-  }, "Expected a canonical UTC timestamp");
+export const CanonicalTimestampSchema = z.string().refine((value) => {
+  const date = new Date(value);
+  return !Number.isNaN(date.valueOf()) && date.toISOString() === value;
+}, "Expected a canonical UTC timestamp");
 
 const supportedCurrencies = new Set(Intl.supportedValuesOf("currency"));
 
 export const PurchaseCurrencySchema = z
   .string()
   .regex(/^[A-Z]{3}$/)
-  .refine((currency) => supportedCurrencies.has(currency), "Expected a supported ISO 4217 currency");
+  .refine(
+    (currency) => supportedCurrencies.has(currency),
+    "Expected a supported ISO 4217 currency",
+  );
 
 // This is the price of one unit, not the total paid for the quantity row.
 export const PurchaseAmountMinorSchema = z
@@ -51,7 +54,10 @@ export const PurchaseAmountMinorSchema = z
   .max(Number.MAX_SAFE_INTEGER);
 
 function requireMoneyPair(
-  data: { purchaseAmountMinor?: number | null; purchaseCurrency?: string | null },
+  data: {
+    purchaseAmountMinor?: number | null | undefined;
+    purchaseCurrency?: string | null | undefined;
+  },
   context: z.RefinementCtx,
 ) {
   if ((data.purchaseAmountMinor === null) !== (data.purchaseCurrency === null)) {

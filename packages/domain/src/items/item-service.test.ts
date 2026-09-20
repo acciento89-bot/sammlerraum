@@ -103,6 +103,7 @@ describe("item service", () => {
         acquisitionDate: "2026-02-28",
         purchaseAmountMinor: 12_345,
         purchaseCurrency: "EUR",
+        tradeStatus: "FOR_SALE",
       }),
     ).resolves.toMatchObject({
       id: createdItemId,
@@ -114,7 +115,7 @@ describe("item service", () => {
       purchaseAmountMinor: 12_345,
       purchaseCurrency: "EUR",
       visibility: "PRIVATE",
-      tradeStatus: "NOT_FOR_TRADE",
+      tradeStatus: "FOR_SALE",
     });
     expect(writes).toMatchObject([
       {
@@ -126,7 +127,7 @@ describe("item service", () => {
         purchaseAmountMinor: 12_345n,
         purchaseCurrency: "EUR",
         visibility: "PRIVATE",
-        tradeStatus: "NOT_FOR_TRADE",
+        tradeStatus: "FOR_SALE",
       },
     ]);
   });
@@ -196,12 +197,16 @@ describe("item service", () => {
       "owner-user-id",
     );
 
-    await expect(
-      unauthorized.createItem({ collectionId, title: "Secret" }),
-    ).rejects.toMatchObject({ code: "COLLECTION_NOT_FOUND", message: "Collection not found" });
+    await expect(unauthorized.createItem({ collectionId, title: "Secret" })).rejects.toMatchObject({
+      code: "COLLECTION_NOT_FOUND",
+      message: "Collection not found",
+    });
     await expect(
       foreignNode.createItem({ collectionId, nodeId, title: "Wrong node" }),
-    ).rejects.toMatchObject({ code: "COLLECTION_NODE_NOT_FOUND", message: "Collection node not found" });
+    ).rejects.toMatchObject({
+      code: "COLLECTION_NODE_NOT_FOUND",
+      message: "Collection node not found",
+    });
     expect(creates).toBe(0);
   });
 
@@ -276,6 +281,31 @@ describe("item service", () => {
     expect(updates).toBe(1);
   });
 
+  it("allows a disposed item to be archived while retaining both lifecycle timestamps", async () => {
+    const disposedAt = new Date("2026-09-19T08:00:00.000Z");
+    const archivedAt = new Date("2026-09-20T12:34:56.000Z");
+    const transaction = {
+      $queryRaw: async () => [itemFixture({ disposedAt })],
+      collectibleItem: {
+        update: async ({ data }: { data: Record<string, unknown> }) =>
+          itemFixture({ disposedAt, archivedAt: data.archivedAt }),
+      },
+    };
+    const service = createItemService(
+      {
+        $transaction: async <T>(operation: (tx: typeof transaction) => Promise<T>) =>
+          operation(transaction),
+      } as unknown as ItemDatabase,
+      "owner-user-id",
+      { now: () => archivedAt },
+    );
+
+    await expect(service.archiveItem(itemId)).resolves.toMatchObject({
+      archivedAt: "2026-09-20T12:34:56.000Z",
+      disposedAt: "2026-09-19T08:00:00.000Z",
+    });
+  });
+
   it("rejects invalid split counts against the freshly locked quantity", async () => {
     let writes = 0;
     const transaction = {
@@ -308,7 +338,11 @@ describe("item service", () => {
   });
 
   it("preserves total acquisition value by copying a per-unit purchase amount", async () => {
-    const original = itemFixture({ quantity: 10, purchaseAmountMinor: 299n, purchaseCurrency: "EUR" });
+    const original = itemFixture({
+      quantity: 10,
+      purchaseAmountMinor: 299n,
+      purchaseCurrency: "EUR",
+    });
     const transaction = {
       $queryRaw: async () => [original],
       collectibleItem: {
@@ -379,6 +413,13 @@ describe.runIf(runIntegration)("item service PostgreSQL integration", () => {
         data: { collectionId: foreignCollection.id, name: "Foreign node" },
       });
       const item = await owner.createItem({ collectionId: collection.id, title: "Private item" });
+      expect(item).toMatchObject({
+        nodeId: null,
+        visibility: "PRIVATE",
+        tradeStatus: "NOT_FOR_TRADE",
+        archivedAt: null,
+        disposedAt: null,
+      });
 
       await expect(other.updateItem(item.id, { title: "Stolen" })).rejects.toMatchObject({
         code: "ITEM_NOT_FOUND",
@@ -392,10 +433,52 @@ describe.runIf(runIntegration)("item service PostgreSQL integration", () => {
           data: { nodeId: foreignNode.id },
         }),
       ).rejects.toMatchObject({ code: "P2003" });
-      await expect(prisma!.collectibleItem.findUnique({ where: { id: item.id } })).resolves.toMatchObject({
+      await expect(
+        prisma!.collectibleItem.findUnique({ where: { id: item.id } }),
+      ).resolves.toMatchObject({
         title: "Private item",
         nodeId: null,
       });
+      await expect(
+        owner.updateItem(item.id, { publicDescription: "Public facts" }),
+      ).resolves.toMatchObject({ publicDescription: "Public facts", privateNotes: null });
+      await expect(owner.archiveItem(item.id)).resolves.toMatchObject({
+        tradeStatus: "NOT_FOR_TRADE",
+      });
+      await expect(owner.splitQuantityItem(item.id, 1)).rejects.toMatchObject({
+        code: "ITEM_INACTIVE",
+      });
+
+      const disposed = await owner.createItem({
+        collectionId: collection.id,
+        title: "Disposed item",
+        quantity: 2,
+        tradeStatus: "OPEN_TO_TRADE",
+      });
+      await expect(
+        owner.updateItem(disposed.id, { disposedAt: "2026-09-20T12:34:56.000Z" }),
+      ).resolves.toMatchObject({
+        disposedAt: "2026-09-20T12:34:56.000Z",
+        tradeStatus: "NOT_FOR_TRADE",
+      });
+      await expect(owner.splitQuantityItem(disposed.id, 1)).rejects.toMatchObject({
+        code: "ITEM_INACTIVE",
+      });
+
+      await expect(
+        prisma!.collectibleItem.create({
+          data: { collectionId: collection.id, title: "Zero", quantity: 0 },
+        }),
+      ).rejects.toBeDefined();
+      await expect(
+        prisma!.collectibleItem.create({
+          data: {
+            collectionId: collection.id,
+            title: "Incomplete money",
+            purchaseAmountMinor: 100n,
+          },
+        }),
+      ).rejects.toBeDefined();
     } finally {
       await prisma!.user.deleteMany({ where: { id: { in: [ownerId, otherId] } } });
     }
@@ -413,6 +496,12 @@ describe.runIf(runIntegration)("item service PostgreSQL integration", () => {
         title: "Ten stamps",
         quantity: 10,
         acquisitionType: "PURCHASE",
+        acquisitionDate: "2026-02-28",
+        purchaseAmountMinor: 299,
+        purchaseCurrency: "EUR",
+      });
+      expect(item).toMatchObject({
+        acquisitionDate: "2026-02-28",
         purchaseAmountMinor: 299,
         purchaseCurrency: "EUR",
       });
@@ -433,9 +522,9 @@ describe.runIf(runIntegration)("item service PostgreSQL integration", () => {
       expect(rows).toHaveLength(2);
       expect(rows.reduce((total, row) => total + row.quantity, 0)).toBe(10);
       expect(rows.every((row) => row.quantity > 0)).toBe(true);
-      expect(rows.reduce((total, row) => total + BigInt(row.quantity) * row.purchaseAmountMinor!, 0n)).toBe(
-        2_990n,
-      );
+      expect(
+        rows.reduce((total, row) => total + BigInt(row.quantity) * row.purchaseAmountMinor!, 0n),
+      ).toBe(2_990n);
     } finally {
       await prisma!.user.delete({ where: { id: ownerId } });
     }
@@ -473,10 +562,7 @@ describe.runIf(runIntegration)("item service PostgreSQL integration", () => {
             options,
           ),
       };
-      const failingService = createItemService(
-        failingDatabase as unknown as ItemDatabase,
-        ownerId,
-      );
+      const failingService = createItemService(failingDatabase as unknown as ItemDatabase, ownerId);
 
       await expect(failingService.splitQuantityItem(item.id, 3)).rejects.toThrow(
         "fixture split insert failure",

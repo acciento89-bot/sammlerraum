@@ -5,6 +5,7 @@
   "exports": {
     "./errors": "./src/errors.ts",
     "./collections": "./src/collections.ts",
+    "./items": "./src/items.ts",
     "./openapi": "./src/openapi.ts",
     "./profile": "./src/profile.ts"
   },

@@ -251,10 +251,7 @@ export function createItemService(
     );
   }
 
-  async function updateItem(
-    itemIdInput: string,
-    input: UpdateItemInput,
-  ): Promise<CollectibleItem> {
+  async function updateItem(itemIdInput: string, input: UpdateItemInput): Promise<CollectibleItem> {
     const itemId = CollectibleItemSchema.shape.id.parse(itemIdInput);
     const data = UpdateItemInputSchema.parse(input);
     return database.$transaction(
@@ -268,8 +265,7 @@ export function createItemService(
         const update: ItemUpdateData = {};
         if (data.nodeId !== undefined) update.nodeId = data.nodeId;
         if (data.title !== undefined) update.title = data.title;
-        if (data.publicDescription !== undefined)
-          update.publicDescription = data.publicDescription;
+        if (data.publicDescription !== undefined) update.publicDescription = data.publicDescription;
         if (data.privateNotes !== undefined) update.privateNotes = data.privateNotes;
         if (data.quantity !== undefined) update.quantity = data.quantity;
         if (data.acquisitionType !== undefined) update.acquisitionType = data.acquisitionType;
@@ -307,7 +303,7 @@ export function createItemService(
     return database.$transaction(
       async (transaction) => {
         const existing = await lockOwnedItem(transaction, itemId, actorUserId);
-        ensureActive(existing);
+        if (existing.archivedAt !== null) throw new ItemServiceError("ITEM_INACTIVE");
         return toItem(
           await transaction.collectibleItem.update({
             where: { id: existing.id },
@@ -350,8 +346,7 @@ export function createItemService(
             privateNotes: item.privateNotes,
             quantity: splitQuantity.data,
             acquisitionType: item.acquisitionType,
-            acquisitionDate:
-              item.acquisitionDate === null ? null : new Date(item.acquisitionDate),
+            acquisitionDate: item.acquisitionDate === null ? null : new Date(item.acquisitionDate),
             purchaseAmountMinor:
               item.purchaseAmountMinor === null ? null : BigInt(item.purchaseAmountMinor),
             purchaseCurrency: item.purchaseCurrency,
@@ -360,7 +355,10 @@ export function createItemService(
           },
           select: itemSelect,
         });
-        return SplitQuantityResultSchema.parse({ source: toItem(source), created: toItem(created) });
+        return SplitQuantityResultSchema.parse({
+          source: toItem(source),
+          created: toItem(created),
+        });
       },
       { isolationLevel: "ReadCommitted" },
     );

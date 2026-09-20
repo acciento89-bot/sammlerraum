@@ -12,6 +12,22 @@ enum Visibility {
   PUBLIC
 }
 
+enum AcquisitionType {
+  PURCHASE
+  GIFT
+  TRADE
+  INHERITANCE
+  FOUND
+  OTHER
+}
+
+enum TradeStatus {
+  NOT_FOR_TRADE
+  OPEN_TO_TRADE
+  FOR_SALE
+  RESERVED
+}
+
 model SystemMetadata {
   key       String   @id
   value     String
@@ -48,33 +64,60 @@ model User {
 }
 
 model Collection {
-  id         String           @id @default(uuid()) @db.Uuid
+  id         String            @id @default(uuid()) @db.Uuid
   ownerId    String
   name       String
-  visibility Visibility       @default(PRIVATE)
-  createdAt  DateTime         @default(now())
-  updatedAt  DateTime         @updatedAt
-  owner      User             @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  visibility Visibility        @default(PRIVATE)
+  createdAt  DateTime          @default(now())
+  updatedAt  DateTime          @updatedAt
+  owner      User              @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   nodes      CollectionNode[]
+  items      CollectibleItem[]
 
   @@index([ownerId])
 }
 
 model CollectionNode {
-  id           String           @id @default(uuid()) @db.Uuid
-  collectionId String           @db.Uuid
-  parentId     String?          @db.Uuid
+  id           String            @id @default(uuid()) @db.Uuid
+  collectionId String            @db.Uuid
+  parentId     String?           @db.Uuid
   name         String
-  visibility   Visibility       @default(PRIVATE)
-  createdAt    DateTime         @default(now())
-  updatedAt    DateTime         @updatedAt
-  collection   Collection       @relation(fields: [collectionId], references: [id], onDelete: Cascade)
-  parent       CollectionNode?  @relation("CollectionHierarchy", fields: [parentId, collectionId], references: [id, collectionId], onDelete: Restrict)
-  children     CollectionNode[] @relation("CollectionHierarchy")
+  visibility   Visibility        @default(PRIVATE)
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+  collection   Collection        @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  parent       CollectionNode?   @relation("CollectionHierarchy", fields: [parentId, collectionId], references: [id, collectionId], onDelete: Restrict)
+  children     CollectionNode[]  @relation("CollectionHierarchy")
+  items        CollectibleItem[]
 
   @@unique([id, collectionId])
   @@index([collectionId])
   @@index([parentId, collectionId])
+}
+
+model CollectibleItem {
+  id                  String          @id @default(uuid()) @db.Uuid
+  collectionId        String          @db.Uuid
+  nodeId              String?         @db.Uuid
+  title               String
+  publicDescription   String?
+  privateNotes        String?
+  quantity            Int             @default(1)
+  acquisitionType     AcquisitionType @default(OTHER)
+  acquisitionDate     DateTime?       @db.Date
+  purchaseAmountMinor BigInt?
+  purchaseCurrency    String?         @db.Char(3)
+  visibility          Visibility      @default(PRIVATE)
+  tradeStatus         TradeStatus     @default(NOT_FOR_TRADE)
+  archivedAt          DateTime?
+  disposedAt          DateTime?
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @updatedAt
+  collection          Collection      @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  node                CollectionNode? @relation(fields: [nodeId, collectionId], references: [id, collectionId], onDelete: Restrict)
+
+  @@index([collectionId])
+  @@index([nodeId, collectionId])
 }
 
 model Session {
