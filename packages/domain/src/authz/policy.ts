@@ -14,8 +14,10 @@ const POLICY_ACTIONS = new Set<unknown>([
   "profile.view",
   "collection.view",
   "collection.edit",
+  "collection.delete",
   "item.view",
   "item.edit",
+  "item.delete",
   "document.view",
   "comment.create",
   "members.manage",
@@ -69,10 +71,20 @@ function authorizeView(actor: ActorFacts, resource: ResourceFacts): Authorizatio
 
 function actionMatchesResource(action: PolicyAction, resource: ResourceFacts): boolean {
   if (action === "profile.view") return resource.type === "PROFILE";
-  if (action === "collection.view" || action === "collection.edit" || action === "members.manage") {
+  if (
+    action === "collection.view" ||
+    action === "collection.edit" ||
+    action === "collection.delete" ||
+    action === "members.manage"
+  ) {
     return resource.type === "COLLECTION";
   }
-  if (action === "item.view" || action === "item.edit" || action === "comment.create") {
+  if (
+    action === "item.view" ||
+    action === "item.edit" ||
+    action === "item.delete" ||
+    action === "comment.create"
+  ) {
     return resource.type === "ITEM";
   }
   return action === "document.view" && resource.type === "DOCUMENT";
@@ -99,6 +111,9 @@ export function authorize(
   }
   if (action === "item.edit") {
     return allowForRole(actor, resource, ["OWNER", "ADMIN", "EDITOR"]) ?? denied();
+  }
+  if (action === "collection.delete" || action === "item.delete") {
+    return allowForRole(actor, resource, ["OWNER"]) ?? denied();
   }
   if (action === "members.manage") {
     return allowForRole(actor, resource, ["OWNER", "ADMIN"]) ?? denied();

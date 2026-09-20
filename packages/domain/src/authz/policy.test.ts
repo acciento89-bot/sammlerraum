@@ -176,6 +176,35 @@ describe("authorization policy", () => {
     expect(authorize(ownerActor, "item.edit", privateItem)).toMatchObject({ allowed: true });
   });
 
+  it("reserves reversible collection and item deletion for owners", () => {
+    const adminCollection = createTrustedResourceFacts({
+      type: "COLLECTION",
+      ownerId: "owner-1",
+      visibility: "PRIVATE",
+      ancestorVisibility: [],
+      role: { userId: "member-1", role: "ADMIN" },
+      moderation: "VISIBLE",
+      interactionBlocked: false,
+    });
+    const adminItem = createTrustedResourceFacts({
+      ...publicItem,
+      role: { userId: "member-1", role: "ADMIN" },
+    });
+
+    expect(
+      authorize(ownerActor, "collection.delete" as PolicyAction, adminCollection),
+    ).toMatchObject({ allowed: true });
+    expect(
+      authorize(memberActor, "collection.delete" as PolicyAction, adminCollection),
+    ).toMatchObject({ allowed: false });
+    expect(authorize(ownerActor, "item.delete" as PolicyAction, adminItem)).toMatchObject({
+      allowed: true,
+    });
+    expect(authorize(memberActor, "item.delete" as PolicyAction, adminItem)).toMatchObject({
+      allowed: false,
+    });
+  });
+
   it("matches member roles to the authenticated actor and action", () => {
     const editorItem = createTrustedResourceFacts({
       ...publicItem,

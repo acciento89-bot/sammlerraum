@@ -201,20 +201,58 @@ export function createCollectionService(database: CollectionDatabase, actorUserI
   ): Promise<CollectionNode> {
     const nodeId = CollectionNodeSchema.shape.id.parse(nodeIdInput);
     const data = UpdateCollectionNodeInputSchema.parse(input);
-    if (data.parentId !== undefined) {
-      await moveCollectionNode(nodeId, { parentId: data.parentId });
-    }
     return database.$transaction(
       async (transaction) => {
+        const staleSource = await transaction.collectionNode.findUnique({
+          where: { id: nodeId },
+          select: { id: true, collectionId: true },
+        });
+        if (!staleSource) throw new CollectionServiceError("COLLECTION_NODE_NOT_FOUND");
+        await lockOwnedCollection(transaction, staleSource.collectionId, actorUserId);
         const source = await transaction.collectionNode.findUnique({
           where: { id: nodeId },
           select: { id: true, collectionId: true },
         });
-        if (!source) throw new CollectionServiceError("COLLECTION_NODE_NOT_FOUND");
-        await lockOwnedCollection(transaction, source.collectionId, actorUserId);
+        if (!source || source.collectionId !== staleSource.collectionId) {
+          throw new CollectionServiceError("COLLECTION_NODE_NOT_FOUND");
+        }
+        if (data.parentId !== undefined && data.parentId !== null) {
+          const parent = await transaction.collectionNode.findUnique({
+            where: { id: data.parentId },
+            select: { id: true, collectionId: true },
+          });
+          if (!parent || parent.collectionId !== source.collectionId) {
+            throw new CollectionServiceError("COLLECTION_NODE_NOT_FOUND");
+          }
+          const descendants = await transaction.$queryRaw<
+            Array<{ id: string; collectionId: string; cycle: boolean }>
+          >`
+            WITH RECURSIVE descendants AS (
+              SELECT "id", "collectionId", ARRAY["id"] AS path, false AS cycle
+              FROM "CollectionNode"
+              WHERE "id" = ${nodeId}::uuid AND "collectionId" = ${source.collectionId}::uuid
+              UNION ALL
+              SELECT child."id", child."collectionId", parent.path || child."id",
+                     child."id" = ANY(parent.path)
+              FROM "CollectionNode" child JOIN descendants parent ON child."parentId" = parent."id"
+              WHERE NOT parent.cycle
+            )
+            SELECT "id", "collectionId", cycle FROM descendants
+          `;
+          if (
+            descendants.length === 0 ||
+            descendants.some((row) => row.cycle || row.collectionId !== source.collectionId)
+          ) {
+            throw new CollectionServiceError("COLLECTION_HIERARCHY_INVALID");
+          }
+          if (descendants.some((row) => row.id === data.parentId)) {
+            throw new CollectionServiceError("COLLECTION_HIERARCHY_CYCLE");
+          }
+        }
         const rows = await transaction.$queryRaw<CollectionNode[]>`
           UPDATE "CollectionNode"
           SET
+            "parentId" = CASE WHEN ${data.parentId !== undefined} THEN ${data.parentId ?? null}::uuid ELSE "parentId" END,
             "name" = COALESCE(${data.name ?? null}, "name"),
             "visibility" = COALESCE(${data.visibility ?? null}::"Visibility", "visibility"),
             "updatedAt" = CURRENT_TIMESTAMP

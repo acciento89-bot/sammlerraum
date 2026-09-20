@@ -92,10 +92,14 @@ function itemDto(row: ItemRow): CollectibleItem {
   });
 }
 
-function ancestry<T extends { ancestorId: string | null; ancestorParentId: string | null; ancestorVisibility: Visibility | null; cycle: boolean | null }>(
-  rows: T[],
-  expectedNode: string | null,
-): Visibility[] {
+function ancestry<
+  T extends {
+    ancestorId: string | null;
+    ancestorParentId: string | null;
+    ancestorVisibility: Visibility | null;
+    cycle: boolean | null;
+  },
+>(rows: T[], expectedNode: string | null): Visibility[] {
   const nodeRows = rows.filter(
     (row): row is T & { ancestorId: string; ancestorVisibility: Visibility } =>
       row.ancestorId !== null && row.ancestorVisibility !== null,
@@ -111,7 +115,9 @@ function ancestry<T extends { ancestorId: string | null; ancestorParentId: strin
 }
 
 export function createResourceQuery(database: ResourceQueryDatabase) {
-  async function loadCollection(collectionId: string): Promise<{ collection: Collection; facts: ResourceFacts }> {
+  async function loadCollection(
+    collectionId: string,
+  ): Promise<{ collection: Collection; facts: ResourceFacts }> {
     const id = CollectionSchema.shape.id.parse(collectionId);
     const rows = await database.$queryRaw<CollectionRow[]>`
       SELECT "id", "ownerId", "name", "visibility"
@@ -175,7 +181,9 @@ export function createResourceQuery(database: ResourceQueryDatabase) {
     };
   }
 
-  async function loadItem(itemId: string): Promise<{ item: CollectibleItem; facts: ResourceFacts }> {
+  async function loadItem(
+    itemId: string,
+  ): Promise<{ item: CollectibleItem; facts: ResourceFacts }> {
     const id = CollectibleItemSchema.shape.id.parse(itemId);
     const rows = await database.$queryRaw<ItemRow[]>`
       WITH RECURSIVE base AS (
@@ -222,13 +230,14 @@ export function createResourceQuery(database: ResourceQueryDatabase) {
   }
 
   async function listCollections(ownerId: string | null): Promise<Collection[]> {
-    const rows = ownerId === null
-      ? await database.$queryRaw<Collection[]>`
+    const rows =
+      ownerId === null
+        ? await database.$queryRaw<Collection[]>`
           SELECT "id", "name", "visibility" FROM "Collection"
           WHERE "deletedAt" IS NULL AND "visibility" = 'PUBLIC'
           ORDER BY "name", "id"
         `
-      : await database.$queryRaw<Collection[]>`
+        : await database.$queryRaw<Collection[]>`
           SELECT "id", "name", "visibility" FROM "Collection"
           WHERE "deletedAt" IS NULL AND "ownerId" = ${ownerId}
           ORDER BY "name", "id"
@@ -262,9 +271,20 @@ export function createResourceQuery(database: ResourceQueryDatabase) {
     return rows.map(itemDto);
   }
 
-  async function listCustomFields(collectionId: string, ownerId: string): Promise<CustomFieldDefinition[]> {
+  async function listCustomFields(
+    collectionId: string,
+    ownerId: string,
+  ): Promise<CustomFieldDefinition[]> {
     const id = CollectionSchema.shape.id.parse(collectionId);
-    const rows = await database.$queryRaw<Array<{ id: string; collectionId: string; name: string; type: CustomFieldType; options: string[] | null }>>`
+    const rows = await database.$queryRaw<
+      Array<{
+        id: string;
+        collectionId: string;
+        name: string;
+        type: CustomFieldType;
+        options: string[] | null;
+      }>
+    >`
       SELECT definition."id", definition."collectionId", definition."name", definition."type",
              COALESCE(array_agg(option."value" ORDER BY option."position") FILTER (WHERE option."id" IS NOT NULL), ARRAY[]::text[]) AS options
       FROM "CustomFieldDefinition" definition
@@ -274,7 +294,9 @@ export function createResourceQuery(database: ResourceQueryDatabase) {
         AND collection."deletedAt" IS NULL
       GROUP BY definition."id" ORDER BY definition."name", definition."id"
     `;
-    return rows.map((row) => CustomFieldDefinitionSchema.parse({ ...row, options: row.options ?? [] }));
+    return rows.map((row) =>
+      CustomFieldDefinitionSchema.parse({ ...row, options: row.options ?? [] }),
+    );
   }
 
   async function listLocations(ownerId: string): Promise<StorageLocation[]> {
@@ -288,7 +310,9 @@ export function createResourceQuery(database: ResourceQueryDatabase) {
   async function getItemMetadata(itemId: string, ownerId: string) {
     const id = CollectibleItemSchema.shape.id.parse(itemId);
     const [identifiers, tags, fieldValues, selectedOptions, locations] = await Promise.all([
-      database.$queryRaw<Array<{ id: string; itemId: string; type: string; value: string; normalizedValue: string }>>`
+      database.$queryRaw<
+        Array<{ id: string; itemId: string; type: string; value: string; normalizedValue: string }>
+      >`
         SELECT identifier."id", identifier."itemId", identifier."type", identifier."value", identifier."normalizedValue"
         FROM "ItemIdentifier" identifier
         JOIN "CollectibleItem" item ON item."id" = identifier."itemId"
@@ -306,7 +330,9 @@ export function createResourceQuery(database: ResourceQueryDatabase) {
           AND item."deletedAt" IS NULL AND collection."deletedAt" IS NULL
         ORDER BY tag."normalizedName"
       `,
-      database.$queryRaw<Array<Record<string, unknown> & { fieldDefinitionId: string; fieldType: CustomFieldType }>>`
+      database.$queryRaw<
+        Array<Record<string, unknown> & { fieldDefinitionId: string; fieldType: CustomFieldType }>
+      >`
         SELECT value.*, option."value" AS "singleSelectValue"
         FROM "CustomFieldValue" value
         JOIN "CollectibleItem" item ON item."id" = value."itemId"
@@ -342,16 +368,29 @@ export function createResourceQuery(database: ResourceQueryDatabase) {
       multiByField.set(option.fieldDefinitionId, current);
     }
     const values = fieldValues.map((row) => {
-      const value = row.fieldType === "SHORT_TEXT" ? row.shortTextValue
-        : row.fieldType === "LONG_TEXT" ? row.longTextValue
-        : row.fieldType === "INTEGER" ? safeNumber(row.integerValue as bigint | number)
-        : row.fieldType === "DECIMAL" ? String(row.decimalValue)
-        : row.fieldType === "DATE" ? dateOnly(row.dateValue as Date | string)
-        : row.fieldType === "BOOLEAN" ? row.booleanValue
-        : row.fieldType === "SINGLE_SELECT" ? row.singleSelectValue
-        : row.fieldType === "MULTI_SELECT" ? (multiByField.get(row.fieldDefinitionId) ?? [])
-        : row.fieldType === "URL" ? row.urlValue
-        : { amountMinor: safeNumber(row.moneyAmountMinor as bigint | number), currency: row.moneyCurrency };
+      const value =
+        row.fieldType === "SHORT_TEXT"
+          ? row.shortTextValue
+          : row.fieldType === "LONG_TEXT"
+            ? row.longTextValue
+            : row.fieldType === "INTEGER"
+              ? safeNumber(row.integerValue as bigint | number)
+              : row.fieldType === "DECIMAL"
+                ? String(row.decimalValue)
+                : row.fieldType === "DATE"
+                  ? dateOnly(row.dateValue as Date | string)
+                  : row.fieldType === "BOOLEAN"
+                    ? row.booleanValue
+                    : row.fieldType === "SINGLE_SELECT"
+                      ? row.singleSelectValue
+                      : row.fieldType === "MULTI_SELECT"
+                        ? (multiByField.get(row.fieldDefinitionId) ?? [])
+                        : row.fieldType === "URL"
+                          ? row.urlValue
+                          : {
+                              amountMinor: safeNumber(row.moneyAmountMinor as bigint | number),
+                              currency: row.moneyCurrency,
+                            };
       return { fieldDefinitionId: row.fieldDefinitionId, type: row.fieldType, value };
     });
     return {
@@ -362,5 +401,15 @@ export function createResourceQuery(database: ResourceQueryDatabase) {
     };
   }
 
-  return { loadCollection, loadNode, loadItem, listCollections, listNodes, listItems, listCustomFields, listLocations, getItemMetadata };
+  return {
+    loadCollection,
+    loadNode,
+    loadItem,
+    listCollections,
+    listNodes,
+    listItems,
+    listCustomFields,
+    listLocations,
+    getItemMetadata,
+  };
 }

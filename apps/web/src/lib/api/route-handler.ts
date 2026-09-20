@@ -44,7 +44,9 @@ function validationMetadata(error: ZodError): ApiValidationErrorEnvelope["valida
   return { issues, truncated: error.issues.length > MAX_VALIDATION_ISSUES };
 }
 
-export function apiRoute<Args extends unknown[]>(handler: ApiRouteHandler<Args>): ApiRouteHandler<Args> {
+export function apiRoute<Args extends unknown[]>(
+  handler: ApiRouteHandler<Args>,
+): ApiRouteHandler<Args> {
   return async (request, ...args) => {
     const requestId = getRequestId(request.headers);
 

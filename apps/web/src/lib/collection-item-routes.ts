@@ -15,10 +15,7 @@ import {
   type PublicItem,
 } from "@sammlerraum/contracts/items";
 import { assertAuthorized } from "@sammlerraum/domain/authz/policy";
-import {
-  createTrustedActorFacts,
-  type ResourceFacts,
-} from "@sammlerraum/domain/authz/types";
+import { createTrustedActorFacts, type ResourceFacts } from "@sammlerraum/domain/authz/types";
 
 import { apiRoute } from "./api/route-handler";
 
@@ -60,7 +57,13 @@ function actor(session: Session | null) {
 
 function hiddenAuthorization(
   currentActor: ReturnType<typeof actor>,
-  action: "collection.view" | "collection.edit" | "item.view" | "item.edit",
+  action:
+    | "collection.view"
+    | "collection.edit"
+    | "collection.delete"
+    | "item.view"
+    | "item.edit"
+    | "item.delete",
   facts: ResourceFacts,
 ): void {
   try {
@@ -77,11 +80,19 @@ async function asNotFound<T>(operation: () => Promise<T>): Promise<T> {
   try {
     return await operation();
   } catch (error) {
-    const code = typeof error === "object" && error !== null && "code" in error
-      ? String(error.code)
-      : "";
+    const code =
+      typeof error === "object" && error !== null && "code" in error ? String(error.code) : "";
     if (code.includes("NOT_FOUND")) throw new ApiError("NOT_FOUND", 404, "Resource not found");
-    if (code.includes("CYCLE") || code.includes("UNCHANGED")) {
+    if (
+      code === "IDENTIFIERS_INVALID" ||
+      code === "TAGS_INVALID" ||
+      code === "CUSTOM_FIELD_DEFINITION_INVALID" ||
+      code === "CUSTOM_FIELD_VALUE_INVALID" ||
+      code === "CUSTOM_FIELD_TYPE_MISMATCH"
+    ) {
+      throw new ApiError("VALIDATION_ERROR", 400, "Request validation failed");
+    }
+    if (code.includes("CYCLE") || code.includes("UNCHANGED") || code.includes("ALREADY_EXISTS")) {
       throw new ApiError("CONFLICT", 409, "The requested change conflicts with current state");
     }
     if (code.endsWith("_INVALID") || code === "ITEM_INACTIVE") {
@@ -123,7 +134,11 @@ export function createCollectionRouteHandlers(dependencies: CollectionDependenci
       const session = await requireSession(dependencies.getSession, request.headers);
       const input = CreateCollectionInputSchema.parse(await jsonBody(request));
       return Response.json(
-        { collection: await asNotFound(() => dependencies.createCollectionService(session.user.id).createCollection(input)) },
+        {
+          collection: await asNotFound(() =>
+            dependencies.createCollectionService(session.user.id).createCollection(input),
+          ),
+        },
         { status: 201, headers: noStore },
       );
     }),
@@ -140,7 +155,13 @@ export function createCollectionRouteHandlers(dependencies: CollectionDependenci
       hiddenAuthorization(actor(session), "collection.edit", loaded.facts);
       const input = UpdateCollectionInputSchema.parse(await jsonBody(request));
       return Response.json(
-        { collection: await asNotFound(() => dependencies.createCollectionService(session.user.id).updateCollection(loaded.collection.id, input)) },
+        {
+          collection: await asNotFound(() =>
+            dependencies
+              .createCollectionService(session.user.id)
+              .updateCollection(loaded.collection.id, input),
+          ),
+        },
         { headers: noStore },
       );
     }),
@@ -148,8 +169,12 @@ export function createCollectionRouteHandlers(dependencies: CollectionDependenci
       requireSameOrigin(request, dependencies.appOrigin);
       const session = await requireSession(dependencies.getSession, request.headers);
       const loaded = await asNotFound(() => dependencies.loadCollection(collectionId ?? ""));
-      hiddenAuthorization(actor(session), "collection.edit", loaded.facts);
-      await asNotFound(() => dependencies.createCollectionService(session.user.id).deleteCollection(loaded.collection.id));
+      hiddenAuthorization(actor(session), "collection.delete", loaded.facts);
+      await asNotFound(() =>
+        dependencies
+          .createCollectionService(session.user.id)
+          .deleteCollection(loaded.collection.id),
+      );
       return new Response(null, { status: 204, headers: noStore });
     }),
     GET_NODES: apiRoute(async (request, collectionId?: string) => {
@@ -167,22 +192,35 @@ export function createCollectionRouteHandlers(dependencies: CollectionDependenci
       const loaded = await asNotFound(() => dependencies.loadCollection(collectionId ?? ""));
       hiddenAuthorization(actor(session), "collection.edit", loaded.facts);
       const input = CreateCollectionNodeInputSchema.parse({
-        ...(await jsonBody(request) as object),
+        ...((await jsonBody(request)) as object),
         collectionId: loaded.collection.id,
       });
       return Response.json(
-        { node: await asNotFound(() => dependencies.createCollectionService(session.user.id).createCollectionNode(input)) },
+        {
+          node: await asNotFound(() =>
+            dependencies.createCollectionService(session.user.id).createCollectionNode(input),
+          ),
+        },
         { status: 201, headers: noStore },
       );
     }),
-    PATCH_NODE: apiRoute(async (request, nodeId?: string) => {
+    PATCH_NODE: apiRoute(async (request, collectionId?: string, nodeId?: string) => {
       requireSameOrigin(request, dependencies.appOrigin);
       const session = await requireSession(dependencies.getSession, request.headers);
       const loaded = await asNotFound(() => dependencies.loadNode(nodeId ?? ""));
+      if (loaded.node.collectionId !== collectionId) {
+        throw new ApiError("NOT_FOUND", 404, "Resource not found");
+      }
       hiddenAuthorization(actor(session), "collection.edit", loaded.facts);
       const input = UpdateCollectionNodeInputSchema.parse(await jsonBody(request));
       return Response.json(
-        { node: await asNotFound(() => dependencies.createCollectionService(session.user.id).updateCollectionNode(loaded.node.id, input)) },
+        {
+          node: await asNotFound(() =>
+            dependencies
+              .createCollectionService(session.user.id)
+              .updateCollectionNode(loaded.node.id, input),
+          ),
+        },
         { headers: noStore },
       );
     }),
@@ -214,10 +252,14 @@ function required<T>(value: T | undefined): T {
 }
 
 export function createItemRouteHandlers(dependencies: ItemDependencies) {
-  async function ownedItem(request: Request, itemId: string | undefined) {
+  async function ownedItem(
+    request: Request,
+    itemId: string | undefined,
+    action: "item.edit" | "item.delete" = "item.edit",
+  ) {
     const session = await requireSession(dependencies.getSession, request.headers);
     const loaded = await asNotFound(() => dependencies.loadItem(itemId ?? ""));
-    hiddenAuthorization(actor(session), "item.edit", loaded.facts);
+    hiddenAuthorization(actor(session), action, loaded.facts);
     return { session, loaded };
   }
 
@@ -237,10 +279,16 @@ export function createItemRouteHandlers(dependencies: ItemDependencies) {
       requireSameOrigin(request, dependencies.appOrigin);
       const session = await requireSession(dependencies.getSession, request.headers);
       const input = CreateItemInputSchema.parse(await jsonBody(request));
-      const collection = await asNotFound(() => required(dependencies.loadCollection)(input.collectionId));
+      const collection = await asNotFound(() =>
+        required(dependencies.loadCollection)(input.collectionId),
+      );
       hiddenAuthorization(actor(session), "collection.edit", collection.facts);
       return Response.json(
-        { item: await asNotFound(() => dependencies.createItemService(session.user.id).createItem(input)) },
+        {
+          item: await asNotFound(() =>
+            dependencies.createItemService(session.user.id).createItem(input),
+          ),
+        },
         { status: 201, headers: noStore },
       );
     }),
@@ -269,21 +317,31 @@ export function createItemRouteHandlers(dependencies: ItemDependencies) {
       const { session, loaded } = await ownedItem(request, itemId);
       const input = UpdateItemInputSchema.parse(await jsonBody(request));
       return Response.json(
-        { item: await asNotFound(() => dependencies.createItemService(session.user.id).updateItem(loaded.item.id, input)) },
+        {
+          item: await asNotFound(() =>
+            dependencies.createItemService(session.user.id).updateItem(loaded.item.id, input),
+          ),
+        },
         { headers: noStore },
       );
     }),
     DELETE_ITEM: apiRoute(async (request, itemId?: string) => {
       requireSameOrigin(request, dependencies.appOrigin);
-      const { session, loaded } = await ownedItem(request, itemId);
-      await asNotFound(() => dependencies.createItemService(session.user.id).deleteItem(loaded.item.id));
+      const { session, loaded } = await ownedItem(request, itemId, "item.delete");
+      await asNotFound(() =>
+        dependencies.createItemService(session.user.id).deleteItem(loaded.item.id),
+      );
       return new Response(null, { status: 204, headers: noStore });
     }),
     ARCHIVE_ITEM: apiRoute(async (request, itemId?: string) => {
       requireSameOrigin(request, dependencies.appOrigin);
       const { session, loaded } = await ownedItem(request, itemId);
       return Response.json(
-        { item: await asNotFound(() => dependencies.createItemService(session.user.id).archiveItem(loaded.item.id)) },
+        {
+          item: await asNotFound(() =>
+            dependencies.createItemService(session.user.id).archiveItem(loaded.item.id),
+          ),
+        },
         { headers: noStore },
       );
     }),
@@ -292,7 +350,13 @@ export function createItemRouteHandlers(dependencies: ItemDependencies) {
       const { session, loaded } = await ownedItem(request, itemId);
       const input = SplitItemInputSchema.parse(await jsonBody(request));
       return Response.json(
-        { result: await asNotFound(() => dependencies.createItemService(session.user.id).splitQuantityItem(loaded.item.id, input.quantity)) },
+        {
+          result: await asNotFound(() =>
+            dependencies
+              .createItemService(session.user.id)
+              .splitQuantityItem(loaded.item.id, input.quantity),
+          ),
+        },
         { status: 201, headers: noStore },
       );
     }),
