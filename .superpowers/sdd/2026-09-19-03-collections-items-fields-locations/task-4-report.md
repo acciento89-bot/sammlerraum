@@ -89,6 +89,27 @@ clearing, and direct typed-shape constraint rejection. It is included in the exi
 PostgreSQL command. Actual migration deployment and database execution remain the controller's
 required CI gate.
 
+### Actual PostgreSQL correction
+
+GitHub Actions run 35534182170 applied the migration and passed all unit, lint, typecheck, build,
+and other database checks. Its one failure was the typed-shape test's expected Prisma error code:
+PostgreSQL correctly rejected the row with SQLSTATE `23514` and named
+`CustomFieldValue_typedShape_check`, while Prisma surfaced `P2039` instead of the test's assumed
+`P2004`.
+
+Inspection of the installed Prisma 7.10 adapter and client engine established the mapping path:
+`@prisma/adapter-pg` has no dedicated case for PostgreSQL `23514`, so it emits a generic
+`kind: "postgres"` driver error; the client deliberately maps generic database errors to `P2039`.
+The integration assertion now requires `P2039`, driver metadata with `kind: "postgres"` and
+`originalCode: "23514"`, and the exact typed-shape constraint name in both the retained original
+database message and the surfaced error message. This verifies the intended database invariant
+without weakening the assertion to a generic rejection.
+
+The fresh review also found that the PostgreSQL fixture created both owners before entering its
+cleanup `try/finally`; failure while creating the second owner could therefore leak the first.
+The fixture now opens the cleanup scope before setup and registers each owner immediately after
+creation, matching the existing identifier integration pattern.
+
 ## Rulings and change controls
 
 - Decimal API values are strings so callers cannot lose precision in JavaScript; values outside
