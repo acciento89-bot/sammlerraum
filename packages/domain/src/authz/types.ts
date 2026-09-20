@@ -42,26 +42,29 @@ type ResourceFactsBase = TrustedFacts & {
   readonly ownerId: string;
   readonly visibility: Visibility;
   readonly ancestorVisibility: readonly Visibility[];
-  readonly role: RoleAssignment | null;
   readonly moderation: ModerationStatus;
   readonly interactionBlocked: boolean;
 };
 
 export type ProfileResourceFacts = ResourceFactsBase & {
   readonly type: "PROFILE";
+  readonly role: null;
 };
 
 export type CollectionResourceFacts = ResourceFactsBase & {
   readonly type: "COLLECTION";
+  readonly role: RoleAssignment | null;
 };
 
 export type ItemResourceFacts = ResourceFactsBase & {
   readonly type: "ITEM";
+  readonly role: RoleAssignment | null;
   readonly commentsEnabled: boolean;
 };
 
 export type DocumentResourceFacts = ResourceFactsBase & {
   readonly type: "DOCUMENT";
+  readonly role: RoleAssignment | null;
   /** An explicit document-level protection bit; parent visibility never clears it. */
   readonly protected: boolean;
 };
@@ -78,19 +81,23 @@ type ResourceFactsInputBase = {
   ownerId: string;
   visibility: Visibility;
   ancestorVisibility: readonly Visibility[];
-  role: RoleAssignment | null;
   moderation: ModerationStatus;
   interactionBlocked: boolean;
 };
 
-type ProfileResourceFactsInput = ResourceFactsInputBase & { type: "PROFILE" };
-type CollectionResourceFactsInput = ResourceFactsInputBase & { type: "COLLECTION" };
+type ProfileResourceFactsInput = ResourceFactsInputBase & { type: "PROFILE"; role: null };
+type CollectionResourceFactsInput = ResourceFactsInputBase & {
+  type: "COLLECTION";
+  role: RoleAssignment | null;
+};
 type ItemResourceFactsInput = ResourceFactsInputBase & {
   type: "ITEM";
+  role: RoleAssignment | null;
   commentsEnabled: boolean;
 };
 type DocumentResourceFactsInput = ResourceFactsInputBase & {
   type: "DOCUMENT";
+  role: RoleAssignment | null;
   protected: boolean;
 };
 
@@ -103,6 +110,7 @@ type ResourceFactsInput =
 const VISIBILITIES = new Set<unknown>(["PRIVATE", "UNLISTED", "PUBLIC"]);
 const ROLES = new Set<unknown>(["OWNER", "ADMIN", "EDITOR", "VIEWER"]);
 const MODERATION_STATUSES = new Set<unknown>(["VISIBLE", "HIDDEN"]);
+const RESOURCE_TYPES = new Set<unknown>(["PROFILE", "COLLECTION", "ITEM", "DOCUMENT"]);
 
 function isNonEmptyString(value: unknown): value is string {
   return typeof value === "string" && value.trim().length > 0;
@@ -145,6 +153,7 @@ export function createTrustedActorFacts<T extends ActorFactsInput>(
 
 function validateResourceFacts(facts: ResourceFactsInput): void {
   if (
+    !RESOURCE_TYPES.has(facts.type) ||
     !isNonEmptyString(facts.ownerId) ||
     !isVisibility(facts.visibility) ||
     !Array.isArray(facts.ancestorVisibility) ||
@@ -156,7 +165,7 @@ function validateResourceFacts(facts: ResourceFactsInput): void {
     throw new TypeError("Invalid trusted resource facts");
   }
 
-  if (facts.type === "PROFILE" && facts.ancestorVisibility.length !== 0) {
+  if (facts.type === "PROFILE" && (facts.ancestorVisibility.length !== 0 || facts.role !== null)) {
     throw new TypeError("Invalid trusted resource facts");
   }
   if (facts.type === "ITEM" && typeof facts.commentsEnabled !== "boolean") {
@@ -198,7 +207,11 @@ export function createTrustedResourceFacts<T extends ResourceFactsInput>(
   };
 
   if (facts.type === "ITEM") {
-    return brandAndFreeze({ ...base, type: facts.type, commentsEnabled: facts.commentsEnabled }) as never;
+    return brandAndFreeze({
+      ...base,
+      type: facts.type,
+      commentsEnabled: facts.commentsEnabled,
+    }) as never;
   }
   if (facts.type === "DOCUMENT") {
     return brandAndFreeze({ ...base, type: facts.type, protected: facts.protected }) as never;
@@ -225,5 +238,5 @@ export function isTrustedResourceFacts(value: unknown): value is ResourceFacts {
     return false;
   }
 
-  return ["PROFILE", "COLLECTION", "ITEM", "DOCUMENT"].includes(candidate.type ?? "");
+  return true;
 }

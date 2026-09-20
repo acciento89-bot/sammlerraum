@@ -53,6 +53,13 @@ function isPubliclyVisible(resource: ResourceFacts): boolean {
 }
 
 function authorizeView(actor: ActorFacts, resource: ResourceFacts): AuthorizationDecision {
+  if (resource.type === "PROFILE") {
+    if (actor.type === "AUTHENTICATED" && actor.userId === resource.ownerId) {
+      return { allowed: true, reason: "OWNER" };
+    }
+    return isPubliclyVisible(resource) ? { allowed: true, reason: "PUBLIC" } : denied();
+  }
+
   const memberDecision = allowForRole(actor, resource, ["OWNER", "ADMIN", "EDITOR", "VIEWER"]);
   if (memberDecision) return memberDecision;
   if (!isPubliclyVisible(resource)) return denied();
@@ -62,11 +69,7 @@ function authorizeView(actor: ActorFacts, resource: ResourceFacts): Authorizatio
 
 function actionMatchesResource(action: PolicyAction, resource: ResourceFacts): boolean {
   if (action === "profile.view") return resource.type === "PROFILE";
-  if (
-    action === "collection.view" ||
-    action === "collection.edit" ||
-    action === "members.manage"
-  ) {
+  if (action === "collection.view" || action === "collection.edit" || action === "members.manage") {
     return resource.type === "COLLECTION";
   }
   if (action === "item.view" || action === "item.edit" || action === "comment.create") {
