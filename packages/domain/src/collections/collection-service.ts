@@ -1,9 +1,11 @@
 import {
+  AncestorVisibilitySchema,
   CollectionNodeSchema,
   CollectionSchema,
   CreateCollectionInputSchema,
   CreateCollectionNodeInputSchema,
   MoveCollectionNodeInputSchema,
+  type AncestorVisibility,
   type Collection,
   type CollectionNode,
   type CreateCollectionInput,
@@ -22,6 +24,16 @@ const collectionNodeSelect = {
 } as const;
 
 type NodeIdentity = { id: string; collectionId: string };
+
+type AncestryRow = {
+  collectionVisibility: Visibility;
+  nodeId: string | null;
+  parentId: string | null;
+  nodeCollectionId: string | null;
+  nodeVisibility: Visibility | null;
+  cycle: boolean | null;
+  depth: number | null;
+};
 
 type CollectionTransaction = {
   collectionNode: {
@@ -53,6 +65,7 @@ export type CollectionDatabase = {
       select: typeof collectionSelect;
     }): Promise<Collection>;
   };
+  $queryRaw<T>(query: TemplateStringsArray, ...values: unknown[]): Promise<T>;
   $transaction<T>(
     operation: (transaction: CollectionTransaction) => Promise<T>,
     options: { isolationLevel: "ReadCommitted" },
@@ -116,7 +129,7 @@ export function createCollectionService(database: CollectionDatabase, actorUserI
             where: { id: data.parentId },
             select: { id: true, collectionId: true },
           });
-          if (!parent) {
+          if (!parent || parent.collectionId !== data.collectionId) {
             throw new CollectionServiceError("COLLECTION_NODE_NOT_FOUND");
           }
         }
@@ -201,5 +214,86 @@ export function createCollectionService(database: CollectionDatabase, actorUserI
     );
   }
 
-  return { createCollection, createCollectionNode, moveCollectionNode, moveNode: moveCollectionNode };
+  async function getAncestorVisibility(
+    collectionIdInput: string,
+    nodeIdInput: string | null,
+  ): Promise<AncestorVisibility> {
+    const collectionId = CollectionSchema.shape.id.parse(collectionIdInput);
+    const nodeId = nodeIdInput === null ? null : CollectionNodeSchema.shape.id.parse(nodeIdInput);
+    const rows = await database.$queryRaw<AncestryRow[]>`
+      WITH RECURSIVE ancestry AS (
+        SELECT
+          node."id",
+          node."parentId",
+          node."collectionId",
+          node."visibility",
+          ARRAY[node."id"] AS path,
+          false AS cycle,
+          0 AS depth
+        FROM "CollectionNode" node
+        WHERE node."id" = ${nodeId}::uuid AND node."collectionId" = ${collectionId}::uuid
+
+        UNION ALL
+
+        SELECT
+          parent."id",
+          parent."parentId",
+          parent."collectionId",
+          parent."visibility",
+          child.path || parent."id",
+          parent."id" = ANY(child.path),
+          child.depth + 1
+        FROM "CollectionNode" parent
+        JOIN ancestry child ON parent."id" = child."parentId"
+        WHERE NOT child.cycle
+      )
+      SELECT
+        collection."visibility" AS "collectionVisibility",
+        ancestry."id" AS "nodeId",
+        ancestry."parentId",
+        ancestry."collectionId" AS "nodeCollectionId",
+        ancestry."visibility" AS "nodeVisibility",
+        ancestry.cycle,
+        ancestry.depth
+      FROM "Collection" collection
+      LEFT JOIN ancestry ON true
+      WHERE collection."id" = ${collectionId}::uuid
+      ORDER BY ancestry.depth DESC NULLS LAST
+    `;
+    if (rows.length === 0) {
+      throw new CollectionServiceError("COLLECTION_NOT_FOUND");
+    }
+    const nodeRows = rows.filter(
+      (row): row is AncestryRow & { nodeId: string; nodeVisibility: Visibility; depth: number } =>
+        row.nodeId !== null && row.nodeVisibility !== null && row.depth !== null,
+    );
+    if (nodeId !== null && nodeRows.length === 0) {
+      throw new CollectionServiceError("COLLECTION_NODE_NOT_FOUND");
+    }
+    if (
+      nodeRows.some((row) => row.cycle === true || row.nodeCollectionId !== collectionId) ||
+      (nodeRows.length > 0 && nodeRows[0]?.parentId !== null)
+    ) {
+      throw new CollectionServiceError("COLLECTION_HIERARCHY_INVALID");
+    }
+
+    const visibilityPath = [
+      rows[0]!.collectionVisibility,
+      ...nodeRows.map((row) => row.nodeVisibility),
+    ];
+    const effectiveVisibility: Visibility = visibilityPath.includes("PRIVATE")
+      ? "PRIVATE"
+      : visibilityPath.includes("UNLISTED")
+        ? "UNLISTED"
+        : "PUBLIC";
+    return AncestorVisibilitySchema.parse({ visibilityPath, effectiveVisibility });
+  }
+
+  return {
+    createCollection,
+    createCollectionNode,
+    moveCollectionNode,
+    moveNode: moveCollectionNode,
+    getAncestorVisibility,
+  };
 }

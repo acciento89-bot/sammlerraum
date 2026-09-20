@@ -7,6 +7,12 @@ datasource db {
   provider = "postgresql"
 }
 
+enum Visibility {
+  PRIVATE
+  UNLISTED
+  PUBLIC
+}
+
 model SystemMetadata {
   key       String   @id
   value     String
@@ -36,9 +42,40 @@ model User {
   accounts      Account[]
   passkeys      Passkey[]
   profile       UserProfile?
+  collections   Collection[]
 
   @@unique([email])
   @@map("user")
+}
+
+model Collection {
+  id         String           @id @default(uuid()) @db.Uuid
+  ownerId    String
+  name       String
+  visibility Visibility       @default(PRIVATE)
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
+  owner      User             @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  nodes      CollectionNode[]
+
+  @@index([ownerId])
+}
+
+model CollectionNode {
+  id           String           @id @default(uuid()) @db.Uuid
+  collectionId String           @db.Uuid
+  parentId     String?          @db.Uuid
+  name         String
+  visibility   Visibility       @default(PRIVATE)
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+  collection   Collection       @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  parent       CollectionNode?  @relation("CollectionHierarchy", fields: [parentId, collectionId], references: [id, collectionId], onDelete: Restrict)
+  children     CollectionNode[] @relation("CollectionHierarchy")
+
+  @@unique([id, collectionId])
+  @@index([collectionId])
+  @@index([parentId, collectionId])
 }
 
 model Session {
