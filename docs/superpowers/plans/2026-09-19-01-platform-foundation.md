@@ -138,7 +138,7 @@ git commit -m "chore: scaffold Sammlerraum workspace"
 - Consumes: Zod.
 - Produces: `parseServerEnv(input): ServerEnv`, `serverEnv`, `clientEnv`.
 
-- [ ] **Step 1: Write failing config tests**
+- [x] **Step 1: Write failing config tests**
 
 ```ts
 import { describe, expect, it } from "vitest";
@@ -160,12 +160,12 @@ describe("parseServerEnv", () => {
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run packages/config/src/server.test.ts`  
 Expected: FAIL because `parseServerEnv` does not exist.
 
-- [ ] **Step 3: Implement server config**
+- [x] **Step 3: Implement server config**
 
 ```ts
 import { z } from "zod";
@@ -189,12 +189,12 @@ export const serverEnv = parseServerEnv(process.env);
 
 `.env.example` must contain non-secret examples for `DATABASE_URL`, `APP_ORIGIN`, `UPLOADS_DIR`, and `LOG_LEVEL`.
 
-- [ ] **Step 4: Run tests**
+- [x] **Step 4: Run tests**
 
 Run: `pnpm vitest run packages/config/src/server.test.ts`  
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/config .env.example

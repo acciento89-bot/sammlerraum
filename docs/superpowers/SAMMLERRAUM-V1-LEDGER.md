@@ -9,7 +9,7 @@ This is the handoff/status file for long-running implementation. Update it after
 
 | Phase | Plan | Tasks | Status | Next |
 |---|---|---:|---|---|
-| 01 | Platform Foundation | 6 | in progress (1/6 recovered) | Task 2 |
+| 01 | Platform Foundation | 6 | in progress (2/6 recovered) | Task 3 |
 | 02 | Identity, Auth & Policies | 7 | not started | Task 1 |
 | 03 | Collections, Items, Fields & Locations | 8 | not started | Task 1 |
 | 04 | Media & Documents | 6 | not started | Task 1 |
@@ -69,3 +69,15 @@ Local runtime previously lacked Docker/psql. Live database/container validation 
 - Frozen pnpm10.17.1 install, eight-package typecheck/lint/scaffold build, formatting and manifest assertions passed.
 - Root project config removes workspace deprecation; generated outputs/secrets ignored. Real dev targets remain Tasks4/5 dependencies.
 - Commit: chore: scaffold Sammlerraum workspace (recovered).
+
+### Recovered Phase 01 Task 2
+
+- Previous recovered Task 1 remote commit: `413c293`.
+- Fresh implementer and fresh reviewer: spec/quality PASS, no findings.
+- RED missing server/client modules recorded; GREEN focused 20/20, controller rerun 20/20; eight-package typecheck/lint and staged diff check passed.
+- Redacted server validation, strict postgres URL/http(s) origin/absolute uploads path, client-only origin whitelist, eager startup guard and test-only pre-import environment.
+- Commit: feat: add validated environment configuration (recovered).
+
+### Mandatory persistence rule (user confirmed 2026-09-20)
+
+Every completed and independently reviewed task must be checked off in its detail plan, recorded in this ledger, committed and saved to GitHub. Verify the remote tree before starting the next task. Do not leave completed work only in a transient runtime. An unverified or review-pending task stays unchecked. Production deployment remains prohibited without separate approval.

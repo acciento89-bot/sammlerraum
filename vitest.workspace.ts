@@ -5,6 +5,7 @@ export default [
     test: {
       name: "workspace",
       include: ["apps/**/*.test.ts", "packages/**/*.test.ts"],
+      setupFiles: ["./vitest.setup.ts"],
     },
   }),
 ];
