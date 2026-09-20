@@ -11,7 +11,7 @@ This is the handoff/status file for long-running implementation. Update it after
 |---|---|---:|---|---|
 | 01 | Platform Foundation | 6 | complete (6/6) | — |
 | 02 | Identity, Auth & Policies | 7 | complete (7/7) | — |
-| 03 | Collections, Items, Fields & Locations | 8 | in progress (0/8) | Task 1 |
+| 03 | Collections, Items, Fields & Locations | 8 | in progress (1/8) | Task 2 |
 | 04 | Media & Documents | 6 | not started | Task 1 |
 | 05 | Catalog, Condition & Grading | 7 | not started | Task 1 |
 | 06 | Valuations & Market Data | 6 | not started | Task 1 |
@@ -322,3 +322,11 @@ Every completed and independently reviewed task must be checked off in its detai
 - Verified installed Better Auth1.7.5: email sign-in callbackURL returns redirect:true and client plugin sets window.location.href. In-place security reauth supplied callbackURL while concurrently reloading session state; pending navigation interrupted the next action.
 - Reauth now supplies only email/password, preserving normal login/reset/OAuth redirects. New test observedRED thenGREEN; full137 unit tests pass/9DBskips; focusedcontroller9/9, lint/typecheck/collection pass.
 - Browser regression asserts actual reauth redirect:false/noURL/stablelocation, refreshed sessions, DELETE204 and final count1. Scoped reviewer approved causal minimal fix without new findings; fullCI still required before Task1 checkoff.
+
+### Phase 03 Task 1 — COMPLETE
+
+- Hierarchy implementation remote `f1ef9fe2f04a083aa331a6ad4188e01b59fe9c8a`; final regression-fixed tested code `da330457ea18aab0b47d03bc4b1ca4c56be4227b`.
+- Full CI SUCCESS: https://github.com/acciento89-bot/sammlerraum/actions/runs/35528856401 (job106125740859).
+-137 unit/static tests passed; dedicated integration29 passed including9 actual DB cases (4 new hierarchy cases). All4 browser journeys passed33.6s, including explicit nonredirecting reauth+DELETE204 regression. Migrations/lint/typecheck/workspace build/Compose/both Docker builds passed.
+- Hierarchy fresh spec/quality review approved without findings. Auth regression root-cause fix separately reviewed and verified; no open findings. Task1 checked off; next Task2 collectible item lifecycle/acquisition/quantity split.
+- Documentation-only completion with [skip ci]; tested code unchanged. No production/provider actions.
