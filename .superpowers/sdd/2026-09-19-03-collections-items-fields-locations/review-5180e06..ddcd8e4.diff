@@ -1,0 +1,2810 @@
+diff --git a/.github/workflows/ci.yml b/.github/workflows/ci.yml
+--- a/.github/workflows/ci.yml
++++ b/.github/workflows/ci.yml
+@@ -62,7 +62,57 @@ jobs:
+       - name: Apply PostgreSQL migrations
+         run: pnpm --filter @sammlerraum/db prisma migrate deploy
+       - run: pnpm test
+-      - run: pnpm lint
++      - name: Lint workspace
++        id: lint
++        run: pnpm lint
++      - name: Capture exact Task 7 formatting diff
++        if: ${{ failure() && steps.lint.outcome == 'failure' }}
++        run: |
++          pnpm --filter @sammlerraum/web exec prettier --write \
++            src/app/globals.css \
++            'src/app/[locale]/(app)/collections/page.tsx' \
++            'src/app/[locale]/(app)/collections/[collectionId]/page.tsx' \
++            'src/app/[locale]/(app)/items/new/page.tsx' \
++            'src/app/[locale]/(app)/items/[itemId]/page.tsx' \
++            src/components/collections/collections-manager.tsx \
++            src/components/collections/collection-detail.tsx \
++            src/components/items/item-form.tsx \
++            src/components/items/item-form-values.ts \
++            src/components/items/item-form-values.test.ts \
++            src/components/items/code-scanner.tsx \
++            e2e/collections-items.spec.ts \
++            messages/de.json \
++            messages/en.json
++          node --input-type=module <<'NODE'
++          import { execFileSync } from "node:child_process";
++          import { readFile } from "node:fs/promises";
++          const allowed = new Set([
++            "apps/web/src/app/globals.css",
++            "apps/web/src/app/[locale]/(app)/collections/page.tsx",
++            "apps/web/src/app/[locale]/(app)/collections/[collectionId]/page.tsx",
++            "apps/web/src/app/[locale]/(app)/items/new/page.tsx",
++            "apps/web/src/app/[locale]/(app)/items/[itemId]/page.tsx",
++            "apps/web/src/components/collections/collections-manager.tsx",
++            "apps/web/src/components/collections/collection-detail.tsx",
++            "apps/web/src/components/items/item-form.tsx",
++            "apps/web/src/components/items/item-form-values.ts",
++            "apps/web/src/components/items/item-form-values.test.ts",
++            "apps/web/src/components/items/code-scanner.tsx",
++            "apps/web/e2e/collections-items.spec.ts",
++            "apps/web/messages/de.json",
++            "apps/web/messages/en.json",
++          ]);
++          const changed = execFileSync("git", ["diff", "--name-only", "--", "apps/web"], {
++            encoding: "utf8",
++          })
++            .trim()
++            .split("\n")
++            .filter((file) => allowed.has(file));
++          for (const file of changed) {
++            const content = await readFile(file);
++            console.log(JSON.stringify({ file, base64: content.toString("base64") }));
++          }
++          NODE
+       - run: pnpm typecheck
+       - name: Build workspace
+         env:
+@@ -88,6 +138,10 @@ jobs:
+         run: >-
+           RUN_AUTH_E2E=1 pnpm --filter @sammlerraum/web exec playwright test
+           e2e/auth.spec.ts
++      - name: Run collection and item browser journeys
++        run: >-
++          RUN_AUTH_E2E=1 pnpm --filter @sammlerraum/web exec playwright test
++          e2e/collections-items.spec.ts --workers=1
+       - run: bash scripts/verify-compose.sh
+       - run: docker build -f Dockerfile.web --build-arg NEXT_PUBLIC_APP_ORIGIN=https://example.invalid .
+       - run: docker build -f Dockerfile.worker .
+
+diff --git a/apps/web/e2e/collections-items.spec.ts b/apps/web/e2e/collections-items.spec.ts
+--- /dev/null
++++ b/apps/web/e2e/collections-items.spec.ts
+@@ -0,0 +1,336 @@
++import { randomUUID } from "node:crypto";
++
++import { expect, test, type Page, type TestInfo } from "@playwright/test";
++import { createPrismaClient } from "@sammlerraum/db/create-client";
++import { hashPassword } from "better-auth/crypto";
++
++const runManagementE2E = process.env.RUN_AUTH_E2E === "1";
++
++type Locale = "de" | "en";
++
++const copy = {
++  de: {
++    collectionName: "Name der Sammlung",
++    collections: "Sammlungen",
++    createCollection: "Sammlung anlegen",
++    subcollectionName: "Name der Teilsammlung",
++    createSubcollection: "Teilsammlung anlegen",
++    customFieldName: "Feldname",
++    customFieldType: "Feldtyp",
++    shortText: "Kurzer Text",
++    createCustomField: "Feld anlegen",
++    locationName: "Name des Lagerorts",
++    locationParent: "Übergeordneter Lagerort",
++    locationType: "Lagerorttyp",
++    room: "Raum",
++    cabinet: "Vitrine / Schrank",
++    shelf: "Fach / Regal",
++    createLocation: "Lagerort anlegen",
++    addItem: "Stück hinzufügen",
++    node: "Teilsammlung",
++    title: "Titel",
++    publicDescription: "Öffentliche Beschreibung",
++    privateNotes: "Private Notizen",
++    unitPrice: "Kaufpreis pro Stück",
++    currency: "Währung",
++    tags: "Tags",
++    identifierType: "Kennungstyp",
++    identifierValue: "EAN / UPC / ISBN oder andere Kennung",
++    location: "Lagerort",
++    saveItem: "Stück speichern",
++    private: "Privat",
++    visibility: "Sichtbarkeit",
++    email: "E-Mail-Adresse",
++    password: "Passwort",
++    signIn: "Anmelden",
++    identifiers: "Kennungen und Code-Erfassung",
++    scanStart: "Code scannen",
++    scanProposal: "Erkannter Vorschlag",
++    scanConfirm: "Vorschlag übernehmen",
++    archive: "Archivieren",
++    archivedMessage: "Stück archiviert.",
++    savedDetails: "Gespeicherte Zusatzdaten",
++    setCustomField: "Wert verwenden",
++  },
++  en: {
++    collectionName: "Collection name",
++    collections: "Collections",
++    createCollection: "Create collection",
++    subcollectionName: "Subcollection name",
++    createSubcollection: "Create subcollection",
++    customFieldName: "Field name",
++    customFieldType: "Field type",
++    shortText: "Short text",
++    createCustomField: "Create field",
++    locationName: "Location name",
++    locationParent: "Parent location",
++    locationType: "Location type",
++    room: "Room",
++    cabinet: "Display cabinet / cabinet",
++    shelf: "Shelf",
++    createLocation: "Create location",
++    addItem: "Add item",
++    node: "Subcollection",
++    title: "Title",
++    publicDescription: "Public description",
++    privateNotes: "Private notes",
++    unitPrice: "Purchase price per unit",
++    currency: "Currency",
++    tags: "Tags",
++    identifierType: "Identifier type",
++    identifierValue: "EAN / UPC / ISBN or other identifier",
++    location: "Location",
++    saveItem: "Save item",
++    private: "Private",
++    visibility: "Visibility",
++    email: "Email address",
++    password: "Password",
++    signIn: "Sign in",
++    identifiers: "Identifiers and code capture",
++    scanStart: "Scan code",
++    scanProposal: "Detected proposal",
++    scanConfirm: "Accept proposal",
++    archive: "Archive",
++    archivedMessage: "Item archived.",
++    savedDetails: "Saved additional details",
++    setCustomField: "Use value",
++  },
++} as const;
++
++function localeFor(testInfo: TestInfo): Locale {
++  return testInfo.project.name === "mobile" ? "en" : "de";
++}
++
++async function expectTreeItem(page: Page, name: string) {
++  const item = page.getByRole("treeitem", { name, exact: true });
++  try {
++    await expect(item).toBeVisible();
++  } catch (error) {
++    const main = page.locator("main");
++    const [text, aria] = await Promise.all([main.innerText(), main.ariaSnapshot()]);
++    const original = error instanceof Error ? error.message : String(error);
++    throw new Error(`${original}\nUI text: ${text.slice(0, 2000)}\nARIA: ${aria.slice(0, 3000)}`);
++  }
++}
++
++const databaseUrl = process.env.DATABASE_URL ?? "";
++const databaseName = (() => {
++  try {
++    return decodeURIComponent(new URL(databaseUrl).pathname.split("/").at(-1) ?? "");
++  } catch {
++    return "";
++  }
++})();
++if (runManagementE2E && !databaseName.endsWith("_test")) {
++  throw new Error("Collection browser tests only seed a database whose name ends in _test");
++}
++if (runManagementE2E && process.env.NODE_ENV === "production") {
++  throw new Error("Collection browser fixtures are disabled in production mode");
++}
++const prisma = createPrismaClient(databaseUrl);
++
++async function seedTestCollector() {
++  const email = `collections-browser-${randomUUID()}@example.test`;
++  const password = "correct-horse-battery-staple";
++  const userId = randomUUID();
++
++  await prisma.user.create({
++    data: {
++      id: userId,
++      name: "Test Collector",
++      email,
++      emailVerified: true,
++      accounts: {
++        create: {
++          id: randomUUID(),
++          accountId: userId,
++          providerId: "credential",
++          password: await hashPassword(password),
++        },
++      },
++    },
++  });
++
++  return { email, password, userId };
++}
++
++async function loginTestCollector(
++  page: Page,
++  locale: Locale,
++  credentials: { email: string; password: string },
++) {
++  const labels = copy[locale];
++
++  await page.goto(`/${locale}/login`);
++  await page.getByLabel(labels.email).fill(credentials.email);
++  await page.getByLabel(labels.password).fill(credentials.password);
++  const loginResponse = page.waitForResponse(
++    (response) =>
++      response.url().endsWith("/api/auth/sign-in/email") && response.request().method() === "POST",
++  );
++  await page.getByRole("button", { name: labels.signIn, exact: true }).click();
++  const response = await loginResponse;
++  expect(response.status(), `test collector sign-in returned HTTP ${response.status()}`).toBe(200);
++  await expect(page).toHaveURL(new RegExp(`/${locale}/account/profile$`));
++}
++
++test.describe("localized collection and item management", () => {
++  test.skip(!runManagementE2E, "requires the migrated PostgreSQL database and Chromium");
++
++  test.beforeAll(async () => {
++    await prisma.$connect();
++    // The authentication journey intentionally exercises the database-backed limiter first.
++    // Isolate this later feature journey without changing production rate-limit behavior.
++    await prisma.rateLimit.deleteMany();
++  });
++
++  test.afterAll(async () => {
++    await prisma.$disconnect();
++  });
++
++  test("collector creates a nested collection and item with custom field and location", async ({
++    page,
++  }, testInfo) => {
++    await page.addInitScript(() => {
++      const browser = globalThis as unknown as {
++        BarcodeDetector?: unknown;
++        navigator: { mediaDevices?: { getUserMedia(): Promise<unknown> } };
++        MediaStream: new () => unknown;
++        HTMLMediaElement: { prototype: { play(): Promise<void> } };
++      };
++      Object.defineProperty(browser, "BarcodeDetector", {
++        configurable: true,
++        value: class {
++          async detect() {
++            return [{ rawValue: "9783161484100" }];
++          }
++        },
++      });
++      Object.defineProperty(browser.navigator, "mediaDevices", {
++        configurable: true,
++        value: { getUserMedia: async () => new browser.MediaStream() },
++      });
++      browser.HTMLMediaElement.prototype.play = async () => undefined;
++    });
++    const locale = localeFor(testInfo);
++    const labels = copy[locale];
++    const collector = await seedTestCollector();
++
++    try {
++      await loginTestCollector(page, locale, collector);
++      await page.goto(`/${locale}/collections`);
++      await expect(
++        page.getByRole("heading", { level: 1, name: labels.collections, exact: true }),
++      ).toBeVisible();
++      await page.getByLabel(labels.collectionName).fill("Pokémon");
++      await page.getByLabel(labels.visibility).selectOption("PRIVATE");
++      const collectionCreated = page.waitForResponse(
++        (response) =>
++          response.url().endsWith("/api/v1/collections") && response.request().method() === "POST",
++      );
++      await page.getByRole("button", { name: labels.createCollection }).click();
++      expect((await collectionCreated).status()).toBe(201);
++      await page.getByRole("link", { name: `Pokémon ${labels.private}`, exact: true }).click();
++
++      await page.getByLabel(labels.subcollectionName).fill("Base Set");
++      const nodeCreated = page.waitForResponse(
++        (response) => response.url().endsWith("/nodes") && response.request().method() === "POST",
++      );
++      await page.getByRole("button", { name: labels.createSubcollection }).click();
++      expect((await nodeCreated).status()).toBe(201);
++      await expectTreeItem(page, "Base Set");
++
++      await page.getByLabel(labels.customFieldName).fill("Edition");
++      await page.getByLabel(labels.customFieldType).selectOption({ label: labels.shortText });
++      await page.getByRole("button", { name: labels.createCustomField }).click();
++      await expect(page.getByText("Edition", { exact: true })).toBeVisible();
++
++      const locationSection = page
++        .getByRole("heading", { name: labels.createLocation, exact: true })
++        .locator("..");
++      const createLocation = async (name: string, type: string, parent?: string) => {
++        await locationSection.getByLabel(labels.locationName, { exact: true }).fill(name);
++        await locationSection.getByLabel(labels.locationType, { exact: true }).selectOption({
++          label: type,
++        });
++        if (parent) {
++          await locationSection
++            .getByLabel(labels.locationParent, { exact: true })
++            .selectOption({ label: parent });
++        }
++        const locationCreated = page.waitForResponse(
++          (response) =>
++            response.url().endsWith("/api/v1/locations") && response.request().method() === "POST",
++        );
++        await locationSection.getByRole("button", { name: labels.createLocation }).click();
++        expect((await locationCreated).status()).toBe(201);
++        await expectTreeItem(page, name);
++      };
++      await createLocation("Wohnzimmer", labels.room);
++      await createLocation("Vitrine", labels.cabinet, "Wohnzimmer");
++      await createLocation("Fach 2", labels.shelf, "Vitrine");
++
++      const addItemLink = page.getByRole("link", { name: labels.addItem });
++      const addItemHref = await addItemLink.getAttribute("href");
++      if (!addItemHref) throw new Error("Add-item link has no destination");
++      const addItemUrl = new URL(addItemHref, page.url()).toString();
++      await addItemLink.click();
++      await expect(page).toHaveURL(addItemUrl);
++      await expect(
++        page.getByRole("heading", { level: 1, name: labels.addItem, exact: true }),
++      ).toBeVisible();
++      await page.getByLabel(labels.node).selectOption({ label: "Base Set" });
++      await page.getByLabel(labels.title).fill("Glurak");
++      await page.getByLabel(labels.publicDescription).fill("Holographic card");
++      await page.getByLabel(labels.privateNotes).fill("Kept in a protective sleeve");
++      await page.getByLabel(labels.unitPrice).fill("12.34");
++      await page.getByLabel(labels.currency).selectOption("EUR");
++      await page.getByLabel(labels.tags).fill("holo, favorite");
++      await page.getByText(labels.identifiers, { exact: true }).click();
++      await page.getByLabel(labels.identifierType).selectOption("EAN");
++      await page.getByRole("button", { name: labels.scanStart }).click();
++      await expect(page.getByText(labels.scanProposal)).toBeVisible();
++      await expect(page.getByLabel(labels.identifierValue)).toHaveValue("");
++      await page.getByRole("button", { name: labels.scanConfirm }).click();
++      await expect(page.getByLabel(labels.identifierValue)).toHaveValue("9783161484100");
++      await page.getByLabel(labels.identifierValue).fill("4006381333931");
++      const editionField = page
++        .locator(".custom-field")
++        .filter({ has: page.getByLabel("Edition", { exact: true }) });
++      await editionField
++        .getByRole("checkbox", { name: labels.setCustomField, exact: true })
++        .check();
++      await editionField.getByLabel("Edition", { exact: true }).fill("1st");
++      await page.getByLabel(labels.location).selectOption({ label: "Fach 2" });
++      const itemCreated = page.waitForResponse(
++        (response) =>
++          response.url().endsWith("/api/v1/items") && response.request().method() === "POST",
++      );
++      await page.getByRole("button", { name: labels.saveItem }).click();
++      const itemCreatedResponse = await itemCreated;
++      expect(itemCreatedResponse.status()).toBe(201);
++      const createdItemBody = (await itemCreatedResponse.json()) as { item: { id: string } };
++      await expect(page).toHaveURL(new RegExp(`/${locale}/items/${createdItemBody.item.id}$`));
++      await expect(
++        page.getByRole("heading", { level: 1, name: "Glurak", exact: true }),
++      ).toBeVisible();
++      const savedDetails = page.getByRole("region", { name: labels.savedDetails });
++      await expect(savedDetails.getByText("Edition: 1st", { exact: true })).toBeVisible();
++      await expect(savedDetails.getByText("Fach 2", { exact: true })).toBeVisible();
++      await expect(savedDetails.getByText("4006381333931", { exact: true })).toBeVisible();
++
++      await page.getByLabel(labels.title).fill("Glurak – edited");
++      await page.getByRole("button", { name: labels.saveItem }).click();
++      await expect(
++        page.getByRole("heading", { level: 1, name: "Glurak – edited", exact: true }),
++      ).toBeVisible();
++      page.once("dialog", (dialog) => dialog.accept());
++      await page.getByRole("button", { name: labels.archive }).click();
++      await expect(page.getByText(labels.archivedMessage)).toBeVisible();
++      await expect(page.getByRole("button", { name: labels.saveItem })).toBeDisabled();
++    } finally {
++      await prisma.itemLocationHistory.deleteMany({ where: { assignedById: collector.userId } });
++      await prisma.user.deleteMany({ where: { id: collector.userId } });
++    }
++  });
++});
+
+diff --git a/apps/web/messages/de.json b/apps/web/messages/de.json
+--- a/apps/web/messages/de.json
++++ b/apps/web/messages/de.json
+@@ -90,5 +90,155 @@
+     "reauthPassword": "Aktuelles Passwort",
+     "reauth": "Erneut anmelden",
+     "reauthRequired": "Bitte melde dich erneut an, um diese Sicherheitsaktion auszuführen."
++  },
++  "Management": {
++    "navigation": "Sammlungsverwaltung",
++    "account": "Konto",
++    "error": "Die Aktion ist fehlgeschlagen.",
++    "loading": "Wird geladen …",
++    "visibility": "Sichtbarkeit",
++    "visibilityPRIVATE": "Privat",
++    "visibilityUNLISTED": "Nicht gelistet",
++    "visibilityPUBLIC": "Öffentlich",
++    "save": "Speichern"
++  },
++  "Collections": {
++    "eyebrow": "Dein Archiv",
++    "title": "Sammlungen",
++    "intro": "Ordne deine Stücke in privaten, nicht gelisteten oder öffentlichen Sammlungen.",
++    "newTitle": "Neue Sammlung",
++    "name": "Name der Sammlung",
++    "create": "Sammlung anlegen",
++    "yourCollections": "Deine Sammlungen",
++    "empty": "Du hast noch keine Sammlung angelegt."
++  },
++  "CollectionDetail": {
++    "back": "Alle Sammlungen",
++    "eyebrow": "Sammlung",
++    "addItem": "Stück hinzufügen",
++    "settings": "Sammlungseinstellungen",
++    "collectionName": "Name der Sammlung",
++    "delete": "Sammlung löschen",
++    "deleteConfirm": "Sammlung in den Papierkorb verschieben? Die enthaltenen Stücke bleiben erhalten.",
++    "newNode": "Teilsammlung anlegen",
++    "nodeName": "Name der Teilsammlung",
++    "nodeParent": "Übergeordnete Teilsammlung",
++    "root": "Sammlungswurzel",
++    "createNode": "Teilsammlung anlegen",
++    "hierarchy": "Sammlungshierarchie",
++    "noNodes": "Noch keine Teilsammlungen.",
++    "newField": "Benutzerdefiniertes Feld",
++    "fieldName": "Feldname",
++    "fieldType": "Feldtyp",
++    "fieldOptions": "Auswahloptionen",
++    "fieldOptionsHelp": "Eine Option pro Zeile.",
++    "createField": "Feld anlegen",
++    "fieldTypeSHORT_TEXT": "Kurzer Text",
++    "fieldTypeLONG_TEXT": "Langer Text",
++    "fieldTypeINTEGER": "Ganzzahl",
++    "fieldTypeDECIMAL": "Dezimalzahl",
++    "fieldTypeDATE": "Datum",
++    "fieldTypeBOOLEAN": "Ja / Nein",
++    "fieldTypeSINGLE_SELECT": "Auswahl",
++    "fieldTypeMULTI_SELECT": "Mehrfachauswahl",
++    "fieldTypeURL": "URL",
++    "fieldTypeMONEY": "Geldwert",
++    "newLocation": "Lagerort anlegen",
++    "locationName": "Name des Lagerorts",
++    "locationParent": "Übergeordneter Lagerort",
++    "locationRoot": "Oberste Ebene",
++    "locationType": "Lagerorttyp",
++    "locationTypeROOM": "Raum",
++    "locationTypeCABINET": "Vitrine / Schrank",
++    "locationTypeSHELF": "Fach / Regal",
++    "locationTypeDRAWER": "Schublade",
++    "locationTypeBOX": "Box",
++    "locationTypeOTHER": "Sonstiger Ort",
++    "createLocation": "Lagerort anlegen",
++    "locations": "Lagerorte",
++    "noLocations": "Noch keine Lagerorte.",
++    "moveLocation": "Lagerort verschieben",
++    "items": "Stücke",
++    "noItems": "Noch keine Stücke in dieser Sammlung.",
++    "archived": "Archiviert"
++  },
++  "ItemForm": {
++    "back": "Zur Sammlung",
++    "newEyebrow": "Neues Sammlerstück",
++    "editEyebrow": "Sammlerstück",
++    "newTitle": "Stück hinzufügen",
++    "intro": "Dokumentiere das Exemplar. Private Notizen und Lagerorte bleiben geschützt.",
++    "noCollections": "Lege zuerst eine Sammlung an.",
++    "createCollection": "Sammlung anlegen",
++    "basic": "Grunddaten",
++    "collection": "Sammlung",
++    "node": "Teilsammlung",
++    "collectionRoot": "Sammlungswurzel",
++    "title": "Titel",
++    "publicDescription": "Öffentliche Beschreibung",
++    "publicDescriptionHelp": "Diese Beschreibung kann bei öffentlicher Sichtbarkeit gezeigt werden.",
++    "privateNotes": "Private Notizen",
++    "privateNotesHelp": "Private Notizen werden niemals in öffentlichen Stückdaten ausgegeben.",
++    "quantity": "Menge",
++    "acquisition": "Erwerb und Status",
++    "acquisitionType": "Erwerbsart",
++    "acquisitionTypePURCHASE": "Kauf",
++    "acquisitionTypeGIFT": "Geschenk",
++    "acquisitionTypeTRADE": "Tausch",
++    "acquisitionTypeINHERITANCE": "Erbschaft",
++    "acquisitionTypeFOUND": "Fund",
++    "acquisitionTypeOTHER": "Sonstiges",
++    "acquisitionDate": "Erwerbsdatum",
++    "unitPrice": "Kaufpreis pro Stück",
++    "currency": "Währung",
++    "tradeStatus": "Tausch-/Verkaufsstatus",
++    "tradeStatusNOT_FOR_TRADE": "Nicht verfügbar",
++    "tradeStatusOPEN_TO_TRADE": "Offen für Tausch",
++    "tradeStatusFOR_SALE": "Zu verkaufen",
++    "tradeStatusRESERVED": "Reserviert",
++    "organization": "Organisation",
++    "tags": "Tags",
++    "tagsHelp": "Mehrere Tags durch Kommas trennen.",
++    "location": "Lagerort",
++    "noLocation": "Kein Lagerort",
++    "identifiers": "Kennungen und Code-Erfassung",
++    "identifierType": "Kennungstyp",
++    "identifierValue": "EAN / UPC / ISBN oder andere Kennung",
++    "identifierTypeEAN": "EAN",
++    "identifierTypeUPC": "UPC",
++    "identifierTypeISBN": "ISBN",
++    "identifierTypeSERIAL": "Seriennummer",
++    "identifierTypeCERTIFICATE": "Zertifikatsnummer",
++    "identifierTypeCATALOG": "Katalognummer",
++    "identifierTypeMANUFACTURER": "Herstellerreferenz",
++    "identifierTypeINTERNAL": "Interne Kennung",
++    "identifierTypeOTHER": "Andere Kennung",
++    "addIdentifier": "Weitere Kennung",
++    "removeIdentifier": "Kennung entfernen",
++    "scanStart": "Code scannen",
++    "scanStop": "Scanner stoppen",
++    "scanUnavailable": "Kamera-Scan ist in diesem Browser nicht verfügbar. Die manuelle Eingabe funktioniert immer.",
++    "scanProposal": "Erkannter Vorschlag",
++    "scanConfirm": "Vorschlag übernehmen",
++    "scanError": "Die Kamera oder Code-Erkennung ist fehlgeschlagen.",
++    "customFields": "Benutzerdefinierte Felder",
++    "setCustomField": "Wert verwenden",
++    "chooseOption": "Option wählen",
++    "save": "Stück speichern",
++    "saving": "Wird gespeichert …",
++    "archive": "Archivieren",
++    "delete": "Löschen",
++    "archiveConfirm": "Dieses Stück archivieren?",
++    "deleteConfirm": "Dieses Stück in den Papierkorb verschieben?",
++    "archived": "Stück archiviert.",
++    "archivedNotice": "Dieses Stück ist archiviert und kann nicht mehr bearbeitet werden.",
++    "disposedNotice": "Dieses Stück ist als abgegeben markiert und kann nicht mehr bearbeitet werden.",
++    "moneyInvalid": "Bitte gib einen gültigen Geldbetrag mit höchstens zwei Nachkommastellen ein.",
++    "fieldInvalid": "Bitte prüfe die benutzerdefinierten Felder.",
++    "coreCreated": "Das Stück wurde angelegt. Die Zusatzdaten werden gespeichert …",
++    "partialSaveError": "Das Stück wurde angelegt, aber Zusatzdaten konnten nicht vollständig gespeichert werden.",
++    "metadataSaveError": "Die Zusatzdaten konnten nicht vollständig gespeichert werden.",
++    "retryWithoutDuplicate": "Du kannst erneut speichern. Das bereits angelegte Stück wird dabei aktualisiert und nicht dupliziert.",
++    "savedDetails": "Gespeicherte Zusatzdaten"
+   }
+ }
+
+diff --git a/apps/web/messages/en.json b/apps/web/messages/en.json
+--- a/apps/web/messages/en.json
++++ b/apps/web/messages/en.json
+@@ -90,5 +90,155 @@
+     "reauthPassword": "Current password",
+     "reauth": "Sign in again",
+     "reauthRequired": "Please sign in again to complete this security action."
++  },
++  "Management": {
++    "navigation": "Collection management",
++    "account": "Account",
++    "error": "The action failed.",
++    "loading": "Loading…",
++    "visibility": "Visibility",
++    "visibilityPRIVATE": "Private",
++    "visibilityUNLISTED": "Unlisted",
++    "visibilityPUBLIC": "Public",
++    "save": "Save"
++  },
++  "Collections": {
++    "eyebrow": "Your archive",
++    "title": "Collections",
++    "intro": "Organize your items in private, unlisted, or public collections.",
++    "newTitle": "New collection",
++    "name": "Collection name",
++    "create": "Create collection",
++    "yourCollections": "Your collections",
++    "empty": "You have not created a collection yet."
++  },
++  "CollectionDetail": {
++    "back": "All collections",
++    "eyebrow": "Collection",
++    "addItem": "Add item",
++    "settings": "Collection settings",
++    "collectionName": "Collection name",
++    "delete": "Delete collection",
++    "deleteConfirm": "Move this collection to the bin? Its items will be retained.",
++    "newNode": "Create subcollection",
++    "nodeName": "Subcollection name",
++    "nodeParent": "Parent subcollection",
++    "root": "Collection root",
++    "createNode": "Create subcollection",
++    "hierarchy": "Collection hierarchy",
++    "noNodes": "No subcollections yet.",
++    "newField": "Custom field",
++    "fieldName": "Field name",
++    "fieldType": "Field type",
++    "fieldOptions": "Selection options",
++    "fieldOptionsHelp": "Enter one option per line.",
++    "createField": "Create field",
++    "fieldTypeSHORT_TEXT": "Short text",
++    "fieldTypeLONG_TEXT": "Long text",
++    "fieldTypeINTEGER": "Integer",
++    "fieldTypeDECIMAL": "Decimal",
++    "fieldTypeDATE": "Date",
++    "fieldTypeBOOLEAN": "Yes / no",
++    "fieldTypeSINGLE_SELECT": "Single select",
++    "fieldTypeMULTI_SELECT": "Multiple select",
++    "fieldTypeURL": "URL",
++    "fieldTypeMONEY": "Money",
++    "newLocation": "Create location",
++    "locationName": "Location name",
++    "locationParent": "Parent location",
++    "locationRoot": "Top level",
++    "locationType": "Location type",
++    "locationTypeROOM": "Room",
++    "locationTypeCABINET": "Display cabinet / cabinet",
++    "locationTypeSHELF": "Shelf",
++    "locationTypeDRAWER": "Drawer",
++    "locationTypeBOX": "Box",
++    "locationTypeOTHER": "Other location",
++    "createLocation": "Create location",
++    "locations": "Locations",
++    "noLocations": "No locations yet.",
++    "moveLocation": "Move location",
++    "items": "Items",
++    "noItems": "No items in this collection yet.",
++    "archived": "Archived"
++  },
++  "ItemForm": {
++    "back": "Back to collection",
++    "newEyebrow": "New collectible",
++    "editEyebrow": "Collectible",
++    "newTitle": "Add item",
++    "intro": "Document this copy. Private notes and storage locations stay protected.",
++    "noCollections": "Create a collection first.",
++    "createCollection": "Create collection",
++    "basic": "Basic details",
++    "collection": "Collection",
++    "node": "Subcollection",
++    "collectionRoot": "Collection root",
++    "title": "Title",
++    "publicDescription": "Public description",
++    "publicDescriptionHelp": "This description may be shown when the item is public.",
++    "privateNotes": "Private notes",
++    "privateNotesHelp": "Private notes are never included in public item data.",
++    "quantity": "Quantity",
++    "acquisition": "Acquisition and status",
++    "acquisitionType": "Acquisition type",
++    "acquisitionTypePURCHASE": "Purchase",
++    "acquisitionTypeGIFT": "Gift",
++    "acquisitionTypeTRADE": "Trade",
++    "acquisitionTypeINHERITANCE": "Inheritance",
++    "acquisitionTypeFOUND": "Found",
++    "acquisitionTypeOTHER": "Other",
++    "acquisitionDate": "Acquisition date",
++    "unitPrice": "Purchase price per unit",
++    "currency": "Currency",
++    "tradeStatus": "Trade status",
++    "tradeStatusNOT_FOR_TRADE": "Not available",
++    "tradeStatusOPEN_TO_TRADE": "Open to trade",
++    "tradeStatusFOR_SALE": "For sale",
++    "tradeStatusRESERVED": "Reserved",
++    "organization": "Organization",
++    "tags": "Tags",
++    "tagsHelp": "Separate multiple tags with commas.",
++    "location": "Location",
++    "noLocation": "No location",
++    "identifiers": "Identifiers and code capture",
++    "identifierType": "Identifier type",
++    "identifierValue": "EAN / UPC / ISBN or other identifier",
++    "identifierTypeEAN": "EAN",
++    "identifierTypeUPC": "UPC",
++    "identifierTypeISBN": "ISBN",
++    "identifierTypeSERIAL": "Serial number",
++    "identifierTypeCERTIFICATE": "Certificate number",
++    "identifierTypeCATALOG": "Catalog number",
++    "identifierTypeMANUFACTURER": "Manufacturer reference",
++    "identifierTypeINTERNAL": "Internal identifier",
++    "identifierTypeOTHER": "Other identifier",
++    "addIdentifier": "Add identifier",
++    "removeIdentifier": "Remove identifier",
++    "scanStart": "Scan code",
++    "scanStop": "Stop scanner",
++    "scanUnavailable": "Camera scanning is unavailable in this browser. Manual entry always works.",
++    "scanProposal": "Detected proposal",
++    "scanConfirm": "Accept proposal",
++    "scanError": "Camera or code detection failed.",
++    "customFields": "Custom fields",
++    "setCustomField": "Use value",
++    "chooseOption": "Choose option",
++    "save": "Save item",
++    "saving": "Saving…",
++    "archive": "Archive",
++    "delete": "Delete",
++    "archiveConfirm": "Archive this item?",
++    "deleteConfirm": "Move this item to the bin?",
++    "archived": "Item archived.",
++    "archivedNotice": "This item is archived and can no longer be edited.",
++    "disposedNotice": "This item is marked as disposed and can no longer be edited.",
++    "moneyInvalid": "Enter a valid money amount with no more than two decimal places.",
++    "fieldInvalid": "Check the custom fields.",
++    "coreCreated": "The item was created. Saving additional details…",
++    "partialSaveError": "The item was created, but some additional details could not be saved.",
++    "metadataSaveError": "Some additional details could not be saved.",
++    "retryWithoutDuplicate": "You can save again. The existing item will be updated without creating a duplicate.",
++    "savedDetails": "Saved additional details"
+   }
+ }
+
+diff --git a/apps/web/playwright.config.ts b/apps/web/playwright.config.ts
+--- a/apps/web/playwright.config.ts
++++ b/apps/web/playwright.config.ts
+@@ -1,4 +1,4 @@
+-import { defineConfig } from "@playwright/test";
++import { defineConfig, devices } from "@playwright/test";
+ 
+ export default defineConfig({
+   testDir: "./e2e",
+@@ -7,6 +7,22 @@ export default defineConfig({
+   use: {
+     baseURL: "http://localhost:3000",
+   },
++  projects: [
++    {
++      name: "auth",
++      testMatch: "**/auth.spec.ts",
++    },
++    {
++      name: "desktop",
++      testMatch: "**/collections-items.spec.ts",
++      use: { viewport: { width: 1440, height: 1000 } },
++    },
++    {
++      name: "mobile",
++      testMatch: "**/collections-items.spec.ts",
++      use: { ...devices["Pixel 7"] },
++    },
++  ],
+   ...(process.env.RUN_AUTH_E2E === "1"
+     ? {
+         webServer: {
+
+diff --git a/apps/web/src/app/[locale]/(app)/collections/[collectionId]/page.tsx b/apps/web/src/app/[locale]/(app)/collections/[collectionId]/page.tsx
+--- /dev/null
++++ b/apps/web/src/app/[locale]/(app)/collections/[collectionId]/page.tsx
+@@ -0,0 +1,24 @@
++import { headers } from "next/headers";
++import { redirect } from "next/navigation";
++import { setRequestLocale } from "next-intl/server";
++
++import { CollectionDetail } from "../../../../../components/collections/collection-detail";
++import { auth } from "../../../../../lib/auth";
++
++export const dynamic = "force-dynamic";
++export const revalidate = 0;
++
++export default async function CollectionPage({
++  params,
++}: {
++  params: Promise<{ locale: "de" | "en"; collectionId: string }>;
++}) {
++  const { locale, collectionId } = await params;
++  setRequestLocale(locale);
++  const session = await auth.api.getSession({
++    headers: await headers(),
++    query: { disableCookieCache: true, disableRefresh: true },
++  });
++  if (!session) redirect(`/${locale}/login`);
++  return <CollectionDetail collectionId={collectionId} locale={locale} />;
++}
+
+diff --git a/apps/web/src/app/[locale]/(app)/collections/page.tsx b/apps/web/src/app/[locale]/(app)/collections/page.tsx
+--- /dev/null
++++ b/apps/web/src/app/[locale]/(app)/collections/page.tsx
+@@ -0,0 +1,24 @@
++import { headers } from "next/headers";
++import { redirect } from "next/navigation";
++import { setRequestLocale } from "next-intl/server";
++
++import { CollectionsManager } from "../../../../components/collections/collections-manager";
++import { auth } from "../../../../lib/auth";
++
++export const dynamic = "force-dynamic";
++export const revalidate = 0;
++
++export default async function CollectionsPage({
++  params,
++}: {
++  params: Promise<{ locale: "de" | "en" }>;
++}) {
++  const { locale } = await params;
++  setRequestLocale(locale);
++  const session = await auth.api.getSession({
++    headers: await headers(),
++    query: { disableCookieCache: true, disableRefresh: true },
++  });
++  if (!session) redirect(`/${locale}/login`);
++  return <CollectionsManager locale={locale} />;
++}
+
+diff --git a/apps/web/src/app/[locale]/(app)/items/[itemId]/page.tsx b/apps/web/src/app/[locale]/(app)/items/[itemId]/page.tsx
+--- /dev/null
++++ b/apps/web/src/app/[locale]/(app)/items/[itemId]/page.tsx
+@@ -0,0 +1,24 @@
++import { headers } from "next/headers";
++import { redirect } from "next/navigation";
++import { setRequestLocale } from "next-intl/server";
++
++import { ItemForm } from "../../../../../components/items/item-form";
++import { auth } from "../../../../../lib/auth";
++
++export const dynamic = "force-dynamic";
++export const revalidate = 0;
++
++export default async function ItemPage({
++  params,
++}: {
++  params: Promise<{ locale: "de" | "en"; itemId: string }>;
++}) {
++  const { locale, itemId } = await params;
++  setRequestLocale(locale);
++  const session = await auth.api.getSession({
++    headers: await headers(),
++    query: { disableCookieCache: true, disableRefresh: true },
++  });
++  if (!session) redirect(`/${locale}/login`);
++  return <ItemForm itemId={itemId} locale={locale} />;
++}
+
+diff --git a/apps/web/src/app/[locale]/(app)/items/new/page.tsx b/apps/web/src/app/[locale]/(app)/items/new/page.tsx
+--- /dev/null
++++ b/apps/web/src/app/[locale]/(app)/items/new/page.tsx
+@@ -0,0 +1,27 @@
++import { headers } from "next/headers";
++import { redirect } from "next/navigation";
++import { setRequestLocale } from "next-intl/server";
++
++import { ItemForm } from "../../../../../components/items/item-form";
++import { auth } from "../../../../../lib/auth";
++
++export const dynamic = "force-dynamic";
++export const revalidate = 0;
++
++export default async function NewItemPage({
++  params,
++  searchParams,
++}: {
++  params: Promise<{ locale: "de" | "en" }>;
++  searchParams: Promise<{ collectionId?: string }>;
++}) {
++  const { locale } = await params;
++  const { collectionId } = await searchParams;
++  setRequestLocale(locale);
++  const session = await auth.api.getSession({
++    headers: await headers(),
++    query: { disableCookieCache: true, disableRefresh: true },
++  });
++  if (!session) redirect(`/${locale}/login`);
++  return <ItemForm initialCollectionId={collectionId ?? ""} locale={locale} />;
++}
+
+diff --git a/apps/web/src/app/globals.css b/apps/web/src/app/globals.css
+--- a/apps/web/src/app/globals.css
++++ b/apps/web/src/app/globals.css
+@@ -366,3 +366,250 @@ button {
+       color 0.15s ease;
+   }
+ }
++
++select {
++  width: 100%;
++  padding: 0.7rem 0.8rem;
++  border: 1px solid var(--line);
++  border-radius: 0.55rem;
++  background: white;
++  color: var(--ink);
++  font: inherit;
++}
++fieldset {
++  min-width: 0;
++  margin: 0;
++  padding: 0;
++  border: 0;
++}
++.management-shell {
++  width: min(72rem, calc(100% - 2rem));
++  margin: 0 auto;
++  padding: 2.5rem 0 5rem;
++}
++.management-nav,
++.management-heading-row,
++.section-heading-row,
++.form-actions {
++  display: flex;
++  align-items: center;
++  gap: 0.75rem;
++}
++.management-nav {
++  margin-bottom: 1.5rem;
++}
++.management-nav a,
++.primary-link {
++  padding: 0.5rem 0.8rem;
++  border: 1px solid var(--line);
++  border-radius: 999px;
++  background: var(--surface);
++  text-decoration: none;
++}
++.management-heading {
++  margin-bottom: 2rem;
++}
++.management-heading h1 {
++  max-width: 18ch;
++  font-size: clamp(2.25rem, 6vw, 4.5rem);
++}
++.management-heading-row,
++.section-heading-row {
++  justify-content: space-between;
++}
++.primary-link {
++  border-color: var(--green);
++  background: var(--green);
++  color: white;
++}
++.management-grid {
++  display: grid;
++  grid-template-columns: repeat(2, minmax(0, 1fr));
++  gap: 1rem;
++}
++.management-card,
++.item-form > details,
++.item-form > fieldset {
++  padding: clamp(1.1rem, 3vw, 1.7rem);
++  border: 1px solid var(--line);
++  border-radius: 1rem;
++  background: var(--surface);
++}
++.management-card.wide {
++  grid-column: 1 / -1;
++}
++.management-card h2,
++.section-heading-row h2 {
++  margin-top: 0;
++}
++.management-card summary,
++.item-form summary {
++  cursor: pointer;
++  font-weight: 750;
++}
++.collection-list,
++.plain-list,
++.management-tree {
++  margin: 0;
++  padding: 0;
++  list-style: none;
++}
++.collection-list li + li,
++.plain-list li + li {
++  border-top: 1px solid var(--line);
++}
++.collection-list a {
++  display: flex;
++  justify-content: space-between;
++  gap: 1rem;
++  padding: 0.8rem 0;
++  text-decoration: none;
++}
++.collection-list span,
++.plain-list span,
++.field-help,
++.empty-state {
++  color: var(--muted);
++}
++.plain-list li {
++  display: flex;
++  justify-content: space-between;
++  gap: 1rem;
++  padding: 0.65rem 0;
++}
++.management-tree .management-tree {
++  margin-left: 1.25rem;
++  border-left: 1px solid var(--line);
++  padding-left: 1rem;
++}
++.management-tree > li {
++  padding: 0.35rem 0;
++}
++.compact-form,
++.details-fields,
++.item-form {
++  display: grid;
++  gap: 1rem;
++}
++.compact-form {
++  margin: 0.75rem 0;
++  padding: 1rem;
++  border-radius: 0.75rem;
++  background: var(--paper);
++}
++.compact-form label,
++.details-fields label,
++.item-form > fieldset > label,
++.custom-field > label {
++  display: grid;
++  gap: 0.35rem;
++  font-weight: 650;
++}
++.item-form {
++  max-width: 58rem;
++}
++.item-form > details > summary {
++  padding: 1.1rem 0;
++}
++.details-fields {
++  padding-top: 0.5rem;
++}
++.form-row,
++.identifier-row {
++  display: grid;
++  grid-template-columns: repeat(2, minmax(0, 1fr));
++  gap: 0.8rem;
++}
++.identifier-row {
++  padding: 1rem;
++  border: 1px solid var(--line);
++  border-radius: 0.75rem;
++}
++.identifier-row .scanner {
++  grid-column: 2;
++}
++.identifier-row .text-button {
++  justify-self: start;
++}
++.checkbox-label {
++  display: flex !important;
++  align-items: center;
++  gap: 0.55rem;
++}
++.checkbox-label input {
++  width: auto;
++}
++.custom-field {
++  padding: 1rem;
++  border: 1px solid var(--line);
++  border-radius: 0.75rem;
++}
++.custom-field > .checkbox-label {
++  margin-bottom: 0.75rem;
++}
++.secondary-button {
++  border-color: var(--line);
++  background: var(--surface);
++  color: var(--ink);
++}
++.danger-button {
++  border-color: #8a2d22;
++  background: #8a2d22;
++}
++.notice {
++  max-width: 58rem;
++  padding: 0.8rem 1rem;
++  border-left: 0.3rem solid var(--accent);
++  background: var(--surface);
++}
++.scanner {
++  display: grid;
++  gap: 0.65rem;
++}
++.scanner-video {
++  width: 100%;
++  max-height: 18rem;
++  border-radius: 0.75rem;
++  background: #111;
++}
++.scanner-video.hidden {
++  display: none;
++}
++.scanner-proposal {
++  padding: 0.8rem;
++  border: 1px solid var(--accent);
++  border-radius: 0.75rem;
++  background: var(--paper);
++}
++.item-summary {
++  max-width: 58rem;
++  margin-bottom: 1rem;
++}
++.item-summary p {
++  margin: 0.35rem 0;
++}
++@media (max-width: 44rem) {
++  .management-grid {
++    grid-template-columns: 1fr;
++  }
++  .management-card.wide {
++    grid-column: auto;
++  }
++  .management-heading-row,
++  .section-heading-row,
++  .form-actions {
++    align-items: stretch;
++    flex-direction: column;
++  }
++  .form-row,
++  .identifier-row {
++    grid-template-columns: 1fr;
++  }
++  .identifier-row .scanner {
++    grid-column: auto;
++  }
++  .collection-list a {
++    flex-direction: column;
++    gap: 0.15rem;
++  }
++}
+
+diff --git a/apps/web/src/components/collections/collection-detail.tsx b/apps/web/src/components/collections/collection-detail.tsx
+--- /dev/null
++++ b/apps/web/src/components/collections/collection-detail.tsx
+@@ -0,0 +1,522 @@
++"use client";
++
++import type { Collection, CollectionNode } from "@sammlerraum/contracts/collections";
++import type { CustomFieldDefinition, CustomFieldType } from "@sammlerraum/contracts/custom-fields";
++import type { CollectibleItem } from "@sammlerraum/contracts/items";
++import type { LocationType, StorageLocation } from "@sammlerraum/contracts/locations";
++import Link from "next/link";
++import { useRouter } from "next/navigation";
++import { useTranslations } from "next-intl";
++import { useCallback, useEffect, useState, type FormEvent, type ReactNode } from "react";
++
++import { errorMessage, VisibilitySelect } from "./collections-manager";
++
++const fieldTypes: CustomFieldType[] = [
++  "SHORT_TEXT",
++  "LONG_TEXT",
++  "INTEGER",
++  "DECIMAL",
++  "DATE",
++  "BOOLEAN",
++  "SINGLE_SELECT",
++  "MULTI_SELECT",
++  "URL",
++  "MONEY",
++];
++const locationTypes: LocationType[] = ["ROOM", "CABINET", "SHELF", "DRAWER", "BOX", "OTHER"];
++
++type DetailData = {
++  collection: Collection;
++  nodes: CollectionNode[];
++  customFields: CustomFieldDefinition[];
++  locations: StorageLocation[];
++  items: CollectibleItem[];
++};
++
++async function read<T>(url: string): Promise<T> {
++  const response = await fetch(url, { cache: "no-store" });
++  if (!response.ok) throw response;
++  return response.json() as Promise<T>;
++}
++
++export function CollectionDetail({
++  collectionId,
++  locale,
++}: {
++  collectionId: string;
++  locale: "de" | "en";
++}) {
++  const t = useTranslations("CollectionDetail");
++  const common = useTranslations("Management");
++  const router = useRouter();
++  const [data, setData] = useState<DetailData>();
++  const [error, setError] = useState("");
++  const [fieldType, setFieldType] = useState<CustomFieldType>("SHORT_TEXT");
++
++  const load = useCallback(async () => {
++    try {
++      const [collectionBody, nodesBody, fieldsBody, locationsBody, itemsBody] = await Promise.all([
++        read<{ collection: Collection }>(`/api/v1/collections/${collectionId}`),
++        read<{ nodes: CollectionNode[] }>(`/api/v1/collections/${collectionId}/nodes`),
++        read<{ customFields: CustomFieldDefinition[] }>(
++          `/api/v1/collections/${collectionId}/custom-fields`,
++        ),
++        read<{ locations: StorageLocation[] }>("/api/v1/locations"),
++        read<{ items: CollectibleItem[] }>(
++          `/api/v1/items?collectionId=${encodeURIComponent(collectionId)}`,
++        ),
++      ]);
++      setData({
++        collection: collectionBody.collection,
++        nodes: nodesBody.nodes,
++        customFields: fieldsBody.customFields,
++        locations: locationsBody.locations,
++        items: itemsBody.items,
++      });
++      setError("");
++    } catch (problem) {
++      setError(
++        problem instanceof Response
++          ? await errorMessage(problem, common("error"))
++          : common("error"),
++      );
++    }
++  }, [collectionId, common]);
++
++  useEffect(() => {
++    void load();
++  }, [load]);
++
++  async function mutate(url: string, method: string, body?: unknown) {
++    setError("");
++    const request: RequestInit = { method };
++    if (body !== undefined) {
++      request.headers = { "content-type": "application/json" };
++      request.body = JSON.stringify(body);
++    }
++    const response = await fetch(url, request);
++    if (!response.ok) {
++      setError(await errorMessage(response, common("error")));
++      return false;
++    }
++    await load();
++    return true;
++  }
++
++  if (!data) {
++    return (
++      <section className="management-shell">
++        <p role="status">{common("loading")}</p>
++        {error && (
++          <p className="error" role="alert">
++            {error}
++          </p>
++        )}
++      </section>
++    );
++  }
++
++  async function updateCollection(event: FormEvent<HTMLFormElement>) {
++    event.preventDefault();
++    const form = new FormData(event.currentTarget);
++    await mutate(`/api/v1/collections/${collectionId}`, "PATCH", {
++      name: form.get("name"),
++      visibility: form.get("visibility"),
++    });
++  }
++
++  async function deleteCollection() {
++    if (!window.confirm(t("deleteConfirm"))) return;
++    const response = await fetch(`/api/v1/collections/${collectionId}`, { method: "DELETE" });
++    if (!response.ok) {
++      setError(await errorMessage(response, common("error")));
++      return;
++    }
++    router.push(`/${locale}/collections`);
++    router.refresh();
++  }
++
++  async function createNode(event: FormEvent<HTMLFormElement>) {
++    event.preventDefault();
++    const element = event.currentTarget;
++    const form = new FormData(element);
++    const saved = await mutate(`/api/v1/collections/${collectionId}/nodes`, "POST", {
++      name: form.get("name"),
++      parentId: String(form.get("parentId") ?? "") || null,
++      visibility: form.get("visibility"),
++    });
++    if (saved) element.reset();
++  }
++
++  async function createField(event: FormEvent<HTMLFormElement>) {
++    event.preventDefault();
++    const element = event.currentTarget;
++    const form = new FormData(element);
++    const options = String(form.get("options") ?? "")
++      .split("\n")
++      .map((option) => option.trim())
++      .filter(Boolean);
++    const saved = await mutate(`/api/v1/collections/${collectionId}/custom-fields`, "POST", {
++      name: form.get("name"),
++      type: form.get("type"),
++      options,
++    });
++    if (saved) {
++      element.reset();
++      setFieldType("SHORT_TEXT");
++    }
++  }
++
++  async function createLocation(event: FormEvent<HTMLFormElement>) {
++    event.preventDefault();
++    const element = event.currentTarget;
++    const form = new FormData(element);
++    const saved = await mutate("/api/v1/locations", "POST", {
++      name: form.get("name"),
++      parentId: String(form.get("parentId") ?? "") || null,
++      type: form.get("type"),
++      visibility: form.get("visibility"),
++    });
++    if (saved) element.reset();
++  }
++
++  return (
++    <section className="management-shell">
++      <nav className="management-nav" aria-label={common("navigation")}>
++        <Link href={`/${locale}/collections`}>{t("back")}</Link>
++        <Link href={`/${locale}/account/profile`}>{common("account")}</Link>
++      </nav>
++      <header className="management-heading management-heading-row">
++        <div>
++          <p className="eyebrow">{t("eyebrow")}</p>
++          <h1>{data.collection.name}</h1>
++        </div>
++        <Link className="primary-link" href={`/${locale}/items/new?collectionId=${collectionId}`}>
++          {t("addItem")}
++        </Link>
++      </header>
++
++      {error && (
++        <p className="error" role="alert">
++          {error}
++        </p>
++      )}
++
++      <div className="management-grid">
++        <details className="management-card">
++          <summary>{t("settings")}</summary>
++          <form className="form-stack" onSubmit={updateCollection}>
++            <label>
++              {t("collectionName")}
++              <input name="name" defaultValue={data.collection.name} maxLength={120} required />
++            </label>
++            <VisibilitySelect
++              label={common("visibility")}
++              name="visibility"
++              value={data.collection.visibility}
++              t={common}
++            />
++            <button type="submit">{common("save")}</button>
++            <button className="danger-button" type="button" onClick={deleteCollection}>
++              {t("delete")}
++            </button>
++          </form>
++        </details>
++
++        <section className="management-card" aria-labelledby="new-node-heading">
++          <h2 id="new-node-heading">{t("newNode")}</h2>
++          <form className="form-stack" onSubmit={createNode}>
++            <label>
++              {t("nodeName")}
++              <input name="name" maxLength={120} required />
++            </label>
++            <ParentSelect
++              label={t("nodeParent")}
++              name="parentId"
++              none={t("root")}
++              records={data.nodes}
++            />
++            <VisibilitySelect label={common("visibility")} name="visibility" t={common} />
++            <button type="submit">{t("createNode")}</button>
++          </form>
++        </section>
++
++        <section className="management-card wide" aria-labelledby="hierarchy-heading">
++          <h2 id="hierarchy-heading">{t("hierarchy")}</h2>
++          {data.nodes.length === 0 ? (
++            <p className="empty-state">{t("noNodes")}</p>
++          ) : (
++            <RecordTree
++              records={data.nodes}
++              render={(node) => (
++                <NodeEditor node={node} all={data.nodes} mutate={mutate} t={t} common={common} />
++              )}
++            />
++          )}
++        </section>
++
++        <section className="management-card" aria-labelledby="field-heading">
++          <h2 id="field-heading">{t("newField")}</h2>
++          <form className="form-stack" onSubmit={createField}>
++            <label>
++              {t("fieldName")}
++              <input name="name" maxLength={120} required />
++            </label>
++            <label>
++              {t("fieldType")}
++              <select
++                name="type"
++                value={fieldType}
++                onChange={(event) => setFieldType(event.target.value as CustomFieldType)}
++              >
++                {fieldTypes.map((type) => (
++                  <option key={type} value={type}>
++                    {t(`fieldType${type}`)}
++                  </option>
++                ))}
++              </select>
++            </label>
++            {(fieldType === "SINGLE_SELECT" || fieldType === "MULTI_SELECT") && (
++              <label>
++                {t("fieldOptions")}
++                <textarea name="options" required />
++                <span className="field-help">{t("fieldOptionsHelp")}</span>
++              </label>
++            )}
++            <button type="submit">{t("createField")}</button>
++          </form>
++          <ul className="plain-list">
++            {data.customFields.map((field) => (
++              <li key={field.id}>
++                <strong>{field.name}</strong>
++                <span>{t(`fieldType${field.type}`)}</span>
++              </li>
++            ))}
++          </ul>
++        </section>
++
++        <section className="management-card" aria-labelledby="location-heading">
++          <h2 id="location-heading">{t("newLocation")}</h2>
++          <form className="form-stack" onSubmit={createLocation}>
++            <label>
++              {t("locationName")}
++              <input name="name" maxLength={120} required />
++            </label>
++            <ParentSelect
++              label={t("locationParent")}
++              name="parentId"
++              none={t("locationRoot")}
++              records={data.locations}
++            />
++            <label>
++              {t("locationType")}
++              <select aria-label={t("locationType")} name="type" defaultValue="OTHER">
++                {locationTypes.map((type) => (
++                  <option key={type} value={type}>
++                    {t(`locationType${type}`)}
++                  </option>
++                ))}
++              </select>
++            </label>
++            <VisibilitySelect label={common("visibility")} name="visibility" t={common} />
++            <button type="submit">{t("createLocation")}</button>
++          </form>
++        </section>
++
++        <section className="management-card wide" aria-labelledby="locations-heading">
++          <h2 id="locations-heading">{t("locations")}</h2>
++          {data.locations.length === 0 ? (
++            <p className="empty-state">{t("noLocations")}</p>
++          ) : (
++            <RecordTree
++              records={data.locations}
++              render={(location) => (
++                <LocationEditor location={location} all={data.locations} mutate={mutate} t={t} />
++              )}
++            />
++          )}
++        </section>
++
++        <section className="management-card wide" aria-labelledby="items-heading">
++          <h2 id="items-heading">{t("items")}</h2>
++          {data.items.length === 0 ? (
++            <p className="empty-state">{t("noItems")}</p>
++          ) : (
++            <ul className="collection-list">
++              {data.items.map((item) => (
++                <li key={item.id}>
++                  <Link href={`/${locale}/items/${item.id}`}>
++                    <strong>{item.title}</strong>
++                    <span>
++                      {item.quantity} · {common(`visibility${item.visibility}`)}
++                      {item.archivedAt ? ` · ${t("archived")}` : ""}
++                    </span>
++                  </Link>
++                </li>
++              ))}
++            </ul>
++          )}
++        </section>
++      </div>
++    </section>
++  );
++}
++
++type TreeRecord = { id: string; parentId: string | null; name: string };
++
++function RecordTree<T extends TreeRecord>({
++  records,
++  render,
++}: {
++  records: T[];
++  render(record: T): ReactNode;
++}) {
++  function branch(parentId: string | null): ReactNode {
++    const children = records.filter((record) => record.parentId === parentId);
++    if (children.length === 0) return null;
++    return (
++      <ul role={parentId === null ? "tree" : "group"} className="management-tree">
++        {children.map((record) => {
++          const hasChildren = records.some((candidate) => candidate.parentId === record.id);
++          return (
++            <li
++              aria-expanded={hasChildren ? true : undefined}
++              aria-label={record.name}
++              role="treeitem"
++              key={record.id}
++            >
++              {render(record)}
++              {branch(record.id)}
++            </li>
++          );
++        })}
++      </ul>
++    );
++  }
++  return branch(null);
++}
++
++function ParentSelect<T extends TreeRecord>({
++  label,
++  name,
++  none,
++  records,
++  value = "",
++  exclude,
++}: {
++  label: string;
++  name: string;
++  none: string;
++  records: T[];
++  value?: string;
++  exclude?: string;
++}) {
++  return (
++    <label>
++      {label}
++      <select aria-label={label} name={name} defaultValue={value}>
++        <option value="">{none}</option>
++        {records
++          .filter((record) => record.id !== exclude)
++          .map((record) => (
++            <option key={record.id} value={record.id}>
++              {record.name}
++            </option>
++          ))}
++      </select>
++    </label>
++  );
++}
++
++type Mutation = (url: string, method: string, body?: unknown) => Promise<boolean>;
++type Translation = (key: string) => string;
++
++function NodeEditor({
++  node,
++  all,
++  mutate,
++  t,
++  common,
++}: {
++  node: CollectionNode;
++  all: CollectionNode[];
++  mutate: Mutation;
++  t: Translation;
++  common: Translation;
++}) {
++  return (
++    <details>
++      <summary>{node.name}</summary>
++      <form
++        className="compact-form"
++        onSubmit={async (event) => {
++          event.preventDefault();
++          const form = new FormData(event.currentTarget);
++          await mutate(`/api/v1/collections/${node.collectionId}/nodes/${node.id}`, "PATCH", {
++            name: form.get("name"),
++            parentId: String(form.get("parentId") ?? "") || null,
++            visibility: form.get("visibility"),
++          });
++        }}
++      >
++        <label>
++          {t("nodeName")}
++          <input name="name" defaultValue={node.name} required />
++        </label>
++        <ParentSelect
++          label={t("nodeParent")}
++          name="parentId"
++          none={t("root")}
++          records={all}
++          value={node.parentId ?? ""}
++          exclude={node.id}
++        />
++        <VisibilitySelect
++          label={common("visibility")}
++          name="visibility"
++          value={node.visibility}
++          t={common}
++        />
++        <button type="submit">{common("save")}</button>
++      </form>
++    </details>
++  );
++}
++
++function LocationEditor({
++  location,
++  all,
++  mutate,
++  t,
++}: {
++  location: StorageLocation;
++  all: StorageLocation[];
++  mutate: Mutation;
++  t: Translation;
++}) {
++  return (
++    <details>
++      <summary>{location.name}</summary>
++      <form
++        className="compact-form"
++        onSubmit={async (event) => {
++          event.preventDefault();
++          const form = new FormData(event.currentTarget);
++          await mutate(`/api/v1/locations/${location.id}`, "PATCH", {
++            parentId: String(form.get("parentId") ?? "") || null,
++          });
++        }}
++      >
++        <ParentSelect
++          label={t("locationParent")}
++          name="parentId"
++          none={t("locationRoot")}
++          records={all}
++          value={location.parentId ?? ""}
++          exclude={location.id}
++        />
++        <button type="submit">{t("moveLocation")}</button>
++      </form>
++    </details>
++  );
++}
+
+diff --git a/apps/web/src/components/collections/collections-manager.tsx b/apps/web/src/components/collections/collections-manager.tsx
+--- /dev/null
++++ b/apps/web/src/components/collections/collections-manager.tsx
+@@ -0,0 +1,141 @@
++"use client";
++
++import type { Collection, Visibility } from "@sammlerraum/contracts/collections";
++import Link from "next/link";
++import { useTranslations } from "next-intl";
++import { useEffect, useState, type FormEvent } from "react";
++
++type ApiErrorBody = { error?: { requestId?: string } };
++type Translation = (key: string) => string;
++
++export function CollectionsManager({ locale }: { locale: "de" | "en" }) {
++  const t = useTranslations("Collections");
++  const common = useTranslations("Management");
++  const [collections, setCollections] = useState<Collection[]>([]);
++  const [loading, setLoading] = useState(true);
++  const [error, setError] = useState("");
++
++  async function load() {
++    setLoading(true);
++    const response = await fetch("/api/v1/collections", { cache: "no-store" });
++    if (response.ok) {
++      const body = (await response.json()) as { collections: Collection[] };
++      setCollections(body.collections);
++      setError("");
++    } else {
++      setError(await errorMessage(response, common("error")));
++    }
++    setLoading(false);
++  }
++
++  useEffect(() => {
++    void load();
++  }, []);
++
++  async function create(event: FormEvent<HTMLFormElement>) {
++    event.preventDefault();
++    setError("");
++    const form = event.currentTarget;
++    const data = new FormData(form);
++    const response = await fetch("/api/v1/collections", {
++      method: "POST",
++      headers: { "content-type": "application/json" },
++      body: JSON.stringify({
++        name: data.get("name"),
++        visibility: data.get("visibility") as Visibility,
++      }),
++    });
++    if (!response.ok) return setError(await errorMessage(response, common("error")));
++    form.reset();
++    await load();
++  }
++
++  return (
++    <section className="management-shell">
++      <nav className="management-nav" aria-label={common("navigation")}>
++        <Link aria-current="page" href={`/${locale}/collections`}>
++          {t("title")}
++        </Link>
++        <Link href={`/${locale}/account/profile`}>{common("account")}</Link>
++      </nav>
++      <header className="management-heading">
++        <p className="eyebrow">{t("eyebrow")}</p>
++        <h1>{t("title")}</h1>
++        <p className="form-intro">{t("intro")}</p>
++      </header>
++
++      <div className="management-grid">
++        <section className="management-card" aria-labelledby="new-collection-title">
++          <h2 id="new-collection-title">{t("newTitle")}</h2>
++          <form className="form-stack" onSubmit={create}>
++            <label>
++              {t("name")}
++              <input name="name" maxLength={120} required />
++            </label>
++            <VisibilitySelect label={common("visibility")} name="visibility" t={common} />
++            <button type="submit">{t("create")}</button>
++          </form>
++        </section>
++
++        <section className="management-card wide" aria-labelledby="collection-list-title">
++          <h2 id="collection-list-title">{t("yourCollections")}</h2>
++          {loading ? (
++            <p role="status">{common("loading")}</p>
++          ) : collections.length === 0 ? (
++            <p className="empty-state">{t("empty")}</p>
++          ) : (
++            <ul className="collection-list">
++              {collections.map((collection) => (
++                <li key={collection.id}>
++                  <Link href={`/${locale}/collections/${collection.id}`}>
++                    <strong>{collection.name}</strong>
++                    <span>{common(`visibility${collection.visibility}`)}</span>
++                  </Link>
++                </li>
++              ))}
++            </ul>
++          )}
++        </section>
++      </div>
++      {error && (
++        <p className="error" role="alert">
++          {error}
++        </p>
++      )}
++    </section>
++  );
++}
++
++export function VisibilitySelect({
++  label,
++  name,
++  value = "PRIVATE",
++  t,
++}: {
++  label: string;
++  name: string;
++  value?: Visibility;
++  t: Translation;
++}) {
++  return (
++    <label>
++      {label}
++      <select name={name} defaultValue={value}>
++        <option value="PRIVATE">{t("visibilityPRIVATE")}</option>
++        <option value="UNLISTED">{t("visibilityUNLISTED")}</option>
++        <option value="PUBLIC">{t("visibilityPUBLIC")}</option>
++      </select>
++    </label>
++  );
++}
++
++export async function errorMessage(response: Response, fallback: string): Promise<string> {
++  let requestId = response.headers.get("x-request-id") ?? "";
++  try {
++    const body = (await response.json()) as ApiErrorBody;
++    requestId ||= body.error?.requestId ?? "";
++  } catch {
++    // The status and server-provided request id are enough for a safe client error.
++  }
++  return requestId ? `${fallback} (${requestId})` : fallback;
++}
+
+diff --git a/apps/web/src/components/items/code-scanner.tsx b/apps/web/src/components/items/code-scanner.tsx
+--- /dev/null
++++ b/apps/web/src/components/items/code-scanner.tsx
+@@ -0,0 +1,140 @@
++"use client";
++
++import { useEffect, useRef, useState } from "react";
++
++type BarcodeResult = { rawValue: string };
++type BarcodeDetectorConstructor = new (options?: { formats?: string[] }) => {
++  detect(source: HTMLVideoElement): Promise<BarcodeResult[]>;
++};
++
++export function CodeScanner({
++  label,
++  value,
++  onChange,
++  copy,
++  disabled = false,
++}: {
++  label: string;
++  value: string;
++  onChange(value: string): void;
++  copy: {
++    start: string;
++    stop: string;
++    unavailable: string;
++    proposal: string;
++    confirm: string;
++    cameraError: string;
++  };
++  disabled?: boolean;
++}) {
++  const video = useRef<HTMLVideoElement>(null);
++  const stream = useRef<MediaStream | undefined>(undefined);
++  const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
++  const [scanning, setScanning] = useState(false);
++  const [proposal, setProposal] = useState("");
++  const [error, setError] = useState("");
++  const [supported, setSupported] = useState(false);
++  const Detector = (
++    globalThis as typeof globalThis & {
++      BarcodeDetector?: BarcodeDetectorConstructor;
++    }
++  ).BarcodeDetector;
++
++  function stop() {
++    if (timer.current) clearTimeout(timer.current);
++    stream.current?.getTracks().forEach((track) => track.stop());
++    stream.current = undefined;
++    if (video.current) video.current.srcObject = null;
++    setScanning(false);
++  }
++
++  useEffect(() => {
++    setSupported(
++      Boolean(Detector && typeof navigator !== "undefined" && navigator.mediaDevices?.getUserMedia),
++    );
++    return stop;
++  }, []);
++
++  async function start() {
++    if (!Detector || !video.current) return;
++    setError("");
++    try {
++      stream.current = await navigator.mediaDevices.getUserMedia({
++        video: { facingMode: { ideal: "environment" } },
++        audio: false,
++      });
++      video.current.srcObject = stream.current;
++      await video.current.play();
++      setScanning(true);
++      const detector = new Detector({ formats: ["ean_13", "ean_8", "upc_a", "upc_e"] });
++      const scan = async () => {
++        if (!video.current || !stream.current) return;
++        try {
++          const result = await detector.detect(video.current);
++          if (result[0]?.rawValue) {
++            setProposal(result[0].rawValue);
++            stop();
++            return;
++          }
++        } catch {
++          setError(copy.cameraError);
++          stop();
++          return;
++        }
++        timer.current = setTimeout(scan, 400);
++      };
++      await scan();
++    } catch {
++      setError(copy.cameraError);
++      stop();
++    }
++  }
++
++  return (
++    <div className="scanner">
++      <label>
++        {label}
++        <input
++          value={value}
++          onChange={(event) => onChange(event.target.value)}
++          maxLength={512}
++          disabled={disabled}
++        />
++      </label>
++      {supported ? (
++        <button
++          className="secondary-button"
++          type="button"
++          disabled={disabled}
++          onClick={scanning ? stop : start}
++        >
++          {scanning ? copy.stop : copy.start}
++        </button>
++      ) : (
++        <p className="field-help">{copy.unavailable}</p>
++      )}
++      <video ref={video} className={scanning ? "scanner-video" : "scanner-video hidden"} muted />
++      {proposal && (
++        <div className="scanner-proposal" role="status">
++          <p>
++            {copy.proposal}: <strong>{proposal}</strong>
++          </p>
++          <button
++            type="button"
++            onClick={() => {
++              onChange(proposal);
++              setProposal("");
++            }}
++          >
++            {copy.confirm}
++          </button>
++        </div>
++      )}
++      {error && (
++        <p className="error" role="alert">
++          {error}
++        </p>
++      )}
++    </div>
++  );
++}
+
+diff --git a/apps/web/src/components/items/item-form-values.test.ts b/apps/web/src/components/items/item-form-values.test.ts
+--- /dev/null
++++ b/apps/web/src/components/items/item-form-values.test.ts
+@@ -0,0 +1,17 @@
++import { describe, expect, it } from "vitest";
++
++import { majorUnits, minorUnits } from "./item-form-values";
++
++describe("item form money conversion", () => {
++  it.each([
++    [Number.MAX_SAFE_INTEGER - 1, "90071992547409.90"],
++    [Number.MAX_SAFE_INTEGER, "90071992547409.91"],
++  ])("round-trips safe minor-unit boundary %s without changing a cent", (minor, major) => {
++    expect(majorUnits(minor)).toBe(major);
++    expect(minorUnits(major)).toBe(minor);
++  });
++
++  it("rejects the first amount beyond the safe minor-unit contract", () => {
++    expect(() => minorUnits("90071992547409.92")).toThrow("money");
++  });
++});
+
+diff --git a/apps/web/src/components/items/item-form-values.ts b/apps/web/src/components/items/item-form-values.ts
+--- /dev/null
++++ b/apps/web/src/components/items/item-form-values.ts
+@@ -0,0 +1,20 @@
++export function minorUnits(input: string): number | null {
++  if (input.trim() === "") return null;
++  const normalized = input.trim().replace(",", ".");
++  const match = /^(\d+)(?:\.(\d{1,2}))?$/.exec(normalized);
++  if (!match) throw new Error("money");
++  const whole = match[1];
++  if (whole === undefined) throw new Error("money");
++  const fraction = (match[2] ?? "").padEnd(2, "0");
++  const amount = BigInt(whole) * 100n + BigInt(fraction || "0");
++  if (amount > BigInt(Number.MAX_SAFE_INTEGER)) throw new Error("money");
++  return Number(amount);
++}
++
++export function majorUnits(amount: number | null): string {
++  if (amount === null) return "";
++  if (!Number.isSafeInteger(amount) || amount < 0) throw new Error("money");
++  const whole = Math.floor(amount / 100);
++  const cents = amount % 100;
++  return `${whole}.${String(cents).padStart(2, "0")}`;
++}
+
+diff --git a/apps/web/src/components/items/item-form.tsx b/apps/web/src/components/items/item-form.tsx
+--- /dev/null
++++ b/apps/web/src/components/items/item-form.tsx
+@@ -0,0 +1,799 @@
++"use client";
++
++import type { Collection, CollectionNode } from "@sammlerraum/contracts/collections";
++import type {
++  CanonicalCustomFieldValue,
++  CustomFieldDefinition,
++  CustomFieldType,
++} from "@sammlerraum/contracts/custom-fields";
++import type { AcquisitionType, CollectibleItem, TradeStatus } from "@sammlerraum/contracts/items";
++import type { StorageLocation } from "@sammlerraum/contracts/locations";
++import Link from "next/link";
++import { useRouter } from "next/navigation";
++import { useTranslations } from "next-intl";
++import { useEffect, useState, type FormEvent, type ReactNode } from "react";
++
++import { errorMessage } from "../collections/collections-manager";
++import { CodeScanner } from "./code-scanner";
++import { majorUnits, minorUnits } from "./item-form-values";
++
++type Identifier = { type: string; value: string };
++type ItemMetadata = {
++  identifiers: Array<Identifier & { id: string; itemId: string; normalizedValue: string }>;
++  tags: string[];
++  customFieldValues: Array<{
++    fieldDefinitionId: string;
++    type: CustomFieldType;
++    value: CanonicalCustomFieldValue;
++  }>;
++  location: StorageLocation | null;
++};
++type ItemResponse = { item: CollectibleItem; metadata?: ItemMetadata };
++type Translation = (key: string) => string;
++
++const acquisitionTypes: AcquisitionType[] = [
++  "PURCHASE",
++  "GIFT",
++  "TRADE",
++  "INHERITANCE",
++  "FOUND",
++  "OTHER",
++];
++const tradeStatuses: TradeStatus[] = ["NOT_FOR_TRADE", "OPEN_TO_TRADE", "FOR_SALE", "RESERVED"];
++const identifierTypes = [
++  "EAN",
++  "UPC",
++  "ISBN",
++  "SERIAL",
++  "CERTIFICATE",
++  "CATALOG",
++  "MANUFACTURER",
++  "INTERNAL",
++  "OTHER",
++];
++
++async function read<T>(url: string): Promise<T> {
++  const response = await fetch(url, { cache: "no-store" });
++  if (!response.ok) throw response;
++  return response.json() as Promise<T>;
++}
++
++export function ItemForm({
++  locale,
++  itemId,
++  initialCollectionId = "",
++}: {
++  locale: "de" | "en";
++  itemId?: string;
++  initialCollectionId?: string;
++}) {
++  const t = useTranslations("ItemForm");
++  const common = useTranslations("Management");
++  const router = useRouter();
++  const [collections, setCollections] = useState<Collection[]>([]);
++  const [collectionId, setCollectionId] = useState(initialCollectionId);
++  const [nodes, setNodes] = useState<CollectionNode[]>([]);
++  const [fields, setFields] = useState<CustomFieldDefinition[]>([]);
++  const [locations, setLocations] = useState<StorageLocation[]>([]);
++  const [item, setItem] = useState<CollectibleItem>();
++  const [metadata, setMetadata] = useState<ItemMetadata>();
++  const [identifiers, setIdentifiers] = useState<Identifier[]>([{ type: "EAN", value: "" }]);
++  const [workingItemId, setWorkingItemId] = useState(itemId ?? "");
++  const [initialLocationId, setInitialLocationId] = useState<string | null>(null);
++  const [loading, setLoading] = useState(true);
++  const [saving, setSaving] = useState(false);
++  const [error, setError] = useState("");
++  const [status, setStatus] = useState("");
++
++  useEffect(() => {
++    let cancelled = false;
++    void (async () => {
++      try {
++        const [collectionBody, locationBody, itemBody] = await Promise.all([
++          read<{ collections: Collection[] }>("/api/v1/collections"),
++          read<{ locations: StorageLocation[] }>("/api/v1/locations"),
++          itemId ? read<ItemResponse>(`/api/v1/items/${itemId}`) : Promise.resolve(undefined),
++        ]);
++        if (cancelled) return;
++        setCollections(collectionBody.collections);
++        setLocations(locationBody.locations);
++        if (itemBody) {
++          setItem(itemBody.item);
++          setMetadata(itemBody.metadata);
++          setCollectionId(itemBody.item.collectionId);
++          setWorkingItemId(itemBody.item.id);
++          const loadedIdentifiers = itemBody.metadata?.identifiers.map(({ type, value }) => ({
++            type,
++            value,
++          }));
++          setIdentifiers(
++            loadedIdentifiers?.length ? loadedIdentifiers : [{ type: "EAN", value: "" }],
++          );
++          const locationId = itemBody.metadata?.location?.id ?? null;
++          setInitialLocationId(locationId);
++        } else if (!initialCollectionId && collectionBody.collections[0]) {
++          setCollectionId(collectionBody.collections[0].id);
++        }
++      } catch (problem) {
++        setError(
++          problem instanceof Response
++            ? await errorMessage(problem, common("error"))
++            : common("error"),
++        );
++      } finally {
++        if (!cancelled) setLoading(false);
++      }
++    })();
++    return () => {
++      cancelled = true;
++    };
++  }, [itemId, initialCollectionId, common]);
++
++  useEffect(() => {
++    if (!collectionId) {
++      setNodes([]);
++      setFields([]);
++      return;
++    }
++    let cancelled = false;
++    void Promise.all([
++      read<{ nodes: CollectionNode[] }>(`/api/v1/collections/${collectionId}/nodes`),
++      read<{ customFields: CustomFieldDefinition[] }>(
++        `/api/v1/collections/${collectionId}/custom-fields`,
++      ),
++    ])
++      .then(([nodeBody, fieldBody]) => {
++        if (!cancelled) {
++          setNodes(nodeBody.nodes);
++          setFields(fieldBody.customFields);
++        }
++      })
++      .catch(async (problem) => {
++        if (!cancelled) {
++          setError(
++            problem instanceof Response
++              ? await errorMessage(problem, common("error"))
++              : common("error"),
++          );
++        }
++      });
++    return () => {
++      cancelled = true;
++    };
++  }, [collectionId, common]);
++
++  const inactive = Boolean(item?.archivedAt || item?.disposedAt);
++  const valueByField = new Map(
++    metadata?.customFieldValues.map((record) => [record.fieldDefinitionId, record.value]) ?? [],
++  );
++
++  async function save(event: FormEvent<HTMLFormElement>) {
++    event.preventDefault();
++    if (!collectionId || inactive) return;
++    setSaving(true);
++    setError("");
++    setStatus("");
++    const form = new FormData(event.currentTarget);
++    let purchaseAmountMinor: number | null;
++    try {
++      purchaseAmountMinor = minorUnits(String(form.get("purchaseAmount") ?? ""));
++    } catch {
++      setError(t("moneyInvalid"));
++      setSaving(false);
++      return;
++    }
++    const core = {
++      nodeId: String(form.get("nodeId") ?? "") || null,
++      title: form.get("title"),
++      publicDescription: String(form.get("publicDescription") ?? "").trim() || null,
++      privateNotes: String(form.get("privateNotes") ?? "").trim() || null,
++      quantity: Number(form.get("quantity")),
++      acquisitionType: form.get("acquisitionType"),
++      acquisitionDate: String(form.get("acquisitionDate") ?? "") || null,
++      purchaseAmountMinor,
++      purchaseCurrency: purchaseAmountMinor === null ? null : form.get("purchaseCurrency"),
++      visibility: form.get("visibility"),
++      tradeStatus: form.get("tradeStatus"),
++    };
++    let targetId = workingItemId;
++    let createdNow = false;
++    const coreResponse = await fetch(targetId ? `/api/v1/items/${targetId}` : "/api/v1/items", {
++      method: targetId ? "PATCH" : "POST",
++      headers: { "content-type": "application/json" },
++      body: JSON.stringify(targetId ? core : { ...core, collectionId }),
++    });
++    if (!coreResponse.ok) {
++      setError(await errorMessage(coreResponse, common("error")));
++      setSaving(false);
++      return;
++    }
++    const coreBody = (await coreResponse.json()) as { item: CollectibleItem };
++    setItem(coreBody.item);
++    if (!targetId) {
++      targetId = coreBody.item.id;
++      createdNow = true;
++      setWorkingItemId(targetId);
++      setStatus(t("coreCreated"));
++    }
++
++    const cleanIdentifiers = identifiers
++      .map((identifier) => ({ type: identifier.type, value: identifier.value.trim() }))
++      .filter((identifier) => identifier.value);
++    const tags = String(form.get("tags") ?? "")
++      .split(",")
++      .map((tag) => tag.trim())
++      .filter(Boolean);
++    const requests: Array<{ kind: string; response: Promise<Response> }> = [
++      {
++        kind: "identifiers",
++        response: put(`/api/v1/items/${targetId}/identifiers`, {
++          identifiers: cleanIdentifiers,
++        }),
++      },
++      { kind: "tags", response: put(`/api/v1/items/${targetId}/tags`, { tags }) },
++    ];
++
++    try {
++      for (const field of fields) {
++        const enabled = form.has(`field-enabled-${field.id}`);
++        const value = enabled ? customValue(field, form) : null;
++        requests.push({
++          kind: `field-${field.id}`,
++          response: put(`/api/v1/items/${targetId}/custom-fields/${field.id}`, { value }),
++        });
++      }
++    } catch {
++      setError(t("fieldInvalid"));
++      setSaving(false);
++      return;
++    }
++
++    const selectedLocationId = String(form.get("locationId") ?? "") || null;
++    if (selectedLocationId !== initialLocationId) {
++      requests.push({
++        kind: "location",
++        response: put(`/api/v1/items/${targetId}/location`, {
++          locationId: selectedLocationId,
++        }),
++      });
++    }
++    const responses = await Promise.all(
++      requests.map(async (request) => ({ kind: request.kind, response: await request.response })),
++    );
++    const locationResponse = responses.find((entry) => entry.kind === "location")?.response;
++    if (locationResponse?.ok) setInitialLocationId(selectedLocationId);
++    const failed = responses.find((entry) => !entry.response.ok);
++    if (failed) {
++      setError(
++        await errorMessage(
++          failed.response,
++          createdNow ? t("partialSaveError") : t("metadataSaveError"),
++        ),
++      );
++      setStatus(t("retryWithoutDuplicate"));
++      setSaving(false);
++      return;
++    }
++
++    setSaving(false);
++    router.push(`/${locale}/items/${targetId}`);
++    router.refresh();
++  }
++
++  async function archive() {
++    if (!workingItemId || inactive || !window.confirm(t("archiveConfirm"))) return;
++    const response = await fetch(`/api/v1/items/${workingItemId}/archive`, { method: "POST" });
++    if (!response.ok) return setError(await errorMessage(response, common("error")));
++    const body = (await response.json()) as { item: CollectibleItem };
++    setItem(body.item);
++    setStatus(t("archived"));
++  }
++
++  async function remove() {
++    if (!workingItemId || !window.confirm(t("deleteConfirm"))) return;
++    const response = await fetch(`/api/v1/items/${workingItemId}`, { method: "DELETE" });
++    if (!response.ok) return setError(await errorMessage(response, common("error")));
++    router.push(`/${locale}/collections/${collectionId}`);
++    router.refresh();
++  }
++
++  if (loading) {
++    return (
++      <section className="management-shell">
++        <p role="status">{common("loading")}</p>
++      </section>
++    );
++  }
++
++  return (
++    <section className="management-shell">
++      <nav className="management-nav" aria-label={common("navigation")}>
++        <Link
++          href={collectionId ? `/${locale}/collections/${collectionId}` : `/${locale}/collections`}
++        >
++          {t("back")}
++        </Link>
++      </nav>
++      <header className="management-heading">
++        <p className="eyebrow">{t(item ? "editEyebrow" : "newEyebrow")}</p>
++        <h1>{item?.title ?? t("newTitle")}</h1>
++        <p className="form-intro">{t("intro")}</p>
++      </header>
++
++      {item && metadata && <ItemSummary item={item} metadata={metadata} fields={fields} t={t} />}
++      {inactive && (
++        <p className="notice">{t(item?.disposedAt ? "disposedNotice" : "archivedNotice")}</p>
++      )}
++      {status && (
++        <p className="success" role="status">
++          {status}
++        </p>
++      )}
++      {error && (
++        <p className="error" role="alert">
++          {error}
++        </p>
++      )}
++
++      {collections.length === 0 ? (
++        <div className="management-card">
++          <p>{t("noCollections")}</p>
++          <Link href={`/${locale}/collections`}>{t("createCollection")}</Link>
++        </div>
++      ) : (
++        <form className="item-form" onSubmit={save}>
++          <fieldset disabled={inactive || saving}>
++            <legend>{t("basic")}</legend>
++            {!item && (
++              <label>
++                {t("collection")}
++                <select
++                  name="collectionId"
++                  value={collectionId}
++                  onChange={(event) => setCollectionId(event.target.value)}
++                  required
++                >
++                  {collections.map((collection) => (
++                    <option key={collection.id} value={collection.id}>
++                      {collection.name}
++                    </option>
++                  ))}
++                </select>
++              </label>
++            )}
++            <label>
++              {t("node")}
++              <select name="nodeId" defaultValue={item?.nodeId ?? ""}>
++                <option value="">{t("collectionRoot")}</option>
++                {nodes.map((node) => (
++                  <option key={node.id} value={node.id}>
++                    {node.name}
++                  </option>
++                ))}
++              </select>
++            </label>
++            <label>
++              {t("title")}
++              <input name="title" defaultValue={item?.title ?? ""} maxLength={200} required />
++            </label>
++            <label>
++              {t("publicDescription")}
++              <textarea
++                name="publicDescription"
++                defaultValue={item?.publicDescription ?? ""}
++                maxLength={10000}
++              />
++              <span className="field-help">{t("publicDescriptionHelp")}</span>
++            </label>
++            <label>
++              {t("privateNotes")}
++              <textarea
++                name="privateNotes"
++                defaultValue={item?.privateNotes ?? ""}
++                maxLength={10000}
++              />
++              <span className="field-help">{t("privateNotesHelp")}</span>
++            </label>
++            <div className="form-row">
++              <label>
++                {t("quantity")}
++                <input
++                  name="quantity"
++                  type="number"
++                  min="1"
++                  step="1"
++                  defaultValue={item?.quantity ?? 1}
++                  required
++                />
++              </label>
++              <label>
++                {common("visibility")}
++                <select name="visibility" defaultValue={item?.visibility ?? "PRIVATE"}>
++                  <option value="PRIVATE">{common("visibilityPRIVATE")}</option>
++                  <option value="UNLISTED">{common("visibilityUNLISTED")}</option>
++                  <option value="PUBLIC">{common("visibilityPUBLIC")}</option>
++                </select>
++              </label>
++            </div>
++          </fieldset>
++
++          <details open>
++            <summary>{t("acquisition")}</summary>
++            <fieldset disabled={inactive || saving} className="details-fields">
++              <label>
++                {t("acquisitionType")}
++                <select name="acquisitionType" defaultValue={item?.acquisitionType ?? "OTHER"}>
++                  {acquisitionTypes.map((type) => (
++                    <option key={type} value={type}>
++                      {t(`acquisitionType${type}`)}
++                    </option>
++                  ))}
++                </select>
++              </label>
++              <label>
++                {t("acquisitionDate")}
++                <input
++                  name="acquisitionDate"
++                  type="date"
++                  defaultValue={item?.acquisitionDate ?? ""}
++                />
++              </label>
++              <div className="form-row">
++                <label>
++                  {t("unitPrice")}
++                  <input
++                    name="purchaseAmount"
++                    inputMode="decimal"
++                    defaultValue={majorUnits(item?.purchaseAmountMinor ?? null)}
++                    placeholder="0.00"
++                  />
++                </label>
++                <label>
++                  {t("currency")}
++                  <select name="purchaseCurrency" defaultValue={item?.purchaseCurrency ?? "EUR"}>
++                    <option value="EUR">EUR</option>
++                    <option value="USD">USD</option>
++                    <option value="CHF">CHF</option>
++                    <option value="GBP">GBP</option>
++                  </select>
++                </label>
++              </div>
++              <label>
++                {t("tradeStatus")}
++                <select name="tradeStatus" defaultValue={item?.tradeStatus ?? "NOT_FOR_TRADE"}>
++                  {tradeStatuses.map((tradeStatus) => (
++                    <option key={tradeStatus} value={tradeStatus}>
++                      {t(`tradeStatus${tradeStatus}`)}
++                    </option>
++                  ))}
++                </select>
++              </label>
++            </fieldset>
++          </details>
++
++          <details open>
++            <summary>{t("organization")}</summary>
++            <fieldset disabled={inactive || saving} className="details-fields">
++              <label>
++                {t("tags")}
++                <input name="tags" defaultValue={metadata?.tags.join(", ") ?? ""} />
++                <span className="field-help">{t("tagsHelp")}</span>
++              </label>
++              <label>
++                {t("location")}
++                <select name="locationId" defaultValue={metadata?.location?.id ?? ""}>
++                  <option value="">{t("noLocation")}</option>
++                  {locations.map((location) => (
++                    <option key={location.id} value={location.id}>
++                      {location.name}
++                    </option>
++                  ))}
++                </select>
++              </label>
++            </fieldset>
++          </details>
++
++          <details>
++            <summary>{t("identifiers")}</summary>
++            <fieldset disabled={inactive || saving} className="details-fields">
++              {identifiers.map((identifier, index) => (
++                <div className="identifier-row" key={index}>
++                  <label>
++                    {t("identifierType")}
++                    <select
++                      value={identifier.type}
++                      onChange={(event) =>
++                        setIdentifiers((current) =>
++                          current.map((entry, entryIndex) =>
++                            entryIndex === index ? { ...entry, type: event.target.value } : entry,
++                          ),
++                        )
++                      }
++                    >
++                      {identifierTypes.map((type) => (
++                        <option key={type} value={type}>
++                          {t(`identifierType${type}`)}
++                        </option>
++                      ))}
++                    </select>
++                  </label>
++                  <CodeScanner
++                    label={t("identifierValue")}
++                    value={identifier.value}
++                    disabled={inactive || saving}
++                    onChange={(value) =>
++                      setIdentifiers((current) =>
++                        current.map((entry, entryIndex) =>
++                          entryIndex === index ? { ...entry, value } : entry,
++                        ),
++                      )
++                    }
++                    copy={{
++                      start: t("scanStart"),
++                      stop: t("scanStop"),
++                      unavailable: t("scanUnavailable"),
++                      proposal: t("scanProposal"),
++                      confirm: t("scanConfirm"),
++                      cameraError: t("scanError"),
++                    }}
++                  />
++                  {identifiers.length > 1 && (
++                    <button
++                      className="text-button"
++                      type="button"
++                      onClick={() =>
++                        setIdentifiers((current) =>
++                          current.filter((_, entryIndex) => entryIndex !== index),
++                        )
++                      }
++                    >
++                      {t("removeIdentifier")}
++                    </button>
++                  )}
++                </div>
++              ))}
++              <button
++                className="secondary-button"
++                type="button"
++                onClick={() =>
++                  setIdentifiers((current) => [...current, { type: "OTHER", value: "" }])
++                }
++              >
++                {t("addIdentifier")}
++              </button>
++            </fieldset>
++          </details>
++
++          {fields.length > 0 && (
++            <details open>
++              <summary>{t("customFields")}</summary>
++              <fieldset disabled={inactive || saving} className="details-fields custom-fields">
++                {fields.map((field) => (
++                  <CustomFieldControl
++                    key={field.id}
++                    field={field}
++                    value={valueByField.get(field.id)}
++                    t={t}
++                  />
++                ))}
++              </fieldset>
++            </details>
++          )}
++
++          <div className="form-actions">
++            <button type="submit" disabled={inactive || saving}>
++              {saving ? t("saving") : t("save")}
++            </button>
++            {item && (
++              <>
++                <button
++                  className="secondary-button"
++                  type="button"
++                  disabled={inactive}
++                  onClick={archive}
++                >
++                  {t("archive")}
++                </button>
++                <button className="danger-button" type="button" onClick={remove}>
++                  {t("delete")}
++                </button>
++              </>
++            )}
++          </div>
++        </form>
++      )}
++    </section>
++  );
++}
++
++async function put(url: string, body: unknown): Promise<Response> {
++  return fetch(url, {
++    method: "PUT",
++    headers: { "content-type": "application/json" },
++    body: JSON.stringify(body),
++  });
++}
++
++function customValue(field: CustomFieldDefinition, form: FormData): CanonicalCustomFieldValue {
++  const name = `field-${field.id}`;
++  switch (field.type) {
++    case "SHORT_TEXT":
++    case "LONG_TEXT":
++    case "DATE":
++    case "SINGLE_SELECT":
++    case "URL":
++      return String(form.get(name) ?? "");
++    case "INTEGER":
++      return Number.parseInt(String(form.get(name)), 10);
++    case "DECIMAL":
++      return String(form.get(name) ?? "").replace(",", ".");
++    case "BOOLEAN":
++      return form.has(name);
++    case "MULTI_SELECT":
++      return form.getAll(name).map(String);
++    case "MONEY": {
++      const amountMinor = minorUnits(String(form.get(`${name}-amount`) ?? ""));
++      if (amountMinor === null) throw new Error("money");
++      return { amountMinor, currency: String(form.get(`${name}-currency`) ?? "") };
++    }
++  }
++}
++
++function CustomFieldControl({
++  field,
++  value,
++  t,
++}: {
++  field: CustomFieldDefinition;
++  value: CanonicalCustomFieldValue | undefined;
++  t: Translation;
++}) {
++  const name = `field-${field.id}`;
++  const enabled = value !== undefined;
++  const wrapper = (control: ReactNode) => (
++    <div className="custom-field">
++      <label className="checkbox-label">
++        <input type="checkbox" name={`field-enabled-${field.id}`} defaultChecked={enabled} />
++        {t("setCustomField")}
++      </label>
++      {control}
++    </div>
++  );
++  if (field.type === "LONG_TEXT") {
++    return wrapper(
++      <label>
++        {field.name}
++        <textarea name={name} defaultValue={typeof value === "string" ? value : ""} />
++      </label>,
++    );
++  }
++  if (field.type === "BOOLEAN") {
++    return wrapper(
++      <label className="checkbox-label">
++        <input name={name} type="checkbox" defaultChecked={value === true} />
++        {field.name}
++      </label>,
++    );
++  }
++  if (field.type === "SINGLE_SELECT") {
++    return wrapper(
++      <label>
++        {field.name}
++        <select name={name} defaultValue={typeof value === "string" ? value : ""}>
++          <option value="">{t("chooseOption")}</option>
++          {field.options.map((option) => (
++            <option key={option} value={option}>
++              {option}
++            </option>
++          ))}
++        </select>
++      </label>,
++    );
++  }
++  if (field.type === "MULTI_SELECT") {
++    const selected = Array.isArray(value) ? value : [];
++    return wrapper(
++      <fieldset>
++        <legend>{field.name}</legend>
++        {field.options.map((option) => (
++          <label className="checkbox-label" key={option}>
++            <input
++              name={name}
++              type="checkbox"
++              value={option}
++              defaultChecked={selected.includes(option)}
++            />
++            {option}
++          </label>
++        ))}
++      </fieldset>,
++    );
++  }
++  if (field.type === "MONEY") {
++    const money =
++      typeof value === "object" && value !== null && !Array.isArray(value)
++        ? (value as { amountMinor: number; currency: string })
++        : undefined;
++    return wrapper(
++      <div className="form-row">
++        <label>
++          {field.name}
++          <input
++            name={`${name}-amount`}
++            inputMode="decimal"
++            defaultValue={money ? majorUnits(money.amountMinor) : ""}
++          />
++        </label>
++        <label>
++          {t("currency")}
++          <select name={`${name}-currency`} defaultValue={money?.currency ?? "EUR"}>
++            <option value="EUR">EUR</option>
++            <option value="USD">USD</option>
++            <option value="CHF">CHF</option>
++            <option value="GBP">GBP</option>
++          </select>
++        </label>
++      </div>,
++    );
++  }
++  const inputType =
++    field.type === "DATE"
++      ? "date"
++      : field.type === "URL"
++        ? "url"
++        : field.type === "INTEGER"
++          ? "number"
++          : "text";
++  return wrapper(
++    <label>
++      {field.name}
++      <input
++        aria-label={field.name}
++        name={name}
++        type={inputType}
++        step={field.type === "INTEGER" ? "1" : undefined}
++        inputMode={field.type === "DECIMAL" ? "decimal" : undefined}
++        defaultValue={typeof value === "number" || typeof value === "string" ? String(value) : ""}
++      />
++    </label>,
++  );
++}
++
++function ItemSummary({
++  metadata,
++  fields,
++  t,
++}: {
++  item: CollectibleItem;
++  metadata: ItemMetadata;
++  fields: CustomFieldDefinition[];
++  t: Translation;
++}) {
++  return (
++    <section className="management-card item-summary" aria-label={t("savedDetails")}>
++      {metadata.customFieldValues.map((record) => {
++        const field = fields.find((candidate) => candidate.id === record.fieldDefinitionId);
++        return field ? (
++          <p key={record.fieldDefinitionId}>
++            {field.name}: {displayValue(record.value)}
++          </p>
++        ) : null;
++      })}
++      {metadata.location && <p>{metadata.location.name}</p>}
++      {metadata.identifiers.length > 0 && (
++        <ul className="plain-list">
++          {metadata.identifiers.map((identifier) => (
++            <li key={identifier.id}>{identifier.value}</li>
++          ))}
++        </ul>
++      )}
++    </section>
++  );
++}
++
++function displayValue(value: CanonicalCustomFieldValue): string {
++  if (Array.isArray(value)) return value.join(", ");
++  if (typeof value === "object") return `${majorUnits(value.amountMinor)} ${value.currency}`;
++  if (typeof value === "boolean") return value ? "✓" : "—";
++  return String(value);
++}
