@@ -14,6 +14,7 @@
     "@better-auth/prisma-adapter": "1.7.5",
     "@better-auth/utils": "0.4.2",
     "@sammlerraum/config": "workspace:*",
+    "@sammlerraum/contracts": "workspace:*",
     "@sammlerraum/db": "workspace:*",
     "@sammlerraum/domain": "workspace:*",
     "better-auth": "1.7.5",
@@ -21,7 +22,8 @@
     "next-intl": "4.14.5",
     "nodemailer": "10.0.10",
     "react": "19.3.0",
-    "react-dom": "19.3.0"
+    "react-dom": "19.3.0",
+    "zod": "4.6.5"
   },
   "devDependencies": {
     "@types/nodemailer": "8.0.2",

@@ -18,7 +18,10 @@ describe("account recovery-method route", () => {
     const response = await handlers.DELETE(
       new Request("https://example.test/api/v1/account/recovery-methods", {
         method: "DELETE",
-        headers: { origin: "https://example.test", "content-type": "application/json" },
+        headers: {
+          origin: "https://example.test",
+          "content-type": "application/json",
+        },
         body: JSON.stringify({ methodId: "password", userId: "attacker-chosen-user" }),
       }),
     );
@@ -42,12 +45,25 @@ describe("account recovery-method route", () => {
     const response = await handlers.DELETE(
       new Request("https://example.test/api/v1/account/recovery-methods", {
         method: "DELETE",
-        headers: { origin: "https://example.test", "content-type": "application/json" },
+        headers: {
+          origin: "https://example.test",
+          "content-type": "application/json",
+          "x-request-id": "stale-request",
+        },
         body: JSON.stringify({ methodId: "password" }),
       }),
     );
 
     expect(response.status).toBe(403);
+    expect(response.headers.get("cache-control")).toBe("no-store");
+    expect(response.headers.get("x-request-id")).toBe("stale-request");
+    expect(await response.json()).toEqual({
+      error: {
+        code: "SESSION_NOT_FRESH",
+        message: "Recent authentication required",
+        requestId: "stale-request",
+      },
+    });
     expect(removeLoginMethod).not.toHaveBeenCalled();
   });
 });
