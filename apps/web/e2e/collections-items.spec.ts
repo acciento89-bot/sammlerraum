@@ -182,7 +182,6 @@ async function loginTestCollector(
   await expect(page).toHaveURL(new RegExp(`/${locale}/account/profile$`));
 }
 
-
 async function writeApi<T>(
   page: Page,
   method: "POST" | "PUT",
@@ -434,13 +433,10 @@ test.describe("localized collection and item management", () => {
         200,
       );
 
-      await page.route(
-        "**/api/v1/collections/" + collection.id + "/nodes",
-        async (route) => {
-          await new Promise((resolve) => setTimeout(resolve, 300));
-          await route.continue();
-        },
-      );
+      await page.route("**/api/v1/collections/" + collection.id + "/nodes", async (route) => {
+        await new Promise((resolve) => setTimeout(resolve, 300));
+        await route.continue();
+      });
       await page.goto("/" + locale + "/items/" + item.id);
       await expect(page.getByLabel("Valuation", { exact: true })).toBeVisible();
       await page.getByLabel(labels.title).fill("Preserved edit");
@@ -454,7 +450,11 @@ test.describe("localized collection and item management", () => {
 
       const loaded = await page.request.get("/api/v1/items/" + item.id);
       const body = (await loaded.json()) as {
-        item: { nodeId: string | null; purchaseAmountMinor: number | null; purchaseCurrency: string | null };
+        item: {
+          nodeId: string | null;
+          purchaseAmountMinor: number | null;
+          purchaseCurrency: string | null;
+        };
         metadata: {
           tags: string[];
           customFieldValues: Array<{ fieldDefinitionId: string; value: unknown }>;
@@ -464,11 +464,13 @@ test.describe("localized collection and item management", () => {
       expect.soft(body.item.purchaseAmountMinor).toBe(12345);
       expect.soft(body.item.purchaseCurrency).toBe("JPY");
       expect.soft(body.metadata.tags).toEqual(["Washington, D.C.", "postal history"]);
-      expect.soft(
-        body.metadata.customFieldValues.find(
-          (record) => record.fieldDefinitionId === customField.id,
-        )?.value,
-      ).toEqual({ amountMinor: 67890, currency: "JPY" });
+      expect
+        .soft(
+          body.metadata.customFieldValues.find(
+            (record) => record.fieldDefinitionId === customField.id,
+          )?.value,
+        )
+        .toEqual({ amountMinor: 67890, currency: "JPY" });
     } finally {
       await cleanupCollector(collector.userId);
     }
@@ -602,28 +604,21 @@ test.describe("localized collection and item management", () => {
       const countField = page
         .locator(".custom-field")
         .filter({ has: page.getByLabel("Count", { exact: true }) });
-      await countField
-        .getByRole("checkbox", { name: labels.setCustomField, exact: true })
-        .check();
+      await countField.getByRole("checkbox", { name: labels.setCustomField, exact: true }).check();
       await countField.getByLabel("Count", { exact: true }).fill("1e3");
       const moneyField = page
         .locator(".custom-field")
         .filter({ has: page.getByLabel("Valuation", { exact: true }) });
-      await moneyField
-        .getByRole("checkbox", { name: labels.setCustomField, exact: true })
-        .check();
+      await moneyField.getByRole("checkbox", { name: labels.setCustomField, exact: true }).check();
 
       let releaseEarlyPut = () => undefined;
       const earlyPutBlocked = new Promise<void>((resolve) => {
         releaseEarlyPut = () => resolve();
       });
-      await page.route(
-        "**/api/v1/items/*/custom-fields/" + countDefinition.id,
-        async (route) => {
-          await earlyPutBlocked;
-          await route.continue();
-        },
-      );
+      await page.route("**/api/v1/items/*/custom-fields/" + countDefinition.id, async (route) => {
+        await earlyPutBlocked;
+        await route.continue();
+      });
       const mutations: string[] = [];
       page.on("request", (request) => {
         if (
@@ -669,7 +664,7 @@ test.describe("localized collection and item management", () => {
         MediaStream: new () => { getTracks(): Array<{ stop(): void }> };
         HTMLMediaElement: { prototype: { play(): Promise<void> } };
       };
-            Object.defineProperty(browser.navigator, "mediaDevices", {
+      Object.defineProperty(browser.navigator, "mediaDevices", {
         configurable: true,
         value: {
           getUserMedia: () => {
@@ -709,7 +704,8 @@ test.describe("localized collection and item management", () => {
         (button as { click(): void }).click();
         (button as { click(): void }).click();
       });
-      await expect.poll(() =>
+      await expect
+        .poll(() =>
           page.evaluate(
             () =>
               (globalThis as unknown as { __scannerRegression: { requests: number } })
@@ -739,13 +735,12 @@ test.describe("localized collection and item management", () => {
       ).toEqual([true]);
       await page.goto("/" + locale + "/collections");
       expect(
-        await page.evaluate(
-          () =>
-            (
-              globalThis as unknown as {
-                __scannerRegression: { stopped: boolean[] };
-              }
-            ).__scannerRegression.stopped.every(Boolean),
+        await page.evaluate(() =>
+          (
+            globalThis as unknown as {
+              __scannerRegression: { stopped: boolean[] };
+            }
+          ).__scannerRegression.stopped.every(Boolean),
         ),
       ).toBe(true);
     } finally {

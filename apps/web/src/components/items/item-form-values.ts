@@ -14,9 +14,7 @@ export function minorUnits(input: string, currency = "EUR"): number | null {
   if (input.trim() === "") return null;
   const digits = currencyFractionDigits(currency);
   const normalized = input.trim().replace(",", ".");
-  const pattern = new RegExp(
-    digits === 0 ? "^(\\d+)$" : `^(\\d+)(?:\\.(\\d{1,${digits}}))?$`,
-  );
+  const pattern = new RegExp(digits === 0 ? "^(\\d+)$" : `^(\\d+)(?:\\.(\\d{1,${digits}}))?$`);
   const match = pattern.exec(normalized);
   if (!match) throw new Error("money");
   const whole = match[1];
@@ -47,9 +45,7 @@ export function integerCustomFieldValue(input: string): number {
 }
 
 export function tagsInputValue(tags: string[]): string {
-  return tags
-    .map((tag) => tag.replaceAll("\\", "\\\\").replaceAll(",", "\\,"))
-    .join(", ");
+  return tags.map((tag) => tag.replaceAll("\\", "\\\\").replaceAll(",", "\\,")).join(", ");
 }
 
 export function tagsFromInput(input: string): string[] {

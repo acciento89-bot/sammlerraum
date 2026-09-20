@@ -328,7 +328,9 @@ export function ItemForm({
         <p className="form-intro">{t("intro")}</p>
       </header>
 
-      {item && metadata && <ItemSummary item={item} metadata={metadata} fields={fields} locale={locale} t={t} />}
+      {item && metadata && (
+        <ItemSummary item={item} metadata={metadata} fields={fields} locale={locale} t={t} />
+      )}
       {inactive && (
         <p className="notice">{t(item?.disposedAt ? "disposedNotice" : "archivedNotice")}</p>
       )}
@@ -452,7 +454,10 @@ export function ItemForm({
                   <input
                     name="purchaseAmount"
                     inputMode="decimal"
-                    defaultValue={majorUnits(item?.purchaseAmountMinor ?? null, item?.purchaseCurrency ?? "EUR")}
+                    defaultValue={majorUnits(
+                      item?.purchaseAmountMinor ?? null,
+                      item?.purchaseCurrency ?? "EUR",
+                    )}
                     placeholder="0.00"
                   />
                 </label>
@@ -803,4 +808,3 @@ function ItemSummary({
     </section>
   );
 }
-
