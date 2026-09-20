@@ -107,7 +107,14 @@ export function buildAuthOptions(
         "/send-verification-email": { window: 300, max: 3 },
       },
     },
-    disabledPaths: ["/unlink-account", "/passkey/delete-passkey"],
+    disabledPaths: [
+      "/unlink-account",
+      "/passkey/delete-passkey",
+      "/list-sessions",
+      "/revoke-session",
+      "/revoke-sessions",
+      "/revoke-other-sessions",
+    ],
     trustedOrigins: [env.APP_ORIGIN],
     plugins: [
       passkey({

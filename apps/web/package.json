@@ -15,6 +15,7 @@
     "@better-auth/utils": "0.4.2",
     "@sammlerraum/config": "workspace:*",
     "@sammlerraum/db": "workspace:*",
+    "@sammlerraum/domain": "workspace:*",
     "better-auth": "1.7.5",
     "next": "16.3.5",
     "next-intl": "4.14.5",

@@ -2,6 +2,9 @@
   "name": "@sammlerraum/domain",
   "private": true,
   "type": "module",
+  "exports": {
+    "./identity/security-service": "./src/identity/security-service.ts"
+  },
   "scripts": {
     "build": "pnpm typecheck",
     "lint": "prettier --check .",

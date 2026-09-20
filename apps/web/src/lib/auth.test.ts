@@ -32,7 +32,14 @@ describe("Better Auth configuration", () => {
     expect(options.account?.encryptOAuthTokens).toBe(true);
     expect(options.session?.cookieCache?.enabled).toBe(false);
     expect(options.disabledPaths).toEqual(
-      expect.arrayContaining(["/unlink-account", "/passkey/delete-passkey"]),
+      expect.arrayContaining([
+        "/unlink-account",
+        "/passkey/delete-passkey",
+        "/list-sessions",
+        "/revoke-session",
+        "/revoke-sessions",
+        "/revoke-other-sessions",
+      ]),
     );
     expect(options.rateLimit).toMatchObject({
       enabled: true,
