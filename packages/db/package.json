@@ -2,9 +2,24 @@
   "name": "@sammlerraum/db",
   "private": true,
   "type": "module",
+  "exports": {
+    "./client": "./src/client.ts",
+    "./create-client": "./src/create-client.ts",
+    "./health": "./src/health.ts",
+    "./test-database": "./src/test-database.ts"
+  },
   "scripts": {
     "build": "pnpm typecheck",
     "lint": "prettier --check .",
+    "prisma": "prisma",
     "typecheck": "tsc --noEmit --project ../../tsconfig.base.json"
+  },
+  "dependencies": {
+    "@prisma/adapter-pg": "7.10.0",
+    "@prisma/client": "7.10.0",
+    "@sammlerraum/config": "workspace:*"
+  },
+  "devDependencies": {
+    "prisma": "7.10.0"
   }
 }

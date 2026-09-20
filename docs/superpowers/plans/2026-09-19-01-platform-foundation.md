@@ -216,7 +216,7 @@ git commit -m "feat: add validated environment configuration"
 - Consumes: `DATABASE_URL`.
 - Produces: `prisma`, `checkDatabaseHealth(): Promise<{ ok: boolean }>`.
 
-- [ ] **Step 1: Write failing health test**
+- [x] **Step 1: Write failing health test**
 
 ```ts
 import { describe, expect, it, vi } from "vitest";
@@ -230,12 +230,12 @@ describe("checkDatabaseHealth", () => {
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run packages/db/src/health.test.ts`  
 Expected: FAIL because `checkDatabaseHealth` does not exist.
 
-- [ ] **Step 3: Implement the database package**
+- [x] **Step 3: Implement the database package**
 
 `schema.prisma`:
 
@@ -273,7 +273,7 @@ export async function checkDatabaseHealth(db: Queryable): Promise<{ ok: boolean 
 
 Generate the Prisma client and create the initial migration.
 
-- [ ] **Step 4: Run tests and migration validation**
+- [x] **Step 4: Run tests and migration validation**
 
 Run:
 ```bash
@@ -284,7 +284,7 @@ pnpm vitest run packages/db/src/health.test.ts
 
 Expected: all PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/db

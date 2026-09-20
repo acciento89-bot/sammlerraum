@@ -9,7 +9,7 @@ This is the handoff/status file for long-running implementation. Update it after
 
 | Phase | Plan | Tasks | Status | Next |
 |---|---|---:|---|---|
-| 01 | Platform Foundation | 6 | in progress (2/6 recovered) | Task 3 |
+| 01 | Platform Foundation | 6 | in progress (3/6 recovered) | Task 4 |
 | 02 | Identity, Auth & Policies | 7 | not started | Task 1 |
 | 03 | Collections, Items, Fields & Locations | 8 | not started | Task 1 |
 | 04 | Media & Documents | 6 | not started | Task 1 |
@@ -81,3 +81,12 @@ Local runtime previously lacked Docker/psql. Live database/container validation 
 ### Mandatory persistence rule (user confirmed 2026-09-20)
 
 Every completed and independently reviewed task must be checked off in its detail plan, recorded in this ledger, committed and saved to GitHub. Verify the remote tree before starting the next task. Do not leave completed work only in a transient runtime. An unverified or review-pending task stays unchecked. Production deployment remains prohibited without separate approval.
+
+### Recovered Phase 01 Task 3
+
+- Task 2 remote commit: `951d950`.
+- Prisma7.10.0 config/client/adapter and initial SystemMetadata migration generated/validated. Environment-free factory separated from production singleton.
+- RED/GREEN baseline plus regression for actual production bypass via test option; fixed to reject either production source. Fresh review and scoped rereview approved.
+- Controller db tests5/5; prior full suite25/25 before new regression; typecheck/lint, frozen pnpm10.17.1 install, staged diff check passed.
+- No live PostgreSQL migration/query: Docker/psql unavailable. Integration verification remains open.
+- Commit: feat: establish PostgreSQL foundation (recovered).
