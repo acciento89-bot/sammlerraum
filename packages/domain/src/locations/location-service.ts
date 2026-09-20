@@ -256,10 +256,10 @@ export function createLocationService(database: LocationDatabase, actorUserId: s
         `;
         const item = rows[0];
         if (!item) throw new LocationServiceError("ITEM_NOT_FOUND");
-        if (locationId !== null) await findOwnedLocation(transaction, locationId, actorUserId);
-        if (item.storageLocationId === null && locationId === null) {
+        if (item.storageLocationId === locationId) {
           throw new LocationServiceError("ITEM_LOCATION_UNCHANGED");
         }
+        if (locationId !== null) await findOwnedLocation(transaction, locationId, actorUserId);
         const update = await transaction.collectibleItem.updateMany({
           where: { id: item.id, ownerId: actorUserId },
           data: { storageLocationId: locationId },
