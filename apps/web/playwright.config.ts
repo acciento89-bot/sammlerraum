@@ -1,4 +1,4 @@
-import { defineConfig } from "@playwright/test";
+import { defineConfig, devices } from "@playwright/test";
 
 export default defineConfig({
   testDir: "./e2e",
@@ -7,6 +7,22 @@ export default defineConfig({
   use: {
     baseURL: "http://localhost:3000",
   },
+  projects: [
+    {
+      name: "auth",
+      testMatch: "**/auth.spec.ts",
+    },
+    {
+      name: "desktop",
+      testMatch: "**/collections-items.spec.ts",
+      use: { viewport: { width: 1440, height: 1000 } },
+    },
+    {
+      name: "mobile",
+      testMatch: "**/collections-items.spec.ts",
+      use: { ...devices["Pixel 7"] },
+    },
+  ],
   ...(process.env.RUN_AUTH_E2E === "1"
     ? {
         webServer: {
