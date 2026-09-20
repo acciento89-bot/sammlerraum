@@ -1,4 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
+import { betterAuth } from "better-auth";
+import { memoryAdapter } from "better-auth/adapters/memory";
 
 import { buildAuthOptions } from "./auth";
 
@@ -27,8 +29,11 @@ describe("Better Auth configuration", () => {
     );
     expect(options.plugins?.length).toBeGreaterThan(0);
     expect(options.account?.accountLinking?.disableImplicitLinking).toBe(true);
+    expect(options.account?.encryptOAuthTokens).toBe(true);
     expect(options.session?.cookieCache?.enabled).toBe(false);
-    expect(options.disabledPaths).toContain("/unlink-account");
+    expect(options.disabledPaths).toEqual(
+      expect.arrayContaining(["/unlink-account", "/passkey/delete-passkey"]),
+    );
     expect(options.rateLimit).toMatchObject({
       enabled: true,
       storage: "database",
@@ -77,5 +82,34 @@ describe("Better Auth configuration", () => {
       subject: "Reset your Sammlerraum password",
       text: expect.stringContaining("https://example.test/reset-password"),
     });
+  });
+
+  it("removes identity tokens at the database adapter boundary on create and update", async () => {
+    const database: Record<string, Record<string, unknown>[]> = {};
+    const testAuth = betterAuth(
+      buildAuthOptions(testEnv, {
+        database: memoryAdapter(database),
+        sendEmail: vi.fn(),
+      }),
+    );
+    const context = await testAuth.$context;
+    const created = await context.internalAdapter.createAccount({
+      accountId: "provider-account-id",
+      providerId: "google",
+      userId: "user-1",
+      accessToken: "access-token",
+      refreshToken: "refresh-token",
+      idToken: "eyJhbGciOiJSUzI1NiJ9.eyJlbWFpbCI6ImxvZ2luQGV4YW1wbGUudGVzdCJ9.signature",
+    });
+
+    expect(created?.idToken).toBeNull();
+    expect(database.account?.[0]?.idToken).toBeNull();
+
+    const updated = await context.internalAdapter.updateAccount(created!.id, {
+      idToken: "eyJhbGciOiJSUzI1NiJ9.eyJlbWFpbCI6Im5ld0BleGFtcGxlLnRlc3QifQ.signature",
+    });
+
+    expect(updated?.idToken).toBeNull();
+    expect(database.account?.[0]?.idToken).toBeNull();
   });
 });

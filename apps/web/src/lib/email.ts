@@ -25,6 +25,8 @@ type TransportFactory = (options: {
   host: string;
   port: number;
   secure: boolean;
+  requireTLS: boolean;
+  tls: { rejectUnauthorized: true };
   auth: { user: string; pass: string };
 }) => MailTransport;
 
@@ -38,6 +40,8 @@ export function createSmtpEmailSender(
     host: env.SMTP_HOST,
     port: env.SMTP_PORT,
     secure: env.SMTP_SECURE,
+    requireTLS: !env.SMTP_SECURE,
+    tls: { rejectUnauthorized: true },
     auth: {
       user: env.SMTP_USER,
       pass: env.SMTP_PASSWORD,

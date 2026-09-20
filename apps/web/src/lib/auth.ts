@@ -79,6 +79,16 @@ export function buildAuthOptions(
         allowUnlinkingAll: false,
       },
     },
+    databaseHooks: {
+      account: {
+        create: {
+          before: async (account) => ({ data: { ...account, idToken: null } }),
+        },
+        update: {
+          before: async (account) => ({ data: { ...account, idToken: null } }),
+        },
+      },
+    },
     session: {
       cookieCache: { enabled: false },
     },
@@ -97,7 +107,7 @@ export function buildAuthOptions(
         "/send-verification-email": { window: 300, max: 3 },
       },
     },
-    disabledPaths: ["/unlink-account"],
+    disabledPaths: ["/unlink-account", "/passkey/delete-passkey"],
     trustedOrigins: [env.APP_ORIGIN],
     plugins: [
       passkey({

@@ -28,6 +28,8 @@ describe("SMTP email sender", () => {
       host: "smtp.example.test",
       port: 465,
       secure: true,
+      requireTLS: false,
+      tls: { rejectUnauthorized: true },
       auth: { user: "smtp-user", pass: "smtp-password" },
     });
     expect(sendMail).toHaveBeenCalledWith({
@@ -36,5 +38,29 @@ describe("SMTP email sender", () => {
       subject: "Verify your Sammlerraum email",
       text: "https://example.test/verify?token=raw-secret-token",
     });
+  });
+
+  it("requires STARTTLS when implicit TLS is disabled", () => {
+    const createTransport = vi.fn().mockReturnValue({ sendMail: vi.fn() });
+
+    createSmtpEmailSender(
+      {
+        SMTP_HOST: "smtp.example.test",
+        SMTP_PORT: 587,
+        SMTP_SECURE: false,
+        SMTP_USER: "smtp-user",
+        SMTP_PASSWORD: "smtp-password",
+        SMTP_FROM: "Sammlerraum <noreply@example.test>",
+      },
+      createTransport,
+    );
+
+    expect(createTransport).toHaveBeenCalledWith(
+      expect.objectContaining({
+        secure: false,
+        requireTLS: true,
+        tls: { rejectUnauthorized: true },
+      }),
+    );
   });
 });

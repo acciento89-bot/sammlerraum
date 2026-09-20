@@ -55,9 +55,7 @@ const authSchema = z.object({
   APPLE_CLIENT_SECRET: z.string().min(1),
   SMTP_HOST: z.string().min(1),
   SMTP_PORT: z.coerce.number().int().min(1).max(65535),
-  SMTP_SECURE: z
-    .enum(["true", "false"])
-    .transform((value) => value === "true"),
+  SMTP_SECURE: z.enum(["true", "false"]).transform((value) => value === "true"),
   SMTP_USER: z.string().min(1),
   SMTP_PASSWORD: z.string().min(1),
   SMTP_FROM: z.string().min(3),
