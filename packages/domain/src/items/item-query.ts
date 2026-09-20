@@ -19,6 +19,7 @@ type PublicItemRow = {
   collectionVisibility: Visibility;
   archivedAt?: Date | string | null;
   disposedAt?: Date | string | null;
+  itemNodeId: string | null;
   nodeId: string | null;
   parentId: string | null;
   nodeVisibility: Visibility | null;
@@ -55,7 +56,7 @@ export function createItemQuery(database: ItemQueryDatabase) {
           item."visibility" AS "itemVisibility",
           item."archivedAt",
           item."disposedAt",
-          item."nodeId",
+          item."nodeId" AS "itemNodeId",
           item."collectionId",
           collection."ownerId",
           collection."visibility" AS "collectionVisibility"
@@ -73,7 +74,7 @@ export function createItemQuery(database: ItemQueryDatabase) {
           false AS cycle,
           0 AS depth
         FROM "CollectionNode" node
-        JOIN item_base item ON item."nodeId" = node."id"
+        JOIN item_base item ON item."itemNodeId" = node."id"
           AND item."collectionId" = node."collectionId"
 
         UNION ALL
@@ -102,6 +103,7 @@ export function createItemQuery(database: ItemQueryDatabase) {
         item."collectionVisibility",
         item."archivedAt",
         item."disposedAt",
+        item."itemNodeId",
         ancestry."nodeId",
         ancestry."parentId",
         ancestry."nodeVisibility",
@@ -120,7 +122,7 @@ export function createItemQuery(database: ItemQueryDatabase) {
         row.nodeId !== null && row.nodeVisibility !== null,
     );
     if (
-      (item.nodeId !== null && nodeRows.length === 0) ||
+      (item.itemNodeId !== null && nodeRows.length === 0) ||
       nodeRows.some((row) => row.cycle === true) ||
       (nodeRows.length > 0 && !nodeRows.some((row) => row.parentId === null))
     ) {
@@ -130,10 +132,7 @@ export function createItemQuery(database: ItemQueryDatabase) {
       type: "ITEM",
       ownerId: item.ownerId,
       visibility: item.itemVisibility,
-      ancestorVisibility: [
-        item.collectionVisibility,
-        ...nodeRows.map((row) => row.nodeVisibility),
-      ],
+      ancestorVisibility: [item.collectionVisibility, ...nodeRows.map((row) => row.nodeVisibility)],
       role: null,
       moderation: "VISIBLE",
       interactionBlocked: false,

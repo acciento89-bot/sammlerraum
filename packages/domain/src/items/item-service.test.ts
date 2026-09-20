@@ -467,13 +467,14 @@ describe.runIf(runIntegration)("item service PostgreSQL integration", () => {
 
       await expect(
         prisma!.collectibleItem.create({
-          data: { collectionId: collection.id, title: "Zero", quantity: 0 },
+          data: { collectionId: collection.id, ownerId, title: "Zero", quantity: 0 },
         }),
       ).rejects.toBeDefined();
       await expect(
         prisma!.collectibleItem.create({
           data: {
             collectionId: collection.id,
+            ownerId,
             title: "Incomplete money",
             purchaseAmountMinor: 100n,
           },

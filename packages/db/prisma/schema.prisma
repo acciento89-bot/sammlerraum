@@ -68,20 +68,20 @@ model UserProfile {
 }
 
 model User {
-  id            String       @id
-  name          String
-  email         String
-  emailVerified Boolean      @default(false)
-  image         String?
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
-  sessions      Session[]
-  accounts      Account[]
-  passkeys      Passkey[]
-  profile       UserProfile?
-  collections   Collection[]
-  tags          Tag[]
-  storageLocations StorageLocation[]
+  id                         String                @id
+  name                       String
+  email                      String
+  emailVerified              Boolean               @default(false)
+  image                      String?
+  createdAt                  DateTime              @default(now())
+  updatedAt                  DateTime              @updatedAt
+  sessions                   Session[]
+  accounts                   Account[]
+  passkeys                   Passkey[]
+  profile                    UserProfile?
+  collections                Collection[]
+  tags                       Tag[]
+  storageLocations           StorageLocation[]
   locationHistoryAssignments ItemLocationHistory[] @relation("LocationHistoryAssignee")
 
   @@unique([email])
@@ -100,8 +100,8 @@ model Collection {
   items                  CollectibleItem[]
   customFieldDefinitions CustomFieldDefinition[]
 
-  @@index([ownerId])
   @@unique([id, ownerId])
+  @@index([ownerId])
 }
 
 model CollectionNode {
@@ -123,28 +123,28 @@ model CollectionNode {
 }
 
 model CollectibleItem {
-  id                  String             @id @default(uuid()) @db.Uuid
-  collectionId        String             @db.Uuid
+  id                  String                @id @default(uuid()) @db.Uuid
+  collectionId        String                @db.Uuid
   ownerId             String
-  nodeId              String?            @db.Uuid
-  storageLocationId   String?            @db.Uuid
+  nodeId              String?               @db.Uuid
+  storageLocationId   String?               @db.Uuid
   title               String
   publicDescription   String?
   privateNotes        String?
-  quantity            Int                @default(1)
-  acquisitionType     AcquisitionType    @default(OTHER)
-  acquisitionDate     DateTime?          @db.Date
+  quantity            Int                   @default(1)
+  acquisitionType     AcquisitionType       @default(OTHER)
+  acquisitionDate     DateTime?             @db.Date
   purchaseAmountMinor BigInt?
-  purchaseCurrency    String?            @db.Char(3)
-  visibility          Visibility         @default(PRIVATE)
-  tradeStatus         TradeStatus        @default(NOT_FOR_TRADE)
+  purchaseCurrency    String?               @db.Char(3)
+  visibility          Visibility            @default(PRIVATE)
+  tradeStatus         TradeStatus           @default(NOT_FOR_TRADE)
   archivedAt          DateTime?
   disposedAt          DateTime?
-  createdAt           DateTime           @default(now())
-  updatedAt           DateTime           @updatedAt
-  collection          Collection         @relation(fields: [collectionId, ownerId], references: [id, ownerId], onDelete: Cascade)
-  node                CollectionNode?    @relation(fields: [nodeId, collectionId], references: [id, collectionId], onDelete: Restrict)
-  storageLocation     StorageLocation?   @relation(fields: [storageLocationId, ownerId], references: [id, ownerId], onDelete: Restrict)
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime              @updatedAt
+  collection          Collection            @relation(fields: [collectionId, ownerId], references: [id, ownerId], onDelete: Cascade)
+  node                CollectionNode?       @relation(fields: [nodeId, collectionId], references: [id, collectionId], onDelete: Restrict)
+  storageLocation     StorageLocation?      @relation(fields: [storageLocationId, ownerId], references: [id, ownerId], onDelete: Restrict)
   locationHistory     ItemLocationHistory[]
   identifiers         ItemIdentifier[]
   itemTags            ItemTag[]
@@ -158,21 +158,21 @@ model CollectibleItem {
 }
 
 model StorageLocation {
-  id             String                @id @default(uuid()) @db.Uuid
-  ownerId        String
-  parentId       String?               @db.Uuid
-  name           String
-  type           LocationType          @default(OTHER)
-  visibility     Visibility            @default(PRIVATE)
-  qrToken        String                @unique @db.VarChar(43)
-  createdAt      DateTime              @default(now())
-  updatedAt      DateTime              @updatedAt
-  owner          User                  @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  parent         StorageLocation?      @relation("StorageLocationHierarchy", fields: [parentId, ownerId], references: [id, ownerId], onDelete: Restrict)
-  children       StorageLocation[]     @relation("StorageLocationHierarchy")
-  items          CollectibleItem[]
-  historyFrom    ItemLocationHistory[] @relation("HistoryFromLocation")
-  historyTo      ItemLocationHistory[] @relation("HistoryToLocation")
+  id          String                @id @default(uuid()) @db.Uuid
+  ownerId     String
+  parentId    String?               @db.Uuid
+  name        String
+  type        LocationType          @default(OTHER)
+  visibility  Visibility            @default(PRIVATE)
+  qrToken     String                @unique @db.VarChar(43)
+  createdAt   DateTime              @default(now())
+  updatedAt   DateTime              @updatedAt
+  owner       User                  @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  parent      StorageLocation?      @relation("StorageLocationHierarchy", fields: [parentId, ownerId], references: [id, ownerId], onDelete: Restrict)
+  children    StorageLocation[]     @relation("StorageLocationHierarchy")
+  items       CollectibleItem[]
+  historyFrom ItemLocationHistory[] @relation("HistoryFromLocation")
+  historyTo   ItemLocationHistory[] @relation("HistoryToLocation")
 
   @@unique([id, ownerId])
   @@index([ownerId])

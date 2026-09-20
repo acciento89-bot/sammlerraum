@@ -150,7 +150,10 @@ async function findOwnedLocation(
 function toHistory(row: StoredHistory): ItemLocationHistory {
   return ItemLocationHistorySchema.parse({
     ...row,
-    movedAt: typeof row.movedAt === "string" ? new Date(row.movedAt).toISOString() : row.movedAt.toISOString(),
+    movedAt:
+      typeof row.movedAt === "string"
+        ? new Date(row.movedAt).toISOString()
+        : row.movedAt.toISOString(),
   });
 }
 
@@ -180,7 +183,10 @@ export function createLocationService(database: LocationDatabase, actorUserId: s
     );
   }
 
-  async function moveLocation(locationIdInput: string, parentIdInput: string | null): Promise<void> {
+  async function moveLocation(
+    locationIdInput: string,
+    parentIdInput: string | null,
+  ): Promise<void> {
     const locationId = StorageLocationSchema.shape.id.parse(locationIdInput);
     const parentId =
       parentIdInput === null ? null : StorageLocationSchema.shape.id.parse(parentIdInput);

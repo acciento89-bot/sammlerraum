@@ -11,14 +11,7 @@ const LocationNameSchema = z
   .max(120)
   .refine((value) => !/[\u0000-\u001f\u007f]/u.test(value), "Control characters are not allowed");
 
-export const LocationTypeSchema = z.enum([
-  "ROOM",
-  "CABINET",
-  "SHELF",
-  "DRAWER",
-  "BOX",
-  "OTHER",
-]);
+export const LocationTypeSchema = z.enum(["ROOM", "CABINET", "SHELF", "DRAWER", "BOX", "OTHER"]);
 export type LocationType = z.infer<typeof LocationTypeSchema>;
 
 export const CreateLocationInputSchema = z.object({

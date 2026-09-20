@@ -142,7 +142,9 @@ describe("location service", () => {
                 return { count: 1 };
               },
             },
-            itemLocationHistory: { create: async () => Promise.reject(new Error("history failed")) },
+            itemLocationHistory: {
+              create: async () => Promise.reject(new Error("history failed")),
+            },
           });
         } catch (error) {
           storedLocation = prior;
@@ -163,9 +165,9 @@ describe("location service", () => {
         findMany: vi.fn().mockResolvedValue([location({ id: childId, parentId: locationId })]),
       },
       collectibleItem: {
-        findMany: vi.fn().mockResolvedValue([
-          { id: itemId, title: "Penny Black", quantity: 1, collectionId },
-        ]),
+        findMany: vi
+          .fn()
+          .mockResolvedValue([{ id: itemId, title: "Penny Black", quantity: 1, collectionId }]),
       },
     };
     const service = createLocationService(database as unknown as LocationDatabase, ownerId);
@@ -191,6 +193,7 @@ describe("public item query", () => {
           itemVisibility: "PUBLIC",
           ownerId,
           collectionVisibility: "PUBLIC",
+          itemNodeId: null,
           nodeId: null,
           parentId: null,
           nodeVisibility: null,
@@ -223,9 +226,38 @@ describe("public item query", () => {
   it.each([
     ["private item", { itemVisibility: "PRIVATE" }],
     ["unlisted collection", { collectionVisibility: "UNLISTED" }],
-    ["private ancestor", { nodeVisibility: "PRIVATE", nodeId: childId, parentId: null, depth: 0 }],
-    ["missing ancestor", { nodeVisibility: "PUBLIC", nodeId: childId, parentId: locationId, depth: 0 }],
-    ["cyclic ancestry", { nodeVisibility: "PUBLIC", nodeId: childId, parentId: null, cycle: true, depth: 0 }],
+    ["missing item node", { itemNodeId: childId }],
+    [
+      "private ancestor",
+      {
+        itemNodeId: childId,
+        nodeVisibility: "PRIVATE",
+        nodeId: childId,
+        parentId: null,
+        depth: 0,
+      },
+    ],
+    [
+      "missing ancestor",
+      {
+        itemNodeId: childId,
+        nodeVisibility: "PUBLIC",
+        nodeId: childId,
+        parentId: locationId,
+        depth: 0,
+      },
+    ],
+    [
+      "cyclic ancestry",
+      {
+        itemNodeId: childId,
+        nodeVisibility: "PUBLIC",
+        nodeId: childId,
+        parentId: null,
+        cycle: true,
+        depth: 0,
+      },
+    ],
   ])("fails closed for a %s", async (_label, override) => {
     const row = {
       id: itemId,
@@ -236,6 +268,7 @@ describe("public item query", () => {
       itemVisibility: "PUBLIC",
       ownerId,
       collectionVisibility: "PUBLIC",
+      itemNodeId: null,
       nodeId: null,
       parentId: null,
       nodeVisibility: null,
@@ -289,6 +322,9 @@ describe.runIf(runIntegration)("location PostgreSQL integration", () => {
         code: "LOCATION_NOT_FOUND",
       });
       await expect(
+        service.createLocation({ parentId: foreign.id, name: "Invalid", type: "SHELF" }),
+      ).rejects.toMatchObject({ code: "LOCATION_NOT_FOUND" });
+      await expect(
         prisma!.storageLocation.update({ where: { id: a.id }, data: { parentId: foreign.id } }),
       ).rejects.toBeDefined();
 
@@ -326,11 +362,52 @@ describe.runIf(runIntegration)("location PostgreSQL integration", () => {
       await expect(own.assignItemLocation(item.id, foreignLocation.id)).rejects.toMatchObject({
         code: "LOCATION_NOT_FOUND",
       });
+      await expect(other.assignItemLocation(item.id, foreignLocation.id)).rejects.toMatchObject({
+        code: "ITEM_NOT_FOUND",
+      });
+
+      const failingDatabase = {
+        ...prisma!,
+        $transaction: async <T>(
+          operation: (transaction: Record<string, unknown>) => Promise<T>,
+          options: { isolationLevel: "ReadCommitted" },
+        ) =>
+          prisma!.$transaction(
+            async (transaction) =>
+              operation({
+                ...transaction,
+                $queryRaw: transaction.$queryRaw.bind(transaction),
+                storageLocation: transaction.storageLocation,
+                collectibleItem: transaction.collectibleItem,
+                itemLocationHistory: {
+                  create: async () => {
+                    throw new Error("fixture history failure");
+                  },
+                },
+              }),
+            options,
+          ),
+      };
+      const failing = createLocationService(
+        failingDatabase as unknown as LocationDatabase,
+        firstOwner,
+      );
+      await expect(failing.assignItemLocation(item.id, ownLocation.id)).rejects.toThrow(
+        "fixture history failure",
+      );
+      await expect(
+        prisma!.collectibleItem.findUnique({ where: { id: item.id } }),
+      ).resolves.toMatchObject({ storageLocationId: null });
+
       const history = await own.assignItemLocation(item.id, ownLocation.id);
-      await expect(prisma!.collectibleItem.findUnique({ where: { id: item.id } })).resolves.toMatchObject({
+      await expect(
+        prisma!.collectibleItem.findUnique({ where: { id: item.id } }),
+      ).resolves.toMatchObject({
         storageLocationId: ownLocation.id,
       });
-      await expect(prisma!.itemLocationHistory.findUnique({ where: { id: history.id } })).resolves.toMatchObject({
+      await expect(
+        prisma!.itemLocationHistory.findUnique({ where: { id: history.id } }),
+      ).resolves.toMatchObject({
         itemId: item.id,
         toLocationId: ownLocation.id,
         assignedById: firstOwner,
@@ -379,7 +456,9 @@ describe.runIf(runIntegration)("location PostgreSQL integration", () => {
       });
       const query = createItemQuery(prisma! as unknown as ItemQueryDatabase);
 
-      await expect(query.getPublicItem(hidden.id)).rejects.toMatchObject({ code: "ITEM_NOT_FOUND" });
+      await expect(query.getPublicItem(hidden.id)).rejects.toMatchObject({
+        code: "ITEM_NOT_FOUND",
+      });
       await expect(query.getPublicItem(visible.id)).resolves.toEqual({
         id: visible.id,
         title: "Visible",

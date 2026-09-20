@@ -342,7 +342,7 @@ describe.runIf(runIntegration)("custom field PostgreSQL integration", () => {
         data: { ownerId, name: "Other collection" },
       });
       const item = await prisma!.collectibleItem.create({
-        data: { collectionId: collection.id, title: "Typed specimen" },
+        data: { collectionId: collection.id, ownerId, title: "Typed specimen" },
       });
       const owner = createCustomFieldService(prisma! as unknown as CustomFieldDatabase, ownerId);
       const other = createCustomFieldService(
