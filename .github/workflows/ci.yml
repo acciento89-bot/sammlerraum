@@ -20,6 +20,17 @@ jobs:
       UPLOADS_DIR: /tmp/sammlerraum-test-uploads
       LOG_LEVEL: info
       WORKER_HEALTH_PORT: "3001"
+      BETTER_AUTH_SECRET: test-only-secret-that-is-at-least-thirty-two-characters
+      GOOGLE_CLIENT_ID: test-google-client-id
+      GOOGLE_CLIENT_SECRET: test-google-client-secret
+      APPLE_CLIENT_ID: test-apple-client-id
+      APPLE_CLIENT_SECRET: test-apple-client-secret
+      SMTP_HOST: smtp.example.invalid
+      SMTP_PORT: "587"
+      SMTP_SECURE: "false"
+      SMTP_USER: test-smtp-user
+      SMTP_PASSWORD: test-smtp-password
+      SMTP_FROM: noreply@example.invalid
       POSTGRES_DB: sammlerraum_test
       POSTGRES_USER: test
       POSTGRES_PASSWORD: test

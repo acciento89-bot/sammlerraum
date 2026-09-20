@@ -10,7 +10,7 @@ This is the handoff/status file for long-running implementation. Update it after
 | Phase | Plan | Tasks | Status | Next |
 |---|---|---:|---|---|
 | 01 | Platform Foundation | 6 | complete (6/6) | — |
-| 02 | Identity, Auth & Policies | 7 | in progress (1/7) | Task 2 |
+| 02 | Identity, Auth & Policies | 7 | Task 2 reviewed; CI pending (1/7) | Task 2 gate |
 | 03 | Collections, Items, Fields & Locations | 8 | not started | Task 1 |
 | 04 | Media & Documents | 6 | not started | Task 1 |
 | 05 | Catalog, Condition & Grading | 7 | not started | Task 1 |
@@ -39,7 +39,10 @@ After each task is implemented, tested, reviewed and committed:
 
 ## External blocker log
 
-No external blockers recorded yet.
+- Phase02 Task2: live Google OAuth requires real client/consent configuration and callback registration.
+- Phase02 Task2: live Apple sign-in requires Services ID, domain/return URL configuration, signing key and current client-secret JWT.
+- Phase02 Task2: live verification/reset email delivery requires SMTP credentials and permitted sender.
+- Code/adapters and fake-backed tests are implemented; exact variables/callbacks/manual steps: `docs/authentication-setup.md`. These live checks do not block independent implementation. No real provider account/action performed.
 
 ## Implementation log
 
@@ -148,3 +151,13 @@ Every completed and independently reviewed task must be checked off in its detai
 - PostgreSQL17 applied identity_profile migration;62 unit/static tests passed; dedicated integration run5 passed (3 real DB tests plus2 profile unit tests). Lint/typecheck/build, Compose and both Docker builds passed.
 - Fresh review spec/quality approved without findings; required database gate resolved. Task1 boxes checked, next Task2.
 - Completion is docs-only with [skip ci]; code remains identical to successful CI commit.
+
+### Phase 02 Task 2 — reviewed authentication candidate, CI pending
+
+- Base completion remote `a682438`; latest WIP checkpoint `83940fb` verified exact tree.
+- BetterAuth1.7.5 password/verification/reset, Google, Apple, passkeys; explicit-only linking, DB-backed rate limits, uncached sessions; TLS-enforced SMTP adapter with injected test sender.
+- CLI-generated explicit auth models and additive migration with UserProfile FK. Published migrations unchanged. Configuration/env/callback setup documented without live secrets.
+- TDD RED missing modules and3 reproduced security failures. GREEN initial full67 tests,3 DB-gated skips; final focused5/5 (controller repeated), typecheck/lint/production build passed.
+- Fresh reviewer found SMTP downgrade and plaintext ID-token storage. Both fixed and scoped rereview spec/quality APPROVED; no findings remain. TLS certificate validation mandatory; account create/update hooks drop unused ID tokens, actual BetterAuth adapter persistence test proves absence. Access/refresh encryption retained.
+- Code candidate saved for PostgreSQL17 migrate deploy, integration and Docker CI. Task2 remains unchecked until CI passes; live provider/SMTP checks remain external blockers.
+- Task3 must implement recovery-guarded removal; default account unlink/passkey-delete paths are disabled meanwhile.

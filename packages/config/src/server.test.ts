@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { EnvironmentConfigurationError, parseServerEnv } from "./server";
+import { EnvironmentConfigurationError, parseAuthEnv, parseServerEnv } from "./server";
 
 const validEnvironment = {
   NODE_ENV: "test",
@@ -66,5 +66,43 @@ describe("parseServerEnv", () => {
       expect((error as Error).message).toContain("DATABASE_URL, LOG_LEVEL");
       expect((error as Error).message).not.toContain(secret);
     }
+  });
+});
+
+describe("parseAuthEnv", () => {
+  const validAuthEnvironment = {
+    APP_ORIGIN: "https://example.test",
+    BETTER_AUTH_SECRET: "test-secret-that-is-at-least-thirty-two-characters",
+    GOOGLE_CLIENT_ID: "google-client-id",
+    GOOGLE_CLIENT_SECRET: "google-client-secret",
+    APPLE_CLIENT_ID: "apple-client-id",
+    APPLE_CLIENT_SECRET: "apple-client-secret",
+    SMTP_HOST: "smtp.example.test",
+    SMTP_PORT: "587",
+    SMTP_SECURE: "false",
+    SMTP_USER: "smtp-user",
+    SMTP_PASSWORD: "smtp-password",
+    SMTP_FROM: "Sammlerraum <noreply@example.test>",
+  };
+
+  it("requires provider, auth-secret, and SMTP delivery configuration", () => {
+    expect(parseAuthEnv(validAuthEnvironment)).toEqual({
+      ...validAuthEnvironment,
+      SMTP_PORT: 587,
+      SMTP_SECURE: false,
+    });
+
+    for (const key of Object.keys(validAuthEnvironment)) {
+      const invalid = { ...validAuthEnvironment, [key]: undefined };
+      expect(() => parseAuthEnv(invalid)).toThrow(key);
+    }
+  });
+
+  it("never exposes auth or SMTP secret values in validation errors", () => {
+    const secret = "too-short";
+
+    expect(() =>
+      parseAuthEnv({ ...validAuthEnvironment, BETTER_AUTH_SECRET: secret }),
+    ).toThrowError(expect.objectContaining({ message: expect.not.stringContaining(secret) }));
   });
 });

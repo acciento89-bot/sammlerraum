@@ -46,7 +46,23 @@ const schema = z.object({
   WORKER_HEALTH_PORT: z.coerce.number().int().min(1).max(65535).default(3001),
 });
 
+const authSchema = z.object({
+  APP_ORIGIN: z.string().transform(applicationOrigin),
+  BETTER_AUTH_SECRET: z.string().min(32),
+  GOOGLE_CLIENT_ID: z.string().min(1),
+  GOOGLE_CLIENT_SECRET: z.string().min(1),
+  APPLE_CLIENT_ID: z.string().min(1),
+  APPLE_CLIENT_SECRET: z.string().min(1),
+  SMTP_HOST: z.string().min(1),
+  SMTP_PORT: z.coerce.number().int().min(1).max(65535),
+  SMTP_SECURE: z.enum(["true", "false"]).transform((value) => value === "true"),
+  SMTP_USER: z.string().min(1),
+  SMTP_PASSWORD: z.string().min(1),
+  SMTP_FROM: z.string().min(3),
+});
+
 export type ServerEnv = z.infer<typeof schema>;
+export type AuthEnv = z.infer<typeof authSchema>;
 
 export class EnvironmentConfigurationError extends Error {
   readonly invalidVariables: readonly string[];
@@ -60,6 +76,18 @@ export class EnvironmentConfigurationError extends Error {
 
 export function parseServerEnv(input: Record<string, string | undefined>): ServerEnv {
   const result = schema.safeParse(input);
+  if (result.success) {
+    return result.data;
+  }
+
+  const invalidVariables = [
+    ...new Set(result.error.issues.map((issue) => String(issue.path[0] ?? "environment"))),
+  ];
+  throw new EnvironmentConfigurationError(invalidVariables);
+}
+
+export function parseAuthEnv(input: Record<string, string | undefined>): AuthEnv {
+  const result = authSchema.safeParse(input);
   if (result.success) {
     return result.data;
   }

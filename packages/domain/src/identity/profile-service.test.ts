@@ -105,6 +105,14 @@ describe.runIf(runIntegration)("profile service PostgreSQL integration", () => {
     const handle = `sammler-${randomUUID()}`;
     const service = createProfileService(prisma!);
 
+    await prisma!.user.create({
+      data: {
+        id: userId,
+        name: "Sammler",
+        email: `${userId}@example.test`,
+        emailVerified: true,
+      },
+    });
     await prisma!.userProfile.create({
       data: {
         userId,
@@ -134,7 +142,7 @@ describe.runIf(runIntegration)("profile service PostgreSQL integration", () => {
         avatarAssetId: null,
       });
     } finally {
-      await prisma!.userProfile.delete({ where: { userId } });
+      await prisma!.user.delete({ where: { id: userId } });
     }
   });
 });
