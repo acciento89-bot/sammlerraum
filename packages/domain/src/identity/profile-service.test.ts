@@ -1,4 +1,7 @@
-import { describe, expect, it, vi } from "vitest";
+import { randomUUID } from "node:crypto";
+
+import { createPrismaClient } from "@sammlerraum/db/create-client";
+import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 
 import { createProfileService } from "./profile-service";
 
@@ -81,5 +84,65 @@ describe("profile service", () => {
         avatarAssetId: true,
       },
     });
+  });
+});
+
+const runIntegration = process.env.RUN_DATABASE_INTEGRATION === "1";
+const databaseUrl = process.env.DATABASE_URL ?? "";
+const prisma = runIntegration ? createPrismaClient(databaseUrl) : undefined;
+
+describe.runIf(runIntegration)("profile service PostgreSQL integration", () => {
+  beforeAll(async () => {
+    await prisma?.$connect();
+  });
+
+  afterAll(async () => {
+    await prisma?.$disconnect();
+  });
+
+  it("persists a normalized profile and reads only its public projection", async () => {
+    const userId = randomUUID();
+    const handle = `sammler-${randomUUID()}`;
+    const service = createProfileService(prisma!);
+
+    await prisma!.user.create({
+      data: {
+        id: userId,
+        name: "Sammler",
+        email: `${userId}@example.test`,
+        emailVerified: true,
+      },
+    });
+    await prisma!.userProfile.create({
+      data: {
+        userId,
+        handle,
+        displayName: "Sammler",
+      },
+    });
+
+    try {
+      await expect(
+        service.updateOwnProfile(userId, {
+          handle: `  ${handle.toUpperCase()}  `,
+          displayName: "Neue Anzeige",
+          bio: "Über mich",
+          avatarAssetId: null,
+        }),
+      ).resolves.toEqual({
+        handle,
+        displayName: "Neue Anzeige",
+        bio: "Über mich",
+        avatarAssetId: null,
+      });
+      await expect(service.getPublicProfile(handle)).resolves.toEqual({
+        handle,
+        displayName: "Neue Anzeige",
+        bio: "Über mich",
+        avatarAssetId: null,
+      });
+    } finally {
+      await prisma!.user.delete({ where: { id: userId } });
+    }
   });
 });

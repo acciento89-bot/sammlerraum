@@ -46,10 +46,7 @@ export function createProfileService(database: ProfileDatabase) {
       return profile === null ? null : PublicProfileSchema.parse(profile);
     },
 
-    async updateOwnProfile(
-      userId: string,
-      input: UpdateOwnProfileInput,
-    ): Promise<PublicProfile> {
+    async updateOwnProfile(userId: string, input: UpdateOwnProfileInput): Promise<PublicProfile> {
       const data = PublicProfileSchema.parse({
         ...input,
         handle: normalizeHandle(input.handle),

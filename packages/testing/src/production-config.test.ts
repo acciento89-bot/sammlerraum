@@ -94,5 +94,6 @@ describe("production container configuration", () => {
     }
     expect(workflow).toContain("postgres:17");
     expect(workflow).toContain("pg-boss singleton integration tests");
+    expect(workflow).toContain("packages/domain/src/identity/profile-service.test.ts");
   });
 });

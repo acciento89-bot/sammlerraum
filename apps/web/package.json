@@ -10,13 +10,20 @@
     "typecheck": "tsc --noEmit --project tsconfig.json"
   },
   "dependencies": {
+    "@better-auth/passkey": "1.7.5",
+    "@better-auth/prisma-adapter": "1.7.5",
+    "@better-auth/utils": "0.4.2",
+    "@sammlerraum/config": "workspace:*",
     "@sammlerraum/db": "workspace:*",
+    "better-auth": "1.7.5",
     "next": "16.3.5",
     "next-intl": "4.14.5",
+    "nodemailer": "10.0.10",
     "react": "19.3.0",
     "react-dom": "19.3.0"
   },
   "devDependencies": {
+    "@types/nodemailer": "8.0.2",
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3"
   }

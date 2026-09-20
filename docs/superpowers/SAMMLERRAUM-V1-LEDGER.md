@@ -1,6 +1,6 @@
 # Sammlerraum V1 Completion Ledger
 
-**Stand:** 19.09.2026  
+**Stand:** 20.09.2026
 **Master plan:** `docs/superpowers/plans/2026-09-19-sammlerraum-v1-master-plan.md`  
 **Canonical product/system spec:** `docs/superpowers/specs/2026-09-19-sammlerraum-design.md`  
 **SEO/Search Console spec:** `docs/superpowers/specs/2026-09-19-seo-search-console-design.md`
@@ -10,7 +10,7 @@ This is the handoff/status file for long-running implementation. Update it after
 | Phase | Plan | Tasks | Status | Next |
 |---|---|---:|---|---|
 | 01 | Platform Foundation | 6 | complete (6/6) | — |
-| 02 | Identity, Auth & Policies | 7 | not started | Task 1 |
+| 02 | Identity, Auth & Policies | 7 | in progress (1/7) | Task 2 |
 | 03 | Collections, Items, Fields & Locations | 8 | not started | Task 1 |
 | 04 | Media & Documents | 6 | not started | Task 1 |
 | 05 | Catalog, Condition & Grading | 7 | not started | Task 1 |
@@ -43,7 +43,7 @@ No external blockers recorded yet.
 
 ## Implementation log
 
-No implementation tasks have been executed yet. The repository currently contains the approved product/system/SEO designs and detailed implementation plans.
+Phase 01 is complete and secured on GitHub. Subsequent task evidence and historical recovery records follow.
 
 ## Runtime recovery — 2026-09-20
 
@@ -130,3 +130,21 @@ Every completed and independently reviewed task must be checked off in its detai
 - Phase01 larger regression gates passed. Earlier live PostgreSQL/Docker blockers are resolved through CI; local Docker remains unavailable but no longer blocks this phase.
 - Tasks1–6 checked off. Next:Phase02 Task1, privacy-safe identity/profile schema and service.
 - Completion commit changes documentation only; [skip ci] avoids rerunning unchanged code builds. CI provenance above remains the tested code commit.
+
+### Phase 02 Task 1 — reviewed candidate, migration CI pending
+
+- Base remote completion commit: `95f1695`; WIP snapshot saved as `4d253a7` on work/sammlerraum-v1-checkpoint.
+- Explicit four-field public profile DTO, normalized unique handles, owner-scoped updates, additive UserProfile migration. No login/auth material in profile output.
+- TDD RED missing service; GREEN focused2/2. Full local suite62 passed,3 DB-gated skipped; lint/typecheck/build, Prisma validate/generate and diff check passed. Controller focused7 passed,1 DB-gated skipped.
+- Fresh independent reviewer: spec PASS, quality PASS, no findings. Code approved; completion stays unchecked until remote migration/persistence gate succeeds.
+- Ruling: UserProfile stores unique scalar userId until Task2 creates auth User and adds FK — preserves task sequence; cost if wrong: additive relation adjustment.
+- Ruling: local migrate dev cannot connect because PostgreSQL is unavailable; Prisma generated additive SQL offline, real PostgreSQL17 migrate deploy and persistence test run in CI — cost if wrong: generator parity rework. Published initial migration unchanged.
+- Ruling: package exports/dependencies and explicit CI test invocation updated as supporting files — necessary for real adapter coverage; cost if wrong: reversible supporting-file rework.
+
+### Phase 02 Task 1 — COMPLETE
+
+- Reviewed implementation secured at `970649762a9394f1857fde858c36bb76044f5319`.
+- Full CI SUCCESS: https://github.com/acciento89-bot/sammlerraum/actions/runs/35516444676 (job106093088492).
+- PostgreSQL17 applied identity_profile migration;62 unit/static tests passed; dedicated integration run5 passed (3 real DB tests plus2 profile unit tests). Lint/typecheck/build, Compose and both Docker builds passed.
+- Fresh review spec/quality approved without findings; required database gate resolved. Task1 boxes checked, next Task2.
+- Completion is docs-only with [skip ci]; code remains identical to successful CI commit.

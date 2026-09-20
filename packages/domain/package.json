@@ -9,5 +9,8 @@
   },
   "dependencies": {
     "@sammlerraum/contracts": "workspace:*"
+  },
+  "devDependencies": {
+    "@sammlerraum/db": "workspace:*"
   }
 }
