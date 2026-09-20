@@ -366,3 +366,251 @@ button {
       color 0.15s ease;
   }
 }
+
+
+select {
+  width: 100%;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid var(--line);
+  border-radius: 0.55rem;
+  background: white;
+  color: var(--ink);
+  font: inherit;
+}
+fieldset {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.management-shell {
+  width: min(72rem, calc(100% - 2rem));
+  margin: 0 auto;
+  padding: 2.5rem 0 5rem;
+}
+.management-nav,
+.management-heading-row,
+.section-heading-row,
+.form-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.management-nav {
+  margin-bottom: 1.5rem;
+}
+.management-nav a,
+.primary-link {
+  padding: 0.5rem 0.8rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  text-decoration: none;
+}
+.management-heading {
+  margin-bottom: 2rem;
+}
+.management-heading h1 {
+  max-width: 18ch;
+  font-size: clamp(2.25rem, 6vw, 4.5rem);
+}
+.management-heading-row,
+.section-heading-row {
+  justify-content: space-between;
+}
+.primary-link {
+  border-color: var(--green);
+  background: var(--green);
+  color: white;
+}
+.management-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+.management-card,
+.item-form > details,
+.item-form > fieldset {
+  padding: clamp(1.1rem, 3vw, 1.7rem);
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  background: var(--surface);
+}
+.management-card.wide {
+  grid-column: 1 / -1;
+}
+.management-card h2,
+.section-heading-row h2 {
+  margin-top: 0;
+}
+.management-card summary,
+.item-form summary {
+  cursor: pointer;
+  font-weight: 750;
+}
+.collection-list,
+.plain-list,
+.management-tree {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.collection-list li + li,
+.plain-list li + li {
+  border-top: 1px solid var(--line);
+}
+.collection-list a {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.8rem 0;
+  text-decoration: none;
+}
+.collection-list span,
+.plain-list span,
+.field-help,
+.empty-state {
+  color: var(--muted);
+}
+.plain-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.65rem 0;
+}
+.management-tree .management-tree {
+  margin-left: 1.25rem;
+  border-left: 1px solid var(--line);
+  padding-left: 1rem;
+}
+.management-tree > li {
+  padding: 0.35rem 0;
+}
+.compact-form,
+.details-fields,
+.item-form {
+  display: grid;
+  gap: 1rem;
+}
+.compact-form {
+  margin: 0.75rem 0;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  background: var(--paper);
+}
+.compact-form label,
+.details-fields label,
+.item-form > fieldset > label,
+.custom-field > label {
+  display: grid;
+  gap: 0.35rem;
+  font-weight: 650;
+}
+.item-form {
+  max-width: 58rem;
+}
+.item-form > details > summary {
+  padding: 1.1rem 0;
+}
+.details-fields {
+  padding-top: 0.5rem;
+}
+.form-row,
+.identifier-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.8rem;
+}
+.identifier-row {
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+}
+.identifier-row .scanner {
+  grid-column: 2;
+}
+.identifier-row .text-button {
+  justify-self: start;
+}
+.checkbox-label {
+  display: flex !important;
+  align-items: center;
+  gap: 0.55rem;
+}
+.checkbox-label input {
+  width: auto;
+}
+.custom-field {
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+}
+.custom-field > .checkbox-label {
+  margin-bottom: 0.75rem;
+}
+.secondary-button {
+  border-color: var(--line);
+  background: var(--surface);
+  color: var(--ink);
+}
+.danger-button {
+  border-color: #8a2d22;
+  background: #8a2d22;
+}
+.notice {
+  max-width: 58rem;
+  padding: 0.8rem 1rem;
+  border-left: 0.3rem solid var(--accent);
+  background: var(--surface);
+}
+.scanner {
+  display: grid;
+  gap: 0.65rem;
+}
+.scanner-video {
+  width: 100%;
+  max-height: 18rem;
+  border-radius: 0.75rem;
+  background: #111;
+}
+.scanner-video.hidden {
+  display: none;
+}
+.scanner-proposal {
+  padding: 0.8rem;
+  border: 1px solid var(--accent);
+  border-radius: 0.75rem;
+  background: var(--paper);
+}
+.item-summary {
+  max-width: 58rem;
+  margin-bottom: 1rem;
+}
+.item-summary p {
+  margin: 0.35rem 0;
+}
+@media (max-width: 44rem) {
+  .management-grid {
+    grid-template-columns: 1fr;
+  }
+  .management-card.wide {
+    grid-column: auto;
+  }
+  .management-heading-row,
+  .section-heading-row,
+  .form-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .form-row,
+  .identifier-row {
+    grid-template-columns: 1fr;
+  }
+  .identifier-row .scanner {
+    grid-column: auto;
+  }
+  .collection-list a {
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+}
