@@ -442,7 +442,7 @@ git commit -m "feat: add localized web shell and health endpoint"
 - Consumes: web, worker, PostgreSQL, uploads path.
 - Produces: reproducible `web`, `worker`, `db` services and persistent `sammlerraum-db`, `sammlerraum-uploads` volumes.
 
-- [ ] **Step 1: Write the failing compose verification**
+- [x] **Step 1: Write the failing compose verification**
 
 `scripts/verify-compose.sh`:
 
@@ -459,7 +459,7 @@ grep -q "web:" /tmp/sammlerraum-compose.yml
 Run it before compose exists.  
 Expected: FAIL.
 
-- [ ] **Step 2: Create Dockerfiles and compose**
+- [x] **Step 2: Create Dockerfiles and compose**
 
 `docker-compose.yml` must include:
 
@@ -469,7 +469,7 @@ Expected: FAIL.
 - Healthchecks for database and web.
 - No source-code bind mounts in the production compose.
 
-- [ ] **Step 3: Add CI workflow**
+- [x] **Step 3: Add CI workflow**
 
 CI jobs run:
 
@@ -486,7 +486,7 @@ docker build -f Dockerfile.worker .
 
 Use a PostgreSQL service for migration/integration checks.
 
-- [ ] **Step 4: Run the same validation locally**
+- [x] **Step 4: Run the same validation locally**
 
 Run:
 ```bash
@@ -500,7 +500,7 @@ docker build -f Dockerfile.worker .
 
 Expected: all PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add Dockerfile.web Dockerfile.worker docker-compose.yml .dockerignore .github scripts

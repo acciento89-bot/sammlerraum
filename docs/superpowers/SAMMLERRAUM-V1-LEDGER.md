@@ -9,7 +9,7 @@ This is the handoff/status file for long-running implementation. Update it after
 
 | Phase | Plan | Tasks | Status | Next |
 |---|---|---:|---|---|
-| 01 | Platform Foundation | 6 | in progress (5/6) | Task 6 |
+| 01 | Platform Foundation | 6 | complete (6/6) | — |
 | 02 | Identity, Auth & Policies | 7 | not started | Task 1 |
 | 03 | Collections, Items, Fields & Locations | 8 | not started | Task 1 |
 | 04 | Media & Documents | 6 | not started | Task 1 |
@@ -110,3 +110,23 @@ Every completed and independently reviewed task must be checked off in its detai
 - Fresh independent reviewer: spec+quality Approved without findings; TSX coverage and strict TS options verified.
 - Task1 web dev dependency resolved with actual Next dev/build/start.
 - Commit: feat: add localized web shell and health endpoint.
+
+### Phase 01 Task 6 — reviewed candidate, CI validation pending
+
+- Task 5 remote commit: `1e213ff`; tasks1–5 checked off and secured. Draft PR: https://github.com/acciento89-bot/sammlerraum/pull/1.
+- Docker/Compose/CI implemented. Static RED/GREEN and local test/typecheck/lint/build checks passed; controller final production-config tests5/5.
+- Fresh review found upload persistence mismatch, worker probe-port mismatch and baked public origin. All reproduced/fixed; scoped rereview approved CODE CANDIDATE only.
+- Uploads always /data/uploads in Compose matching shared volume; worker listener/probe3001; required public origin build argument wired consistently. Runtime secrets remain external.
+- CI candidate is backed up now to run real PostgreSQL17 migrations/health/queue and both Docker builds. Task6 remains unchecked until those gates pass.
+- Intermediate checkpoints are not completion evidence. Last WIP checkpoint before review:3e05277 on work/sammlerraum-v1-checkpoint.
+
+### Phase 01 Task 6 and phase regression — COMPLETE
+
+- Reviewed code commit `79b0f55f7d34bd48ad40cee9ef72f7db0130f78f`.
+- CI SUCCESS: https://github.com/acciento89-bot/sammlerraum/actions/runs/35515621740 (job106090953281).
+- Exact evidence:60 unit/static tests passed;2 PostgreSQL integration tests passed separately (health and pg-boss singleton). All migrations applied successfully against PostgreSQL17.
+- Frozen install, Prisma generation, lint, typecheck, workspace production build, Compose rendering/verification and BOTH web/worker Docker image builds passed.
+- Fresh task reviewer updated verdict to final APPROVED after remote gates. No findings remain in this task.
+- Phase01 larger regression gates passed. Earlier live PostgreSQL/Docker blockers are resolved through CI; local Docker remains unavailable but no longer blocks this phase.
+- Tasks1–6 checked off. Next:Phase02 Task1, privacy-safe identity/profile schema and service.
+- Completion commit changes documentation only; [skip ci] avoids rerunning unchanged code builds. CI provenance above remains the tested code commit.

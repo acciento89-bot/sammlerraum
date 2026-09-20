@@ -3,6 +3,12 @@
 .superpowers
 .env
 .env.*
+.npmrc
+*.pem
+*.key
+*.crt
+secrets
+**/secrets
 node_modules
 **/node_modules
 .next

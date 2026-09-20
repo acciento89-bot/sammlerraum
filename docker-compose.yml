@@ -19,6 +19,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.web
+      args:
+        NEXT_PUBLIC_APP_ORIGIN: ${NEXT_PUBLIC_APP_ORIGIN}
     restart: unless-stopped
     depends_on:
       db:
@@ -27,8 +29,7 @@ services:
       NODE_ENV: production
       DATABASE_URL: ${DATABASE_URL}
       APP_ORIGIN: ${APP_ORIGIN}
-      NEXT_PUBLIC_APP_ORIGIN: ${NEXT_PUBLIC_APP_ORIGIN}
-      UPLOADS_DIR: ${UPLOADS_DIR}
+      UPLOADS_DIR: /data/uploads
       LOG_LEVEL: ${LOG_LEVEL}
     ports:
       - "3000:3000"
@@ -59,9 +60,9 @@ services:
       NODE_ENV: production
       DATABASE_URL: ${DATABASE_URL}
       APP_ORIGIN: ${APP_ORIGIN}
-      UPLOADS_DIR: ${UPLOADS_DIR}
+      UPLOADS_DIR: /data/uploads
       LOG_LEVEL: ${LOG_LEVEL}
-      WORKER_HEALTH_PORT: ${WORKER_HEALTH_PORT}
+      WORKER_HEALTH_PORT: "3001"
     volumes:
       - sammlerraum-uploads:/data/uploads
     healthcheck:

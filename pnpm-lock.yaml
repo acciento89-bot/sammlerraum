@@ -68,7 +68,11 @@ importers:
         specifier: 4.1.11
         version: 4.1.11
 
-  packages/contracts: {}
+  packages/contracts:
+    dependencies:
+      zod:
+        specifier: 4.1.11
+        version: 4.1.11
 
   packages/db:
     dependencies:
@@ -86,7 +90,11 @@ importers:
         specifier: 7.10.0
         version: 7.10.0(@types/react-dom@19.2.3(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@5.9.2)
 
-  packages/domain: {}
+  packages/domain:
+    dependencies:
+      '@sammlerraum/contracts':
+        specifier: workspace:*
+        version: link:../contracts
 
   packages/queue:
     dependencies:

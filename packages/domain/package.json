@@ -6,5 +6,8 @@
     "build": "pnpm typecheck",
     "lint": "prettier --check .",
     "typecheck": "tsc --noEmit --project ../../tsconfig.base.json"
+  },
+  "dependencies": {
+    "@sammlerraum/contracts": "workspace:*"
   }
 }
