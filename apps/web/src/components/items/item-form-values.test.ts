@@ -22,6 +22,16 @@ describe("item form money conversion", () => {
   it("rejects the first amount beyond the safe minor-unit contract", () => {
     expect(() => minorUnits("90071992547409.92")).toThrow("money");
   });
+
+  it("uses zero fractional digits for JPY minor units", () => {
+    expect(minorUnits("123", "JPY")).toBe(123);
+    expect(majorUnits(123, "JPY")).toBe("123");
+  });
+
+  it("uses three fractional digits for KWD minor units", () => {
+    expect(minorUnits("1.234", "KWD")).toBe(1234);
+    expect(majorUnits(1234, "KWD")).toBe("1.234");
+  });
 });
 
 describe("item form canonical value preservation", () => {
@@ -56,8 +66,8 @@ describe("saved custom-field display", () => {
   });
 
   it("localizes maximum-safe-cent money without losing cents", () => {
-    const value = { amountMinor: Number.MAX_SAFE_INTEGER, currency: "JPY" };
-    expect(displayCustomFieldValue(value, "MONEY", "de")).toBe("90.071.992.547.409,91 JPY");
-    expect(displayCustomFieldValue(value, "MONEY", "en")).toBe("90,071,992,547,409.91 JPY");
+    const value = { amountMinor: Number.MAX_SAFE_INTEGER, currency: "EUR" };
+    expect(displayCustomFieldValue(value, "MONEY", "de")).toBe("90.071.992.547.409,91 EUR");
+    expect(displayCustomFieldValue(value, "MONEY", "en")).toBe("90,071,992,547,409.91 EUR");
   });
 });

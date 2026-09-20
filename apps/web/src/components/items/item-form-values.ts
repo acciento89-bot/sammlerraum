@@ -5,7 +5,7 @@ import type {
 
 export const itemCurrencyOptions = ["EUR", "USD", "CHF", "GBP"] as const;
 
-export function minorUnits(input: string): number | null {
+export function minorUnits(input: string, _currency = "EUR"): number | null {
   if (input.trim() === "") return null;
   const normalized = input.trim().replace(",", ".");
   const match = /^(\d+)(?:\.(\d{1,2}))?$/.exec(normalized);
@@ -18,7 +18,7 @@ export function minorUnits(input: string): number | null {
   return Number(amount);
 }
 
-export function majorUnits(amount: number | null): string {
+export function majorUnits(amount: number | null, _currency = "EUR"): string {
   if (amount === null) return "";
   if (!Number.isSafeInteger(amount) || amount < 0) throw new Error("money");
   const whole = Math.floor(amount / 100);

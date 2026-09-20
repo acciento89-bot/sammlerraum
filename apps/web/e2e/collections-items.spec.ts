@@ -15,6 +15,7 @@ const copy = {
     createCollection: "Sammlung anlegen",
     subcollectionName: "Name der Teilsammlung",
     createSubcollection: "Teilsammlung anlegen",
+    hierarchy: "Sammlungshierarchie",
     customFieldName: "Feldname",
     customFieldType: "Feldtyp",
     shortText: "Kurzer Text",
@@ -45,6 +46,9 @@ const copy = {
     signIn: "Anmelden",
     identifiers: "Kennungen und Code-Erfassung",
     scanStart: "Code scannen",
+    scanStop: "Scanner stoppen",
+    actionError: "Die Aktion ist fehlgeschlagen.",
+    fieldInvalid: "Bitte prüfe die benutzerdefinierten Felder."
     scanProposal: "Erkannter Vorschlag",
     scanConfirm: "Vorschlag übernehmen",
     archive: "Archivieren",
@@ -58,6 +62,7 @@ const copy = {
     createCollection: "Create collection",
     subcollectionName: "Subcollection name",
     createSubcollection: "Create subcollection",
+    hierarchy: "Collection hierarchy",
     customFieldName: "Field name",
     customFieldType: "Field type",
     shortText: "Short text",
@@ -88,6 +93,9 @@ const copy = {
     signIn: "Sign in",
     identifiers: "Identifiers and code capture",
     scanStart: "Scan code",
+    scanStop: "Stop scanner",
+    actionError: "The action failed.",
+    fieldInvalid: "Check the custom fields."
     scanProposal: "Detected proposal",
     scanConfirm: "Accept proposal",
     archive: "Archive",
@@ -174,13 +182,47 @@ async function loginTestCollector(
   await expect(page).toHaveURL(new RegExp(`/${locale}/account/profile$`));
 }
 
+
+async function writeApi<T>(
+  page: Page,
+  method: "POST" | "PUT",
+  path: string,
+  data: unknown,
+  expectedStatus: number,
+): Promise<T> {
+  const response = await page.request.fetch(path, {
+    method,
+    data,
+    headers: { origin: new URL(page.url()).origin },
+  });
+  expect(response.status(), method + " " + path).toBe(expectedStatus);
+  return response.json() as Promise<T>;
+}
+
+async function createCollectionApi(page: Page, name: string) {
+  return writeApi<{ collection: { id: string } }>(
+    page,
+    "POST",
+    "/api/v1/collections",
+    { name, visibility: "PRIVATE" },
+    201,
+  );
+}
+
+async function cleanupCollector(userId: string) {
+  await prisma.itemLocationHistory.deleteMany({ where: { assignedById: userId } });
+  await prisma.user.deleteMany({ where: { id: userId } });
+}
+
 test.describe("localized collection and item management", () => {
   test.skip(!runManagementE2E, "requires the migrated PostgreSQL database and Chromium");
 
   test.beforeAll(async () => {
     await prisma.$connect();
-    // The authentication journey intentionally exercises the database-backed limiter first.
-    // Isolate this later feature journey without changing production rate-limit behavior.
+  });
+
+  test.beforeEach(async () => {
+    // Each focused browser regression uses a fresh verified collector.
     await prisma.rateLimit.deleteMany();
   });
 
@@ -239,6 +281,12 @@ test.describe("localized collection and item management", () => {
       await page.getByRole("button", { name: labels.createSubcollection }).click();
       expect((await nodeCreated).status()).toBe(201);
       await expectTreeItem(page, "Base Set");
+      const hierarchy = page.getByRole("region", { name: labels.hierarchy, exact: true });
+      await expect.soft(hierarchy.getByRole("list")).toBeVisible();
+      const nodeDisclosure = hierarchy.getByText("Base Set", { exact: true });
+      await nodeDisclosure.focus();
+      await page.keyboard.press("Enter");
+      await expect(nodeDisclosure.locator("..")).toHaveAttribute("open", "");
 
       await page.getByLabel(labels.customFieldName).fill("Edition");
       await page.getByLabel(labels.customFieldType).selectOption({ label: labels.shortText });
@@ -331,6 +379,356 @@ test.describe("localized collection and item management", () => {
     } finally {
       await prisma.itemLocationHistory.deleteMany({ where: { assignedById: collector.userId } });
       await prisma.user.deleteMany({ where: { id: collector.userId } });
+    }
+  });
+
+  test("unrelated edits preserve nested placement, currencies, and canonical tags", async ({
+    page,
+  }, testInfo) => {
+    const locale = localeFor(testInfo);
+    const labels = copy[locale];
+    const collector = await seedTestCollector();
+
+    try {
+      await loginTestCollector(page, locale, collector);
+      const { collection } = await createCollectionApi(page, "Preservation");
+      const { node } = await writeApi<{ node: { id: string } }>(
+        page,
+        "POST",
+        "/api/v1/collections/" + collection.id + "/nodes",
+        { name: "Nested", parentId: null, visibility: "PRIVATE" },
+        201,
+      );
+      const { customField } = await writeApi<{ customField: { id: string } }>(
+        page,
+        "POST",
+        "/api/v1/collections/" + collection.id + "/custom-fields",
+        { name: "Valuation", type: "MONEY", options: [] },
+        201,
+      );
+      const { item } = await writeApi<{ item: { id: string } }>(
+        page,
+        "POST",
+        "/api/v1/items",
+        {
+          collectionId: collection.id,
+          nodeId: node.id,
+          title: "Preserved",
+          purchaseAmountMinor: 12345,
+          purchaseCurrency: "JPY",
+        },
+        201,
+      );
+      await writeApi(
+        page,
+        "PUT",
+        "/api/v1/items/" + item.id + "/tags",
+        { tags: ["Washington, D.C.", "postal history"] },
+        200,
+      );
+      await writeApi(
+        page,
+        "PUT",
+        "/api/v1/items/" + item.id + "/custom-fields/" + customField.id,
+        { value: { amountMinor: 67890, currency: "JPY" } },
+        200,
+      );
+
+      await page.route(
+        "**/api/v1/collections/" + collection.id + "/nodes",
+        async (route) => {
+          await new Promise((resolve) => setTimeout(resolve, 300));
+          await route.continue();
+        },
+      );
+      await page.goto("/" + locale + "/items/" + item.id);
+      await expect(page.getByLabel("Valuation", { exact: true })).toBeVisible();
+      await page.getByLabel(labels.title).fill("Preserved edit");
+      const customValueSaved = page.waitForResponse(
+        (response) =>
+          response.url().endsWith("/custom-fields/" + customField.id) &&
+          response.request().method() === "PUT",
+      );
+      await page.getByRole("button", { name: labels.saveItem }).click();
+      expect((await customValueSaved).status()).toBe(200);
+
+      const loaded = await page.request.get("/api/v1/items/" + item.id);
+      const body = (await loaded.json()) as {
+        item: { nodeId: string | null; purchaseAmountMinor: number | null; purchaseCurrency: string | null };
+        metadata: {
+          tags: string[];
+          customFieldValues: Array<{ fieldDefinitionId: string; value: unknown }>;
+        };
+      };
+      expect.soft(body.item.nodeId).toBe(node.id);
+      expect.soft(body.item.purchaseAmountMinor).toBe(12345);
+      expect.soft(body.item.purchaseCurrency).toBe("JPY");
+      expect.soft(body.metadata.tags).toEqual(["Washington, D.C.", "postal history"]);
+      expect.soft(
+        body.metadata.customFieldValues.find(
+          (record) => record.fieldDefinitionId === customField.id,
+        )?.value,
+      ).toEqual({ amountMinor: 67890, currency: "JPY" });
+    } finally {
+      await cleanupCollector(collector.userId);
+    }
+  });
+
+  test("a rejected core request releases the form for retry", async ({ page }, testInfo) => {
+    const locale = localeFor(testInfo);
+    const labels = copy[locale];
+    const collector = await seedTestCollector();
+
+    try {
+      await loginTestCollector(page, locale, collector);
+      const { collection } = await createCollectionApi(page, "Core retry");
+      await page.goto("/" + locale + "/items/new?collectionId=" + collection.id);
+      await page.getByLabel(labels.title).fill("Network retry");
+      await page.route("**/api/v1/items", async (route) => {
+        if (route.request().method() === "POST") await route.abort("failed");
+        else await route.continue();
+      });
+      const save = page.getByRole("button", { name: labels.saveItem });
+      await save.click();
+      await expect(page.getByRole("alert")).toContainText(labels.actionError);
+      await expect(save).toBeEnabled();
+    } finally {
+      await cleanupCollector(collector.userId);
+    }
+  });
+
+  test("metadata retry reuses the item and does not repeat a successful location", async ({
+    page,
+  }, testInfo) => {
+    const locale = localeFor(testInfo);
+    const labels = copy[locale];
+    const collector = await seedTestCollector();
+
+    try {
+      await loginTestCollector(page, locale, collector);
+      const { collection } = await createCollectionApi(page, "Metadata retry");
+      const { location } = await writeApi<{ location: { id: string } }>(
+        page,
+        "POST",
+        "/api/v1/locations",
+        { name: "Retry shelf", parentId: null, type: "SHELF", visibility: "PRIVATE" },
+        201,
+      );
+      await page.goto("/" + locale + "/items/new?collectionId=" + collection.id);
+      await page.getByLabel(labels.title).fill("Retry item");
+      await page.getByLabel(labels.location).selectOption(location.id);
+
+      let identifierAttempts = 0;
+      let locationAttempts = 0;
+      let corePosts = 0;
+      let corePatches = 0;
+      await page.route("**/api/v1/items/*/identifiers", async (route) => {
+        identifierAttempts += 1;
+        if (identifierAttempts === 1) await route.abort("failed");
+        else await route.continue();
+      });
+      await page.route("**/api/v1/items/*/location", async (route) => {
+        locationAttempts += 1;
+        await route.continue();
+      });
+      page.on("request", (request) => {
+        if (!/\/api\/v1\/items$/.test(request.url())) return;
+        if (request.method() === "POST") corePosts += 1;
+      });
+      const save = page.getByRole("button", { name: labels.saveItem });
+      const itemCreated = page.waitForResponse(
+        (response) =>
+          response.url().endsWith("/api/v1/items") && response.request().method() === "POST",
+      );
+      await save.click();
+      const created = (await (await itemCreated).json()) as { item: { id: string } };
+      await expect(page.getByRole("alert")).toBeVisible();
+      await expect(save).toBeEnabled();
+
+      page.on("request", (request) => {
+        if (
+          request.url().endsWith("/api/v1/items/" + created.item.id) &&
+          request.method() === "PATCH"
+        ) {
+          corePatches += 1;
+        }
+      });
+      const retried = page.waitForResponse(
+        (response) =>
+          response.url().endsWith("/api/v1/items/" + created.item.id) &&
+          response.request().method() === "PATCH",
+      );
+      await save.click();
+      expect((await retried).status()).toBe(200);
+      await expect(page).toHaveURL(new RegExp("/" + locale + "/items/" + created.item.id + "$"));
+      expect(corePosts).toBe(1);
+      expect(corePatches).toBe(1);
+      expect(identifierAttempts).toBe(2);
+      expect(locationAttempts).toBe(1);
+    } finally {
+      await cleanupCollector(collector.userId);
+    }
+  });
+
+  test("invalid later custom fields cause zero writes before correction", async ({
+    page,
+  }, testInfo) => {
+    const locale = localeFor(testInfo);
+    const labels = copy[locale];
+    const collector = await seedTestCollector();
+
+    try {
+      await loginTestCollector(page, locale, collector);
+      const { collection } = await createCollectionApi(page, "Validation");
+      await writeApi(
+        page,
+        "POST",
+        "/api/v1/collections/" + collection.id + "/custom-fields",
+        { name: "Count", type: "INTEGER", options: [] },
+        201,
+      );
+      await writeApi(
+        page,
+        "POST",
+        "/api/v1/collections/" + collection.id + "/custom-fields",
+        { name: "Valuation", type: "MONEY", options: [] },
+        201,
+      );
+      await page.goto("/" + locale + "/items/new?collectionId=" + collection.id);
+      await page.getByLabel(labels.title).fill("Validate first");
+
+      const countField = page
+        .locator(".custom-field")
+        .filter({ has: page.getByLabel("Count", { exact: true }) });
+      await countField
+        .getByRole("checkbox", { name: labels.setCustomField, exact: true })
+        .check();
+      await countField.getByLabel("Count", { exact: true }).fill("1e3");
+      const moneyField = page
+        .locator(".custom-field")
+        .filter({ has: page.getByLabel("Valuation", { exact: true }) });
+      await moneyField
+        .getByRole("checkbox", { name: labels.setCustomField, exact: true })
+        .check();
+
+      const mutations: string[] = [];
+      page.on("request", (request) => {
+        if (
+          request.url().includes("/api/v1/items") &&
+          ["POST", "PATCH", "PUT"].includes(request.method())
+        ) {
+          mutations.push(request.method() + " " + new URL(request.url()).pathname);
+        }
+      });
+      await page.getByRole("button", { name: labels.saveItem }).click();
+      await expect(page.getByRole("alert")).toContainText(labels.fieldInvalid);
+      await page.waitForTimeout(250);
+      expect(mutations).toEqual([]);
+    } finally {
+      await cleanupCollector(collector.userId);
+    }
+  });
+
+  test("concurrent scanner starts acquire at most one fully disposable stream", async ({
+    page,
+  }, testInfo) => {
+    await page.addInitScript(() => {
+      const state = {
+        requests: 0,
+        resolvers: [] as Array<() => void>,
+        stopped: [] as boolean[],
+        resolveAll() {
+          for (const resolve of this.resolvers.splice(0)) resolve();
+        },
+      };
+      Object.defineProperty(globalThis, "__scannerRegression", { value: state });
+      Object.defineProperty(globalThis, "BarcodeDetector", {
+        configurable: true,
+        value: class {
+          async detect() {
+            return new Promise<never>(() => undefined);
+          }
+        },
+      });
+      Object.defineProperty(navigator, "mediaDevices", {
+        configurable: true,
+        value: {
+          getUserMedia: () => {
+            state.requests += 1;
+            return new Promise((resolve) => {
+              state.resolvers.push(() => {
+                const index = state.stopped.push(false) - 1;
+                resolve({
+                  getTracks: () => [
+                    {
+                      stop: () => {
+                        state.stopped[index] = true;
+                      },
+                    },
+                  ],
+                });
+              });
+            });
+          },
+        },
+      });
+      HTMLMediaElement.prototype.play = async () => undefined;
+    });
+    const locale = localeFor(testInfo);
+    const labels = copy[locale];
+    const collector = await seedTestCollector();
+
+    try {
+      await loginTestCollector(page, locale, collector);
+      const { collection } = await createCollectionApi(page, "Scanner");
+      await page.goto("/" + locale + "/items/new?collectionId=" + collection.id);
+      await page.getByText(labels.identifiers, { exact: true }).click();
+      const start = page.getByRole("button", { name: labels.scanStart });
+      await start.evaluate((button) => {
+        (button as HTMLButtonElement).click();
+        (button as HTMLButtonElement).click();
+      });
+      await expect.poll(() =>
+          page.evaluate(
+            () =>
+              (globalThis as unknown as { __scannerRegression: { requests: number } })
+                .__scannerRegression.requests,
+          ),
+        )
+        .toBe(1);
+      await page.evaluate(() => {
+        (
+          globalThis as unknown as {
+            __scannerRegression: { resolveAll(): void };
+          }
+        ).__scannerRegression.resolveAll();
+      });
+      const stop = page.getByRole("button", { name: labels.scanStop });
+      await expect(stop).toBeVisible();
+      await stop.click();
+      expect(
+        await page.evaluate(
+          () =>
+            (
+              globalThis as unknown as {
+                __scannerRegression: { stopped: boolean[] };
+              }
+            ).__scannerRegression.stopped,
+        ),
+      ).toEqual([true]);
+      await page.goto("/" + locale + "/collections");
+      expect(
+        await page.evaluate(
+          () =>
+            (
+              globalThis as unknown as {
+                __scannerRegression: { stopped: boolean[] };
+              }
+            ).__scannerRegression.stopped.every(Boolean),
+        ),
+      ).toBe(true);
+    } finally {
+      await cleanupCollector(collector.userId);
     }
   });
 });
