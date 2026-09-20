@@ -244,3 +244,10 @@ Every completed and independently reviewed task must be checked off in its detai
 - 113 unit/static tests passed; dedicated integration run12 passed including5 actual DB cases. Required Playwright authentication smoke: **1 passed**, not skipped, on migrated PostgreSQL17.
 - Migration/lint/typecheck/workspace build/Compose and both Docker builds all passed. Fresh review approved after all3 findings fixed; no findings remain.
 - Task6 checked off. Next Task7 localized authentication/profile/security UI. Completion docs-only with [skip ci]; tested code unchanged.
+
+### Phase 02 Task 7 — tests-only RED checkpoint, implementation pending
+
+- Base `78a9b00`. Browser journeys and test-only TLS SMTP/Next harness prepared; CI installs Chromium. Production code unchanged.
+- Local syntax/format/typecheck checks pass. Local browser run cannot establish meaningful RED because Chromium/PostgreSQL are absent; GitHub CI must demonstrate missing UI failure before implementation.
+- Runtime-generated one-day localhost certificate/key remain in test temporary files; no committed credentials or production mail bypass.
+- Checkpoint is intentionally failing and not reviewed completion. No Task7 checkbox is ticked.
