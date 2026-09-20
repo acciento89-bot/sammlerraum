@@ -15,7 +15,15 @@ import { useEffect, useState, type FormEvent, type ReactNode } from "react";
 
 import { errorMessage } from "../collections/collections-manager";
 import { CodeScanner } from "./code-scanner";
-import { majorUnits, minorUnits } from "./item-form-values";
+import {
+  displayCustomFieldValue,
+  integerCustomFieldValue,
+  itemCurrencyOptions,
+  majorUnits,
+  minorUnits,
+  tagsFromInput,
+  tagsInputValue,
+} from "./item-form-values";
 
 type Identifier = { type: string; value: string };
 type ItemMetadata = {
@@ -219,10 +227,7 @@ export function ItemForm({
     const cleanIdentifiers = identifiers
       .map((identifier) => ({ type: identifier.type, value: identifier.value.trim() }))
       .filter((identifier) => identifier.value);
-    const tags = String(form.get("tags") ?? "")
-      .split(",")
-      .map((tag) => tag.trim())
-      .filter(Boolean);
+    const tags = tagsFromInput(String(form.get("tags") ?? ""));
     const requests: Array<{ kind: string; response: Promise<Response> }> = [
       {
         kind: "identifiers",
@@ -451,10 +456,11 @@ export function ItemForm({
                 <label>
                   {t("currency")}
                   <select name="purchaseCurrency" defaultValue={item?.purchaseCurrency ?? "EUR"}>
-                    <option value="EUR">EUR</option>
-                    <option value="USD">USD</option>
-                    <option value="CHF">CHF</option>
-                    <option value="GBP">GBP</option>
+                    {itemCurrencyOptions.map((currency) => (
+                      <option key={currency} value={currency}>
+                        {currency}
+                      </option>
+                    ))}
                   </select>
                 </label>
               </div>
@@ -476,7 +482,7 @@ export function ItemForm({
             <fieldset disabled={inactive || saving} className="details-fields">
               <label>
                 {t("tags")}
-                <input name="tags" defaultValue={metadata?.tags.join(", ") ?? ""} />
+                <input name="tags" defaultValue={tagsInputValue(metadata?.tags ?? [])} />
                 <span className="field-help">{t("tagsHelp")}</span>
               </label>
               <label>
@@ -624,7 +630,7 @@ function customValue(field: CustomFieldDefinition, form: FormData): CanonicalCus
     case "URL":
       return String(form.get(name) ?? "");
     case "INTEGER":
-      return Number.parseInt(String(form.get(name)), 10);
+      return integerCustomFieldValue(String(form.get(name)));
     case "DECIMAL":
       return String(form.get(name) ?? "").replace(",", ".");
     case "BOOLEAN":
@@ -727,10 +733,11 @@ function CustomFieldControl({
         <label>
           {t("currency")}
           <select name={`${name}-currency`} defaultValue={money?.currency ?? "EUR"}>
-            <option value="EUR">EUR</option>
-            <option value="USD">USD</option>
-            <option value="CHF">CHF</option>
-            <option value="GBP">GBP</option>
+            {itemCurrencyOptions.map((currency) => (
+              <option key={currency} value={currency}>
+                {currency}
+              </option>
+            ))}
           </select>
         </label>
       </div>,
@@ -775,7 +782,7 @@ function ItemSummary({
         const field = fields.find((candidate) => candidate.id === record.fieldDefinitionId);
         return field ? (
           <p key={record.fieldDefinitionId}>
-            {field.name}: {displayValue(record.value)}
+            {field.name}: {displayCustomFieldValue(record.value)}
           </p>
         ) : null;
       })}
@@ -791,9 +798,3 @@ function ItemSummary({
   );
 }
 
-function displayValue(value: CanonicalCustomFieldValue): string {
-  if (Array.isArray(value)) return value.join(", ");
-  if (typeof value === "object") return `${majorUnits(value.amountMinor)} ${value.currency}`;
-  if (typeof value === "boolean") return value ? "✓" : "—";
-  return String(value);
-}
