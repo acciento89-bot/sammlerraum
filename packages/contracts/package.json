@@ -7,6 +7,7 @@
     "./collections": "./src/collections.ts",
     "./custom-fields": "./src/custom-fields.ts",
     "./items": "./src/items.ts",
+    "./locations": "./src/locations.ts",
     "./openapi": "./src/openapi.ts",
     "./profile": "./src/profile.ts"
   },

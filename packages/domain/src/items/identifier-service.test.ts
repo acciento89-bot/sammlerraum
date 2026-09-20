@@ -315,7 +315,7 @@ describe.runIf(runIntegration)("identifier and tag PostgreSQL integration", () =
       data: { ownerId, name: `${label} collection` },
     });
     const item = await prisma!.collectibleItem.create({
-      data: { collectionId: collection.id, title: `${label} item` },
+      data: { collectionId: collection.id, ownerId, title: `${label} item` },
     });
     return { ownerId, collectionId: collection.id, itemId: item.id };
   }
@@ -337,7 +337,11 @@ describe.runIf(runIntegration)("identifier and tag PostgreSQL integration", () =
       const firstTags = createTagService(prisma! as unknown as TagDatabase, first.ownerId);
       const secondTags = createTagService(prisma! as unknown as TagDatabase, second.ownerId);
       const sameOwnerItem = await prisma!.collectibleItem.create({
-        data: { collectionId: first.collectionId, title: "First owner second item" },
+        data: {
+          collectionId: first.collectionId,
+          ownerId: first.ownerId,
+          title: "First owner second item",
+        },
       });
 
       await expect(
@@ -392,7 +396,11 @@ describe.runIf(runIntegration)("identifier and tag PostgreSQL integration", () =
     try {
       const fixture = await createOwnerAndItem("Concurrent tags", cleanupOwnerIds);
       const secondItem = await prisma!.collectibleItem.create({
-        data: { collectionId: fixture.collectionId, title: "Concurrent tags second item" },
+        data: {
+          collectionId: fixture.collectionId,
+          ownerId: fixture.ownerId,
+          title: "Concurrent tags second item",
+        },
       });
       await prisma!.tag.createMany({
         data: [
