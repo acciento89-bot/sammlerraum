@@ -58,7 +58,11 @@ jobs:
           NODE_ENV: production
         run: pnpm build
       - name: Run real database health and pg-boss singleton integration tests
-        run: RUN_DATABASE_INTEGRATION=1 pnpm vitest run packages/db/src/postgres.integration.test.ts packages/queue/src/postgres.integration.test.ts
+        run: >-
+          RUN_DATABASE_INTEGRATION=1 pnpm vitest run
+          packages/db/src/postgres.integration.test.ts
+          packages/queue/src/postgres.integration.test.ts
+          packages/domain/src/identity/profile-service.test.ts
       - run: bash scripts/verify-compose.sh
       - run: docker build -f Dockerfile.web --build-arg NEXT_PUBLIC_APP_ORIGIN=https://example.invalid .
       - run: docker build -f Dockerfile.worker .
