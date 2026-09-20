@@ -236,3 +236,11 @@ Every completed and independently reviewed task must be checked off in its detai
 - Ruling: Task6 tests real handlers over a loopback HTTP harness; Task7 adds actual Next/browser UI journeys once pages exist — respects task order; cost if wrong: additional dispatch integration coverage.
 - Ruling: no local PostgreSQL; GitHub CI must execute `RUN_AUTH_E2E=1` against migrated PostgreSQL17 with a passed, not skipped, test before completion — local skip is not success evidence; cost if wrong: CI/harness correction.
 - Task remains unchecked until full CI and real auth smoke succeed.
+
+### Phase 02 Task 6 — COMPLETE
+
+- Reviewed code remote `8df9a828e287e1fc2eb5c0f586851e3e0635c6fb`.
+- Full CI SUCCESS: https://github.com/acciento89-bot/sammlerraum/actions/runs/35523415832 (job106111327853).
+- 113 unit/static tests passed; dedicated integration run12 passed including5 actual DB cases. Required Playwright authentication smoke: **1 passed**, not skipped, on migrated PostgreSQL17.
+- Migration/lint/typecheck/workspace build/Compose and both Docker builds all passed. Fresh review approved after all3 findings fixed; no findings remain.
+- Task6 checked off. Next Task7 localized authentication/profile/security UI. Completion docs-only with [skip ci]; tested code unchanged.
