@@ -329,9 +329,12 @@ describe.runIf(runIntegration)("custom field PostgreSQL integration", () => {
   }
 
   it("round-trips every typed column and enforces owner and same-collection boundaries", async () => {
-    const ownerId = await createOwner("Custom field owner");
-    const otherOwnerId = await createOwner("Other custom field owner");
+    const cleanupOwnerIds: string[] = [];
     try {
+      const ownerId = await createOwner("Custom field owner");
+      cleanupOwnerIds.push(ownerId);
+      const otherOwnerId = await createOwner("Other custom field owner");
+      cleanupOwnerIds.push(otherOwnerId);
       const collection = await prisma!.collection.create({
         data: { ownerId, name: "Typed values" },
       });
@@ -491,9 +494,21 @@ describe.runIf(runIntegration)("custom field PostgreSQL integration", () => {
             integerValue: 12n,
           },
         }),
-      ).rejects.toMatchObject({ code: "P2004" });
+      ).rejects.toMatchObject({
+        code: "P2039",
+        message: expect.stringContaining("CustomFieldValue_typedShape_check"),
+        meta: {
+          driverAdapterError: {
+            cause: {
+              kind: "postgres",
+              originalCode: "23514",
+              originalMessage: expect.stringContaining("CustomFieldValue_typedShape_check"),
+            },
+          },
+        },
+      });
     } finally {
-      await prisma!.user.deleteMany({ where: { id: { in: [ownerId, otherOwnerId] } } });
+      await prisma!.user.deleteMany({ where: { id: { in: cleanupOwnerIds } } });
     }
   });
 });
