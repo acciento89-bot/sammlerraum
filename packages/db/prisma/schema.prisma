@@ -58,6 +58,7 @@ model User {
   passkeys      Passkey[]
   profile       UserProfile?
   collections   Collection[]
+  tags          Tag[]
 
   @@unique([email])
   @@map("user")
@@ -115,9 +116,43 @@ model CollectibleItem {
   updatedAt           DateTime        @updatedAt
   collection          Collection      @relation(fields: [collectionId], references: [id], onDelete: Cascade)
   node                CollectionNode? @relation(fields: [nodeId, collectionId], references: [id, collectionId], onDelete: Restrict)
+  identifiers         ItemIdentifier[]
+  itemTags            ItemTag[]
 
   @@index([collectionId])
   @@index([nodeId, collectionId])
+}
+
+model ItemIdentifier {
+  id              String          @id @default(uuid()) @db.Uuid
+  itemId          String          @db.Uuid
+  type            String
+  value           String
+  normalizedValue String
+  item            CollectibleItem @relation(fields: [itemId], references: [id], onDelete: Cascade)
+
+  @@unique([itemId, type, normalizedValue])
+}
+
+model Tag {
+  id             String    @id @default(uuid()) @db.Uuid
+  ownerId        String
+  name           String
+  normalizedName String
+  owner          User      @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  itemTags       ItemTag[]
+
+  @@unique([ownerId, normalizedName])
+}
+
+model ItemTag {
+  itemId String          @db.Uuid
+  tagId  String          @db.Uuid
+  item   CollectibleItem @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  tag    Tag             @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([itemId, tagId])
+  @@index([tagId])
 }
 
 model Session {

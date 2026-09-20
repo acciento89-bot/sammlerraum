@@ -89,7 +89,7 @@ git commit -m "feat: add collection hierarchy"
 - Consumes: collection membership/ownership, collection node.
 - Produces: `createItem`, `updateItem`, `archiveItem`, `splitQuantityItem`.
 
-- [ ] **Step 1: Write failing quantity split test**
+- [x] **Step 1: Write failing quantity split test**
 
 ```ts
 it("splits a quantity item without changing total quantity", async () => {
@@ -99,18 +99,18 @@ it("splits a quantity item without changing total quantity", async () => {
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run packages/domain/src/items/item-service.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Add item model and service**
+- [x] **Step 3: Add item model and service**
 
 Add `CollectibleItem` with title, public description, private notes, quantity > 0, acquisition type enum, acquisition date, purchase amount as integer minor units plus ISO currency, visibility, trade status, archived/disposed timestamps.
 
 Splitting runs in one transaction and rejects split counts <= 0 or >= current quantity.
 
-- [ ] **Step 4: Run migration and tests**
+- [x] **Step 4: Run migration and tests**
 
 Run:
 ```bash
@@ -120,7 +120,7 @@ pnpm vitest run packages/domain/src/items/item-service.test.ts
 
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/db packages/domain/src/items packages/contracts/src/items.ts

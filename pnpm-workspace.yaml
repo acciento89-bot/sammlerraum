@@ -2,6 +2,6 @@ packages:
   - apps/*
   - packages/*
 onlyBuiltDependencies:
-  - '@prisma/engines'
+  - "@prisma/engines"
   - esbuild
   - prisma
