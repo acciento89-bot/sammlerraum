@@ -7,13 +7,19 @@ export function proxy(request: NextRequest): NextResponse {
   const routeLocale = request.nextUrl.pathname.slice(1);
   if (routeLocale === "de" || routeLocale === "en") {
     const response = NextResponse.next();
-    response.cookies.set(localeCookieName, routeLocale, {
-      httpOnly: true,
-      maxAge: 60 * 60 * 24 * 365,
-      sameSite: "lax",
-      secure: process.env.NODE_ENV === "production",
-      path: "/",
-    });
+    if (
+      !request.headers.has("next-router-prefetch") &&
+      request.headers.get("purpose") !== "prefetch" &&
+      request.headers.get("sec-purpose") !== "prefetch"
+    ) {
+      response.cookies.set(localeCookieName, routeLocale, {
+        httpOnly: true,
+        maxAge: 60 * 60 * 24 * 365,
+        sameSite: "lax",
+        secure: process.env.NODE_ENV === "production",
+        path: "/",
+      });
+    }
     return response;
   }
 
