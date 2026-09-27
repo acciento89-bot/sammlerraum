@@ -29,6 +29,8 @@ export function CodeScanner({
 }) {
   const video = useRef<HTMLVideoElement>(null);
   const stream = useRef<MediaStream | undefined>(undefined);
+  const starting = useRef(false);
+  const generation = useRef(0);
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const [scanning, setScanning] = useState(false);
   const [proposal, setProposal] = useState("");
@@ -41,6 +43,8 @@ export function CodeScanner({
   ).BarcodeDetector;
 
   function stop() {
+    generation.current += 1;
+    starting.current = false;
     if (timer.current) clearTimeout(timer.current);
     stream.current?.getTracks().forEach((track) => track.stop());
     stream.current = undefined;
@@ -56,19 +60,28 @@ export function CodeScanner({
   }, []);
 
   async function start() {
-    if (!Detector || !video.current) return;
+    if (!Detector || !video.current || starting.current || stream.current) return;
+    starting.current = true;
+    const activeGeneration = ++generation.current;
     setError("");
     try {
-      stream.current = await navigator.mediaDevices.getUserMedia({
+      const acquired = await navigator.mediaDevices.getUserMedia({
         video: { facingMode: { ideal: "environment" } },
         audio: false,
       });
-      video.current.srcObject = stream.current;
+      if (generation.current !== activeGeneration || !video.current) {
+        acquired.getTracks().forEach((track) => track.stop());
+        return;
+      }
+      stream.current = acquired;
+      video.current.srcObject = acquired;
       await video.current.play();
+      if (generation.current !== activeGeneration) return;
+      starting.current = false;
       setScanning(true);
       const detector = new Detector({ formats: ["ean_13", "ean_8", "upc_a", "upc_e"] });
       const scan = async () => {
-        if (!video.current || !stream.current) return;
+        if (!video.current || !stream.current || generation.current !== activeGeneration) return;
         try {
           const result = await detector.detect(video.current);
           if (result[0]?.rawValue) {
@@ -81,12 +94,12 @@ export function CodeScanner({
           stop();
           return;
         }
-        timer.current = setTimeout(scan, 400);
+        if (generation.current === activeGeneration) timer.current = setTimeout(scan, 400);
       };
       await scan();
     } catch {
       setError(copy.cameraError);
-      stop();
+      if (generation.current === activeGeneration) stop();
     }
   }
 

@@ -89,18 +89,24 @@ export function CollectionDetail({
 
   async function mutate(url: string, method: string, body?: unknown) {
     setError("");
-    const request: RequestInit = { method };
-    if (body !== undefined) {
-      request.headers = { "content-type": "application/json" };
-      request.body = JSON.stringify(body);
-    }
-    const response = await fetch(url, request);
-    if (!response.ok) {
-      setError(await errorMessage(response, common("error")));
+    try {
+      const request: RequestInit = { method };
+      if (body !== undefined) {
+        request.headers = { "content-type": "application/json" };
+        request.body = JSON.stringify(body);
+      }
+      const response = await fetch(url, request);
+      if (!response.ok) throw response;
+      await load();
+      return true;
+    } catch (problem) {
+      setError(
+        problem instanceof Response
+          ? await errorMessage(problem, common("error"))
+          : common("error"),
+      );
       return false;
     }
-    await load();
-    return true;
   }
 
   if (!data) {
@@ -127,13 +133,18 @@ export function CollectionDetail({
 
   async function deleteCollection() {
     if (!window.confirm(t("deleteConfirm"))) return;
-    const response = await fetch(`/api/v1/collections/${collectionId}`, { method: "DELETE" });
-    if (!response.ok) {
-      setError(await errorMessage(response, common("error")));
-      return;
+    try {
+      const response = await fetch(`/api/v1/collections/${collectionId}`, { method: "DELETE" });
+      if (!response.ok) throw response;
+      router.push(`/${locale}/collections`);
+      router.refresh();
+    } catch (problem) {
+      setError(
+        problem instanceof Response
+          ? await errorMessage(problem, common("error"))
+          : common("error"),
+      );
     }
-    router.push(`/${locale}/collections`);
-    router.refresh();
   }
 
   async function createNode(event: FormEvent<HTMLFormElement>) {
@@ -375,16 +386,10 @@ function RecordTree<T extends TreeRecord>({
     const children = records.filter((record) => record.parentId === parentId);
     if (children.length === 0) return null;
     return (
-      <ul role={parentId === null ? "tree" : "group"} className="management-tree">
+      <ul className="management-tree">
         {children.map((record) => {
-          const hasChildren = records.some((candidate) => candidate.parentId === record.id);
           return (
-            <li
-              aria-expanded={hasChildren ? true : undefined}
-              aria-label={record.name}
-              role="treeitem"
-              key={record.id}
-            >
+            <li key={record.id}>
               {render(record)}
               {branch(record.id)}
             </li>

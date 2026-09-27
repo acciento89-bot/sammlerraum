@@ -17,15 +17,21 @@ export function CollectionsManager({ locale }: { locale: "de" | "en" }) {
 
   async function load() {
     setLoading(true);
-    const response = await fetch("/api/v1/collections", { cache: "no-store" });
-    if (response.ok) {
+    try {
+      const response = await fetch("/api/v1/collections", { cache: "no-store" });
+      if (!response.ok) throw response;
       const body = (await response.json()) as { collections: Collection[] };
       setCollections(body.collections);
       setError("");
-    } else {
-      setError(await errorMessage(response, common("error")));
+    } catch (problem) {
+      setError(
+        problem instanceof Response
+          ? await errorMessage(problem, common("error"))
+          : common("error"),
+      );
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }
 
   useEffect(() => {
@@ -37,17 +43,25 @@ export function CollectionsManager({ locale }: { locale: "de" | "en" }) {
     setError("");
     const form = event.currentTarget;
     const data = new FormData(form);
-    const response = await fetch("/api/v1/collections", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({
-        name: data.get("name"),
-        visibility: data.get("visibility") as Visibility,
-      }),
-    });
-    if (!response.ok) return setError(await errorMessage(response, common("error")));
-    form.reset();
-    await load();
+    try {
+      const response = await fetch("/api/v1/collections", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          name: data.get("name"),
+          visibility: data.get("visibility") as Visibility,
+        }),
+      });
+      if (!response.ok) throw response;
+      form.reset();
+      await load();
+    } catch (problem) {
+      setError(
+        problem instanceof Response
+          ? await errorMessage(problem, common("error"))
+          : common("error"),
+      );
+    }
   }
 
   return (

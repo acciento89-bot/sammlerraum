@@ -80,6 +80,8 @@ export function ItemForm({
   const router = useRouter();
   const [collections, setCollections] = useState<Collection[]>([]);
   const [collectionId, setCollectionId] = useState(initialCollectionId);
+  const [nodeId, setNodeId] = useState("");
+  const [optionsCollectionId, setOptionsCollectionId] = useState("");
   const [nodes, setNodes] = useState<CollectionNode[]>([]);
   const [fields, setFields] = useState<CustomFieldDefinition[]>([]);
   const [locations, setLocations] = useState<StorageLocation[]>([]);
@@ -109,6 +111,7 @@ export function ItemForm({
           setItem(itemBody.item);
           setMetadata(itemBody.metadata);
           setCollectionId(itemBody.item.collectionId);
+          setNodeId(itemBody.item.nodeId ?? "");
           setWorkingItemId(itemBody.item.id);
           const loadedIdentifiers = itemBody.metadata?.identifiers.map(({ type, value }) => ({
             type,
@@ -141,8 +144,12 @@ export function ItemForm({
     if (!collectionId) {
       setNodes([]);
       setFields([]);
+      setOptionsCollectionId("");
       return;
     }
+    setOptionsCollectionId("");
+    setNodes([]);
+    setFields([]);
     let cancelled = false;
     void Promise.all([
       read<{ nodes: CollectionNode[] }>(`/api/v1/collections/${collectionId}/nodes`),
@@ -154,6 +161,7 @@ export function ItemForm({
         if (!cancelled) {
           setNodes(nodeBody.nodes);
           setFields(fieldBody.customFields);
+          setOptionsCollectionId(collectionId);
         }
       })
       .catch(async (problem) => {
@@ -177,7 +185,7 @@ export function ItemForm({
 
   async function save(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!collectionId || inactive) return;
+    if (!collectionId || optionsCollectionId !== collectionId || inactive) return;
     setSaving(true);
     setError("");
     setStatus("");
@@ -194,7 +202,7 @@ export function ItemForm({
       return;
     }
     const core = {
-      nodeId: String(form.get("nodeId") ?? "") || null,
+      nodeId: nodeId || null,
       title: form.get("title"),
       publicDescription: String(form.get("publicDescription") ?? "").trim() || null,
       privateNotes: String(form.get("privateNotes") ?? "").trim() || null,
@@ -206,49 +214,16 @@ export function ItemForm({
       visibility: form.get("visibility"),
       tradeStatus: form.get("tradeStatus"),
     };
-    let targetId = workingItemId;
-    let createdNow = false;
-    const coreResponse = await fetch(targetId ? `/api/v1/items/${targetId}` : "/api/v1/items", {
-      method: targetId ? "PATCH" : "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify(targetId ? core : { ...core, collectionId }),
-    });
-    if (!coreResponse.ok) {
-      setError(await errorMessage(coreResponse, common("error")));
-      setSaving(false);
-      return;
-    }
-    const coreBody = (await coreResponse.json()) as { item: CollectibleItem };
-    setItem(coreBody.item);
-    if (!targetId) {
-      targetId = coreBody.item.id;
-      createdNow = true;
-      setWorkingItemId(targetId);
-      setStatus(t("coreCreated"));
-    }
-
     const cleanIdentifiers = identifiers
       .map((identifier) => ({ type: identifier.type, value: identifier.value.trim() }))
       .filter((identifier) => identifier.value);
     const tags = tagsFromInput(String(form.get("tags") ?? ""));
-    const requests: Array<{ kind: string; response: Promise<Response> }> = [
-      {
-        kind: "identifiers",
-        response: put(`/api/v1/items/${targetId}/identifiers`, {
-          identifiers: cleanIdentifiers,
-        }),
-      },
-      { kind: "tags", response: put(`/api/v1/items/${targetId}/tags`, { tags }) },
-    ];
-
+    const fieldValues: Array<{ id: string; value: CanonicalCustomFieldValue | null }> = [];
     try {
       for (const field of fields) {
         const enabled = form.has(`field-enabled-${field.id}`);
         const value = enabled ? customValue(field, form) : null;
-        requests.push({
-          kind: `field-${field.id}`,
-          response: put(`/api/v1/items/${targetId}/custom-fields/${field.id}`, { value }),
-        });
+        fieldValues.push({ id: field.id, value });
       }
     } catch {
       setError(t("fieldInvalid"));
@@ -257,52 +232,111 @@ export function ItemForm({
     }
 
     const selectedLocationId = String(form.get("locationId") ?? "") || null;
-    if (selectedLocationId !== initialLocationId) {
-      requests.push({
-        kind: "location",
-        response: put(`/api/v1/items/${targetId}/location`, {
-          locationId: selectedLocationId,
-        }),
+    let createdNow = false;
+    try {
+      let targetId = workingItemId;
+      const coreResponse = await fetch(targetId ? `/api/v1/items/${targetId}` : "/api/v1/items", {
+        method: targetId ? "PATCH" : "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(targetId ? core : { ...core, collectionId }),
       });
-    }
-    const responses = await Promise.all(
-      requests.map(async (request) => ({ kind: request.kind, response: await request.response })),
-    );
-    const locationResponse = responses.find((entry) => entry.kind === "location")?.response;
-    if (locationResponse?.ok) setInitialLocationId(selectedLocationId);
-    const failed = responses.find((entry) => !entry.response.ok);
-    if (failed) {
-      setError(
-        await errorMessage(
-          failed.response,
-          createdNow ? t("partialSaveError") : t("metadataSaveError"),
-        ),
-      );
-      setStatus(t("retryWithoutDuplicate"));
-      setSaving(false);
-      return;
-    }
+      if (!coreResponse.ok) {
+        setError(await errorMessage(coreResponse, common("error")));
+        return;
+      }
+      const coreBody = (await coreResponse.json()) as { item: CollectibleItem };
+      setItem(coreBody.item);
+      if (!targetId) {
+        targetId = coreBody.item.id;
+        createdNow = true;
+        setWorkingItemId(targetId);
+        setStatus(t("coreCreated"));
+      }
 
-    setSaving(false);
-    router.push(`/${locale}/items/${targetId}`);
-    router.refresh();
+      const requests: Array<{ kind: string; response: Promise<Response> }> = [
+        {
+          kind: "identifiers",
+          response: put(`/api/v1/items/${targetId}/identifiers`, {
+            identifiers: cleanIdentifiers,
+          }),
+        },
+        { kind: "tags", response: put(`/api/v1/items/${targetId}/tags`, { tags }) },
+        ...fieldValues.map(({ id, value }) => ({
+          kind: `field-${id}`,
+          response: put(`/api/v1/items/${targetId}/custom-fields/${id}`, { value }),
+        })),
+      ];
+      if (selectedLocationId !== initialLocationId) {
+        requests.push({
+          kind: "location",
+          response: put(`/api/v1/items/${targetId}/location`, {
+            locationId: selectedLocationId,
+          }),
+        });
+      }
+      const responses = await Promise.allSettled(requests.map((request) => request.response));
+      const locationIndex = requests.findIndex((request) => request.kind === "location");
+      const locationResult = responses[locationIndex];
+      if (locationResult?.status === "fulfilled" && locationResult.value.ok) {
+        setInitialLocationId(selectedLocationId);
+      }
+      const failed = responses.find((result) => result.status === "rejected" || !result.value.ok);
+      if (failed) {
+        const fallback = createdNow ? t("partialSaveError") : t("metadataSaveError");
+        setError(
+          failed.status === "fulfilled" ? await errorMessage(failed.value, fallback) : fallback,
+        );
+        setStatus(t("retryWithoutDuplicate"));
+        return;
+      }
+
+      router.push(`/${locale}/items/${targetId}`);
+      router.refresh();
+    } catch (problem) {
+      setError(
+        problem instanceof Response
+          ? await errorMessage(problem, common("error"))
+          : createdNow
+            ? t("partialSaveError")
+            : common("error"),
+      );
+      if (createdNow) setStatus(t("retryWithoutDuplicate"));
+    } finally {
+      setSaving(false);
+    }
   }
 
   async function archive() {
     if (!workingItemId || inactive || !window.confirm(t("archiveConfirm"))) return;
-    const response = await fetch(`/api/v1/items/${workingItemId}/archive`, { method: "POST" });
-    if (!response.ok) return setError(await errorMessage(response, common("error")));
-    const body = (await response.json()) as { item: CollectibleItem };
-    setItem(body.item);
-    setStatus(t("archived"));
+    try {
+      const response = await fetch(`/api/v1/items/${workingItemId}/archive`, { method: "POST" });
+      if (!response.ok) throw response;
+      const body = (await response.json()) as { item: CollectibleItem };
+      setItem(body.item);
+      setStatus(t("archived"));
+    } catch (problem) {
+      setError(
+        problem instanceof Response
+          ? await errorMessage(problem, common("error"))
+          : common("error"),
+      );
+    }
   }
 
   async function remove() {
     if (!workingItemId || !window.confirm(t("deleteConfirm"))) return;
-    const response = await fetch(`/api/v1/items/${workingItemId}`, { method: "DELETE" });
-    if (!response.ok) return setError(await errorMessage(response, common("error")));
-    router.push(`/${locale}/collections/${collectionId}`);
-    router.refresh();
+    try {
+      const response = await fetch(`/api/v1/items/${workingItemId}`, { method: "DELETE" });
+      if (!response.ok) throw response;
+      router.push(`/${locale}/collections/${collectionId}`);
+      router.refresh();
+    } catch (problem) {
+      setError(
+        problem instanceof Response
+          ? await errorMessage(problem, common("error"))
+          : common("error"),
+      );
+    }
   }
 
   if (loading) {
@@ -352,7 +386,7 @@ export function ItemForm({
         </div>
       ) : (
         <form className="item-form" onSubmit={save}>
-          <fieldset disabled={inactive || saving}>
+          <fieldset disabled={inactive || saving || optionsCollectionId !== collectionId}>
             <legend>{t("basic")}</legend>
             {!item && (
               <label>
@@ -360,7 +394,10 @@ export function ItemForm({
                 <select
                   name="collectionId"
                   value={collectionId}
-                  onChange={(event) => setCollectionId(event.target.value)}
+                  onChange={(event) => {
+                    setNodeId("");
+                    setCollectionId(event.target.value);
+                  }}
                   required
                 >
                   {collections.map((collection) => (
@@ -373,7 +410,11 @@ export function ItemForm({
             )}
             <label>
               {t("node")}
-              <select name="nodeId" defaultValue={item?.nodeId ?? ""}>
+              <select
+                name="nodeId"
+                value={nodeId}
+                onChange={(event) => setNodeId(event.target.value)}
+              >
                 <option value="">{t("collectionRoot")}</option>
                 {nodes.map((node) => (
                   <option key={node.id} value={node.id}>
