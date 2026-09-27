@@ -161,7 +161,8 @@
     "moveLocation": "Move location",
     "items": "Items",
     "noItems": "No items in this collection yet.",
-    "archived": "Archived"
+    "archived": "Archived",
+    "printLocationLabel": "Print label"
   },
   "ItemForm": {
     "back": "Back to collection",
@@ -241,5 +242,16 @@
     "metadataSaveError": "Some additional details could not be saved.",
     "retryWithoutDuplicate": "You can save again. The existing item will be updated without creating a duplicate.",
     "savedDetails": "Saved additional details"
+  },
+  "LocationLabel": {
+    "back": "Back to location",
+    "print": "Print",
+    "labelFor": "Label for {name}",
+    "qrAlt": "QR code for {name}",
+    "shortCode": "Short code: {code}",
+    "childLocations": "Child locations",
+    "noChildLocations": "No child locations.",
+    "items": "Items",
+    "noItems": "No items at this location."
   }
 }

@@ -351,7 +351,13 @@ export function CollectionDetail({
             <RecordTree
               records={data.locations}
               render={(location) => (
-                <LocationEditor location={location} all={data.locations} mutate={mutate} t={t} />
+                <LocationEditor
+                  location={location}
+                  all={data.locations}
+                  mutate={mutate}
+                  t={t}
+                  locale={locale}
+                />
               )}
             />
           )}
@@ -502,15 +508,20 @@ function LocationEditor({
   all,
   mutate,
   t,
+  locale,
 }: {
   location: StorageLocation;
   all: StorageLocation[];
   mutate: Mutation;
   t: Translation;
+  locale: "de" | "en";
 }) {
   return (
     <details>
       <summary>{location.name}</summary>
+      <p>
+        <Link href={`/${locale}/locations/${location.id}/label`}>{t("printLocationLabel")}</Link>
+      </p>
       <form
         className="compact-form"
         onSubmit={async (event) => {

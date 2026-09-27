@@ -14,12 +14,12 @@ export default defineConfig({
     },
     {
       name: "desktop",
-      testMatch: "**/collections-items.spec.ts",
+      testMatch: ["**/collections-items.spec.ts", "**/location-labels.spec.ts"],
       use: { viewport: { width: 1440, height: 1000 } },
     },
     {
       name: "mobile",
-      testMatch: "**/collections-items.spec.ts",
+      testMatch: ["**/collections-items.spec.ts", "**/location-labels.spec.ts"],
       use: { ...devices["Pixel 7"] },
     },
   ],

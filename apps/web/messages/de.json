@@ -161,7 +161,8 @@
     "moveLocation": "Lagerort verschieben",
     "items": "Stücke",
     "noItems": "Noch keine Stücke in dieser Sammlung.",
-    "archived": "Archiviert"
+    "archived": "Archiviert",
+    "printLocationLabel": "Etikett drucken"
   },
   "ItemForm": {
     "back": "Zur Sammlung",
@@ -241,5 +242,16 @@
     "metadataSaveError": "Die Zusatzdaten konnten nicht vollständig gespeichert werden.",
     "retryWithoutDuplicate": "Du kannst erneut speichern. Das bereits angelegte Stück wird dabei aktualisiert und nicht dupliziert.",
     "savedDetails": "Gespeicherte Zusatzdaten"
+  },
+  "LocationLabel": {
+    "back": "Zurück zum Lagerort",
+    "print": "Drucken",
+    "labelFor": "Etikett für {name}",
+    "qrAlt": "QR-Code für {name}",
+    "shortCode": "Kurzcode: {code}",
+    "childLocations": "Untergeordnete Lagerorte",
+    "noChildLocations": "Keine untergeordneten Lagerorte.",
+    "items": "Stücke",
+    "noItems": "Keine Stücke an diesem Lagerort."
   }
 }

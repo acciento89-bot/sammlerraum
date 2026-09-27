@@ -588,6 +588,43 @@ fieldset {
 .item-summary p {
   margin: 0.35rem 0;
 }
+.label-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.printable-label {
+  width: min(100%, 26rem);
+  padding: 1rem;
+  border: 2px solid var(--ink);
+  background: white;
+  color: black;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+.printable-label img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+@media print {
+  .site-header,
+  .site-footer,
+  .skip-link,
+  .label-controls {
+    display: none !important;
+  }
+  .label-page {
+    margin: 0;
+    padding: 0;
+  }
+  .printable-label {
+    break-inside: avoid;
+    width: 8cm;
+    border: 1px solid black;
+  }
+}
 @media (max-width: 44rem) {
   .management-grid {
     grid-template-columns: 1fr;
