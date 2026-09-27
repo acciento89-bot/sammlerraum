@@ -246,6 +246,7 @@
   "LocationLabel": {
     "back": "Back to location",
     "print": "Print",
+    "printLabel": "Print label",
     "labelFor": "Label for {name}",
     "qrAlt": "QR code for {name}",
     "shortCode": "Short code: {code}",

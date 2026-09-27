@@ -246,6 +246,7 @@
   "LocationLabel": {
     "back": "Zurück zum Lagerort",
     "print": "Drucken",
+    "printLabel": "Etikett drucken",
     "labelFor": "Etikett für {name}",
     "qrAlt": "QR-Code für {name}",
     "shortCode": "Kurzcode: {code}",
