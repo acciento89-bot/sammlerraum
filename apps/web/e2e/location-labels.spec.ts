@@ -74,7 +74,12 @@ test.describe("storage QR labels", () => {
     await prisma.rateLimit.deleteMany();
   });
   test.afterAll(async () => {
-    await prisma.$disconnect();
+    try {
+      // This suite runs before auth journeys against the same _test database.
+      await prisma.rateLimit.deleteMany();
+    } finally {
+      await prisma.$disconnect();
+    }
   });
 
   test("owner prints a private label and scans to localized contents; anonymous and other owner cannot see it", async ({
