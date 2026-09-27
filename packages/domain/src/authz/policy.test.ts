@@ -66,6 +66,21 @@ describe("authorization policy", () => {
     expect(authorize(ownerActor, "document.view", document)).toMatchObject({ allowed: true });
   });
 
+  it("keeps protected receipts owner-only even if a viewer role is present", () => {
+    const receipt = createTrustedResourceFacts({
+      type: "DOCUMENT",
+      ownerId: "owner-1",
+      visibility: "PUBLIC",
+      ancestorVisibility: ["PUBLIC", "PUBLIC"],
+      role: { userId: "member-1", role: "VIEWER" },
+      moderation: "VISIBLE",
+      interactionBlocked: false,
+      protected: true,
+    });
+    expect(authorize(memberActor, "document.view", receipt)).toMatchObject({ allowed: false });
+    expect(authorize(ownerActor, "document.view", receipt)).toMatchObject({ allowed: true });
+  });
+
   it("keeps SEO indexing preference separate from authorization", () => {
     const privateProfile = createTrustedResourceFacts({
       type: "PROFILE",

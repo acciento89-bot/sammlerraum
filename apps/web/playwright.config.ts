@@ -12,6 +12,7 @@ export default defineConfig({
       name: "auth",
       testMatch: "**/auth.spec.ts",
     },
+    { name: "media", testMatch: "**/media-read.spec.ts" },
     {
       name: "desktop",
       testMatch: ["**/collections-items.spec.ts", "**/location-labels.spec.ts"],

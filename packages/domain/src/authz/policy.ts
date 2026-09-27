@@ -62,10 +62,12 @@ function authorizeView(actor: ActorFacts, resource: ResourceFacts): Authorizatio
     return isPubliclyVisible(resource) ? { allowed: true, reason: "PUBLIC" } : denied();
   }
 
+  if (resource.type === "DOCUMENT" && resource.protected) {
+    return allowForRole(actor, resource, ["OWNER"]) ?? denied();
+  }
   const memberDecision = allowForRole(actor, resource, ["OWNER", "ADMIN", "EDITOR", "VIEWER"]);
   if (memberDecision) return memberDecision;
   if (!isPubliclyVisible(resource)) return denied();
-  if (resource.type === "DOCUMENT" && resource.protected) return denied();
   return { allowed: true, reason: "PUBLIC" };
 }
 

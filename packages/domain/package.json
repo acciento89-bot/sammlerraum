@@ -11,6 +11,7 @@
     "./items/item-service": "./src/items/item-service.ts",
     "./items/item-query": "./src/items/item-query.ts",
     "./media/media-service": "./src/media/media-service.ts",
+    "./media/media-read": "./src/media/media-read.ts",
     "./locations/location-service": "./src/locations/location-service.ts",
     "./locations/label-service": "./src/locations/label-service.ts",
     "./identity/profile-service": "./src/identity/profile-service.ts",
