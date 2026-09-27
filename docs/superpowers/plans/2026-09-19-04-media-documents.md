@@ -198,7 +198,7 @@ git commit -m "feat: process secure image variants"
 - Consumes: media ownership/link facts.
 - Produces: authorized byte streaming.
 
-- [ ] **Step 1: Write failing guessed-ID tests**
+- [x] **Step 1: Write failing guessed-ID tests**
 
 ```ts
 it("returns 404 for an unauthorized private document UUID", async () => {
@@ -212,23 +212,23 @@ it("allows an anonymous read only for explicitly public image links", async () =
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run apps/web/src/app/api/v1/media/media-read.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement route**
+- [x] **Step 3: Implement route**
 
 Resolve asset link/purpose first, load visibility ancestors, call policy engine, then stream bytes with content type, immutable ETag from checksum, and appropriate private/public cache headers.
 
 Documents default to private even when linked to a public item unless `DocumentLink.visibility` explicitly permits the viewer.
 
-- [ ] **Step 4: Run tests**
+- [x] **Step 4: Run tests**
 
 Run: `pnpm vitest run apps/web/src/app/api/v1/media packages/domain/src/authz`  
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add apps/web/src/app/api/v1/media packages/domain/src/authz

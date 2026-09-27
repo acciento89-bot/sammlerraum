@@ -28,3 +28,18 @@ Changed source paths: `.github/workflows/ci.yml`, `apps/web/playwright.config.ts
 ## CI correction: generic test query signature
 
 CI run `36322989684` (job `108630290340`) failed workspace TypeScript at `packages/domain/src/media/media-read.test.ts:97`: wrapping the generic `$queryRaw<T>` fixture method in Vitest `vi.fn` erased its generic return and inferred `Promise<unknown>`. The earlier web-only typecheck did not compile this domain test source. The correction removes the unnecessary mock wrapper; the fixture remains a real generic function and its existing query log supplies the zero-query assertion. Production types and behavior are unchanged. On reviewed source base `491fc652c5e0865feafa20769b6ed02207072b3f`, the same `corepack pnpm --filter @sammlerraum/domain typecheck` reproduced RED. Correction commit: `668a027661c7c01b534b83f3f89c524fa30445e6`. GREEN: domain typecheck, focused media resolver 8/8, then full `corepack pnpm typecheck` across all workspace projects, targeted Prettier check, and `git diff --check`. The PostgreSQL and production Next journeys still need a new CI run; this correction does not claim those gates passed.
+
+
+### Phase 04 Task 4 — COMPLETE
+
+- Final reviewed/tested source `92f0db8204da377fbd07087a65511cfa0b0d392d`. Protected GET media routes use authoritative recursive ancestry and live item/document/avatar references, including owner reads. Private receipts never inherit public item access or generic member access; public images use complete READY sanitized variants, originals remain owner-only. Explicit public PDFs use safe attachment/nosniff/sandbox headers. Unlinked retained bytes are inaccessible.
+- Current authorization precedes conditional304. Public bytes require revalidation, private responses are no-store, and stored filenames/keys do not enter public headers. Production Next browser evidence verifies content/header delivery and ETag denial after collection visibility revocation.
+- Independent SPEC PASS / QUALITY PASS, zero open Critical/Important. CI found a test-double generic typing error missed by web-only typecheck; reproduced RED, fixed without production type changes, full workspace typecheck GREEN, scoped rereview PASS.
+- Full CI SUCCESS: https://github.com/acciento89-bot/sammlerraum/actions/runs/36323311980 (job108631202195).315 unit/static tests;133 dedicated integration tests including real media ancestry/reference policy;2 production label,1 production media,4 auth and16 management browser journeys. Migrations/lint/typecheck/build/Compose/both Docker images/native Sharp probe passed.
+- Task4 checked off; Phase04 now4/6, overall25/91. NextTask5 retention/unlink/cleanup. Main ledger synchronized; no source merge/deploy.
+
+### Task5 late-write recovery ruling
+
+- Durable minimal cleanup tombstones may outlive deleted MediaAsset/Variant rows so generated keys remain discoverable and a later write can be reconciled. Equivalent tested provider reconciliation is acceptable. Lease/quarantine alone is not proof that unbounded storage I/O stopped. Cost: small retained cleanup metadata/background scans; do not expire tracking on an arbitrary timer. Task5 must test this boundary and preserve denied media access throughout.
+
+Previously pending realDB/productionNext gates resolved by citedCI.

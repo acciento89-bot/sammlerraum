@@ -81,3 +81,13 @@ Task3 implementation96cd21f/report785b701; exacttree remote be08b81ada3f6f16c956
 Task3 review I1 expected-rejection matcher fixed df4654a; scoped rereview SPEC/QUALITYPASS0Important. Exacttree remoteff929ab9377f4add743c58e55d02650ac4903efc; fullCI36321650793 pending. Task5 must solve late-write reconciliation; quarantine/lease alone not proof.
 
 Task3 COMPLETE ff929ab, CI36321650793SUCCESS301unit132integration22browser, nativeDockerdecodePASS. Task4 pending completion publication/main ledger sync.
+
+Task3 completion52c47fd exacttreeverified; mainledger4f5f201/blob54eeb406 synchronized. Task4 inprogress from52c47fd via freshimplementer p04_t04.
+
+Task5 ruling: durable minimal cleanup tombstones/reconciliation may outlive asset/variant rows to keep late writes discoverable after DB-lock partition; equivalent proven provider recovery acceptable. Reason: lease/quarantine not hardIObound. Cost: retained small metadata/background scans. No expiry solely by arbitrarytimer.
+
+Task4 candidate450e74b/report8499da4; exacttree remote491fc652c5e0865feafa20769b6ed02207072b3f.38focusedPASS1DBskip/typecheckPASS. Freshreview p04_t04_review and fullCIpending. Ownerread requiresliveitem/document/avatarreference perexistingpreflight.
+
+Task4 CI36322989684 failedsharedtestgeneric typing; originalimplementer reproducedTSRED/fixed668a027/report5bf4d2, focused8PASS/fullworkspaceTSPASS. ScopedrereviewPASS0Important. Exacttree remote92f0db8204da377fbd07087a65511cfa0b0d392d; fullCI36323311980 pending.
+
+Task4 COMPLETE92f0db8, CI36323311980SUCCESS315unit133integration23browser/allbuildgates. Task5pending completionsync.
