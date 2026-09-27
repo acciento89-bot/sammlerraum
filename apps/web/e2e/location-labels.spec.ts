@@ -38,6 +38,11 @@ async function seedCollector() {
 }
 
 async function login(page: Page, locale: "de" | "en", user: { email: string; password: string }) {
+  // The neutral /l/[token] route uses the locale cookie set on the locale home page.
+  await page.goto(`/${locale}`);
+  expect(
+    (await page.context().cookies()).find((cookie) => cookie.name === "NEXT_LOCALE")?.value,
+  ).toBe(locale);
   await page.goto(`/${locale}/login`);
   await page.getByLabel(locale === "de" ? "E-Mail-Adresse" : "Email address").fill(user.email);
   await page.getByLabel(locale === "de" ? "Passwort" : "Password").fill(user.password);
@@ -130,13 +135,18 @@ test.describe("storage QR labels", () => {
       expect(labelResponse.headers()["cache-control"]).toContain("no-store");
 
       const scanUrl = `/l/${location.qrToken}`;
+      // Cookie preference wins even when a scanner/browser sends another Accept-Language.
+      await page.setExtraHTTPHeaders({ "accept-language": locale === "de" ? "en" : "de" });
       await page.goto(scanUrl);
       await expect(page).toHaveURL(new RegExp(`/${locale}/locations/${location.id}$`));
       await expect(page.getByRole("heading", { name: "Blue drawer" })).toBeVisible();
       await expect(page.getByRole("link", { name: "Rare item" })).toBeVisible();
       await expect(page.locator("main")).not.toContainText("Only owner knows this secret");
 
-      const anonymous = await browser.newContext({ locale });
+      const anonymous = await browser.newContext({
+        locale,
+        extraHTTPHeaders: { "accept-language": locale },
+      });
       try {
         const valid = await anonymous.request.get(scanUrl, { maxRedirects: 0 });
         const invalid = await anonymous.request.get(`/l/${"z".repeat(43)}`, { maxRedirects: 0 });
