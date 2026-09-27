@@ -14,7 +14,7 @@ This is the handoff/status file for long-running implementation. Update it after
 | 01 | Platform Foundation | 6 | complete (6/6) | — |
 | 02 | Identity, Auth & Policies | 7 | complete (7/7) | — |
 | 03 | Collections, Items, Fields & Locations | 8 | complete (8/8) | — |
-| 04 | Media & Documents | 6 | in progress (2/6) | Task 3 |
+| 04 | Media & Documents | 6 | in progress (3/6) | Task 4 |
 | 05 | Catalog, Condition & Grading | 7 | not started | Task 1 |
 | 06 | Valuations & Market Data | 6 | not started | Task 1 |
 | 07 | Search, Smart Collections & Dashboard | 5 | not started | Task 1 |
@@ -53,9 +53,10 @@ This is the handoff/status file for long-running implementation. Update it after
 - [x] P03 T08 — Printable storage labels and protected scan-to-location flow
 - [x] P04 T01 — Storage provider and persistent local implementation
 - [x] P04 T02 — Media/document models and upload validation
-- [ ] P04 T03 — Image variant worker
+- [x] P04 T03 — Image variant worker
+- [ ] P04 T04 — Protected media and document reads
 
-**Verified completion: 23/91 tasks.** Later tasks remain open as listed in the phase table and detail plans.
+**Verified completion: 24/91 tasks.** Later tasks remain open as listed in the phase table and detail plans.
 
 ## Update rule
 
@@ -496,3 +497,12 @@ Every completed and independently reviewed task must be checked off in its detai
 - Task6 adds a minimal read-only public item/gallery presentation through authoritative public DTO and Task4 authorization, as its browser requirement needs images after logout. Owner editing remains authenticated, receipts private, noindex retained until Phase14. Cost if wrong: bounded route/presentation relocation.
 - Migration clears unsupported pre-media avatar UUIDs before the owned MediaAsset FK: no earlier media source exists for backfill. Other profile fields and bytes are untouched. Cost if wrong: avatar reselection; no production migration performed.
 - Task5 includes conservative age-gated cleanup of reserved local-provider .storage-UUID.tmp staging files after process crashes, with crash/active-write tests and unchanged four-method provider interface. Cost if wrong: an overly aggressive threshold can disrupt a long write.
+
+
+### Phase 04 Task 3 — COMPLETE
+
+- Final reviewed/tested source `ff929ab9377f4add743c58e55d02650ac4903efc`. Durable bounded image dispatch for IMAGE and DOCUMENT MIME types, atomic token/lease claims, recovery and at most five attempts. Original retained, safe processing error codes, three tracked WebP variants THUMBNAIL256/MEDIUM640/LARGE1600 with orientation applied, no enlargement and EXIF/GPS stripped. READY follows all completed writes.
+- Native Sharp is externalized and included in the final worker runtime; CI actually encodes/decodes inside that container. Queue registration precedes startup, dispatcher stops before queue teardown.
+- Independent SPEC PASS / QUALITY PASS after one rejection-matcher fixture correction; scoped rereview confirms0 open Important. Full CI SUCCESS: https://github.com/acciento89-bot/sammlerraum/actions/runs/36321650793 (job108626527423).301 unit/static tests;132 dedicated integration tests including new realDB claim/recovery and two-session advisory lock checks;2 production label,4 auth and16 management browser journeys. Migrations/lint/typecheck/build/Compose/both Docker images and final-image native decode passed.
+- Task5 integration obligation: shared dedicated-session advisory lock prevents normal processing/cleanup overlap, but a server/client partition can release it before worker notices. Observed loss aborts worker; lease expiry is not a hard storage-I/O deadline. Task5 must implement/test late-write reconciliation or fencing; arbitrary quarantine alone is not a proof. Existing key tracking remains intact until cleanup exists.
+- Task3 checked off; Phase04 now3/6, overall24/91. NextTask4 protected reads. Main ledger synchronized; no source merge or deployment.

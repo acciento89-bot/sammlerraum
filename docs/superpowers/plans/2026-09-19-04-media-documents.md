@@ -150,7 +150,7 @@ git commit -m "feat: add validated media and document uploads"
 - Consumes: job `media.process-image { assetId }`.
 - Produces: variants `THUMBNAIL`, `MEDIUM`, `LARGE`, processing status.
 
-- [ ] **Step 1: Write failing EXIF/variant test**
+- [x] **Step 1: Write failing EXIF/variant test**
 
 ```ts
 it("creates required variants and strips metadata", async () => {
@@ -164,21 +164,21 @@ it("creates required variants and strips metadata", async () => {
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run apps/worker/src/jobs/process-image.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement handler**
+- [x] **Step 3: Implement handler**
 
 Decode source once per job. Generate max-edge sizes 256, 640, 1600 while preserving aspect ratio and never upscaling. Output WebP for derived variants. Mark failures with an error code and leave original intact.
 
-- [ ] **Step 4: Run tests**
+- [x] **Step 4: Run tests**
 
 Run: `pnpm vitest run apps/worker/src/jobs/process-image.test.ts`  
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add apps/worker/src/jobs apps/worker/src/main.ts

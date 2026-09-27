@@ -28,3 +28,14 @@ Changed paths: `apps/worker/src/jobs/{process-image,image-dispatcher,image-repos
 ## Review correction
 
 The real-database fixture's incomplete-READY assertion now passes the promise directly to Vitest's `.rejects` matcher. The earlier `expect(await promise).rejects` shape would throw before Vitest could observe the intended rejection. Local PostgreSQL is unavailable, so this fixture still requires the CI database gate; the focused local test loads and skips it.
+
+
+### Phase 04 Task 3 — COMPLETE
+
+- Final reviewed/tested source `ff929ab9377f4add743c58e55d02650ac4903efc`. Durable bounded image dispatch for IMAGE and DOCUMENT MIME types, atomic token/lease claims, recovery and at most five attempts. Original retained, safe processing error codes, three tracked WebP variants THUMBNAIL256/MEDIUM640/LARGE1600 with orientation applied, no enlargement and EXIF/GPS stripped. READY follows all completed writes.
+- Native Sharp is externalized and included in the final worker runtime; CI actually encodes/decodes inside that container. Queue registration precedes startup, dispatcher stops before queue teardown.
+- Independent SPEC PASS / QUALITY PASS after one rejection-matcher fixture correction; scoped rereview confirms0 open Important. Full CI SUCCESS: https://github.com/acciento89-bot/sammlerraum/actions/runs/36321650793 (job108626527423).301 unit/static tests;132 dedicated integration tests including new realDB claim/recovery and two-session advisory lock checks;2 production label,4 auth and16 management browser journeys. Migrations/lint/typecheck/build/Compose/both Docker images and final-image native decode passed.
+- Task5 integration obligation: shared dedicated-session advisory lock prevents normal processing/cleanup overlap, but a server/client partition can release it before worker notices. Observed loss aborts worker; lease expiry is not a hard storage-I/O deadline. Task5 must implement/test late-write reconciliation or fencing; arbitrary quarantine alone is not a proof. Existing key tracking remains intact until cleanup exists.
+- Task3 checked off; Phase04 now3/6, overall24/91. NextTask4 protected reads. Main ledger synchronized; no source merge or deployment.
+
+Previously pending realDB and finalDocker gates are now resolved by the citedCI.

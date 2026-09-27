@@ -73,3 +73,11 @@ Task2 implementation e8cc3f2 / remote5b1d13a; independent SPEC PASS / QUALITY PA
 Task 2: fix round1/5 (CI fixture addressed,0 openImportant; e8cc3f2..4818fb7 / remote38dbc4aa; narrow rereviewPASS). Fresh fullCI36319866566 pending. Task3 brief/context prepared; do not start until Task2 verified checkoff/main sync.
 
 Task2 COMPLETE: source38dbc4aa, CI36319866566 SUCCESS,290unit129integration22browser/allbuilds. Review and fixture rereview PASS. Task3 pending publication/main-ledger sync.
+
+Task2 completion74e81ef saved and exacttreeverified; mainledger6d51681/blob3265ef9a synchronized. Task3 in progress from74e81ef via fresh implementer p04_t03. Task4 brief/context prepared for later review against finalTask3 contracts.
+
+Task3 implementation96cd21f/report785b701; exacttree remote be08b81ada3f6f16c9560c645849aede829fd31a.301localpass28DBskips/typecheck/build/deploy-native-smokePASS. Independent reviewer p04_t03_review active; fullCI36321548760 pending. No checkoff yet.
+
+Task3 review I1 expected-rejection matcher fixed df4654a; scoped rereview SPEC/QUALITYPASS0Important. Exacttree remoteff929ab9377f4add743c58e55d02650ac4903efc; fullCI36321650793 pending. Task5 must solve late-write reconciliation; quarantine/lease alone not proof.
+
+Task3 COMPLETE ff929ab, CI36321650793SUCCESS301unit132integration22browser, nativeDockerdecodePASS. Task4 pending completion publication/main ledger sync.
