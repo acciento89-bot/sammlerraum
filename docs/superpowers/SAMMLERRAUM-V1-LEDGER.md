@@ -14,7 +14,7 @@ This is the handoff/status file for long-running implementation. Update it after
 | 01 | Platform Foundation | 6 | complete (6/6) | — |
 | 02 | Identity, Auth & Policies | 7 | complete (7/7) | — |
 | 03 | Collections, Items, Fields & Locations | 8 | complete (8/8) | — |
-| 04 | Media & Documents | 6 | in progress (3/6) | Task 4 |
+| 04 | Media & Documents | 6 | in progress (4/6) | Task 5 |
 | 05 | Catalog, Condition & Grading | 7 | not started | Task 1 |
 | 06 | Valuations & Market Data | 6 | not started | Task 1 |
 | 07 | Search, Smart Collections & Dashboard | 5 | not started | Task 1 |
@@ -54,9 +54,10 @@ This is the handoff/status file for long-running implementation. Update it after
 - [x] P04 T01 — Storage provider and persistent local implementation
 - [x] P04 T02 — Media/document models and upload validation
 - [x] P04 T03 — Image variant worker
-- [ ] P04 T04 — Protected media and document reads
+- [x] P04 T04 — Protected media and document reads
+- [ ] P04 T05 — Safe unlink, retention and orphan cleanup
 
-**Verified completion: 24/91 tasks.** Later tasks remain open as listed in the phase table and detail plans.
+**Verified completion: 25/91 tasks.** Later tasks remain open as listed in the phase table and detail plans.
 
 ## Update rule
 
@@ -506,3 +507,16 @@ Every completed and independently reviewed task must be checked off in its detai
 - Independent SPEC PASS / QUALITY PASS after one rejection-matcher fixture correction; scoped rereview confirms0 open Important. Full CI SUCCESS: https://github.com/acciento89-bot/sammlerraum/actions/runs/36321650793 (job108626527423).301 unit/static tests;132 dedicated integration tests including new realDB claim/recovery and two-session advisory lock checks;2 production label,4 auth and16 management browser journeys. Migrations/lint/typecheck/build/Compose/both Docker images and final-image native decode passed.
 - Task5 integration obligation: shared dedicated-session advisory lock prevents normal processing/cleanup overlap, but a server/client partition can release it before worker notices. Observed loss aborts worker; lease expiry is not a hard storage-I/O deadline. Task5 must implement/test late-write reconciliation or fencing; arbitrary quarantine alone is not a proof. Existing key tracking remains intact until cleanup exists.
 - Task3 checked off; Phase04 now3/6, overall24/91. NextTask4 protected reads. Main ledger synchronized; no source merge or deployment.
+
+
+### Phase 04 Task 4 — COMPLETE
+
+- Final reviewed/tested source `92f0db8204da377fbd07087a65511cfa0b0d392d`. Protected GET media routes use authoritative recursive ancestry and live item/document/avatar references, including owner reads. Private receipts never inherit public item access or generic member access; public images use complete READY sanitized variants, originals remain owner-only. Explicit public PDFs use safe attachment/nosniff/sandbox headers. Unlinked retained bytes are inaccessible.
+- Current authorization precedes conditional304. Public bytes require revalidation, private responses are no-store, and stored filenames/keys do not enter public headers. Production Next browser evidence verifies content/header delivery and ETag denial after collection visibility revocation.
+- Independent SPEC PASS / QUALITY PASS, zero open Critical/Important. CI found a test-double generic typing error missed by web-only typecheck; reproduced RED, fixed without production type changes, full workspace typecheck GREEN, scoped rereview PASS.
+- Full CI SUCCESS: https://github.com/acciento89-bot/sammlerraum/actions/runs/36323311980 (job108631202195).315 unit/static tests;133 dedicated integration tests including real media ancestry/reference policy;2 production label,1 production media,4 auth and16 management browser journeys. Migrations/lint/typecheck/build/Compose/both Docker images/native Sharp probe passed.
+- Task4 checked off; Phase04 now4/6, overall25/91. NextTask5 retention/unlink/cleanup. Main ledger synchronized; no source merge/deploy.
+
+### Task5 late-write recovery ruling
+
+- Durable minimal cleanup tombstones may outlive deleted MediaAsset/Variant rows so generated keys remain discoverable and a later write can be reconciled. Equivalent tested provider reconciliation is acceptable. Lease/quarantine alone is not proof that unbounded storage I/O stopped. Cost: small retained cleanup metadata/background scans; do not expire tracking on an arbitrary timer. Task5 must test this boundary and preserve denied media access throughout.
