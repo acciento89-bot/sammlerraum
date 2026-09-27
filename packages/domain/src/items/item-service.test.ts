@@ -35,6 +35,9 @@ describe("item service", () => {
   it("splits a quantity item without changing total quantity", async () => {
     const transaction = {
       $queryRaw: async () => [itemFixture()],
+      itemIdentifier: { findMany: async () => [] },
+      itemTag: { findMany: async () => [] },
+      customFieldValue: { findMany: async () => [] },
       collectibleItem: {
         update: async ({ data }: { data: { quantity: number } }) => ({
           ...itemFixture(),
@@ -56,6 +59,67 @@ describe("item service", () => {
 
     expect(result.source.quantity + result.created.quantity).toBe(10);
     expect(result.created.id).not.toBe(result.source.id);
+  });
+
+  it("copies populated metadata in the locked split transaction", async () => {
+    const locationId = "00000000-0000-4000-8000-000000000030";
+    const writes: Record<string, unknown> = {};
+    const transaction = {
+      $queryRaw: async () => [
+        itemFixture({ ownerId: "owner-user-id", storageLocationId: locationId }),
+      ],
+      collectibleItem: {
+        update: async ({ data }: { data: { quantity: number } }) =>
+          itemFixture({ quantity: data.quantity }),
+        create: async ({ data }: { data: Record<string, unknown> }) => {
+          writes.item = data;
+          return itemFixture({ id: createdItemId, quantity: data.quantity });
+        },
+      },
+      itemIdentifier: {
+        findMany: async () => [{ type: "EAN", value: "00123", normalizedValue: "00123" }],
+        createMany: async ({ data }: { data: unknown }) => {
+          writes.identifiers = data;
+        },
+      },
+      itemTag: {
+        findMany: async () => [{ tagId: "tag-1" }],
+        createMany: async ({ data }: { data: unknown }) => {
+          writes.tags = data;
+        },
+      },
+      customFieldValue: {
+        findMany: async () => [],
+        createMany: async ({ data }: { data: unknown }) => {
+          writes.values = data;
+        },
+      },
+      itemLocationHistory: {
+        create: async ({ data }: { data: unknown }) => {
+          writes.history = data;
+        },
+      },
+    };
+    const service = createItemService(
+      {
+        $transaction: async <T>(operation: (tx: typeof transaction) => Promise<T>) =>
+          operation(transaction),
+      } as unknown as ItemDatabase,
+      "owner-user-id",
+    );
+
+    await service.splitQuantityItem(itemId, 3);
+    expect(writes.item).toMatchObject({ ownerId: "owner-user-id", storageLocationId: locationId });
+    expect(writes.identifiers).toEqual([
+      { itemId: createdItemId, type: "EAN", value: "00123", normalizedValue: "00123" },
+    ]);
+    expect(writes.tags).toEqual([{ itemId: createdItemId, tagId: "tag-1" }]);
+    expect(writes.history).toMatchObject({
+      itemId: createdItemId,
+      ownerId: "owner-user-id",
+      fromLocationId: null,
+      toLocationId: locationId,
+    });
   });
 
   it("creates a private item for the trusted owner in a node from the same collection", async () => {
@@ -345,6 +409,9 @@ describe("item service", () => {
     });
     const transaction = {
       $queryRaw: async () => [original],
+      itemIdentifier: { findMany: async () => [] },
+      itemTag: { findMany: async () => [] },
+      customFieldValue: { findMany: async () => [] },
       collectibleItem: {
         update: async ({ data }: { data: { quantity: number } }) => ({
           ...original,
@@ -553,6 +620,9 @@ describe.runIf(runIntegration)("item service PostgreSQL integration", () => {
               operation({
                 ...transaction,
                 $queryRaw: transaction.$queryRaw.bind(transaction),
+                itemIdentifier: transaction.itemIdentifier,
+                itemTag: transaction.itemTag,
+                customFieldValue: transaction.customFieldValue,
                 collectibleItem: {
                   update: transaction.collectibleItem.update.bind(transaction.collectibleItem),
                   create: async () => {
@@ -574,6 +644,58 @@ describe.runIf(runIntegration)("item service PostgreSQL integration", () => {
       await expect(
         prisma!.collectibleItem.count({ where: { collectionId: collection.id } }),
       ).resolves.toBe(1);
+    } finally {
+      await prisma!.user.delete({ where: { id: ownerId } });
+    }
+  });
+
+  it("rolls back the source and new row when copying metadata fails", async () => {
+    const ownerId = await createOwner();
+    const service = createItemService(prisma! as unknown as ItemDatabase, ownerId);
+    try {
+      const collection = await prisma!.collection.create({
+        data: { ownerId, name: "Metadata rollback" },
+      });
+      const item = await service.createItem({
+        collectionId: collection.id,
+        title: "Rollback",
+        quantity: 10,
+      });
+      await prisma!.itemIdentifier.create({
+        data: { itemId: item.id, type: "EAN", value: "00123", normalizedValue: "00123" },
+      });
+      const failingDatabase = {
+        $transaction: async <T>(
+          operation: (transaction: Record<string, unknown>) => Promise<T>,
+          options: { isolationLevel: "ReadCommitted" },
+        ) =>
+          prisma!.$transaction(
+            async (transaction) =>
+              operation({
+                ...transaction,
+                $queryRaw: transaction.$queryRaw.bind(transaction),
+                itemTag: transaction.itemTag,
+                customFieldValue: transaction.customFieldValue,
+                itemIdentifier: {
+                  findMany: transaction.itemIdentifier.findMany.bind(transaction.itemIdentifier),
+                  createMany: async () => {
+                    throw new Error("fixture metadata insert failure");
+                  },
+                },
+              }),
+            options,
+          ),
+      };
+      await expect(
+        createItemService(failingDatabase as unknown as ItemDatabase, ownerId).splitQuantityItem(
+          item.id,
+          3,
+        ),
+      ).rejects.toThrow("fixture metadata insert failure");
+      expect(
+        await prisma!.collectibleItem.findMany({ where: { collectionId: collection.id } }),
+      ).toMatchObject([{ id: item.id, quantity: 10 }]);
+      expect(await prisma!.itemIdentifier.count({ where: { itemId: item.id } })).toBe(1);
     } finally {
       await prisma!.user.delete({ where: { id: ownerId } });
     }

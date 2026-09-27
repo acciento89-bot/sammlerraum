@@ -173,4 +173,140 @@ describe.runIf(runIntegration)("collection/item route PostgreSQL integration", (
       await prisma!.user.deleteMany({ where: { id: { in: cleanup } } });
     }
   });
+
+  it("splits a populated item and preserves owner metadata, location count, and typed values", async () => {
+    const ownerId = randomUUID();
+    await prisma!.user.create({
+      data: {
+        id: ownerId,
+        name: "Split owner",
+        email: `${ownerId}@example.test`,
+        emailVerified: true,
+      },
+    });
+    try {
+      const collection = await prisma!.collection.create({
+        data: { ownerId, name: "Split collection" },
+      });
+      const dependencies = createManagementRouteDependencies(
+        prisma!,
+        { api: { getSession: async () => ({ user: { id: ownerId } }) } },
+        "https://sammlerraum.example",
+      );
+      const handlers = createItemRouteHandlers(dependencies);
+      const item = await dependencies.createItemService(ownerId).createItem({
+        collectionId: collection.id,
+        title: "Interchangeable stamps",
+        quantity: 10,
+        purchaseAmountMinor: 299,
+        purchaseCurrency: "EUR",
+      });
+      await dependencies
+        .createIdentifierService(ownerId)
+        .setItemIdentifiers(item.id, [{ type: "EAN", value: "0012345678905" }]);
+      await dependencies.createTagService(ownerId).setItemTags(item.id, ["Numbered"]);
+      const fields = dependencies.createCustomFieldService(ownerId);
+      const decimal = await fields.createFieldDefinition({
+        collectionId: collection.id,
+        name: "Precision",
+        type: "DECIMAL",
+      });
+      const money = await fields.createFieldDefinition({
+        collectionId: collection.id,
+        name: "Value",
+        type: "MONEY",
+      });
+      const multi = await fields.createFieldDefinition({
+        collectionId: collection.id,
+        name: "Features",
+        type: "MULTI_SELECT",
+        options: ["Signed", "Numbered"],
+      });
+      await fields.setFieldValue(item.id, decimal.id, "99999999999999999999.999999999999999999");
+      await fields.setFieldValue(item.id, money.id, { amountMinor: 12005, currency: "EUR" });
+      await fields.setFieldValue(item.id, multi.id, ["Numbered", "Signed"]);
+      const location = await dependencies
+        .createLocationService(ownerId)
+        .createLocation({ name: "Drawer" });
+      await dependencies.createLocationService(ownerId).assignItemLocation(item.id, location.id);
+
+      const response = await handlers.SPLIT_ITEM(
+        new Request(`https://sammlerraum.example/api/v1/items/${item.id}/split`, {
+          method: "POST",
+          headers: { origin: "https://sammlerraum.example", "content-type": "application/json" },
+          body: JSON.stringify({ quantity: 3 }),
+        }),
+        item.id,
+      );
+      expect(response.status).toBe(201);
+      const { result } = (await response.json()) as { result: { created: { id: string } } };
+      type OwnerRead = {
+        item: { quantity: number; purchaseAmountMinor: number };
+        metadata: {
+          location: { id: string } | null;
+          identifiers: Array<{ type: string; value: string }>;
+          tags: string[];
+          customFieldValues: Array<{ fieldDefinitionId: string; type: string; value: unknown }>;
+        };
+      };
+      const read = async (id: string): Promise<OwnerRead> => {
+        const ownerResponse = await handlers.GET_ITEM(
+          new Request(`https://sammlerraum.example/api/v1/items/${id}`),
+          id,
+        );
+        expect(ownerResponse.status).toBe(200);
+        return ownerResponse.json() as Promise<OwnerRead>;
+      };
+      const [source, created] = await Promise.all([read(item.id), read(result.created.id)]);
+      expect([source.item.quantity, created.item.quantity]).toEqual([7, 3]);
+      expect(source.item.purchaseAmountMinor).toBe(299);
+      expect(created.item.purchaseAmountMinor).toBe(299);
+      expect(created.metadata.location?.id).toBe(location.id);
+      expect(
+        created.metadata.identifiers.map(({ type, value }: { type: string; value: string }) => ({
+          type,
+          value,
+        })),
+      ).toEqual(
+        source.metadata.identifiers.map(({ type, value }: { type: string; value: string }) => ({
+          type,
+          value,
+        })),
+      );
+      expect(created.metadata.tags).toEqual(source.metadata.tags);
+      expect(created.metadata.customFieldValues).toEqual(source.metadata.customFieldValues);
+      expect(created.metadata.customFieldValues).toEqual(
+        expect.arrayContaining([
+          {
+            fieldDefinitionId: decimal.id,
+            type: "DECIMAL",
+            value: "99999999999999999999.999999999999999999",
+          },
+          {
+            fieldDefinitionId: money.id,
+            type: "MONEY",
+            value: { amountMinor: 12005, currency: "EUR" },
+          },
+          { fieldDefinitionId: multi.id, type: "MULTI_SELECT", value: ["Numbered", "Signed"] },
+        ]),
+      );
+      const rows = await prisma!.collectibleItem.findMany({
+        where: { collectionId: collection.id },
+      });
+      expect(rows.reduce((count, row) => count + row.quantity, 0)).toBe(10);
+      expect(
+        rows
+          .filter((row) => row.storageLocationId === location.id)
+          .reduce((count, row) => count + row.quantity, 0),
+      ).toBe(10);
+      expect(
+        await prisma!.itemLocationHistory.findMany({ where: { itemId: result.created.id } }),
+      ).toMatchObject([{ fromLocationId: null, toLocationId: location.id, assignedById: ownerId }]);
+      expect(
+        await prisma!.itemLocationHistory.count({ where: { itemId: result.created.id } }),
+      ).toBe(1);
+    } finally {
+      await prisma!.user.delete({ where: { id: ownerId } });
+    }
+  });
 });

@@ -1,6 +1,8 @@
 import { spawn, spawnSync } from "node:child_process";
-import { readFile, unlink, writeFile } from "node:fs/promises";
+import { readFile, symlink, unlink, writeFile } from "node:fs/promises";
+import { dirname, join } from "node:path";
 import { createServer } from "node:tls";
+import { fileURLToPath } from "node:url";
 
 const smtpPort = 3465;
 const mailboxPath = process.env.E2E_MAILBOX_PATH;
@@ -125,12 +127,28 @@ await new Promise((resolve, reject) => {
   smtpServer.listen(smtpPort, resolve);
 });
 
+const production = process.env.RUN_PRODUCTION_E2E === "1";
+const webRoot = join(dirname(fileURLToPath(import.meta.url)), "../..");
+if (production) {
+  // Standalone output omits static assets; keep browser hydration assets on the built server.
+  await symlink(
+    join(webRoot, ".next/static"),
+    join(webRoot, ".next/standalone/apps/web/.next/static"),
+    "dir",
+  ).catch((error) => {
+    if (error.code !== "EEXIST") throw error;
+  });
+}
 const next = spawn(
-  "corepack",
-  ["pnpm@10.17.1", "--filter", "@sammlerraum/web", "dev", "--hostname", "localhost"],
+  production ? process.execPath : "corepack",
+  production
+    ? [join(webRoot, ".next/standalone/apps/web/server.js")]
+    : ["pnpm@10.17.1", "--filter", "@sammlerraum/web", "dev", "--hostname", "localhost"],
   {
     env: {
       ...process.env,
+      NODE_ENV: production ? "production" : process.env.NODE_ENV,
+      HOSTNAME: "localhost",
       APP_ORIGIN: "http://localhost:3000",
       NODE_EXTRA_CA_CERTS: certificatePath,
       SMTP_HOST: "localhost",

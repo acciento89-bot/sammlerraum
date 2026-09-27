@@ -134,6 +134,11 @@ jobs:
           apps/web/src/app/api/v1/items/resource-route.integration.test.ts
       - name: Install Chromium for authentication journeys
         run: pnpm --filter @sammlerraum/web exec playwright install --with-deps chromium
+      # next dev can rewrite .next; verify the label response on the production build first.
+      - name: Run storage label browser journeys against production
+        run: >-
+          RUN_AUTH_E2E=1 RUN_PRODUCTION_E2E=1 pnpm --filter @sammlerraum/web exec playwright test
+          e2e/location-labels.spec.ts --workers=1
       - name: Run authentication browser journeys
         run: >-
           RUN_AUTH_E2E=1 pnpm --filter @sammlerraum/web exec playwright test
@@ -142,10 +147,6 @@ jobs:
         run: >-
           RUN_AUTH_E2E=1 pnpm --filter @sammlerraum/web exec playwright test
           e2e/collections-items.spec.ts --workers=1
-      - name: Run storage label browser journeys
-        run: >-
-          RUN_AUTH_E2E=1 pnpm --filter @sammlerraum/web exec playwright test
-          e2e/location-labels.spec.ts --workers=1
       - run: bash scripts/verify-compose.sh
       - run: docker build -f Dockerfile.web --build-arg NEXT_PUBLIC_APP_ORIGIN=https://example.invalid .
       - run: docker build -f Dockerfile.worker .

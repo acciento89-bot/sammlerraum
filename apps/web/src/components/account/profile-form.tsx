@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { profileFeedback } from "../auth/account-ui-state";
 
 type Profile = {
@@ -13,11 +13,14 @@ type Profile = {
 
 export function ProfileForm({ profile }: { profile: Profile | null }) {
   const t = useTranslations("Profile");
+  const [hydrated, setHydrated] = useState(false);
+  useEffect(() => setHydrated(true), []);
   const [feedback, setFeedback] = useState<
     { message: string; kind: "success" | "error"; role: "status" | "alert" } | undefined
   >();
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (!hydrated) return;
     setFeedback(undefined);
     const data = new FormData(event.currentTarget);
     const response = await fetch("/api/v1/account/profile", {
@@ -59,7 +62,9 @@ export function ProfileForm({ profile }: { profile: Profile | null }) {
         {t("bio")}
         <textarea name="bio" defaultValue={profile?.bio ?? ""} maxLength={500} />
       </label>
-      <button type="submit">{t("save")}</button>
+      <button type="submit" disabled={!hydrated}>
+        {t("save")}
+      </button>
       {feedback && (
         <p role={feedback.role} className={feedback.kind}>
           {feedback.message}

@@ -235,6 +235,21 @@ test.describe("localized authentication and account UI", () => {
     });
 
     const credentials = await registerWithPassword(page, "de");
+    const unhydrated = await browser.newContext({
+      javaScriptEnabled: false,
+      storageState: await page.context().storageState(),
+    });
+    try {
+      const staticPage = await unhydrated.newPage();
+      await staticPage.goto("/de/account/profile");
+      const staticSave = staticPage.getByRole("button", { name: "Speichern" });
+      await expect(staticSave).toBeDisabled();
+      await staticPage.getByLabel("Öffentlicher Handle").fill(`sammler-${randomUUID()}`);
+      await staticPage.getByLabel("Öffentlicher Handle").press("Enter");
+      await expect(staticPage).toHaveURL(/\/de\/account\/profile$/);
+    } finally {
+      await unhydrated.close();
+    }
     await page.getByLabel("Öffentlicher Handle").fill(`sammler-${randomUUID()}`);
     await page.getByLabel("Anzeigename").fill("Sammler");
     await page.getByLabel("Biografie").fill("Bewahrt Geschichten.");

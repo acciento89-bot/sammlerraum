@@ -18,6 +18,7 @@ type StoredItem = {
   collectionId: string;
   ownerId: string;
   nodeId: string | null;
+  storageLocationId: string | null;
   title: string;
   publicDescription: string | null;
   privateNotes: string | null;
@@ -38,6 +39,7 @@ const itemSelect = {
   collectionId: true,
   ownerId: true,
   nodeId: true,
+  storageLocationId: true,
   title: true,
   publicDescription: true,
   privateNotes: true,
@@ -57,6 +59,7 @@ type ItemWriteData = {
   collectionId: string;
   ownerId: string;
   nodeId: string | null;
+  storageLocationId?: string | null;
   title: string;
   publicDescription: string | null;
   privateNotes: string | null;
@@ -76,6 +79,57 @@ type ItemUpdateData = Partial<Omit<ItemWriteData, "collectionId">> & {
 };
 
 type ItemTransaction = {
+  itemIdentifier: {
+    findMany(args: {
+      where: { itemId: string };
+      select: typeof splitIdentifierSelect;
+    }): Promise<Array<{ type: string; value: string; normalizedValue: string }>>;
+    createMany(args: {
+      data: Array<{ itemId: string; type: string; value: string; normalizedValue: string }>;
+    }): Promise<unknown>;
+  };
+  itemTag: {
+    findMany(args: {
+      where: { itemId: string };
+      select: { tagId: true };
+    }): Promise<Array<{ tagId: string }>>;
+    createMany(args: { data: Array<{ itemId: string; tagId: string }> }): Promise<unknown>;
+  };
+  customFieldValue: {
+    findMany(args: {
+      where: { itemId: string };
+      select: typeof splitFieldSelect;
+    }): Promise<SplitFieldValue[]>;
+    createMany(args: {
+      data: Array<
+        Omit<SplitFieldValue, "multiSelectValues" | "decimalValue"> & {
+          itemId: string;
+          decimalValue: string | null;
+        }
+      >;
+    }): Promise<unknown>;
+  };
+  customFieldMultiSelectValue: {
+    createMany(args: {
+      data: Array<{
+        itemId: string;
+        fieldDefinitionId: string;
+        optionId: string;
+        position: number;
+      }>;
+    }): Promise<unknown>;
+  };
+  itemLocationHistory: {
+    create(args: {
+      data: {
+        itemId: string;
+        ownerId: string;
+        fromLocationId: null;
+        toLocationId: string;
+        assignedById: string;
+      };
+    }): Promise<unknown>;
+  };
   collectionNode: {
     findUnique(args: {
       where: { id: string };
@@ -92,6 +146,59 @@ type ItemTransaction = {
   };
   $queryRaw<T>(query: TemplateStringsArray, ...values: unknown[]): Promise<T>;
 };
+
+const splitIdentifierSelect = { type: true, value: true, normalizedValue: true } as const;
+const splitFieldSelect = {
+  fieldDefinitionId: true,
+  collectionId: true,
+  fieldType: true,
+  shortTextValue: true,
+  longTextValue: true,
+  integerValue: true,
+  decimalValue: true,
+  dateValue: true,
+  booleanValue: true,
+  singleSelectOptionId: true,
+  urlValue: true,
+  moneyAmountMinor: true,
+  moneyCurrency: true,
+  multiSelectValues: { select: { optionId: true, position: true }, orderBy: { position: "asc" } },
+} as const;
+type SplitFieldValue = {
+  fieldDefinitionId: string;
+  collectionId: string;
+  fieldType:
+    | "SHORT_TEXT"
+    | "LONG_TEXT"
+    | "INTEGER"
+    | "DECIMAL"
+    | "DATE"
+    | "BOOLEAN"
+    | "SINGLE_SELECT"
+    | "MULTI_SELECT"
+    | "URL"
+    | "MONEY";
+  shortTextValue: string | null;
+  longTextValue: string | null;
+  integerValue: bigint | null;
+  decimalValue: unknown;
+  dateValue: Date | null;
+  booleanValue: boolean | null;
+  singleSelectOptionId: string | null;
+  urlValue: string | null;
+  moneyAmountMinor: bigint | null;
+  moneyCurrency: string | null;
+  multiSelectValues: Array<{ optionId: string; position: number }>;
+};
+
+function exactDecimal(value: unknown): string | null {
+  if (value === null) return null;
+  if (typeof value === "string") return value;
+  if (typeof value === "object" && "toFixed" in value && typeof value.toFixed === "function") {
+    return value.toFixed();
+  }
+  throw new TypeError("Stored decimal has an invalid representation");
+}
 
 export type ItemDatabase = {
   $transaction<T>(
@@ -175,6 +282,7 @@ async function lockOwnedItem(
       item."collectionId",
       item."ownerId",
       item."nodeId",
+      item."storageLocationId",
       item."title",
       item."publicDescription",
       item."privateNotes",
@@ -358,6 +466,18 @@ export function createItemService(
           throw new ItemServiceError("ITEM_SPLIT_INVALID");
         }
 
+        const [identifiers, tags, fields] = await Promise.all([
+          transaction.itemIdentifier.findMany({
+            where: { itemId: item.id },
+            select: splitIdentifierSelect,
+          }),
+          transaction.itemTag.findMany({ where: { itemId: item.id }, select: { tagId: true } }),
+          transaction.customFieldValue.findMany({
+            where: { itemId: item.id },
+            select: splitFieldSelect,
+          }),
+        ]);
+
         const source = await transaction.collectibleItem.update({
           where: { id: item.id },
           data: { quantity: item.quantity - splitQuantity.data },
@@ -368,6 +488,7 @@ export function createItemService(
             collectionId: item.collectionId,
             ownerId: item.ownerId,
             nodeId: item.nodeId,
+            storageLocationId: item.storageLocationId ?? null,
             title: item.title,
             publicDescription: item.publicDescription,
             privateNotes: item.privateNotes,
@@ -382,6 +503,52 @@ export function createItemService(
           },
           select: itemSelect,
         });
+        if (identifiers.length > 0) {
+          await transaction.itemIdentifier.createMany({
+            data: identifiers.map(({ type, value, normalizedValue }) => ({
+              itemId: created.id,
+              type,
+              value,
+              normalizedValue,
+            })),
+          });
+        }
+        if (tags.length > 0) {
+          await transaction.itemTag.createMany({
+            data: tags.map(({ tagId }) => ({ itemId: created.id, tagId })),
+          });
+        }
+        if (fields.length > 0) {
+          await transaction.customFieldValue.createMany({
+            data: fields.map(({ multiSelectValues: _selections, ...value }) => ({
+              ...value,
+              decimalValue: exactDecimal(value.decimalValue),
+              itemId: created.id,
+            })),
+          });
+          const selections = fields.flatMap(({ fieldDefinitionId, multiSelectValues }) =>
+            multiSelectValues.map(({ optionId, position }) => ({
+              itemId: created.id,
+              fieldDefinitionId,
+              optionId,
+              position,
+            })),
+          );
+          if (selections.length > 0) {
+            await transaction.customFieldMultiSelectValue.createMany({ data: selections });
+          }
+        }
+        if (item.storageLocationId != null) {
+          await transaction.itemLocationHistory.create({
+            data: {
+              itemId: created.id,
+              ownerId: item.ownerId,
+              fromLocationId: null,
+              toLocationId: item.storageLocationId,
+              assignedById: actorUserId,
+            },
+          });
+        }
         return SplitQuantityResultSchema.parse({
           source: toItem(source),
           created: toItem(created),
