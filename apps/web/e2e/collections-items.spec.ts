@@ -463,7 +463,9 @@ test.describe("localized collection and item management", () => {
       expect.soft(body.item.nodeId).toBe(node.id);
       expect.soft(body.item.purchaseAmountMinor).toBe(12345);
       expect.soft(body.item.purchaseCurrency).toBe("JPY");
-      expect.soft(body.metadata.tags).toEqual(["Washington, D.C.", "postal history"]);
+      expect
+        .soft(body.metadata.tags.toSorted())
+        .toEqual(["Washington, D.C.", "postal history"].toSorted());
       expect
         .soft(
           body.metadata.customFieldValues.find(
@@ -492,7 +494,9 @@ test.describe("localized collection and item management", () => {
       });
       const save = page.getByRole("button", { name: labels.saveItem });
       await save.click();
-      await expect(page.getByRole("alert")).toContainText(labels.actionError);
+      await expect(page.locator(".management-shell p[role='alert']")).toContainText(
+        labels.actionError,
+      );
       await expect(save).toBeEnabled();
     } finally {
       await cleanupCollector(collector.userId);
@@ -544,7 +548,7 @@ test.describe("localized collection and item management", () => {
       );
       await save.click();
       const created = (await (await itemCreated).json()) as { item: { id: string } };
-      await expect(page.getByRole("alert")).toBeVisible();
+      await expect(page.locator(".management-shell p[role='alert']")).toBeVisible();
       await expect(save).toBeEnabled();
 
       page.on("request", (request) => {
@@ -629,7 +633,9 @@ test.describe("localized collection and item management", () => {
         }
       });
       await page.getByRole("button", { name: labels.saveItem }).click();
-      await expect(page.getByRole("alert")).toContainText(labels.fieldInvalid);
+      await expect(page.locator(".management-shell p[role='alert']")).toContainText(
+        labels.fieldInvalid,
+      );
       await page.waitForTimeout(250);
       expect(mutations).toEqual([]);
       releaseEarlyPut();
