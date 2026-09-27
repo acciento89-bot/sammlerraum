@@ -14,7 +14,7 @@ This is the handoff/status file for long-running implementation. Update it after
 | 01 | Platform Foundation | 6 | complete (6/6) | — |
 | 02 | Identity, Auth & Policies | 7 | complete (7/7) | — |
 | 03 | Collections, Items, Fields & Locations | 8 | complete (8/8) | — |
-| 04 | Media & Documents | 6 | not started | Task 1 |
+| 04 | Media & Documents | 6 | in progress (1/6) | Task 2 |
 | 05 | Catalog, Condition & Grading | 7 | not started | Task 1 |
 | 06 | Valuations & Market Data | 6 | not started | Task 1 |
 | 07 | Search, Smart Collections & Dashboard | 5 | not started | Task 1 |
@@ -51,8 +51,10 @@ This is the handoff/status file for long-running implementation. Update it after
 - [x] P03 T06 — Collection/item REST APIs and policy enforcement
 - [x] P03 T07 — Responsive collection and item management UI
 - [x] P03 T08 — Printable storage labels and protected scan-to-location flow
+- [x] P04 T01 — Storage provider and persistent local implementation
+- [ ] P04 T02 — Media/document models and upload validation
 
-**Verified completion: 21/91 tasks.** Later tasks remain open as listed in the phase table and detail plans.
+**Verified completion: 22/91 tasks.** Later tasks remain open as listed in the phase table and detail plans.
 
 ## Update rule
 
@@ -459,3 +461,22 @@ Every completed and independently reviewed task must be checked off in its detai
 - Final-review nonblocking follow-ups retained: M1 enabled blank INTEGER converts to0; M2 duplicate hierarchy leaf names need ancestry context in selectors. These are explicit UX follow-ups for future item/hierarchy UI work, not silently discarded findings.
 - Execution decisions: resumed the existing dedicated feature checkout (reversible relocation if unsuitable); corrected only fixture-owned history cleanup before owner deletion (risk limited to isolated test records). Full task and phase review/report evidence is preserved under `.superpowers/sdd/2026-09-19-03-collections-items-fields-locations/`.
 - Task8 checked off; Phase03 complete8/8, overall21/91. Next: Phase04 Task1 (Media & Documents). Implementation remains on `work/sammlerraum-v1` / Draft PR#1; ledger synchronized to main as requested. No source merge or deployment.
+
+
+### Phase 04 Task 1 — COMPLETE
+
+- Reviewed/tested source `165fddb28ac925a4ed7e860239d2786687a2c31d` (local implementation0374221). New `@sammlerraum/storage` exports exact put/read/delete/exists interface and local implementation; caller supplies validated UPLOADS_DIR. No environment parsing or public file route in the storage package.
+- All operations reject invalid relative keys and traversal/absolute/NUL/backslash paths. Root, parent and leaf symlinks are rejected, including a trailing-slash root. Same-directory temporary file plus rename provides atomic visibility; failure cleans temporary files, missing delete is idempotent, safe error codes omit system paths. Root is trusted app-owned filesystem space; hostile OS-writer directory swaps are outside this boundary.
+- Actual RED path-escape assertion and18 failing contract tests preceded implementation; a later root-symlink/trailing-slash regression also went RED before correction. Focused19/19 GREEN, workspace typecheck/format/frozen lock pass. Independent SPEC PASS / QUALITY PASS; no Critical/Important findings.
+- Full CI SUCCESS: https://github.com/acciento89-bot/sammlerraum/actions/runs/36317746924 (job108615555313).259 unit/static tests;109 integration tests including22 database cases;2 production label,4 auth and16 management browser journeys. Migrations/lint/typecheck/build/Compose/both Docker builds passed.
+- Minor deferred to Phase04 final review: directory entries are not fsynced after mkdir/rename/unlink; atomic visibility/process-restart persistence does not promise complete sudden-power-loss durability. Final review must triage filesystem durability/reconciliation requirements.
+- Task1 checked off, Phase04 now1/6 and overall22/91. NextTask2 upload models/validation. Main ledger synchronized; implementation remains on feature branch.
+
+### Phase 04 execution rulings / interface handoff
+
+- Continue existing dedicated feature checkout; cost if unsuitable: reversible relocation.
+- Upload/link API foundation belongs with Task2, gallery ordering/title/document controls with Task6; plan consumes APIs without a separate API task. Cost if wrong: bounded endpoint restructuring.
+- Public image delivery uses sanitized derivatives, owner-authorized originals retained; prevents EXIF/GPS leakage. Cost if wrong: explicit future authorized-original feature.
+- Task5 creates cleanup-media.test.ts named by its test command despite omission from its file list; cost if wrong: small test-maintenance cost.
+- Planned configurable limits:20MiB/image,25MiB/document,40million decoded pixels; initial imagesJPEG/PNG/WebP, documentsPDF or those images. Values/formats were unspecified; cost if wrong: config/allowlist refinement.
+- Task2 integrates new media/document links with existing item splitting by sharing asset references, preserving title/order/category/visibility; cost if wrong: explicit unlink on split portion. Avatar references must remain ownership-checked and counted by cleanup; unsupported future catalog targets stay denied until their domain exists.
