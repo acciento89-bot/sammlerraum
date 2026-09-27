@@ -611,7 +611,7 @@ test.describe("localized collection and item management", () => {
         .filter({ has: page.getByLabel("Valuation", { exact: true }) });
       await moneyField.getByRole("checkbox", { name: labels.setCustomField, exact: true }).check();
 
-      let releaseEarlyPut = () => undefined;
+      let releaseEarlyPut: () => void = () => undefined;
       const earlyPutBlocked = new Promise<void>((resolve) => {
         releaseEarlyPut = () => resolve();
       });

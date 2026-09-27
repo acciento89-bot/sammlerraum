@@ -6,8 +6,12 @@ import type {
 export const itemCurrencyOptions = Intl.supportedValuesOf("currency");
 
 function currencyFractionDigits(currency: string): number {
-  return new Intl.NumberFormat("en", { style: "currency", currency }).resolvedOptions()
-    .maximumFractionDigits;
+  const digits = new Intl.NumberFormat("en", {
+    style: "currency",
+    currency,
+  }).resolvedOptions().maximumFractionDigits;
+  if (digits === undefined) throw new Error("money");
+  return digits;
 }
 
 export function minorUnits(input: string, currency = "EUR"): number | null {
