@@ -11,6 +11,7 @@ type Locale = "de" | "en";
 const copy = {
   de: {
     collectionName: "Name der Sammlung",
+    itemCollection: "Sammlung",
     collections: "Sammlungen",
     createCollection: "Sammlung anlegen",
     subcollectionName: "Name der Teilsammlung",
@@ -48,6 +49,7 @@ const copy = {
     scanStart: "Code scannen",
     scanStop: "Scanner stoppen",
     actionError: "Die Aktion ist fehlgeschlagen.",
+    retryLoad: "Erneut laden",
     fieldInvalid: "Bitte prüfe die benutzerdefinierten Felder.",
     scanProposal: "Erkannter Vorschlag",
     scanConfirm: "Vorschlag übernehmen",
@@ -58,6 +60,7 @@ const copy = {
   },
   en: {
     collectionName: "Collection name",
+    itemCollection: "Collection",
     collections: "Collections",
     createCollection: "Create collection",
     subcollectionName: "Subcollection name",
@@ -95,6 +98,7 @@ const copy = {
     scanStart: "Scan code",
     scanStop: "Stop scanner",
     actionError: "The action failed.",
+    retryLoad: "Retry loading",
     fieldInvalid: "Check the custom fields.",
     scanProposal: "Detected proposal",
     scanConfirm: "Accept proposal",
@@ -498,6 +502,67 @@ test.describe("localized collection and item management", () => {
         labels.actionError,
       );
       await expect(save).toBeEnabled();
+    } finally {
+      await cleanupCollector(collector.userId);
+    }
+  });
+
+  test("failed collection options can retry without losing the item draft", async ({
+    page,
+  }, testInfo) => {
+    const locale = localeFor(testInfo);
+    const labels = copy[locale];
+    const collector = await seedTestCollector();
+    try {
+      await loginTestCollector(page, locale, collector);
+      const { collection } = await createCollectionApi(page, "Options retry");
+      let attempts = 0;
+      await page.route("**/api/v1/collections/" + collection.id + "/nodes", async (route) => {
+        attempts += 1;
+        if (attempts === 1) await route.abort("failed");
+        else await route.continue();
+      });
+      await page.goto("/" + locale + "/items/new?collectionId=" + collection.id);
+      await page.getByLabel(labels.title).fill("Keep my draft");
+      await expect(page.locator(".management-shell p[role='alert']")).toContainText(
+        labels.actionError,
+      );
+      await expect(page.getByRole("button", { name: labels.saveItem })).toBeDisabled();
+      await expect(page.getByLabel(labels.itemCollection, { exact: true })).toBeEnabled();
+      await page.getByRole("button", { name: labels.retryLoad }).click();
+      await expect(page.getByRole("button", { name: labels.saveItem })).toBeEnabled();
+      await expect(page.getByLabel(labels.title)).toHaveValue("Keep my draft");
+      expect(attempts).toBe(2);
+    } finally {
+      await cleanupCollector(collector.userId);
+    }
+  });
+
+  test("failed collection detail load shows a retry instead of endless loading", async ({
+    page,
+  }, testInfo) => {
+    const locale = localeFor(testInfo);
+    const labels = copy[locale];
+    const collector = await seedTestCollector();
+    try {
+      await loginTestCollector(page, locale, collector);
+      const { collection } = await createCollectionApi(page, "Recover detail");
+      let attempts = 0;
+      await page.route("**/api/v1/collections/" + collection.id, async (route) => {
+        attempts += 1;
+        if (attempts === 1) await route.abort("failed");
+        else await route.continue();
+      });
+      await page.goto("/" + locale + "/collections/" + collection.id);
+      await expect(page.locator(".management-shell p[role='alert']")).toContainText(
+        labels.actionError,
+      );
+      await expect(page.getByRole("status")).toHaveCount(0);
+      await page.getByRole("button", { name: labels.retryLoad }).click();
+      await expect(
+        page.getByRole("heading", { name: "Recover detail", exact: true }),
+      ).toBeVisible();
+      expect(attempts).toBe(2);
     } finally {
       await cleanupCollector(collector.userId);
     }
