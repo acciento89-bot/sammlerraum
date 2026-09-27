@@ -1,6 +1,6 @@
 # Platform Foundation Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** Create the production-grade Sammlerraum workspace, web/worker processes, PostgreSQL foundation, shared contracts/config, i18n shell, queue abstraction, Docker setup, and CI.
 
@@ -49,7 +49,7 @@
 - Consumes: none.
 - Produces: workspace package names `@sammlerraum/config`, `@sammlerraum/contracts`, `@sammlerraum/db`, `@sammlerraum/queue`, `@sammlerraum/domain`, `@sammlerraum/testing`.
 
-- [ ] **Step 1: Write the failing workspace smoke test**
+- [x] **Step 1: Write the failing workspace smoke test**
 
 Create `packages/testing/src/workspace.test.ts`:
 
@@ -66,12 +66,12 @@ describe("workspace", () => {
 });
 ```
 
-- [ ] **Step 2: Run the test and verify it fails**
+- [x] **Step 2: Run the test and verify it fails**
 
 Run: `pnpm vitest run packages/testing/src/workspace.test.ts`  
 Expected: FAIL because the workspace/package files do not exist yet.
 
-- [ ] **Step 3: Create the workspace manifests**
+- [x] **Step 3: Create the workspace manifests**
 
 Root `package.json` must include:
 
@@ -112,12 +112,12 @@ packages:
 
 Create package manifests with the exact package names listed under **Produces** plus `@sammlerraum/web` and `@sammlerraum/worker`.
 
-- [ ] **Step 4: Install dependencies and run the smoke test**
+- [x] **Step 4: Install dependencies and run the smoke test**
 
 Run: `pnpm install && pnpm vitest run packages/testing/src/workspace.test.ts`  
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add package.json pnpm-lock.yaml pnpm-workspace.yaml .nvmrc tsconfig.base.json vitest.workspace.ts apps packages
@@ -138,7 +138,7 @@ git commit -m "chore: scaffold Sammlerraum workspace"
 - Consumes: Zod.
 - Produces: `parseServerEnv(input): ServerEnv`, `serverEnv`, `clientEnv`.
 
-- [ ] **Step 1: Write failing config tests**
+- [x] **Step 1: Write failing config tests**
 
 ```ts
 import { describe, expect, it } from "vitest";
@@ -160,12 +160,12 @@ describe("parseServerEnv", () => {
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run packages/config/src/server.test.ts`  
 Expected: FAIL because `parseServerEnv` does not exist.
 
-- [ ] **Step 3: Implement server config**
+- [x] **Step 3: Implement server config**
 
 ```ts
 import { z } from "zod";
@@ -189,12 +189,12 @@ export const serverEnv = parseServerEnv(process.env);
 
 `.env.example` must contain non-secret examples for `DATABASE_URL`, `APP_ORIGIN`, `UPLOADS_DIR`, and `LOG_LEVEL`.
 
-- [ ] **Step 4: Run tests**
+- [x] **Step 4: Run tests**
 
 Run: `pnpm vitest run packages/config/src/server.test.ts`  
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/config .env.example
@@ -216,7 +216,7 @@ git commit -m "feat: add validated environment configuration"
 - Consumes: `DATABASE_URL`.
 - Produces: `prisma`, `checkDatabaseHealth(): Promise<{ ok: boolean }>`.
 
-- [ ] **Step 1: Write failing health test**
+- [x] **Step 1: Write failing health test**
 
 ```ts
 import { describe, expect, it, vi } from "vitest";
@@ -230,12 +230,12 @@ describe("checkDatabaseHealth", () => {
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run packages/db/src/health.test.ts`  
 Expected: FAIL because `checkDatabaseHealth` does not exist.
 
-- [ ] **Step 3: Implement the database package**
+- [x] **Step 3: Implement the database package**
 
 `schema.prisma`:
 
@@ -273,7 +273,7 @@ export async function checkDatabaseHealth(db: Queryable): Promise<{ ok: boolean 
 
 Generate the Prisma client and create the initial migration.
 
-- [ ] **Step 4: Run tests and migration validation**
+- [x] **Step 4: Run tests and migration validation**
 
 Run:
 ```bash
@@ -284,7 +284,7 @@ pnpm vitest run packages/db/src/health.test.ts
 
 Expected: all PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/db
@@ -308,7 +308,7 @@ git commit -m "feat: establish PostgreSQL foundation"
   - `QueueClient.enqueue<T>(name: string, payload: T, options?: EnqueueOptions): Promise<string>`
   - `WorkerRegistry.register<T>(name: string, handler: JobHandler<T>): void`
 
-- [ ] **Step 1: Write the failing queue contract test**
+- [x] **Step 1: Write the failing queue contract test**
 
 ```ts
 import { describe, expect, it } from "vitest";
@@ -324,12 +324,12 @@ describe("QueueClient", () => {
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run packages/queue/src/pg-boss-queue.test.ts`  
 Expected: FAIL because queue interfaces/testing implementation do not exist.
 
-- [ ] **Step 3: Implement interfaces and pg-boss adapter**
+- [x] **Step 3: Implement interfaces and pg-boss adapter**
 
 ```ts
 export type EnqueueOptions = {
@@ -347,14 +347,14 @@ export type JobHandler<T> = (payload: T) => Promise<void>;
 
 The pg-boss adapter maps `singletonKey` to pg-boss singleton behavior and defaults `retryLimit` to 5.
 
-- [ ] **Step 4: Add worker startup and run tests**
+- [x] **Step 4: Add worker startup and run tests**
 
 `apps/worker/src/main.ts` starts the queue, registers handlers from a registry, logs readiness, and exits non-zero on unrecoverable startup configuration/database errors.
 
 Run: `pnpm vitest run packages/queue`  
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/queue apps/worker
@@ -379,7 +379,7 @@ git commit -m "feat: add PostgreSQL queue and worker runtime"
 - Consumes: `checkDatabaseHealth`.
 - Produces: locale-aware shell, `GET /api/health`, `getRequestId(headers): string`.
 
-- [ ] **Step 1: Write the failing health tests**
+- [x] **Step 1: Write the failing health tests**
 
 ```ts
 import { describe, expect, it } from "vitest";
@@ -396,12 +396,12 @@ describe("health payload", () => {
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run apps/web/src/app/api/health/route.test.ts`  
 Expected: FAIL because health builder does not exist.
 
-- [ ] **Step 3: Implement locale routing and health**
+- [x] **Step 3: Implement locale routing and health**
 
 Use `next-intl` with supported locales exactly `["de", "en"]`. The root language selection redirects to a deterministic locale using explicit preference/cookie first and Accept-Language second.
 
@@ -409,7 +409,7 @@ Health returns HTTP 200 for healthy and HTTP 503 for degraded database state.
 
 Request IDs use incoming `x-request-id` only when it matches `^[A-Za-z0-9._-]{1,128}$`; otherwise generate `crypto.randomUUID()`.
 
-- [ ] **Step 4: Run focused tests and production build**
+- [x] **Step 4: Run focused tests and production build**
 
 Run:
 ```bash
@@ -419,7 +419,7 @@ pnpm --filter @sammlerraum/web build
 
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add apps/web
@@ -442,7 +442,7 @@ git commit -m "feat: add localized web shell and health endpoint"
 - Consumes: web, worker, PostgreSQL, uploads path.
 - Produces: reproducible `web`, `worker`, `db` services and persistent `sammlerraum-db`, `sammlerraum-uploads` volumes.
 
-- [ ] **Step 1: Write the failing compose verification**
+- [x] **Step 1: Write the failing compose verification**
 
 `scripts/verify-compose.sh`:
 
@@ -459,7 +459,7 @@ grep -q "web:" /tmp/sammlerraum-compose.yml
 Run it before compose exists.  
 Expected: FAIL.
 
-- [ ] **Step 2: Create Dockerfiles and compose**
+- [x] **Step 2: Create Dockerfiles and compose**
 
 `docker-compose.yml` must include:
 
@@ -469,7 +469,7 @@ Expected: FAIL.
 - Healthchecks for database and web.
 - No source-code bind mounts in the production compose.
 
-- [ ] **Step 3: Add CI workflow**
+- [x] **Step 3: Add CI workflow**
 
 CI jobs run:
 
@@ -486,7 +486,7 @@ docker build -f Dockerfile.worker .
 
 Use a PostgreSQL service for migration/integration checks.
 
-- [ ] **Step 4: Run the same validation locally**
+- [x] **Step 4: Run the same validation locally**
 
 Run:
 ```bash
@@ -500,7 +500,7 @@ docker build -f Dockerfile.worker .
 
 Expected: all PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add Dockerfile.web Dockerfile.worker docker-compose.yml .dockerignore .github scripts
