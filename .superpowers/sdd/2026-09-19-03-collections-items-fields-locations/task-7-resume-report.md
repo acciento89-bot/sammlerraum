@@ -8,6 +8,7 @@ Status: implementation candidate, pending full remote CI and independent rerevie
 - `acaba87`: narrowed browser error locators away from Next's route announcer and compared canonical tags without assuming API ordering. The controller published the identical tree as remote `6fdc079` for a test-only RED run.
 - `22d5b71`: production fixes for remaining browser review findings. The controller will publish the candidate tree; no local push was made.
 - `47c490c`: this evidence report. `5416c31`: collection-load retry browser regressions, published as identical remote tree `271e7e5`. `86be72d`: scoped rereview fixes for R4 and R7. The controller handles publishing; no local push was made.
+- `5ebd1b3`: make the collection-load browser regressions hold transport failure until the explicit retry, accommodating development effect replay while asserting a new request and recovered UI.
 
 ## Evidence and review findings
 
@@ -22,3 +23,5 @@ Scoped independent rereview of `22d5b71` found R1/R2/R3/R5/R6/R8/R9 addressed an
 The round-one production source tree `e65e56b` passed all 12 Task 7 browser cases in remote CI `36312414477`, following successful normal gates and authentication journeys; Compose and Docker were still running when recorded. Independent scoped round-two rereview of `86be72d` is SPEC PASS / QUALITY PASS for R1–R9 and identified no new issue. This review verdict is distinct from final CI on the round-two source tree `3031da8` (`36312661038`), which is running.
 
 Local PostgreSQL, Docker, and Chromium are unavailable, so the round-two candidate still requires remote desktop/mobile browser journeys, database integration, and Docker gates. No full green round-two CI result is claimed here.
+
+Round-two source CI `36312661038` passed the original 12 Task 7 desktop/mobile cases and failed only the four new retry cases: aborting just the first initial GET allowed a subsequent effect load to succeed before the expected alert, while the detail test observed three GETs rather than its assumed two. The test-only R4 CI `36312600326` passed the original 12 and failed both locales' detail retry because the retry button was missing; its options cases stopped at the absent alert caused by the same one-abort effect-replay race, so they do not prove the later draft/retry assertions RED. The corrected route rejects all initial GETs until explicit retry, then verifies another request and successful UI/draft recovery. Web typecheck and lint pass at `5ebd1b3`; final remote CI on the test correction remains pending.

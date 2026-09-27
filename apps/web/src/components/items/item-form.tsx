@@ -399,6 +399,7 @@ export function ItemForm({
               <label>
                 {t("collection")}
                 <select
+                  aria-label={t("collection")}
                   name="collectionId"
                   value={collectionId}
                   onChange={(event) => {
