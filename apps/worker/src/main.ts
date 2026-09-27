@@ -22,6 +22,7 @@ type StartWorkerOptions = {
   logger: Logger;
   installSignals?: boolean;
   onQueueListenerInstalled?: () => void;
+  imageDispatcher?: { start(): void; stop(): Promise<void> };
 };
 
 export type RunningWorker = {
@@ -60,6 +61,7 @@ export async function startWorker(options: StartWorkerOptions): Promise<RunningW
     process.off("SIGTERM", handleSignal);
     process.off("SIGINT", handleSignal);
     await endpoint?.close();
+    await options.imageDispatcher?.stop();
     await options.queue.stop();
     options.queue.off("error", handleQueueError);
     await options.disconnectDatabase();
@@ -72,6 +74,7 @@ export async function startWorker(options: StartWorkerOptions): Promise<RunningW
 
   try {
     await options.queue.start();
+    options.imageDispatcher?.start();
     endpoint = await (options.startHealth ?? startHealthServer)({
       port: options.healthPort,
       databaseHealth: options.databaseHealth,

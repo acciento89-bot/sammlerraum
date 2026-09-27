@@ -423,27 +423,34 @@ model RateLimit {
 // check storageKey for stale rows before cleaning them; PENDING is a durable
 // processing intent consumed by the Task 3 dispatcher.
 model MediaAsset {
-  id               String                @id @default(uuid()) @db.Uuid
-  ownerId          String
-  kind             MediaKind
-  status           MediaProcessingStatus @default(UPLOADING)
-  storageKey       String                @unique
-  mimeType         String
-  byteSize         BigInt
-  checksumSha256   String                @db.Char(64)
-  width            Int?
-  height           Int?
-  originalFileName String                @db.VarChar(255)
-  createdAt        DateTime              @default(now())
-  updatedAt        DateTime              @updatedAt
-  owner            User                  @relation(fields: [ownerId], references: [id], onDelete: Restrict)
-  variants         MediaVariant[]
-  mediaLinks       MediaLink[]
-  documentLinks    DocumentLink[]
-  avatarProfiles   UserProfile[]         @relation("ProfileAvatar")
+  id                   String                @id @default(uuid()) @db.Uuid
+  ownerId              String
+  kind                 MediaKind
+  status               MediaProcessingStatus @default(UPLOADING)
+  storageKey           String                @unique
+  mimeType             String
+  byteSize             BigInt
+  checksumSha256       String                @db.Char(64)
+  width                Int?
+  height               Int?
+  originalFileName     String                @db.VarChar(255)
+  processingToken      String?               @db.Uuid
+  processingLeaseUntil DateTime?
+  processingAttempts   Int                   @default(0)
+  processingErrorCode  String?               @db.VarChar(32)
+  lastDispatchedAt     DateTime?
+  createdAt            DateTime              @default(now())
+  updatedAt            DateTime              @updatedAt
+  owner                User                  @relation(fields: [ownerId], references: [id], onDelete: Restrict)
+  variants             MediaVariant[]
+  mediaLinks           MediaLink[]
+  documentLinks        DocumentLink[]
+  avatarProfiles       UserProfile[]         @relation("ProfileAvatar")
 
   @@unique([id, ownerId])
   @@index([ownerId, status, createdAt])
+  @@index([status, processingLeaseUntil])
+  @@index([status, lastDispatchedAt, createdAt])
 }
 
 model MediaVariant {

@@ -5,6 +5,53 @@ import { describe, expect, it, vi } from "vitest";
 import { runWorkerMain, startWorker } from "./main";
 
 describe("startWorker", () => {
+  it("starts durable dispatch after queue startup and stops it before queue teardown", async () => {
+    const calls: string[] = [];
+    const queue = new EventEmitter();
+    Object.assign(queue, {
+      start: async () => {
+        calls.push("queue-start");
+      },
+      stop: async () => {
+        calls.push("queue-stop");
+      },
+      isReady: () => true,
+    });
+    const worker = await startWorker({
+      queue: queue as never,
+      imageDispatcher: {
+        start: () => {
+          calls.push("dispatch-start");
+        },
+        stop: async () => {
+          calls.push("dispatch-stop");
+        },
+      },
+      databaseHealth: async () => ({ ok: true }),
+      disconnectDatabase: async () => {
+        calls.push("database-stop");
+      },
+      startHealth: async () => ({
+        close: async () => {
+          calls.push("health-stop");
+        },
+        port: 3001,
+        host: "127.0.0.1",
+      }),
+      healthPort: 3001,
+      logger: { info: vi.fn(), error: vi.fn() },
+      installSignals: false,
+    });
+    await worker.stop();
+    expect(calls).toEqual([
+      "queue-start",
+      "dispatch-start",
+      "health-stop",
+      "dispatch-stop",
+      "queue-stop",
+      "database-stop",
+    ]);
+  });
   it("installs the queue error listener before startup and keeps an emitted error unhealthy", async () => {
     const calls: string[] = [];
     const queue = new EventEmitter();

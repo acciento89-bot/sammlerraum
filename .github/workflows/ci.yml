@@ -123,7 +123,9 @@ jobs:
           RUN_DATABASE_INTEGRATION=1 pnpm vitest run
           packages/db/src/postgres.integration.test.ts
           packages/db/src/media-migration.integration.test.ts
+          packages/db/src/media-lock.integration.test.ts
           packages/queue/src/postgres.integration.test.ts
+          apps/worker/src/jobs/image-repository.integration.test.ts
           packages/domain/src/identity/profile-service.test.ts
           packages/domain/src/identity/security-service.test.ts
           packages/domain/src/collections/collection-service.test.ts
@@ -151,4 +153,8 @@ jobs:
           e2e/collections-items.spec.ts --workers=1
       - run: bash scripts/verify-compose.sh
       - run: docker build -f Dockerfile.web --build-arg NEXT_PUBLIC_APP_ORIGIN=https://example.invalid .
-      - run: docker build -f Dockerfile.worker .
+      - run: docker build -f Dockerfile.worker -t sammlerraum-worker-ci .
+      - name: Decode with Sharp in the final worker image
+        run: >-
+          docker run --rm --entrypoint node sammlerraum-worker-ci -e
+          "const sharp=require('sharp'); sharp({create:{width:3,height:2,channels:3,background:'red'}}).webp().toBuffer().then(bytes=>sharp(bytes).raw().toBuffer({resolveWithObject:true})).then(({info})=>{if(info.width!==3||info.height!==2)process.exit(1)}).catch(()=>process.exit(1))"

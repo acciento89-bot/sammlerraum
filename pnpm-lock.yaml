@@ -87,6 +87,9 @@ importers:
 
   apps/worker:
     dependencies:
+      '@prisma/client':
+        specifier: 7.10.0
+        version: 7.10.0(prisma@7.10.0(@types/react-dom@19.2.3(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@5.9.2))(typescript@5.9.2)
       '@sammlerraum/config':
         specifier: workspace:*
         version: link:../../packages/config
@@ -96,6 +99,12 @@ importers:
       '@sammlerraum/queue':
         specifier: workspace:*
         version: link:../../packages/queue
+      '@sammlerraum/storage':
+        specifier: workspace:*
+        version: link:../../packages/storage
+      sharp:
+        specifier: 0.35.4
+        version: 0.35.4(@types/node@24.5.2)
     devDependencies:
       esbuild:
         specifier: 0.28.2
@@ -124,13 +133,13 @@ importers:
       '@sammlerraum/config':
         specifier: workspace:*
         version: link:../config
+      pg:
+        specifier: 8.23.0
+        version: 8.23.0
     devDependencies:
       '@types/pg':
         specifier: 8.23.1
         version: 8.23.1
-      pg:
-        specifier: 8.23.0
-        version: 8.23.0
       prisma:
         specifier: 7.10.0
         version: 7.10.0(@types/react-dom@19.2.3(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@5.9.2)

@@ -6,6 +6,7 @@
     "./client": "./src/client.ts",
     "./create-client": "./src/create-client.ts",
     "./health": "./src/health.ts",
+    "./media-lock": "./src/media-lock.ts",
     "./test-database": "./src/test-database.ts"
   },
   "scripts": {
@@ -17,11 +18,11 @@
   "dependencies": {
     "@prisma/adapter-pg": "7.10.0",
     "@prisma/client": "7.10.0",
-    "@sammlerraum/config": "workspace:*"
+    "@sammlerraum/config": "workspace:*",
+    "pg": "8.23.0"
   },
   "devDependencies": {
     "@types/pg": "8.23.1",
-    "pg": "8.23.0",
     "prisma": "7.10.0"
   }
 }
