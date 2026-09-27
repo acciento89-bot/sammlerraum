@@ -328,8 +328,18 @@ describe.runIf(runIntegration)("media PostgreSQL integration", () => {
       const item = await prisma!.collectibleItem.create({
         data: { ownerId, collectionId: collection.id, title: "Stamp" },
       });
+      const otherCollection = await prisma!.collection.create({
+        data: { ownerId: otherId, name: "Other owner's collection" },
+      });
+      const otherItem = await prisma!.collectibleItem.create({
+        data: { ownerId: otherId, collectionId: otherCollection.id, title: "Foreign stamp" },
+      });
       const service = createMediaService(prisma!, new LocalPersistentStorage(root));
       const asset = await service.createImageUpload(ownerId, await image(), meta);
+      // With no link yet, only the asset's RESTRICT FK can block user deletion.
+      await expect(prisma!.user.delete({ where: { id: ownerId } })).rejects.toMatchObject({
+        code: "P2003",
+      });
       await expect(
         service.linkAsset(otherId, {
           target: "ITEM",
@@ -348,12 +358,11 @@ describe.runIf(runIntegration)("media PostgreSQL integration", () => {
       ).resolves.toMatchObject({ assetId: asset.id, itemId: item.id });
       await expect(
         prisma!.mediaLink.create({
-          data: { ownerId: otherId, itemId: item.id, assetId: asset.id, position: 10 },
+          // A valid other-owner item avoids the existing link's unique index;
+          // only the asset/owner composite FK is violated.
+          data: { ownerId: otherId, itemId: otherItem.id, assetId: asset.id, position: 10 },
         }),
       ).rejects.toMatchObject({ code: "P2003" });
-      await expect(prisma!.user.delete({ where: { id: ownerId } })).rejects.toMatchObject({
-        code: "P2003",
-      });
       await prisma!.mediaAsset.update({ where: { id: asset.id }, data: { status: "READY" } });
       await expect(
         createProfileService(prisma!).upsertOwnProfile(otherId, {

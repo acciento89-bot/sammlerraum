@@ -31,3 +31,7 @@
 ## Remaining validation
 
 Real PostgreSQL migration replay, FK ownership checks, and split-link integration await CI because this workspace has no local PostgreSQL/Docker. No Task 3 dispatcher or variants, Task 4 protected reads, Task 5 retention cleanup, or Task 6 gallery management UI is claimed here.
+
+## CI correction round 1
+
+Remote CI run `36319552257` (job `108620611441`) reported **128 passed, 1 failed** in the real-database gate. The failure was the media ownership fixture's strict `P2003` assertion: its foreign-owner link reused the existing `(itemId, assetId, GALLERY)` unique tuple, and PostgreSQL/Prisma raised `P2002` first. The corrected fixture creates an item owned by the other user so its item/owner FK is valid, uses a distinct link tuple, and leaves only the asset/owner FK invalid. The strict `P2003` assertion remains. The user-deletion `RESTRICT` assertion now runs before any link exists, isolating that FK. Local PostgreSQL remains unavailable; this correction needs a fresh CI DB run.
