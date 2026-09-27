@@ -96,6 +96,7 @@
     "account": "Konto",
     "error": "Die Aktion ist fehlgeschlagen.",
     "loading": "Wird geladen …",
+    "retryLoad": "Erneut laden",
     "visibility": "Sichtbarkeit",
     "visibilityPRIVATE": "Privat",
     "visibilityUNLISTED": "Nicht gelistet",

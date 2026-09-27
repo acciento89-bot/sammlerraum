@@ -82,6 +82,8 @@ export function ItemForm({
   const [collectionId, setCollectionId] = useState(initialCollectionId);
   const [nodeId, setNodeId] = useState("");
   const [optionsCollectionId, setOptionsCollectionId] = useState("");
+  const [optionsLoadFailed, setOptionsLoadFailed] = useState(false);
+  const [optionsRetry, setOptionsRetry] = useState(0);
   const [nodes, setNodes] = useState<CollectionNode[]>([]);
   const [fields, setFields] = useState<CustomFieldDefinition[]>([]);
   const [locations, setLocations] = useState<StorageLocation[]>([]);
@@ -145,9 +147,11 @@ export function ItemForm({
       setNodes([]);
       setFields([]);
       setOptionsCollectionId("");
+      setOptionsLoadFailed(false);
       return;
     }
     setOptionsCollectionId("");
+    setOptionsLoadFailed(false);
     setNodes([]);
     setFields([]);
     let cancelled = false;
@@ -162,10 +166,13 @@ export function ItemForm({
           setNodes(nodeBody.nodes);
           setFields(fieldBody.customFields);
           setOptionsCollectionId(collectionId);
+          setOptionsLoadFailed(false);
+          setError("");
         }
       })
       .catch(async (problem) => {
         if (!cancelled) {
+          setOptionsLoadFailed(true);
           setError(
             problem instanceof Response
               ? await errorMessage(problem, common("error"))
@@ -176,7 +183,7 @@ export function ItemForm({
     return () => {
       cancelled = true;
     };
-  }, [collectionId, common]);
+  }, [collectionId, common, optionsRetry]);
 
   const inactive = Boolean(item?.archivedAt || item?.disposedAt);
   const valueByField = new Map(
@@ -386,7 +393,7 @@ export function ItemForm({
         </div>
       ) : (
         <form className="item-form" onSubmit={save}>
-          <fieldset disabled={inactive || saving || optionsCollectionId !== collectionId}>
+          <fieldset disabled={inactive || saving}>
             <legend>{t("basic")}</legend>
             {!item && (
               <label>
@@ -414,6 +421,7 @@ export function ItemForm({
                 name="nodeId"
                 value={nodeId}
                 onChange={(event) => setNodeId(event.target.value)}
+                disabled={optionsCollectionId !== collectionId}
               >
                 <option value="">{t("collectionRoot")}</option>
                 {nodes.map((node) => (
@@ -467,6 +475,15 @@ export function ItemForm({
               </label>
             </div>
           </fieldset>
+          {optionsLoadFailed && (
+            <button
+              className="secondary-button"
+              type="button"
+              onClick={() => setOptionsRetry((value) => value + 1)}
+            >
+              {common("retryLoad")}
+            </button>
+          )}
 
           <details open>
             <summary>{t("acquisition")}</summary>
@@ -636,7 +653,10 @@ export function ItemForm({
           )}
 
           <div className="form-actions">
-            <button type="submit" disabled={inactive || saving}>
+            <button
+              type="submit"
+              disabled={inactive || saving || optionsCollectionId !== collectionId}
+            >
               {saving ? t("saving") : t("save")}
             </button>
             {item && (

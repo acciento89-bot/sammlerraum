@@ -96,6 +96,7 @@
     "account": "Account",
     "error": "The action failed.",
     "loading": "Loading…",
+    "retryLoad": "Retry loading",
     "visibility": "Visibility",
     "visibilityPRIVATE": "Private",
     "visibilityUNLISTED": "Unlisted",

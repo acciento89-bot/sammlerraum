@@ -102,5 +102,10 @@ export function displayCustomFieldValue(
   if (type === "DECIMAL" && typeof value === "string") {
     return localizeCanonicalDecimal(value, locale);
   }
+  if (type === "INTEGER" && typeof value === "number") {
+    return new Intl.NumberFormat(locale, { useGrouping: true, maximumFractionDigits: 0 }).format(
+      value,
+    );
+  }
   return String(value);
 }

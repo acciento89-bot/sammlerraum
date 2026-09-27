@@ -54,6 +54,13 @@ describe("item form canonical value preservation", () => {
 });
 
 describe("saved custom-field display", () => {
+  it("localizes exact safe integers in German and English", () => {
+    expect(displayCustomFieldValue(1234567, "INTEGER", "de")).toBe("1.234.567");
+    expect(displayCustomFieldValue(1234567, "INTEGER", "en")).toBe("1,234,567");
+    expect(displayCustomFieldValue(Number.MAX_SAFE_INTEGER, "INTEGER", "de")).toBe(
+      "9.007.199.254.740.991",
+    );
+  });
   it("localizes canonical dates without changing the input value", () => {
     expect(displayCustomFieldValue("2026-09-20", "DATE", "de")).toBe("20.9.2026");
     expect(displayCustomFieldValue("2026-09-20", "DATE", "en")).toBe("9/20/2026");

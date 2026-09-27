@@ -50,10 +50,12 @@ export function CollectionDetail({
   const common = useTranslations("Management");
   const router = useRouter();
   const [data, setData] = useState<DetailData>();
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [fieldType, setFieldType] = useState<CustomFieldType>("SHORT_TEXT");
 
   const load = useCallback(async () => {
+    setLoading(true);
     try {
       const [collectionBody, nodesBody, fieldsBody, locationsBody, itemsBody] = await Promise.all([
         read<{ collection: Collection }>(`/api/v1/collections/${collectionId}`),
@@ -80,6 +82,8 @@ export function CollectionDetail({
           ? await errorMessage(problem, common("error"))
           : common("error"),
       );
+    } finally {
+      setLoading(false);
     }
   }, [collectionId, common]);
 
@@ -112,11 +116,16 @@ export function CollectionDetail({
   if (!data) {
     return (
       <section className="management-shell">
-        <p role="status">{common("loading")}</p>
+        {loading && <p role="status">{common("loading")}</p>}
         {error && (
           <p className="error" role="alert">
             {error}
           </p>
+        )}
+        {!loading && error && (
+          <button type="button" onClick={() => void load()}>
+            {common("retryLoad")}
+          </button>
         )}
       </section>
     );
