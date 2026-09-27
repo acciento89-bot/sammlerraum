@@ -31,7 +31,7 @@ function fixture(
   const links = options.links ?? [{ itemId, type: kind, visibility: "PUBLIC" }];
   const calls: string[] = [];
   const database = {
-    $queryRaw: vi.fn(async <T>(strings: TemplateStringsArray): Promise<T> => {
+    $queryRaw: async <T>(strings: TemplateStringsArray): Promise<T> => {
       const sql = strings.join("?");
       calls.push(sql);
       if (sql.includes('FROM "MediaAsset"'))
@@ -79,7 +79,7 @@ function fixture(
       if (sql.includes('FROM "UserProfile"'))
         return (options.avatar ? [{ userId: ownerId }] : []) as T;
       throw new Error(`Unexpected query ${sql}`);
-    }),
+    },
   };
   const loadItem = vi.fn(async () => ({
     item: { archivedAt: null, disposedAt: null },
@@ -172,10 +172,10 @@ describe("media read policy", () => {
   });
 
   it("rejects inherited object names as unknown URL variants before any database access", async () => {
-    const { service, database } = fixture();
+    const { service, calls } = fixture();
     expect(await service.resolveRead(null, assetId, "constructor")).toBeNull();
     expect(await service.resolveRead(null, assetId, "__proto__")).toBeNull();
-    expect(database.$queryRaw).not.toHaveBeenCalled();
+    expect(calls).toHaveLength(0);
   });
 
   it("uses the public profile avatar reference independent of item links", async () => {
