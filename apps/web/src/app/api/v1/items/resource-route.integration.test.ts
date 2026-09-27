@@ -306,6 +306,7 @@ describe.runIf(runIntegration)("collection/item route PostgreSQL integration", (
         await prisma!.itemLocationHistory.count({ where: { itemId: result.created.id } }),
       ).toBe(1);
     } finally {
+      await prisma!.itemLocationHistory.deleteMany({ where: { assignedById: ownerId } });
       await prisma!.user.delete({ where: { id: ownerId } });
     }
   });

@@ -19,3 +19,7 @@ Base `dd972b6` on `work/sammlerraum-v1`. Scope: R1 split metadata, observed auth
 ## Remaining remote gates
 
 PostgreSQL, Docker and Chromium are unavailable locally. Therefore the newly added PostgreSQL owner-route/rollback tests, auth SSR/browser regression, production label desktop/mobile journeys, and full GitHub CI need the controller's fresh CI run. Existing concurrent split test remains in the remote DB suite. No claim that those skipped/unrun gates passed locally.
+
+## Scoped rereview follow-up (R2)
+
+The scoped rereview accepted production R1 but identified that the new located-item PostgreSQL fixture's `finally` attempted owner deletion while its source and split location-history rows still referenced that owner as assignee through an intentional `ON DELETE RESTRICT` FK. The fixture now deletes only history assigned by this test's `ownerId` before deleting that owner, following the established Task5 cleanup convention. No schema or production behavior changed. This was source-reviewed and formatting/diff-checked locally; real PostgreSQL execution remains for the controller's fresh CI gate.
