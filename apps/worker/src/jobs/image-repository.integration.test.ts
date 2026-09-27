@@ -61,7 +61,7 @@ describe.runIf(process.env.RUN_DATABASE_INTEGRATION === "1")("durable image clai
       expect((await db.mediaAsset.findUniqueOrThrow({ where: { id } })).status).toBe("PENDING");
       const third = await repo.claim(id);
       expect(third).not.toBeNull();
-      expect(await repo.ready(third!)).rejects.toThrow("Incomplete image variants");
+      await expect(repo.ready(third!)).rejects.toThrow("Incomplete image variants");
       for (const name of ["THUMBNAIL", "MEDIUM", "LARGE"] as const) {
         await repo.reserveVariant(third!, name, `variants/${id}/${name.toLowerCase()}.webp`);
         expect(

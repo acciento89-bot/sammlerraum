@@ -24,3 +24,7 @@ Base: `74e81efcea5a7aeea1171ca10289b22e1db0c90d`. Implementation head: `96cd21fb
 No deployment, push, merge, cleanup implementation, or ledger checkoff. Task 5 must use the shared media asset lock and account for reserved variant rows with zero metadata or a put that completed before metadata update. It must delete bytes before tracking rows, including any partial variant and original; give a stale worker's bounded attempt time to stop before destructive cleanup. The lock's observed-loss fail-stop reduces but cannot eliminate a server/client partition interval.
 
 Changed paths: `apps/worker/src/jobs/{process-image,image-dispatcher,image-repository}*.ts`, `apps/worker/src/{main,main.test,run}.ts`, `apps/worker/package.json`, `packages/db/src/media-lock*.ts`, `packages/db/{package.json,prisma/schema.prisma,prisma/migrations/20260927160000_media_image_processing/migration.sql}`, `pnpm-lock.yaml`, `Dockerfile.worker`, `.github/workflows/ci.yml`, and this report. Controller owns `progress.md` and canonical ledger.
+
+## Review correction
+
+The real-database fixture's incomplete-READY assertion now passes the promise directly to Vitest's `.rejects` matcher. The earlier `expect(await promise).rejects` shape would throw before Vitest could observe the intended rejection. Local PostgreSQL is unavailable, so this fixture still requires the CI database gate; the focused local test loads and skips it.
