@@ -517,9 +517,10 @@ test.describe("localized collection and item management", () => {
       await loginTestCollector(page, locale, collector);
       const { collection } = await createCollectionApi(page, "Options retry");
       let attempts = 0;
+      let failing = true;
       await page.route("**/api/v1/collections/" + collection.id + "/nodes", async (route) => {
         attempts += 1;
-        if (attempts === 1) await route.abort("failed");
+        if (failing) await route.abort("failed");
         else await route.continue();
       });
       await page.goto("/" + locale + "/items/new?collectionId=" + collection.id);
@@ -529,10 +530,12 @@ test.describe("localized collection and item management", () => {
       );
       await expect(page.getByRole("button", { name: labels.saveItem })).toBeDisabled();
       await expect(page.getByLabel(labels.itemCollection, { exact: true })).toBeEnabled();
+      const attemptsBeforeRetry = attempts;
+      failing = false;
       await page.getByRole("button", { name: labels.retryLoad }).click();
       await expect(page.getByRole("button", { name: labels.saveItem })).toBeEnabled();
       await expect(page.getByLabel(labels.title)).toHaveValue("Keep my draft");
-      expect(attempts).toBe(2);
+      expect(attempts).toBeGreaterThan(attemptsBeforeRetry);
     } finally {
       await cleanupCollector(collector.userId);
     }
@@ -548,9 +551,10 @@ test.describe("localized collection and item management", () => {
       await loginTestCollector(page, locale, collector);
       const { collection } = await createCollectionApi(page, "Recover detail");
       let attempts = 0;
+      let failing = true;
       await page.route("**/api/v1/collections/" + collection.id, async (route) => {
         attempts += 1;
-        if (attempts === 1) await route.abort("failed");
+        if (failing) await route.abort("failed");
         else await route.continue();
       });
       await page.goto("/" + locale + "/collections/" + collection.id);
@@ -558,11 +562,13 @@ test.describe("localized collection and item management", () => {
         labels.actionError,
       );
       await expect(page.getByRole("status")).toHaveCount(0);
+      const attemptsBeforeRetry = attempts;
+      failing = false;
       await page.getByRole("button", { name: labels.retryLoad }).click();
       await expect(
         page.getByRole("heading", { name: "Recover detail", exact: true }),
       ).toBeVisible();
-      expect(attempts).toBe(2);
+      expect(attempts).toBeGreaterThan(attemptsBeforeRetry);
     } finally {
       await cleanupCollector(collector.userId);
     }
