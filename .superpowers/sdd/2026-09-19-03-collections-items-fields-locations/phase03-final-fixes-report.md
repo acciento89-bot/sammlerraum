@@ -23,3 +23,8 @@ PostgreSQL, Docker and Chromium are unavailable locally. Therefore the newly add
 ## Scoped rereview follow-up (R2)
 
 The scoped rereview accepted production R1 but identified that the new located-item PostgreSQL fixture's `finally` attempted owner deletion while its source and split location-history rows still referenced that owner as assignee through an intentional `ON DELETE RESTRICT` FK. The fixture now deletes only history assigned by this test's `ownerId` before deleting that owner, following the established Task5 cleanup convention. No schema or production behavior changed. This was source-reviewed and formatting/diff-checked locally; real PostgreSQL execution remains for the controller's fresh CI gate.
+
+
+## Final remote verification — complete
+
+Exact source `d6a1a5e860bbf3bd84c0f0d5a213292362ca73ad` passed CI36316664397 / job108612541982:240 unit/static,109 dedicated integrations (22 actual database cases),2 production QR journeys,4 auth journeys,16 management journeys; migrations/lint/typecheck/build/Compose/both Docker builds PASS. Task and scoped reviews approved corrections. Phase integration R1 is addressed; R2 fixture teardown corrected and verified in actual DB gate. M1/M2 remain documented nonblocking UX follow-ups. This completes Task8 and Phase03, not the V1 release or deployment.

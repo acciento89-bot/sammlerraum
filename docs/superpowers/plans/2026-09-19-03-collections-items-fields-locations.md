@@ -400,7 +400,7 @@ git commit -m "feat: add collection and item management UI"
 - Consumes: storage locations and stable QR token.
 - Produces: printable QR label and scan target that resolves to the authorized location view.
 
-- [ ] **Step 1: Write failing token/privacy test**
+- [x] **Step 1: Write failing token/privacy test**
 
 ```ts
 it("resolves a valid label token but never exposes private location contents to an unauthorized actor", async () => {
@@ -411,16 +411,16 @@ it("resolves a valid label token but never exposes private location contents to 
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run packages/domain/src/locations/label-service.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement labels**
+- [x] **Step 3: Implement labels**
 
 Generate QR content as `${APP_ORIGIN}/l/${token}` using a cryptographically random stable token unrelated to database sequence IDs. Printable view contains QR, human-readable location name, and short internal code; it never prints item values or private notes.
 
-- [ ] **Step 4: Run tests/E2E**
+- [x] **Step 4: Run tests/E2E**
 
 Run:
 ```bash
@@ -430,7 +430,7 @@ pnpm --filter @sammlerraum/web exec playwright test e2e/location-labels.spec.ts
 
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/domain/src/locations apps/web
