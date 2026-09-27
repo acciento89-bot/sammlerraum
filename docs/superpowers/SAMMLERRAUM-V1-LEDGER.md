@@ -14,7 +14,7 @@ This is the handoff/status file for long-running implementation. Update it after
 | 01 | Platform Foundation | 6 | complete (6/6) | — |
 | 02 | Identity, Auth & Policies | 7 | complete (7/7) | — |
 | 03 | Collections, Items, Fields & Locations | 8 | complete (8/8) | — |
-| 04 | Media & Documents | 6 | in progress (1/6) | Task 2 |
+| 04 | Media & Documents | 6 | in progress (2/6) | Task 3 |
 | 05 | Catalog, Condition & Grading | 7 | not started | Task 1 |
 | 06 | Valuations & Market Data | 6 | not started | Task 1 |
 | 07 | Search, Smart Collections & Dashboard | 5 | not started | Task 1 |
@@ -52,9 +52,10 @@ This is the handoff/status file for long-running implementation. Update it after
 - [x] P03 T07 — Responsive collection and item management UI
 - [x] P03 T08 — Printable storage labels and protected scan-to-location flow
 - [x] P04 T01 — Storage provider and persistent local implementation
-- [ ] P04 T02 — Media/document models and upload validation
+- [x] P04 T02 — Media/document models and upload validation
+- [ ] P04 T03 — Image variant worker
 
-**Verified completion: 22/91 tasks.** Later tasks remain open as listed in the phase table and detail plans.
+**Verified completion: 23/91 tasks.** Later tasks remain open as listed in the phase table and detail plans.
 
 ## Update rule
 
@@ -480,3 +481,18 @@ Every completed and independently reviewed task must be checked off in its detai
 - Task5 creates cleanup-media.test.ts named by its test command despite omission from its file list; cost if wrong: small test-maintenance cost.
 - Planned configurable limits:20MiB/image,25MiB/document,40million decoded pixels; initial imagesJPEG/PNG/WebP, documentsPDF or those images. Values/formats were unspecified; cost if wrong: config/allowlist refinement.
 - Task2 integrates new media/document links with existing item splitting by sharing asset references, preserving title/order/category/visibility; cost if wrong: explicit unlink on split portion. Avatar references must remain ownership-checked and counted by cleanup; unsupported future catalog targets stay denied until their domain exists.
+
+
+### Phase 04 Task 2 — COMPLETE
+
+- Reviewed/tested source `38dbc4aa50dfb444c8b92968e0eb1205fd60b603`. Additive media/document models, owned links/avatar references, validated bounded uploads and owner-only same-origin upload/link APIs. Magic, declared MIME, extension and image decode must agree; byte/pixel limits are enforced before persistence. Documents are private by default; split portions share preserved media/document references.
+- Durable UPLOADING storage-key intent precedes byte writes; all image MIME assets (including documents) become PENDING for Task3 dispatch, PDFs READY. RESTRICT ownership/variant relations preserve storage tracking. Task3 supplies processing, Task4 reads, Task5 cleanup and Task6 UI.
+- Independent SPEC PASS / QUALITY PASS. One CI fixture correction isolates the intended owner FK without weakening the strict P2003 assertion; narrow rereview PASS, no open Important findings. Provider crash-temp cleanup explicitly assigned to Task5.
+- Full CI SUCCESS: https://github.com/acciento89-bot/sammlerraum/actions/runs/36319866566 (job108621505266). 290 unit/static tests;129 dedicated integration tests, including migration replay, owned media/avatar constraints and split-link persistence;2 production label,4 auth and16 management browser journeys. Migrations/lint/typecheck/workspace build/Compose/both Docker builds passed.
+- Task2 checked off; Phase04 now2/6, overall23/91. NextTask3 image worker. Main ledger synchronized; source remains on feature branch.
+
+### Additional Phase04 rulings
+
+- Task6 adds a minimal read-only public item/gallery presentation through authoritative public DTO and Task4 authorization, as its browser requirement needs images after logout. Owner editing remains authenticated, receipts private, noindex retained until Phase14. Cost if wrong: bounded route/presentation relocation.
+- Migration clears unsupported pre-media avatar UUIDs before the owned MediaAsset FK: no earlier media source exists for backfill. Other profile fields and bytes are untouched. Cost if wrong: avatar reselection; no production migration performed.
+- Task5 includes conservative age-gated cleanup of reserved local-provider .storage-UUID.tmp staging files after process crashes, with crash/active-write tests and unchanged four-method provider interface. Cost if wrong: an overly aggressive threshold can disrupt a long write.

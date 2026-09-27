@@ -35,3 +35,20 @@ Real PostgreSQL migration replay, FK ownership checks, and split-link integratio
 ## CI correction round 1
 
 Remote CI run `36319552257` (job `108620611441`) reported **128 passed, 1 failed** in the real-database gate. The failure was the media ownership fixture's strict `P2003` assertion: its foreign-owner link reused the existing `(itemId, assetId, GALLERY)` unique tuple, and PostgreSQL/Prisma raised `P2002` first. The corrected fixture creates an item owned by the other user so its item/owner FK is valid, uses a distinct link tuple, and leaves only the asset/owner FK invalid. The strict `P2003` assertion remains. The user-deletion `RESTRICT` assertion now runs before any link exists, isolating that FK. Local PostgreSQL remains unavailable; this correction needs a fresh CI DB run.
+
+
+### Phase 04 Task 2 — COMPLETE
+
+- Reviewed/tested source `38dbc4aa50dfb444c8b92968e0eb1205fd60b603`. Additive media/document models, owned links/avatar references, validated bounded uploads and owner-only same-origin upload/link APIs. Magic, declared MIME, extension and image decode must agree; byte/pixel limits are enforced before persistence. Documents are private by default; split portions share preserved media/document references.
+- Durable UPLOADING storage-key intent precedes byte writes; all image MIME assets (including documents) become PENDING for Task3 dispatch, PDFs READY. RESTRICT ownership/variant relations preserve storage tracking. Task3 supplies processing, Task4 reads, Task5 cleanup and Task6 UI.
+- Independent SPEC PASS / QUALITY PASS. One CI fixture correction isolates the intended owner FK without weakening the strict P2003 assertion; narrow rereview PASS, no open Important findings. Provider crash-temp cleanup explicitly assigned to Task5.
+- Full CI SUCCESS: https://github.com/acciento89-bot/sammlerraum/actions/runs/36319866566 (job108621505266). 290 unit/static tests;129 dedicated integration tests, including migration replay, owned media/avatar constraints and split-link persistence;2 production label,4 auth and16 management browser journeys. Migrations/lint/typecheck/workspace build/Compose/both Docker builds passed.
+- Task2 checked off; Phase04 now2/6, overall23/91. NextTask3 image worker. Main ledger synchronized; source remains on feature branch.
+
+### Additional Phase04 rulings
+
+- Task6 adds a minimal read-only public item/gallery presentation through authoritative public DTO and Task4 authorization, as its browser requirement needs images after logout. Owner editing remains authenticated, receipts private, noindex retained until Phase14. Cost if wrong: bounded route/presentation relocation.
+- Migration clears unsupported pre-media avatar UUIDs before the owned MediaAsset FK: no earlier media source exists for backfill. Other profile fields and bytes are untouched. Cost if wrong: avatar reselection; no production migration performed.
+- Task5 includes conservative age-gated cleanup of reserved local-provider .storage-UUID.tmp staging files after process crashes, with crash/active-write tests and unchanged four-method provider interface. Cost if wrong: an overly aggressive threshold can disrupt a long write.
+
+The previously pending real-database gate is resolved by this CI. Task5 also owns reserved provider temporary-file crash cleanup, with conservative age and active-write safety.

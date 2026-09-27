@@ -52,3 +52,24 @@ Ruling: add configurable defaults of20MiB per image,25MiB per document and40mill
 Ruling: integrate new item media/document links with existing quantity splitting in Task2; copies reference the same assets — interchangeable split portions must retain description/proof and cleanup must count all references — cost if wrong: explicit link removal on the split portion.
 
 Task 1: complete (7171142..165fddb2, SPEC/QUALITY PASS; one deferred minor; fullCI36317746924SUCCESS259unit109integration22browserallbuildgates). NextTask2.
+
+Task 2: in progress; base9763e02e3913f5f940d950b11ffc364ccb9c0965; fresh implementer p04_t02 dispatched with task-2-brief/context. Main ledger synced7d5536c, blob9d94a464236bc3b386747ff65f3afa89f34fedca.
+
+Additional preflight P03 management page/P04T06: current /[locale]/items/[id] page unconditionally sends anonymous viewers to login, while Task6 browser requirement expects public gallery visibility after logout.
+Ruling: Task6 adds a minimal read-only public item/gallery presentation through the existing authoritative public-item projection and Task4 sanitized media authorization; owner editing stays authenticated, private receipts stay denied — required by the explicit Task6 public-image/private-receipt browser test — cost if wrong: bounded route/presentation relocation when Phase14 supplies final public SEO surfaces. Keep noindex until that phase's explicit SEO policy.
+
+Task2 design milestone: durable UPLOADING row/storage key before put; successful images become PENDING durable dispatch intent, documents READY. Task3 must dispatch/recover PENDING, Task5 handles stale UPLOADING/unlinked assets. Initial10 focusedtestsGREEN after module-missingRED.
+Ruling: Task2 migration clears pre-media non-null avatarAssetId values before adding the owned MediaAsset FK — no legacy media table/storage source exists, so arbitrary unsupported UUIDs cannot be backfilled and would block migration — cost if wrong: users must reselect an avatar; no stored media bytes or other profile fields are deleted. Migration is authored/tested only, no production execution.
+
+Task2/3/4 interface clarification: image MIME uploads are PENDING for sanitized derivatives regardless of IMAGE or DOCUMENT kind; PDFs may be READY immediately. Task3 selects image MIME/status, not IMAGE kind alone. Task4 public image documents expose derivatives, never EXIF-bearing originals; explicitly public PDFs follow document policy and safe download headers. This is the existing public-image derivative ruling applied consistently.
+
+Task2 lifecycle interface: MediaAsset.owner and MediaVariant.asset use RESTRICT rather than cascade so parent/user deletion cannot erase storage-key tracking before byte cleanup. Task5 must remove variant bytes/rows and original bytes before asset row; any account deletion workflow must respect this order. Item links may cascade while asset tracking survives.
+
+Task2 review cross-task handoff: LocalPersistentStorage uses reserved random .storage-UUID.tmp names; a process kill before rename leaves staging bytes not named by UPLOADING.storageKey.
+Ruling: Task5 owns a safe age-gated sweep of reserved local-provider temp files (or equivalent recoverable temp identity) with crash simulation and active-write safety — domain intent tracks final keys but cannot discover staging names through the four-method StorageProvider interface — cost if wrong: overly aggressive cleanup could fail a very long active write; conservative age/ownership checks are required. Keep the generic four-method contract unchanged.
+
+Task2 implementation e8cc3f2 / remote5b1d13a; independent SPEC PASS / QUALITY PASS, one Task5 temp-file handoff. CI36319552257 failed new realDB owner-FK fixture: duplicate media link violates unique key P2002 before intended P2003. Fix round1 assigned to original implementer; production reviewed without Important findings.
+
+Task 2: fix round1/5 (CI fixture addressed,0 openImportant; e8cc3f2..4818fb7 / remote38dbc4aa; narrow rereviewPASS). Fresh fullCI36319866566 pending. Task3 brief/context prepared; do not start until Task2 verified checkoff/main sync.
+
+Task2 COMPLETE: source38dbc4aa, CI36319866566 SUCCESS,290unit129integration22browser/allbuilds. Review and fixture rereview PASS. Task3 pending publication/main-ledger sync.

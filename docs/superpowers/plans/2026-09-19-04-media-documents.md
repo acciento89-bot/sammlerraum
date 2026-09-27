@@ -93,7 +93,7 @@ git commit -m "feat: add persistent storage abstraction"
 - Consumes: `StorageProvider`, Prisma, queue.
 - Produces: `createImageUpload`, `createDocumentUpload`, `linkAsset`.
 
-- [ ] **Step 1: Write failing spoofed MIME and size tests**
+- [x] **Step 1: Write failing spoofed MIME and size tests**
 
 ```ts
 it("rejects a PDF renamed to .jpg", async () => {
@@ -109,18 +109,18 @@ it("rejects a source over the configured byte limit", async () => {
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run packages/domain/src/media/media-service.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement models and validation**
+- [x] **Step 3: Implement models and validation**
 
 Add `MediaAsset`, `MediaVariant`, `MediaLink`, `DocumentLink`, processing status, size, checksum, MIME, width/height, original filename metadata.
 
 Use `file-type` and Sharp decode for images. Enforce explicit byte and megapixel limits from config. Document allowlist starts with PDF and common image types; unsupported active formats are rejected.
 
-- [ ] **Step 4: Run migration and tests**
+- [x] **Step 4: Run migration and tests**
 
 Run:
 ```bash
@@ -130,7 +130,7 @@ pnpm vitest run packages/domain/src/media
 
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/db packages/domain/src/media packages/contracts/src/media.ts
