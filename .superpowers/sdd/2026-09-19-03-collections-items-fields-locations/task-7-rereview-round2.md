@@ -1,0 +1,7 @@
+# Phase 03 Task 7 scoped round-two rereview
+
+- Compared `22d5b71..86be72d`, limited to the two outstanding round-one findings and newly introduced breakage in this diff. No prior code reopened, code edited, or suites rerun.
+- **R4 ADDRESSED.** `apps/web/src/components/items/item-form.tsx:145-186, 395-436, 478-485, 655-660` now exposes a retry after a failed nodes/custom-fields request, keeps the collection selector and basic draft editable, and disables the node selector/save until the selected collection's options arrive. Successful retry clears the error and restores the save path. `apps/web/src/components/collections/collection-detail.tsx:53-92, 116-130` clears loading in `finally` and offers retry following a failed initial load. The new desktop/mobile E2E cases at `apps/web/e2e/collections-items.spec.ts:503-563` target both failures and draft retention.
+- **R7 ADDRESSED.** `apps/web/src/components/items/item-form-values.ts:105-109` now uses locale-aware integer grouping; the focused test at `apps/web/src/components/items/item-form-values.test.ts:57-64` covers DE/EN and the maximum safe integer. The canonical numeric value remains unchanged.
+- **New breakage:** none identified within the round-two diff.
+- **Verdict: SPEC PASS / QUALITY PASS for the scoped Task 7 rereview.** This source verdict does not claim live CI GREEN. Reported local focused tests (13/13) and web typecheck pass; the new browser regressions and full remote CI remain pending. The prior candidate's 12 desktop/mobile browser cases reportedly passed.

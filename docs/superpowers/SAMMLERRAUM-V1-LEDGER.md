@@ -1,6 +1,6 @@
 # Sammlerraum V1 Completion Ledger
 
-**Stand:** 20.09.2026
+**Stand:** 27.09.2026
 **Master plan:** `docs/superpowers/plans/2026-09-19-sammlerraum-v1-master-plan.md`  
 **Canonical product/system spec:** `docs/superpowers/specs/2026-09-19-sammlerraum-design.md`  
 **SEO/Search Console spec:** `docs/superpowers/specs/2026-09-19-seo-search-console-design.md`
@@ -13,7 +13,7 @@ This is the handoff/status file for long-running implementation. Update it after
 |---|---|---:|---|---|
 | 01 | Platform Foundation | 6 | complete (6/6) | — |
 | 02 | Identity, Auth & Policies | 7 | complete (7/7) | — |
-| 03 | Collections, Items, Fields & Locations | 8 | in progress (6/8) | Task 7 |
+| 03 | Collections, Items, Fields & Locations | 8 | in progress (7/8) | Task 8 |
 | 04 | Media & Documents | 6 | not started | Task 1 |
 | 05 | Catalog, Condition & Grading | 7 | not started | Task 1 |
 | 06 | Valuations & Market Data | 6 | not started | Task 1 |
@@ -49,9 +49,10 @@ This is the handoff/status file for long-running implementation. Update it after
 - [x] P03 T04 — Typed custom field definitions and values
 - [x] P03 T05 — Hierarchical storage locations and movement history
 - [x] P03 T06 — Collection/item REST APIs and policy enforcement
-- [ ] P03 T07 — Responsive collection and item management UI
+- [x] P03 T07 — Responsive collection and item management UI
+- [ ] P03 T08 — Printable storage labels and protected scan-to-location flow
 
-**Verified completion: 19/91 tasks.** Later tasks remain open as listed in the phase table and detail plans.
+**Verified completion: 20/91 tasks.** Later tasks remain open as listed in the phase table and detail plans.
 
 ## Update rule
 
@@ -436,3 +437,13 @@ Every completed and independently reviewed task must be checked off in its detai
 - Full final CI SUCCESS: https://github.com/acciento89-bot/sammlerraum/actions/runs/35538114677 (job106150706721).
 - 221 unit/static tests passed; dedicated integration106 passed including20 actual DB cases; all4 browser journeys passed35.5s. Migrations/lint/typecheck/workspace build/Compose/both Docker builds passed. Real route integration covers private/unlisted ancestry, owner metadata, tiny/precision-limit Decimal resubmission, soft deletion/content retention and direct-service bypass rejection.
 - Approved report/review snapshot `c2231d0c0289fd0b73c84875ba62e82bd42428a1` on checkpoint branch. Task6 checked off; next Task7 responsive DE/EN collection/item management UI. Main and feature ledgers synchronized; code remains on feature branch, no production/provider action.
+
+
+### Phase 03 Task 7 — COMPLETE
+
+- Resumed the existing UI implementation and review fixes; did not repeat Tasks1–6 or redesign the approved V1. Final reviewed/tested remote source: `ec5945259c74d8139d292655889d46bb81a03ce9`.
+- Responsive DE/EN collection/hierarchy/item management, all10 typed custom fields, private locations, identifiers/tags, explicit visibility, separate public descriptions/private notes, per-unit acquisition prices, archive/delete, and manual/camera code proposals with explicit confirmation.
+- All9 independent review findings addressed: preserved nested placement/currencies/comma tags, safe integer parsing and exact locale display, recoverable network/metadata/collection loading, native keyboard-accessible hierarchy, camera start/disposal control, and validation before writes. Final scoped SPEC PASS / QUALITY PASS, including deterministic browser-failure setup and stable localized select label.
+- Reproduced local TypeScript failures then corrected. Browser RED on the pre-fix snapshot confirmed node reset, stuck retry, incomplete list semantics and duplicate camera acquisition. R9 exact pre-fix snapshot RED was observed after production work had overlapped the CI run; not claimed as an observed tests-first sequence. Later retry-test setup was corrected for development effect replay; behavioral assertions retained. Full evidence retained in the task report/reviews.
+- Full final CI SUCCESS: https://github.com/acciento89-bot/sammlerraum/actions/runs/36313332028 (job108603303172). 234unit/static tests;106dedicated integration tests including20 actual DB cases;4auth browser journeys (35.0s);16management browser journeys (desktop DE/mobile EN,1.5m). Migrations/lint/typecheck/workspace build/Compose/both Docker builds passed.
+- Task7 checked off; next Task8 printable storage labels and authorized scan flow. Completion documentation preserves the tested source. Main ledger synchronized as requested; no merge, deployment or live provider action.

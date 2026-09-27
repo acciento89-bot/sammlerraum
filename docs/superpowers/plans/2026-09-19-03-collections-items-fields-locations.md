@@ -343,7 +343,7 @@ git commit -m "feat: expose collection and item APIs"
 - Consumes: collection/item/custom-field/location APIs.
 - Produces: mobile/desktop flows to create hierarchy, add/edit/archive items, manage identifiers/tags/custom fields, assign locations, and capture codes.
 
-- [ ] **Step 1: Write failing E2E flow**
+- [x] **Step 1: Write failing E2E flow**
 
 ```ts
 test("collector creates a nested collection and item with custom field and location", async ({ page }) => {
@@ -357,18 +357,18 @@ test("collector creates a nested collection and item with custom field and locat
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm --filter @sammlerraum/web exec playwright test e2e/collections-items.spec.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement responsive UI**
+- [x] **Step 3: Implement responsive UI**
 
 Use accessible tree/navigation controls, explicit visibility selector, separate public description/private notes, canonical money/date inputs, and progressive disclosure for advanced fields.
 
 `code-scanner.tsx` uses the browser `BarcodeDetector` API when available and always exposes manual EAN/UPC/ISBN entry as fallback. Scanner output is only an identifier proposal until the user confirms it.
 
-- [ ] **Step 4: Run E2E/build**
+- [x] **Step 4: Run E2E/build**
 
 Run:
 ```bash
@@ -378,7 +378,7 @@ pnpm --filter @sammlerraum/web build
 
 Expected: PASS in mobile and desktop projects.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add apps/web

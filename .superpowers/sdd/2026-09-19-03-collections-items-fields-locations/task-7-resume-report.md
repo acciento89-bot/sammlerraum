@@ -1,6 +1,6 @@
 # Task 7 resume report
 
-Status: implementation candidate, pending full remote CI and independent rereview. Do not check off Task 7 yet.
+Status: implementation verified. Final source passed full remote CI and independent scoped rereview; controller owns Task 7 checkoff and ledger sync.
 
 ## Commits
 
@@ -9,6 +9,7 @@ Status: implementation candidate, pending full remote CI and independent rerevie
 - `22d5b71`: production fixes for remaining browser review findings. The controller will publish the candidate tree; no local push was made.
 - `47c490c`: this evidence report. `5416c31`: collection-load retry browser regressions, published as identical remote tree `271e7e5`. `86be72d`: scoped rereview fixes for R4 and R7. The controller handles publishing; no local push was made.
 - `5ebd1b3`: make the collection-load browser regressions hold transport failure until the explicit retry, accommodating development effect replay while asserting a new request and recovered UI.
+- `1296f2b`: give the collection selector a translated explicit accessible name, matching its exact-label browser assertion.
 
 ## Evidence and review findings
 
@@ -25,3 +26,7 @@ The round-one production source tree `e65e56b` passed all 12 Task 7 browser case
 Local PostgreSQL, Docker, and Chromium are unavailable, so the round-two candidate still requires remote desktop/mobile browser journeys, database integration, and Docker gates. No full green round-two CI result is claimed here.
 
 Round-two source CI `36312661038` passed the original 12 Task 7 desktop/mobile cases and failed only the four new retry cases: aborting just the first initial GET allowed a subsequent effect load to succeed before the expected alert, while the detail test observed three GETs rather than its assumed two. The test-only R4 CI `36312600326` passed the original 12 and failed both locales' detail retry because the retry button was missing; its options cases stopped at the absent alert caused by the same one-abort effect-replay race, so they do not prove the later draft/retry assertions RED. The corrected route rejects all initial GETs until explicit retry, then verifies another request and successful UI/draft recovery. Web typecheck and lint pass at `5ebd1b3`; final remote CI on the test correction remains pending.
+
+CI `36313002382` on the corrected retry route passed 14 browser cases, including both detail retries; the remaining desktop/mobile options cases reached the visible error and disabled Save but failed to find the collection selector by its exact accessible name. The wrapped label included the selected option text, as had occurred for prior location controls. `1296f2b` supplies a stable translated `aria-label`; local web typecheck, lint, and all 13 focused value tests passed.
+
+Final published source `ec594525` (identical to local `1296f2b` source tree) passed full CI `36313332028`, job `108603303172`: 234 unit tests passed (20 database-dependent cases skipped in that unit run); 106 dedicated integration tests passed; all four authentication browser journeys and all 16 Task 7 desktop/mobile management cases passed. PostgreSQL migrations, ordinary lint, typecheck, workspace build, Compose validation, and both web/worker Docker builds passed. Independent scoped round-two rereview found **SPEC PASS / QUALITY PASS** for R1–R9. No Task 7 code concern remains from that review.
