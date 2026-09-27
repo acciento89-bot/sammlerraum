@@ -13,7 +13,7 @@ This is the handoff/status file for long-running implementation. Update it after
 |---|---|---:|---|---|
 | 01 | Platform Foundation | 6 | complete (6/6) | — |
 | 02 | Identity, Auth & Policies | 7 | complete (7/7) | — |
-| 03 | Collections, Items, Fields & Locations | 8 | in progress (7/8) | Task 8 |
+| 03 | Collections, Items, Fields & Locations | 8 | complete (8/8) | — |
 | 04 | Media & Documents | 6 | not started | Task 1 |
 | 05 | Catalog, Condition & Grading | 7 | not started | Task 1 |
 | 06 | Valuations & Market Data | 6 | not started | Task 1 |
@@ -50,9 +50,9 @@ This is the handoff/status file for long-running implementation. Update it after
 - [x] P03 T05 — Hierarchical storage locations and movement history
 - [x] P03 T06 — Collection/item REST APIs and policy enforcement
 - [x] P03 T07 — Responsive collection and item management UI
-- [ ] P03 T08 — Printable storage labels and protected scan-to-location flow
+- [x] P03 T08 — Printable storage labels and protected scan-to-location flow
 
-**Verified completion: 20/91 tasks.** Later tasks remain open as listed in the phase table and detail plans.
+**Verified completion: 21/91 tasks.** Later tasks remain open as listed in the phase table and detail plans.
 
 ## Update rule
 
@@ -447,3 +447,15 @@ Every completed and independently reviewed task must be checked off in its detai
 - Reproduced local TypeScript failures then corrected. Browser RED on the pre-fix snapshot confirmed node reset, stuck retry, incomplete list semantics and duplicate camera acquisition. R9 exact pre-fix snapshot RED was observed after production work had overlapped the CI run; not claimed as an observed tests-first sequence. Later retry-test setup was corrected for development effect replay; behavioral assertions retained. Full evidence retained in the task report/reviews.
 - Full final CI SUCCESS: https://github.com/acciento89-bot/sammlerraum/actions/runs/36313332028 (job108603303172). 234unit/static tests;106dedicated integration tests including20 actual DB cases;4auth browser journeys (35.0s);16management browser journeys (desktop DE/mobile EN,1.5m). Migrations/lint/typecheck/workspace build/Compose/both Docker builds passed.
 - Task7 checked off; next Task8 printable storage labels and authorized scan flow. Completion documentation preserves the tested source. Main ledger synchronized as requested; no merge, deployment or live provider action.
+
+
+### Phase 03 Task 8 and phase integration — COMPLETE
+
+- Final reviewed/tested source: `d6a1a5e860bbf3bd84c0f0d5a213292362ca73ad`. Printable owner-only QR labels reuse the stable random token and render only location name, QR and short internal code. Scan authenticates before owner-scoped lookup; anonymous scans lead to login, foreign/invalid authenticated tokens return404. DE/EN contents, noindex, private no-store and no-referrer verified in actual production browser journeys. Anonymous users sign in and rescan.
+- Task8 review corrected the missing DE/EN print action key. Production browser validation exposed a locale-cookie overwrite from Next link prefetch; reproduced RED, corrected GREEN with prefetch-safe cookie handling and non-prefetching language links. Tests explicitly verify cookie precedence over Accept-Language and anonymous header fallback. Narrow reviews approved every correction; privacy assertions retained.
+- Phase-wide final review found split metadata loss across Tasks2–5. The corrected locked transaction preserves current location, identifiers, tag links, all typed values and ordered multi-select links, and creates one initial location-history assignment without copying old movements. Real database owner-API round trips verify exact Decimal/MONEY, unchanged total/location quantities and rollback after metadata-write failure. Scoped review: original Important R1 addressed.
+- CI also exposed profile submission before hydration. SSR submit is disabled until hydrated; browser checks cover disabled/implicit-submit behavior and successful hydrated save. Production label journeys now precede dev journeys so cache headers are tested against the deployed server mode. Fixture history cleanup respects existing RESTRICT constraints; label teardown removes test rate-limit state before the auth suite. Production rate limits unchanged. The earlier non-OK reauthentication response was consistent with shared test counters, but its status was not captured and is not misreported as an observed429.
+- Full final CI SUCCESS: https://github.com/acciento89-bot/sammlerraum/actions/runs/36316664397 (job108612541982, exact source above). 240 unit/static tests;109 dedicated integration tests including22 actual database cases;2 production label browser journeys (5.3s),4 auth journeys (23.5s),16 management journeys (55.6s). Migrations, lint, typecheck, workspace build, Compose and both Docker builds passed. Unit-run DB skips were executed by the dedicated integration gate.
+- Final-review nonblocking follow-ups retained: M1 enabled blank INTEGER converts to0; M2 duplicate hierarchy leaf names need ancestry context in selectors. These are explicit UX follow-ups for future item/hierarchy UI work, not silently discarded findings.
+- Execution decisions: resumed the existing dedicated feature checkout (reversible relocation if unsuitable); corrected only fixture-owned history cleanup before owner deletion (risk limited to isolated test records). Full task and phase review/report evidence is preserved under `.superpowers/sdd/2026-09-19-03-collections-items-fields-locations/`.
+- Task8 checked off; Phase03 complete8/8, overall21/91. Next: Phase04 Task1 (Media & Documents). Implementation remains on `work/sammlerraum-v1` / Draft PR#1; ledger synchronized to main as requested. No source merge or deployment.
