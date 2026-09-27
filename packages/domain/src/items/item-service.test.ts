@@ -36,6 +36,8 @@ describe("item service", () => {
     const transaction = {
       $queryRaw: async () => [itemFixture()],
       itemIdentifier: { findMany: async () => [] },
+      mediaLink: { findMany: async () => [] },
+      documentLink: { findMany: async () => [] },
       itemTag: { findMany: async () => [] },
       customFieldValue: { findMany: async () => [] },
       collectibleItem: {
@@ -76,6 +78,35 @@ describe("item service", () => {
           return itemFixture({ id: createdItemId, quantity: data.quantity });
         },
       },
+      mediaLink: {
+        findMany: async () => [
+          {
+            assetId: "media-1",
+            ownerId: "owner-user-id",
+            purpose: "GALLERY",
+            position: 2,
+            title: "Front",
+          },
+        ],
+        createMany: async ({ data }: { data: unknown }) => {
+          writes.media = data;
+        },
+      },
+      documentLink: {
+        findMany: async () => [
+          {
+            assetId: "document-1",
+            ownerId: "owner-user-id",
+            category: "PURCHASE_RECEIPT",
+            visibility: "PRIVATE",
+            position: 1,
+            title: "Proof",
+          },
+        ],
+        createMany: async ({ data }: { data: unknown }) => {
+          writes.documents = data;
+        },
+      },
       itemIdentifier: {
         findMany: async () => [{ type: "EAN", value: "00123", normalizedValue: "00123" }],
         createMany: async ({ data }: { data: unknown }) => {
@@ -114,6 +145,27 @@ describe("item service", () => {
       { itemId: createdItemId, type: "EAN", value: "00123", normalizedValue: "00123" },
     ]);
     expect(writes.tags).toEqual([{ itemId: createdItemId, tagId: "tag-1" }]);
+    expect(writes.media).toEqual([
+      {
+        itemId: createdItemId,
+        assetId: "media-1",
+        ownerId: "owner-user-id",
+        purpose: "GALLERY",
+        position: 2,
+        title: "Front",
+      },
+    ]);
+    expect(writes.documents).toEqual([
+      {
+        itemId: createdItemId,
+        assetId: "document-1",
+        ownerId: "owner-user-id",
+        category: "PURCHASE_RECEIPT",
+        visibility: "PRIVATE",
+        position: 1,
+        title: "Proof",
+      },
+    ]);
     expect(writes.history).toMatchObject({
       itemId: createdItemId,
       ownerId: "owner-user-id",
@@ -410,6 +462,8 @@ describe("item service", () => {
     const transaction = {
       $queryRaw: async () => [original],
       itemIdentifier: { findMany: async () => [] },
+      mediaLink: { findMany: async () => [] },
+      documentLink: { findMany: async () => [] },
       itemTag: { findMany: async () => [] },
       customFieldValue: { findMany: async () => [] },
       collectibleItem: {
@@ -594,6 +648,107 @@ describe.runIf(runIntegration)("item service PostgreSQL integration", () => {
         rows.reduce((total, row) => total + BigInt(row.quantity) * row.purchaseAmountMinor!, 0n),
       ).toBe(2_990n);
     } finally {
+      await prisma!.user.delete({ where: { id: ownerId } });
+    }
+  });
+
+  it("keeps image and document links on both portions with shared asset IDs", async () => {
+    const ownerId = await createOwner();
+    const service = createItemService(prisma! as unknown as ItemDatabase, ownerId);
+    try {
+      const collection = await prisma!.collection.create({
+        data: { ownerId, name: "Shared media" },
+      });
+      const item = await service.createItem({
+        collectionId: collection.id,
+        title: "Pair",
+        quantity: 2,
+      });
+      const imageId = randomUUID();
+      const documentId = randomUUID();
+      await prisma!.mediaAsset.createMany({
+        data: [
+          {
+            id: imageId,
+            ownerId,
+            kind: "IMAGE",
+            status: "READY",
+            storageKey: `originals/${imageId}`,
+            mimeType: "image/jpeg",
+            byteSize: 42n,
+            checksumSha256: "a".repeat(64),
+            width: 2,
+            height: 2,
+            originalFileName: "front.jpg",
+          },
+          {
+            id: documentId,
+            ownerId,
+            kind: "DOCUMENT",
+            status: "READY",
+            storageKey: `originals/${documentId}`,
+            mimeType: "application/pdf",
+            byteSize: 43n,
+            checksumSha256: "b".repeat(64),
+            originalFileName: "receipt.pdf",
+          },
+        ],
+      });
+      await prisma!.mediaLink.create({
+        data: {
+          itemId: item.id,
+          assetId: imageId,
+          ownerId,
+          purpose: "DETAIL",
+          position: 3,
+          title: "Front",
+        },
+      });
+      await prisma!.documentLink.create({
+        data: {
+          itemId: item.id,
+          assetId: documentId,
+          ownerId,
+          category: "PURCHASE_RECEIPT",
+          visibility: "PRIVATE",
+          position: 2,
+          title: "Receipt",
+        },
+      });
+      const { created } = await service.splitQuantityItem(item.id, 1);
+      for (const portionId of [item.id, created.id]) {
+        await expect(
+          prisma!.mediaLink.findMany({
+            where: { itemId: portionId },
+            select: { assetId: true, purpose: true, position: true, title: true },
+          }),
+        ).resolves.toEqual([{ assetId: imageId, purpose: "DETAIL", position: 3, title: "Front" }]);
+        await expect(
+          prisma!.documentLink.findMany({
+            where: { itemId: portionId },
+            select: {
+              assetId: true,
+              category: true,
+              visibility: true,
+              position: true,
+              title: true,
+            },
+          }),
+        ).resolves.toEqual([
+          {
+            assetId: documentId,
+            category: "PURCHASE_RECEIPT",
+            visibility: "PRIVATE",
+            position: 2,
+            title: "Receipt",
+          },
+        ]);
+      }
+      expect(await prisma!.mediaAsset.count({ where: { ownerId } })).toBe(2);
+    } finally {
+      await prisma!.mediaLink.deleteMany({ where: { ownerId } });
+      await prisma!.documentLink.deleteMany({ where: { ownerId } });
+      await prisma!.mediaAsset.deleteMany({ where: { ownerId } });
       await prisma!.user.delete({ where: { id: ownerId } });
     }
   });

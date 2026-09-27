@@ -88,6 +88,20 @@ type ItemTransaction = {
       data: Array<{ itemId: string; type: string; value: string; normalizedValue: string }>;
     }): Promise<unknown>;
   };
+  mediaLink: {
+    findMany(args: {
+      where: { itemId: string };
+      select: typeof splitMediaSelect;
+    }): Promise<SplitMediaLink[]>;
+    createMany(args: { data: Array<SplitMediaLink & { itemId: string }> }): Promise<unknown>;
+  };
+  documentLink: {
+    findMany(args: {
+      where: { itemId: string };
+      select: typeof splitDocumentSelect;
+    }): Promise<SplitDocumentLink[]>;
+    createMany(args: { data: Array<SplitDocumentLink & { itemId: string }> }): Promise<unknown>;
+  };
   itemTag: {
     findMany(args: {
       where: { itemId: string };
@@ -147,6 +161,45 @@ type ItemTransaction = {
   $queryRaw<T>(query: TemplateStringsArray, ...values: unknown[]): Promise<T>;
 };
 
+const splitMediaSelect = {
+  assetId: true,
+  ownerId: true,
+  purpose: true,
+  position: true,
+  title: true,
+} as const;
+const splitDocumentSelect = {
+  assetId: true,
+  ownerId: true,
+  category: true,
+  visibility: true,
+  position: true,
+  title: true,
+} as const;
+type SplitMediaLink = {
+  assetId: string;
+  ownerId: string;
+  purpose: "GALLERY" | "DETAIL";
+  position: number;
+  title: string | null;
+};
+type SplitDocumentLink = {
+  assetId: string;
+  ownerId: string;
+  category:
+    | "PURCHASE_RECEIPT"
+    | "INVOICE"
+    | "AUTHENTICITY_CERTIFICATE"
+    | "GRADING_PROOF"
+    | "APPRAISAL"
+    | "INSURANCE"
+    | "PROVENANCE"
+    | "WARRANTY"
+    | "OTHER_PRIVATE";
+  visibility: Visibility;
+  position: number;
+  title: string | null;
+};
 const splitIdentifierSelect = { type: true, value: true, normalizedValue: true } as const;
 const splitFieldSelect = {
   fieldDefinitionId: true,
@@ -466,7 +519,7 @@ export function createItemService(
           throw new ItemServiceError("ITEM_SPLIT_INVALID");
         }
 
-        const [identifiers, tags, fields] = await Promise.all([
+        const [identifiers, tags, fields, media, documents] = await Promise.all([
           transaction.itemIdentifier.findMany({
             where: { itemId: item.id },
             select: splitIdentifierSelect,
@@ -475,6 +528,11 @@ export function createItemService(
           transaction.customFieldValue.findMany({
             where: { itemId: item.id },
             select: splitFieldSelect,
+          }),
+          transaction.mediaLink.findMany({ where: { itemId: item.id }, select: splitMediaSelect }),
+          transaction.documentLink.findMany({
+            where: { itemId: item.id },
+            select: splitDocumentSelect,
           }),
         ]);
 
@@ -537,6 +595,16 @@ export function createItemService(
           if (selections.length > 0) {
             await transaction.customFieldMultiSelectValue.createMany({ data: selections });
           }
+        }
+        if (media.length > 0) {
+          await transaction.mediaLink.createMany({
+            data: media.map((link) => ({ ...link, itemId: created.id })),
+          });
+        }
+        if (documents.length > 0) {
+          await transaction.documentLink.createMany({
+            data: documents.map((link) => ({ ...link, itemId: created.id })),
+          });
         }
         if (item.storageLocationId != null) {
           await transaction.itemLocationHistory.create({

@@ -19,6 +19,12 @@ type ProfileRecord = {
 };
 
 type ProfileDatabase = {
+  mediaAsset?: {
+    findFirst(args: {
+      where: { id: string; ownerId: string; kind: "IMAGE"; status: "READY" };
+      select: { id: true };
+    }): Promise<{ id: string } | null>;
+  };
   userProfile: {
     findUnique(args: {
       where: { handle: string } | { userId: string };
@@ -43,13 +49,22 @@ function normalizeHandle(handle: string): string {
 }
 
 export class ProfileServiceError extends Error {
-  constructor(readonly code: "HANDLE_TAKEN") {
-    super("Profile handle is already in use");
+  constructor(readonly code: "HANDLE_TAKEN" | "AVATAR_NOT_FOUND") {
+    super(code === "HANDLE_TAKEN" ? "Profile handle is already in use" : "Avatar image not found");
     this.name = "ProfileServiceError";
   }
 }
 
 export function createProfileService(database: ProfileDatabase) {
+  async function assertAvatar(userId: string, assetId: string | null) {
+    if (assetId === null) return;
+    const asset = await database.mediaAsset?.findFirst({
+      where: { id: assetId, ownerId: userId, kind: "IMAGE", status: "READY" },
+      select: { id: true },
+    });
+    if (!asset) throw new ProfileServiceError("AVATAR_NOT_FOUND");
+  }
+
   return {
     async getPublicProfile(handle: string): Promise<PublicProfile | null> {
       const profile = await database.userProfile.findUnique({
@@ -69,6 +84,7 @@ export function createProfileService(database: ProfileDatabase) {
 
     async upsertOwnProfile(userId: string, input: UpdateOwnProfileInput): Promise<PublicProfile> {
       const data = PublicProfileSchema.parse({ ...input, handle: normalizeHandle(input.handle) });
+      await assertAvatar(userId, data.avatarAssetId);
       let profile: ProfileRecord;
       try {
         profile = await database.userProfile.upsert({
@@ -96,6 +112,7 @@ export function createProfileService(database: ProfileDatabase) {
         ...input,
         handle: normalizeHandle(input.handle),
       });
+      await assertAvatar(userId, data.avatarAssetId);
       const profile = await database.userProfile.update({
         where: { userId },
         data,

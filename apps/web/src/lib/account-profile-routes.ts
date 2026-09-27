@@ -50,6 +50,8 @@ export function createProfileRouteHandlers(dependencies: Dependencies) {
         );
       } catch (error) {
         if (error instanceof ProfileServiceError) {
+          if (error.code === "AVATAR_NOT_FOUND")
+            throw new ApiError("NOT_FOUND", 404, "Avatar not found");
           throw new ApiError("HANDLE_TAKEN", 409, "Profile handle is already in use");
         }
         throw error;

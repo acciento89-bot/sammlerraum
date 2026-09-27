@@ -41,6 +41,36 @@ enum CustomFieldType {
   MONEY
 }
 
+enum MediaKind {
+  IMAGE
+  DOCUMENT
+}
+
+enum MediaProcessingStatus {
+  UPLOADING
+  PENDING
+  PROCESSING
+  READY
+  FAILED
+}
+
+enum MediaPurpose {
+  GALLERY
+  DETAIL
+}
+
+enum DocumentCategory {
+  PURCHASE_RECEIPT
+  INVOICE
+  AUTHENTICITY_CERTIFICATE
+  GRADING_PROOF
+  APPRAISAL
+  INSURANCE
+  PROVENANCE
+  WARRANTY
+  OTHER_PRIVATE
+}
+
 enum LocationType {
   ROOM
   CABINET
@@ -57,14 +87,15 @@ model SystemMetadata {
 }
 
 model UserProfile {
-  userId        String   @id
-  handle        String   @unique
+  userId        String      @id
+  handle        String      @unique
   displayName   String
   bio           String?
-  avatarAssetId String?  @db.Uuid
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  avatarAssetId String?     @db.Uuid
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  avatarAsset   MediaAsset? @relation("ProfileAvatar", fields: [avatarAssetId, userId], references: [id, ownerId], onDelete: Restrict)
 }
 
 model User {
@@ -83,6 +114,7 @@ model User {
   tags                       Tag[]
   storageLocations           StorageLocation[]
   locationHistoryAssignments ItemLocationHistory[] @relation("LocationHistoryAssignee")
+  mediaAssets                MediaAsset[]
 
   @@unique([email])
   @@map("user")
@@ -152,6 +184,8 @@ model CollectibleItem {
   identifiers         ItemIdentifier[]
   itemTags            ItemTag[]
   customFieldValues   CustomFieldValue[]
+  mediaLinks          MediaLink[]
+  documentLinks       DocumentLink[]
 
   @@unique([id, collectionId])
   @@unique([id, ownerId])
@@ -383,4 +417,82 @@ model RateLimit {
 
   @@unique([key])
   @@map("rateLimit")
+}
+
+// An UPLOADING row is committed before the original is written. Recovery must
+// check storageKey for stale rows before cleaning them; PENDING is a durable
+// processing intent consumed by the Task 3 dispatcher.
+model MediaAsset {
+  id               String                @id @default(uuid()) @db.Uuid
+  ownerId          String
+  kind             MediaKind
+  status           MediaProcessingStatus @default(UPLOADING)
+  storageKey       String                @unique
+  mimeType         String
+  byteSize         BigInt
+  checksumSha256   String                @db.Char(64)
+  width            Int?
+  height           Int?
+  originalFileName String                @db.VarChar(255)
+  createdAt        DateTime              @default(now())
+  updatedAt        DateTime              @updatedAt
+  owner            User                  @relation(fields: [ownerId], references: [id], onDelete: Restrict)
+  variants         MediaVariant[]
+  mediaLinks       MediaLink[]
+  documentLinks    DocumentLink[]
+  avatarProfiles   UserProfile[]         @relation("ProfileAvatar")
+
+  @@unique([id, ownerId])
+  @@index([ownerId, status, createdAt])
+}
+
+model MediaVariant {
+  id             String     @id @default(uuid()) @db.Uuid
+  assetId        String     @db.Uuid
+  name           String     @db.VarChar(32)
+  storageKey     String     @unique
+  mimeType       String
+  byteSize       BigInt
+  checksumSha256 String     @db.Char(64)
+  width          Int
+  height         Int
+  createdAt      DateTime   @default(now())
+  asset          MediaAsset @relation(fields: [assetId], references: [id], onDelete: Restrict)
+
+  @@unique([assetId, name])
+}
+
+model MediaLink {
+  id        String          @id @default(uuid()) @db.Uuid
+  assetId   String          @db.Uuid
+  ownerId   String
+  itemId    String          @db.Uuid
+  purpose   MediaPurpose    @default(GALLERY)
+  position  Int
+  title     String?         @db.VarChar(255)
+  createdAt DateTime        @default(now())
+  asset     MediaAsset      @relation(fields: [assetId, ownerId], references: [id, ownerId], onDelete: Restrict)
+  item      CollectibleItem @relation(fields: [itemId, ownerId], references: [id, ownerId], onDelete: Cascade)
+
+  @@unique([itemId, assetId, purpose])
+  @@index([itemId, position])
+  @@index([assetId])
+}
+
+model DocumentLink {
+  id         String           @id @default(uuid()) @db.Uuid
+  assetId    String           @db.Uuid
+  ownerId    String
+  itemId     String           @db.Uuid
+  category   DocumentCategory @default(OTHER_PRIVATE)
+  visibility Visibility       @default(PRIVATE)
+  position   Int
+  title      String?          @db.VarChar(255)
+  createdAt  DateTime         @default(now())
+  asset      MediaAsset       @relation(fields: [assetId, ownerId], references: [id, ownerId], onDelete: Restrict)
+  item       CollectibleItem  @relation(fields: [itemId, ownerId], references: [id, ownerId], onDelete: Cascade)
+
+  @@unique([itemId, assetId])
+  @@index([itemId, position])
+  @@index([assetId])
 }

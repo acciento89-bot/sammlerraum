@@ -19,6 +19,29 @@ function profileRecord() {
 }
 
 describe("profile service", () => {
+  it("rejects a foreign or non-image avatar before a profile write", async () => {
+    const upsert = vi.fn();
+    const mediaAsset = { findFirst: vi.fn().mockResolvedValue(null) };
+    const service = createProfileService({
+      userProfile: { findUnique: vi.fn(), update: vi.fn(), upsert },
+      mediaAsset,
+    });
+    const input = {
+      handle: "sammler",
+      displayName: "Sammler",
+      bio: null,
+      avatarAssetId: "00000000-0000-4000-8000-000000000111",
+    };
+    await expect(service.upsertOwnProfile("owner", input)).rejects.toMatchObject({
+      code: "AVATAR_NOT_FOUND",
+    });
+    expect(mediaAsset.findFirst).toHaveBeenCalledWith({
+      where: { id: input.avatarAssetId, ownerId: "owner", kind: "IMAGE", status: "READY" },
+      select: { id: true },
+    });
+    expect(upsert).not.toHaveBeenCalled();
+  });
+
   it("never exposes login email in the public profile projection", async () => {
     const findUnique = vi.fn().mockResolvedValue(profileRecord());
     const service = createProfileService({

@@ -19,6 +19,9 @@ describe("parseServerEnv", () => {
       ...validEnvironment,
       LOG_LEVEL: "info",
       WORKER_HEALTH_PORT: 3001,
+      MEDIA_MAX_IMAGE_BYTES: 20 * 1024 * 1024,
+      MEDIA_MAX_DOCUMENT_BYTES: 25 * 1024 * 1024,
+      MEDIA_MAX_IMAGE_PIXELS: 40_000_000,
     });
   });
 
@@ -105,4 +108,23 @@ describe("parseAuthEnv", () => {
       parseAuthEnv({ ...validAuthEnvironment, BETTER_AUTH_SECRET: secret }),
     ).toThrowError(expect.objectContaining({ message: expect.not.stringContaining(secret) }));
   });
+});
+
+describe("media configuration", () => {
+  it("uses explicit bounded upload defaults", () => {
+    expect(parseServerEnv(validEnvironment)).toMatchObject({
+      MEDIA_MAX_IMAGE_BYTES: 20 * 1024 * 1024,
+      MEDIA_MAX_DOCUMENT_BYTES: 25 * 1024 * 1024,
+      MEDIA_MAX_IMAGE_PIXELS: 40_000_000,
+    });
+  });
+
+  it.each(["0", "-1", "1.5", "9007199254740992", "NaN"])(
+    "rejects unsafe byte limit %s",
+    (value) => {
+      expect(() => parseServerEnv({ ...validEnvironment, MEDIA_MAX_IMAGE_BYTES: value })).toThrow(
+        EnvironmentConfigurationError,
+      );
+    },
+  );
 });

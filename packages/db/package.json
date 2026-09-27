@@ -20,6 +20,8 @@
     "@sammlerraum/config": "workspace:*"
   },
   "devDependencies": {
+    "@types/pg": "8.23.1",
+    "pg": "8.23.0",
     "prisma": "7.10.0"
   }
 }

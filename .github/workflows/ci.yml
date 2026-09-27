@@ -122,11 +122,13 @@ jobs:
         run: >-
           RUN_DATABASE_INTEGRATION=1 pnpm vitest run
           packages/db/src/postgres.integration.test.ts
+          packages/db/src/media-migration.integration.test.ts
           packages/queue/src/postgres.integration.test.ts
           packages/domain/src/identity/profile-service.test.ts
           packages/domain/src/identity/security-service.test.ts
           packages/domain/src/collections/collection-service.test.ts
           packages/domain/src/items/item-service.test.ts
+          packages/domain/src/media/media-service.test.ts
           packages/domain/src/items/identifier-service.test.ts
           packages/domain/src/custom-fields/custom-field-service.test.ts
           packages/domain/src/locations/location-service.test.ts

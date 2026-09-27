@@ -10,6 +10,7 @@
     "./custom-fields/custom-field-service": "./src/custom-fields/custom-field-service.ts",
     "./items/item-service": "./src/items/item-service.ts",
     "./items/item-query": "./src/items/item-query.ts",
+    "./media/media-service": "./src/media/media-service.ts",
     "./locations/location-service": "./src/locations/location-service.ts",
     "./locations/label-service": "./src/locations/label-service.ts",
     "./identity/profile-service": "./src/identity/profile-service.ts",
@@ -23,7 +24,10 @@
     "typecheck": "tsc --noEmit --project ../../tsconfig.base.json"
   },
   "dependencies": {
-    "@sammlerraum/contracts": "workspace:*"
+    "@sammlerraum/contracts": "workspace:*",
+    "@sammlerraum/storage": "workspace:*",
+    "file-type": "21.3.4",
+    "sharp": "0.35.4"
   },
   "devDependencies": {
     "@sammlerraum/db": "workspace:*"
