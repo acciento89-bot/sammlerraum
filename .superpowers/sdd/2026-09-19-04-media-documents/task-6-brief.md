@@ -26,7 +26,7 @@ test("public item can have a purchase receipt that remains private", async ({ pa
 
 - [ ] **Step 2: Run and confirm failure**
 
-Run: `pnpm --filter @sammlerraum/web exec playwright test e2e/media-documents.spec.ts`  
+Run: `pnpm --filter @sammlerraum/web exec playwright test e2e/media-documents.spec.ts`
 Expected: FAIL.
 
 - [ ] **Step 3: Implement UI**
