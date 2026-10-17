@@ -39,6 +39,14 @@ export async function validateAttributeValue(
     throw new CategoryTemplateServiceError("CATALOG_ATTRIBUTE_DEFINITION_INVALID");
   }
   const definition = stored.data;
+  // Preserve primitive mismatch precedence without normalizing oversized selections.
+  if (
+    definition.type === "MULTI_SELECT" &&
+    Array.isArray(value) &&
+    value.some((entry) => typeof entry !== "string")
+  ) {
+    throw new CategoryTemplateServiceError("CATALOG_ATTRIBUTE_TYPE_MISMATCH");
+  }
   // Bound work before the shared validator normalizes values and deduplicates selections.
   if (
     (definition.type === "MULTI_SELECT" &&

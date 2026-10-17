@@ -110,3 +110,39 @@ Exact command outputs are preserved under this phase workspace's `logs/task-1-*.
 Reviewed contracts, service, migration, integration constraints, cleanup scope, and package/CI exports. Fixed selection-entry bounds and mismatch precedence with observed RED/GREEN tests. No unresolved design or correctness concerns. DE/EN and capacity limits above are intentional approved constraints. Local Node is 26 while CI uses 24, per the provided environment; CI remains responsible for the Node 24 run. Browser journeys and Docker builds were outside this task's requested local validation; no browser/worker UI behavior changed.
 
 No push, merge, deploy, canonical ledger, or phase completion edits were performed. Root's `progress.md` change is excluded from this commit.
+
+## Review fix round 1
+
+Addressed review M1 and M2. The bounds guard ran before the shared MULTI_SELECT member-type check, so an oversized array containing non-string members incorrectly received `CATALOG_ATTRIBUTE_VALUE_INVALID`. The service now checks member primitives before returning any selection bounds error. This only scans primitive types: selection normalization and deduplication still occur through the unchanged shared validator after the existing input bounds pass.
+
+Added three regression cases: 101 numeric members; 100 valid string members followed by a numeric member; and an oversized string entry plus a numeric member. All must return `CATALOG_ATTRIBUTE_TYPE_MISMATCH`. Existing oversized valid-string array and entry cases continue returning `CATALOG_ATTRIBUTE_VALUE_INVALID`.
+
+### RED
+
+After adding the regression tests and before changing production code:
+
+```sh
+source ../sammlerraum-test-env.sh
+npm exec --yes --package=pnpm@10.17.1 -- pnpm vitest run packages/domain/src/catalog/category-template-service.test.ts
+```
+
+Exit 1: **3 failed / 29 passed**. All three regressions expected `CATALOG_ATTRIBUTE_TYPE_MISMATCH` and received `CATALOG_ATTRIBUTE_VALUE_INVALID`. Exact output: `logs/task-1-fix-1-red.log`.
+
+### GREEN and covering checks
+
+```sh
+source ../sammlerraum-test-env.sh
+RUN_DATABASE_INTEGRATION=1 npm exec --yes --package=pnpm@10.17.1 -- pnpm vitest run packages/domain/src/catalog/category-template-service.test.ts packages/domain/src/catalog/category-template-service.integration.test.ts
+npm exec --yes --package=pnpm@10.17.1 -- pnpm --filter @sammlerraum/domain lint
+npm exec --yes --package=pnpm@10.17.1 -- pnpm --filter @sammlerraum/domain typecheck
+```
+
+Focused tests exited 0: **36/36 passing** (32 unit + 4 real-PostgreSQL). Exact output: `logs/task-1-fix-1-green.log`. Domain lint and typecheck both exited 0; exact outputs: `logs/task-1-fix-1-lint.log` and `logs/task-1-fix-1-typecheck.log`.
+
+The earlier 410-test full-suite and production-build evidence applies to the original implementation commit `7dce6cc`. Per controller direction, no full-suite or build repeat is required for this narrow error-precedence correction; its focused unit/database regressions and covering lint/typecheck are the review-fix evidence.
+
+### Existing build diagnostic (M2)
+
+The saved successful production build includes `apps/worker build: dist/worker.cjs 6.8mb ⚠️` at `logs/task-1-build.log:36`. This is an acknowledged existing worker bundle-size diagnostic, not warning-free build output. Category-template work does not modify worker code or bundling; this finding does not establish a new worker regression. Any bundle-size improvement belongs to the owning worker work and is outside this task. The full test run itself had no warning/error output.
+
+Self-review: checked mismatch precedence before both the array-count and entry-length caps, retained the shared validator for valid primitive input, and left all schema/database/maintenance interfaces unchanged. No unresolved correctness concerns from this fix. Only the service, its unit tests, and this report are changed in the follow-up commit.

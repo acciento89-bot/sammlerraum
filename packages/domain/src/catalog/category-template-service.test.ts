@@ -26,6 +26,16 @@ describe("catalog attribute validation", () => {
   });
 
   it.each([
+    [Array.from({ length: 101 }, () => 1)],
+    [[...Array.from({ length: 100 }, () => "mint"), 1]],
+    [[" ".repeat(20_001) + "mint", 1]],
+  ])("preserves multi-select member mismatch errors before input bounds", async (value) => {
+    await expect(
+      validateAttributeValue(definition("MULTI_SELECT", [{ key: "mint", labels }]), value),
+    ).rejects.toMatchObject({ code: "CATALOG_ATTRIBUTE_TYPE_MISMATCH" });
+  });
+
+  it.each([
     ["SHORT_TEXT", "  Stamp  ", "Stamp"],
     ["LONG_TEXT", "  Line one\nLine two  ", "Line one\nLine two"],
     ["INTEGER", 12, 12],
