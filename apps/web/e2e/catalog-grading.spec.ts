@@ -12,6 +12,194 @@ test.afterAll(async () => {
 test.describe("catalog, personal condition and external grading", () => {
   test.skip(!enabled, "requires migrated test database");
   for (const locale of ["de", "en"] as const) {
+    test(`unsaved condition survives a grading refresh (${locale})`, async ({ page }) => {
+      const fixture = await catalogFixture();
+      try {
+        expect(
+          (
+            await page.request.post("/api/auth/sign-in/email", {
+              data: { email: fixture.email, password: fixture.password },
+              headers: { origin },
+            })
+          ).status(),
+        ).toBe(200);
+        await page.goto(`/${locale}/items/${fixture.item.id}`);
+        const condition = page.getByLabel(
+          locale === "de" ? "Eigener Zustand" : "Personal condition",
+          { exact: true },
+        );
+        await expect(condition).toHaveValue(fixture.scheme.options[0]!.id);
+        await condition.selectOption(fixture.scheme.options[1]!.id);
+        const grading = page.getByRole("region", {
+          name: locale === "de" ? "Externes Grading" : "External grading",
+          exact: true,
+        });
+        await grading
+          .getByLabel(locale === "de" ? "Grading-Anbieter" : "Grading provider", { exact: true })
+          .fill("Draft check");
+        await grading
+          .getByLabel(locale === "de" ? "Grade / Bewertungsangabe" : "Grade / assessment", {
+            exact: true,
+          })
+          .fill("A");
+        await grading
+          .getByRole("button", {
+            name: locale === "de" ? "Grading speichern" : "Save grading",
+            exact: true,
+          })
+          .click();
+        await expect(grading.getByRole("status")).toContainText(
+          locale === "de" ? "Grading gespeichert" : "Grading saved",
+        );
+        await expect(condition).toHaveValue(fixture.scheme.options[1]!.id);
+        expect(
+          (await (await page.request.get(`/api/v1/items/${fixture.item.id}/condition`)).json())
+            .condition.conditionOption.id,
+        ).toBe(fixture.scheme.options[0]!.id);
+        const save = page.getByRole("button", {
+          name: locale === "de" ? "Zustand speichern" : "Save condition",
+          exact: true,
+        });
+        await save.click();
+        await expect(
+          page.getByRole("status").filter({
+            hasText: locale === "de" ? "Zustand gespeichert" : "Condition saved",
+          }),
+        ).toBeVisible();
+        await expect(save).toBeDisabled();
+        expect(
+          (await (await page.request.get(`/api/v1/items/${fixture.item.id}/condition`)).json())
+            .condition.conditionOption.id,
+        ).toBe(fixture.scheme.options[1]!.id);
+        // A genuinely changed saved condition remains authoritative on the next sibling refresh.
+        expect(
+          (
+            await page.request.put(`/api/v1/items/${fixture.item.id}/condition`, {
+              data: { optionId: fixture.scheme.options[0]!.id },
+              headers: { origin },
+            })
+          ).status(),
+        ).toBe(200);
+        await grading
+          .getByLabel(locale === "de" ? "Grading-Anbieter" : "Grading provider", { exact: true })
+          .fill("Saved facts check");
+        await grading
+          .getByLabel(locale === "de" ? "Grade / Bewertungsangabe" : "Grade / assessment", {
+            exact: true,
+          })
+          .fill("B");
+        await grading
+          .getByRole("button", {
+            name: locale === "de" ? "Grading speichern" : "Save grading",
+            exact: true,
+          })
+          .click();
+        await expect(condition).toHaveValue(fixture.scheme.options[0]!.id);
+      } finally {
+        await cleanupCatalog(fixture);
+      }
+    });
+    test(`unsaved category and explicit clear survive link refreshes (${locale})`, async ({
+      page,
+    }) => {
+      const fixture = await catalogFixture();
+      try {
+        const { createCatalogMaintenanceService } = await import(
+          "@sammlerraum/domain/catalog/catalog-service"
+        );
+        const entry = await createCatalogMaintenanceService(db).createCatalogEntry({
+          categoryTemplateId: fixture.category.id,
+          text: { language: "en", title: `Draft reference ${fixture.id}` },
+        });
+        expect(
+          (
+            await page.request.post("/api/auth/sign-in/email", {
+              data: { email: fixture.email, password: fixture.password },
+              headers: { origin },
+            })
+          ).status(),
+        ).toBe(200);
+        await page.goto(`/${locale}/items/${fixture.item.id}`);
+        const category = page.getByLabel(locale === "de" ? "Kategorie" : "Category", {
+          exact: true,
+        });
+        await expect(category).toHaveValue(fixture.category.id);
+        await category.selectOption("");
+        const clear = page.getByLabel(
+          locale === "de"
+            ? "Den aktuellen Zustand beim Kategorienwechsel entfernen"
+            : "Clear the current condition when changing category",
+          { exact: true },
+        );
+        await clear.check();
+        const link = page.getByRole("region", {
+          name: locale === "de" ? "Katalogverknüpfung" : "Catalog reference",
+          exact: true,
+        });
+        await link
+          .getByLabel(locale === "de" ? "Katalog durchsuchen" : "Search catalog", { exact: true })
+          .fill(`Draft reference ${fixture.id}`);
+        await link
+          .getByRole("button", { name: locale === "de" ? "Suchen" : "Search", exact: true })
+          .click();
+        await link
+          .getByRole("button", {
+            name: locale === "de" ? "Referenz auswählen" : "Choose reference",
+            exact: true,
+          })
+          .click();
+        await link
+          .getByRole("button", {
+            name: locale === "de" ? "Mit diesem Stück verknüpfen" : "Link to this item",
+            exact: true,
+          })
+          .click();
+        await expect(link.getByRole("status")).toContainText(
+          locale === "de" ? "Katalogverknüpfung gespeichert" : "Catalog reference saved",
+        );
+        await expect(category).toHaveValue("");
+        await expect(clear).toBeChecked();
+        expect(
+          (await (await page.request.get(`/api/v1/items/${fixture.item.id}`)).json()).item,
+        ).toMatchObject({
+          categoryTemplateId: fixture.category.id,
+          conditionOptionId: fixture.scheme.options[0]!.id,
+          catalogEntryId: entry.state.id,
+        });
+        await link
+          .getByRole("button", {
+            name: locale === "de" ? "Verknüpfung lösen" : "Unlink reference",
+            exact: true,
+          })
+          .click();
+        await expect(link.getByRole("status")).toContainText(
+          locale === "de" ? "Verknüpfung gelöst" : "Reference unlinked",
+        );
+        await expect(category).toHaveValue("");
+        await expect(clear).toBeChecked();
+        await page
+          .getByRole("button", {
+            name: locale === "de" ? "Kategorie speichern" : "Save category",
+            exact: true,
+          })
+          .click();
+        await expect(clear).toHaveCount(0);
+        await expect(
+          page.getByLabel(locale === "de" ? "Eigener Zustand" : "Personal condition", {
+            exact: true,
+          }),
+        ).toHaveValue("");
+        expect(
+          (await (await page.request.get(`/api/v1/items/${fixture.item.id}`)).json()).item,
+        ).toMatchObject({
+          categoryTemplateId: null,
+          conditionOptionId: null,
+          catalogEntryId: null,
+        });
+      } finally {
+        await cleanupCatalog(fixture);
+      }
+    });
     test(`changing own condition preserves external grading (${locale})`, async ({ page }) => {
       const fixture = await catalogFixture();
       try {

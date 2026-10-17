@@ -73,3 +73,23 @@ Starter bands are all null. Adding a band or correcting immutable option semanti
 Next dev also generated managed-only `apps/web/AGENTS.md` and `CLAUDE.md` during the first browser runs. Their generator and timestamps were checked, bundled Next routing/client/caching guidance was read, and the generated files were preserved at `/tmp/sammlerraum-task7-generated-instructions` rather than committing unrelated repository policy. No source ignore setting changed.
 
 Source/tests/report/logs/visuals are supplied for root review. No push, merge, deploy, exact remote CI success or canonical task/phase completion is claimed.
+
+## Review fix round 1 — I1 condition drafts
+
+Scope is review I1 only, based on `423d095b202e1525684c31054258ef5bbb992f7d`. M1 pending catalog-detail cancellation and M2 warning/bundle diagnostics remain deferred for root's whole-phase triage; this round does not claim to resolve them.
+
+The condition editor synchronized all local fields whenever its `condition` object identity changed. Every successful sibling grading/link save reloads and parses that object, even when saved condition facts are identical. The editor now keys synchronization on saved category/option IDs and item identity, with separate category and option effects. Identical reloads preserve unfinished category, explicit-clear and condition selections. A genuinely changed saved category resets the category draft and its clear confirmation; a changed saved option updates the option selection. Intentional saves still synchronize from authoritative reloaded facts.
+
+New real production browser regressions use existing owner sessions, persisted fixture facts, actual grading writes and canonical link/unlink routes. Before the component fix, the unchanged production server failed all four DE/EN desktop cases at the precise draft assertions: a successful grading save reverted Near Mint to Mint, and a successful link reverted the unsaved no-category selection to the saved category. `task-7-fix1-drafts-red.log` retains these behavioral failures, and the original Playwright error contexts are preserved at `outputs/phase-05-task-7/fix1-red-test-results/`. The same failure assertions remain in the GREEN tests; the later intentional-save portion additionally waits for its successful-save status before reading persistence.
+
+After the narrow component fix, the DE/EN desktop/mobile matrix verifies unsaved condition selection across a grading save, unchanged saved condition before deliberate submission, deliberate condition save, genuinely changed persisted condition synchronization on a subsequent grading refresh, and unsaved category plus checked clear confirmation across link and unlink refreshes. Deliberate category removal clears the saved exact condition and removes the confirmation. The existing original condition/PSA9 journey also remains GREEN in both locales and device projects.
+
+| Fix check | Result | Log |
+| --- | --- | --- |
+| Unchanged production server, new interleaving cases | 4/4 genuine expected draft-reset failures | task-7-fix1-drafts-red.log |
+| Focused production matrix plus original condition/PSA9 regression | 12/12 passed | task-7-fix1-drafts-green.log |
+| Workspace production build | Passed | task-7-fix1-build.log |
+| Workspace lint | Passed | task-7-fix1-lint.log |
+| Post-build workspace types | Passed | task-7-fix1-typecheck.log |
+
+Commands use the established synthetic environment and pinned pnpm10.17.1. RED selected `--project=desktop --grep 'unsaved'`; GREEN selected `--grep 'unsaved|changing own condition'` across both registered projects, with `RUN_AUTH_E2E=1 RUN_PRODUCTION_E2E=1` and one worker. No unchanged broad database suite was repeated for this UI synchronization fix. Ports3000/3174 had no listeners before the production run; unrelated processes were preserved. Independent scoped rereview and exact-source CI remain root-owned gates.

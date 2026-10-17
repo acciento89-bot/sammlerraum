@@ -1,0 +1,23 @@
+[WebServer] (node:63355) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 12 tests using 1 worker
+
+(node:63360) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [desktop] › e2e/catalog-grading.spec.ts:15:5 › catalog, personal condition and external grading › unsaved condition survives a grading refresh (de) (4.7s)
+  ✓   2 [desktop] › e2e/catalog-grading.spec.ts:102:5 › catalog, personal condition and external grading › unsaved category and explicit clear survive link refreshes (de) (2.6s)
+  ✓   3 [desktop] › e2e/catalog-grading.spec.ts:203:5 › catalog, personal condition and external grading › changing own condition preserves external grading (de) (1.2s)
+  ✓   4 [desktop] › e2e/catalog-grading.spec.ts:15:5 › catalog, personal condition and external grading › unsaved condition survives a grading refresh (en) (799ms)
+  ✓   5 [desktop] › e2e/catalog-grading.spec.ts:102:5 › catalog, personal condition and external grading › unsaved category and explicit clear survive link refreshes (en) (869ms)
+  ✓   6 [desktop] › e2e/catalog-grading.spec.ts:203:5 › catalog, personal condition and external grading › changing own condition preserves external grading (en) (621ms)
+(node:63435) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   7 [mobile] › e2e/catalog-grading.spec.ts:15:5 › catalog, personal condition and external grading › unsaved condition survives a grading refresh (de) (906ms)
+  ✓   8 [mobile] › e2e/catalog-grading.spec.ts:102:5 › catalog, personal condition and external grading › unsaved category and explicit clear survive link refreshes (de) (992ms)
+  ✓   9 [mobile] › e2e/catalog-grading.spec.ts:203:5 › catalog, personal condition and external grading › changing own condition preserves external grading (de) (632ms)
+  ✓  10 [mobile] › e2e/catalog-grading.spec.ts:15:5 › catalog, personal condition and external grading › unsaved condition survives a grading refresh (en) (700ms)
+  ✓  11 [mobile] › e2e/catalog-grading.spec.ts:102:5 › catalog, personal condition and external grading › unsaved category and explicit clear survive link refreshes (en) (840ms)
+  ✓  12 [mobile] › e2e/catalog-grading.spec.ts:203:5 › catalog, personal condition and external grading › changing own condition preserves external grading (en) (624ms)
+
+  12 passed (19.5s)

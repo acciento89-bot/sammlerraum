@@ -29,11 +29,16 @@ export function ConditionEditor({
   const [status, setStatus] = useState("");
   const [loading, setLoading] = useState(false);
   const [retry, setRetry] = useState(0);
+  // Sibling saves reload these facts; object identity must not discard unfinished edits.
+  const savedCategory = condition.categoryTemplateId ?? "";
+  const savedOption = condition.conditionOption?.id ?? "";
   useEffect(() => {
-    setCategory(condition.categoryTemplateId ?? "");
-    setOption(condition.conditionOption?.id ?? "");
+    setCategory(savedCategory);
     setClear(false);
-  }, [condition]);
+  }, [itemId, savedCategory]);
+  useEffect(() => {
+    setOption(savedOption);
+  }, [itemId, savedCategory, savedOption]);
   useEffect(() => {
     const control = new AbortController();
     setScheme(null);
