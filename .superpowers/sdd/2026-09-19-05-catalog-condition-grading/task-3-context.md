@@ -1,4 +1,6 @@
-# Task3 context — finalize Task2 producer/base gate before dispatch
+# Task3 context
+
+Producer gate complete. Task2 final sourceb1ce8ea independentlyapproved and fullCI39068763845/job117501807515SUCCESS incl166DB/29browser/bothDocker/nativeSharp. Completion911e0cc7eb9fcb4e3b08611f443ddbd18e22dd2b pushed/exactremoteverified; source diff fromb1ce8ea empty. Task3 BASE911e0cc7eb9fcb4e3b08611f443ddbd18e22dd2b. Mainledger-onlysync35efc27f/blob b39f01f15c44e44e8e1b6cc2884f3bf378e4fe4b succeeded; canonical29/91. RootGO now authorizes Task3 implementation using approved design below.
 
 Read task-3-brief.md first. Implements ordinary-user proposals and moderator decisions over the shared catalog. Task2 public transaction seam/strict catalog contracts and report are the producer interface; root will provide exact final paths/BASE and gate before GO. Do not duplicate canonical mutation logic or commit proposal and canonical changes in separate transactions.
 

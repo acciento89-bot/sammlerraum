@@ -135,7 +135,7 @@ git commit -m "feat: add revisioned global catalog"
 **Interfaces:**
 - Produces: `submitProposal`, `approveProposal`, `rejectProposal`.
 
-- [ ] **Step 1: Write failing stale-revision test**
+- [x] **Step 1: Write failing stale-revision test**
 
 ```ts
 it("does not auto-apply a proposal against a stale base revision", async () => {
@@ -145,21 +145,21 @@ it("does not auto-apply a proposal against a stale base revision", async () => {
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run packages/domain/src/catalog/proposal-service.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement proposal states**
+- [x] **Step 3: Implement proposal states**
 
 States: `PENDING`, `APPROVED`, `REJECTED`, `CONFLICT`. Store proposer, base revision, proposed patch, source note/URL, moderator, moderation time, decision reason.
 
-- [ ] **Step 4: Run tests**
+- [x] **Step 4: Run tests**
 
 Run: `pnpm vitest run packages/domain/src/catalog/proposal-service.test.ts`  
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/db packages/domain/src/catalog/proposal-service.ts packages/domain/src/catalog/proposal-service.test.ts apps/web/src/app/api/v1/catalog
