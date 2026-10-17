@@ -15,7 +15,7 @@ This is the handoff/status file for long-running implementation. Update it after
 | 02 | Identity, Auth & Policies | 7 | complete (7/7) | — |
 | 03 | Collections, Items, Fields & Locations | 8 | complete (8/8) | — |
 | 04 | Media & Documents | 6 | complete (6/6) | — |
-| 05 | Catalog, Condition & Grading | 7 | in progress (5/7) | Task 6 |
+| 05 | Catalog, Condition & Grading | 7 | in progress (6/7) | Task 7 |
 | 06 | Valuations & Market Data | 6 | not started | Task 1 |
 | 07 | Search, Smart Collections & Dashboard | 5 | not started | Task 1 |
 | 08 | Import, Export, Insurance & Reports | 7 | not started | Task 1 |
@@ -62,8 +62,9 @@ This is the handoff/status file for long-running implementation. Update it after
 - [x] P05 T03 — Moderated catalog proposals, authoritative application grants and rollback audit
 - [x] P05 T04 — Category-specific exact condition schemes and independent personal condition
 - [x] P05 T05 — Private external grading records and single-specimen certificate integrity
+- [x] P05 T06 — Safe optional personal catalog links and bounded canonical discovery
 
-**Verified completion: 32/91 tasks.** Later tasks remain open as listed in the phase table and detail plans.
+**Verified completion: 33/91 tasks.** Later tasks remain open as listed in the phase table and detail plans.
 
 ## Update rule
 
@@ -610,3 +611,16 @@ Every completed and independently reviewed task must be checked off in its detai
 - Soft-deleting an item retains grading and its owner-local certificate reservation. Deleted resources remain hidden404, same-owner/provider/cert reuse409, other accounts unaffected, all covered by actual service tests. Cost:restore/trash/permanent-erasure policy in Phase09 must preserve/recover this identity and later release it deliberately; removing grading before deletion releases the claim now. No silent private-fact erasure or extra recovery framework.
 - Additive migrations19–20 (`20261017225204_grading_records`, `20261017225205_grading_finite_comparable`), all current/no drift. Correct DB identity schema existed from start; transparent new-service certificate-only scaffold RED then unchanged PSA123/CGC123 persisted assertion GREEN, never represented as an old production bug. Final local serial real-PG490/490 across67files, lint/fresh post-build typecheck/productionbuild/schema PASS. Initial fixture unhandled rejection/type errors and four preexisting ignored generated .next type duplicates were preserved/documented; only duplicates moved outside compiler include and normal output regenerated, no source workaround.
 - Exact-source CI [39073823041](https://github.com/acciento89-bot/sammlerraum/actions/runs/39073823041), job117516742621 SUCCESS: dedicated DB integration,29 browser journeys,unit/lint/types/build/migrations/Compose,both Docker images/nativeSharp. Backend tail explicitly truncated; full run linked, no unsupported DB count invented. Source/report/review/raw chronology saved on feature branch; canonical32/91, Phase05 5/7, nextTask6. No source merge, deployment, real provider action or production migration.
+
+
+### Phase05 Task6 — Safe personal catalog links and canonical discovery
+
+- Final source `639257e7c744dfd2e0b41acc8d66428b8e1e1a5e`; fresh independent SPEC/QUALITY Approved, zero Critical/Important/Minor. Actual item service link/unlink/owner link-state, nullable DTO/read/resourceSQL/list/split integration and strict owner HTTP routes. Generic item inputs remain separate from assignment; public item whitelist unchanged, no private facts copied into canonical state.
+- Link infers category only when null, otherwise retains matching category or rejects mismatch; changing/clearing linked category requires explicit unlink even with condition-clear flag. Unlink preserves category/exact condition/grading/acquisition/private metadata/media/docs. Retained inactive variant reads/identical no-op/split references work; selecting another retired variant rejects. Actual grading quantity1 guard remains, no certificate clone or movement.
+- Parent-first entry SHARE→variant SHARE→owned item UPDATE agrees with canonical writer order. Split discovers IDs unlocked, locks parents then item, revalidates and rolls back/retries at most3 times; exhaustion has stable409 and leaves quantities/items unchanged. Category/condition/unlink never wait for a new catalog parent while holding item. Real PostgreSQL tests observe actual canonical writer/selector contention and category races.
+- Additive migration21 `20261017225206_item_catalog_links`: scope composite FKs ON UPDATE RESTRICT, entry-implies-category/variant-implies-entry CHECKs, tuple indexes and exact identifier value-leading B-tree. Native column-specific SET NULL clears only catalogEntryId or catalogVariantId, preserving personal category. Cost:Prisma7.10 schema cannot express subset deletion columns; actual diff is empty only for represented semantics. Independent confdelsetcols/pg_get_constraintdef tests prove exact actions and protect future generated FK replacements. Schema-only recreation is insufficient; no applied migration edited.
+- Canonical hard deletion remains restricted by history/other children and has no new API. Tests distinguish unlink, history rejection and native deletion on otherwise-deletable isolated synthetic targets, without guard bypass/global cleanup. No claim that normal history-bearing entries can be hard-deleted.
+- Fresh-session authenticated/no-store canonical search/category summaries/template detail/current entry snapshot, plus2048-byte fatal-UTF8 exact-Origin link mutations/strictDELETE. Missing/foreign/deleted personal resources hidden404. Search explicit text2–200 or exact identifier1–500, strict filters/duplicate/unknown query rejection, default20max50, versioned query-bound cursor and UUID keyset. Compact <=5 variant/identifier previews+counts, disambiguating titles/language/edition/reference, no private joins or full snapshots per hit. Current detail joins immutable snapshot to exact current entry revision in one statement; retained inactive selected summary separate.
+- Accepted scaling/visibility costs: literal text searches may scan, individual bounded producer snapshots/templates can be large, keyset pages are live, anonymous catalog browsing requires later explicit policy. No external index/provider/global write. Authored translations/provenance remain exact; no invented translations or missing data.
+- Original real-PG unchanged persisted unlink RED→GREEN retained separately from fixture setup failure; additional route/read/race-observer failed attempts honestly preserved. Final local serial realPG515/515 across70files, lint/production build/postbuild types/schema21/native metadata/represented drift PASS. Thirty source-task logs/report and independent review saved; unchanged6.9MB worker bundle diagnostic nonblocking.
+- Exact-source CI [39076021125](https://github.com/acciento89-bot/sammlerraum/actions/runs/39076021125), job117523224269 SUCCESS: dedicated DB integration,29 browser journeys,unit/lint/types/build/migrations/Compose,both Docker images/nativeSharp. Backend tail explicitly truncated; full run linked, no unsupported DB count inferred. Canonical33/91, Phase05 6/7, nextTask7 UI; whole-phase review still required after task gates. Source unmerged/undeployed, no production/provider/role action.
