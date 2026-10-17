@@ -1,6 +1,6 @@
 # Catalog, Condition, and Grading Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** Implement category templates, the global reference catalog, variants, external identifiers, revision history, moderated catalog proposals, category-specific condition schemas, and grading records.
 
@@ -39,7 +39,7 @@
 **Interfaces:**
 - Produces: `createCategoryTemplate`, `getCategoryTemplate`, typed `CatalogAttributeDefinition`.
 
-- [ ] **Step 1: Write failing schema test**
+- [x] **Step 1: Write failing schema test**
 
 ```ts
 it("rejects a catalog attribute value that does not match its definition", async () => {
@@ -48,16 +48,16 @@ it("rejects a catalog attribute value that does not match its definition", async
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run packages/domain/src/catalog/category-template-service.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Add models and implementation**
+- [x] **Step 3: Add models and implementation**
 
 Add `CategoryTemplate`, localized template labels, `CatalogAttributeDefinition`, allowed field types matching the custom-field primitive types, and stable language-neutral keys.
 
-- [ ] **Step 4: Migrate and test**
+- [x] **Step 4: Migrate and test**
 
 Run:
 ```bash
@@ -67,7 +67,7 @@ pnpm vitest run packages/domain/src/catalog/category-template-service.test.ts
 
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/db packages/domain/src/catalog packages/contracts/src/catalog.ts

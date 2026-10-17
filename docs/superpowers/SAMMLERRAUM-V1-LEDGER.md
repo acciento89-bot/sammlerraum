@@ -15,7 +15,7 @@ This is the handoff/status file for long-running implementation. Update it after
 | 02 | Identity, Auth & Policies | 7 | complete (7/7) | — |
 | 03 | Collections, Items, Fields & Locations | 8 | complete (8/8) | — |
 | 04 | Media & Documents | 6 | complete (6/6) | — |
-| 05 | Catalog, Condition & Grading | 7 | not started | Task 1 |
+| 05 | Catalog, Condition & Grading | 7 | in progress (1/7) | Task 2 |
 | 06 | Valuations & Market Data | 6 | not started | Task 1 |
 | 07 | Search, Smart Collections & Dashboard | 5 | not started | Task 1 |
 | 08 | Import, Export, Insurance & Reports | 7 | not started | Task 1 |
@@ -57,8 +57,9 @@ This is the handoff/status file for long-running implementation. Update it after
 - [x] P04 T04 — Protected media and document reads
 - [x] P04 T05 — Safe unlink, retention and orphan cleanup
 - [x] P04 T06 — Media gallery and private document UI
+- [x] P05 T01 — Category templates and typed catalog attributes
 
-**Verified completion: 27/91 tasks.** Later tasks remain open as listed in the phase table and detail plans.
+**Verified completion: 28/91 tasks.** Later tasks remain open as listed in the phase table and detail plans.
 
 ## Update rule
 
@@ -544,3 +545,21 @@ Every completed and independently reviewed task must be checked off in its detai
 - Independent whole-Phase04 boundary review PASS: zero Critical/Important, no final source-fix wave required. Durable permanent tombstones close late-write recovery, staging coordination/fairness closes crash-temp recovery, and all-reference/ancestry/private-document boundaries integrate correctly. Review and test evidence are retained under `.superpowers/sdd/2026-09-19-04-media-documents/`.
 - Nonblocking follow-ups retained: parent directory entries are not fsynced after mkdir/rename/unlink, so atomic process-crash publication does not promise acknowledged-name durability through sudden power loss; tombstones can retry resurrected deletions but cannot restore lost originals or READY derivatives. Avatar cleanup-winning conflicts are safely rejected by DB guards but can produce a generic API error (analogous item-link path fixed). Harness color/stream-close diagnostics remain documented despite passing assertions. Existing Phase03 integer parsing/location label follow-ups remain separate.
 - Phase04 complete6/6; overall27/91. Next: Phase05 Task1 — Catalog, Condition & Grading. This is verified feature-branch progress, not completed V1 or production deployment. Source remains in DraftPR#1; only this ledger is synchronized to main.
+
+
+### Phase 05 Task 1 — COMPLETE (17 October 2026)
+
+- Final source `31725b997a5f467d640767ac703c70279ff4e42d` (initial7dce6cc). Maintenance-only category-template service, authored stable keys, relational DE/EN labels, ordered typed attribute definitions/options, scoped DB uniqueness and atomic nested creation. No ordinary-user write endpoint. Reuses all ten custom-field primitive validators without changing legacy behavior, maps catalog errors, preserves precise decimal/date/selection semantics and excludes unknown/private payload properties. Additive migration13 and exports/CI integration registration included.
+- Ruling: authored lowercase ASCII keys at most64, required DE/EN labels at most200 normalized characters, at most100 definitions and100 keyed options each; labels never generate identity. Cost if wrong: deliberate locale/capacity/contract extension. Creation is a server maintenance boundary; real operator-granted application moderator/admin authority will guard catalog proposals before user-facing canonical changes.
+- Genuine behavioral RED then focused33/33 and full410/410 DB-enabled tests, lint/typecheck/production build passed. Independent review found a minor mismatch-error precedence discrepancy for oversized MULTI_SELECT arrays with wrong-type members. Actual regressionRED3failed/29passed, narrow correctionGREEN36/36 (32unit+4realPG), domainlint/typecheck passed. Scoped rereview SPEC/QUALITYApproved, zero newCritical/Important; existing6.8mb worker bundle diagnostic acknowledged and retained for final-phase triage.
+- Exact corrected-source CI SUCCESS: https://github.com/acciento89-bot/sammlerraum/actions/runs/39066522503 (job117495245612, source31725b9). Unit/static checks,155 dedicated PostgreSQL integration tests,29 browser journeys (QR2/media7/auth4/management16), all migrations/lint/typecheck/build, Compose, both Docker images/native Sharp final-image decode passed. Saved backend log is explicitly truncated; job conclusions establish gate completion. Earlier source checks are not substituted for final-source CI.
+- Task1 complete, Phase05 now1/7, overall28/91; nextTask2 revisioned global catalog. Source and evidence retained in feature branch/DraftPR#1, ledger-only main synchronization authorized. User authorized continuous work until18October09:00Europe/Berlin; heartbeat continuation established, final deadline tracked in Phase05 progress. No source merge or production deployment.
+
+### Phase05 integration rulings recorded during preparation
+
+- Required supporting migrations/exports/APIs/CI wiring belong with their producer tasks even when omitted from minimal plan file lists; cost if wrong: bounded restructuring.
+- Personal item category remains optional and independent of catalog links; condition support must preserve uncataloged items and facts on unlink; cost if wrong: additive category migration/DTO refinement.
+- Immutable catalog snapshots retain complete authored reference state; rollback creates a new revision, never rewrites history. Bounded explicit JSON is allowed for authored translations/provenance/typed canonical values, while identity/category/definition relations remain relational; cost if wrong: larger snapshots or future schema extension.
+- Rollback retains inactive child UUID identities to preserve later personal references; Task6 must exclude inactive candidates/block new links while handling existing links explicitly. Cost: retained inactive rows and explicit linking policy.
+- Entry and its variants may hold typed attributes and namespaced identifiers; UUID identity is independent of displayed title/language/edition. Cost: later deduplication or target-contract refinement.
+- Phase05Task3 introduces the minimal persisted application MODERATOR/ADMIN authority foundation named by Phase10Task4, separate from collection roles and operator-granted. Phase10 must reuse/extend this source. Cost if wrong: bounded role migration; no live grants or later-phase completion claimed.
