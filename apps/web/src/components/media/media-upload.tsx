@@ -1,5 +1,6 @@
 "use client";
 
+import { MEDIA_FILE_NAME_ENCODING } from "@sammlerraum/contracts/media";
 import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 
@@ -83,7 +84,8 @@ export function MediaUpload({
         operation.xhr = xhr;
         xhr.open("POST", document ? "/api/v1/media/documents" : "/api/v1/media/images");
         xhr.setRequestHeader("content-type", file.type);
-        xhr.setRequestHeader("x-file-name", file.name);
+        xhr.setRequestHeader("x-file-name", encodeURIComponent(file.name));
+        xhr.setRequestHeader("x-file-name-encoding", MEDIA_FILE_NAME_ENCODING);
         xhr.upload.onprogress = (event) => {
           if (mounted.current && event.lengthComputable)
             setProgress(Math.round((event.loaded / event.total) * 100));

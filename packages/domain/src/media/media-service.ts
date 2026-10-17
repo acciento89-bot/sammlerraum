@@ -5,6 +5,7 @@ import {
   LinkAssetInputSchema,
   type LinkAssetInput,
   DocumentCategorySchema,
+  MEDIA_FILE_NAME_MAX_LENGTH,
 } from "@sammlerraum/contracts/media";
 import type { createPrismaClient } from "@sammlerraum/db/create-client";
 import type { StorageProvider } from "@sammlerraum/storage";
@@ -69,7 +70,7 @@ function limitsWithDefaults(input: Partial<MediaLimits>): MediaLimits {
 function fileName(input: string): string {
   if (
     typeof input !== "string" ||
-    input.length > 255 ||
+    input.length > MEDIA_FILE_NAME_MAX_LENGTH ||
     input.length === 0 ||
     input.includes("/") ||
     input.includes("\\") ||

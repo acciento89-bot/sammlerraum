@@ -1,5 +1,10 @@
 import { z } from "zod";
-import { DocumentCategorySchema } from "@sammlerraum/contracts/media";
+import {
+  DocumentCategorySchema,
+  MEDIA_FILE_NAME_ENCODING,
+  MEDIA_FILE_NAME_MAX_LENGTH,
+  MEDIA_FILE_NAME_MAX_HEADER_LENGTH,
+} from "@sammlerraum/contracts/media";
 import { MediaAssetSchema } from "@sammlerraum/contracts/media";
 import {
   MediaCleanupError,
@@ -89,10 +94,24 @@ function safeMediaError(error: unknown): never {
 export function createMediaRouteHandlers(dependencies: Dependencies) {
   async function upload(request: Request, kind: "IMAGE" | "DOCUMENT") {
     const userId = await actor(dependencies, request);
-    const fileName = request.headers.get("x-file-name");
+    let fileName = request.headers.get("x-file-name");
     const claimedMime = request.headers.get("content-type");
     if (!fileName || !claimedMime)
       throw new ApiError("VALIDATION_ERROR", 400, "File metadata required");
+    const encoding = request.headers.get("x-file-name-encoding");
+    if (encoding !== null) {
+      if (encoding !== MEDIA_FILE_NAME_ENCODING)
+        throw new ApiError("VALIDATION_ERROR", 400, "Invalid file metadata");
+      if (fileName.length > MEDIA_FILE_NAME_MAX_HEADER_LENGTH)
+        throw new ApiError("VALIDATION_ERROR", 400, "Invalid file metadata");
+      try {
+        fileName = decodeURIComponent(fileName);
+      } catch {
+        throw new ApiError("VALIDATION_ERROR", 400, "Invalid file metadata");
+      }
+    }
+    if (fileName.length > MEDIA_FILE_NAME_MAX_LENGTH)
+      throw new ApiError("VALIDATION_ERROR", 400, "Invalid file metadata");
     const bytes = await readBoundedBody(
       request,
       kind === "IMAGE" ? dependencies.limits.maxImageBytes : dependencies.limits.maxDocumentBytes,

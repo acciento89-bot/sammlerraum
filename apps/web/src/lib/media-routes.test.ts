@@ -263,3 +263,57 @@ describe("bounded media management routes", () => {
     });
   });
 });
+
+describe("explicit filename header encoding", () => {
+  it("decodes percent-encoded UTF-8 exactly once while keeping legacy clients literal", async () => {
+    const name = "Łódź – coin 🪙 100%25.png";
+    const { routes, service } = fixture();
+    expect(
+      (
+        await routes.POST_IMAGE(
+          request(new Uint8Array([1]), {
+            "x-file-name": encodeURIComponent(name),
+            "x-file-name-encoding": "percent-utf8",
+          }),
+        )
+      ).status,
+    ).toBe(201);
+    expect(service.createImageUpload).toHaveBeenLastCalledWith("owner", expect.any(Uint8Array), {
+      fileName: name,
+      claimedMime: "image/jpeg",
+    });
+    expect(
+      (
+        await routes.POST_IMAGE(
+          request(new Uint8Array([1]), { "x-file-name": "literal%20name%252F.jpg" }),
+        )
+      ).status,
+    ).toBe(201);
+    expect(service.createImageUpload).toHaveBeenLastCalledWith("owner", expect.any(Uint8Array), {
+      fileName: "literal%20name%252F.jpg",
+      claimedMime: "image/jpeg",
+    });
+  });
+  it("rejects malformed UTF-8 escapes and unknown encoding markers before upload persistence", async () => {
+    for (const [name, encoding] of [
+      ["bad%GG.jpg", "percent-utf8"],
+      ["x".repeat(255 * 9 + 1), "percent-utf8"],
+      [encodeURIComponent("ä".repeat(256)), "percent-utf8"],
+      ["bad%FF.jpg", "percent-utf8"],
+      ["safe.jpg", "base64"],
+    ]) {
+      const { routes, service } = fixture();
+      expect(
+        (
+          await routes.POST_IMAGE(
+            request(new Uint8Array([1]), {
+              "x-file-name": name!,
+              "x-file-name-encoding": encoding!,
+            }),
+          )
+        ).status,
+      ).toBe(400);
+      expect(service.createImageUpload).not.toHaveBeenCalled();
+    }
+  });
+});

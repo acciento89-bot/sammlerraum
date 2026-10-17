@@ -1,5 +1,12 @@
 import { z } from "zod";
 
+// x-file-name-encoding marks exactly one encodeURIComponent/decodeURIComponent pass.
+// Without this marker, x-file-name remains a literal legacy filename (including percent signs).
+export const MEDIA_FILE_NAME_ENCODING = "percent-utf8";
+export const MEDIA_FILE_NAME_MAX_LENGTH = 255;
+// A UTF-16 code unit uses at most three UTF-8 bytes, each escaped as %XX.
+export const MEDIA_FILE_NAME_MAX_HEADER_LENGTH = MEDIA_FILE_NAME_MAX_LENGTH * 9;
+
 export const MediaAssetSchema = z.object({
   id: z.uuid(),
   kind: z.enum(["IMAGE", "DOCUMENT"]),

@@ -100,7 +100,45 @@ async function cleanup(ownerId: string) {
 test.describe("item media and private documents", () => {
   test.skip(!enabled, "requires migrated test database");
   test.setTimeout(180_000);
-  test.afterAll(async () => db.$disconnect());
+  test.beforeEach(async () => {
+    // Match management fixtures: each isolated test collector starts with fresh test-only limits.
+    if (enabled) await db.rateLimit.deleteMany();
+  });
+  test.afterAll(async () => {
+    // Do not carry synthetic sign-in attempts into the later auth journey command.
+    if (enabled) await db.rateLimit.deleteMany();
+    await db.$disconnect();
+  });
+  test("Unicode upload filenames preserve literal percent sequences", async ({ page }) => {
+    const owner = await collector();
+    const collection = await db.collection.create({
+      data: { ownerId: owner.id, name: "Unicode media", visibility: "PRIVATE" },
+    });
+    const item = await db.collectibleItem.create({
+      data: { ownerId: owner.id, collectionId: collection.id, title: "Unicode media" },
+    });
+    const name = "Łódź – coin 🪙 100%25.png";
+    try {
+      expect(
+        (
+          await page.request.post("/api/auth/sign-in/email", {
+            data: { email: owner.email, password: owner.password },
+            headers: { origin },
+          })
+        ).status(),
+      ).toBe(200);
+      await page.goto(`/en/items/${item.id}`);
+      const input = page.getByLabel("Upload gallery image", { exact: true });
+      await expect(input).toBeEnabled();
+      await input.setInputFiles({ name, mimeType: "image/png", buffer: png });
+      await expect(page.getByText("Upload linked to this item.", { exact: true })).toBeVisible();
+      const listing = await (await page.request.get(`/api/v1/items/${item.id}/media`)).json();
+      expect(listing.images[0].asset.originalFileName).toBe(name);
+      await expect(page.getByRole("img", { name, exact: true })).toBeVisible({ timeout: 50_000 });
+    } finally {
+      await cleanup(owner.id);
+    }
+  });
   for (const locale of ["de", "en"] as const) {
     test(`public item can have a purchase receipt that remains private (${locale})`, async ({
       page,
