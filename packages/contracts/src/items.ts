@@ -134,6 +134,8 @@ export const CollectibleItemSchema = z.object({
   id: ItemIdSchema,
   collectionId: ItemIdSchema,
   nodeId: ItemIdSchema.nullable(),
+  categoryTemplateId: ItemIdSchema.nullable(),
+  conditionOptionId: ItemIdSchema.nullable(),
   title: ItemTitleSchema,
   publicDescription: OptionalTextSchema,
   privateNotes: OptionalTextSchema,

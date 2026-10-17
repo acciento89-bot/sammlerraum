@@ -11,6 +11,8 @@ const privateItem = {
   id: itemId,
   collectionId,
   nodeId: null,
+  categoryTemplateId: null,
+  conditionOptionId: null,
   title: "Glurak",
   publicDescription: "Public card",
   privateNotes: "paid at the flea market",

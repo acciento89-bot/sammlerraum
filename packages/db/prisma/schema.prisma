@@ -166,6 +166,8 @@ model CollectibleItem {
   ownerId             String
   nodeId              String?               @db.Uuid
   storageLocationId   String?               @db.Uuid
+  categoryTemplateId  String?               @db.Uuid
+  conditionOptionId   String?               @db.Uuid
   title               String
   publicDescription   String?
   privateNotes        String?
@@ -184,6 +186,8 @@ model CollectibleItem {
   collection          Collection            @relation(fields: [collectionId, ownerId], references: [id, ownerId], onDelete: Cascade)
   node                CollectionNode?       @relation(fields: [nodeId, collectionId], references: [id, collectionId], onDelete: Restrict)
   storageLocation     StorageLocation?      @relation(fields: [storageLocationId, ownerId], references: [id, ownerId], onDelete: Restrict)
+  categoryTemplate    CategoryTemplate?     @relation(fields: [categoryTemplateId], references: [id], onDelete: Restrict)
+  conditionOption     ConditionOption?      @relation(fields: [conditionOptionId, categoryTemplateId], references: [id, categoryTemplateId], onDelete: Restrict)
   locationHistory     ItemLocationHistory[]
   identifiers         ItemIdentifier[]
   itemTags            ItemTag[]
@@ -197,6 +201,8 @@ model CollectibleItem {
   @@index([collectionId, deletedAt])
   @@index([nodeId, collectionId])
   @@index([storageLocationId, ownerId])
+  @@index([categoryTemplateId])
+  @@index([conditionOptionId, categoryTemplateId])
 }
 
 model StorageLocation {
@@ -523,12 +529,14 @@ model MediaCleanupKey {
 
 // Global maintenance-authored category metadata; no personal collection data.
 model CategoryTemplate {
-  id             String                       @id @default(uuid()) @db.Uuid
-  key            String                       @unique @db.VarChar(64)
-  createdAt      DateTime                     @default(now())
-  labels         CategoryTemplateLabel[]
-  definitions    CatalogAttributeDefinition[]
-  catalogEntries CatalogEntry[]
+  id              String                       @id @default(uuid()) @db.Uuid
+  key             String                       @unique @db.VarChar(64)
+  createdAt       DateTime                     @default(now())
+  labels          CategoryTemplateLabel[]
+  definitions     CatalogAttributeDefinition[]
+  catalogEntries  CatalogEntry[]
+  conditionScheme ConditionScheme?
+  items           CollectibleItem[]
 }
 
 model CategoryTemplateLabel {
@@ -719,4 +727,36 @@ model CatalogRollbackAudit {
   actor            User            @relation(fields: [actorId], references: [id], onDelete: Restrict)
 
   @@index([entryId, revision])
+}
+
+// V1 authored labels are explicitly DE/EN. Semantic fields are immutable in SQL.
+model ConditionScheme {
+  id                 String            @id @default(uuid()) @db.Uuid
+  categoryTemplateId String            @unique @db.Uuid
+  key                String            @unique @db.VarChar(64)
+  labelDe            String            @db.VarChar(200)
+  labelEn            String            @db.VarChar(200)
+  active             Boolean           @default(true)
+  categoryTemplate   CategoryTemplate  @relation(fields: [categoryTemplateId], references: [id], onDelete: Restrict)
+  options            ConditionOption[]
+
+  @@unique([id, categoryTemplateId])
+}
+
+model ConditionOption {
+  id                 String            @id @default(uuid()) @db.Uuid
+  schemeId           String            @db.Uuid
+  categoryTemplateId String            @db.Uuid
+  labelKey           String            @db.VarChar(128)
+  labelDe            String            @db.VarChar(200)
+  labelEn            String            @db.VarChar(200)
+  normalizedBand     Int?
+  position           Int
+  active             Boolean           @default(true)
+  scheme             ConditionScheme   @relation(fields: [schemeId, categoryTemplateId], references: [id, categoryTemplateId], onDelete: Restrict)
+  items              CollectibleItem[]
+
+  @@unique([id, categoryTemplateId])
+  @@unique([schemeId, labelKey])
+  @@unique([schemeId, position])
 }

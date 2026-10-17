@@ -12,7 +12,8 @@
     "./openapi": "./src/openapi.ts",
     "./profile": "./src/profile.ts",
     "./catalog": "./src/catalog.ts",
-    "./catalog-proposals": "./src/catalog-proposals.ts"
+    "./catalog-proposals": "./src/catalog-proposals.ts",
+    "./condition": "./src/condition.ts"
   },
   "scripts": {
     "build": "pnpm typecheck",

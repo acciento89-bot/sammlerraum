@@ -1,0 +1,15 @@
+packages/contracts/src/condition.ts 33ms
+packages/domain/src/condition/condition-service.test.ts 40ms
+packages/domain/src/condition/condition-service.ts 24ms
+packages/contracts/src/items.ts 9ms (unchanged)
+packages/domain/src/items/item-service.ts 25ms (unchanged)
+packages/domain/src/items/item-service.test.ts 31ms
+packages/domain/src/api/resource-query.ts 10ms (unchanged)
+apps/web/src/lib/condition-routes.ts 4ms
+apps/web/src/lib/condition-routes.integration.test.ts 9ms
+apps/web/src/lib/condition-route-dependencies.ts 1ms
+apps/web/src/app/api/v1/items/[itemId]/condition/route.ts 1ms (unchanged)
+apps/web/src/app/api/v1/items/[itemId]/category/route.ts 1ms (unchanged)
+apps/web/src/app/api/v1/categories/[categoryId]/condition-scheme/route.ts 1ms (unchanged)
+apps/web/src/app/api/v1/items/item-api.test.ts 10ms (unchanged)
+.github/workflows/ci.yml 14ms (unchanged)

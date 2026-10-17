@@ -19,6 +19,8 @@ type StoredItem = {
   ownerId: string;
   nodeId: string | null;
   storageLocationId: string | null;
+  categoryTemplateId: string | null;
+  conditionOptionId: string | null;
   title: string;
   publicDescription: string | null;
   privateNotes: string | null;
@@ -40,6 +42,8 @@ const itemSelect = {
   ownerId: true,
   nodeId: true,
   storageLocationId: true,
+  categoryTemplateId: true,
+  conditionOptionId: true,
   title: true,
   publicDescription: true,
   privateNotes: true,
@@ -60,6 +64,8 @@ type ItemWriteData = {
   ownerId: string;
   nodeId: string | null;
   storageLocationId?: string | null;
+  categoryTemplateId?: string | null;
+  conditionOptionId?: string | null;
   title: string;
   publicDescription: string | null;
   privateNotes: string | null;
@@ -336,6 +342,8 @@ async function lockOwnedItem(
       item."ownerId",
       item."nodeId",
       item."storageLocationId",
+      item."categoryTemplateId",
+      item."conditionOptionId",
       item."title",
       item."publicDescription",
       item."privateNotes",
@@ -554,6 +562,8 @@ export function createItemService(
             ownerId: item.ownerId,
             nodeId: item.nodeId,
             storageLocationId: item.storageLocationId ?? null,
+            categoryTemplateId: item.categoryTemplateId,
+            conditionOptionId: item.conditionOptionId,
             title: item.title,
             publicDescription: item.publicDescription,
             privateNotes: item.privateNotes,

@@ -15,6 +15,8 @@ function itemFixture(overrides: Record<string, unknown> = {}) {
     id: itemId,
     collectionId,
     nodeId: null,
+    categoryTemplateId: null,
+    conditionOptionId: null,
     title: "Ten identical stamps",
     publicDescription: null,
     privateNotes: null,
@@ -536,6 +538,8 @@ describe.runIf(runIntegration)("item service PostgreSQL integration", () => {
       const item = await owner.createItem({ collectionId: collection.id, title: "Private item" });
       expect(item).toMatchObject({
         nodeId: null,
+        categoryTemplateId: null,
+        conditionOptionId: null,
         visibility: "PRIVATE",
         tradeStatus: "NOT_FOR_TRADE",
         archivedAt: null,
@@ -559,6 +563,8 @@ describe.runIf(runIntegration)("item service PostgreSQL integration", () => {
       ).resolves.toMatchObject({
         title: "Private item",
         nodeId: null,
+        categoryTemplateId: null,
+        conditionOptionId: null,
       });
       await expect(
         owner.updateItem(item.id, { publicDescription: "Public facts" }),
