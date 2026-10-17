@@ -516,3 +516,65 @@ model MediaCleanupKey {
 
   @@index([lastCheckedAt, storageKey])
 }
+
+// Global maintenance-authored category metadata; no personal collection data.
+model CategoryTemplate {
+  id          String                       @id @default(uuid()) @db.Uuid
+  key         String                       @unique @db.VarChar(64)
+  createdAt   DateTime                     @default(now())
+  labels      CategoryTemplateLabel[]
+  definitions CatalogAttributeDefinition[]
+}
+
+model CategoryTemplateLabel {
+  categoryTemplateId String           @db.Uuid
+  locale             String           @db.VarChar(2)
+  label              String           @db.VarChar(200)
+  categoryTemplate   CategoryTemplate @relation(fields: [categoryTemplateId], references: [id], onDelete: Cascade)
+
+  @@id([categoryTemplateId, locale])
+}
+
+model CatalogAttributeDefinition {
+  id                 String                   @id @default(uuid()) @db.Uuid
+  categoryTemplateId String                   @db.Uuid
+  key                String                   @db.VarChar(64)
+  type               CustomFieldType
+  position           Int
+  categoryTemplate   CategoryTemplate         @relation(fields: [categoryTemplateId], references: [id], onDelete: Cascade)
+  labels             CatalogAttributeLabel[]
+  options            CatalogAttributeOption[]
+
+  @@unique([categoryTemplateId, key])
+  @@unique([categoryTemplateId, position])
+}
+
+model CatalogAttributeLabel {
+  definitionId String                     @db.Uuid
+  locale       String                     @db.VarChar(2)
+  label        String                     @db.VarChar(200)
+  definition   CatalogAttributeDefinition @relation(fields: [definitionId], references: [id], onDelete: Cascade)
+
+  @@id([definitionId, locale])
+}
+
+model CatalogAttributeOption {
+  id           String                        @id @default(uuid()) @db.Uuid
+  definitionId String                        @db.Uuid
+  key          String                        @db.VarChar(64)
+  position     Int
+  definition   CatalogAttributeDefinition    @relation(fields: [definitionId], references: [id], onDelete: Cascade)
+  labels       CatalogAttributeOptionLabel[]
+
+  @@unique([definitionId, key])
+  @@unique([definitionId, position])
+}
+
+model CatalogAttributeOptionLabel {
+  optionId String                 @db.Uuid
+  locale   String                 @db.VarChar(2)
+  label    String                 @db.VarChar(200)
+  option   CatalogAttributeOption @relation(fields: [optionId], references: [id], onDelete: Cascade)
+
+  @@id([optionId, locale])
+}

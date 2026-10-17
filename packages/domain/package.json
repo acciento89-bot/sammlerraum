@@ -18,7 +18,8 @@
     "./identity/security-service": "./src/identity/security-service.ts",
     "./items/identifier-service": "./src/items/identifier-service.ts",
     "./items/tag-service": "./src/items/tag-service.ts",
-    "./media/cleanup-service": "./src/media/cleanup-service.ts"
+    "./media/cleanup-service": "./src/media/cleanup-service.ts",
+    "./catalog/category-template-service": "./src/catalog/category-template-service.ts"
   },
   "scripts": {
     "build": "pnpm typecheck",
