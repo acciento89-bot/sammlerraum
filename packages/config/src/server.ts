@@ -41,6 +41,10 @@ const mediaLimit = (maximum: number, fallback: number) =>
   z.coerce.number().int().min(1).max(maximum).default(fallback);
 
 const schema = z.object({
+  MEDIA_RETENTION_HOURS: mediaLimit(87600, 168),
+  MEDIA_CLEANUP_INTERVAL_MS: mediaLimit(86400000, 60000),
+  MEDIA_CLEANUP_BATCH_SIZE: mediaLimit(1000, 100),
+  STORAGE_TEMP_MAX_AGE_HOURS: mediaLimit(87600, 24),
   MEDIA_MAX_IMAGE_BYTES: mediaLimit(100 * 1024 * 1024, 20 * 1024 * 1024),
   MEDIA_MAX_DOCUMENT_BYTES: mediaLimit(100 * 1024 * 1024, 25 * 1024 * 1024),
   MEDIA_MAX_IMAGE_PIXELS: mediaLimit(100_000_000, 40_000_000),

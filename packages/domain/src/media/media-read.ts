@@ -65,7 +65,7 @@ export function createMediaReadService(
     const assetRows = await database.$queryRaw<AssetRow[]>`
       SELECT "id", "ownerId", "kind", "status", "storageKey", "mimeType", "byteSize",
              "checksumSha256", "originalFileName"
-      FROM "MediaAsset" WHERE "id" = ${id.data}::uuid
+      FROM "MediaAsset" WHERE "id" = ${id.data}::uuid AND "cleanupStartedAt" IS NULL
     `;
     const asset = assetRows[0];
     if (!asset || asset.status === "UPLOADING") return null;

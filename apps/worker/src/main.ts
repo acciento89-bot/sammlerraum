@@ -22,6 +22,7 @@ type StartWorkerOptions = {
   logger: Logger;
   installSignals?: boolean;
   onQueueListenerInstalled?: () => void;
+  mediaCleanup?: { start(): void; stop(): Promise<void> };
   imageDispatcher?: { start(): void; stop(): Promise<void> };
 };
 
@@ -61,6 +62,7 @@ export async function startWorker(options: StartWorkerOptions): Promise<RunningW
     process.off("SIGTERM", handleSignal);
     process.off("SIGINT", handleSignal);
     await endpoint?.close();
+    await options.mediaCleanup?.stop();
     await options.imageDispatcher?.stop();
     await options.queue.stop();
     options.queue.off("error", handleQueueError);
@@ -75,6 +77,7 @@ export async function startWorker(options: StartWorkerOptions): Promise<RunningW
   try {
     await options.queue.start();
     options.imageDispatcher?.start();
+    options.mediaCleanup?.start();
     endpoint = await (options.startHealth ?? startHealthServer)({
       port: options.healthPort,
       databaseHealth: options.databaseHealth,

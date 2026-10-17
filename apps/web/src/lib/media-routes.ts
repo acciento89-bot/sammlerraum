@@ -1,3 +1,8 @@
+import { MediaAssetSchema } from "@sammlerraum/contracts/media";
+import {
+  MediaCleanupError,
+  type createMediaCleanupService,
+} from "@sammlerraum/domain/media/cleanup-service";
 import { ApiError } from "@sammlerraum/contracts/errors";
 import { LinkAssetInputSchema } from "@sammlerraum/contracts/media";
 import {
@@ -14,6 +19,7 @@ type Dependencies = {
   appOrigin: string;
   getSession(headers: Headers): Promise<Session | null>;
   createMediaService(): Service;
+  createCleanupService(): ReturnType<typeof createMediaCleanupService>;
   limits: Pick<MediaLimits, "maxImageBytes" | "maxDocumentBytes">;
 };
 const noStore = { "cache-control": "no-store" };
@@ -123,7 +129,38 @@ export function createMediaRouteHandlers(dependencies: Dependencies) {
     }
   }
 
+  async function unlink(
+    request: Request,
+    target: "ITEM" | "ITEM_DOCUMENT" | "AVATAR",
+    itemId?: string,
+    linkId?: string,
+  ) {
+    const userId = await actor(dependencies, request);
+    if (
+      target !== "AVATAR" &&
+      (!MediaAssetSchema.shape.id.safeParse(itemId).success ||
+        !MediaAssetSchema.shape.id.safeParse(linkId).success)
+    )
+      throw new ApiError("NOT_FOUND", 404, "Resource not found");
+    try {
+      await dependencies
+        .createCleanupService()
+        .unlinkAsset(userId, target, target === "AVATAR" ? userId : linkId!, itemId);
+      return new Response(null, { status: 204, headers: noStore });
+    } catch (error) {
+      if (error instanceof MediaCleanupError)
+        throw new ApiError("NOT_FOUND", 404, "Resource not found");
+      throw error;
+    }
+  }
   return {
+    DELETE_ITEM_IMAGE: apiRoute((request, itemId: string, linkId: string) =>
+      unlink(request, "ITEM", itemId, linkId),
+    ),
+    DELETE_ITEM_DOCUMENT: apiRoute((request, itemId: string, linkId: string) =>
+      unlink(request, "ITEM_DOCUMENT", itemId, linkId),
+    ),
+    DELETE_AVATAR: apiRoute((request) => unlink(request, "AVATAR")),
     POST_IMAGE: apiRoute((request) => upload(request, "IMAGE")),
     POST_DOCUMENT: apiRoute((request) => upload(request, "DOCUMENT")),
     POST_ITEM_IMAGE: apiRoute((request, itemId: string) => link(request, itemId, "ITEM")),

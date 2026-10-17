@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { constants } from "node:fs";
-import { lstat, mkdir, open, realpath, rename, unlink } from "node:fs/promises";
+import { lstat, mkdir, open, realpath, readdir, rename, unlink } from "node:fs/promises";
 import { dirname, isAbsolute, join, relative, resolve, sep, win32 } from "node:path";
 
 import type { StorageProvider } from "./types";
@@ -69,10 +69,92 @@ function assertObject(stat: Awaited<ReturnType<typeof lstat>> | null) {
   if (stat && !stat.isFile()) throw new StorageError("STORAGE_IO_ERROR");
 }
 
+export type StorageStagingLocker = <T>(
+  id: string,
+  work: () => Promise<T>,
+  wait?: boolean,
+) => Promise<T | false>;
+const activeTemporary = new Set<string>();
+const stagingName =
+  /^\.storage-([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\.tmp$/i;
+
+export type StorageCleanupCursor = { walk?: AsyncGenerator<string> };
+
+async function* stagingPaths(directory: string): AsyncGenerator<string> {
+  const stat = await inspect(directory);
+  if (!stat) return;
+  assertDirectory(stat);
+  for (const entry of await readdir(directory, { withFileTypes: true })) {
+    const path = join(directory, entry.name);
+    yield path;
+    if (entry.isDirectory() && !entry.isSymbolicLink()) yield* stagingPaths(path);
+  }
+}
+
+// Production callers share the staging locker with maintenance and retain the cursor between polls.
+// No directory descriptors remain open while a bounded scan is paused.
+export async function cleanupLocalStorageTemporaryFiles(
+  root: string,
+  options: {
+    maxAgeHours: number;
+    withLock: StorageStagingLocker;
+    maxEntries?: number;
+    cursor?: StorageCleanupCursor;
+  },
+) {
+  const budget = options.maxEntries ?? 1000;
+  if (
+    !isAbsolute(root) ||
+    !Number.isSafeInteger(options.maxAgeHours) ||
+    options.maxAgeHours < 1 ||
+    !Number.isSafeInteger(budget) ||
+    budget < 1
+  )
+    throw new StorageError("STORAGE_IO_ERROR");
+  const cursor = options.cursor ?? {};
+  cursor.walk ??= stagingPaths(resolve(root));
+  const cutoff = Date.now() - options.maxAgeHours * 3_600_000;
+  try {
+    for (let count = 0; count < budget; count++) {
+      const next = await cursor.walk.next();
+      if (next.done) {
+        delete cursor.walk;
+        break;
+      }
+      const path = next.value;
+      const match = stagingName.exec(path.split(sep).at(-1)!);
+      if (!match || activeTemporary.has(path)) continue;
+      const before = await inspect(path);
+      if (!before?.isFile() || before.isSymbolicLink() || before.mtimeMs > cutoff) continue;
+      await options.withLock(`staging:${match[1]}`, async () => {
+        const current = await inspect(path);
+        if (
+          current?.isFile() &&
+          !current.isSymbolicLink() &&
+          current.mtimeMs <= cutoff &&
+          !activeTemporary.has(path)
+        )
+          await unlink(path).catch((error) => {
+            if (filesystemCode(error) !== "ENOENT") throw error;
+          });
+      });
+    }
+  } catch (error) {
+    await cursor.walk?.return(undefined).catch(() => undefined);
+    delete cursor.walk;
+    throw safeError(error);
+  } finally {
+    if (!options.cursor) await cursor.walk?.return(undefined);
+  }
+}
+
 export class LocalPersistentStorage implements StorageProvider {
   readonly root: string;
 
-  constructor(root: string) {
+  constructor(
+    root: string,
+    private readonly withStagingLock?: StorageStagingLocker,
+  ) {
     if (!isAbsolute(root)) throw new StorageError("STORAGE_IO_ERROR");
     this.root = resolve(root);
   }
@@ -116,28 +198,37 @@ export class LocalPersistentStorage implements StorageProvider {
 
   async put(key: string, bytes: Uint8Array): Promise<void> {
     const path = (await this.pathFor(key, true))!;
-    const temporary = join(dirname(path), `.storage-${randomUUID()}.tmp`);
-    try {
-      assertObject(await inspect(path));
-      // Keep incomplete writes private until same-directory rename publishes them.
-      const handle = await open(
-        temporary,
-        constants.O_WRONLY | constants.O_CREAT | constants.O_EXCL | constants.O_NOFOLLOW,
-        0o600,
-      );
+    const id = randomUUID();
+    const temporary = join(dirname(path), `.storage-${id}.tmp`);
+    const write = async () => {
+      activeTemporary.add(temporary);
       try {
-        await handle.writeFile(bytes);
-        await handle.sync();
+        assertObject(await inspect(path));
+        // Keep incomplete writes private until same-directory rename publishes them.
+        const handle = await open(
+          temporary,
+          constants.O_WRONLY | constants.O_CREAT | constants.O_EXCL | constants.O_NOFOLLOW,
+          0o600,
+        );
+        try {
+          await handle.writeFile(bytes);
+          await handle.sync();
+        } finally {
+          await handle.close();
+        }
+        assertObject(await inspect(path));
+        await rename(temporary, path);
+      } catch (error) {
+        throw safeError(error);
       } finally {
-        await handle.close();
+        await unlink(temporary).catch(() => undefined);
+        activeTemporary.delete(temporary);
       }
-      assertObject(await inspect(path));
-      await rename(temporary, path);
-    } catch (error) {
-      throw safeError(error);
-    } finally {
-      await unlink(temporary).catch(() => undefined);
-    }
+    };
+    if (this.withStagingLock) {
+      const result = await this.withStagingLock(`staging:${id}`, write, true);
+      if (result === false) throw new StorageError("STORAGE_IO_ERROR");
+    } else await write();
   }
 
   async read(key: string): Promise<Uint8Array> {

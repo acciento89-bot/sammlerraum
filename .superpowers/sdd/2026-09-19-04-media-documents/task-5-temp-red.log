@@ -1,0 +1,46 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| packages/storage/src/local-storage.test.ts (20 tests | 1 failed) 37ms
+   ✓ never allows a storage key to escape the configured root 2ms
+   ✓ LocalPersistentStorage > persists nested bytes and atomically replaces an existing object 14ms
+   ✓ LocalPersistentStorage > rejects malformed key "" before every operation 1ms
+   ✓ LocalPersistentStorage > rejects malformed key "." before every operation 1ms
+   ✓ LocalPersistentStorage > rejects malformed key ".." before every operation 2ms
+   ✓ LocalPersistentStorage > rejects malformed key "../secret" before every operation 1ms
+   ✓ LocalPersistentStorage > rejects malformed key "a/../secret" before every operation 0ms
+   ✓ LocalPersistentStorage > rejects malformed key "a/./b" before every operation 0ms
+   ✓ LocalPersistentStorage > rejects malformed key "a//b" before every operation 0ms
+   ✓ LocalPersistentStorage > rejects malformed key "/secret" before every operation 0ms
+   ✓ LocalPersistentStorage > rejects malformed key "a\\..\\secret" before every operation 0ms
+   ✓ LocalPersistentStorage > rejects malformed key "C:\\secret" before every operation 0ms
+   ✓ LocalPersistentStorage > rejects malformed key "a\u0000b" before every operation 0ms
+   ✓ LocalPersistentStorage > rejects malformed key "a/" before every operation 0ms
+   ✓ LocalPersistentStorage > blocks a symlinked parent for every operation without touching the external file 2ms
+   ✓ LocalPersistentStorage > blocks a symlink at the leaf for every operation 2ms
+   ✓ LocalPersistentStorage > rejects a symlinked configured root 1ms
+   ✓ LocalPersistentStorage > rejects a symlinked configured root with a trailing slash 1ms
+   ✓ LocalPersistentStorage > fails safely when the target is a directory 5ms
+   × staging maintenance > uses the shared staging lock, skips a live old write, then removes its crashed file 4ms
+     → cleanupLocalStorageTemporaryFiles is not a function
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/storage/src/local-storage.test.ts > staging maintenance > uses the shared staging lock, skips a live old write, then removes its crashed file
+TypeError: cleanupLocalStorageTemporaryFiles is not a function
+ ❯ packages/storage/src/local-storage.test.ts:171:13
+    169|     try {
+    170|       await writeFile(path, "incomplete"); await utimes(path, new Date…
+    171|       await cleanupLocalStorageTemporaryFiles(root, { maxAgeHours: 24,…
+       |             ^
+    172|       expect(await storage.exists(`.storage-${id}.tmp`)).toBe(true);
+    173|       locked.clear();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 19 passed (20)
+   Start at  20:55:41
+   Duration  339ms (transform 32ms, setup 5ms, collect 31ms, tests 37ms, environment 0ms, prepare 48ms)
+

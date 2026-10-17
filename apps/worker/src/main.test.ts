@@ -19,6 +19,14 @@ describe("startWorker", () => {
     });
     const worker = await startWorker({
       queue: queue as never,
+      mediaCleanup: {
+        start: () => {
+          calls.push("cleanup-start");
+        },
+        stop: async () => {
+          calls.push("cleanup-stop");
+        },
+      },
       imageDispatcher: {
         start: () => {
           calls.push("dispatch-start");
@@ -46,7 +54,9 @@ describe("startWorker", () => {
     expect(calls).toEqual([
       "queue-start",
       "dispatch-start",
+      "cleanup-start",
       "health-stop",
+      "cleanup-stop",
       "dispatch-stop",
       "queue-stop",
       "database-stop",

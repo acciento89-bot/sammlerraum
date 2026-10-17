@@ -24,6 +24,7 @@ export function createPrismaImageRepository(
     id: claim.id,
     status: "PROCESSING" as const,
     processingToken: claim.token,
+    cleanupStartedAt: null,
     processingLeaseUntil: { gt: new Date() },
   });
   return {
@@ -31,6 +32,7 @@ export function createPrismaImageRepository(
       const now = new Date();
       const rows = await database.mediaAsset.findMany({
         where: {
+          cleanupStartedAt: null,
           mimeType: { in: supported },
           OR: [{ status: "PENDING" }, { status: "PROCESSING", processingLeaseUntil: { lt: now } }],
           AND: [
@@ -69,6 +71,7 @@ export function createPrismaImageRepository(
       const token = randomUUID();
       const where = {
         id: assetId,
+        cleanupStartedAt: null,
         mimeType: { in: supported },
         OR: [
           { status: "PENDING" as const },

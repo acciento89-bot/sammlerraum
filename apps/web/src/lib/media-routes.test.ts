@@ -14,12 +14,15 @@ function fixture(session: string | null = "owner") {
     })),
     linkAsset: vi.fn(async () => ({ id: randomUUID(), position: 0 })),
   };
+  const cleanup = { unlinkAsset: vi.fn(async () => {}) };
   return {
+    cleanup,
     service,
     routes: createMediaRouteHandlers({
       appOrigin: "https://example.test",
       getSession: async () => (session ? { user: { id: session } } : null),
       createMediaService: () => service as never,
+      createCleanupService: () => cleanup as never,
       limits: { maxImageBytes: 4, maxDocumentBytes: 6 },
     }),
   };
@@ -132,5 +135,57 @@ describe("media routes", () => {
       assetId,
       purpose: "GALLERY",
     });
+  });
+});
+
+describe("owner unlink routes", () => {
+  it("authenticates and checks same origin before unlinking", async () => {
+    const { routes } = fixture(null);
+    const response = await routes.DELETE_ITEM_IMAGE(
+      new Request("https://example.test/api", {
+        method: "DELETE",
+        headers: { origin: "https://example.test" },
+      }),
+      randomUUID(),
+      randomUUID(),
+    );
+    expect(response.status).toBe(401);
+  });
+  it("unlinks only the authenticated owner's requested item link", async () => {
+    const { routes, cleanup } = fixture();
+    const itemId = randomUUID(),
+      linkId = randomUUID();
+    const response = await routes.DELETE_ITEM_DOCUMENT(
+      new Request("https://example.test/api", {
+        method: "DELETE",
+        headers: { origin: "https://example.test" },
+      }),
+      itemId,
+      linkId,
+    );
+    expect(response.status).toBe(204);
+    expect(response.headers.get("cache-control")).toBe("no-store");
+    expect(cleanup.unlinkAsset).toHaveBeenCalledWith("owner", "ITEM_DOCUMENT", linkId, itemId);
+  });
+  it("rejects cross-origin deletion and malformed identifiers", async () => {
+    const { routes, cleanup } = fixture();
+    const request = new Request("https://example.test/api", {
+      method: "DELETE",
+      headers: { origin: "https://evil.test" },
+    });
+    expect((await routes.DELETE_ITEM_IMAGE(request, randomUUID(), randomUUID())).status).toBe(403);
+    expect(
+      (
+        await routes.DELETE_ITEM_IMAGE(
+          new Request("https://example.test/api", {
+            method: "DELETE",
+            headers: { origin: "https://example.test" },
+          }),
+          "bad",
+          "bad",
+        )
+      ).status,
+    ).toBe(404);
+    expect(cleanup.unlinkAsset).not.toHaveBeenCalled();
   });
 });

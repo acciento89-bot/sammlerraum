@@ -183,10 +183,17 @@ export function createMediaService(
     });
     await storage.put(storageKey, bytes);
     // PENDING is the durable processing intent for all image MIME, including image documents.
-    const saved = await database.mediaAsset.update({
-      where: { id: intent.id },
-      data: { status: mime === "application/pdf" ? "READY" : "PENDING" },
-    });
+    let saved;
+    try {
+      saved = await database.mediaAsset.update({
+        where: { id: intent.id, status: "UPLOADING", cleanupStartedAt: null },
+        data: { status: mime === "application/pdf" ? "READY" : "PENDING" },
+      });
+    } catch (error) {
+      if (error && typeof error === "object" && "code" in error && error.code === "P2025")
+        throw new MediaServiceError("ASSET_NOT_READY");
+      throw error;
+    }
     return serialize(saved);
   }
 

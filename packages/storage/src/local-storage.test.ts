@@ -152,3 +152,62 @@ describe("LocalPersistentStorage", () => {
     expect((await readdir(root)).sort()).toEqual(["blocked", "photo.jpg"]);
   });
 });
+
+describe("staging maintenance", () => {
+  it("uses the shared staging lock, skips a live old write, then removes its crashed file", async () => {
+    const { cleanupLocalStorageTemporaryFiles } = await import("./local-storage");
+    const { mkdtemp, writeFile, utimes, rm } = await import("node:fs/promises");
+    const root = await mkdtemp(join(tmpdir(), "staging-"));
+    const id = "00000000-0000-4000-8000-000000000001";
+    const path = join(root, `.storage-${id}.tmp`);
+    const storage = new LocalPersistentStorage(root);
+    const locked = new Set([`staging:${id}`]);
+    const withLock = async <T>(key: string, work: () => Promise<T>): Promise<T | false> => {
+      if (locked.has(key)) return false;
+      locked.add(key);
+      try {
+        return await work();
+      } finally {
+        locked.delete(key);
+      }
+    };
+    try {
+      await writeFile(path, "incomplete");
+      await utimes(path, new Date(0), new Date(0));
+      await cleanupLocalStorageTemporaryFiles(root, { maxAgeHours: 24, withLock });
+      expect(await storage.exists(`.storage-${id}.tmp`)).toBe(true);
+      locked.clear();
+      await cleanupLocalStorageTemporaryFiles(root, { maxAgeHours: 24, withLock });
+      expect(await storage.exists(`.storage-${id}.tmp`)).toBe(false);
+    } finally {
+      await rm(root, { recursive: true, force: true });
+    }
+  });
+});
+
+it("bounds staging traversal and resumes the next batch without starving later files", async () => {
+  const { cleanupLocalStorageTemporaryFiles } = await import("./local-storage");
+  const { mkdtemp, writeFile, utimes, rm, readdir } = await import("node:fs/promises");
+  const root = await mkdtemp(join(tmpdir(), "staging-batch-"));
+  try {
+    for (let index = 1; index <= 3; index++) {
+      const path = join(root, `.storage-00000000-0000-4000-8000-00000000000${index}.tmp`);
+      await writeFile(path, "old");
+      await utimes(path, new Date(0), new Date(0));
+    }
+    const options = {
+      maxAgeHours: 24,
+      maxEntries: 1,
+      cursor: {},
+      withLock: async <T>(_id: string, work: () => Promise<T>) => work(),
+    };
+    await cleanupLocalStorageTemporaryFiles(root, options);
+    expect(await readdir(root)).toHaveLength(2);
+    await cleanupLocalStorageTemporaryFiles(root, options);
+    expect(await readdir(root)).toHaveLength(1);
+    await cleanupLocalStorageTemporaryFiles(root, options);
+    expect(await readdir(root)).toHaveLength(0);
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
+});

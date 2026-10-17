@@ -131,6 +131,8 @@ jobs:
           packages/domain/src/collections/collection-service.test.ts
           packages/domain/src/items/item-service.test.ts
           packages/domain/src/media/media-service.test.ts
+          packages/domain/src/media/cleanup-service.test.ts
+          packages/storage/src/staging-lock.integration.test.ts
           packages/domain/src/media/media-read.integration.test.ts
           packages/domain/src/items/identifier-service.test.ts
           packages/domain/src/custom-fields/custom-field-service.test.ts

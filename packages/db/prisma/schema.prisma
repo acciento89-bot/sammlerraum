@@ -438,6 +438,9 @@ model MediaAsset {
   processingLeaseUntil DateTime?
   processingAttempts   Int                   @default(0)
   processingErrorCode  String?               @db.VarChar(32)
+  orphanedAt           DateTime?             @default(now())
+  cleanupStartedAt     DateTime?
+  cleanupAttemptAt     DateTime?
   lastDispatchedAt     DateTime?
   createdAt            DateTime              @default(now())
   updatedAt            DateTime              @updatedAt
@@ -448,6 +451,7 @@ model MediaAsset {
   avatarProfiles       UserProfile[]         @relation("ProfileAvatar")
 
   @@unique([id, ownerId])
+  @@index([cleanupAttemptAt, orphanedAt, id])
   @@index([ownerId, status, createdAt])
   @@index([status, processingLeaseUntil])
   @@index([status, lastDispatchedAt, createdAt])
@@ -502,4 +506,13 @@ model DocumentLink {
   @@unique([itemId, assetId])
   @@index([itemId, position])
   @@index([assetId])
+}
+
+// Durable reconciliation tracking. No FK or arbitrary expiry: old I/O may finish late.
+model MediaCleanupKey {
+  storageKey    String   @id
+  assetId       String   @db.Uuid
+  lastCheckedAt DateTime @default(now())
+
+  @@index([lastCheckedAt, storageKey])
 }

@@ -1,3 +1,4 @@
+import { createMediaAssetLocker } from "@sammlerraum/db/media-lock";
 import { createResourceQuery } from "@sammlerraum/domain/api/resource-query";
 import { createMediaReadService } from "@sammlerraum/domain/media/media-read";
 import { LocalPersistentStorage } from "@sammlerraum/storage";
@@ -10,7 +11,10 @@ export async function mediaReadHandlers() {
     import("@sammlerraum/db/client"),
     import("@sammlerraum/config/server"),
   ]);
-  const storage = new LocalPersistentStorage(serverEnv.UPLOADS_DIR);
+  const storage = new LocalPersistentStorage(
+    serverEnv.UPLOADS_DIR,
+    createMediaAssetLocker(serverEnv.DATABASE_URL),
+  );
   const resources = createResourceQuery(prisma);
   const service = createMediaReadService(prisma, resources.loadItem);
   return createMediaReadHandlers({

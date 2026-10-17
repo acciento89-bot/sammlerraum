@@ -536,6 +536,13 @@ export function createItemService(
           }),
         ]);
 
+        // Reference triggers lock assets too. Lock the complete shared set in UUID order
+        // before either bulk insert so parallel splits and avatar replacement agree.
+        const assetIds = [...new Set([...media, ...documents].map((link) => link.assetId))].sort();
+        for (const assetId of assetIds) {
+          await transaction.$queryRaw`SELECT id FROM "MediaAsset" WHERE id = ${assetId}::uuid ORDER BY id FOR UPDATE`;
+        }
+
         const source = await transaction.collectibleItem.update({
           where: { id: item.id },
           data: { quantity: item.quantity - splitQuantity.data },

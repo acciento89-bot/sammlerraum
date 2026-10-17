@@ -96,6 +96,9 @@ importers:
       '@sammlerraum/db':
         specifier: workspace:*
         version: link:../../packages/db
+      '@sammlerraum/domain':
+        specifier: workspace:*
+        version: link:../../packages/domain
       '@sammlerraum/queue':
         specifier: workspace:*
         version: link:../../packages/queue

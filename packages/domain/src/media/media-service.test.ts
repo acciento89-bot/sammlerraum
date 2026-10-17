@@ -65,11 +65,19 @@ function fixture() {
   const db = {
     mediaAsset: {
       create: vi.fn(async ({ data }: { data: Record<string, unknown> }) => {
-        assets[data.id as string] = { ...data };
+        assets[data.id as string] = { cleanupStartedAt: null, ...data };
         return assets[data.id as string];
       }),
       update: vi.fn(
-        async ({ where, data }: { where: { id: string }; data: Record<string, unknown> }) => {
+        async ({
+          where,
+          data,
+        }: {
+          where: { id: string; [key: string]: unknown };
+          data: Record<string, unknown>;
+        }) => {
+          if (!Object.entries(where).every(([key, value]) => assets[where.id]?.[key] === value))
+            throw Object.assign(new Error("not found"), { code: "P2025" });
           Object.assign(assets[where.id]!, data);
           return assets[where.id];
         },
@@ -137,6 +145,17 @@ describe("media service", () => {
     );
     expect(storage.put).toHaveBeenCalledOnce();
     expect(Object.values(assets)[0]).toMatchObject({ status: "UPLOADING" });
+  });
+
+  it("rejects a late upload completion after cleanup claimed its unlinked intent", async () => {
+    const { service, storage, assets } = fixture();
+    storage.put.mockImplementationOnce(async () => {
+      Object.values(assets)[0]!.cleanupStartedAt = new Date();
+    });
+    await expect(service.createImageUpload(actor, await image(), meta)).rejects.toMatchObject({
+      code: "ASSET_NOT_READY",
+    });
+    expect(Object.values(assets)[0]!.status).toBe("UPLOADING");
   });
 
   it("validates and saves an image with a persistent pending processing status", async () => {
