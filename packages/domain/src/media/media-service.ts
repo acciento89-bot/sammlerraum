@@ -4,6 +4,7 @@ import {
   MediaAssetSchema,
   LinkAssetInputSchema,
   type LinkAssetInput,
+  DocumentCategorySchema,
 } from "@sammlerraum/contracts/media";
 import type { createPrismaClient } from "@sammlerraum/db/create-client";
 import type { StorageProvider } from "@sammlerraum/storage";
@@ -197,7 +198,101 @@ export function createMediaService(
     return serialize(saved);
   }
 
+  async function withItem<T>(
+    actorUserId: string,
+    itemId: string,
+    operation: (tx: Pick<MediaDatabase, "$queryRaw" | "mediaLink" | "documentLink">) => Promise<T>,
+  ) {
+    MediaAssetSchema.shape.id.parse(itemId);
+    return database.$transaction(async (tx) => {
+      const rows = await tx.$queryRaw<Array<{ id: string }>>`
+        SELECT item."id" FROM "CollectibleItem" item
+        JOIN "Collection" collection ON collection."id" = item."collectionId"
+        WHERE item."id" = ${itemId}::uuid AND item."ownerId" = ${actorUserId}
+          AND item."deletedAt" IS NULL AND collection."deletedAt" IS NULL
+        FOR UPDATE OF item
+      `;
+      if (!rows[0]) throw new MediaServiceError("ITEM_NOT_FOUND");
+      return operation(tx);
+    });
+  }
+
+  const assetSelect = {
+    id: true,
+    kind: true,
+    status: true,
+    mimeType: true,
+    originalFileName: true,
+  } as const;
   return {
+    async listItemMedia(actorUserId: string, itemId: string) {
+      return withItem(actorUserId, itemId, async (tx) => {
+        const [images, documents] = await Promise.all([
+          tx.mediaLink.findMany({
+            where: { itemId, ownerId: actorUserId },
+            orderBy: [{ position: "asc" }, { id: "asc" }],
+            take: 200,
+            select: {
+              id: true,
+              purpose: true,
+              position: true,
+              title: true,
+              asset: { select: assetSelect },
+            },
+          }),
+          tx.documentLink.findMany({
+            where: { itemId, ownerId: actorUserId },
+            orderBy: [{ position: "asc" }, { id: "asc" }],
+            take: 200,
+            select: {
+              id: true,
+              category: true,
+              visibility: true,
+              position: true,
+              title: true,
+              asset: { select: assetSelect },
+            },
+          }),
+        ]);
+        return { images, documents };
+      });
+    },
+    async reorderGallery(actorUserId: string, itemId: string, linkIds: string[]) {
+      if (linkIds.length > 200 || new Set(linkIds).size !== linkIds.length)
+        throw new MediaServiceError("INVALID_UPLOAD");
+      for (const id of linkIds) MediaAssetSchema.shape.id.parse(id);
+      return withItem(actorUserId, itemId, async (tx) => {
+        const links = await tx.mediaLink.findMany({
+          where: { itemId, ownerId: actorUserId, purpose: "GALLERY", asset: { kind: "IMAGE" } },
+          select: { id: true },
+        });
+        if (links.length !== linkIds.length || links.some((link) => !linkIds.includes(link.id)))
+          throw new MediaServiceError("ASSET_NOT_FOUND");
+        // First gallery IMAGE by position is the title image. One transaction preserves the rest of the order.
+        for (const [position, id] of linkIds.entries())
+          await tx.mediaLink.update({ where: { id }, data: { position } });
+      });
+    },
+    async updateDocument(
+      actorUserId: string,
+      itemId: string,
+      linkId: string,
+      input: { category: string; visibility: "PRIVATE" | "UNLISTED" | "PUBLIC" },
+    ) {
+      const category = DocumentCategorySchema.parse(input.category);
+      if (!["PRIVATE", "UNLISTED", "PUBLIC"].includes(input.visibility))
+        throw new MediaServiceError("INVALID_UPLOAD");
+      return withItem(actorUserId, itemId, async (tx) => {
+        const link = await tx.documentLink.findFirst({
+          where: { id: linkId, itemId, ownerId: actorUserId },
+        });
+        if (!link) throw new MediaServiceError("ASSET_NOT_FOUND");
+        await tx.documentLink.update({
+          where: { id: link.id },
+          data: { category, visibility: input.visibility },
+        });
+      });
+    },
     createImageUpload: (actorUserId: string, bytes: Uint8Array, meta: UploadMetadata) =>
       upload(actorUserId, bytes, meta, "IMAGE"),
     createDocumentUpload: (actorUserId: string, bytes: Uint8Array, meta: UploadMetadata) =>
@@ -219,10 +314,19 @@ export function createMediaService(
             FOR UPDATE OF item
           `;
             if (!rows[0]) throw new MediaServiceError("ITEM_NOT_FOUND");
+            const count =
+              data.target === "ITEM"
+                ? await tx.mediaLink.count({ where: { itemId: data.itemId } })
+                : await tx.documentLink.count({ where: { itemId: data.itemId } });
+            if (count >= 200) throw new MediaServiceError("INVALID_UPLOAD");
+            // Item -> asset lock matches cleanup and split. Recheck cleanup after a concurrent claim commits.
+            await tx.$queryRaw`SELECT "id" FROM "MediaAsset" WHERE "id" = ${data.assetId}::uuid AND "ownerId" = ${actorUserId} FOR UPDATE`;
             const asset = await tx.mediaAsset.findFirst({
               where: { id: data.assetId, ownerId: actorUserId },
             });
             if (!asset) throw new MediaServiceError("ASSET_NOT_FOUND");
+            if (asset.cleanupStartedAt !== null && asset.cleanupStartedAt !== undefined)
+              throw new MediaServiceError("ASSET_NOT_READY");
             if (
               asset.status !== "PENDING" &&
               asset.status !== "PROCESSING" &&

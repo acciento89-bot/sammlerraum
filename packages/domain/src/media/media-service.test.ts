@@ -48,6 +48,7 @@ function fixture() {
       findFirst: vi.fn(async () => ({ id: "00000000-0000-4000-8000-000000000001" })),
     },
     mediaLink: {
+      count: vi.fn(async () => 0),
       findFirst: vi.fn(async () => null),
       create: vi.fn(async ({ data }: { data: unknown }) => ({
         id: randomUUID(),
@@ -55,6 +56,7 @@ function fixture() {
       })),
     },
     documentLink: {
+      count: vi.fn(async () => 0),
       findFirst: vi.fn(async () => null),
       create: vi.fn(async ({ data }: { data: unknown }) => ({
         id: randomUUID(),
@@ -89,6 +91,33 @@ function fixture() {
 }
 
 describe("media service", () => {
+  it("bounds new links to the owner-list limit", async () => {
+    const { service, tx } = fixture();
+    const asset = await service.createImageUpload(actor, await image(), meta);
+    tx.mediaLink.count.mockResolvedValueOnce(200);
+    await expect(
+      service.linkAsset(actor, {
+        target: "ITEM",
+        itemId: "00000000-0000-4000-8000-000000000001",
+        assetId: asset.id,
+        purpose: "GALLERY",
+      }),
+    ).rejects.toMatchObject({ code: "INVALID_UPLOAD" });
+    expect(tx.mediaLink.create).not.toHaveBeenCalled();
+  });
+  it("rejects cleanup-claimed retained upload references with a domain conflict", async () => {
+    const { service, assets } = fixture();
+    const asset = await service.createImageUpload(actor, await image(), meta);
+    assets[asset.id]!.cleanupStartedAt = new Date();
+    await expect(
+      service.linkAsset(actor, {
+        target: "ITEM",
+        itemId: "00000000-0000-4000-8000-000000000001",
+        assetId: asset.id,
+        purpose: "GALLERY",
+      }),
+    ).rejects.toMatchObject({ code: "ASSET_NOT_READY" });
+  });
   it("rejects a PDF renamed to .jpg", async () => {
     const { service } = fixture();
     await expect(service.createImageUpload(actor, pdf, meta)).rejects.toMatchObject({

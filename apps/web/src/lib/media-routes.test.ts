@@ -12,6 +12,9 @@ function fixture(session: string | null = "owner") {
       status: "READY",
       kind: "DOCUMENT",
     })),
+    listItemMedia: vi.fn(async () => ({ images: [], documents: [] })),
+    reorderGallery: vi.fn(async () => undefined),
+    updateDocument: vi.fn(async () => undefined),
     linkAsset: vi.fn(async () => ({ id: randomUUID(), position: 0 })),
   };
   const cleanup = { unlinkAsset: vi.fn(async () => {}) };
@@ -187,5 +190,76 @@ describe("owner unlink routes", () => {
       ).status,
     ).toBe(404);
     expect(cleanup.unlinkAsset).not.toHaveBeenCalled();
+  });
+});
+
+describe("bounded media management routes", () => {
+  const itemId = "00000000-0000-4000-8000-000000000001";
+  const linkId = "00000000-0000-4000-8000-000000000002";
+  function managementRequest(method: string, data?: unknown, origin = "https://example.test") {
+    return new Request("https://example.test/api/v1/items/" + itemId + "/media", {
+      method,
+      headers: { origin, "content-type": "application/json" },
+      ...(data === undefined ? {} : { body: JSON.stringify(data) }),
+    });
+  }
+  it("lists an authenticated owner's safe DTO with no-store without requiring an Origin on GET", async () => {
+    const { routes, service } = fixture();
+    const response = await routes.GET_ITEM_MEDIA(managementRequest("GET", undefined, ""), itemId);
+    expect(response.status).toBe(200);
+    expect(response.headers.get("cache-control")).toBe("no-store");
+    expect(service.listItemMedia).toHaveBeenCalledWith("owner", itemId);
+    expect(((await response.json()) as { limits: unknown }).limits).toEqual({
+      maxImageBytes: 4,
+      maxDocumentBytes: 6,
+    });
+    expect(
+      (await fixture(null).routes.GET_ITEM_MEDIA(managementRequest("GET"), itemId)).status,
+    ).toBe(401);
+  });
+  it("validates origin, bounded complete order and explicit document visibility before mutation", async () => {
+    const { routes, service } = fixture();
+    expect(
+      (
+        await routes.PUT_ITEM_MEDIA(
+          managementRequest("PUT", { linkIds: [linkId] }, "https://evil.test"),
+          itemId,
+        )
+      ).status,
+    ).toBe(403);
+    expect(
+      (
+        await routes.PUT_ITEM_MEDIA(
+          managementRequest("PUT", { linkIds: Array(201).fill(linkId) }),
+          itemId,
+        )
+      ).status,
+    ).toBe(400);
+    expect(
+      (await routes.PUT_ITEM_MEDIA(managementRequest("PUT", { linkIds: [linkId] }), itemId)).status,
+    ).toBe(204);
+    expect(service.reorderGallery).toHaveBeenCalledExactlyOnceWith("owner", itemId, [linkId]);
+    expect(
+      (
+        await routes.PATCH_ITEM_DOCUMENT(
+          managementRequest("PATCH", { category: "INVOICE" }),
+          itemId,
+          linkId,
+        )
+      ).status,
+    ).toBe(400);
+    expect(
+      (
+        await routes.PATCH_ITEM_DOCUMENT(
+          managementRequest("PATCH", { category: "INVOICE", visibility: "PUBLIC" }),
+          itemId,
+          linkId,
+        )
+      ).status,
+    ).toBe(204);
+    expect(service.updateDocument).toHaveBeenCalledExactlyOnceWith("owner", itemId, linkId, {
+      category: "INVOICE",
+      visibility: "PUBLIC",
+    });
   });
 });

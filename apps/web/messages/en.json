@@ -254,5 +254,56 @@
     "noChildLocations": "No child locations.",
     "items": "Items",
     "noItems": "No items at this location."
+  },
+  "Media": {
+    "gallery": "Image gallery",
+    "documents": "Documents",
+    "uploadImage": "Upload gallery image",
+    "uploadDocument": "Upload document",
+    "privateDefault": "Documents start private, independently of the item. Only Public allows public access when the item is public. Unlisted remains protected.",
+    "category": "Document category",
+    "documentVisibility": "Document visibility",
+    "limit": "Maximum {mb} MB. JPEG, PNG, WebP; PDF also accepted for documents.",
+    "progress": "Upload progress",
+    "cancel": "Cancel upload",
+    "tooLarge": "This file is too large. Choose a smaller file.",
+    "typeError": "Unsupported or invalid file. Choose a JPEG, PNG, WebP image or a PDF document.",
+    "actionError": "The action failed. Try again.",
+    "canceled": "Upload canceled.",
+    "uploaded": "Upload linked to this item.",
+    "download": "Download document",
+    "remove": "Remove link",
+    "setTitle": "Use as title image",
+    "up": "Move earlier",
+    "down": "Move later",
+    "titleImage": "Title image",
+    "titleHelp": "The first gallery image is the title image. Drag images or use the move buttons to change their order.",
+    "failedHelp": "Processing failed. Remove this link and upload the image again; automatic retries have stopped.",
+    "retry": "Retry loading",
+    "loading": "Loading media…",
+    "visibility": {
+      "PRIVATE": "Private",
+      "UNLISTED": "Unlisted",
+      "PUBLIC": "Public"
+    },
+    "states": {
+      "UPLOADING": "Uploading",
+      "PENDING": "Waiting for processing",
+      "PROCESSING": "Processing image",
+      "READY": "Ready",
+      "FAILED": "Processing failed"
+    },
+    "categories": {
+      "PURCHASE_RECEIPT": "Purchase receipt",
+      "INVOICE": "Invoice",
+      "AUTHENTICITY_CERTIFICATE": "Authenticity certificate",
+      "GRADING_PROOF": "Grading proof",
+      "APPRAISAL": "Appraisal",
+      "INSURANCE": "Insurance",
+      "PROVENANCE": "Provenance",
+      "WARRANTY": "Warranty",
+      "OTHER_PRIVATE": "Other private document"
+    },
+    "saveFirst": "Save the item first to add images and documents."
   }
 }

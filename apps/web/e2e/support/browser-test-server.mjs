@@ -140,10 +140,21 @@ if (production) {
   });
 }
 const next = spawn(
-  production ? process.execPath : "corepack",
+  production ? process.execPath : "npm",
   production
     ? [join(webRoot, ".next/standalone/apps/web/server.js")]
-    : ["pnpm@10.17.1", "--filter", "@sammlerraum/web", "dev", "--hostname", "localhost"],
+    : [
+        "exec",
+        "--yes",
+        "--package=pnpm@10.17.1",
+        "--",
+        "pnpm",
+        "--filter",
+        "@sammlerraum/web",
+        "dev",
+        "--hostname",
+        "localhost",
+      ],
   {
     env: {
       ...process.env,
@@ -162,7 +173,18 @@ const next = spawn(
   },
 );
 
+const mediaWorker =
+  process.env.RUN_MEDIA_E2E === "1"
+    ? spawn(process.execPath, [join(webRoot, "../worker/dist/worker.cjs")], {
+        env: { ...process.env, NODE_ENV: "test" },
+        stdio: "inherit",
+      })
+    : undefined;
+mediaWorker?.on("error", () => {
+  next.kill("SIGTERM");
+});
 function shutdown(signal) {
+  mediaWorker?.kill(signal);
   next.kill(signal);
   smtpServer.close();
 }
@@ -170,5 +192,6 @@ function shutdown(signal) {
 process.on("SIGINT", () => shutdown("SIGINT"));
 process.on("SIGTERM", () => shutdown("SIGTERM"));
 next.on("exit", (code) => {
+  mediaWorker?.kill("SIGTERM");
   smtpServer.close(() => process.exit(code ?? 1));
 });

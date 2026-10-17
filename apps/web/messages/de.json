@@ -254,5 +254,56 @@
     "noChildLocations": "Keine untergeordneten Lagerorte.",
     "items": "Stücke",
     "noItems": "Keine Stücke an diesem Lagerort."
+  },
+  "Media": {
+    "gallery": "Bildergalerie",
+    "documents": "Dokumente",
+    "uploadImage": "Galeriebild hochladen",
+    "uploadDocument": "Dokument hochladen",
+    "privateDefault": "Dokumente sind zunächst privat, unabhängig vom Stück. Nur „Öffentlich“ erlaubt öffentlichen Zugriff bei einem öffentlichen Stück. „Nicht gelistet“ bleibt geschützt.",
+    "category": "Dokumentart",
+    "documentVisibility": "Dokumentsichtbarkeit",
+    "limit": "Maximal {mb} MB. JPEG, PNG, WebP; für Dokumente auch PDF.",
+    "progress": "Upload-Fortschritt",
+    "cancel": "Upload abbrechen",
+    "tooLarge": "Diese Datei ist zu groß. Wähle eine kleinere Datei.",
+    "typeError": "Nicht unterstützte oder ungültige Datei. Wähle ein JPEG-, PNG-, WebP-Bild oder ein PDF-Dokument.",
+    "actionError": "Die Aktion ist fehlgeschlagen. Bitte versuche es erneut.",
+    "canceled": "Upload abgebrochen.",
+    "uploaded": "Upload mit diesem Stück verknüpft.",
+    "download": "Dokument herunterladen",
+    "remove": "Verknüpfung entfernen",
+    "setTitle": "Als Titelbild verwenden",
+    "up": "Nach vorne",
+    "down": "Nach hinten",
+    "titleImage": "Titelbild",
+    "titleHelp": "Das erste Galeriebild ist das Titelbild. Ziehe Bilder oder verwende die Schaltflächen, um die Reihenfolge zu ändern.",
+    "failedHelp": "Verarbeitung fehlgeschlagen. Entferne diese Verknüpfung und lade das Bild erneut hoch; automatische Versuche wurden beendet.",
+    "retry": "Erneut laden",
+    "loading": "Medien werden geladen…",
+    "visibility": {
+      "PRIVATE": "Privat",
+      "UNLISTED": "Nicht gelistet",
+      "PUBLIC": "Öffentlich"
+    },
+    "states": {
+      "UPLOADING": "Wird hochgeladen",
+      "PENDING": "Wartet auf Verarbeitung",
+      "PROCESSING": "Bild wird verarbeitet",
+      "READY": "Bereit",
+      "FAILED": "Verarbeitung fehlgeschlagen"
+    },
+    "categories": {
+      "PURCHASE_RECEIPT": "Kaufbeleg",
+      "INVOICE": "Rechnung",
+      "AUTHENTICITY_CERTIFICATE": "Echtheitszertifikat",
+      "GRADING_PROOF": "Bewertungsnachweis",
+      "APPRAISAL": "Wertgutachten",
+      "INSURANCE": "Versicherung",
+      "PROVENANCE": "Herkunftsnachweis",
+      "WARRANTY": "Garantie",
+      "OTHER_PRIVATE": "Sonstiges privates Dokument"
+    },
+    "saveFirst": "Speichere das Stück zuerst, um Bilder und Dokumente hinzuzufügen."
   }
 }

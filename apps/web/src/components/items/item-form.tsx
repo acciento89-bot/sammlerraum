@@ -1,5 +1,6 @@
 "use client";
 
+import { ItemGalleryEditor } from "../media/item-gallery-editor";
 import type { Collection, CollectionNode } from "@sammlerraum/contracts/collections";
 import type {
   CanonicalCustomFieldValue,
@@ -75,6 +76,7 @@ export function ItemForm({
   itemId?: string;
   initialCollectionId?: string;
 }) {
+  const media = useTranslations("Media");
   const t = useTranslations("ItemForm");
   const common = useTranslations("Management");
   const router = useRouter();
@@ -678,6 +680,11 @@ export function ItemForm({
           </div>
         </form>
       )}
+      {workingItemId && !inactive ? (
+        <ItemGalleryEditor itemId={workingItemId} />
+      ) : !workingItemId ? (
+        <p>{media("saveFirst")}</p>
+      ) : null}
     </section>
   );
 }

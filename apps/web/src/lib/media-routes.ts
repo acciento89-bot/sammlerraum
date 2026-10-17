@@ -1,3 +1,5 @@
+import { z } from "zod";
+import { DocumentCategorySchema } from "@sammlerraum/contracts/media";
 import { MediaAssetSchema } from "@sammlerraum/contracts/media";
 import {
   MediaCleanupError,
@@ -153,7 +155,66 @@ export function createMediaRouteHandlers(dependencies: Dependencies) {
       throw error;
     }
   }
+  async function manage(
+    request: Request,
+    itemId: string,
+    operation: "LIST" | "ORDER" | "DOCUMENT",
+    linkId?: string,
+  ) {
+    if (operation !== "LIST") assertOrigin(request, dependencies.appOrigin);
+    const session = await dependencies.getSession(request.headers);
+    if (!session) throw new ApiError("UNAUTHORIZED", 401, "Authentication required");
+    if (
+      !MediaAssetSchema.shape.id.safeParse(itemId).success ||
+      (linkId !== undefined && !MediaAssetSchema.shape.id.safeParse(linkId).success)
+    )
+      throw new ApiError("NOT_FOUND", 404, "Resource not found");
+    let body: unknown;
+    if (operation !== "LIST") {
+      try {
+        body = JSON.parse(new TextDecoder().decode(await readBoundedBody(request, 10_000)));
+      } catch (error) {
+        if (error instanceof ApiError) throw error;
+        throw new ApiError("VALIDATION_ERROR", 400, "Invalid request");
+      }
+    }
+    const service = dependencies.createMediaService();
+    try {
+      if (operation === "LIST")
+        return Response.json(
+          {
+            ...(await service.listItemMedia(session.user.id, itemId)),
+            limits: dependencies.limits,
+          },
+          { headers: noStore },
+        );
+      if (operation === "ORDER") {
+        const input = z
+          .object({ linkIds: z.array(z.uuid()).max(200) })
+          .strict()
+          .parse(body);
+        await service.reorderGallery(session.user.id, itemId, input.linkIds);
+      } else {
+        const input = z
+          .object({
+            category: DocumentCategorySchema,
+            visibility: z.enum(["PRIVATE", "UNLISTED", "PUBLIC"]),
+          })
+          .strict()
+          .parse(body);
+        await service.updateDocument(session.user.id, itemId, linkId!, input);
+      }
+      return new Response(null, { status: 204, headers: noStore });
+    } catch (error) {
+      safeMediaError(error);
+    }
+  }
   return {
+    GET_ITEM_MEDIA: apiRoute((request, itemId: string) => manage(request, itemId, "LIST")),
+    PUT_ITEM_MEDIA: apiRoute((request, itemId: string) => manage(request, itemId, "ORDER")),
+    PATCH_ITEM_DOCUMENT: apiRoute((request, itemId: string, linkId: string) =>
+      manage(request, itemId, "DOCUMENT", linkId),
+    ),
     DELETE_ITEM_IMAGE: apiRoute((request, itemId: string, linkId: string) =>
       unlink(request, "ITEM", itemId, linkId),
     ),
