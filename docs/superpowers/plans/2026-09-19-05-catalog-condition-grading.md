@@ -86,7 +86,7 @@ git commit -m "feat: add category catalog templates"
 **Interfaces:**
 - Produces: `createCatalogEntry`, `addCatalogVariant`, `addExternalIdentifier`, `getCatalogEntryAtRevision`.
 
-- [ ] **Step 1: Write failing variant-distinction test**
+- [x] **Step 1: Write failing variant-distinction test**
 
 ```ts
 it("keeps language and edition variants separate", async () => {
@@ -96,16 +96,16 @@ it("keeps language and edition variants separate", async () => {
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run packages/domain/src/catalog/catalog-service.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement revisioned catalog**
+- [x] **Step 3: Implement revisioned catalog**
 
 Add `CatalogEntry`, `CatalogVariant`, `CatalogExternalIdentifier`, `CatalogRevision`, source/license metadata, localized text where needed, and immutable revision snapshots for canonical changes.
 
-- [ ] **Step 4: Migrate and test**
+- [x] **Step 4: Migrate and test**
 
 Run:
 ```bash
@@ -115,7 +115,7 @@ pnpm vitest run packages/domain/src/catalog/catalog-service.test.ts
 
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/db packages/domain/src/catalog

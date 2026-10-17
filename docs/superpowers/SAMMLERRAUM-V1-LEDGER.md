@@ -15,7 +15,7 @@ This is the handoff/status file for long-running implementation. Update it after
 | 02 | Identity, Auth & Policies | 7 | complete (7/7) | — |
 | 03 | Collections, Items, Fields & Locations | 8 | complete (8/8) | — |
 | 04 | Media & Documents | 6 | complete (6/6) | — |
-| 05 | Catalog, Condition & Grading | 7 | in progress (1/7) | Task 2 |
+| 05 | Catalog, Condition & Grading | 7 | in progress (2/7) | Task 3 |
 | 06 | Valuations & Market Data | 6 | not started | Task 1 |
 | 07 | Search, Smart Collections & Dashboard | 5 | not started | Task 1 |
 | 08 | Import, Export, Insurance & Reports | 7 | not started | Task 1 |
@@ -58,8 +58,9 @@ This is the handoff/status file for long-running implementation. Update it after
 - [x] P04 T05 — Safe unlink, retention and orphan cleanup
 - [x] P04 T06 — Media gallery and private document UI
 - [x] P05 T01 — Category templates and typed catalog attributes
+- [x] P05 T02 — Revisioned catalog entries, variants, identifiers and attributes
 
-**Verified completion: 28/91 tasks.** Later tasks remain open as listed in the phase table and detail plans.
+**Verified completion: 29/91 tasks.** Later tasks remain open as listed in the phase table and detail plans.
 
 ## Update rule
 
@@ -563,3 +564,14 @@ Every completed and independently reviewed task must be checked off in its detai
 - Rollback retains inactive child UUID identities to preserve later personal references; Task6 must exclude inactive candidates/block new links while handling existing links explicitly. Cost: retained inactive rows and explicit linking policy.
 - Entry and its variants may hold typed attributes and namespaced identifiers; UUID identity is independent of displayed title/language/edition. Cost: later deduplication or target-contract refinement.
 - Phase05Task3 introduces the minimal persisted application MODERATOR/ADMIN authority foundation named by Phase10Task4, separate from collection roles and operator-granted. Phase10 must reuse/extend this source. Cost if wrong: bounded role migration; no live grants or later-phase completion claimed.
+
+
+### Phase 05 Task 2 — COMPLETE (17 October 2026)
+
+- Final source `b1ce8eadfab2a7d73f2b80ab3e0c9a5ff118e9cb` (initial2d5f3e5), maintained global catalog entries/UUID variants/namespaced identifiers, entry/variant typed attributes with relational category/target guards, authored multilingual text and source/license metadata. No user HTTP mutation endpoint or personal item facts. Transaction-aware canonical seam composes inside one approval transaction; entry locks and expected revisions serialize writes, including stale no-op rejection.
+- Complete deterministic immutable authored snapshots preserve past state. Rollback appends a new revision, retains inactive child identities and can reactivate their original UUIDs. DB UPDATE guard and restricted parent deletion protect application history; operator-level DELETE is deliberately outside the guarantee. Inactive identifier tuple re-add currently creates a new UUID; historical rollback reactivates its stored UUID. Consumers must not assume one tuple maps to one UUID across separate re-additions; this policy remains a nonblocking final-review follow-up.
+- Actual behavioral RED/GREEN covered authored translation/serialization, immutable DB UPDATE rejection, empty-patch defaults resetting sources, malformed URL errors and rollback metadata. The brief's exact variant-distinction assertion first ran GREEN; the chronology deviation is retained honestly. Later isolated fault injection proved it catches same-title UUID collapse, after build completion; exact source was restored and focused10/10 passed. Standard fullsuite369passed/54DBgatedskips, lint/typecheck/production build passed; skipped DB cases were not counted as local passes.
+- Independent review found ImportantI1: accepted uppercase UUIDs differed from PostgreSQL canonical lowercase, breaking rollback and identity checks. Three real-PG RED failures preceded consistent input/command/legacy-snapshot normalization; GREEN13/13 (11PG+2unit), full workspace lint/typecheck passed. Raw historical JSON stays unchanged and authored values/user IDs are not case-normalized. Scoped rereview PASS, zero newCritical/Important; final exact-source CI covers the corrected implementation.
+- Full CI SUCCESS: https://github.com/acciento89-bot/sammlerraum/actions/runs/39068763845 (job117501807515, sourceb1ce8ea):166 dedicated PostgreSQL integration tests,29 browser journeys (QR2/media7/auth4/management16), unit/static tests, all migrations/lint/typecheck/build, Compose, both Docker images and native Sharp final-image decode passed. Saved backend log is explicitly truncated; job conclusions verify all gates.
+- Two additive migrations `20261017225000_global_catalog` and `20261017225200_catalog_revision_guard` are applied. Future IDs must sort after latestexistingID, usingmax(latest+1,currentUTC); folder timestamps are not execution-time evidence. A package runner banner caused the first new migration attempt to fail before DDL; only that failed test migration was resolved/redeployed, no reset or old-history edit. Applied SQL's cosmetic EOF blank is retained to preserve checksum. A reproduced Prisma nested-read pg warning was fixed with sequential batched state reads, with clean focused output.
+- Task2 complete, Phase05 now2/7, overall29/91. NextTask3 moderated proposals/application role foundation; prepared design only until completion persistence. Correcting/removing external identifiers is included there as a necessary supporting canonical command surface. Implementation stays on feature branch/DraftPR#1; ledger-only main sync, no source merge/deployment.

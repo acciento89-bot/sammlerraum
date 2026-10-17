@@ -1,4 +1,6 @@
-# Task2 context (finalize base/producer gate before dispatch)
+# Task2 context
+
+Producer gate complete: Task1 final source31725b9 is independently approved and fullCI39066522503/job117495245612SUCCESS. Completion1a96ea3569be83195ddd26b9ec47c5a95c3c8ce4 pushed and exactremote verified; source diff from31725b9 empty. Task2 BASE is1a96ea3569be83195ddd26b9ec47c5a95c3c8ce4. Root-approved design: explicit bounded JSON translations/provenance/typed values plus relationalidentity; inactive child UUID retention on rollback; entry+variant attributes and variant-targeted identifiers. Root progress has costs/Task6 obligations. GO authorizes implementation of Task2 only.
 
 Read task-2-brief.md first. This is the revisioned global reference catalog foundation, not user-facing proposal/moderation/UI yet. Task1 supplies contracts/catalog.ts CategoryTemplate/CatalogAttributeDefinition, stable ASCII keys, required DE/EN template labels, ordered keyed options and maintenance factory createCategoryTemplateMaintenanceService(database). Read that public contract and service interfaces rather than the whole phase plan. Catalog attribute validation reuses existing ten primitive types through validateAttributeValue; selections use option keys, decimal/money values preserve precision and JSON-safe canonical representation. Definitions/values must belong to the entry's category, not a foreign template. Do not alter previous task primitive semantics.
 
