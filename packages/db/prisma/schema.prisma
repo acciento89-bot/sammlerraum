@@ -194,9 +194,11 @@ model CollectibleItem {
   customFieldValues   CustomFieldValue[]
   mediaLinks          MediaLink[]
   documentLinks       DocumentLink[]
+  gradings            Grading[]
 
   @@unique([id, collectionId])
   @@unique([id, ownerId])
+  @@unique([id, ownerId, quantity])
   @@index([collectionId])
   @@index([collectionId, deletedAt])
   @@index([nodeId, collectionId])
@@ -759,4 +761,28 @@ model ConditionOption {
   @@unique([id, categoryTemplateId])
   @@unique([schemeId, labelKey])
   @@unique([schemeId, position])
+}
+
+// Personally authored external facts. No provider lookup or authenticity verification.
+model Grading {
+  id              String          @id @default(uuid()) @db.Uuid
+  itemId          String          @db.Uuid
+  ownerId         String
+  itemQuantity    Int             @default(1)
+  provider        String          @db.VarChar(120)
+  providerKey     String          @db.VarChar(120)
+  grade           String          @db.VarChar(120)
+  comparableValue Decimal?        @db.Decimal(12, 4)
+  comparableScale String?         @db.VarChar(120)
+  certificateNo   String?         @db.VarChar(160)
+  certificateKey  String?         @db.VarChar(160)
+  gradedAt        DateTime?       @db.Date
+  verificationUrl String?         @db.VarChar(2048)
+  source          String?         @db.VarChar(1000)
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  item            CollectibleItem @relation(fields: [itemId, ownerId, itemQuantity], references: [id, ownerId, quantity], onDelete: Cascade, onUpdate: Restrict)
+
+  @@unique([ownerId, providerKey, certificateKey])
+  @@index([itemId, ownerId])
 }

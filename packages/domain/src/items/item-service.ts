@@ -271,7 +271,8 @@ export type ItemServiceErrorCode =
   | "COLLECTION_NODE_NOT_FOUND"
   | "ITEM_NOT_FOUND"
   | "ITEM_INACTIVE"
-  | "ITEM_SPLIT_INVALID";
+  | "ITEM_SPLIT_INVALID"
+  | "ITEM_GRADING_QUANTITY_INVALID";
 
 const errorMessages: Record<ItemServiceErrorCode, string> = {
   COLLECTION_NOT_FOUND: "Collection not found",
@@ -279,6 +280,8 @@ const errorMessages: Record<ItemServiceErrorCode, string> = {
   ITEM_NOT_FOUND: "Item not found",
   ITEM_INACTIVE: "Item is archived or disposed",
   ITEM_SPLIT_INVALID: "Split quantity must be positive and less than the current quantity",
+  ITEM_GRADING_QUANTITY_INVALID:
+    "Remove grading records before changing physical specimen quantity",
 };
 
 export class ItemServiceError extends Error {
@@ -369,6 +372,13 @@ async function lockOwnedItem(
   return item;
 }
 
+async function ensureNoGrading(transaction: ItemTransaction, itemId: string): Promise<void> {
+  const [row] = await transaction.$queryRaw<Array<{ present: boolean }>>`
+    SELECT EXISTS(SELECT 1 FROM "Grading" WHERE "itemId" = ${itemId}::uuid) AS present
+  `;
+  if (row!.present) throw new ItemServiceError("ITEM_GRADING_QUANTITY_INVALID");
+}
+
 function ensureActive(item: StoredItem): void {
   if (item.archivedAt !== null || item.disposedAt !== null) {
     throw new ItemServiceError("ITEM_INACTIVE");
@@ -447,7 +457,10 @@ export function createItemService(
         if (data.title !== undefined) update.title = data.title;
         if (data.publicDescription !== undefined) update.publicDescription = data.publicDescription;
         if (data.privateNotes !== undefined) update.privateNotes = data.privateNotes;
-        if (data.quantity !== undefined) update.quantity = data.quantity;
+        if (data.quantity !== undefined) {
+          if (data.quantity !== existing.quantity) await ensureNoGrading(transaction, existing.id);
+          update.quantity = data.quantity;
+        }
         if (data.acquisitionType !== undefined) update.acquisitionType = data.acquisitionType;
         if (data.acquisitionDate !== undefined) {
           update.acquisitionDate =
@@ -523,6 +536,7 @@ export function createItemService(
       async (transaction) => {
         const item = await lockOwnedItem(transaction, itemId, actorUserId);
         ensureActive(item);
+        await ensureNoGrading(transaction, item.id);
         if (splitQuantity.data >= item.quantity) {
           throw new ItemServiceError("ITEM_SPLIT_INVALID");
         }

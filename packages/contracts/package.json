@@ -13,7 +13,8 @@
     "./profile": "./src/profile.ts",
     "./catalog": "./src/catalog.ts",
     "./catalog-proposals": "./src/catalog-proposals.ts",
-    "./condition": "./src/condition.ts"
+    "./condition": "./src/condition.ts",
+    "./grading": "./src/grading.ts"
   },
   "scripts": {
     "build": "pnpm typecheck",

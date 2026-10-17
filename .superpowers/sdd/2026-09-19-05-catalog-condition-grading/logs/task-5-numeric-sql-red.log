@@ -1,0 +1,49 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| packages/domain/src/grading/grading-service.test.ts (15 tests | 1 failed | 14 skipped) 159ms
+   ↓ personal grading PostgreSQL > allows equal certificate numbers across different providers
+   ↓ personal grading PostgreSQL > preserves authored facts, leading zeros and exact optional decimal strings
+   ↓ personal grading PostgreSQL > scopes certificate conflicts to one owner and provider without guessing number equivalence
+   ↓ personal grading PostgreSQL > supports multiple uncertified records and full replacement/removal releasing a certificate
+   ↓ personal grading PostgreSQL > hides foreign and mismatched grading IDs on reads and all mutations
+   ↓ personal grading PostgreSQL > retains inactive item reads but rejects lifecycle mutations and deleted parents
+   ↓ personal grading PostgreSQL > requires split before grading and enforces the shared item quantity mutation path
+   ↓ personal grading PostgreSQL > rejects malformed authored facts and never rounds or synthesizes comparable values
+   ↓ personal grading PostgreSQL > caps records under the shared item lock and handles racing certificate additions
+   × personal grading PostgreSQL > enforces owner, single-specimen, paired scale and provider identity in PostgreSQL 62ms
+     → promise resolved "[ { id: '506fcb97-2a01-48c8-bd13-9…' } ]" instead of rejecting
+   ↓ personal grading PostgreSQL > keeps exact condition and grading independent through condition edits and grading removal
+   ↓ personal grading PostgreSQL > serializes actual item quantity updates behind grading's item lock
+   ↓ personal grading PostgreSQL > rechecks quantity after waiting for a concurrent committed change
+   ↓ personal grading PostgreSQL > uses native FK locking to reject a racing direct SQL quantity change
+   ↓ personal grading PostgreSQL > retains owner-scoped certificate reservations on item soft deletion
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/grading/grading-service.test.ts > personal grading PostgreSQL > enforces owner, single-specimen, paired scale and provider identity in PostgreSQL
+AssertionError: promise resolved "[ { id: '506fcb97-2a01-48c8-bd13-9…' } ]" instead of rejecting
+
+- Expected: 
+Error {
+  "message": "rejected promise",
+}
+
++ Received: 
+[
+  {
+    "id": "506fcb97-2a01-48c8-bd13-99453143fb79",
+  },
+]
+
+ ❯ packages/domain/src/grading/grading-service.test.ts:334:272
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 14 skipped (15)
+   Start at  00:04:00
+   Duration  451ms (transform 69ms, setup 5ms, collect 141ms, tests 159ms, environment 0ms, prepare 34ms)
+

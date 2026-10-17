@@ -141,6 +141,8 @@ jobs:
           packages/domain/src/catalog/catalog-service.integration.test.ts
           packages/domain/src/catalog/proposal-service.test.ts
           packages/domain/src/condition/condition-service.test.ts
+          packages/domain/src/grading/grading-service.test.ts
+          apps/web/src/lib/grading-routes.integration.test.ts
           apps/web/src/lib/condition-routes.integration.test.ts
           apps/web/src/lib/catalog-proposal-routes.integration.test.ts
           packages/domain/src/locations/location-service.test.ts
