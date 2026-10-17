@@ -91,3 +91,48 @@ Task4 candidate450e74b/report8499da4; exacttree remote491fc652c5e0865feafa20769b
 Task4 CI36322989684 failedsharedtestgeneric typing; originalimplementer reproducedTSRED/fixed668a027/report5bf4d2, focused8PASS/fullworkspaceTSPASS. ScopedrereviewPASS0Important. Exacttree remote92f0db8204da377fbd07087a65511cfa0b0d392d; fullCI36323311980 pending.
 
 Task4 COMPLETE92f0db8, CI36323311980SUCCESS315unit133integration23browser/allbuildgates. Task5pending completionsync.
+
+## Resume 2026-10-17
+
+Resume 2026-10-17 at base 42324f7. Existing isolated clone, feature branch work/sammlerraum-v1. Tasks 1–4 already complete with remote CI evidence; do not repeat.
+
+## Preflight
+| Tasks | Shared interface | Finding |
+|---|---|---|
+| 1,2 | StorageProvider and upload persistence | Existing 4-method storage provider retained. |
+| 1,3 | Source/variant storage keys | Existing image worker uses reserved tracked keys. |
+| 1,4 | Authorized storage reads | Existing service denies unlinked retained bytes. |
+| 1,5 | Filesystem deletion and crash staging | Task5 must clean old staging safely; inherited ruling applies. |
+| 1,6 | Uploaded bytes behind provider | UI only consumes APIs, no storage key exposure. |
+| 2,3 | Asset status/variant models | Existing claims/token/lease and advisory locks preserved. |
+| 2,4 | Live ownership and links | Existing read authorization remains authoritative. |
+| 2,5 | References, avatar, split links | Count all references and lock unlink/relink/delete consistently. |
+| 2,6 | Upload/link APIs | Task6 extends ordering/title/document controls; foundation exists. |
+| 3,4 | READY sanitized variants | Reads must not return originals publicly. |
+| 3,5 | Concurrent/late writes | Durable tombstones or proven reconciliation required by recovery ruling. |
+| 3,6 | Processing status | UI handles pending/failed states. |
+| 4,5 | Read denial after unlink | Test that retention and tombstones never grant access. |
+| 4,6 | Public image/private document views | Existing production media browser test provides fixture pattern. |
+| 5,6 | Authorized unlink and lifecycle | Task6 uses verified Task5 API. |
+
+| Task | Internal consistency |
+|---|---|
+| 1 | Complete; storage durability minor retained for phase review. |
+| 2 | Complete; orphan/temp cleanup assigned to Task5. |
+| 3 | Complete; partition late-write reconciliation assigned to Task5. |
+| 4 | Complete; authoritative read interface is available. |
+| 5 | Test command names cleanup-media.test.ts omitted from file list; inherited ruling includes it. Schema/API/worker/CI supporting integration required for an actual runtime job. |
+| 6 | Consumes API controls not all present yet; inherited ruling assigns those bounded controls to Task6. Public presentation required by specified logout browser journey. |
+
+Task 5: in progress. BASE 42324f7011b1d608269ed2be4f842f60dce101a2.
+
+Ruling: Task5 configurable defaults are retention168hours, cleanup60seconds, batch100, staging age24hours. Existing proposed7day policy retained; validation must bound values. Cost if wrong: reversible policy tuning.
+Ruling: Active staging writes and sweeping coordinate using the existing dedicated-session PostgreSQL advisory locker keyed staging UUID, plus in-process protection. Constructor-specific maintenance preserves generic StorageProvider contract. Production construction sites must all be wired; legacy cleanup requires old pre-lock writers stopped/upgraded. Lost-lock publication remains recoverable through durable final-key tombstones. Cost if wrong: extra DB sessions/maintenance coupling and migration precondition.
+
+Task5 candidate8b199e6 secured on origin, exact SHA verified. Local327pass41DBskip/lint/typecheck/build; independent reviewer SPEC/QUALITY CHANGES REQUIRED: ImportantR1 staging traversal resets on persistent entry failure and starves healthy siblings. Original implementer assigned scoped RED/GREEN fix round1/5. CI39060930384 and39060928115 still pending for candidate.
+Task5 minor (deferred): M1 cleanup guard's expected link/avatar conflict can surface as generic persistence error; safety preserved. Carry to Phase04 final review.
+
+Task5 fix0cad624 secured on origin, exact SHA verified. Scoped independent rereview R1 ADDRESSED, no new Critical/Important. Full329pass41DBskip; current CI39061502277/39061498912 pending. Candidate8b199e6 fullCI39060930384 and39060928115 SUCCESS (all realDB/browser/Docker/native gates).
+Local verification environment added2026-10-17: Homebrew PostgreSQL17.11, task-owned data directory outside repo, loopback5432 (Vitest setup hardcodes this port), isolated sammlerraum_test. Initial attempt on55437 failed connections because testsetup overrides DATABASE_URL; no source defect, corrected local port. Fresh exact-source0cad624 cleanup/staging integration14/14PASS, logs task-5-local-database*.log. Task6 may now run real local browser/DB tests. No production service/data touched.
+
+Task5 fix round1/5: R1 ADDRESSED,0openImportant;0cad624 scoped rereviewPASS and fullCI39061502277SUCCESS. Task5 COMPLETE42324f7..0cad624; local329unitpass/41DBskips plus fresh local14integrationPASS. Canonical ledger26/91; Task6 next. Main ledger synchronization follows.

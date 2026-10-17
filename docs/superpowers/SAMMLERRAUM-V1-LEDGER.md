@@ -1,6 +1,6 @@
 # Sammlerraum V1 Completion Ledger
 
-**Stand:** 27.09.2026
+**Stand:** 17.10.2026
 **Master plan:** `docs/superpowers/plans/2026-09-19-sammlerraum-v1-master-plan.md`  
 **Canonical product/system spec:** `docs/superpowers/specs/2026-09-19-sammlerraum-design.md`  
 **SEO/Search Console spec:** `docs/superpowers/specs/2026-09-19-seo-search-console-design.md`
@@ -14,7 +14,7 @@ This is the handoff/status file for long-running implementation. Update it after
 | 01 | Platform Foundation | 6 | complete (6/6) | — |
 | 02 | Identity, Auth & Policies | 7 | complete (7/7) | — |
 | 03 | Collections, Items, Fields & Locations | 8 | complete (8/8) | — |
-| 04 | Media & Documents | 6 | in progress (4/6) | Task 5 |
+| 04 | Media & Documents | 6 | in progress (5/6) | Task 6 |
 | 05 | Catalog, Condition & Grading | 7 | not started | Task 1 |
 | 06 | Valuations & Market Data | 6 | not started | Task 1 |
 | 07 | Search, Smart Collections & Dashboard | 5 | not started | Task 1 |
@@ -55,9 +55,10 @@ This is the handoff/status file for long-running implementation. Update it after
 - [x] P04 T02 — Media/document models and upload validation
 - [x] P04 T03 — Image variant worker
 - [x] P04 T04 — Protected media and document reads
-- [ ] P04 T05 — Safe unlink, retention and orphan cleanup
+- [x] P04 T05 — Safe unlink, retention and orphan cleanup
+- [ ] P04 T06 — Media gallery and private document UI
 
-**Verified completion: 25/91 tasks.** Later tasks remain open as listed in the phase table and detail plans.
+**Verified completion: 26/91 tasks.** Later tasks remain open as listed in the phase table and detail plans.
 
 ## Update rule
 
@@ -520,3 +521,14 @@ Every completed and independently reviewed task must be checked off in its detai
 ### Task5 late-write recovery ruling
 
 - Durable minimal cleanup tombstones may outlive deleted MediaAsset/Variant rows so generated keys remain discoverable and a later write can be reconciled. Equivalent tested provider reconciliation is acceptable. Lease/quarantine alone is not proof that unbounded storage I/O stopped. Cost: small retained cleanup metadata/background scans; do not expire tracking on an arbitrary timer. Task5 must test this boundary and preserve denied media access throughout.
+
+
+### Phase 04 Task 5 — COMPLETE (17 October 2026)
+
+- Final reviewed/tested source `0cad624c3f1d1ee69f4535c220123e4400db2e1d` (initial candidate `8b199e6`). Owner/same-origin unlink APIs, transactional all-reference retention across images/private documents/avatars/quantity splits/cascades, permanent generated-key tombstones and bounded fair runtime reconciliation. Unlinked retained files remain unreadable; conditional upload/processing completion prevents deleted-row resurrection. Soft-deleted references are retained conservatively.
+- Additive reference triggers coordinate unlink/relink/cleanup under deterministic asset locks. Byte failures preserve retryable tracking; late original/Sharp-derived writes after session loss are removed by durable reconciliation. Temporary writes/sweeping use shared staging-UUID advisory locks; all production constructors are wired. Coordinated rollout requires pre-lock writers stopped before the upgraded cleanup worker starts against shared storage.
+- Configurable defaults: retention168hours, poll60seconds, batch100, staging age24hours. Ruling: these settings were unspecified; retain seven-day conservative retention and bounded periodic work. Cost if wrong: policy/storage-latency tuning; completed deletion after retention is irreversible. Staging DB-lock reuse preserves the four-method storage contract; cost: extra DB sessions and coordinated old-writer rollout. These are implementation defaults, not production operations.
+- Independent review found ImportantR1: persistent early filesystem errors restarted enumeration and starved later healthy staging files. Actual permission-failure RED2failed/21passed, fixed per-entry/subtree error handling with retained bounded progress; focusedGREEN24pass/2DBskip, full329pass/41DBskip. Scoped independent rereview: R1 ADDRESSED,0newCritical/Important. MinorM1 expected cleanup/link conflict can surface as generic error; retained for phase final review.
+- Full exact-source CI SUCCESS: https://github.com/acciento89-bot/sammlerraum/actions/runs/39061502277 (job117480246428): migrations, unit/static tests, dedicated PostgreSQL integration including twelve new realDB cases, production label/media/browser journeys, auth/management journeys, lint/typecheck/build, Compose, both Docker images and native Sharp final-image decode passed. Initial candidate fullCI39060930384 also passed before R1 correction.
+- Controller then established isolated local PostgreSQL17.11; fresh cleanup/staging integration14/14PASS (twelveDB plus two unit cases), after correcting test-server port to match existing hardcoded Vitest setup. No product source change was needed for that environment correction. Local original runner did not count skipped DB cases as passes.
+- Task5 checked off, Phase04 now5/6, overall26/91. NextTask6 gallery/private-document UI. Implementation remains on `work/sammlerraum-v1` / DraftPR#1; no source merge, production deployment or production cleanup.
