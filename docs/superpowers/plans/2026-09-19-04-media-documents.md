@@ -295,7 +295,7 @@ git commit -m "feat: add safe media retention cleanup"
 - Consumes: media upload/read/link APIs.
 - Produces: title image selection, ordered gallery, document typing, explicit document visibility controls, upload progress/error UI.
 
-- [ ] **Step 1: Write failing private-document E2E**
+- [x] **Step 1: Write failing private-document E2E**
 
 ```ts
 test("public item can have a purchase receipt that remains private", async ({ page, request }) => {
@@ -307,16 +307,16 @@ test("public item can have a purchase receipt that remains private", async ({ pa
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm --filter @sammlerraum/web exec playwright test e2e/media-documents.spec.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement UI**
+- [x] **Step 3: Implement UI**
 
 Support drag/reorder gallery, title-image selection, document category, private-by-default toggle state, upload cancellation, processing state, and clear size/type errors. Do not render original storage keys.
 
-- [ ] **Step 4: Run E2E/build**
+- [x] **Step 4: Run E2E/build**
 
 Run:
 ```bash
@@ -326,7 +326,7 @@ pnpm --filter @sammlerraum/web build
 
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add apps/web
