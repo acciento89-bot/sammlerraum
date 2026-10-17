@@ -15,7 +15,7 @@ This is the handoff/status file for long-running implementation. Update it after
 | 02 | Identity, Auth & Policies | 7 | complete (7/7) | — |
 | 03 | Collections, Items, Fields & Locations | 8 | complete (8/8) | — |
 | 04 | Media & Documents | 6 | complete (6/6) | — |
-| 05 | Catalog, Condition & Grading | 7 | in progress (2/7) | Task 3 |
+| 05 | Catalog, Condition & Grading | 7 | in progress (3/7) | Task 4 |
 | 06 | Valuations & Market Data | 6 | not started | Task 1 |
 | 07 | Search, Smart Collections & Dashboard | 5 | not started | Task 1 |
 | 08 | Import, Export, Insurance & Reports | 7 | not started | Task 1 |
@@ -59,8 +59,9 @@ This is the handoff/status file for long-running implementation. Update it after
 - [x] P04 T06 — Media gallery and private document UI
 - [x] P05 T01 — Category templates and typed catalog attributes
 - [x] P05 T02 — Revisioned catalog entries, variants, identifiers and attributes
+- [x] P05 T03 — Moderated catalog proposals, authoritative application grants and rollback audit
 
-**Verified completion: 29/91 tasks.** Later tasks remain open as listed in the phase table and detail plans.
+**Verified completion: 30/91 tasks.** Later tasks remain open as listed in the phase table and detail plans.
 
 ## Update rule
 
@@ -575,3 +576,14 @@ Every completed and independently reviewed task must be checked off in its detai
 - Full CI SUCCESS: https://github.com/acciento89-bot/sammlerraum/actions/runs/39068763845 (job117501807515, sourceb1ce8ea):166 dedicated PostgreSQL integration tests,29 browser journeys (QR2/media7/auth4/management16), unit/static tests, all migrations/lint/typecheck/build, Compose, both Docker images and native Sharp final-image decode passed. Saved backend log is explicitly truncated; job conclusions verify all gates.
 - Two additive migrations `20261017225000_global_catalog` and `20261017225200_catalog_revision_guard` are applied. Future IDs must sort after latestexistingID, usingmax(latest+1,currentUTC); folder timestamps are not execution-time evidence. A package runner banner caused the first new migration attempt to fail before DDL; only that failed test migration was resolved/redeployed, no reset or old-history edit. Applied SQL's cosmetic EOF blank is retained to preserve checksum. A reproduced Prisma nested-read pg warning was fixed with sequential batched state reads, with clean focused output.
 - Task2 complete, Phase05 now2/7, overall29/91. NextTask3 moderated proposals/application role foundation; prepared design only until completion persistence. Correcting/removing external identifiers is included there as a necessary supporting canonical command surface. Implementation stays on feature branch/DraftPR#1; ledger-only main sync, no source merge/deployment.
+
+
+### Phase05 Task3 — Moderated catalog proposals and authoritative decisions
+
+- Final source `37cb8ddb8d6dfedaf0545ec8ec070e5574276633`; fresh independent SPEC compliant/QUALITY Approved, zero Critical/Important. Seven strict operations cover new entries, entry/variant corrections, identifiers (including necessary supporting update/remove), authored translations and source/license provenance. Ordinary users submit/read only their private proposals; granted MODERATOR/ADMIN users decide through the shared canonical transaction seam. No private item facts enter canonical records.
+- ApplicationRoleGrant foundation is separate from collection roles and must be reused by Phase10 Task4 rather than duplicated. Same-transaction grant FOR SHARE locks make ordinary SQL revocation wait for already-authorized work; authority→proposal→entry lock ordering and expected-revision checks ensure atomic one-time decisions. Stale approval persists CONFLICT before public409; other validation errors leave PENDING. Real enclosing rollback reverts canonical and decision together. Operator-only setup/revoke SQL documented; no real grants/provider actions. Audit/proposer/moderator references restrict account deletion; later erasure policy must preserve/anonymize audit identity explicitly. Current grant metadata is not a full role-event stream; cost is operator change-log retention and later erasure design.
+- Approved initial limits:20 pending/50 rolling24h/10000 retained per user,64KiB UTF8 payload, bounded summaries/reasons/list/cursors, namespaced actor quota lock. Submission seam rejects unsupported isolation before counting/writing; public wrapper owns ReadCommitted. Actual RepeatableRead RED inserted21 against ceiling20, guard GREEN retains20. Cost:one extra submit isolation query and fixed initial policy tuning, no silent audit expiry. Moderator own-proposal approval allowed with actual grant/reason; cost is future governance policy if two-person review is desired.
+- Clarified rollback exception to earlier shorthand: different canonical content creates a new immutable revision; byte-equivalent snapshot retains verified Task2 no-op revision/metadata, but every successful authorized rollback records separate actor/reason/expected/target/result audit. CAS runs before no-op. Cost:rollback audit-event count need not equal canonical revision count. Minimal identifier correction/removal retains inactive history/UUID scope and reuses producer persistence.
+- Fresh-session, exact-Origin, bounded-body, no-store HTTP routes cover submit/own detail/list, protected review/decision and rollback; redacted request-ID errors and hidden foreign404. Proposal source is retained review provenance; canonical payload sources explicitly control canonical provenance. Shared media bounded-body extraction preserves behavior. Additive migrations16–17 (`20261017225201_catalog_proposals`, `20261017225202_catalog_rollback_audit_target`), DB current/no drift; applied history untouched.
+- Original real-PG stale-base behavioral RED/GREEN and isolation bypass RED/GREEN retained. Final local serial full452/452, workspace lint/typecheck/production build PASS. First parallel full450pass/1 inherited worker dispatcher fixture interference; focused worker2/2 and serial451 then452 pass. Dedicated DB CI now --no-file-parallelism, unchanged worker behavior/assertions; cost modest CI time. Initial typecheck/pg-fixture warnings resolved, exact failed logs retained; unchanged6.8mb worker bundle diagnostic remains nonblocking.
+- Exact-source CI [39070683270](https://github.com/acciento89-bot/sammlerraum/actions/runs/39070683270), job117507466853 SUCCESS:185 real-DB integration tests,29 browser journeys,unit/lint/types/build/migrations/Compose,both Docker images and native Sharp. Backend CI log explicitly truncated and retained; complete run is linked. Task3 report/review/raw chronology under phase workspace. Implementation remains on draft PR #1, unmerged/undeployed. Canonical verified30/91; Phase05 3/7, nextTask4.
