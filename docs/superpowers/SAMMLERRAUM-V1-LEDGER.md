@@ -14,7 +14,7 @@ This is the handoff/status file for long-running implementation. Update it after
 | 01 | Platform Foundation | 6 | complete (6/6) | — |
 | 02 | Identity, Auth & Policies | 7 | complete (7/7) | — |
 | 03 | Collections, Items, Fields & Locations | 8 | complete (8/8) | — |
-| 04 | Media & Documents | 6 | in progress (5/6) | Task 6 |
+| 04 | Media & Documents | 6 | complete (6/6) | — |
 | 05 | Catalog, Condition & Grading | 7 | not started | Task 1 |
 | 06 | Valuations & Market Data | 6 | not started | Task 1 |
 | 07 | Search, Smart Collections & Dashboard | 5 | not started | Task 1 |
@@ -56,9 +56,9 @@ This is the handoff/status file for long-running implementation. Update it after
 - [x] P04 T03 — Image variant worker
 - [x] P04 T04 — Protected media and document reads
 - [x] P04 T05 — Safe unlink, retention and orphan cleanup
-- [ ] P04 T06 — Media gallery and private document UI
+- [x] P04 T06 — Media gallery and private document UI
 
-**Verified completion: 26/91 tasks.** Later tasks remain open as listed in the phase table and detail plans.
+**Verified completion: 27/91 tasks.** Later tasks remain open as listed in the phase table and detail plans.
 
 ## Update rule
 
@@ -532,3 +532,15 @@ Every completed and independently reviewed task must be checked off in its detai
 - Full exact-source CI SUCCESS: https://github.com/acciento89-bot/sammlerraum/actions/runs/39061502277 (job117480246428): migrations, unit/static tests, dedicated PostgreSQL integration including twelve new realDB cases, production label/media/browser journeys, auth/management journeys, lint/typecheck/build, Compose, both Docker images and native Sharp final-image decode passed. Initial candidate fullCI39060930384 also passed before R1 correction.
 - Controller then established isolated local PostgreSQL17.11; fresh cleanup/staging integration14/14PASS (twelveDB plus two unit cases), after correcting test-server port to match existing hardcoded Vitest setup. No product source change was needed for that environment correction. Local original runner did not count skipped DB cases as passes.
 - Task5 checked off, Phase04 now5/6, overall26/91. NextTask6 gallery/private-document UI. Implementation remains on `work/sammlerraum-v1` / DraftPR#1; no source merge, production deployment or production cleanup.
+
+
+### Phase 04 Task 6 and final integration review — COMPLETE (17 October 2026)
+
+- Final source `5319a745a852068508ef509314477c2e078ab123`; source implementation `cfdea251`, original evidence `30ff3e0`, review-fix evidence `b75a6fd`. Owner gallery supports upload progress/cancellation, processing/failure states, atomic drag/keyboard ordering and title selection. Documents have explicit category/visibility and default PRIVATE. Minimal public item/gallery presentation uses authoritative ancestry, sanitized derivatives and noindex; private receipts and owner metadata stay protected.
+- Ruling: title image is the first gallery image by position; choosing a title moves it to front, preserving other relative order. Cost: a future independent cover choice requires an additive field/DTO. Bounded owner/public lists and mutation membership support at most 200 image/document links per target; legacy larger lists require pagination before complete reordering. Safe DTOs omit storage paths.
+- Initial independent task review found ImportantI1: raw Unicode filename headers fail before upload. Genuine browser and route RED/GREEN led to explicit bounded percent-UTF8 encoding, decoded exactly once only with a marker; legacy raw/literal-percent requests remain compatible. Focused35/35, real Unicode PNG desktop/mobile2/2, lint/typecheck/build passed. Scoped rereview: I1 addressed, zero new Critical/Important. No separate Unicode-PDF browser claim.
+- Original local DB-enabled suite375/375 passed, as did production7/7 and all16 management journeys. Original dev run18/20 retained two auth failures without captured response statuses; isolated auth retry4/4 passed after clearing one gated test rate-limit record, so the original cause remains an inference. Exact-source initial CI39063403979 captured429 on two synthetic media sign-ins. The gated media fixture now isolates test rate-limit records; production authentication policy is unchanged. Final corrected local media matrix6/6 passed against a real bundled worker, PostgreSQL/pg-boss and Sharp.
+- Final exact-source full CI SUCCESS: https://github.com/acciento89-bot/sammlerraum/actions/runs/39063951664 (job117487544612, source5319a74). Frozen install, all migrations, unit/static tests, lint/typecheck/workspace build,151 dedicated PostgreSQL integration tests,2 production QR +7 production media/read +4 auth +16 management browser journeys, Compose, both Docker images and native Sharp final-image decode passed. Saved Code Review log is explicitly truncated; job/step conclusions verify all gates. Source was not changed after this tested commit.
+- Independent whole-Phase04 boundary review PASS: zero Critical/Important, no final source-fix wave required. Durable permanent tombstones close late-write recovery, staging coordination/fairness closes crash-temp recovery, and all-reference/ancestry/private-document boundaries integrate correctly. Review and test evidence are retained under `.superpowers/sdd/2026-09-19-04-media-documents/`.
+- Nonblocking follow-ups retained: parent directory entries are not fsynced after mkdir/rename/unlink, so atomic process-crash publication does not promise acknowledged-name durability through sudden power loss; tombstones can retry resurrected deletions but cannot restore lost originals or READY derivatives. Avatar cleanup-winning conflicts are safely rejected by DB guards but can produce a generic API error (analogous item-link path fixed). Harness color/stream-close diagnostics remain documented despite passing assertions. Existing Phase03 integer parsing/location label follow-ups remain separate.
+- Phase04 complete6/6; overall27/91. Next: Phase05 Task1 — Catalog, Condition & Grading. This is verified feature-branch progress, not completed V1 or production deployment. Source remains in DraftPR#1; only this ledger is synchronized to main.
