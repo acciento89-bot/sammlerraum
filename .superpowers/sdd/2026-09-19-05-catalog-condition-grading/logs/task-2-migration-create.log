@@ -1,0 +1,22 @@
+
+> @sammlerraum/db@ prisma /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/db
+> prisma migrate dev --name global_catalog --create-only
+
+Loaded Prisma config from prisma.config.ts.
+
+Prisma schema loaded from prisma/schema.prisma.
+Datasource "db": PostgreSQL database "sammlerraum_test", schema "public" at "localhost:5432"
+
+
+⚠️  Warnings for the current datasource:
+
+  • A unique constraint covering the columns `[id,categoryTemplateId]` on the table `CatalogAttributeDefinition` will be added. If there are existing duplicate values, this will fail.
+
+Error: Prisma Migrate has detected that the environment is non-interactive, which is not supported.
+
+`prisma migrate dev` is an interactive command designed to create new migrations and evolve the database in development.
+To apply existing migrations in deployments, use prisma migrate deploy.
+See https://pris.ly/d/migrate-deploy
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/db:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @sammlerraum/db@ prisma: `prisma migrate dev --name global_catalog --create-only`
+Exit status 1

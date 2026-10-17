@@ -138,6 +138,7 @@ jobs:
           packages/domain/src/items/identifier-service.test.ts
           packages/domain/src/custom-fields/custom-field-service.test.ts
           packages/domain/src/catalog/category-template-service.integration.test.ts
+          packages/domain/src/catalog/catalog-service.integration.test.ts
           packages/domain/src/locations/location-service.test.ts
           apps/web/src/lib/security-service.integration.test.ts
           apps/web/src/app/api/v1/items/resource-route.integration.test.ts

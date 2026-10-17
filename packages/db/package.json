@@ -7,7 +7,8 @@
     "./create-client": "./src/create-client.ts",
     "./health": "./src/health.ts",
     "./media-lock": "./src/media-lock.ts",
-    "./test-database": "./src/test-database.ts"
+    "./test-database": "./src/test-database.ts",
+    "./catalog-types": "./src/catalog-types.ts"
   },
   "scripts": {
     "build": "pnpm typecheck",

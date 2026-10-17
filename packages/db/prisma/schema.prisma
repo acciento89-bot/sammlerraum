@@ -519,11 +519,12 @@ model MediaCleanupKey {
 
 // Global maintenance-authored category metadata; no personal collection data.
 model CategoryTemplate {
-  id          String                       @id @default(uuid()) @db.Uuid
-  key         String                       @unique @db.VarChar(64)
-  createdAt   DateTime                     @default(now())
-  labels      CategoryTemplateLabel[]
-  definitions CatalogAttributeDefinition[]
+  id             String                       @id @default(uuid()) @db.Uuid
+  key            String                       @unique @db.VarChar(64)
+  createdAt      DateTime                     @default(now())
+  labels         CategoryTemplateLabel[]
+  definitions    CatalogAttributeDefinition[]
+  catalogEntries CatalogEntry[]
 }
 
 model CategoryTemplateLabel {
@@ -544,7 +545,9 @@ model CatalogAttributeDefinition {
   categoryTemplate   CategoryTemplate         @relation(fields: [categoryTemplateId], references: [id], onDelete: Cascade)
   labels             CatalogAttributeLabel[]
   options            CatalogAttributeOption[]
+  catalogValues      CatalogAttributeValue[]
 
+  @@unique([id, categoryTemplateId])
   @@unique([categoryTemplateId, key])
   @@unique([categoryTemplateId, position])
 }
@@ -577,4 +580,73 @@ model CatalogAttributeOptionLabel {
   option   CatalogAttributeOption @relation(fields: [optionId], references: [id], onDelete: Cascade)
 
   @@id([optionId, locale])
+}
+
+// Canonical maintenance data. Personal collection rows never cascade from these.
+model CatalogEntry {
+  id                 String                      @id @default(uuid()) @db.Uuid
+  categoryTemplateId String                      @db.Uuid
+  revision           Int                         @default(1)
+  authored           Json
+  categoryTemplate   CategoryTemplate            @relation(fields: [categoryTemplateId], references: [id], onDelete: Restrict)
+  variants           CatalogVariant[]
+  identifiers        CatalogExternalIdentifier[]
+  attributes         CatalogAttributeValue[]
+  revisions          CatalogRevision[]
+
+  @@unique([id, categoryTemplateId])
+}
+
+model CatalogVariant {
+  id          String                      @id @default(uuid()) @db.Uuid
+  entryId     String                      @db.Uuid
+  active      Boolean                     @default(true)
+  authored    Json
+  entry       CatalogEntry                @relation(fields: [entryId], references: [id], onDelete: Restrict)
+  identifiers CatalogExternalIdentifier[]
+  attributes  CatalogAttributeValue[]
+
+  @@unique([id, entryId])
+  @@index([entryId, active])
+}
+
+model CatalogExternalIdentifier {
+  id        String          @id @default(uuid()) @db.Uuid
+  entryId   String          @db.Uuid
+  variantId String?         @db.Uuid
+  active    Boolean         @default(true)
+  namespace String          @db.VarChar(64)
+  type      String          @db.VarChar(64)
+  value     String          @db.VarChar(500)
+  sources   Json
+  entry     CatalogEntry    @relation(fields: [entryId], references: [id], onDelete: Restrict)
+  variant   CatalogVariant? @relation(fields: [variantId, entryId], references: [id, entryId], onDelete: Restrict)
+
+  @@index([entryId, active])
+}
+
+model CatalogAttributeValue {
+  id                 String                     @id @default(uuid()) @db.Uuid
+  entryId            String                     @db.Uuid
+  categoryTemplateId String                     @db.Uuid
+  variantId          String?                    @db.Uuid
+  targetKey          String                     @db.VarChar(36)
+  definitionId       String                     @db.Uuid
+  value              Json
+  entry              CatalogEntry               @relation(fields: [entryId, categoryTemplateId], references: [id, categoryTemplateId], onDelete: Restrict)
+  variant            CatalogVariant?            @relation(fields: [variantId, entryId], references: [id, entryId], onDelete: Restrict)
+  definition         CatalogAttributeDefinition @relation(fields: [definitionId, categoryTemplateId], references: [id, categoryTemplateId], onDelete: Restrict)
+
+  @@unique([entryId, targetKey, definitionId])
+}
+
+model CatalogRevision {
+  entryId              String       @db.Uuid
+  revision             Int
+  snapshot             Json
+  rollbackFromRevision Int?
+  createdAt            DateTime     @default(now())
+  entry                CatalogEntry @relation(fields: [entryId], references: [id], onDelete: Restrict)
+
+  @@id([entryId, revision])
 }
