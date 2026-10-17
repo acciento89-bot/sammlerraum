@@ -42,7 +42,14 @@ function mapped(error: unknown): never {
   if (error instanceof ConditionServiceError) {
     if (error.code === "ITEM_NOT_FOUND" || error.code === "CONDITION_NOT_FOUND")
       throw new ApiError("NOT_FOUND", 404, "Resource not found");
-    if (["ITEM_INACTIVE", "CONDITION_CLEAR_REQUIRED", "CONDITION_INACTIVE"].includes(error.code))
+    if (
+      [
+        "ITEM_INACTIVE",
+        "CONDITION_CLEAR_REQUIRED",
+        "CONDITION_INACTIVE",
+        "CATALOG_UNLINK_REQUIRED",
+      ].includes(error.code)
+    )
       throw new ApiError(error.code, 409, "Condition change cannot be applied");
     throw new ApiError("VALIDATION_ERROR", 400, "Invalid condition request");
   }

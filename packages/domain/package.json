@@ -24,7 +24,8 @@
     "./catalog/proposal-service": "./src/catalog/proposal-service.ts",
     "./authz/application-role": "./src/authz/application-role.ts",
     "./condition/condition-service": "./src/condition/condition-service.ts",
-    "./grading/grading-service": "./src/grading/grading-service.ts"
+    "./grading/grading-service": "./src/grading/grading-service.ts",
+    "./catalog/catalog-read-service": "./src/catalog/catalog-read-service.ts"
   },
   "scripts": {
     "build": "pnpm typecheck",

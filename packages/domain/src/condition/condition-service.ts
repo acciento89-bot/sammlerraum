@@ -13,6 +13,7 @@ import {
 } from "@sammlerraum/contracts/condition";
 
 type Code =
+  | "CATALOG_UNLINK_REQUIRED"
   | "CONDITION_INVALID"
   | "CONDITION_NOT_FOUND"
   | "ITEM_NOT_FOUND"
@@ -58,6 +59,7 @@ type ItemRow = {
   id: string;
   categoryTemplateId: string | null;
   conditionOptionId: string | null;
+  catalogEntryId: string | null;
   archivedAt: Date | null;
   disposedAt: Date | null;
 };
@@ -115,7 +117,7 @@ async function state(tx: Query, itemId: string, actorUserId: string): Promise<It
 }
 async function lockItem(tx: Query, itemId: string, actorUserId: string): Promise<ItemRow> {
   const [item] = await tx.$queryRaw<ItemRow[]>`
-    SELECT item.id, item."categoryTemplateId", item."conditionOptionId", item."archivedAt", item."disposedAt"
+    SELECT item.id, item."categoryTemplateId", item."conditionOptionId", item."catalogEntryId", item."archivedAt", item."disposedAt"
     FROM "CollectibleItem" item JOIN "Collection" collection ON collection.id = item."collectionId"
     WHERE item.id = ${itemId}::uuid AND collection."ownerId" = ${actorUserId}
       AND item."deletedAt" IS NULL AND collection."deletedAt" IS NULL FOR UPDATE OF item
@@ -178,6 +180,10 @@ export function createConditionService(database: ConditionDatabase, actorUserId:
     return database.$transaction(
       async (tx) => {
         const item = await lockItem(tx, itemId, actorUserId);
+        // No catalog parent lock after the item lock. Native scope FKs guarantee
+        // the current linked category; changing it requires explicit unlink first.
+        if (item.catalogEntryId !== null && item.categoryTemplateId !== categoryTemplateId)
+          throw new ConditionServiceError("CATALOG_UNLINK_REQUIRED");
         if (categoryTemplateId !== null) {
           const rows = await tx.$queryRaw<
             Array<{ id: string }>

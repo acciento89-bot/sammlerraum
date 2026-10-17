@@ -1,4 +1,16 @@
 import {
+  CatalogReadIdSchema,
+  ItemCatalogLinkSchema,
+  type ItemCatalogLink,
+} from "@sammlerraum/contracts/catalog-reads";
+import { CatalogSnapshotSchema, CatalogVariantSchema } from "@sammlerraum/contracts/catalog";
+import { catalogTitleSummary, catalogVariantSummary } from "../catalog/catalog-summary";
+import {
+  CatalogReferencesChanged,
+  lockCatalogParents,
+  type CatalogReferences,
+} from "../catalog/item-catalog-locks";
+import {
   CollectibleItemSchema,
   CreateItemInputSchema,
   SplitQuantityInputSchema,
@@ -21,6 +33,8 @@ type StoredItem = {
   storageLocationId: string | null;
   categoryTemplateId: string | null;
   conditionOptionId: string | null;
+  catalogEntryId: string | null;
+  catalogVariantId: string | null;
   title: string;
   publicDescription: string | null;
   privateNotes: string | null;
@@ -44,6 +58,8 @@ const itemSelect = {
   storageLocationId: true,
   categoryTemplateId: true,
   conditionOptionId: true,
+  catalogEntryId: true,
+  catalogVariantId: true,
   title: true,
   publicDescription: true,
   privateNotes: true,
@@ -66,6 +82,8 @@ type ItemWriteData = {
   storageLocationId?: string | null;
   categoryTemplateId?: string | null;
   conditionOptionId?: string | null;
+  catalogEntryId?: string | null;
+  catalogVariantId?: string | null;
   title: string;
   publicDescription: string | null;
   privateNotes: string | null;
@@ -272,9 +290,20 @@ export type ItemServiceErrorCode =
   | "ITEM_NOT_FOUND"
   | "ITEM_INACTIVE"
   | "ITEM_SPLIT_INVALID"
-  | "ITEM_GRADING_QUANTITY_INVALID";
+  | "ITEM_GRADING_QUANTITY_INVALID"
+  | "CATALOG_NOT_FOUND"
+  | "CATALOG_VARIANT_NOT_FOUND"
+  | "CATALOG_VARIANT_INACTIVE"
+  | "ITEM_CATALOG_CATEGORY_MISMATCH"
+  | "ITEM_CATALOG_RETRY_EXHAUSTED";
 
 const errorMessages: Record<ItemServiceErrorCode, string> = {
+  CATALOG_NOT_FOUND: "Catalog entry not found",
+  CATALOG_VARIANT_NOT_FOUND: "Catalog variant not found",
+  CATALOG_VARIANT_INACTIVE: "Catalog variant is inactive",
+  ITEM_CATALOG_CATEGORY_MISMATCH:
+    "Unlink and explicitly change personal category before choosing this entry",
+  ITEM_CATALOG_RETRY_EXHAUSTED: "Catalog link changed concurrently; retry the operation",
   COLLECTION_NOT_FOUND: "Collection not found",
   COLLECTION_NODE_NOT_FOUND: "Collection node not found",
   ITEM_NOT_FOUND: "Item not found",
@@ -347,6 +376,8 @@ async function lockOwnedItem(
       item."storageLocationId",
       item."categoryTemplateId",
       item."conditionOptionId",
+      item."catalogEntryId",
+      item."catalogVariantId",
       item."title",
       item."publicDescription",
       item."privateNotes",
@@ -363,6 +394,7 @@ async function lockOwnedItem(
     JOIN "Collection" collection ON collection."id" = item."collectionId"
     WHERE item."id" = ${itemId}::uuid
       AND collection."ownerId" = ${actorUserId}
+      AND item."ownerId" = ${actorUserId}
       AND item."deletedAt" IS NULL
       AND collection."deletedAt" IS NULL
     FOR UPDATE OF item
@@ -532,130 +564,295 @@ export function createItemService(
     const splitQuantity = SplitQuantityInputSchema.safeParse(splitQuantityInput);
     if (!splitQuantity.success) throw new ItemServiceError("ITEM_SPLIT_INVALID");
 
-    return database.$transaction(
-      async (transaction) => {
-        const item = await lockOwnedItem(transaction, itemId, actorUserId);
-        ensureActive(item);
-        await ensureNoGrading(transaction, item.id);
-        if (splitQuantity.data >= item.quantity) {
-          throw new ItemServiceError("ITEM_SPLIT_INVALID");
-        }
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        return await database.$transaction(
+          async (transaction) => {
+            const [discovered] = await transaction.$queryRaw<CatalogReferences[]>`
+          SELECT item."catalogEntryId",item."catalogVariantId"
+          FROM "CollectibleItem" item JOIN "Collection" collection ON collection.id=item."collectionId"
+          WHERE item.id=${itemId}::uuid AND item."ownerId"=${actorUserId} AND collection."ownerId"=${actorUserId}
+            AND item."deletedAt" IS NULL AND collection."deletedAt" IS NULL
+        `;
+            if (!discovered) throw new ItemServiceError("ITEM_NOT_FOUND");
+            const parents = await lockCatalogParents(transaction, discovered);
+            const item = await lockOwnedItem(transaction, itemId, actorUserId);
+            if (
+              item.catalogEntryId !== discovered.catalogEntryId ||
+              item.catalogVariantId !== discovered.catalogVariantId ||
+              (item.catalogEntryId !== null && parents.entry === null) ||
+              (item.catalogVariantId !== null && parents.variant === null)
+            ) {
+              // Abort releases the item lock before discovering any replacement parent.
+              throw new CatalogReferencesChanged();
+            }
+            ensureActive(item);
+            await ensureNoGrading(transaction, item.id);
+            if (splitQuantity.data >= item.quantity) {
+              throw new ItemServiceError("ITEM_SPLIT_INVALID");
+            }
 
-        const [identifiers, tags, fields, media, documents] = await Promise.all([
-          transaction.itemIdentifier.findMany({
-            where: { itemId: item.id },
-            select: splitIdentifierSelect,
-          }),
-          transaction.itemTag.findMany({ where: { itemId: item.id }, select: { tagId: true } }),
-          transaction.customFieldValue.findMany({
-            where: { itemId: item.id },
-            select: splitFieldSelect,
-          }),
-          transaction.mediaLink.findMany({ where: { itemId: item.id }, select: splitMediaSelect }),
-          transaction.documentLink.findMany({
-            where: { itemId: item.id },
-            select: splitDocumentSelect,
-          }),
-        ]);
+            const [identifiers, tags, fields, media, documents] = await Promise.all([
+              transaction.itemIdentifier.findMany({
+                where: { itemId: item.id },
+                select: splitIdentifierSelect,
+              }),
+              transaction.itemTag.findMany({ where: { itemId: item.id }, select: { tagId: true } }),
+              transaction.customFieldValue.findMany({
+                where: { itemId: item.id },
+                select: splitFieldSelect,
+              }),
+              transaction.mediaLink.findMany({
+                where: { itemId: item.id },
+                select: splitMediaSelect,
+              }),
+              transaction.documentLink.findMany({
+                where: { itemId: item.id },
+                select: splitDocumentSelect,
+              }),
+            ]);
 
-        // Reference triggers lock assets too. Lock the complete shared set in UUID order
-        // before either bulk insert so parallel splits and avatar replacement agree.
-        const assetIds = [...new Set([...media, ...documents].map((link) => link.assetId))].sort();
-        for (const assetId of assetIds) {
-          await transaction.$queryRaw`SELECT id FROM "MediaAsset" WHERE id = ${assetId}::uuid ORDER BY id FOR UPDATE`;
-        }
+            // Reference triggers lock assets too. Lock the complete shared set in UUID order
+            // before either bulk insert so parallel splits and avatar replacement agree.
+            const assetIds = [
+              ...new Set([...media, ...documents].map((link) => link.assetId)),
+            ].sort();
+            for (const assetId of assetIds) {
+              await transaction.$queryRaw`SELECT id FROM "MediaAsset" WHERE id = ${assetId}::uuid ORDER BY id FOR UPDATE`;
+            }
 
-        const source = await transaction.collectibleItem.update({
-          where: { id: item.id },
-          data: { quantity: item.quantity - splitQuantity.data },
-          select: itemSelect,
-        });
-        const created = await transaction.collectibleItem.create({
-          data: {
-            collectionId: item.collectionId,
-            ownerId: item.ownerId,
-            nodeId: item.nodeId,
-            storageLocationId: item.storageLocationId ?? null,
-            categoryTemplateId: item.categoryTemplateId,
-            conditionOptionId: item.conditionOptionId,
-            title: item.title,
-            publicDescription: item.publicDescription,
-            privateNotes: item.privateNotes,
-            quantity: splitQuantity.data,
-            acquisitionType: item.acquisitionType,
-            acquisitionDate: item.acquisitionDate === null ? null : new Date(item.acquisitionDate),
-            purchaseAmountMinor:
-              item.purchaseAmountMinor === null ? null : BigInt(item.purchaseAmountMinor),
-            purchaseCurrency: item.purchaseCurrency,
-            visibility: item.visibility,
-            tradeStatus: item.tradeStatus,
+            const source = await transaction.collectibleItem.update({
+              where: { id: item.id },
+              data: { quantity: item.quantity - splitQuantity.data },
+              select: itemSelect,
+            });
+            const created = await transaction.collectibleItem.create({
+              data: {
+                collectionId: item.collectionId,
+                ownerId: item.ownerId,
+                nodeId: item.nodeId,
+                storageLocationId: item.storageLocationId ?? null,
+                categoryTemplateId: item.categoryTemplateId,
+                conditionOptionId: item.conditionOptionId,
+                catalogEntryId: item.catalogEntryId,
+                catalogVariantId: item.catalogVariantId,
+                title: item.title,
+                publicDescription: item.publicDescription,
+                privateNotes: item.privateNotes,
+                quantity: splitQuantity.data,
+                acquisitionType: item.acquisitionType,
+                acquisitionDate:
+                  item.acquisitionDate === null ? null : new Date(item.acquisitionDate),
+                purchaseAmountMinor:
+                  item.purchaseAmountMinor === null ? null : BigInt(item.purchaseAmountMinor),
+                purchaseCurrency: item.purchaseCurrency,
+                visibility: item.visibility,
+                tradeStatus: item.tradeStatus,
+              },
+              select: itemSelect,
+            });
+            if (identifiers.length > 0) {
+              await transaction.itemIdentifier.createMany({
+                data: identifiers.map(({ type, value, normalizedValue }) => ({
+                  itemId: created.id,
+                  type,
+                  value,
+                  normalizedValue,
+                })),
+              });
+            }
+            if (tags.length > 0) {
+              await transaction.itemTag.createMany({
+                data: tags.map(({ tagId }) => ({ itemId: created.id, tagId })),
+              });
+            }
+            if (fields.length > 0) {
+              await transaction.customFieldValue.createMany({
+                data: fields.map(({ multiSelectValues: _selections, ...value }) => ({
+                  ...value,
+                  decimalValue: exactDecimal(value.decimalValue),
+                  itemId: created.id,
+                })),
+              });
+              const selections = fields.flatMap(({ fieldDefinitionId, multiSelectValues }) =>
+                multiSelectValues.map(({ optionId, position }) => ({
+                  itemId: created.id,
+                  fieldDefinitionId,
+                  optionId,
+                  position,
+                })),
+              );
+              if (selections.length > 0) {
+                await transaction.customFieldMultiSelectValue.createMany({ data: selections });
+              }
+            }
+            if (media.length > 0) {
+              await transaction.mediaLink.createMany({
+                data: media.map((link) => ({ ...link, itemId: created.id })),
+              });
+            }
+            if (documents.length > 0) {
+              await transaction.documentLink.createMany({
+                data: documents.map((link) => ({ ...link, itemId: created.id })),
+              });
+            }
+            if (item.storageLocationId != null) {
+              await transaction.itemLocationHistory.create({
+                data: {
+                  itemId: created.id,
+                  ownerId: item.ownerId,
+                  fromLocationId: null,
+                  toLocationId: item.storageLocationId,
+                  assignedById: actorUserId,
+                },
+              });
+            }
+            return SplitQuantityResultSchema.parse({
+              source: toItem(source),
+              created: toItem(created),
+            });
           },
-          select: itemSelect,
-        });
-        if (identifiers.length > 0) {
-          await transaction.itemIdentifier.createMany({
-            data: identifiers.map(({ type, value, normalizedValue }) => ({
-              itemId: created.id,
-              type,
-              value,
-              normalizedValue,
-            })),
-          });
-        }
-        if (tags.length > 0) {
-          await transaction.itemTag.createMany({
-            data: tags.map(({ tagId }) => ({ itemId: created.id, tagId })),
-          });
-        }
-        if (fields.length > 0) {
-          await transaction.customFieldValue.createMany({
-            data: fields.map(({ multiSelectValues: _selections, ...value }) => ({
-              ...value,
-              decimalValue: exactDecimal(value.decimalValue),
-              itemId: created.id,
-            })),
-          });
-          const selections = fields.flatMap(({ fieldDefinitionId, multiSelectValues }) =>
-            multiSelectValues.map(({ optionId, position }) => ({
-              itemId: created.id,
-              fieldDefinitionId,
-              optionId,
-              position,
-            })),
-          );
-          if (selections.length > 0) {
-            await transaction.customFieldMultiSelectValue.createMany({ data: selections });
-          }
-        }
-        if (media.length > 0) {
-          await transaction.mediaLink.createMany({
-            data: media.map((link) => ({ ...link, itemId: created.id })),
-          });
-        }
-        if (documents.length > 0) {
-          await transaction.documentLink.createMany({
-            data: documents.map((link) => ({ ...link, itemId: created.id })),
-          });
-        }
-        if (item.storageLocationId != null) {
-          await transaction.itemLocationHistory.create({
-            data: {
-              itemId: created.id,
-              ownerId: item.ownerId,
-              fromLocationId: null,
-              toLocationId: item.storageLocationId,
-              assignedById: actorUserId,
-            },
-          });
-        }
-        return SplitQuantityResultSchema.parse({
-          source: toItem(source),
-          created: toItem(created),
-        });
+          { isolationLevel: "ReadCommitted" },
+        );
+      } catch (error) {
+        if (!(error instanceof CatalogReferencesChanged)) throw error;
+      }
+    }
+    throw new ItemServiceError("ITEM_CATALOG_RETRY_EXHAUSTED");
+  }
+
+  async function unlinkItemFromCatalog(itemIdInput: string): Promise<CollectibleItem> {
+    const itemId = CatalogReadIdSchema.parse(itemIdInput);
+    return database.$transaction(
+      async (tx) => {
+        const existing = await lockOwnedItem(tx, itemId, actorUserId);
+        ensureActive(existing);
+        return toItem(
+          await tx.collectibleItem.update({
+            where: { id: existing.id },
+            data: { catalogEntryId: null, catalogVariantId: null },
+            select: itemSelect,
+          }),
+        );
       },
       { isolationLevel: "ReadCommitted" },
     );
   }
 
-  return { createItem, updateItem, archiveItem, deleteItem, splitQuantityItem };
+  async function linkItemToCatalog(
+    itemIdInput: string,
+    entryIdInput: string,
+    variantIdInput: string | null = null,
+  ): Promise<CollectibleItem> {
+    const itemId = CatalogReadIdSchema.parse(itemIdInput);
+    const catalogEntryId = CatalogReadIdSchema.parse(entryIdInput);
+    const catalogVariantId =
+      variantIdInput === null ? null : CatalogReadIdSchema.parse(variantIdInput);
+    return database.$transaction(
+      async (tx) => {
+        const { entry, variant } = await lockCatalogParents(tx, {
+          catalogEntryId,
+          catalogVariantId,
+        });
+        const existing = await lockOwnedItem(tx, itemId, actorUserId);
+        ensureActive(existing);
+        if (!entry) throw new ItemServiceError("CATALOG_NOT_FOUND");
+        if (catalogVariantId !== null && !variant)
+          throw new ItemServiceError("CATALOG_VARIANT_NOT_FOUND");
+        if (
+          existing.categoryTemplateId !== null &&
+          existing.categoryTemplateId !== entry.categoryTemplateId
+        )
+          throw new ItemServiceError("ITEM_CATALOG_CATEGORY_MISMATCH");
+        if (
+          existing.catalogEntryId === catalogEntryId &&
+          existing.catalogVariantId === catalogVariantId
+        )
+          return toItem(existing);
+        if (variant && !variant.active) throw new ItemServiceError("CATALOG_VARIANT_INACTIVE");
+        return toItem(
+          await tx.collectibleItem.update({
+            where: { id: existing.id },
+            data: {
+              catalogEntryId,
+              catalogVariantId,
+              categoryTemplateId: existing.categoryTemplateId ?? entry.categoryTemplateId,
+            },
+            select: itemSelect,
+          }),
+        );
+      },
+      { isolationLevel: "ReadCommitted" },
+    );
+  }
+
+  async function getItemCatalogLink(itemIdInput: string): Promise<ItemCatalogLink> {
+    const itemId = CatalogReadIdSchema.parse(itemIdInput);
+    return database.$transaction(
+      async (tx) => {
+        // One MVCC statement keeps revision, retained identity and personal assignment coherent.
+        const [row] = await tx.$queryRaw<
+          Array<
+            CatalogReferences & {
+              itemId: string;
+              categoryTemplateId: string | null;
+              revision: number | null;
+              snapshot: unknown;
+              variantAuthored: unknown;
+              variantActive: boolean | null;
+            }
+          >
+        >`
+        SELECT item.id AS "itemId",item."categoryTemplateId",item."catalogEntryId",item."catalogVariantId",
+               entry.revision,revision.snapshot,variant.authored AS "variantAuthored",variant.active AS "variantActive"
+        FROM "CollectibleItem" item JOIN "Collection" collection ON collection.id=item."collectionId"
+        LEFT JOIN "CatalogEntry" entry ON entry.id=item."catalogEntryId"
+        LEFT JOIN "CatalogRevision" revision ON revision."entryId"=entry.id AND revision.revision=entry.revision
+        LEFT JOIN "CatalogVariant" variant ON variant.id=item."catalogVariantId" AND variant."entryId"=item."catalogEntryId"
+        WHERE item.id=${itemId}::uuid AND item."ownerId"=${actorUserId} AND collection."ownerId"=${actorUserId}
+          AND item."deletedAt" IS NULL AND collection."deletedAt" IS NULL
+      `;
+        if (!row) throw new ItemServiceError("ITEM_NOT_FOUND");
+        const snapshot =
+          row.catalogEntryId === null ? null : CatalogSnapshotSchema.parse(row.snapshot);
+        const variant =
+          row.catalogVariantId === null
+            ? null
+            : CatalogVariantSchema.parse({
+                ...(row.variantAuthored as object),
+                id: row.catalogVariantId,
+                attributes: [],
+              });
+        return ItemCatalogLinkSchema.parse({
+          itemId: row.itemId,
+          categoryTemplateId: row.categoryTemplateId,
+          catalogEntryId: row.catalogEntryId,
+          catalogVariantId: row.catalogVariantId,
+          entry:
+            snapshot === null
+              ? null
+              : {
+                  id: snapshot.id,
+                  revision: row.revision,
+                  text: catalogTitleSummary(snapshot.text),
+                },
+          variant:
+            variant === null
+              ? null
+              : { ...catalogVariantSummary(variant), active: row.variantActive },
+        });
+      },
+      { isolationLevel: "ReadCommitted" },
+    );
+  }
+  return {
+    createItem,
+    updateItem,
+    archiveItem,
+    deleteItem,
+    splitQuantityItem,
+    linkItemToCatalog,
+    unlinkItemFromCatalog,
+    getItemCatalogLink,
+  };
 }

@@ -168,6 +168,8 @@ model CollectibleItem {
   storageLocationId   String?               @db.Uuid
   categoryTemplateId  String?               @db.Uuid
   conditionOptionId   String?               @db.Uuid
+  catalogEntryId      String?               @db.Uuid
+  catalogVariantId    String?               @db.Uuid
   title               String
   publicDescription   String?
   privateNotes        String?
@@ -188,6 +190,10 @@ model CollectibleItem {
   storageLocation     StorageLocation?      @relation(fields: [storageLocationId, ownerId], references: [id, ownerId], onDelete: Restrict)
   categoryTemplate    CategoryTemplate?     @relation(fields: [categoryTemplateId], references: [id], onDelete: Restrict)
   conditionOption     ConditionOption?      @relation(fields: [conditionOptionId, categoryTemplateId], references: [id, categoryTemplateId], onDelete: Restrict)
+  // SQL migration narrows SET NULL to the catalog ID, preserving personal category.
+  catalogEntry        CatalogEntry?         @relation(fields: [catalogEntryId, categoryTemplateId], references: [id, categoryTemplateId], onDelete: SetNull, onUpdate: Restrict)
+  // SQL migration narrows SET NULL to variant ID, retaining the entry.
+  catalogVariant      CatalogVariant?       @relation(fields: [catalogVariantId, catalogEntryId], references: [id, entryId], onDelete: SetNull, onUpdate: Restrict)
   locationHistory     ItemLocationHistory[]
   identifiers         ItemIdentifier[]
   itemTags            ItemTag[]
@@ -205,6 +211,8 @@ model CollectibleItem {
   @@index([storageLocationId, ownerId])
   @@index([categoryTemplateId])
   @@index([conditionOptionId, categoryTemplateId])
+  @@index([catalogEntryId, categoryTemplateId])
+  @@index([catalogVariantId, catalogEntryId])
 }
 
 model StorageLocation {
@@ -608,6 +616,7 @@ model CatalogEntry {
   attributes         CatalogAttributeValue[]
   revisions          CatalogRevision[]
   proposals          CatalogProposal[]
+  items              CollectibleItem[]
 
   @@unique([id, categoryTemplateId])
 }
@@ -620,6 +629,7 @@ model CatalogVariant {
   entry       CatalogEntry                @relation(fields: [entryId], references: [id], onDelete: Restrict)
   identifiers CatalogExternalIdentifier[]
   attributes  CatalogAttributeValue[]
+  items       CollectibleItem[]
 
   @@unique([id, entryId])
   @@index([entryId, active])
@@ -638,6 +648,7 @@ model CatalogExternalIdentifier {
   variant   CatalogVariant? @relation(fields: [variantId, entryId], references: [id, entryId], onDelete: Restrict)
 
   @@index([entryId, active])
+  @@index([value, active, entryId])
 }
 
 model CatalogAttributeValue {

@@ -1,0 +1,44 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| apps/web/src/lib/catalog-link-routes.integration.test.ts (5 tests | 1 failed | 4 skipped) 166ms
+   ↓ catalog link and canonical read routes PostgreSQL > persists owner links, fresh sessions and actual item reads/splits; unlink retains category
+   ↓ catalog link and canonical read routes PostgreSQL > authenticates all canonical reads while returning only canonical bounded projections
+   ↓ catalog link and canonical read routes PostgreSQL > rejects foreign/deleted/inactive mutations and forged Origin without consuming input
+   ↓ catalog link and canonical read routes PostgreSQL > strictly bounds streamed JSON, rejects malformed IDs, unexpected DELETE bodies and query ambiguity
+   × catalog link and canonical read routes PostgreSQL > maps split retry exhaustion to a stable actionable 409 code 18ms
+     → expected { error: { …(3) } } to match object { Object (error) }
+(2 matching properties omitted from actual)
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/web/src/lib/catalog-link-routes.integration.test.ts > catalog link and canonical read routes PostgreSQL > maps split retry exhaustion to a stable actionable 409 code
+AssertionError: expected { error: { …(3) } } to match object { Object (error) }
+(2 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "error": {
+-     "code": "ITEM_CATALOG_RETRY_EXHAUSTED",
++     "code": "INVALID_STATE",
+    },
+  }
+
+ ❯ apps/web/src/lib/catalog-link-routes.integration.test.ts:118:35
+    116|     const response = await api.SPLIT_ITEM(request("POST", { quantity: …
+    117|     expect(response.status).toBe(409);
+    118|     expect(await response.json()).toMatchObject({ error: { code: "ITEM…
+       |                                   ^
+    119|   });
+    120| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 4 skipped (5)
+   Start at  00:34:16
+   Duration  685ms (transform 130ms, setup 5ms, collect 294ms, tests 166ms, environment 0ms, prepare 49ms)
+

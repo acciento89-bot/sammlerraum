@@ -95,6 +95,9 @@ async function asNotFound<T>(operation: () => Promise<T>): Promise<T> {
     if (code.includes("CYCLE") || code.includes("UNCHANGED") || code.includes("ALREADY_EXISTS")) {
       throw new ApiError("CONFLICT", 409, "The requested change conflicts with current state");
     }
+    if (code === "ITEM_CATALOG_RETRY_EXHAUSTED") {
+      throw new ApiError(code, 409, "Catalog link changed concurrently; retry the operation");
+    }
     if (code.endsWith("_INVALID") || code === "ITEM_INACTIVE") {
       throw new ApiError("INVALID_STATE", 409, "The requested change is invalid");
     }

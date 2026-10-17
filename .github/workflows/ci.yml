@@ -139,6 +139,9 @@ jobs:
           packages/domain/src/custom-fields/custom-field-service.test.ts
           packages/domain/src/catalog/category-template-service.integration.test.ts
           packages/domain/src/catalog/catalog-service.integration.test.ts
+          packages/domain/src/catalog/item-catalog-link.test.ts
+          packages/domain/src/catalog/catalog-read-service.test.ts
+          apps/web/src/lib/catalog-link-routes.integration.test.ts
           packages/domain/src/catalog/proposal-service.test.ts
           packages/domain/src/condition/condition-service.test.ts
           packages/domain/src/grading/grading-service.test.ts

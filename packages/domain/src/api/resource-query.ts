@@ -50,6 +50,8 @@ type ItemRow = {
   nodeId: string | null;
   categoryTemplateId: string | null;
   conditionOptionId: string | null;
+  catalogEntryId: string | null;
+  catalogVariantId: string | null;
   title: string;
   publicDescription: string | null;
   privateNotes: string | null;
@@ -204,7 +206,7 @@ export function createResourceQuery(database: ResourceQueryDatabase) {
     const id = CollectibleItemSchema.shape.id.parse(itemId);
     const rows = await database.$queryRaw<ItemRow[]>`
       WITH RECURSIVE base AS (
-        SELECT item."id", item."collectionId", item."ownerId", item."nodeId", item."categoryTemplateId", item."conditionOptionId", item."title",
+        SELECT item."id", item."collectionId", item."ownerId", item."nodeId", item."categoryTemplateId", item."conditionOptionId", item."catalogEntryId", item."catalogVariantId", item."title",
                item."publicDescription", item."privateNotes", item."quantity", item."acquisitionType",
                item."acquisitionDate", item."purchaseAmountMinor", item."purchaseCurrency",
                item."visibility", item."tradeStatus", item."archivedAt", item."disposedAt",

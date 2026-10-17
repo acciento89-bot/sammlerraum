@@ -1,0 +1,10 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ✓ |workspace| packages/domain/src/catalog/item-catalog-link.test.ts (8 tests) 318ms
+
+ Test Files  1 passed (1)
+      Tests  8 passed (8)
+   Start at  00:27:02
+   Duration  754ms (transform 95ms, setup 5ms, collect 203ms, tests 318ms, environment 0ms, prepare 44ms)
+
