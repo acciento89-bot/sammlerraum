@@ -105,8 +105,10 @@ export function createGradingRouteHandlers(
     }),
     DELETE_GRADING: apiRoute(async (request, itemId: string, gradingId: string) => {
       const service = await actor(request, true);
-      if (request.body !== null) {
-        await readBoundedBody(request, GRADING_MAX_BODY_BYTES);
+      if (
+        request.body !== null &&
+        (await readBoundedBody(request, GRADING_MAX_BODY_BYTES)).byteLength > 0
+      ) {
         throw new ApiError("VALIDATION_ERROR", 400, "DELETE does not accept a body");
       }
       try {

@@ -1,0 +1,25 @@
+
+> sammlerraum@ build /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+> pnpm -r build
+
+Scope: 9 of 10 workspace projects
+packages/config build$ pnpm typecheck
+packages/contracts build$ pnpm typecheck
+packages/storage build$ pnpm typecheck
+packages/queue build$ pnpm typecheck
+packages/config build: > @sammlerraum/config@ typecheck /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/config
+packages/config build: > tsc --noEmit --project ../../tsconfig.base.json
+packages/contracts build: > @sammlerraum/contracts@ typecheck /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/contracts
+packages/contracts build: > tsc --noEmit --project ../../tsconfig.base.json
+packages/queue build: > @sammlerraum/queue@ typecheck /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/queue
+packages/queue build: > tsc --noEmit --project ../../tsconfig.base.json
+packages/storage build: > @sammlerraum/storage@ typecheck /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/storage
+packages/storage build: > tsc --noEmit --project ../../tsconfig.base.json
+packages/queue build: ../../apps/web/src/components/catalog/catalog-fields.test.ts(3,55): error TS6142: Module './catalog-fields' was resolved to '/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/src/components/catalog/catalog-fields.tsx', but '--jsx' is not set.
+packages/queue build:  ELIFECYCLE  Command failed with exit code 2.
+packages/queue build: Failed
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/queue:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @sammlerraum/queue@ build: `pnpm typecheck`
+Exit status 2
+packages/testing build$ pnpm typecheck
+ ELIFECYCLE  Command failed with exit code 2.

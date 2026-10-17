@@ -1,0 +1,75 @@
+[WebServer] npm warn Unknown env config "verify-deps-before-run". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+[WebServer] (node:55304) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:55336) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:55371) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:55377) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:55381) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:55382) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:55390) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:55392) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:55397) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:55406) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:55407) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:55408) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:55409) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:55410) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:55411) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:55412) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:55413) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:55414) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:55415) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:55416) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:55417) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [desktop] › e2e/catalog-grading.spec.ts:909:2 › grading save recovery › retry after a saved grading and failed refresh updates the known record (4.6s)
+
+
+  1) [desktop] › e2e/catalog-grading.spec.ts:909:2 › grading save recovery › retry after a saved grading and failed refresh updates the known record 
+
+    Error: expect(received).toHaveLength(expected)
+
+    Expected length: 1
+    Received length: 2
+    Received array:  [{"certificateNo": null, "comparableScale": null, "comparableValue": null, "createdAt": "2026-10-18T01:13:43.604Z", "grade": "A", "gradedAt": null, "id": "6d120d78-8851-4bcd-bcbc-b6a461530a9c", "itemId": "e5b49f3c-4e25-4a3e-970d-9f2ab45035d7", "provider": "Retry provider", "source": null, "updatedAt": "2026-10-18T01:13:43.604Z", "verificationUrl": null}, {"certificateNo": null, "comparableScale": null, "comparableValue": null, "createdAt": "2026-10-18T01:13:43.712Z", "grade": "A", "gradedAt": null, "id": "b49c0fe8-870e-43e7-8bd3-0fa0e042d3f7", "itemId": "e5b49f3c-4e25-4a3e-970d-9f2ab45035d7", "provider": "Retry provider", "source": null, "updatedAt": "2026-10-18T01:13:43.712Z", "verificationUrl": null}]
+
+      910 |   const owner=await catalogFixture();
+      911 |   try{
+    > 912 |    expect((await page.request.post("/api/auth/sign-in/email",{data:{email:owner.email,password:owner.password},headers:{origin}})).status()).toBe(200);await page.goto(`/en/items/${owner.item.id}`);await expect(page.getByText("PSA 9",{exact:true})).toBeVisible();const grade=page.getByRole("region",{name:"External grading",exact:true});await grade.getByLabel("Grading provider",{exact:true}).fill("Retry provider");await grade.getByLabel("Grade / assessment",{exact:true}).fill("A");let failed=false;await page.route(`**/api/v1/items/${owner.item.id}/condition`,async route=>{if(!failed&&route.request().method()==="GET"){failed=true;await route.fulfill({status:503,json:{error:{code:"UNAVAILABLE"}}});}else await route.continue();});await grade.getByRole("button",{name:"Save grading",exact:true}).click();await expect(grade.getByRole("alert")).toBeVisible();await grade.getByRole("button",{name:"Save grading",exact:true}).click();await expect(grade.getByRole("status")).toContainText("Grading saved");const rows=(await(await page.request.get(`/api/v1/items/${owner.item.id}/gradings`)).json()).gradings;expect(rows.filter((row:{provider:string})=>row.provider==="Retry provider")).toHaveLength(1);
+          |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 ^
+      913 |   }finally{await cleanupCatalog(owner);}
+      914 |  });
+      915 | });
+        at /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/catalog-grading.spec.ts:912:1185
+
+    Error Context: test-results/catalog-grading-grading-sa-4a80f-sh-updates-the-known-record-desktop/error-context.md
+
+    Error Context: test-results/catalog-grading-grading-sa-4a80f-sh-updates-the-known-record-desktop/error-context.md
+
+  1 failed
+    [desktop] › e2e/catalog-grading.spec.ts:909:2 › grading save recovery › retry after a saved grading and failed refresh updates the known record 
+undefined
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/catalog-grading.spec.ts --project=desktop --grep retry after a saved grading --workers=1

@@ -25,7 +25,8 @@
     "./authz/application-role": "./src/authz/application-role.ts",
     "./condition/condition-service": "./src/condition/condition-service.ts",
     "./grading/grading-service": "./src/grading/grading-service.ts",
-    "./catalog/catalog-read-service": "./src/catalog/catalog-read-service.ts"
+    "./catalog/catalog-read-service": "./src/catalog/catalog-read-service.ts",
+    "./catalog/initialize-catalog": "./src/catalog/initialize-catalog.ts"
   },
   "scripts": {
     "build": "pnpm typecheck",

@@ -1,0 +1,10 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ✓ |workspace| packages/domain/src/catalog/initialize-catalog.test.ts (2 tests) 198ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Start at  00:58:12
+   Duration  471ms (transform 58ms, setup 5ms, collect 124ms, tests 198ms, environment 0ms, prepare 33ms)
+

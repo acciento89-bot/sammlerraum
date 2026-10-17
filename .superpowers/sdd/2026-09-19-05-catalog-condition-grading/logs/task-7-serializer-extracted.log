@@ -1,0 +1,10 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ✓ |workspace| apps/web/src/components/catalog/catalog-form-values.test.ts (3 tests) 27ms
+
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+   Start at  01:18:45
+   Duration  510ms (transform 79ms, setup 22ms, collect 101ms, tests 27ms, environment 0ms, prepare 81ms)
+

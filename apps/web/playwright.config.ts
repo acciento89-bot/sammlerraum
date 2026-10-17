@@ -16,6 +16,7 @@ export default defineConfig({
     {
       name: "desktop",
       testMatch: [
+        "**/catalog-grading.spec.ts",
         "**/collections-items.spec.ts",
         "**/location-labels.spec.ts",
         "**/media-documents.spec.ts",
@@ -25,6 +26,7 @@ export default defineConfig({
     {
       name: "mobile",
       testMatch: [
+        "**/catalog-grading.spec.ts",
         "**/collections-items.spec.ts",
         "**/location-labels.spec.ts",
         "**/media-documents.spec.ts",

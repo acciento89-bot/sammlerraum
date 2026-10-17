@@ -6,6 +6,10 @@ import {
 } from "@sammlerraum/contracts/catalog";
 import {
   CatalogPageInputSchema,
+  CatalogHistoryInputSchema,
+  CatalogHistoryRevisionSchema,
+  CatalogTitleSummarySchema,
+  type CatalogRevisionSummary,
   CatalogReadIdSchema,
   CatalogSearchInputSchema,
   CatalogSearchResultSchema,
@@ -168,5 +172,98 @@ export function createCatalogReadService(database: Query) {
       nextCursor: rows.length > limit ? pageCursor(results.at(-1)!.id, identity) : null,
     };
   }
-  return { searchCatalog, listCategories, getCategoryTemplate, getCurrentCatalogEntry };
+  async function listCatalogRevisions(entryIdInput: string, input: unknown = {}) {
+    const entryId = CatalogReadIdSchema.parse(entryIdInput);
+    const { limit, cursor } = CatalogHistoryInputSchema.parse(input);
+    let before: number | null = null;
+    if (cursor !== undefined) {
+      try {
+        if (!/^[A-Za-z0-9_-]{1,256}$/u.test(cursor)) throw new Error();
+        const buffer = Buffer.from(cursor, "base64url");
+        if (buffer.toString("base64url") !== cursor) throw new Error();
+        const parsed = JSON.parse(
+          new TextDecoder("utf-8", { fatal: true }).decode(buffer),
+        ) as Record<string, unknown>;
+        if (
+          !parsed ||
+          Object.keys(parsed).sort().join(",") !== "before,entryId,v" ||
+          parsed.v !== 1 ||
+          parsed.entryId !== entryId
+        )
+          throw new Error();
+        before = CatalogHistoryRevisionSchema.parse(parsed.before);
+      } catch {
+        throw new CatalogReadError("CATALOG_QUERY_INVALID");
+      }
+    }
+    const rows = await database.$queryRaw<
+      Array<{
+        revision: number;
+        createdAt: Date;
+        rollbackFromRevision: number | null;
+        text: unknown;
+        sources: unknown;
+      }>
+    >`
+      SELECT revision,"createdAt","rollbackFromRevision",snapshot->'text' AS text,snapshot->'sources' AS sources
+      FROM "CatalogRevision" WHERE "entryId"=${entryId}::uuid AND (${before}::int IS NULL OR revision<${before}::int)
+      ORDER BY revision DESC LIMIT ${limit + 1}
+    `;
+    // Distinguish an empty later page from an unknown canonical resource.
+    if (!rows.length) await getCurrentCatalogEntry(entryId);
+    const revisions: CatalogRevisionSummary[] = rows.slice(0, limit).map((row) => {
+      const text = row.text as {
+        language: unknown;
+        title: unknown;
+        translations?: Array<{ language: unknown; title: unknown }>;
+      };
+      return {
+        revision: row.revision,
+        createdAt: row.createdAt.toISOString(),
+        rollbackFromRevision: row.rollbackFromRevision,
+        text: CatalogTitleSummarySchema.parse({
+          language: text.language,
+          title: text.title,
+          translations: (text.translations ?? []).map((value) => ({
+            language: value.language,
+            title: value.title,
+          })),
+        }),
+        sources: CatalogSnapshotSchema.shape.sources.parse(row.sources ?? []),
+      };
+    });
+    return {
+      revisions,
+      nextCursor:
+        rows.length > limit
+          ? Buffer.from(
+              JSON.stringify({ v: 1, entryId, before: revisions.at(-1)!.revision }),
+            ).toString("base64url")
+          : null,
+    };
+  }
+  async function getCatalogRevision(
+    entryIdInput: string,
+    revisionInput: number,
+  ): Promise<CatalogEntryRevision> {
+    const entryId = CatalogReadIdSchema.parse(entryIdInput);
+    const revision = CatalogHistoryRevisionSchema.parse(revisionInput);
+    const [row] = await database.$queryRaw<
+      Array<{ revision: number; snapshot: unknown; rollbackFromRevision: number | null }>
+    >`SELECT revision,snapshot,"rollbackFromRevision" FROM "CatalogRevision" WHERE "entryId"=${entryId}::uuid AND revision=${revision}`;
+    if (!row) throw new CatalogReadError("CATALOG_NOT_FOUND");
+    return {
+      revision: row.revision,
+      state: CatalogSnapshotSchema.parse(row.snapshot),
+      rollbackFromRevision: row.rollbackFromRevision,
+    };
+  }
+  return {
+    searchCatalog,
+    listCategories,
+    getCategoryTemplate,
+    getCurrentCatalogEntry,
+    listCatalogRevisions,
+    getCatalogRevision,
+  };
 }

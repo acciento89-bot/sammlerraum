@@ -1,0 +1,10 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ✓ |workspace| packages/domain/src/catalog/catalog-history-service.test.ts (2 tests) 133ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Start at  00:56:15
+   Duration  414ms (transform 63ms, setup 5ms, collect 132ms, tests 133ms, environment 0ms, prepare 34ms)
+

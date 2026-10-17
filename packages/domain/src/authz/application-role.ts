@@ -1,5 +1,3 @@
-import type { CatalogProposalTransaction } from "@sammlerraum/db/catalog-types";
-
 export class ApplicationRoleError extends Error {
   readonly code = "APPLICATION_ROLE_REQUIRED";
   constructor() {
@@ -10,7 +8,7 @@ export class ApplicationRoleError extends Error {
 
 /** Read authoritative authority and hold it until commit. Ordinary SQL revocations wait. */
 export async function requireApplicationModerator(
-  tx: Pick<CatalogProposalTransaction, "$queryRaw">,
+  tx: { $queryRaw<T>(query: TemplateStringsArray, ...values: unknown[]): Promise<T> },
   userId: string,
 ): Promise<void> {
   const grants = await tx.$queryRaw<{ role: string }[]>`

@@ -107,3 +107,18 @@ export const ItemCatalogLinkSchema = z
   })
   .strict();
 export type ItemCatalogLink = z.infer<typeof ItemCatalogLinkSchema>;
+
+export const CatalogHistoryInputSchema = z
+  .object({
+    limit: z.number().int().min(1).max(50).default(20),
+    cursor: z.string().min(1).max(256).optional(),
+  })
+  .strict();
+export const CatalogHistoryRevisionSchema = z.number().int().min(1).max(2_147_483_647);
+export type CatalogRevisionSummary = {
+  revision: number;
+  createdAt: string;
+  rollbackFromRevision: number | null;
+  text: z.infer<typeof CatalogTitleSummarySchema>;
+  sources: z.infer<typeof CatalogSourceSchema>[];
+};

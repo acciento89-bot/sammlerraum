@@ -212,6 +212,21 @@ describe.runIf(enabled)("catalog link and canonical read routes PostgreSQL", () 
     await createItemService(db!, ownerId).deleteItem(itemId);
     expect((await api.GET_LINK(request(), itemId)).status).toBe(404);
   });
+  it("accepts an empty DELETE stream emitted by a browser adapter", async () => {
+    await createItemService(db!, ownerId).linkItemToCatalog(itemId, entryId, variantId);
+    const response = await handlers().DELETE_LINK(
+      new Request(origin, {
+        method: "DELETE",
+        headers: { origin, "content-length": "0" },
+        body: "",
+      }),
+      itemId,
+    );
+    expect(response.status).toBe(200);
+    expect(
+      (await createItemService(db!, ownerId).getItemCatalogLink(itemId)).catalogEntryId,
+    ).toBeNull();
+  });
   it("strictly bounds streamed JSON, rejects malformed IDs, unexpected DELETE bodies and query ambiguity", async () => {
     const api = handlers();
     for (const body of [

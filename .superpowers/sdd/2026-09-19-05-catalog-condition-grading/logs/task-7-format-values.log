@@ -1,0 +1,5 @@
+apps/web/src/components/catalog/catalog-fields.tsx 55ms
+apps/web/src/components/catalog/catalog-form-values.ts 10ms
+apps/web/src/components/catalog/catalog-form-values.test.ts 5ms (unchanged)
+apps/web/src/components/catalog/proposal-composer.tsx 20ms
+apps/web/src/app/globals.css 34ms

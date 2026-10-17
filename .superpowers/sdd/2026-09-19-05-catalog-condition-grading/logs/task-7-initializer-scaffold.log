@@ -1,0 +1,13 @@
+import type {CreateCategoryTemplateInput} from "@sammlerraum/contracts/catalog";
+import type {ConditionDatabase} from "../condition/condition-service";
+import type {CategoryTemplateDatabase} from "./category-template-service";
+export type StarterDefinition={template:CreateCategoryTemplateInput;scheme:{key:string;labels:{de:string;en:string};options:Array<{labelKey:string;labels:{de:string;en:string};normalizedBand:null}>}};
+const field=(key:string,de:string,en:string)=>({key,labels:{de,en},type:"SHORT_TEXT" as const});
+const options=(values:readonly string[])=>values.map((label,index)=>({labelKey:`condition_${index+1}`,labels:{de:label,en:label},normalizedBand:null}));
+export const STARTER_CATALOG:StarterDefinition[]=[
+ {template:{key:"trading_cards",labels:{de:"Sammelkarten",en:"Trading cards"},definitions:[field("set","Set","Set"),field("collector_number","Sammlernummer","Collector number")]},scheme:{key:"cards_authored_v1",labels:{de:"Kartenzustand",en:"Card condition"},options:options(["Mint","Near Mint","Excellent","Good","Played","Poor"])}},
+ {template:{key:"vinyl",labels:{de:"Schallplatten",en:"Vinyl records"},definitions:[field("artist","Interpret","Artist"),field("label","Label","Label"),field("catalogue_number","Katalognummer","Catalogue number")]},scheme:{key:"vinyl_authored_v1",labels:{de:"Plattenzustand",en:"Record condition"},options:options(["M","NM","VG+","VG","G","F","P"])}}
+];
+type Query={ $queryRaw<T>(query:TemplateStringsArray,...values:unknown[]):Promise<T> };
+export type InitializerDatabase={ $transaction<T>(work:(tx:Query&CategoryTemplateDatabase)=>Promise<T>,options:{isolationLevel:"ReadCommitted"}):Promise<T> };
+export async function initializeCatalogDefinitions(_database:InitializerDatabase,_input:{definitions?:StarterDefinition[];apply?:boolean}={}) {return {applied:false,actions:[] as Array<{key:string;action:string}>};}

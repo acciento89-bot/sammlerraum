@@ -323,6 +323,20 @@ describe.runIf(enabled)("grading routes PostgreSQL", () => {
     }
     expect((await handlers().GET_GRADINGS(request(), itemId)).status).toBe(404);
   });
+  it("accepts a zero-byte DELETE stream while removing only the requested grading", async () => {
+    const row = await service().addGrading(itemId, { provider: "Empty stream", grade: "9" });
+    const response = await handlers().DELETE_GRADING(
+      new Request(origin, {
+        method: "DELETE",
+        headers: { origin, "content-length": "0" },
+        body: "",
+      }),
+      itemId,
+      row.id,
+    );
+    expect(response.status).toBe(204);
+    expect(await db!.grading.findUnique({ where: { id: row.id } })).toBeNull();
+  });
   it("rejects DELETE payloads within the same independent body bound", async () => {
     const row = await service().addGrading(itemId, { provider: "Delete body", grade: "A" });
     const api = handlers();

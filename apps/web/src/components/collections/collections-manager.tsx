@@ -70,6 +70,7 @@ export function CollectionsManager({ locale }: { locale: "de" | "en" }) {
         <Link aria-current="page" href={`/${locale}/collections`}>
           {t("title")}
         </Link>
+        <Link href={`/${locale}/catalog`}>{common("catalog")}</Link>
         <Link href={`/${locale}/account/profile`}>{common("account")}</Link>
       </nav>
       <header className="management-heading">

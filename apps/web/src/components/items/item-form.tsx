@@ -1,5 +1,6 @@
 "use client";
 
+import { ConditionGradingEditor } from "./condition-grading-editor";
 import { ItemGalleryEditor } from "../media/item-gallery-editor";
 import type { Collection, CollectionNode } from "@sammlerraum/contracts/collections";
 import type {
@@ -679,6 +680,16 @@ export function ItemForm({
             )}
           </div>
         </form>
+      )}
+      {workingItemId ? (
+        <ConditionGradingEditor
+          itemId={workingItemId}
+          locale={locale}
+          quantity={item?.quantity ?? 1}
+          readOnly={inactive}
+        />
+      ) : (
+        <p className="field-help">{t("saveBeforeReference")}</p>
       )}
       {workingItemId && !inactive ? (
         <ItemGalleryEditor itemId={workingItemId} />

@@ -3,6 +3,10 @@ import {
   CatalogLinkInputSchema,
   CatalogReadIdSchema,
 } from "@sammlerraum/contracts/catalog-reads";
+import {
+  ApplicationRoleError,
+  requireApplicationModerator,
+} from "@sammlerraum/domain/authz/application-role";
 import { ApiError } from "@sammlerraum/contracts/errors";
 import {
   createItemService,
@@ -35,6 +39,19 @@ export function createCatalogLinkRouteDependencies(
       auth.api.getSession({ headers, query: { disableCookieCache: true, disableRefresh: true } }),
     createItemService: (actorId: string) => createItemService(database, actorId),
     reads: createCatalogReadService(database),
+    canModerate: (userId: string) =>
+      database.$transaction(
+        async (tx) => {
+          try {
+            await requireApplicationModerator(tx, userId);
+            return true;
+          } catch (error) {
+            if (error instanceof ApplicationRoleError) return false;
+            throw error;
+          }
+        },
+        { isolationLevel: "ReadCommitted" },
+      ),
   };
 }
 function routeId(value: string) {
@@ -100,6 +117,26 @@ export function createCatalogLinkRouteHandlers(
     return session.user.id;
   }
   return {
+    CAPABILITIES: apiRoute(async (request) => {
+      const userId = await actor(request);
+      query(request, []);
+      return run(async () => ({ canModerate: await dependencies.canModerate(userId) }));
+    }),
+    HISTORY: apiRoute(async (request, entryId: string) => {
+      await actor(request);
+      const input = query(request, ["limit", "cursor"]);
+      return run(() => dependencies.reads.listCatalogRevisions(routeId(entryId), input));
+    }),
+    REVISION: apiRoute(async (request, entryId: string, revision: string) => {
+      await actor(request);
+      query(request, []);
+      if (!/^[1-9][0-9]{0,9}$/u.test(revision) || Number(revision) > 2_147_483_647)
+        throw new ApiError("VALIDATION_ERROR", 400, "Invalid revision");
+      return run(
+        () => dependencies.reads.getCatalogRevision(routeId(entryId), Number(revision)),
+        "entry",
+      );
+    }),
     GET_LINK: apiRoute(async (request, itemId: string) => {
       const service = dependencies.createItemService(await actor(request));
       query(request, []);
@@ -117,8 +154,10 @@ export function createCatalogLinkRouteHandlers(
     DELETE_LINK: apiRoute(async (request, itemId: string) => {
       const service = dependencies.createItemService(await actor(request, true));
       query(request, []);
-      if (request.body !== null) {
-        await readBoundedBody(request, CATALOG_LINK_MAX_BODY_BYTES);
+      if (
+        request.body !== null &&
+        (await readBoundedBody(request, CATALOG_LINK_MAX_BODY_BYTES)).byteLength > 0
+      ) {
         throw new ApiError("VALIDATION_ERROR", 400, "DELETE does not accept a body");
       }
       return run(() => service.unlinkItemFromCatalog(routeId(itemId)), "item");
