@@ -178,7 +178,7 @@ git commit -m "feat: add moderated catalog proposals"
 **Interfaces:**
 - Produces: `getConditionScheme(categoryId)`, `setItemCondition(itemId, optionId)`.
 
-- [ ] **Step 1: Write failing separation test**
+- [x] **Step 1: Write failing separation test**
 
 ```ts
 it("stores exact condition label and optional normalized band separately", async () => {
@@ -188,21 +188,21 @@ it("stores exact condition label and optional normalized band separately", async
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run packages/domain/src/condition/condition-service.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement condition schemes**
+- [x] **Step 3: Implement condition schemes**
 
 Add `ConditionScheme`, `ConditionOption`, localized label keys, optional normalized band 1–5, ordering, active flag, and item condition relation.
 
-- [ ] **Step 4: Run tests**
+- [x] **Step 4: Run tests**
 
 Run: `pnpm vitest run packages/domain/src/condition`  
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/db packages/domain/src/condition
