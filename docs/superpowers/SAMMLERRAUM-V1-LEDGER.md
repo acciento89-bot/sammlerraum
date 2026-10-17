@@ -1,6 +1,6 @@
 # Sammlerraum V1 Completion Ledger
 
-**Stand:** 17.10.2026
+**Stand:** 18.10.2026
 **Master plan:** `docs/superpowers/plans/2026-09-19-sammlerraum-v1-master-plan.md`  
 **Canonical product/system spec:** `docs/superpowers/specs/2026-09-19-sammlerraum-design.md`  
 **SEO/Search Console spec:** `docs/superpowers/specs/2026-09-19-seo-search-console-design.md`
@@ -15,7 +15,7 @@ This is the handoff/status file for long-running implementation. Update it after
 | 02 | Identity, Auth & Policies | 7 | complete (7/7) | — |
 | 03 | Collections, Items, Fields & Locations | 8 | complete (8/8) | — |
 | 04 | Media & Documents | 6 | complete (6/6) | — |
-| 05 | Catalog, Condition & Grading | 7 | in progress (4/7) | Task 5 |
+| 05 | Catalog, Condition & Grading | 7 | in progress (5/7) | Task 6 |
 | 06 | Valuations & Market Data | 6 | not started | Task 1 |
 | 07 | Search, Smart Collections & Dashboard | 5 | not started | Task 1 |
 | 08 | Import, Export, Insurance & Reports | 7 | not started | Task 1 |
@@ -61,8 +61,9 @@ This is the handoff/status file for long-running implementation. Update it after
 - [x] P05 T02 — Revisioned catalog entries, variants, identifiers and attributes
 - [x] P05 T03 — Moderated catalog proposals, authoritative application grants and rollback audit
 - [x] P05 T04 — Category-specific exact condition schemes and independent personal condition
+- [x] P05 T05 — Private external grading records and single-specimen certificate integrity
 
-**Verified completion: 31/91 tasks.** Later tasks remain open as listed in the phase table and detail plans.
+**Verified completion: 32/91 tasks.** Later tasks remain open as listed in the phase table and detail plans.
 
 ## Update rule
 
@@ -598,3 +599,14 @@ Every completed and independently reviewed task must be checked off in its detai
 - Additive migration18 `20261017225203_condition_schemes`, all migrations current/no schema drift; no applied history rewrite or production write. Supporting contracts/exports/API adapters and CI registration included. No automatic bootstrap or fabricated official category scale; usable maintenance starter data remains an explicit Task7 design question.
 - Actual existing-path persistence RED probe is documented separately from the unchanged dedicated runnable real-PG exact vinyl.vg_plus/independentband4 RED→GREEN test. Full serial real-DB workspace467/467 across65files, lint/typecheck/production build/schema PASS; later scoped fixture-teardown-only adjustment has15/15 focused evidence. Strict routes, ownership/lifecycle, history/split, DB scope/immutability and real option/scheme lock waits are covered; failed attempts retained honestly.
 - Exact-source CI [39072253539](https://github.com/acciento89-bot/sammlerraum/actions/runs/39072253539), job117512104742 SUCCESS: dedicated DB integration,29 browser journeys, unit/lint/types/build/migrations/Compose,both Docker images and native Sharp. Backend log is explicitly truncated, exact run remains linked; no unsupported database test count inferred from the truncated tail. Implementation/report/review/raw chronology saved on feature branch; canonical31/91, Phase05 4/7, nextTask5. Source remains unmerged/undeployed.
+
+
+### Phase05 Task5 — Private grading facts and physical specimen integrity
+
+- Final source `04e41d4ed922cf3e83c209d0d97d051af93252ff`; fresh independent SPEC/QUALITY Approved, zero Critical/Important/Minor. Owner-only grading list/read/add/full-replacement update/remove, strict contracts and fresh-session/Origin/no-store/8192-byte routes. Records retain authored provider/grade, optional certificate/date/safe verification URL/source and timestamps. No provider fetch, authenticity claim, automatic grade conversion, global catalog/personal coupling or public DTO change.
+- Current certificate uniqueness is owner+provider+certificate, never a number-only or cross-account claim. Conservative NFC/trim preserves certificate case, punctuation/internal spaces and leading zeros; provider identity uses ASCII case fold only, no fabricated aliases. NULL certificates permit multiple records; cap100 current rows/item. Cost:provider-specific aliases/equivalence are not inferred, and edits/removal are personal CRUD rather than immutable historical facts. Phase09 Task4 creates shared audit, Task5 integrates grading in the existing mutation transaction; no duplicate audit framework was introduced. Report cross-reference corrected in documentation only.
+- Optional comparable numeric input is exact authored decimal text, Decimal(12,4),0..99999999.9999 with required explicit authored comparableScale. No exponent, precision rounding or inferred universal ranking at application input; DTO remains string. Native checks enforce range/scale pairing/finite upper bound. An actual raw SQL NaN RED exposed the nonnegative-only gap and was fixed by a second additive check; a prior typed-client rejection is explicitly not claimed as database proof. Direct operator SQL retains native PostgreSQL precision behavior, not a promise of lexical input validation.
+- Every current grading requires item quantity1. Actual shared item update/split services check under the same item lock; native composite item(id,ownerId,quantity) FK ON UPDATE RESTRICT and child quantity=1 CHECK prevent racing/direct-DB quantity violations. No copying or moving grading certificates on split; split quantities into specimens first. Cost:one additional composite item unique index and constant child FK column; removing all grading releases quantity restriction.
+- Soft-deleting an item retains grading and its owner-local certificate reservation. Deleted resources remain hidden404, same-owner/provider/cert reuse409, other accounts unaffected, all covered by actual service tests. Cost:restore/trash/permanent-erasure policy in Phase09 must preserve/recover this identity and later release it deliberately; removing grading before deletion releases the claim now. No silent private-fact erasure or extra recovery framework.
+- Additive migrations19–20 (`20261017225204_grading_records`, `20261017225205_grading_finite_comparable`), all current/no drift. Correct DB identity schema existed from start; transparent new-service certificate-only scaffold RED then unchanged PSA123/CGC123 persisted assertion GREEN, never represented as an old production bug. Final local serial real-PG490/490 across67files, lint/fresh post-build typecheck/productionbuild/schema PASS. Initial fixture unhandled rejection/type errors and four preexisting ignored generated .next type duplicates were preserved/documented; only duplicates moved outside compiler include and normal output regenerated, no source workaround.
+- Exact-source CI [39073823041](https://github.com/acciento89-bot/sammlerraum/actions/runs/39073823041), job117516742621 SUCCESS: dedicated DB integration,29 browser journeys,unit/lint/types/build/migrations/Compose,both Docker images/nativeSharp. Backend tail explicitly truncated; full run linked, no unsupported DB count invented. Source/report/review/raw chronology saved on feature branch; canonical32/91, Phase05 5/7, nextTask6. No source merge, deployment, real provider action or production migration.

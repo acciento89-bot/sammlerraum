@@ -26,7 +26,7 @@ Native enforcement uses the item composite unique index `(id, ownerId, quantity)
 
 Root explicitly ruled that **item soft deletion preserves grading rows and owner-scoped certificate reservations**. The hidden item becomes 404; re-entering the same certificate under the same owner/provider conflicts, while another account remains independent. This prevents silent erasure of personal facts. Remove grading before deleting the item to release the claim now. Recovery of retained items and later permanent erasure belong to Phase 09 trash/restore policy; no recovery endpoint was added here.
 
-There is no bespoke immutable grading history or generic audit framework. Current edits/removal are personal CRUD with timestamps. Phase 09 Task 4 must append grading audit events inside these existing mutation transactions. This task makes no immutable-history guarantee. Category/exact condition and grading remain independent; condition changes preserve grading and grading removal preserves exact condition.
+There is no bespoke immutable grading history or generic audit framework. Current edits/removal are personal CRUD with timestamps. Phase 09 Task 4 establishes the shared audit model, and Task 5 integrates grading audit events inside these existing mutation transactions. This task makes no immutable-history guarantee. Category/exact condition and grading remain independent; condition changes preserve grading and grading removal preserves exact condition.
 
 ## Genuine test and migration chronology
 

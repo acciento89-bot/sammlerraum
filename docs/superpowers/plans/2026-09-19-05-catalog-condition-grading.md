@@ -221,7 +221,7 @@ git commit -m "feat: add category condition schemes"
 **Interfaces:**
 - Produces: `addGrading`, `updateGrading`, `removeGrading`.
 
-- [ ] **Step 1: Write failing provider-scope test**
+- [x] **Step 1: Write failing provider-scope test**
 
 ```ts
 it("allows equal certificate numbers across different providers", async () => {
@@ -231,21 +231,21 @@ it("allows equal certificate numbers across different providers", async () => {
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run packages/domain/src/grading/grading-service.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement grading model**
+- [x] **Step 3: Implement grading model**
 
 Store provider, grade as normalized string plus optional numeric comparable value, certificate number, graded date, verification URL, and provenance/source.
 
-- [ ] **Step 4: Run tests**
+- [x] **Step 4: Run tests**
 
 Run: `pnpm vitest run packages/domain/src/grading`  
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/db packages/domain/src/grading
