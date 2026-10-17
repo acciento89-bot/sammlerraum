@@ -15,7 +15,7 @@ This is the handoff/status file for long-running implementation. Update it after
 | 02 | Identity, Auth & Policies | 7 | complete (7/7) | — |
 | 03 | Collections, Items, Fields & Locations | 8 | complete (8/8) | — |
 | 04 | Media & Documents | 6 | complete (6/6) | — |
-| 05 | Catalog, Condition & Grading | 7 | in progress (3/7) | Task 4 |
+| 05 | Catalog, Condition & Grading | 7 | in progress (4/7) | Task 5 |
 | 06 | Valuations & Market Data | 6 | not started | Task 1 |
 | 07 | Search, Smart Collections & Dashboard | 5 | not started | Task 1 |
 | 08 | Import, Export, Insurance & Reports | 7 | not started | Task 1 |
@@ -60,8 +60,9 @@ This is the handoff/status file for long-running implementation. Update it after
 - [x] P05 T01 — Category templates and typed catalog attributes
 - [x] P05 T02 — Revisioned catalog entries, variants, identifiers and attributes
 - [x] P05 T03 — Moderated catalog proposals, authoritative application grants and rollback audit
+- [x] P05 T04 — Category-specific exact condition schemes and independent personal condition
 
-**Verified completion: 30/91 tasks.** Later tasks remain open as listed in the phase table and detail plans.
+**Verified completion: 31/91 tasks.** Later tasks remain open as listed in the phase table and detail plans.
 
 ## Update rule
 
@@ -587,3 +588,13 @@ Every completed and independently reviewed task must be checked off in its detai
 - Fresh-session, exact-Origin, bounded-body, no-store HTTP routes cover submit/own detail/list, protected review/decision and rollback; redacted request-ID errors and hidden foreign404. Proposal source is retained review provenance; canonical payload sources explicitly control canonical provenance. Shared media bounded-body extraction preserves behavior. Additive migrations16–17 (`20261017225201_catalog_proposals`, `20261017225202_catalog_rollback_audit_target`), DB current/no drift; applied history untouched.
 - Original real-PG stale-base behavioral RED/GREEN and isolation bypass RED/GREEN retained. Final local serial full452/452, workspace lint/typecheck/production build PASS. First parallel full450pass/1 inherited worker dispatcher fixture interference; focused worker2/2 and serial451 then452 pass. Dedicated DB CI now --no-file-parallelism, unchanged worker behavior/assertions; cost modest CI time. Initial typecheck/pg-fixture warnings resolved, exact failed logs retained; unchanged6.8mb worker bundle diagnostic remains nonblocking.
 - Exact-source CI [39070683270](https://github.com/acciento89-bot/sammlerraum/actions/runs/39070683270), job117507466853 SUCCESS:185 real-DB integration tests,29 browser journeys,unit/lint/types/build/migrations/Compose,both Docker images and native Sharp. Backend CI log explicitly truncated and retained; complete run is linked. Task3 report/review/raw chronology under phase workspace. Implementation remains on draft PR #1, unmerged/undeployed. Canonical verified30/91; Phase05 3/7, nextTask4.
+
+
+### Phase05 Task4 — Exact category conditions and independent personal facts
+
+- Final source `40018a4198636daf6b621f4836d8dcfe80049ff8`; fresh independent SPEC compliant/QUALITY Approved, zero Critical/Important/Minor. One maintenance-authored scheme per category, ordered exact stable condition keys and authored DE/EN labels, optional integer1–5 band derived from the selected immutable option. Personal category/condition are independently nullable, work without catalog link, and do not change the public item whitelist or future grading facts.
+- Owner/lifecycle-checked services and authenticated strict no-store routes support scheme reads, item condition read/set/clear and category assignment. Actual item DTO/read/resource SQL/split seams expose nullable IDs and preserve an inactive historical choice on split. Category change/removal with a selected condition requires explicit atomic clearCondition:true; no silent loss. New selections require active scheme+option, while old inactive choices remain readable.
+- Approved storage/maintenance policy: scalar labelDe/labelEn with bounded labels:{de,en} DTO, one scheme/category, max100 ordered options; semantic corrections append a key and retire the old option. PostgreSQL semantic UPDATE guards cover actual label/key/category/band/identity storage, RESTRICT protects referenced identities, unused scoped fixtures can be deleted normally. Composite scope FKs plus explicit option-implies-category CHECK close nullable FK bypass; band/position bounds are enforced. Item→scheme SHARE→option SHARE selection locks block concurrent deactivation through commit; maintenance never locks an item. Cost:retained retired definitions and future extra locales need additive schema extension; this is not tamperproof operator history.
+- Additive migration18 `20261017225203_condition_schemes`, all migrations current/no schema drift; no applied history rewrite or production write. Supporting contracts/exports/API adapters and CI registration included. No automatic bootstrap or fabricated official category scale; usable maintenance starter data remains an explicit Task7 design question.
+- Actual existing-path persistence RED probe is documented separately from the unchanged dedicated runnable real-PG exact vinyl.vg_plus/independentband4 RED→GREEN test. Full serial real-DB workspace467/467 across65files, lint/typecheck/production build/schema PASS; later scoped fixture-teardown-only adjustment has15/15 focused evidence. Strict routes, ownership/lifecycle, history/split, DB scope/immutability and real option/scheme lock waits are covered; failed attempts retained honestly.
+- Exact-source CI [39072253539](https://github.com/acciento89-bot/sammlerraum/actions/runs/39072253539), job117512104742 SUCCESS: dedicated DB integration,29 browser journeys, unit/lint/types/build/migrations/Compose,both Docker images and native Sharp. Backend log is explicitly truncated, exact run remains linked; no unsupported database test count inferred from the truncated tail. Implementation/report/review/raw chronology saved on feature branch; canonical31/91, Phase05 4/7, nextTask5. Source remains unmerged/undeployed.
