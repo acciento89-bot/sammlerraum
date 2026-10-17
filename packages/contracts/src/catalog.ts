@@ -96,7 +96,11 @@ export type CanonicalCatalogAttributeValue = CanonicalCustomFieldValue;
 
 // Authored reference content has a primary language and only explicit translations.
 // These whitelists intentionally cannot accept ownership, purchase or condition DTOs.
-const CatalogIdSchema = z.string().uuid();
+// PostgreSQL UUID columns return lowercase; authored snapshots use the same identity form.
+const CatalogIdSchema = z
+  .string()
+  .uuid()
+  .transform((id) => id.toLowerCase());
 const CatalogLanguageSchema = z.string().regex(/^[a-z]{2,3}(?:-[A-Z]{2})?$/u);
 const CatalogTextValueSchema = z
   .string()

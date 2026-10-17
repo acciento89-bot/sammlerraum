@@ -34,8 +34,9 @@ export class CatalogServiceError extends Error {
 function invalid(): never {
   throw new CatalogServiceError("CATALOG_INPUT_INVALID");
 }
-function validId(id: string): void {
+function canonicalId(id: string): string {
   if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/iu.test(id)) invalid();
+  return id.toLowerCase();
 }
 function validRevision(revision: number): void {
   if (!Number.isSafeInteger(revision) || revision < 1 || revision > 2_147_483_647) invalid();
@@ -247,7 +248,7 @@ export function createCatalogMutationService(tx: CatalogTransaction) {
     change: (state: CatalogSnapshot) => Promise<void>,
     rollbackFromRevision: number | null = null,
   ) {
-    validId(entryId);
+    entryId = canonicalId(entryId);
     validRevision(expectedRevision);
     await tx.$queryRaw`SELECT "id" FROM "CatalogEntry" WHERE "id" = ${entryId}::uuid FOR UPDATE`;
     const current = await readState(tx, entryId);
@@ -324,7 +325,7 @@ export function createCatalogMutationService(tx: CatalogTransaction) {
     variantId: string,
     input: unknown,
   ) {
-    validId(variantId);
+    variantId = canonicalId(variantId);
     const parsed = CatalogVariantInputSchema.safeParse(input);
     if (!parsed.success) invalid();
     return mutate(entryId, expectedRevision, async (state) => {
@@ -354,6 +355,8 @@ export function createCatalogMutationService(tx: CatalogTransaction) {
           identifier.value === data.value,
       );
       // Duplicate authored identifiers with identical provenance are a no-op; differing sources are a canonical change.
+      // Re-adding an inactive historical tuple creates a new UUID; restoring a
+      // snapshot is the operation that reactivates its retained historical UUID.
       if (existing) {
         id = existing.id;
         existing.sources = data.sources;
@@ -373,6 +376,7 @@ export function createCatalogMutationService(tx: CatalogTransaction) {
     expectedRevision: number,
     targetRevision: number,
   ) {
+    entryId = canonicalId(entryId);
     validRevision(targetRevision);
     return mutate(
       entryId,
@@ -416,7 +420,7 @@ export function createCatalogMaintenanceService(database: CatalogDatabase) {
     entryId: string,
     revision: number,
   ): Promise<CatalogEntryRevision | null> {
-    validId(entryId);
+    entryId = canonicalId(entryId);
     validRevision(revision);
     const row = await database.catalogRevision.findUnique({
       where: { entryId_revision: { entryId, revision } },

@@ -114,3 +114,39 @@ Root-owned progress/context edits were preserved and excluded from staging. No s
 ## Costs and integration obligations
 
 The explicit JSON record schemas need deliberate versioned extension for richer locale/provenance formats. Retaining inactive variant/identifier rows grows stored history; Task 6 must hide inactive candidates and block new links to them while preserving existing personal items. No current deletion API forecloses Task 6's later safe unlink/delete policy. Immutable history intentionally does not prohibit operator-level DELETE. The supplied mutation seam assumes an active caller transaction and server-side authority checks; it is not an authorization API. No known functional failure remains in the covered scope. Independent review and root CI are still required before completion persistence.
+
+## Review fix round 1 — UUID identity normalization (I1)
+
+Reviewed `task-2-review.md` against source base `2d5f3e52d813195bbcd63b2f4e1963799c046798`. The Important finding was valid: accepted uppercase UUID strings could remain uppercase inside authored snapshots, while PostgreSQL UUID columns returned lowercase strings. This broke category/definition/variant identity comparisons and required historical rollback. The original implementation's covered-scope claim missed this accepted-input case.
+
+Added three real-PostgreSQL regressions before changing production code:
+
+```sh
+source ../sammlerraum-test-env.sh
+RUN_DATABASE_INTEGRATION=1 npm exec --yes --package=pnpm@10.17.1 -- pnpm vitest run packages/domain/src/catalog/catalog-service.integration.test.ts -t 'uppercase|legacy snapshot'
+```
+
+`logs/task-2-fix-1-red.log`: 3 failed, 8 skipped. The uppercase-category create/update/rollback scenario threw `CATALOG_INPUT_INVALID`; valid uppercase definition input threw `CATALOG_ATTRIBUTE_CATEGORY_MISMATCH`; a manually seeded legacy uppercase snapshot returned uppercase identity strings instead of canonical UUIDs. These were actual service/database behavioral failures, with fixtures and imports working.
+
+Task2's shared UUID input/snapshot schema now normalizes accepted UUIDs to lowercase. The separately supplied entry and variant command IDs are also validated and normalized before use. Snapshot parsing normalizes legacy identity representations without updating their stored JSON. This preserves historical authored content and immutable history while comparing the same database identity consistently. Template-definition/category/entry guards remain intact; identifier namespace, type, original value, language and other authored strings are not case-normalized by this change.
+
+The new real-PG cases cover uppercase category/template, definition, entry and variant IDs; variant-targeted identifier inputs and identifier deduplication across UUID casing; variant and entry no-ops; historical reads/rollback; mixed-case duplicate definition rejection; and foreign-category/foreign-entry rejection after canonicalization. A legacy revision fixture includes uppercase entry/category/definition/variant/identifier UUIDs, and the test confirms its raw persisted snapshot JSON remains exactly unchanged after reads and rollback. No migration or database-history edit was made.
+
+GREEN and verification commands, all after the same environment source:
+
+```sh
+RUN_DATABASE_INTEGRATION=1 npm exec --yes --package=pnpm@10.17.1 -- pnpm vitest run packages/domain/src/catalog/catalog-service.test.ts packages/domain/src/catalog/catalog-service.integration.test.ts
+npm exec --yes --package=pnpm@10.17.1 -- pnpm lint
+npm exec --yes --package=pnpm@10.17.1 -- pnpm typecheck
+git diff --check -- packages/contracts/src/catalog.ts packages/domain/src/catalog/catalog-service.ts packages/domain/src/catalog/catalog-service.integration.test.ts
+```
+
+- `logs/task-2-fix-1-green.log`: 13/13 passed, 2 files (11 real-PG integration + 2 unit), clean output.
+- `logs/task-2-fix-1-lint.log`: all workspace lint checks passed.
+- `logs/task-2-fix-1-typecheck.log`: all workspace typechecks passed.
+- Changed source-path whitespace check passed; the previously documented unchanged applied-SQL EOF exception remains.
+- Full suite and build were not repeated for this narrow fix, per root's instruction; prior results belong to the original implementation above. Root's final exact-commit CI remains the final broad gate.
+
+M1 policy documentation only: adding an identifier tuple absent from the active snapshot creates a new UUID even if that tuple exists in an inactive historical row. Restoring an old snapshot reactivates that snapshot's retained identifier UUID. Consumers must not assume a tuple always maps to one UUID across separate re-additions. Added this policy beside identifier deduplication in the service; no identity-reuse behavior changed. Later task integration can deliberately refine that policy, as root approved.
+
+Fix files: `packages/contracts/src/catalog.ts`, `packages/domain/src/catalog/catalog-service.ts`, `packages/domain/src/catalog/catalog-service.integration.test.ts`, this appended report and `logs/task-2-fix-1-*.log`. Root-owned progress/context/review files remain excluded. Status: DONE, pending independent fix review and root exact-commit CI; no known unresolved functional failure in the fix scope.

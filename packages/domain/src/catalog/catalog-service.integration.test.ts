@@ -97,6 +97,206 @@ describe.runIf(enabled)("revisioned global catalog PostgreSQL", () => {
     await prisma.$disconnect();
   });
 
+  it("canonicalizes uppercase category UUIDs through rollback and no-op commands", async () => {
+    const entry = await create({ categoryTemplateId: categoryId.toUpperCase() });
+    await service().updateCatalogEntry(entry.state.id.toUpperCase(), 1, {
+      text: { ...text, title: "Changed" },
+    });
+    const restored = await service().rollbackCatalogEntry(entry.state.id.toUpperCase(), 2, 1);
+    expect(restored).toMatchObject({
+      revision: 3,
+      rollbackFromRevision: 1,
+      state: { id: entry.state.id, categoryTemplateId: categoryId, text: { title: "Moneta" } },
+    });
+    expect((await service().updateCatalogEntry(entry.state.id.toUpperCase(), 3, {})).revision).toBe(
+      3,
+    );
+    expect(
+      (await service().getCatalogEntryAtRevision(entry.state.id.toUpperCase(), 1))!.state
+        .categoryTemplateId,
+    ).toBe(categoryId);
+  });
+
+  it("canonicalizes uppercase definition and variant references without weakening category or entry guards", async () => {
+    const entry = await create({
+      categoryTemplateId: categoryId.toUpperCase(),
+      attributes: [{ definitionId: yearId.toUpperCase(), value: 1999 }],
+    });
+    expect(entry.state.attributes[0]!.definitionId).toBe(yearId);
+    const variantInput = {
+      text,
+      attributes: [{ definitionId: yearId.toUpperCase(), value: 2000 }],
+    };
+    const variant = await service().addCatalogVariant(
+      entry.state.id.toUpperCase(),
+      1,
+      variantInput,
+    );
+    expect(variant.attributes[0]!.definitionId).toBe(yearId);
+    const changed = await service().updateCatalogVariant(
+      entry.state.id.toUpperCase(),
+      2,
+      variant.id.toUpperCase(),
+      { ...variantInput, text: { ...text, title: "Updated variant" } },
+    );
+    expect(changed.state.variants[0]!.id).toBe(variant.id);
+    const identifierInput = { namespace: "museum", type: "accession", value: "17", sources };
+    const identifier = await service().addExternalIdentifier(entry.state.id.toUpperCase(), 3, {
+      ...identifierInput,
+      variantId: variant.id.toUpperCase(),
+    });
+    expect(identifier.variantId).toBe(variant.id);
+    const sameIdentifier = await service().addExternalIdentifier(entry.state.id, 4, {
+      ...identifierInput,
+      variantId: variant.id,
+    });
+    expect(sameIdentifier).toMatchObject({ id: identifier.id, revision: 4 });
+    expect(
+      (
+        await service().updateCatalogVariant(
+          entry.state.id.toUpperCase(),
+          4,
+          variant.id.toUpperCase(),
+          { ...variantInput, text: { ...text, title: "Updated variant" } },
+        )
+      ).revision,
+    ).toBe(4);
+    const foreign = await create({ categoryTemplateId: foreignCategoryId.toUpperCase() });
+    const foreignVariant = await service().addCatalogVariant(foreign.state.id, 1, { text });
+    await expect(
+      service().addExternalIdentifier(entry.state.id.toUpperCase(), 4, {
+        ...identifierInput,
+        variantId: foreignVariant.id.toUpperCase(),
+      }),
+    ).rejects.toMatchObject({ code: "CATALOG_VARIANT_NOT_FOUND" });
+    await expect(
+      service().updateCatalogEntry(entry.state.id.toUpperCase(), 4, {
+        attributes: [{ definitionId: foreignDefinitionId.toUpperCase(), value: 1 }],
+      }),
+    ).rejects.toMatchObject({ code: "CATALOG_ATTRIBUTE_CATEGORY_MISMATCH" });
+    await expect(
+      service().updateCatalogEntry(entry.state.id.toUpperCase(), 4, {
+        attributes: [
+          { definitionId: yearId, value: 1 },
+          { definitionId: yearId.toUpperCase(), value: 2 },
+        ],
+      }),
+    ).rejects.toMatchObject({ code: "CATALOG_INPUT_INVALID" });
+    expect(await service().getCatalogEntryAtRevision(entry.state.id, 5)).toBeNull();
+    const restored = await service().rollbackCatalogEntry(entry.state.id.toUpperCase(), 4, 1);
+    expect(restored.revision).toBe(5);
+    expect(restored.state).toEqual(entry.state);
+    expect(
+      (await service().getCatalogEntryAtRevision(entry.state.id.toUpperCase(), 4))!.state
+        .identifiers[0],
+    ).toMatchObject({ id: identifier.id, variantId: variant.id });
+  });
+
+  it("normalizes legacy snapshot UUIDs on read and rollback without rewriting stored history", async () => {
+    const entryId = randomUUID();
+    const variantId = randomUUID();
+    const identifierId = randomUUID();
+    const authoredText = { ...text, translations: [] };
+    const legacySnapshot = {
+      schemaVersion: 1,
+      id: entryId.toUpperCase(),
+      categoryTemplateId: categoryId.toUpperCase(),
+      text: authoredText,
+      sources,
+      attributes: [
+        { definitionId: yearId.toUpperCase(), key: "year", type: "INTEGER", value: 1970 },
+      ],
+      variants: [
+        {
+          id: variantId.toUpperCase(),
+          text: authoredText,
+          sources: [],
+          attributes: [
+            { definitionId: yearId.toUpperCase(), key: "year", type: "INTEGER", value: 1971 },
+          ],
+        },
+      ],
+      identifiers: [
+        {
+          id: identifierId.toUpperCase(),
+          variantId: variantId.toUpperCase(),
+          namespace: "museum",
+          type: "accession",
+          value: "17",
+          sources,
+        },
+      ],
+    };
+    await prisma!.$transaction(async (tx) => {
+      await tx.catalogEntry.create({
+        data: {
+          id: entryId,
+          categoryTemplateId: categoryId,
+          authored: { text: authoredText, sources },
+        },
+      });
+      await tx.catalogVariant.create({
+        data: { id: variantId, entryId, authored: { text: authoredText, sources: [] } },
+      });
+      await tx.catalogExternalIdentifier.create({
+        data: {
+          id: identifierId,
+          entryId,
+          variantId,
+          namespace: "museum",
+          type: "accession",
+          value: "17",
+          sources,
+        },
+      });
+      await tx.catalogAttributeValue.createMany({
+        data: [
+          {
+            entryId,
+            categoryTemplateId: categoryId,
+            definitionId: yearId,
+            targetKey: "entry",
+            value: 1970,
+          },
+          {
+            entryId,
+            categoryTemplateId: categoryId,
+            definitionId: yearId,
+            variantId,
+            targetKey: variantId,
+            value: 1971,
+          },
+        ],
+      });
+      await tx.catalogRevision.create({ data: { entryId, revision: 1, snapshot: legacySnapshot } });
+    });
+    const historical = await service().getCatalogEntryAtRevision(entryId.toUpperCase(), 1);
+    expect(historical!.state).toMatchObject({
+      id: entryId,
+      categoryTemplateId: categoryId,
+      attributes: [{ definitionId: yearId }],
+      variants: [{ id: variantId, attributes: [{ definitionId: yearId }] }],
+      identifiers: [{ id: identifierId, variantId }],
+    });
+    await service().updateCatalogEntry(entryId.toUpperCase(), 1, {
+      text: { ...text, title: "Changed" },
+    });
+    const restored = await service().rollbackCatalogEntry(entryId.toUpperCase(), 2, 1);
+    expect(restored).toMatchObject({
+      revision: 3,
+      rollbackFromRevision: 1,
+      state: historical!.state,
+    });
+    expect((await service().updateCatalogEntry(entryId.toUpperCase(), 3, {})).revision).toBe(3);
+    expect(
+      (
+        await prisma!.catalogRevision.findUniqueOrThrow({
+          where: { entryId_revision: { entryId, revision: 1 } },
+        })
+      ).snapshot,
+    ).toEqual(legacySnapshot);
+  });
+
   it("guards persisted revision snapshots against database UPDATE", async () => {
     const entry = await create();
     await expect(
