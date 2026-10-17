@@ -78,15 +78,25 @@ const activeTemporary = new Set<string>();
 const stagingName =
   /^\.storage-([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\.tmp$/i;
 
-export type StorageCleanupCursor = { walk?: AsyncGenerator<string> };
+type StagingScanEntry = { path: string } | { error: unknown };
+export type StorageCleanupCursor = { walk?: AsyncGenerator<StagingScanEntry> };
 
-async function* stagingPaths(directory: string): AsyncGenerator<string> {
-  const stat = await inspect(directory);
-  if (!stat) return;
-  assertDirectory(stat);
-  for (const entry of await readdir(directory, { withFileTypes: true })) {
+async function* stagingPaths(directory: string): AsyncGenerator<StagingScanEntry> {
+  let entries;
+  try {
+    const stat = await inspect(directory);
+    if (!stat) return;
+    assertDirectory(stat);
+    entries = await readdir(directory, { withFileTypes: true });
+  } catch (error) {
+    // Report a failed subtree as one budgeted entry, then resume its parent's
+    // healthy siblings. A later traversal will retry this directory.
+    yield { error };
+    return;
+  }
+  for (const entry of entries) {
     const path = join(directory, entry.name);
-    yield path;
+    yield { path };
     if (entry.isDirectory() && !entry.isSymbolicLink()) yield* stagingPaths(path);
   }
 }
@@ -114,6 +124,7 @@ export async function cleanupLocalStorageTemporaryFiles(
   const cursor = options.cursor ?? {};
   cursor.walk ??= stagingPaths(resolve(root));
   const cutoff = Date.now() - options.maxAgeHours * 3_600_000;
+  let failure: unknown;
   try {
     for (let count = 0; count < budget; count++) {
       const next = await cursor.walk.next();
@@ -121,31 +132,44 @@ export async function cleanupLocalStorageTemporaryFiles(
         delete cursor.walk;
         break;
       }
-      const path = next.value;
-      const match = stagingName.exec(path.split(sep).at(-1)!);
-      if (!match || activeTemporary.has(path)) continue;
-      const before = await inspect(path);
-      if (!before?.isFile() || before.isSymbolicLink() || before.mtimeMs > cutoff) continue;
-      await options.withLock(`staging:${match[1]}`, async () => {
-        const current = await inspect(path);
-        if (
-          current?.isFile() &&
-          !current.isSymbolicLink() &&
-          current.mtimeMs <= cutoff &&
-          !activeTemporary.has(path)
-        )
-          await unlink(path).catch((error) => {
-            if (filesystemCode(error) !== "ENOENT") throw error;
-          });
-      });
+      if ("error" in next.value) {
+        failure ??= next.value.error;
+        continue;
+      }
+      const path = next.value.path;
+      try {
+        const match = stagingName.exec(path.split(sep).at(-1)!);
+        if (!match || activeTemporary.has(path)) continue;
+        const before = await inspect(path);
+        if (!before?.isFile() || before.isSymbolicLink() || before.mtimeMs > cutoff) continue;
+        await options.withLock(`staging:${match[1]}`, async () => {
+          const current = await inspect(path);
+          if (
+            current?.isFile() &&
+            !current.isSymbolicLink() &&
+            current.mtimeMs <= cutoff &&
+            !activeTemporary.has(path)
+          )
+            await unlink(path).catch((error) => {
+              if (filesystemCode(error) !== "ENOENT") throw error;
+            });
+        });
+      } catch (error) {
+        // Inspection, lock and deletion failures must not discard scan progress.
+        // Keep reporting failure to the worker while trying later eligible files.
+        failure ??= error;
+      }
     }
   } catch (error) {
+    // Only an unexpected iterator failure closes it; normal filesystem errors
+    // are contained inside the traversal and per-entry work above.
     await cursor.walk?.return(undefined).catch(() => undefined);
     delete cursor.walk;
     throw safeError(error);
   } finally {
     if (!options.cursor) await cursor.walk?.return(undefined);
   }
+  if (failure) throw safeError(failure);
 }
 
 export class LocalPersistentStorage implements StorageProvider {

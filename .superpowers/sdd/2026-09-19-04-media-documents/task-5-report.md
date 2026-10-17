@@ -50,3 +50,24 @@ No local Docker/PostgreSQL exists. Live migrations, SQL triggers/Prisma adapter 
 New DB cases cover: shared media/document/avatar links and owner denial; candidate recheck/relink rejection; simultaneous final unlinks and rollback; both actual reference-first and cleanup-first races with observed pg_stat_activity lock blocking; retained soft deletion and hard cascade; a blocked original upload publishing after row deletion and denied reads; failed/busy asset and tombstone fairness; real Sharp medium variant publication after asset/variant deletion and reconciliation; actual quantity split shared references; separate staging sessions; and server-terminated staging session followed by failed stale rename. Existing media read tests continue proving retained unlinked bytes inaccessible.
 
 Self-review checked schema/trigger scope, row/asset lock order, bounded batches, durable-key-before-delete ordering, retry after partial byte deletion, all production constructor wiring and queue/shutdown ordering. Independent review remains controller-owned. The principal unresolved confidence limit is the unexecuted live PostgreSQL gate, not a known waived implementation defect. Permanent tombstone accumulation and coordinated old-writer rollout are deliberate costs, not arbitrary expiry/workarounds. Controller should transfer the explicit rulings above to the ledger when reviewing/checking off, without marking complete before CI.
+
+## Review fix round 1 — Important R1
+
+Base candidate: `8b199e6d0d50fd20c98c0df0a1b2a6078d56ec8a`. Read the full independent review in task-5-review.md and reproduced R1 before changing production code. Scope is only staging-scan failure fairness; nonblocking M1 remains deferred as instructed.
+
+Root cause: the outer sweep catch closed/discarded the entire recursive generator on a file inspection/lock/unlink failure. A recursive enumeration exception also closed the generator itself. Both restarted subsequent polls at an earlier persistent failure, starving healthy later siblings.
+
+Correction: traversal contains each directory's inspection/enumeration failure and yields it as one budgeted error entry before returning to the parent. Per-file failures are accumulated while the current bounded batch continues. The function still rejects with a safe storage error after the batch, so the worker logs/retries failures, but it preserves the live cursor beyond those entries. Completion starts a later traversal that retries failed paths. Only an unexpected iterator failure closes/resets the generator. Age gates, exact reserved-name matching, symlink checks, active-write exclusion, shared staging locks and per-poll entry budget remain intact. No generic provider contract, schema, default, route or other behavior changed.
+
+Added real filesystem regressions in packages/storage/src/local-storage.test.ts: an early a-blocked directory and a later z-healthy directory each hold old reserved staging files. Directory permissions0500 reproduce unlink failure; permissions0000 reproduce recursive enumeration failure. With budget one, eight polls through the same cursor must remove the healthy later file despite persistent early failure. Permissions are restored, and further bounded polls must remove the previously failed file. Fixture permissions are always restored before teardown. These tests use actual filesystem operations rather than mocks; they skip only under root, which bypasses the permission boundary. Both ran locally as uid501 and passed, without an extra skip.
+
+Observed commands/results (complete adjacent logs):
+
+- RED: `node node_modules/vitest/vitest.mjs run packages/storage/src/local-storage.test.ts` — **2 failed,21 passed**, because the healthy later file still existed in both permission cases (`task-5-r1-red.log`).
+- GREEN: `node node_modules/vitest/vitest.mjs run packages/storage/src/local-storage.test.ts packages/storage/src/staging-lock.integration.test.ts` — **24 passed,2 database-gated skips** (`task-5-r1-green.log`).
+- Formatted the two changed storage files with the installed Prettier (`task-5-r1-format.log`).
+- Full suite, once after the changed code: `node node_modules/vitest/vitest.mjs run` — **329 passed,41 database-gated skips;46 files passed,8 skipped; zero failures**,3.00s (`task-5-r1-full-suite.log`). No skipped database case is counted as passing.
+- Relevant lint: pinned `pnpm --filter @sammlerraum/storage lint` — exit0 (`task-5-r1-lint.log`).
+- Typecheck covering the workspace .ts sources and new cursor/worker types: `node node_modules/typescript/bin/tsc --noEmit --project tsconfig.base.json` — exit0 (`task-5-r1-typecheck.log`, empty on success).
+
+No extra build/browser/database rerun was performed locally for this storage-only fix. Remote CI on the exact fix and a scoped independent rereview remain controller gates. Controller-owned progress/brief/review files were preserved; no push, deployment or production cleanup performed.

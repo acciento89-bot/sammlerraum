@@ -211,3 +211,48 @@ it("bounds staging traversal and resumes the next batch without starving later f
     await rm(root, { recursive: true, force: true });
   }
 });
+
+it.skipIf(process.getuid?.() === 0).each([
+  { mode: 0o500, failure: "unlink" },
+  { mode: 0o000, failure: "recursive enumeration" },
+])("continues past persistent $failure failures and retries after recovery", async ({ mode }) => {
+  const { cleanupLocalStorageTemporaryFiles } = await import("./local-storage");
+  const { chmod, utimes } = await import("node:fs/promises");
+  const root = await temporaryRoot();
+  const blocked = join(root, "a-blocked");
+  const healthy = join(root, "z-healthy");
+  const name = ".storage-00000000-0000-4000-8000-000000000001.tmp";
+  for (const directory of [blocked, healthy]) {
+    await mkdir(directory);
+    await writeFile(join(directory, name), "crashed staging");
+    await utimes(join(directory, name), new Date(0), new Date(0));
+  }
+  const storage = new LocalPersistentStorage(root);
+  const options = {
+    maxAgeHours: 24,
+    maxEntries: 1,
+    cursor: {},
+    withLock: async <T>(_id: string, work: () => Promise<T>) => work(),
+  };
+  let failures = 0;
+  const poll = async () => {
+    try {
+      await cleanupLocalStorageTemporaryFiles(root, options);
+    } catch (error) {
+      expect(error).toMatchObject({ code: "STORAGE_IO_ERROR" });
+      failures++;
+    }
+  };
+  try {
+    await chmod(blocked, mode);
+    for (let count = 0; count < 8; count++) await poll();
+    expect(failures).toBeGreaterThan(0);
+    expect(await storage.exists(`z-healthy/${name}`)).toBe(false);
+    await chmod(blocked, 0o700);
+    expect(await storage.exists(`a-blocked/${name}`)).toBe(true);
+    for (let count = 0; count < 8; count++) await poll();
+    expect(await storage.exists(`a-blocked/${name}`)).toBe(false);
+  } finally {
+    await chmod(blocked, 0o700);
+  }
+});

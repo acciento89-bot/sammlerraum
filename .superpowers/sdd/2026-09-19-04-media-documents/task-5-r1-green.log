@@ -1,0 +1,11 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ✓ |workspace| packages/storage/src/staging-lock.integration.test.ts (3 tests | 2 skipped) 9ms
+ ✓ |workspace| packages/storage/src/local-storage.test.ts (23 tests) 42ms
+
+ Test Files  2 passed (2)
+      Tests  24 passed | 2 skipped (26)
+   Start at  21:11:56
+   Duration  297ms (transform 62ms, setup 9ms, collect 92ms, tests 51ms, environment 0ms, prepare 92ms)
+
