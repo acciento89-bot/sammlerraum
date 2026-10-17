@@ -1,0 +1,9 @@
+
+> @sammlerraum/domain@ typecheck /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain
+> tsc --noEmit --project ../../tsconfig.base.json
+
+../../apps/web/src/lib/catalog-proposal-routes.test.ts(21,24): error TS2304: Cannot find name 'BodyInit'.
+../../apps/web/src/lib/catalog-proposal-routes.test.ts(43,271): error TS2304: Cannot find name 'BodyInit'.
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @sammlerraum/domain@ typecheck: `tsc --noEmit --project ../../tsconfig.base.json`
+Exit status 2

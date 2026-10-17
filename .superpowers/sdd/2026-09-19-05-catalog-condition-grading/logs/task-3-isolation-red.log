@@ -1,0 +1,92 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| packages/domain/src/catalog/proposal-service.test.ts (16 tests | 1 failed | 15 skipped) 157ms
+   ↓ catalog proposal moderation PostgreSQL > does not auto-apply a stale base and commits CONFLICT before returning its conflict error
+   ↓ catalog proposal moderation PostgreSQL > corrects and retires references with CAS, entry scope, normalized UUIDs and historical identities
+   ↓ catalog proposal moderation PostgreSQL > creates a new entry once and retains authored proposal provenance with its resulting revision
+   ↓ catalog proposal moderation PostgreSQL > supports corrections, authored translations, variant references, source updates and reference removal
+   ↓ catalog proposal moderation PostgreSQL > hides foreign proposal state and denies all review and canonical decisions without persisted authority
+   ↓ catalog proposal moderation PostgreSQL > serializes competing entry proposals and never loses an approved change
+   ↓ catalog proposal moderation PostgreSQL > rolls canonical changes and decision metadata back under an enclosing transaction
+   ↓ catalog proposal moderation PostgreSQL > keeps non-stale semantic validation failures pending without partial canonical writes
+   ↓ catalog proposal moderation PostgreSQL > records authorized rollback reasons and no-op results, with CAS checked before audit
+   ↓ catalog proposal moderation PostgreSQL > blocks SQL role revocation until the authorized transaction commits and denies the next decision
+   ↓ catalog proposal moderation PostgreSQL > rejects private fields, role spoofing, unsafe provenance, malformed IDs and oversized or unserializable input
+   ↓ catalog proposal moderation PostgreSQL > paginates own and moderator views without overlap and rejects invalid list cursors or limits
+   ↓ catalog proposal moderation PostgreSQL > atomically enforces pending, rolling daily and retained-history quotas without deleting audit rows
+   ↓ catalog proposal moderation PostgreSQL > checks CAS before approving a no-op and points successful no-ops at their unchanged revision
+   ↓ catalog proposal moderation PostgreSQL > rejects foreign variant reassignment, duplicate identifier tuples, malformed IDs and stale removal
+   × catalog proposal moderation PostgreSQL > rejects unsupported submission isolation after a preestablished RepeatableRead snapshot 40ms
+     → expected { value: { …(14) } } to match object { Object (error) }
+(15 matching properties omitted from actual)
+     → expected 21 to be 20 // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/catalog/proposal-service.test.ts > catalog proposal moderation PostgreSQL > rejects unsupported submission isolation after a preestablished RepeatableRead snapshot
+AssertionError: expected { value: { …(14) } } to match object { Object (error) }
+(15 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "error": {
+-     "code": "CATALOG_PROPOSAL_ISOLATION_UNSUPPORTED",
++   "value": {
++     "baseRevision": null,
++     "createdAt": "2026-10-17T21:19:27.616Z",
++     "decisionReason": null,
++     "id": "f22551de-02aa-4951-b879-e275157ef363",
++     "moderatedAt": null,
++     "moderatorId": null,
++     "patch": {
++       "input": {
++         "attributes": [],
++         "categoryTemplateId": "0c833c60-059e-43c3-947d-b926541eaf81",
++         "sources": [],
++         "text": {
++           "description": "Opis",
++           "language": "pl",
++           "title": "Moneta",
++           "translations": [],
++         },
++       },
++       "kind": "CREATE_ENTRY",
++     },
++     "proposerId": "fixture_b3b9d7d3417b4570901ce89a9ddae03f_snapshot_quota",
++     "resultEntryId": null,
++     "resultRevision": null,
++     "source": null,
++     "state": "PENDING",
++     "summary": "Stale count snapshot",
++     "targetEntryId": null,
+    },
+  }
+
+ ❯ packages/domain/src/catalog/proposal-service.test.ts:751:25
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |workspace| packages/domain/src/catalog/proposal-service.test.ts > catalog proposal moderation PostgreSQL > rejects unsupported submission isolation after a preestablished RepeatableRead snapshot
+AssertionError: expected 21 to be 20 // Object.is equality
+
+- Expected
++ Received
+
+- 20
++ 21
+
+ ❯ packages/domain/src/catalog/proposal-service.test.ts:752:97
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 15 skipped (16)
+   Start at  23:19:27
+   Duration  531ms (transform 76ms, setup 5ms, collect 149ms, tests 157ms, environment 0ms, prepare 41ms)
+

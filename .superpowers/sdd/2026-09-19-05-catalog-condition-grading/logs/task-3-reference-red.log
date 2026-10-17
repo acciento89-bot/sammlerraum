@@ -1,0 +1,28 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| packages/domain/src/catalog/proposal-service.test.ts (2 tests | 1 failed) 172ms
+   ✓ catalog proposal moderation PostgreSQL > does not auto-apply a stale base and commits CONFLICT before returning its conflict error 35ms
+   × catalog proposal moderation PostgreSQL > corrects and retires references with CAS, entry scope, normalized UUIDs and historical identities 17ms
+     → catalog(...).updateExternalIdentifier is not a function
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/catalog/proposal-service.test.ts > catalog proposal moderation PostgreSQL > corrects and retires references with CAS, entry scope, normalized UUIDs and historical identities
+TypeError: catalog(...).updateExternalIdentifier is not a function
+ ❯ packages/domain/src/catalog/proposal-service.test.ts:59:28
+     57|     const reference = await catalog().addExternalIdentifier(entry.stat…
+     58|     const input = { namespace: "museum", type: "accession", value: "Co…
+     59|     await expect(catalog().updateExternalIdentifier(entry.state.id.toU…
+       |                            ^
+     60|     await expect(catalog().updateExternalIdentifier(other.state.id, 1,…
+     61|     const corrected = await catalog().updateExternalIdentifier(entry.s…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 1 passed (2)
+   Start at  23:10:07
+   Duration  530ms (transform 66ms, setup 5ms, collect 139ms, tests 172ms, environment 0ms, prepare 38ms)
+

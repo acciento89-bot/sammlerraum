@@ -11,7 +11,8 @@
     "./locations": "./src/locations.ts",
     "./openapi": "./src/openapi.ts",
     "./profile": "./src/profile.ts",
-    "./catalog": "./src/catalog.ts"
+    "./catalog": "./src/catalog.ts",
+    "./catalog-proposals": "./src/catalog-proposals.ts"
   },
   "scripts": {
     "build": "pnpm typecheck",

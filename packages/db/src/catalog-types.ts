@@ -1,4 +1,4 @@
-import type { Prisma, PrismaClient } from "@prisma/client";
+import type { CatalogProposal, Prisma, PrismaClient } from "@prisma/client";
 
 // Narrow client seam: callers can use an enclosing proposal-approval transaction.
 export type CatalogTransaction = Pick<
@@ -14,3 +14,12 @@ export type CatalogTransaction = Pick<
 >;
 export type CatalogDatabase = Pick<PrismaClient, "$transaction" | "catalogRevision">;
 export type CatalogJson = Prisma.InputJsonValue;
+
+export type CatalogProposalTransaction = CatalogTransaction &
+  Pick<
+    Prisma.TransactionClient,
+    "catalogProposal" | "applicationRoleGrant" | "catalogRollbackAudit"
+  >;
+export type CatalogProposalDatabase = Pick<PrismaClient, "$transaction">;
+
+export type CatalogProposalRecord = CatalogProposal;

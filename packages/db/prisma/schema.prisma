@@ -99,13 +99,13 @@ model UserProfile {
 }
 
 model User {
-  id                         String                @id
+  id                         String                 @id
   name                       String
   email                      String
-  emailVerified              Boolean               @default(false)
+  emailVerified              Boolean                @default(false)
   image                      String?
-  createdAt                  DateTime              @default(now())
-  updatedAt                  DateTime              @updatedAt
+  createdAt                  DateTime               @default(now())
+  updatedAt                  DateTime               @updatedAt
   sessions                   Session[]
   accounts                   Account[]
   passkeys                   Passkey[]
@@ -113,8 +113,12 @@ model User {
   collections                Collection[]
   tags                       Tag[]
   storageLocations           StorageLocation[]
-  locationHistoryAssignments ItemLocationHistory[] @relation("LocationHistoryAssignee")
+  locationHistoryAssignments ItemLocationHistory[]  @relation("LocationHistoryAssignee")
   mediaAssets                MediaAsset[]
+  applicationRoleGrant       ApplicationRoleGrant?
+  catalogProposals           CatalogProposal[]      @relation("ProposalProposer")
+  catalogDecisions           CatalogProposal[]      @relation("ProposalModerator")
+  catalogRollbacks           CatalogRollbackAudit[]
 
   @@unique([email])
   @@map("user")
@@ -593,6 +597,7 @@ model CatalogEntry {
   identifiers        CatalogExternalIdentifier[]
   attributes         CatalogAttributeValue[]
   revisions          CatalogRevision[]
+  proposals          CatalogProposal[]
 
   @@unique([id, categoryTemplateId])
 }
@@ -648,5 +653,70 @@ model CatalogRevision {
   createdAt            DateTime     @default(now())
   entry                CatalogEntry @relation(fields: [entryId], references: [id], onDelete: Restrict)
 
+  proposals      CatalogProposal[]
+  rollbackAudits CatalogRollbackAudit[]
+
   @@id([entryId, revision])
+}
+
+enum ApplicationRole {
+  MODERATOR
+  ADMIN
+}
+
+enum CatalogProposalState {
+  PENDING
+  APPROVED
+  REJECTED
+  CONFLICT
+}
+
+// Application authority is independent of collection membership. Operators only.
+model ApplicationRoleGrant {
+  userId    String          @id
+  role      ApplicationRole
+  grantedBy String          @db.VarChar(200)
+  reason    String          @db.VarChar(1000)
+  grantedAt DateTime        @default(now())
+  user      User            @relation(fields: [userId], references: [id], onDelete: Restrict)
+}
+
+model CatalogProposal {
+  id             String               @id @default(uuid()) @db.Uuid
+  proposerId     String
+  targetEntryId  String?              @db.Uuid
+  baseRevision   Int?
+  patch          Json
+  summary        String               @db.VarChar(500)
+  source         Json?
+  state          CatalogProposalState @default(PENDING)
+  createdAt      DateTime             @default(now())
+  moderatorId    String?
+  moderatedAt    DateTime?
+  decisionReason String?              @db.VarChar(1000)
+  resultEntryId  String?              @db.Uuid
+  resultRevision Int?
+  proposer       User                 @relation("ProposalProposer", fields: [proposerId], references: [id], onDelete: Restrict)
+  moderator      User?                @relation("ProposalModerator", fields: [moderatorId], references: [id], onDelete: Restrict)
+  targetEntry    CatalogEntry?        @relation(fields: [targetEntryId], references: [id], onDelete: Restrict)
+  result         CatalogRevision?     @relation(fields: [resultEntryId, resultRevision], references: [entryId, revision], onDelete: Restrict)
+
+  @@index([proposerId, state])
+  @@index([proposerId, createdAt, id])
+  @@index([state, createdAt, id])
+}
+
+model CatalogRollbackAudit {
+  id               String          @id @default(uuid()) @db.Uuid
+  entryId          String          @db.Uuid
+  expectedRevision Int
+  targetRevision   Int
+  revision         Int
+  actorId          String
+  reason           String          @db.VarChar(1000)
+  createdAt        DateTime        @default(now())
+  result           CatalogRevision @relation(fields: [entryId, revision], references: [entryId, revision], onDelete: Restrict)
+  actor            User            @relation(fields: [actorId], references: [id], onDelete: Restrict)
+
+  @@index([entryId, revision])
 }

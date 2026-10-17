@@ -1,0 +1,8 @@
+
+> @sammlerraum/domain@ typecheck /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain
+> tsc --noEmit --project ../../tsconfig.base.json
+
+src/catalog/proposal-service.ts(2,38): error TS2307: Cannot find module '@prisma/client' or its corresponding type declarations.
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @sammlerraum/domain@ typecheck: `tsc --noEmit --project ../../tsconfig.base.json`
+Exit status 2

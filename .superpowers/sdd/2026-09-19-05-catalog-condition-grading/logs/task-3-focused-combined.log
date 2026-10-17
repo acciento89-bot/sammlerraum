@@ -1,0 +1,14 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ✓ |workspace| packages/contracts/src/catalog-proposals.test.ts (2 tests) 5ms
+ ✓ |workspace| apps/web/src/lib/catalog-proposal-routes.test.ts (5 tests) 25ms
+ ✓ |workspace| apps/web/src/lib/catalog-proposal-routes.integration.test.ts (3 tests) 254ms
+ ✓ |workspace| packages/domain/src/catalog/proposal-service.test.ts (13 tests) 1378ms
+   ✓ catalog proposal moderation PostgreSQL > atomically enforces pending, rolling daily and retained-history quotas without deleting audit rows  879ms
+
+ Test Files  4 passed (4)
+      Tests  23 passed (23)
+   Start at  23:14:48
+   Duration  1.77s (transform 175ms, setup 20ms, collect 654ms, tests 1.66s, environment 0ms, prepare 196ms)
+

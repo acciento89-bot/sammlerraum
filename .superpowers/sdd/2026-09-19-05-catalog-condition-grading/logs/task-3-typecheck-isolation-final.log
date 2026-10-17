@@ -1,0 +1,23 @@
+
+> sammlerraum@ typecheck /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+> pnpm -r typecheck
+
+Scope: 9 of 10 workspace projects
+packages/config typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+packages/contracts typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+packages/queue typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+packages/storage typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+packages/queue typecheck: Done
+packages/testing typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+packages/config typecheck: Done
+packages/storage typecheck: Done
+packages/contracts typecheck: Done
+packages/testing typecheck: Done
+packages/db typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+packages/db typecheck: Done
+packages/domain typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+packages/domain typecheck: Done
+apps/web typecheck$ tsc --noEmit --project tsconfig.json
+apps/worker typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+apps/worker typecheck: Done
+apps/web typecheck: Done

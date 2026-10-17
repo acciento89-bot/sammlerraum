@@ -20,7 +20,9 @@
     "./items/tag-service": "./src/items/tag-service.ts",
     "./media/cleanup-service": "./src/media/cleanup-service.ts",
     "./catalog/category-template-service": "./src/catalog/category-template-service.ts",
-    "./catalog/catalog-service": "./src/catalog/catalog-service.ts"
+    "./catalog/catalog-service": "./src/catalog/catalog-service.ts",
+    "./catalog/proposal-service": "./src/catalog/proposal-service.ts",
+    "./authz/application-role": "./src/authz/application-role.ts"
   },
   "scripts": {
     "build": "pnpm typecheck",

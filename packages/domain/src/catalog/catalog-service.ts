@@ -24,6 +24,8 @@ type ErrorCode =
   | "CATALOG_REVISION_CONFLICT"
   | "CATALOG_ATTRIBUTE_CATEGORY_MISMATCH"
   | "CATALOG_VARIANT_NOT_FOUND"
+  | "CATALOG_IDENTIFIER_NOT_FOUND"
+  | "CATALOG_IDENTIFIER_CONFLICT"
   | "CATALOG_LIMIT_EXCEEDED";
 export class CatalogServiceError extends Error {
   constructor(readonly code: ErrorCode) {
@@ -371,6 +373,47 @@ export function createCatalogMutationService(tx: CatalogTransaction) {
       revision: result.revision,
     };
   }
+  async function updateExternalIdentifier(
+    entryId: string,
+    expectedRevision: number,
+    identifierId: string,
+    input: unknown,
+  ) {
+    identifierId = canonicalId(identifierId);
+    const parsed = CatalogExternalIdentifierInputSchema.safeParse(input);
+    if (!parsed.success) invalid();
+    return mutate(entryId, expectedRevision, async (state) => {
+      const index = state.identifiers.findIndex((identifier) => identifier.id === identifierId);
+      if (index < 0) throw new CatalogServiceError("CATALOG_IDENTIFIER_NOT_FOUND");
+      const data = parsed.data;
+      if (data.variantId && !state.variants.some((variant) => variant.id === data.variantId))
+        throw new CatalogServiceError("CATALOG_VARIANT_NOT_FOUND");
+      if (
+        state.identifiers.some(
+          (identifier) =>
+            identifier.id !== identifierId &&
+            identifier.variantId === data.variantId &&
+            identifier.namespace === data.namespace &&
+            identifier.type === data.type &&
+            identifier.value === data.value,
+        )
+      )
+        throw new CatalogServiceError("CATALOG_IDENTIFIER_CONFLICT");
+      state.identifiers[index] = { id: identifierId, ...data };
+    });
+  }
+  async function removeExternalIdentifier(
+    entryId: string,
+    expectedRevision: number,
+    identifierId: string,
+  ) {
+    identifierId = canonicalId(identifierId);
+    return mutate(entryId, expectedRevision, async (state) => {
+      const index = state.identifiers.findIndex((identifier) => identifier.id === identifierId);
+      if (index < 0) throw new CatalogServiceError("CATALOG_IDENTIFIER_NOT_FOUND");
+      state.identifiers.splice(index, 1);
+    });
+  }
   async function rollbackCatalogEntry(
     entryId: string,
     expectedRevision: number,
@@ -404,6 +447,8 @@ export function createCatalogMutationService(tx: CatalogTransaction) {
     addCatalogVariant,
     updateCatalogVariant,
     addExternalIdentifier,
+    updateExternalIdentifier,
+    removeExternalIdentifier,
     rollbackCatalogEntry,
   };
 }
@@ -450,6 +495,19 @@ export function createCatalogMaintenanceService(database: CatalogDatabase) {
       ),
     addExternalIdentifier: (entryId: string, expectedRevision: number, input: unknown) =>
       within((service) => service.addExternalIdentifier(entryId, expectedRevision, input)),
+    updateExternalIdentifier: (
+      entryId: string,
+      expectedRevision: number,
+      identifierId: string,
+      input: unknown,
+    ) =>
+      within((service) =>
+        service.updateExternalIdentifier(entryId, expectedRevision, identifierId, input),
+      ),
+    removeExternalIdentifier: (entryId: string, expectedRevision: number, identifierId: string) =>
+      within((service) =>
+        service.removeExternalIdentifier(entryId, expectedRevision, identifierId),
+      ),
     rollbackCatalogEntry: (entryId: string, expectedRevision: number, targetRevision: number) =>
       within((service) => service.rollbackCatalogEntry(entryId, expectedRevision, targetRevision)),
     getCatalogEntryAtRevision,

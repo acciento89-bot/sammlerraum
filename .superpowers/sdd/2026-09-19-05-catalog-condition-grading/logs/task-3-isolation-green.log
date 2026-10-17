@@ -1,0 +1,10 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ✓ |workspace| packages/domain/src/catalog/proposal-service.test.ts (16 tests | 15 skipped) 155ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 15 skipped (16)
+   Start at  23:19:45
+   Duration  510ms (transform 75ms, setup 5ms, collect 146ms, tests 155ms, environment 0ms, prepare 35ms)
+

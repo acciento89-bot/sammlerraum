@@ -120,7 +120,7 @@ jobs:
         run: pnpm build
       - name: Run real database health and pg-boss singleton integration tests
         run: >-
-          RUN_DATABASE_INTEGRATION=1 pnpm vitest run
+          RUN_DATABASE_INTEGRATION=1 pnpm vitest run --no-file-parallelism
           packages/db/src/postgres.integration.test.ts
           packages/db/src/media-migration.integration.test.ts
           packages/db/src/media-lock.integration.test.ts
@@ -139,6 +139,8 @@ jobs:
           packages/domain/src/custom-fields/custom-field-service.test.ts
           packages/domain/src/catalog/category-template-service.integration.test.ts
           packages/domain/src/catalog/catalog-service.integration.test.ts
+          packages/domain/src/catalog/proposal-service.test.ts
+          apps/web/src/lib/catalog-proposal-routes.integration.test.ts
           packages/domain/src/locations/location-service.test.ts
           apps/web/src/lib/security-service.integration.test.ts
           apps/web/src/app/api/v1/items/resource-route.integration.test.ts
