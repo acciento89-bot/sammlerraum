@@ -280,6 +280,7 @@ test.describe("item media and private documents", () => {
           let linkReleased = false;
           let stageCaptured = false;
           let cleanupCaptured = false;
+          let reloadListingStates: string[] = [];
           let compensated = false;
           const name = `cancel-${cancelStage}.png`;
           const targetAsset = page
@@ -293,6 +294,20 @@ test.describe("item media and private documents", () => {
               expect(response.status()).toBe(201);
               return (await response.json()).asset as { id: string };
             });
+          // Worker processing has its existing 50-second allowance. Await it separately
+          // from the ten-second route latches; no pending asset is delivered to the gallery.
+          const stageAsset = targetAsset.then(async (asset) => {
+            if (cancelStage === "reload") {
+              await expect
+                .poll(
+                  async () => (await db.mediaAsset.findUnique({ where: { id: asset.id } }))?.status,
+                  { timeout: 50_000 },
+                )
+                .toBe("READY");
+              events.push("real target worker READY");
+            }
+            return asset;
+          });
           const onResponse = (response: Response) => {
             if (
               linkId &&
@@ -330,9 +345,13 @@ test.describe("item media and private documents", () => {
             ) {
               // Reserve exactly one request before any await; later GETs cannot satisfy atStage.
               stageCaptured = true;
+              await stageAsset;
               const response = await route.fetch({ timeout: 10_000 });
               const listing = await response.json();
               expect(listing.images.some((link: { id: string }) => link.id === linkId)).toBe(true);
+              reloadListingStates = [...listing.images, ...listing.documents].map(
+                (link: { asset: { status: string } }) => link.asset.status,
+              );
               events.push("actual onChange GET held");
               atStage.release();
               await releaseStage.wait();
@@ -350,6 +369,11 @@ test.describe("item media and private documents", () => {
               const response = await route.fetch({ timeout: 10_000 });
               const listing = await response.json();
               expect(listing.images).toHaveLength(2);
+              expect(
+                [...listing.images, ...listing.documents].map(
+                  (link: { asset: { status: string } }) => link.asset.status,
+                ),
+              ).toEqual(["READY", "READY"]);
               expect(listing.images.some((link: { id: string }) => link.id === linkId)).toBe(false);
               events.push("post-delete cleanup GET held");
               atCleanup.release();
@@ -362,10 +386,17 @@ test.describe("item media and private documents", () => {
           await page.route(`**${base}/media`, handle);
           try {
             await Promise.all([
-              targetAsset,
+              stageAsset,
               upload.setInputFiles({ name, mimeType: "image/png", buffer: png }),
             ]);
             await atStage.wait();
+            if (cancelStage === "reload") {
+              expect(reloadListingStates, "post-link listing must not start polling").toEqual([
+                "READY",
+                "READY",
+                "READY",
+              ]);
+            }
             await page.getByRole("button", { name: t.cancel, exact: true }).click();
             events.push("cancel clicked");
             releaseStage.release();
@@ -375,8 +406,8 @@ test.describe("item media and private documents", () => {
             await expect.poll(() => db.mediaLink.count({ where: { itemId: item.id } })).toBe(2);
             if (cancelStage === "reload") {
               await atCleanup.wait();
-              // A polling GET cannot stand in for the awaited catch refresh: holding it
-              // would let the upload finish and this assertion would fail.
+              // Initial and real post-link listings are all READY, so polling never starts.
+              // This busy check observes completion; request identity follows from no poll source.
               await expect(upload).toBeDisabled();
               events.push("cleanup held while upload remains busy");
             }
