@@ -238,6 +238,7 @@
     "disposedNotice": "Dieses Stück ist als abgegeben markiert und kann nicht mehr bearbeitet werden.",
     "moneyInvalid": "Bitte gib einen gültigen Geldbetrag mit höchstens zwei Nachkommastellen ein.",
     "fieldInvalid": "Bitte prüfe die benutzerdefinierten Felder.",
+    "refreshError": "Die Änderungen wurden gespeichert, aber die Stückdetails konnten nicht neu geladen werden. Lade die Seite erneut, um den aktuellen Stand zu sehen.",
     "coreCreated": "Das Stück wurde angelegt. Die Zusatzdaten werden gespeichert …",
     "partialSaveError": "Das Stück wurde angelegt, aber Zusatzdaten konnten nicht vollständig gespeichert werden.",
     "metadataSaveError": "Die Zusatzdaten konnten nicht vollständig gespeichert werden.",

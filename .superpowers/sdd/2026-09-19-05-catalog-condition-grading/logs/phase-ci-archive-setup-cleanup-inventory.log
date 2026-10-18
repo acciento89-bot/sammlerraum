@@ -1,0 +1,14 @@
+Fixture cleanup provenance — transcription of actual pre-cleanup query output
+This file records the observed inventory from the diagnosis session; it is not a new query execution log.
+Owned PostgreSQL 17 test database, source ../sammlerraum-test-env.sh.
+Query: SELECT u.id,c.id,c.name,u."createdAt" FROM "user" u JOIN "Collection" c ON c."ownerId"=u.id WHERE u.email LIKE 'collections-browser-%@example.test' AND c.name='Acknowledged refresh failure' ORDER BY u."createdAt";
+
+user_id | collection_id | collection_name | created_at_utc
+1ccce5c6-2f22-4ac8-958b-2597184df806 | d36e6fd9-4464-451f-a885-c5545345fbe6 | Acknowledged refresh failure | 2026-10-18 01:24:05.002
+93ae3700-a64b-48a4-9b8c-77e725fe2187 | 6237eba7-c797-4228-8afb-ca0620076316 | Acknowledged refresh failure | 2026-10-18 01:25:07.049
+1892ebfc-862d-40fa-8cc7-3e99ae7ff4f5 | ab9bd66a-f956-4bb6-a80a-c387e4395b7d | Acknowledged refresh failure | 2026-10-18 01:26:27.542
+880dc50d-6494-4846-945d-b57ae0e1efdd | 9d2c62d9-f9c5-422d-9c1b-b9b525939f57 | Acknowledged refresh failure | 2026-10-18 01:27:47.402
+
+These four setup attempts timed out at the exact Tags action locator, before the first item write.
+Cleanup selected these exact user IDs with the synthetic email guard in one transaction.
+Actual cleanup command output is retained separately in phase-ci-archive-setup-cleanup.log: BEGIN, DELETE 0 (ItemLocationHistory), DELETE 4 (user), COMMIT.

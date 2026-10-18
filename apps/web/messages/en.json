@@ -238,6 +238,7 @@
     "disposedNotice": "This item is marked as disposed and can no longer be edited.",
     "moneyInvalid": "Enter a valid money amount with no more than two decimal places.",
     "fieldInvalid": "Check the custom fields.",
+    "refreshError": "The changes were saved, but the item details could not be refreshed. Reload to see the current details.",
     "coreCreated": "The item was created. Saving additional details…",
     "partialSaveError": "The item was created, but some additional details could not be saved.",
     "metadataSaveError": "Some additional details could not be saved.",

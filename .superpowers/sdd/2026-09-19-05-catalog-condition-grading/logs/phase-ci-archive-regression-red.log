@@ -1,0 +1,143 @@
+[WebServer] (node:80929) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 4 tests using 1 worker
+
+(node:80933) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [desktop] › e2e/collections-items.spec.ts:829:5 › localized collection and item management › acknowledged archive ignores an older active item snapshot (de) (6.7s)
+(node:80950) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  2 [desktop] › e2e/collections-items.spec.ts:829:5 › localized collection and item management › acknowledged archive ignores an older active item snapshot (en) (5.9s)
+(node:80965) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  3 [mobile] › e2e/collections-items.spec.ts:829:5 › localized collection and item management › acknowledged archive ignores an older active item snapshot (de) (5.8s)
+(node:80974) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  4 [mobile] › e2e/collections-items.spec.ts:829:5 › localized collection and item management › acknowledged archive ignores an older active item snapshot (en) (5.8s)
+
+
+  1) [desktop] › e2e/collections-items.spec.ts:829:5 › localized collection and item management › acknowledged archive ignores an older active item snapshot (de) 
+
+    Error: expect(locator).toBeDisabled() failed
+
+    Locator:  locator('.item-form button[type=submit]')
+    Expected: disabled
+    Received: enabled
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toBeDisabled" locator('.item-form button[type=submit]') with timeout 5000ms
+      - waiting for locator('.item-form button[type=submit]')
+        14 × locator resolved to <button type="submit">Stück speichern</button>
+           - unexpected value "enabled"
+
+
+      942 |             }),
+      943 |         );
+    > 944 |         await expect(save).toBeDisabled();
+          |                            ^
+      945 |         await expect(archive).toBeDisabled();
+      946 |         await expect(page.getByLabel(labels.title, { exact: true })).toBeDisabled();
+      947 |         await expect(
+        at /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/collections-items.spec.ts:944:28
+
+    Error Context: test-results/collections-items-localize-cd097-er-active-item-snapshot-de--desktop/error-context.md
+
+    Error Context: test-results/collections-items-localize-cd097-er-active-item-snapshot-de--desktop/error-context.md
+
+  2) [desktop] › e2e/collections-items.spec.ts:829:5 › localized collection and item management › acknowledged archive ignores an older active item snapshot (en) 
+
+    Error: expect(locator).toBeDisabled() failed
+
+    Locator:  locator('.item-form button[type=submit]')
+    Expected: disabled
+    Received: enabled
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toBeDisabled" locator('.item-form button[type=submit]') with timeout 5000ms
+      - waiting for locator('.item-form button[type=submit]')
+        14 × locator resolved to <button type="submit">Save item</button>
+           - unexpected value "enabled"
+
+
+      942 |             }),
+      943 |         );
+    > 944 |         await expect(save).toBeDisabled();
+          |                            ^
+      945 |         await expect(archive).toBeDisabled();
+      946 |         await expect(page.getByLabel(labels.title, { exact: true })).toBeDisabled();
+      947 |         await expect(
+        at /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/collections-items.spec.ts:944:28
+
+    Error Context: test-results/collections-items-localize-df2ea-er-active-item-snapshot-en--desktop/error-context.md
+
+    Error Context: test-results/collections-items-localize-df2ea-er-active-item-snapshot-en--desktop/error-context.md
+
+  3) [mobile] › e2e/collections-items.spec.ts:829:5 › localized collection and item management › acknowledged archive ignores an older active item snapshot (de) 
+
+    Error: expect(locator).toBeDisabled() failed
+
+    Locator:  locator('.item-form button[type=submit]')
+    Expected: disabled
+    Received: enabled
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toBeDisabled" locator('.item-form button[type=submit]') with timeout 5000ms
+      - waiting for locator('.item-form button[type=submit]')
+        14 × locator resolved to <button type="submit">Stück speichern</button>
+           - unexpected value "enabled"
+
+
+      942 |             }),
+      943 |         );
+    > 944 |         await expect(save).toBeDisabled();
+          |                            ^
+      945 |         await expect(archive).toBeDisabled();
+      946 |         await expect(page.getByLabel(labels.title, { exact: true })).toBeDisabled();
+      947 |         await expect(
+        at /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/collections-items.spec.ts:944:28
+
+    Error Context: test-results/collections-items-localize-cd097-er-active-item-snapshot-de--mobile/error-context.md
+
+    Error Context: test-results/collections-items-localize-cd097-er-active-item-snapshot-de--mobile/error-context.md
+
+  4) [mobile] › e2e/collections-items.spec.ts:829:5 › localized collection and item management › acknowledged archive ignores an older active item snapshot (en) 
+
+    Error: expect(locator).toBeDisabled() failed
+
+    Locator:  locator('.item-form button[type=submit]')
+    Expected: disabled
+    Received: enabled
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toBeDisabled" locator('.item-form button[type=submit]') with timeout 5000ms
+      - waiting for locator('.item-form button[type=submit]')
+        14 × locator resolved to <button type="submit">Save item</button>
+           - unexpected value "enabled"
+
+
+      942 |             }),
+      943 |         );
+    > 944 |         await expect(save).toBeDisabled();
+          |                            ^
+      945 |         await expect(archive).toBeDisabled();
+      946 |         await expect(page.getByLabel(labels.title, { exact: true })).toBeDisabled();
+      947 |         await expect(
+        at /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/collections-items.spec.ts:944:28
+
+    Error Context: test-results/collections-items-localize-df2ea-er-active-item-snapshot-en--mobile/error-context.md
+
+    Error Context: test-results/collections-items-localize-df2ea-er-active-item-snapshot-en--mobile/error-context.md
+
+  4 failed
+    [desktop] › e2e/collections-items.spec.ts:829:5 › localized collection and item management › acknowledged archive ignores an older active item snapshot (de) 
+    [desktop] › e2e/collections-items.spec.ts:829:5 › localized collection and item management › acknowledged archive ignores an older active item snapshot (en) 
+    [mobile] › e2e/collections-items.spec.ts:829:5 › localized collection and item management › acknowledged archive ignores an older active item snapshot (de) 
+    [mobile] › e2e/collections-items.spec.ts:829:5 › localized collection and item management › acknowledged archive ignores an older active item snapshot (en) 
+undefined
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test collections-items.spec.ts --project=desktop --project=mobile --grep acknowledged archive ignores --workers=1

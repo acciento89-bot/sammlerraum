@@ -13,7 +13,7 @@ import type { StorageLocation } from "@sammlerraum/contracts/locations";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { useEffect, useState, type FormEvent, type ReactNode } from "react";
+import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 
 import { errorMessage } from "../collections/collections-manager";
 import { CodeScanner } from "./code-scanner";
@@ -99,8 +99,38 @@ export function ItemForm({
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [status, setStatus] = useState("");
+  // Reads started before an acknowledged write cannot restore an older item snapshot.
+  const snapshotGeneration = useRef(0);
+
+  function applyItemSnapshot(body: ItemResponse) {
+    setItem(body.item);
+    setMetadata(body.metadata);
+    setCollectionId(body.item.collectionId);
+    setNodeId(body.item.nodeId ?? "");
+    setWorkingItemId(body.item.id);
+    const loadedIdentifiers = body.metadata?.identifiers.map(({ type, value }) => ({
+      type,
+      value,
+    }));
+    setIdentifiers(loadedIdentifiers?.length ? loadedIdentifiers : [{ type: "EAN", value: "" }]);
+    setInitialLocationId(body.metadata?.location?.id ?? null);
+  }
+
+  async function refreshItemSnapshot(targetId: string, generation: number) {
+    if (generation !== snapshotGeneration.current) return true;
+    try {
+      const body = await read<ItemResponse>(`/api/v1/items/${targetId}`);
+      if (generation === snapshotGeneration.current) applyItemSnapshot(body);
+      return true;
+    } catch {
+      if (generation !== snapshotGeneration.current) return true;
+      setError(t("refreshError"));
+      return false;
+    }
+  }
 
   useEffect(() => {
+    const generation = ++snapshotGeneration.current;
     let cancelled = false;
     void (async () => {
       try {
@@ -109,39 +139,27 @@ export function ItemForm({
           read<{ locations: StorageLocation[] }>("/api/v1/locations"),
           itemId ? read<ItemResponse>(`/api/v1/items/${itemId}`) : Promise.resolve(undefined),
         ]);
-        if (cancelled) return;
+        if (cancelled || generation !== snapshotGeneration.current) return;
         setCollections(collectionBody.collections);
         setLocations(locationBody.locations);
         if (itemBody) {
-          setItem(itemBody.item);
-          setMetadata(itemBody.metadata);
-          setCollectionId(itemBody.item.collectionId);
-          setNodeId(itemBody.item.nodeId ?? "");
-          setWorkingItemId(itemBody.item.id);
-          const loadedIdentifiers = itemBody.metadata?.identifiers.map(({ type, value }) => ({
-            type,
-            value,
-          }));
-          setIdentifiers(
-            loadedIdentifiers?.length ? loadedIdentifiers : [{ type: "EAN", value: "" }],
-          );
-          const locationId = itemBody.metadata?.location?.id ?? null;
-          setInitialLocationId(locationId);
+          applyItemSnapshot(itemBody);
         } else if (!initialCollectionId && collectionBody.collections[0]) {
           setCollectionId(collectionBody.collections[0].id);
         }
       } catch (problem) {
-        setError(
+        const message =
           problem instanceof Response
             ? await errorMessage(problem, common("error"))
-            : common("error"),
-        );
+            : common("error");
+        if (!cancelled && generation === snapshotGeneration.current) setError(message);
       } finally {
-        if (!cancelled) setLoading(false);
+        if (!cancelled && generation === snapshotGeneration.current) setLoading(false);
       }
     })();
     return () => {
       cancelled = true;
+      snapshotGeneration.current++;
     };
   }, [itemId, initialCollectionId, common]);
 
@@ -255,6 +273,7 @@ export function ItemForm({
         return;
       }
       const coreBody = (await coreResponse.json()) as { item: CollectibleItem };
+      const generation = ++snapshotGeneration.current;
       setItem(coreBody.item);
       if (!targetId) {
         targetId = coreBody.item.id;
@@ -300,6 +319,10 @@ export function ItemForm({
         return;
       }
 
+      if (!(await refreshItemSnapshot(targetId, generation))) {
+        setStatus(t("retryWithoutDuplicate"));
+        return;
+      }
       router.push(`/${locale}/items/${targetId}`);
       router.refresh();
     } catch (problem) {
@@ -322,8 +345,10 @@ export function ItemForm({
       const response = await fetch(`/api/v1/items/${workingItemId}/archive`, { method: "POST" });
       if (!response.ok) throw response;
       const body = (await response.json()) as { item: CollectibleItem };
+      const generation = ++snapshotGeneration.current;
       setItem(body.item);
       setStatus(t("archived"));
+      await refreshItemSnapshot(body.item.id, generation);
     } catch (problem) {
       setError(
         problem instanceof Response

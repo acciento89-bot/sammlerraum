@@ -824,4 +824,268 @@ test.describe("localized collection and item management", () => {
       await cleanupCollector(collector.userId);
     }
   });
+
+  for (const locale of ["de", "en"] as const) {
+    test(`acknowledged archive ignores an older active item snapshot (${locale})`, async ({
+      page,
+    }) => {
+      const labels = copy[locale];
+      const collector = await seedTestCollector();
+      let release = () => {};
+      try {
+        await loginTestCollector(page, locale, collector);
+        const { collection } = await createCollectionApi(page, "Archive snapshot regression");
+        const { customField } = await writeApi<{ customField: { id: string } }>(
+          page,
+          "POST",
+          `/api/v1/collections/${collection.id}/custom-fields`,
+          { name: "Edition", type: "SHORT_TEXT", options: [] },
+          201,
+        );
+        const { item } = await writeApi<{ item: { id: string } }>(
+          page,
+          "POST",
+          "/api/v1/items",
+          { collectionId: collection.id, title: "Archive snapshot original" },
+          201,
+        );
+        const path = `/api/v1/items/${item.id}`;
+        await writeApi(
+          page,
+          "PUT",
+          `${path}/custom-fields/${customField.id}`,
+          { value: "Original edition" },
+          200,
+        );
+        await page.goto(`/${locale}/items/${item.id}`);
+        const save = page.locator(".item-form button[type=submit]");
+        const archive = page.getByRole("button", { name: labels.archive, exact: true });
+        const details = page.getByRole("region", { name: labels.savedDetails, exact: true });
+        const condition = page.getByRole("region", {
+          name:
+            locale === "de" ? "Kategorie und eigener Zustand" : "Category and personal condition",
+          exact: true,
+        });
+        const grading = page.getByRole("region", {
+          name: locale === "de" ? "Externes Grading" : "External grading",
+          exact: true,
+        });
+        const category = condition.getByLabel(locale === "de" ? "Kategorie" : "Category", {
+          exact: true,
+        });
+        await expect(save).toBeEnabled();
+        await expect(details.getByText("Edition: Original edition", { exact: true })).toBeVisible();
+        await expect(category).toBeEnabled();
+        const gate = new Promise<void>((resolve) => {
+          release = resolve;
+        });
+        let began = () => {};
+        const started = new Promise<void>((resolve) => {
+          began = resolve;
+        });
+        let held = false;
+        let heldRequest: import("@playwright/test").Request | undefined;
+        await page.route(`**${path}`, async (route) => {
+          if (route.request().method() !== "GET" || held) {
+            await route.continue();
+            return;
+          }
+          held = true;
+          heldRequest = route.request();
+          const response = await route.fetch();
+          expect(response.status()).toBe(200);
+          const body = await response.json();
+          expect(body.item.archivedAt).toBeNull();
+          expect(body.metadata.customFieldValues).toContainEqual(
+            expect.objectContaining({ fieldDefinitionId: customField.id, value: "Edited edition" }),
+          );
+          began();
+          await gate;
+          await route.fulfill({ response });
+        });
+        await page.getByLabel(labels.title, { exact: true }).fill("Archive snapshot edited");
+        await page.getByLabel("Edition", { exact: true }).fill("Edited edition");
+        await save.click();
+        await started;
+        page.once("dialog", (dialog) => dialog.accept());
+        const archived = page.waitForResponse(
+          (response) =>
+            response.url().endsWith(`${path}/archive`) && response.request().method() === "POST",
+        );
+        await archive.click();
+        const archivedResponse = await archived;
+        expect(archivedResponse.status()).toBe(200);
+        const archivedBody = await archivedResponse.json();
+        expect(archivedBody.item.archivedAt).not.toBeNull();
+        await expect(page.getByText(labels.archivedMessage, { exact: true })).toBeVisible();
+        const persisted = await prisma.collectibleItem.findUniqueOrThrow({
+          where: { id: item.id },
+        });
+        expect(persisted.archivedAt?.toISOString()).toBe(archivedBody.item.archivedAt);
+        expect((await (await page.request.get(path)).json()).item.archivedAt).toBe(
+          archivedBody.item.archivedAt,
+        );
+        await expect(save).toBeDisabled();
+        const staleDelivered = page.waitForResponse(
+          (response) => response.request() === heldRequest,
+        );
+        release();
+        await (await staleDelivered).finished();
+        await page.unrouteAll({ behavior: "wait" });
+        await expect(save).toHaveText(labels.saveItem);
+        // Flush browser presentation after the real response body has been delivered.
+        await page.evaluate(
+          () =>
+            new Promise<void>((resolve) => {
+              const frame = (
+                globalThis as unknown as { requestAnimationFrame: (callback: () => void) => number }
+              ).requestAnimationFrame;
+              frame(() => frame(resolve));
+            }),
+        );
+        await expect(save).toBeDisabled();
+        await expect(archive).toBeDisabled();
+        await expect(page.getByLabel(labels.title, { exact: true })).toBeDisabled();
+        await expect(
+          page.getByText(
+            locale === "de"
+              ? "Dieses Stück ist archiviert und kann nicht mehr bearbeitet werden."
+              : "This item is archived and can no longer be edited.",
+            { exact: true },
+          ),
+        ).toBeVisible();
+        await expect(category).toBeDisabled();
+        await expect(
+          grading.getByRole("button", {
+            name: locale === "de" ? "Grading speichern" : "Save grading",
+            exact: true,
+          }),
+        ).toHaveCount(0);
+        await expect(
+          condition.getByRole("button", {
+            name: locale === "de" ? "Zustand speichern" : "Save condition",
+            exact: true,
+          }),
+        ).toHaveCount(0);
+        await expect(details.getByText("Edition: Edited edition", { exact: true })).toBeVisible();
+        const current = await (await page.request.get(path)).json();
+        expect(current.item.archivedAt).toBe(archivedBody.item.archivedAt);
+        expect(current.metadata.customFieldValues).toContainEqual(
+          expect.objectContaining({ fieldDefinitionId: customField.id, value: "Edited edition" }),
+        );
+      } finally {
+        release();
+        await page.unrouteAll({ behavior: "wait" });
+        await cleanupCollector(collector.userId);
+      }
+    });
+  }
+  test("acknowledged creation and archive survive snapshot refresh failures", async ({
+    page,
+  }, info) => {
+    const locale = localeFor(info);
+    const labels = copy[locale];
+    const collector = await seedTestCollector();
+    const refreshError =
+      locale === "de"
+        ? "Die Änderungen wurden gespeichert, aber die Stückdetails konnten nicht neu geladen werden. Lade die Seite erneut, um den aktuellen Stand zu sehen."
+        : "The changes were saved, but the item details could not be refreshed. Reload to see the current details.";
+    try {
+      await loginTestCollector(page, locale, collector);
+      const { collection } = await createCollectionApi(page, "Acknowledged refresh failure");
+      await page.goto(`/${locale}/items/new?collectionId=${collection.id}`);
+      const save = page.locator(".item-form button[type=submit]");
+      await expect(save).toBeEnabled();
+      let failNextRead = true;
+      let failedReads = 0;
+      let creates = 0;
+      let updates = 0;
+      page.on("request", (request) => {
+        const pathname = new URL(request.url()).pathname;
+        if (pathname === "/api/v1/items" && request.method() === "POST") creates++;
+        if (/^\/api\/v1\/items\/[^/]+$/u.test(pathname) && request.method() === "PATCH") updates++;
+      });
+      await page.route(/\/api\/v1\/items\/[^/?]+$/u, async (route) => {
+        if (route.request().method() === "GET" && failNextRead) {
+          failNextRead = false;
+          failedReads++;
+          await route.fulfill({ status: 503, json: { error: { code: "UNAVAILABLE" } } });
+        } else await route.continue();
+      });
+      await page.getByLabel(labels.title, { exact: true }).fill("Acknowledged original");
+      await page.getByLabel(labels.tags).fill("retained tag");
+      const created = page.waitForResponse(
+        (response) =>
+          response.url().endsWith("/api/v1/items") && response.request().method() === "POST",
+      );
+      await save.click();
+      const createdResponse = await created;
+      expect(createdResponse.status()).toBe(201);
+      const { item } = await createdResponse.json();
+      const path = `/api/v1/items/${item.id}`;
+      await expect(page.getByRole("alert").filter({ hasText: refreshError })).toHaveText(
+        refreshError,
+      );
+      await expect(
+        page.getByRole("status").filter({
+          hasText: locale === "de" ? "Du kannst erneut speichern." : "You can save again.",
+        }),
+      ).toHaveText(
+        locale === "de"
+          ? "Du kannst erneut speichern. Das bereits angelegte Stück wird dabei aktualisiert und nicht dupliziert."
+          : "You can save again. The existing item will be updated without creating a duplicate.",
+      );
+      await expect(page).toHaveURL(
+        new RegExp(`/${locale}/items/new\\?collectionId=${collection.id}$`),
+      );
+      await expect(save).toBeEnabled();
+      expect(await prisma.collectibleItem.count({ where: { ownerId: collector.userId } })).toBe(1);
+      expect((await (await page.request.get(path)).json()).metadata.tags).toEqual(["retained tag"]);
+      await page.getByLabel(labels.title, { exact: true }).fill("Acknowledged retry");
+      const updated = page.waitForResponse(
+        (response) => response.url().endsWith(path) && response.request().method() === "PATCH",
+      );
+      await save.click();
+      expect((await updated).status()).toBe(200);
+      await expect(page).toHaveURL(new RegExp(`/${locale}/items/${item.id}$`));
+      await expect(save).toHaveText(labels.saveItem);
+      await expect(save).toBeEnabled();
+      expect(creates).toBe(1);
+      expect(updates).toBe(1);
+      expect(await prisma.collectibleItem.count({ where: { ownerId: collector.userId } })).toBe(1);
+      await page.reload();
+      await expect(save).toBeEnabled();
+      failNextRead = true;
+      page.once("dialog", (dialog) => dialog.accept());
+      const archived = page.waitForResponse(
+        (response) =>
+          response.url().endsWith(`${path}/archive`) && response.request().method() === "POST",
+      );
+      await page.getByRole("button", { name: labels.archive, exact: true }).click();
+      const archivedResponse = await archived;
+      expect(archivedResponse.status()).toBe(200);
+      const archivedBody = await archivedResponse.json();
+      await expect(page.getByText(labels.archivedMessage, { exact: true })).toBeVisible();
+      await expect(page.getByRole("alert").filter({ hasText: refreshError })).toHaveText(
+        refreshError,
+      );
+      await expect(save).toBeDisabled();
+      await expect(page.getByLabel(labels.title, { exact: true })).toBeDisabled();
+      const persisted = await prisma.collectibleItem.findUniqueOrThrow({ where: { id: item.id } });
+      expect(persisted.archivedAt?.toISOString()).toBe(archivedBody.item.archivedAt);
+      const current = await (await page.request.get(path)).json();
+      expect(current.item).toMatchObject({
+        id: item.id,
+        title: "Acknowledged retry",
+        archivedAt: archivedBody.item.archivedAt,
+      });
+      expect(current.metadata.tags).toEqual(["retained tag"]);
+      expect(failedReads).toBe(2);
+      expect(creates).toBe(1);
+      expect(updates).toBe(1);
+    } finally {
+      await page.unrouteAll({ behavior: "wait" });
+      await cleanupCollector(collector.userId);
+    }
+  });
 });
