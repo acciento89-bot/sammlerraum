@@ -389,6 +389,9 @@ describe.runIf(enabled)("retained search integrity producer parity", () => {
           })),
         });
       await setValue("customField", "URL", urls[0]!);
+      // Prepare actual planner statistics after deliberate bulk fixture growth;
+      // limit, snapshot and retained-integrity assertions remain independent.
+      await db!.$executeRaw`ANALYZE "CollectibleItem", "CustomFieldValue"`;
       const rejectWithoutValues = async (expectedCount: bigint, expectedBytes: bigint) => {
         manifest.length = 0;
         countOrPage = 0;
