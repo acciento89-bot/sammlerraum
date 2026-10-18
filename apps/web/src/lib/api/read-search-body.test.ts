@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { readSearchBody } from "./read-search-body";
 import { parsePrivateItemSearchWire } from "@sammlerraum/contracts/private-search-query";
 
-function request(body?: BodyInit, headers: Record<string, string> = {}) {
+function request(body?: NonNullable<RequestInit["body"]>, headers: Record<string, string> = {}) {
   return new Request("https://example.invalid/api/v1/search/items", {
     method: "POST",
     headers: { "content-type": "application/json", ...headers },

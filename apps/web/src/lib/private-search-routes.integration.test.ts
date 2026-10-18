@@ -1,4 +1,7 @@
 import { randomUUID } from "node:crypto";
+import { z } from "zod";
+import { ItemSearchPageSchema } from "@sammlerraum/contracts/item-search";
+import { DashboardDataSchema } from "@sammlerraum/contracts/dashboard";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { Prisma } from "@sammlerraum/db/search-sql";
 import type { SearchDatabase } from "@sammlerraum/domain/search/item-search-service";
@@ -42,6 +45,16 @@ async function post(
 ) {
   return handlers.POST(req);
 }
+const page = async (response: Response) => ItemSearchPageSchema.parse(await response.json());
+const dashboardData = async (response: Response) =>
+  DashboardDataSchema.parse(await response.json());
+const errorData = async (response: Response) =>
+  z
+    .object({
+      error: z.object({ code: z.string(), message: z.string(), requestId: z.string() }).strict(),
+    })
+    .strict()
+    .parse(await response.json());
 const filter = (root: object) => JSON.stringify({ version: 1, root });
 const sameData = (body: Record<string, unknown>) => {
   const { readAt: _, ...data } = body;
@@ -99,8 +112,8 @@ describe.runIf(enabled)("native private query POST transport", () => {
     const get = await items.GET(new Request(`${origin}/api/v1/search/items?text=Match&limit=2`));
     const response = await post(items, request(JSON.stringify({ text: "Match", limit: 2 })));
     expect(response.status).toBe(200);
-    const a = await get.json(),
-      b = await response.json();
+    const a = await page(get),
+      b = await page(response);
     expect(sameData(b)).toEqual(sameData(a));
     expect(b.total).toBe(3);
     expect(b.items).toHaveLength(2);
@@ -114,14 +127,14 @@ describe.runIf(enabled)("native private query POST transport", () => {
     );
     const response = await post(routes().items, request(JSON.stringify({ f })));
     expect(response.status).toBe(200);
-    expect((await response.json()).total).toBe(3);
+    expect((await page(response)).total).toBe(3);
   });
   it.each(['{"text":"secret","text":"other"}', '{"text":"secret","t\\u0065xt":"other"}'])(
     "rejects duplicate root keys before losing them",
     async (body) => {
       const response = await post(routes().items, request(body));
       expect(response.status).toBe(400);
-      expect((await response.json()).error.code).toBe("SEARCH_INVALID");
+      expect((await errorData(response)).error.code).toBe("SEARCH_INVALID");
     },
   );
   it("uses the actual dashboard aggregate service and currency groups", async () => {
@@ -129,8 +142,8 @@ describe.runIf(enabled)("native private query POST transport", () => {
     const a = await dashboard.GET(new Request(`${origin}/api/v1/dashboard?text=Match`));
     const b = await post(dashboard, request('{"text":"Match"}', "dashboard"));
     expect(b.status).toBe(200);
-    const body = await b.json();
-    expect(sameData(body)).toEqual(sameData(await a.json()));
+    const body = await dashboardData(b);
+    expect(sameData(body)).toEqual(sameData(await dashboardData(a)));
     expect(body.selection).toEqual({ itemCount: 3, unitCount: "9", matchedCollectionCount: 1 });
     expect(body.manualValues.groups).toMatchObject([
       { currency: "EUR", totalMinor: "300" },
@@ -139,8 +152,8 @@ describe.runIf(enabled)("native private query POST transport", () => {
   });
   it("crosses GET/POST cursors but rejects changed query, actor and saved context", async () => {
     const { items } = routes();
-    const firstGet = await (await items.GET(new Request(`${origin}/?text=Match&limit=2`))).json();
-    const firstPost = await (await post(items, request('{"text":"Match","limit":2}'))).json();
+    const firstGet = await page(await items.GET(new Request(`${origin}/?text=Match&limit=2`)));
+    const firstPost = await page(await post(items, request('{"text":"Match","limit":2}')));
     const nextPost = await post(
       items,
       request(JSON.stringify({ text: "Match", limit: 2, cursor: firstGet.nextCursor })),
@@ -150,8 +163,8 @@ describe.runIf(enabled)("native private query POST transport", () => {
     );
     expect(nextPost.status).toBe(200);
     expect(nextGet.status).toBe(200);
-    const a = await nextPost.json(),
-      b = await nextGet.json();
+    const a = await page(nextPost),
+      b = await page(nextGet);
     expect(sameData(a)).toEqual(sameData(b));
     expect(a.items).toHaveLength(1);
     expect(a.total).toBe(3);
@@ -170,7 +183,7 @@ describe.runIf(enabled)("native private query POST transport", () => {
         request(JSON.stringify({ ...query, cursor: firstGet.nextCursor })),
       );
       expect(response.status).toBe(400);
-      expect((await response.json()).error.code).toBe("SEARCH_INVALID");
+      expect((await errorData(response)).error.code).toBe("SEARCH_INVALID");
     }
     const saved = createSmartCollectionService(db!);
     const smart = await saved.createSmartCollection(
@@ -192,7 +205,7 @@ describe.runIf(enabled)("native private query POST transport", () => {
     await expect(
       saved.resolveSmartCollectionItems({ userId: owner }, smart.id, {
         limit: 2,
-        cursor: firstPost.nextCursor,
+        cursor: firstPost.nextCursor!,
       }),
     ).rejects.toMatchObject({ code: "SEARCH_INVALID" });
   });
@@ -228,13 +241,13 @@ describe.runIf(enabled)("native private query POST transport", () => {
         request("not JSON", "", "?text=private"),
       );
       expect(invalidQuery.status).toBe(400);
-      expect((await invalidQuery.json()).error.code).toBe("SEARCH_INVALID");
+      expect((await errorData(invalidQuery)).error.code).toBe("SEARCH_INVALID");
       const largeQuery = await post(
         authenticated[family],
         request("not JSON", "", `?text=${"x".repeat(32769)}`),
       );
       expect(largeQuery.status).toBe(414);
-      expect((await largeQuery.json()).error.code).toBe("SEARCH_QUERY_TOO_LARGE");
+      expect((await errorData(largeQuery)).error.code).toBe("SEARCH_QUERY_TOO_LARGE");
       expect((await post(authenticated[family], request("{}", "", "?"))).status).toBe(200);
     },
   );
@@ -286,7 +299,7 @@ describe.runIf(enabled)("native private query POST transport", () => {
         expect(response.status).toBe(status);
         expect(response.headers.get("cache-control")).toBe("no-store");
         expect(response.headers.get("x-request-id")).toBeTruthy();
-        const result = await response.json();
+        const result = await errorData(response);
         expect(result.error.code).toBe(code);
         expect(Object.keys(result.error).sort()).toEqual(["code", "message", "requestId"]);
         expect(JSON.stringify(result)).not.toMatch(/private-body-secret|SELECT |WHERE |cause/);
@@ -362,7 +375,7 @@ describe.runIf(enabled)("native private query POST transport", () => {
           : createDashboardRouteHandlers(createDashboardRouteDependencies(delayed, auth, origin));
       const unavailable = await post(delayedHandler, request("{}"));
       expect(unavailable.status).toBe(503);
-      expect((await unavailable.json()).error.code).toBe("SEARCH_UNAVAILABLE");
+      expect((await errorData(unavailable)).error.code).toBe("SEARCH_UNAVAILABLE");
       expect(timeouts).toBe(1);
       const id = selected[0]!;
       const original = await db!.collectibleItem.findUniqueOrThrow({
@@ -374,7 +387,7 @@ describe.runIf(enabled)("native private query POST transport", () => {
         await db!.collectibleItem.update({ where: { id }, data: { title: "" } });
         const response = await post(routes()[family], request("{}"));
         expect(response.status).toBe(500);
-        const error = await response.json();
+        const error = await errorData(response);
         expect(error.error.code).toBe("SEARCH_INVARIANT");
         expect(JSON.stringify(error)).not.toMatch(/SELECT |WHERE |cause|Private selected/);
         expect(response.headers.get("cache-control")).toBe("no-store");
@@ -399,7 +412,7 @@ describe.runIf(enabled)("native private query POST transport", () => {
         request(JSON.stringify({ text: "no matches", f })),
       );
       expect(response.status).toBe(422);
-      expect((await response.json()).error.code).toBe("FILTER_REFERENCE_INVALID");
+      expect((await errorData(response)).error.code).toBe("FILTER_REFERENCE_INVALID");
     }
   });
 
@@ -442,10 +455,11 @@ describe.runIf(enabled)("native private query POST transport", () => {
         );
         expect(get.status).toBe(200);
         expect(response.status).toBe(200);
-        const a = await get.json(),
-          b = await response.json();
+        const read = family === "items" ? page : dashboardData;
+        const a = await read(get),
+          b = await read(response);
         expect(sameData(b)).toEqual(sameData(a));
-        if (family === "items") {
+        if ("items" in b) {
           expect(b.total).toBe(ids.length);
           expect(new Set(b.items.map((item: { id: string }) => item.id))).toEqual(new Set(ids));
         } else {
@@ -464,18 +478,18 @@ describe.runIf(enabled)("native private query POST transport", () => {
     for (const family of ["items", "dashboard"] as const) {
       const response = await post(other[family], request('{"text":"Match"}'));
       expect(response.status).toBe(200);
-      const body = await response.json();
-      if (family === "items") {
+      const body = await (family === "items" ? page(response) : dashboardData(response));
+      if ("items" in body) {
         expect(body.total).toBe(1);
-        expect(body.items[0].title).toBe("Match hidden");
-        expect(selected).not.toContain(body.items[0].id);
+        expect(body.items[0]!.title).toBe("Match hidden");
+        expect(selected).not.toContain(body.items[0]!.id);
       } else {
         expect(body.selection).toEqual({
           itemCount: 1,
           unitCount: "100",
           matchedCollectionCount: 1,
         });
-        expect(body.recentAdditions.items[0].title).toBe("Match hidden");
+        expect(body.recentAdditions.items[0]!.title).toBe("Match hidden");
       }
     }
   });
