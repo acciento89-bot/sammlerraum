@@ -1,0 +1,93 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| packages/domain/src/dashboard/dashboard-input.test.ts (9 tests | 4 failed | 5 skipped) 52ms
+   ↓ dashboard request and result bounds > normalizes exactly the shared query fields and rejects pagination/owner overrides before acquiring DB
+   ↓ dashboard request and result bounds > rejects numeric output overflow as unavailable and malformed/rounded driver values as invariant
+   × dashboard request and result bounds > rejects invalid manualValues output denomination ZZZ/2 24ms
+     → expected [Function] to throw an error
+   × dashboard request and result bounds > rejects invalid manualValues output denomination EUR/9 9ms
+     → expected [Function] to throw an error
+   × dashboard request and result bounds > rejects invalid manualChange output denomination ZZZ/2 9ms
+     → expected [Function] to throw an error
+   × dashboard request and result bounds > rejects invalid manualChange output denomination EUR/9 10ms
+     → expected [Function] to throw an error
+   ↓ dashboard request and result bounds > bounds complete monetary groups at 256 without treating oversized output as partial
+   ↓ dashboard request and result bounds > accepts exactly 1MiB and rejects one byte more, including UTF8 content
+   ↓ dashboard request and result bounds > checks CPU budget after validation and serialization rather than returning late output
+ ❯ |workspace| packages/domain/src/dashboard/dashboard-service.test.ts (25 tests | 4 failed | 20 skipped) 166ms
+   ↓ owned dashboard PostgreSQL > weights latest own estimates without leaking foreign money and includes empty owned collections
+   × dashboard actual observations and filters > rejects unsupported latest currency before returning monetary groups or noncomparable history 123ms
+     → VALUATION_INVALID
+   × dashboard actual observations and filters > rejects mismatched latest exponent before returning monetary groups or noncomparable history 5ms
+     → VALUATION_INVALID
+   × dashboard actual observations and filters > rejects unsupported immediate prior currency before returning monetary groups or noncomparable history 3ms
+     → VALUATION_INVALID
+   × dashboard actual observations and filters > rejects mismatched immediate prior exponent before returning monetary groups or noncomparable history 3ms
+     → VALUATION_INVALID
+   ↓ dashboard actual observations and filters > selects latest before denomination and never turns absent or incomparable history into zero
+   ↓ dashboard actual observations and filters > requires distinct observation times and uses exact large current-quantity sums
+   ↓ dashboard actual observations and filters > uses disjoint lifecycles and excludes deleted parents while keeping collection counts independent
+   ↓ dashboard actual observations and filters > counts grading records separately, retains retired conditions and distinguishes usable media
+   ✓ dashboard actual observations and filters > keeps unavailable producer metrics explicit and rejects unsupported leaves even for empty matches 31ms
+   ↓ dashboard bounded sets and consistency > matches actual search selection and does not use a limited page as inventory
+   ↓ dashboard bounded sets and consistency > caps per-denomination value rankings and recency with stable ties
+   ↓ dashboard bounded sets and consistency > uses createdAt then id to resolve equal observed times and does not copy history on a real split
+   ↓ dashboard bounded sets and consistency > holds one snapshot through summary, values and rankings and next read sees changes
+   ↓ dashboard bounded sets and consistency > returns all 128 grading groups and rejects 129 instead of truncating
+   ↓ dashboard bounded sets and consistency > returns all 128 condition groups and rejects 129 before group transfer
+   ↓ dashboard bounded sets and consistency > settles a real dashboard SQL timeout with closed installed-driver mapping
+   ↓ dashboard actual cost evidence > keeps fixed query count and records real plans for 1 owned rows
+   ↓ dashboard actual cost evidence > keeps fixed query count and records real plans for 50 owned rows
+   ↓ dashboard actual cost evidence > keeps fixed query count and records real plans for 500 owned rows
+   ↓ dashboard actual cost evidence > uses the same bounded URL manifest and independent retained-fact guard
+   ↓ dashboard complete selected facts > requires usable IMAGE assets instead of a link or pending/failed asset
+   ↓ dashboard complete selected facts > requires usable DOCUMENT assets instead of a link or pending/failed asset
+   ↓ dashboard complete selected facts > ranks largest selected collections by units then rows, retaining all live collection count
+   ↓ dashboard complete selected facts > retains native currency scales and separates all authored trade statuses
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 8 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/dashboard/dashboard-input.test.ts > dashboard request and result bounds > rejects invalid manualValues output denomination ZZZ/2
+ FAIL  |workspace| packages/domain/src/dashboard/dashboard-input.test.ts > dashboard request and result bounds > rejects invalid manualValues output denomination EUR/9
+ FAIL  |workspace| packages/domain/src/dashboard/dashboard-input.test.ts > dashboard request and result bounds > rejects invalid manualChange output denomination ZZZ/2
+ FAIL  |workspace| packages/domain/src/dashboard/dashboard-input.test.ts > dashboard request and result bounds > rejects invalid manualChange output denomination EUR/9
+AssertionError: expected [Function] to throw an error
+
+- Expected: 
+null
+
++ Received: 
+undefined
+
+ ❯ packages/domain/src/dashboard/dashboard-input.test.ts:131:53
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/8]⎯
+
+ FAIL  |workspace| packages/domain/src/dashboard/dashboard-service.test.ts > dashboard actual observations and filters > rejects unsupported latest currency before returning monetary groups or noncomparable history
+ FAIL  |workspace| packages/domain/src/dashboard/dashboard-service.test.ts > dashboard actual observations and filters > rejects mismatched latest exponent before returning monetary groups or noncomparable history
+ FAIL  |workspace| packages/domain/src/dashboard/dashboard-service.test.ts > dashboard actual observations and filters > rejects unsupported immediate prior currency before returning monetary groups or noncomparable history
+ FAIL  |workspace| packages/domain/src/dashboard/dashboard-service.test.ts > dashboard actual observations and filters > rejects mismatched immediate prior exponent before returning monetary groups or noncomparable history
+ValuationServiceError: VALUATION_INVALID
+ ❯ invalid packages/domain/src/valuations/valuation-service.ts:34:9
+     32| export type ValuationPage = { records: ManualValuation[]; nextCursor: …
+     33| const invalid = (): never => {
+     34|   throw new ValuationServiceError("VALUATION_INVALID");
+       |         ^
+     35| };
+     36| function object(input: unknown, keys: string[]): Record<string, unknow…
+ ❯ instant packages/domain/src/valuations/valuation-service.ts:60:12
+ ❯ inputValue packages/domain/src/valuations/valuation-service.ts:89:57
+ ❯ Object.addManualValuation packages/domain/src/valuations/valuation-service.ts:157:19
+ ❯ packages/domain/src/dashboard/dashboard-service.test.ts:115:23
+ ❯ fixture packages/domain/src/dashboard/dashboard-service.test.ts:89:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/8]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  8 failed | 1 passed | 25 skipped (34)
+   Start at  11:49:05
+   Duration  907ms (transform 164ms, setup 7ms, collect 389ms, tests 217ms, environment 0ms, prepare 76ms)
+

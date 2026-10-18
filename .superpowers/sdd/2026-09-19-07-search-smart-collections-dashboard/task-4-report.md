@@ -113,3 +113,43 @@ These are the final17 source entries, each verified against source commit b974e7
 | `packages/domain/src/dashboard/dashboard-service.test.ts` | `1b0470df324bd7c1bfb8d0df49d8c243d60b73bac6402c32f497bc12ec0b292f` |
 | `packages/domain/src/dashboard/dashboard-service.ts` | `332e82298985ac6f9d15fdce8b56a2cd5268d8a0181eb19466008a8190d77577` |
 | `packages/domain/src/dashboard/dashboard-sql.ts` | `d8b1e9a3165c6a9a6be100abf3f8e122d965efbad8d9952dec1db03b2c3ee447` |
+
+
+## Task4A fix round 1 — review I1
+
+Fix BASE: `bb2aaabd87b42ec1a97f3dd1f8591d9b5c1643a5`. Source: `91ae759a0465530d7ddb8b01fd38f635a16991b2` (five dashboard source/test paths only). The accompanying evidence-only commit contains this appended report and `logs/task-4-fix1-*`. No push, ledger/checkoff, schema/index, producer, budget, shared preparation, or UI changes.
+
+The complete formal review identified one Important issue: chosen latest manual denominations were accepted by shape alone, while an invalid immediate prior could be silently excluded as noncomparable. Both chosen points now pass a bounded SQL validity guard derived directly from the existing `valuationCurrencyCodes` and `currencyMinorUnitExponent` authority. There is no copied currency table. Selection still precedes denomination comparison, and prior selection remains the immediate strictly earlier observation; invalid prior data never causes fallback to an older valid point.
+
+The existing manual statement materializes selected points, computes a single validity sentinel against the authoritative 165 current pairs, and passes points into classification/aggregation only if all chosen pairs are valid. An invalid pair returns `denominationsValid:false` and `data:null`; the service requires the sentinel to equal true and returns `SEARCH_INVARIANT` before accepting data or proceeding to later dashboard statements. Final result validation also checks both bounded manual value/change group arrays through `currencyMinorUnitExponent`, protecting the output boundary from malformed intercepted driver values. The ordinary contracts remain browser-safe. The synthetic 256-group response-cap fixtures now repeat a valid EUR/2 pair; they test array/byte capacity, not denomination uniqueness or native attainability.
+
+### RED, fixture correction, and exact execution boundary
+
+`task-4-fix1-red.log` preserves the first run: eight failures, one unrelated selected test passed, 25 skipped. Four pure tests reached the missing response defense; four new DB fixtures initially supplied a Date to the existing producer's ISO-string input and failed with `VALUATION_INVALID`. Only that fixture input was corrected before the second RED. `task-4-fix1-red-corrected-fixture.log` then records eight intended failures, 26 diagnostic skips: four complete service calls resolved instead of rejecting, and four complete final-response validations did not throw. No implementation had been changed before this corrected RED.
+
+The four DB-backed corruption cases create three valid EUR observations through the actual valuation producer. A narrowly intercepted manual driver query changes only one selected-point projection: latest currency to ZZZ, latest exponent to9, immediate prior currency to ZZZ, or immediate prior exponent to9. It preserves parameters and executes the remaining actual SQL through PostgreSQL and the real bounded transaction/service path. This is **selected-point corruption simulation**, not ordinary native-writer bypass, not a claim that current constraints permit corrupt persisted rows. Constraints remain enabled; stored rows remain valid. Each case asserts exactly one interception, actual SQL `data:null`/invalid sentinel, closed service failure, and a subsequent ordinary read returning the valid EUR total and zero comparable change. The third older valid observation cannot mask an invalid immediate prior.
+
+`task-4-fix1-focused-green.log` records all eight targeted cases passing. The pure tests reject unsupported/wrong-exponent pairs in both value and change groups at the actual final response validator. Existing JPY/0, KWD/3, genuine EUR→USD switches, absent histories, real zeroes, strict-earlier ties, exact numeric/group/UTF8 caps and current-quantity semantics remain green in the frozen gate.
+
+### Frozen verification and costs
+
+All final gates ran after formatting on the exact five-file manifest below, with no post-freeze source edits. Commands, outputs and exit codes are preserved in `task-4-fix1-commands.txt`, `task-4-fix1-final-gates.json` and corresponding raw logs. Runtime remains pinned Node24.19.0/pnpm10.17.1 and the guarded local PostgreSQL17.11 test database.
+
+- Affected native gate: **3 files,46 passed,zero skips**:25 domain dashboard DB-backed cases (including the4 explicit projection simulations),12 dashboard route DB-backed cases,9 pure dashboard input/output cases. Thus37 DB-backed cases plus9 pure cases; not46 real-native-write corruption cases.
+- Regular workspace gate:74 files passed/38 expected skipped; **794 passed/424 expected integration/browser skips**.
+- Full types, lint, production build: exit0. The build includes `/api/v1/dashboard`.
+- Shared search/saved source and authority/producer source are unchanged. The affected dashboard gate retains actual search-selection comparison, URL independent-integrity behavior, snapshot consistency and driver timeout coverage. No unrelated full DB/media suite rerun was needed for this five-file fix.
+
+The four dashboard statements, seven/eight data queries,15/17 calls including configuration, and existing snapshot/transaction budgets are unchanged and asserted by the final native gate. The guard uses330 bound scalar values for the165 authoritative pairs in the existing manual statement; no additional statement or per-item application query is introduced. Full EXPLAIN(ANALYZE,BUFFERS,FORMAT JSON) plans for all four actual queries and1/50/500 owned-row cases are retained in `task-4-fix1-final-native.log`; `task-4-fix1-plan-summary.json` is extracted from those outputs. Manual execution times are0.388/0.574/1.705ms respectively; requests are22.385/14.314/18.892ms, each15 calls. The URL case remains17 calls. These are warm, analyzed synthetic fixtures with zero shared-read blocks, not production latency/capacity claims. The original dense-history scenario and Phase13 stale-statistics/burst-growth risk remain unchanged.
+
+All original partial-milestone limitations remain: future money/market/shared/relations/UI/full-history work is unavailable/deferred explicitly; original Task4/count41 is open. Root owns scoped rereview, exact remote CI and acceptance. The narrow reader defense uses the current authoritative currency mapping as required by I1; future deliberate currency-table evolution must preserve the separately documented historical-money policy rather than silently adding alternate interpretation here.
+
+### Fix round 1 exact committed SHA256 manifest
+
+| Path | SHA256 |
+|---|---|
+| `packages/domain/src/dashboard/dashboard-input.test.ts` | `ddaa1fdde4c5f5fcbc60f51f72062752159790f2c1fdd6c22b8bb33d0f0e3a7b` |
+| `packages/domain/src/dashboard/dashboard-result.ts` | `ce8e51132d8760b65079d50f27606c6d8a41c956819c488a36e40b14f7e92226` |
+| `packages/domain/src/dashboard/dashboard-service.test.ts` | `04cc58d942bd7167d3fc7b29e00bdfbd1347501239ee108711eccdb616ae0fc1` |
+| `packages/domain/src/dashboard/dashboard-service.ts` | `5b3f102e2155a0c1ad275444b456c04f803aa8214b193455095cdc02ddcbae41` |
+| `packages/domain/src/dashboard/dashboard-sql.ts` | `d895d850c75d673f264c27cd6db5526bbc306c0714148512a2d21e74edf560b8` |

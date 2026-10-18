@@ -1,0 +1,7 @@
+{
+  "packages/domain/src/dashboard/dashboard-input.test.ts": "ddaa1fdde4c5f5fcbc60f51f72062752159790f2c1fdd6c22b8bb33d0f0e3a7b",
+  "packages/domain/src/dashboard/dashboard-result.ts": "ce8e51132d8760b65079d50f27606c6d8a41c956819c488a36e40b14f7e92226",
+  "packages/domain/src/dashboard/dashboard-service.test.ts": "04cc58d942bd7167d3fc7b29e00bdfbd1347501239ee108711eccdb616ae0fc1",
+  "packages/domain/src/dashboard/dashboard-service.ts": "5b3f102e2155a0c1ad275444b456c04f803aa8214b193455095cdc02ddcbae41",
+  "packages/domain/src/dashboard/dashboard-sql.ts": "d895d850c75d673f264c27cd6db5526bbc306c0714148512a2d21e74edf560b8"
+}
