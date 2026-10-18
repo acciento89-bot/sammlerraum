@@ -556,6 +556,7 @@ for (const locale of ["de", "en"] as const) {
       const owner = await catalogFixture();
       const foreign = await catalogFixture();
       const context = await browser.newContext();
+      let releaseScheme = () => {};
       try {
         expect(
           (
@@ -606,8 +607,8 @@ for (const locale of ["de", "en"] as const) {
             exact: true,
           })
           .click();
-        await expect(grade.getByRole("status")).toContainText(
-          locale === "de" ? "Grading gespeichert" : "Grading saved",
+        await expect(grade.getByRole("status")).toHaveText(
+          locale === "de" ? "Grading gespeichert." : "Grading saved.",
         );
         const condition = page.getByRole("region", {
           name:
@@ -635,27 +636,85 @@ for (const locale of ["de", "en"] as const) {
             { exact: true },
           )
           .check();
+        const schemeGate = new Promise<void>((resolve) => {
+          releaseScheme = resolve;
+        });
+        let schemeStarted = () => {};
+        const schemeBegan = new Promise<void>((resolve) => {
+          schemeStarted = resolve;
+        });
+        // Fetch the actual scheme, then hold its response while the category save completes.
+        await page.route(
+          `**/api/v1/categories/${foreign.category.id}/condition-scheme`,
+          async (route) => {
+            const response = await route.fetch();
+            expect(response.status()).toBe(200);
+            schemeStarted();
+            await schemeGate;
+            await route.fulfill({ response });
+          },
+        );
         await condition
           .getByRole("button", {
             name: locale === "de" ? "Kategorie speichern" : "Save category",
             exact: true,
           })
           .click();
-        await expect(condition.getByRole("status")).toContainText(
-          locale === "de" ? "Kategorie gespeichert" : "Category saved",
+        await schemeBegan;
+        const loadingText = locale === "de" ? "Wird geladen…" : "Loading…";
+        const savedCategoryText = locale === "de" ? "Kategorie gespeichert." : "Category saved.";
+        const loading = condition.getByRole("status").filter({ hasText: loadingText });
+        const categorySaved = condition.getByRole("status").filter({ hasText: savedCategoryText });
+        await expect(condition.getByRole("status")).toHaveCount(2);
+        await expect(loading).toHaveText(loadingText);
+        await expect(categorySaved).toHaveText(savedCategoryText);
+        const personalCondition = condition.getByLabel(
+          locale === "de" ? "Eigener Zustand" : "Personal condition",
+          { exact: true },
         );
-        await condition
-          .getByLabel(locale === "de" ? "Eigener Zustand" : "Personal condition", { exact: true })
-          .selectOption(foreign.scheme.options[1]!.id);
+        const saveCategory = condition.getByRole("button", {
+          name: locale === "de" ? "Kategorie speichern" : "Save category",
+          exact: true,
+        });
+        const saveCondition = condition.getByRole("button", {
+          name: locale === "de" ? "Zustand speichern" : "Save condition",
+          exact: true,
+        });
+        await expect(personalCondition).toBeDisabled();
+        expect(
+          (await (await page.request.get(`/api/v1/items/${owner.item.id}/condition`)).json())
+            .condition,
+        ).toMatchObject({ categoryTemplateId: foreign.category.id, conditionOption: null });
+        releaseScheme();
+        await page.unrouteAll({ behavior: "wait" });
+        await expect(loading).toHaveCount(0);
+        await expect(condition.getByRole("status")).toHaveCount(1);
+        await expect(categorySaved).toHaveText(savedCategoryText);
+        await expect(personalCondition).toBeEnabled();
+        await expect(personalCondition).toHaveValue("");
+        await expect(saveCategory).toBeDisabled();
+        await expect(saveCondition).toBeDisabled();
+        await personalCondition.selectOption(foreign.scheme.options[1]!.id);
+        await expect(saveCondition).toBeEnabled();
         await condition
           .getByRole("button", {
             name: locale === "de" ? "Zustand speichern" : "Save condition",
             exact: true,
           })
           .click();
-        await expect(condition.getByRole("status")).toContainText(
-          locale === "de" ? "Zustand gespeichert" : "Condition saved",
-        );
+        const savedConditionText = locale === "de" ? "Zustand gespeichert." : "Condition saved.";
+        await expect(
+          condition.getByRole("status").filter({ hasText: savedConditionText }),
+        ).toHaveText(savedConditionText);
+        await expect(saveCondition).toBeDisabled();
+        await expect(personalCondition).toHaveValue(foreign.scheme.options[1]!.id);
+        expect(
+          (await (await page.request.get(`/api/v1/items/${owner.item.id}/condition`)).json())
+            .condition,
+        ).toMatchObject({
+          categoryTemplateId: foreign.category.id,
+          conditionOption: { id: foreign.scheme.options[1]!.id },
+        });
         const { createConditionMaintenanceService } = await import(
           "@sammlerraum/domain/condition/condition-service"
         );
@@ -720,6 +779,8 @@ for (const locale of ["de", "en"] as const) {
           fullPage: true,
         });
       } finally {
+        releaseScheme();
+        await page.unrouteAll({ behavior: "wait" });
         await context.close();
         await cleanupCatalog(owner);
         await cleanupCatalog(foreign);
