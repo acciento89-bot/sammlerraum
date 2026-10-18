@@ -37,7 +37,10 @@ export function ProposalComposer({
   useEffect(() => {
     const control = new AbortController();
     setTemplate(null);
-    if (!category) return;
+    if (!category) {
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     void catalogRequest<{ category: CategoryTemplate }>(
       `/api/v1/categories/${category}`,

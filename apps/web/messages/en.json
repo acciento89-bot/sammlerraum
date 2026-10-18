@@ -473,6 +473,8 @@
     "restored": "Revision restored.",
     "submittedValues": "Proposed facts",
     "removingReference": "Reference to remove",
+    "contextLoading": "Loading reference context…",
+    "contextUnavailable": "Reference context unavailable",
     "beforeChange": "Previous reference facts",
     "reviewIntro": "Review proposed reference facts and record your decision.",
     "ownIntro": "Find your submitted proposals and their outcomes here.",

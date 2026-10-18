@@ -78,3 +78,12 @@ describe("saved custom-field display", () => {
     expect(displayCustomFieldValue(value, "MONEY", "en")).toBe("90,071,992,547,409.91 EUR");
   });
 });
+
+describe("required integer custom fields", () => {
+  it.each(["", " ", "\t\n"])("rejects blank personal INTEGER input %j", (input) => {
+    expect(() => integerCustomFieldValue(input)).toThrow("integer");
+  });
+  it("preserves explicitly authored personal zero", () => {
+    expect(integerCustomFieldValue("0")).toBe(0);
+  });
+});

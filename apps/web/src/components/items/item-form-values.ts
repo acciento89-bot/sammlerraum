@@ -43,6 +43,7 @@ export function majorUnits(amount: number | null, currency = "EUR"): string {
 }
 
 export function integerCustomFieldValue(input: string): number {
+  if (!input.trim()) throw new Error("integer");
   const value = Number(input);
   if (!Number.isSafeInteger(value)) throw new Error("integer");
   return value;

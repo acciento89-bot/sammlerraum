@@ -8,6 +8,7 @@ import {
   SubmitCatalogProposalInputSchema,
 } from "@sammlerraum/contracts/catalog-proposals";
 import { ApplicationRoleError } from "@sammlerraum/domain/authz/application-role";
+import { CategoryTemplateServiceError } from "@sammlerraum/domain/catalog/category-template-service";
 import { CatalogServiceError } from "@sammlerraum/domain/catalog/catalog-service";
 import {
   CatalogProposalError,
@@ -38,6 +39,15 @@ function mapped(error: unknown): never {
       throw new ApiError(error.code, 429, "Proposal submission limit reached");
     throw new ApiError("VALIDATION_ERROR", 400, "Invalid catalog proposal request");
   }
+  if (
+    error instanceof CategoryTemplateServiceError &&
+    [
+      "CATALOG_ATTRIBUTE_DEFINITION_INVALID",
+      "CATALOG_ATTRIBUTE_TYPE_MISMATCH",
+      "CATALOG_ATTRIBUTE_VALUE_INVALID",
+    ].includes(error.code)
+  )
+    throw new ApiError("VALIDATION_ERROR", 400, "Invalid catalog attribute");
   if (error instanceof CatalogServiceError) {
     if (error.code === "CATALOG_REVISION_CONFLICT" || error.code === "CATALOG_IDENTIFIER_CONFLICT")
       throw new ApiError("CONFLICT", 409, "Catalog revision cannot be applied");

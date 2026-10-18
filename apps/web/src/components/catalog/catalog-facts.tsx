@@ -47,9 +47,10 @@ export function TextFacts({ text, locale }: { text: CatalogText; locale: Locale 
       {text.translations.length > 0 && (
         <details>
           <summary>{t("translations")}</summary>
-          <p>
+          <h4>
             {text.language}: {text.title}
-          </p>
+          </h4>
+          <p className="preserve-lines">{text.description}</p>
           {text.translations.map((row) => (
             <div key={row.language}>
               <h4>
@@ -140,7 +141,7 @@ export function CatalogFacts({
           {state.variants.map((row) => (
             <li key={row.id}>
               <h4>{variantLabel(row, locale)}</h4>
-              <p className="preserve-lines">{row.text.description}</p>
+              <TextFacts text={row.text} locale={locale} />
               <AttributeFacts attributes={row.attributes} category={category} locale={locale} />
               <SourceFacts sources={row.sources} />
             </li>

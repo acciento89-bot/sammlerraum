@@ -19,6 +19,10 @@ export function ProposalManager({ locale, review = false }: { locale: Locale; re
   const [currentRevision, setCurrentRevision] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
+  const [reading, setReading] = useState(false);
+  const [contextState, setContextState] = useState<"loading" | "ready" | "unavailable" | null>(
+    null,
+  );
   const [deciding, setDeciding] = useState(false);
   const [error, setError] = useState("");
   const [status, setStatus] = useState("");
@@ -70,56 +74,74 @@ export function ProposalManager({ locale, review = false }: { locale: Locale; re
       if (ticket === listTicket.current) setBusy(false);
     }
   }
+  async function context(proposal: Proposal, ticket: number) {
+    let original: CatalogEntryRevision | null = null;
+    let current: CatalogEntryRevision | null = null;
+    let unavailable = false;
+    if (proposal.targetEntryId) {
+      const [old, now] = await Promise.allSettled([
+        catalogRequest<{ entry: CatalogEntryRevision }>(
+          `/api/v1/catalog/entries/${proposal.targetEntryId}/revisions/${proposal.baseRevision}`,
+        ),
+        catalogRequest<{ entry: CatalogEntryRevision }>(
+          `/api/v1/catalog/entries/${proposal.targetEntryId}`,
+        ),
+      ]);
+      original = old.status === "fulfilled" ? old.value.entry : null;
+      current = now.status === "fulfilled" ? now.value.entry : null;
+      unavailable = old.status === "rejected" || now.status === "rejected";
+    }
+    if (ticket !== detailTicket.current) return;
+    setBase(original);
+    setCurrentRevision(current?.revision ?? null);
+    const categoryId =
+      original?.state.categoryTemplateId ??
+      current?.state.categoryTemplateId ??
+      (proposal.patch.kind === "CREATE_ENTRY" ? proposal.patch.input.categoryTemplateId : null);
+    let template: CategoryTemplate | null = null;
+    if (categoryId) {
+      try {
+        template = (
+          await catalogRequest<{ category: CategoryTemplate }>(`/api/v1/categories/${categoryId}`)
+        ).category;
+      } catch {
+        unavailable = true;
+      }
+    } else unavailable = true;
+    if (ticket !== detailTicket.current) return;
+    setCategory(template);
+    setContextState(unavailable ? "unavailable" : "ready");
+  }
   async function detail(id: string) {
     const ticket = ++detailTicket.current;
-    setBusy(true);
+    setReading(true);
     setError("");
     setSelected(null);
     setBase(null);
     setCategory(null);
+    setCurrentRevision(null);
+    setContextState(null);
     try {
       const body = await catalogRequest<{ proposal: Proposal }>(`${prefix}/${id}`);
-      let original: CatalogEntryRevision | null = null;
-      let current: CatalogEntryRevision | null = null;
-      if (body.proposal.targetEntryId) {
-        const [old, now] = await Promise.all([
-          catalogRequest<{ entry: CatalogEntryRevision }>(
-            `/api/v1/catalog/entries/${body.proposal.targetEntryId}/revisions/${body.proposal.baseRevision}`,
-          ),
-          catalogRequest<{ entry: CatalogEntryRevision }>(
-            `/api/v1/catalog/entries/${body.proposal.targetEntryId}`,
-          ),
-        ]);
-        original = old.entry;
-        current = now.entry;
-      }
-      const categoryId =
-        original?.state.categoryTemplateId ??
-        (body.proposal.patch.kind === "CREATE_ENTRY"
-          ? body.proposal.patch.input.categoryTemplateId
-          : null);
-      const template = categoryId
-        ? await catalogRequest<{ category: CategoryTemplate }>(`/api/v1/categories/${categoryId}`)
-        : null;
-      if (ticket === detailTicket.current) {
-        setSelected(body.proposal);
-        setBase(original);
-        setCurrentRevision(current?.revision ?? null);
-        setCategory(template?.category ?? null);
-      }
+      if (ticket !== detailTicket.current) return;
+      // Authenticated proposal content and rejection do not depend on reference reads.
+      setSelected(body.proposal);
+      setContextState("loading");
+      void context(body.proposal, ticket);
     } catch (problem) {
       if (ticket === detailTicket.current) setError(catalogError(problem, t));
     } finally {
-      if (ticket === detailTicket.current) setBusy(false);
+      if (ticket === detailTicket.current) setReading(false);
     }
   }
   async function decide(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (busy || !selected) return;
+    if (busy || reading || deciding || !selected) return;
     const form = new FormData(event.currentTarget);
     const submitter = (event.nativeEvent as SubmitEvent).submitter as HTMLButtonElement | null;
     const decision = submitter?.value;
     if (decision !== "APPROVE" && decision !== "REJECT") return;
+    if (decision === "APPROVE" && contextState !== "ready") return;
     setBusy(true);
     setDeciding(true);
     setError("");
@@ -161,6 +183,8 @@ export function ProposalManager({ locale, review = false }: { locale: Locale; re
             detailTicket.current++;
             listTicket.current++;
             setBusy(false);
+            setReading(false);
+            setContextState(null);
             setRows([]);
             setCursor(null);
             setLoading(true);
@@ -184,7 +208,7 @@ export function ProposalManager({ locale, review = false }: { locale: Locale; re
             <button
               type="button"
               className="text-button"
-              disabled={busy}
+              disabled={busy || reading || deciding}
               onClick={() => void detail(row.id)}
             >
               {row.summary}
@@ -197,7 +221,7 @@ export function ProposalManager({ locale, review = false }: { locale: Locale; re
         ))}
       </ul>
       {cursor && (
-        <button type="button" disabled={busy} onClick={() => void more()}>
+        <button type="button" disabled={busy || reading || deciding} onClick={() => void more()}>
           {t("moreProposals")}
         </button>
       )}
@@ -230,6 +254,8 @@ export function ProposalManager({ locale, review = false }: { locale: Locale; re
               <SourceFacts sources={[selected.source]} />
             </>
           )}
+          {contextState === "loading" && <p role="status">{t("contextLoading")}</p>}
+          {contextState === "unavailable" && <p className="notice">{t("contextUnavailable")}</p>}
           <ProposalFacts proposal={selected} base={base} category={category} locale={locale} />
           {selected.state === "CONFLICT" && <p className="notice">{t("proposalConflictHelp")}</p>}
           {review && selected.state === "PENDING" && (
@@ -242,7 +268,12 @@ export function ProposalManager({ locale, review = false }: { locale: Locale; re
                 <textarea name="reason" maxLength={1000} required />
               </label>
               <div className="form-actions">
-                <button type="submit" name="decision" value="APPROVE" disabled={busy}>
+                <button
+                  type="submit"
+                  name="decision"
+                  value="APPROVE"
+                  disabled={busy || reading || deciding || contextState !== "ready"}
+                >
                   {t("approve")}
                 </button>
                 <button
@@ -250,7 +281,7 @@ export function ProposalManager({ locale, review = false }: { locale: Locale; re
                   name="decision"
                   value="REJECT"
                   className="secondary-button"
-                  disabled={busy}
+                  disabled={busy || reading || deciding}
                 >
                   {t("reject")}
                 </button>

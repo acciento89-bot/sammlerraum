@@ -42,7 +42,10 @@ export function ConditionEditor({
   useEffect(() => {
     const control = new AbortController();
     setScheme(null);
-    if (!condition.categoryTemplateId) return;
+    if (!condition.categoryTemplateId) {
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     void catalogRequest<{ scheme: ConditionScheme | null }>(
       `/api/v1/categories/${condition.categoryTemplateId}/condition-scheme`,

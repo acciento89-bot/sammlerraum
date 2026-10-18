@@ -22,7 +22,9 @@ export function CatalogLinker({
   const t = useTranslations("Catalog");
   const [selected, setSelected] = useState<CatalogEntryRevision | null>(null);
   const [variant, setVariant] = useState("");
-  const [busy, setBusy] = useState(false);
+  const [reading, setReading] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const busy = reading || saving;
   const [error, setError] = useState("");
   const [status, setStatus] = useState("");
   const generation = useRef(0);
@@ -33,8 +35,9 @@ export function CatalogLinker({
     [],
   );
   async function choose(entryId: string) {
+    if (saving) return;
     const ticket = ++generation.current;
-    setBusy(true);
+    setReading(true);
     setError("");
     try {
       const body = await catalogRequest<{ entry: CatalogEntryRevision }>(
@@ -47,13 +50,13 @@ export function CatalogLinker({
     } catch (problem) {
       if (ticket === generation.current) setError(catalogError(problem, t));
     } finally {
-      if (ticket === generation.current) setBusy(false);
+      if (ticket === generation.current) setReading(false);
     }
   }
   async function save(event?: FormEvent, unlink = false) {
     event?.preventDefault();
     if (busy || readOnly || (!selected && !unlink)) return;
-    setBusy(true);
+    setSaving(true);
     setError("");
     setStatus("");
     try {
@@ -68,7 +71,7 @@ export function CatalogLinker({
     } catch (problem) {
       setError(catalogError(problem, t));
     } finally {
-      setBusy(false);
+      setSaving(false);
     }
   }
   return (
@@ -140,7 +143,12 @@ export function CatalogLinker({
                 <button
                   type="button"
                   className="secondary-button"
-                  onClick={() => setSelected(null)}
+                  disabled={saving}
+                  onClick={() => {
+                    generation.current++;
+                    setReading(false);
+                    setSelected(null);
+                  }}
                 >
                   {t("cancel")}
                 </button>

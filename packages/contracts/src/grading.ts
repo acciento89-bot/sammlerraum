@@ -7,10 +7,16 @@ export const GradingIdSchema = z
   .string()
   .uuid()
   .transform((value) => value.toLowerCase());
-const authoredText = (max: number) =>
+const authoredText = (max: number, multiline = false) =>
   z
     .string()
-    .refine((value) => !/[\u0000-\u001f\u007f]/u.test(value), "Control characters are not allowed")
+    .refine(
+      (value) =>
+        !(
+          multiline ? /[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/u : /[\u0000-\u001f\u007f]/u
+        ).test(value),
+      "Control characters are not allowed",
+    )
     .transform((value) => value.normalize("NFC").trim())
     .pipe(z.string().min(1).max(max));
 // Numeric values are author assertions within an explicit scale, never a conversion or authenticity claim.
@@ -36,7 +42,7 @@ const facts = z
     certificateNo: authoredText(160).nullable().default(null),
     gradedAt: AcquisitionDateSchema.nullable().default(null),
     verificationUrl: verificationUrl.nullable().default(null),
-    source: authoredText(1000).nullable().default(null),
+    source: authoredText(1000, true).nullable().default(null),
   })
   .strict();
 const paired = (

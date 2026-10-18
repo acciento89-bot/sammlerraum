@@ -1,0 +1,139 @@
+[WebServer] (node:70873) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 4 tests using 1 worker
+
+(node:70877) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [desktop] › e2e/catalog-grading.spec.ts:1242:5 › phase integration en › accepted proposals retain own detail and rejection with missing reference context (6.5s)
+(node:70912) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  2 [desktop] › e2e/catalog-grading.spec.ts:1283:5 › phase integration en › proposal and revision previews expose every authored entry and variant description (5.9s)
+(node:70931) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  3 [desktop] › e2e/catalog-grading.spec.ts:1318:5 › phase integration en › clearing category releases delayed scheme and proposal template reads (6.3s)
+(node:71005) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  4 [desktop] › e2e/catalog-grading.spec.ts:1357:5 › phase integration en › cancel invalidates delayed catalog selection without unlocking a link mutation (6.0s)
+
+
+  1) [desktop] › e2e/catalog-grading.spec.ts:1242:5 › phase integration en › accepted proposals retain own detail and rejection with missing reference context 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('region', { name: 'Proposal details', exact: true })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('region', { name: 'Proposal details', exact: true }) with timeout 5000ms
+      - waiting for getByRole('region', { name: 'Proposal details', exact: true })
+
+
+      1263 |           await page.getByRole("button", { name: input.summary, exact: true }).click();
+      1264 |           const own = page.getByRole("region", { name: locale === "de" ? "Vorschlagsdetails" : "Proposal details", exact: true });
+    > 1265 |           await expect(own).toBeVisible();
+           |                             ^
+      1266 |           await expect(own.getByRole("heading", { name: input.patch.input.text.title, exact: true })).toBeVisible();
+      1267 |           await reviewer.goto(`/${locale}/catalog/moderation`);
+      1268 |           await reviewer.getByRole("button", { name: input.summary, exact: true }).click();
+        at /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/catalog-grading.spec.ts:1265:29
+
+    Error Context: test-results/catalog-grading-phase-inte-e0e30-h-missing-reference-context-desktop/error-context.md
+
+    Error Context: test-results/catalog-grading-phase-inte-e0e30-h-missing-reference-context-desktop/error-context.md
+
+  2) [desktop] › e2e/catalog-grading.spec.ts:1283:5 › phase integration en › proposal and revision previews expose every authored entry and variant description 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('region', { name: 'Proposal details', exact: true }).getByText('Variant translated description', { exact: true }).first()
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('region', { name: 'Proposal details', exact: true }).getByText('Variant translated description', { exact: true }).first() with timeout 5000ms
+      - waiting for getByRole('region', { name: 'Proposal details', exact: true }).getByText('Variant translated description', { exact: true }).first()
+
+
+      1303 |           await expect(detail).toBeVisible();
+      1304 |           for (const details of await detail.locator("details").all()) await details.evaluate(el => { (el as HTMLDetailsElement).open = true; });
+    > 1305 |           for (const marker of [`${name} primary description`, `${name} translated description`, `${name} polski opis`, "Entry primary description", "Entry translated description", "Variant primary description", "Variant translated description", "Variant polski opis"]) await expect(detail.getByText(marker, { exact: true }).first()).toBeVisible();
+           |                                                                                                                                                                                                                                                                                                                                               ^
+      1306 |           await expect(detail.getByText("Variant authored source", { exact: true })).toBeVisible();
+      1307 |           await expect(detail.getByText("Proposal authored source", { exact: true })).toBeVisible();
+      1308 |         }
+        at /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/catalog-grading.spec.ts:1305:335
+
+    Error Context: test-results/catalog-grading-phase-inte-3e438-try-and-variant-description-desktop/error-context.md
+
+    Error Context: test-results/catalog-grading-phase-inte-3e438-try-and-variant-description-desktop/error-context.md
+
+  3) [desktop] › e2e/catalog-grading.spec.ts:1318:5 › phase integration en › clearing category releases delayed scheme and proposal template reads 
+
+    Error: expect(locator).toHaveCount(expected) failed
+
+    Locator:  getByRole('region', { name: 'Category and personal condition', exact: true }).getByText('Loading…', { exact: true })
+    Expected: 0
+    Received: 1
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveCount" getByRole('region', { name: 'Category and personal condition', exact: true }).getByText('Loading…', { exact: true }) with timeout 5000ms
+      - waiting for getByRole('region', { name: 'Category and personal condition', exact: true }).getByText('Loading…', { exact: true })
+        14 × locator resolved to 1 element
+           - unexpected value "1"
+
+
+      1335 |         releaseScheme();
+      1336 |         await page.unrouteAll({ behavior: "wait" });
+    > 1337 |         await expect(condition.getByText(locale === "de" ? "Wird geladen…" : "Loading…", { exact: true })).toHaveCount(0);
+           |                                                                                                            ^
+      1338 |         await expect(condition.getByLabel(locale === "de" ? "Eigener Zustand" : "Personal condition", { exact: true })).toHaveValue("");
+      1339 |         await page.goto(`/${locale}/catalog`);
+      1340 |         await page.getByRole("button", { name: locale === "de" ? "Neuen Eintrag vorschlagen" : "Propose new entry", exact: true }).click();
+        at /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/catalog-grading.spec.ts:1337:108
+
+    Error Context: test-results/catalog-grading-phase-inte-c4553-and-proposal-template-reads-desktop/error-context.md
+
+    Error Context: test-results/catalog-grading-phase-inte-c4553-and-proposal-template-reads-desktop/error-context.md
+
+  4) [desktop] › e2e/catalog-grading.spec.ts:1357:5 › phase integration en › cancel invalidates delayed catalog selection without unlocking a link mutation 
+
+    Error: expect(locator).toBeDisabled() failed
+
+    Locator:  getByRole('region', { name: 'Catalog reference', exact: true }).getByRole('button', { name: 'Cancel', exact: true })
+    Expected: disabled
+    Received: enabled
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toBeDisabled" getByRole('region', { name: 'Catalog reference', exact: true }).getByRole('button', { name: 'Cancel', exact: true }) with timeout 5000ms
+      - waiting for getByRole('region', { name: 'Catalog reference', exact: true }).getByRole('button', { name: 'Cancel', exact: true })
+        14 × locator resolved to <button type="button" class="secondary-button">Cancel</button>
+           - unexpected value "enabled"
+
+
+      1391 |         await save.click();
+      1392 |         await mutationBegan;
+    > 1393 |         await expect(link.getByRole("button", { name: locale === "de" ? "Abbrechen" : "Cancel", exact: true })).toBeDisabled();
+           |                                                                                                                 ^
+      1394 |         // A new reference read cannot release the authoritative mutation lock.
+      1395 |         await choices.nth(1).click();
+      1396 |         await expect(save).toBeDisabled();
+        at /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/catalog-grading.spec.ts:1393:113
+
+    Error Context: test-results/catalog-grading-phase-inte-01bf4-t-unlocking-a-link-mutation-desktop/error-context.md
+
+    Error Context: test-results/catalog-grading-phase-inte-01bf4-t-unlocking-a-link-mutation-desktop/error-context.md
+
+  4 failed
+    [desktop] › e2e/catalog-grading.spec.ts:1242:5 › phase integration en › accepted proposals retain own detail and rejection with missing reference context 
+    [desktop] › e2e/catalog-grading.spec.ts:1283:5 › phase integration en › proposal and revision previews expose every authored entry and variant description 
+    [desktop] › e2e/catalog-grading.spec.ts:1318:5 › phase integration en › clearing category releases delayed scheme and proposal template reads 
+    [desktop] › e2e/catalog-grading.spec.ts:1357:5 › phase integration en › cancel invalidates delayed catalog selection without unlocking a link mutation 
+undefined
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test catalog-grading.spec.ts --project=desktop --grep phase integration en --workers=1

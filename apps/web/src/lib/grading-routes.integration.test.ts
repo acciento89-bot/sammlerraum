@@ -126,6 +126,29 @@ describe.runIf(enabled)("grading routes PostgreSQL", () => {
       query: { disableCookieCache: true, disableRefresh: true },
     });
   });
+  it("persists multiline source through protected service writes and private DTO reads", async () => {
+    const source = "Café receipt\r\nSecond\tline\rThird\nlast";
+    const created = await handlers().POST_GRADING(
+      request("POST", { provider: "Multiline", grade: "A", source: `  ${source}  ` }),
+      itemId,
+    );
+    expect(created.status).toBe(201);
+    const { grading } = (await created.json()) as { grading: Grading };
+    expect(grading.source).toBe(source);
+    expect((await db!.grading.findUniqueOrThrow({ where: { id: grading.id } })).source).toBe(
+      source,
+    );
+    expect((await service().getGrading(itemId, grading.id)).source).toBe(source);
+    const replacement = "Changed\nreceipt\tentry";
+    await service().updateGrading(itemId, grading.id, {
+      provider: "Multiline",
+      grade: "A",
+      source: replacement,
+    });
+    const read = await handlers().GET_GRADING(request(), itemId, grading.id);
+    expect(read.headers.get("cache-control")).toBe("no-store");
+    expect(await read.json()).toMatchObject({ grading: { source: replacement } });
+  });
   it("requires fresh authentication and hides foreign, mismatched and invalid resource IDs", async () => {
     const row = await service().addGrading(itemId, {
       provider: "Private",

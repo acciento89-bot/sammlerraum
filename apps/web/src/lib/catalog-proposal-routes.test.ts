@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { describe, expect, it } from "vitest";
 import { CatalogProposalError } from "@sammlerraum/domain/catalog/proposal-service";
+import { CategoryTemplateServiceError } from "@sammlerraum/domain/catalog/category-template-service";
 import { ApplicationRoleError } from "@sammlerraum/domain/authz/application-role";
 import { createCatalogProposalRouteHandlers } from "./catalog-proposal-routes";
 const valid = {
@@ -126,6 +127,34 @@ describe("catalog proposal route boundaries", () => {
     expect(error.status).toBe(500);
     expect(error.headers.get("x-request-id")).toBe("catalog-test-request");
     expect(await error.text()).not.toContain("SECRET");
+  });
+  it("maps only known attribute failures and keeps unexpected decision failures redacted server errors", async () => {
+    for (const [error, status] of [
+      [new CategoryTemplateServiceError("CATALOG_ATTRIBUTE_DEFINITION_INVALID"), 400],
+      [new CategoryTemplateServiceError("CATALOG_ATTRIBUTE_TYPE_MISMATCH"), 400],
+      [new CategoryTemplateServiceError("CATALOG_ATTRIBUTE_VALUE_INVALID"), 400],
+      [new CategoryTemplateServiceError("CATALOG_TEMPLATE_INVALID"), 500],
+      [new Error("database password SECRET"), 500],
+    ] as const) {
+      const api = createCatalogProposalRouteHandlers({
+        appOrigin: "https://example.test",
+        getSession: async () => ({ user: { id: "actor" } }),
+        createService: () =>
+          ({
+            approveProposal: async () => {
+              throw error;
+            },
+          }) as never,
+      });
+      const response = await api.POST_DECISION(
+        request(JSON.stringify({ decision: "APPROVE", reason: "Check bounded mapping" })),
+        randomUUID(),
+      );
+      expect(response.status).toBe(status);
+      expect(await response.json()).toMatchObject({
+        error: { code: status === 400 ? "VALIDATION_ERROR" : "INTERNAL_ERROR" },
+      });
+    }
   });
   it("rejects unsupported or duplicate query parameters, invalid limits and spoofed decision fields", async () => {
     for (const query of [

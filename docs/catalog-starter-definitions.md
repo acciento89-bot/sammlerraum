@@ -2,7 +2,9 @@
 
 An empty installation supports personal items and authored grading immediately. An operator may explicitly install two modest authored category templates and their condition schemes. The application never invokes this command during startup, deployment or ordinary user requests.
 
-Build the existing worker maintenance command, configure the intended database through `DATABASE_URL`, and inspect the dry-run:
+Run this source-checkout command from an installed repository checkout with its Prisma client generated and all migrations applied to the intended database. Use the pinned Node 24.19.0 runtime and pnpm 10.17.1 package manager; set `DATABASE_URL` to that database. The current worker container does not include this maintenance command. Container packaging and an in-image invocation remain a Phase 13 gate.
+
+Build the existing worker maintenance command and inspect the dry-run:
 
 ```sh
 pnpm --filter @sammlerraum/worker build

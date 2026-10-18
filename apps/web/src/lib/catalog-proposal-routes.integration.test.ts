@@ -60,6 +60,7 @@ describe.runIf(enabled)("catalog proposal HTTP contracts with PostgreSQL", () =>
       await createCategoryTemplateMaintenanceService(db!).createCategoryTemplate({
         key: prefix,
         labels: { de: "Münzen", en: "Coins" },
+        definitions: [{ key: "number", labels: { de: "Nummer", en: "Number" }, type: "INTEGER" }],
       })
     ).id;
   });
@@ -73,6 +74,7 @@ describe.runIf(enabled)("catalog proposal HTTP contracts with PostgreSQL", () =>
     await db.catalogExternalIdentifier.deleteMany({ where: { entry } });
     await db.catalogVariant.deleteMany({ where: { entry } });
     await db.catalogEntry.deleteMany({ where: entry });
+    await db.catalogAttributeDefinition.deleteMany({ where: { categoryTemplateId: categoryId } });
     await db.categoryTemplateLabel.deleteMany({ where: { categoryTemplate: { key: prefix } } });
     await db.categoryTemplate.deleteMany({ where: { key: prefix } });
     await db.applicationRoleGrant.deleteMany({ where: { userId: { startsWith: prefix } } });
@@ -145,6 +147,49 @@ describe.runIf(enabled)("catalog proposal HTTP contracts with PostgreSQL", () =>
       ).status,
     ).toBe(409);
     expect((await routes(null).GET_PROPOSALS(read())).status).toBe(401);
+  });
+  it("bounds expected invalid attribute approval and keeps the proposal rejectable", async () => {
+    const canonical = createCatalogMaintenanceService(db!);
+    const entry = await canonical.createCatalogEntry({ categoryTemplateId: categoryId, text });
+    const definition = await db!.catalogAttributeDefinition.findFirstOrThrow({
+      where: { categoryTemplateId: categoryId },
+    });
+    for (const value of ["wrong primitive", 1.5]) {
+      const submitted = await routes(owner).POST_PROPOSAL(
+        mutation({
+          targetEntryId: entry.state.id,
+          baseRevision: 1,
+          summary: "Invalid attribute",
+          patch: {
+            kind: "UPDATE_ENTRY",
+            input: { attributes: [{ definitionId: definition.id, value }] },
+          },
+        }),
+      );
+      expect(submitted.status).toBe(201);
+      const row = (await body(submitted)).proposal;
+      const response = await routes(moderator).POST_DECISION(
+        mutation({ decision: "APPROVE", reason: "Check attribute" }),
+        row.id,
+      );
+      expect(response.status).toBe(400);
+      expect(await response.json()).toMatchObject({
+        error: { code: "VALIDATION_ERROR", requestId: "catalog-integration-test" },
+      });
+      expect(
+        (await db!.catalogEntry.findUniqueOrThrow({ where: { id: entry.state.id } })).revision,
+      ).toBe(1);
+      expect(await db!.catalogAttributeValue.count({ where: { entryId: entry.state.id } })).toBe(0);
+      expect((await db!.catalogProposal.findUniqueOrThrow({ where: { id: row.id } })).state).toBe(
+        "PENDING",
+      );
+      const rejected = await routes(moderator).POST_DECISION(
+        mutation({ decision: "REJECT", reason: "Invalid authored value" }),
+        row.id,
+      );
+      expect(rejected.status).toBe(200);
+      expect((await body(rejected)).proposal).toMatchObject({ state: "REJECTED" });
+    }
   });
   it("returns HTTP409 after stale approval commits CONFLICT and leaves the catalog unchanged", async () => {
     const canonical = createCatalogMaintenanceService(db!);

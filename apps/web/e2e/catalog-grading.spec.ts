@@ -1234,3 +1234,709 @@ test.describe("proposal read cancellation", () => {
     }
   });
 });
+
+// Phase 05 integration regressions: real accepted proposals and persisted review decisions.
+for (const locale of ["de", "en"] as const) {
+  test.describe(`phase integration ${locale}`, () => {
+    test.skip(!enabled, "requires migrated test database");
+    for (const missing of ["future base", "category"] as const)
+      test(`accepted proposals retain own detail and rejection with missing ${missing} context`, async ({
+        page,
+        browser,
+      }) => {
+        const owner = await catalogFixture();
+        const moderator = await catalogFixture();
+        const context = await browser.newContext({ viewport: page.viewportSize() });
+        const reviewer = await context.newPage();
+        try {
+          const { createCatalogMaintenanceService } = await import(
+            "@sammlerraum/domain/catalog/catalog-service"
+          );
+          const entry = await createCatalogMaintenanceService(db).createCatalogEntry({
+            categoryTemplateId: owner.category.id,
+            text: { language: "en", title: "Unchanged reference" },
+          });
+          await db.applicationRoleGrant.create({
+            data: {
+              userId: moderator.id,
+              role: "MODERATOR",
+              grantedBy: "synthetic e2e",
+              reason: "Missing context regression",
+            },
+          });
+          for (const [target, fixture] of [
+            [page, owner],
+            [reviewer, moderator],
+          ] as const) {
+            expect(
+              (
+                await target.request.post("/api/auth/sign-in/email", {
+                  data: { email: fixture.email, password: fixture.password },
+                  headers: { origin },
+                })
+              ).status(),
+            ).toBe(200);
+          }
+          const submissions = [
+            {
+              targetEntryId: entry.state.id,
+              baseRevision: 999,
+              patch: {
+                kind: "UPDATE_ENTRY",
+                input: { text: { language: "en", title: "Future revision proposal" } },
+              },
+              summary: "Unavailable future base",
+            },
+            {
+              targetEntryId: null,
+              baseRevision: null,
+              patch: {
+                kind: "CREATE_ENTRY",
+                input: {
+                  categoryTemplateId: "c33a8401-a6d2-4dbc-82be-123456789abc",
+                  text: { language: "en", title: "Missing category proposal" },
+                },
+              },
+              summary: "Unavailable category",
+            },
+          ];
+          for (const input of submissions.filter(
+            (_, index) => index === (missing === "future base" ? 0 : 1),
+          )) {
+            const response = await page.request.post("/api/v1/catalog/proposals", {
+              data: input,
+              headers: { origin },
+            });
+            expect(response.status()).toBe(201);
+            const { proposal } = await response.json();
+            await page.goto(`/${locale}/catalog/proposals`);
+            await page.getByRole("button", { name: input.summary, exact: true }).click();
+            const own = page.getByRole("region", {
+              name: locale === "de" ? "Vorschlagsdetails" : "Proposal details",
+              exact: true,
+            });
+            await expect(own).toBeVisible();
+            await expect(
+              own.getByRole("heading", { name: input.patch.input.text.title, exact: true }),
+            ).toBeVisible();
+            await reviewer.goto(`/${locale}/catalog/moderation`);
+            await reviewer.getByRole("button", { name: input.summary, exact: true }).click();
+            const detail = reviewer.getByRole("region", {
+              name: locale === "de" ? "Vorschlagsdetails" : "Proposal details",
+              exact: true,
+            });
+            await expect(detail).toBeVisible();
+            await expect(
+              detail.getByText(
+                locale === "de"
+                  ? "Referenzkontext nicht verfügbar"
+                  : "Reference context unavailable",
+                { exact: true },
+              ),
+            ).toBeVisible();
+            await expect(
+              detail.getByRole("button", {
+                name: locale === "de" ? "Annehmen" : "Approve",
+                exact: true,
+              }),
+            ).toBeDisabled();
+            await detail
+              .getByLabel(locale === "de" ? "Begründung" : "Decision reason", { exact: true })
+              .fill("Cannot verify reference context");
+            await detail
+              .getByRole("button", { name: locale === "de" ? "Ablehnen" : "Reject", exact: true })
+              .click();
+            await expect(
+              reviewer.getByRole("status").filter({
+                hasText: locale === "de" ? "Entscheidung gespeichert" : "Decision recorded",
+              }),
+            ).toBeVisible();
+            expect(
+              (await (await page.request.get(`/api/v1/catalog/proposals/${proposal.id}`)).json())
+                .proposal,
+            ).toMatchObject({
+              state: "REJECTED",
+              decisionReason: "Cannot verify reference context",
+            });
+            expect(
+              (await (await page.request.get(`/api/v1/catalog/entries/${entry.state.id}`)).json())
+                .entry,
+            ).toMatchObject({ revision: 1, state: { text: { title: "Unchanged reference" } } });
+          }
+          expect(
+            await db.catalogEntry.count({ where: { categoryTemplateId: owner.category.id } }),
+          ).toBe(1);
+        } finally {
+          await context.close();
+          await cleanupCatalog(owner);
+          await cleanupCatalog(moderator);
+        }
+      });
+
+    test("proposal and revision previews expose every authored entry and variant description", async ({
+      page,
+      browser,
+    }, info) => {
+      const owner = await catalogFixture();
+      const moderator = await catalogFixture();
+      const context = await browser.newContext({ viewport: page.viewportSize() });
+      const reviewer = await context.newPage();
+      try {
+        const { createCatalogMaintenanceService } = await import(
+          "@sammlerraum/domain/catalog/catalog-service"
+        );
+        const service = createCatalogMaintenanceService(db);
+        const authored = (name: string) => ({
+          language: "en",
+          title: `${name} primary`,
+          description: `${name} primary description`,
+          translations: [
+            {
+              language: "de",
+              title: `${name} translated`,
+              description: `${name} translated description`,
+            },
+            { language: "pl", title: `${name} polski`, description: `${name} polski opis` },
+          ],
+        });
+        const entry = await service.createCatalogEntry({
+          categoryTemplateId: owner.category.id,
+          text: authored("Entry"),
+        });
+        await service.addCatalogVariant(entry.state.id, 1, {
+          text: authored("Variant"),
+          language: "ja",
+          edition: "Edition one",
+          reference: "REF-01",
+          sources: [{ note: "Variant authored source" }],
+        });
+        await db.applicationRoleGrant.create({
+          data: {
+            userId: moderator.id,
+            role: "MODERATOR",
+            grantedBy: "synthetic e2e",
+            reason: "Authored content review",
+          },
+        });
+        for (const [target, fixture] of [
+          [page, owner],
+          [reviewer, moderator],
+        ] as const)
+          expect(
+            (
+              await target.request.post("/api/auth/sign-in/email", {
+                data: { email: fixture.email, password: fixture.password },
+                headers: { origin },
+              })
+            ).status(),
+          ).toBe(200);
+        for (const kind of ["UPDATE_ENTRY", "ADD_VARIANT"] as const) {
+          const name = kind === "UPDATE_ENTRY" ? "Proposed entry" : "Proposed variant";
+          const response = await page.request.post("/api/v1/catalog/proposals", {
+            headers: { origin },
+            data: {
+              targetEntryId: entry.state.id,
+              baseRevision: 2,
+              summary: name,
+              patch: {
+                kind,
+                input: {
+                  text: authored(name),
+                  sources: [{ note: "Proposal authored source" }],
+                  ...(kind === "ADD_VARIANT"
+                    ? { language: "fr", edition: "Proposed edition", reference: "PROP-01" }
+                    : {}),
+                },
+              },
+            },
+          });
+          expect(response.status()).toBe(201);
+          await reviewer.goto(`/${locale}/catalog/moderation`);
+          await reviewer.getByRole("button", { name, exact: true }).click();
+          const detail = reviewer.getByRole("region", {
+            name: locale === "de" ? "Vorschlagsdetails" : "Proposal details",
+            exact: true,
+          });
+          await expect(detail).toBeVisible();
+          await expect(
+            detail.getByRole("button", {
+              name: locale === "de" ? "Annehmen" : "Approve",
+              exact: true,
+            }),
+          ).toBeEnabled();
+          await expect(detail.locator("details")).toHaveCount(4);
+          for (const details of await detail.locator("details").all())
+            await details.locator(":scope > summary").click();
+          for (const marker of [
+            `${name} primary description`,
+            `${name} translated description`,
+            `${name} polski opis`,
+            "Entry primary description",
+            "Entry translated description",
+            "Variant primary description",
+            "Variant translated description",
+            "Variant polski opis",
+          ])
+            await expect(detail.getByText(marker, { exact: true }).first()).toBeVisible();
+          await expect(detail.getByText("Variant authored source", { exact: true })).toBeVisible();
+          await expect(detail.getByText("Proposal authored source", { exact: true })).toBeVisible();
+        }
+        await reviewer.goto(`/${locale}/catalog/${entry.state.id}`);
+        await reviewer
+          .getByRole("button", {
+            name: locale === "de" ? "Version 2 ansehen" : "Preview revision 2",
+            exact: true,
+          })
+          .click();
+        const preview = reviewer.locator(".catalog-history-preview");
+        await expect(preview).toBeVisible();
+        await expect(preview.locator("details")).toHaveCount(2);
+        for (const details of await preview.locator("details").all())
+          await details.locator(":scope > summary").click();
+        for (const marker of [
+          "Entry primary description",
+          "Entry translated description",
+          "Entry polski opis",
+          "Variant primary description",
+          "Variant translated description",
+          "Variant polski opis",
+        ])
+          await expect(preview.getByText(marker, { exact: true }).first()).toBeVisible();
+        await expect(
+          preview.getByText("ja · Edition one · REF-01", { exact: false }),
+        ).toBeVisible();
+        await preview.scrollIntoViewIfNeeded();
+        await reviewer.screenshot({
+          path: info.outputPath(`phase-fix-authored-preview-${info.project.name}-${locale}.png`),
+          fullPage: true,
+        });
+      } finally {
+        await context.close();
+        await cleanupCatalog(owner);
+        await cleanupCatalog(moderator);
+      }
+    });
+
+    test("clearing category releases delayed scheme and proposal template reads", async ({
+      page,
+    }) => {
+      const owner = await catalogFixture();
+      let releaseScheme = () => {};
+      let releaseTemplate = () => {};
+      try {
+        expect(
+          (
+            await page.request.post("/api/auth/sign-in/email", {
+              data: { email: owner.email, password: owner.password },
+              headers: { origin },
+            })
+          ).status(),
+        ).toBe(200);
+        const schemeGate = new Promise<void>((resolve) => {
+          releaseScheme = resolve;
+        });
+        let schemeStarted = () => {};
+        const schemeBegan = new Promise<void>((resolve) => {
+          schemeStarted = resolve;
+        });
+        await page.route(
+          `**/api/v1/categories/${owner.category.id}/condition-scheme`,
+          async (route) => {
+            schemeStarted();
+            await schemeGate;
+            await route.continue();
+          },
+        );
+        await page.goto(`/${locale}/items/${owner.item.id}`);
+        await schemeBegan;
+        const condition = page.getByRole("region", {
+          name:
+            locale === "de" ? "Kategorie und eigener Zustand" : "Category and personal condition",
+          exact: true,
+        });
+        await condition
+          .getByLabel(locale === "de" ? "Kategorie" : "Category", { exact: true })
+          .selectOption("");
+        await condition
+          .getByLabel(
+            locale === "de"
+              ? "Den aktuellen Zustand beim Kategorienwechsel entfernen"
+              : "Clear the current condition when changing category",
+            { exact: true },
+          )
+          .check();
+        await condition
+          .getByRole("button", {
+            name: locale === "de" ? "Kategorie speichern" : "Save category",
+            exact: true,
+          })
+          .click();
+        await expect(
+          condition
+            .getByRole("status")
+            .filter({ hasText: locale === "de" ? "Kategorie gespeichert" : "Category saved" }),
+        ).toBeVisible();
+        releaseScheme();
+        await page.unrouteAll({ behavior: "wait" });
+        await expect(
+          condition.getByText(locale === "de" ? "Wird geladen…" : "Loading…", { exact: true }),
+        ).toHaveCount(0);
+        await expect(
+          condition.getByLabel(locale === "de" ? "Eigener Zustand" : "Personal condition", {
+            exact: true,
+          }),
+        ).toHaveValue("");
+        await page.goto(`/${locale}/catalog`);
+        await page
+          .getByRole("button", {
+            name: locale === "de" ? "Neuen Eintrag vorschlagen" : "Propose new entry",
+            exact: true,
+          })
+          .click();
+        const form = page.getByRole("form", {
+          name: locale === "de" ? "Katalogvorschlag" : "Catalog proposal",
+          exact: true,
+        });
+        const templateGate = new Promise<void>((resolve) => {
+          releaseTemplate = resolve;
+        });
+        let templateStarted = () => {};
+        const templateBegan = new Promise<void>((resolve) => {
+          templateStarted = resolve;
+        });
+        await page.route(`**/api/v1/categories/${owner.category.id}`, async (route) => {
+          templateStarted();
+          await templateGate;
+          await route.continue();
+        });
+        await form
+          .getByLabel(locale === "de" ? "Kategorie" : "Category", { exact: true })
+          .selectOption(owner.category.id);
+        await templateBegan;
+        await form
+          .getByLabel(locale === "de" ? "Kategorie" : "Category", { exact: true })
+          .selectOption("");
+        releaseTemplate();
+        await page.unrouteAll({ behavior: "wait" });
+        await expect(
+          form.getByText(locale === "de" ? "Wird geladen…" : "Loading…", { exact: true }),
+        ).toHaveCount(0);
+        await expect(
+          form.getByRole("button", {
+            name: locale === "de" ? "Vorschlag absenden" : "Submit proposal",
+            exact: true,
+          }),
+        ).toBeDisabled();
+        await expect(form.getByLabel("Set", { exact: true })).toHaveCount(0);
+        await form
+          .getByLabel(locale === "de" ? "Kategorie" : "Category", { exact: true })
+          .selectOption(owner.category.id);
+        await expect(form.getByLabel("Set", { exact: true })).toBeVisible();
+        await expect(
+          form.getByRole("button", {
+            name: locale === "de" ? "Vorschlag absenden" : "Submit proposal",
+            exact: true,
+          }),
+        ).toBeEnabled();
+      } finally {
+        releaseScheme();
+        releaseTemplate();
+        await page.unrouteAll({ behavior: "wait" });
+        await cleanupCatalog(owner);
+      }
+    });
+
+    test("cancel invalidates delayed catalog selection without unlocking a link mutation", async ({
+      page,
+    }) => {
+      const owner = await catalogFixture();
+      let releaseRead = () => {};
+      let releaseMutation = () => {};
+      try {
+        const { createCatalogMaintenanceService } = await import(
+          "@sammlerraum/domain/catalog/catalog-service"
+        );
+        const service = createCatalogMaintenanceService(db);
+        const entries = [];
+        for (const title of ["Cancel reference A", "Cancel reference B"])
+          entries.push(
+            await service.createCatalogEntry({
+              categoryTemplateId: owner.category.id,
+              text: { language: "en", title },
+            }),
+          );
+        expect(
+          (
+            await page.request.post("/api/auth/sign-in/email", {
+              data: { email: owner.email, password: owner.password },
+              headers: { origin },
+            })
+          ).status(),
+        ).toBe(200);
+        await page.goto(`/${locale}/items/${owner.item.id}`);
+        const link = page.getByRole("region", {
+          name: locale === "de" ? "Katalogverknüpfung" : "Catalog reference",
+          exact: true,
+        });
+        await link
+          .getByLabel(locale === "de" ? "Katalog durchsuchen" : "Search catalog", { exact: true })
+          .fill("Cancel reference");
+        await link
+          .getByRole("button", { name: locale === "de" ? "Suchen" : "Search", exact: true })
+          .click();
+        const choose = (title: string) =>
+          link
+            .getByRole("listitem")
+            .filter({ has: page.getByRole("heading", { name: title, exact: true }) })
+            .getByRole("button", {
+              name: locale === "de" ? "Referenz auswählen" : "Choose reference",
+              exact: true,
+            });
+        await choose("Cancel reference A").click();
+        const save = link.getByRole("button", {
+          name: locale === "de" ? "Mit diesem Stück verknüpfen" : "Link to this item",
+          exact: true,
+        });
+        await expect(save).toBeEnabled();
+        let started = () => {};
+        const began = new Promise<void>((resolve) => {
+          started = resolve;
+        });
+        const gate = new Promise<void>((resolve) => {
+          releaseRead = resolve;
+        });
+        await page.route(`**/api/v1/catalog/entries/${entries[1]!.state.id}`, async (route) => {
+          started();
+          await gate;
+          await route.continue();
+        });
+        await choose("Cancel reference B").click();
+        await began;
+        await link
+          .getByRole("button", { name: locale === "de" ? "Abbrechen" : "Cancel", exact: true })
+          .click();
+        releaseRead();
+        await page.unrouteAll({ behavior: "wait" });
+        await expect(
+          link.getByText(locale === "de" ? "Wird geladen…" : "Loading…", { exact: true }),
+        ).toHaveCount(0);
+        await expect(save).toHaveCount(0);
+        await choose("Cancel reference A").click();
+        await expect(save).toBeEnabled();
+        let mutationStarted = () => {};
+        const mutationBegan = new Promise<void>((resolve) => {
+          mutationStarted = resolve;
+        });
+        const mutationGate = new Promise<void>((resolve) => {
+          releaseMutation = resolve;
+        });
+        await page.route(`**/api/v1/items/${owner.item.id}/catalog-link`, async (route) => {
+          if (route.request().method() === "PUT") {
+            mutationStarted();
+            await mutationGate;
+          }
+          await route.continue();
+        });
+        await save.click();
+        await mutationBegan;
+        await expect(
+          link.getByRole("button", { name: locale === "de" ? "Abbrechen" : "Cancel", exact: true }),
+        ).toBeDisabled();
+        // A new reference read cannot release the authoritative mutation lock.
+        await choose("Cancel reference B").click();
+        await expect(save).toBeDisabled();
+        releaseMutation();
+        await page.unrouteAll({ behavior: "wait" });
+        await expect(
+          link.getByRole("status").filter({
+            hasText: locale === "de" ? "Katalogverknüpfung gespeichert" : "Catalog reference saved",
+          }),
+        ).toBeVisible();
+        expect(
+          (await (await page.request.get(`/api/v1/items/${owner.item.id}/catalog-link`)).json())
+            .link.entry.id,
+        ).toBe(entries[0]!.state.id);
+      } finally {
+        releaseRead();
+        releaseMutation();
+        await page.unrouteAll({ behavior: "wait" });
+        await cleanupCatalog(owner);
+      }
+    });
+  });
+}
+
+for (const locale of ["de", "en"] as const) {
+  test.describe(`phase context requests ${locale}`, () => {
+    test.skip(!enabled, "requires migrated test database");
+    test("slow and stale enrichment cannot hide rejection, replace selection or unlock decisions", async ({
+      page,
+      browser,
+    }) => {
+      const owner = await catalogFixture();
+      const moderator = await catalogFixture();
+      const context = await browser.newContext({ viewport: page.viewportSize() });
+      const reviewer = await context.newPage();
+      let releaseRead = () => {};
+      let releaseDecision = () => {};
+      try {
+        const { createCatalogMaintenanceService } = await import(
+          "@sammlerraum/domain/catalog/catalog-service"
+        );
+        const entry = await createCatalogMaintenanceService(db).createCatalogEntry({
+          categoryTemplateId: owner.category.id,
+          text: { language: "en", title: "Reference unchanged" },
+        });
+        await db.applicationRoleGrant.create({
+          data: {
+            userId: moderator.id,
+            role: "MODERATOR",
+            grantedBy: "synthetic e2e",
+            reason: "Context race regression",
+          },
+        });
+        for (const [target, fixture] of [
+          [page, owner],
+          [reviewer, moderator],
+        ] as const)
+          expect(
+            (
+              await target.request.post("/api/auth/sign-in/email", {
+                data: { email: fixture.email, password: fixture.password },
+                headers: { origin },
+              })
+            ).status(),
+          ).toBe(200);
+        const ids: string[] = [];
+        for (const summary of ["Slow first proposal", "Independent second proposal"]) {
+          const submitted = await page.request.post("/api/v1/catalog/proposals", {
+            headers: { origin },
+            data: {
+              targetEntryId: entry.state.id,
+              baseRevision: 1,
+              summary,
+              patch: { kind: "UPDATE_ENTRY", input: { text: { language: "en", title: summary } } },
+            },
+          });
+          expect(submitted.status()).toBe(201);
+          ids.push((await submitted.json()).proposal.id);
+        }
+        const detail = reviewer.getByRole("region", {
+          name: locale === "de" ? "Vorschlagsdetails" : "Proposal details",
+          exact: true,
+        });
+        const approve = detail.getByRole("button", {
+          name: locale === "de" ? "Annehmen" : "Approve",
+          exact: true,
+        });
+        const reject = detail.getByRole("button", {
+          name: locale === "de" ? "Ablehnen" : "Reject",
+          exact: true,
+        });
+        const revisionUrl = `**/api/v1/catalog/entries/${entry.state.id}/revisions/1`;
+        async function delayNextRead() {
+          let began = () => {};
+          const started = new Promise<void>((resolve) => {
+            began = resolve;
+          });
+          const gate = new Promise<void>((resolve) => {
+            releaseRead = resolve;
+          });
+          let first = true;
+          await reviewer.route(revisionUrl, async (route) => {
+            if (first) {
+              first = false;
+              began();
+              await gate;
+            }
+            await route.continue();
+          });
+          return { started };
+        }
+        let read = await delayNextRead();
+        await reviewer.goto(`/${locale}/catalog/moderation`);
+        await reviewer.getByRole("button", { name: "Slow first proposal", exact: true }).click();
+        await read.started;
+        await expect(
+          detail.getByRole("heading", { name: "Slow first proposal", exact: true }).first(),
+        ).toBeVisible();
+        await expect(reject).toBeEnabled();
+        await expect(approve).toBeDisabled();
+        await reviewer
+          .getByRole("button", { name: "Independent second proposal", exact: true })
+          .click();
+        await expect(approve).toBeEnabled();
+        releaseRead();
+        await reviewer.unrouteAll({ behavior: "wait" });
+        await expect(
+          detail.getByRole("heading", { name: "Independent second proposal", exact: true }).first(),
+        ).toBeVisible();
+        await expect(
+          detail.getByRole("heading", { name: "Slow first proposal", exact: true }),
+        ).toHaveCount(0);
+        read = await delayNextRead();
+        await reviewer.getByRole("button", { name: "Slow first proposal", exact: true }).click();
+        await read.started;
+        await detail
+          .getByLabel(locale === "de" ? "Begründung" : "Decision reason", { exact: true })
+          .fill("Reject while optional context is delayed");
+        let beganDecision = () => {};
+        const decisionStarted = new Promise<void>((resolve) => {
+          beganDecision = resolve;
+        });
+        const decisionGate = new Promise<void>((resolve) => {
+          releaseDecision = resolve;
+        });
+        let decisions = 0;
+        await reviewer.route(`**/api/v1/catalog/proposals/${ids[0]}/decision`, async (route) => {
+          decisions++;
+          beganDecision();
+          await decisionGate;
+          await route.continue();
+        });
+        await reject.click();
+        await decisionStarted;
+        releaseRead();
+        await expect(
+          detail.getByText(
+            locale === "de" ? "Referenzkontext wird geladen…" : "Loading reference context…",
+            { exact: true },
+          ),
+        ).toHaveCount(0);
+        await expect(reject).toBeDisabled();
+        await expect(approve).toBeDisabled();
+        await expect(
+          reviewer.getByLabel(locale === "de" ? "Vorschlagsstatus" : "Proposal status", {
+            exact: true,
+          }),
+        ).toBeDisabled();
+        await expect(
+          reviewer.getByRole("button", { name: "Independent second proposal", exact: true }),
+        ).toBeDisabled();
+        releaseDecision();
+        await reviewer.unrouteAll({ behavior: "wait" });
+        await expect(
+          reviewer.getByRole("status").filter({
+            hasText: locale === "de" ? "Entscheidung gespeichert" : "Decision recorded",
+          }),
+        ).toBeVisible();
+        expect(decisions).toBe(1);
+        expect(
+          (await (await page.request.get(`/api/v1/catalog/proposals/${ids[0]}`)).json()).proposal
+            .state,
+        ).toBe("REJECTED");
+        expect(
+          (await (await page.request.get(`/api/v1/catalog/entries/${entry.state.id}`)).json()).entry
+            .revision,
+        ).toBe(1);
+      } finally {
+        releaseRead();
+        releaseDecision();
+        await reviewer.unrouteAll({ behavior: "wait" });
+        await context.close();
+        await cleanupCatalog(owner);
+        await cleanupCatalog(moderator);
+      }
+    });
+  });
+}

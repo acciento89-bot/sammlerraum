@@ -473,6 +473,8 @@
     "restored": "Version wiederhergestellt.",
     "submittedValues": "Vorgeschlagene Angaben",
     "removingReference": "Zu entfernende Referenz",
+    "contextLoading": "Referenzkontext wird geladen…",
+    "contextUnavailable": "Referenzkontext nicht verfügbar",
     "beforeChange": "Bisherige Referenzangaben",
     "reviewIntro": "Prüfe vorgeschlagene Referenzangaben und dokumentiere deine Entscheidung.",
     "ownIntro": "Hier findest du deine eingereichten Vorschläge und ihre Ergebnisse.",

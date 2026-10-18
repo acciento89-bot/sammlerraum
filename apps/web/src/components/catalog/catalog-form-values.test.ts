@@ -82,3 +82,20 @@ describe("authored catalog form boundaries", () => {
     expect(() => readAttributes(form, [definition("money", "MONEY")])).toThrow();
   });
 });
+
+describe("required catalog integer attributes", () => {
+  it.each(["", " ", "\t\n"])("rejects enabled blank INTEGER input %j", (input) => {
+    const form = new FormData();
+    form.set("attribute-enabled-integer", "on");
+    form.set("attribute-integer", input);
+    expect(() => readAttributes(form, [definition("integer", "INTEGER")])).toThrow("integer");
+  });
+  it("preserves explicitly authored catalog zero", () => {
+    const form = new FormData();
+    form.set("attribute-enabled-integer", "on");
+    form.set("attribute-integer", "0");
+    expect(readAttributes(form, [definition("integer", "INTEGER")])).toEqual([
+      { definitionId: "integer", value: 0 },
+    ]);
+  });
+});
