@@ -116,6 +116,36 @@ describe("dashboard request and result bounds", () => {
     data.selection.itemCount = 9007199254740992;
     expect(() => finalizeDashboard(data, () => {})).toThrow("SEARCH_INVARIANT");
   });
+  it.each([
+    ["manualValues", "ZZZ", 2],
+    ["manualValues", "EUR", 9],
+    ["manualChange", "ZZZ", 2],
+    ["manualChange", "EUR", 9],
+  ] as const)(
+    "rejects invalid %s output denomination %s/%s",
+    (section, currency, minorUnitExponent) => {
+      const data = large();
+      if (section === "manualValues") {
+        Object.assign(data.manualValues.groups![0]!, { currency, minorUnitExponent });
+      } else {
+        data.manualChange.groups = [
+          {
+            source: "MANUAL",
+            basis: "PER_UNIT",
+            currency,
+            minorUnitExponent,
+            deltaMinor: "0",
+            contributors: pair,
+            previousObservedAtFrom: timestamp,
+            previousObservedAtTo: timestamp,
+            latestObservedAtFrom: timestamp,
+            latestObservedAtTo: timestamp,
+          },
+        ];
+      }
+      expect(() => finalizeDashboard(data, () => {})).toThrow("SEARCH_INVARIANT");
+    },
+  );
   it("bounds complete monetary groups at 256 without treating oversized output as partial", () => {
     const data = large();
     expect(finalizeDashboard(data, () => {}).manualValues.groups).toHaveLength(256);
@@ -154,10 +184,10 @@ describe("dashboard request and result bounds", () => {
 });
 function large(): DashboardData {
   const data = empty();
-  data.manualValues.groups = Array.from({ length: 256 }, (_, n) => ({
+  data.manualValues.groups = Array.from({ length: 256 }, () => ({
     source: "MANUAL",
     basis: "PER_UNIT",
-    currency: `A${String.fromCharCode(65 + Math.floor(n / 26))}${String.fromCharCode(65 + (n % 26))}`,
+    currency: "EUR",
     minorUnitExponent: 2,
     totalMinor: "10",
     contributors: { itemCount: 10, unitCount: "10" },

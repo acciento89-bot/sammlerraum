@@ -1,3 +1,4 @@
+import { currencyMinorUnitExponent } from "../money/currencies";
 import { searchFail } from "@sammlerraum/contracts/item-search";
 import {
   DashboardDataSchema,
@@ -42,6 +43,20 @@ export function checkedDashboardPart<T>(
 /** Validate the bounded wire object while still inside the caller's transaction budget. */
 export function finalizeDashboard(value: unknown, checkBudget: () => void): DashboardData {
   const result = checkedDashboardPart(DashboardDataSchema, value, checkBudget);
+  // Shape validation alone does not establish a supported currency/exponent pair.
+  // SQL separately validates the chosen prior point, including excluded histories.
+  for (const group of [
+    ...(result.manualValues.groups ?? []),
+    ...(result.manualChange.groups ?? []),
+  ]) {
+    let exponent: number;
+    try {
+      exponent = currencyMinorUnitExponent(group.currency);
+    } catch {
+      return searchFail("SEARCH_INVARIANT");
+    }
+    if (exponent !== group.minorUnitExponent) return searchFail("SEARCH_INVARIANT");
+  }
   checkBudget();
   const bytes = Buffer.byteLength(JSON.stringify(result));
   checkBudget();

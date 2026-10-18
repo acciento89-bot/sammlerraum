@@ -27,12 +27,16 @@ async function read<T>(
   tx: BoundedSearchReadTransaction,
   sql: Prisma.Sql,
   schema: Schema<T>,
+  requireValidDenominations = false,
 ): Promise<T> {
-  const rows = await tx.$queryRaw<{ data: unknown; overflow?: boolean }[]>(sql);
+  const rows =
+    await tx.$queryRaw<{ data: unknown; overflow?: boolean; denominationsValid?: unknown }[]>(sql);
   if (
     rows.length !== 1 ||
     (rows[0]!.overflow !== undefined && typeof rows[0]!.overflow !== "boolean")
   )
+    return searchFail("SEARCH_INVARIANT");
+  if (requireValidDenominations && rows[0]!.denominationsValid !== true)
     return searchFail("SEARCH_INVARIANT");
   if (rows[0]!.overflow) return searchFail("SEARCH_UNAVAILABLE");
   return checkedDashboardPart(schema, rows[0]!.data, tx.checkBudget);
@@ -58,7 +62,7 @@ export function createDashboardService(database: SearchDatabase) {
           dashboardSummarySql(actor.userId, predicate),
           DashboardSummarySchema,
         );
-        const manual = await read(tx, dashboardManualSql(predicate), DashboardManualSchema);
+        const manual = await read(tx, dashboardManualSql(predicate), DashboardManualSchema, true);
         const distributions = await read(
           tx,
           dashboardDistributionsSql(predicate),

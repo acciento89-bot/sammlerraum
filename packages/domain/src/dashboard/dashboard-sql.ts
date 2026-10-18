@@ -1,5 +1,13 @@
 import { Prisma } from "@sammlerraum/db/search-sql";
 import { candidateFrom, TRUE } from "../search/search-compiler";
+import { currencyMinorUnitExponent, valuationCurrencyCodes } from "../money/currencies";
+
+// Derive the bounded SQL guard from the same authority used by valuation writes.
+const manualDenominations = Prisma.join(
+  valuationCurrencyCodes.map(
+    (currency) => Prisma.sql`(${currency}::text,${currencyMinorUnitExponent(currency)}::integer)`,
+  ),
+);
 
 /** Fixed internal JSON projections. Numeric sums leave PostgreSQL only as decimal strings. */
 const measure = (where: Prisma.Sql = TRUE) =>
@@ -23,13 +31,19 @@ export function dashboardSummarySql(owner: string, predicate: Prisma.Sql) {
  'missing',jsonb_build_object('category',${measure(Prisma.sql`"categoryTemplateId" IS NULL`)},'condition',${measure(Prisma.sql`"conditionOptionId" IS NULL`)},'acquisitionDate',${measure(Prisma.sql`"acquisitionDate" IS NULL`)},'purchaseAmount',${measure(Prisma.sql`"purchaseAmountMinor" IS NULL AND "purchaseCurrency" IS NULL`)},'ownEstimate',${measure(Prisma.sql`NOT manual`)},'grading',${measure(Prisma.sql`NOT graded`)},'catalogLink',${measure(Prisma.sql`"catalogEntryId" IS NULL`)},'image',${measure(Prisma.sql`NOT image`)},'document',${measure(Prisma.sql`NOT document`)})) AS data FROM facts`;
 }
 export function dashboardManualSql(predicate: Prisma.Sql) {
-  return Prisma.sql`/* dashboard:manual */ WITH ${matched(predicate)}, points AS MATERIALIZED (
+  return Prisma.sql`/* dashboard:manual */ WITH ${matched(predicate)}, valid_denominations(currency,exponent) AS (VALUES ${manualDenominations}), selected_points AS MATERIALIZED (
  SELECT i.id,i.title,i."collectionId",i.quantity,v.id AS valuation_id,v."amountMinor" AS amount,v.currency,v."minorUnitExponent" AS exponent,v."observedAt" AS observed,
  p.id AS previous_id,p."amountMinor" AS previous_amount,p.currency AS previous_currency,p."minorUnitExponent" AS previous_exponent,p."observedAt" AS previous_observed
  FROM matched i
  LEFT JOIN LATERAL (SELECT v.* FROM "Valuation" v WHERE v."itemId"=i.id AND v."ownerId"=i."ownerId" AND v.type='MANUAL' AND v.basis='PER_UNIT' ORDER BY v."observedAt" DESC,v."createdAt" DESC,v.id DESC LIMIT 1) v ON true
  LEFT JOIN LATERAL (SELECT p.* FROM "Valuation" p WHERE p."itemId"=i.id AND p."ownerId"=i."ownerId" AND p.type='MANUAL' AND p.basis='PER_UNIT' AND p."observedAt"<v."observedAt" ORDER BY p."observedAt" DESC,p."createdAt" DESC,p.id DESC LIMIT 1) p ON true
- ), classified AS MATERIALIZED (SELECT *,valuation_id IS NOT NULL AND previous_id IS NOT NULL AND currency=previous_currency AND exponent=previous_exponent AS comparable FROM points),
+ ), integrity AS MATERIALIZED (SELECT NOT EXISTS (
+ SELECT 1 FROM selected_points p WHERE
+ (valuation_id IS NOT NULL AND NOT EXISTS (SELECT 1 FROM valid_denominations d WHERE d.currency=p.currency AND d.exponent=p.exponent)) OR
+ (previous_id IS NOT NULL AND NOT EXISTS (SELECT 1 FROM valid_denominations d WHERE d.currency=p.previous_currency AND d.exponent=p.previous_exponent))
+ ) AS valid),
+ points AS MATERIALIZED (SELECT * FROM selected_points WHERE (SELECT valid FROM integrity)),
+ classified AS MATERIALIZED (SELECT *,valuation_id IS NOT NULL AND previous_id IS NOT NULL AND currency=previous_currency AND exponent=previous_exponent AS comparable FROM points),
  denominations AS MATERIALIZED (SELECT currency,exponent FROM points WHERE valuation_id IS NOT NULL GROUP BY currency,exponent LIMIT 257),
  sizes AS (SELECT count(*) AS groups FROM denominations),
  totals AS (SELECT count(*) AS selected,count(valuation_id) AS valued,count(*) FILTER(WHERE comparable) AS compared FROM classified),
@@ -41,13 +55,13 @@ export function dashboardManualSql(predicate: Prisma.Sql) {
  'topItems',jsonb_build_object('limit',10,'eligibleCount',count(*),'hasMore',count(*)>10,'quantityBasis','CURRENT_QUANTITY','items',jsonb_agg(jsonb_build_object('id',id,'title',title,'collectionId',"collectionId",'quantity',quantity,'valuationId',valuation_id,'perUnitMinor',amount::text,'weightedMinor',(amount::numeric*quantity)::text,'observedAt',${date(Prisma.sql`observed`)}) ORDER BY rank) FILTER(WHERE rank<=10))) AS data
  FROM denominations d JOIN ranked r ON r.currency=d.currency AND r.exponent=d.exponent WHERE (SELECT groups FROM sizes)<=256 GROUP BY d.currency,d.exponent),
  change_groups AS (SELECT currency,exponent,jsonb_build_object('source','MANUAL','basis','PER_UNIT','currency',currency,'minorUnitExponent',exponent,'deltaMinor',sum((amount::numeric-previous_amount::numeric)*quantity)::text,'contributors',${measure()},'previousObservedAtFrom',${date(Prisma.sql`min(previous_observed)`)},'previousObservedAtTo',${date(Prisma.sql`max(previous_observed)`)},'latestObservedAtFrom',${date(Prisma.sql`min(observed)`)},'latestObservedAtTo',${date(Prisma.sql`max(observed)`)}) AS data FROM classified WHERE comparable AND (SELECT groups FROM sizes)<=256 GROUP BY currency,exponent)
- SELECT (SELECT groups>256 FROM sizes) AS overflow,jsonb_build_object(
+ SELECT (SELECT valid FROM integrity) AS "denominationsValid",(SELECT groups>256 FROM sizes) AS overflow,CASE WHEN (SELECT valid FROM integrity) THEN jsonb_build_object(
  'manualValues',jsonb_build_object('state',CASE WHEN selected=0 THEN 'EMPTY' WHEN valued=0 THEN 'NO_ESTIMATES' WHEN valued<selected THEN 'PARTIAL' ELSE 'COMPLETE' END,'quantityBasis','CURRENT_QUANTITY',
  'contributors',(SELECT ${measure(Prisma.sql`valuation_id IS NOT NULL`)} FROM points),'missing',(SELECT ${measure(Prisma.sql`valuation_id IS NULL`)} FROM points),
  'groups',CASE WHEN selected>0 AND valued=0 THEN NULL ELSE coalesce((SELECT jsonb_agg(data ORDER BY currency COLLATE pg_catalog."C",exponent) FROM value_groups),'[]'::jsonb) END),
  'manualChange',jsonb_build_object('state',CASE WHEN selected=0 THEN 'EMPTY' WHEN compared=0 THEN 'INSUFFICIENT_DATA' WHEN compared<selected THEN 'PARTIAL' ELSE 'COMPLETE' END,'mode','LATEST_VS_PREVIOUS_OBSERVATION','quantityBasis','CURRENT_QUANTITY','comparable',(SELECT ${measure(Prisma.sql`comparable`)} FROM classified),
  'excluded',jsonb_build_object('NO_ESTIMATE',(SELECT ${measure(Prisma.sql`valuation_id IS NULL`)} FROM points),'INSUFFICIENT_HISTORY',(SELECT ${measure(Prisma.sql`valuation_id IS NOT NULL AND previous_id IS NULL`)} FROM points),'NONCOMPARABLE_DENOMINATION',(SELECT ${measure(Prisma.sql`previous_id IS NOT NULL AND (currency,exponent)<>(previous_currency,previous_exponent)`)} FROM points)),
- 'groups',CASE WHEN selected>0 AND compared=0 THEN NULL ELSE coalesce((SELECT jsonb_agg(data ORDER BY currency COLLATE pg_catalog."C",exponent) FROM change_groups),'[]'::jsonb) END)) AS data FROM totals`;
+ 'groups',CASE WHEN selected>0 AND compared=0 THEN NULL ELSE coalesce((SELECT jsonb_agg(data ORDER BY currency COLLATE pg_catalog."C",exponent) FROM change_groups),'[]'::jsonb) END)) ELSE NULL END AS data FROM totals`;
 }
 export function dashboardDistributionsSql(predicate: Prisma.Sql) {
   return Prisma.sql`/* dashboard:distributions */ WITH ${matched(predicate)},

@@ -102,6 +102,65 @@ async function fixture(
   }
 }
 describe.runIf(enabled)("dashboard actual observations and filters", () => {
+  it.each([
+    ["unsupported latest currency", "v.currency,", "'ZZZ'::text AS currency,"],
+    ["mismatched latest exponent", 'v."minorUnitExponent" AS exponent', "9 AS exponent"],
+    [
+      "unsupported immediate prior currency",
+      "p.currency AS previous_currency",
+      "'ZZZ'::text AS previous_currency",
+    ],
+    [
+      "mismatched immediate prior exponent",
+      'p."minorUnitExponent" AS previous_exponent',
+      "9 AS previous_exponent",
+    ],
+  ])(
+    "rejects %s before returning monetary groups or noncomparable history",
+    async (_label, from, to) =>
+      fixture(async (f) => {
+        const item = await f.item("Chosen denomination integrity", 2);
+        const service = createValuationService(db!, f.owner);
+        for (const observedAt of ["2025-01-01", "2025-02-01", "2025-03-01"])
+          await service.addManualValuation(item.id, {
+            amountMinor: 100n,
+            currency: "EUR",
+            observedAt: new Date(observedAt).toISOString(),
+          });
+        let interceptions = 0;
+        let manualRows: unknown;
+        const wrapped: SearchDatabase = {
+          $transaction: (work, options) =>
+            db!.$transaction(
+              (tx) =>
+                work({
+                  $queryRaw: async <T>(sql: Prisma.Sql) => {
+                    if (!sql.text.includes("dashboard:manual")) return tx.$queryRaw<T>(sql);
+                    // Simulate corrupt selected points only; execute the rest of the actual query natively.
+                    // Native constraints remain enabled, and stored producer-written rows remain valid.
+                    const strings = sql.strings.map((part) => part.replace(from!, to!));
+                    expect(strings.join("")).not.toBe(sql.strings.join(""));
+                    interceptions++;
+                    const rows = await tx.$queryRaw<T>(Prisma.sql(strings, ...sql.values));
+                    manualRows = rows;
+                    return rows;
+                  },
+                }),
+              options,
+            ),
+        };
+        await expect(
+          createDashboardService(wrapped).getDashboard({ userId: f.owner }, {}),
+        ).rejects.toMatchObject({ code: "SEARCH_INVARIANT" });
+        expect(interceptions).toBe(1);
+        expect(manualRows).toEqual([{ denominationsValid: false, overflow: false, data: null }]);
+        expect(await f.read()).toMatchObject({
+          manualValues: { groups: [{ currency: "EUR", minorUnitExponent: 2, totalMinor: "200" }] },
+          manualChange: { state: "COMPLETE", groups: [{ deltaMinor: "0" }] },
+        });
+      }),
+  );
+
   it("selects latest before denomination and never turns absent or incomparable history into zero", async () =>
     fixture(async (f) => {
       const a = await f.item("Changed", 3),
