@@ -1,0 +1,29 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/market-data/src/production-providers.test.ts [ packages/market-data/src/production-providers.test.ts ]
+Error: Cannot find module './scrydex-provider' imported from '/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/market-data/src/production-providers.test.ts'
+ ❯ packages/market-data/src/production-providers.test.ts:5:1
+      3| import { parseLocalizedMoney, MAX_AMOUNT_MINOR } from "../../domain/sr…
+      4| import { currencyMinorUnitExponent } from "../../domain/src/money/curr…
+      5| import { makeScrydexProvider } from "./scrydex-provider";
+       | ^
+      6| import { makePriceChartingProvider } from "./pricecharting-provider";
+      7| import { credentialKey, type ProviderDependencies } from "./provider-h…
+
+Caused by: Error: Failed to load url ./scrydex-provider (resolved id: ./scrydex-provider) in /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/market-data/src/production-providers.test.ts. Does the file exist?
+ ❯ loadAndTransform node_modules/.pnpm/vite@7.3.6_@types+node@24.5.2_jiti@2.7.0/node_modules/vite/dist/node/chunks/config.js:22739:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  no tests
+   Start at  07:15:44
+   Duration  301ms (transform 39ms, setup 6ms, collect 0ms, tests 0ms, environment 0ms, prepare 57ms)
+
+
+EXIT=1

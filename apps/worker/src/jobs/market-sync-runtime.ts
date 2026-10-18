@@ -7,12 +7,13 @@ import type { WorkerRegistry, TransactionalProducerBackend } from "@sammlerraum/
 import { createMarketSyncDispatcher } from "./market-sync-dispatcher";
 import { createMarketSyncRepository } from "./market-sync-repository";
 import { createMarketSyncHandler, MARKET_SYNC_JOB } from "./sync-market-data";
-/** Actual composition, injectable with fake providers. Production supplies no registrations. */
+/** Actual composition with explicit, policy-validated production or fake registrations. */
 export function composeMarketSync(options: {
   database: MarketDatabase;
   backend: TransactionalProducerBackend;
   workers: WorkerRegistry;
   registrations?: readonly ProviderRegistration[];
+  requestLifecycle?: { stop(): Promise<void> };
   enabled: boolean;
   logger: Pick<Console, "error">;
   intervalMs?: number;
@@ -62,7 +63,17 @@ export function composeMarketSync(options: {
       if (stopPromise) return stopPromise;
       stopping = true;
       controller.abort();
-      const settled = Promise.all([dispatcher.stop(), Promise.allSettled([...pending])]);
+      let requestStop: Promise<void>;
+      try {
+        requestStop = options.requestLifecycle?.stop() ?? Promise.resolve();
+      } catch {
+        requestStop = Promise.reject(new Error("Market shutdown failed"));
+      }
+      const settled = Promise.all([
+        dispatcher.stop(),
+        Promise.allSettled([...pending]),
+        requestStop,
+      ]);
       stopPromise = new Promise<void>((resolve, reject) => {
         const timer = setTimeout(() => reject(new Error("Market work did not settle")), 15000);
         settled.then(

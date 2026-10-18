@@ -17,6 +17,14 @@ describe("parseServerEnv", () => {
   it("accepts the required foundation environment", () => {
     expect(parseServerEnv(validEnvironment)).toEqual({
       ...validEnvironment,
+      SCRYDEX_ENABLED: false,
+      SCRYDEX_POLICY_APPROVED: false,
+      SCRYDEX_HOURLY_CALL_BUDGET: 0,
+      SCRYDEX_DAILY_CALL_BUDGET: 0,
+      PRICECHARTING_ENABLED: false,
+      PRICECHARTING_POLICY_APPROVED: false,
+      PRICECHARTING_HOURLY_CALL_BUDGET: 0,
+      PRICECHARTING_DAILY_CALL_BUDGET: 0,
       MARKET_SYNC_ENABLED: false,
       MARKET_SYNC_INTERVAL_MS: 60000,
       MARKET_SYNC_BATCH_SIZE: 32,

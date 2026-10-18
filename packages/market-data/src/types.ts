@@ -40,12 +40,10 @@ export type MarketObservation = Common &
     | { kind: Exclude<MarketObservationKind, "PRICE_RANGE">; amountMinor: bigint }
     | { kind: "PRICE_RANGE"; lowMinor: bigint; highMinor: bigint }
   );
+export type MarketFetchContext = { signal: AbortSignal; reportFetchedAt?: (iso: string) => void };
 export interface MarketDataProvider {
   readonly id: string;
-  fetch(
-    request: MarketFetchRequest,
-    context?: { signal: AbortSignal },
-  ): Promise<MarketObservation[]>;
+  fetch(request: MarketFetchRequest, context?: MarketFetchContext): Promise<MarketObservation[]>;
 }
 export type RecordContext = { request: MarketFetchRequest; fetchedAt: string };
 
@@ -56,6 +54,6 @@ export type RecordContext = { request: MarketFetchRequest; fetchedAt: string };
 export interface MarketRequestPermit {
   run<T>(
     context: { credentialKey: string; signal: AbortSignal },
-    send: () => Promise<T>,
+    send: (signal: AbortSignal) => Promise<T>,
   ): Promise<T>;
 }

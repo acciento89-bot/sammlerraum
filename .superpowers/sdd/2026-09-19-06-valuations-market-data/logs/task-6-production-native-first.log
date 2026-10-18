@@ -1,0 +1,26 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| apps/worker/src/jobs/production-market.integration.test.ts (3 tests | 1 failed) 9339ms
+   × real production composition with fake HTTP and PostgreSQL > actual composed handler ingests exact zero/bigint with receipt time before cooldown and skips same-poll replay 1092ms
+     → expected -7198960 to be greater than or equal to 1000
+   ✓ real production composition with fake HTTP and PostgreSQL > real pg-boss retry reuses receipt; raw provider errors never reach persisted broker output  7077ms
+   ✓ real production composition with fake HTTP and PostgreSQL > earlier completed handler cleanup failure remains latched through real composition/main shutdown  1030ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/worker/src/jobs/production-market.integration.test.ts > real production composition with fake HTTP and PostgreSQL > actual composed handler ingests exact zero/bigint with receipt time before cooldown and skips same-poll replay
+AssertionError: expected -7198960 to be greater than or equal to 1000
+ ❯ apps/worker/src/jobs/production-market.integration.test.ts:55:225
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 2 passed (3)
+   Start at  07:25:25
+   Duration  9.77s (transform 126ms, setup 6ms, collect 272ms, tests 9.34s, environment 0ms, prepare 35ms)
+
+
+EXIT=1

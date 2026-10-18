@@ -912,3 +912,18 @@ model MarketSyncDispatchState {
   cursorIdentifierId String?  @db.Uuid
   nextDispatchAt     DateTime @db.Timestamptz(3)
 }
+
+// Never expiring credential claim; no observation/purge cascade may erase a live sender.
+model MarketRequestGate {
+  credentialKey String    @id @db.VarChar(64)
+  service       String    @db.VarChar(16)
+  hourly        Int
+  daily         Int
+  policyVersion Int
+  activeAttempt String?   @db.Uuid
+  acquiredAt    DateTime? @db.Timestamptz(3)
+  hourStart     DateTime  @db.Timestamptz(3)
+  dayStart      DateTime  @db.Timestamptz(3)
+  hourCount     Int
+  dayCount      Int
+}

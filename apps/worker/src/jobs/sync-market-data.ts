@@ -1,3 +1,4 @@
+import { ProviderFailure } from "@sammlerraum/market-data/provider-failure";
 import {
   MarketDataError,
   parseMarketSyncPayload,
@@ -66,19 +67,46 @@ export function createMarketSyncHandler(options: {
       const httpTimer = setTimeout(() => controller.abort(), 30_000);
       httpTimer.unref();
       let observations: MarketObservation[];
+      let reportedAt: string | undefined,
+        invalidReport = false,
+        acceptingReport = true;
+      const reportFetchedAt = (value: string) => {
+        // Detached late reports cannot mutate the selected commit time.
+        if (!acceptingReport) return;
+        if (
+          reportedAt !== undefined ||
+          typeof value !== "string" ||
+          !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/u.test(value) ||
+          !Number.isFinite(Date.parse(value)) ||
+          new Date(value).toISOString() !== value
+        ) {
+          invalidReport = true;
+          throw new Error("MARKET_SYNC_INVALID_TIME");
+        }
+        reportedAt = value;
+      };
       try {
         observations = await registration.provider.fetch(
           Object.freeze({ pollId: payload.pollId, target: Object.freeze({ ...payload.target }) }),
-          { signal },
+          Object.freeze({ signal, reportFetchedAt }),
         );
       } finally {
+        acceptingReport = false;
         clearTimeout(httpTimer);
       }
-      const fetchedAt = new Date().toISOString();
+      const completedAt = new Date().toISOString();
+      if (invalidReport || (reportedAt !== undefined && reportedAt > completedAt))
+        throw new Error("MARKET_SYNC_INVALID_TIME");
+      const fetchedAt = reportedAt ?? completedAt;
       check();
       // Once begun, await the bounded transaction's commit/rollback even after cancellation.
       await options.repository.commit(payload, observations, fetchedAt);
     } catch (error) {
+      if (signal.aborted) throw new Error("MARKET_SYNC_INTERRUPTED");
+      if (error instanceof ProviderFailure && !error.retryable) {
+        options.logger.error(`Market sync skipped: ${error.code}`);
+        return;
+      }
       if (
         (error instanceof MarketDataError &&
           [

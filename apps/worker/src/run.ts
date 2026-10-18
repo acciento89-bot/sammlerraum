@@ -1,3 +1,4 @@
+import { createProductionMarketProviders } from "./jobs/market-provider-composition";
 import { composeMarketSync } from "./jobs/market-sync-runtime";
 import type { StorageCleanupCursor } from "@sammlerraum/storage";
 import { createMediaCleanupService } from "@sammlerraum/domain/media/cleanup-service";
@@ -30,7 +31,12 @@ async function startProductionWorker(): Promise<void> {
   );
   const { createPrismaClient } = await import("@sammlerraum/db/create-client");
   const marketDatabase = createPrismaClient(serverEnv.DATABASE_URL, { bounded: true });
+  const providers = createProductionMarketProviders({
+    config: serverEnv,
+    database: marketDatabase,
+  });
   const marketSync = composeMarketSync({
+    ...providers,
     database: marketDatabase,
     backend: producerBackend,
     workers: registry,

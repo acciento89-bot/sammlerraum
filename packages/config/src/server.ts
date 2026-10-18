@@ -40,28 +40,75 @@ function applicationOrigin(value: string, context: z.RefinementCtx): string | ne
 const mediaLimit = (maximum: number, fallback: number) =>
   z.coerce.number().int().min(1).max(maximum).default(fallback);
 
-const schema = z.object({
-  MARKET_SYNC_ENABLED: z
+const providerFlag = () =>
+  z
     .enum(["true", "false"])
     .default("false")
-    .transform((value) => value === "true"),
-  MARKET_SYNC_INTERVAL_MS: z.coerce.number().int().min(60000).max(3600000).default(60000),
-  MARKET_SYNC_BATCH_SIZE: mediaLimit(32, 32),
-  MARKET_SYNC_MAX_PENDING: mediaLimit(256, 256),
-  MEDIA_RETENTION_HOURS: mediaLimit(87600, 168),
-  MEDIA_CLEANUP_INTERVAL_MS: mediaLimit(86400000, 60000),
-  MEDIA_CLEANUP_BATCH_SIZE: mediaLimit(1000, 100),
-  STORAGE_TEMP_MAX_AGE_HOURS: mediaLimit(87600, 24),
-  MEDIA_MAX_IMAGE_BYTES: mediaLimit(100 * 1024 * 1024, 20 * 1024 * 1024),
-  MEDIA_MAX_DOCUMENT_BYTES: mediaLimit(100 * 1024 * 1024, 25 * 1024 * 1024),
-  MEDIA_MAX_IMAGE_PIXELS: mediaLimit(100_000_000, 40_000_000),
-  NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
-  DATABASE_URL: z.string().transform(postgresUrl),
-  APP_ORIGIN: z.string().transform(applicationOrigin),
-  UPLOADS_DIR: z.string().min(1).refine(isAbsolute, "must be an absolute path"),
-  LOG_LEVEL: z.enum(["debug", "info", "warn", "error"]).default("info"),
-  WORKER_HEALTH_PORT: z.coerce.number().int().min(1).max(65535).default(3001),
-});
+    .transform((value) => value === "true");
+const providerCredential = () =>
+  z
+    .string()
+    .min(1)
+    .max(4096)
+    .refine(
+      (value) => /^[\x20-\x7e]+$/u.test(value) && value.trim() === value,
+      "invalid credential",
+    )
+    .optional();
+const providerBudget = (maximum: number) => z.coerce.number().int().min(0).max(maximum).default(0);
+const schema = z
+  .object({
+    SCRYDEX_ENABLED: providerFlag(),
+    SCRYDEX_POLICY_APPROVED: providerFlag(),
+    SCRYDEX_API_KEY: providerCredential(),
+    SCRYDEX_TEAM_ID: providerCredential(),
+    SCRYDEX_HOURLY_CALL_BUDGET: providerBudget(60),
+    SCRYDEX_DAILY_CALL_BUDGET: providerBudget(500),
+    PRICECHARTING_ENABLED: providerFlag(),
+    PRICECHARTING_POLICY_APPROVED: providerFlag(),
+    PRICECHARTING_API_TOKEN: providerCredential(),
+    PRICECHARTING_HOURLY_CALL_BUDGET: providerBudget(60),
+    PRICECHARTING_DAILY_CALL_BUDGET: providerBudget(500),
+    MARKET_SYNC_ENABLED: z
+      .enum(["true", "false"])
+      .default("false")
+      .transform((value) => value === "true"),
+    MARKET_SYNC_INTERVAL_MS: z.coerce.number().int().min(60000).max(3600000).default(60000),
+    MARKET_SYNC_BATCH_SIZE: mediaLimit(32, 32),
+    MARKET_SYNC_MAX_PENDING: mediaLimit(256, 256),
+    MEDIA_RETENTION_HOURS: mediaLimit(87600, 168),
+    MEDIA_CLEANUP_INTERVAL_MS: mediaLimit(86400000, 60000),
+    MEDIA_CLEANUP_BATCH_SIZE: mediaLimit(1000, 100),
+    STORAGE_TEMP_MAX_AGE_HOURS: mediaLimit(87600, 24),
+    MEDIA_MAX_IMAGE_BYTES: mediaLimit(100 * 1024 * 1024, 20 * 1024 * 1024),
+    MEDIA_MAX_DOCUMENT_BYTES: mediaLimit(100 * 1024 * 1024, 25 * 1024 * 1024),
+    MEDIA_MAX_IMAGE_PIXELS: mediaLimit(100_000_000, 40_000_000),
+    NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
+    DATABASE_URL: z.string().transform(postgresUrl),
+    APP_ORIGIN: z.string().transform(applicationOrigin),
+    UPLOADS_DIR: z.string().min(1).refine(isAbsolute, "must be an absolute path"),
+    LOG_LEVEL: z.enum(["debug", "info", "warn", "error"]).default("info"),
+    WORKER_HEALTH_PORT: z.coerce.number().int().min(1).max(65535).default(3001),
+  })
+  .superRefine((env, context) => {
+    for (const provider of ["SCRYDEX", "PRICECHARTING"] as const) {
+      if (!env[`${provider}_ENABLED`]) continue;
+      const valid =
+        env.MARKET_SYNC_ENABLED &&
+        env[`${provider}_POLICY_APPROVED`] &&
+        env[`${provider}_HOURLY_CALL_BUDGET`] > 0 &&
+        env[`${provider}_DAILY_CALL_BUDGET`] > 0 &&
+        (provider === "SCRYDEX"
+          ? env.SCRYDEX_API_KEY && env.SCRYDEX_TEAM_ID
+          : env.PRICECHARTING_API_TOKEN);
+      if (!valid)
+        context.addIssue({
+          code: "custom",
+          path: [`${provider}_ENABLED`],
+          message: "incomplete provider configuration",
+        });
+    }
+  });
 
 const authSchema = z.object({
   APP_ORIGIN: z.string().transform(applicationOrigin),

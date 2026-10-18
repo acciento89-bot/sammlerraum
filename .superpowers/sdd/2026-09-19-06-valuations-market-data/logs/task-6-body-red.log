@@ -1,0 +1,102 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| packages/market-data/src/production-providers.test.ts (43 tests | 2 failed) 75ms
+   ✓ exact production guide contracts (fake HTTP only) > preserves numeric zero and integers beyond Number precision as pennies 7ms
+   ✓ exact production guide contracts (fake HTTP only) > uses category-specific source buckets without invented company 0ms
+   ✓ exact production guide contracts (fake HTTP only) > maps selected raw/graded metrics with exact decimals and honest qualifiers 1ms
+   ✓ exact production guide contracts (fake HTTP only) > rejects invalid penny token -1 as a whole batch 1ms
+   ✓ exact production guide contracts (fake HTTP only) > rejects invalid penny token -0 as a whole batch 0ms
+   ✓ exact production guide contracts (fake HTTP only) > rejects invalid penny token 1e2 as a whole batch 0ms
+   ✓ exact production guide contracts (fake HTTP only) > rejects invalid penny token 1.5 as a whole batch 0ms
+   ✓ exact production guide contracts (fake HTTP only) > rejects invalid penny token 9223372036854775808 as a whole batch 0ms
+   ✓ exact production guide contracts (fake HTTP only) > rejects invalid penny token "12" as a whole batch 0ms
+   ✓ exact production guide contracts (fake HTTP only) > rejects invalid penny token true as a whole batch 0ms
+   ✓ exact production guide contracts (fake HTTP only) > rejects invalid penny token {} as a whole batch 0ms
+   ✓ exact production guide contracts (fake HTTP only) > rejects unsupported precision/currency USD 1.231 0ms
+   ✓ exact production guide contracts (fake HTTP only) > rejects unsupported precision/currency JPY 100.1 0ms
+   ✓ exact production guide contracts (fake HTTP only) > rejects unsupported precision/currency ZZZ 1 0ms
+   ✓ exact production guide contracts (fake HTTP only) > rejects unsupported precision/currency USD 1e2 0ms
+   ✓ exact production guide contracts (fake HTTP only) > rejects mismatched or unsuccessful product response 0ms
+   ✓ exact production guide contracts (fake HTTP only) > rejects mismatched or unsuccessful product response 0ms
+   ✓ exact production guide contracts (fake HTTP only) > rejects mismatched or unsuccessful product response 0ms
+   ✓ exact production guide contracts (fake HTTP only) > fails closed on missing/ambiguous selected card data 0ms
+   ✓ exact production guide contracts (fake HTTP only) > fails closed on missing/ambiguous selected card data 0ms
+   ✓ exact production guide contracts (fake HTTP only) > fails closed on missing/ambiguous selected card data 0ms
+   ✓ exact production guide contracts (fake HTTP only) > fails closed on missing/ambiguous selected card data 0ms
+   ✓ exact production guide contracts (fake HTTP only) > accepts explicit empty arrays and absent guide fields 0ms
+   ✓ exact production guide contracts (fake HTTP only) > rejects noncanonical mapping before admission ["v1","cards","0123","NES"] 0ms
+   ✓ exact production guide contracts (fake HTTP only) > rejects noncanonical mapping before admission  ["v1","cards","1234","NES"] 0ms
+   ✓ exact production guide contracts (fake HTTP only) > rejects noncanonical mapping before admission upc=1234 0ms
+   ✓ exact production guide contracts (fake HTTP only) > rejects noncanonical mapping before admission ["v2","cards","1234","NES"] 0ms
+   ✓ exact production guide contracts (fake HTTP only) > rejects unsafe credentials without exposing them 0ms
+   ✓ exact production guide contracts (fake HTTP only) > rejects unsafe credentials without exposing them 0ms
+   ✓ exact production guide contracts (fake HTTP only) > rejects unsafe credentials without exposing them 0ms
+   ✓ exact production guide contracts (fake HTTP only) > rejects unsafe credentials without exposing them 0ms
+   ✓ exact production guide contracts (fake HTTP only) > rejects unsafe credentials without exposing them 0ms
+   ✓ exact production guide contracts (fake HTTP only) > shares token gate across teams and preserves exact accepted authentication 0ms
+   ✓ exact production guide contracts (fake HTTP only) > does not admit disabled or cancelled calls 0ms
+   ✓ exact production guide contracts (fake HTTP only) > classifies HTTP 401 safely 0ms
+   ✓ exact production guide contracts (fake HTTP only) > classifies HTTP 403 safely 0ms
+   ✓ exact production guide contracts (fake HTTP only) > classifies HTTP 429 safely 0ms
+   ✓ exact production guide contracts (fake HTTP only) > classifies HTTP 500 safely 0ms
+   ✓ exact production guide contracts (fake HTTP only) > strips transport messages, causes and stacks 0ms
+   ✓ exact production guide contracts (fake HTTP only) > rejects excessive body, depth, numeric tokens and record count 1ms
+   ✓ awaits body cancellation on an oversized stream before releasing the transport 52ms
+   × normal aborted body read settles without inventing cancellation uncertainty 6ms
+     → expected ProviderFailure: TRANSPORT_UNCERTAIN { …(2) } to match object { code: 'INTERRUPTED' }
+(2 matching properties omitted from actual)
+   × reports body receipt before UTF8/JSON decoding fails 1ms
+     → expected "spy" to be called once with arguments: [ '2026-10-18T05:00:00.000Z' ]
+
+Number of calls: 0
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/market-data/src/production-providers.test.ts > normal aborted body read settles without inventing cancellation uncertainty
+AssertionError: expected ProviderFailure: TRANSPORT_UNCERTAIN { …(2) } to match object { code: 'INTERRUPTED' }
+(2 matching properties omitted from actual)
+
+- Expected
++ Received
+
+- {
+-   "code": "INTERRUPTED",
++ ProviderFailure {
++   "code": "TRANSPORT_UNCERTAIN",
+  }
+
+ ❯ packages/market-data/src/production-providers.test.ts:103:168
+    101|  const {deps}=setup('{}');const ac=new AbortController();let entered!:…
+    102|  deps.fetch=vi.fn(async(_url,init)=>new Response(new ReadableStream<Ui…
+    103|  const task=makePriceChartingProvider(deps).fetch(pc,{signal:ac.signal…
+       |                                                                                                                                                                        ^
+    104| });
+    105| it("reports body receipt before UTF8/JSON decoding fails",async()=>{
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |workspace| packages/market-data/src/production-providers.test.ts > reports body receipt before UTF8/JSON decoding fails
+AssertionError: expected "spy" to be called once with arguments: [ '2026-10-18T05:00:00.000Z' ]
+
+Number of calls: 0
+
+ ❯ packages/market-data/src/production-providers.test.ts:107:130
+    105| it("reports body receipt before UTF8/JSON decoding fails",async()=>{
+    106|  const {deps}=setup('{}');deps.fetch=vi.fn(async()=>new Response(new U…
+    107|  await expect(makePriceChartingProvider(deps).fetch(pc,ctx)).rejects.t…
+       |                                                                                                                                  ^
+    108| });
+    109| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 41 passed (43)
+   Start at  07:23:32
+   Duration  351ms (transform 46ms, setup 6ms, collect 53ms, tests 75ms, environment 0ms, prepare 37ms)
+
+
+EXIT=1

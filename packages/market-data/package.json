@@ -4,7 +4,11 @@
   "type": "module",
   "exports": {
     "./types": "./src/types.ts",
-    "./provider-registry": "./src/provider-registry.ts"
+    "./provider-registry": "./src/provider-registry.ts",
+    "./scrydex-provider": "./src/scrydex-provider.ts",
+    "./pricecharting-provider": "./src/pricecharting-provider.ts",
+    "./provider-failure": "./src/provider-failure.ts",
+    "./provider-http": "./src/provider-http.ts"
   },
   "scripts": {
     "build": "pnpm typecheck",

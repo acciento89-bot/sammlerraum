@@ -152,6 +152,8 @@ jobs:
           packages/domain/src/valuations/valuation-query.test.ts
           apps/web/src/lib/valuation-routes.integration.test.ts
           packages/domain/src/market-data/market-data-service.test.ts apps/worker/src/jobs/market-sync.integration.test.ts
+          apps/worker/src/jobs/market-request-permit.integration.test.ts
+          apps/worker/src/jobs/production-market.integration.test.ts
           apps/web/src/lib/grading-routes.integration.test.ts
           apps/web/src/lib/condition-routes.integration.test.ts
           apps/web/src/lib/catalog-proposal-routes.integration.test.ts

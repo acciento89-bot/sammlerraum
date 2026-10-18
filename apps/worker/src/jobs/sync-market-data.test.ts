@@ -28,9 +28,11 @@ function setup() {
   const repository = {
     find: vi.fn(async (p: ReturnType<typeof payload>) => receipts.get(p.pollId) ?? null),
     validate: vi.fn(async () => {}),
-    commit: vi.fn(async (p: ReturnType<typeof payload>) => {
-      receipts.set(p.pollId, { request: p });
-    }),
+    commit: vi.fn(
+      async (p: ReturnType<typeof payload>, _observations: unknown[], _fetchedAt: string) => {
+        receipts.set(p.pollId, { request: p });
+      },
+    ),
   };
   return {
     repository,
@@ -165,4 +167,65 @@ it("aborts a compliant transport at the thirty-second request bound", async () =
   } finally {
     vi.useRealTimers();
   }
+});
+
+it("uses one frozen response-receipt timestamp through registry before delayed decode/cooldown", async () => {
+  const s = setup();
+  const received = "2026-01-01T00:00:00.000Z";
+  s.fetch.mockImplementation((async (
+    _request: unknown,
+    context: { reportFetchedAt: (value: string) => void },
+  ) => {
+    context.reportFetchedAt(received);
+    return [];
+  }) as never);
+  await s.handler(payload(), { signal: new AbortController().signal });
+  expect(s.repository.commit.mock.calls[0]![2]).toBe(received);
+});
+it.each([
+  "not-a-date",
+  "2026-02-30T00:00:00.000Z",
+  "9999-01-01T00:00:00.000Z",
+  "2026-01-01T00:00:00Z",
+])("rejects malformed/future response time %s without committing", async (timestamp) => {
+  const s = setup();
+  s.fetch.mockImplementation((async (_r: unknown, c: { reportFetchedAt: (v: string) => void }) => {
+    try {
+      c.reportFetchedAt(timestamp);
+    } catch {}
+    return [];
+  }) as never);
+  await expect(s.handler(payload(), { signal: new AbortController().signal })).rejects.toThrow(
+    "MARKET_SYNC_RETRY",
+  );
+  expect(s.repository.commit).not.toHaveBeenCalled();
+});
+it("rejects duplicate receipt reports even when the adapter catches the exception", async () => {
+  const s = setup();
+  s.fetch.mockImplementation((async (_r: unknown, c: { reportFetchedAt: (v: string) => void }) => {
+    c.reportFetchedAt("2026-01-01T00:00:00.000Z");
+    try {
+      c.reportFetchedAt("2026-01-01T00:00:00.000Z");
+    } catch {}
+    return [];
+  }) as never);
+  await expect(s.handler(payload(), { signal: new AbortController().signal })).rejects.toThrow(
+    "MARKET_SYNC_RETRY",
+  );
+  expect(s.repository.commit).not.toHaveBeenCalled();
+});
+it("terminal provider failures avoid paid retries but cancellation takes precedence", async () => {
+  const { ProviderFailure } = await import("@sammlerraum/market-data/provider-failure");
+  const s = setup();
+  s.fetch.mockRejectedValue(new ProviderFailure("INVALID_RESPONSE"));
+  await s.handler(payload(), { signal: new AbortController().signal });
+  expect(s.repository.commit).not.toHaveBeenCalled();
+  const ac = new AbortController();
+  s.fetch.mockImplementation((async () => {
+    ac.abort();
+    throw new ProviderFailure("INVALID_MAPPING");
+  }) as never);
+  await expect(s.handler(payload(), { signal: ac.signal })).rejects.toThrow(
+    "MARKET_SYNC_INTERRUPTED",
+  );
 });

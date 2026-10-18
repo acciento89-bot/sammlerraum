@@ -1,0 +1,12 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ✓ |workspace| packages/market-data/src/production-providers.test.ts (40 tests) 17ms
+
+ Test Files  1 passed (1)
+      Tests  40 passed (40)
+   Start at  07:17:00
+   Duration  325ms (transform 52ms, setup 6ms, collect 54ms, tests 17ms, environment 0ms, prepare 53ms)
+
+
+EXIT=0
