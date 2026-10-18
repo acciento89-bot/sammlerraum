@@ -1,0 +1,945 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Visibility {
+  PRIVATE
+  UNLISTED
+  PUBLIC
+}
+
+enum AcquisitionType {
+  PURCHASE
+  GIFT
+  TRADE
+  INHERITANCE
+  FOUND
+  OTHER
+}
+
+enum TradeStatus {
+  NOT_FOR_TRADE
+  OPEN_TO_TRADE
+  FOR_SALE
+  RESERVED
+}
+
+enum CustomFieldType {
+  SHORT_TEXT
+  LONG_TEXT
+  INTEGER
+  DECIMAL
+  DATE
+  BOOLEAN
+  SINGLE_SELECT
+  MULTI_SELECT
+  URL
+  MONEY
+}
+
+enum MediaKind {
+  IMAGE
+  DOCUMENT
+}
+
+enum MediaProcessingStatus {
+  UPLOADING
+  PENDING
+  PROCESSING
+  READY
+  FAILED
+}
+
+enum MediaPurpose {
+  GALLERY
+  DETAIL
+}
+
+enum DocumentCategory {
+  PURCHASE_RECEIPT
+  INVOICE
+  AUTHENTICITY_CERTIFICATE
+  GRADING_PROOF
+  APPRAISAL
+  INSURANCE
+  PROVENANCE
+  WARRANTY
+  OTHER_PRIVATE
+}
+
+enum LocationType {
+  ROOM
+  CABINET
+  SHELF
+  DRAWER
+  BOX
+  OTHER
+}
+
+model SystemMetadata {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt
+}
+
+model UserProfile {
+  userId        String      @id
+  handle        String      @unique
+  displayName   String
+  bio           String?
+  avatarAssetId String?     @db.Uuid
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  avatarAsset   MediaAsset? @relation("ProfileAvatar", fields: [avatarAssetId, userId], references: [id, ownerId], onDelete: Restrict)
+}
+
+model User {
+  id                         String                 @id
+  name                       String
+  email                      String
+  emailVerified              Boolean                @default(false)
+  image                      String?
+  createdAt                  DateTime               @default(now())
+  updatedAt                  DateTime               @updatedAt
+  sessions                   Session[]
+  accounts                   Account[]
+  passkeys                   Passkey[]
+  profile                    UserProfile?
+  collections                Collection[]
+  smartCollections           SmartCollection[]
+  tags                       Tag[]
+  storageLocations           StorageLocation[]
+  locationHistoryAssignments ItemLocationHistory[]  @relation("LocationHistoryAssignee")
+  mediaAssets                MediaAsset[]
+  applicationRoleGrant       ApplicationRoleGrant?
+  catalogProposals           CatalogProposal[]      @relation("ProposalProposer")
+  catalogDecisions           CatalogProposal[]      @relation("ProposalModerator")
+  valuations                 Valuation[]
+  catalogRollbacks           CatalogRollbackAudit[]
+
+  @@unique([email])
+  @@map("user")
+}
+
+model Collection {
+  id                     String                  @id @default(uuid()) @db.Uuid
+  ownerId                String
+  name                   String
+  visibility             Visibility              @default(PRIVATE)
+  createdAt              DateTime                @default(now())
+  updatedAt              DateTime                @updatedAt
+  deletedAt              DateTime?
+  owner                  User                    @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  nodes                  CollectionNode[]
+  items                  CollectibleItem[]
+  customFieldDefinitions CustomFieldDefinition[]
+
+  @@unique([id, ownerId])
+  @@index([ownerId])
+  @@index([ownerId, deletedAt])
+}
+
+model CollectionNode {
+  id           String            @id @default(uuid()) @db.Uuid
+  collectionId String            @db.Uuid
+  parentId     String?           @db.Uuid
+  name         String
+  visibility   Visibility        @default(PRIVATE)
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+  collection   Collection        @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  parent       CollectionNode?   @relation("CollectionHierarchy", fields: [parentId, collectionId], references: [id, collectionId], onDelete: Restrict)
+  children     CollectionNode[]  @relation("CollectionHierarchy")
+  items        CollectibleItem[]
+
+  @@unique([id, collectionId])
+  @@index([collectionId])
+  @@index([parentId, collectionId])
+}
+
+model CollectibleItem {
+  id                  String                @id @default(uuid()) @db.Uuid
+  collectionId        String                @db.Uuid
+  ownerId             String
+  nodeId              String?               @db.Uuid
+  storageLocationId   String?               @db.Uuid
+  categoryTemplateId  String?               @db.Uuid
+  conditionOptionId   String?               @db.Uuid
+  catalogEntryId      String?               @db.Uuid
+  catalogVariantId    String?               @db.Uuid
+  title               String
+  publicDescription   String?
+  privateNotes        String?
+  quantity            Int                   @default(1)
+  acquisitionType     AcquisitionType       @default(OTHER)
+  acquisitionDate     DateTime?             @db.Date
+  purchaseAmountMinor BigInt?
+  purchaseCurrency    String?               @db.Char(3)
+  visibility          Visibility            @default(PRIVATE)
+  tradeStatus         TradeStatus           @default(NOT_FOR_TRADE)
+  archivedAt          DateTime?
+  disposedAt          DateTime?
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime              @updatedAt
+  deletedAt           DateTime?
+  collection          Collection            @relation(fields: [collectionId, ownerId], references: [id, ownerId], onDelete: Cascade)
+  node                CollectionNode?       @relation(fields: [nodeId, collectionId], references: [id, collectionId], onDelete: Restrict)
+  storageLocation     StorageLocation?      @relation(fields: [storageLocationId, ownerId], references: [id, ownerId], onDelete: Restrict)
+  categoryTemplate    CategoryTemplate?     @relation(fields: [categoryTemplateId], references: [id], onDelete: Restrict)
+  conditionOption     ConditionOption?      @relation(fields: [conditionOptionId, categoryTemplateId], references: [id, categoryTemplateId], onDelete: Restrict)
+  // SQL migration narrows SET NULL to the catalog ID, preserving personal category.
+  catalogEntry        CatalogEntry?         @relation(fields: [catalogEntryId, categoryTemplateId], references: [id, categoryTemplateId], onDelete: SetNull, onUpdate: Restrict)
+  // SQL migration narrows SET NULL to variant ID, retaining the entry.
+  catalogVariant      CatalogVariant?       @relation(fields: [catalogVariantId, catalogEntryId], references: [id, entryId], onDelete: SetNull, onUpdate: Restrict)
+  locationHistory     ItemLocationHistory[]
+  identifiers         ItemIdentifier[]
+  itemTags            ItemTag[]
+  customFieldValues   CustomFieldValue[]
+  mediaLinks          MediaLink[]
+  documentLinks       DocumentLink[]
+  gradings            Grading[]
+  valuations          Valuation[]
+
+  @@unique([id, collectionId])
+  @@unique([id, ownerId])
+  @@unique([id, ownerId, quantity])
+  @@index([collectionId])
+  @@index([collectionId, deletedAt])
+  @@index([nodeId, collectionId])
+  @@index([storageLocationId, ownerId])
+  @@index([categoryTemplateId])
+  @@index([conditionOptionId, categoryTemplateId])
+  @@index([catalogEntryId, categoryTemplateId])
+  @@index([catalogVariantId, catalogEntryId])
+}
+
+model StorageLocation {
+  id          String                @id @default(uuid()) @db.Uuid
+  ownerId     String
+  parentId    String?               @db.Uuid
+  name        String
+  type        LocationType          @default(OTHER)
+  visibility  Visibility            @default(PRIVATE)
+  qrToken     String                @unique @db.VarChar(43)
+  createdAt   DateTime              @default(now())
+  updatedAt   DateTime              @updatedAt
+  owner       User                  @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  parent      StorageLocation?      @relation("StorageLocationHierarchy", fields: [parentId, ownerId], references: [id, ownerId], onDelete: Restrict)
+  children    StorageLocation[]     @relation("StorageLocationHierarchy")
+  items       CollectibleItem[]
+  historyFrom ItemLocationHistory[] @relation("HistoryFromLocation")
+  historyTo   ItemLocationHistory[] @relation("HistoryToLocation")
+
+  @@unique([id, ownerId])
+  @@index([ownerId])
+  @@index([parentId, ownerId])
+}
+
+model ItemLocationHistory {
+  id             String           @id @default(uuid()) @db.Uuid
+  itemId         String           @db.Uuid
+  ownerId        String
+  fromLocationId String?          @db.Uuid
+  toLocationId   String?          @db.Uuid
+  assignedById   String
+  movedAt        DateTime         @default(now())
+  item           CollectibleItem  @relation(fields: [itemId, ownerId], references: [id, ownerId], onDelete: Cascade)
+  fromLocation   StorageLocation? @relation("HistoryFromLocation", fields: [fromLocationId, ownerId], references: [id, ownerId], onDelete: Restrict)
+  toLocation     StorageLocation? @relation("HistoryToLocation", fields: [toLocationId, ownerId], references: [id, ownerId], onDelete: Restrict)
+  assignedBy     User             @relation("LocationHistoryAssignee", fields: [assignedById], references: [id], onDelete: Restrict)
+
+  @@index([itemId, movedAt])
+  @@index([fromLocationId, ownerId])
+  @@index([toLocationId, ownerId])
+  @@index([assignedById])
+}
+
+model CustomFieldDefinition {
+  id             String              @id @default(uuid()) @db.Uuid
+  collectionId   String              @db.Uuid
+  name           String
+  normalizedName String
+  type           CustomFieldType
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+  collection     Collection          @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  options        CustomFieldOption[]
+  values         CustomFieldValue[]
+
+  @@unique([collectionId, normalizedName])
+  @@unique([id, collectionId])
+  @@unique([id, collectionId, type])
+  @@index([collectionId])
+}
+
+model CustomFieldOption {
+  id                String                        @id @default(uuid()) @db.Uuid
+  fieldDefinitionId String                        @db.Uuid
+  value             String
+  normalizedValue   String
+  position          Int
+  fieldDefinition   CustomFieldDefinition         @relation(fields: [fieldDefinitionId], references: [id], onDelete: Cascade)
+  singleValues      CustomFieldValue[]            @relation("SingleSelectOption")
+  multiValues       CustomFieldMultiSelectValue[]
+
+  @@unique([fieldDefinitionId, normalizedValue])
+  @@unique([fieldDefinitionId, position])
+  @@unique([id, fieldDefinitionId])
+  @@index([fieldDefinitionId])
+}
+
+model CustomFieldValue {
+  itemId               String                        @db.Uuid
+  fieldDefinitionId    String                        @db.Uuid
+  collectionId         String                        @db.Uuid
+  fieldType            CustomFieldType
+  shortTextValue       String?                       @db.VarChar(255)
+  longTextValue        String?
+  integerValue         BigInt?
+  decimalValue         Decimal?                      @db.Decimal(38, 18)
+  dateValue            DateTime?                     @db.Date
+  booleanValue         Boolean?
+  singleSelectOptionId String?                       @db.Uuid
+  urlValue             String?                       @db.VarChar(2048)
+  moneyAmountMinor     BigInt?
+  moneyCurrency        String?                       @db.Char(3)
+  createdAt            DateTime                      @default(now())
+  updatedAt            DateTime                      @updatedAt
+  item                 CollectibleItem               @relation(fields: [itemId, collectionId], references: [id, collectionId], onDelete: Cascade)
+  fieldDefinition      CustomFieldDefinition         @relation(fields: [fieldDefinitionId, collectionId, fieldType], references: [id, collectionId, type], onDelete: Cascade)
+  singleSelectOption   CustomFieldOption?            @relation("SingleSelectOption", fields: [singleSelectOptionId, fieldDefinitionId], references: [id, fieldDefinitionId], onDelete: Cascade)
+  multiSelectValues    CustomFieldMultiSelectValue[]
+
+  @@id([itemId, fieldDefinitionId])
+  @@index([fieldDefinitionId, collectionId, fieldType])
+  @@index([singleSelectOptionId, fieldDefinitionId])
+}
+
+model CustomFieldMultiSelectValue {
+  itemId            String            @db.Uuid
+  fieldDefinitionId String            @db.Uuid
+  optionId          String            @db.Uuid
+  position          Int
+  value             CustomFieldValue  @relation(fields: [itemId, fieldDefinitionId], references: [itemId, fieldDefinitionId], onDelete: Cascade)
+  option            CustomFieldOption @relation(fields: [optionId, fieldDefinitionId], references: [id, fieldDefinitionId], onDelete: Cascade)
+
+  @@id([itemId, fieldDefinitionId, optionId])
+  @@unique([itemId, fieldDefinitionId, position])
+  @@index([optionId, fieldDefinitionId])
+}
+
+model ItemIdentifier {
+  id              String          @id @default(uuid()) @db.Uuid
+  itemId          String          @db.Uuid
+  type            String
+  value           String
+  normalizedValue String
+  item            CollectibleItem @relation(fields: [itemId], references: [id], onDelete: Cascade)
+
+  @@unique([itemId, type, normalizedValue])
+}
+
+model Tag {
+  id             String    @id @default(uuid()) @db.Uuid
+  ownerId        String
+  name           String
+  normalizedName String
+  owner          User      @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  itemTags       ItemTag[]
+
+  @@unique([ownerId, normalizedName])
+}
+
+model ItemTag {
+  itemId String          @db.Uuid
+  tagId  String          @db.Uuid
+  item   CollectibleItem @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  tag    Tag             @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([itemId, tagId])
+  @@index([tagId])
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+  @@index([userId])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@index([userId])
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
+  @@map("verification")
+}
+
+model Passkey {
+  id           String    @id
+  name         String?
+  publicKey    String
+  userId       String
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  credentialID String
+  counter      Int
+  deviceType   String
+  backedUp     Boolean
+  transports   String?
+  createdAt    DateTime?
+  aaguid       String?
+
+  @@index([userId])
+  @@index([credentialID])
+  @@map("passkey")
+}
+
+model RateLimit {
+  id          String @id
+  key         String
+  count       Int
+  lastRequest BigInt
+
+  @@unique([key])
+  @@map("rateLimit")
+}
+
+// An UPLOADING row is committed before the original is written. Recovery must
+// check storageKey for stale rows before cleaning them; PENDING is a durable
+// processing intent consumed by the Task 3 dispatcher.
+model MediaAsset {
+  id                   String                @id @default(uuid()) @db.Uuid
+  ownerId              String
+  kind                 MediaKind
+  status               MediaProcessingStatus @default(UPLOADING)
+  storageKey           String                @unique
+  mimeType             String
+  byteSize             BigInt
+  checksumSha256       String                @db.Char(64)
+  width                Int?
+  height               Int?
+  originalFileName     String                @db.VarChar(255)
+  processingToken      String?               @db.Uuid
+  processingLeaseUntil DateTime?
+  processingAttempts   Int                   @default(0)
+  processingErrorCode  String?               @db.VarChar(32)
+  orphanedAt           DateTime?             @default(now())
+  cleanupStartedAt     DateTime?
+  cleanupAttemptAt     DateTime?
+  lastDispatchedAt     DateTime?
+  createdAt            DateTime              @default(now())
+  updatedAt            DateTime              @updatedAt
+  owner                User                  @relation(fields: [ownerId], references: [id], onDelete: Restrict)
+  variants             MediaVariant[]
+  mediaLinks           MediaLink[]
+  documentLinks        DocumentLink[]
+  avatarProfiles       UserProfile[]         @relation("ProfileAvatar")
+
+  @@unique([id, ownerId])
+  @@index([cleanupAttemptAt, orphanedAt, id])
+  @@index([ownerId, status, createdAt])
+  @@index([status, processingLeaseUntil])
+  @@index([status, lastDispatchedAt, createdAt])
+}
+
+model MediaVariant {
+  id             String     @id @default(uuid()) @db.Uuid
+  assetId        String     @db.Uuid
+  name           String     @db.VarChar(32)
+  storageKey     String     @unique
+  mimeType       String
+  byteSize       BigInt
+  checksumSha256 String     @db.Char(64)
+  width          Int
+  height         Int
+  createdAt      DateTime   @default(now())
+  asset          MediaAsset @relation(fields: [assetId], references: [id], onDelete: Restrict)
+
+  @@unique([assetId, name])
+}
+
+model MediaLink {
+  id        String          @id @default(uuid()) @db.Uuid
+  assetId   String          @db.Uuid
+  ownerId   String
+  itemId    String          @db.Uuid
+  purpose   MediaPurpose    @default(GALLERY)
+  position  Int
+  title     String?         @db.VarChar(255)
+  createdAt DateTime        @default(now())
+  asset     MediaAsset      @relation(fields: [assetId, ownerId], references: [id, ownerId], onDelete: Restrict)
+  item      CollectibleItem @relation(fields: [itemId, ownerId], references: [id, ownerId], onDelete: Cascade)
+
+  @@unique([itemId, assetId, purpose])
+  @@index([itemId, position])
+  @@index([assetId])
+}
+
+model DocumentLink {
+  id         String           @id @default(uuid()) @db.Uuid
+  assetId    String           @db.Uuid
+  ownerId    String
+  itemId     String           @db.Uuid
+  category   DocumentCategory @default(OTHER_PRIVATE)
+  visibility Visibility       @default(PRIVATE)
+  position   Int
+  title      String?          @db.VarChar(255)
+  createdAt  DateTime         @default(now())
+  asset      MediaAsset       @relation(fields: [assetId, ownerId], references: [id, ownerId], onDelete: Restrict)
+  item       CollectibleItem  @relation(fields: [itemId, ownerId], references: [id, ownerId], onDelete: Cascade)
+
+  @@unique([itemId, assetId])
+  @@index([itemId, position])
+  @@index([assetId])
+}
+
+// Durable reconciliation tracking. No FK or arbitrary expiry: old I/O may finish late.
+model MediaCleanupKey {
+  storageKey    String   @id
+  assetId       String   @db.Uuid
+  lastCheckedAt DateTime @default(now())
+
+  @@index([lastCheckedAt, storageKey])
+}
+
+// Global maintenance-authored category metadata; no personal collection data.
+model CategoryTemplate {
+  id              String                       @id @default(uuid()) @db.Uuid
+  key             String                       @unique @db.VarChar(64)
+  createdAt       DateTime                     @default(now())
+  labels          CategoryTemplateLabel[]
+  definitions     CatalogAttributeDefinition[]
+  catalogEntries  CatalogEntry[]
+  conditionScheme ConditionScheme?
+  items           CollectibleItem[]
+}
+
+model CategoryTemplateLabel {
+  categoryTemplateId String           @db.Uuid
+  locale             String           @db.VarChar(2)
+  label              String           @db.VarChar(200)
+  categoryTemplate   CategoryTemplate @relation(fields: [categoryTemplateId], references: [id], onDelete: Cascade)
+
+  @@id([categoryTemplateId, locale])
+}
+
+model CatalogAttributeDefinition {
+  id                 String                   @id @default(uuid()) @db.Uuid
+  categoryTemplateId String                   @db.Uuid
+  key                String                   @db.VarChar(64)
+  type               CustomFieldType
+  position           Int
+  categoryTemplate   CategoryTemplate         @relation(fields: [categoryTemplateId], references: [id], onDelete: Cascade)
+  labels             CatalogAttributeLabel[]
+  options            CatalogAttributeOption[]
+  catalogValues      CatalogAttributeValue[]
+
+  @@unique([id, categoryTemplateId])
+  @@unique([categoryTemplateId, key])
+  @@unique([categoryTemplateId, position])
+}
+
+model CatalogAttributeLabel {
+  definitionId String                     @db.Uuid
+  locale       String                     @db.VarChar(2)
+  label        String                     @db.VarChar(200)
+  definition   CatalogAttributeDefinition @relation(fields: [definitionId], references: [id], onDelete: Cascade)
+
+  @@id([definitionId, locale])
+}
+
+model CatalogAttributeOption {
+  id           String                        @id @default(uuid()) @db.Uuid
+  definitionId String                        @db.Uuid
+  key          String                        @db.VarChar(64)
+  position     Int
+  definition   CatalogAttributeDefinition    @relation(fields: [definitionId], references: [id], onDelete: Cascade)
+  labels       CatalogAttributeOptionLabel[]
+
+  @@unique([definitionId, key])
+  @@unique([definitionId, position])
+}
+
+model CatalogAttributeOptionLabel {
+  optionId String                 @db.Uuid
+  locale   String                 @db.VarChar(2)
+  label    String                 @db.VarChar(200)
+  option   CatalogAttributeOption @relation(fields: [optionId], references: [id], onDelete: Cascade)
+
+  @@id([optionId, locale])
+}
+
+// Canonical maintenance data. Personal collection rows never cascade from these.
+model CatalogEntry {
+  marketObservations MarketObservation[]
+  id                 String                      @id @default(uuid()) @db.Uuid
+  categoryTemplateId String                      @db.Uuid
+  revision           Int                         @default(1)
+  authored           Json
+  categoryTemplate   CategoryTemplate            @relation(fields: [categoryTemplateId], references: [id], onDelete: Restrict)
+  variants           CatalogVariant[]
+  identifiers        CatalogExternalIdentifier[]
+  attributes         CatalogAttributeValue[]
+  revisions          CatalogRevision[]
+  proposals          CatalogProposal[]
+  items              CollectibleItem[]
+
+  @@unique([id, categoryTemplateId])
+}
+
+model CatalogVariant {
+  marketObservations MarketObservation[]
+  id                 String                      @id @default(uuid()) @db.Uuid
+  entryId            String                      @db.Uuid
+  active             Boolean                     @default(true)
+  authored           Json
+  entry              CatalogEntry                @relation(fields: [entryId], references: [id], onDelete: Restrict)
+  identifiers        CatalogExternalIdentifier[]
+  attributes         CatalogAttributeValue[]
+  items              CollectibleItem[]
+
+  @@unique([id, entryId])
+  @@index([entryId, active])
+}
+
+model CatalogExternalIdentifier {
+  id        String          @id @default(uuid()) @db.Uuid
+  entryId   String          @db.Uuid
+  variantId String?         @db.Uuid
+  active    Boolean         @default(true)
+  namespace String          @db.VarChar(64)
+  type      String          @db.VarChar(64)
+  value     String          @db.VarChar(500)
+  sources   Json
+  entry     CatalogEntry    @relation(fields: [entryId], references: [id], onDelete: Restrict)
+  variant   CatalogVariant? @relation(fields: [variantId, entryId], references: [id, entryId], onDelete: Restrict)
+
+  @@index([entryId, active])
+  @@index([value, active, entryId])
+}
+
+model CatalogAttributeValue {
+  id                 String                     @id @default(uuid()) @db.Uuid
+  entryId            String                     @db.Uuid
+  categoryTemplateId String                     @db.Uuid
+  variantId          String?                    @db.Uuid
+  targetKey          String                     @db.VarChar(36)
+  definitionId       String                     @db.Uuid
+  value              Json
+  entry              CatalogEntry               @relation(fields: [entryId, categoryTemplateId], references: [id, categoryTemplateId], onDelete: Restrict)
+  variant            CatalogVariant?            @relation(fields: [variantId, entryId], references: [id, entryId], onDelete: Restrict)
+  definition         CatalogAttributeDefinition @relation(fields: [definitionId, categoryTemplateId], references: [id, categoryTemplateId], onDelete: Restrict)
+
+  @@unique([entryId, targetKey, definitionId])
+}
+
+model CatalogRevision {
+  marketObservations   MarketObservation[]
+  entryId              String              @db.Uuid
+  revision             Int
+  snapshot             Json
+  rollbackFromRevision Int?
+  createdAt            DateTime            @default(now())
+  entry                CatalogEntry        @relation(fields: [entryId], references: [id], onDelete: Restrict)
+
+  proposals      CatalogProposal[]
+  rollbackAudits CatalogRollbackAudit[]
+
+  @@id([entryId, revision])
+}
+
+enum ApplicationRole {
+  MODERATOR
+  ADMIN
+}
+
+enum CatalogProposalState {
+  PENDING
+  APPROVED
+  REJECTED
+  CONFLICT
+}
+
+// Application authority is independent of collection membership. Operators only.
+model ApplicationRoleGrant {
+  userId    String          @id
+  role      ApplicationRole
+  grantedBy String          @db.VarChar(200)
+  reason    String          @db.VarChar(1000)
+  grantedAt DateTime        @default(now())
+  user      User            @relation(fields: [userId], references: [id], onDelete: Restrict)
+}
+
+model CatalogProposal {
+  id             String               @id @default(uuid()) @db.Uuid
+  proposerId     String
+  targetEntryId  String?              @db.Uuid
+  baseRevision   Int?
+  patch          Json
+  summary        String               @db.VarChar(500)
+  source         Json?
+  state          CatalogProposalState @default(PENDING)
+  createdAt      DateTime             @default(now())
+  moderatorId    String?
+  moderatedAt    DateTime?
+  decisionReason String?              @db.VarChar(1000)
+  resultEntryId  String?              @db.Uuid
+  resultRevision Int?
+  proposer       User                 @relation("ProposalProposer", fields: [proposerId], references: [id], onDelete: Restrict)
+  moderator      User?                @relation("ProposalModerator", fields: [moderatorId], references: [id], onDelete: Restrict)
+  targetEntry    CatalogEntry?        @relation(fields: [targetEntryId], references: [id], onDelete: Restrict)
+  result         CatalogRevision?     @relation(fields: [resultEntryId, resultRevision], references: [entryId, revision], onDelete: Restrict)
+
+  @@index([proposerId, state])
+  @@index([proposerId, createdAt, id])
+  @@index([state, createdAt, id])
+}
+
+model CatalogRollbackAudit {
+  id               String          @id @default(uuid()) @db.Uuid
+  entryId          String          @db.Uuid
+  expectedRevision Int
+  targetRevision   Int
+  revision         Int
+  actorId          String
+  reason           String          @db.VarChar(1000)
+  createdAt        DateTime        @default(now())
+  result           CatalogRevision @relation(fields: [entryId, revision], references: [entryId, revision], onDelete: Restrict)
+  actor            User            @relation(fields: [actorId], references: [id], onDelete: Restrict)
+
+  @@index([entryId, revision])
+}
+
+// V1 authored labels are explicitly DE/EN. Semantic fields are immutable in SQL.
+model ConditionScheme {
+  id                 String            @id @default(uuid()) @db.Uuid
+  categoryTemplateId String            @unique @db.Uuid
+  key                String            @unique @db.VarChar(64)
+  labelDe            String            @db.VarChar(200)
+  labelEn            String            @db.VarChar(200)
+  active             Boolean           @default(true)
+  categoryTemplate   CategoryTemplate  @relation(fields: [categoryTemplateId], references: [id], onDelete: Restrict)
+  options            ConditionOption[]
+
+  @@unique([id, categoryTemplateId])
+}
+
+model ConditionOption {
+  id                 String            @id @default(uuid()) @db.Uuid
+  schemeId           String            @db.Uuid
+  categoryTemplateId String            @db.Uuid
+  labelKey           String            @db.VarChar(128)
+  labelDe            String            @db.VarChar(200)
+  labelEn            String            @db.VarChar(200)
+  normalizedBand     Int?
+  position           Int
+  active             Boolean           @default(true)
+  scheme             ConditionScheme   @relation(fields: [schemeId, categoryTemplateId], references: [id, categoryTemplateId], onDelete: Restrict)
+  items              CollectibleItem[]
+
+  @@unique([id, categoryTemplateId])
+  @@unique([schemeId, labelKey])
+  @@unique([schemeId, position])
+}
+
+// Personally authored external facts. No provider lookup or authenticity verification.
+model Grading {
+  id              String          @id @default(uuid()) @db.Uuid
+  itemId          String          @db.Uuid
+  ownerId         String
+  itemQuantity    Int             @default(1)
+  provider        String          @db.VarChar(120)
+  providerKey     String          @db.VarChar(120)
+  grade           String          @db.VarChar(120)
+  comparableValue Decimal?        @db.Decimal(12, 4)
+  comparableScale String?         @db.VarChar(120)
+  certificateNo   String?         @db.VarChar(160)
+  certificateKey  String?         @db.VarChar(160)
+  gradedAt        DateTime?       @db.Date
+  verificationUrl String?         @db.VarChar(2048)
+  source          String?         @db.VarChar(1000)
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  item            CollectibleItem @relation(fields: [itemId, ownerId, itemQuantity], references: [id, ownerId, quantity], onDelete: Cascade, onUpdate: Restrict)
+
+  @@unique([ownerId, providerKey, certificateKey])
+  @@index([itemId, ownerId])
+}
+
+enum ValuationType {
+  MANUAL
+}
+
+// Append-only personal per-unit estimates. SQL prohibits UPDATE; private erasure can DELETE.
+model Valuation {
+  id                String          @id @default(uuid()) @db.Uuid
+  itemId            String          @db.Uuid
+  ownerId           String
+  actorUserId       String
+  type              ValuationType   @default(MANUAL)
+  basis             String          @default("PER_UNIT") @db.VarChar(8)
+  amountMinor       BigInt
+  currency          String          @db.VarChar(3)
+  minorUnitExponent Int
+  note              String?         @db.VarChar(2000)
+  observedAt        DateTime        @db.Timestamptz(3)
+  createdAt         DateTime        @default(now()) @db.Timestamptz(3)
+  item              CollectibleItem @relation(fields: [itemId, ownerId], references: [id, ownerId], onDelete: Cascade, onUpdate: Restrict)
+  actor             User            @relation(fields: [actorUserId], references: [id], onDelete: Cascade, onUpdate: Restrict)
+
+  @@index([itemId, ownerId, observedAt(sort: Desc), createdAt(sort: Desc), id(sort: Desc)])
+  @@index([actorUserId])
+}
+
+// Global source facts. Partial native unique indexes distinguish events from recurring polls.
+enum MarketObservationKind {
+  LAST_SOLD
+  SOLD_AVERAGE
+  SOLD_MEDIAN
+  ASKING_PRICE
+  PRICE_RANGE
+  CATALOG_VALUE
+  DEALER_PRICE
+}
+
+enum MarketIdentityMode {
+  EVENT
+  POLL
+}
+
+enum MarketObservedBasis {
+  SOURCE
+  FETCH
+}
+
+enum MarketObservedPrecision {
+  DAY
+  SECOND
+  MILLISECOND
+}
+
+model MarketObservation {
+  id                  String                  @id @default(uuid()) @db.Uuid
+  providerId          String                  @db.VarChar(64)
+  externalId          String                  @db.VarChar(256)
+  identityMode        MarketIdentityMode
+  eventId             String?                 @db.VarChar(256)
+  pollId              String?                 @db.Uuid
+  sourceMetric        String                  @db.VarChar(64)
+  kind                MarketObservationKind
+  entryId             String                  @db.Uuid
+  variantId           String?                 @db.Uuid
+  catalogRevision     Int
+  identifierId        String                  @db.Uuid
+  identifierNamespace String                  @db.VarChar(64)
+  identifierType      String                  @db.VarChar(64)
+  qualifiers          Json
+  currency            String                  @db.VarChar(3)
+  minorUnitExponent   Int
+  amountMinor         BigInt?
+  lowMinor            BigInt?
+  highMinor           BigInt?
+  observedAt          DateTime                @db.Timestamptz(3)
+  fetchedAt           DateTime                @db.Timestamptz(3)
+  createdAt           DateTime                @db.Timestamptz(3)
+  observedBasis       MarketObservedBasis
+  observedPrecision   MarketObservedPrecision
+  sourceUrl           String?                 @db.VarChar(2048)
+  sourceReference     String?                 @db.VarChar(512)
+  confidence          Json?
+  entry               CatalogEntry            @relation(fields: [entryId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  variant             CatalogVariant?         @relation(fields: [variantId, entryId], references: [id, entryId], onDelete: Restrict, onUpdate: Restrict)
+  revision            CatalogRevision         @relation(fields: [entryId, catalogRevision], references: [entryId, revision], onDelete: Restrict, onUpdate: Restrict)
+
+  @@index([providerId])
+  @@index([entryId, variantId, providerId, identifierNamespace, identifierType, externalId, kind, currency, observedAt(sort: Desc), createdAt(sort: Desc), id(sort: Desc)], map: "MarketObservation_source_history_idx")
+  @@index([entryId, variantId, providerId, kind, currency, observedAt(sort: Desc), createdAt(sort: Desc), id(sort: Desc)], map: "MarketObservation_history_idx")
+}
+
+// Successful immutable completion only; no observation FK obstructs provider purge.
+model MarketSyncReceipt {
+  providerId       String   @db.VarChar(64)
+  pollId           String   @db.Uuid
+  request          Json
+  fetchedAt        DateTime @db.Timestamptz(3)
+  recordedAt       DateTime @db.Timestamptz(3)
+  observationCount Int
+
+  @@id([providerId, pollId])
+}
+
+// One global operational cursor. Cursor and queue sends share one PG transaction.
+model MarketSyncDispatchState {
+  id                 String   @id
+  cursorProviderId   String?  @db.VarChar(64)
+  cursorIdentifierId String?  @db.Uuid
+  nextDispatchAt     DateTime @db.Timestamptz(3)
+}
+
+// Never expiring credential claim; no observation/purge cascade may erase a live sender.
+model MarketRequestGate {
+  credentialKey String    @id @db.VarChar(64)
+  service       String    @db.VarChar(16)
+  hourly        Int
+  daily         Int
+  policyVersion Int
+  activeAttempt String?   @db.Uuid
+  acquiredAt    DateTime? @db.Timestamptz(3)
+  hourStart     DateTime  @db.Timestamptz(3)
+  dayStart      DateTime  @db.Timestamptz(3)
+  hourCount     Int
+  dayCount      Int
+}
+
+model SmartCollection {
+  id            String    @id @default(uuid()) @db.Uuid
+  ownerId       String
+  name          String    @db.VarChar(100)
+  filterVersion Int       @default(1)
+  definition    Json      @db.JsonB
+  revision      Int       @default(1)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  deletedAt     DateTime?
+  owner         User      @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  @@index([ownerId, deletedAt, createdAt(sort: Desc), id(sort: Desc)])
+}

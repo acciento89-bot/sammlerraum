@@ -1,0 +1,16 @@
+Loaded Prisma config from packages/db/prisma.config.ts.
+
+Prisma schema loaded from packages/db/prisma/schema.prisma.
+Datasource "db": PostgreSQL database "sammlerraum_test", schema "public" at "localhost:5432"
+
+20 migrations found in prisma/migrations
+
+Applying migration `20261017225205_grading_finite_comparable`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20261017225205_grading_finite_comparable/
+    └─ migration.sql
+
+All migrations have been successfully applied.

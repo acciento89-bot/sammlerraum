@@ -1,0 +1,27 @@
+packages/market-data/package.json 13ms (unchanged)
+packages/market-data/src/exact-json.test.ts 29ms
+packages/market-data/src/exact-json.ts 10ms
+packages/market-data/src/pricecharting-provider.ts 7ms
+packages/market-data/src/production-providers.test.ts 33ms
+packages/market-data/src/provider-failure.ts 4ms (unchanged)
+packages/market-data/src/provider-http.ts 9ms
+packages/market-data/src/provider-mapping.ts 4ms
+packages/market-data/src/provider-registry.test.ts 3ms (unchanged)
+packages/market-data/src/provider-registry.ts 3ms (unchanged)
+packages/market-data/src/scrydex-provider.ts 6ms
+packages/market-data/src/types.ts 4ms
+packages/config/src/server.ts 12ms
+[error] No parser could be inferred for file "/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/db/prisma/schema.prisma".
+apps/worker/src/jobs/market-provider-composition.ts 3ms
+apps/worker/src/jobs/market-provider-composition.test.ts 3ms
+apps/worker/src/jobs/market-request-permit.ts 10ms
+apps/worker/src/jobs/market-request-permit.integration.test.ts 25ms
+apps/worker/src/jobs/market-sync-runtime.ts 4ms
+apps/worker/src/jobs/market-sync-lifecycle.test.ts 4ms
+apps/worker/src/jobs/production-market.integration.test.ts 17ms
+apps/worker/src/jobs/sync-market-data.ts 5ms
+apps/worker/src/jobs/sync-market-data.test.ts 12ms
+apps/worker/src/run.ts 5ms
+.github/workflows/ci.yml 16ms (unchanged)
+
+EXIT=2

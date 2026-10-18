@@ -1,0 +1,220 @@
+import { EventEmitter } from "node:events";
+
+import { describe, expect, it, vi } from "vitest";
+
+import { runWorkerMain, startWorker } from "./main";
+
+describe("startWorker", () => {
+  it("starts durable dispatch after queue startup and stops it before queue teardown", async () => {
+    const calls: string[] = [];
+    const queue = new EventEmitter();
+    Object.assign(queue, {
+      start: async () => {
+        calls.push("queue-start");
+      },
+      stop: async () => {
+        calls.push("queue-stop");
+      },
+      isReady: () => true,
+    });
+    const worker = await startWorker({
+      queue: queue as never,
+      mediaCleanup: {
+        start: () => {
+          calls.push("cleanup-start");
+        },
+        stop: async () => {
+          calls.push("cleanup-stop");
+        },
+      },
+      imageDispatcher: {
+        start: () => {
+          calls.push("dispatch-start");
+        },
+        stop: async () => {
+          calls.push("dispatch-stop");
+        },
+      },
+      databaseHealth: async () => ({ ok: true }),
+      disconnectDatabase: async () => {
+        calls.push("database-stop");
+      },
+      startHealth: async () => ({
+        close: async () => {
+          calls.push("health-stop");
+        },
+        port: 3001,
+        host: "127.0.0.1",
+      }),
+      healthPort: 3001,
+      logger: { info: vi.fn(), error: vi.fn() },
+      installSignals: false,
+    });
+    await worker.stop();
+    expect(calls).toEqual([
+      "queue-start",
+      "dispatch-start",
+      "cleanup-start",
+      "health-stop",
+      "cleanup-stop",
+      "dispatch-stop",
+      "queue-stop",
+      "database-stop",
+    ]);
+  });
+  it("installs the queue error listener before startup and keeps an emitted error unhealthy", async () => {
+    const calls: string[] = [];
+    const queue = new EventEmitter();
+    Object.assign(queue, {
+      start: vi.fn(async () => {
+        calls.push("start");
+        queue.emit("error", new Error("postgresql://admin:secret@database/prod"));
+      }),
+      stop: vi.fn().mockResolvedValue(undefined),
+      isReady: vi.fn().mockReturnValue(true),
+    });
+    const logger = { info: vi.fn(), error: vi.fn() };
+    const endpoint = { close: vi.fn().mockResolvedValue(undefined), port: 3001, host: "127.0.0.1" };
+
+    const worker = await startWorker({
+      queue: queue as never,
+      databaseHealth: async () => ({ ok: true }),
+      disconnectDatabase: vi.fn().mockResolvedValue(undefined),
+      startHealth: vi.fn().mockResolvedValue(endpoint),
+      healthPort: 3001,
+      logger,
+      installSignals: false,
+      onQueueListenerInstalled: () => calls.push("listener"),
+    });
+
+    expect(calls).toEqual(["listener", "start"]);
+    expect(worker.isHealthy()).toBe(false);
+    expect(logger.error).toHaveBeenCalledWith("Worker queue error");
+    expect(JSON.stringify(logger.error.mock.calls)).not.toContain("secret");
+    await worker.stop();
+  });
+
+  it("rolls back queue, endpoint, and database resources in reverse lifecycle order", async () => {
+    const calls: string[] = [];
+    const queue = new EventEmitter();
+    Object.assign(queue, {
+      start: vi.fn().mockResolvedValue(undefined),
+      stop: vi.fn(async () => calls.push("queue")),
+      isReady: vi.fn().mockReturnValue(true),
+    });
+    const endpoint = {
+      close: vi.fn(async () => calls.push("endpoint")),
+      port: 3001,
+      host: "127.0.0.1",
+    };
+    const worker = await startWorker({
+      queue: queue as never,
+      databaseHealth: async () => ({ ok: true }),
+      disconnectDatabase: vi.fn(async () => {
+        calls.push("database");
+      }),
+      startHealth: vi.fn().mockResolvedValue(endpoint),
+      healthPort: 3001,
+      logger: { info: vi.fn(), error: vi.fn() },
+      installSignals: false,
+    });
+
+    await worker.stop();
+
+    expect(calls).toEqual(["endpoint", "queue", "database"]);
+  });
+});
+
+describe("runWorkerMain", () => {
+  it("returns exit code 1 and logs a generic startup configuration error", async () => {
+    const logger = { error: vi.fn() };
+
+    await expect(
+      runWorkerMain(async () => {
+        throw new Error("DATABASE_URL=postgresql://admin:secret@database/prod");
+      }, logger),
+    ).resolves.toBe(1);
+    expect(logger.error).toHaveBeenCalledWith("Worker startup failed");
+    expect(JSON.stringify(logger.error.mock.calls)).not.toContain("secret");
+  });
+});
+
+it("shares stop completion and never disconnects DB when market work cannot settle", async () => {
+  const calls: string[] = [];
+  let release!: () => void;
+  const pending = new Promise<void>((r) => (release = r));
+  const queue = Object.assign(new EventEmitter(), {
+    start: async () => {},
+    stop: async () => {
+      calls.push("queue");
+    },
+    isReady: () => true,
+  });
+  const worker = await startWorker({
+    queue,
+    marketSync: {
+      start: () => {},
+      stop: async () => {
+        calls.push("abort");
+        await pending;
+        throw new Error("unsettled");
+      },
+    },
+    databaseHealth: async () => ({ ok: true }),
+    disconnectDatabase: async () => {
+      calls.push("database");
+    },
+    startHealth: async () => ({
+      close: async () => {
+        calls.push("health");
+      },
+      port: 1,
+      host: "127.0.0.1",
+    }),
+    healthPort: 1,
+    logger: { info: vi.fn(), error: vi.fn() },
+    installSignals: false,
+  });
+  const first = worker.stop(),
+    second = worker.stop();
+  expect(first).toBe(second);
+  expect(calls[0]).toBe("abort");
+  release();
+  await expect(first).rejects.toThrow("Worker shutdown failed");
+  expect(calls).toEqual(["abort", "health", "queue"]);
+});
+it("attempts independent cleanup when market stop throws synchronously", async () => {
+  const calls: string[] = [];
+  const queue = Object.assign(new EventEmitter(), {
+    start: async () => {},
+    stop: async () => {
+      calls.push("queue");
+    },
+    isReady: () => true,
+  });
+  const worker = await startWorker({
+    queue,
+    marketSync: {
+      start: () => {},
+      stop: () => {
+        throw new Error("unsettled");
+      },
+    },
+    databaseHealth: async () => ({ ok: true }),
+    disconnectDatabase: async () => {
+      calls.push("database");
+    },
+    startHealth: async () => ({
+      close: async () => {
+        calls.push("health");
+      },
+      port: 1,
+      host: "127.0.0.1",
+    }),
+    healthPort: 1,
+    logger: { info: vi.fn(), error: vi.fn() },
+    installSignals: false,
+  });
+  await expect(worker.stop()).rejects.toThrow();
+  expect(calls).toEqual(["health", "queue"]);
+});

@@ -1,0 +1,32 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| packages/market-data/src/exact-json.test.ts (5 tests | 1 failed) 11ms
+   ✓ raw numeric provenance > requires real reviver source support on the pinned runtime 1ms
+   ✓ raw numeric provenance > cannot forge numeric brands with provider JSON objects or strings 0ms
+   ✓ raw numeric provenance > bounds ignored tree nodes as well as selected values 4ms
+   × raw numeric provenance > fails closed if a runtime silently omits reviver source context 5ms
+     → expected [Function] to throw error including 'PROVIDER_CONFIGURATION' but got 'Cannot read properties of undefined (…'
+   ✓ raw numeric provenance > validates failure codes at runtime and exposes no foreign fields 0ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/market-data/src/exact-json.test.ts > raw numeric provenance > fails closed if a runtime silently omits reviver source context
+AssertionError: expected [Function] to throw error including 'PROVIDER_CONFIGURATION' but got 'Cannot read properties of undefined (…'
+
+Expected: "PROVIDER_CONFIGURATION"
+Received: "Cannot read properties of undefined (reading 'source')"
+
+ ❯ packages/market-data/src/exact-json.test.ts:13:92
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 4 passed (5)
+   Start at  07:28:29
+   Duration  293ms (transform 31ms, setup 7ms, collect 23ms, tests 11ms, environment 0ms, prepare 47ms)
+
+
+EXIT=1

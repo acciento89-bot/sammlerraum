@@ -1,0 +1,48 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/contracts/src/private-search-query.test.ts [ packages/contracts/src/private-search-query.test.ts ]
+Error: Cannot find module './private-search-query' imported from '/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/contracts/src/private-search-query.test.ts'
+ ❯ packages/contracts/src/private-search-query.test.ts:2:1
+      1| import { describe, expect, it } from "vitest";
+      2| import { parsePrivateItemSearchWire as item, parsePrivateDashboardWire…
+       | ^
+      3| const f = (root: object) => JSON.stringify({ version: 1, root });
+      4| const leaf = { kind: "duplicate", value: true };
+
+Caused by: Error: Failed to load url ./private-search-query (resolved id: ./private-search-query) in /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/contracts/src/private-search-query.test.ts. Does the file exist?
+ ❯ loadAndTransform node_modules/.pnpm/vite@7.3.6_@types+node@24.5.2_jiti@2.7.0/node_modules/vite/dist/node/chunks/config.js:22739:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |workspace| apps/web/src/lib/api/read-search-body.test.ts [ apps/web/src/lib/api/read-search-body.test.ts ]
+Error: Missing "./private-search-query" specifier in "@sammlerraum/contracts" package
+  Plugin: vite:import-analysis
+  File: /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/src/lib/api/read-search-body.test.ts:3:43
+  1  |  import { describe, expect, it } from "vitest";
+  2  |  import { readSearchBody } from "./read-search-body";
+  3  |  import { parsePrivateItemSearchWire } from "@sammlerraum/contracts/private-search-query";
+     |                                              ^
+  4  |  function request(body, headers = {}) {
+  5  |    return new Request("https://example.invalid/api/v1/search/items", {
+ ❯ e node_modules/.pnpm/vite@7.3.6_@types+node@24.5.2_jiti@2.7.0/node_modules/vite/dist/node/chunks/config.js:6667:8
+ ❯ n node_modules/.pnpm/vite@7.3.6_@types+node@24.5.2_jiti@2.7.0/node_modules/vite/dist/node/chunks/config.js:6679:14
+ ❯ o node_modules/.pnpm/vite@7.3.6_@types+node@24.5.2_jiti@2.7.0/node_modules/vite/dist/node/chunks/config.js:6707:10
+ ❯ resolveExportsOrImports node_modules/.pnpm/vite@7.3.6_@types+node@24.5.2_jiti@2.7.0/node_modules/vite/dist/node/chunks/config.js:32907:45
+ ❯ resolveDeepImport node_modules/.pnpm/vite@7.3.6_@types+node@24.5.2_jiti@2.7.0/node_modules/vite/dist/node/chunks/config.js:32921:22
+ ❯ tryNodeResolve node_modules/.pnpm/vite@7.3.6_@types+node@24.5.2_jiti@2.7.0/node_modules/vite/dist/node/chunks/config.js:32796:70
+ ❯ ResolveIdContext.handler node_modules/.pnpm/vite@7.3.6_@types+node@24.5.2_jiti@2.7.0/node_modules/vite/dist/node/chunks/config.js:32635:16
+ ❯ EnvironmentPluginContainer.resolveId node_modules/.pnpm/vite@7.3.6_@types+node@24.5.2_jiti@2.7.0/node_modules/vite/dist/node/chunks/config.js:28797:56
+ ❯ TransformPluginContext.resolve node_modules/.pnpm/vite@7.3.6_@types+node@24.5.2_jiti@2.7.0/node_modules/vite/dist/node/chunks/config.js:29009:13
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  no tests
+   Start at  12:01:50
+   Duration  299ms (transform 26ms, setup 10ms, collect 0ms, tests 0ms, environment 0ms, prepare 92ms)
+

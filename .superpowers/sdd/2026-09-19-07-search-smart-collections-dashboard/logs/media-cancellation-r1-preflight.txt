@@ -1,0 +1,1 @@
+Initial whole-workspace-clean preflight was too strict: root-owned progress.md was modified. Python stopped before source edits, but the shell continued and ran the unmodified reviewed spec (1 passed,43.9s). That log is baseline, not RED. Later preflights check owned source/product consistency and free ports, and shells stop on errors. Root notes remain untouched.

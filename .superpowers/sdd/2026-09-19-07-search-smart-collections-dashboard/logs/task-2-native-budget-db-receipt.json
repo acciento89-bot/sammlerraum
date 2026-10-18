@@ -1,0 +1,8 @@
+{
+  "base": "1ab352edf29ac6b5b7b839d4105d345f5451c673",
+  "name": "sammlerraum_budget_20261018_test",
+  "createdAtUtc": "2026-10-18T08:53:01.313744+00:00",
+  "server": "{\"database\" : \"sammlerraum_test\", \"role\" : \"test\", \"version\" : \"PostgreSQL 17.11 (Homebrew) on aarch64-apple-darwin27.0.0, compiled by Apple clang version 21.0.0 (clang-2100.3.34.2), 64-bit\", \"address\" : \"::1\", \"port\" : 5432, \"dataDirectory\" : \"/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum-db/data\", \"started\" : \"2026-10-18T09:05:10.181288+02:00\"}",
+  "creation": "CREATE DATABASE",
+  "database": "{\"oid\" : \"27487\", \"name\" : \"sammlerraum_budget_20261018_test\", \"owner\" : \"test\"}"
+}

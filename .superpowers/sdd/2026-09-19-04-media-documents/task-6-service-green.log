@@ -1,0 +1,11 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ✓ |workspace| apps/web/src/lib/media-routes.test.ts (10 tests) 14ms
+ ✓ |workspace| packages/domain/src/media/media-management.integration.test.ts (1 test) 175ms
+
+ Test Files  2 passed (2)
+      Tests  11 passed (11)
+   Start at  21:25:25
+   Duration  609ms (transform 69ms, setup 11ms, collect 385ms, tests 188ms, environment 0ms, prepare 101ms)
+

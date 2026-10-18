@@ -1,0 +1,2 @@
+packages/domain/src/search/search-read.integration.test.ts(16,107): error TS7006: Parameter 'sql' implicitly has an 'any' type.
+packages/domain/src/search/search-read.test.ts(13,239): error TS7006: Parameter 'sql' implicitly has an 'any' type.

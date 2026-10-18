@@ -1,0 +1,162 @@
+2026-10-17T23:55:33.072Z pw:webserver HTTP GET: http://localhost:3000/de
+2026-10-17T23:55:33.088Z pw:webserver Error while checking if http://localhost:3000/de is available: connect ECONNREFUSED ::1:3000
+connect ECONNREFUSED 127.0.0.1:3000
+2026-10-17T23:55:33.088Z pw:webserver Starting WebServer process node e2e/support/browser-test-server.mjs...
+2026-10-17T23:55:33.092Z pw:webserver Process started
+2026-10-17T23:55:33.092Z pw:webserver Waiting for availability...
+2026-10-17T23:55:33.092Z pw:webserver HTTP GET: http://localhost:3000/de
+2026-10-17T23:55:33.095Z pw:webserver Error while checking if http://localhost:3000/de is available: connect ECONNREFUSED ::1:3000
+connect ECONNREFUSED 127.0.0.1:3000
+2026-10-17T23:55:33.095Z pw:webserver Waiting 100ms
+2026-10-17T23:55:33.199Z pw:webserver HTTP GET: http://localhost:3000/de
+2026-10-17T23:55:33.216Z pw:webserver Error while checking if http://localhost:3000/de is available: connect ECONNREFUSED ::1:3000
+connect ECONNREFUSED 127.0.0.1:3000
+2026-10-17T23:55:33.216Z pw:webserver Waiting 250ms
+2026-10-17T23:55:33.469Z pw:webserver HTTP GET: http://localhost:3000/de
+2026-10-17T23:55:33.471Z pw:webserver Error while checking if http://localhost:3000/de is available: connect ECONNREFUSED ::1:3000
+connect ECONNREFUSED 127.0.0.1:3000
+2026-10-17T23:55:33.471Z pw:webserver Waiting 500ms
+[WebServer] (node:66458) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] ▲ Next.js 16.3.5
+[WebServer] - Local:         http://localhost:3000
+[WebServer] - Network:       http://localhost:3000
+[WebServer] ✓ Ready in 0ms
+[WebServer] ✓ Running next.config took 6ms
+2026-10-17T23:55:33.973Z pw:webserver HTTP GET: http://localhost:3000/de
+2026-10-17T23:55:34.095Z pw:webserver HTTP Status: 200
+2026-10-17T23:55:34.096Z pw:webserver WebServer available
+
+Running 20 tests using 1 worker
+
+(node:66655) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [auth] › e2e/auth.spec.ts:106:3 › password authentication API › registers, verifies, signs in, and lists the authenticated session (664ms)
+[WebServer] 2026-10-17T23:55:39.689Z ERROR [Better Auth]: Error Error: aborted
+[WebServer]     at ignore-listed frames {
+[WebServer]   code: 'ECONNRESET'
+[WebServer] }
+[WebServer] # SERVER_ERROR:  Error: aborted
+[WebServer]     at ignore-listed frames {
+[WebServer]   code: 'ECONNRESET'
+[WebServer] }
+  ✓   2 [auth] › e2e/auth.spec.ts:172:3 › localized authentication and account UI › offers localized password and social authentication (1.6s)
+[WebServer] 2026-10-17T23:55:39.941Z ERROR [Better Auth]: Error Error: aborted
+[WebServer]     at ignore-listed frames {
+[WebServer]   code: 'ECONNRESET'
+[WebServer] }
+[WebServer] # SERVER_ERROR:  Error: aborted
+[WebServer]     at ignore-listed frames {
+[WebServer]   code: 'ECONNRESET'
+[WebServer] }
+  ✘   3 [auth] › e2e/auth.spec.ts:197:3 › localized authentication and account UI › user can reset a password through the emailed recovery link (5.5s)
+(node:66773) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘   4 [auth] › e2e/auth.spec.ts:220:3 › localized authentication and account UI › user can register, verify, sign in, edit profile, add and use a passkey, and revoke another session (5.3s)
+(node:66812) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   5 [desktop] › e2e/collections-items.spec.ts:236:3 › localized collection and item management › collector creates a nested collection and item with custom field and location (3.0s)
+  ✓   6 [desktop] › e2e/collections-items.spec.ts:388:3 › localized collection and item management › unrelated edits preserve nested placement, currencies, and canonical tags (1.6s)
+  ✓   7 [desktop] › e2e/collections-items.spec.ts:485:3 › localized collection and item management › a rejected core request releases the form for retry (563ms)
+  ✓   8 [desktop] › e2e/collections-items.spec.ts:510:3 › localized collection and item management › failed collection options can retry without losing the item draft (688ms)
+  ✓   9 [desktop] › e2e/collections-items.spec.ts:544:3 › localized collection and item management › failed collection detail load shows a retry instead of endless loading (578ms)
+  ✓  10 [desktop] › e2e/collections-items.spec.ts:577:3 › localized collection and item management › metadata retry reuses the item and does not repeat a successful location (1.0s)
+  ✓  11 [desktop] › e2e/collections-items.spec.ts:650:3 › localized collection and item management › invalid later custom fields cause zero writes before correction (1.1s)
+  ✓  12 [desktop] › e2e/collections-items.spec.ts:718:3 › localized collection and item management › concurrent scanner starts acquire at most one fully disposable stream (772ms)
+(node:66942) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  13 [mobile] › e2e/collections-items.spec.ts:236:3 › localized collection and item management › collector creates a nested collection and item with custom field and location (2.2s)
+[WebServer] ⨯ Error: The destination stream closed early.
+[WebServer]     at ignore-listed frames {
+[WebServer]   digest: '4277776922'
+[WebServer] }
+  ✓  14 [mobile] › e2e/collections-items.spec.ts:388:3 › localized collection and item management › unrelated edits preserve nested placement, currencies, and canonical tags (928ms)
+[WebServer] ⨯ Error: The destination stream closed early.
+[WebServer]     at ignore-listed frames {
+[WebServer]   digest: '4277776922'
+[WebServer] }
+  ✓  15 [mobile] › e2e/collections-items.spec.ts:485:3 › localized collection and item management › a rejected core request releases the form for retry (533ms)
+  ✓  16 [mobile] › e2e/collections-items.spec.ts:510:3 › localized collection and item management › failed collection options can retry without losing the item draft (555ms)
+  ✓  17 [mobile] › e2e/collections-items.spec.ts:544:3 › localized collection and item management › failed collection detail load shows a retry instead of endless loading (484ms)
+  ✓  18 [mobile] › e2e/collections-items.spec.ts:577:3 › localized collection and item management › metadata retry reuses the item and does not repeat a successful location (698ms)
+  ✓  19 [mobile] › e2e/collections-items.spec.ts:650:3 › localized collection and item management › invalid later custom fields cause zero writes before correction (852ms)
+  ✓  20 [mobile] › e2e/collections-items.spec.ts:718:3 › localized collection and item management › concurrent scanner starts acquire at most one fully disposable stream (600ms)
+2026-10-17T23:56:08.934Z pw:webserver Terminating the WebServer
+2026-10-17T23:56:08.955Z pw:webserver Terminated the WebServer
+
+
+  1) [auth] › e2e/auth.spec.ts:197:3 › localized authentication and account UI › user can reset a password through the emailed recovery link 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByText('Prüfe jetzt dein E-Mail-Postfach.')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByText('Prüfe jetzt dein E-Mail-Postfach.') with timeout 5000ms
+      - waiting for getByText('Prüfe jetzt dein E-Mail-Postfach.')
+
+
+      43 |       locale === "de" ? "Prüfe jetzt dein E-Mail-Postfach." : "Check your email inbox now.",
+      44 |     ),
+    > 45 |   ).toBeVisible();
+         |     ^
+      46 |
+      47 |   await rm(mailboxPath, { force: true });
+      48 |   await page
+        at registerWithPassword (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/auth.spec.ts:45:5)
+        at /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/auth.spec.ts:198:25
+
+    Error Context: test-results/auth-localized-authenticat-9f856-h-the-emailed-recovery-link-auth/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/auth-localized-authenticat-9f856-h-the-emailed-recovery-link-auth/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/auth-localized-authenticat-9f856-h-the-emailed-recovery-link-auth/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [auth] › e2e/auth.spec.ts:220:3 › localized authentication and account UI › user can register, verify, sign in, edit profile, add and use a passkey, and revoke another session 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByText('Prüfe jetzt dein E-Mail-Postfach.')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByText('Prüfe jetzt dein E-Mail-Postfach.') with timeout 5000ms
+      - waiting for getByText('Prüfe jetzt dein E-Mail-Postfach.')
+
+
+      43 |       locale === "de" ? "Prüfe jetzt dein E-Mail-Postfach." : "Check your email inbox now.",
+      44 |     ),
+    > 45 |   ).toBeVisible();
+         |     ^
+      46 |
+      47 |   await rm(mailboxPath, { force: true });
+      48 |   await page
+        at registerWithPassword (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/auth.spec.ts:45:5)
+        at /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/auth.spec.ts:237:25
+
+    Error Context: test-results/auth-localized-authenticat-8c641--and-revoke-another-session-auth/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/auth-localized-authenticat-8c641--and-revoke-another-session-auth/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/auth-localized-authenticat-8c641--and-revoke-another-session-auth/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2 failed
+    [auth] › e2e/auth.spec.ts:197:3 › localized authentication and account UI › user can reset a password through the emailed recovery link 
+    [auth] › e2e/auth.spec.ts:220:3 › localized authentication and account UI › user can register, verify, sign in, edit profile, add and use a passkey, and revoke another session 
+  18 passed (35.9s)
+undefined
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/auth.spec.ts e2e/collections-items.spec.ts --workers=1 --trace retain-on-failure

@@ -1,0 +1,49 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| apps/worker/src/jobs/market-request-permit.integration.test.ts (12 tests | 1 failed | 11 skipped) 94ms
+   ↓ durable market gate on separate PostgreSQL clients > holds a paused admitted sender beyond one second, then enforces physical settlement plus cooldown
+   ↓ durable market gate on separate PostgreSQL clients > races concurrent first admission atomically and keeps a crashed claim non-expiring
+   ↓ durable market gate on separate PostgreSQL clients > keeps distinct tokens independent and never refunds failure or pre-send abort
+   ↓ durable market gate on separate PostgreSQL clients > enforces hourly/daily budgets, non-regressing DB windows and policy consistency
+   ↓ durable market gate on separate PostgreSQL clients > never sends on admission committed/lost ACK and retains claim plus local uncertainty
+   ↓ durable market gate on separate PostgreSQL clients > allows safe successor after clear committed/lost ACK while old local stop fails
+   ↓ durable market gate on separate PostgreSQL clients > holds claim when clear fails before commit and never forgets settled handler uncertainty
+   ↓ durable market gate on separate PostgreSQL clients > standalone stop aborts physical transport and waits settlement, cooldown and own clear
+   ↓ durable market gate on separate PostgreSQL clients > keeps an ignored abort claimed until actual settlement rather than treating timeout as cancellation
+   ↓ durable market gate on separate PostgreSQL clients > does not clear a transport whose physical cancellation is uncertain
+   × durable market gate on separate PostgreSQL clients > charges a carried attempt into advanced UTC windows before releasing its claim 29ms
+     → promise resolved "undefined" instead of rejecting
+   ↓ durable market gate on separate PostgreSQL clients > native constraints reject invalid counters and incoherent active claims
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/worker/src/jobs/market-request-permit.integration.test.ts > durable market gate on separate PostgreSQL clients > charges a carried attempt into advanced UTC windows before releasing its claim
+AssertionError: promise resolved "undefined" instead of rejecting
+
+- Expected: 
+Error {
+  "message": "rejected promise",
+}
+
++ Received: 
+undefined
+
+ ❯ apps/worker/src/jobs/market-request-permit.integration.test.ts:88:44
+     86|   await a!.$executeRaw`UPDATE "MarketRequestGate" SET "hourStart"="hou…
+     87|   await sa.clear(key,id);const current=await row(key);expect(current.h…
+     88|   await expect(sb.acquire(key,randomUUID())).rejects.toMatchObject({co…
+       |                                            ^
+     89|  });
+     90|  it("native constraints reject invalid counters and incoherent active …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 11 skipped (12)
+   Start at  07:22:46
+   Duration  341ms (transform 45ms, setup 6ms, collect 95ms, tests 94ms, environment 0ms, prepare 34ms)
+
+
+EXIT=1

@@ -1,0 +1,21 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+(node:26750) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+    at Client.query (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/node_modules/.pnpm/pg@8.23.0/node_modules/pg/lib/client.js:762:7)
+    at PgTransaction.performIO (file:///Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/node_modules/.pnpm/@prisma+adapter-pg@7.10.0/node_modules/@prisma/adapter-pg/dist/index.mjs:645:40)
+    at PgTransaction.queryRaw (file:///Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/node_modules/.pnpm/@prisma+adapter-pg@7.10.0/node_modules/@prisma/adapter-pg/dist/index.mjs:595:41)
+    at callback (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client-engine-runtime/src/interpreter/query-interpreter.ts:202:18)
+    at withQuerySpanAndEvent (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client-engine-runtime/src/tracing.ts:80:12)
+    at e.#withQuerySpanAndEvent (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client-engine-runtime/src/interpreter/query-interpreter.ts:592:12)
+    at fn (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client-engine-runtime/src/interpreter/query-interpreter.ts:200:39)
+    at e.#withChunkTransaction (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client-engine-runtime/src/interpreter/query-interpreter.ts:515:14)
+    at e.interpretNode (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client-engine-runtime/src/interpreter/query-interpreter.ts:196:21)
+    at e.interpretNode (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client-engine-runtime/src/interpreter/query-interpreter.ts:149:40)
+ ✓ |workspace| packages/domain/src/catalog/catalog-service.integration.test.ts (8 tests | 7 skipped) 215ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 7 skipped (8)
+   Start at  22:40:44
+   Duration  582ms (transform 62ms, setup 5ms, collect 137ms, tests 215ms, environment 0ms, prepare 53ms)
+

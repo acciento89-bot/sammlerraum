@@ -1,0 +1,1772 @@
+# Review package: f24679c4be785b7db588c11513ad23c4689e5a00..eda7248973550623fe50f10714be0fc4ea199109
+
+## Commits
+eda7248 feat: add dynamic owned saved queries
+
+## Files changed
+ .github/workflows/ci.yml                           |   2 +
+ .../api/v1/smart-collections/[id]/items/route.ts   |   4 +
+ .../src/app/api/v1/smart-collections/[id]/route.ts |  11 +
+ apps/web/src/app/api/v1/smart-collections/route.ts |   7 +
+ apps/web/src/lib/item-search-routes.ts             |  11 +-
+ .../src/lib/smart-collection-route-dependencies.ts |  22 +
+ .../smart-collection-routes.integration.test.ts    | 170 ++++++
+ apps/web/src/lib/smart-collection-routes.test.ts   |  52 ++
+ apps/web/src/lib/smart-collection-routes.ts        | 163 ++++++
+ docs/search/smart-collections.md                   |  15 +
+ packages/contracts/package.json                    |   3 +-
+ packages/contracts/src/smart-collections.ts        | 156 ++++++
+ .../20261018090000_smart_collections/migration.sql |  25 +
+ packages/db/prisma/schema.prisma                   |  16 +
+ packages/domain/package.json                       |   3 +-
+ packages/domain/src/search/search-read.ts          |  15 +-
+ .../src/search/smart-collection-service.test.ts    | 581 +++++++++++++++++++++
+ .../domain/src/search/smart-collection-service.ts  | 217 ++++++++
+ 18 files changed, 1462 insertions(+), 11 deletions(-)
+
+## Diff
+diff --git a/.github/workflows/ci.yml b/.github/workflows/ci.yml
+index 8858d3b..c0a469f 100644
+--- a/.github/workflows/ci.yml
++++ b/.github/workflows/ci.yml
+@@ -143,20 +143,22 @@ jobs:
+           packages/domain/src/catalog/catalog-read-service.test.ts
+           packages/domain/src/catalog/catalog-history-service.test.ts
+           packages/domain/src/catalog/initialize-catalog.test.ts
+           apps/web/src/lib/catalog-history-routes.integration.test.ts
+           apps/web/src/lib/catalog-link-routes.integration.test.ts
+           packages/domain/src/catalog/proposal-service.test.ts
+           packages/domain/src/condition/condition-service.test.ts
+           packages/domain/src/grading/grading-service.test.ts
+           packages/domain/src/valuations/valuation-service.test.ts
+           packages/domain/src/valuations/valuation-query.test.ts
++          packages/domain/src/search/smart-collection-service.test.ts
++          apps/web/src/lib/smart-collection-routes.integration.test.ts
+           packages/domain/src/search/item-search-service.test.ts
+           packages/domain/src/search/search-read.integration.test.ts
+           packages/domain/src/search/search-retained-integrity.integration.test.ts
+           apps/web/src/lib/item-search-routes.integration.test.ts
+           apps/web/src/lib/valuation-routes.integration.test.ts
+           packages/domain/src/market-data/market-data-service.test.ts apps/worker/src/jobs/market-sync.integration.test.ts
+           apps/worker/src/jobs/market-request-permit.integration.test.ts
+           apps/worker/src/jobs/production-market.integration.test.ts
+           apps/web/src/lib/grading-routes.integration.test.ts
+           apps/web/src/lib/condition-routes.integration.test.ts
+diff --git a/apps/web/src/app/api/v1/smart-collections/[id]/items/route.ts b/apps/web/src/app/api/v1/smart-collections/[id]/items/route.ts
+new file mode 100644
+index 0000000..191371d
+--- /dev/null
++++ b/apps/web/src/app/api/v1/smart-collections/[id]/items/route.ts
+@@ -0,0 +1,4 @@
++import { smartCollectionRouteHandlers } from "../../../../../../lib/smart-collection-route-dependencies";
++export async function GET(request: Request, context: { params: Promise<{ id: string }> }) {
++  return (await smartCollectionRouteHandlers()).GET_ITEMS(request, (await context.params).id);
++}
+diff --git a/apps/web/src/app/api/v1/smart-collections/[id]/route.ts b/apps/web/src/app/api/v1/smart-collections/[id]/route.ts
+new file mode 100644
+index 0000000..47fd1fb
+--- /dev/null
++++ b/apps/web/src/app/api/v1/smart-collections/[id]/route.ts
+@@ -0,0 +1,11 @@
++import { smartCollectionRouteHandlers } from "../../../../../lib/smart-collection-route-dependencies";
++type Context = { params: Promise<{ id: string }> };
++export async function GET(request: Request, context: Context) {
++  return (await smartCollectionRouteHandlers()).GET_ONE(request, (await context.params).id);
++}
++export async function PATCH(request: Request, context: Context) {
++  return (await smartCollectionRouteHandlers()).PATCH(request, (await context.params).id);
++}
++export async function DELETE(request: Request, context: Context) {
++  return (await smartCollectionRouteHandlers()).DELETE(request, (await context.params).id);
++}
+diff --git a/apps/web/src/app/api/v1/smart-collections/route.ts b/apps/web/src/app/api/v1/smart-collections/route.ts
+new file mode 100644
+index 0000000..f7142cd
+--- /dev/null
++++ b/apps/web/src/app/api/v1/smart-collections/route.ts
+@@ -0,0 +1,7 @@
++import { smartCollectionRouteHandlers } from "../../../../lib/smart-collection-route-dependencies";
++export async function GET(request: Request) {
++  return (await smartCollectionRouteHandlers()).GET(request);
++}
++export async function POST(request: Request) {
++  return (await smartCollectionRouteHandlers()).POST(request);
++}
+diff --git a/apps/web/src/lib/item-search-routes.ts b/apps/web/src/lib/item-search-routes.ts
+index 4a103d1..9d17050 100644
+--- a/apps/web/src/lib/item-search-routes.ts
++++ b/apps/web/src/lib/item-search-routes.ts
+@@ -14,42 +14,41 @@ type Authentication = {
+     }): Promise<{ user: { id: string } } | null>;
+   };
+ };
+ export function createItemSearchRouteDependencies(database: SearchDatabase, auth: Authentication) {
+   return {
+     getSession: (headers: Headers) =>
+       auth.api.getSession({ headers, query: { disableCookieCache: true, disableRefresh: true } }),
+     service: createItemSearchService(database),
+   };
+ }
+-export function readItemSearchQuery(request: Request) {
++export function readItemSearchQuery(
++  request: Request,
++  allowedKeys: readonly string[] = ["text", "f", "lifecycle", "limit", "cursor"],
++) {
+   const marker = request.url.indexOf("?");
+   const encoded = marker < 0 ? "" : request.url.slice(marker).split("#", 1)[0]!;
+   if (Buffer.byteLength(encoded) > SEARCH_MAX_QUERY_BYTES)
+     throw new ApiError("SEARCH_QUERY_TOO_LARGE", 414, "Search query is too large");
+   const raw = encoded.slice(1);
+   const values: Record<string, string> = Object.create(null);
+   try {
+     for (const segment of raw ? raw.split("&") : []) {
+       if (!segment) throw Error();
+       const separator = segment.indexOf("=");
+       const key = decodeURIComponent(
+         (separator < 0 ? segment : segment.slice(0, separator)).replaceAll("+", " "),
+       );
+       const value = decodeURIComponent(
+         (separator < 0 ? "" : segment.slice(separator + 1)).replaceAll("+", " "),
+       );
+-      if (
+-        !["text", "f", "lifecycle", "limit", "cursor"].includes(key) ||
+-        Object.hasOwn(values, key)
+-      )
+-        throw Error();
++      if (!allowedKeys.includes(key) || Object.hasOwn(values, key)) throw Error();
+       values[key] = value;
+     }
+   } catch {
+     throw new ItemSearchError("SEARCH_INVALID");
+   }
+   if (values.limit !== undefined && !/^[1-9][0-9]*$/u.test(values.limit))
+     throw new ItemSearchError("SEARCH_INVALID");
+   return {
+     ...(values.text !== undefined ? { text: values.text } : {}),
+     ...(values.f !== undefined ? { filter: parseItemFilterJson(values.f) } : {}),
+diff --git a/apps/web/src/lib/smart-collection-route-dependencies.ts b/apps/web/src/lib/smart-collection-route-dependencies.ts
+new file mode 100644
+index 0000000..0e44a8c
+--- /dev/null
++++ b/apps/web/src/lib/smart-collection-route-dependencies.ts
+@@ -0,0 +1,22 @@
++import {
++  createSmartCollectionRouteDependencies,
++  createSmartCollectionRouteHandlers,
++} from "./smart-collection-routes";
++const dependencies = async () => {
++  const [{ auth }, { createPrismaClient }, { serverEnv }] = await Promise.all([
++    import("./auth"),
++    import("@sammlerraum/db/create-client"),
++    import("@sammlerraum/config/server"),
++  ]);
++  return createSmartCollectionRouteHandlers(
++    createSmartCollectionRouteDependencies(
++      createPrismaClient(serverEnv.DATABASE_URL, { bounded: true }),
++      auth,
++      serverEnv.APP_ORIGIN,
++    ),
++  );
++};
++let handlers: ReturnType<typeof dependencies> | undefined;
++export function smartCollectionRouteHandlers() {
++  return (handlers ??= dependencies());
++}
+diff --git a/apps/web/src/lib/smart-collection-routes.integration.test.ts b/apps/web/src/lib/smart-collection-routes.integration.test.ts
+new file mode 100644
+index 0000000..605b6b8
+--- /dev/null
++++ b/apps/web/src/lib/smart-collection-routes.integration.test.ts
+@@ -0,0 +1,170 @@
++import type { SmartCollectionDetail } from "@sammlerraum/contracts/smart-collections";
++import type { ApiErrorEnvelope } from "@sammlerraum/contracts/errors";
++import { randomUUID } from "node:crypto";
++import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
++import { createTestDatabaseClient } from "@sammlerraum/db/test-database";
++const enabled = process.env.RUN_DATABASE_INTEGRATION === "1";
++const db = enabled ? createTestDatabaseClient() : undefined;
++const owner = `smartroute_${randomUUID()}`;
++const origin = "http://localhost:3000";
++describe.runIf(enabled)("native saved-query authorized routes", () => {
++  beforeAll(async () => {
++    await db!.user.create({
++      data: { id: owner, name: "Saved", email: `${owner}@example.invalid` },
++    });
++    const c = await db!.collection.create({ data: { ownerId: owner, name: "Saved" } });
++    await db!.collectibleItem.create({
++      data: { ownerId: owner, collectionId: c.id, title: "Route watch" },
++    });
++  });
++  afterAll(async () => {
++    await db?.user.deleteMany({ where: { id: owner } });
++    await db?.$disconnect();
++  });
++  async function handlers(authenticated = true) {
++    const path = "./smart-collection-routes";
++    const m = await import(path);
++    const getSession = vi.fn(async () => (authenticated ? { user: { id: owner } } : null));
++    return {
++      handler: m.createSmartCollectionRouteHandlers(
++        m.createSmartCollectionRouteDependencies(db!, { api: { getSession } }, origin),
++      ),
++      getSession,
++    };
++  }
++  function req(body: unknown, method = "POST", headers: Record<string, string> = {}) {
++    return new Request(`${origin}/api/v1/smart-collections`, {
++      method,
++      headers: { origin, "content-type": "application/json", ...headers },
++      body: JSON.stringify(body),
++    });
++  }
++  it("creates/lists/details/replaces/resolves/deletes actual saved definitions", async () => {
++    const { handler: h, getSession } = await handlers();
++    const created = await h.POST(req({ name: "Route", text: "watch", lifecycle: "ALL" }));
++    expect(created.status).toBe(201);
++    const saved = await created.json();
++    expect(saved.definition).toEqual({ version: 1, text: "watch", filter: null, lifecycle: "ALL" });
++    expect(getSession).toHaveBeenCalledWith(
++      expect.objectContaining({ query: { disableCookieCache: true, disableRefresh: true } }),
++    );
++    const list = await h.GET(new Request(origin));
++    expect(list.status).toBe(200);
++    expect((await list.json()).items[0]).not.toHaveProperty("definition");
++    expect((await h.GET_ONE(new Request(origin), saved.id)).status).toBe(200);
++    const items = await h.GET_ITEMS(new Request(origin), saved.id);
++    expect(items.status).toBe(200);
++    expect((await items.json()).total).toBe(1);
++    expect(
++      (await h.PATCH(req({ name: "Replaced", expectedRevision: 1 }, "PATCH"), saved.id)).status,
++    ).toBe(200);
++    expect((await h.DELETE(req({ expectedRevision: 1 }, "DELETE"), saved.id)).status).toBe(409);
++    expect((await h.DELETE(req({ expectedRevision: 2 }, "DELETE"), saved.id)).status).toBe(200);
++    const hidden = await h.GET_ONE(new Request(origin), saved.id);
++    expect(hidden.status).toBe(404);
++    expect(hidden.headers.get("cache-control")).toBe("no-store");
++    expect(hidden.headers.get("x-request-id")).toBeTruthy();
++  });
++  it("enforces auth/origin/raw filter/body/query boundaries and closed errors", async () => {
++    const { handler: h } = await handlers();
++    expect((await (await handlers(false)).handler.GET(new Request(origin))).status).toBe(401);
++    expect((await h.POST(req({ name: "x" }, "POST", { origin: `${origin}/` }))).status).toBe(403);
++    for (const body of [
++      { name: "x", ownerId: owner },
++      { name: "x", f: '{"version":1,"version":1}' },
++      { name: "x", text: "secret".repeat(34) },
++    ])
++      expect((await h.POST(req(body))).status).toBe(400);
++    expect((await h.POST(req({ name: "x", f: "x".repeat(32769) }))).status).toBe(413);
++    expect(
++      (
++        await h.POST(
++          new Request(origin, {
++            method: "POST",
++            headers: { origin, "content-type": "application/json" },
++            body: new Uint8Array([255]),
++          }),
++        )
++      ).status,
++    ).toBe(400);
++    for (const q of [
++      "limit=01",
++      "limit=1&limit=2",
++      "text=secret",
++      "cursor=%FF",
++      "ownerId=x",
++      "limit=1&%6cimit=2",
++    ]) {
++      const r = await h.GET(new Request(`${origin}/?${q}`));
++      expect(r.status).toBe(400);
++      expect(await r.text()).not.toContain("secret");
++    }
++    expect((await h.GET(new Request(`${origin}/?cursor=${"x".repeat(32769)}`))).status).toBe(414);
++    for (const [root, status] of [
++      [{ kind: "duplicate", value: true }, 422],
++      [{ kind: "collection", test: { op: "eq", value: randomUUID() } }, 422],
++    ] as const) {
++      expect(
++        (await h.POST(req({ name: "Unavailable", f: JSON.stringify({ version: 1, root }) })))
++          .status,
++      ).toBe(status);
++    }
++  });
++  it("uses all actual Next route modules with native service dependencies", async () => {
++    const { handler } = await handlers();
++    const dependencies = await import("./smart-collection-route-dependencies");
++    const mock = vi.spyOn(dependencies, "smartCollectionRouteHandlers").mockResolvedValue(handler);
++    try {
++      const root = await import("../app/api/v1/smart-collections/route");
++      const detail = await import("../app/api/v1/smart-collections/[id]/route");
++      const items = await import("../app/api/v1/smart-collections/[id]/items/route");
++      const created = await root.POST(req({ name: "Actual path", text: "watch" }));
++      expect(created.status).toBe(201);
++      const saved = (await created.json()) as SmartCollectionDetail,
++        context = { params: Promise.resolve({ id: saved.id }) };
++      expect((await root.GET(new Request(origin))).status).toBe(200);
++      expect((await detail.GET(new Request(origin), context)).status).toBe(200);
++      expect((await items.GET(new Request(origin), context)).status).toBe(200);
++      expect(
++        (
++          await detail.PATCH(
++            req({ name: "Actual replaced", expectedRevision: 1 }, "PATCH"),
++            context,
++          )
++        ).status,
++      ).toBe(200);
++      expect((await detail.DELETE(req({ expectedRevision: 2 }, "DELETE"), context)).status).toBe(
++        200,
++      );
++    } finally {
++      mock.mockRestore();
++    }
++  });
++  it("projects dependency/invariant/stored errors without leaking request or database values", async () => {
++    const m = await import("./smart-collection-routes");
++    const { ItemSearchError } = await import("@sammlerraum/contracts/item-search");
++    const { SmartCollectionError } = await import("@sammlerraum/contracts/smart-collections");
++    for (const [error, status] of [
++      [new ItemSearchError("SEARCH_UNAVAILABLE"), 503],
++      [new ItemSearchError("SEARCH_INVARIANT"), 500],
++      [new SmartCollectionError("SMART_COLLECTION_UNRESOLVABLE"), 409],
++    ] as const) {
++      const dependencies = m.createSmartCollectionRouteDependencies(
++        db!,
++        { api: { getSession: async () => ({ user: { id: owner } }) } },
++        origin,
++      );
++      dependencies.service.resolveSmartCollectionItems = async () => {
++        throw error;
++      };
++      const response = await m
++        .createSmartCollectionRouteHandlers(dependencies)
++        .GET_ITEMS(new Request(origin), randomUUID());
++      expect(response.status).toBe(status);
++      const body = (await response.json()) as ApiErrorEnvelope;
++      expect(body.error.code).toBe(error.code);
++      expect(Object.keys(body.error).sort()).toEqual(["code", "message", "requestId"]);
++      expect(response.headers.get("cache-control")).toBe("no-store");
++    }
++  });
++});
+diff --git a/apps/web/src/lib/smart-collection-routes.test.ts b/apps/web/src/lib/smart-collection-routes.test.ts
+new file mode 100644
+index 0000000..fac4255
+--- /dev/null
++++ b/apps/web/src/lib/smart-collection-routes.test.ts
+@@ -0,0 +1,52 @@
++import { describe, expect, it } from "vitest";
++import {
++  parseSmartCollectionWire,
++  parseSmartCollectionDefinition,
++} from "@sammlerraum/contracts/smart-collections";
++describe("saved query strict input", () => {
++  it("preserves full normalized query and permits explicit all-owned selection", () => {
++    expect(
++      parseSmartCollectionWire(
++        { name: " Ｓaved ", text: " Ｗatch ", lifecycle: "ALL", f: null },
++        "create",
++      ),
++    ).toEqual({
++      name: "Saved",
++      definition: { version: 1, text: "Watch", filter: null, lifecycle: "ALL" },
++    });
++    expect(parseSmartCollectionWire({ name: "All" }, "create")).toEqual({
++      name: "All",
++      definition: { version: 1, text: "", filter: null, lifecycle: "ACTIVE" },
++    });
++  });
++  it.each([
++    { name: " " },
++    { name: "x\n" },
++    { name: "x".repeat(101) },
++    { name: "x", ownerId: "other" },
++    { name: "x", expectedRevision: 1 },
++    { name: "x", f: {} },
++    { name: "x", text: "x".repeat(201) },
++    { name: "x", f: '{"version":1,"version":1,"root":{"kind":"tags","test":{"op":"present"}}}' },
++    {
++      name: "x",
++      f: JSON.stringify({
++        version: 1,
++        root: {
++          kind: "and",
++          children: Array.from({ length: 51 }, () => ({ kind: "tags", test: { op: "present" } })),
++        },
++      }),
++    },
++  ])("rejects invalid create input %j", (input) => {
++    expect(() => parseSmartCollectionWire(input, "create")).toThrow();
++  });
++  it("requires exact full definition and bounded revision", () => {
++    expect(() =>
++      parseSmartCollectionDefinition({ version: 1, text: "", lifecycle: "ACTIVE" }),
++    ).toThrow();
++    expect(() => parseSmartCollectionWire({ name: "x" }, "update")).toThrow();
++    expect(() => parseSmartCollectionWire({ expectedRevision: 2147483648 }, "delete")).toThrow();
++    expect(() => parseSmartCollectionWire({ expectedRevision: 1, extra: 1 }, "delete")).toThrow();
++  });
++});
+diff --git a/apps/web/src/lib/smart-collection-routes.ts b/apps/web/src/lib/smart-collection-routes.ts
+new file mode 100644
+index 0000000..f11604f
+--- /dev/null
++++ b/apps/web/src/lib/smart-collection-routes.ts
+@@ -0,0 +1,163 @@
++import { ApiError } from "@sammlerraum/contracts/errors";
++import { FilterValidationError } from "@sammlerraum/contracts/search";
++import { ItemSearchError } from "@sammlerraum/contracts/item-search";
++import {
++  SmartCollectionError,
++  parseSmartCollectionWire,
++  SMART_COLLECTION_MAX_BODY_BYTES,
++} from "@sammlerraum/contracts/smart-collections";
++import { createSmartCollectionService } from "@sammlerraum/domain/search/smart-collection-service";
++import type { SearchDatabase } from "@sammlerraum/domain/search/item-search-service";
++import { apiRoute } from "./api/route-handler";
++import { readBoundedBody } from "./api/read-bounded-body";
++import { readItemSearchQuery } from "./item-search-routes";
++type Authentication = {
++  api: {
++    getSession(input: {
++      headers: Headers;
++      query: { disableCookieCache: true; disableRefresh: true };
++    }): Promise<{ user: { id: string } } | null>;
++  };
++};
++export function createSmartCollectionRouteDependencies(
++  database: SearchDatabase,
++  auth: Authentication,
++  appOrigin: string,
++) {
++  return {
++    appOrigin,
++    getSession: (headers: Headers) =>
++      auth.api.getSession({ headers, query: { disableCookieCache: true, disableRefresh: true } }),
++    service: createSmartCollectionService(database),
++  };
++}
++function mapped(error: unknown): never {
++  if (error instanceof SmartCollectionError) {
++    const status =
++      error.code === "SMART_COLLECTION_INVALID"
++        ? 400
++        : error.code === "SMART_COLLECTION_NOT_FOUND"
++          ? 404
++          : 409;
++    throw new ApiError(
++      error.code,
++      status,
++      status === 400
++        ? "Invalid saved query request"
++        : status === 404
++          ? "Resource not found"
++          : "Saved query cannot be applied",
++    );
++  }
++  if (error instanceof FilterValidationError)
++    throw new ApiError(
++      error.code,
++      error.code === "FILTER_UNAVAILABLE" ? 422 : 400,
++      "Invalid or unavailable filter",
++    );
++  if (error instanceof ItemSearchError)
++    throw new ApiError(
++      error.code,
++      error.code === "SEARCH_INVALID"
++        ? 400
++        : error.code === "FILTER_REFERENCE_INVALID"
++          ? 422
++          : error.code === "SEARCH_UNAVAILABLE"
++            ? 503
++            : 500,
++      error.code === "SEARCH_INVARIANT"
++        ? "An unexpected error occurred"
++        : "Search request cannot be applied",
++    );
++  throw error;
++}
++async function json(request: Request): Promise<unknown> {
++  if (!/^application\/json(?:\s*;|$)/iu.test(request.headers.get("content-type") ?? ""))
++    throw new ApiError("SMART_COLLECTION_INVALID", 400, "JSON body required");
++  try {
++    return JSON.parse(
++      new TextDecoder("utf-8", { fatal: true }).decode(
++        await readBoundedBody(request, SMART_COLLECTION_MAX_BODY_BYTES),
++      ),
++    ) as unknown;
++  } catch (error) {
++    if (error instanceof ApiError) throw error;
++    throw new ApiError("SMART_COLLECTION_INVALID", 400, "Invalid JSON body");
++  }
++}
++export function createSmartCollectionRouteHandlers(
++  dependencies: ReturnType<typeof createSmartCollectionRouteDependencies>,
++) {
++  async function actor(request: Request, mutation = false) {
++    if (mutation && request.headers.get("origin") !== new URL(dependencies.appOrigin).origin)
++      throw new ApiError("FORBIDDEN", 403, "Cross-origin request rejected");
++    const session = await dependencies.getSession(request.headers);
++    if (!session) throw new ApiError("UNAUTHORIZED", 401, "Authentication required");
++    return { userId: session.user.id };
++  }
++  async function run(work: () => Promise<unknown>, status = 200) {
++    try {
++      return Response.json(await work(), { status, headers: { "cache-control": "no-store" } });
++    } catch (error) {
++      return mapped(error);
++    }
++  }
++  return {
++    GET: apiRoute((request) =>
++      run(async () =>
++        dependencies.service.listSmartCollections(
++          await actor(request),
++          readItemSearchQuery(request, ["limit", "cursor"]),
++        ),
++      ),
++    ),
++    POST: apiRoute((request) =>
++      run(async () => {
++        const a = await actor(request, true);
++        readItemSearchQuery(request, []);
++        return dependencies.service.createSmartCollection(
++          a,
++          parseSmartCollectionWire(await json(request), "create"),
++        );
++      }, 201),
++    ),
++    GET_ONE: apiRoute((request, id: string) =>
++      run(async () => {
++        const a = await actor(request);
++        readItemSearchQuery(request, []);
++        return dependencies.service.getSmartCollection(a, id);
++      }),
++    ),
++    PATCH: apiRoute((request, id: string) =>
++      run(async () => {
++        const a = await actor(request, true);
++        readItemSearchQuery(request, []);
++        return dependencies.service.updateSmartCollection(
++          a,
++          id,
++          parseSmartCollectionWire(await json(request), "update"),
++        );
++      }),
++    ),
++    DELETE: apiRoute((request, id: string) =>
++      run(async () => {
++        const a = await actor(request, true);
++        readItemSearchQuery(request, []);
++        return dependencies.service.deleteSmartCollection(
++          a,
++          id,
++          parseSmartCollectionWire(await json(request), "delete"),
++        );
++      }),
++    ),
++    GET_ITEMS: apiRoute((request, id: string) =>
++      run(async () =>
++        dependencies.service.resolveSmartCollectionItems(
++          await actor(request),
++          id,
++          readItemSearchQuery(request, ["limit", "cursor"]),
++        ),
++      ),
++    ),
++  };
++}
+diff --git a/docs/search/smart-collections.md b/docs/search/smart-collections.md
+new file mode 100644
+index 0000000..c369cc1
+--- /dev/null
++++ b/docs/search/smart-collections.md
+@@ -0,0 +1,15 @@
++# Owned smart collections (Phase07 Task3A)
++
++Smart collections save a query, never matching item IDs or copied item rows. The version1 definition is `{version:1,text,filter,lifecycle}`, with a nullable typed ItemFilter. Empty text plus null filter explicitly selects all owned items. Name accepts 1–100 UTF-16 units before and after NFKC/trim, valid Unicode and no control characters. Duplicate names are allowed.
++
++The fresh authenticated actor owns every operation. `GET /api/v1/smart-collections` lists summaries using `limit` (20 default, 50 maximum) and `cursor`; summaries omit definitions. `POST` creates with strict JSON `{name,text?,f?:string|null,lifecycle?}`. `f` is the raw filter JSON string: the existing duplicate-member and complexity guards parse it directly. Omitted/null `f` means no filter. Text and filter retain the exact direct-search limits. Mutation bodies are bounded to32KiB including escaping and decoded with fatal UTF-8. Unknown keys reject. Successful creation returns201 with the normalized detail.
++
++`GET /api/v1/smart-collections/[id]` returns one normalized detail. `PATCH` fully replaces name/query and requires `expectedRevision`; omitted query fields reset to their defaults. `DELETE` takes strict JSON `{expectedRevision}` and soft-deletes. Updates and deletes compare live owner/id/revision atomically and advance the revision; stale own edits conflict409, while foreign/missing/deleted IDs all return404. Revision2147483647 cannot advance. Malformed caller IDs return400. No restore or sharing is provided. Mutations require exact configured APP_ORIGIN. All responses use no-store and a request ID.
++
++`GET /api/v1/smart-collections/[id]/items` accepts only `limit` and `cursor` and returns the exact owned SearchPage. Each resolution loads the live saved row/revision and validates current references, inventory, count and page inside one bounded RepeatableRead transaction. Saving/replacing likewise executes the actual query at limit1 in the mutation transaction to validate current references and availability. The existing12-second operation/5-second transaction/2-second statement budgets and recognized40001-only retries apply to both reads and writes; any error escapes the transaction and rolls back. A lost network outcome is not an assurance that a write did not commit or permission to retry it automatically.
++
++List keysets order createdAt DESC/id DESC and preserve the exact total before cursor. Their canonical unsigned cursor binds owner/operation/limit. Item cursors additionally bind the stored query/saved ID/revision through the actual search seam. Direct-search/list/other saved ID/revision/limit replays fail400. Later pages see live state, with no retained database snapshot. Editing a query conservatively invalidates prior item cursors even for identical replacements.
++
++Malformed stored definitions and currently unavailable saved references/capabilities resolve as409 SMART_COLLECTION_UNRESOLVABLE. Structurally valid unavailable definitions remain readable for editing; malformed raw bytes are never returned as fallback. Caller cursor errors remain400, dependency/budget errors503 and corrupt inventory/invariants500. Invalid new filter syntax is400 and new unavailable capability/reference422. Mutation oversize413 and encoded query oversize414 precede parsing. Output is bounded to1MiB and includes only normalized definitions or whitelisted search summaries, with no owner input or sensitive item payload.
++
++The additive PostgreSQL migration enforces owner cascade, version1, positive bounded revision, basic envelope and32KiB JSONB text size. Reads enforce the actual typed AST schema rather than claiming the native CHECK repeats it. No item-membership relation exists. Full Phase07 Task2/Task3 acceptance remains open: legacy money/market/shared/duplicate relation producer integration and later UI remain separate gates. No production/provider or real-data change is included.
+diff --git a/packages/contracts/package.json b/packages/contracts/package.json
+index f6d0281..9e743f0 100644
+--- a/packages/contracts/package.json
++++ b/packages/contracts/package.json
+@@ -11,21 +11,22 @@
+     "./locations": "./src/locations.ts",
+     "./openapi": "./src/openapi.ts",
+     "./profile": "./src/profile.ts",
+     "./catalog": "./src/catalog.ts",
+     "./catalog-proposals": "./src/catalog-proposals.ts",
+     "./condition": "./src/condition.ts",
+     "./grading": "./src/grading.ts",
+     "./catalog-reads": "./src/catalog-reads.ts",
+     "./valuations": "./src/valuations.ts",
+     "./search": "./src/search.ts",
+-    "./item-search": "./src/item-search.ts"
++    "./item-search": "./src/item-search.ts",
++    "./smart-collections": "./src/smart-collections.ts"
+   },
+   "scripts": {
+     "build": "pnpm typecheck",
+     "lint": "prettier --check .",
+     "typecheck": "tsc --noEmit --project ../../tsconfig.base.json"
+   },
+   "dependencies": {
+     "zod": "4.1.11"
+   }
+ }
+diff --git a/packages/contracts/src/smart-collections.ts b/packages/contracts/src/smart-collections.ts
+new file mode 100644
+index 0000000..9e484c2
+--- /dev/null
++++ b/packages/contracts/src/smart-collections.ts
+@@ -0,0 +1,156 @@
++import { z } from "zod";
++import { parseItemSearchQuery, type SearchLifecycle } from "./item-search";
++import { parseItemFilterJson, type ItemFilter } from "./search";
++import { validUnicode } from "./search-parser";
++import { CanonicalTimestampSchema } from "./items";
++export const SMART_COLLECTION_MAX_BODY_BYTES = 32768;
++export const SMART_COLLECTION_MAX_REVISION = 2147483647;
++export class SmartCollectionError extends Error {
++  constructor(
++    readonly code:
++      | "SMART_COLLECTION_INVALID"
++      | "SMART_COLLECTION_NOT_FOUND"
++      | "SMART_COLLECTION_CONFLICT"
++      | "SMART_COLLECTION_UNRESOLVABLE",
++  ) {
++    super(code);
++    this.name = "SmartCollectionError";
++  }
++}
++export function smartFail(code: SmartCollectionError["code"]): never {
++  throw new SmartCollectionError(code);
++}
++const nameValid = (v: string) =>
++  validUnicode(v) && v.length >= 1 && v.length <= 100 && !/\p{Cc}/u.test(v);
++export const SmartCollectionNameSchema = z
++  .string()
++  .refine(nameValid)
++  .transform((v) => v.normalize("NFKC").trim())
++  .refine(nameValid);
++export const SmartCollectionRevisionSchema = z
++  .number()
++  .int()
++  .min(1)
++  .max(SMART_COLLECTION_MAX_REVISION);
++const definitionSchema = z
++  .object({
++    version: z.literal(1),
++    text: z.string(),
++    filter: z.unknown(),
++    lifecycle: z.enum(["ACTIVE", "ARCHIVED", "DISPOSED", "ALL"]),
++  })
++  .strict();
++export type SmartCollectionDefinition = {
++  version: 1;
++  text: string;
++  filter: ItemFilter | null;
++  lifecycle: SearchLifecycle;
++};
++export function parseSmartCollectionDefinition(value: unknown): SmartCollectionDefinition {
++  const result = definitionSchema.safeParse(value);
++  if (!result.success || result.data.filter === undefined)
++    return smartFail("SMART_COLLECTION_INVALID");
++  const q = parseItemSearchQuery({
++    text: result.data.text,
++    filter: result.data.filter,
++    lifecycle: result.data.lifecycle,
++  });
++  return { version: 1, text: q.text, filter: q.filter, lifecycle: q.lifecycle };
++}
++const mutationSchema = z
++  .object({ name: SmartCollectionNameSchema, definition: z.unknown() })
++  .strict();
++export function parseSmartCollectionMutation(input: unknown) {
++  const result = mutationSchema.safeParse(input);
++  if (!result.success) return smartFail("SMART_COLLECTION_INVALID");
++  return {
++    name: result.data.name,
++    definition: parseSmartCollectionDefinition(result.data.definition),
++  };
++}
++const wireFields = {
++  name: SmartCollectionNameSchema,
++  text: z.string().optional(),
++  f: z.string().nullable().optional(),
++  lifecycle: z.enum(["ACTIVE", "ARCHIVED", "DISPOSED", "ALL"]).optional(),
++};
++const createWire = z.object(wireFields).strict();
++const updateWire = z
++  .object({ ...wireFields, expectedRevision: SmartCollectionRevisionSchema })
++  .strict();
++const deleteWire = z.object({ expectedRevision: SmartCollectionRevisionSchema }).strict();
++export function parseSmartCollectionWire(
++  input: unknown,
++  operation: "create" | "update" | "delete",
++) {
++  if (operation === "delete") {
++    const r = deleteWire.safeParse(input);
++    if (!r.success) return smartFail("SMART_COLLECTION_INVALID");
++    return r.data;
++  }
++  const r = (operation === "create" ? createWire : updateWire).safeParse(input);
++  if (!r.success) return smartFail("SMART_COLLECTION_INVALID");
++  const { f, text, lifecycle, name } = r.data;
++  const q = parseItemSearchQuery({
++    text,
++    lifecycle,
++    filter: f === undefined || f === null ? null : parseItemFilterJson(f),
++  });
++  return {
++    name,
++    definition: { version: 1 as const, text: q.text, filter: q.filter, lifecycle: q.lifecycle },
++    ...("expectedRevision" in r.data ? { expectedRevision: r.data.expectedRevision } : {}),
++  };
++}
++export const SmartCollectionSummarySchema = z
++  .object({
++    id: z.string().uuid(),
++    name: SmartCollectionNameSchema,
++    revision: SmartCollectionRevisionSchema,
++    createdAt: CanonicalTimestampSchema,
++    updatedAt: CanonicalTimestampSchema,
++  })
++  .strict();
++export type SmartCollectionSummary = z.infer<typeof SmartCollectionSummarySchema>;
++export type SmartCollectionDetail = SmartCollectionSummary & {
++  definition: SmartCollectionDefinition;
++};
++export function parseSmartCollectionPageInput(input: unknown) {
++  const result = z
++    .object({
++      limit: z.number().int().min(1).max(50).default(20),
++      cursor: z
++        .string()
++        .regex(/^[A-Za-z0-9_-]{1,2048}$/u)
++        .optional(),
++    })
++    .strict()
++    .safeParse(input);
++  if (!result.success) return smartFail("SMART_COLLECTION_INVALID");
++  return result.data;
++}
++export function parseSmartCollectionId(input: unknown): string {
++  const r = z.string().uuid().safeParse(input);
++  if (!r.success) return smartFail("SMART_COLLECTION_INVALID");
++  return r.data.toLowerCase();
++}
++export function parseSmartCollectionUpdate(input: unknown) {
++  const r = z
++    .object({
++      name: z.unknown(),
++      definition: z.unknown(),
++      expectedRevision: SmartCollectionRevisionSchema,
++    })
++    .strict()
++    .safeParse(input);
++  if (!r.success) return smartFail("SMART_COLLECTION_INVALID");
++  return {
++    ...parseSmartCollectionMutation({ name: r.data.name, definition: r.data.definition }),
++    expectedRevision: r.data.expectedRevision,
++  };
++}
++export function parseSmartCollectionDelete(input: unknown) {
++  const r = deleteWire.safeParse(input);
++  if (!r.success) return smartFail("SMART_COLLECTION_INVALID");
++  return r.data;
++}
+diff --git a/packages/db/prisma/migrations/20261018090000_smart_collections/migration.sql b/packages/db/prisma/migrations/20261018090000_smart_collections/migration.sql
+new file mode 100644
+index 0000000..aa9d9b4
+--- /dev/null
++++ b/packages/db/prisma/migrations/20261018090000_smart_collections/migration.sql
+@@ -0,0 +1,25 @@
++CREATE TABLE "SmartCollection" (
++ "id" UUID NOT NULL,
++ "ownerId" TEXT NOT NULL,
++ "name" VARCHAR(100) NOT NULL,
++ "filterVersion" INTEGER NOT NULL DEFAULT 1,
++ "definition" JSONB NOT NULL,
++ "revision" INTEGER NOT NULL DEFAULT 1,
++ "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
++ "updatedAt" TIMESTAMP(3) NOT NULL,
++ "deletedAt" TIMESTAMP(3),
++ CONSTRAINT "SmartCollection_pkey" PRIMARY KEY ("id"),
++ CONSTRAINT "SmartCollection_ownerId_fkey" FOREIGN KEY ("ownerId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE,
++ CONSTRAINT "SmartCollection_version_check" CHECK ("filterVersion" = 1),
++ CONSTRAINT "SmartCollection_revision_check" CHECK ("revision" BETWEEN 1 AND 2147483647),
++ CONSTRAINT "SmartCollection_definition_check" CHECK (
++  jsonb_typeof("definition") = 'object' AND
++  "definition" ?& ARRAY['version','text','filter','lifecycle'] AND
++  "definition"->'version' = '1'::jsonb AND
++  jsonb_typeof("definition"->'text') = 'string' AND
++  jsonb_typeof("definition"->'filter') IN ('object','null') AND
++  "definition"->>'lifecycle' IN ('ACTIVE','ARCHIVED','DISPOSED','ALL') AND
++  octet_length("definition"::text) <= 32768
++ )
++);
++CREATE INDEX "SmartCollection_ownerId_deletedAt_createdAt_id_idx" ON "SmartCollection"("ownerId", "deletedAt", "createdAt" DESC, "id" DESC);
+diff --git a/packages/db/prisma/schema.prisma b/packages/db/prisma/schema.prisma
+index 9fdc88b..1cfaa61 100644
+--- a/packages/db/prisma/schema.prisma
++++ b/packages/db/prisma/schema.prisma
+@@ -104,20 +104,21 @@ model User {
+   email                      String
+   emailVerified              Boolean                @default(false)
+   image                      String?
+   createdAt                  DateTime               @default(now())
+   updatedAt                  DateTime               @updatedAt
+   sessions                   Session[]
+   accounts                   Account[]
+   passkeys                   Passkey[]
+   profile                    UserProfile?
+   collections                Collection[]
++  smartCollections           SmartCollection[]
+   tags                       Tag[]
+   storageLocations           StorageLocation[]
+   locationHistoryAssignments ItemLocationHistory[]  @relation("LocationHistoryAssignee")
+   mediaAssets                MediaAsset[]
+   applicationRoleGrant       ApplicationRoleGrant?
+   catalogProposals           CatalogProposal[]      @relation("ProposalProposer")
+   catalogDecisions           CatalogProposal[]      @relation("ProposalModerator")
+   valuations                 Valuation[]
+   catalogRollbacks           CatalogRollbackAudit[]
+ 
+@@ -920,10 +921,25 @@ model MarketRequestGate {
+   hourly        Int
+   daily         Int
+   policyVersion Int
+   activeAttempt String?   @db.Uuid
+   acquiredAt    DateTime? @db.Timestamptz(3)
+   hourStart     DateTime  @db.Timestamptz(3)
+   dayStart      DateTime  @db.Timestamptz(3)
+   hourCount     Int
+   dayCount      Int
+ }
++
++model SmartCollection {
++  id            String    @id @default(uuid()) @db.Uuid
++  ownerId       String
++  name          String    @db.VarChar(100)
++  filterVersion Int       @default(1)
++  definition    Json      @db.JsonB
++  revision      Int       @default(1)
++  createdAt     DateTime  @default(now())
++  updatedAt     DateTime  @updatedAt
++  deletedAt     DateTime?
++  owner         User      @relation(fields: [ownerId], references: [id], onDelete: Cascade)
++
++  @@index([ownerId, deletedAt, createdAt(sort: Desc), id(sort: Desc)])
++}
+diff --git a/packages/domain/package.json b/packages/domain/package.json
+index 8b03ba9..a839630 100644
+--- a/packages/domain/package.json
++++ b/packages/domain/package.json
+@@ -27,21 +27,22 @@
+     "./grading/grading-service": "./src/grading/grading-service.ts",
+     "./catalog/catalog-read-service": "./src/catalog/catalog-read-service.ts",
+     "./catalog/initialize-catalog": "./src/catalog/initialize-catalog.ts",
+     "./money/money": "./src/money/money.ts",
+     "./valuations/valuation-service": "./src/valuations/valuation-service.ts",
+     "./market-data/market-data-service": "./src/market-data/market-data-service.ts",
+     "./valuations/valuation-query": "./src/valuations/valuation-query.ts",
+     "./valuations/market-display-policy": "./src/valuations/market-display-policy.ts",
+     "./money/currencies": "./src/money/currencies.ts",
+     "./search/filter-ast": "./src/search/filter-ast.ts",
+-    "./search/item-search-service": "./src/search/item-search-service.ts"
++    "./search/item-search-service": "./src/search/item-search-service.ts",
++    "./search/smart-collection-service": "./src/search/smart-collection-service.ts"
+   },
+   "scripts": {
+     "build": "pnpm typecheck",
+     "lint": "prettier --check .",
+     "typecheck": "tsc --noEmit --project ../../tsconfig.base.json"
+   },
+   "dependencies": {
+     "@sammlerraum/contracts": "workspace:*",
+     "@sammlerraum/storage": "workspace:*",
+     "file-type": "21.3.4",
+diff --git a/packages/domain/src/search/search-read.ts b/packages/domain/src/search/search-read.ts
+index a3dbf94..d4717a4 100644
+--- a/packages/domain/src/search/search-read.ts
++++ b/packages/domain/src/search/search-read.ts
+@@ -1,24 +1,25 @@
+ import { Prisma } from "@sammlerraum/db/search-sql";
+ import { ItemSearchError, searchFail } from "@sammlerraum/contracts/item-search";
++import { SmartCollectionError } from "@sammlerraum/contracts/smart-collections";
+ import { FilterValidationError } from "@sammlerraum/contracts/search";
+ import { isReadDependencyFailure, isReadSerializationFailure } from "../api/read-dependency-errors";
+ export type SearchReadTransaction = { $queryRaw<T>(sql: Prisma.Sql): Promise<T> };
+ export type BoundedSearchReadTransaction = SearchReadTransaction & { checkBudget(): void };
+ export type SearchDatabase = {
+   $transaction<T>(
+     work: (tx: SearchReadTransaction) => Promise<T>,
+     options: { isolationLevel: "RepeatableRead"; maxWait: number; timeout: number },
+   ): Promise<T>;
+ };
+-/** Entire read retries within 12s; no locks or snapshot survive a response. */
+-export async function runSearchRead<T>(
++/** Entire operation retries within 12s; no locks or snapshot survive a response. */
++export async function runSearchTransaction<T>(
+   database: SearchDatabase,
+   work: (tx: BoundedSearchReadTransaction) => Promise<T>,
+ ): Promise<T> {
+   const stop = performance.now() + 12000;
+   for (let attempt = 0; attempt < 3; attempt++) {
+     const remaining = Math.floor(stop - performance.now());
+     if (remaining < 1) return searchFail("SEARCH_UNAVAILABLE");
+     try {
+       const result = await database.$transaction(
+         async (raw) => {
+@@ -54,21 +55,29 @@ export async function runSearchRead<T>(
+         },
+         {
+           isolationLevel: "RepeatableRead",
+           maxWait: Math.min(2000, remaining),
+           timeout: Math.min(5000, remaining),
+         },
+       );
+       if (performance.now() >= stop) return searchFail("SEARCH_UNAVAILABLE");
+       return result;
+     } catch (error) {
+-      if (error instanceof ItemSearchError || error instanceof FilterValidationError) throw error;
++      if (
++        error instanceof ItemSearchError ||
++        error instanceof FilterValidationError ||
++        error instanceof SmartCollectionError
++      )
++        throw error;
+       if (isReadSerializationFailure(error) && attempt < 2 && performance.now() < stop) continue;
+       if (isReadDependencyFailure(error)) return searchFail("SEARCH_UNAVAILABLE");
+       // This compiler's only named collation is a deployment dependency. Never expose SQL.
+       const code = (error as { meta?: { code?: unknown } } | null)?.meta?.code;
+       if (code === "42704") return searchFail("SEARCH_UNAVAILABLE");
+       return searchFail("SEARCH_INVARIANT");
+     }
+   }
+   return searchFail("SEARCH_UNAVAILABLE");
+ }
++
++/** Compatibility alias for existing read-only search callers. */
++export const runSearchRead = runSearchTransaction;
+diff --git a/packages/domain/src/search/smart-collection-service.test.ts b/packages/domain/src/search/smart-collection-service.test.ts
+new file mode 100644
+index 0000000..a211f00
+--- /dev/null
++++ b/packages/domain/src/search/smart-collection-service.test.ts
+@@ -0,0 +1,581 @@
++import { randomUUID } from "node:crypto";
++import { afterAll, beforeAll, describe, expect, it } from "vitest";
++import { createTestDatabaseClient } from "@sammlerraum/db/test-database";
++import { Prisma } from "@sammlerraum/db/search-sql";
++import { SmartCollectionError } from "@sammlerraum/contracts/smart-collections";
++import { createSmartCollectionService } from "./smart-collection-service";
++import { createItemSearchService, type SearchDatabase } from "./item-search-service";
++import { encodeSearchCursor } from "./search-cursor";
++import { createHash } from "node:crypto";
++import { createTagService } from "../items/tag-service";
++const enabled = process.env.RUN_DATABASE_INTEGRATION === "1";
++const db = enabled ? createTestDatabaseClient() : undefined;
++const owner = `smart_${randomUUID()}`;
++let item: string, collection: string;
++const actor = { userId: owner };
++const definition = { version: 1 as const, text: "", filter: null, lifecycle: "ACTIVE" as const };
++const service = () => createSmartCollectionService(db!);
++const create = (name = "Saved", query: object = {}) =>
++  service().createSmartCollection(actor, { name, definition: { ...definition, ...query } });
++describe.runIf(enabled)("owned dynamic saved queries PostgreSQL", () => {
++  beforeAll(async () => {
++    await db!.user.create({
++      data: { id: owner, name: "Saved", email: `${owner}@example.invalid` },
++    });
++    const c = await db!.collection.create({ data: { ownerId: owner, name: "Saved" } });
++    collection = c.id;
++    item = (
++      await db!.collectibleItem.create({
++        data: { ownerId: owner, collectionId: collection, title: "Signed watch" },
++      })
++    ).id;
++  });
++  afterAll(async () => {
++    await db?.user.deleteMany({ where: { id: owner } });
++    await db?.$disconnect();
++  });
++  it("reflects actual tag-service edits without storing membership rows", async () => {
++    const path = "./smart-collection-service";
++    const module = await import(path);
++    expect(module?.createSmartCollectionService, "saved query service must exist").toBeTypeOf(
++      "function",
++    );
++    const service = module!.createSmartCollectionService(db!);
++    const actor = { userId: owner };
++    const smart = await service.createSmartCollection(actor, {
++      name: "Signed",
++      definition: {
++        version: 1,
++        text: "watch",
++        lifecycle: "ACTIVE",
++        filter: { version: 1, root: { kind: "tags", test: { op: "hasAll", values: ["signed"] } } },
++      },
++    });
++    expect((await service.resolveSmartCollectionItems(actor, smart.id, {})).items).toHaveLength(0);
++    await createTagService(db!, owner).setItemTags(item, ["signed"]);
++    expect(
++      (await service.resolveSmartCollectionItems(actor, smart.id, {})).items.map(
++        (x: { id: string }) => x.id,
++      ),
++    ).toEqual([item]);
++    await createTagService(db!, owner).setItemTags(item, []);
++    expect((await service.resolveSmartCollectionItems(actor, smart.id, {})).total).toBe(0);
++  });
++  it("persists the whole normalized query and no result membership relation", async () => {
++    const saved = await create(" Ｓaved ", { text: " Ｗatch ", lifecycle: "ALL" });
++    expect(saved.name).toBe("Saved");
++    expect(saved.definition).toEqual({ ...definition, text: "Watch", lifecycle: "ALL" });
++    const row = await db!.smartCollection.findUniqueOrThrow({ where: { id: saved.id } });
++    expect(row.definition).toEqual(saved.definition);
++    expect(row.filterVersion).toBe(1);
++    const tables = await db!.$queryRaw<
++      { name: string }[]
++    >`SELECT conrelid::regclass::text AS name FROM pg_constraint WHERE confrelid='"SmartCollection"'::regclass AND contype='f'`;
++    expect(tables).toEqual([]);
++  });
++  it("hides foreign/missing/deleted saved IDs and inventory in rows/count", async () => {
++    const foreign = `foreign_${randomUUID()}`;
++    await db!.user.create({
++      data: { id: foreign, name: "Other", email: `${foreign}@example.invalid` },
++    });
++    try {
++      const c = await db!.collection.create({ data: { ownerId: foreign, name: "Other" } });
++      await db!.collectibleItem.create({
++        data: { ownerId: foreign, collectionId: c.id, title: "Hidden", visibility: "PUBLIC" },
++      });
++      const saved = await create();
++      const svc = service();
++      const own = await svc.resolveSmartCollectionItems(actor, saved.id, {});
++      expect(own.total).toBe(
++        await db!.collectibleItem.count({
++          where: { ownerId: owner, deletedAt: null, archivedAt: null, disposedAt: null },
++        }),
++      );
++      expect(own.items.every((x) => x.collectionId === collection)).toBe(true);
++      for (const id of [saved.id, randomUUID()]) {
++        await expect(svc.getSmartCollection({ userId: foreign }, id)).rejects.toMatchObject({
++          code: "SMART_COLLECTION_NOT_FOUND",
++        });
++        await expect(
++          svc.resolveSmartCollectionItems({ userId: foreign }, id, {}),
++        ).rejects.toMatchObject({ code: "SMART_COLLECTION_NOT_FOUND" });
++        await expect(
++          svc.updateSmartCollection({ userId: foreign }, id, {
++            name: "Other",
++            definition,
++            expectedRevision: 1,
++          }),
++        ).rejects.toMatchObject({ code: "SMART_COLLECTION_NOT_FOUND" });
++        await expect(
++          svc.deleteSmartCollection({ userId: foreign }, id, { expectedRevision: 1 }),
++        ).rejects.toMatchObject({ code: "SMART_COLLECTION_NOT_FOUND" });
++      }
++      expect((await svc.listSmartCollections({ userId: foreign }, {})).total).toBe(0);
++      await svc.deleteSmartCollection(actor, saved.id, { expectedRevision: 1 });
++      await expect(svc.getSmartCollection(actor, saved.id)).rejects.toMatchObject({
++        code: "SMART_COLLECTION_NOT_FOUND",
++      });
++    } finally {
++      await db!.user.delete({ where: { id: foreign } });
++    }
++  });
++  it("paginates summaries/count before cursor and rejects owner/limit/operation replay", async () => {
++    await create();
++    await create();
++    const svc = service(),
++      first = await svc.listSmartCollections(actor, { limit: 1 });
++    expect(first.items).toHaveLength(1);
++    expect(first.items[0]).not.toHaveProperty("definition");
++    expect(first.nextCursor).toBeTruthy();
++    const second = await svc.listSmartCollections(actor, { limit: 1, cursor: first.nextCursor! });
++    expect(second.total).toBe(first.total);
++    expect(second.items[0]!.id).not.toBe(first.items[0]!.id);
++    let page = first;
++    const seen = new Set<string>();
++    do {
++      for (const x of page.items) {
++        expect(seen.has(x.id)).toBe(false);
++        seen.add(x.id);
++      }
++      if (!page.nextCursor) break;
++      page = await svc.listSmartCollections(actor, { limit: 1, cursor: page.nextCursor });
++    } while (true);
++    expect(seen.size).toBe(first.total);
++    for (const [a, input] of [
++      [actor, { limit: 2, cursor: first.nextCursor }],
++      [{ userId: "other" }, { limit: 1, cursor: first.nextCursor }],
++    ] as const)
++      await expect(svc.listSmartCollections(a, input)).rejects.toMatchObject({
++        code: "SEARCH_INVALID",
++      });
++    const saved = await create();
++    await expect(
++      svc.resolveSmartCollectionItems(actor, saved.id, { limit: 1, cursor: first.nextCursor }),
++    ).rejects.toMatchObject({ code: "SEARCH_INVALID" });
++    await expect(svc.listSmartCollections(actor, { limit: 51 })).rejects.toMatchObject({
++      code: "SMART_COLLECTION_INVALID",
++    });
++  });
++  it("binds item cursors to saved id/revision/query/limit and rejects overrides", async () => {
++    const extra = await db!.collectibleItem.create({
++      data: { ownerId: owner, collectionId: collection, title: "Extra" },
++    });
++    try {
++      const a = await create(),
++        b = await create(),
++        svc = service(),
++        first = await svc.resolveSmartCollectionItems(actor, a.id, { limit: 1 });
++      expect(first.nextCursor).toBeTruthy();
++      for (const [id, input] of [
++        [b.id, { limit: 1, cursor: first.nextCursor }],
++        [a.id, { limit: 2, cursor: first.nextCursor }],
++        [a.id, { text: "override" }],
++        [a.id, { scope: "SHARED" }],
++        [a.id, { context: { revision: 1 } }],
++      ] as const)
++        await expect(svc.resolveSmartCollectionItems(actor, id, input)).rejects.toBeDefined();
++      const direct = await createItemSearchService(db!).searchItems(actor, { limit: 1 });
++      await expect(
++        svc.resolveSmartCollectionItems(actor, a.id, { limit: 1, cursor: direct.nextCursor }),
++      ).rejects.toMatchObject({ code: "SEARCH_INVALID" });
++      await expect(
++        createItemSearchService(db!).searchItems(actor, { limit: 1, cursor: first.nextCursor }),
++      ).rejects.toMatchObject({ code: "SEARCH_INVALID" });
++      await svc.updateSmartCollection(actor, a.id, {
++        name: a.name,
++        definition: a.definition,
++        expectedRevision: 1,
++      });
++      await expect(
++        svc.resolveSmartCollectionItems(actor, a.id, { limit: 1, cursor: first.nextCursor }),
++      ).rejects.toMatchObject({ code: "SEARCH_INVALID" });
++      const changed = await svc.updateSmartCollection(actor, a.id, {
++        name: "Changed",
++        definition: { ...definition, text: "impossible" },
++        expectedRevision: 2,
++      });
++      expect(changed.revision).toBe(3);
++      expect((await svc.resolveSmartCollectionItems(actor, a.id, {})).total).toBe(0);
++    } finally {
++      await db!.collectibleItem.delete({ where: { id: extra.id } });
++    }
++  });
++  it("uses atomic CAS for concurrent replacements and delete/update races", async () => {
++    const saved = await create(),
++      svc = service();
++    const mutations = await Promise.allSettled(
++      [1, 2].map((n) =>
++        svc.updateSmartCollection(actor, saved.id, {
++          name: `Changed ${n}`,
++          definition,
++          expectedRevision: 1,
++        }),
++      ),
++    );
++    expect(mutations.filter((x) => x.status === "fulfilled")).toHaveLength(1);
++    expect(mutations.filter((x) => x.status === "rejected").map((x) => x.reason.code)).toEqual([
++      "SMART_COLLECTION_CONFLICT",
++    ]);
++    const race = await Promise.allSettled([
++      svc.updateSmartCollection(actor, saved.id, {
++        name: "Replacement",
++        definition,
++        expectedRevision: 2,
++      }),
++      svc.deleteSmartCollection(actor, saved.id, { expectedRevision: 2 }),
++    ]);
++    expect(race.filter((x) => x.status === "fulfilled")).toHaveLength(1);
++    expect(race.filter((x) => x.status === "rejected").map((x) => x.reason.code)).toEqual([
++      expect.stringMatching(/^SMART_COLLECTION_(CONFLICT|NOT_FOUND)$/u),
++    ]);
++  });
++  it("closes revision overflow before any write", async () => {
++    const saved = await create();
++    await db!.smartCollection.update({ where: { id: saved.id }, data: { revision: 2147483647 } });
++    await expect(
++      service().updateSmartCollection(actor, saved.id, {
++        name: "Overflow",
++        definition,
++        expectedRevision: 2147483647,
++      }),
++    ).rejects.toMatchObject({ code: "SMART_COLLECTION_CONFLICT" });
++    await expect(
++      service().deleteSmartCollection(actor, saved.id, { expectedRevision: 2147483647 }),
++    ).rejects.toMatchObject({ code: "SMART_COLLECTION_CONFLICT" });
++    expect(
++      (await db!.smartCollection.findUniqueOrThrow({ where: { id: saved.id } })).deletedAt,
++    ).toBeNull();
++  });
++  it("revalidates references under NOT/OR and with empty candidates", async () => {
++    for (const root of [
++      { kind: "not", child: { kind: "collection", test: { op: "eq", value: randomUUID() } } },
++      {
++        kind: "or",
++        children: [
++          { kind: "tags", test: { op: "present" } },
++          { kind: "collection", test: { op: "eq", value: randomUUID() } },
++        ],
++      },
++    ])
++      await expect(
++        create("Invalid", { text: "no candidates", filter: { version: 1, root } }),
++      ).rejects.toMatchObject({ code: "FILTER_REFERENCE_INVALID" });
++    for (const root of [
++      { kind: "not", child: { kind: "duplicate", value: true } },
++      {
++        kind: "or",
++        children: [
++          { kind: "tags", test: { op: "present" } },
++          { kind: "duplicate", value: true },
++        ],
++      },
++    ])
++      await expect(
++        create("Unsupported", { text: "no candidates", filter: { version: 1, root } }),
++      ).rejects.toMatchObject({ code: "FILTER_UNAVAILABLE" });
++  });
++  it("retains structurally valid unavailable definitions for editing but closes malformed data", async () => {
++    const saved = await create();
++    const unsupported = {
++      ...definition,
++      filter: { version: 1, root: { kind: "duplicate", value: true } },
++    };
++    await db!.smartCollection.update({
++      where: { id: saved.id },
++      data: { definition: unsupported },
++    });
++    expect((await service().getSmartCollection(actor, saved.id)).definition).toEqual(unsupported);
++    await expect(service().resolveSmartCollectionItems(actor, saved.id, {})).rejects.toMatchObject({
++      code: "SMART_COLLECTION_UNRESOLVABLE",
++    });
++    await expect(
++      service().resolveSmartCollectionItems(actor, saved.id, { cursor: "bad" }),
++    ).rejects.toMatchObject({ code: "SEARCH_INVALID" });
++    await db!.smartCollection.update({
++      where: { id: saved.id },
++      data: { definition: { ...definition, filter: { bad: "secret malformed" } } },
++    });
++    await expect(service().getSmartCollection(actor, saved.id)).rejects.toMatchObject({
++      code: "SMART_COLLECTION_UNRESOLVABLE",
++    });
++    await expect(service().resolveSmartCollectionItems(actor, saved.id, {})).rejects.toMatchObject({
++      code: "SMART_COLLECTION_UNRESOLVABLE",
++    });
++    expect(
++      (
++        await service().updateSmartCollection(actor, saved.id, {
++          name: "Repaired",
++          definition,
++          expectedRevision: 1,
++        })
++      ).revision,
++    ).toBe(2);
++  });
++  it("revalidates deleted referenced collections and live parent/lifecycle state", async () => {
++    const c = await db!.collection.create({ data: { ownerId: owner, name: "Temporary" } });
++    const i = await db!.collectibleItem.create({
++      data: { ownerId: owner, collectionId: c.id, title: "Lifecycle" },
++    });
++    try {
++      const saved = await create("Lifecycle", {
++        text: "Lifecycle",
++        lifecycle: "ALL",
++        filter: { version: 1, root: { kind: "collection", test: { op: "eq", value: c.id } } },
++      });
++      expect((await service().resolveSmartCollectionItems(actor, saved.id, {})).total).toBe(1);
++      await db!.collectibleItem.update({ where: { id: i.id }, data: { archivedAt: new Date() } });
++      expect((await service().resolveSmartCollectionItems(actor, saved.id, {})).total).toBe(1);
++      const active = await create("Active", { text: "Lifecycle" });
++      expect((await service().resolveSmartCollectionItems(actor, active.id, {})).total).toBe(0);
++      await db!.collection.update({ where: { id: c.id }, data: { deletedAt: new Date() } });
++      await expect(
++        service().resolveSmartCollectionItems(actor, saved.id, {}),
++      ).rejects.toMatchObject({ code: "SMART_COLLECTION_UNRESOLVABLE" });
++      expect((await service().getSmartCollection(actor, saved.id)).definition.filter).toBeTruthy();
++      expect((await service().resolveSmartCollectionItems(actor, active.id, {})).total).toBe(0);
++    } finally {
++      await db!.collectibleItem.delete({ where: { id: i.id } });
++      await db!.collection.delete({ where: { id: c.id } });
++    }
++  });
++  it("loads saved definition/count/rows in one snapshot then sees subsequent live changes", async () => {
++    const i = await db!.collectibleItem.create({
++        data: { ownerId: owner, collectionId: collection, title: "Snapshot before" },
++      }),
++      saved = await create("Snapshot", { text: "Snapshot before" });
++    let changed = false;
++    const database: SearchDatabase = {
++      $transaction: (work, options) =>
++        db!.$transaction(
++          (tx) =>
++            work({
++              $queryRaw: async <T>(sql: Prisma.Sql) => {
++                const rows = await tx.$queryRaw<T>(sql);
++                if (!changed && sql.sql.includes('FROM "SmartCollection"')) {
++                  changed = true;
++                  await db!.smartCollection.update({
++                    where: { id: saved.id },
++                    data: { definition: { ...definition, text: "Snapshot after" }, revision: 2 },
++                  });
++                  await db!.collectibleItem.update({
++                    where: { id: i.id },
++                    data: { title: "Snapshot after" },
++                  });
++                }
++                return rows;
++              },
++            }),
++          options,
++        ),
++    };
++    try {
++      const page = await createSmartCollectionService(database).resolveSmartCollectionItems(
++        actor,
++        saved.id,
++        {},
++      );
++      expect(changed).toBe(true);
++      expect(page.total).toBe(1);
++      expect(page.items.map((x) => x.title)).toEqual(["Snapshot before"]);
++      const live = await service().resolveSmartCollectionItems(actor, saved.id, {});
++      expect(live.items.map((x) => x.title)).toEqual(["Snapshot after"]);
++    } finally {
++      await db!.collectibleItem.delete({ where: { id: i.id } });
++    }
++  });
++  it("rolls back create/update/delete when a recognized domain error follows the real write", async () => {
++    const saved = await create("Rollback original");
++    const database: SearchDatabase = {
++      $transaction: (work, options) =>
++        db!.$transaction(
++          (tx) =>
++            work({
++              $queryRaw: async <T>(sql: Prisma.Sql) => {
++                const rows = await tx.$queryRaw<T>(sql);
++                if (/^(?:INSERT INTO|UPDATE) "SmartCollection"/u.test(sql.sql))
++                  throw new SmartCollectionError("SMART_COLLECTION_CONFLICT");
++                return rows;
++              },
++            }),
++          options,
++        ),
++    };
++    const svc = createSmartCollectionService(database);
++    await expect(
++      svc.createSmartCollection(actor, { name: "Rollback create", definition }),
++    ).rejects.toMatchObject({ code: "SMART_COLLECTION_CONFLICT" });
++    expect(
++      await db!.smartCollection.count({ where: { ownerId: owner, name: "Rollback create" } }),
++    ).toBe(0);
++    await expect(
++      svc.updateSmartCollection(actor, saved.id, {
++        name: "Rollback update",
++        definition,
++        expectedRevision: 1,
++      }),
++    ).rejects.toMatchObject({ code: "SMART_COLLECTION_CONFLICT" });
++    await expect(
++      svc.deleteSmartCollection(actor, saved.id, { expectedRevision: 1 }),
++    ).rejects.toMatchObject({ code: "SMART_COLLECTION_CONFLICT" });
++    const unchanged = await db!.smartCollection.findUniqueOrThrow({ where: { id: saved.id } });
++    expect(unchanged.name).toBe("Rollback original");
++    expect(unchanged.revision).toBe(1);
++    expect(unchanged.deletedAt).toBeNull();
++  });
++  it("rolls back actual PostgreSQL failure after insert without converting it into definition conflict", async () => {
++    const database: SearchDatabase = {
++      $transaction: (work, options) =>
++        db!.$transaction(
++          (tx) =>
++            work({
++              $queryRaw: async <T>(sql: Prisma.Sql) => {
++                const rows = await tx.$queryRaw<T>(sql);
++                if (sql.sql.startsWith('INSERT INTO "SmartCollection"'))
++                  await tx.$queryRaw(Prisma.sql`SELECT 1/0`);
++                return rows;
++              },
++            }),
++          options,
++        ),
++    };
++    await expect(
++      createSmartCollectionService(database).createSmartCollection(actor, {
++        name: "Native failed create",
++        definition,
++      }),
++    ).rejects.toMatchObject({ code: "SEARCH_INVARIANT" });
++    expect(
++      await db!.smartCollection.count({ where: { ownerId: owner, name: "Native failed create" } }),
++    ).toBe(0);
++  });
++  it("enforces native envelope/version/revision/size constraints", async () => {
++    const saved = await create();
++    for (const sql of [
++      Prisma.sql`UPDATE "SmartCollection" SET "filterVersion"=2 WHERE id=${saved.id}::uuid`,
++      Prisma.sql`UPDATE "SmartCollection" SET revision=0 WHERE id=${saved.id}::uuid`,
++      Prisma.sql`UPDATE "SmartCollection" SET definition='{}'::jsonb WHERE id=${saved.id}::uuid`,
++      Prisma.sql`UPDATE "SmartCollection" SET definition=${JSON.stringify({ ...definition, text: "x".repeat(33000) })}::jsonb WHERE id=${saved.id}::uuid`,
++    ])
++      await expect(db!.$executeRaw(sql)).rejects.toBeDefined();
++  });
++  it("returns exact totals for empty/exhausted lists and rejects impossible count before page SQL", async () => {
++    const svc = service();
++    const hash = createHash("sha256")
++      .update(JSON.stringify(["smart-collection-list", 1, owner, 20, "CREATED_DESC_ID_DESC"]))
++      .digest("hex");
++    const cursor = encodeSearchCursor({
++      v: 1,
++      contextHash: hash,
++      after: { createdAt: "0001-01-01T00:00:00.000Z", id: "00000000-0000-4000-8000-000000000000" },
++    });
++    const exhausted = await svc.listSmartCollections(actor, { cursor });
++    expect(exhausted.items).toEqual([]);
++    expect(exhausted.total).toBe(
++      await db!.smartCollection.count({ where: { ownerId: owner, deletedAt: null } }),
++    );
++    const empty = await svc.listSmartCollections({ userId: `empty_${randomUUID()}` }, {});
++    expect(empty).toEqual({ items: [], total: 0, nextCursor: null });
++    let pageRead = false;
++    const database: SearchDatabase = {
++      $transaction: (work, options) =>
++        db!.$transaction(
++          (tx) =>
++            work({
++              $queryRaw: async <T>(sql: Prisma.Sql) => {
++                const rows = await tx.$queryRaw<T>(sql);
++                if (sql.sql.startsWith('SELECT count(*) AS total FROM "SmartCollection"'))
++                  return [{ total: 9007199254740992n }] as T;
++                if (sql.sql.startsWith('SELECT id,name,revision,"createdAt"')) pageRead = true;
++                return rows;
++              },
++            }),
++          options,
++        ),
++    };
++    await expect(
++      createSmartCollectionService(database).listSmartCollections(actor, { cursor }),
++    ).rejects.toMatchObject({ code: "SEARCH_INVARIANT" });
++    expect(pageRead).toBe(false);
++  });
++  it("retries recognized native serialization only and leaves one mutation", async () => {
++    let attempts = 0;
++    const database: SearchDatabase = {
++      $transaction: (work, options) => {
++        attempts++;
++        return db!.$transaction(
++          (tx) =>
++            work({
++              $queryRaw: async <T>(sql: Prisma.Sql) => {
++                const rows = await tx.$queryRaw<T>(sql);
++                if (attempts === 1 && sql.sql.startsWith('INSERT INTO "SmartCollection"'))
++                  await tx.$queryRaw(
++                    Prisma.sql`DO $$ BEGIN RAISE EXCEPTION 'saved test serialization' USING ERRCODE='40001'; END $$`,
++                  );
++                return rows;
++              },
++            }),
++          options,
++        );
++      },
++    };
++    const saved = await createSmartCollectionService(database).createSmartCollection(actor, {
++      name: "Retry once",
++      definition,
++    });
++    expect(attempts).toBe(2);
++    expect(saved.revision).toBe(1);
++    expect(await db!.smartCollection.count({ where: { ownerId: owner, name: "Retry once" } })).toBe(
++      1,
++    );
++  });
++  it("rolls back timed-out mutation and retains dependency503 outside definition conflicts", async () => {
++    const saved = await create("Timeout original");
++    const database: SearchDatabase = {
++      $transaction: (work, options) =>
++        db!.$transaction(
++          (tx) =>
++            work({
++              $queryRaw: async <T>(sql: Prisma.Sql) => {
++                const rows = await tx.$queryRaw<T>(sql);
++                if (sql.sql.startsWith('UPDATE "SmartCollection"'))
++                  await tx.$queryRaw(Prisma.sql`SELECT pg_sleep(3)`);
++                return rows;
++              },
++            }),
++          options,
++        ),
++    };
++    await expect(
++      createSmartCollectionService(database).updateSmartCollection(actor, saved.id, {
++        name: "Timeout replacement",
++        definition,
++        expectedRevision: 1,
++      }),
++    ).rejects.toMatchObject({ code: "SEARCH_UNAVAILABLE" });
++    const row = await db!.smartCollection.findUniqueOrThrow({ where: { id: saved.id } });
++    expect(row.name).toBe("Timeout original");
++    expect(row.revision).toBe(1);
++    const unavailable: SearchDatabase = {
++      $transaction: async () => {
++        throw { code: "ECONNREFUSED" };
++      },
++    };
++    await expect(
++      createSmartCollectionService(unavailable).resolveSmartCollectionItems(actor, saved.id, {}),
++    ).rejects.toMatchObject({ code: "SEARCH_UNAVAILABLE" });
++  }, 7000);
++  it("requires actor on every service operation", async () => {
++    const svc = service(),
++      bad = { userId: "" },
++      id = randomUUID();
++    for (const work of [
++      () => svc.createSmartCollection(bad, { name: "x", definition }),
++      () => svc.getSmartCollection(bad, id),
++      () => svc.listSmartCollections(bad, {}),
++      () => svc.resolveSmartCollectionItems(bad, id, {}),
++      () => svc.updateSmartCollection(bad, id, { name: "x", definition, expectedRevision: 1 }),
++      () => svc.deleteSmartCollection(bad, id, { expectedRevision: 1 }),
++    ])
++      await expect(work()).rejects.toMatchObject({ code: "SMART_COLLECTION_INVALID" });
++  });
++});
+diff --git a/packages/domain/src/search/smart-collection-service.ts b/packages/domain/src/search/smart-collection-service.ts
+new file mode 100644
+index 0000000..bb354e8
+--- /dev/null
++++ b/packages/domain/src/search/smart-collection-service.ts
+@@ -0,0 +1,217 @@
++import { randomUUID, createHash } from "node:crypto";
++import { Prisma } from "@sammlerraum/db/search-sql";
++import { FilterValidationError } from "@sammlerraum/contracts/search";
++import {
++  ItemSearchError,
++  SEARCH_MAX_RESPONSE_BYTES,
++  searchFail,
++} from "@sammlerraum/contracts/item-search";
++import {
++  smartFail,
++  parseSmartCollectionMutation,
++  parseSmartCollectionDefinition,
++  parseSmartCollectionId,
++  parseSmartCollectionUpdate,
++  parseSmartCollectionDelete,
++  parseSmartCollectionPageInput,
++  SmartCollectionSummarySchema,
++  SMART_COLLECTION_MAX_REVISION,
++  type SmartCollectionDetail,
++  type SmartCollectionSummary,
++} from "@sammlerraum/contracts/smart-collections";
++import { executeItemSearch, checkedSearchTotal, type SearchActor } from "./item-search-service";
++import {
++  runSearchTransaction,
++  type SearchDatabase,
++  type BoundedSearchReadTransaction,
++} from "./search-read";
++import { decodeSearchCursor, encodeSearchCursor, searchContextHash } from "./search-cursor";
++type SavedRow = {
++  id: string;
++  name: string;
++  revision: number;
++  filterVersion: number;
++  definition: unknown;
++  createdAt: Date;
++  updatedAt: Date;
++};
++function actorId(actor: SearchActor) {
++  if (!actor || typeof actor.userId !== "string" || !actor.userId || actor.userId.includes("\0"))
++    return smartFail("SMART_COLLECTION_INVALID");
++  return actor.userId;
++}
++function bounded<T>(value: T): T {
++  if (Buffer.byteLength(JSON.stringify(value)) > SEARCH_MAX_RESPONSE_BYTES)
++    return searchFail("SEARCH_INVARIANT");
++  return value;
++}
++function summary(row: SavedRow): SmartCollectionSummary {
++  const parsed = SmartCollectionSummarySchema.safeParse({
++    id: row.id,
++    name: row.name,
++    revision: row.revision,
++    createdAt: row.createdAt?.toISOString(),
++    updatedAt: row.updatedAt?.toISOString(),
++  });
++  if (!parsed.success) return smartFail("SMART_COLLECTION_UNRESOLVABLE");
++  return parsed.data;
++}
++function detail(row: SavedRow): SmartCollectionDetail {
++  let definition: SmartCollectionDetail["definition"];
++  try {
++    if (row.filterVersion !== 1) return smartFail("SMART_COLLECTION_UNRESOLVABLE");
++    definition = parseSmartCollectionDefinition(row.definition);
++  } catch {
++    return smartFail("SMART_COLLECTION_UNRESOLVABLE");
++  }
++  return bounded({ ...summary(row), definition });
++}
++async function load(tx: BoundedSearchReadTransaction, owner: string, id: string) {
++  const [row] = await tx.$queryRaw<SavedRow[]>(
++    Prisma.sql`SELECT id,name,revision,"filterVersion",definition,"createdAt","updatedAt" FROM "SmartCollection" WHERE id=${id}::uuid AND "ownerId"=${owner} AND "deletedAt" IS NULL`,
++  );
++  if (!row) return smartFail("SMART_COLLECTION_NOT_FOUND");
++  tx.checkBudget();
++  return row;
++}
++async function validateDefinition(
++  tx: BoundedSearchReadTransaction,
++  actor: SearchActor,
++  definition: SmartCollectionDetail["definition"],
++) {
++  await executeItemSearch(tx, actor, { ...definitionQuery(definition), limit: 1 });
++}
++function definitionQuery(definition: SmartCollectionDetail["definition"]) {
++  return { text: definition.text, filter: definition.filter, lifecycle: definition.lifecycle };
++}
++function storedAvailability(error: unknown): never {
++  if (
++    error instanceof FilterValidationError ||
++    (error instanceof ItemSearchError && error.code === "FILTER_REFERENCE_INVALID")
++  )
++    return smartFail("SMART_COLLECTION_UNRESOLVABLE");
++  throw error;
++}
++export function createSmartCollectionService(database: SearchDatabase) {
++  return {
++    async createSmartCollection(
++      actor: SearchActor,
++      input: unknown,
++    ): Promise<SmartCollectionDetail> {
++      const owner = actorId(actor),
++        mutation = parseSmartCollectionMutation(input),
++        id = randomUUID();
++      return runSearchTransaction(database, async (tx) => {
++        await validateDefinition(tx, actor, mutation.definition);
++        const [row] = await tx.$queryRaw<SavedRow[]>(
++          Prisma.sql`INSERT INTO "SmartCollection" (id,"ownerId",name,"filterVersion",definition,revision,"createdAt","updatedAt") VALUES (${id}::uuid,${owner},${mutation.name},1,${JSON.stringify(mutation.definition)}::jsonb,1,date_trunc('milliseconds',transaction_timestamp()),date_trunc('milliseconds',transaction_timestamp())) RETURNING id,name,revision,"filterVersion",definition,"createdAt","updatedAt"`,
++        );
++        if (!row) return searchFail("SEARCH_INVARIANT");
++        return detail(row);
++      });
++    },
++    async getSmartCollection(actor: SearchActor, idInput: string) {
++      const owner = actorId(actor),
++        id = parseSmartCollectionId(idInput);
++      return runSearchTransaction(database, async (tx) => detail(await load(tx, owner, id)));
++    },
++    async listSmartCollections(actor: SearchActor, input: unknown = {}) {
++      const owner = actorId(actor),
++        query = parseSmartCollectionPageInput(input);
++      const hash = createHash("sha256")
++        .update(
++          JSON.stringify(["smart-collection-list", 1, owner, query.limit, "CREATED_DESC_ID_DESC"]),
++        )
++        .digest("hex");
++      const cursor = query.cursor ? decodeSearchCursor(query.cursor, hash) : null;
++      return runSearchTransaction(database, async (tx) => {
++        const [count] = await tx.$queryRaw<{ total: bigint }[]>(
++          Prisma.sql`SELECT count(*) AS total FROM "SmartCollection" WHERE "ownerId"=${owner} AND "deletedAt" IS NULL`,
++        );
++        const total = checkedSearchTotal(count!.total);
++        const after = cursor
++          ? Prisma.sql`("createdAt",id)<(${cursor.after.createdAt}::timestamp,${cursor.after.id}::uuid)`
++          : Prisma.sql`TRUE`;
++        const rows = await tx.$queryRaw<SavedRow[]>(
++          Prisma.sql`SELECT id,name,revision,"createdAt","updatedAt" FROM "SmartCollection" WHERE "ownerId"=${owner} AND "deletedAt" IS NULL AND ${after} ORDER BY "createdAt" DESC,id DESC LIMIT ${query.limit + 1}`,
++        );
++        const items = rows.slice(0, query.limit).map(summary),
++          last = items.at(-1);
++        return bounded({
++          items,
++          total,
++          nextCursor:
++            rows.length > query.limit && last
++              ? encodeSearchCursor({
++                  v: 1,
++                  contextHash: hash,
++                  after: { createdAt: last.createdAt, id: last.id },
++                })
++              : null,
++        });
++      });
++    },
++    async updateSmartCollection(actor: SearchActor, idInput: string, input: unknown) {
++      const owner = actorId(actor),
++        id = parseSmartCollectionId(idInput);
++      const mutation = parseSmartCollectionUpdate(input),
++        expectedRevision = mutation.expectedRevision;
++      return runSearchTransaction(database, async (tx) => {
++        const current = await load(tx, owner, id);
++        if (
++          current.revision !== expectedRevision ||
++          current.revision >= SMART_COLLECTION_MAX_REVISION
++        )
++          return smartFail("SMART_COLLECTION_CONFLICT");
++        await validateDefinition(tx, actor, mutation.definition);
++        const [row] = await tx.$queryRaw<SavedRow[]>(
++          Prisma.sql`UPDATE "SmartCollection" SET name=${mutation.name},definition=${JSON.stringify(mutation.definition)}::jsonb,revision=revision+1,"updatedAt"=date_trunc('milliseconds',transaction_timestamp()) WHERE id=${id}::uuid AND "ownerId"=${owner} AND "deletedAt" IS NULL AND revision=${expectedRevision} RETURNING id,name,revision,"filterVersion",definition,"createdAt","updatedAt"`,
++        );
++        if (!row) return smartFail("SMART_COLLECTION_CONFLICT");
++        return detail(row);
++      });
++    },
++    async deleteSmartCollection(actor: SearchActor, idInput: string, input: unknown) {
++      const owner = actorId(actor),
++        id = parseSmartCollectionId(idInput);
++      const { expectedRevision: revision } = parseSmartCollectionDelete(input);
++      return runSearchTransaction(database, async (tx) => {
++        const current = await load(tx, owner, id);
++        if (current.revision !== revision || current.revision >= SMART_COLLECTION_MAX_REVISION)
++          return smartFail("SMART_COLLECTION_CONFLICT");
++        const rows = await tx.$queryRaw<{ id: string }[]>(
++          Prisma.sql`UPDATE "SmartCollection" SET revision=revision+1,"deletedAt"=date_trunc('milliseconds',transaction_timestamp()),"updatedAt"=date_trunc('milliseconds',transaction_timestamp()) WHERE id=${id}::uuid AND "ownerId"=${owner} AND "deletedAt" IS NULL AND revision=${revision} RETURNING id`,
++        );
++        if (rows.length !== 1) return smartFail("SMART_COLLECTION_CONFLICT");
++        return { id, revision: revision + 1 };
++      });
++    },
++    async resolveSmartCollectionItems(actor: SearchActor, idInput: string, input: unknown = {}) {
++      const owner = actorId(actor),
++        id = parseSmartCollectionId(idInput),
++        page = parseSmartCollectionPageInput(input);
++      return runSearchTransaction(database, async (tx) => {
++        const saved = detail(await load(tx, owner, id));
++        if (page.cursor)
++          decodeSearchCursor(
++            page.cursor,
++            searchContextHash(
++              owner,
++              { ...definitionQuery(saved.definition), ...page },
++              { smartCollectionId: id, revision: saved.revision },
++            ),
++          );
++        try {
++          return await executeItemSearch(
++            tx,
++            actor,
++            { ...definitionQuery(saved.definition), ...page },
++            { smartCollectionId: id, revision: saved.revision },
++          );
++        } catch (error) {
++          return storedAvailability(error);
++        }
++      });
++    },
++  };
++}

@@ -1,0 +1,50 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| packages/domain/src/catalog/catalog-service.integration.test.ts (8 tests | 1 failed | 7 skipped) 165ms
+   × revisioned global catalog PostgreSQL > guards persisted revision snapshots against database UPDATE 33ms
+     → promise resolved "{ …(5) }" instead of rejecting
+   ↓ revisioned global catalog PostgreSQL > keeps same-title language and edition variants separate and preserves authored text
+   ↓ revisioned global catalog PostgreSQL > stores typed entry and variant attributes canonically and rejects foreign definitions atomically
+   ↓ revisioned global catalog PostgreSQL > retains original identifier values, namespaces, target and provenance in past snapshots
+   ↓ revisioned global catalog PostgreSQL > serializes concurrent writes with expected-revision conflicts and checks stale no-ops
+   ↓ revisioned global catalog PostgreSQL > shares the caller transaction so failed approval work rolls back state and snapshots
+   ↓ revisioned global catalog PostgreSQL > records rollback as a new revision while retaining inactive UUID identities and old snapshots
+   ↓ revisioned global catalog PostgreSQL > strictly bounds maintenance inputs and does not write personal data or unsafe provenance
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/catalog/catalog-service.integration.test.ts > revisioned global catalog PostgreSQL > guards persisted revision snapshots against database UPDATE
+AssertionError: promise resolved "{ …(5) }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "createdAt": 2026-10-17T20:39:22.654Z,
++   "entryId": "12009232-c058-44bb-87ac-e8a19f60cd84",
++   "revision": 1,
++   "rollbackFromRevision": null,
++   "snapshot": {
++     "changed": true,
++   },
+  }
+
+ ❯ packages/domain/src/catalog/catalog-service.integration.test.ts:61:7
+     59|       where: { entryId_revision: { entryId: entry.state.id, revision: …
+     60|       data: { snapshot: { changed: true } },
+     61|     })).rejects.toThrow(/immutable|P2004/i);
+       |       ^
+     62|     expect((await service().getCatalogEntryAtRevision(entry.state.id, …
+     63|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 7 skipped (8)
+   Start at  22:39:22
+   Duration  546ms (transform 62ms, setup 6ms, collect 144ms, tests 165ms, environment 0ms, prepare 40ms)
+

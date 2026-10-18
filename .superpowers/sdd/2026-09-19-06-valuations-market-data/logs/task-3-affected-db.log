@@ -1,0 +1,17 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ✓ |workspace| packages/domain/src/market-data/validation.test.ts (4 tests) 9ms
+ ✓ |workspace| packages/market-data/src/provider-registry.test.ts (3 tests) 2ms
+ ✓ |workspace| apps/worker/src/jobs/market-sync.integration.test.ts (15 tests) 8716ms
+   ✓ market sync PostgreSQL > retries persisted queue data after ACK failure without refetching committed observations  2095ms
+   ✓ market sync PostgreSQL > runs the composed producer and cancels an in-flight fake provider before teardown without catalog HTTP locks  2569ms
+   ✓ forwards pg-boss active-expiry cancellation through the real runtime  3585ms
+ ✓ |workspace| packages/queue/src/postgres.integration.test.ts (1 test) 40ms
+ ✓ |workspace| packages/domain/src/market-data/market-data-service.test.ts (13 tests) 604ms
+
+ Test Files  5 passed (5)
+      Tests  36 passed (36)
+   Start at  05:02:03
+   Duration  10.41s (transform 124ms, setup 8ms, collect 383ms, tests 9.37s, environment 0ms, prepare 165ms)
+

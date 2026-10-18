@@ -1,0 +1,19 @@
+apps/web/src/components/media/document-manager.tsx 39ms
+apps/web/src/components/media/item-gallery-editor.tsx 19ms
+apps/web/src/components/media/media-upload.tsx 13ms
+apps/web/src/components/items/item-form.tsx 45ms
+apps/web/src/app/[locale]/(app)/items/[itemId]/page.tsx 4ms
+apps/web/src/app/api/v1/items/[itemId]/media/route.ts 2ms
+apps/web/src/app/api/v1/items/[itemId]/documents/[linkId]/route.ts 1ms
+apps/web/src/lib/media-routes.ts 11ms
+apps/web/src/lib/media-routes.test.ts 12ms
+apps/web/src/app/globals.css 33ms
+apps/web/messages/de.json 16ms (unchanged)
+apps/web/messages/en.json 3ms (unchanged)
+apps/web/e2e/media-documents.spec.ts 24ms
+apps/web/e2e/support/browser-test-server.mjs 14ms
+apps/web/playwright.config.ts 2ms
+packages/domain/src/media/media-service.ts 16ms
+packages/domain/src/media/media-service.test.ts 21ms
+packages/domain/src/media/media-management.integration.test.ts 6ms
+.github/workflows/ci.yml 16ms (unchanged)

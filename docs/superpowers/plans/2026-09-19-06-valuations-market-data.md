@@ -40,7 +40,7 @@
 **Interfaces:**
 - Produces: `Money { amountMinor: bigint; currency: string }`, `parseLocalizedMoney`, `addManualValuation`.
 
-- [ ] **Step 1: Write failing locale test**
+- [x] **Step 1: Write failing locale test**
 
 ```ts
 it.each([
@@ -51,16 +51,16 @@ it.each([
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run packages/domain/src/money/money.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement money + valuation model**
+- [x] **Step 3: Implement money + valuation model**
 
 Add `Valuation` with type `MANUAL`, amount minor, currency, observedAt, note, actor. Never update an old row when a new manual estimate is added.
 
-- [ ] **Step 4: Migrate and test**
+- [x] **Step 4: Migrate and test**
 
 Run:
 ```bash
@@ -70,7 +70,7 @@ pnpm vitest run packages/domain/src/money packages/domain/src/valuations
 
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/domain/src/money packages/domain/src/valuations packages/db
@@ -94,7 +94,7 @@ git commit -m "feat: add canonical money and manual valuations"
   - `MarketDataProvider.fetch(request): Promise<MarketObservation[]>`
   - `recordObservations(providerId, observations)`.
 
-- [ ] **Step 1: Write failing observation-type test**
+- [x] **Step 1: Write failing observation-type test**
 
 ```ts
 it("preserves sold median separately from asking price", async () => {
@@ -107,18 +107,18 @@ it("preserves sold median separately from asking price", async () => {
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run packages/domain/src/market-data/market-data-service.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement interface and model**
+- [x] **Step 3: Implement interface and model**
 
 Observation kinds: `LAST_SOLD`, `SOLD_AVERAGE`, `SOLD_MEDIAN`, `ASKING_PRICE`, `PRICE_RANGE`, `CATALOG_VALUE`, `DEALER_PRICE`.
 
 Persist provider ID, external observation ID, source URL/reference when licensed, catalog entry/variant, condition/grading qualifiers, currency, amount/range, observedAt, fetchedAt, confidence metadata.
 
-- [ ] **Step 4: Migrate and test**
+- [x] **Step 4: Migrate and test**
 
 Run:
 ```bash
@@ -128,7 +128,7 @@ pnpm vitest run packages/domain/src/market-data
 
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/market-data packages/domain/src/market-data packages/db
@@ -148,7 +148,7 @@ git commit -m "feat: add external market observation model"
 - Consumes: `market.sync { providerId, catalogVariantId }`.
 - Produces: deduplicated observations.
 
-- [ ] **Step 1: Write failing retry test**
+- [x] **Step 1: Write failing retry test**
 
 ```ts
 it("does not duplicate provider observations on job retry", async () => {
@@ -158,21 +158,21 @@ it("does not duplicate provider observations on job retry", async () => {
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run apps/worker/src/jobs/sync-market-data.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement sync handler**
+- [x] **Step 3: Implement sync handler**
 
 Use provider observation external ID + provider ID as idempotency key. Reject/flag observations whose returned variant qualifiers do not match the requested catalog variant sufficiently.
 
-- [ ] **Step 4: Run tests**
+- [x] **Step 4: Run tests**
 
 Run: `pnpm vitest run apps/worker/src/jobs/sync-market-data.test.ts`  
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add apps/worker/src/jobs apps/worker/src/main.ts
@@ -191,7 +191,7 @@ git commit -m "feat: synchronize market data idempotently"
 **Interfaces:**
 - Produces: `getItemValuationSummary(itemId, actor)`.
 
-- [ ] **Step 1: Write failing mixed-currency test**
+- [x] **Step 1: Write failing mixed-currency test**
 
 ```ts
 it("does not calculate a combined total across mixed currencies", async () => {
@@ -201,21 +201,21 @@ it("does not calculate a combined total across mixed currencies", async () => {
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run packages/domain/src/valuations/valuation-query.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement transparent comparison**
+- [x] **Step 3: Implement transparent comparison**
 
 Return manual latest + history and external observations grouped by provider/kind/currency. Do not compute a blended value unless all required inputs share currency and a later explicit aggregation method exists.
 
-- [ ] **Step 4: Run tests**
+- [x] **Step 4: Run tests**
 
 Run: `pnpm vitest run packages/domain/src/valuations`  
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/domain/src/valuations apps/web/src/app/api/v1/items
@@ -237,7 +237,7 @@ git commit -m "feat: compare manual and market valuations"
 - Consumes: valuation API.
 - Produces: localized source-separated valuation history page.
 
-- [ ] **Step 1: Write failing rendering test**
+- [x] **Step 1: Write failing rendering test**
 
 ```tsx
 it("labels asking price and sold median as different source types", async () => {
@@ -247,16 +247,16 @@ it("labels asking price and sold median as different source types", async () => 
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run apps/web/src/app/[locale]/\(app\)/items/[itemId]/values/page.test.tsx`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement page**
+- [x] **Step 3: Implement page**
 
 Use `Intl.NumberFormat` by locale/currency. Render provider, observation type, timestamp, qualifier, and history separately.
 
-- [ ] **Step 4: Run tests/build**
+- [x] **Step 4: Run tests/build**
 
 Run:
 ```bash
@@ -266,7 +266,7 @@ pnpm --filter @sammlerraum/web build
 
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/contracts/src/valuations.ts apps/web
@@ -290,7 +290,7 @@ git commit -m "feat: show transparent valuation history"
 - Consumes: Scrydex and PriceCharting credentials configured server-side.
 - Produces: two production `MarketDataProvider` implementations mapped into the same internal `MarketObservation` model.
 
-- [ ] **Step 1: Write failing adapter contract tests**
+- [x] **Step 1: Write failing adapter contract tests**
 
 ```ts
 describe.each([
@@ -309,7 +309,7 @@ describe.each([
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run:
 ```bash
@@ -318,7 +318,7 @@ pnpm vitest run packages/market-data/src/scrydex-provider.test.ts packages/marke
 
 Expected: FAIL because production adapters do not exist.
 
-- [ ] **Step 3: Implement Scrydex adapter**
+- [x] **Step 3: Implement Scrydex adapter**
 
 Add required server configuration:
 
@@ -331,7 +331,7 @@ Use the documented card endpoints with price inclusion for supported TCG catalog
 
 Provider documentation reference for implementation review: `https://scrydex.com/docs/getting-started/prices`.
 
-- [ ] **Step 4: Implement PriceCharting adapter**
+- [x] **Step 4: Implement PriceCharting adapter**
 
 Add:
 
@@ -343,7 +343,7 @@ Map PriceCharting product IDs/UPC/query matches and condition-specific price fie
 
 Provider documentation reference for implementation review: `https://www.pricecharting.com/api-documentation`.
 
-- [ ] **Step 5: Run adapter and market sync tests**
+- [x] **Step 5: Run adapter and market sync tests**
 
 Run:
 ```bash
@@ -352,7 +352,7 @@ pnpm vitest run packages/market-data packages/domain/src/market-data apps/worker
 
 Expected: PASS with fake HTTP clients; CI makes no paid external calls.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add packages/market-data packages/config .env.example

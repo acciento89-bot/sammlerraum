@@ -1,0 +1,9 @@
+Observed UTC 2026-10-18T06:49:10.542302+00:00
+Owned PostgreSQL PID=21136 data=/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum-db/data
+pg_ctl (PostgreSQL) 17.11 (Homebrew)
+waiting for server to shut down.... done
+server stopped
+Stop exit=0
+pg_ctl: no server running
+Status exit=3 (expected not-running)
+Data/evidence preserved. No unknown server/browser/process was touched.

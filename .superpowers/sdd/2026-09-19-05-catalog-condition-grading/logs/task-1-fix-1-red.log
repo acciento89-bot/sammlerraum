@@ -1,0 +1,68 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| packages/domain/src/catalog/category-template-service.test.ts (32 tests | 3 failed) 13ms
+   ✓ catalog attribute validation > rejects a catalog attribute value that does not match its definition 3ms
+   ✓ catalog attribute validation > preserves primitive mismatch errors even for oversized values 0ms
+   × catalog attribute validation > preserves multi-select member mismatch errors before input bounds 4ms
+     → expected CategoryTemplateServiceError: CATALOG_ATT… { code: '…' } to match object { Object (code) }
+(1 matching property omitted from actual)
+   × catalog attribute validation > preserves multi-select member mismatch errors before input bounds 0ms
+     → expected CategoryTemplateServiceError: CATALOG_ATT… { code: '…' } to match object { Object (code) }
+(1 matching property omitted from actual)
+   × catalog attribute validation > preserves multi-select member mismatch errors before input bounds 0ms
+     → expected CategoryTemplateServiceError: CATALOG_ATT… { code: '…' } to match object { Object (code) }
+(1 matching property omitted from actual)
+   ✓ catalog attribute validation > canonicalizes SHORT_TEXT using the existing primitive semantics 0ms
+   ✓ catalog attribute validation > canonicalizes LONG_TEXT using the existing primitive semantics 0ms
+   ✓ catalog attribute validation > canonicalizes INTEGER using the existing primitive semantics 0ms
+   ✓ catalog attribute validation > canonicalizes DECIMAL using the existing primitive semantics 0ms
+   ✓ catalog attribute validation > canonicalizes DATE using the existing primitive semantics 1ms
+   ✓ catalog attribute validation > canonicalizes BOOLEAN using the existing primitive semantics 0ms
+   ✓ catalog attribute validation > canonicalizes SINGLE_SELECT using the existing primitive semantics 0ms
+   ✓ catalog attribute validation > canonicalizes MULTI_SELECT using the existing primitive semantics 0ms
+   ✓ catalog attribute validation > canonicalizes URL using the existing primitive semantics 0ms
+   ✓ catalog attribute validation > canonicalizes MONEY using the existing primitive semantics 0ms
+   ✓ catalog attribute validation > rejects invalid INTEGER values with a stable catalog error 0ms
+   ✓ catalog attribute validation > rejects invalid DECIMAL values with a stable catalog error 0ms
+   ✓ catalog attribute validation > rejects invalid DECIMAL values with a stable catalog error 0ms
+   ✓ catalog attribute validation > rejects invalid DATE values with a stable catalog error 0ms
+   ✓ catalog attribute validation > rejects invalid URL values with a stable catalog error 0ms
+   ✓ catalog attribute validation > rejects invalid SHORT_TEXT values with a stable catalog error 0ms
+   ✓ catalog attribute validation > rejects invalid MONEY values with a stable catalog error 0ms
+   ✓ catalog attribute validation > rejects invalid SINGLE_SELECT values with a stable catalog error 0ms
+   ✓ catalog attribute validation > rejects invalid MULTI_SELECT values with a stable catalog error 0ms
+   ✓ catalog attribute validation > rejects invalid MULTI_SELECT values with a stable catalog error 0ms
+   ✓ catalog attribute validation > rejects malformed definitions before validating values 0ms
+   ✓ catalog attribute validation > rejects malformed definitions before validating values 0ms
+   ✓ catalog attribute validation > rejects malformed definitions before validating values 0ms
+   ✓ catalog attribute validation > rejects malformed definitions before validating values 0ms
+   ✓ catalog attribute validation > rejects malformed definitions before validating values 0ms
+   ✓ catalog attribute validation > rejects malformed definitions before validating values 0ms
+   ✓ catalog attribute validation > rejects malformed definitions before validating values 0ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/catalog/category-template-service.test.ts > catalog attribute validation > preserves multi-select member mismatch errors before input bounds
+ FAIL  |workspace| packages/domain/src/catalog/category-template-service.test.ts > catalog attribute validation > preserves multi-select member mismatch errors before input bounds
+ FAIL  |workspace| packages/domain/src/catalog/category-template-service.test.ts > catalog attribute validation > preserves multi-select member mismatch errors before input bounds
+AssertionError: expected CategoryTemplateServiceError: CATALOG_ATT… { code: '…' } to match object { Object (code) }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+- {
+-   "code": "CATALOG_ATTRIBUTE_TYPE_MISMATCH",
++ CategoryTemplateServiceError {
++   "code": "CATALOG_ATTRIBUTE_VALUE_INVALID",
+  }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 29 passed (32)
+   Start at  22:22:45
+   Duration  353ms (transform 52ms, setup 5ms, collect 87ms, tests 13ms, environment 0ms, prepare 47ms)
+

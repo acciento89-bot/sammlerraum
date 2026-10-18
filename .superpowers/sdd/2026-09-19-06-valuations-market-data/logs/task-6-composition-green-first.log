@@ -1,0 +1,15 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ✓ |workspace| packages/market-data/src/provider-registry.test.ts (3 tests) 2ms
+ ✓ |workspace| apps/worker/src/jobs/market-provider-composition.test.ts (10 tests) 6ms
+ ✓ |workspace| packages/market-data/src/production-providers.test.ts (40 tests) 20ms
+ ✓ |workspace| apps/worker/src/jobs/sync-market-data.test.ts (16 tests) 14ms
+
+ Test Files  4 passed (4)
+      Tests  69 passed (69)
+   Start at  07:21:05
+   Duration  452ms (transform 194ms, setup 26ms, collect 395ms, tests 42ms, environment 0ms, prepare 243ms)
+
+
+EXIT=0

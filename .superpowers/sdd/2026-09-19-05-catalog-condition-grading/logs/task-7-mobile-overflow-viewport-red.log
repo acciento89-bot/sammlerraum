@@ -1,0 +1,59 @@
+[WebServer] (node:58799) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 1 worker
+
+(node:58802) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [mobile] › e2e/catalog-grading.spec.ts:179:5 › catalog reference workflow de › ordinary proposal is reviewed using a real grant and a reasoned revision rollback (2.4s)
+(node:58822) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  2 [mobile] › e2e/catalog-grading.spec.ts:179:5 › catalog reference workflow en › ordinary proposal is reviewed using a real grant and a reasoned revision rollback (1.8s)
+
+
+  1) [mobile] › e2e/catalog-grading.spec.ts:179:5 › catalog reference workflow de › ordinary proposal is reviewed using a real grant and a reasoned revision rollback 
+
+    Error: expect(received).toBeLessThanOrEqual(expected)
+
+    Expected: <= 413
+    Received:    474
+
+      337 |           (await (await reviewer.request.get(`/api/v1/catalog/entries/${entryId}`)).json()).entry,
+      338 |         ).toMatchObject({ revision: 3, state: { text: { title: `Community ${owner.id}` } } });
+    > 339 |         expect(await reviewer.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(reviewer.viewportSize()!.width+1);
+          |                                                                                   ^
+      340 |         await reviewer.getByRole("banner").scrollIntoViewIfNeeded();
+      341 |         await reviewer.screenshot({
+      342 |           path: info.outputPath(`catalog-review-${info.project.name}-${locale}.png`),
+        at /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/catalog-grading.spec.ts:339:83
+
+    Error Context: test-results/catalog-grading-catalog-re-3103f--reasoned-revision-rollback-mobile/error-context.md
+
+    Error Context: test-results/catalog-grading-catalog-re-3103f--reasoned-revision-rollback-mobile/error-context.md
+
+  2) [mobile] › e2e/catalog-grading.spec.ts:179:5 › catalog reference workflow en › ordinary proposal is reviewed using a real grant and a reasoned revision rollback 
+
+    Error: expect(received).toBeLessThanOrEqual(expected)
+
+    Expected: <= 413
+    Received:    441
+
+      337 |           (await (await reviewer.request.get(`/api/v1/catalog/entries/${entryId}`)).json()).entry,
+      338 |         ).toMatchObject({ revision: 3, state: { text: { title: `Community ${owner.id}` } } });
+    > 339 |         expect(await reviewer.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(reviewer.viewportSize()!.width+1);
+          |                                                                                   ^
+      340 |         await reviewer.getByRole("banner").scrollIntoViewIfNeeded();
+      341 |         await reviewer.screenshot({
+      342 |           path: info.outputPath(`catalog-review-${info.project.name}-${locale}.png`),
+        at /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/catalog-grading.spec.ts:339:83
+
+    Error Context: test-results/catalog-grading-catalog-re-90384--reasoned-revision-rollback-mobile/error-context.md
+
+    Error Context: test-results/catalog-grading-catalog-re-90384--reasoned-revision-rollback-mobile/error-context.md
+
+  2 failed
+    [mobile] › e2e/catalog-grading.spec.ts:179:5 › catalog reference workflow de › ordinary proposal is reviewed using a real grant and a reasoned revision rollback 
+    [mobile] › e2e/catalog-grading.spec.ts:179:5 › catalog reference workflow en › ordinary proposal is reviewed using a real grant and a reasoned revision rollback 
+undefined
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/catalog-grading.spec.ts --project=mobile --grep ordinary proposal is reviewed --workers=1

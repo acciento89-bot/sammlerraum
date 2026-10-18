@@ -1,0 +1,57 @@
+{
+  "name": "@sammlerraum/domain",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./api/resource-query": "./src/api/resource-query.ts",
+    "./authz/policy": "./src/authz/policy.ts",
+    "./authz/types": "./src/authz/types.ts",
+    "./collections/collection-service": "./src/collections/collection-service.ts",
+    "./custom-fields/custom-field-service": "./src/custom-fields/custom-field-service.ts",
+    "./items/item-service": "./src/items/item-service.ts",
+    "./items/item-query": "./src/items/item-query.ts",
+    "./media/media-service": "./src/media/media-service.ts",
+    "./media/media-read": "./src/media/media-read.ts",
+    "./locations/location-service": "./src/locations/location-service.ts",
+    "./locations/label-service": "./src/locations/label-service.ts",
+    "./identity/profile-service": "./src/identity/profile-service.ts",
+    "./identity/security-service": "./src/identity/security-service.ts",
+    "./items/identifier-service": "./src/items/identifier-service.ts",
+    "./items/tag-service": "./src/items/tag-service.ts",
+    "./media/cleanup-service": "./src/media/cleanup-service.ts",
+    "./catalog/category-template-service": "./src/catalog/category-template-service.ts",
+    "./catalog/catalog-service": "./src/catalog/catalog-service.ts",
+    "./catalog/proposal-service": "./src/catalog/proposal-service.ts",
+    "./authz/application-role": "./src/authz/application-role.ts",
+    "./condition/condition-service": "./src/condition/condition-service.ts",
+    "./grading/grading-service": "./src/grading/grading-service.ts",
+    "./catalog/catalog-read-service": "./src/catalog/catalog-read-service.ts",
+    "./catalog/initialize-catalog": "./src/catalog/initialize-catalog.ts",
+    "./money/money": "./src/money/money.ts",
+    "./valuations/valuation-service": "./src/valuations/valuation-service.ts",
+    "./market-data/market-data-service": "./src/market-data/market-data-service.ts",
+    "./valuations/valuation-query": "./src/valuations/valuation-query.ts",
+    "./valuations/market-display-policy": "./src/valuations/market-display-policy.ts",
+    "./money/currencies": "./src/money/currencies.ts",
+    "./search/filter-ast": "./src/search/filter-ast.ts",
+    "./search/item-search-service": "./src/search/item-search-service.ts",
+    "./search/smart-collection-service": "./src/search/smart-collection-service.ts",
+    "./dashboard/dashboard-service": "./src/dashboard/dashboard-service.ts",
+    "./search/search-reference-service": "./src/search/search-reference-service.ts"
+  },
+  "scripts": {
+    "build": "pnpm typecheck",
+    "lint": "prettier --check .",
+    "typecheck": "tsc --noEmit --project ../../tsconfig.base.json"
+  },
+  "dependencies": {
+    "@sammlerraum/contracts": "workspace:*",
+    "@sammlerraum/storage": "workspace:*",
+    "file-type": "21.3.4",
+    "sharp": "0.35.4",
+    "@sammlerraum/market-data": "workspace:*"
+  },
+  "devDependencies": {
+    "@sammlerraum/db": "workspace:*"
+  }
+}

@@ -1,0 +1,5 @@
+Scope: 2 of 11 workspace projects
+packages/domain typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+packages/domain typecheck: Done
+apps/web typecheck$ tsc --noEmit --project tsconfig.json
+apps/web typecheck: Done

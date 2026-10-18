@@ -1,0 +1,25 @@
+Installed @prisma/adapter-pg 7.10.0
+node_modules/.pnpm/@prisma+adapter-pg@7.10.0/node_modules/@prisma/adapter-pg/dist/index.mjs
+270: }
+271: function normalize_timestamp(time) {
+272:   return `${time.replace(" ", "T")}+00:00`;
+273: }
+274: function normalize_timestamptz(time) {
+275:   return time.replace(" ", "T").replace(/[+-]\d{2}(:\d{2})?$/, "+00:00");
+276: }
+330:   }
+331:   if (typeof arg === "string" && argType.scalarType === "datetime") {
+332:     arg = new Date(arg);
+333:   }
+334:   if (arg instanceof Date) {
+335:     switch (argType.dbType) {
+336:       case "TIME":
+337:       case "TIMETZ":
+338:         return formatTime(arg);
+339:       case "DATE":
+340:         return formatDate(arg);
+341:       default:
+342:         return formatDateTime(arg);
+343:     }
+344:   }
+345:   if (typeof arg === "string" && argType.scalarType === "bytes") {

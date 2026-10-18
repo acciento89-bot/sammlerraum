@@ -1,0 +1,42 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| packages/domain/src/valuations/valuation-service.test.ts (7 tests | 1 failed) 470ms
+   ✓ private manual valuation PostgreSQL > appends exact per-unit amounts without overwriting and preserves case-sensitive authors 23ms
+   ✓ private manual valuation PostgreSQL > orders latest by observed time and resolves equal-millisecond ties with createdAt then UUID 19ms
+   × private manual valuation PostgreSQL > bounds pages and validates strict cursor/time/input without caller-authored identity 22ms
+     →
+Invalid `prisma.$queryRaw()` invocation:
+
+
+Raw query failed. Code: `23514`. Message: `new row for relation "Valuation" violates check constraint "Valuation_time_check"`
+   ✓ private manual valuation PostgreSQL > hides foreign/deleted rows but permits inactive reads and retains soft-deleted history 52ms
+   ✓ private manual valuation PostgreSQL > keeps per-unit history through actual quantity changes and leaves a split unauthored 22ms
+   ✓ private manual valuation PostgreSQL > enforces native ownership, actor, basis, amount, scale, note and finite timestamp guards 72ms
+   ✓ private manual valuation PostgreSQL > serializes the append quota and rejects the 10001st estimate without pruning 164ms
+ ✓ |workspace| packages/domain/src/money/money.test.ts (50 tests) 4ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/valuations/valuation-service.test.ts > private manual valuation PostgreSQL > bounds pages and validates strict cursor/time/input without caller-authored identity
+PrismaClientKnownRequestError:
+Invalid `prisma.$queryRaw()` invocation:
+
+
+Raw query failed. Code: `23514`. Message: `new row for relation "Valuation" violates check constraint "Valuation_time_check"`
+ ❯ vn.handleRequestError node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:238:13
+ ❯ vn.handleAndLogRequestError node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:184:12
+ ❯ vn.request node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:153:12
+ ❯ a node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:1014:24
+ ❯ packages/domain/src/valuations/valuation-service.ts:109:21
+
+ ❯ Proxy._transactionWithCallback node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:861:18
+ ❯ packages/domain/src/valuations/valuation-service.test.ts:72:17
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  1 failed | 56 passed (57)
+   Start at  03:53:47
+   Duration  943ms (transform 83ms, setup 6ms, collect 179ms, tests 475ms, environment 0ms, prepare 72ms)

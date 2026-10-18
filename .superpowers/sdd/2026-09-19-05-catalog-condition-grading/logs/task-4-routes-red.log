@@ -1,0 +1,118 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| apps/web/src/lib/condition-routes.integration.test.ts (5 tests | 5 failed) 122ms
+   × condition routes PostgreSQL > serves an authenticated scheme and persists exact personal category/condition through the adapter 5ms
+     → expected 501 to be 200 // Object.is equality
+   × condition routes PostgreSQL > requires live sessions and hides foreign-owned or invalid item identifiers 0ms
+     → expected 501 to be 401 // Object.is equality
+   × condition routes PostgreSQL > requires exact Origin on both mutation routes before state changes 1ms
+     → expected 501 to be 403 // Object.is equality
+   × condition routes PostgreSQL > strictly rejects semantic writes, malformed bodies, and streamed oversized input 0ms
+     → expected 501 to be 400 // Object.is equality
+   × condition routes PostgreSQL > returns a conflict for implicit category clearing and supports explicit nullable clear 0ms
+     → expected 501 to be 409 // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/web/src/lib/condition-routes.integration.test.ts > condition routes PostgreSQL > serves an authenticated scheme and persists exact personal category/condition through the adapter
+AssertionError: expected 501 to be 200 // Object.is equality
+
+- Expected
++ Received
+
+- 200
++ 501
+
+ ❯ apps/web/src/lib/condition-routes.integration.test.ts:44:27
+     42|     const api = handlers();
+     43|     const scheme = await api.GET_SCHEME(request("categories/x/conditio…
+     44|     expect(scheme.status).toBe(200);
+       |                           ^
+     45|     expect(scheme.headers.get("cache-control")).toBe("no-store");
+     46|     expect(await scheme.json()).toMatchObject({ scheme: { categoryTemp…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ FAIL  |workspace| apps/web/src/lib/condition-routes.integration.test.ts > condition routes PostgreSQL > requires live sessions and hides foreign-owned or invalid item identifiers
+AssertionError: expected 501 to be 401 // Object.is equality
+
+- Expected
++ Received
+
+- 401
++ 501
+
+ ❯ apps/web/src/lib/condition-routes.integration.test.ts:59:104
+     57|   it("requires live sessions and hides foreign-owned or invalid item i…
+     58|     session.mockResolvedValueOnce(null);
+     59|     expect((await handlers().GET_SCHEME(request("categories/x/conditio…
+       |                                                                                                        ^
+     60|     session.mockResolvedValueOnce({ user: { id: "foreign" } });
+     61|     const hidden = await handlers().PUT_CONDITION(request("items/x/con…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+ FAIL  |workspace| apps/web/src/lib/condition-routes.integration.test.ts > condition routes PostgreSQL > requires exact Origin on both mutation routes before state changes
+AssertionError: expected 501 to be 403 // Object.is equality
+
+- Expected
++ Received
+
+- 403
++ 501
+
+ ❯ apps/web/src/lib/condition-routes.integration.test.ts:72:127
+     70|   it("requires exact Origin on both mutation routes before state chang…
+     71|     for (const value of [null, "https://evil.example", `${origin}/`, `…
+     72|       expect((await handlers().PUT_CONDITION(request("items/x/conditio…
+       |                                                                                                                               ^
+     73|       expect((await handlers().PUT_CATEGORY(request("items/x/category"…
+     74|     }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+
+ FAIL  |workspace| apps/web/src/lib/condition-routes.integration.test.ts > condition routes PostgreSQL > strictly rejects semantic writes, malformed bodies, and streamed oversized input
+AssertionError: expected 501 to be 400 // Object.is equality
+
+- Expected
++ Received
+
+- 400
++ 501
+
+ ❯ apps/web/src/lib/condition-routes.integration.test.ts:81:31
+     79|     for (const body of [{ optionId, normalizedBand: 1 }, { optionId, l…
+     80|       const response = await handlers().PUT_CONDITION(request("items/x…
+     81|       expect(response.status).toBe(400);
+       |                               ^
+     82|       expect(response.headers.get("cache-control")).toBe("no-store");
+     83|     }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯
+
+ FAIL  |workspace| apps/web/src/lib/condition-routes.integration.test.ts > condition routes PostgreSQL > returns a conflict for implicit category clearing and supports explicit nullable clear
+AssertionError: expected 501 to be 409 // Object.is equality
+
+- Expected
++ Received
+
+- 409
++ 501
+
+ ❯ apps/web/src/lib/condition-routes.integration.test.ts:96:27
+     94|   it("returns a conflict for implicit category clearing and supports e…
+     95|     const denied = await handlers().PUT_CATEGORY(request("items/x/cate…
+     96|     expect(denied.status).toBe(409);
+       |                           ^
+     97|     expect(await denied.json()).toMatchObject({ error: { code: "CONDIT…
+     98|     const cleared = await handlers().PUT_CONDITION(request("items/x/co…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/5]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  5 failed (5)
+   Start at  23:40:23
+   Duration  495ms (transform 62ms, setup 5ms, collect 150ms, tests 122ms, environment 0ms, prepare 41ms)
+

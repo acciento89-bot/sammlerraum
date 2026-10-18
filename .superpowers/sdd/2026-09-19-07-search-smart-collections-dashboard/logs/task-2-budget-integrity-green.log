@@ -1,0 +1,20 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+stdout | packages/domain/src/search/search-read.integration.test.ts > native search transaction dependency behavior > settles a real statement timeout and maps captured installed-driver error
+native search timeout mapping {"outerCode":"P2010","recognizedCode":"57014"}
+
+stdout | packages/domain/src/search/search-read.integration.test.ts > native search transaction dependency behavior > recognizes real serialization errors and retries exactly three transactions
+native search serialization mapping {"outerCode":"P2010","recognizedCode":"40001","attempts":3}
+
+ ✓ |workspace| packages/domain/src/search/search-read.integration.test.ts (4 tests) 2637ms
+   ✓ native search transaction dependency behavior > settles a real statement timeout and maps captured installed-driver error  2035ms
+   ✓ native search transaction dependency behavior > maps actual lock timeout without returning a partial result  514ms
+ ✓ |workspace| packages/domain/src/search/item-search-service.test.ts (67 tests) 812ms
+ ✓ |workspace| packages/domain/src/search/search-read.test.ts (6 tests) 4ms
+
+ Test Files  3 passed (3)
+      Tests  77 passed (77)
+   Start at  09:16:57
+   Duration  4.26s (transform 102ms, setup 7ms, collect 368ms, tests 3.45s, environment 0ms, prepare 94ms)
+

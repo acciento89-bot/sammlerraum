@@ -1,0 +1,58 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| packages/storage/src/local-storage.test.ts (23 tests | 2 failed) 51ms
+   ✓ never allows a storage key to escape the configured root 2ms
+   ✓ LocalPersistentStorage > persists nested bytes and atomically replaces an existing object 19ms
+   ✓ LocalPersistentStorage > rejects malformed key "" before every operation 1ms
+   ✓ LocalPersistentStorage > rejects malformed key "." before every operation 1ms
+   ✓ LocalPersistentStorage > rejects malformed key ".." before every operation 1ms
+   ✓ LocalPersistentStorage > rejects malformed key "../secret" before every operation 0ms
+   ✓ LocalPersistentStorage > rejects malformed key "a/../secret" before every operation 0ms
+   ✓ LocalPersistentStorage > rejects malformed key "a/./b" before every operation 1ms
+   ✓ LocalPersistentStorage > rejects malformed key "a//b" before every operation 0ms
+   ✓ LocalPersistentStorage > rejects malformed key "/secret" before every operation 0ms
+   ✓ LocalPersistentStorage > rejects malformed key "a\\..\\secret" before every operation 0ms
+   ✓ LocalPersistentStorage > rejects malformed key "C:\\secret" before every operation 0ms
+   ✓ LocalPersistentStorage > rejects malformed key "a\u0000b" before every operation 0ms
+   ✓ LocalPersistentStorage > rejects malformed key "a/" before every operation 0ms
+   ✓ LocalPersistentStorage > blocks a symlinked parent for every operation without touching the external file 2ms
+   ✓ LocalPersistentStorage > blocks a symlink at the leaf for every operation 1ms
+   ✓ LocalPersistentStorage > rejects a symlinked configured root 1ms
+   ✓ LocalPersistentStorage > rejects a symlinked configured root with a trailing slash 1ms
+   ✓ LocalPersistentStorage > fails safely when the target is a directory 6ms
+   ✓ staging maintenance > uses the shared staging lock, skips a live old write, then removes its crashed file 2ms
+   ✓ bounds staging traversal and resumes the next batch without starving later files 2ms
+   × continues past persistent 'unlink' failures and retries after recovery 7ms
+     → expected true to be false // Object.is equality
+   × continues past persistent 'recursive enumeration' failures and retries after recovery 2ms
+     → expected true to be false // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/storage/src/local-storage.test.ts > continues past persistent 'unlink' failures and retries after recovery
+ FAIL  |workspace| packages/storage/src/local-storage.test.ts > continues past persistent 'recursive enumeration' failures and retries after recovery
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ packages/storage/src/local-storage.test.ts:250:55
+    248|     for (let count = 0; count < 8; count++) await poll();
+    249|     expect(failures).toBeGreaterThan(0);
+    250|     expect(await storage.exists(`z-healthy/${name}`)).toBe(false);
+       |                                                       ^
+    251|     await chmod(blocked, 0o700);
+    252|     expect(await storage.exists(`a-blocked/${name}`)).toBe(true);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 21 passed (23)
+   Start at  21:11:39
+   Duration  323ms (transform 38ms, setup 5ms, collect 36ms, tests 51ms, environment 0ms, prepare 49ms)
+

@@ -1,0 +1,29 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/worker/src/jobs/market-request-permit.integration.test.ts [ apps/worker/src/jobs/market-request-permit.integration.test.ts ]
+Error: Cannot find module './market-request-permit' imported from '/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/worker/src/jobs/market-request-permit.integration.test.ts'
+ ❯ apps/worker/src/jobs/market-request-permit.integration.test.ts:8:1
+      6| import { credentialKey } from "@sammlerraum/market-data/provider-http";
+      7| import { ProviderFailure } from "@sammlerraum/market-data/provider-fai…
+      8| import { createPostgresMarketGate, createMarketRequestPermit, type Mar…
+       | ^
+      9| const enabled=process.env.RUN_DATABASE_INTEGRATION==="1";
+     10| const a=enabled?createTestDatabaseClient():undefined, b=enabled?create…
+
+Caused by: Error: Failed to load url ./market-request-permit (resolved id: ./market-request-permit) in /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/worker/src/jobs/market-request-permit.integration.test.ts. Does the file exist?
+ ❯ loadAndTransform node_modules/.pnpm/vite@7.3.6_@types+node@24.5.2_jiti@2.7.0/node_modules/vite/dist/node/chunks/config.js:22739:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  no tests
+   Start at  07:18:17
+   Duration  249ms (transform 49ms, setup 6ms, collect 0ms, tests 0ms, environment 0ms, prepare 42ms)
+
+
+EXIT=1

@@ -1,0 +1,109 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| packages/domain/src/valuations/valuation-query.test.ts (21 tests | 1 failed | 20 skipped) 193ms
+   ↓ owner valuation comparison PostgreSQL > does not calculate a combined total across mixed currencies, including groups outside the first page
+   ↓ owner valuation comparison PostgreSQL > keeps all same-currency kinds separate, preserving zero ranges and source metadata
+   ↓ owner valuation comparison PostgreSQL > refreshes latest independently of old manual pages and never multiplies by quantity
+   ↓ owner valuation comparison PostgreSQL > pages source histories with timestamp ties and retains availability beyond the last group
+   ↓ owner valuation comparison PostgreSQL > keeps current semantic mapping across title edits and identifier replacement, with original provenance
+   ↓ owner valuation comparison PostgreSQL > excludes changed mappings from current scope and shows explicitly permitted historical provenance
+   ↓ owner valuation comparison PostgreSQL > keeps entry-only and exact variants isolated; retired variant history is explicit
+   ↓ owner valuation comparison PostgreSQL > never leaks stored external existence under the default empty policy, including history
+   ↓ owner valuation comparison PostgreSQL > hides foreign/deleted-parent items but permits archived and disposed reads
+   ↓ owner valuation comparison PostgreSQL > invalidates source selectors after catalog edits or relinking and rejects cross-item cursors
+   ↓ owner valuation comparison PostgreSQL > reports source availability independently of a group cursor beyond the final group
+   ↓ owner valuation comparison PostgreSQL > validates hidden historical candidates before allowing them to affect currency diversity
+   ↓ owner valuation comparison PostgreSQL > retains one MVCC view while an independent catalog edit and ingestion commit between reads
+   ↓ owner valuation comparison PostgreSQL > serves representative populated reads with index-seeking plans
+   ↓ owner valuation comparison PostgreSQL > holds parent/item locks while append waits and returns a coherent pre-append view
+   ↓ owner valuation comparison PostgreSQL > fails a real lock-budget timeout as unavailability rather than empty data
+   ↓ owner valuation comparison PostgreSQL > retries only serialization failures with a fresh complete transaction and stops after three
+   ↓ owner valuation comparison PostgreSQL > restores session timezone and preserves year0001 native manual and external instants
+   ↓ owner valuation comparison PostgreSQL > rejects malformed/cross-context tokens and inconsistent display grants before database acquisition
+   ↓ owner valuation comparison PostgreSQL > fits maximum manual pages with worst JSON-escaped notes below the enforced response ceiling
+   × owner valuation comparison PostgreSQL > fails closed on structurally valid but incoherent historical identifier snapshots 74ms
+     → expected [ { key: { …(6) }, …(2) } ] to deeply equal []
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/valuations/valuation-query.test.ts > owner valuation comparison PostgreSQL > fails closed on structurally valid but incoherent historical identifier snapshots
+AssertionError: expected [ { key: { …(6) }, …(2) } ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   {
++     "history": {
++       "nextCursor": null,
++       "records": [
++         {
++           "catalogMatch": {
++             "currentIdentifierId": "9147166e-bd52-4225-9fe4-747659238015",
++             "currentRevision": 3,
++             "identifierActive": true,
++             "identifierRecordChanged": false,
++             "observedIdentifierId": "9147166e-bd52-4225-9fe4-747659238015",
++             "observedRevision": 2,
++             "revisionChanged": true,
++             "variantActive": true,
++           },
++           "confidence": null,
++           "fetchedAt": "2025-02-01T00:00:00.000Z",
++           "id": "0d8b548c-d2d9-47af-a090-35c13f65b199",
++           "minorUnitExponent": 2,
++           "observedAt": "2025-02-01T00:00:00.000Z",
++           "observedBasis": "FETCH",
++           "observedPrecision": "MILLISECOND",
++           "price": {
++             "amountMinor": "9007199254740993",
++             "type": "POINT",
++           },
++           "qualifiers": {
++             "flag": false,
++           },
++           "recordedAt": "2026-10-18T03:40:49.724Z",
++           "source": {
++             "currency": "USD",
++             "externalId": "product-1",
++             "identifierNamespace": "fixture",
++             "identifierType": "product",
++             "kind": "SOLD_MEDIAN",
++             "providerId": "fixture",
++           },
++           "sourceMetric": "market",
++           "sourceReference": null,
++           "sourceUrl": null,
++         },
++       ],
++     },
++     "key": {
++       "currency": "USD",
++       "externalId": "product-1",
++       "identifierNamespace": "fixture",
++       "identifierType": "product",
++       "kind": "SOLD_MEDIAN",
++       "providerId": "fixture",
++     },
++     "source": "eyJ2IjoxLCJjb250ZXh0Ijp7Iml0ZW1JZCI6ImYyNzhjYTZiLTViM2ItNDg3My1hN2VjLWE5YzhmMTlmOWE5MCIsImVudHJ5SWQiOiIwMWMyY2M2Yi00ZTNlLTQyNDctODQzYy0wZWFlMzA4OWQzZjAiLCJ2YXJpYW50SWQiOm51bGwsInJldmlzaW9uIjozfSwic2NvcGUiOiJISVNUT1JJQ0FMX01BUFBJTkciLCJrZXkiOnsicHJvdmlkZXJJZCI6ImZpeHR1cmUiLCJpZGVudGlmaWVyTmFtZXNwYWNlIjoiZml4dHVyZSIsImlkZW50aWZpZXJUeXBlIjoicHJvZHVjdCIsImV4dGVybmFsSWQiOiJwcm9kdWN0LTEiLCJraW5kIjoiU09MRF9NRURJQU4iLCJjdXJyZW5jeSI6IlVTRCJ9fQ",
++   },
++ ]
+
+ ❯ packages/domain/src/valuations/valuation-query.test.ts:734:36
+    732|     }}),options)};
+    733|     const result=await createValuationQuery(bad,policy,registry).getIt…
+    734|     expect(result.external.groups).toEqual([]);expect(result.currencyC…
+       |                                    ^
+    735|   });
+    736| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 20 skipped (21)
+   Start at  05:40:49
+   Duration  578ms (transform 125ms, setup 5ms, collect 228ms, tests 193ms, environment 0ms, prepare 37ms)
+

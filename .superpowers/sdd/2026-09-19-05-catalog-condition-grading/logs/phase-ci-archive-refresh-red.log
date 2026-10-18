@@ -1,0 +1,62 @@
+[WebServer] (node:81422) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 6 tests using 1 worker
+
+(node:81423) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [desktop] › e2e/collections-items.spec.ts:829:5 › localized collection and item management › acknowledged archive ignores an older active item snapshot (de) (2.3s)
+  ✓  2 [desktop] › e2e/collections-items.spec.ts:829:5 › localized collection and item management › acknowledged archive ignores an older active item snapshot (en) (718ms)
+  ✘  3 [desktop] › e2e/collections-items.spec.ts:983:3 › localized collection and item management › acknowledged creation and archive survive snapshot refresh failures (1.0m)
+(node:81505) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  4 [mobile] › e2e/collections-items.spec.ts:829:5 › localized collection and item management › acknowledged archive ignores an older active item snapshot (de) (824ms)
+  ✓  5 [mobile] › e2e/collections-items.spec.ts:829:5 › localized collection and item management › acknowledged archive ignores an older active item snapshot (en) (666ms)
+  ✘  6 [mobile] › e2e/collections-items.spec.ts:983:3 › localized collection and item management › acknowledged creation and archive survive snapshot refresh failures (1.0m)
+
+
+  1) [desktop] › e2e/collections-items.spec.ts:983:3 › localized collection and item management › acknowledged creation and archive survive snapshot refresh failures 
+
+    Test timeout of 60000ms exceeded.
+
+    Error: page.unrouteAll: Target page, context or browser has been closed
+
+      1085 |       expect(updates).toBe(1);
+      1086 |     } finally {
+    > 1087 |       await page.unrouteAll({ behavior: "wait" });
+           |       ^
+      1088 |       await cleanupCollector(collector.userId);
+      1089 |     }
+      1090 |   });
+        at /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/collections-items.spec.ts:1087:7
+
+    Error Context: test-results/collections-items-localize-f9a95-e-snapshot-refresh-failures-desktop/error-context.md
+
+    Error Context: test-results/collections-items-localize-f9a95-e-snapshot-refresh-failures-desktop/error-context.md
+
+  2) [mobile] › e2e/collections-items.spec.ts:983:3 › localized collection and item management › acknowledged creation and archive survive snapshot refresh failures 
+
+    Test timeout of 60000ms exceeded.
+
+    Error: page.unrouteAll: Target page, context or browser has been closed
+
+      1085 |       expect(updates).toBe(1);
+      1086 |     } finally {
+    > 1087 |       await page.unrouteAll({ behavior: "wait" });
+           |       ^
+      1088 |       await cleanupCollector(collector.userId);
+      1089 |     }
+      1090 |   });
+        at /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/collections-items.spec.ts:1087:7
+
+    Error Context: test-results/collections-items-localize-f9a95-e-snapshot-refresh-failures-mobile/error-context.md
+
+    Error Context: test-results/collections-items-localize-f9a95-e-snapshot-refresh-failures-mobile/error-context.md
+
+  2 failed
+    [desktop] › e2e/collections-items.spec.ts:983:3 › localized collection and item management › acknowledged creation and archive survive snapshot refresh failures 
+    [mobile] › e2e/collections-items.spec.ts:983:3 › localized collection and item management › acknowledged creation and archive survive snapshot refresh failures 
+  4 passed (2.1m)
+undefined
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test collections-items.spec.ts --project=desktop --project=mobile --grep acknowledged archive ignores|acknowledged creation and archive --workers=1

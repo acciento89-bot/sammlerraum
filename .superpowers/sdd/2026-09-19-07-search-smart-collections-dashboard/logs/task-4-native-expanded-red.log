@@ -1,0 +1,156 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| packages/domain/src/dashboard/dashboard-service.test.ts (6 tests | 6 failed) 228ms
+   × owned dashboard PostgreSQL > weights latest own estimates without leaking foreign money and includes empty owned collections 3ms
+     → SEARCH_UNAVAILABLE
+   × dashboard actual observations and filters > selects latest before denomination and never turns absent or incomparable history into zero 37ms
+     → SEARCH_UNAVAILABLE
+   × dashboard actual observations and filters > requires distinct observation times and uses exact large current-quantity sums 11ms
+     → SEARCH_UNAVAILABLE
+   × dashboard actual observations and filters > uses disjoint lifecycles and excludes deleted parents while keeping collection counts independent 10ms
+     → SEARCH_UNAVAILABLE
+   × dashboard actual observations and filters > counts grading records separately, retains retired conditions and distinguishes usable media 32ms
+     → 
+Invalid `db!.mediaAsset.create()` invocation in
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/dashboard/dashboard-service.test.ts:76:37
+
+  73 await db!.collectibleItem.update({where:{id:a.id},data:{categoryTemplateId:category.id,conditionOptionId:option.id,tradeStatus:"FOR_SALE",purchaseAmountMinor:0n,purchaseCurrency:"EUR"}});
+  74 await db!.collectibleItem.update({where:{id:b.id},data:{tradeStatus:"RESERVED"}});
+  75 for(const provider of ["PSA","CGC"]) await db!.grading.create({data:{itemId:a.id,ownerId:f.owner,provider,providerKey:provider.toLowerCase(),grade:"10"}});
+→ 76 const asset=await db!.mediaAsset.create({
+       data: {
+         ownerId: "dash_case_a6daea44-de9d-4a3f-a0ac-034b4dc66450",
+         kind: "IMAGE",
+         status: "READY",
+         storageKey: "test/84e9ed34-bb7a-4a26-b4ac-51e3e850b05a",
+         mimeType: "image/png",
+         byteSize: 10n,
+         checksumSha256: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     +   originalFileName: String
+       }
+     })
+
+Argument `originalFileName` is missing.
+   × dashboard actual observations and filters > keeps unavailable producer metrics explicit and rejects unsupported leaves even for empty matches 3ms
+     → SEARCH_UNAVAILABLE
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/dashboard/dashboard-service.test.ts > owned dashboard PostgreSQL > weights latest own estimates without leaking foreign money and includes empty owned collections
+ItemSearchError: SEARCH_UNAVAILABLE
+ ❯ searchFail packages/contracts/src/item-search.ts:24:9
+     22| }
+     23| export function searchFail(code: ItemSearchError["code"]): never {
+     24|   throw new ItemSearchError(code);
+       |         ^
+     25| }
+     26| const textValid = (v: string) =>
+ ❯ Object.getDashboard packages/domain/src/dashboard/dashboard-service.ts:4:99
+ ❯ packages/domain/src/dashboard/dashboard-service.test.ts:26:50
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  |workspace| packages/domain/src/dashboard/dashboard-service.test.ts > dashboard actual observations and filters > selects latest before denomination and never turns absent or incomparable history into zero
+ItemSearchError: SEARCH_UNAVAILABLE
+ ❯ searchFail packages/contracts/src/item-search.ts:24:9
+     22| }
+     23| export function searchFail(code: ItemSearchError["code"]): never {
+     24|   throw new ItemSearchError(code);
+       |         ^
+     25| }
+     26| const textValid = (v: string) =>
+ ❯ Object.getDashboard packages/domain/src/dashboard/dashboard-service.ts:4:99
+ ❯ Object.read packages/domain/src/dashboard/dashboard-service.test.ts:36:192
+ ❯ packages/domain/src/dashboard/dashboard-service.test.ts:44:22
+ ❯ fixture packages/domain/src/dashboard/dashboard-service.test.ts:36:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  |workspace| packages/domain/src/dashboard/dashboard-service.test.ts > dashboard actual observations and filters > requires distinct observation times and uses exact large current-quantity sums
+ItemSearchError: SEARCH_UNAVAILABLE
+ ❯ searchFail packages/contracts/src/item-search.ts:24:9
+     22| }
+     23| export function searchFail(code: ItemSearchError["code"]): never {
+     24|   throw new ItemSearchError(code);
+       |         ^
+     25| }
+     26| const textValid = (v: string) =>
+ ❯ Object.getDashboard packages/domain/src/dashboard/dashboard-service.ts:4:99
+ ❯ Object.read packages/domain/src/dashboard/dashboard-service.test.ts:36:192
+ ❯ packages/domain/src/dashboard/dashboard-service.test.ts:52:22
+ ❯ fixture packages/domain/src/dashboard/dashboard-service.test.ts:36:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+ FAIL  |workspace| packages/domain/src/dashboard/dashboard-service.test.ts > dashboard actual observations and filters > uses disjoint lifecycles and excludes deleted parents while keeping collection counts independent
+ItemSearchError: SEARCH_UNAVAILABLE
+ ❯ searchFail packages/contracts/src/item-search.ts:24:9
+     22| }
+     23| export function searchFail(code: ItemSearchError["code"]): never {
+     24|   throw new ItemSearchError(code);
+       |         ^
+     25| }
+     26| const textValid = (v: string) =>
+ ❯ Object.getDashboard packages/domain/src/dashboard/dashboard-service.ts:4:99
+ ❯ Object.read packages/domain/src/dashboard/dashboard-service.test.ts:36:192
+ ❯ packages/domain/src/dashboard/dashboard-service.test.ts:63:137
+ ❯ fixture packages/domain/src/dashboard/dashboard-service.test.ts:36:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯
+
+ FAIL  |workspace| packages/domain/src/dashboard/dashboard-service.test.ts > dashboard actual observations and filters > counts grading records separately, retains retired conditions and distinguishes usable media
+PrismaClientValidationError: 
+Invalid `db!.mediaAsset.create()` invocation in
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/dashboard/dashboard-service.test.ts:76:37
+
+  73 await db!.collectibleItem.update({where:{id:a.id},data:{categoryTemplateId:category.id,conditionOptionId:option.id,tradeStatus:"FOR_SALE",purchaseAmountMinor:0n,purchaseCurrency:"EUR"}});
+  74 await db!.collectibleItem.update({where:{id:b.id},data:{tradeStatus:"RESERVED"}});
+  75 for(const provider of ["PSA","CGC"]) await db!.grading.create({data:{itemId:a.id,ownerId:f.owner,provider,providerKey:provider.toLowerCase(),grade:"10"}});
+→ 76 const asset=await db!.mediaAsset.create({
+       data: {
+         ownerId: "dash_case_a6daea44-de9d-4a3f-a0ac-034b4dc66450",
+         kind: "IMAGE",
+         status: "READY",
+         storageKey: "test/84e9ed34-bb7a-4a26-b4ac-51e3e850b05a",
+         mimeType: "image/png",
+         byteSize: 10n,
+         checksumSha256: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     +   originalFileName: String
+       }
+     })
+
+Argument `originalFileName` is missing.
+ ❯ throwValidationException node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/core/errorRendering/throwValidationException.ts:46:9
+ ❯ vn.handleRequestError node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:212:7
+ ❯ vn.handleAndLogRequestError node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:184:12
+ ❯ vn.request node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:153:12
+ ❯ a node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:1014:24
+ ❯ packages/domain/src/dashboard/dashboard-service.test.ts:76:16
+
+ ❯ fixture packages/domain/src/dashboard/dashboard-service.test.ts:36:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/6]⎯
+
+ FAIL  |workspace| packages/domain/src/dashboard/dashboard-service.test.ts > dashboard actual observations and filters > keeps unavailable producer metrics explicit and rejects unsupported leaves even for empty matches
+ItemSearchError: SEARCH_UNAVAILABLE
+ ❯ searchFail packages/contracts/src/item-search.ts:24:9
+     22| }
+     23| export function searchFail(code: ItemSearchError["code"]): never {
+     24|   throw new ItemSearchError(code);
+       |         ^
+     25| }
+     26| const textValid = (v: string) =>
+ ❯ Object.getDashboard packages/domain/src/dashboard/dashboard-service.ts:4:99
+ ❯ Object.read packages/domain/src/dashboard/dashboard-service.test.ts:36:192
+ ❯ packages/domain/src/dashboard/dashboard-service.test.ts:84:18
+ ❯ fixture packages/domain/src/dashboard/dashboard-service.test.ts:36:9
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/6]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  6 failed (6)
+   Start at  11:23:41
+   Duration  621ms (transform 85ms, setup 6ms, collect 206ms, tests 228ms, environment 0ms, prepare 47ms)
+

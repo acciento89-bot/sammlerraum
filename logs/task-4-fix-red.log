@@ -1,0 +1,126 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| packages/domain/src/valuations/valuation-query.test.ts (26 tests | 2 failed | 23 skipped) 275ms
+   ↓ owner valuation comparison PostgreSQL > does not calculate a combined total across mixed currencies, including groups outside the first page
+   ↓ owner valuation comparison PostgreSQL > keeps all same-currency kinds separate, preserving zero ranges and source metadata
+   ↓ owner valuation comparison PostgreSQL > refreshes latest independently of old manual pages and never multiplies by quantity
+   ↓ owner valuation comparison PostgreSQL > pages source histories with timestamp ties and retains availability beyond the last group
+   ↓ owner valuation comparison PostgreSQL > keeps current semantic mapping across title edits and identifier replacement, with original provenance
+   ↓ owner valuation comparison PostgreSQL > excludes changed mappings from current scope and shows explicitly permitted historical provenance
+   ↓ owner valuation comparison PostgreSQL > keeps entry-only and exact variants isolated; retired variant history is explicit
+   ↓ owner valuation comparison PostgreSQL > never leaks stored external existence under the default empty policy, including history
+   ↓ owner valuation comparison PostgreSQL > hides foreign/deleted-parent items but permits archived and disposed reads
+   ↓ owner valuation comparison PostgreSQL > invalidates source selectors after catalog edits or relinking and rejects cross-item cursors
+   ↓ owner valuation comparison PostgreSQL > reports source availability independently of a group cursor beyond the final group
+   ↓ owner valuation comparison PostgreSQL > validates hidden historical candidates before allowing them to affect currency diversity
+   ↓ owner valuation comparison PostgreSQL > retains one MVCC view while an independent catalog edit and ingestion commit between reads
+   ↓ owner valuation comparison PostgreSQL > serves representative populated reads with index-seeking plans
+   ↓ owner valuation comparison PostgreSQL > holds parent/item locks while append waits and returns a coherent pre-append view
+   ↓ owner valuation comparison PostgreSQL > fails a real lock-budget timeout as unavailability rather than empty data
+   ↓ owner valuation comparison PostgreSQL > retries only serialization failures with a fresh complete transaction and stops after three
+   × owner valuation comparison PostgreSQL > deducts acquisition from remaining transaction and statement limits after retries 61ms
+     → expected [ '2000ms', '2000ms' ] to include '200ms'
+   ✓ owner valuation comparison PostgreSQL > rejects exhausted summary immediately after awaited SQL, including an empty final page 44ms
+   × owner valuation comparison PostgreSQL > rejects exhausted source history immediately after awaited SQL, including an empty final page 25ms
+     → promise resolved "{ …(6) }" instead of rejecting
+   ↓ owner valuation comparison PostgreSQL > restores session timezone and preserves year0001 native manual and external instants
+   ↓ owner valuation comparison PostgreSQL > rejects malformed/cross-context tokens and inconsistent display grants before database acquisition
+   ↓ owner valuation comparison PostgreSQL > fits maximum manual and source-group pages with escaped notes and large metadata
+   ↓ owner valuation comparison PostgreSQL > fails closed on structurally valid but incoherent historical identifier snapshots
+   ↓ owner valuation comparison PostgreSQL > retries a real item-move serialization race with a fresh parent and snapshot
+   ↓ owner valuation comparison PostgreSQL > retries a committed parent deletion race then hides the deleted item
+ ❯ |workspace| apps/web/src/lib/valuation-routes.integration.test.ts (10 tests | 1 failed | 8 skipped) 136ms
+   ↓ valuation HTTP routes PostgreSQL > appends exact private manual values and reads the real owner query with no-store responses
+   ↓ valuation HTTP routes PostgreSQL > rejects unknown, duplicate, malformed and excessive query inputs before domain reading
+   ↓ valuation HTTP routes PostgreSQL > requires authentication, correct origin, owner scope and active writes
+   ↓ valuation HTTP routes PostgreSQL > rejects unsafe money, injected authors, unsupported new currencies and malformed Unicode
+   ↓ valuation HTTP routes PostgreSQL > uses thin route exports with actual dependencies and preserves the anonymous public projection
+   ↓ valuation HTTP routes PostgreSQL > rejects streamed over-limit and invalid UTF8 bodies, while allowing 2000 astral codepoints
+   ↓ valuation HTTP routes PostgreSQL > returns real ingested external facts and continuation, with disabled production display independently empty
+   × valuation HTTP routes PostgreSQL > maps captured acquisition and adapter connection failures to one sanitized GET and POST attempt 16ms
+     → expected 500 to be 503 // Object.is equality
+   ✓ valuation HTTP routes PostgreSQL > does not mask unknown database faults as availability failures 4ms
+   ↓ valuation HTTP routes PostgreSQL > maps the native manual quota and dependency failures without leaking database details
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/web/src/lib/valuation-routes.integration.test.ts > valuation HTTP routes PostgreSQL > maps captured acquisition and adapter connection failures to one sanitized GET and POST attempt
+AssertionError: expected 500 to be 503 // Object.is equality
+
+- Expected
++ Received
+
+- 503
++ 500
+
+ ❯ apps/web/src/lib/valuation-routes.integration.test.ts:365:31
+    363|         }, { api: { getSession: session } }, origin));
+    364|         const result = await unavailable[method](request(method, metho…
+    365|         expect(result.status).toBe(503);
+       |                               ^
+    366|         expect(result.headers.get("cache-control")).toBe("no-store");
+    367|         const body = await result.text();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  |workspace| packages/domain/src/valuations/valuation-query.test.ts > owner valuation comparison PostgreSQL > deducts acquisition from remaining transaction and statement limits after retries
+AssertionError: expected [ '2000ms', '2000ms' ] to include '200ms'
+ ❯ packages/domain/src/valuations/valuation-query.test.ts:721:25
+    719|       await createValuationQuery(delayed).getItemValuationSummary(f.it…
+    720|       expect(attempts).toBe(3);
+    721|       expect(limits[0]).toContain("200ms");
+       |                         ^
+    722|       expect(limits[0]).not.toContain("2000ms");
+    723|       expect(limits.some(values => values.includes("100ms"))).toBe(tru…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  |workspace| packages/domain/src/valuations/valuation-query.test.ts > owner valuation comparison PostgreSQL > rejects exhausted source history immediately after awaited SQL, including an empty final page
+AssertionError: promise resolved "{ …(6) }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "catalog": {
++     "entryId": "6caf290c-9379-49d8-b6a3-8067e4d89b5b",
++     "revision": 2,
++     "variantActive": true,
++     "variantId": null,
++   },
++   "history": {
++     "nextCursor": null,
++     "records": [],
++   },
++   "itemId": "bf6a9b2a-3a9e-4d8f-9f68-9d7151b5bbee",
++   "key": {
++     "currency": "EUR",
++     "externalId": "product-1",
++     "identifierNamespace": "fixture",
++     "identifierType": "product",
++     "kind": "SOLD_MEDIAN",
++     "providerId": "fixture",
++   },
++   "readAt": "2026-10-18T03:56:51.101Z",
++   "scope": "CURRENT_MAPPING",
+  }
+
+ ❯ packages/domain/src/valuations/valuation-query.test.ts:751:151
+    749|       await expect(view === "summary"
+    750|         ? service.getItemValuationSummary(f.itemId, { userId: ownerId …
+    751|         : service.getItemValuationSourceHistory(f.itemId, { userId: ow…
+       |                                                                                                                                                       ^
+    752|         .rejects.toMatchObject({ code: "VALUATION_UNAVAILABLE" });
+    753|       expect(queriesAfterExpiry).toBe(0);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  3 failed | 2 passed | 31 skipped (36)
+   Start at  05:56:50
+   Duration  1.14s (transform 173ms, setup 7ms, collect 433ms, tests 411ms, environment 0ms, prepare 80ms)
+

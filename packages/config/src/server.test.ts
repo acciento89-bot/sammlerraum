@@ -1,0 +1,161 @@
+import { describe, expect, it } from "vitest";
+
+import { EnvironmentConfigurationError, parseAuthEnv, parseServerEnv } from "./server";
+
+const validEnvironment = {
+  NODE_ENV: "test",
+  DATABASE_URL: "postgresql://user:pass@localhost:5432/sammlerraum",
+  APP_ORIGIN: "http://localhost:3000",
+  UPLOADS_DIR: "/tmp/sammlerraum-uploads",
+};
+
+describe("parseServerEnv", () => {
+  it("rejects missing database configuration", () => {
+    expect(() => parseServerEnv({ NODE_ENV: "test" })).toThrow(/DATABASE_URL/);
+  });
+
+  it("accepts the required foundation environment", () => {
+    expect(parseServerEnv(validEnvironment)).toEqual({
+      ...validEnvironment,
+      SCRYDEX_ENABLED: false,
+      SCRYDEX_POLICY_APPROVED: false,
+      SCRYDEX_HOURLY_CALL_BUDGET: 0,
+      SCRYDEX_DAILY_CALL_BUDGET: 0,
+      PRICECHARTING_ENABLED: false,
+      PRICECHARTING_POLICY_APPROVED: false,
+      PRICECHARTING_HOURLY_CALL_BUDGET: 0,
+      PRICECHARTING_DAILY_CALL_BUDGET: 0,
+      MARKET_SYNC_ENABLED: false,
+      MARKET_SYNC_INTERVAL_MS: 60000,
+      MARKET_SYNC_BATCH_SIZE: 32,
+      MARKET_SYNC_MAX_PENDING: 256,
+      LOG_LEVEL: "info",
+      WORKER_HEALTH_PORT: 3001,
+      MEDIA_MAX_IMAGE_BYTES: 20 * 1024 * 1024,
+      MEDIA_MAX_DOCUMENT_BYTES: 25 * 1024 * 1024,
+      MEDIA_MAX_IMAGE_PIXELS: 40_000_000,
+      MEDIA_RETENTION_HOURS: 168,
+      MEDIA_CLEANUP_INTERVAL_MS: 60000,
+      MEDIA_CLEANUP_BATCH_SIZE: 100,
+      STORAGE_TEMP_MAX_AGE_HOURS: 24,
+    });
+  });
+
+  it.each(["0", "65536", "3.5", "not-a-port"])(
+    "rejects invalid WORKER_HEALTH_PORT %s",
+    (WORKER_HEALTH_PORT) => {
+      expect(() => parseServerEnv({ ...validEnvironment, WORKER_HEALTH_PORT })).toThrow(
+        EnvironmentConfigurationError,
+      );
+    },
+  );
+
+  it.each([
+    ["NODE_ENV", "staging"],
+    ["DATABASE_URL", "mysql://user:pass@localhost:3306/sammlerraum"],
+    ["DATABASE_URL", "postgresql:///sammlerraum"],
+    ["APP_ORIGIN", "ftp://localhost:3000"],
+    ["APP_ORIGIN", "http://user:pass@localhost:3000"],
+    ["APP_ORIGIN", "http://localhost:3000/app"],
+    ["APP_ORIGIN", "http://localhost:3000?preview=true"],
+    ["APP_ORIGIN", "http://localhost:3000#preview"],
+    ["UPLOADS_DIR", "relative/uploads"],
+    ["LOG_LEVEL", "verbose"],
+  ])("rejects an invalid %s value", (variable, value) => {
+    expect(() => parseServerEnv({ ...validEnvironment, [variable]: value })).toThrow(
+      EnvironmentConfigurationError,
+    );
+  });
+
+  it("normalizes APP_ORIGIN to its origin", () => {
+    expect(
+      parseServerEnv({ ...validEnvironment, APP_ORIGIN: "https://example.com/" }).APP_ORIGIN,
+    ).toBe("https://example.com");
+  });
+
+  it("reports invalid variable names without exposing values", () => {
+    const secret = "postgresql://admin:do-not-leak@/sammlerraum";
+
+    expect.assertions(4);
+    try {
+      parseServerEnv({ ...validEnvironment, DATABASE_URL: secret, LOG_LEVEL: "trace" });
+    } catch (error) {
+      expect(error).toBeInstanceOf(EnvironmentConfigurationError);
+      expect(error).toMatchObject({ invalidVariables: ["DATABASE_URL", "LOG_LEVEL"] });
+      expect((error as Error).message).toContain("DATABASE_URL, LOG_LEVEL");
+      expect((error as Error).message).not.toContain(secret);
+    }
+  });
+});
+
+describe("parseAuthEnv", () => {
+  const validAuthEnvironment = {
+    APP_ORIGIN: "https://example.test",
+    BETTER_AUTH_SECRET: "test-secret-that-is-at-least-thirty-two-characters",
+    GOOGLE_CLIENT_ID: "google-client-id",
+    GOOGLE_CLIENT_SECRET: "google-client-secret",
+    APPLE_CLIENT_ID: "apple-client-id",
+    APPLE_CLIENT_SECRET: "apple-client-secret",
+    SMTP_HOST: "smtp.example.test",
+    SMTP_PORT: "587",
+    SMTP_SECURE: "false",
+    SMTP_USER: "smtp-user",
+    SMTP_PASSWORD: "smtp-password",
+    SMTP_FROM: "Sammlerraum <noreply@example.test>",
+  };
+
+  it("requires provider, auth-secret, and SMTP delivery configuration", () => {
+    expect(parseAuthEnv(validAuthEnvironment)).toEqual({
+      ...validAuthEnvironment,
+      SMTP_PORT: 587,
+      SMTP_SECURE: false,
+    });
+
+    for (const key of Object.keys(validAuthEnvironment)) {
+      const invalid = { ...validAuthEnvironment, [key]: undefined };
+      expect(() => parseAuthEnv(invalid)).toThrow(key);
+    }
+  });
+
+  it("never exposes auth or SMTP secret values in validation errors", () => {
+    const secret = "too-short";
+
+    expect(() =>
+      parseAuthEnv({ ...validAuthEnvironment, BETTER_AUTH_SECRET: secret }),
+    ).toThrowError(expect.objectContaining({ message: expect.not.stringContaining(secret) }));
+  });
+});
+
+describe("media configuration", () => {
+  it("uses explicit bounded upload defaults", () => {
+    expect(parseServerEnv(validEnvironment)).toMatchObject({
+      MEDIA_MAX_IMAGE_BYTES: 20 * 1024 * 1024,
+      MEDIA_MAX_DOCUMENT_BYTES: 25 * 1024 * 1024,
+      MEDIA_MAX_IMAGE_PIXELS: 40_000_000,
+      MEDIA_RETENTION_HOURS: 168,
+      MEDIA_CLEANUP_INTERVAL_MS: 60000,
+      MEDIA_CLEANUP_BATCH_SIZE: 100,
+      STORAGE_TEMP_MAX_AGE_HOURS: 24,
+    });
+  });
+
+  it.each(["0", "-1", "1.5", "9007199254740992", "NaN"])(
+    "rejects unsafe byte limit %s",
+    (value) => {
+      expect(() => parseServerEnv({ ...validEnvironment, MEDIA_MAX_IMAGE_BYTES: value })).toThrow(
+        EnvironmentConfigurationError,
+      );
+    },
+  );
+});
+
+it.each([
+  ["MARKET_SYNC_ENABLED", "1"],
+  ["MARKET_SYNC_INTERVAL_MS", "59999"],
+  ["MARKET_SYNC_BATCH_SIZE", "33"],
+  ["MARKET_SYNC_MAX_PENDING", "257"],
+])("rejects unsafe market configuration %s", (key, value) => {
+  expect(() => parseServerEnv({ ...validEnvironment, [key]: value })).toThrow(
+    EnvironmentConfigurationError,
+  );
+});

@@ -1,0 +1,16 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+stdout | apps/worker/src/jobs/production-market.integration.test.ts > real production composition with fake HTTP and PostgreSQL > actual composed handler ingests exact zero/bigint with receipt time before cooldown and skips same-poll replay
+TASK6_TIMESTAMP_READ { rawDateDelta: -7198965, databaseEpochDelta: 1035 }
+
+ ✓ |workspace| apps/worker/src/jobs/production-market.integration.test.ts (3 tests | 2 skipped) 1219ms
+   ✓ real production composition with fake HTTP and PostgreSQL > actual composed handler ingests exact zero/bigint with receipt time before cooldown and skips same-poll replay  1084ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 2 skipped (3)
+   Start at  07:26:08
+   Duration  1.66s (transform 120ms, setup 6ms, collect 272ms, tests 1.22s, environment 0ms, prepare 41ms)
+
+
+EXIT=0

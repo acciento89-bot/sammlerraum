@@ -1,0 +1,67 @@
+[WebServer] npm warn Unknown env config "verify-deps-before-run". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+[WebServer] (node:50811) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:50843) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:50878) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:50884) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:50888) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:50890) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:50899) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:50901) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:50902) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:50903) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:50908) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:50917) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:50918) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:50919) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [desktop] › e2e/catalog-grading.spec.ts:8:5 › catalog, personal condition and external grading › changing own condition preserves external grading (de) (9.7s)
+
+
+  1) [desktop] › e2e/catalog-grading.spec.ts:8:5 › catalog, personal condition and external grading › changing own condition preserves external grading (de) 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByText('PSA 9', { exact: true })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByText('PSA 9', { exact: true }) with timeout 5000ms
+      - waiting for getByText('PSA 9', { exact: true })
+
+
+      18 |         await page.goto(`/${locale}/items/${fixture.item.id}`);
+      19 |         await expect(page.getByRole("heading",{name:"My graded card",exact:true})).toBeVisible();
+    > 20 |         await expect(page.getByText("PSA 9",{exact:true})).toBeVisible();
+         |                                                            ^
+      21 |         await page.getByLabel(locale==="de"?"Eigener Zustand":"Personal condition",{exact:true}).selectOption(fixture.scheme.options[1]!.id);
+      22 |         await page.getByRole("button",{name:locale==="de"?"Zustand speichern":"Save condition",exact:true}).click();
+      23 |         await expect(page.getByRole("status").filter({hasText:locale==="de"?"Zustand gespeichert":"Condition saved"})).toBeVisible();
+        at /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/catalog-grading.spec.ts:20:60
+
+    Error Context: test-results/catalog-grading-catalog-pe-ab401-serves-external-grading-de--desktop/error-context.md
+
+    Error Context: test-results/catalog-grading-catalog-pe-ab401-serves-external-grading-de--desktop/error-context.md
+
+  1 failed
+    [desktop] › e2e/catalog-grading.spec.ts:8:5 › catalog, personal condition and external grading › changing own condition preserves external grading (de) 
+undefined
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/catalog-grading.spec.ts --project=desktop --grep \(de\) --workers=1

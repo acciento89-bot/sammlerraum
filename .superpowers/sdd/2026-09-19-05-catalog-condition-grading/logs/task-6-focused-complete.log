@@ -1,0 +1,52 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ✓ |workspace| apps/web/src/lib/catalog-link-routes.integration.test.ts (5 tests) 214ms
+ ✓ |workspace| packages/domain/src/catalog/proposal-service.test.ts (16 tests) 1319ms
+   ✓ catalog proposal moderation PostgreSQL > atomically enforces pending, rolling daily and retained-history quotas without deleting audit rows  878ms
+ ✓ |workspace| packages/domain/src/grading/grading-service.test.ts (15 tests) 462ms
+ ✓ |workspace| packages/domain/src/catalog/catalog-service.integration.test.ts (11 tests) 430ms
+ ✓ |workspace| packages/domain/src/condition/condition-service.test.ts (10 tests) 400ms
+ ❯ |workspace| packages/domain/src/catalog/item-catalog-link.test.ts (13 tests | 1 failed) 1836ms
+   ✓ personal catalog links PostgreSQL > keeps the personal item and independent facts when its catalog link is removed 25ms
+   ✓ personal catalog links PostgreSQL > infers only an absent category and integrates DTO, resource reads and split 19ms
+   ✓ personal catalog links PostgreSQL > requires explicit unlink before category changes and never silently clears condition 18ms
+   ✓ personal catalog links PostgreSQL > checks entry/variant scope and preserves retired existing references without offering new selections 22ms
+   ✓ personal catalog links PostgreSQL > hides foreign/deleted items and retains owner reads for inactive items 12ms
+   ✓ personal catalog links PostgreSQL > enforces native partial-null and relational guards independently of services 33ms
+   ✓ personal catalog links PostgreSQL > preserves personal category/condition when otherwise deletable catalog targets disappear 18ms
+   ✓ personal catalog links PostgreSQL > pins column-specific native SET NULL actions and supporting indexes 8ms
+   ✓ personal catalog links PostgreSQL > retries changed split parents three times without copying or decrementing 21ms
+   ✓ personal catalog links PostgreSQL > waits for a canonical writer before active validation and rejects its retired variant 16ms
+   × personal catalog links PostgreSQL > holds parent locks while waiting on the item so a canonical writer cannot invert the order 1420ms
+     → No PostgreSQL lock wait observed for FROM "CatalogEntry" WHERE id=
+   ✓ personal catalog links PostgreSQL > revalidates a changed split link before copying the new reference on a later attempt 39ms
+   ✓ personal catalog links PostgreSQL > rechecks category under the shared item lock after a competing category change 19ms
+ ✓ |workspace| packages/domain/src/catalog/catalog-read-service.test.ts (6 tests) 364ms
+ ✓ |workspace| packages/domain/src/items/item-service.test.ts (15 tests) 244ms
+ ✓ |workspace| packages/domain/src/catalog/category-template-service.integration.test.ts (4 tests) 180ms
+ ✓ |workspace| apps/web/src/lib/condition-routes.integration.test.ts (5 tests) 161ms
+ ✓ |workspace| packages/domain/src/catalog/category-template-service.test.ts (32 tests) 8ms
+ ✓ |workspace| packages/domain/src/catalog/catalog-service.test.ts (2 tests) 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/catalog/item-catalog-link.test.ts > personal catalog links PostgreSQL > holds parent locks while waiting on the item so a canonical writer cannot invert the order
+Error: No PostgreSQL lock wait observed for FROM "CatalogEntry" WHERE id=
+ ❯ waitForLock packages/domain/src/catalog/item-catalog-link.test.ts:532:9
+    530|     await new Promise((resolve) => setTimeout(resolve, 10));
+    531|   }
+    532|   throw new Error(`No PostgreSQL lock wait observed for ${fragment}`);
+       |         ^
+    533| }
+    534| 
+ ❯ packages/domain/src/catalog/item-catalog-link.test.ts:440:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 11 passed (12)
+      Tests  1 failed | 133 passed (134)
+   Start at  00:34:37
+   Duration  8.19s (transform 218ms, setup 11ms, collect 1.07s, tests 5.62s, environment 1ms, prepare 352ms)
+

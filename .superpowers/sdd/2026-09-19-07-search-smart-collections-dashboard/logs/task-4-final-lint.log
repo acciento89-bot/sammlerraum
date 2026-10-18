@@ -1,0 +1,42 @@
+
+> sammlerraum@ lint /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+> pnpm -r lint
+
+Scope: 10 of 11 workspace projects
+packages/config lint$ prettier --check .
+packages/contracts lint$ prettier --check .
+packages/market-data lint$ prettier --check .
+packages/queue lint$ prettier --check .
+packages/config lint: Checking formatting...
+packages/contracts lint: Checking formatting...
+packages/market-data lint: Checking formatting...
+packages/queue lint: Checking formatting...
+packages/config lint: All matched files use Prettier code style!
+packages/config lint: Done
+packages/storage lint$ prettier --check .
+packages/queue lint: All matched files use Prettier code style!
+packages/queue lint: Done
+packages/testing lint$ prettier --check .
+packages/storage lint: Checking formatting...
+packages/market-data lint: All matched files use Prettier code style!
+packages/market-data lint: Done
+packages/testing lint: Checking formatting...
+packages/contracts lint: All matched files use Prettier code style!
+packages/contracts lint: Done
+packages/testing lint: All matched files use Prettier code style!
+packages/testing lint: Done
+packages/storage lint: All matched files use Prettier code style!
+packages/storage lint: Done
+packages/db lint$ prettier --check .
+packages/db lint: Checking formatting...
+packages/db lint: All matched files use Prettier code style!
+packages/db lint: Done
+packages/domain lint$ prettier --check .
+packages/domain lint: Checking formatting...
+packages/domain lint: [warn] src/dashboard/dashboard-result.ts
+packages/domain lint: [warn] Code style issues found in the above file. Run Prettier with --write to fix.
+packages/domain lint: Failed
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @sammlerraum/domain@ lint: `prettier --check .`
+Exit status 1
+ ELIFECYCLE  Command failed with exit code 1.

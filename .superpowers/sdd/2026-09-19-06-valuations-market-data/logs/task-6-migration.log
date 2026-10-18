@@ -1,0 +1,22 @@
+
+> @sammlerraum/db@ prisma /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/db
+> prisma migrate deploy
+
+Loaded Prisma config from prisma.config.ts.
+
+Prisma schema loaded from prisma/schema.prisma.
+Datasource "db": PostgreSQL database "sammlerraum_test", schema "public" at "localhost:5432"
+
+26 migrations found in prisma/migrations
+
+Applying migration `20261018051900_market_request_gate`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20261018051900_market_request_gate/
+    └─ migration.sql
+
+All migrations have been successfully applied.
+
+EXIT=0

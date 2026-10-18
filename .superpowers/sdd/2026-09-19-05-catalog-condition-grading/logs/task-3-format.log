@@ -1,0 +1,19 @@
+packages/contracts/src/catalog-proposals.ts 36ms
+packages/contracts/src/catalog-proposals.test.ts 6ms
+packages/domain/src/catalog/proposal-service.ts 25ms
+packages/domain/src/catalog/proposal-service.test.ts 43ms
+packages/domain/src/catalog/catalog-service.ts 26ms
+packages/domain/src/authz/application-role.ts 2ms (unchanged)
+packages/db/src/catalog-types.ts 2ms
+apps/web/src/lib/catalog-proposal-routes.ts 9ms
+apps/web/src/lib/catalog-proposal-routes.test.ts 9ms
+apps/web/src/lib/catalog-proposal-routes.integration.test.ts 10ms
+apps/web/src/lib/catalog-proposal-route-dependencies.ts 1ms
+apps/web/src/lib/api/read-bounded-body.ts 2ms
+apps/web/src/lib/media-routes.ts 8ms (unchanged)
+apps/web/src/app/api/v1/catalog/entries/[entryId]/rollback/route.ts 1ms
+apps/web/src/app/api/v1/catalog/moderation/proposals/[proposalId]/route.ts 1ms
+apps/web/src/app/api/v1/catalog/moderation/proposals/route.ts 1ms (unchanged)
+apps/web/src/app/api/v1/catalog/proposals/[proposalId]/decision/route.ts 1ms
+apps/web/src/app/api/v1/catalog/proposals/[proposalId]/route.ts 1ms
+apps/web/src/app/api/v1/catalog/proposals/route.ts 1ms (unchanged)

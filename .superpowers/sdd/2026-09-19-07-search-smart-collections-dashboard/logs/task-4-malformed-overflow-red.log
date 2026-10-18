@@ -1,0 +1,35 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| packages/domain/src/dashboard/dashboard-input.test.ts (5 tests | 1 failed) 68ms
+   ✓ dashboard request and result bounds > normalizes exactly the shared query fields and rejects pagination/owner overrides before acquiring DB 6ms
+   × dashboard request and result bounds > rejects numeric output overflow as unavailable and malformed/rounded driver values as invariant 10ms
+     → expected [Function] to throw error including 'SEARCH_INVARIANT' but got 'SEARCH_UNAVAILABLE'
+   ✓ dashboard request and result bounds > bounds complete monetary groups at 256 without treating oversized output as partial 23ms
+   ✓ dashboard request and result bounds > accepts exactly 1MiB and rejects one byte more, including UTF8 content 28ms
+   ✓ dashboard request and result bounds > checks CPU budget after validation and serialization rather than returning late output 0ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/dashboard/dashboard-input.test.ts > dashboard request and result bounds > rejects numeric output overflow as unavailable and malformed/rounded driver values as invariant
+AssertionError: expected [Function] to throw error including 'SEARCH_INVARIANT' but got 'SEARCH_UNAVAILABLE'
+
+Expected: "SEARCH_INVARIANT"
+Received: "SEARCH_UNAVAILABLE"
+
+ ❯ packages/domain/src/dashboard/dashboard-input.test.ts:113:55
+    111|     for (const units of ["01", "-0", "1e3", "NaN", "x".repeat(79)]) {
+    112|       data.selection.unitCount = units;
+    113|       expect(() => finalizeDashboard(data, () => {})).toThrow("SEARCH_…
+       |                                                       ^
+    114|     }
+    115|     data.selection.unitCount = "0";
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 4 passed (5)
+   Start at  11:35:02
+   Duration  629ms (transform 147ms, setup 7ms, collect 253ms, tests 68ms, environment 0ms, prepare 63ms)
+

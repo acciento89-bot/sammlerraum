@@ -1,0 +1,12 @@
+
+> @sammlerraum/db@ prisma /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/db
+> prisma migrate dev --create-only --name catalog_templates
+
+Loaded Prisma config from prisma.config.ts.
+
+Prisma schema loaded from prisma/schema.prisma.
+Datasource "db": PostgreSQL database "sammlerraum_test", schema "public" at "localhost:5432"
+
+Prisma Migrate created the following migration without applying it 20261017201618_catalog_templates
+
+You can now edit it and apply it by running prisma migrate dev.

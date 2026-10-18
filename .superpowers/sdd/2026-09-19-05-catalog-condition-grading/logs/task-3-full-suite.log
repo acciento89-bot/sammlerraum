@@ -1,0 +1,123 @@
+
+> sammlerraum@ test /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+> vitest run
+
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ✓ |workspace| packages/config/src/client.test.ts (6 tests) 223ms
+ ✓ |workspace| packages/storage/src/local-storage.test.ts (23 tests) 212ms
+ ✓ |workspace| apps/worker/src/jobs/process-image.test.ts (8 tests) 732ms
+ ✓ |workspace| apps/web/src/lib/catalog-proposal-routes.test.ts (5 tests) 227ms
+ ✓ |workspace| apps/web/src/lib/auth-api-server-setup.test.ts (1 test) 12ms
+ ✓ |workspace| packages/db/src/health.test.ts (1 test) 2ms
+ ✓ |workspace| packages/domain/src/media/media-service.test.ts (20 tests) 1154ms
+   ✓ media PostgreSQL integration > enforces owned item and avatar references on real rows  962ms
+ ✓ |workspace| packages/db/src/test-database.test.ts (4 tests) 78ms
+ ✓ |workspace| apps/worker/src/health.test.ts (2 tests) 50ms
+ ✓ |workspace| apps/worker/src/jobs/cleanup-media.test.ts (4 tests) 153ms
+ ✓ |workspace| apps/web/src/lib/catalog-proposal-routes.integration.test.ts (3 tests) 1523ms
+ ✓ |workspace| apps/web/src/components/items/item-form-values.test.ts (13 tests) 42ms
+ ✓ |workspace| apps/web/src/lib/media-routes.test.ts (14 tests) 99ms
+ ✓ |workspace| apps/web/src/lib/api/route-handler.test.ts (5 tests) 10ms
+ ✓ |workspace| apps/web/src/app/api/v1/collections/collection-api.test.ts (5 tests) 16ms
+ ✓ |workspace| apps/web/src/app/api/v1/items/item-api.test.ts (10 tests) 40ms
+ ✓ |workspace| apps/web/src/app/api/v1/media/media-read.test.ts (5 tests) 11ms
+ ✓ |workspace| packages/queue/src/pg-boss-queue.test.ts (10 tests) 9ms
+ ✓ |workspace| apps/web/src/lib/account-profile-routes.test.ts (2 tests) 90ms
+ ✓ |workspace| apps/worker/src/jobs/image-dispatcher.test.ts (2 tests) 44ms
+ ✓ |workspace| packages/domain/src/catalog/catalog-service.integration.test.ts (11 tests) 3668ms
+   ✓ revisioned global catalog PostgreSQL > canonicalizes uppercase category UUIDs through rollback and no-op commands  306ms
+   ✓ revisioned global catalog PostgreSQL > canonicalizes uppercase definition and variant references without weakening category or entry guards  435ms
+   ✓ revisioned global catalog PostgreSQL > retains original identifier values, namespaces, target and provenance in past snapshots  410ms
+   ✓ revisioned global catalog PostgreSQL > records rollback as a new revision while retaining inactive UUID identities and old snapshots  354ms
+ ✓ |workspace| packages/domain/src/identity/profile-service.test.ts (6 tests) 557ms
+ ✓ |workspace| packages/config/src/server.test.ts (26 tests) 38ms
+ ✓ |workspace| packages/storage/src/staging-lock.integration.test.ts (3 tests) 764ms
+   ✓ lost staging session > fails an ancient writer rename after the lost session permits cleanup  497ms
+ ✓ |workspace| packages/domain/src/catalog/category-template-service.test.ts (32 tests) 264ms
+ ✓ |workspace| packages/domain/src/custom-fields/custom-field-service.test.ts (36 tests) 1628ms
+   ✓ custom field PostgreSQL integration > round-trips every typed column and enforces owner and same-collection boundaries  1401ms
+ ✓ |workspace| apps/worker/src/main.test.ts (4 tests) 4ms
+ ✓ |workspace| apps/web/src/app/api/v1/account/sessions/route.test.ts (4 tests) 7ms
+ ✓ |workspace| apps/web/src/proxy.test.ts (3 tests) 30ms
+ ✓ |workspace| packages/testing/src/production-config.test.ts (5 tests) 7ms
+ ✓ |workspace| apps/web/src/components/auth/account-ui-state.test.ts (9 tests) 4ms
+ ✓ |workspace| apps/web/src/app/api/v1/account/recovery-methods/route.test.ts (3 tests) 23ms
+ ✓ |workspace| packages/domain/src/locations/location-service.test.ts (17 tests) 1044ms
+   ✓ location PostgreSQL integration > rejects cycles, cross-owner parents, and concurrent inverse moves  522ms
+ ✓ |workspace| packages/domain/src/items/item-service.test.ts (15 tests) 1422ms
+   ✓ item service PostgreSQL integration > enforces same-collection nodes and owner-only item mutations  683ms
+ ✓ |workspace| packages/domain/src/media/media-read.test.ts (8 tests) 29ms
+ ✓ |workspace| packages/contracts/src/catalog-proposals.test.ts (2 tests) 7ms
+ ✓ |workspace| packages/domain/src/collections/collection-service.test.ts (14 tests) 651ms
+ ✓ |workspace| apps/web/src/app/api/openapi.json/route.test.ts (1 test) 5ms
+ ✓ |workspace| packages/domain/src/locations/label-service.test.ts (2 tests) 5ms
+ ✓ |workspace| packages/domain/src/authz/policy.test.ts (25 tests) 4ms
+ ✓ |workspace| apps/web/src/lib/request-id.test.ts (5 tests) 20ms
+ ✓ |workspace| apps/web/src/lib/auth.test.ts (3 tests) 8ms
+ ✓ |workspace| packages/contracts/src/openapi.test.ts (3 tests) 70ms
+ ✓ |workspace| apps/web/src/i18n/routing.test.ts (3 tests) 1ms
+ ✓ |workspace| packages/domain/src/items/identifier-service.test.ts (11 tests) 867ms
+   ✓ identifier and tag PostgreSQL integration > scopes identifier uniqueness to an item and tags to an owner  453ms
+ ✓ |workspace| packages/domain/src/identity/security-service.test.ts (7 tests) 545ms
+ ✓ |workspace| packages/domain/src/api/resource-query.test.ts (2 tests) 6ms
+ ✓ |workspace| apps/web/src/lib/email.test.ts (2 tests) 50ms
+ ✓ |workspace| apps/web/src/app/api/health/route.test.ts (2 tests) 2ms
+ ✓ |workspace| packages/testing/src/workspace.test.ts (1 test) 3ms
+ ✓ |workspace| packages/domain/src/catalog/catalog-service.test.ts (2 tests) 2ms
+ ✓ |workspace| packages/db/src/media-lock.integration.test.ts (1 test) 111ms
+ ✓ |workspace| packages/domain/src/catalog/proposal-service.test.ts (15 tests) 8105ms
+   ✓ catalog proposal moderation PostgreSQL > supports corrections, authored translations, variant references, source updates and reference removal  481ms
+   ✓ catalog proposal moderation PostgreSQL > atomically enforces pending, rolling daily and retained-history quotas without deleting audit rows  4466ms
+ ✓ |workspace| packages/db/src/media-migration.integration.test.ts (1 test) 216ms
+ ✓ |workspace| packages/queue/src/postgres.integration.test.ts (1 test) 188ms
+ ✓ |workspace| packages/db/src/postgres.integration.test.ts (1 test) 365ms
+ ✓ |workspace| packages/domain/src/catalog/category-template-service.integration.test.ts (4 tests) 1106ms
+   ✓ category templates PostgreSQL > atomically creates and reads ordered localized definitions with stable keys  642ms
+ ✓ |workspace| packages/domain/src/media/media-read.integration.test.ts (1 test) 802ms
+   ✓ media read PostgreSQL authorization > resolves actual ancestor and document links, then revokes stale public URLs  801ms
+ ✓ |workspace| packages/domain/src/media/media-management.integration.test.ts (1 test) 1015ms
+   ✓ owner media management PostgreSQL > orders a complete gallery atomically, hides foreign links and sanitizes list DTOs  1005ms
+ ❯ |workspace| apps/worker/src/jobs/image-repository.integration.test.ts (2 tests | 1 failed) 1415ms
+   ✓ durable image claims > recovers expired claims, rejects stale tokens, and tracks a key before bytes  759ms
+   × durable image claims > paginates dispatch intents and excludes PDFs, active claims, and failed assets 655ms
+     → expected [ …(5) ] to have a length of 2 but got 5
+ ✓ |workspace| apps/web/src/lib/security-service.integration.test.ts (1 test) 799ms
+   ✓ security service Better Auth adapter integration > makes a revoked stable session id fail the next getSession call  579ms
+ ✓ |workspace| apps/web/src/app/api/v1/items/resource-route.integration.test.ts (2 tests) 1257ms
+   ✓ collection/item route PostgreSQL integration > loads trusted ancestry and enforces soft deletion through real handlers and services  621ms
+   ✓ collection/item route PostgreSQL integration > splits a populated item and preserves owner metadata, location count, and typed values  386ms
+ ✓ |workspace| packages/domain/src/media/cleanup-service.test.ts (11 tests) 3058ms
+   ✓ retention on real PostgreSQL > does not delete bytes while another media, private document, or avatar reference exists  861ms
+   ✓ retention on real PostgreSQL > serializes a reference introduced after candidate discovery and blocks relinking during deletion  397ms
+   ✓ retention on real PostgreSQL > reconciles a real image processor derivative completing after asset and variant rows were deleted  310ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/worker/src/jobs/image-repository.integration.test.ts > durable image claims > paginates dispatch intents and excludes PDFs, active claims, and failed assets
+AssertionError: expected [ …(5) ] to have a length of 2 but got 5
+
+- Expected
++ Received
+
+- 2
++ 5
+
+ ❯ apps/worker/src/jobs/image-repository.integration.test.ts:134:20
+    132|       for (const id of first) await repo.noteDispatched(id);
+    133|       const rest = await repo.dispatchCandidates(32);
+    134|       expect(rest).toHaveLength(2);
+       |                    ^
+    135|       expect(rest).not.toContain(ids[34]);
+    136|       expect(rest.some((id) => first.includes(id))).toBe(false);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 62 passed (63)
+      Tests  1 failed | 450 passed (451)
+   Start at  23:16:42
+   Duration  12.39s (transform 1.46s, setup 440ms, collect 17.17s, tests 34.90s, environment 49ms, prepare 8.09s)
+
+ ELIFECYCLE  Test failed. See above for more details.

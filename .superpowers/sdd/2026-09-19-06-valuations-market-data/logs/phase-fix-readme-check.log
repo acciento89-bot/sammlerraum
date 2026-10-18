@@ -1,0 +1,8 @@
+Checking formatting...
+All matched files use Prettier code style!
+
+FORMAT_EXIT=0
+LINK_CHECK=0 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/docs/market-provider-operations.md
+STALE_CLAIM_CHECK=0
+DIFF_CHECK=0
+EXIT=0

@@ -1,0 +1,10 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ✓ |workspace| apps/worker/src/jobs/image-repository.integration.test.ts (2 tests) 200ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Start at  23:17:17
+   Duration  489ms (transform 35ms, setup 5ms, collect 82ms, tests 200ms, environment 0ms, prepare 40ms)
+

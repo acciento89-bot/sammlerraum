@@ -1,0 +1,214 @@
+
+> sammlerraum@ test /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+> vitest run apps/web/src/components/items/item-form-values.test.ts apps/web/src/components/catalog/catalog-form-values.test.ts packages/contracts/src/grading.test.ts apps/web/src/lib/catalog-proposal-routes.integration.test.ts apps/web/src/lib/grading-routes.integration.test.ts --no-file-parallelism
+
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| apps/web/src/lib/grading-routes.integration.test.ts (10 tests | 1 failed) 215ms
+   ✓ grading routes PostgreSQL > persists owner CRUD through the adapter with full replacement and private no-store DTOs 33ms
+   × grading routes PostgreSQL > persists multiline source through protected service writes and private DTO reads 4ms
+     → expected 400 to be 201 // Object.is equality
+   ✓ grading routes PostgreSQL > requires fresh authentication and hides foreign, mismatched and invalid resource IDs 16ms
+   ✓ grading routes PostgreSQL > enforces exact Origin on every mutation 6ms
+   ✓ grading routes PostgreSQL > rejects strict malformed facts and never accepts trusted verification or cross-scale numbers 7ms
+   ✓ grading routes PostgreSQL > bounds actual UTF-8 streams independently of absent or false Content-Length 4ms
+   ✓ grading routes PostgreSQL > returns stable conflicts for duplicate certificates, lifecycle and shared item quantity writes 35ms
+   ✓ grading routes PostgreSQL > does not leak grading or private provenance through anonymous or other-user public item reads 6ms
+   ✓ grading routes PostgreSQL > accepts a zero-byte DELETE stream while removing only the requested grading 7ms
+   ✓ grading routes PostgreSQL > rejects DELETE payloads within the same independent body bound 5ms
+ ❯ |workspace| apps/web/src/lib/catalog-proposal-routes.integration.test.ts (4 tests | 1 failed) 216ms
+   ✓ catalog proposal HTTP contracts with PostgreSQL > submits, privately lists/details, reviews, approves and exposes only safe scalar proposal metadata 56ms
+   × catalog proposal HTTP contracts with PostgreSQL > bounds expected invalid attribute approval and keeps the proposal rejectable 17ms
+     → expected 500 to be 400 // Object.is equality
+   ✓ catalog proposal HTTP contracts with PostgreSQL > returns HTTP409 after stale approval commits CONFLICT and leaves the catalog unchanged 12ms
+   ✓ catalog proposal HTTP contracts with PostgreSQL > requires real authority and authored reason for rollback, and rejects foreign query scopes and cursors 13ms
+ ❯ |workspace| apps/web/src/components/items/item-form-values.test.ts (17 tests | 3 failed) 21ms
+   ✓ item form money conversion > round-trips safe minor-unit boundary 9007199254740990 without changing a cent 11ms
+   ✓ item form money conversion > round-trips safe minor-unit boundary 9007199254740991 without changing a cent 0ms
+   ✓ item form money conversion > rejects the first amount beyond the safe minor-unit contract 0ms
+   ✓ item form money conversion > uses zero fractional digits for JPY minor units 0ms
+   ✓ item form money conversion > uses three fractional digits for KWD minor units 0ms
+   ✓ item form canonical value preservation > offers an API-valid saved currency outside the original defaults 0ms
+   ✓ item form canonical value preservation > parses the complete integral exponent spelling 1e3 0ms
+   ✓ item form canonical value preservation > parses the complete integral exponent spelling -2e2 0ms
+   ✓ item form canonical value preservation > round-trips comma-containing tags alongside ordinary tags 0ms
+   ✓ saved custom-field display > localizes exact safe integers in German and English 0ms
+   ✓ saved custom-field display > localizes canonical dates without changing the input value 3ms
+   ✓ saved custom-field display > localizes high-precision decimals without losing digits 1ms
+   ✓ saved custom-field display > localizes maximum-safe-cent money without losing cents 0ms
+   × required integer custom fields > rejects blank personal INTEGER input "" 3ms
+     → expected [Function] to throw an error
+   × required integer custom fields > rejects blank personal INTEGER input " " 0ms
+     → expected [Function] to throw an error
+   × required integer custom fields > rejects blank personal INTEGER input "\t\n" 0ms
+     → expected [Function] to throw an error
+   ✓ required integer custom fields > preserves explicitly authored personal zero 0ms
+ ❯ |workspace| apps/web/src/components/catalog/catalog-form-values.test.ts (7 tests | 3 failed) 17ms
+   ✓ authored catalog form boundaries > retains independently authored languages and source metadata 1ms
+   ✓ authored catalog form boundaries > serializes exact typed choices, explicit false and money without copying private fields 11ms
+   ✓ authored catalog form boundaries > rejects precision loss before submitting an attribute proposal 1ms
+   × required catalog integer attributes > rejects enabled blank INTEGER input "" 3ms
+     → expected [Function] to throw an error
+   × required catalog integer attributes > rejects enabled blank INTEGER input " " 0ms
+     → expected [Function] to throw an error
+   × required catalog integer attributes > rejects enabled blank INTEGER input "\t\n" 0ms
+     → expected [Function] to throw an error
+   ✓ required catalog integer attributes > preserves explicitly authored catalog zero 0ms
+ ❯ |workspace| packages/contracts/src/grading.test.ts (37 tests | 1 failed) 7ms
+   × grading authored provenance > accepts trimmed NFC multiline source with CR LF and tabs 3ms
+     → [
+  {
+    "code": "custom",
+    "path": [
+      "source"
+    ],
+    "message": "Control characters are not allowed"
+  }
+]
+   ✓ grading authored provenance > rejects forbidden source control 0 0ms
+   ✓ grading authored provenance > rejects forbidden source control 1 0ms
+   ✓ grading authored provenance > rejects forbidden source control 2 0ms
+   ✓ grading authored provenance > rejects forbidden source control 3 0ms
+   ✓ grading authored provenance > rejects forbidden source control 4 0ms
+   ✓ grading authored provenance > rejects forbidden source control 5 0ms
+   ✓ grading authored provenance > rejects forbidden source control 6 0ms
+   ✓ grading authored provenance > rejects forbidden source control 7 0ms
+   ✓ grading authored provenance > rejects forbidden source control 8 0ms
+   ✓ grading authored provenance > rejects forbidden source control 11 0ms
+   ✓ grading authored provenance > rejects forbidden source control 12 0ms
+   ✓ grading authored provenance > rejects forbidden source control 14 0ms
+   ✓ grading authored provenance > rejects forbidden source control 15 0ms
+   ✓ grading authored provenance > rejects forbidden source control 16 0ms
+   ✓ grading authored provenance > rejects forbidden source control 17 0ms
+   ✓ grading authored provenance > rejects forbidden source control 18 0ms
+   ✓ grading authored provenance > rejects forbidden source control 19 0ms
+   ✓ grading authored provenance > rejects forbidden source control 20 0ms
+   ✓ grading authored provenance > rejects forbidden source control 21 0ms
+   ✓ grading authored provenance > rejects forbidden source control 22 0ms
+   ✓ grading authored provenance > rejects forbidden source control 23 0ms
+   ✓ grading authored provenance > rejects forbidden source control 24 0ms
+   ✓ grading authored provenance > rejects forbidden source control 25 0ms
+   ✓ grading authored provenance > rejects forbidden source control 26 0ms
+   ✓ grading authored provenance > rejects forbidden source control 27 0ms
+   ✓ grading authored provenance > rejects forbidden source control 28 0ms
+   ✓ grading authored provenance > rejects forbidden source control 29 0ms
+   ✓ grading authored provenance > rejects forbidden source control 30 0ms
+   ✓ grading authored provenance > rejects forbidden source control 31 0ms
+   ✓ grading authored provenance > rejects forbidden source control 127 0ms
+   ✓ grading authored provenance > keeps provider control-free 0ms
+   ✓ grading authored provenance > keeps grade control-free 0ms
+   ✓ grading authored provenance > keeps certificateNo control-free 0ms
+   ✓ grading authored provenance > keeps comparableScale control-free 0ms
+   ✓ grading authored provenance > keeps verificationUrl control-free 0ms
+   ✓ grading authored provenance > retains source length and nonblank bounds 0ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 9 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/contracts/src/grading.test.ts > grading authored provenance > accepts trimmed NFC multiline source with CR LF and tabs
+ZodError: [
+  {
+    "code": "custom",
+    "path": [
+      "source"
+    ],
+    "message": "Control characters are not allowed"
+  }
+]
+ ❯ packages/contracts/src/grading.test.ts:6:31
+      4| describe("grading authored provenance", () => {
+      5|   it("accepts trimmed NFC multiline source with CR LF and tabs", () =>…
+      6|     expect(GradingInputSchema.parse({ provider: "Provider", grade: "A"…
+       |                               ^
+      7|   });
+      8|   it.each(Array.from({ length: 128 }, (_, code) => code).filter(code =…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/9]⎯
+
+ FAIL  |workspace| apps/web/src/lib/catalog-proposal-routes.integration.test.ts > catalog proposal HTTP contracts with PostgreSQL > bounds expected invalid attribute approval and keeps the proposal rejectable
+AssertionError: expected 500 to be 400 // Object.is equality
+
+- Expected
++ Received
+
+- 400
++ 500
+
+ ❯ apps/web/src/lib/catalog-proposal-routes.integration.test.ts:160:31
+    158|       const row = (await body(submitted)).proposal;
+    159|       const response = await routes(moderator).POST_DECISION(mutation(…
+    160|       expect(response.status).toBe(400);
+       |                               ^
+    161|       expect(await response.json()).toMatchObject({ error: { code: "VA…
+    162|       expect((await db!.catalogEntry.findUniqueOrThrow({ where: { id: …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/9]⎯
+
+ FAIL  |workspace| apps/web/src/lib/grading-routes.integration.test.ts > grading routes PostgreSQL > persists multiline source through protected service writes and private DTO reads
+AssertionError: expected 400 to be 201 // Object.is equality
+
+- Expected
++ Received
+
+- 201
++ 400
+
+ ❯ apps/web/src/lib/grading-routes.integration.test.ts:132:28
+    130|     const source = "Café receipt\r\nSecond\tline\rThird\nlast";
+    131|     const created = await handlers().POST_GRADING(request("POST", { pr…
+    132|     expect(created.status).toBe(201);
+       |                            ^
+    133|     const { grading } = await created.json();
+    134|     expect(grading.source).toBe(source);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/9]⎯
+
+ FAIL  |workspace| apps/web/src/components/items/item-form-values.test.ts > required integer custom fields > rejects blank personal INTEGER input ""
+ FAIL  |workspace| apps/web/src/components/items/item-form-values.test.ts > required integer custom fields > rejects blank personal INTEGER input " "
+ FAIL  |workspace| apps/web/src/components/items/item-form-values.test.ts > required integer custom fields > rejects blank personal INTEGER input "\t\n"
+AssertionError: expected [Function] to throw an error
+
+- Expected: 
+null
+
++ Received: 
+undefined
+
+ ❯ apps/web/src/components/items/item-form-values.test.ts:84:50
+     82|  describe("required integer custom fields", () => {
+     83|   it.each(["", " ", "\t\n"])("rejects blank personal INTEGER input %j"…
+     84|     expect(() => integerCustomFieldValue(input)).toThrow("integer");
+       |                                                  ^
+     85|   });
+     86|   it("preserves explicitly authored personal zero", () => {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/9]⎯
+
+ FAIL  |workspace| apps/web/src/components/catalog/catalog-form-values.test.ts > required catalog integer attributes > rejects enabled blank INTEGER input ""
+ FAIL  |workspace| apps/web/src/components/catalog/catalog-form-values.test.ts > required catalog integer attributes > rejects enabled blank INTEGER input " "
+ FAIL  |workspace| apps/web/src/components/catalog/catalog-form-values.test.ts > required catalog integer attributes > rejects enabled blank INTEGER input "\t\n"
+AssertionError: expected [Function] to throw an error
+
+- Expected: 
+null
+
++ Received: 
+undefined
+
+ ❯ apps/web/src/components/catalog/catalog-form-values.test.ts:91:76
+     89|     form.set("attribute-enabled-integer", "on");
+     90|     form.set("attribute-integer", input);
+     91|     expect(() => readAttributes(form, [definition("integer", "INTEGER"…
+       |                                                                            ^
+     92|   });
+     93|   it("preserves explicitly authored catalog zero", () => {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/9]⎯
+
+
+ Test Files  5 failed (5)
+      Tests  9 failed | 66 passed (75)
+   Start at  02:29:42
+   Duration  1.54s (transform 157ms, setup 8ms, collect 431ms, tests 475ms, environment 0ms, prepare 153ms)
+
+ ELIFECYCLE  Test failed. See above for more details.

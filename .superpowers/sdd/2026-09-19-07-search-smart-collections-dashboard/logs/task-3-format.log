@@ -1,0 +1,14 @@
+packages/contracts/src/smart-collections.ts 54ms
+packages/domain/src/search/smart-collection-service.ts 20ms
+packages/domain/src/search/smart-collection-service.test.ts 46ms
+packages/domain/src/search/search-read.ts 10ms
+[error] No parser could be inferred for file "/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/db/prisma/schema.prisma".
+apps/web/src/lib/smart-collection-routes.ts 10ms
+apps/web/src/lib/smart-collection-route-dependencies.ts 2ms
+apps/web/src/lib/smart-collection-routes.test.ts 6ms
+apps/web/src/lib/smart-collection-routes.integration.test.ts 16ms
+apps/web/src/lib/item-search-routes.ts 6ms
+apps/web/src/app/api/v1/smart-collections/[id]/items/route.ts 1ms
+apps/web/src/app/api/v1/smart-collections/[id]/route.ts 1ms
+apps/web/src/app/api/v1/smart-collections/route.ts 1ms
+.github/workflows/ci.yml 18ms (unchanged)

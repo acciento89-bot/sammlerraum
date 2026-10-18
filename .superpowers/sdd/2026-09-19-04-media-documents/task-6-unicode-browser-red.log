@@ -1,0 +1,67 @@
+[WebServer] (node:18979) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] npm warn Unknown env config "verify-deps-before-run". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+[WebServer] (node:18978) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:19018) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:19053) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:19059) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:19062) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:19063) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:19071) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:19073) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:19076) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:19085) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:19086) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:19097) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:19104) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [desktop] › e2e/media-documents.spec.ts:104:3 › item media and private documents › Unicode upload filenames preserve literal percent sequences (9.6s)
+
+
+  1) [desktop] › e2e/media-documents.spec.ts:104:3 › item media and private documents › Unicode upload filenames preserve literal percent sequences 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByText('Upload linked to this item.', { exact: true })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByText('Upload linked to this item.', { exact: true }) with timeout 5000ms
+      - waiting for getByText('Upload linked to this item.', { exact: true })
+
+
+      113 |       await expect(input).toBeEnabled();
+      114 |       await input.setInputFiles({name,mimeType:"image/png",buffer:png});
+    > 115 |       await expect(page.getByText("Upload linked to this item.",{exact:true})).toBeVisible();
+          |                                                                                ^
+      116 |       const listing=await (await page.request.get(`/api/v1/items/${item.id}/media`)).json();
+      117 |       expect(listing.images[0].asset.originalFileName).toBe(name);
+      118 |       await expect(page.getByRole("img",{name,exact:true})).toBeVisible({timeout:50_000});
+        at /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/media-documents.spec.ts:115:80
+
+    Error Context: test-results/media-documents-item-media-6bd89-e-literal-percent-sequences-desktop/error-context.md
+
+    Error Context: test-results/media-documents-item-media-6bd89-e-literal-percent-sequences-desktop/error-context.md
+
+  1 failed
+    [desktop] › e2e/media-documents.spec.ts:104:3 › item media and private documents › Unicode upload filenames preserve literal percent sequences 
+undefined
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/media-documents.spec.ts --project=desktop --grep=Unicode upload --workers=1

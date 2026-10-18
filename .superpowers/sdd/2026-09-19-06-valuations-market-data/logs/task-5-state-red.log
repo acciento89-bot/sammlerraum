@@ -1,0 +1,155 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| apps/web/src/components/valuations/valuation-state.test.ts (7 tests | 7 failed) 6ms
+   × valuation request authority > ignores an old GET after append acknowledgement and sends a double click only once 4ms
+     → expected +0 to be 1 // Object.is equality
+   × valuation request authority > retains a confirmed row when refresh fails, and retries only GET 0ms
+     → expected undefined to be '11111111-1111-4111-8111-111111111111' // Object.is equality
+   × valuation request authority > holds an unknown POST outcome across refresh and requires explicit new-entry action 0ms
+     → expected +0 to be 1 // Object.is equality
+   × valuation request authority > makes an inactive rejection authoritative over an earlier ACTIVE read 0ms
+     → expected undefined to be 'ARCHIVED' // Object.is equality
+   × valuation request authority > bounds stale-cursor recovery to one fresh summary 0ms
+     → expected +0 to be 2 // Object.is equality
+   × valuation request authority > clears private facts on summary 404, but checks source 404 with a fresh owner summary 0ms
+     → expected +0 to be 2 // Object.is equality
+   × valuation request authority > does not let a previous scope or source overwrite a newer selection 0ms
+     → expected undefined to be 'HISTORICAL_MAPPING' // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 7 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/web/src/components/valuations/valuation-state.test.ts > valuation request authority > ignores an old GET after append acknowledgement and sends a double click only once
+AssertionError: expected +0 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ apps/web/src/components/valuations/valuation-state.test.ts:13:96
+     11|     const old = deferred<ValuationSummaryDto>(), post = deferred<Manua…
+     12|     const c=fixture({ summary: async () => ++gets===1 ? old.promise : …
+     13|     const reading=c.load(); const saving=c.append(input); await c.appe…
+       |                                                                                                ^
+     14|     post.resolve(row); await saving; old.resolve(summary); await readi…
+     15|     expect(c.state.summary?.manual.latest?.id).toBe(row.id); expect(c.…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/7]⎯
+
+ FAIL  |workspace| apps/web/src/components/valuations/valuation-state.test.ts > valuation request authority > retains a confirmed row when refresh fails, and retries only GET
+AssertionError: expected undefined to be '11111111-1111-4111-8111-111111111111' // Object.is equality
+
+- Expected: 
+"11111111-1111-4111-8111-111111111111"
+
++ Received: 
+undefined
+
+ ❯ apps/web/src/components/valuations/valuation-state.test.ts:19:52
+     17|   it("retains a confirmed row when refresh fails, and retries only GET…
+     18|     let posts=0; const c=fixture({summary:async()=>{throw new Error("o…
+     19|     await c.append(input); expect(c.state.ack?.id).toBe(row.id); expec…
+       |                                                    ^
+     20|     await c.load(); expect(posts).toBe(1); expect(c.state.ack?.id).toB…
+     21|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/7]⎯
+
+ FAIL  |workspace| apps/web/src/components/valuations/valuation-state.test.ts > valuation request authority > holds an unknown POST outcome across refresh and requires explicit new-entry action
+AssertionError: expected +0 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ apps/web/src/components/valuations/valuation-state.test.ts:25:19
+     23|     let posts=0; const c=fixture({append:async()=>{posts++;throw new E…
+     24|     await c.append(input); await c.load(); await c.append(input);
+     25|     expect(posts).toBe(1);expect(c.state.mutation).toBe("unknown");c.n…
+       |                   ^
+     26|   });
+     27|   it("makes an inactive rejection authoritative over an earlier ACTIVE…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/7]⎯
+
+ FAIL  |workspace| apps/web/src/components/valuations/valuation-state.test.ts > valuation request authority > makes an inactive rejection authoritative over an earlier ACTIVE read
+AssertionError: expected undefined to be 'ARCHIVED' // Object.is equality
+
+- Expected: 
+"ARCHIVED"
+
++ Received: 
+undefined
+
+ ❯ apps/web/src/components/valuations/valuation-state.test.ts:31:40
+     29|     const c=fixture({summary:async()=>++gets===1?old.promise:{...summa…
+     30|     const reading=c.load();await c.append(input);old.resolve(summary);…
+     31|     expect(c.state.summary?.lifecycle).toBe("ARCHIVED");expect(c.canAp…
+       |                                        ^
+     32|   });
+     33|   it("bounds stale-cursor recovery to one fresh summary", async () => {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/7]⎯
+
+ FAIL  |workspace| apps/web/src/components/valuations/valuation-state.test.ts > valuation request authority > bounds stale-cursor recovery to one fresh summary
+AssertionError: expected +0 to be 2 // Object.is equality
+
+- Expected
++ Received
+
+- 2
++ 0
+
+ ❯ apps/web/src/components/valuations/valuation-state.test.ts:35:53
+     33|   it("bounds stale-cursor recovery to one fresh summary", async () => {
+     34|     let gets=0; const c=fixture({summary:async()=>{gets++;throw new Va…
+     35|     await c.load({manualCursor:"old"});expect(gets).toBe(2);expect(c.s…
+       |                                                     ^
+     36|   });
+     37|   it("clears private facts on summary 404, but checks source 404 with …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/7]⎯
+
+ FAIL  |workspace| apps/web/src/components/valuations/valuation-state.test.ts > valuation request authority > clears private facts on summary 404, but checks source 404 with a fresh owner summary
+AssertionError: expected +0 to be 2 // Object.is equality
+
+- Expected
++ Received
+
+- 2
++ 0
+
+ ❯ apps/web/src/components/valuations/valuation-state.test.ts:39:60
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/7]⎯
+
+ FAIL  |workspace| apps/web/src/components/valuations/valuation-state.test.ts > valuation request authority > does not let a previous scope or source overwrite a newer selection
+AssertionError: expected undefined to be 'HISTORICAL_MAPPING' // Object.is equality
+
+- Expected: 
+"HISTORICAL_MAPPING"
+
++ Received: 
+undefined
+
+ ❯ apps/web/src/components/valuations/valuation-state.test.ts:44:133
+     42|   it("does not let a previous scope or source overwrite a newer select…
+     43|     const old=deferred<ValuationSummaryDto>();let gets=0;const c=fixtu…
+     44|     const read=c.load();await c.scope("HISTORICAL_MAPPING");old.resolv…
+       |                                                                                                                                     ^
+     45|   });
+     46| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/7]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  7 failed (7)
+   Start at  06:15:34
+   Duration  245ms (transform 26ms, setup 6ms, collect 21ms, tests 6ms, environment 0ms, prepare 40ms)
+

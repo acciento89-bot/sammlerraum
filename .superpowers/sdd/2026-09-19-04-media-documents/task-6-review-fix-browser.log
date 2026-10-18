@@ -1,0 +1,19 @@
+[WebServer] (node:19756) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:19755) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 6 tests using 1 worker
+
+(node:19764) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [desktop] › e2e/media-documents.spec.ts:112:3 › item media and private documents › Unicode upload filenames preserve literal percent sequences (15.3s)
+  ✓  2 [desktop] › e2e/media-documents.spec.ts:143:5 › item media and private documents › public item can have a purchase receipt that remains private (de) (38.9s)
+  ✓  3 [desktop] › e2e/media-documents.spec.ts:143:5 › item media and private documents › public item can have a purchase receipt that remains private (en) (34.8s)
+(node:20073) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  4 [mobile] › e2e/media-documents.spec.ts:112:3 › item media and private documents › Unicode upload filenames preserve literal percent sequences (7.1s)
+  ✓  5 [mobile] › e2e/media-documents.spec.ts:143:5 › item media and private documents › public item can have a purchase receipt that remains private (de) (40.5s)
+  ✓  6 [mobile] › e2e/media-documents.spec.ts:143:5 › item media and private documents › public item can have a purchase receipt that remains private (en) (36.8s)
+
+  6 passed (2.9m)

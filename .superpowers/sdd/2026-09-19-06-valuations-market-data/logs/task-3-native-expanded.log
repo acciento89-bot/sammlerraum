@@ -1,0 +1,11 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ✓ |workspace| apps/worker/src/jobs/market-sync.integration.test.ts (13 tests) 2517ms
+   ✓ market sync PostgreSQL > retries persisted queue data after ACK failure without refetching committed observations  2047ms
+
+ Test Files  1 passed (1)
+      Tests  13 passed (13)
+   Start at  04:56:57
+   Duration  2.90s (transform 96ms, setup 5ms, collect 218ms, tests 2.52s, environment 0ms, prepare 36ms)
+

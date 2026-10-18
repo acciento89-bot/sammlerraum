@@ -1,0 +1,20 @@
+{
+  ".github/workflows/ci.yml": "b699d2a0242582a35e7f44222bdc3aa39c2466e71966846b9fce1e58e15b93b3",
+  "packages/contracts/package.json": "01fe16fc718985dd42dec61fb9974429a914b7da5a2d051d2108461b3e72ca0f",
+  "packages/contracts/src/smart-collections.ts": "21bb856db9be9b604f9f8c5bd05e55c738cb30831ca35eda0ddc105894860e60",
+  "packages/domain/package.json": "ee1550ec027e002a2d0bdd1f8cc7d27a9786f882198e6c8ca01ff1dc66c3eede",
+  "packages/domain/src/search/search-read.ts": "e573162a6306987cd9d4fa1f98e4636f6116a7fd32a3d0f4a1982fdca292f9c3",
+  "packages/domain/src/search/smart-collection-service.ts": "41328e7ac49219c5a5b794dd53fb5bd847a45c6bdab36de80212897ade89dde3",
+  "packages/domain/src/search/smart-collection-service.test.ts": "423260fd26222af2df78536b4e22fcc310eb44be4e2bc089867ecac30b38d749",
+  "packages/db/prisma/schema.prisma": "a5329f17bdabb41f8283a0914431b7ebcd971718ffe2606ac52f13c5699303af",
+  "packages/db/prisma/migrations/20261018090000_smart_collections/migration.sql": "fa16293a2d3fde0c7116126546b96ab87b113bb0ee375ed48f7a99c5f5a53680",
+  "apps/web/src/lib/item-search-routes.ts": "8c4f92d1143cff4b59f0e4240adc6ea2cf28edfeabd1b1d3970e83989e0b4440",
+  "apps/web/src/lib/smart-collection-route-dependencies.ts": "963472eca77fb5fa14585f2c35e3c85b23f3ece3122e2e58dcbca14084df91b3",
+  "apps/web/src/lib/smart-collection-routes.ts": "b358b556b3cc5b8357c3bcbbe50381378ec8109ae8587065f398d05fd777dbf2",
+  "apps/web/src/lib/smart-collection-routes.test.ts": "328e9fdce2c871c660e54afb806ab65ba9b79487503e30621f81acc2c94be2a6",
+  "apps/web/src/lib/smart-collection-routes.integration.test.ts": "e1874e8aa683b48535317032e17463acb89053965e6f902239aa545c4c31189a",
+  "apps/web/src/app/api/v1/smart-collections/route.ts": "298de1d30e7c5dc7623c3139277a788747085bd8081403c4f423ef8c202eaff3",
+  "apps/web/src/app/api/v1/smart-collections/[id]/route.ts": "d0cc88275d95ec230ff846dfcfc3da1bde1af20f82824cee292120d66fe1a46d",
+  "apps/web/src/app/api/v1/smart-collections/[id]/items/route.ts": "2e6fcf3b11d69af8ad401148c16b2969763085b974fdd5458bb65f4d67199bff",
+  "docs/search/smart-collections.md": "f6b1f612f1450bc6173d091e6635397e501d96284734f52c239a4316ee03661f"
+}

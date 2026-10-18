@@ -1,0 +1,10 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ✓ |workspace| apps/web/src/lib/grading-routes.integration.test.ts (7 tests) 193ms
+
+ Test Files  1 passed (1)
+      Tests  7 passed (7)
+   Start at  00:02:18
+   Duration  598ms (transform 112ms, setup 5ms, collect 246ms, tests 193ms, environment 0ms, prepare 36ms)
+

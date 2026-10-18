@@ -1,0 +1,4 @@
+Loaded Prisma config from packages/db/prisma.config.ts.
+
+Prisma schema loaded from packages/db/prisma/schema.prisma.
+Formatted packages/db/prisma/schema.prisma in 34ms 🚀

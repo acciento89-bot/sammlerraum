@@ -1,0 +1,41 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| packages/domain/src/catalog/catalog-service.integration.test.ts (8 tests | 1 failed | 7 skipped) 202ms
+   ↓ revisioned global catalog PostgreSQL > guards persisted revision snapshots against database UPDATE
+   × revisioned global catalog PostgreSQL > keeps same-title language and edition variants separate and preserves authored text 55ms
+     → expected 1 to be 4 // Object.is equality
+   ↓ revisioned global catalog PostgreSQL > stores typed entry and variant attributes canonically and rejects foreign definitions atomically
+   ↓ revisioned global catalog PostgreSQL > retains original identifier values, namespaces, target and provenance in past snapshots
+   ↓ revisioned global catalog PostgreSQL > serializes concurrent writes with expected-revision conflicts and checks stale no-ops
+   ↓ revisioned global catalog PostgreSQL > shares the caller transaction so failed approval work rolls back state and snapshots
+   ↓ revisioned global catalog PostgreSQL > records rollback as a new revision while retaining inactive UUID identities and old snapshots
+   ↓ revisioned global catalog PostgreSQL > strictly bounds maintenance inputs and does not write personal data or unsafe provenance
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/catalog/catalog-service.integration.test.ts > revisioned global catalog PostgreSQL > keeps same-title language and edition variants separate and preserves authored text
+AssertionError: expected 1 to be 4 // Object.is equality
+
+- Expected
++ Received
+
+- 4
++ 1
+
+ ❯ packages/domain/src/catalog/catalog-service.integration.test.ts:140:62
+    138|       edition: "1st",
+    139|     });
+    140|     expect(new Set([de.id, en.id, second.id, same.id]).size).toBe(4);
+       |                                                              ^
+    141|     const revision = await service().getCatalogEntryAtRevision(entry.s…
+    142|     expect(revision!.state.text).toMatchObject({
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 7 skipped (8)
+   Start at  22:45:21
+   Duration  577ms (transform 64ms, setup 5ms, collect 129ms, tests 202ms, environment 0ms, prepare 45ms)
+

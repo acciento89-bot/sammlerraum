@@ -1,0 +1,55 @@
+
+> sammlerraum@ build /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+> pnpm -r build
+
+Scope: 9 of 10 workspace projects
+packages/config build$ pnpm typecheck
+packages/contracts build$ pnpm typecheck
+packages/storage build$ pnpm typecheck
+packages/queue build$ pnpm typecheck
+packages/contracts build: > @sammlerraum/contracts@ typecheck /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/contracts
+packages/contracts build: > tsc --noEmit --project ../../tsconfig.base.json
+packages/queue build: > @sammlerraum/queue@ typecheck /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/queue
+packages/queue build: > tsc --noEmit --project ../../tsconfig.base.json
+packages/storage build: > @sammlerraum/storage@ typecheck /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/storage
+packages/storage build: > tsc --noEmit --project ../../tsconfig.base.json
+packages/config build: > @sammlerraum/config@ typecheck /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/config
+packages/config build: > tsc --noEmit --project ../../tsconfig.base.json
+packages/contracts build: Done
+packages/testing build$ pnpm typecheck
+packages/storage build: Done
+packages/config build: Done
+packages/queue build: Done
+packages/testing build: > @sammlerraum/testing@ typecheck /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/testing
+packages/testing build: > tsc --noEmit --project ../../tsconfig.base.json
+packages/testing build: Done
+packages/db build$ pnpm typecheck
+packages/db build: > @sammlerraum/db@ typecheck /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/db
+packages/db build: > tsc --noEmit --project ../../tsconfig.base.json
+packages/db build: Done
+packages/domain build$ pnpm typecheck
+packages/domain build: > @sammlerraum/domain@ typecheck /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain
+packages/domain build: > tsc --noEmit --project ../../tsconfig.base.json
+packages/domain build: Done
+apps/worker build$ esbuild src/run.ts --bundle --platform=node --format=cjs --external:sharp --outfile=dist/worker.cjs && esbuild src/main.ts --bundle --platform=node --format=cjs --outfile=dist/main.cjs && esbuild src/maintenance/initialize-catalog.ts --bundle --platform=node --format=cjs --outfile=dist/initialize-catalog.cjs
+apps/web build$ next build
+apps/worker build:   dist/worker.cjs  6.9mb ⚠️
+apps/worker build: ⚡ Done in 86ms
+apps/worker build:   dist/main.cjs  4.0kb
+apps/worker build: ⚡ Done in 1ms
+apps/worker build:   dist/initialize-catalog.cjs  5.7mb ⚠️
+apps/worker build: ⚡ Done in 71ms
+apps/worker build: Done
+apps/web build: ▲ Next.js 16.3.5 (Turbopack)
+apps/web build: ✓ Running next.config.ts took 89ms
+apps/web build:   Creating an optimized production build ...
+apps/web build: ✓ Compiled successfully in 1477ms
+apps/web build:   Running TypeScript ...
+apps/web build: e2e/catalog-grading.spec.ts(1501,17): error TS2304: Cannot find name 'info'.
+apps/web build: e2e/catalog-grading.spec.ts(1501,63): error TS2304: Cannot find name 'info'.
+apps/web build: Failed to type check.
+apps/web build: Failed
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @sammlerraum/web@ build: `next build`
+Exit status 1
+ ELIFECYCLE  Command failed with exit code 1.

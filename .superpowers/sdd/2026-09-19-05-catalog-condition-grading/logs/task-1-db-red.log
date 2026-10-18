@@ -1,0 +1,84 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| packages/domain/src/catalog/category-template-service.integration.test.ts (4 tests | 4 failed) 4ms
+   × category templates PostgreSQL > atomically creates and reads ordered localized definitions with stable keys 3ms
+     → (0 , createCategoryTemplateMaintenanceService) is not a function
+   × category templates PostgreSQL > rejects invalid and private properties without leaving template rows 0ms
+     → (0 , createCategoryTemplateMaintenanceService) is not a function
+   × category templates PostgreSQL > maps concurrent unique-key conflicts and permits identical attribute keys in different templates 0ms
+     → (0 , createCategoryTemplateMaintenanceService) is not a function
+   × category templates PostgreSQL > enforces scoped key and order uniqueness in PostgreSQL and rolls back nested failures 0ms
+     → (0 , createCategoryTemplateMaintenanceService) is not a function
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/catalog/category-template-service.integration.test.ts > category templates PostgreSQL
+TypeError: Cannot read properties of undefined (reading 'deleteMany')
+ ❯ packages/domain/src/catalog/category-template-service.integration.test.ts:29:35
+     27|     if (!prisma) return;
+     28|     // Only rows owned by this fixture; child rows cascade from fixtur…
+     29|     await prisma.categoryTemplate.deleteMany({ where: { key: { startsW…
+       |                                   ^
+     30|     await prisma.$disconnect();
+     31|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/catalog/category-template-service.integration.test.ts > category templates PostgreSQL > atomically creates and reads ordered localized definitions with stable keys
+TypeError: (0 , createCategoryTemplateMaintenanceService) is not a function
+ ❯ packages/domain/src/catalog/category-template-service.integration.test.ts:34:21
+     32| 
+     33|   it("atomically creates and reads ordered localized definitions with …
+     34|     const service = createCategoryTemplateMaintenanceService(prisma!);
+       |                     ^
+     35|     const created = await service.createCategoryTemplate(input("read")…
+     36|     expect(created).toMatchObject({ key: `${prefix}_read`, labels: { d…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+ FAIL  |workspace| packages/domain/src/catalog/category-template-service.integration.test.ts > category templates PostgreSQL > rejects invalid and private properties without leaving template rows
+TypeError: (0 , createCategoryTemplateMaintenanceService) is not a function
+ ❯ packages/domain/src/catalog/category-template-service.integration.test.ts:47:21
+     45| 
+     46|   it("rejects invalid and private properties without leaving template …
+     47|     const service = createCategoryTemplateMaintenanceService(prisma!);
+       |                     ^
+     48|     for (const invalid of [
+     49|       { ...input("invalid"), ownerId: "private" },
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+
+ FAIL  |workspace| packages/domain/src/catalog/category-template-service.integration.test.ts > category templates PostgreSQL > maps concurrent unique-key conflicts and permits identical attribute keys in different templates
+TypeError: (0 , createCategoryTemplateMaintenanceService) is not a function
+ ❯ packages/domain/src/catalog/category-template-service.integration.test.ts:61:21
+     59| 
+     60|   it("maps concurrent unique-key conflicts and permits identical attri…
+     61|     const service = createCategoryTemplateMaintenanceService(prisma!);
+       |                     ^
+     62|     const results = await Promise.allSettled([
+     63|       service.createCategoryTemplate(input("race")), service.createCat…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯
+
+ FAIL  |workspace| packages/domain/src/catalog/category-template-service.integration.test.ts > category templates PostgreSQL > enforces scoped key and order uniqueness in PostgreSQL and rolls back nested failures
+TypeError: (0 , createCategoryTemplateMaintenanceService) is not a function
+ ❯ packages/domain/src/catalog/category-template-service.integration.test.ts:73:21
+     71| 
+     72|   it("enforces scoped key and order uniqueness in PostgreSQL and rolls…
+     73|     const service = createCategoryTemplateMaintenanceService(prisma!);
+       |                     ^
+     74|     const created = await service.createCategoryTemplate(input("constr…
+     75|     const year = created.definitions[0]!;
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/5]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  4 failed (4)
+   Start at  22:15:51
+   Duration  335ms (transform 35ms, setup 6ms, collect 76ms, tests 4ms, environment 0ms, prepare 58ms)
+

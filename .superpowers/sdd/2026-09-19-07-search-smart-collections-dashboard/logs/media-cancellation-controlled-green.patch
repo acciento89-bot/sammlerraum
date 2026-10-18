@@ -1,0 +1,143 @@
+diff --git a/apps/web/e2e/media-documents.spec.ts b/apps/web/e2e/media-documents.spec.ts
+index 053b10f..45785c4 100644
+--- a/apps/web/e2e/media-documents.spec.ts
++++ b/apps/web/e2e/media-documents.spec.ts
+@@ -228,49 +228,102 @@ test.describe("item media and private documents", () => {
+         listed = await (await page.request.get(`${base}/media`)).json();
+         expect(listed.images.map((link: { id: string }) => link.id)).toEqual([secondId, firstId]);
+         expect(JSON.stringify(listed)).not.toMatch(/storageKey|originals\/|ownerId|checksumSha256/);
+-        // Exercise cancellation while the link response and while the subsequent refresh are in flight.
++        // Controlled causal probe of the existing route lifecycle; retained as evidence, not final source.
+         for (const cancelStage of ["link", "reload"]) {
+           let releaseRequest = () => {};
+           let reachedStage = () => {};
++          let releaseCleanup = () => {};
++          let reachedCleanup = () => {};
+           let didLink = false;
+-          const atStage = new Promise<void>((resolve) => {
+-            reachedStage = resolve;
+-          });
+-          const release = new Promise<void>((resolve) => {
+-            releaseRequest = resolve;
+-          });
+-          await page.route(`**${base}/media`, async (route) => {
+-            const method = route.request().method();
+-            if (method === "POST") {
+-              const response = await route.fetch();
+-              didLink = true;
+-              if (cancelStage === "link") {
++          let compensated = false;
++          let sequence = 0;
++          const start = Date.now();
++          const active = new Set<Promise<void>>();
++          const trace = (event: string, routeId = 0) =>
++            console.log("MEDIA_CAUSAL", JSON.stringify({ cancelStage, event, routeId, ms: Date.now() - start }));
++          const atStage = new Promise<void>((resolve) => { reachedStage = resolve; });
++          const release = new Promise<void>((resolve) => { releaseRequest = resolve; });
++          const atCleanup = new Promise<void>((resolve) => { reachedCleanup = resolve; });
++          const cleanupRelease = new Promise<void>((resolve) => { releaseCleanup = resolve; });
++          const onResponse = (response: import("@playwright/test").Response) => {
++            if (response.request().method() === "DELETE" && response.url().includes(`${base}/media/`)) {
++              compensated = true;
++              trace("compensating-delete-response");
++            }
++          };
++          page.on("response", onResponse);
++          await page.route(`**${base}/media`, (route) => {
++            const routeId = ++sequence;
++            const isCleanup = compensated && route.request().method() === "GET";
++            const task = (async () => {
++              const method = route.request().method();
++              trace(`${method}-entered${isCleanup ? "-cleanup" : ""}`, routeId);
++              if (method === "POST") {
++                const response = await route.fetch({ timeout: 10_000 });
++                trace("POST-fetch-done", routeId);
++                didLink = true;
++                if (cancelStage === "link") { reachedStage(); await release; }
++                trace("POST-fulfill-start", routeId);
++                await route.fulfill({ response });
++                trace("POST-fulfill-done", routeId);
++              } else if (method === "GET" && didLink && cancelStage === "reload") {
++                const response = await route.fetch({ timeout: 10_000 });
++                trace("GET-fetch-done", routeId);
++                if (isCleanup) {
++                  const listing = await response.json();
++                  expect(listing.images).toHaveLength(2);
++                  trace("cleanup-real-listing-has-original-two", routeId);
++                  reachedCleanup();
++                  await cleanupRelease;
++                }
+                 reachedStage();
+                 await release;
+-              }
+-              await route.fulfill({ response });
+-            } else if (method === "GET" && didLink && cancelStage === "reload") {
+-              const response = await route.fetch();
+-              reachedStage();
+-              await release;
+-              await route.fulfill({ response });
+-            } else await route.continue();
+-          });
+-          await expect(upload).toBeEnabled();
+-          const name = `cancel-${cancelStage}.png`;
+-          await upload.setInputFiles({ name, mimeType: "image/png", buffer: png });
+-          await atStage;
+-          await page.getByRole("button", { name: t.cancel, exact: true }).click();
+-          releaseRequest();
+-          await expect(page.getByText(t.canceled, { exact: true })).toBeVisible();
+-          await expect(page.getByText(t.uploaded, { exact: true })).toHaveCount(0);
+-          await expect.poll(() => db.mediaLink.count({ where: { itemId: item.id } })).toBe(2);
+-          await page.unroute(`**${base}/media`);
+-          const canceledAsset = await db.mediaAsset.findFirst({
+-            where: { ownerId: owner.id, originalFileName: name },
++                trace("GET-fulfill-start", routeId);
++                await route.fulfill({ response });
++                trace("GET-fulfill-done", routeId);
++              } else await route.continue();
++            })().finally(() => { trace("handler-settled", routeId); active.delete(task); });
++            active.add(task);
++            return task;
+           });
+-          expect(canceledAsset).not.toBeNull();
+-          expect(canceledAsset?.orphanedAt).not.toBeNull();
++          try {
++            await expect(upload).toBeEnabled();
++            const name = `cancel-${cancelStage}.png`;
++            await upload.setInputFiles({ name, mimeType: "image/png", buffer: png });
++            await expect(async () => { await Promise.race([atStage, new Promise((_, reject) => setTimeout(() => reject(new Error("stage not reached")), 10_000))]); }).toPass({ timeout: 10_000 });
++            trace("stage-reached");
++            await page.getByRole("button", { name: t.cancel, exact: true }).click();
++            trace("cancel-clicked");
++            releaseRequest();
++            trace("stage-released");
++            await expect(page.getByText(t.canceled, { exact: true })).toBeVisible();
++            trace("canceled-visible");
++            await expect(page.getByText(t.uploaded, { exact: true })).toHaveCount(0);
++            await expect.poll(() => db.mediaLink.count({ where: { itemId: item.id } })).toBe(2);
++            trace("original-link-count-restored");
++            if (cancelStage === "reload") {
++              await Promise.race([atCleanup, new Promise((_, reject) => setTimeout(() => reject(new Error("cleanup GET not reached")), 10_000))]);
++              expect(await upload.isEnabled()).toBe(false);
++              trace("cleanup-held-input-still-disabled");
++            }
++            releaseCleanup();
++            trace("cleanup-released-before-drain");
++            await expect(upload).toBeEnabled();
++            trace("input-enabled-after-cleanup");
++            await Promise.all([...active]);
++            trace("handlers-drained");
++            trace("unroute-start");
++            await page.unroute(`**${base}/media`);
++            trace("unroute-done");
++            const canceledAsset = await db.mediaAsset.findFirst({ where: { ownerId: owner.id, originalFileName: name } });
++            expect(canceledAsset?.orphanedAt).not.toBeNull();
++          } finally {
++            releaseRequest();
++            releaseCleanup();
++            await Promise.allSettled([...active]);
++            page.off("response", onResponse);
++            await page.unroute(`**${base}/media`);
++          }
+         }
+         const receiptInput = page.getByLabel(t.doc, { exact: true });
+         await expect(page.getByLabel(t.visibility, { exact: true })).toHaveValue("PRIVATE");

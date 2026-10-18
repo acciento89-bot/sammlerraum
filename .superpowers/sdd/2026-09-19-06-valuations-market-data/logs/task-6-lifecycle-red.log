@@ -1,0 +1,39 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| apps/worker/src/jobs/market-sync-lifecycle.test.ts (4 tests | 1 failed) 8ms
+   × composed provider lifecycle > closes request admission synchronously and shares stop completion 5ms
+     → expected false to be true // Object.is equality
+   ✓ composed provider lifecycle > does not forget earlier cleanup failure after all handler promises settled 1ms
+   ✓ composed provider lifecycle > real main keeps database connected after lifecycle uncertainty 1ms
+   ✓ composed provider lifecycle > treats the watchdog as failure while an ignored-abort lifecycle is still pending 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/worker/src/jobs/market-sync-lifecycle.test.ts > composed provider lifecycle > closes request admission synchronously and shares stop completion
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ apps/worker/src/jobs/market-sync-lifecycle.test.ts:9:104
+      7| describe("composed provider lifecycle",()=>{
+      8|  it("closes request admission synchronously and shares stop completion…
+      9|   let closed=false;const market=setup(async()=>{closed=true;});const s…
+       |                                                                                                        ^
+     10|  });
+     11|  it("does not forget earlier cleanup failure after all handler promise…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 3 passed (4)
+   Start at  07:21:59
+   Duration  428ms (transform 74ms, setup 5ms, collect 179ms, tests 8ms, environment 0ms, prepare 44ms)
+
+
+EXIT=1

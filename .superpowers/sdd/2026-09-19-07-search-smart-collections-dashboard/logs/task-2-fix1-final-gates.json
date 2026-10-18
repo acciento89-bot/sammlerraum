@@ -1,0 +1,32 @@
+[
+  {
+    "gate": "regular",
+    "command": "source ../sammlerraum-test-env.sh\nRUN_DATABASE_INTEGRATION=0 npm exec --yes --package=node@24.19.0 --package=pnpm@10.17.1 -- pnpm test",
+    "exitCode": 0,
+    "durationSeconds": 6.989
+  },
+  {
+    "gate": "types",
+    "command": "source ../sammlerraum-test-env.sh\nnpm exec --yes --package=node@24.19.0 --package=pnpm@10.17.1 -- pnpm typecheck",
+    "exitCode": 0,
+    "durationSeconds": 32.982
+  },
+  {
+    "gate": "lint",
+    "command": "source ../sammlerraum-test-env.sh\nnpm exec --yes --package=node@24.19.0 --package=pnpm@10.17.1 -- pnpm lint",
+    "exitCode": 0,
+    "durationSeconds": 4.202
+  },
+  {
+    "gate": "build",
+    "command": "source ../sammlerraum-test-env.sh\nNODE_ENV=production npm exec --yes --package=node@24.19.0 --package=pnpm@10.17.1 -- pnpm build",
+    "exitCode": 0,
+    "durationSeconds": 37.725
+  },
+  {
+    "gate": "native",
+    "command": "source ../sammlerraum-test-env.sh\nRUN_DATABASE_INTEGRATION=1 npm exec --yes --package=node@24.19.0 --package=pnpm@10.17.1 -- pnpm vitest run --no-file-parallelism packages/domain/src/search/item-search-service.test.ts packages/domain/src/search/search-read.integration.test.ts packages/domain/src/search/search-retained-integrity.integration.test.ts apps/web/src/lib/item-search-routes.integration.test.ts packages/domain/src/valuations/valuation-query.test.ts apps/web/src/lib/valuation-routes.integration.test.ts",
+    "exitCode": 0,
+    "durationSeconds": 21.282
+  }
+]

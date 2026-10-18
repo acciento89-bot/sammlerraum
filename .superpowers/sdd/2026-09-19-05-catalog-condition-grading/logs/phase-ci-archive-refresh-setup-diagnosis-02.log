@@ -1,0 +1,39 @@
+[WebServer] (node:81835) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:81838) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ACK_SETUP login
+ACK_SETUP collection 9d2c62d9-f9c5-422d-9c1b-b9b525939f57
+ACK_SETUP new page
+ACK_SETUP save enabled
+ACK_SETUP title filled
+  ✘  1 [desktop] › e2e/collections-items.spec.ts:983:3 › localized collection and item management › acknowledged creation and archive survive snapshot refresh failures (1.0m)
+
+
+  1) [desktop] › e2e/collections-items.spec.ts:983:3 › localized collection and item management › acknowledged creation and archive survive snapshot refresh failures 
+
+    Test timeout of 60000ms exceeded.
+
+    Error: page.unrouteAll: Target page, context or browser has been closed
+
+      1093 |       expect(updates).toBe(1);
+      1094 |     } finally {
+    > 1095 |       await page.unrouteAll({ behavior: "wait" });
+           |       ^
+      1096 |       await cleanupCollector(collector.userId);
+      1097 |     }
+      1098 |   });
+        at /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/collections-items.spec.ts:1095:7
+
+    Error Context: test-results/collections-items-localize-f9a95-e-snapshot-refresh-failures-desktop/error-context.md
+
+    Error Context: test-results/collections-items-localize-f9a95-e-snapshot-refresh-failures-desktop/error-context.md
+
+  1 failed
+    [desktop] › e2e/collections-items.spec.ts:983:3 › localized collection and item management › acknowledged creation and archive survive snapshot refresh failures 
+undefined
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test collections-items.spec.ts --project=desktop --grep acknowledged creation and archive --workers=1

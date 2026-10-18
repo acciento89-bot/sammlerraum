@@ -1,0 +1,25 @@
+{
+  "frozenOwnedSha256": {
+    "packages/domain/src/search/search-retained-integrity.integration.test.ts": "8c5886c0f34c255e8df3c9eb4c075c28ea8b39ec2835a244a0ddd2ca34c8d9e6",
+    "docs/search/owned-item-search.md": "2b2490cd6b1a5eb610b7171025cc1d91c86416e1d8ab1b81265091840f9114dc"
+  },
+  "allPriorAssertionsAndTimeoutByteIdentical": true,
+  "finalApplicationAndConfigDigest": "a4a70ec8442f5850e1cf605e685f696f62680f3eb472a51733f7aa7fc8547cb3",
+  "priorBuiltSource": "eda7248973550623fe50f10714be0fc4ea199109",
+  "applicationAndConfigFiles": 389,
+  "quarantine8FilesRemainByteIdentical": true,
+  "generatedTypesCurrentFiles": [
+    "cache-life.d.ts",
+    "root-params.d.ts",
+    "routes.d.ts",
+    "validator.ts"
+  ],
+  "stagedPaths": [
+    "docs/search/owned-item-search.md",
+    "packages/domain/src/search/search-retained-integrity.integration.test.ts"
+  ],
+  "otherUnstagedRootEvidencePaths": [
+    ".superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/progress.md"
+  ],
+  "initialStagingGuard": "Stopped before staging because concurrent root progress.md edit made whole-checkout diff larger than2paths; no source/test failure or commit. Corrected guard scopes owned paths and excludes root evidence."
+}

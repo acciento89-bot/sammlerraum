@@ -1,0 +1,538 @@
+{
+  "headRevision": "8b15141a053711594f1d1ed28560c92b13da4373",
+  "capturedFrom": "GitHub connector complete job steps before completion push",
+  "runs": [
+    {
+      "run": 39092715952,
+      "total_count": 1,
+      "jobs": [
+        {
+          "id": 117572654662,
+          "run_id": 39092715952,
+          "workflow_name": "CI",
+          "head_branch": "work/sammlerraum-v1",
+          "run_url": "https://api.github.com/repos/acciento89-bot/sammlerraum/actions/runs/39092715952",
+          "run_attempt": 1,
+          "node_id": "CR_kwDOUfIdT88AAAAbX-BWRg",
+          "head_sha": "8b15141a053711594f1d1ed28560c92b13da4373",
+          "url": "https://api.github.com/repos/acciento89-bot/sammlerraum/actions/jobs/117572654662",
+          "html_url": "https://github.com/acciento89-bot/sammlerraum/actions/runs/39092715952/job/117572654662",
+          "status": "completed",
+          "conclusion": "success",
+          "created_at": "2026-10-18T03:11:03Z",
+          "started_at": "2026-10-18T03:11:04Z",
+          "completed_at": "2026-10-18T03:20:39Z",
+          "name": "verify",
+          "steps": [
+            {
+              "name": "Set up job",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 1,
+              "started_at": "2026-10-18T03:11:05Z",
+              "completed_at": "2026-10-18T03:11:07Z"
+            },
+            {
+              "name": "Initialize containers",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 2,
+              "started_at": "2026-10-18T03:11:07Z",
+              "completed_at": "2026-10-18T03:11:33Z"
+            },
+            {
+              "name": "Run actions/checkout@v4",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 3,
+              "started_at": "2026-10-18T03:11:33Z",
+              "completed_at": "2026-10-18T03:11:35Z"
+            },
+            {
+              "name": "Run pnpm/action-setup@v4",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 4,
+              "started_at": "2026-10-18T03:11:35Z",
+              "completed_at": "2026-10-18T03:11:36Z"
+            },
+            {
+              "name": "Run actions/setup-node@v4",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 5,
+              "started_at": "2026-10-18T03:11:36Z",
+              "completed_at": "2026-10-18T03:11:37Z"
+            },
+            {
+              "name": "Run pnpm install --frozen-lockfile",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 6,
+              "started_at": "2026-10-18T03:11:37Z",
+              "completed_at": "2026-10-18T03:11:42Z"
+            },
+            {
+              "name": "Run pnpm --filter @sammlerraum/db prisma generate",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 7,
+              "started_at": "2026-10-18T03:11:42Z",
+              "completed_at": "2026-10-18T03:11:44Z"
+            },
+            {
+              "name": "Apply PostgreSQL migrations",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 8,
+              "started_at": "2026-10-18T03:11:44Z",
+              "completed_at": "2026-10-18T03:11:45Z"
+            },
+            {
+              "name": "Run pnpm test",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 9,
+              "started_at": "2026-10-18T03:11:45Z",
+              "completed_at": "2026-10-18T03:11:55Z"
+            },
+            {
+              "name": "Lint workspace",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 10,
+              "started_at": "2026-10-18T03:11:55Z",
+              "completed_at": "2026-10-18T03:12:00Z"
+            },
+            {
+              "name": "Capture exact Task 7 formatting diff",
+              "status": "completed",
+              "conclusion": "skipped",
+              "number": 11,
+              "started_at": "2026-10-18T03:12:00Z",
+              "completed_at": "2026-10-18T03:12:00Z"
+            },
+            {
+              "name": "Run pnpm typecheck",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 12,
+              "started_at": "2026-10-18T03:12:00Z",
+              "completed_at": "2026-10-18T03:12:42Z"
+            },
+            {
+              "name": "Build workspace",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 13,
+              "started_at": "2026-10-18T03:12:42Z",
+              "completed_at": "2026-10-18T03:13:34Z"
+            },
+            {
+              "name": "Run real database health and pg-boss singleton integration tests",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 14,
+              "started_at": "2026-10-18T03:13:34Z",
+              "completed_at": "2026-10-18T03:14:06Z"
+            },
+            {
+              "name": "Install Chromium for authentication journeys",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 15,
+              "started_at": "2026-10-18T03:14:06Z",
+              "completed_at": "2026-10-18T03:14:25Z"
+            },
+            {
+              "name": "Run storage label browser journeys against production",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 16,
+              "started_at": "2026-10-18T03:14:25Z",
+              "completed_at": "2026-10-18T03:14:33Z"
+            },
+            {
+              "name": "Run protected media browser journey against production",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 17,
+              "started_at": "2026-10-18T03:14:33Z",
+              "completed_at": "2026-10-18T03:17:28Z"
+            },
+            {
+              "name": "Run catalog and grading browser journeys against production",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 18,
+              "started_at": "2026-10-18T03:17:28Z",
+              "completed_at": "2026-10-18T03:18:44Z"
+            },
+            {
+              "name": "Run authentication browser journeys against production",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 19,
+              "started_at": "2026-10-18T03:18:44Z",
+              "completed_at": "2026-10-18T03:18:54Z"
+            },
+            {
+              "name": "Run collection and item browser journeys against production",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 20,
+              "started_at": "2026-10-18T03:18:54Z",
+              "completed_at": "2026-10-18T03:19:19Z"
+            },
+            {
+              "name": "Run bash scripts/verify-compose.sh",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 21,
+              "started_at": "2026-10-18T03:19:19Z",
+              "completed_at": "2026-10-18T03:19:21Z"
+            },
+            {
+              "name": "Run docker build -f Dockerfile.web --build-arg NEXT_PUBLIC_APP_ORIGIN=https://example.invalid .",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 22,
+              "started_at": "2026-10-18T03:19:21Z",
+              "completed_at": "2026-10-18T03:20:03Z"
+            },
+            {
+              "name": "Run docker build -f Dockerfile.worker -t sammlerraum-worker-ci .",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 23,
+              "started_at": "2026-10-18T03:20:03Z",
+              "completed_at": "2026-10-18T03:20:32Z"
+            },
+            {
+              "name": "Decode with Sharp in the final worker image",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 24,
+              "started_at": "2026-10-18T03:20:32Z",
+              "completed_at": "2026-10-18T03:20:32Z"
+            },
+            {
+              "name": "Post Run actions/setup-node@v4",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 45,
+              "started_at": "2026-10-18T03:20:32Z",
+              "completed_at": "2026-10-18T03:20:36Z"
+            },
+            {
+              "name": "Post Run pnpm/action-setup@v4",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 46,
+              "started_at": "2026-10-18T03:20:36Z",
+              "completed_at": "2026-10-18T03:20:36Z"
+            },
+            {
+              "name": "Post Run actions/checkout@v4",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 47,
+              "started_at": "2026-10-18T03:20:36Z",
+              "completed_at": "2026-10-18T03:20:36Z"
+            },
+            {
+              "name": "Stop containers",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 48,
+              "started_at": "2026-10-18T03:20:36Z",
+              "completed_at": "2026-10-18T03:20:37Z"
+            },
+            {
+              "name": "Complete job",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 49,
+              "started_at": "2026-10-18T03:20:37Z",
+              "completed_at": "2026-10-18T03:20:37Z"
+            }
+          ],
+          "check_run_url": "https://api.github.com/repos/acciento89-bot/sammlerraum/check-runs/117572654662",
+          "labels": [
+            "ubuntu-latest"
+          ],
+          "runner_id": 1000053013,
+          "runner_name": "GitHub Actions 1000053013",
+          "runner_group_id": 0,
+          "runner_group_name": "GitHub Actions"
+        }
+      ]
+    },
+    {
+      "run": 39092712883,
+      "total_count": 1,
+      "jobs": [
+        {
+          "id": 117572644973,
+          "run_id": 39092712883,
+          "workflow_name": "CI",
+          "head_branch": "work/sammlerraum-v1",
+          "run_url": "https://api.github.com/repos/acciento89-bot/sammlerraum/actions/runs/39092712883",
+          "run_attempt": 1,
+          "node_id": "CR_kwDOUfIdT88AAAAbX-AwbQ",
+          "head_sha": "8b15141a053711594f1d1ed28560c92b13da4373",
+          "url": "https://api.github.com/repos/acciento89-bot/sammlerraum/actions/jobs/117572644973",
+          "html_url": "https://github.com/acciento89-bot/sammlerraum/actions/runs/39092712883/job/117572644973",
+          "status": "completed",
+          "conclusion": "success",
+          "created_at": "2026-10-18T03:10:59Z",
+          "started_at": "2026-10-18T03:11:01Z",
+          "completed_at": "2026-10-18T03:22:12Z",
+          "name": "verify",
+          "steps": [
+            {
+              "name": "Set up job",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 1,
+              "started_at": "2026-10-18T03:11:02Z",
+              "completed_at": "2026-10-18T03:11:03Z"
+            },
+            {
+              "name": "Initialize containers",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 2,
+              "started_at": "2026-10-18T03:11:03Z",
+              "completed_at": "2026-10-18T03:11:24Z"
+            },
+            {
+              "name": "Run actions/checkout@v4",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 3,
+              "started_at": "2026-10-18T03:11:24Z",
+              "completed_at": "2026-10-18T03:11:26Z"
+            },
+            {
+              "name": "Run pnpm/action-setup@v4",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 4,
+              "started_at": "2026-10-18T03:11:26Z",
+              "completed_at": "2026-10-18T03:11:27Z"
+            },
+            {
+              "name": "Run actions/setup-node@v4",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 5,
+              "started_at": "2026-10-18T03:11:27Z",
+              "completed_at": "2026-10-18T03:11:28Z"
+            },
+            {
+              "name": "Run pnpm install --frozen-lockfile",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 6,
+              "started_at": "2026-10-18T03:11:28Z",
+              "completed_at": "2026-10-18T03:11:34Z"
+            },
+            {
+              "name": "Run pnpm --filter @sammlerraum/db prisma generate",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 7,
+              "started_at": "2026-10-18T03:11:34Z",
+              "completed_at": "2026-10-18T03:11:36Z"
+            },
+            {
+              "name": "Apply PostgreSQL migrations",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 8,
+              "started_at": "2026-10-18T03:11:36Z",
+              "completed_at": "2026-10-18T03:11:38Z"
+            },
+            {
+              "name": "Run pnpm test",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 9,
+              "started_at": "2026-10-18T03:11:38Z",
+              "completed_at": "2026-10-18T03:11:52Z"
+            },
+            {
+              "name": "Lint workspace",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 10,
+              "started_at": "2026-10-18T03:11:52Z",
+              "completed_at": "2026-10-18T03:11:59Z"
+            },
+            {
+              "name": "Capture exact Task 7 formatting diff",
+              "status": "completed",
+              "conclusion": "skipped",
+              "number": 11,
+              "started_at": "2026-10-18T03:11:59Z",
+              "completed_at": "2026-10-18T03:11:59Z"
+            },
+            {
+              "name": "Run pnpm typecheck",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 12,
+              "started_at": "2026-10-18T03:11:59Z",
+              "completed_at": "2026-10-18T03:12:59Z"
+            },
+            {
+              "name": "Build workspace",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 13,
+              "started_at": "2026-10-18T03:12:59Z",
+              "completed_at": "2026-10-18T03:14:15Z"
+            },
+            {
+              "name": "Run real database health and pg-boss singleton integration tests",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 14,
+              "started_at": "2026-10-18T03:14:15Z",
+              "completed_at": "2026-10-18T03:14:59Z"
+            },
+            {
+              "name": "Install Chromium for authentication journeys",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 15,
+              "started_at": "2026-10-18T03:14:59Z",
+              "completed_at": "2026-10-18T03:15:19Z"
+            },
+            {
+              "name": "Run storage label browser journeys against production",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 16,
+              "started_at": "2026-10-18T03:15:19Z",
+              "completed_at": "2026-10-18T03:15:28Z"
+            },
+            {
+              "name": "Run protected media browser journey against production",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 17,
+              "started_at": "2026-10-18T03:15:28Z",
+              "completed_at": "2026-10-18T03:18:25Z"
+            },
+            {
+              "name": "Run catalog and grading browser journeys against production",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 18,
+              "started_at": "2026-10-18T03:18:25Z",
+              "completed_at": "2026-10-18T03:20:07Z"
+            },
+            {
+              "name": "Run authentication browser journeys against production",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 19,
+              "started_at": "2026-10-18T03:20:07Z",
+              "completed_at": "2026-10-18T03:20:18Z"
+            },
+            {
+              "name": "Run collection and item browser journeys against production",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 20,
+              "started_at": "2026-10-18T03:20:18Z",
+              "completed_at": "2026-10-18T03:20:49Z"
+            },
+            {
+              "name": "Run bash scripts/verify-compose.sh",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 21,
+              "started_at": "2026-10-18T03:20:49Z",
+              "completed_at": "2026-10-18T03:20:50Z"
+            },
+            {
+              "name": "Run docker build -f Dockerfile.web --build-arg NEXT_PUBLIC_APP_ORIGIN=https://example.invalid .",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 22,
+              "started_at": "2026-10-18T03:20:50Z",
+              "completed_at": "2026-10-18T03:21:36Z"
+            },
+            {
+              "name": "Run docker build -f Dockerfile.worker -t sammlerraum-worker-ci .",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 23,
+              "started_at": "2026-10-18T03:21:36Z",
+              "completed_at": "2026-10-18T03:22:05Z"
+            },
+            {
+              "name": "Decode with Sharp in the final worker image",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 24,
+              "started_at": "2026-10-18T03:22:05Z",
+              "completed_at": "2026-10-18T03:22:05Z"
+            },
+            {
+              "name": "Post Run actions/setup-node@v4",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 45,
+              "started_at": "2026-10-18T03:22:05Z",
+              "completed_at": "2026-10-18T03:22:09Z"
+            },
+            {
+              "name": "Post Run pnpm/action-setup@v4",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 46,
+              "started_at": "2026-10-18T03:22:09Z",
+              "completed_at": "2026-10-18T03:22:10Z"
+            },
+            {
+              "name": "Post Run actions/checkout@v4",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 47,
+              "started_at": "2026-10-18T03:22:10Z",
+              "completed_at": "2026-10-18T03:22:10Z"
+            },
+            {
+              "name": "Stop containers",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 48,
+              "started_at": "2026-10-18T03:22:10Z",
+              "completed_at": "2026-10-18T03:22:10Z"
+            },
+            {
+              "name": "Complete job",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 49,
+              "started_at": "2026-10-18T03:22:10Z",
+              "completed_at": "2026-10-18T03:22:10Z"
+            }
+          ],
+          "check_run_url": "https://api.github.com/repos/acciento89-bot/sammlerraum/check-runs/117572644973",
+          "labels": [
+            "ubuntu-latest"
+          ],
+          "runner_id": 1000053012,
+          "runner_name": "GitHub Actions 1000053012",
+          "runner_group_id": 0,
+          "runner_group_name": "GitHub Actions"
+        }
+      ]
+    }
+  ]
+}

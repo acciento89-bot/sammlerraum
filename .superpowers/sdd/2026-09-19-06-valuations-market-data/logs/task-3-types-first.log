@@ -1,0 +1,7 @@
+apps/worker/src/jobs/market-sync-dispatcher.ts(41,12): error TS2339: Property 'occupied' does not exist on type '{ occupied: number; } | undefined'.
+apps/worker/src/jobs/sync-market-data.test.ts(11,70): error TS2322: Type '{ find: Mock<(p: ReturnType<typeof payload>) => Promise<{} | null>>; validate: Mock<() => Promise<void>>; commit: Mock<(p: ReturnType<typeof payload>) => Promise<...>>; }' is not assignable to type 'MarketSyncRepository'.
+  The types returned by 'find(...)' are incompatible between these types.
+    Type 'Promise<{} | null>' is not assignable to type 'Promise<MarketSyncReceipt | null>'.
+      Type '{} | null' is not assignable to type 'MarketSyncReceipt | null'.
+        Property 'request' is missing in type '{}' but required in type 'MarketSyncReceipt'.
+apps/worker/src/jobs/sync-market-data.test.ts(20,183): error TS2739: Type '{ find: Mock<Procedure>; }' is missing the following properties from type 'MarketSyncRepository': validate, commit

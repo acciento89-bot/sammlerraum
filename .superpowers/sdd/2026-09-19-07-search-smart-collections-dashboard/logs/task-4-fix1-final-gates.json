@@ -1,0 +1,42 @@
+{
+  "base": "bb2aaabd87b42ec1a97f3dd1f8591d9b5c1643a5",
+  "sourceCommit": "91ae759a0465530d7ddb8b01fd38f635a16991b2",
+  "sourceManifest": "task-4-fix1-frozen-source.json",
+  "sourcePathCount": 5,
+  "native": {
+    "exitCode": 0,
+    "files": 3,
+    "passed": 46,
+    "skipped": 0,
+    "databaseBackedCases": 37,
+    "selectedPointCorruptionSimulationCasesWithinDatabaseBackedCount": 4,
+    "pureCases": 9
+  },
+  "regular": {
+    "exitCode": 0,
+    "filesPassed": 74,
+    "filesSkipped": 38,
+    "passed": 794,
+    "skipped": 424
+  },
+  "typecheck": {
+    "exitCode": 0
+  },
+  "lint": {
+    "exitCode": 0
+  },
+  "productionBuild": {
+    "exitCode": 0
+  },
+  "runtime": {
+    "node": "24.19.0",
+    "pnpm": "10.17.1",
+    "database": "sammlerraum_test",
+    "postgres": "17.11"
+  },
+  "queryCallsIncludingSettings": {
+    "ordinary": 15,
+    "withURL": 17
+  },
+  "postFreezeSourceChanges": false
+}

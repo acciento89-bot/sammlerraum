@@ -1,0 +1,3 @@
+packages/domain/src/catalog/proposal-service.ts 52ms (unchanged)
+packages/domain/src/catalog/proposal-service.test.ts 69ms
+apps/web/src/lib/catalog-proposal-routes.ts 8ms (unchanged)

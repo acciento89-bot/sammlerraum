@@ -1,0 +1,72 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| apps/web/src/components/valuations/valuation-money.test.ts (27 tests | 1 failed) 24ms
+   ✓ stored valuation scale and exact digits > preserves 0 EUR at stored exponent 2 12ms
+   ✓ stored valuation scale and exact digits > preserves 100 AFN at stored exponent 2 0ms
+   ✓ stored valuation scale and exact digits > preserves 1001 IQD at stored exponent 3 0ms
+   ✓ stored valuation scale and exact digits > preserves 1 CLF at stored exponent 4 0ms
+   ✓ stored valuation scale and exact digits > preserves 1 UYW at stored exponent 4 0ms
+   ✓ stored valuation scale and exact digits > preserves 9223372036854775807 JPY at stored exponent 0 0ms
+   ✓ stored valuation scale and exact digits > preserves 9223372036854775807 EUR at stored exponent 2 0ms
+   ✓ stored valuation scale and exact digits > preserves 9223372036854775807 KWD at stored exponent 3 0ms
+   ✓ stored valuation scale and exact digits > preserves 9223372036854775807 CLF at stored exponent 4 0ms
+   ✓ stored valuation scale and exact digits > preserves 1230 ANG at stored exponent 3 0ms
+   ✓ stored valuation scale and exact digits > preserves 100 EUR at stored exponent 0 0ms
+   ✓ stored valuation scale and exact digits > rejects missing/invalid stored facts rather than treating them as zero 1ms
+   ✓ manual draft interpretation > keeps input locale, UTC year 0001 and trimmed codepoints 2ms
+   ✓ manual draft interpretation > rejects invalid draft 0 0ms
+   ✓ manual draft interpretation > rejects invalid draft 1 0ms
+   ✓ manual draft interpretation > rejects invalid draft 2 0ms
+   ✓ manual draft interpretation > rejects invalid draft 3 0ms
+   ✓ manual draft interpretation > rejects invalid draft 4 0ms
+   ✓ manual draft interpretation > rejects invalid draft 5 0ms
+   ✓ manual draft interpretation > rejects invalid draft 6 0ms
+   ✓ manual draft interpretation > rejects invalid draft 7 0ms
+   ✓ manual draft interpretation > rejects invalid draft 8 0ms
+   ✓ manual draft interpretation > rejects invalid draft 9 0ms
+   ✓ manual draft interpretation > revalidates selected currency without rounding 0ms
+   ✓ manual draft interpretation > respects stated observation precision 3ms
+   ✓ catalog display keeps exact safe-number digits with existing legacy scale 0ms
+   × formats a validated manual DTO without rejecting its non-money provenance 2ms
+     → [
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "id"
+    ],
+    "path": [],
+    "message": "Unrecognized key: \"id\""
+  }
+]
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/web/src/components/valuations/valuation-money.test.ts > formats a validated manual DTO without rejecting its non-money provenance
+ZodError: [
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "id"
+    ],
+    "path": [],
+    "message": "Unrecognized key: \"id\""
+  }
+]
+ ❯ formatValuationMoney apps/web/src/components/valuations/valuation-money.ts:8:78
+      6| const storedMoney = z.object({ amountMinor: AmountMinorSchema, currenc…
+      7| export function formatValuationMoney(money: z.infer<typeof storedMoney…
+      8|   const { amountMinor, currency, minorUnitExponent: exponent } = store…
+       |                                                                              ^
+      9|   const exact = BigInt(amountMinor), scale = 10n ** BigInt(exponent);
+     10|   const fraction = String(exact % scale).padStart(exponent, "0");
+ ❯ apps/web/src/components/valuations/valuation-money.test.ts:59:10
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 26 passed (27)
+   Start at  06:20:38
+   Duration  354ms (transform 44ms, setup 5ms, collect 111ms, tests 24ms, environment 0ms, prepare 54ms)
+

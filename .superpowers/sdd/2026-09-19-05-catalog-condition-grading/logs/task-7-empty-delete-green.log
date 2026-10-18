@@ -1,0 +1,11 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ✓ |workspace| apps/web/src/lib/catalog-link-routes.integration.test.ts (6 tests) 235ms
+ ✓ |workspace| apps/web/src/lib/grading-routes.integration.test.ts (9 tests) 205ms
+
+ Test Files  2 passed (2)
+      Tests  15 passed (15)
+   Start at  01:09:43
+   Duration  1.15s (transform 167ms, setup 7ms, collect 420ms, tests 440ms, environment 0ms, prepare 72ms)
+

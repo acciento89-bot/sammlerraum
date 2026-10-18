@@ -1,0 +1,21 @@
+apps/worker/src/jobs/sync-market-data.ts 40ms
+apps/worker/src/jobs/sync-market-data.test.ts 18ms
+apps/worker/src/jobs/market-sync-repository.ts 9ms
+apps/worker/src/jobs/market-sync-dispatcher.ts 12ms
+apps/worker/src/jobs/market-sync-runtime.ts 4ms
+apps/worker/src/jobs/market-sync.integration.test.ts 36ms
+apps/worker/src/main.ts 6ms
+apps/worker/src/main.test.ts 9ms
+apps/worker/src/run.ts 6ms
+apps/worker/src/run.test.ts 4ms
+apps/worker/src/run-wiring.test.ts 4ms
+apps/worker/package.json 10ms (unchanged)
+packages/config/src/server.ts 8ms
+packages/config/src/server.test.ts 6ms
+packages/db/src/create-client.ts 1ms
+packages/domain/src/market-data/market-data-service.ts 16ms
+packages/market-data/src/types.ts 3ms
+packages/queue/src/index.ts 1ms
+packages/queue/src/runtime.ts 5ms
+packages/queue/src/pg-boss-queue.test.ts 13ms
+.github/workflows/ci.yml 15ms (unchanged)

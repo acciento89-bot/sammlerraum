@@ -1,0 +1,40 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| packages/domain/src/catalog/item-catalog-link.test.ts (1 test | 1 failed) 180ms
+   × personal catalog links PostgreSQL > keeps the personal item and independent facts when its catalog link is removed 30ms
+     → expected { …(24) } to match object { …(10) }
+(14 matching properties omitted from actual)
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/catalog/item-catalog-link.test.ts > personal catalog links PostgreSQL > keeps the personal item and independent facts when its catalog link is removed
+AssertionError: expected { …(24) } to match object { …(10) }
+(14 matching properties omitted from actual)
+
+- Expected
++ Received
+
+@@ -1,8 +1,8 @@
+  {
+-   "catalogEntryId": null,
+-   "catalogVariantId": null,
++   "catalogEntryId": "3adea741-b64f-4df5-8b3d-f12a0706108b",
++   "catalogVariantId": "2b5d66a4-7cad-4278-a772-ea294c340179",
+    "categoryTemplateId": "78c2ed43-f68f-43d6-8ddb-e2bad47fb587",
+    "conditionOptionId": "7beaca9b-87b7-4c35-a10d-b654401ebdf0",
+    "id": "99b5064f-c84c-4ebb-b3da-ecec2cad5fac",
+    "privateNotes": "Private retention",
+    "purchaseAmountMinor": 1234n,
+
+ ❯ packages/domain/src/catalog/item-catalog-link.test.ts:60:23
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+   Start at  00:22:41
+   Duration  547ms (transform 74ms, setup 5ms, collect 153ms, tests 180ms, environment 0ms, prepare 40ms)
+

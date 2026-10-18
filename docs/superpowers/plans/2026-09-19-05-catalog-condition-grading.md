@@ -1,6 +1,6 @@
 # Catalog, Condition, and Grading Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** Implement category templates, the global reference catalog, variants, external identifiers, revision history, moderated catalog proposals, category-specific condition schemas, and grading records.
 
@@ -39,7 +39,7 @@
 **Interfaces:**
 - Produces: `createCategoryTemplate`, `getCategoryTemplate`, typed `CatalogAttributeDefinition`.
 
-- [ ] **Step 1: Write failing schema test**
+- [x] **Step 1: Write failing schema test**
 
 ```ts
 it("rejects a catalog attribute value that does not match its definition", async () => {
@@ -48,16 +48,16 @@ it("rejects a catalog attribute value that does not match its definition", async
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run packages/domain/src/catalog/category-template-service.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Add models and implementation**
+- [x] **Step 3: Add models and implementation**
 
 Add `CategoryTemplate`, localized template labels, `CatalogAttributeDefinition`, allowed field types matching the custom-field primitive types, and stable language-neutral keys.
 
-- [ ] **Step 4: Migrate and test**
+- [x] **Step 4: Migrate and test**
 
 Run:
 ```bash
@@ -67,7 +67,7 @@ pnpm vitest run packages/domain/src/catalog/category-template-service.test.ts
 
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/db packages/domain/src/catalog packages/contracts/src/catalog.ts
@@ -86,7 +86,7 @@ git commit -m "feat: add category catalog templates"
 **Interfaces:**
 - Produces: `createCatalogEntry`, `addCatalogVariant`, `addExternalIdentifier`, `getCatalogEntryAtRevision`.
 
-- [ ] **Step 1: Write failing variant-distinction test**
+- [x] **Step 1: Write failing variant-distinction test**
 
 ```ts
 it("keeps language and edition variants separate", async () => {
@@ -96,16 +96,16 @@ it("keeps language and edition variants separate", async () => {
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run packages/domain/src/catalog/catalog-service.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement revisioned catalog**
+- [x] **Step 3: Implement revisioned catalog**
 
 Add `CatalogEntry`, `CatalogVariant`, `CatalogExternalIdentifier`, `CatalogRevision`, source/license metadata, localized text where needed, and immutable revision snapshots for canonical changes.
 
-- [ ] **Step 4: Migrate and test**
+- [x] **Step 4: Migrate and test**
 
 Run:
 ```bash
@@ -115,7 +115,7 @@ pnpm vitest run packages/domain/src/catalog/catalog-service.test.ts
 
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/db packages/domain/src/catalog
@@ -135,7 +135,7 @@ git commit -m "feat: add revisioned global catalog"
 **Interfaces:**
 - Produces: `submitProposal`, `approveProposal`, `rejectProposal`.
 
-- [ ] **Step 1: Write failing stale-revision test**
+- [x] **Step 1: Write failing stale-revision test**
 
 ```ts
 it("does not auto-apply a proposal against a stale base revision", async () => {
@@ -145,21 +145,21 @@ it("does not auto-apply a proposal against a stale base revision", async () => {
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run packages/domain/src/catalog/proposal-service.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement proposal states**
+- [x] **Step 3: Implement proposal states**
 
 States: `PENDING`, `APPROVED`, `REJECTED`, `CONFLICT`. Store proposer, base revision, proposed patch, source note/URL, moderator, moderation time, decision reason.
 
-- [ ] **Step 4: Run tests**
+- [x] **Step 4: Run tests**
 
 Run: `pnpm vitest run packages/domain/src/catalog/proposal-service.test.ts`  
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/db packages/domain/src/catalog/proposal-service.ts packages/domain/src/catalog/proposal-service.test.ts apps/web/src/app/api/v1/catalog
@@ -178,7 +178,7 @@ git commit -m "feat: add moderated catalog proposals"
 **Interfaces:**
 - Produces: `getConditionScheme(categoryId)`, `setItemCondition(itemId, optionId)`.
 
-- [ ] **Step 1: Write failing separation test**
+- [x] **Step 1: Write failing separation test**
 
 ```ts
 it("stores exact condition label and optional normalized band separately", async () => {
@@ -188,21 +188,21 @@ it("stores exact condition label and optional normalized band separately", async
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run packages/domain/src/condition/condition-service.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement condition schemes**
+- [x] **Step 3: Implement condition schemes**
 
 Add `ConditionScheme`, `ConditionOption`, localized label keys, optional normalized band 1–5, ordering, active flag, and item condition relation.
 
-- [ ] **Step 4: Run tests**
+- [x] **Step 4: Run tests**
 
 Run: `pnpm vitest run packages/domain/src/condition`  
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/db packages/domain/src/condition
@@ -221,7 +221,7 @@ git commit -m "feat: add category condition schemes"
 **Interfaces:**
 - Produces: `addGrading`, `updateGrading`, `removeGrading`.
 
-- [ ] **Step 1: Write failing provider-scope test**
+- [x] **Step 1: Write failing provider-scope test**
 
 ```ts
 it("allows equal certificate numbers across different providers", async () => {
@@ -231,21 +231,21 @@ it("allows equal certificate numbers across different providers", async () => {
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run packages/domain/src/grading/grading-service.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement grading model**
+- [x] **Step 3: Implement grading model**
 
 Store provider, grade as normalized string plus optional numeric comparable value, certificate number, graded date, verification URL, and provenance/source.
 
-- [ ] **Step 4: Run tests**
+- [x] **Step 4: Run tests**
 
 Run: `pnpm vitest run packages/domain/src/grading`  
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/db packages/domain/src/grading
@@ -264,7 +264,7 @@ git commit -m "feat: add external grading records"
 **Interfaces:**
 - Produces: `linkItemToCatalog(itemId, entryId, variantId?)`, `unlinkItemFromCatalog`.
 
-- [ ] **Step 1: Write failing unlink resilience test**
+- [x] **Step 1: Write failing unlink resilience test**
 
 ```ts
 it("keeps the personal item when its catalog link is removed", async () => {
@@ -273,16 +273,16 @@ it("keeps the personal item when its catalog link is removed", async () => {
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run packages/domain/src/catalog/item-catalog-link.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement linking**
+- [x] **Step 3: Implement linking**
 
 Require variant belongs to entry. Catalog IDs remain optional. Do not copy user-private facts into global catalog fields.
 
-- [ ] **Step 4: Run tests and build**
+- [x] **Step 4: Run tests and build**
 
 Run:
 ```bash
@@ -292,7 +292,7 @@ pnpm --filter @sammlerraum/web build
 
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/domain/src/items packages/domain/src/catalog apps/web/src/app/api/v1/catalog
@@ -316,7 +316,7 @@ git commit -m "feat: link personal items to global catalog"
 - Consumes: catalog search/link/proposal, condition, grading APIs.
 - Produces: reference lookup/linking, new-entry/correction proposal UI, category condition selection, independent grading editor.
 
-- [ ] **Step 1: Write failing separation E2E**
+- [x] **Step 1: Write failing separation E2E**
 
 ```ts
 test("changing own condition does not overwrite external grading", async ({ page }) => {
@@ -328,16 +328,16 @@ test("changing own condition does not overwrite external grading", async ({ page
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm --filter @sammlerraum/web exec playwright test e2e/catalog-grading.spec.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement UI**
+- [x] **Step 3: Implement UI**
 
 Catalog candidates always show variant-disambiguating fields such as language/edition/reference. Proposal forms require change summary and optional source URL. Condition and grading render as separate sections.
 
-- [ ] **Step 4: Run E2E/build**
+- [x] **Step 4: Run E2E/build**
 
 Run:
 ```bash
@@ -347,7 +347,7 @@ pnpm --filter @sammlerraum/web build
 
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add apps/web

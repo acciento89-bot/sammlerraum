@@ -1,0 +1,62 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| packages/domain/src/media/media-service.test.ts (18 tests | 1 failed | 1 skipped) 31ms
+   ✓ media service > rejects a PDF renamed to .jpg 3ms
+   ✓ media service > rejects a source over the configured byte limit 5ms
+   ✓ media service > rejects a compressed image exceeding the decoded pixel limit 2ms
+   ✓ media service > rejects a truncated image despite a valid magic header 2ms
+   ✓ media service > records the storage key before put and leaves a recoverable intent on failure 3ms
+   ✓ media service > keeps processing intent durable even when the upload status update fails 1ms
+   × media service > rejects a late upload completion after cleanup claimed its unlinked intent 8ms
+     → promise resolved "{ …(9) }" instead of rejecting
+   ✓ media service > validates and saves an image with a persistent pending processing status 2ms
+   ✓ media service > stores a PDF as a private document with no image decoding 0ms
+   ✓ media service > keeps image-backed documents pending sanitized processing 1ms
+   ✓ media service > rejects a claimed MIME that disagrees with detected content 0ms
+   ✓ media service > retains a tracked upload if a link transaction fails 2ms
+   ✓ media service > does not link to a foreign or deleted item 0ms
+   ✓ media service > persists a private categorized document link without exposing storage keys 0ms
+   ✓ media service > rejects a document as a gallery image and an unready asset 0ms
+   ✓ media service > rejects embedded NUL in a link title before database persistence 0ms
+   ✓ media service > hides foreign assets and rejects unsupported future targets before linking 0ms
+   ↓ media PostgreSQL integration > enforces owned item and avatar references on real rows
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/media/media-service.test.ts > media service > rejects a late upload completion after cleanup claimed its unlinked intent
+AssertionError: promise resolved "{ …(9) }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "byteSize": 270,
++   "checksumSha256": "0ab2971710c6e5d2938a038182feeb36ea8531b76fcad162b93031f2d8d56391",
++   "height": 2,
++   "id": "b90643d1-fe0a-4a71-a666-b29c7ed5a359",
++   "kind": "IMAGE",
++   "mimeType": "image/jpeg",
++   "originalFileName": "photo.jpg",
++   "status": "PENDING",
++   "width": 2,
+  }
+
+ ❯ packages/domain/src/media/media-service.test.ts:148:71
+    146|       Object.values(assets)[0]!.cleanupStartedAt = new Date();
+    147|     });
+    148|     await expect(service.createImageUpload(actor, await image(), meta)…
+       |                                                                       ^
+    149|     expect(Object.values(assets)[0]!.status).toBe("UPLOADING");
+    150|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 16 passed | 1 skipped (18)
+   Start at  20:57:36
+   Duration  451ms (transform 58ms, setup 5ms, collect 195ms, tests 31ms, environment 0ms, prepare 49ms)
+

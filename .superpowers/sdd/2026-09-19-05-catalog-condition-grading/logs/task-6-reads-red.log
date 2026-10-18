@@ -1,0 +1,80 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| packages/domain/src/catalog/catalog-read-service.test.ts (4 tests | 3 failed) 337ms
+   × bounded canonical reads PostgreSQL > searches authored translations and disambiguation with compact previews and keyset pages 5ms
+     → expected [] to have a length of 2 but got +0
+   × bounded canonical reads PostgreSQL > uses exact case-preserving identifiers and rejects mismatched cursor/filter reuse 0ms
+     → expected [] to have a length of 1 but got +0
+   × bounded canonical reads PostgreSQL > reads category summaries separately from typed template detail and coherent current snapshots 1ms
+     → expected undefined to match object { …(2) }
+   ✓ bounded canonical reads PostgreSQL > bounds queries and disallows private/unknown request fields 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/catalog/catalog-read-service.test.ts > bounded canonical reads PostgreSQL > searches authored translations and disambiguation with compact previews and keyset pages
+AssertionError: expected [] to have a length of 2 but got +0
+
+- Expected
++ Received
+
+- 2
++ 0
+
+ ❯ packages/domain/src/catalog/catalog-read-service.test.ts:48:27
+     46|   it("searches authored translations and disambiguation with compact p…
+     47|     const first = await service().searchCatalog({ mode: "text", q: `${…
+     48|     expect(first.results).toHaveLength(2);
+       |                           ^
+     49|     expect(first.nextCursor).toEqual(expect.any(String));
+     50|     const second = await service().searchCatalog({ mode: "text", q: `$…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  |workspace| packages/domain/src/catalog/catalog-read-service.test.ts > bounded canonical reads PostgreSQL > uses exact case-preserving identifiers and rejects mismatched cursor/filter reuse
+AssertionError: expected [] to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ packages/domain/src/catalog/catalog-read-service.test.ts:64:27
+     62|   it("uses exact case-preserving identifiers and rejects mismatched cu…
+     63|     const first = await service().searchCatalog({ mode: "identifier", …
+     64|     expect(first.results).toHaveLength(1);
+       |                           ^
+     65|     expect(first.results[0]!.identifiers[0]!.sources).toEqual([{ note:…
+     66|     expect((await service().searchCatalog({ mode: "identifier", q: "00…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  |workspace| packages/domain/src/catalog/catalog-read-service.test.ts > bounded canonical reads PostgreSQL > reads category summaries separately from typed template detail and coherent current snapshots
+AssertionError: expected undefined to match object { …(2) }
+
+- Expected: 
+{
+  "id": "b3e83bc3-2a99-4cf2-8ea8-49d7eaa1f5e2",
+  "key": "reads_77da70d62cc84b58ab6e67060aca29c0",
+}
+
++ Received: 
+undefined
+
+ ❯ packages/domain/src/catalog/catalog-read-service.test.ts:80:19
+     78|       cursor = page.nextCursor ?? undefined;
+     79|     } while (cursor);
+     80|     expect(found).toMatchObject({ id: categoryId, key: prefix });
+       |                   ^
+     81|     expect(await service().getCategoryTemplate(categoryId.toUpperCase(…
+     82|     const current = await service().getCurrentCatalogEntry(entryIds[0]…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 1 passed (4)
+   Start at  00:29:09
+   Duration  729ms (transform 73ms, setup 6ms, collect 160ms, tests 337ms, environment 0ms, prepare 62ms)
+

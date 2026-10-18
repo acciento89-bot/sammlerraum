@@ -1,0 +1,4 @@
+apps/web/src/components/catalog/catalog-navigation.tsx 30ms (unchanged)
+apps/web/src/components/catalog/proposal-manager.tsx 28ms
+apps/web/e2e/catalog-grading.spec.ts 59ms
+apps/web/src/app/globals.css 36ms

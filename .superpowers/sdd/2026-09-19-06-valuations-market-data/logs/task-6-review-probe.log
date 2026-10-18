@@ -1,0 +1,4 @@
+Runtime v24.19.0
+direct fake permit: code=INVALID_RESPONSE; retryable=false; message=INVALID_RESPONSE
+real worker permit: code=TRANSPORT; retryable=true; message=TRANSPORT
+sends=2; fake-store admissions=1; fake-store clears=1; no real HTTP/DB

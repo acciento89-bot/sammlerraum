@@ -1,0 +1,8 @@
+{
+  input: 'Mon Jan 01 0001 00:53:28 GMT+0053 (Central European Standard Time)',
+  rows: [ { parsed: 0000-12-31T23:07:00.000Z } ]
+}
+{
+  input: '0001-01-01T00:00:00.000Z',
+  rows: [ { parsed: 0000-12-31T23:06:32.000Z } ]
+}

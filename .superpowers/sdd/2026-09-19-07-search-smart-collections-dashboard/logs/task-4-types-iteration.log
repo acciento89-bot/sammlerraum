@@ -1,0 +1,13 @@
+packages/domain/src/dashboard/dashboard-service.test.ts(76,45): error TS2322: Type '{ ownerId: string; kind: "IMAGE"; status: "READY"; storageKey: string; mimeType: string; byteSize: bigint; checksumSha256: string; }' is not assignable to type '((Without<MediaAssetCreateInput, MediaAssetUncheckedCreateInput> & MediaAssetUncheckedCreateInput) | (Without<...> & MediaAssetCreateInput)) & object'.
+  Type '{ ownerId: string; kind: "IMAGE"; status: "READY"; storageKey: string; mimeType: string; byteSize: bigint; checksumSha256: string; }' is not assignable to type 'Without<MediaAssetCreateInput, MediaAssetUncheckedCreateInput> & MediaAssetUncheckedCreateInput & object'.
+    Property 'originalFileName' is missing in type '{ ownerId: string; kind: "IMAGE"; status: "READY"; storageKey: string; mimeType: string; byteSize: bigint; checksumSha256: string; }' but required in type 'MediaAssetUncheckedCreateInput'.
+packages/domain/src/dashboard/dashboard-service.test.ts(77,32): error TS2322: Type '{ itemId: string; ownerId: string; assetId: string; }' is not assignable to type '((Without<MediaLinkCreateInput, MediaLinkUncheckedCreateInput> & MediaLinkUncheckedCreateInput) | (Without<...> & MediaLinkCreateInput)) & object'.
+  Type '{ itemId: string; ownerId: string; assetId: string; }' is not assignable to type 'Without<MediaLinkCreateInput, MediaLinkUncheckedCreateInput> & MediaLinkUncheckedCreateInput & object'.
+    Property 'position' is missing in type '{ itemId: string; ownerId: string; assetId: string; }' but required in type 'MediaLinkUncheckedCreateInput'.
+packages/domain/src/dashboard/dashboard-service.ts(1,19): error TS2307: Cannot find module 'zod' or its corresponding type declarations.
+packages/domain/src/dashboard/dashboard-service.ts(15,31): error TS7006: Parameter 'issue' implicitly has an 'any' type.
+packages/domain/src/dashboard/dashboard-service.ts(32,3): error TS2322: Type 'unknown' is not assignable to type '{ selection: { itemCount: number; unitCount: string; matchedCollectionCount: number; }; collections: { ownedLiveCount: number; }; trade: { itemCount: number; unitCount: string; tradeStatus: "NOT_FOR_TRADE" | "OPEN_TO_TRADE" | "FOR_SALE" | "RESERVED"; }[]; ... 15 more ...; readAt: string; }'.
+packages/domain/src/dashboard/dashboard-service.ts(38,120): error TS2698: Spread types may only be created from object types.
+packages/domain/src/dashboard/dashboard-service.ts(38,131): error TS2698: Spread types may only be created from object types.
+packages/domain/src/dashboard/dashboard-service.ts(38,141): error TS2698: Spread types may only be created from object types.
+packages/domain/src/dashboard/dashboard-service.ts(38,158): error TS2698: Spread types may only be created from object types.
