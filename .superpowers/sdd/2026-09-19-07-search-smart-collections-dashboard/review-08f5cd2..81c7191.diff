@@ -1,0 +1,59 @@
+# Review package: 08f5cd28ea2026f478ca69249698fe30b8c4b010..81c7191e1e91dc8dba9089ccbfde7c3e2e0cd24b
+
+## Commits
+81c7191 test: prepare planner statistics for retained URL boundary
+
+## Files changed
+ docs/search/owned-item-search.md                                       | 2 ++
+ .../domain/src/search/search-retained-integrity.integration.test.ts    | 3 +++
+ 2 files changed, 5 insertions(+)
+
+## Diff
+diff --git a/docs/search/owned-item-search.md b/docs/search/owned-item-search.md
+index 1b6a73e..e500452 100644
+--- a/docs/search/owned-item-search.md
++++ b/docs/search/owned-item-search.md
+@@ -7,13 +7,15 @@ Every response contains a whitelisted item summary, an exact safe-integer total
+ One RepeatableRead transaction resolves references, checks relevant retained typed facts, counts matches, and fetches the limited page. Search uses fixed parameterized SQL and EXISTS relations; there is no client SQL, column, JSON path or sort interpolation. Invalid references and unavailable families reject the entire filter even under NOT/OR or on an empty result. Missing scoped custom/catalog values only match the selected collection/category. NOT complements the resulting nonnull boolean, including outside that selector scope.
+ 
+ Retained custom/catalog text uses producer NFKC-then-JavaScript-trim canonical equality and UTF-16 length limits, including when broad text touches native values without a typed leaf. Typed URL leaves add one distinct relevant-value manifest within the same transaction before matching. Only the selected owned custom definitions and exact catalog targets contribute. PostgreSQL bounds the manifest to 4,096 distinct strings and 8 MiB of UTF-8 value bytes before transfer; exceeding either cap returns `SEARCH_UNAVAILABLE` without values or a partial result. The existing URL producer validates each retained string and exact canonical serialization; malformed values return `SEARCH_INVARIANT`. No URL leaf means no manifest or URL parsing. Parsing also checks the remaining transaction budget.
+ 
+ Exact typed string comparisons use deterministic `C` collation and are case-sensitive. Substring/prefix operands and broad text treat percent, underscore, backslash and quotes literally. Broad text uses PostgreSQL NFKC plus `ILIKE COLLATE "und-x-icu"` over title/public description, tag identity, item identifiers, grading text, custom text/selected options, exact linked catalog entry/selected variant titles and explicit translations, retained text/selected option keys and labels, and DE/EN category labels. Private notes and other variants/unselected options are excluded. Tag and custom-selection identity comparisons retain their JavaScript producer folding. Broad matching does not promise Unicode case-fold equivalence or German ß=ss equivalence.
+ 
+ Deployment requires PostgreSQL17 with the deterministic ICU root collation `pg_catalog."und-x-icu"`. Missing collation fails closed as `SEARCH_UNAVAILABLE`; no database-default collation fallback is used. Native tests exercise DE/EN, composed/decomposed accents, uppercase umlauts/ẞ and literal wildcard characters. ICU upgrades require rerunning these regressions. The CI postgres17-bookworm service runs the same tests.
+ 
+ Each read has a 12-second total processing/acquisition/retry budget, at most three attempts for recognized SQLSTATE40001 serialization failures, a maximum 5-second transaction and 2-second acquisition, per-statement 2-second and lock-wait 500-ms limits, recomputed from remaining time with post-await checks. These bound processing, not authentication or network response transfer. LIMIT bounds returned rows, not count/scans/guards. Timeout/dependency failures return no partial page. HTTP uses closed 400 syntax/complexity/version/cursor, 401 authentication, 414 encoded size, 422 reference/unavailable, 503 dependency/budget, and 500 invariant errors with no submitted values or database causes. Responses are no-store and include request IDs.
+ 
++The URL cap test analyzes its item and custom-value tables after deliberate bulk fixture growth. Local controlled measurements showed stale statistics causing repeated scans; refreshing those statistics reduced the same request from 2.62 seconds to 0.29 seconds. This prepares the fixture, without changing runtime queries or proving the historical CI failure's exact plan. Production burst growth can still leave stale statistics and cause bounded HTTP 503 responses. **Phase13 operational readiness gate:** before release, verify performance with representative data and burst growth, including autovacuum/analyze behavior and observability of budget failures. Runtime performance is not guaranteed by this fixture correction.
++
+ Cursors use canonical bounded base64url JSON and bind actor, normalized query/filter, lifecycle, limit, fixed sort, compiler/text versions and optional trusted saved-query id/revision. They are unsigned replay-context checks, not authorization or a retained snapshot. Every later request revalidates live definitions and facts; edits, inserts and deletions may change subsequent page membership and totals. `readAt` labels only that response's snapshot.
+ 
+ This is a partial Task2A milestone. Legacy monetary ranges, all market leaves, duplicates and shared discovery remain unavailable pending their actual interpretation/eligibility/authorization/relation producers. Raw purchase/custom/catalog money presence and latest manual per-unit comparisons are supported. Manual denomination matches the latest stored row before applying range criteria; older matching currencies cannot reappear. The native producer currently admits stored exponents 0,2,3,4; a syntactically valid exponent1 query matches no current manual row. No migration, provider activation, classification or full Task2/Phase07 completion is implied.
+diff --git a/packages/domain/src/search/search-retained-integrity.integration.test.ts b/packages/domain/src/search/search-retained-integrity.integration.test.ts
+index 1507d8c..7fda3ea 100644
+--- a/packages/domain/src/search/search-retained-integrity.integration.test.ts
++++ b/packages/domain/src/search/search-retained-integrity.integration.test.ts
+@@ -382,20 +382,23 @@ describe.runIf(enabled)("retained search integrity producer parity", () => {
+         await db!.customFieldValue.createMany({
+           data: created.slice(i, i + 500).map((row, n) => ({
+             itemId: row.id,
+             collectionId: collection,
+             fieldDefinitionId: custom.get("URL")!,
+             fieldType: "URL",
+             urlValue: urls[i + n]!,
+           })),
+         });
+       await setValue("customField", "URL", urls[0]!);
++      // Prepare actual planner statistics after deliberate bulk fixture growth;
++      // limit, snapshot and retained-integrity assertions remain independent.
++      await db!.$executeRaw`ANALYZE "CollectibleItem", "CustomFieldValue"`;
+       const rejectWithoutValues = async (expectedCount: bigint, expectedBytes: bigint) => {
+         manifest.length = 0;
+         countOrPage = 0;
+         await expect(search(leaf("customField", "URL"), undefined, observed)).rejects.toMatchObject(
+           { code: "SEARCH_UNAVAILABLE", message: "SEARCH_UNAVAILABLE" },
+         );
+         expect(manifest).toEqual([{ count: expectedCount, bytes: expectedBytes, values: null }]);
+         expect(countOrPage).toBe(0);
+       };
+       await rejectWithoutValues(4097n, 4097n * 2048n);
