@@ -124,7 +124,7 @@ const smtpServer = createServer({ key, cert }, (socket) => {
 
 await new Promise((resolve, reject) => {
   smtpServer.once("error", reject);
-  smtpServer.listen(smtpPort, resolve);
+  smtpServer.listen(smtpPort, "127.0.0.1", resolve);
 });
 
 const production = process.env.RUN_PRODUCTION_E2E === "1";
@@ -162,7 +162,8 @@ const next = spawn(
       HOSTNAME: "localhost",
       APP_ORIGIN: "http://localhost:3000",
       NODE_EXTRA_CA_CERTS: certificatePath,
-      SMTP_HOST: "localhost",
+      // Avoid DNS resolution of localhost escaping the synthetic loopback mail fixture.
+      SMTP_HOST: "127.0.0.1",
       SMTP_PORT: String(smtpPort),
       SMTP_SECURE: "true",
       SMTP_USER: "e2e-user",
