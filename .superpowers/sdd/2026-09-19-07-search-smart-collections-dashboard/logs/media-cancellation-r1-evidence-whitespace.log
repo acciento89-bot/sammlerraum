@@ -1,0 +1,5 @@
+.superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/media-cancellation-r1-red.log:15: trailing whitespace.
++  1) [desktop] › e2e/media-documents.spec.ts:164:5 › item media and private documents › public item can have a purchase receipt that remains private (de) 
+.superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/media-cancellation-r1-red.log:45: trailing whitespace.
++    [desktop] › e2e/media-documents.spec.ts:164:5 › item media and private documents › public item can have a purchase receipt that remains private (de) 
+.superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/media-cancellation-r1-typecheck.log:4: new blank line at EOF.
