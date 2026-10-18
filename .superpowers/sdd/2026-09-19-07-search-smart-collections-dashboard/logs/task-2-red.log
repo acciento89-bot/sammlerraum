@@ -1,0 +1,31 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| packages/domain/src/search/item-search-service.test.ts (1 test | 1 failed) 202ms
+   × owned item search PostgreSQL > does not include private inaccessible items in rows or total count 8ms
+     → authorized search service must exist: expected undefined to be type of 'function'
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/search/item-search-service.test.ts > owned item search PostgreSQL > does not include private inaccessible items in rows or total count
+AssertionError: authorized search service must exist: expected undefined to be type of 'function'
+
+Expected: "function"
+Received: "undefined"
+
+ ❯ packages/domain/src/search/item-search-service.test.ts:25:85
+     23|     const path = "./item-search-service";
+     24|     const module = await import(path).catch(() => null);
+     25|     expect(module?.createItemSearchService, "authorized search service…
+       |                                                                                     ^
+     26|     const result = await module!.createItemSearchService(db!).searchIt…
+     27|     expect(result.items.map((x: {id:string}) => x.id)).not.toContain(h…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+   Start at  09:06:59
+   Duration  584ms (transform 45ms, setup 9ms, collect 83ms, tests 202ms, environment 0ms, prepare 55ms)
+

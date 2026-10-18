@@ -1,0 +1,25 @@
+ .github/workflows/ci.yml                           |    3 +
+ apps/web/src/app/api/v1/search/items/route.ts      |    4 +
+ apps/web/src/lib/item-search-route-dependencies.ts |   21 +
+ .../src/lib/item-search-routes.integration.test.ts |  154 +++
+ apps/web/src/lib/item-search-routes.test.ts        |   38 +
+ apps/web/src/lib/item-search-routes.ts             |  108 ++
+ docs/search/owned-item-search.md                   |   17 +
+ packages/contracts/package.json                    |    3 +-
+ packages/contracts/src/item-search.ts              |  121 ++
+ packages/db/package.json                           |    3 +-
+ packages/db/src/search-sql.ts                      |    2 +
+ packages/domain/package.json                       |    3 +-
+ packages/domain/src/api/read-dependency-errors.ts  |   44 +
+ .../domain/src/search/item-search-service.test.ts  | 1205 ++++++++++++++++++++
+ packages/domain/src/search/item-search-service.ts  |  133 +++
+ packages/domain/src/search/search-compiler.ts      |  347 ++++++
+ packages/domain/src/search/search-cursor.ts        |   64 ++
+ packages/domain/src/search/search-input.test.ts    |   54 +
+ .../src/search/search-read.integration.test.ts     |  174 +++
+ packages/domain/src/search/search-read.test.ts     |  116 ++
+ packages/domain/src/search/search-read.ts          |   70 ++
+ packages/domain/src/search/search-text.ts          |   41 +
+ packages/domain/src/search/search-typed-guards.ts  |   52 +
+ packages/domain/src/valuations/valuation-query.ts  |   43 +-
+ 24 files changed, 2776 insertions(+), 44 deletions(-)

@@ -1,0 +1,13 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ✓ |workspace| packages/domain/src/search/search-input.test.ts (12 tests) 19ms
+ ✓ |workspace| packages/domain/src/search/filter-ast.test.ts (117 tests) 75ms
+ ✓ |workspace| packages/domain/src/search/item-search-service.test.ts (1 test) 350ms
+ ✓ |workspace| apps/web/src/lib/item-search-routes.integration.test.ts (11 tests) 389ms
+
+ Test Files  4 passed (4)
+      Tests  141 passed (141)
+   Start at  09:12:18
+   Duration  759ms (transform 279ms, setup 23ms, collect 672ms, tests 834ms, environment 0ms, prepare 224ms)
+
