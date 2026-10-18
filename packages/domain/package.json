@@ -31,7 +31,8 @@
     "./valuations/valuation-service": "./src/valuations/valuation-service.ts",
     "./market-data/market-data-service": "./src/market-data/market-data-service.ts",
     "./valuations/valuation-query": "./src/valuations/valuation-query.ts",
-    "./valuations/market-display-policy": "./src/valuations/market-display-policy.ts"
+    "./valuations/market-display-policy": "./src/valuations/market-display-policy.ts",
+    "./money/currencies": "./src/money/currencies.ts"
   },
   "scripts": {
     "build": "pnpm typecheck",

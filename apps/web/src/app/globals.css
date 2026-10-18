@@ -800,3 +800,123 @@ fieldset {
 .catalog-nav a {
   max-width: 100%;
 }
+
+/* Private per-unit valuation history. */
+.valuations-shell {
+  max-width: 1180px;
+}
+.value-overview {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 1.5rem;
+  align-items: start;
+}
+.value-card,
+.value-form {
+  padding: 1.4rem;
+  margin-block: 1.5rem;
+  background: var(--surface, #fff);
+  border: 1px solid #d5ded9;
+  border-radius: 14px;
+  min-width: 0;
+}
+.value-form fieldset {
+  border: 0;
+  padding: 0;
+  min-width: 0;
+}
+.value-form legend {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+.value-form label,
+.valuations-shell section > label {
+  display: grid;
+  gap: 0.4rem;
+  margin-block: 0.8rem;
+}
+.value-input-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  gap: 1rem;
+}
+.value-input-grid input,
+.value-input-grid select,
+.value-form textarea {
+  width: 100%;
+  min-width: 0;
+}
+.value-amount {
+  font-size: 1.2rem;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+.value-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.value-list > li + li {
+  border-top: 1px solid #d5ded9;
+}
+.value-record {
+  padding-block: 1rem;
+  overflow-wrap: anywhere;
+}
+.value-record dl {
+  display: grid;
+  gap: 0.55rem;
+  font-size: 0.9rem;
+}
+.value-record dl > div {
+  display: grid;
+  grid-template-columns: minmax(90px, 1fr) minmax(0, 2fr);
+  gap: 0.7rem;
+}
+.value-record dd {
+  margin: 0;
+}
+.value-record dt {
+  color: #53645a;
+}
+.value-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.7rem;
+  margin-block: 1rem;
+}
+.value-source {
+  border-top: 2px solid #d5ded9;
+  margin-top: 1.6rem;
+  padding-top: 1rem;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.valuations-shell details {
+  margin-block: 0.8rem;
+}
+.valuations-shell summary {
+  cursor: pointer;
+}
+.value-preview {
+  padding: 0.7rem;
+  background: #edf5ee;
+  border-radius: 6px;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 700px) {
+  .value-overview,
+  .value-input-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .value-card,
+  .value-form {
+    padding: 1rem;
+  }
+  .value-record dl > div {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.15rem;
+  }
+}

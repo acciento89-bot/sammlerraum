@@ -1,0 +1,12 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ✓ |workspace| apps/web/src/components/valuations/valuation-state.test.ts (9 tests) 4ms
+ ✓ |workspace| apps/web/src/components/valuations/valuation-client.test.ts (3 tests) 9ms
+ ✓ |workspace| apps/web/src/components/valuations/valuation-money.test.ts (27 tests) 27ms
+
+ Test Files  3 passed (3)
+      Tests  39 passed (39)
+   Start at  06:29:13
+   Duration  410ms (transform 79ms, setup 9ms, collect 306ms, tests 40ms, environment 0ms, prepare 125ms)
+

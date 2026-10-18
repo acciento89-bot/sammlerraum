@@ -390,6 +390,7 @@ export function ItemForm({
         >
           {t("back")}
         </Link>
+        {item && <Link href={`/${locale}/items/${item.id}/values`}>{t("valuations")}</Link>}
       </nav>
       <header className="management-heading">
         <p className="eyebrow">{t(item ? "editEyebrow" : "newEyebrow")}</p>

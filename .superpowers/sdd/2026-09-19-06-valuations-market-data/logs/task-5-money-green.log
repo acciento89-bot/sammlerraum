@@ -1,0 +1,10 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ✓ |workspace| apps/web/src/components/valuations/valuation-money.test.ts (26 tests) 48ms
+
+ Test Files  1 passed (1)
+      Tests  26 passed (26)
+   Start at  06:15:06
+   Duration  397ms (transform 44ms, setup 6ms, collect 129ms, tests 48ms, environment 0ms, prepare 49ms)
+

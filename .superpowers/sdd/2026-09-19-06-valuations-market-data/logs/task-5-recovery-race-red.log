@@ -1,0 +1,41 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| apps/web/src/components/valuations/valuation-state.test.ts (9 tests | 1 failed) 8ms
+   ✓ valuation request authority > ignores an old GET after append acknowledgement and sends a double click only once 1ms
+   ✓ valuation request authority > retains a confirmed row when refresh fails, and retries only GET 0ms
+   ✓ valuation request authority > holds an unknown POST outcome across refresh and requires explicit new-entry action 0ms
+   ✓ valuation request authority > makes an inactive rejection authoritative over an earlier ACTIVE read 0ms
+   ✓ valuation request authority > bounds stale-cursor recovery to one fresh summary 0ms
+   ✓ valuation request authority > clears private facts on summary 404, but checks source 404 with a fresh owner summary 0ms
+   ✓ valuation request authority > does not let a previous scope or source overwrite a newer selection 0ms
+   ✓ allows manual estimates on ACTIVE items despite an inactive catalog variant 0ms
+   × a superseded stale-cursor recovery cannot attach its error to a newer successful read 5ms
+     → expected 'mappingChanged' to be '' // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/web/src/components/valuations/valuation-state.test.ts > a superseded stale-cursor recovery cannot attach its error to a newer successful read
+AssertionError: expected 'mappingChanged' to be '' // Object.is equality
+
+- Expected
++ Received
+
++ mappingChanged
+
+ ❯ apps/web/src/components/valuations/valuation-state.test.ts:206:167
+    204|   const recovery=deferred<ValuationSummaryDto>();let reads=0;
+    205|   const c=fixture({summary:async()=>{reads++;if(reads===1)throw new Va…
+    206|   const old=c.load({manualCursor:"stale"});await new Promise(resolve=>…
+       |                                                                                                                                                                       ^
+    207| });
+    208| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 8 passed (9)
+   Start at  06:28:21
+   Duration  267ms (transform 31ms, setup 6ms, collect 25ms, tests 8ms, environment 0ms, prepare 48ms)
+

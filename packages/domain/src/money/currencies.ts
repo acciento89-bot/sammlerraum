@@ -175,3 +175,6 @@ export function currencyMinorUnitExponent(currency: string): number {
   if (!Object.hasOwn(exponents, currency)) throw new Error("Unsupported ISO 4217 currency");
   return exponents[currency]!;
 }
+
+/** Current numeric-exponent write choices; historical responses use their stored exponent. */
+export const valuationCurrencyCodes: readonly string[] = Object.freeze(Object.keys(exponents));

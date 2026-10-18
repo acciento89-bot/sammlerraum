@@ -1,0 +1,43 @@
+[WebServer] (node:12487) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:12492) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [desktop] › e2e/valuations.spec.ts:20:5 › private valuation history › production manual journey (de) (11.3s)
+
+
+  1) [desktop] › e2e/valuations.spec.ts:20:5 › private valuation history › production manual journey (de) 
+
+    TimeoutError: locator.click: Timeout 10000ms exceeded.
+    Call log:
+      - waiting for getByRole('link', { name: 'Synthetic collector\'s card', exact: true })
+
+
+      23 |         await signIn(page,f);
+      24 |         await page.goto(`/${locale}/collections/${f.collectionId}`);
+    > 25 |         await page.getByRole("link",{name:"Synthetic collector's card",exact:true}).click();
+         |                                                                                     ^
+      26 |         await page.getByRole("link",{name:c.title,exact:true}).click();
+      27 |         await expect(page.getByRole("heading",{name:c.title,exact:true})).toBeVisible();
+      28 |         await expect(page.getByText(c.disabled,{exact:true})).toBeVisible();
+        at /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/valuations.spec.ts:25:85
+
+    Error Context: test-results/valuations-private-valuati-164a5-oduction-manual-journey-de--desktop/error-context.md
+
+    Error Context: test-results/valuations-private-valuati-164a5-oduction-manual-journey-de--desktop/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/valuations-private-valuati-164a5-oduction-manual-journey-de--desktop/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/valuations-private-valuati-164a5-oduction-manual-journey-de--desktop/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [desktop] › e2e/valuations.spec.ts:20:5 › private valuation history › production manual journey (de) 
+undefined
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/valuations.spec.ts --project=desktop --grep production manual journey \(de\) --workers=1 --trace=on

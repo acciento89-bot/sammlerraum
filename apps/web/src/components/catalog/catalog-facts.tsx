@@ -8,6 +8,7 @@ import type {
 } from "@sammlerraum/contracts/catalog";
 import { authoredTitle, type Locale } from "./catalog-client";
 import { variantLabel } from "./catalog-search";
+import { displayCatalogMoney } from "./catalog-money";
 export function SourceFacts({ sources }: { sources: CatalogSource[] }) {
   const t = useTranslations("Catalog");
   return (
@@ -89,17 +90,7 @@ export function AttributeFacts({
           ) {
             const money = value as { amountMinor: number; currency: string };
             try {
-              return new Intl.NumberFormat(locale, {
-                style: "currency",
-                currency: money.currency,
-              }).format(
-                money.amountMinor /
-                  10 **
-                    new Intl.NumberFormat("en", {
-                      style: "currency",
-                      currency: money.currency,
-                    }).resolvedOptions().maximumFractionDigits!,
-              );
+              return displayCatalogMoney(money, locale);
             } catch {
               return t("unavailableAttribute");
             }

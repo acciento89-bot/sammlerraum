@@ -1,0 +1,44 @@
+[WebServer] (node:14765) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:14766) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [desktop] › e2e/valuations.spec.ts:358:5 › private valuation history › external UI transport rendering from real ingestion and query (en) (6.9s)
+
+
+  1) [desktop] › e2e/valuations.spec.ts:358:5 › private valuation history › external UI transport rendering from real ingestion and query (en) 
+
+    Error: expect(locator).toHaveValue(expected) failed
+
+    Locator:  getByLabel('Amount per unit', { exact: true })
+    Expected: "1.23"
+    Received: ""
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveValue" getByLabel('Amount per unit', { exact: true }) with timeout 5000ms
+      - waiting for getByLabel('Amount per unit', { exact: true })
+        12 × locator resolved to <input value="" required="" name="amount" maxlength="80" inputmode="decimal" aria-describedby="valuation-money-help"/>
+           - unexpected value ""
+
+
+      507 |         await page.getByLabel(c.note,{exact:true}).fill("Synthetic scope draft");
+      508 |         await external.getByLabel(c.scope, { exact: true }).selectOption("HISTORICAL_MAPPING");
+    > 509 |         await expect(page.getByLabel(c.amount,{exact:true})).toHaveValue(scopeDraft);
+          |                                                              ^
+      510 |         await expect(page.getByLabel(c.note,{exact:true})).toHaveValue("Synthetic scope draft");
+      511 |         await expect(external.getByLabel(c.scope, { exact: true })).toHaveValue(
+      512 |           "HISTORICAL_MAPPING",
+        at /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/valuations.spec.ts:509:62
+
+    Error Context: test-results/valuations-private-valuati-7c7b2-eal-ingestion-and-query-en--desktop/error-context.md
+
+    Error Context: test-results/valuations-private-valuati-7c7b2-eal-ingestion-and-query-en--desktop/error-context.md
+
+  1 failed
+    [desktop] › e2e/valuations.spec.ts:358:5 › private valuation history › external UI transport rendering from real ingestion and query (en) 
+undefined
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/valuations.spec.ts --project=desktop --grep external UI transport.*\(en\) --workers=1

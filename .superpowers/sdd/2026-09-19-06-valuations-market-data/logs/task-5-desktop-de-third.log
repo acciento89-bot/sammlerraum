@@ -1,0 +1,46 @@
+[WebServer] (node:13130) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 1 worker
+
+(node:13131) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [desktop] › e2e/valuations.spec.ts:137:5 › private valuation history › production manual journey (de) (4.0s)
+  ✘  2 [desktop] › e2e/valuations.spec.ts:339:5 › private valuation history › external UI transport rendering from real ingestion and query (de) (6.1s)
+
+
+  1) [desktop] › e2e/valuations.spec.ts:339:5 › private valuation history › external UI transport rendering from real ingestion and query (de) 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator:  getByRole('region', { name: 'Externe Quellen', exact: true }).getByText('Die Katalogrevision hat sich seit dieser Beobachtung geändert.', { exact: true }).first()
+    Expected: visible
+    Received: hidden
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toBeVisible" getByRole('region', { name: 'Externe Quellen', exact: true }).getByText('Die Katalogrevision hat sich seit dieser Beobachtung geändert.', { exact: true }).first() with timeout 5000ms
+      - waiting for getByRole('region', { name: 'Externe Quellen', exact: true }).getByText('Die Katalogrevision hat sich seit dieser Beobachtung geändert.', { exact: true }).first()
+        12 × locator resolved to <p>Die Katalogrevision hat sich seit dieser Beobacht…</p>
+           - unexpected value "hidden"
+
+
+      466 |             )
+      467 |             .first(),
+    > 468 |         ).toBeVisible();
+          |           ^
+      469 |         if (
+      470 |           (locale === "de" && info.project.name === "desktop") ||
+      471 |           (locale === "en" && info.project.name === "mobile")
+        at /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/valuations.spec.ts:468:11
+
+    Error Context: test-results/valuations-private-valuati-100ba-eal-ingestion-and-query-de--desktop/error-context.md
+
+    Error Context: test-results/valuations-private-valuati-100ba-eal-ingestion-and-query-de--desktop/error-context.md
+
+  1 failed
+    [desktop] › e2e/valuations.spec.ts:339:5 › private valuation history › external UI transport rendering from real ingestion and query (de) 
+  1 passed (11.4s)
+undefined
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/valuations.spec.ts --project=desktop --grep production manual journey \(de\)|external UI transport.*\(de\) --workers=1

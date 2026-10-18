@@ -1,0 +1,8 @@
+
+> @sammlerraum/web@ typecheck /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web
+> tsc --noEmit --project tsconfig.json
+
+e2e/valuations.spec.ts(92,129): error TS2551: Property 'updateCatalogEntryText' does not exist on type '{ createCatalogEntry: (input: unknown) => Promise<CatalogEntryRevision>; updateCatalogEntry: (entryId: string, expectedRevision: number, input: unknown) => Promise<...>; ... 6 more ...; getCatalogEntryAtRevision: (entryId: string, revision: number) => Promise<...>; }'. Did you mean 'updateCatalogEntry'?
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @sammlerraum/web@ typecheck: `tsc --noEmit --project tsconfig.json`
+Exit status 2

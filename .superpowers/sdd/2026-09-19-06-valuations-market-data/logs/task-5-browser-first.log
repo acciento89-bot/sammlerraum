@@ -1,0 +1,71 @@
+[WebServer] (node:12116) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 10 tests using 1 worker
+
+(node:12117) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘   1 [desktop] › e2e/valuations.spec.ts:19:5 › private valuation history › production manual journey (de) (1.0m)
+(node:12294) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘   2 [desktop] › e2e/valuations.spec.ts:69:5 › private valuation history › external UI transport rendering from real ingestion and query (de) (5.8s)
+(node:12329) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘   3 [desktop] › e2e/valuations.spec.ts:19:5 › private valuation history › production manual journey (en) (12.3s)
+
+
+  1) [desktop] › e2e/valuations.spec.ts:19:5 › private valuation history › production manual journey (de) 
+
+    Test timeout of 60000ms exceeded.
+
+    Error: page.unrouteAll: Target page, context or browser has been closed
+
+      65 |         await db!.collectibleItem.update({where:{id:f.itemId},data:{disposedAt:new Date()}});await page.getByRole("button",{name:c.refresh,exact:true}).click();await expect(page.getByText(locale==="de"?"Abgegebenes Stück: Der Verlauf ist schreibgeschützt.":"Disposed item: history is read-only.",{exact:true})).toBeVisible();
+      66 |         await db!.collection.update({where:{id:f.collectionId},data:{deletedAt:new Date()}});await page.getByRole("button",{name:c.refresh,exact:true}).click();await expect(page.locator("[data-valuation-id]")).toHaveCount(0);
+    > 67 |       } finally {try{await page.unrouteAll({behavior:"wait"})}finally{try{await anonymous?.close()}finally{await cleanupValuationFixture(f)}}}
+         |                      ^
+      68 |     });
+      69 |     test(`external UI transport rendering from real ingestion and query (${locale})`,async({page},info)=>{
+      70 |       const f=await valuationFixture();const c=labels[locale];const queriedIds=new Set<string>();let gets=0;
+        at /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/valuations.spec.ts:67:22
+
+    Error Context: test-results/valuations-private-valuati-164a5-oduction-manual-journey-de--desktop/error-context.md
+
+    Error Context: test-results/valuations-private-valuati-164a5-oduction-manual-journey-de--desktop/error-context.md
+
+  2) [desktop] › e2e/valuations.spec.ts:69:5 › private valuation history › external UI transport rendering from real ingestion and query (de) 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('region', { name: 'Externe Quellen', exact: true }).getByRole('heading', { name: /^Katalogwert ·/ })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('region', { name: 'Externe Quellen', exact: true }).getByRole('heading', { name: /^Katalogwert ·/ }) with timeout 5000ms
+      - waiting for getByRole('region', { name: 'Externe Quellen', exact: true }).getByRole('heading', { name: /^Katalogwert ·/ })
+
+
+      79 |         });
+      80 |         await page.goto(`/${locale}/items/${f.itemId}/values`);const external=page.getByRole("region",{name:c.external,exact:true});
+    > 81 |         for(const kind of c.kinds.slice(0,4))await expect(external.getByRole("heading",{name:new RegExp(`^${kind} ·`)})).toBeVisible();
+         |                                                                                                                          ^
+      82 |         await expect(external.getByText(locale==="de"?/Mehrere Währungen; keine Umrechnung/:/Multiple currencies; no conversion/)).toBeVisible();
+      83 |         const asking=external.getByRole("region").filter({has:page.getByRole("heading",{name:new RegExp(`^${c.kinds[0]} ·`)})});
+      84 |         await expect(asking.locator("[data-observation-id]")).toHaveCount(5);await expect(asking.locator("[data-observation-id]").first()).toContainText(locale==="de"?"90.071.992.547.409,93":"90,071,992,547,409.93");
+        at /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/valuations.spec.ts:81:122
+
+    Error Context: test-results/valuations-private-valuati-100ba-eal-ingestion-and-query-de--desktop/error-context.md
+
+    Error Context: test-results/valuations-private-valuati-100ba-eal-ingestion-and-query-de--desktop/error-context.md
+
+  2 failed
+    [desktop] › e2e/valuations.spec.ts:19:5 › private valuation history › production manual journey (de) 
+    [desktop] › e2e/valuations.spec.ts:69:5 › private valuation history › external UI transport rendering from real ingestion and query (de) 
+  1 interrupted
+    [desktop] › e2e/valuations.spec.ts:19:5 › private valuation history › production manual journey (en) 
+  7 did not run
+undefined
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 130: playwright test e2e/valuations.spec.ts --workers=1

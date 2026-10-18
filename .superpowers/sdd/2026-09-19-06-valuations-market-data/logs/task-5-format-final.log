@@ -1,0 +1,12 @@
+src/components/valuations/manual-valuation-form.tsx 43ms (unchanged)
+src/components/valuations/manual-valuation-history.tsx 5ms (unchanged)
+src/components/valuations/market-observation-history.tsx 14ms (unchanged)
+src/components/valuations/valuation-client.test.ts 7ms (unchanged)
+src/components/valuations/valuation-client.ts 8ms (unchanged)
+src/components/valuations/valuation-money.test.ts 7ms (unchanged)
+src/components/valuations/valuation-money.ts 7ms (unchanged)
+src/components/valuations/valuation-page.tsx 18ms (unchanged)
+src/components/valuations/valuation-state.test.ts 12ms
+src/components/valuations/valuation-state.ts 18ms
+e2e/valuations.spec.ts 49ms
+e2e/support/valuation-fixture.ts 10ms

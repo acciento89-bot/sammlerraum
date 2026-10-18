@@ -1,0 +1,29 @@
+
+> @sammlerraum/web@ typecheck /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web
+> tsc --noEmit --project tsconfig.json
+
+src/components/valuations/valuation-client.ts(12,255): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(input: string | URL | Request, init?: RequestInit | undefined): Promise<Response>', gave the following error.
+    Argument of type '{ cache: "no-store"; signal: AbortSignal | undefined; }' is not assignable to parameter of type 'RequestInit' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+      Types of property 'signal' are incompatible.
+        Type 'AbortSignal | undefined' is not assignable to type 'AbortSignal | null'.
+          Type 'undefined' is not assignable to type 'AbortSignal | null'.
+  Overload 2 of 2, '(input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>', gave the following error.
+    Argument of type '{ cache: "no-store"; signal: AbortSignal | undefined; }' is not assignable to parameter of type 'RequestInit' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+      Types of property 'signal' are incompatible.
+        Type 'AbortSignal | undefined' is not assignable to type 'AbortSignal | null'.
+          Type 'undefined' is not assignable to type 'AbortSignal | null'.
+src/components/valuations/valuation-client.ts(13,200): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(input: string | URL | Request, init?: RequestInit | undefined): Promise<Response>', gave the following error.
+    Argument of type '{ cache: "no-store"; signal: AbortSignal | undefined; }' is not assignable to parameter of type 'RequestInit' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+      Types of property 'signal' are incompatible.
+        Type 'AbortSignal | undefined' is not assignable to type 'AbortSignal | null'.
+          Type 'undefined' is not assignable to type 'AbortSignal | null'.
+  Overload 2 of 2, '(input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>', gave the following error.
+    Argument of type '{ cache: "no-store"; signal: AbortSignal | undefined; }' is not assignable to parameter of type 'RequestInit' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+      Types of property 'signal' are incompatible.
+        Type 'AbortSignal | undefined' is not assignable to type 'AbortSignal | null'.
+          Type 'undefined' is not assignable to type 'AbortSignal | null'.
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @sammlerraum/web@ typecheck: `tsc --noEmit --project tsconfig.json`
+Exit status 2
