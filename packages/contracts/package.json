@@ -19,7 +19,8 @@
     "./valuations": "./src/valuations.ts",
     "./search": "./src/search.ts",
     "./item-search": "./src/item-search.ts",
-    "./smart-collections": "./src/smart-collections.ts"
+    "./smart-collections": "./src/smart-collections.ts",
+    "./dashboard": "./src/dashboard.ts"
   },
   "scripts": {
     "build": "pnpm typecheck",

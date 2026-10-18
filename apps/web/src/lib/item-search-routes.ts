@@ -57,7 +57,7 @@ export function readItemSearchQuery(
     ...(values.cursor !== undefined ? { cursor: values.cursor } : {}),
   };
 }
-function mapped(error: unknown): never {
+export function mapItemSearchError(error: unknown): never {
   if (error instanceof FilterValidationError)
     throw new ApiError(
       error.code,
@@ -100,7 +100,7 @@ export function createItemSearchRouteHandlers(
         );
         return Response.json(result, { headers: { "cache-control": "no-store" } });
       } catch (error) {
-        return mapped(error);
+        return mapItemSearchError(error);
       }
     }),
   };

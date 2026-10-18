@@ -9,19 +9,8 @@ import {
   type SearchPage,
 } from "@sammlerraum/contracts/item-search";
 import { validateCurrentFilterAvailability } from "./filter-ast";
-import {
-  and,
-  or,
-  TRUE,
-  candidateFrom,
-  ownedCandidates,
-  compileFilter,
-  leaves,
-  referencePredicate,
-  invalidFacts,
-} from "./search-compiler";
-import { validateRetainedUrls } from "./search-url-integrity";
-import { compileBroadText, invalidBroadFacts } from "./search-text";
+import { TRUE, candidateFrom } from "./search-compiler";
+import { prepareItemSelection } from "./search-selection";
 import {
   searchContextHash,
   decodeSearchCursor,
@@ -65,26 +54,7 @@ export async function executeItemSearch(
   if (query.filter) validateCurrentFilterAvailability(query.filter);
   const hash = searchContextHash(actor.userId, query, context);
   const cursor = query.cursor ? decodeSearchCursor(query.cursor, hash) : null;
-  const [clock] = await tx.$queryRaw<{ now: Date; collation: boolean }[]>(
-    Prisma.sql`SELECT date_trunc('milliseconds',transaction_timestamp()) AS now,EXISTS(SELECT 1 FROM pg_collation WHERE collname='und-x-icu' AND collprovider='i' AND collisdeterministic AND collnamespace='pg_catalog'::regnamespace) AS collation`,
-  );
-  if (!clock?.collation) return searchFail("SEARCH_UNAVAILABLE");
-  const nodes = leaves(query.filter?.root ?? null);
-  const [refs] = await tx.$queryRaw<{ valid: boolean }[]>(
-    Prisma.sql`SELECT ${referencePredicate(nodes, actor.userId)} AS valid`,
-  );
-  if (!refs?.valid) return searchFail("FILTER_REFERENCE_INVALID");
-  const outer = ownedCandidates(actor.userId, query.lifecycle);
-  const [integrity] = await tx.$queryRaw<{ invalid: boolean }[]>(
-    Prisma.sql`SELECT EXISTS(SELECT 1 ${candidateFrom} WHERE ${outer} AND ${or([invalidFacts(nodes), query.text ? invalidBroadFacts : Prisma.sql`FALSE`])}) AS invalid`,
-  );
-  if (integrity?.invalid) return searchFail("SEARCH_INVARIANT");
-  await validateRetainedUrls(tx, nodes, outer);
-  const predicate = and([
-    outer,
-    query.filter ? compileFilter(query.filter.root, actor.userId) : TRUE,
-    query.text ? compileBroadText(query.text, actor.userId) : TRUE,
-  ]);
+  const { readAt, matchedPredicate: predicate } = await prepareItemSelection(tx, actor, query);
   const [count] = await tx.$queryRaw<{ total: bigint }[]>(
     Prisma.sql`SELECT count(*) AS total ${candidateFrom} WHERE ${predicate}`,
   );
@@ -116,7 +86,7 @@ export async function executeItemSearch(
         : null,
     scope: "OWNED",
     lifecycle: query.lifecycle,
-    readAt: clock.now.toISOString(),
+    readAt,
   });
   if (!result.success || Buffer.byteLength(JSON.stringify(result.data)) > SEARCH_MAX_RESPONSE_BYTES)
     return searchFail("SEARCH_INVARIANT");
