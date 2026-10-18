@@ -100,16 +100,28 @@ function errorCode(error: unknown, depth = 0): string | undefined {
         "40P01",
         "57014",
         "55P03",
+        "P1001",
+        "P1002",
+        "P1008",
+        "P1017",
         "P2028",
         "P2024",
         "P2034",
         "ETIMEDOUT",
         "ECONNREFUSED",
+        "ECONNRESET",
+        "ENOTFOUND",
         "08006",
         "25P04",
       ].includes(e[key])
     )
       return e[key];
+  // These are the connection causes emitted by the installed PostgreSQL adapter.
+  if (
+    typeof e.kind === "string" &&
+    ["DatabaseNotReachable", "ConnectionClosed", "SocketTimeout"].includes(e.kind)
+  )
+    return e.kind;
   for (const key of ["meta", "cause", "driverAdapterError"]) {
     const code = errorCode(e[key], depth + 1);
     if (code) return code;
@@ -196,15 +208,25 @@ export function createValuationQuery(
             const txStop = Math.min(stop, performance.now() + 5000);
             let work = 0;
             const budget = () => {
-              if (performance.now() >= txStop || ++work > 10000) fail("VALUATION_UNAVAILABLE");
+              const left = Math.floor(txStop - performance.now());
+              if (left < 1 || ++work > 10000) fail("VALUATION_UNAVAILABLE");
+              return left;
             };
+            // Acquisition has already consumed part of the overall budget. PostgreSQL's
+            // transaction deadline covers the setup round trips as well as subsequent SQL.
+            const acquiredRemaining = budget();
+            await raw.$queryRaw`SELECT set_config('TimeZone','UTC',true),set_config('statement_timeout',${`${Math.min(2000, acquiredRemaining)}ms`},true),set_config('lock_timeout',${`${Math.min(500, acquiredRemaining)}ms`},true),set_config('transaction_timeout',${`${acquiredRemaining}ms`},true)`;
+            budget();
             const tx: ValuationReadTransaction = {
-              $queryRaw: async (q, ...v) => {
+              $queryRaw: async <T>(q: TemplateStringsArray, ...v: unknown[]) => {
+                const left = budget();
+                await raw.$queryRaw`SELECT set_config('statement_timeout',${`${Math.min(2000, left)}ms`},true),set_config('lock_timeout',${`${Math.min(500, left)}ms`},true)`;
                 budget();
-                return raw.$queryRaw(q, ...v);
+                const result = await raw.$queryRaw<T>(q, ...v);
+                budget();
+                return result;
               },
             };
-            await tx.$queryRaw`SELECT set_config('TimeZone','UTC',true),set_config('statement_timeout',${`${Math.min(2000, remaining)}ms`},true),set_config('lock_timeout','500ms',true),set_config('transaction_timeout',${`${Math.min(5000, remaining)}ms`},true)`;
             const [clock] = await tx.$queryRaw<
               Array<{ now: Date }>
             >`SELECT date_trunc('milliseconds',transaction_timestamp()) AS now`;
@@ -421,7 +443,7 @@ export function createValuationQuery(
               const exists = await rows(selector.key, 1, null);
               if (!exists.length) return fail("SOURCE_NOT_FOUND");
               const history = await rows(selector.key, src.limit + 1, historyCursor?.after ?? null);
-              return checkedDto(
+              const response = checkedDto(
                 {
                   itemId,
                   readAt,
@@ -437,6 +459,8 @@ export function createValuationQuery(
                 },
                 SourceHistorySchema,
               );
+              budget();
+              return response;
             }
             const [latest] = await tx.$queryRaw<
               ManualValuation[]
@@ -542,8 +566,9 @@ export function createValuationQuery(
               currencyConflict: conflict,
               currencyConflictScope: "LATEST_MANUAL_AND_ALL_ELIGIBLE_EXTERNAL_GROUPS",
             };
+            const result = checkedDto(response, ValuationSummarySchema);
             budget();
-            return checkedDto(response, ValuationSummarySchema);
+            return result;
           },
           {
             isolationLevel: "RepeatableRead",

@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { createTestDatabaseClient } from "@sammlerraum/db/test-database";
 import { ProviderRegistry } from "@sammlerraum/market-data/provider-registry";
 import { createCatalogMaintenanceService } from "../catalog/catalog-service";
@@ -8,7 +8,7 @@ import { createItemService } from "../items/item-service";
 import { createMarketDataService } from "../market-data/market-data-service";
 import { createValuationService } from "./valuation-service";
 import { createValuationQuery, type ValuationQueryDatabase } from "./valuation-query";
-import { encodeValuationToken } from "./valuation-cursors";
+import { decodeSourceSelector, encodeValuationToken } from "./valuation-cursors";
 
 const enabled = process.env.RUN_DATABASE_INTEGRATION === "1";
 const db = enabled ? createTestDatabaseClient() : undefined;
@@ -695,6 +695,145 @@ describe.runIf(enabled)("owner valuation comparison PostgreSQL", () => {
     ).rejects.toMatchObject({ code: "VALUATION_UNAVAILABLE" });
     expect(calls).toBe(1);
   });
+  it("deducts acquisition from remaining transaction and statement limits after retries", async () => {
+    const f = await fixture();
+    let now = 0,
+      attempts = 0;
+    const limits: unknown[][] = [];
+    const clock = vi.spyOn(performance, "now").mockImplementation(() => now);
+    try {
+      const delayed: ValuationQueryDatabase = {
+        $transaction: async (work, options) => {
+          attempts++;
+          if (attempts < 3) {
+            now += 5000;
+            throw { code: "40001" };
+          }
+          now += 1800;
+          return db!.$transaction(
+            (tx) =>
+              work({
+                $queryRaw: async <T>(q: TemplateStringsArray, ...v: unknown[]) => {
+                  if (q.join("").includes("set_config")) limits.push(v);
+                  const result = await tx.$queryRaw<T>(q, ...v);
+                  if (q.join("").includes("transaction_timestamp()")) now += 100;
+                  return result;
+                },
+              }),
+            options,
+          );
+        },
+      };
+      await createValuationQuery(delayed).getItemValuationSummary(f.itemId, { userId: ownerId });
+      expect(attempts).toBe(3);
+      expect(limits[0]).toContain("200ms");
+      expect(limits[0]).not.toContain("2000ms");
+      expect(limits.some((values) => values.includes("100ms"))).toBe(true);
+    } finally {
+      clock.mockRestore();
+    }
+  });
+  it("cancels native SQL within the remaining acquired budget and settles before returning", async () => {
+    const f = await fixture();
+    let now = 0,
+      attempts = 0,
+      settled = false;
+    const clock = vi.spyOn(performance, "now").mockImplementation(() => now);
+    try {
+      const delayed: ValuationQueryDatabase = {
+        $transaction: async (work, options) => {
+          attempts++;
+          if (attempts < 3) {
+            now += 5000;
+            throw { code: "40001" };
+          }
+          now += 1850;
+          try {
+            return await db!.$transaction(
+              (tx) =>
+                work({
+                  $queryRaw: async <T>(q: TemplateStringsArray, ...v: unknown[]) => {
+                    if (q.join("").includes("transaction_timestamp()"))
+                      return tx.$queryRaw<T>`SELECT pg_sleep(0.5)`;
+                    return tx.$queryRaw<T>(q, ...v);
+                  },
+                }),
+              options,
+            );
+          } finally {
+            settled = true;
+          }
+        },
+      };
+      await expect(
+        createValuationQuery(delayed).getItemValuationSummary(f.itemId, { userId: ownerId }),
+      ).rejects.toMatchObject({ code: "VALUATION_UNAVAILABLE" });
+      expect(attempts).toBe(3);
+      expect(settled).toBe(true);
+      expect(await db!.$queryRaw`SELECT 1 AS ready`).toEqual([{ ready: 1 }]);
+    } finally {
+      clock.mockRestore();
+    }
+  });
+  it.each(["summary", "source history"] as const)(
+    "rejects exhausted %s immediately after awaited SQL, including an empty final page",
+    async (view) => {
+      const f = await fixture();
+      await record(f);
+      const summary = await query().getItemValuationSummary(f.itemId, { userId: ownerId });
+      const group = summary.external.groups[0]!;
+      const last = group.history.records[0]!;
+      const cursor = encodeValuationToken({
+        ...decodeSourceSelector(group.source),
+        after: { id: last.id, observedAt: last.observedAt, createdAt: last.recordedAt },
+      });
+      let now = 0,
+        expired = false,
+        queriesAfterExpiry = 0,
+        marketReads = 0;
+      const clock = vi.spyOn(performance, "now").mockImplementation(() => now);
+      try {
+        const delayed: ValuationQueryDatabase = {
+          $transaction: (work, options) =>
+            db!.$transaction(
+              (tx) =>
+                work({
+                  $queryRaw: async <T>(q: TemplateStringsArray, ...v: unknown[]) => {
+                    if (expired) queriesAfterExpiry++;
+                    const result = await tx.$queryRaw<T>(q, ...v);
+                    const sql = q.join("");
+                    if (
+                      (view === "summary" && sql.includes('FROM "Valuation"')) ||
+                      (view === "source history" &&
+                        sql.includes('FROM "MarketObservation"') &&
+                        ++marketReads === 2)
+                    ) {
+                      now = 5001;
+                      expired = true;
+                      if (view === "source history") expect(result).toEqual([]);
+                    }
+                    return result;
+                  },
+                }),
+              options,
+            ),
+        };
+        const service = createValuationQuery(delayed, policy, registry);
+        await expect(
+          view === "summary"
+            ? service.getItemValuationSummary(f.itemId, { userId: ownerId })
+            : service.getItemValuationSourceHistory(
+                f.itemId,
+                { userId: ownerId },
+                { view: "source-history", source: group.source, cursor },
+              ),
+        ).rejects.toMatchObject({ code: "VALUATION_UNAVAILABLE" });
+        expect(queriesAfterExpiry).toBe(0);
+      } finally {
+        clock.mockRestore();
+      }
+    },
+  );
   it("restores session timezone and preserves year0001 native manual and external instants", async () => {
     const f = await fixture();
     await createValuationService(db!, ownerId).addManualValuation(f.itemId, {

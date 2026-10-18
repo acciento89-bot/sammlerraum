@@ -349,6 +349,67 @@ describe.runIf(enabled)("valuation HTTP routes PostgreSQL", () => {
       if (categoryId) await db!.categoryTemplate.delete({ where: { id: categoryId } });
     }
   });
+  it("maps captured acquisition and adapter connection failures to one sanitized GET and POST attempt", async () => {
+    const failures = [
+      ...["P1001", "P1002", "P1008", "P1017"].map((code) => ({ code })),
+      {
+        code: "P1001",
+        meta: {
+          driverAdapterError: {
+            cause: { kind: "DatabaseNotReachable", host: "127.0.0.1", port: 1 },
+          },
+        },
+      },
+      { meta: { driverAdapterError: { cause: { kind: "ConnectionClosed" } } } },
+      { meta: { driverAdapterError: { cause: { kind: "SocketTimeout" } } } },
+    ];
+    for (const failure of failures) {
+      for (const method of ["GET", "POST"] as const) {
+        let calls = 0;
+        const unavailable = createValuationRouteHandlers(
+          createValuationRouteDependencies(
+            {
+              $transaction: async () => {
+                calls++;
+                throw { ...failure, message: "secret connection details" };
+              },
+            },
+            { api: { getSession: session } },
+            origin,
+          ),
+        );
+        const result = await unavailable[method](
+          request(method, method === "POST" ? { amountMinor: "1", currency: "EUR" } : undefined),
+          itemId,
+        );
+        expect(result.status).toBe(503);
+        expect(result.headers.get("cache-control")).toBe("no-store");
+        const body = await result.text();
+        expect(body).toContain("VALUATION_UNAVAILABLE");
+        expect(body).not.toContain("secret");
+        expect(calls).toBe(1);
+      }
+    }
+  });
+  it("does not mask unknown database faults as availability failures", async () => {
+    let calls = 0;
+    const broken = createValuationRouteHandlers(
+      createValuationRouteDependencies(
+        {
+          $transaction: async () => {
+            calls++;
+            throw { code: "P2010", meta: { code: "42703" }, message: "secret invalid column" };
+          },
+        },
+        { api: { getSession: session } },
+        origin,
+      ),
+    );
+    const result = await broken.GET(request(), itemId);
+    expect(result.status).toBe(500);
+    expect(await result.text()).not.toContain("secret");
+    expect(calls).toBe(1);
+  });
   it("maps the native manual quota and dependency failures without leaking database details", async () => {
     await db!
       .$executeRaw`INSERT INTO "Valuation" (id,"itemId","ownerId","actorUserId","amountMinor",currency,"minorUnitExponent","observedAt","createdAt") SELECT gen_random_uuid(),${itemId}::uuid,${ownerId},${ownerId},1,'EUR',2,'2025-01-01T00:00:00Z'::timestamptz,'2025-01-01T00:00:00Z'::timestamptz FROM generate_series(1,10000)`;
