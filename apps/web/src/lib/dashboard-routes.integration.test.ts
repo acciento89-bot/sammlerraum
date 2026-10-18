@@ -25,7 +25,7 @@ describe.runIf(enabled)("native owned dashboard route", () => {
     return {
       getSession,
       handler: m.createDashboardRouteHandlers(
-        m.createDashboardRouteDependencies(db!, { api: { getSession } }),
+        m.createDashboardRouteDependencies(db!, { api: { getSession } }, "https://example.invalid"),
       ),
     };
   }

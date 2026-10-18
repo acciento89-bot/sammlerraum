@@ -28,7 +28,11 @@ describe.runIf(enabled)("native authorized item search route", () => {
     return {
       getSession,
       handler: m!.createItemSearchRouteHandlers(
-        m!.createItemSearchRouteDependencies(db!, { api: { getSession } }),
+        m!.createItemSearchRouteDependencies(
+          db!,
+          { api: { getSession } },
+          "https://example.invalid",
+        ),
       ),
     };
   }
@@ -136,9 +140,13 @@ describe.runIf(enabled)("native authorized item search route", () => {
       ["SEARCH_UNAVAILABLE", 503],
       ["SEARCH_INVARIANT", 500],
     ] as const) {
-      const dependencies = m.createItemSearchRouteDependencies(db!, {
-        api: { getSession: async () => ({ user: { id: owner } }) },
-      });
+      const dependencies = m.createItemSearchRouteDependencies(
+        db!,
+        {
+          api: { getSession: async () => ({ user: { id: owner } }) },
+        },
+        "https://example.invalid",
+      );
       dependencies.service.searchItems = async () => {
         throw new ItemSearchError(code);
       };

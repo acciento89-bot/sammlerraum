@@ -12,6 +12,7 @@ const dependencies = async () => {
     createItemSearchRouteDependencies(
       createPrismaClient(serverEnv.DATABASE_URL, { bounded: true }),
       auth,
+      serverEnv.APP_ORIGIN,
     ),
   );
 };

@@ -158,6 +158,7 @@ jobs:
           packages/domain/src/search/search-read.integration.test.ts
           packages/domain/src/search/search-retained-integrity.integration.test.ts
           apps/web/src/lib/item-search-routes.integration.test.ts
+          apps/web/src/lib/private-search-routes.integration.test.ts
           apps/web/src/lib/valuation-routes.integration.test.ts
           packages/domain/src/market-data/market-data-service.test.ts apps/worker/src/jobs/market-sync.integration.test.ts
           apps/worker/src/jobs/market-request-permit.integration.test.ts

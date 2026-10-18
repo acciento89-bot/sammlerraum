@@ -20,7 +20,8 @@
     "./search": "./src/search.ts",
     "./item-search": "./src/item-search.ts",
     "./smart-collections": "./src/smart-collections.ts",
-    "./dashboard": "./src/dashboard.ts"
+    "./dashboard": "./src/dashboard.ts",
+    "./private-search-query": "./src/private-search-query.ts"
   },
   "scripts": {
     "build": "pnpm typecheck",

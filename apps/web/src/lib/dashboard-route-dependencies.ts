@@ -9,6 +9,7 @@ const dependencies = async () => {
     createDashboardRouteDependencies(
       createPrismaClient(serverEnv.DATABASE_URL, { bounded: true }),
       auth,
+      serverEnv.APP_ORIGIN,
     ),
   );
 };

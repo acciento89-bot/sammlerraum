@@ -6,6 +6,8 @@ import {
   type SearchDatabase,
 } from "@sammlerraum/domain/search/item-search-service";
 import { apiRoute } from "./api/route-handler";
+import { parsePrivateItemSearchWire } from "@sammlerraum/contracts/private-search-query";
+import { readSearchBody } from "./api/read-search-body";
 type Authentication = {
   api: {
     getSession(input: {
@@ -14,8 +16,13 @@ type Authentication = {
     }): Promise<{ user: { id: string } } | null>;
   };
 };
-export function createItemSearchRouteDependencies(database: SearchDatabase, auth: Authentication) {
+export function createItemSearchRouteDependencies(
+  database: SearchDatabase,
+  auth: Authentication,
+  appOrigin: string,
+) {
   return {
+    appOrigin,
     getSession: (headers: Headers) =>
       auth.api.getSession({ headers, query: { disableCookieCache: true, disableRefresh: true } }),
     service: createItemSearchService(database),
@@ -97,6 +104,22 @@ export function createItemSearchRouteHandlers(
         const result = await dependencies.service.searchItems(
           { userId: session.user.id },
           readItemSearchQuery(request),
+        );
+        return Response.json(result, { headers: { "cache-control": "no-store" } });
+      } catch (error) {
+        return mapItemSearchError(error);
+      }
+    }),
+    POST: apiRoute(async (request) => {
+      try {
+        if (request.headers.get("origin") !== new URL(dependencies.appOrigin).origin)
+          throw new ApiError("FORBIDDEN", 403, "Cross-origin request rejected");
+        const session = await dependencies.getSession(request.headers);
+        if (!session) throw new ApiError("UNAUTHORIZED", 401, "Authentication required");
+        readItemSearchQuery(request, []);
+        const result = await dependencies.service.searchItems(
+          { userId: session.user.id },
+          parsePrivateItemSearchWire(await readSearchBody(request, "ITEM_QUERY")),
         );
         return Response.json(result, { headers: { "cache-control": "no-store" } });
       } catch (error) {
