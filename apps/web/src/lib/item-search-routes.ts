@@ -28,10 +28,7 @@ export function createItemSearchRouteDependencies(
     service: createItemSearchService(database),
   };
 }
-export function readItemSearchQuery(
-  request: Request,
-  allowedKeys: readonly string[] = ["text", "f", "lifecycle", "limit", "cursor"],
-) {
+export function readSearchQueryMap(request: Request, allowedKeys: readonly string[]) {
   const marker = request.url.indexOf("?");
   const encoded = marker < 0 ? "" : request.url.slice(marker).split("#", 1)[0]!;
   if (Buffer.byteLength(encoded) > SEARCH_MAX_QUERY_BYTES)
@@ -54,6 +51,13 @@ export function readItemSearchQuery(
   } catch {
     throw new ItemSearchError("SEARCH_INVALID");
   }
+  return values;
+}
+export function readItemSearchQuery(
+  request: Request,
+  allowedKeys: readonly string[] = ["text", "f", "lifecycle", "limit", "cursor"],
+) {
+  const values = readSearchQueryMap(request, allowedKeys);
   if (values.limit !== undefined && !/^[1-9][0-9]*$/u.test(values.limit))
     throw new ItemSearchError("SEARCH_INVALID");
   return {

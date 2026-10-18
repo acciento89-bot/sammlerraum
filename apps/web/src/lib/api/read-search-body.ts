@@ -3,17 +3,32 @@ import { searchFail } from "@sammlerraum/contracts/item-search";
 import { PRIVATE_SEARCH_MAX_BODY_BYTES } from "@sammlerraum/contracts/private-search-query";
 import { readBoundedBody } from "./read-bounded-body";
 
-type Shape = "ITEM_QUERY" | "DASHBOARD_QUERY";
+type Shape =
+  | "ITEM_QUERY"
+  | "DASHBOARD_QUERY"
+  | "COLLECTION_REFERENCES"
+  | "CUSTOM_FIELD_REFERENCES"
+  | "CONDITION_REFERENCES";
 const keys: Record<Shape, readonly string[]> = {
   ITEM_QUERY: ["text", "f", "lifecycle", "limit", "cursor"],
   DASHBOARD_QUERY: ["text", "f", "lifecycle"],
+  COLLECTION_REFERENCES: ["ids"],
+  CUSTOM_FIELD_REFERENCES: ["references", "detail"],
+  CONDITION_REFERENCES: ["references"],
 };
-/** Fixed scalar envelope only. JSON.parse owns syntax; quoted values stay opaque. */
+/** Five fixed envelopes. JSON.parse owns syntax; quoted values stay opaque. */
 function precheck(raw: string, shape: Shape): void {
   const text = raw.replace(/^[\t\n\r ]+|[\t\n\r ]+$/gu, "");
   if (!text.startsWith("{") || !text.endsWith("}")) searchFail("SEARCH_INVALID");
   const seen = new Set<string>();
   let keyExpected = true;
+  let arrayDepth = 0;
+  const maxDepth =
+    shape === "COLLECTION_REFERENCES"
+      ? 1
+      : shape === "CUSTOM_FIELD_REFERENCES" || shape === "CONDITION_REFERENCES"
+        ? 2
+        : 0;
   for (let i = 1; i < text.length - 1; i++) {
     const char = text[i];
     if (char === '"') {
@@ -23,16 +38,20 @@ function precheck(raw: string, shape: Shape): void {
         i++;
       }
       if (i >= text.length - 1) searchFail("SEARCH_INVALID");
-      if (keyExpected) {
+      if (keyExpected && arrayDepth === 0) {
         const key: unknown = JSON.parse(text.slice(start, i + 1));
         if (typeof key !== "string" || !keys[shape].includes(key) || seen.has(key))
           searchFail("SEARCH_INVALID");
         seen.add(key);
         keyExpected = false;
       }
-    } else if (char === "{" || char === "}" || char === "[" || char === "]") {
+    } else if (char === "{" || char === "}") {
       searchFail("SEARCH_INVALID");
-    } else if (char === ",") keyExpected = true;
+    } else if (char === "[") {
+      if (++arrayDepth > maxDepth) searchFail("SEARCH_INVALID");
+    } else if (char === "]") {
+      if (--arrayDepth < 0) searchFail("SEARCH_INVALID");
+    } else if (char === "," && arrayDepth === 0) keyExpected = true;
   }
 }
 export async function readSearchBody(request: Request, shape: Shape): Promise<unknown> {

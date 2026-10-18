@@ -36,7 +36,8 @@
     "./search/filter-ast": "./src/search/filter-ast.ts",
     "./search/item-search-service": "./src/search/item-search-service.ts",
     "./search/smart-collection-service": "./src/search/smart-collection-service.ts",
-    "./dashboard/dashboard-service": "./src/dashboard/dashboard-service.ts"
+    "./dashboard/dashboard-service": "./src/dashboard/dashboard-service.ts",
+    "./search/search-reference-service": "./src/search/search-reference-service.ts"
   },
   "scripts": {
     "build": "pnpm typecheck",

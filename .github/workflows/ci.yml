@@ -155,6 +155,8 @@ jobs:
           packages/domain/src/search/smart-collection-service.test.ts
           apps/web/src/lib/smart-collection-routes.integration.test.ts
           packages/domain/src/search/item-search-service.test.ts
+          packages/domain/src/search/search-reference-service.integration.test.ts
+          apps/web/src/lib/search-reference-routes.integration.test.ts
           packages/domain/src/search/search-read.integration.test.ts
           packages/domain/src/search/search-retained-integrity.integration.test.ts
           apps/web/src/lib/item-search-routes.integration.test.ts

@@ -136,3 +136,44 @@ describe("private scalar search body boundary", () => {
     });
   });
 });
+
+describe("three fixed reference envelopes", () => {
+  it("retains collection IDs and custom/condition tuples including null", async () => {
+    for (const [shape, value] of [
+      ["COLLECTION_REFERENCES", { ids: ["a", "b"] }],
+      [
+        "CUSTOM_FIELD_REFERENCES",
+        {
+          references: [
+            ["a", "b"],
+            ["c", "d"],
+          ],
+          detail: "OPTIONS",
+        },
+      ],
+      [
+        "CONDITION_REFERENCES",
+        {
+          references: [
+            ["a", null],
+            ["b", "c"],
+          ],
+        },
+      ],
+    ] as const)
+      expect(await readSearchBody(request(JSON.stringify(value)), shape)).toEqual(value);
+  });
+  it.each([
+    ['{"ids":[],"i\\u0064s":[]}', "COLLECTION_REFERENCES"],
+    ['{"references":[],"r\\u0065ferences":[]}', "CUSTOM_FIELD_REFERENCES"],
+    ['{"ids":[["a"]]}', "COLLECTION_REFERENCES"],
+    ['{"references":[[["a"]]]}', "CONDITION_REFERENCES"],
+    ['{"references":[{"id":"secret"}]}', "CUSTOM_FIELD_REFERENCES"],
+    ['{"references":[["a","b"]],"detail":"OPTIONS","detail":"SUMMARY"}', "CUSTOM_FIELD_REFERENCES"],
+    ['{"references":[["a","b"],]}', "CONDITION_REFERENCES"],
+  ] as const)("rejects malformed or duplicate reference envelope", async (raw, shape) => {
+    await expect(readSearchBody(request(raw), shape)).rejects.toMatchObject({
+      code: "SEARCH_INVALID",
+    });
+  });
+});

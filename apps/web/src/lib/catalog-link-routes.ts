@@ -1,3 +1,7 @@
+import { createSearchReferenceService } from "@sammlerraum/domain/search/search-reference-service";
+import type { SearchDatabase } from "@sammlerraum/domain/search/item-search-service";
+import { readSearchQueryMap, mapItemSearchError } from "./item-search-routes";
+import { searchFail } from "@sammlerraum/contracts/item-search";
 import {
   CATALOG_LINK_MAX_BODY_BYTES,
   CatalogLinkInputSchema,
@@ -29,7 +33,7 @@ type Authentication = {
   };
 };
 export function createCatalogLinkRouteDependencies(
-  database: ItemDatabase & Parameters<typeof createCatalogReadService>[0],
+  database: ItemDatabase & Parameters<typeof createCatalogReadService>[0] & SearchDatabase,
   auth: Authentication,
   appOrigin: string,
 ) {
@@ -39,6 +43,7 @@ export function createCatalogLinkRouteDependencies(
       auth.api.getSession({ headers, query: { disableCookieCache: true, disableRefresh: true } }),
     createItemService: (actorId: string) => createItemService(database, actorId),
     reads: createCatalogReadService(database),
+    references: createSearchReferenceService(database),
     canModerate: (userId: string) =>
       database.$transaction(
         async (tx) => {
@@ -181,7 +186,26 @@ export function createCatalogLinkRouteHandlers(
       return run(() => dependencies.reads.listCategories(input));
     }),
     CATEGORY: apiRoute(async (request, categoryId: string) => {
-      await actor(request);
+      const userId = await actor(request);
+      // Omitted view deliberately preserves the legacy query and error boundary.
+      if (new URL(request.url).searchParams.has("view")) {
+        try {
+          const input = readSearchQueryMap(request, ["view", "definitionId"]);
+          const result =
+            input.view === "definitions" && input.definitionId === undefined
+              ? await dependencies.references.getCatalogDefinitionChoices({ userId }, categoryId)
+              : input.view === "definition" && input.definitionId !== undefined
+                ? await dependencies.references.getCatalogDefinition(
+                    { userId },
+                    categoryId,
+                    input.definitionId,
+                  )
+                : searchFail("SEARCH_INVALID");
+          return Response.json(result, { headers: { "cache-control": "no-store" } });
+        } catch (error) {
+          return mapItemSearchError(error);
+        }
+      }
       query(request, []);
       return run(() => dependencies.reads.getCategoryTemplate(routeId(categoryId)), "category");
     }),

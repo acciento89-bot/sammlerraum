@@ -21,7 +21,8 @@
     "./item-search": "./src/item-search.ts",
     "./smart-collections": "./src/smart-collections.ts",
     "./dashboard": "./src/dashboard.ts",
-    "./private-search-query": "./src/private-search-query.ts"
+    "./private-search-query": "./src/private-search-query.ts",
+    "./search-references": "./src/search-references.ts"
   },
   "scripts": {
     "build": "pnpm typecheck",

@@ -1,3 +1,4 @@
+import { readCursorJson } from "./cursor-json";
 import { createHash } from "node:crypto";
 import { searchFail, type NormalizedItemSearchQuery } from "@sammlerraum/contracts/item-search";
 export type SearchResolutionContext = { smartCollectionId: string; revision: number } | null;
@@ -45,12 +46,7 @@ export const encodeSearchCursor = (value: SearchCursor) =>
   Buffer.from(JSON.stringify(value)).toString("base64url");
 export function decodeSearchCursor(token: string, contextHash: string): SearchCursor {
   try {
-    if (!/^[A-Za-z0-9_-]{1,2048}$/u.test(token)) throw Error();
-    const bytes = Buffer.from(token, "base64url");
-    if (bytes.length > 1536 || bytes.toString("base64url") !== token) throw Error();
-    const parsed = schema.safeParse(
-      JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(bytes)),
-    );
+    const parsed = schema.safeParse(readCursorJson(token));
     if (
       !parsed.success ||
       parsed.data.contextHash !== contextHash ||
