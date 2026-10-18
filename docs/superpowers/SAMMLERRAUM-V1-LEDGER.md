@@ -947,3 +947,7 @@ Task5B1 adds strict private POST transport over the actual search/dashboard serv
 Both exact `fbc0b9f` runs `39118709552` and `39118705905` passed every database/browser/build/container gate; GitGuardian also passed. Full steps and explicitly truncated primary tails are retained without inferred remote test totals. Task5B1 now has independent review and exact remote proof.
 
 Task5B2 source `f173934` implements three bounded metadata families and two bounded modes on existing category detail. Local relevant DB-enabled gate235 passes/zero skips includes transport-only cases; of43 new guarded cases19 execute actual SQL and24 stop at transport, plus30 new pure cases. Corrected regular suite900 passes/482 expected skips; types/lint/build pass. Root verified24 working/committed source hashes and the documented pure-fixture-only freeze difference. Independent review and exact B2 remote CI remain pending. Full original Task5/Phase07 and verified **41/91** count remain unchanged.
+
+## 2026-10-18 — bounded selector milestone independently approved
+
+Task5B2 `f173934` is independently SPEC compliant/QUALITY Approved with no Critical/Important findings. One nonblocking SQL-formatting suggestion is deferred to the next relevant edit and final phase review. Root resolved unchanged-foundation checks with the existing approved reviews and actual B2 regression gate. Exact B2 remote CI remains pending; the next source milestone is5C localized search/filter UI. Original Task5/Phase07/count **41/91** and production-readiness gates remain open.
