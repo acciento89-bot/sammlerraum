@@ -1,0 +1,27 @@
+{
+  "headRevision": "5fa2f06e6b88c459cb77415a8269e9b083ddf801",
+  "sourceFixture": "81c7191e1e91dc8dba9089ccbfde7c3e2e0cd24b",
+  "sourceMedia": "137ea615cf4c138a552b780a9db25d68b5294d64",
+  "sourceApplication": "eda7248973550623fe50f10714be0fc4ea199109",
+  "observedAt": "2026-10-18 09:35:48 UTC",
+  "runs": [
+    39114824727,
+    39114822076
+  ],
+  "jobs": [
+    117638370582,
+    117638362646
+  ],
+  "conclusions": [
+    "success",
+    "success"
+  ],
+  "stepConclusionsEach": {
+    "success": 29,
+    "skipped": 1
+  },
+  "primaryLogCharsEach": 120000,
+  "primaryLogsTruncated": true,
+  "remoteNumericTestTotalsInferred": false,
+  "scope": "combined exact candidate; no original full task checkoff or production readiness claim"
+}
