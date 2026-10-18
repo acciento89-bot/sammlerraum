@@ -1,0 +1,59 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| apps/web/src/lib/dashboard-routes.integration.test.ts (12 tests | 12 failed) 114ms
+   × native owned dashboard route > returns matched units and collections with fresh session/no-store/request ID 6ms
+     → Cannot find module './dashboard-routes' imported from '/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/src/lib/dashboard-routes.integration.test.ts'
+   × native owned dashboard route > closes malformed and overridden wire f=null 1ms
+     → Cannot find module './dashboard-routes' imported from '/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/src/lib/dashboard-routes.integration.test.ts'
+   × native owned dashboard route > closes malformed and overridden wire text=%FF 0ms
+     → Cannot find module './dashboard-routes' imported from '/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/src/lib/dashboard-routes.integration.test.ts'
+   × native owned dashboard route > closes malformed and overridden wire text=% 0ms
+     → Cannot find module './dashboard-routes' imported from '/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/src/lib/dashboard-routes.integration.test.ts'
+   × native owned dashboard route > closes malformed and overridden wire text=a&%74ext=b 0ms
+     → Cannot find module './dashboard-routes' imported from '/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/src/lib/dashboard-routes.integration.test.ts'
+   × native owned dashboard route > closes malformed and overridden wire owner=secret 0ms
+     → Cannot find module './dashboard-routes' imported from '/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/src/lib/dashboard-routes.integration.test.ts'
+   × native owned dashboard route > closes malformed and overridden wire limit=1 0ms
+     → Cannot find module './dashboard-routes' imported from '/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/src/lib/dashboard-routes.integration.test.ts'
+   × native owned dashboard route > closes malformed and overridden wire cursor=abc 0ms
+     → Cannot find module './dashboard-routes' imported from '/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/src/lib/dashboard-routes.integration.test.ts'
+   × native owned dashboard route > closes malformed and overridden wire scope=SHARED 0ms
+     → Cannot find module './dashboard-routes' imported from '/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/src/lib/dashboard-routes.integration.test.ts'
+   × native owned dashboard route > closes malformed and overridden wire f=%7B%22version%22%3A1%2C%22version%22%3A1%7D 0ms
+     → Cannot find module './dashboard-routes' imported from '/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/src/lib/dashboard-routes.integration.test.ts'
+   × native owned dashboard route > enforces query bytes and authentication 0ms
+     → Cannot find module './dashboard-routes' imported from '/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/src/lib/dashboard-routes.integration.test.ts'
+   × native owned dashboard route > projects only closed semantic reference and unavailable filter errors 0ms
+     → Cannot find module './dashboard-routes' imported from '/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/src/lib/dashboard-routes.integration.test.ts'
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 12 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/web/src/lib/dashboard-routes.integration.test.ts > native owned dashboard route > returns matched units and collections with fresh session/no-store/request ID
+ FAIL  |workspace| apps/web/src/lib/dashboard-routes.integration.test.ts > native owned dashboard route > closes malformed and overridden wire f=null
+ FAIL  |workspace| apps/web/src/lib/dashboard-routes.integration.test.ts > native owned dashboard route > closes malformed and overridden wire text=%FF
+ FAIL  |workspace| apps/web/src/lib/dashboard-routes.integration.test.ts > native owned dashboard route > closes malformed and overridden wire text=%
+ FAIL  |workspace| apps/web/src/lib/dashboard-routes.integration.test.ts > native owned dashboard route > closes malformed and overridden wire text=a&%74ext=b
+ FAIL  |workspace| apps/web/src/lib/dashboard-routes.integration.test.ts > native owned dashboard route > closes malformed and overridden wire owner=secret
+ FAIL  |workspace| apps/web/src/lib/dashboard-routes.integration.test.ts > native owned dashboard route > closes malformed and overridden wire limit=1
+ FAIL  |workspace| apps/web/src/lib/dashboard-routes.integration.test.ts > native owned dashboard route > closes malformed and overridden wire cursor=abc
+ FAIL  |workspace| apps/web/src/lib/dashboard-routes.integration.test.ts > native owned dashboard route > closes malformed and overridden wire scope=SHARED
+ FAIL  |workspace| apps/web/src/lib/dashboard-routes.integration.test.ts > native owned dashboard route > closes malformed and overridden wire f=%7B%22version%22%3A1%2C%22version%22%3A1%7D
+ FAIL  |workspace| apps/web/src/lib/dashboard-routes.integration.test.ts > native owned dashboard route > enforces query bytes and authentication
+ FAIL  |workspace| apps/web/src/lib/dashboard-routes.integration.test.ts > native owned dashboard route > projects only closed semantic reference and unavailable filter errors
+Error: Cannot find module './dashboard-routes' imported from '/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/src/lib/dashboard-routes.integration.test.ts'
+ ❯ handlers apps/web/src/lib/dashboard-routes.integration.test.ts:10:86
+
+ ❯ apps/web/src/lib/dashboard-routes.integration.test.ts:11:121
+
+Caused by: Error: Failed to load url ./dashboard-routes (resolved id: ./dashboard-routes). Does the file exist?
+ ❯ loadAndTransform node_modules/.pnpm/vite@7.3.6_@types+node@24.5.2_jiti@2.7.0/node_modules/vite/dist/node/chunks/config.js:22739:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/12]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  12 failed (12)
+   Start at  11:26:16
+   Duration  346ms (transform 31ms, setup 5ms, collect 66ms, tests 114ms, environment 0ms, prepare 42ms)
+

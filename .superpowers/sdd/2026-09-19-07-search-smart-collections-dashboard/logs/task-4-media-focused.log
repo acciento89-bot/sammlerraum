@@ -1,0 +1,10 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ✓ |workspace| packages/domain/src/dashboard/dashboard-service.test.ts (21 tests | 19 skipped) 214ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed | 19 skipped (21)
+   Start at  11:34:40
+   Duration  682ms (transform 148ms, setup 5ms, collect 297ms, tests 214ms, environment 0ms, prepare 44ms)
+

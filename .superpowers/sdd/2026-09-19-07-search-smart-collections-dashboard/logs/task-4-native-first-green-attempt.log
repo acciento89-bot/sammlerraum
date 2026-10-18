@@ -1,0 +1,73 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| packages/domain/src/dashboard/dashboard-service.test.ts (6 tests | 1 failed) 334ms
+   ✓ owned dashboard PostgreSQL > weights latest own estimates without leaking foreign money and includes empty owned collections 26ms
+   ✓ dashboard actual observations and filters > selects latest before denomination and never turns absent or incomparable history into zero 51ms
+   ✓ dashboard actual observations and filters > requires distinct observation times and uses exact large current-quantity sums 19ms
+   ✓ dashboard actual observations and filters > uses disjoint lifecycles and excludes deleted parents while keeping collection counts independent 73ms
+   × dashboard actual observations and filters > counts grading records separately, retains retired conditions and distinguishes usable media 27ms
+     → 
+Invalid `db!.mediaAsset.create()` invocation in
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/dashboard/dashboard-service.test.ts:76:37
+
+  73 await db!.collectibleItem.update({where:{id:a.id},data:{categoryTemplateId:category.id,conditionOptionId:option.id,tradeStatus:"FOR_SALE",purchaseAmountMinor:0n,purchaseCurrency:"EUR"}});
+  74 await db!.collectibleItem.update({where:{id:b.id},data:{tradeStatus:"RESERVED"}});
+  75 for(const provider of ["PSA","CGC"]) await db!.grading.create({data:{itemId:a.id,ownerId:f.owner,provider,providerKey:provider.toLowerCase(),grade:"10"}});
+→ 76 const asset=await db!.mediaAsset.create({
+       data: {
+         ownerId: "dash_case_938b0da9-a03a-406e-b97f-1087b601eb32",
+         kind: "IMAGE",
+         status: "READY",
+         storageKey: "test/60b09383-19e2-4ed7-8244-7c8ed0fadab5",
+         mimeType: "image/png",
+         byteSize: 10n,
+         checksumSha256: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     +   originalFileName: String
+       }
+     })
+
+Argument `originalFileName` is missing.
+   ✓ dashboard actual observations and filters > keeps unavailable producer metrics explicit and rejects unsupported leaves even for empty matches 12ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/dashboard/dashboard-service.test.ts > dashboard actual observations and filters > counts grading records separately, retains retired conditions and distinguishes usable media
+PrismaClientValidationError: 
+Invalid `db!.mediaAsset.create()` invocation in
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/dashboard/dashboard-service.test.ts:76:37
+
+  73 await db!.collectibleItem.update({where:{id:a.id},data:{categoryTemplateId:category.id,conditionOptionId:option.id,tradeStatus:"FOR_SALE",purchaseAmountMinor:0n,purchaseCurrency:"EUR"}});
+  74 await db!.collectibleItem.update({where:{id:b.id},data:{tradeStatus:"RESERVED"}});
+  75 for(const provider of ["PSA","CGC"]) await db!.grading.create({data:{itemId:a.id,ownerId:f.owner,provider,providerKey:provider.toLowerCase(),grade:"10"}});
+→ 76 const asset=await db!.mediaAsset.create({
+       data: {
+         ownerId: "dash_case_938b0da9-a03a-406e-b97f-1087b601eb32",
+         kind: "IMAGE",
+         status: "READY",
+         storageKey: "test/60b09383-19e2-4ed7-8244-7c8ed0fadab5",
+         mimeType: "image/png",
+         byteSize: 10n,
+         checksumSha256: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     +   originalFileName: String
+       }
+     })
+
+Argument `originalFileName` is missing.
+ ❯ throwValidationException node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/core/errorRendering/throwValidationException.ts:46:9
+ ❯ vn.handleRequestError node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:212:7
+ ❯ vn.handleAndLogRequestError node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:184:12
+ ❯ vn.request node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:153:12
+ ❯ a node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:1014:24
+ ❯ packages/domain/src/dashboard/dashboard-service.test.ts:76:16
+
+ ❯ fixture packages/domain/src/dashboard/dashboard-service.test.ts:36:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 5 passed (6)
+   Start at  11:25:38
+   Duration  782ms (transform 131ms, setup 6ms, collect 264ms, tests 334ms, environment 0ms, prepare 48ms)
+

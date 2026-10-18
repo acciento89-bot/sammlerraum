@@ -1,0 +1,44 @@
+{
+  "sourceCommit": "b974e7ce86981eba4e8e28591b1baf99d7e16633",
+  "base": "6d2f425342d1e4b96c05306cb0dfa9a7be60e0b3",
+  "runtime": {
+    "node": "24.19.0",
+    "pnpm": "10.17.1",
+    "database": "sammlerraum_test",
+    "postgres": "17.11"
+  },
+  "native": {
+    "exitCode": 0,
+    "files": 16,
+    "passed": 366,
+    "realDatabaseCases": 221,
+    "pureCases": 145,
+    "skipped": 0,
+    "log": "task-4-final-native.log"
+  },
+  "regular": {
+    "exitCode": 0,
+    "filesPassed": 74,
+    "filesSkipped": 38,
+    "passed": 790,
+    "skipped": 420,
+    "log": "task-4-final-regular.log"
+  },
+  "typecheck": {
+    "exitCode": 0,
+    "log": "task-4-final-types.log"
+  },
+  "lint": {
+    "exitCode": 0,
+    "log": "task-4-final-lint-corrected.log",
+    "previousFormattingFailure": "task-4-final-lint.log"
+  },
+  "productionBuild": {
+    "exitCode": 0,
+    "log": "task-4-final-build-corrected.log"
+  },
+  "frozenFunctionalSource": "task-4-frozen-source.json",
+  "finalSource": "task-4-final-source.json",
+  "onlyPostFunctionalGateChange": "dashboard-result.ts formatter correction; identical TypeScript transpilation proven in task-4-format-equivalence.log; final build rerun on corrected exact source",
+  "ownedSourcePathCount": 17
+}

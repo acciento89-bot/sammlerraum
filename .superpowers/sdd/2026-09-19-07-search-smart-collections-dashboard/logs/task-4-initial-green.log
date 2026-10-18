@@ -1,0 +1,48 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| packages/domain/src/dashboard/dashboard-service.test.ts (6 tests | 1 failed) 351ms
+   ✓ owned dashboard PostgreSQL > weights latest own estimates without leaking foreign money and includes empty owned collections 23ms
+   ✓ dashboard actual observations and filters > selects latest before denomination and never turns absent or incomparable history into zero 52ms
+   ✓ dashboard actual observations and filters > requires distinct observation times and uses exact large current-quantity sums 19ms
+   ✓ dashboard actual observations and filters > uses disjoint lifecycles and excludes deleted parents while keeping collection counts independent 70ms
+   × dashboard actual observations and filters > counts grading records separately, retains retired conditions and distinguishes usable media 48ms
+     → 
+Invalid `db!.user.delete()` invocation in
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/dashboard/dashboard-service.test.ts:37:26
+
+  34 try{
+  35  const collection=(await db!.collection.create({data:{ownerId:owner,name:"Case"}})).id;
+  36  await work({owner,collection,item:(title,quantity=1)=>db!.collectibleItem.create({data:{ownerId:owner,collectionId:collection,title,quantity}}),read:(input={})=>createDashboardService(db!).getDashboard({userId:owner},input)});
+→ 37 }finally{await db!.user.delete(
+Foreign key constraint violated on the constraint: `MediaAsset_ownerId_fkey`
+   ✓ dashboard actual observations and filters > keeps unavailable producer metrics explicit and rejects unsupported leaves even for empty matches 22ms
+ ✓ |workspace| apps/web/src/lib/dashboard-routes.integration.test.ts (12 tests) 261ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/dashboard/dashboard-service.test.ts > dashboard actual observations and filters > counts grading records separately, retains retired conditions and distinguishes usable media
+PrismaClientKnownRequestError: 
+Invalid `db!.user.delete()` invocation in
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/dashboard/dashboard-service.test.ts:37:26
+
+  34 try{
+  35  const collection=(await db!.collection.create({data:{ownerId:owner,name:"Case"}})).id;
+  36  await work({owner,collection,item:(title,quantity=1)=>db!.collectibleItem.create({data:{ownerId:owner,collectionId:collection,title,quantity}}),read:(input={})=>createDashboardService(db!).getDashboard({userId:owner},input)});
+→ 37 }finally{await db!.user.delete(
+Foreign key constraint violated on the constraint: `MediaAsset_ownerId_fkey`
+ ❯ vn.handleRequestError node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:238:13
+ ❯ vn.handleAndLogRequestError node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:184:12
+ ❯ vn.request node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:153:12
+ ❯ a node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:1014:24
+ ❯ fixture packages/domain/src/dashboard/dashboard-service.test.ts:37:11
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  1 failed | 17 passed (18)
+   Start at  11:26:40
+   Duration  1.17s (transform 140ms, setup 6ms, collect 282ms, tests 613ms, environment 0ms, prepare 64ms)
+
