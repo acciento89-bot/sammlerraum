@@ -1,0 +1,34 @@
+[WebServer] (node:57060) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:57061) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:57069) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [desktop] › e2e/media-documents.spec.ts:143:5 › item media and private documents › public item can have a purchase receipt that remains private (de) (26.8s)
+
+
+  1) [desktop] › e2e/media-documents.spec.ts:143:5 › item media and private documents › public item can have a purchase receipt that remains private (de) 
+
+    Error: route.fulfill: Route is already handled!
+
+      254 |               reachedStage();
+      255 |               await release;
+    > 256 |               await route.fulfill({ response });
+          |                           ^
+      257 |             } else await route.continue();
+      258 |           });
+      259 |           await expect(upload).toBeEnabled();
+        at /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/media-documents.spec.ts:256:27
+
+    Error Context: test-results/media-documents-item-media-7f0c3-pt-that-remains-private-de--desktop/error-context.md
+
+    Error Context: test-results/media-documents-item-media-7f0c3-pt-that-remains-private-de--desktop/error-context.md
+
+  1 failed
+    [desktop] › e2e/media-documents.spec.ts:143:5 › item media and private documents › public item can have a purchase receipt that remains private (de) 
+undefined
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/media-documents.spec.ts --project=desktop --grep remains private \(de\) --workers=1

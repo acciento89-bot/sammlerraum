@@ -1,0 +1,14 @@
+{
+  "time": "2026-10-18T08:33:15.702095+00:00",
+  "phase": "final-cleanup",
+  "noTestPortListeners": true,
+  "frozenFinalSpecMatches": true,
+  "productDiffEmpty": true,
+  "originalProductAndBuildHashesMatch": {
+    "apps/web/src/components/media/media-upload.tsx": true,
+    "apps/web/src/components/media/item-gallery-editor.tsx": true,
+    "apps/web/.next/BUILD_ID": true,
+    "apps/web/.next/standalone/apps/web/server.js": true,
+    "apps/worker/dist/worker.cjs": true
+  }
+}
