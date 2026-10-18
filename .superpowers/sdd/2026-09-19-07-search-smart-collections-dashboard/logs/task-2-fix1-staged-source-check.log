@@ -1,0 +1,11 @@
+ .github/workflows/ci.yml                           |   1 +
+ docs/search/owned-item-search.md                   |   2 +
+ packages/domain/src/search/item-search-service.ts  |  16 +-
+ packages/domain/src/search/search-read.ts          |   8 +-
+ .../search-retained-integrity.integration.test.ts  | 568 +++++++++++++++++++++
+ packages/domain/src/search/search-text.ts          |   7 +-
+ packages/domain/src/search/search-typed-guards.ts  |  19 +-
+ .../domain/src/search/search-url-integrity.test.ts |  99 ++++
+ packages/domain/src/search/search-url-integrity.ts |  83 +++
+ 9 files changed, 792 insertions(+), 11 deletions(-)
+All nine staged files match task-2-fix1-frozen-source.json; no root-owned files staged.

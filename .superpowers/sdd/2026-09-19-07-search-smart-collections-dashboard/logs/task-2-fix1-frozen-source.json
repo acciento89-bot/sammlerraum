@@ -1,0 +1,11 @@
+{
+  ".github/workflows/ci.yml": "398da5b3f17cfcb4131d3396e4b7a541c76ba6229b0c457409eed153ba6c5628",
+  "docs/search/owned-item-search.md": "a2a14dbc62f6fd17e9b80f7f7fc3c8ee5634f5637fb319696c87cf72f7af2e97",
+  "packages/domain/src/search/item-search-service.ts": "8b09d62d2476bcb1af9dc50803fd205a53e351e2f382d8539780ef91dcbf3746",
+  "packages/domain/src/search/search-read.ts": "e22787f3059d812e2769df17cb8d11c2e3cfff584254fbb68556355d348e6717",
+  "packages/domain/src/search/search-text.ts": "59218188c0cd6b51d444907c3b490b851499ea4c6208e84e8ee2c73edcc7951e",
+  "packages/domain/src/search/search-typed-guards.ts": "0fb1151c7137f90d75f1cf2c57c1b2d08e7298e6773d1014d1dae7f09bf7070b",
+  "packages/domain/src/search/search-url-integrity.ts": "0f5220140e4245bed1f04388f6f3fc3a57130c19899ec9ffb66f804fbbe22975",
+  "packages/domain/src/search/search-url-integrity.test.ts": "4076b7c698d3781b6025c17b7c794fab988067c9b28494a6a3e72d3e4e46ea12",
+  "packages/domain/src/search/search-retained-integrity.integration.test.ts": "f7238099ba2d473d9990e2497d7bc9ca25d32fe796523326330107c90867bb87"
+}
