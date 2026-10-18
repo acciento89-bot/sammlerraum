@@ -30,6 +30,7 @@ export type ValuationState = {
   loading: boolean;
   sourceLoading: boolean;
   stale: boolean;
+  externalInvalidated: boolean;
   options: SummaryOptions;
   draftVersion: number;
 };
@@ -46,6 +47,7 @@ export class ValuationController {
     loading: false,
     sourceLoading: false,
     stale: false,
+    externalInvalidated: false,
     options: { scope: "CURRENT_MAPPING" },
     draftVersion: 0,
   };
@@ -101,6 +103,7 @@ export class ValuationController {
     this.saveRefreshPending = false;
     this.update({
       summary: null,
+      externalInvalidated: true,
       source: null,
       selector: null,
       ack: null,
@@ -138,6 +141,7 @@ export class ValuationController {
       this.saveRefreshPending = false;
       this.update({
         summary,
+        externalInvalidated: false,
         loading: false,
         stale: false,
         access: "",
@@ -172,7 +176,13 @@ export class ValuationController {
     await this.load({ scope });
   }
   async source(selector: string, cursor?: string) {
-    if (this.writing || this.state.loading || this.state.mutation === "unknown") return;
+    if (
+      this.writing ||
+      this.state.loading ||
+      this.state.externalInvalidated ||
+      this.state.mutation === "unknown"
+    )
+      return;
     this.sourceAbort?.abort();
     const abort = new AbortController();
     this.sourceAbort = abort;
@@ -207,11 +217,18 @@ export class ValuationController {
         this.privateFailure(error, false)
       )
         return;
-      this.update({ source: null, selector: null, sourceLoading: false });
-      if (
+      const externalRejected =
         error instanceof ValuationHttpError &&
-        (error.status === 404 || error.code === "VALUATION_CURSOR_STALE")
-      ) {
+        (error.status === 404 || error.code === "VALUATION_CURSOR_STALE");
+      // Reject the cached directory, seed rows and off-page derived claims together.
+      // A failed owner recheck may retain manual context, never restore these facts.
+      this.update({
+        source: null,
+        selector: null,
+        sourceLoading: false,
+        ...(externalRejected ? { externalInvalidated: true } : {}),
+      });
+      if (externalRejected) {
         const recoveryEpoch = this.epoch + 1;
         await this.load({ scope: this.state.options.scope }, false);
         if (this.current(recoveryEpoch) && !this.state.access)

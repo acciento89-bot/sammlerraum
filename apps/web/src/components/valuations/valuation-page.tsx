@@ -42,7 +42,8 @@ export function ValuationPage({
       </section>
     );
   const summary = state.summary;
-  const externalCurrent = summary?.external.scope === state.options.scope;
+  const externalCurrent =
+    !state.externalInvalidated && summary?.external.scope === state.options.scope;
   return (
     <section className="management-shell valuations-shell">
       <nav className="management-nav" aria-label={t("title")}>
@@ -221,28 +222,30 @@ export function ValuationPage({
                 );
               })}
             </div>
-            <div className="value-actions">
-              <button
-                disabled={controls || !externalCurrent || !summary.external.nextGroupCursor}
-                onClick={() =>
-                  void controller.load({
-                    ...state.options,
-                    groupCursor: summary.external.nextGroupCursor!,
-                  })
-                }
-              >
-                {t("nextSources")}
-              </button>
-              <button
-                disabled={controls || !state.options.groupCursor}
-                onClick={() => {
-                  const { groupCursor: _, ...options } = state.options;
-                  void controller.load(options);
-                }}
-              >
-                {t("firstSources")}
-              </button>
-            </div>
+            {externalCurrent && (
+              <div className="value-actions">
+                <button
+                  disabled={controls || !externalCurrent || !summary.external.nextGroupCursor}
+                  onClick={() =>
+                    void controller.load({
+                      ...state.options,
+                      groupCursor: summary.external.nextGroupCursor!,
+                    })
+                  }
+                >
+                  {t("nextSources")}
+                </button>
+                <button
+                  disabled={controls || !state.options.groupCursor}
+                  onClick={() => {
+                    const { groupCursor: _, ...options } = state.options;
+                    void controller.load(options);
+                  }}
+                >
+                  {t("firstSources")}
+                </button>
+              </div>
+            )}
           </section>
         </>
       )}

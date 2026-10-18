@@ -1,4 +1,8 @@
 import { mkdir } from "node:fs/promises";
+import {
+  createValuationRouteDependencies,
+  createValuationRouteHandlers,
+} from "../src/lib/valuation-routes";
 import { resolve } from "node:path";
 import { expect, test, type Page } from "@playwright/test";
 import { createItemService } from "@sammlerraum/domain/items/item-service";
@@ -363,8 +367,19 @@ test.describe("private valuation history", () => {
       const queriedIds = new Set<string>();
       const scopeRelease = gate(),
         scopeCaptured = gate();
+      const recheckRelease = gate(),
+        recheckCaptured = gate();
       let gets = 0,
+        denySource = false,
+        failRecheck = false,
         holdHistorical = false;
+      const disabledHandlers = createValuationRouteHandlers(
+        createValuationRouteDependencies(
+          db!,
+          { api: { getSession: async () => ({ user: { id: f.ownerId } }) } },
+          origin,
+        ),
+      );
       try {
         await signIn(page, f);
         await page.route(`**/api/v1/items/${f.itemId}/valuations?*`, async (route) => {
@@ -375,6 +390,13 @@ test.describe("private valuation history", () => {
           const options = ValuationQuerySchema.parse(Object.fromEntries(url.searchParams));
           gets++;
           if (options.view === "summary") {
+            if (failRecheck) {
+              failRecheck = false;
+              recheckCaptured.release();
+              await recheckRelease.promise;
+              await route.abort("failed");
+              return;
+            }
             const summary = ValuationSummarySchema.parse(
               await f.query.getItemValuationSummary(f.itemId, { userId: f.ownerId }, options),
             );
@@ -400,6 +422,17 @@ test.describe("private valuation history", () => {
               body: JSON.stringify({ summary }),
             });
           } else {
+            if (denySource) {
+              denySource = false;
+              const unavailable = await disabledHandlers.GET(new Request(url), f.itemId);
+              expect(unavailable.status).toBe(404);
+              await route.fulfill({
+                status: unavailable.status,
+                headers: Object.fromEntries(unavailable.headers),
+                body: await unavailable.text(),
+              });
+              return;
+            }
             const sourceHistory = SourceHistorySchema.parse(
               await f.query.getItemValuationSourceHistory(f.itemId, { userId: f.ownerId }, options),
             );
@@ -494,6 +527,82 @@ test.describe("private valuation history", () => {
         await expect(asking.locator("[data-observation-id]")).toHaveCount(20);
         await asking.getByRole("button", { name: c.older, exact: true }).click();
         await expect(asking.locator("[data-observation-id]")).toHaveCount(3);
+        const retainedManual = await append(
+          page,
+          locale,
+          "0",
+          "Synthetic retained manual during source rejection",
+        );
+        await expect(
+          page
+            .getByRole("region", { name: c.latest, exact: true })
+            .locator(`[data-valuation-id="${retainedManual.id}"]`),
+        ).toBeVisible();
+        const rejectionDraft = locale === "de" ? "1,23" : "1.23";
+        await page.getByLabel(c.amount, { exact: true }).fill(rejectionDraft);
+        await page.getByLabel(c.note, { exact: true }).fill("Synthetic source-rejection draft");
+        denySource = true;
+        failRecheck = true;
+        await asking
+          .getByRole("button", {
+            name: locale === "de" ? "Quellverlauf anzeigen" : "View source history",
+            exact: true,
+          })
+          .click();
+        await recheckCaptured.promise;
+        await expect(external.locator("[data-observation-id]")).toHaveCount(0);
+        await expect(external.locator(".value-source")).toHaveCount(0);
+        await expect(
+          external.getByText(
+            locale === "de"
+              ? /Mehrere Währungen; keine Umrechnung/
+              : /Multiple currencies; no conversion/,
+          ),
+        ).toHaveCount(0);
+        await expect(external.getByRole("button", { name: c.next, exact: true })).toHaveCount(0);
+        await expect(external.getByRole("button", { name: c.first, exact: true })).toHaveCount(0);
+        await expect(page.getByLabel(c.amount, { exact: true })).toHaveValue(rejectionDraft);
+        await expect(page.getByLabel(c.note, { exact: true })).toHaveValue(
+          "Synthetic source-rejection draft",
+        );
+        await expect(
+          page
+            .getByRole("region", { name: c.latest, exact: true })
+            .locator(`[data-valuation-id="${retainedManual.id}"]`),
+        ).toBeVisible();
+        recheckRelease.release();
+        await expect(
+          page.getByText(
+            locale === "de"
+              ? "Die Quellzuordnung wurde geändert oder ist nicht verfügbar. Der Verlauf wurde erneut geprüft; bei Bedarf erneut laden."
+              : "Source mapping changed or is unavailable. History was checked again; retry if needed.",
+            { exact: true },
+          ),
+        ).toBeVisible();
+        await expect(external.locator(".value-source")).toHaveCount(0);
+        await expect(
+          external.getByText(
+            locale === "de"
+              ? /Mehrere Währungen; keine Umrechnung/
+              : /Multiple currencies; no conversion/,
+          ),
+        ).toHaveCount(0);
+        await expect(page.getByLabel(c.note, { exact: true })).toHaveValue(
+          "Synthetic source-rejection draft",
+        );
+        await page.getByRole("button", { name: c.refresh, exact: true }).click();
+        await expect(external.locator(".value-source")).toHaveCount(4);
+        await expect(
+          external.getByText(
+            locale === "de"
+              ? /Mehrere Währungen; keine Umrechnung/
+              : /Multiple currencies; no conversion/,
+          ),
+        ).toBeVisible();
+        await expect(page.getByLabel(c.amount, { exact: true })).toHaveValue(rejectionDraft);
+        await expect(page.getByLabel(c.note, { exact: true })).toHaveValue(
+          "Synthetic source-rejection draft",
+        );
         await external.getByRole("button", { name: c.next, exact: true }).focus();
         await page.keyboard.press("Enter");
         for (const kind of [c.kinds[4], c.kinds[1], c.kinds[2]])
@@ -646,6 +755,8 @@ test.describe("private valuation history", () => {
       } finally {
         scopeRelease.release();
         scopeCaptured.release();
+        recheckRelease.release();
+        recheckCaptured.release();
         try {
           await page.unrouteAll({ behavior: "wait" });
         } finally {

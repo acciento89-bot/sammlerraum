@@ -283,3 +283,107 @@ it("reports a later read failure as a read error once a save has been reconciled
   expect(c.state.error).toBe("readError");
   expect(c.state.mutation).toBe("saved");
 });
+it("invalidates populated external facts throughout a deferred failed source-404 recheck, then restores only on fresh success", async () => {
+  const key = {
+    providerId: "fixture",
+    identifierNamespace: "fixture",
+    identifierType: "product",
+    externalId: "product-1",
+    kind: "ASKING_PRICE" as const,
+    currency: "EUR",
+  };
+  const catalog = { entryId: row.id, variantId: null, revision: 2, variantActive: true };
+  const populated: ValuationSummaryDto = {
+    ...summary,
+    catalog,
+    manual: { latest: row, history: { records: [row], nextCursor: null } },
+    currencyConflict: true,
+    external: {
+      ...summary.external,
+      availability: "AVAILABLE",
+      groups: [
+        {
+          key,
+          source: "selector",
+          history: {
+            records: [
+              {
+                id: row.id,
+                source: key,
+                sourceMetric: "asking",
+                qualifiers: { flag: false },
+                minorUnitExponent: 2,
+                price: { type: "POINT", amountMinor: "123" },
+                observedAt: row.observedAt,
+                observedBasis: "SOURCE",
+                observedPrecision: "DAY",
+                fetchedAt: row.createdAt,
+                recordedAt: row.createdAt,
+                sourceUrl: null,
+                sourceReference: "Synthetic asking",
+                confidence: null,
+                catalogMatch: {
+                  observedRevision: 2,
+                  currentRevision: 2,
+                  observedIdentifierId: row.id,
+                  currentIdentifierId: row.id,
+                  revisionChanged: false,
+                  identifierRecordChanged: false,
+                  identifierActive: true,
+                  variantActive: true,
+                },
+              },
+            ],
+            nextCursor: null,
+          },
+        },
+      ],
+      nextGroupCursor: "next-directory",
+    },
+  };
+  const recheck = deferred<ValuationSummaryDto>(),
+    started = deferred<void>();
+  let gets = 0,
+    sources = 0;
+  const c = fixture({
+    summary: async () => {
+      if (++gets === 2) {
+        started.resolve();
+        return recheck.promise;
+      }
+      return populated;
+    },
+    source: async () => {
+      sources++;
+      throw new ValuationHttpError(404, "NOT_FOUND");
+    },
+  });
+  await c.load();
+  const draftVersion = c.state.draftVersion;
+  expect(c.state.summary?.external.groups[0]?.history.records).toHaveLength(1);
+  expect(c.state.summary?.currencyConflict).toBe(true);
+  const reading = c.source("selector");
+  await started.promise;
+  expect(c.state.externalInvalidated).toBe(true);
+  expect(c.state.summary?.manual.latest?.id).toBe(row.id);
+  expect(c.state.draftVersion).toBe(draftVersion);
+  expect(c.state.access).toBe("");
+  recheck.reject(new Error("offline"));
+  await reading;
+  expect(c.state.externalInvalidated).toBe(true);
+  expect(c.state.error).toBe("mappingChanged");
+  expect(c.state.summary?.manual.history.records[0]?.id).toBe(row.id);
+  expect(c.state.draftVersion).toBe(draftVersion);
+  expect(gets).toBe(2);
+  await c.source("selector");
+  expect(sources).toBe(1);
+  await c.load();
+  expect(c.state.externalInvalidated).toBe(false);
+  expect(c.state.summary?.external.groups[0]?.history.records[0]?.price).toEqual({
+    type: "POINT",
+    amountMinor: "123",
+  });
+  expect(c.state.summary?.currencyConflict).toBe(true);
+  expect(c.state.draftVersion).toBe(draftVersion);
+  expect(gets).toBe(3);
+});
