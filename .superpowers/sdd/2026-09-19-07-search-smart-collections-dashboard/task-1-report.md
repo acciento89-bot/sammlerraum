@@ -55,3 +55,24 @@ Initial build without required environment failed with missing DATABASE_URL/APP_
 The initial unstaged whitespace check passed, but a later whole-staged `git diff --cached --check` reported trailing spaces/blank EOF lines in raw captured test/build output only (`logs/task-1-staged-diff-check.log`). Those evidence logs are preserved verbatim. The scoped staged source/report whitespace check passed; no source/report whitespace issue was hidden or reformatted out of a test failure.
 
 No DB/native integration/browser server, live provider, real data/classification/role operation, subagent, push, merge or deployment was performed. Existing DB-gated tests remain visibly skipped in the regular suite; their absence is not query/authorization evidence.
+
+## Fix round1 — review I1 and M1, BASEc00467d
+
+Root accepted the formal review's0 Critical/1 Important/1 Minor and authorized one narrow round. Review I1 identified a real gap in the original default-option diagnostics coverage: supported Zod `reportInput:true` attached the original rejected input and could invoke getters/toJSON while constructing errors. The original blanket public-schema guarantee above therefore did not hold on c00467d for that option. This section records its correction; the117/740 evidence below is distinct from original85/708 evidence above.
+
+Pinned Zod4.1.11 source inspection and an executable in-memory characterization probe confirmed `addIssue` uses nullish input defaulting: omitted, explicit undefined and null each reattach the original payload. Direct supported `context.issues.push` with `input:undefined` does not. The implementation changes only that closed-issue construction, preserving constant code/message, safe empty path and normal rejection/abort behavior. No new public wrapper or generic framework was added. With reporting enabled, issue.input is at most the explicit undefined value; no original object/cause is retained or rendered.
+
+Meaningful RED:32 new regressions failed and85 existing tests passed. The32 cases cover BOTH exported envelope/node schemas, safeParse/parse/safeParseAsync/parseAsync, and secret key/value, enumerable getter, toJSON and oversized fixtures under `reportInput:true`. Each checks bounded constant issues/messages, no cause/raw secrets, and zero getter/toJSON invocation. After the narrow fix,117/117 focused tests passed. The pinned-library probe separately reports original input attached=true for omitted/undefined/null addIssue inputs and false for direct sanitized issue construction.
+
+M1 is corrected in the existing compiler-contract comment: invalid/deleted definitions, resolved type/category mismatches and invalid CATALOG option-key references remain errors; a bounded nonexistent CUSTOM normalized selection identity is valid and matches nothing. This is documentation for Task2, not a synthetic resolver or runtime query change.
+
+Source froze before covering verification. Pinned commands remain exactly the forms in `logs/task-1-commands.txt`; fix1 reruns use the same regular test/typecheck/lint/build commands, same dummy build environment, and the focused command. Evidence files are `logs/task-1-fix1-*`.
+
+- Focused:117/117 passed (`task-1-fix1-green.log`).
+- Full regular suite:740 passed/253 DB-gated skipped,68 passed files/30 skipped (`task-1-fix1-tests.log`).
+- Workspace types and lint: all10 projects passed (`task-1-fix1-types.log`, `task-1-fix1-lint.log`).
+- Browser-platform bundle and isolated reportInput/getter runtime probe passed without process/Buffer/require, zero getter invocation (`task-1-fix1-browser.log`).
+- Pinned Zod behavior probe passed (`task-1-fix1-zod-probe.log`).
+- Final covering production build passed after the frozen source write, using the same documented dummy CI environment (`task-1-fix1-build.log`).
+
+No source outside search.ts/tests, no runtime producer/DB/query/authz changes, and no child/push/live action were introduced in this round. Root owns scoped re-review and new exact CI/checkoff. Previously documented full-phase producer gaps remain unchanged.

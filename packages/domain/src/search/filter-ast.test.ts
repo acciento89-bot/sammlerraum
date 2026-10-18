@@ -59,6 +59,65 @@ const canonical = {
 };
 
 describe("bounded item-filter foundation", () => {
+  const diagnosticCases = (["envelope", "node"] as const).flatMap((shape) =>
+    (["safeParse", "parse", "safeParseAsync", "parseAsync"] as const).flatMap((method) =>
+      (["secret", "getter", "toJSON", "oversized"] as const).map(
+        (fixture) => [shape, method, fixture] as const,
+      ),
+    ),
+  );
+  it.each(diagnosticCases)(
+    "keeps reportInput diagnostics closed: %s/%s/%s",
+    async (shape, method, fixture) => {
+      let invocations = 0;
+      let root: unknown = { kind: "secret-key", value: "secret-value" };
+      if (fixture === "getter")
+        root = Object.defineProperty({ kind: "category" }, "secret-key", {
+          enumerable: true,
+          get() {
+            invocations++;
+            return "secret-value";
+          },
+        });
+      if (fixture === "toJSON")
+        root = {
+          kind: "secret-key",
+          toJSON() {
+            invocations++;
+            return "secret-value";
+          },
+        };
+      if (fixture === "oversized")
+        root = { kind: "secret-key", value: "secret-value".repeat(2000) };
+      const schema = shape === "envelope" ? ItemFilterSchema : ItemFilterNodeSchema;
+      let error: unknown;
+      try {
+        const result = await schema[method](shape === "envelope" ? envelope(root) : root, {
+          reportInput: true,
+        });
+        if (method === "safeParse" || method === "safeParseAsync")
+          error = (result as { error?: unknown }).error;
+      } catch (caught) {
+        error = caught;
+      }
+      expect(invocations).toBe(0);
+      expect(error).toBeInstanceOf(Error);
+      const diagnostic = error as Error & { issues: Array<{ input?: unknown }> };
+      const serialized = JSON.stringify({ issues: diagnostic.issues, message: diagnostic.message });
+      expect(serialized.length).toBeLessThan(300);
+      expect(serialized).not.toContain("secret");
+      expect(diagnostic.issues).toEqual([
+        {
+          code: "custom",
+          message: fixture === "oversized" ? "FILTER_TOO_COMPLEX" : "FILTER_INVALID",
+          input: undefined,
+          path: [],
+        },
+      ]);
+      expect(error).not.toHaveProperty("cause");
+      expect(invocations).toBe(0);
+    },
+  );
   it("accepts five logical ancestors and rejects six including NOT", () => {
     expect(() => validateFilterComplexity(envelope(nested(5)))).not.toThrow();
     fail(() => validateFilterComplexity(envelope(nested(6))), "FILTER_TOO_COMPLEX");

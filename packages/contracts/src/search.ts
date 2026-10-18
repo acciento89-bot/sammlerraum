@@ -289,7 +289,9 @@ export type ItemFilterLeaf = z.infer<typeof leafSchema>;
  * Positive tests on absent facts are false; NOT complements that result only after
  * whole-tree availability succeeds. Explicit scoped missing/present applies only
  * to the selected collection/category. Zero/false/empty authored multi-select is
- * present. Reference/type/option failures are errors resolved by Task2, not missing.
+ * present. Invalid/deleted definitions, resolved type/category mismatches and invalid
+ * CATALOG option keys are reference errors resolved by Task2, not missing. A bounded
+ * nonexistent CUSTOM normalized selection identity is valid and simply matches nothing.
  *
  * Catalog attributes use exact linked ENTRY/SELECTED_VARIANT facts, including
  * retained retired targets. Retirement forbids new selection, not finding an owned
@@ -335,9 +337,12 @@ function guardedSchema<T extends ItemFilter | ItemFilterNode>(nodeOnly: boolean)
     try {
       return parseBounded(input, nodeOnly) as T;
     } catch (error) {
-      context.addIssue({
+      // Zod 4.1.11 addIssue defaults even explicit undefined/null input to the raw
+      // payload. Push a closed issue directly so reportInput cannot retain/render it.
+      context.issues.push({
         code: "custom",
         message: error instanceof FilterValidationError ? error.code : "FILTER_INVALID",
+        input: undefined,
       });
       return z.NEVER;
     }
