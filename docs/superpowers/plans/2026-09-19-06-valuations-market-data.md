@@ -40,7 +40,7 @@
 **Interfaces:**
 - Produces: `Money { amountMinor: bigint; currency: string }`, `parseLocalizedMoney`, `addManualValuation`.
 
-- [ ] **Step 1: Write failing locale test**
+- [x] **Step 1: Write failing locale test**
 
 ```ts
 it.each([
@@ -51,16 +51,16 @@ it.each([
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run packages/domain/src/money/money.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement money + valuation model**
+- [x] **Step 3: Implement money + valuation model**
 
 Add `Valuation` with type `MANUAL`, amount minor, currency, observedAt, note, actor. Never update an old row when a new manual estimate is added.
 
-- [ ] **Step 4: Migrate and test**
+- [x] **Step 4: Migrate and test**
 
 Run:
 ```bash
@@ -70,7 +70,7 @@ pnpm vitest run packages/domain/src/money packages/domain/src/valuations
 
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/domain/src/money packages/domain/src/valuations packages/db

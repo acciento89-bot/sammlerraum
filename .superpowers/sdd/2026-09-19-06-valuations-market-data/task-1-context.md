@@ -1,6 +1,6 @@
 # Phase 06 Task 1 — context for design preflight
 
-DESIGN ONLY. No implementation GO or BASE yet. Phase 05 Task 7 and the whole-phase integration review/exact CI must finish and be persisted first. Canonical ledger is authoritative. Root will send explicit GO and verified BASE. Do not alter source/tests/schema/database/index/HEAD during preflight; report design and named questions to root only.
+IMPLEMENTATION GO from root after persisted Phase05 completion. BASE `eefd76a1d6d29c1925cc0daccfced22d02885f70`; product source `75de79d966ad0ee7e9af2a7d8c6c1f714202daa5` passed both final exact CI runs39087100135/39087096899. Completion source push/exact remote verified; main ledger-only sync `a207a37f88b129939217f6143758765f30890114`, blob `f526a9810396d8a29eac11a75f58d6c5c4e74ff0`. Phase05 complete7/7, canonical34/91. The approved concrete Task1 design below now governs implementation; this GO supersedes earlier design-only wording in historical preparation notes. No other Phase06 task is authorized to implement concurrently.
 
 Read task-1-brief.md first as requirements, then this context and Phase06 progress.md. The full roadmap/spec is approved; do not ask the sleeping user for a new product design cycle. Use actual producer contracts, spec sections5.5/15 and relevant established service patterns rather than historical broad reports.
 
@@ -18,7 +18,7 @@ Operational constraints after GO: sole source implementer, no children/push/merg
 
 Task report path task-1-report.md, logs/task-1-*. Keep failed attempts and actual RED/GREEN chronology honest. Root owns independent review, feature backup push, canonical checkoff and ledger-only main sync. User deadline 2026-10-18 09:00 Europe/Berlin (07:00UTC); no long new work after08:45; preserve verified versus unfinished work at cutoff.
 
-## Concrete preflight approved by root, implementation still gated
+## Concrete preflight approved by root
 
 - Explicit pinned165 numeric-exponent ISO currencies from root's verified SIX snapshot2026-09-17; source/hash in Phase06 progress. Support0/2/3/4, reject N.A./unknown/retired for new input. Existing purchase contracts unchanged. Money remains amountMinor bigint+currency. Persist service-authored minorUnitExponent snapshot and native approved currency/exponent pairs; future migrations retain historical pairs and readers use stored exponent.
 - Parser raw input<=80UTF16 units before trim, explicit de/en locale and uppercase currency, ASCII integer and locale fraction only; optional exact3-digit grouping after first1–3 nonzero-leading digits. Ungrouped leading-zero digits are permitted (00,50 DE EUR→50n;001.00 EN EUR→100n), normalized exactly by BigInt. No internal whitespace/NBSP/symbol/sign/exponent/nonfinite/mixed/wrong grouping; integer required; exponent0 forbids decimal, otherwise1..exponent fraction digits, no excess precision even zeros. Range0..9223372036854775807n; never Number(amount).
@@ -30,4 +30,4 @@ Task report path task-1-report.md, logs/task-1-*. Keep failed attempts and actua
 - Ruling: native BEFORE UPDATE immutability, application has no update/delete method; trusted direct DELETE and item/user cascade cleanup allowed, no pg_trigger_depth bypass or permanent SQL retention claim. Why: private erasure/fixtures and Phase09 policy remain possible. Cost: operator-level deletes remain possible. Current actor=owner/cascade native policy must be deliberately migrated when Phase09 introduces a different collaborating actor; never simply relax one CHECK while retaining inappropriate actor-erasure cascade.
 - Tests: required locale examples,0/2/3/4 currencies and ISO/ICU differences, grammar/leading-zero/zero/max/max+1/exact beyond-safe values; real PG append ownership/native guards/history/ties/backdate/future/note/quota/pagination; actual quantity/split/lifecycle/collection-delete lock race; softdelete hides but retains, harddelete cleans up. Add dedicated DB CI allowlist. Genuine pure behavioral RED/GREEN and honest additive-schema scaffold chronology; final source review/exact CI root-owned.
 
-Root approval is design-only. Await explicit GO+verified BASE after Phase05 task and whole-phase gates; elapsed time or another agent finishing is not GO.
+Root GO and exact BASE are recorded above. Implement only Task1, preserve root-owned ledger/context/progress files, and report before expanding a scope or design blocker.
