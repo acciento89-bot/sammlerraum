@@ -1,0 +1,32 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| packages/queue/src/pg-boss-queue.test.ts (11 tests | 1 failed) 7ms
+   ✓ queue clients > deduplicates a job when a singleton key is reused 1ms
+   ✓ queue clients > does not deduplicate ordinary in-memory jobs 1ms
+   ✓ PgBossQueue > creates an exclusive queue then validates its persisted policy 1ms
+   ✓ PgBossQueue > rejects a persisted policy mismatch without changing the queue 1ms
+   ✓ PgBossQueue > recovers the newest nonterminal singleton after a nullable send 0ms
+   ✓ PgBossQueue > never resends when nullable send recovery finds no nonterminal job 0ms
+   ✓ QueueRuntime and WorkerRegistry > requires registrations before start and rejects duplicates 0ms
+   ✓ QueueRuntime and WorkerRegistry > unwraps every job payload in a pg-boss batch 0ms
+   ✓ QueueRuntime and WorkerRegistry > does not become healthy when the backend errors during work registration 0ms
+   ✓ QueueRuntime and WorkerRegistry > stops the backend when work registration fails 0ms
+   × forwards the actual broker cancellation signal only to opt-in handlers 2ms
+     → registry.registerCancellable is not a function
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/queue/src/pg-boss-queue.test.ts > forwards the actual broker cancellation signal only to opt-in handlers
+TypeError: registry.registerCancellable is not a function
+ ❯ packages/queue/src/pg-boss-queue.test.ts:197:11
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 10 passed (11)
+   Start at  04:50:38
+   Duration  259ms (transform 30ms, setup 6ms, collect 28ms, tests 7ms, environment 0ms, prepare 37ms)
+

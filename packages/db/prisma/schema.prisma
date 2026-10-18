@@ -891,3 +891,23 @@ model MarketObservation {
   @@index([providerId])
   @@index([entryId, variantId, providerId, kind, currency, observedAt(sort: Desc), createdAt(sort: Desc), id(sort: Desc)], map: "MarketObservation_history_idx")
 }
+
+// Successful immutable completion only; no observation FK obstructs provider purge.
+model MarketSyncReceipt {
+  providerId       String   @db.VarChar(64)
+  pollId           String   @db.Uuid
+  request          Json
+  fetchedAt        DateTime @db.Timestamptz(3)
+  recordedAt       DateTime @db.Timestamptz(3)
+  observationCount Int
+
+  @@id([providerId, pollId])
+}
+
+// One global operational cursor. Cursor and queue sends share one PG transaction.
+model MarketSyncDispatchState {
+  id                 String   @id
+  cursorProviderId   String?  @db.VarChar(64)
+  cursorIdentifierId String?  @db.Uuid
+  nextDispatchAt     DateTime @db.Timestamptz(3)
+}

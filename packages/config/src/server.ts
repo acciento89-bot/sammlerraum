@@ -41,6 +41,13 @@ const mediaLimit = (maximum: number, fallback: number) =>
   z.coerce.number().int().min(1).max(maximum).default(fallback);
 
 const schema = z.object({
+  MARKET_SYNC_ENABLED: z
+    .enum(["true", "false"])
+    .default("false")
+    .transform((value) => value === "true"),
+  MARKET_SYNC_INTERVAL_MS: z.coerce.number().int().min(60000).max(3600000).default(60000),
+  MARKET_SYNC_BATCH_SIZE: mediaLimit(32, 32),
+  MARKET_SYNC_MAX_PENDING: mediaLimit(256, 256),
   MEDIA_RETENTION_HOURS: mediaLimit(87600, 168),
   MEDIA_CLEANUP_INTERVAL_MS: mediaLimit(86400000, 60000),
   MEDIA_CLEANUP_BATCH_SIZE: mediaLimit(1000, 100),

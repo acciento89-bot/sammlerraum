@@ -17,6 +17,10 @@ describe("parseServerEnv", () => {
   it("accepts the required foundation environment", () => {
     expect(parseServerEnv(validEnvironment)).toEqual({
       ...validEnvironment,
+      MARKET_SYNC_ENABLED: false,
+      MARKET_SYNC_INTERVAL_MS: 60000,
+      MARKET_SYNC_BATCH_SIZE: 32,
+      MARKET_SYNC_MAX_PENDING: 256,
       LOG_LEVEL: "info",
       WORKER_HEALTH_PORT: 3001,
       MEDIA_MAX_IMAGE_BYTES: 20 * 1024 * 1024,
@@ -134,5 +138,16 @@ describe("media configuration", () => {
         EnvironmentConfigurationError,
       );
     },
+  );
+});
+
+it.each([
+  ["MARKET_SYNC_ENABLED", "1"],
+  ["MARKET_SYNC_INTERVAL_MS", "59999"],
+  ["MARKET_SYNC_BATCH_SIZE", "33"],
+  ["MARKET_SYNC_MAX_PENDING", "257"],
+])("rejects unsafe market configuration %s", (key, value) => {
+  expect(() => parseServerEnv({ ...validEnvironment, [key]: value })).toThrow(
+    EnvironmentConfigurationError,
   );
 });

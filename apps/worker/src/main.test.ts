@@ -138,3 +138,83 @@ describe("runWorkerMain", () => {
     expect(JSON.stringify(logger.error.mock.calls)).not.toContain("secret");
   });
 });
+
+it("shares stop completion and never disconnects DB when market work cannot settle", async () => {
+  const calls: string[] = [];
+  let release!: () => void;
+  const pending = new Promise<void>((r) => (release = r));
+  const queue = Object.assign(new EventEmitter(), {
+    start: async () => {},
+    stop: async () => {
+      calls.push("queue");
+    },
+    isReady: () => true,
+  });
+  const worker = await startWorker({
+    queue,
+    marketSync: {
+      start: () => {},
+      stop: async () => {
+        calls.push("abort");
+        await pending;
+        throw new Error("unsettled");
+      },
+    },
+    databaseHealth: async () => ({ ok: true }),
+    disconnectDatabase: async () => {
+      calls.push("database");
+    },
+    startHealth: async () => ({
+      close: async () => {
+        calls.push("health");
+      },
+      port: 1,
+      host: "127.0.0.1",
+    }),
+    healthPort: 1,
+    logger: { info: vi.fn(), error: vi.fn() },
+    installSignals: false,
+  });
+  const first = worker.stop(),
+    second = worker.stop();
+  expect(first).toBe(second);
+  expect(calls[0]).toBe("abort");
+  release();
+  await expect(first).rejects.toThrow("Worker shutdown failed");
+  expect(calls).toEqual(["abort", "health", "queue"]);
+});
+it("attempts independent cleanup when market stop throws synchronously", async () => {
+  const calls: string[] = [];
+  const queue = Object.assign(new EventEmitter(), {
+    start: async () => {},
+    stop: async () => {
+      calls.push("queue");
+    },
+    isReady: () => true,
+  });
+  const worker = await startWorker({
+    queue,
+    marketSync: {
+      start: () => {},
+      stop: () => {
+        throw new Error("unsettled");
+      },
+    },
+    databaseHealth: async () => ({ ok: true }),
+    disconnectDatabase: async () => {
+      calls.push("database");
+    },
+    startHealth: async () => ({
+      close: async () => {
+        calls.push("health");
+      },
+      port: 1,
+      host: "127.0.0.1",
+    }),
+    healthPort: 1,
+    logger: { info: vi.fn(), error: vi.fn() },
+    installSignals: false,
+  });
+  await expect(worker.stop()).rejects.toThrow();
+  expect(calls).toEqual(["health", "queue"]);
+});

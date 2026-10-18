@@ -149,7 +149,7 @@ jobs:
           packages/domain/src/condition/condition-service.test.ts
           packages/domain/src/grading/grading-service.test.ts
           packages/domain/src/valuations/valuation-service.test.ts
-          packages/domain/src/market-data/market-data-service.test.ts
+          packages/domain/src/market-data/market-data-service.test.ts apps/worker/src/jobs/market-sync.integration.test.ts
           apps/web/src/lib/grading-routes.integration.test.ts
           apps/web/src/lib/condition-routes.integration.test.ts
           apps/web/src/lib/catalog-proposal-routes.integration.test.ts

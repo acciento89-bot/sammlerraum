@@ -8,11 +8,16 @@ import type { JobHandler } from "./types";
 type RegisteredHandler = {
   name: string;
   handle: JobHandler<unknown>;
+  cancellable?: (payload: unknown, context: { signal: AbortSignal }) => Promise<void>;
 };
 
 export class WorkerRegistry {
   private readonly handlers = new Map<string, JobHandler<unknown>>();
   private locked = false;
+  private readonly cancellable = new Map<
+    string,
+    (payload: unknown, context: { signal: AbortSignal }) => Promise<void>
+  >();
 
   register<T>(name: string, handler: JobHandler<T>): void {
     if (this.locked) {
@@ -24,12 +29,27 @@ export class WorkerRegistry {
     this.handlers.set(name, handler as JobHandler<unknown>);
   }
 
+  registerCancellable<T>(
+    name: string,
+    handler: (payload: T, context: { signal: AbortSignal }) => Promise<void>,
+  ): void {
+    this.register(name, async () => undefined);
+    this.cancellable.set(
+      name,
+      handler as (payload: unknown, context: { signal: AbortSignal }) => Promise<void>,
+    );
+  }
+
   lock(): void {
     this.locked = true;
   }
 
   entries(): RegisteredHandler[] {
-    return [...this.handlers].map(([name, handle]) => ({ name, handle }));
+    return [...this.handlers].map(([name, handle]) => ({
+      name,
+      handle,
+      ...(this.cancellable.has(name) ? { cancellable: this.cancellable.get(name)! } : {}),
+    }));
   }
 }
 
@@ -70,7 +90,13 @@ export class QueueRuntime extends EventEmitter {
       for (const registration of this.registry.entries()) {
         await ensureExclusiveQueue(this.backend, registration.name);
         await this.backend.work(registration.name, async (jobs: Job<unknown>[]) => {
-          await Promise.all(jobs.map((job) => registration.handle(job.data)));
+          await Promise.all(
+            jobs.map((job) =>
+              registration.cancellable
+                ? registration.cancellable(job.data, { signal: job.signal })
+                : registration.handle(job.data),
+            ),
+          );
         });
       }
       this.initialized = this.queueHealthy;

@@ -17,7 +17,8 @@
     "@sammlerraum/queue": "workspace:*",
     "@sammlerraum/storage": "workspace:*",
     "sharp": "0.35.4",
-    "@sammlerraum/domain": "workspace:*"
+    "@sammlerraum/domain": "workspace:*",
+    "@sammlerraum/market-data": "workspace:*"
   },
   "devDependencies": {
     "esbuild": "0.28.2"

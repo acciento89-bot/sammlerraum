@@ -99,6 +99,9 @@ importers:
       '@sammlerraum/domain':
         specifier: workspace:*
         version: link:../../packages/domain
+      '@sammlerraum/market-data':
+        specifier: workspace:*
+        version: link:../../packages/market-data
       '@sammlerraum/queue':
         specifier: workspace:*
         version: link:../../packages/queue

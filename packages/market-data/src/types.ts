@@ -42,6 +42,20 @@ export type MarketObservation = Common &
   );
 export interface MarketDataProvider {
   readonly id: string;
-  fetch(request: MarketFetchRequest): Promise<MarketObservation[]>;
+  fetch(
+    request: MarketFetchRequest,
+    context?: { signal: AbortSignal },
+  ): Promise<MarketObservation[]>;
 }
 export type RecordContext = { request: MarketFetchRequest; fetchedAt: string };
+
+/** Task6 injects a distributed, credential-scoped permit around EVERY HTTP attempt/page.
+ * Implementations must enforce actual request spacing, cancellation and independent call budgets.
+ * A queue singleton or a process-local timer does not implement this contract.
+ */
+export interface MarketRequestPermit {
+  run<T>(
+    context: { credentialKey: string; signal: AbortSignal },
+    send: () => Promise<T>,
+  ): Promise<T>;
+}

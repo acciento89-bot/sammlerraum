@@ -12,6 +12,9 @@ import {
   semantic,
   target as validateTarget,
   uuid,
+  request as validateRequest,
+  text,
+  stable,
   type NormalizedObservation,
 } from "./validation";
 export { MarketDataError } from "./validation";
@@ -265,4 +268,19 @@ export function createMarketDataService(database: MarketDatabase, registry: Prov
     recordObservationsInTransaction,
     listObservations,
   };
+}
+
+/** Strict server-only persisted sync envelope. Shares ingestion's exact request parser. */
+export function parseMarketSyncPayload(input: unknown) {
+  const v = object(input, ["providerId", "pollId", "target"]);
+  const providerId = text(v.providerId, 64);
+  if (!/^[a-z][a-z0-9_-]{0,63}$/u.test(providerId)) return invalid();
+  const request = validateRequest({ pollId: v.pollId, target: v.target });
+  const payload = { providerId, ...request };
+  if (Buffer.byteLength(stable(payload)) > 2048) return invalid();
+  return payload;
+}
+export type MarketSyncPayload = ReturnType<typeof parseMarketSyncPayload>;
+export function sameMarketSyncRequest(left: unknown, right: unknown): boolean {
+  return stable(parseMarketSyncPayload(left)) === stable(parseMarketSyncPayload(right));
 }

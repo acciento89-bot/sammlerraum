@@ -1,3 +1,4 @@
+import { composeMarketSync } from "./jobs/market-sync-runtime";
 import type { StorageCleanupCursor } from "@sammlerraum/storage";
 import { createMediaCleanupService } from "@sammlerraum/domain/media/cleanup-service";
 import { createMediaCleanupJob } from "./jobs/cleanup-media";
@@ -24,7 +25,21 @@ async function startProductionWorker(): Promise<void> {
     import("@sammlerraum/db/media-lock"),
     import("./main"),
   ]);
-  const { runtime, client, registry } = createPgBossServices(serverEnv.DATABASE_URL);
+  const { runtime, client, registry, producerBackend } = createPgBossServices(
+    serverEnv.DATABASE_URL,
+  );
+  const { createPrismaClient } = await import("@sammlerraum/db/create-client");
+  const marketDatabase = createPrismaClient(serverEnv.DATABASE_URL, { bounded: true });
+  const marketSync = composeMarketSync({
+    database: marketDatabase,
+    backend: producerBackend,
+    workers: registry,
+    enabled: serverEnv.MARKET_SYNC_ENABLED,
+    intervalMs: serverEnv.MARKET_SYNC_INTERVAL_MS,
+    batchSize: serverEnv.MARKET_SYNC_BATCH_SIZE,
+    maxPending: serverEnv.MARKET_SYNC_MAX_PENDING,
+    logger: console,
+  });
   const repository = createPrismaImageRepository(prisma);
   const withAssetLock = createMediaAssetLocker(serverEnv.DATABASE_URL);
   const storage = new LocalPersistentStorage(serverEnv.UPLOADS_DIR, withAssetLock);
@@ -63,8 +78,11 @@ async function startProductionWorker(): Promise<void> {
     queue: runtime,
     imageDispatcher,
     mediaCleanup,
+    marketSync,
     databaseHealth: () => checkDatabaseHealth(prisma),
-    disconnectDatabase: () => prisma.$disconnect(),
+    disconnectDatabase: async () => {
+      await Promise.all([marketDatabase.$disconnect(), prisma.$disconnect()]);
+    },
     healthPort: serverEnv.WORKER_HEALTH_PORT,
     logger: console,
   });

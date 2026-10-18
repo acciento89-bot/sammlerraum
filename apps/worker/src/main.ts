@@ -22,6 +22,7 @@ type StartWorkerOptions = {
   logger: Logger;
   installSignals?: boolean;
   onQueueListenerInstalled?: () => void;
+  marketSync?: { start(): void; stop(): Promise<void> };
   mediaCleanup?: { start(): void; stop(): Promise<void> };
   imageDispatcher?: { start(): void; stop(): Promise<void> };
 };
@@ -48,7 +49,7 @@ export async function runWorkerMain(
 export async function startWorker(options: StartWorkerOptions): Promise<RunningWorker> {
   let queueHealthy = true;
   let endpoint: HealthEndpoint | undefined;
-  let stopped = false;
+  let stopPromise: Promise<void> | undefined;
   const handleQueueError = () => {
     queueHealthy = false;
     options.logger.error("Worker queue error");
@@ -56,17 +57,43 @@ export async function startWorker(options: StartWorkerOptions): Promise<RunningW
   options.queue.on("error", handleQueueError);
   options.onQueueListenerInstalled?.();
 
-  const stop = async () => {
-    if (stopped) return;
-    stopped = true;
-    process.off("SIGTERM", handleSignal);
-    process.off("SIGINT", handleSignal);
-    await endpoint?.close();
-    await options.mediaCleanup?.stop();
-    await options.imageDispatcher?.stop();
-    await options.queue.stop();
-    options.queue.off("error", handleQueueError);
-    await options.disconnectDatabase();
+  const stop = (): Promise<void> => {
+    if (stopPromise) return stopPromise;
+    stopPromise = (async () => {
+      process.off("SIGTERM", handleSignal);
+      process.off("SIGINT", handleSignal);
+      // Abort market I/O synchronously before waiting for independent cleanup.
+      let marketSettled = true;
+      const errors: unknown[] = [];
+      let marketStop: Promise<void> | undefined;
+      try {
+        marketStop = options.marketSync?.stop();
+      } catch {
+        marketSettled = false;
+        errors.push(new Error("Market shutdown failed"));
+      }
+      const marketResult = marketStop?.catch(() => {
+        marketSettled = false;
+        errors.push(new Error("Market shutdown failed"));
+      });
+      const attempt = async (work: () => Promise<unknown> | undefined) => {
+        try {
+          await work();
+        } catch {
+          errors.push(new Error("Worker cleanup failed"));
+        }
+      };
+      await attempt(() => endpoint?.close());
+      await attempt(() => options.mediaCleanup?.stop());
+      await attempt(() => options.imageDispatcher?.stop());
+      await marketResult;
+      await attempt(() => options.queue.stop());
+      options.queue.off("error", handleQueueError);
+      // An abort/timeout is not proof that a transport or transaction has stopped.
+      if (marketSettled) await attempt(() => options.disconnectDatabase());
+      if (errors.length) throw new Error("Worker shutdown failed");
+    })();
+    return stopPromise;
   };
   const handleSignal = () => {
     void stop().catch(() => {
@@ -78,6 +105,7 @@ export async function startWorker(options: StartWorkerOptions): Promise<RunningW
     await options.queue.start();
     options.imageDispatcher?.start();
     options.mediaCleanup?.start();
+    options.marketSync?.start();
     endpoint = await (options.startHealth ?? startHealthServer)({
       port: options.healthPort,
       databaseHealth: options.databaseHealth,

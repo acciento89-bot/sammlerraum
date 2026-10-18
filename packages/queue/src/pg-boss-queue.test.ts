@@ -191,3 +191,23 @@ describe("QueueRuntime and WorkerRegistry", () => {
     expect(runtime.isReady()).toBe(false);
   });
 });
+
+it("forwards the actual broker cancellation signal only to opt-in handlers", async () => {
+  const registry = new WorkerRegistry(),
+    handler = vi.fn(async () => {}),
+    ac = new AbortController();
+  registry.registerCancellable("market.sync", handler);
+  let work: ((jobs: unknown[]) => Promise<void>) | undefined;
+  const backend = Object.assign(new EventEmitter(), {
+    start: vi.fn(async () => {}),
+    stop: vi.fn(async () => {}),
+    createQueue: vi.fn(async () => {}),
+    getQueue: vi.fn(async () => ({ name: "market.sync", policy: "exclusive" })),
+    work: vi.fn(async (_name, callback) => {
+      work = callback;
+    }),
+  });
+  await new QueueRuntime(backend as never, registry).start();
+  await work!([{ data: { pollId: "durable" }, signal: ac.signal }]);
+  expect(handler).toHaveBeenCalledWith({ pollId: "durable" }, { signal: ac.signal });
+});
