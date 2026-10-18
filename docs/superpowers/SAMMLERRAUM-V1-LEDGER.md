@@ -16,7 +16,7 @@ This is the handoff/status file for long-running implementation. Update it after
 | 03 | Collections, Items, Fields & Locations | 8 | complete (8/8) | — |
 | 04 | Media & Documents | 6 | complete (6/6) | — |
 | 05 | Catalog, Condition & Grading | 7 | complete (7/7) | — |
-| 06 | Valuations & Market Data | 6 | in progress (5/6) | Task 6 |
+| 06 | Valuations & Market Data | 6 | complete (6/6) | — |
 | 07 | Search, Smart Collections & Dashboard | 5 | not started | Task 1 |
 | 08 | Import, Export, Insurance & Reports | 7 | not started | Task 1 |
 | 09 | Collaboration, Sharing & Audit | 7 | not started | Task 1 |
@@ -69,8 +69,9 @@ This is the handoff/status file for long-running implementation. Update it after
 - [x] P06 T03 — Idempotent bounded market synchronization and safe worker lifecycle
 - [x] P06 T04 — Add source comparison API and item valuation summary
 - [x] P06 T05 — Add valuation history UI contracts and localization
+- [x] P06 T06 — Add the first two production market-data adapters
 
-**Verified completion: 39/91 tasks.** Later tasks remain open as listed in the phase table and detail plans.
+**Verified completion: 40/91 tasks.** Later tasks remain open as listed in the phase table and detail plans.
 
 ## Update rule
 
@@ -844,3 +845,37 @@ Local evidence: initial550 workspacepass/234native-gatedskip,54 realPG,42 focuse
 Both exact corrected-source CI39098898037/job117590925497 and39098895696/job117590917344 SUCCESS, including actual new valuations production step, nativeDB, full browser/static/build/container/native-image gates. Primary returned120000-character tail truncated/no test-count lines, no remote totals inferred; both complete step metadata retained in task-5-ci-96bca47-steps.json before completion push. Both superseded204 runs alsoSUCCESS with separate primary tail/complete metadata; they do not substitute for corrected-source CI.
 
 Four synthetic screenshots outside repo labelled production/default-off versus query-generated external transport, with exact source limitations in reports; root independently inspected DEdesktopproduction and ENmobileexternal/readable crops, no required layout change. Final external captures match fix96; original production positive-path captures match204, unchanged by rejection-only fix. Owned fixture users/categories/observations clean, owned browser/server stopped, shared root-owned PG17 retained. Reports/reviews task-5-report/fix-report/review/fix-review.md and raw logs retained. Task6 actual committed Money/worker seams reconciled ready; approved Ruling7 acknowledgement and Ruling8 credential-byte clarifications retained, source GO still sequential after persistence. Future Phase07 preflight/legacy-money-design/progress remain provisional preparation only, no classification/migration/Phase07 checkoff. No source merge, Sammlerraum deployment, real provider/role/purge or real-data action.
+
+### Phase06 Task6 implementation cancellation seam (2026-10-18)
+
+Ruling: approve additive MarketRequestPermit callback send(signal:AbortSignal), passing merged caller+permit-stop signal through actual HTTP/body transport — the old zero-argument callback cannot propagate permit-owned standalone stop cancellation — cost shared type/fake implementation adjustments and focused forwarding/standalone-stop proof. Existing consumers may ignore the extra argument; real transports must use it. One send, awaited actual settlement/cooldown, independent bounded cleanup and no Promise.race/detached work remain binding. This is a narrow implementation seam, not a lifecycle framework/queue rewrite.
+
+
+10. Ruling during implementation: when an own claimed attempt crosses a DB UTC hour/day window before settlement, charge one conservative attempt into each advanced current bucket in the locked compare-clear transaction; keep a same-window count unchanged, reject regressing windows rather than resetting downward, and clear only atomically afterward. Why a paused admitted sender may physically start in the new window; otherwise admission-only counting permits that carried start plus a fresh full budget. The held claim blocks intervening sends, so one carry closes the latest-start gap without a general accounting ledger. Cost conservative counting can include an attempt whose actual start was earlier and clock regression can require manual recovery; fixed UTC admission caps are not rolling or spend guarantees. Native proofs cover both-window advance and hour-only advance preserving the same-day count, with budget1 blocking the next admission. Backdate only owned synthetic rows coherently; no constraint disable/global clock change/applied migration rewrite.
+
+11. Ruling during implementation: explicitly enabled, validated finite positive trusted policy may atomically initialize a missing idle gate row inside admission using INSERT ON CONFLICT DO NOTHING, followed by lock/validation/count/claim. Disabled, missing or zero policy performs no DB/send. Existing claims, counters and policy are never overwritten; policy mismatch fails closed. Why a truly missing row has no existing sender/counter state to recover and requiring an absent provisioning runner would make the approved composition unusable; cost first admission owns initialization rather than external preprovisioning. This supersedes the preflight literal missing-row rejection only. Native separate-client first-row race must prove one claim/start with preserved counters/policy. No actual provider activation or live provisioning is authorized.
+
+
+### Phase07 future design direction, not implementation
+
+Ruling L1.1: use an explicit versioned canonical ISO profile for future NEW/REPLACE only, preserve old raw UNKNOWN and known evidenced stored scales, and retain compatible legacy input grammar through a narrow adapter — avoids another competing currency authority — cost future explicit authoring can differ from former ICU scaling and requires clear replacement acknowledgement. Ruling L1.2: prefer minimal typed interpretation sidecars/stable generations/exact catalog revision paths without rewriting raw v1 snapshots — closes actual producer/copy/ABA seams — cost additive metadata/CAS/joins; a separately reviewed prerequisite plan with invalidation and audit/erasure policy is still required before source GO. Ruling L1.3: explicit owner/moderator evidence and compatible units, whole authorized-scope unknown coverage before monetary NOT/OR/sort and exact complete-cost semantics — prevents invented meaning or silently partial results — cost queries/reports remain unavailable for unresolved scopes. Full decisions/costs and remaining contract gates: .superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/root-design-rulings.md. This is preparation only, no real classification/conversion/inventory or phase acceptance; Phase06 remains active.
+
+
+### Phase06 Task6 verified — documented production adapters, default off
+
+Sourcee97268f plus corrected570a9ccb4735a5ae5578251dd8b4a9e5bb293a9c on BASEeadd2fd. Independent initial0C1I0M found malformedUTF8 retry classification through realpermit; genuine2RED→65GREEN fix and scopedSPEC/QUALITY Approved0C0I0M. Both exact corrected CI39101603958/job117598840938 and39101601035/job117598832454 SUCCESS, fullsteps metadata retained before docs push; primary120000-char truncated tail has no test-count lines, no remote totals inferred. Superseded e972 both final CI metadata SUCCESS; pre-superseding provider logs HTTP502/unavailable retained honestly.
+
+Local48native/4files/no skips,621regular/253expectednative-gatedskip and wholelint/types/productionbuild passed before narrowdecodefix; affected65tests/lint/types/workerbuild passed afterward, with all failures retained. Owned PG17.11/_test migration20261018051900_market_request_gate additive; newnativefiles in actualCI. Numbered generated-type duplicates were preserved outside repo with exactpath/hash and rebuilt, not deleted. No live provider or actual activation.
+
+Scrydex+PriceCharting use explicit exact mappings, bounded single rawHTTP attempt, original numeric lexemes and injected existingMoney authority; preservezero,sourceMetric/qualifiers/FETCH CATALOG_VALUE without inventedsales. One durable per-service/exact-token claim spans physicalsettlement+monotoniccooldown with conservative finiteUTCadmission/carrycounts, noTTL/takeover/refund; actualseparate-clientrace/ACKambiguity/clock/carry/lifecyclestopproofs. Constanttypederrors and mergedstop signal preservephysicalsettlement/unsafeDBdisconnectguard. Fetchreceiptcallback accuratebeforedecode/cooldown, legacyfallback explicit. DefaultsOFF/zerobudgets/emptydisplaygrants; credentialsalone insufficient.
+
+Rootrulings1–11 and actualcosts recorded in task-6-context.md; realwire/envelope/zero/currency/subscription/storage/display/history/linkrights/sharedtokenrouting/credits/driverbounds/fleetdrain/redrive+manualreplaybarrier/purge/recovery/reactivation remain explicit activation/releasegates. Fullreport/review/fixreview and operatorrunbook retained. Taskcomplete is source implementation, not live-ready or deployed. Canonical40/91; wholephasegate recorded separately.
+
+
+### Phase06 integration COMPLETE — all six tasks independently verified
+
+One whole-phase review BASEeefd76a..570a9cc SPEC compliant/QUALITY Approved0C0I1newMinor M1 stalepackageREADME. ONE consolidated docs-only waveeabeb7176abbaa94e01b176b98385720f981856d corrected it, ONE scoped re-review M1ADDRESSED0C0I0newM, finalsourceapproval0C0I with2explicitdeferredMinor follow-ups (unconsumedproviderwidehistoryindex and sharedrunnercolorpolicy); inheritedbundle/dependency/evidencenoisebaseline remains disclosed, no rewrittenlogs. Rootread fullreports and accepted each Declinedtojudge boundary as the already explicit live/laterphase/persistence gate, not silently omitted productwork.
+
+Both exact testedproduct570CI39101603958 and39101601035 SUCCESS; retainedbefore anysupersedingpush. README-onlyeabe plus rootcompletionartifacts change no product/test/schema: explicitproduct-equivalence diff excluding exactREADME+tracking/docs/outputs exit0. Ruling: documentation-only fix is verified by scopedreview/format/link/diff, no duplicateproduct suite — no productbehavior changed — cost no new runtime evidence for documentation, while exact productCI remains570 and never falselyclaimed on a differentSHA. AnyautomaticpostdocsCI is separate.
+
+All six phasecapabilities integrated: exactcanonical/privateper-unitmanualhistory, immutableglobalsourcefacts, atomicsyncreceipts, ownercomparisonAPI, DE/ENdesktop/mobileUI, defaultOFFproviderfactories/durablesharedtokenlimits. Phase06 sixofsixCOMPLETE, globalverified40/91. No merge/deployment/liveactivation/purge. LegacyL1 remains load-bearing for Phase07canonicallegacyranges/totals/Phase08reports/Phase13release. FuturePhase07 design/preflight/Task1contractprepared only, noimplementation accepted by thisphasecheckoff.

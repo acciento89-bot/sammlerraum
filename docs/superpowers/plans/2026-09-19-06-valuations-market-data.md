@@ -290,7 +290,7 @@ git commit -m "feat: show transparent valuation history"
 - Consumes: Scrydex and PriceCharting credentials configured server-side.
 - Produces: two production `MarketDataProvider` implementations mapped into the same internal `MarketObservation` model.
 
-- [ ] **Step 1: Write failing adapter contract tests**
+- [x] **Step 1: Write failing adapter contract tests**
 
 ```ts
 describe.each([
@@ -309,7 +309,7 @@ describe.each([
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run:
 ```bash
@@ -318,7 +318,7 @@ pnpm vitest run packages/market-data/src/scrydex-provider.test.ts packages/marke
 
 Expected: FAIL because production adapters do not exist.
 
-- [ ] **Step 3: Implement Scrydex adapter**
+- [x] **Step 3: Implement Scrydex adapter**
 
 Add required server configuration:
 
@@ -331,7 +331,7 @@ Use the documented card endpoints with price inclusion for supported TCG catalog
 
 Provider documentation reference for implementation review: `https://scrydex.com/docs/getting-started/prices`.
 
-- [ ] **Step 4: Implement PriceCharting adapter**
+- [x] **Step 4: Implement PriceCharting adapter**
 
 Add:
 
@@ -343,7 +343,7 @@ Map PriceCharting product IDs/UPC/query matches and condition-specific price fie
 
 Provider documentation reference for implementation review: `https://www.pricecharting.com/api-documentation`.
 
-- [ ] **Step 5: Run adapter and market sync tests**
+- [x] **Step 5: Run adapter and market sync tests**
 
 Run:
 ```bash
@@ -352,7 +352,7 @@ pnpm vitest run packages/market-data packages/domain/src/market-data apps/worker
 
 Expected: PASS with fake HTTP clients; CI makes no paid external calls.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add packages/market-data packages/config .env.example
