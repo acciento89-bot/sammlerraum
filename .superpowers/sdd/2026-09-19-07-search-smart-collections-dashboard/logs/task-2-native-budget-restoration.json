@@ -1,0 +1,13 @@
+{
+  "base": "1ab352edf29ac6b5b7b839d4105d345f5451c673",
+  "restored": "packages/domain/src/search/search-retained-integrity.integration.test.ts",
+  "sha256": "f7238099ba2d473d9990e2497d7bc9ca25d32fe796523326330107c90867bb87",
+  "removedTemporaryFiles": [
+    "packages/domain/src/search/search-native-budget-diagnostic.ts",
+    "packages/domain/src/search/search-native-budget-preflight.test.ts"
+  ],
+  "originalCaseTimeoutRestored": true,
+  "observationPatchSha256": "daa03940e810cd23bcf2098102c5189f1bfa679923d9ee61c2f081b28d46d439",
+  "stagedDiffNames": "",
+  "remainingDiffNames": ".superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/progress.md\n.superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/task-5-context.md\n"
+}

@@ -1,0 +1,28 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+⎯⎯⎯⎯⎯⎯ Unhandled Errors ⎯⎯⎯⎯⎯⎯
+
+Vitest caught 1 unhandled error during the test run.
+This might cause false positive tests. Resolve unhandled errors to make sure your tests are not affected.
+
+⎯⎯⎯⎯⎯⎯ Unhandled Error ⎯⎯⎯⎯⎯⎯⎯
+TypeError: Sequencer is not a constructor
+ ❯ executeTests node_modules/.pnpm/vitest@3.2.7_@types+node@24.5.2_jiti@2.7.0/node_modules/vitest/dist/chunks/coverage.DfSpMS-b.js:3397:21
+ ❯ Object.runTests node_modules/.pnpm/vitest@3.2.7_@types+node@24.5.2_jiti@2.7.0/node_modules/vitest/dist/chunks/coverage.DfSpMS-b.js:3442:37
+ ❯ node_modules/.pnpm/vitest@3.2.7_@types+node@24.5.2_jiti@2.7.0/node_modules/vitest/dist/chunks/cli-api.DVe0nWUx.js:9648:22
+ ❯ Vitest.runFiles node_modules/.pnpm/vitest@3.2.7_@types+node@24.5.2_jiti@2.7.0/node_modules/vitest/dist/chunks/cli-api.DVe0nWUx.js:9676:10
+ ❯ Vitest.start node_modules/.pnpm/vitest@3.2.7_@types+node@24.5.2_jiti@2.7.0/node_modules/vitest/dist/chunks/cli-api.DVe0nWUx.js:9564:18
+ ❯ startVitest node_modules/.pnpm/vitest@3.2.7_@types+node@24.5.2_jiti@2.7.0/node_modules/vitest/dist/chunks/cli-api.DVe0nWUx.js:10520:8
+ ❯ start node_modules/.pnpm/vitest@3.2.7_@types+node@24.5.2_jiti@2.7.0/node_modules/vitest/dist/chunks/cac.BfaZ95xE.js:1414:15
+ ❯ CAC.run node_modules/.pnpm/vitest@3.2.7_@types+node@24.5.2_jiti@2.7.0/node_modules/vitest/dist/chunks/cac.BfaZ95xE.js:1393:2
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+
+
+ Test Files  no tests
+      Tests  no tests
+     Errors  1 error
+   Start at  10:55:29
+   Duration  31ms (transform 0ms, setup 0ms, collect 0ms, tests 0ms, environment 0ms, prepare 0ms)
+

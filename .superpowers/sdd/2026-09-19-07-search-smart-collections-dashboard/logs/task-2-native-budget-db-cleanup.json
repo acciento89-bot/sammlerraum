@@ -1,0 +1,17 @@
+{
+  "atUtc": "2026-10-18T09:04:23.355435+00:00",
+  "verifiedCreatedDatabase": {
+    "oid": "27487",
+    "name": "sammlerraum_budget_20261018_test",
+    "owner": "test"
+  },
+  "verifiedServer": {
+    "dataDirectory": "/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum-db/data",
+    "started": "2026-10-18T09:05:10.181288+02:00",
+    "role": "test"
+  },
+  "connectionsBeforeDrop": [],
+  "result": "DROP DATABASE",
+  "databaseAbsentAfter": true,
+  "otherDatabasesTouchedByCleanup": false
+}
