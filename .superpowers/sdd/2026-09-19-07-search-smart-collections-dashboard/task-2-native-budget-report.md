@@ -96,3 +96,59 @@ All files below are in this plan's `logs/` directory:
 - Historical root-retained `task-3-ci-39110884618-connector-full.log` and `task-3-ci-39110881850-connector-full.log`: actual timeout evidence; unchanged by this task.
 
 No further local suite or database work remains authorized by this diagnostic. Root review/ruling is the next step.
+
+
+## P7.26 fixture-only correction and frozen validation
+
+Authorized baseline: `08f5cd28ea2026f478ca69249698fe30b8c4b010`. Source commit: `81c7191e1e91dc8dba9089ccbfde7c3e2e0cd24b` (`test: prepare planner statistics for retained URL boundary`). Exactly two owned source paths: retained-integrity native test and owned-item-search documentation. Evidence/report form a separate subsequent commit, whose exact ID is returned in handover; no push, independent review, remote CI result, Task4 GO or phase checkoff is claimed here.
+
+The test adds one `ANALYZE "CollectibleItem", "CustomFieldValue"` after all4,097 bulk item/value inserts and the original item's URL update, before the existing negative and positive cap requests. A two-line comment states why this synthetic fixture prepares current planner statistics. Removing those three inserted lines yields the baseline test byte-for-byte: every original cap/NULL-transfer/no-count-page/total/dedup/integrity/snapshot assertion and the30,000ms case ceiling is unchanged. The service12s/transaction5s/statement2s/acquisition2s/lock500ms code was not touched. There is no permanent diagnostic helper, sequencer, setup wrapper, runtime ANALYZE, schema/index change or query rewrite.
+
+The docs explicitly record the local2.62s-to0.29s statistics experiment, historical exact CI plan uncertainty, remaining production burst-growth/stale-statistics bounded HTTP503 risk, and a named **Phase13 operational readiness gate** requiring representative and burst-growth performance, autovacuum/analyze behavior and budget-failure observability before release. This is fixture preparation, not a production optimization or runtime performance guarantee.
+
+### Prechange evidence and validation scope
+
+The real prechange RED evidence remains the two exact historical CI failures in the original report. The local controlled diagnostic baseline did not time out; it measured the repeated-scan cost and the unchanged/ANALYZE comparison. No new local RED was fabricated, and no repeated broad run was used to manufacture one. This change repairs test setup only and adds no production behavior. Root P7.26 explicitly selected one frozen full native allowlist with covering types/lint and reuse of unchanged application build evidence, rather than another broad regular/build run or separate remote diagnostic workflow.
+
+All commands use pinned Node24.19.0/pnpm10.17.1. The default Vitest setup targets the known synthetic `sammlerraum_test`, confirmed by a native current_database/current_user/version read in `task-2-native-budget-fix-runtime.json`; PG17.11 Homebrew/ARM and role test. The previous disposable DB remains removed. No database reset/drop/new database or global setting change occurred in this fix.
+
+| Frozen candidate check | Result | Retained log |
+| --- | --- | --- |
+|Exact current CI46-file native allowlist, `vitest run --no-file-parallelism`, default config/setup/sequencer |46 files/496 tests passed, zero skips;71.90s Vitest/73.471s runner |task-2-native-budget-fix-native.log |
+|First workspace typecheck |Domain and other packages passed; web failed on stale duplicate generated declarations; exit2 |task-2-native-budget-fix-types.log |
+|Installed Next typegen under P7.27 |passed;1.458s; generated types only, no build |task-2-native-budget-fix-typegen.log |
+|Workspace typecheck after generated-types recovery |all packages passed;34.684s; exit0 |task-2-native-budget-fix-types-recovered.log |
+|Workspace lint |all packages passed;4.195s; exit0 |task-2-native-budget-fix-lint.log |
+|Prettier on exactly two owned paths |passed;0.666s; exit0 |task-2-native-budget-fix-owned-format.log |
+|Final frozen source/assertion/application hash and staged-diff checks |passed |task-2-native-budget-fix-final-verification.json |
+
+Native retained-integrity17 tests passed; the boundary case took1,546ms and its containing file2,925ms. These are **test case/file durations**, not measured production request timings. The default sequencer ran retained-integrity first on this local cache; full actual order is retained in `task-2-native-budget-fix-native-order.json` and verified to contain each current CI allowlist file exactly once. Unlike the earlier diagnostic, this candidate does not force historical CI order. No second native/regular/build run occurred following the generated-types failure/recovery.
+
+The complete native suite also includes current saved-query, valuation and route regressions. Exact command argument arrays, outcomes and wall times are in `task-2-native-budget-fix-runs.json` and `task-2-native-budget-fix-recovery-runs.json`; their corresponding runner scripts are retained. Regular785pass/387skip and previous production build evidence remain historical evidence only, not newly executed candidate gates. The new exact candidate CI is root-owned and still pending.
+
+### P7.27 generated-cache interruption and authorized recovery
+
+The first workspace typecheck found generated `.next/types/cache-life.d 2.ts` and `routes.d 2.ts` conflicting with canonical declaration files (TS6200/TS2717/TS2300/TS2428/TS2536). The gate runner stopped before lint. Read-only inspection found four ignored duplicate `* 2.ts` files among eight generated type files: cache-life/root-params were byte-identical to canonical files; routes/validator were older copies missing the three Task3 API paths. Duplicate timestamps preceded the canonical generated files. No active Next dev/start/build/typegen process was found. Exact paths, hashes and duplicate-to-canonical differences are retained in `task-2-native-budget-fix-generated-types-inspection.json`.
+
+Root first explicitly authorized preserving the entire generated types directory and normal type regeneration. That recovery had already moved all eight files, completed Next typegen and started workspace types when a later narrower four-duplicate-only proposal arrived. Root acknowledged this chronological overlap and confirmed the earlier executed recovery was authorized; it directed no additional cache churn or extra types run. The report therefore records the actual **eight-file directory quarantine**, not the later unexecuted narrower proposal.
+
+Preserved directory: `/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum-p7-types-m5bgyppp/types`. `task-2-native-budget-fix-generated-types-quarantine.json` records all eight original SHA256 values, original path, no-active-process check and ignored status. The final check verifies all preserved bytes still match. Only `apps/web/.next/types` was moved; `.next` build output and other caches were not deleted or moved. Installed `next typegen` recreated four canonical type files. No source/config changes or new application build occurred. The original failed-types log is retained and not renamed as a pass. The full workspace typecheck already in flight then passed, followed once by pending lint/format. There was no native-suite rerun.
+
+A separate staging guard initially stopped because root concurrently edited its own progress.md, so the whole-checkout diff contained more than the two owned paths. No files had been staged and no commit occurred in that attempt. The corrected guard checks the two owned paths while leaving root evidence unstaged; the final source commit contains exactly the approved two paths. This was a staging-scope guard, not a failed test or source change.
+
+### Final identity and handover limits
+
+Frozen SHA256:
+
+- Retained test: `8c5886c0f34c255e8df3c9eb4c075c28ea8b39ec2835a244a0ddd2ca34c8d9e6`.
+- Search documentation: `2b2490cd6b1a5eb610b7171025cc1d91c86416e1d8ab1b81265091840f9114dc`.
+
+All389 application/configuration files from the previously built source `eda7248973550623fe50f10714be0fc4ea199109` have identical current SHA256 values; aggregate digest `a4a70ec8442f5850e1cf605e685f696f62680f3eb472a51733f7aa7fc8547cb3`. Exclusions are explicit in the receipt: plan evidence/docs/e2e and test/spec source. Test TypeScript was checked afresh. The comparison also rejects any added/changed nonexcluded runtime/config path. `task-3-final-build.log` is the existing successful build evidence; **no new build is claimed**. Final hashing reconfirmed the same digest after typegen, types and lint. Source/assertion hashes stayed frozen throughout validation and recovery.
+
+Additional fix evidence: `task-2-native-budget-fix-source.json`, `task-2-native-budget-fix-runtime.json`, `task-2-native-budget-fix-native-order.json`, both runner scripts/run records, cache inspection/quarantine receipts, `task-2-native-budget-fix-final-verification.json`, `task-2-native-budget-fix-source-commit.log`, and a dedicated fix evidence SHA256 manifest. Original diagnostic mistakes, measurements, restoration and disposable cleanup evidence remain unchanged in preceding sections/files.
+
+Open gates: root's scoped independent review, exact new candidate CI, and Phase13 operational readiness. Historical exact CI URL plans remain unknown; local green is not retrospective causal proof. Production burst-growth performance is not repaired by this test-only change. No further source/DB/suite work or push is performed by this handover.
+
+The original26-file diagnostic SHA manifest describes the historical report committed at `08f5cd28ea2026f478ca69249698fe30b8c4b010`, before this FIX appendix. Its bytes are preserved; it is not claimed to match the current appended report. The separate fix manifest hashes the current report and fix evidence. The report prefix matches that historical committed report byte-for-byte.
+
+Raw native output is preserved verbatim, including its terminal blank line. Source/report whitespace checks pass; evidence whitespace checking permits only that blank-at-EOF property rather than rewriting the captured log.

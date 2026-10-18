@@ -1,0 +1,20 @@
+{
+  "ruling": "P7.27",
+  "atUtc": "2026-10-18T09:13:42.222179+00:00",
+  "source": "/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/.next/types",
+  "quarantine": "/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum-p7-types-m5bgyppp/types",
+  "sha256": {
+    "routes.d 2.ts": "75e86b2442c7eaac968544353c311afda3874fde5ad8045c1759aa90f911292f",
+    "cache-life.d 2.ts": "4f984436b10cfb43ccf7fc3114dcb851cbefa4d58b7d8ae741aaae0f6e330129",
+    "root-params.d 2.ts": "a3b8114c44f8d8de4e8ff75f349eab771c145a3e4ed7b95fd141dbdfbcbe06d8",
+    "root-params.d.ts": "a3b8114c44f8d8de4e8ff75f349eab771c145a3e4ed7b95fd141dbdfbcbe06d8",
+    "cache-life.d.ts": "4f984436b10cfb43ccf7fc3114dcb851cbefa4d58b7d8ae741aaae0f6e330129",
+    "validator 2.ts": "9f75ff7876f839f3e4095f4aedf694dc5c6d46c75440cfdc5a1f5aa0e0e0d47e",
+    "routes.d.ts": "b4ade1243326e3dd63c53b5cf146c943762dd618b4d1e6aaeb237888ddf80b16",
+    "validator.ts": "5d2a8d65f7606d2ee2c1bc02a2a72d54ff126fe10e585e5a8fd25c12e8a94caf"
+  },
+  "bytesPreserved": true,
+  "activeNextProcesses": [],
+  "allFilesIgnored": true,
+  "wholeNextCacheMoved": false
+}
