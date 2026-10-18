@@ -20,6 +20,7 @@ import {
   referencePredicate,
   invalidFacts,
 } from "./search-compiler";
+import { validateRetainedUrls } from "./search-url-integrity";
 import { compileBroadText, invalidBroadFacts } from "./search-text";
 import {
   searchContextHash,
@@ -27,9 +28,17 @@ import {
   encodeSearchCursor,
   type SearchResolutionContext,
 } from "./search-cursor";
-import { runSearchRead, type SearchDatabase, type SearchReadTransaction } from "./search-read";
+import {
+  runSearchRead,
+  type SearchDatabase,
+  type BoundedSearchReadTransaction,
+} from "./search-read";
 export { ItemSearchError } from "@sammlerraum/contracts/item-search";
-export type { SearchDatabase, SearchReadTransaction } from "./search-read";
+export type {
+  SearchDatabase,
+  SearchReadTransaction,
+  BoundedSearchReadTransaction,
+} from "./search-read";
 export { runSearchRead } from "./search-read";
 export type SearchActor = { userId: string };
 type Row = Omit<ItemSummary, "createdAt" | "updatedAt" | "archivedAt" | "disposedAt"> & {
@@ -46,7 +55,7 @@ export function checkedSearchTotal(value: bigint): number {
 /** Internal composition seam: callers load an owned saved query in this bounded tx,
  * then pass its trusted id/revision. Public query parsing never accepts this context. */
 export async function executeItemSearch(
-  tx: SearchReadTransaction,
+  tx: BoundedSearchReadTransaction,
   actor: SearchActor,
   query: NormalizedItemSearchQuery,
   context: SearchResolutionContext = null,
@@ -70,6 +79,7 @@ export async function executeItemSearch(
     Prisma.sql`SELECT EXISTS(SELECT 1 ${candidateFrom} WHERE ${outer} AND ${or([invalidFacts(nodes), query.text ? invalidBroadFacts : Prisma.sql`FALSE`])}) AS invalid`,
   );
   if (integrity?.invalid) return searchFail("SEARCH_INVARIANT");
+  await validateRetainedUrls(tx, nodes, outer);
   const predicate = and([
     outer,
     query.filter ? compileFilter(query.filter.root, actor.userId) : TRUE,

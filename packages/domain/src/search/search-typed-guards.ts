@@ -3,13 +3,22 @@ import type { CustomFieldType } from "@sammlerraum/contracts/custom-fields";
 const text = Prisma.sql`(a.value #>> '{}')`;
 const string = Prisma.sql`jsonb_typeof(a.value)='string'`;
 const array = Prisma.sql`CASE WHEN jsonb_typeof(a.value)='array' THEN a.value ELSE '[]'::jsonb END`;
+// ECMAScript WhiteSpace + LineTerminator, applied after NFKC like the producer.
+const jsTrim =
+  "\u0009\u000a\u000b\u000c\u000d\u0020\u00a0\u1680\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u2028\u2029\u202f\u205f\u3000\ufeff";
+// PostgreSQL counts code points; JavaScript string.length counts UTF-16 units.
+const utf16Length = (value: Prisma.Sql) =>
+  Prisma.sql`char_length(${value}) + regexp_count(${value} COLLATE pg_catalog."C",${"[\u{10000}-\u{10ffff}]"})`;
+const canonicalText = (value: Prisma.Sql, maximum: number) =>
+  Prisma.sql`${utf16Length(value)} BETWEEN 1 AND ${maximum} AND ${value}=btrim(normalize(${value},NFKC),${jsTrim}) COLLATE pg_catalog."C"`;
 export function catalogGuard(type: CustomFieldType): Prisma.Sql {
   switch (type) {
     case "SHORT_TEXT":
     case "LONG_TEXT":
-      return Prisma.sql`${string} AND char_length(${text}) BETWEEN 1 AND ${type === "SHORT_TEXT" ? 255 : 10000} AND ${text}=normalize(btrim(${text}),NFKC) COLLATE pg_catalog."C"`;
+      return Prisma.sql`${string} AND ${canonicalText(text, type === "SHORT_TEXT" ? 255 : 10000)}`;
+    // Final URL validity uses the bounded manifest and existing producer parser.
     case "URL":
-      return Prisma.sql`${string} AND char_length(${text})<=2048 AND ${text} ~ '^https?://[^/@[:space:]]+[^[:space:]]*$'`;
+      return Prisma.sql`${string} AND ${utf16Length(text)} BETWEEN 1 AND 2048`;
     case "INTEGER":
       return Prisma.sql`CASE WHEN jsonb_typeof(a.value)='number' AND ${text} ~ '^-?(0|[1-9][0-9]*)$' AND char_length(${text})<=17 THEN ${text}::numeric BETWEEN -9007199254740991 AND 9007199254740991 ELSE FALSE END`;
     case "DECIMAL":
@@ -43,9 +52,11 @@ export function customGuard(type: CustomFieldType): Prisma.Sql {
     case "DATE":
       return Prisma.sql`v."dateValue" BETWEEN DATE '0001-01-01' AND DATE '9999-12-31'`;
     case "SHORT_TEXT":
-      return Prisma.sql`v."shortTextValue"=normalize(btrim(v."shortTextValue"),NFKC) COLLATE pg_catalog."C"`;
+      return canonicalText(Prisma.sql`v."shortTextValue"`, 255);
     case "LONG_TEXT":
-      return Prisma.sql`v."longTextValue"=normalize(btrim(v."longTextValue"),NFKC) COLLATE pg_catalog."C"`;
+      return canonicalText(Prisma.sql`v."longTextValue"`, 10000);
+    case "URL":
+      return Prisma.sql`${utf16Length(Prisma.sql`v."urlValue"`)} BETWEEN 1 AND 2048`;
     default:
       return Prisma.sql`TRUE`;
   }

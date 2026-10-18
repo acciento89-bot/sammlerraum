@@ -1,11 +1,14 @@
 import { Prisma } from "@sammlerraum/db/search-sql";
-import { catalogGuard } from "./search-typed-guards";
+import { catalogGuard, customGuard } from "./search-typed-guards";
 import { or } from "./search-compiler";
 const selected = Prisma.sql`a."entryId"=i."catalogEntryId" AND a."categoryTemplateId"=i."categoryTemplateId" AND ((a."variantId" IS NULL AND a."targetKey"='entry') OR (a."variantId"=i."catalogVariantId" AND a."targetKey"=i."catalogVariantId"::text))`;
 const catalogFrom = Prisma.sql`FROM "CatalogAttributeValue" a JOIN "CatalogAttributeDefinition" d ON d.id=a."definitionId" AND d."categoryTemplateId"=a."categoryTemplateId"`;
 const relevant = Prisma.sql`d.type IN ('SHORT_TEXT','LONG_TEXT','SINGLE_SELECT','MULTI_SELECT')`;
 const guards = Prisma.sql`CASE d.type WHEN 'SHORT_TEXT' THEN ${catalogGuard("SHORT_TEXT")} WHEN 'LONG_TEXT' THEN ${catalogGuard("LONG_TEXT")} WHEN 'SINGLE_SELECT' THEN ${catalogGuard("SINGLE_SELECT")} WHEN 'MULTI_SELECT' THEN ${catalogGuard("MULTI_SELECT")} ELSE TRUE END`;
-export const invalidBroadFacts = Prisma.sql`EXISTS(SELECT 1 ${catalogFrom} WHERE ${selected} AND ${relevant} AND NOT COALESCE((${guards}),FALSE))`;
+export const invalidBroadFacts = or([
+  Prisma.sql`EXISTS(SELECT 1 ${catalogFrom} WHERE ${selected} AND ${relevant} AND NOT COALESCE((${guards}),FALSE))`,
+  Prisma.sql`EXISTS(SELECT 1 FROM "CustomFieldValue" v WHERE v."itemId"=i.id AND v."collectionId"=i."collectionId" AND ((v."fieldType"='SHORT_TEXT' AND NOT COALESCE((${customGuard("SHORT_TEXT")}),FALSE)) OR (v."fieldType"='LONG_TEXT' AND NOT COALESCE((${customGuard("LONG_TEXT")}),FALSE))))`,
+]);
 /** Broad text is literal NFKC/ILIKE with the fixed deterministic root ICU collation. */
 export function compileBroadText(query: string, owner: string): Prisma.Sql {
   const pattern = `%${query.replace(/[\\%_]/gu, (c) => `\\${c}`)}%`;

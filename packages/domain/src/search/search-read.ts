@@ -3,6 +3,7 @@ import { ItemSearchError, searchFail } from "@sammlerraum/contracts/item-search"
 import { FilterValidationError } from "@sammlerraum/contracts/search";
 import { isReadDependencyFailure, isReadSerializationFailure } from "../api/read-dependency-errors";
 export type SearchReadTransaction = { $queryRaw<T>(sql: Prisma.Sql): Promise<T> };
+export type BoundedSearchReadTransaction = SearchReadTransaction & { checkBudget(): void };
 export type SearchDatabase = {
   $transaction<T>(
     work: (tx: SearchReadTransaction) => Promise<T>,
@@ -12,7 +13,7 @@ export type SearchDatabase = {
 /** Entire read retries within 12s; no locks or snapshot survive a response. */
 export async function runSearchRead<T>(
   database: SearchDatabase,
-  work: (tx: SearchReadTransaction) => Promise<T>,
+  work: (tx: BoundedSearchReadTransaction) => Promise<T>,
 ): Promise<T> {
   const stop = performance.now() + 12000;
   for (let attempt = 0; attempt < 3; attempt++) {
@@ -32,7 +33,10 @@ export async function runSearchRead<T>(
             Prisma.sql`SELECT set_config('TimeZone','UTC',true),set_config('statement_timeout',${`${Math.min(2000, first)}ms`},true),set_config('lock_timeout',${`${Math.min(500, first)}ms`},true),set_config('transaction_timeout',${`${first}ms`},true)`,
           );
           budget();
-          const tx: SearchReadTransaction = {
+          const tx: BoundedSearchReadTransaction = {
+            checkBudget: () => {
+              budget();
+            },
             $queryRaw: async <T>(query: Prisma.Sql) => {
               const left = budget();
               await raw.$queryRaw(
