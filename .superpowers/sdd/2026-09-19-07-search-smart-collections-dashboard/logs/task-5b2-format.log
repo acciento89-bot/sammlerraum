@@ -1,0 +1,23 @@
+packages/contracts/src/search-references.ts 58ms
+packages/contracts/src/search-references.fixture.ts 5ms
+packages/contracts/src/search-references.test.ts 10ms
+packages/contracts/package.json 10ms (unchanged)
+packages/domain/package.json 1ms (unchanged)
+packages/domain/src/search/cursor-json.ts 2ms (unchanged)
+packages/domain/src/search/search-cursor.ts 6ms (unchanged)
+packages/domain/src/search/search-reference-cursor.test.ts 4ms
+packages/domain/src/search/search-reference-cursor.ts 2ms
+packages/domain/src/search/search-reference-service.integration.test.ts 47ms
+packages/domain/src/search/search-reference-service.test.ts 6ms
+packages/domain/src/search/search-reference-service.ts 20ms
+packages/domain/src/search/search-reference-sql.ts 5ms
+apps/web/src/lib/search-reference-route-dependencies.ts 1ms
+apps/web/src/lib/search-reference-routes.integration.test.ts 13ms
+apps/web/src/lib/search-reference-routes.ts 4ms
+apps/web/src/lib/item-search-routes.ts 5ms
+apps/web/src/lib/catalog-link-routes.ts 12ms
+apps/web/src/lib/api/read-search-body.ts 4ms
+apps/web/src/lib/api/read-search-body.test.ts 9ms
+apps/web/src/app/api/v1/search/references/collections/route.ts 1ms
+apps/web/src/app/api/v1/search/references/conditions/route.ts 1ms
+apps/web/src/app/api/v1/search/references/custom-fields/route.ts 1ms

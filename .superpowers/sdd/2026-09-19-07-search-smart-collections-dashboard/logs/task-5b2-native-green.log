@@ -1,0 +1,10 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ✓ |workspace| packages/domain/src/search/search-reference-service.integration.test.ts (2 tests) 161ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Start at  12:23:38
+   Duration  577ms (transform 122ms, setup 6ms, collect 258ms, tests 161ms, environment 0ms, prepare 35ms)
+

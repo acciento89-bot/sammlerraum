@@ -1,0 +1,129 @@
+{
+  "sourceCommit": "f17393415262ad2074f1434957a6aa01236927e0",
+  "originalNativeTree": "3b104fd8950dbcbab275cc377549783d72e6f3c6",
+  "finalSourceTree": "3ef3e136f5b6b144ab5f0cc34f83de517a5c70ef",
+  "fixtureOnlyChange": "packages/domain/src/search/search-reference-service.test.ts",
+  "originalFixtureBlob": "5e90ff85355015832b93176f406e42ce9f58c722",
+  "finalFixtureBlob": "49162df9909c6ed1a6a0ca437b6188aecba1d420",
+  "finalGateResults": {
+    "native": {
+      "filesPassed": 15,
+      "casesPassed": 235,
+      "skipped": 0,
+      "description": "DB-enabled suite total; includes transport-only cases"
+    },
+    "regular": {
+      "filesPassed": 79,
+      "filesSkipped": 41,
+      "casesPassed": 900,
+      "casesSkipped": 482
+    },
+    "typecheck": "exit 0",
+    "lint": "exit 0",
+    "build": "exit 0"
+  },
+  "newCases": {
+    "domainNative": 14,
+    "routesWithActualServiceSQL": 5,
+    "guardedRoutesTransportOnly": 24,
+    "pureContractsCursorBudgetBody": 30
+  },
+  "files": [
+    {
+      "path": ".github/workflows/ci.yml",
+      "sha256": "c0a65398698061bf5ff1ccdec1ce35962734e43a9b98dd9b695f99230619cc2f"
+    },
+    {
+      "path": "apps/web/src/app/api/v1/search/references/collections/route.ts",
+      "sha256": "f3977dbe2a47da000bae01ba2c46673b61a21826d7ddb46723a36102b134971d"
+    },
+    {
+      "path": "apps/web/src/app/api/v1/search/references/conditions/route.ts",
+      "sha256": "afec98001f9291e89834bfcc4daf3525eb2892a8e252c876a0936cbf3f161603"
+    },
+    {
+      "path": "apps/web/src/app/api/v1/search/references/custom-fields/route.ts",
+      "sha256": "30eb4a2f98aa7d08449fd3eb4e44c0b90a517d598c8e7f6b6432be93cd05868b"
+    },
+    {
+      "path": "apps/web/src/lib/api/read-search-body.test.ts",
+      "sha256": "e4bef1f7627b6aed960b8ea876c2a667e2f327f0e38e328f1940d9f320dd5bd5"
+    },
+    {
+      "path": "apps/web/src/lib/api/read-search-body.ts",
+      "sha256": "b9cd836252e0caa2f632f0537fd42b1192b33937a66f008f9adf8bc2b01dcdb1"
+    },
+    {
+      "path": "apps/web/src/lib/catalog-link-routes.ts",
+      "sha256": "839453de8bfed13c1f1bbdd96dfc434503b1803b5bdeb0fcbac92d5627faeb9e"
+    },
+    {
+      "path": "apps/web/src/lib/item-search-routes.ts",
+      "sha256": "ef95809699be73fb48417672ef6c91918600e4053781d41edec851eab95af4f9"
+    },
+    {
+      "path": "apps/web/src/lib/search-reference-route-dependencies.ts",
+      "sha256": "966d2dfd8c2eafd1906b25f5b0e95201561df1fdb3872bf081c06de44ed3c5cb"
+    },
+    {
+      "path": "apps/web/src/lib/search-reference-routes.integration.test.ts",
+      "sha256": "2f6918c331896b24ca14995ae3579fb104d8c06d2159015bc63cf6e9b0408e92"
+    },
+    {
+      "path": "apps/web/src/lib/search-reference-routes.ts",
+      "sha256": "7b7a5d8673b14b7971c5351bfa2bb7511c9a474823d0a3e2368df465944d648d"
+    },
+    {
+      "path": "packages/contracts/package.json",
+      "sha256": "1bdde5db01329cfd4cad63ccdcfdf7a3be26b23c3af6d6326f61f80b24050707"
+    },
+    {
+      "path": "packages/contracts/src/search-references.fixture.ts",
+      "sha256": "59e34b28f7e628e93aace3730e8241f48fbfd3de8975bf4655497887f7e0173d"
+    },
+    {
+      "path": "packages/contracts/src/search-references.test.ts",
+      "sha256": "b8307f89a5ad79679f31ce12fe84731ecc3483ef216d7b084885e55f668b61d5"
+    },
+    {
+      "path": "packages/contracts/src/search-references.ts",
+      "sha256": "5070d30dcc62d47050a884be27d98199cca32300630a9c101c3a2b080418f04a"
+    },
+    {
+      "path": "packages/domain/package.json",
+      "sha256": "12cdd052688083378e3cca80c435f628ccefad47dbca23dc3c34a5d7cf072bf2"
+    },
+    {
+      "path": "packages/domain/src/search/cursor-json.ts",
+      "sha256": "588ed26d0023ed11aae7654e729c36004af998dedb5fde055caf76cd7d279af5"
+    },
+    {
+      "path": "packages/domain/src/search/search-cursor.ts",
+      "sha256": "aed22baa1f5bb90522a5d074f38f09428a7a533fd7f4c3aeedff6044cdbb3158"
+    },
+    {
+      "path": "packages/domain/src/search/search-reference-cursor.test.ts",
+      "sha256": "55cfc64ac6320d49d36e1e2410f47926d198de88beb04605d4c83a1ca25775e9"
+    },
+    {
+      "path": "packages/domain/src/search/search-reference-cursor.ts",
+      "sha256": "f3ad161474832fce8b24ff131fce689f4b984756917cfb5d2ae4d91149e9b971"
+    },
+    {
+      "path": "packages/domain/src/search/search-reference-service.integration.test.ts",
+      "sha256": "ef90a1fbd05f3c3e099452f512337c6541c526330970a1e4b21565b00768985c"
+    },
+    {
+      "path": "packages/domain/src/search/search-reference-service.test.ts",
+      "sha256": "655a7c7e699662fc4e87143869efb517f8341bba138a3164d4c76f078af1a08e"
+    },
+    {
+      "path": "packages/domain/src/search/search-reference-service.ts",
+      "sha256": "93064a210b34f337f9634fc3ec905545061dada78fd866096a741783c48fe836"
+    },
+    {
+      "path": "packages/domain/src/search/search-reference-sql.ts",
+      "sha256": "178dda2b35be0bfe302c5905e044d41d7d6477283f5422401e7500e4fd46be87"
+    }
+  ]
+}

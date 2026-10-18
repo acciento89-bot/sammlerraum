@@ -1,0 +1,237 @@
+[
+  {
+    "operation": "collection-list",
+    "planningMs": 0.046,
+    "executionMs": 0.727,
+    "nodes": [
+      {
+        "Node Type": "Result",
+        "Actual Rows": 1,
+        "Actual Loops": 1,
+        "Shared Hit Blocks": 18,
+        "Shared Read Blocks": 0
+      },
+      {
+        "Node Type": "Aggregate",
+        "Actual Rows": 1,
+        "Actual Loops": 1,
+        "Shared Hit Blocks": 18,
+        "Shared Read Blocks": 0
+      },
+      {
+        "Node Type": "Limit",
+        "Actual Rows": 51,
+        "Actual Loops": 1,
+        "Shared Hit Blocks": 18,
+        "Shared Read Blocks": 0
+      },
+      {
+        "Node Type": "Sort",
+        "Actual Rows": 51,
+        "Actual Loops": 1,
+        "Shared Hit Blocks": 18,
+        "Shared Read Blocks": 0
+      },
+      {
+        "Node Type": "Index Scan",
+        "Relation Name": "Collection",
+        "Index Name": "Collection_ownerId_idx",
+        "Actual Rows": 1000,
+        "Actual Loops": 1,
+        "Shared Hit Blocks": 18,
+        "Shared Read Blocks": 0
+      }
+    ]
+  },
+  {
+    "operation": "collection-hydration-50",
+    "planningMs": 0.084,
+    "executionMs": 0.23,
+    "nodes": [
+      {
+        "Node Type": "Result",
+        "Actual Rows": 1,
+        "Actual Loops": 1,
+        "Shared Hit Blocks": 18,
+        "Shared Read Blocks": 0
+      },
+      {
+        "Node Type": "Aggregate",
+        "Actual Rows": 1,
+        "Actual Loops": 1,
+        "Shared Hit Blocks": 18,
+        "Shared Read Blocks": 0
+      },
+      {
+        "Node Type": "Sort",
+        "Actual Rows": 50,
+        "Actual Loops": 1,
+        "Shared Hit Blocks": 18,
+        "Shared Read Blocks": 0
+      },
+      {
+        "Node Type": "Hash Join",
+        "Actual Rows": 50,
+        "Actual Loops": 1,
+        "Shared Hit Blocks": 18,
+        "Shared Read Blocks": 0
+      },
+      {
+        "Node Type": "Values Scan",
+        "Actual Rows": 50,
+        "Actual Loops": 1,
+        "Shared Hit Blocks": 0,
+        "Shared Read Blocks": 0
+      },
+      {
+        "Node Type": "Hash",
+        "Actual Rows": 1000,
+        "Actual Loops": 1,
+        "Shared Hit Blocks": 18,
+        "Shared Read Blocks": 0
+      },
+      {
+        "Node Type": "Index Scan",
+        "Relation Name": "Collection",
+        "Index Name": "Collection_ownerId_idx",
+        "Actual Rows": 1000,
+        "Actual Loops": 1,
+        "Shared Hit Blocks": 18,
+        "Shared Read Blocks": 0
+      }
+    ]
+  },
+  {
+    "operation": "custom-summary",
+    "planningMs": 0.086,
+    "executionMs": 0.032,
+    "nodes": [
+      {
+        "Node Type": "Result",
+        "Actual Rows": 1,
+        "Actual Loops": 1,
+        "Shared Hit Blocks": 4,
+        "Shared Read Blocks": 0
+      },
+      {
+        "Node Type": "Aggregate",
+        "Actual Rows": 1,
+        "Actual Loops": 1,
+        "Shared Hit Blocks": 4,
+        "Shared Read Blocks": 0
+      },
+      {
+        "Node Type": "Nested Loop",
+        "Actual Rows": 1,
+        "Actual Loops": 1,
+        "Shared Hit Blocks": 4,
+        "Shared Read Blocks": 0
+      },
+      {
+        "Node Type": "Result",
+        "Actual Rows": 1,
+        "Actual Loops": 1,
+        "Shared Hit Blocks": 0,
+        "Shared Read Blocks": 0
+      },
+      {
+        "Node Type": "Nested Loop",
+        "Actual Rows": 1,
+        "Actual Loops": 1,
+        "Shared Hit Blocks": 4,
+        "Shared Read Blocks": 0
+      },
+      {
+        "Node Type": "Index Scan",
+        "Relation Name": "Collection",
+        "Index Name": "Collection_ownerId_idx",
+        "Actual Rows": 1,
+        "Actual Loops": 1,
+        "Shared Hit Blocks": 3,
+        "Shared Read Blocks": 0
+      },
+      {
+        "Node Type": "Seq Scan",
+        "Relation Name": "CustomFieldDefinition",
+        "Actual Rows": 1,
+        "Actual Loops": 1,
+        "Shared Hit Blocks": 1,
+        "Shared Read Blocks": 0
+      }
+    ]
+  },
+  {
+    "operation": "custom-options",
+    "planningMs": 0.102,
+    "executionMs": 0.036,
+    "nodes": [
+      {
+        "Node Type": "Nested Loop",
+        "Actual Rows": 1,
+        "Actual Loops": 1,
+        "Shared Hit Blocks": 7,
+        "Shared Read Blocks": 0
+      },
+      {
+        "Node Type": "Result",
+        "Actual Rows": 1,
+        "Actual Loops": 1,
+        "Shared Hit Blocks": 0,
+        "Shared Read Blocks": 0
+      },
+      {
+        "Node Type": "Nested Loop",
+        "Actual Rows": 1,
+        "Actual Loops": 1,
+        "Shared Hit Blocks": 4,
+        "Shared Read Blocks": 0
+      },
+      {
+        "Node Type": "Index Scan",
+        "Relation Name": "Collection",
+        "Index Name": "Collection_ownerId_idx",
+        "Actual Rows": 1,
+        "Actual Loops": 1,
+        "Shared Hit Blocks": 3,
+        "Shared Read Blocks": 0
+      },
+      {
+        "Node Type": "Seq Scan",
+        "Relation Name": "CustomFieldDefinition",
+        "Actual Rows": 1,
+        "Actual Loops": 1,
+        "Shared Hit Blocks": 1,
+        "Shared Read Blocks": 0
+      },
+      {
+        "Node Type": "Aggregate",
+        "Actual Rows": 1,
+        "Actual Loops": 1,
+        "Shared Hit Blocks": 3,
+        "Shared Read Blocks": 0
+      },
+      {
+        "Node Type": "Limit",
+        "Actual Rows": 2,
+        "Actual Loops": 1,
+        "Shared Hit Blocks": 3,
+        "Shared Read Blocks": 0
+      },
+      {
+        "Node Type": "Sort",
+        "Actual Rows": 2,
+        "Actual Loops": 1,
+        "Shared Hit Blocks": 3,
+        "Shared Read Blocks": 0
+      },
+      {
+        "Node Type": "Seq Scan",
+        "Relation Name": "CustomFieldOption",
+        "Actual Rows": 2,
+        "Actual Loops": 1,
+        "Shared Hit Blocks": 3,
+        "Shared Read Blocks": 0
+      }
+    ]
+  }
+]
