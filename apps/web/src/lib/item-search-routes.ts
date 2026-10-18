@@ -21,7 +21,10 @@ export function createItemSearchRouteDependencies(database: SearchDatabase, auth
     service: createItemSearchService(database),
   };
 }
-export function readItemSearchQuery(request: Request) {
+export function readItemSearchQuery(
+  request: Request,
+  allowedKeys: readonly string[] = ["text", "f", "lifecycle", "limit", "cursor"],
+) {
   const marker = request.url.indexOf("?");
   const encoded = marker < 0 ? "" : request.url.slice(marker).split("#", 1)[0]!;
   if (Buffer.byteLength(encoded) > SEARCH_MAX_QUERY_BYTES)
@@ -38,11 +41,7 @@ export function readItemSearchQuery(request: Request) {
       const value = decodeURIComponent(
         (separator < 0 ? "" : segment.slice(separator + 1)).replaceAll("+", " "),
       );
-      if (
-        !["text", "f", "lifecycle", "limit", "cursor"].includes(key) ||
-        Object.hasOwn(values, key)
-      )
-        throw Error();
+      if (!allowedKeys.includes(key) || Object.hasOwn(values, key)) throw Error();
       values[key] = value;
     }
   } catch {

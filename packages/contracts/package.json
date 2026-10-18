@@ -18,7 +18,8 @@
     "./catalog-reads": "./src/catalog-reads.ts",
     "./valuations": "./src/valuations.ts",
     "./search": "./src/search.ts",
-    "./item-search": "./src/item-search.ts"
+    "./item-search": "./src/item-search.ts",
+    "./smart-collections": "./src/smart-collections.ts"
   },
   "scripts": {
     "build": "pnpm typecheck",

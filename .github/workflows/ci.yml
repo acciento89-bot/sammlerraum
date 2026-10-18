@@ -150,6 +150,8 @@ jobs:
           packages/domain/src/grading/grading-service.test.ts
           packages/domain/src/valuations/valuation-service.test.ts
           packages/domain/src/valuations/valuation-query.test.ts
+          packages/domain/src/search/smart-collection-service.test.ts
+          apps/web/src/lib/smart-collection-routes.integration.test.ts
           packages/domain/src/search/item-search-service.test.ts
           packages/domain/src/search/search-read.integration.test.ts
           packages/domain/src/search/search-retained-integrity.integration.test.ts

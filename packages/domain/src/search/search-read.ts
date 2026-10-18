@@ -1,5 +1,6 @@
 import { Prisma } from "@sammlerraum/db/search-sql";
 import { ItemSearchError, searchFail } from "@sammlerraum/contracts/item-search";
+import { SmartCollectionError } from "@sammlerraum/contracts/smart-collections";
 import { FilterValidationError } from "@sammlerraum/contracts/search";
 import { isReadDependencyFailure, isReadSerializationFailure } from "../api/read-dependency-errors";
 export type SearchReadTransaction = { $queryRaw<T>(sql: Prisma.Sql): Promise<T> };
@@ -10,8 +11,8 @@ export type SearchDatabase = {
     options: { isolationLevel: "RepeatableRead"; maxWait: number; timeout: number },
   ): Promise<T>;
 };
-/** Entire read retries within 12s; no locks or snapshot survive a response. */
-export async function runSearchRead<T>(
+/** Entire operation retries within 12s; no locks or snapshot survive a response. */
+export async function runSearchTransaction<T>(
   database: SearchDatabase,
   work: (tx: BoundedSearchReadTransaction) => Promise<T>,
 ): Promise<T> {
@@ -61,7 +62,12 @@ export async function runSearchRead<T>(
       if (performance.now() >= stop) return searchFail("SEARCH_UNAVAILABLE");
       return result;
     } catch (error) {
-      if (error instanceof ItemSearchError || error instanceof FilterValidationError) throw error;
+      if (
+        error instanceof ItemSearchError ||
+        error instanceof FilterValidationError ||
+        error instanceof SmartCollectionError
+      )
+        throw error;
       if (isReadSerializationFailure(error) && attempt < 2 && performance.now() < stop) continue;
       if (isReadDependencyFailure(error)) return searchFail("SEARCH_UNAVAILABLE");
       // This compiler's only named collation is a deployment dependency. Never expose SQL.
@@ -72,3 +78,6 @@ export async function runSearchRead<T>(
   }
   return searchFail("SEARCH_UNAVAILABLE");
 }
+
+/** Compatibility alias for existing read-only search callers. */
+export const runSearchRead = runSearchTransaction;

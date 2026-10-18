@@ -111,6 +111,7 @@ model User {
   passkeys                   Passkey[]
   profile                    UserProfile?
   collections                Collection[]
+  smartCollections           SmartCollection[]
   tags                       Tag[]
   storageLocations           StorageLocation[]
   locationHistoryAssignments ItemLocationHistory[]  @relation("LocationHistoryAssignee")
@@ -926,4 +927,19 @@ model MarketRequestGate {
   dayStart      DateTime  @db.Timestamptz(3)
   hourCount     Int
   dayCount      Int
+}
+
+model SmartCollection {
+  id            String    @id @default(uuid()) @db.Uuid
+  ownerId       String
+  name          String    @db.VarChar(100)
+  filterVersion Int       @default(1)
+  definition    Json      @db.JsonB
+  revision      Int       @default(1)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  deletedAt     DateTime?
+  owner         User      @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  @@index([ownerId, deletedAt, createdAt(sort: Desc), id(sort: Desc)])
 }
