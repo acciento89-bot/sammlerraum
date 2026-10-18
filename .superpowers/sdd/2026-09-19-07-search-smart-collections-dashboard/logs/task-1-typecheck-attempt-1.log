@@ -1,0 +1,17 @@
+
+> sammlerraum@ typecheck /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+> pnpm -r typecheck
+
+Scope: 10 of 11 workspace projects
+packages/config typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+packages/contracts typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+packages/queue typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+packages/market-data typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+packages/contracts typecheck: src/search.ts(25,88): error TS2339: Property 'min' does not exist on type '{ [K in keyof ({ -readonly [k in keyof { op: ZodLiteral<"between">; min: T; max: T; } as { op: ZodLiteral<"between">; min: T; max: T; }[k] extends OptionalOutSchema ? never : k]: { ...; }[k]["_zod"]["output"]; } & { -readonly [k in keyof { ...; } as { ...; }[k] extends OptionalOutSchema ? k : never]?: { ...; }[k]["_...'.
+packages/contracts typecheck: src/search.ts(25,95): error TS2339: Property 'max' does not exist on type '{ [K in keyof ({ -readonly [k in keyof { op: ZodLiteral<"between">; min: T; max: T; } as { op: ZodLiteral<"between">; min: T; max: T; }[k] extends OptionalOutSchema ? never : k]: { ...; }[k]["_zod"]["output"]; } & { -readonly [k in keyof { ...; } as { ...; }[k] extends OptionalOutSchema ? k : never]?: { ...; }[k]["_...'.
+packages/contracts typecheck: Failed
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/contracts:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @sammlerraum/contracts@ typecheck: `tsc --noEmit --project ../../tsconfig.base.json`
+Exit status 2
+packages/storage typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+ ELIFECYCLE  Command failed with exit code 2.

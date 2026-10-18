@@ -1,0 +1,6 @@
+packages/contracts/src/search.ts 78ms
+packages/contracts/src/search-parser.ts 15ms
+packages/domain/src/search/filter-ast.ts 3ms
+packages/domain/src/search/filter-ast.test.ts 34ms
+packages/contracts/package.json 10ms (unchanged)
+packages/domain/package.json 1ms (unchanged)

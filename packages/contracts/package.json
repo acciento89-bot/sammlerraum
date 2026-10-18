@@ -16,7 +16,8 @@
     "./condition": "./src/condition.ts",
     "./grading": "./src/grading.ts",
     "./catalog-reads": "./src/catalog-reads.ts",
-    "./valuations": "./src/valuations.ts"
+    "./valuations": "./src/valuations.ts",
+    "./search": "./src/search.ts"
   },
   "scripts": {
     "build": "pnpm typecheck",

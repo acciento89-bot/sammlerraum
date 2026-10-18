@@ -1,0 +1,28 @@
+Working directory: /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+Final covering regular tests (exit0):
+npm exec --yes --package=node@24.19.0 --package=pnpm@10.17.1 -- pnpm test
+
+Final covering types (exit0):
+npm exec --yes --package=node@24.19.0 --package=pnpm@10.17.1 -- pnpm typecheck
+
+Final covering lint (exit0):
+npm exec --yes --package=node@24.19.0 --package=pnpm@10.17.1 -- pnpm lint
+
+Final covering build (exit0; non-live dummy values only):
+DATABASE_URL=postgresql://test:test@localhost:5432/sammlerraum_test APP_ORIGIN=http://localhost:3000 NEXT_PUBLIC_APP_ORIGIN=https://example.invalid UPLOADS_DIR=/tmp/sammlerraum-test-uploads BETTER_AUTH_SECRET=test-only-secret-that-is-at-least-thirty-two-characters GOOGLE_CLIENT_ID=test-google-client-id GOOGLE_CLIENT_SECRET=test-google-client-secret APPLE_CLIENT_ID=test-apple-client-id APPLE_CLIENT_SECRET=test-apple-client-secret SMTP_HOST=smtp.example.invalid SMTP_PORT=587 SMTP_SECURE=false SMTP_USER=test-user SMTP_PASSWORD=test-password SMTP_FROM=test@example.invalid npm exec --yes --package=node@24.19.0 --package=pnpm@10.17.1 -- pnpm build
+
+Final covering browser import/bundle (exit0):
+npm exec --yes --package=node@24.19.0 --package=pnpm@10.17.1 -- pnpm exec node --input-type=module -e 'import {createRequire} from "node:module"; import vm from "node:vm"; const fromVitest=createRequire(import.meta.resolve("vitest")); const fromVite=createRequire(fromVitest.resolve("vite")); const {build}=fromVite("esbuild"); const result=await build({entryPoints:["packages/contracts/src/search.ts"],bundle:true,platform:"browser",format:"iife",globalName:"Search",write:false}); const context=vm.createContext({TextEncoder,URL}); vm.runInContext(result.outputFiles[0].text,context); const parsed=vm.runInContext("Search.parseItemFilter({version:1,root:{kind:\"visibility\",test:{op:\"eq\",value:\"PRIVATE\"}}})",context); if(parsed.root.test.value!=="PRIVATE") throw Error("Browser import failed"); console.log("Browser bundle and isolated runtime import passed without process/Buffer/require");'
+
+Every focused RED/GREEN run used:
+npm exec --yes --package=node@24.19.0 --package=pnpm@10.17.1 -- pnpm vitest run packages/domain/src/search/filter-ast.test.ts
+
+Runtime proof (exit0):
+npm exec --yes --package=node@24.19.0 --package=pnpm@10.17.1 -- pnpm exec node --input-type=module -e 'console.log(process.version)'
+
+Source/report whitespace check (exit0):
+git diff --cached --check -- packages/contracts/package.json packages/domain/package.json packages/contracts/src/search.ts packages/contracts/src/search-parser.ts packages/domain/src/search/filter-ast.ts packages/domain/src/search/filter-ast.test.ts .superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/task-1-report.md
+
+Whole-staged whitespace check (exit2; only raw test/build evidence-log whitespace, preserved verbatim):
+git diff --cached --check
