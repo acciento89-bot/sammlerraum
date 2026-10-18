@@ -8,7 +8,8 @@
     "./health": "./src/health.ts",
     "./media-lock": "./src/media-lock.ts",
     "./test-database": "./src/test-database.ts",
-    "./catalog-types": "./src/catalog-types.ts"
+    "./catalog-types": "./src/catalog-types.ts",
+    "./search-sql": "./src/search-sql.ts"
   },
   "scripts": {
     "build": "pnpm typecheck",

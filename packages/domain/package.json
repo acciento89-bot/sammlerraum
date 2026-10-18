@@ -33,7 +33,8 @@
     "./valuations/valuation-query": "./src/valuations/valuation-query.ts",
     "./valuations/market-display-policy": "./src/valuations/market-display-policy.ts",
     "./money/currencies": "./src/money/currencies.ts",
-    "./search/filter-ast": "./src/search/filter-ast.ts"
+    "./search/filter-ast": "./src/search/filter-ast.ts",
+    "./search/item-search-service": "./src/search/item-search-service.ts"
   },
   "scripts": {
     "build": "pnpm typecheck",
