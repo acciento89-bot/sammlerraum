@@ -16,7 +16,7 @@ This is the handoff/status file for long-running implementation. Update it after
 | 03 | Collections, Items, Fields & Locations | 8 | complete (8/8) | — |
 | 04 | Media & Documents | 6 | complete (6/6) | — |
 | 05 | Catalog, Condition & Grading | 7 | complete (7/7) | — |
-| 06 | Valuations & Market Data | 6 | in progress (4/6) | Task 5 |
+| 06 | Valuations & Market Data | 6 | in progress (5/6) | Task 6 |
 | 07 | Search, Smart Collections & Dashboard | 5 | not started | Task 1 |
 | 08 | Import, Export, Insurance & Reports | 7 | not started | Task 1 |
 | 09 | Collaboration, Sharing & Audit | 7 | not started | Task 1 |
@@ -68,8 +68,9 @@ This is the handoff/status file for long-running implementation. Update it after
 - [x] P06 T02 — External market provider interface and immutable observations
 - [x] P06 T03 — Idempotent bounded market synchronization and safe worker lifecycle
 - [x] P06 T04 — Add source comparison API and item valuation summary
+- [x] P06 T05 — Add valuation history UI contracts and localization
 
-**Verified completion: 38/91 tasks.** Later tasks remain open as listed in the phase table and detail plans.
+**Verified completion: 39/91 tasks.** Later tasks remain open as listed in the phase table and detail plans.
 
 ## Update rule
 
@@ -812,3 +813,34 @@ Approved coherent bounded RepeatableRead adjustment is recorded above and in tas
 Evidence: initial67/67 affected tests, workspace508pass/228native-gatedskip, full lint/types/build pass; fix affected native37/37 and strengthened6/6 targeted regressions, final scoped types/lint/format and production build pass. Actual ownership/foreign/deleted-parent/lifecycle, concurrency/item-move/deletion retry, append blocking/timeout, malformed retained snapshot exclusion, mapping/grant boundaries, UTC/year0001, exact money and1,419,287-byte worst-page response covered. Both exact corrected-source CI39095599056/job117581267901 and39095597661/job117581264889 SUCCESS, including native DB, production browser journeys, web/worker containers and native image processing. Tool-returned120000-character primary log tail is truncated and contains no test-count lines; no remote totals inferred. Complete metadata for both runs retained in task-4-ci-25e3658-steps.json. Both superseded fe15 CI runs later completed SUCCESS by metadata; this does not replace corrected-source CI, and original in-progress metadata/diagnostic gap is preserved.
 
 All expected REDs, typing/test-fixture and harness failures plus recoveries are retained in task-4-report.md/task-4-fix-report.md and logs. Reports/reviews are under .superpowers/sdd/2026-09-19-06-valuations-market-data/. Task5 actual-interface read-only reconciliation found no blocker; UI, real adapters and whole-phase review remain pending. Task6 additional readonly reconciliation and approved failure/lifecycle/token-only scope rulings are retained. Future Phase07 design preflight exists only as preparation, requires root adjudication and actual final Phase06 reconciliation; no Phase07 source/task completion. No real provider activation, role assignment, purge, merge or Sammlerraum deployment.
+
+### Phase06 Task5 in-progress browser harness ruling (2026-10-18)
+
+Task5 in-progress harness Ruling: isolate each owned synthetic credential-login client with a unique reserved documentation/benchmark IPv4 through the existing forwarded-IP path, confirming installed normalization/key and no pre-existing collision; delete only its exact owned rate-limit row in attempt-all cleanup — real shared-loopback max5/60s throttles the ten-case browser suite, and global deletion would affect unrelated counters — cost this fixture isolation does not establish production reverse-proxy/IP trust. Credentials/sessions, production auth/rate-limit settings and global browser headers stay unchanged; original429 evidence retained. This is no Task5 completion or live configuration change.
+
+### Phase06 Task6 pre-implementation claim acknowledgement clarification (2026-10-18)
+
+Ruling: ambiguous acknowledgement always latches local lifecycle failure, but a durable database claim blocks replicas only while actually present. Ambiguous admission must never send HTTP; if committed, its non-expiring claim/counters remain. Post-settlement compare-clear can commit despite lost acknowledgement: transport and full monotonic cooldown already finished, so idle DB and a safely spaced successor are legitimate, while the old local stop still rejects/withholds DB disconnect. A clear that did not commit leaves the claim held — a successful clear cannot become globally blocked merely because its ACK was lost — cost conservative local failure/manual inspection can coexist with idle gate or another legitimate sender; no false global-blocked/fleet-drained guarantee or automatic recovery/refund. Root read and approved the narrow agent clarification; native tests must distinguish actual admission/clear commit outcomes with separate clients. No Task6 source GO, implementation or live action.
+
+### Phase06 Task5 initial independent review and fix round1 (2026-10-18)
+
+Independent SPEC issues/QUALITY needs fixes:0Critical,1Important,1Minor on source204dfe4. I1 accepted: source-history404 cleared expanded rows but same-scope cached groups/seed observations and off-page currencyConflict stayed visible during/after failed owner-summary recheck. Original implementer resumes fix round1/5 with immediate external invalidation, manual/draft preservation and focused pending/failure/fresh-success tests. No task completion yet.
+
+Ruling: defer Minor M1 conflicting NO_COLOR/FORCE_COLOR runner warnings to Phase13's shared harness color-policy cleanup — all final runs passed and warnings are disclosed; changing shared process environment is unrelated to the narrow source-authority fix — cost retained warning noise, no warning-free claim. Never filter/rewrite existing raw evidence or relax tests to hide it.
+
+### Phase06 Task6 pre-implementation credential serialization clarification (2026-10-18)
+
+Ruling: reject empty/padded/control credentials at factory/config entry, then use the identical accepted token bytes for both gate fingerprint and actual HTTP authentication; never independently trim/hash differing forms — a pinned Node24.19.0 no-network synthetic Headers probe confirms X-Api-Key padding is removed by header serialization, creating a gate-alias risk if raw padding were hashed — cost stricter invalid config rejection with sanitized errors, no speculative vendor-format restrictions. Scrydex team remains outside token gate identity. Future focused config tests required. No source, real credential or network/DB operation and no Task6 GO.
+
+
+### Phase06 Task5 verified — private localized valuation history (2026-10-18)
+
+Source204dfe46717ecf61e2f465eb3d8bb8bd1e550b00 plus fix96bca4743e4785f9cd0fafbcfd111ebe8343f4bb. Private dynamic/noindex fresh-owner page, actual owner item navigation including inactive items, DE/EN responsive manual form/history and separately bounded source groups/history consume Task4 contracts/API. Exact bigint/stored-exponent presentation and canonical current-currency/input parser preserve zero/max/year0001/0-2-3-4 scales; explicit note2000-codepoint/UTC input. Scoped numerical-only catalog display repair removes floating digit loss while preserving legacy scale/input/storage; L1 remains a load-bearing Phase07/08/13 interpretation gate, not resolved or cosmetically dismissed.
+
+Read/mutation/source generations, synchronous submit guard, dirty locale/scope draft preservation, ACK separate from latest, acknowledged-refresh failure and unknown outcome/no automatic POST replay, inactive authority and contextual401/owner404/source404 behavior tested. Independent initial SPEC/QUALITY0Critical/1Important/1Minor found cached source seeds/off-page currency claim surviving source404 plus failed owner recheck. Fix round1 externalInvalidated atomically suppresses all old external rows/claims/controls/selectors until current validated summary succeeds, retaining manual context/draft. Meaningful populated controller and real browser20-old-rows REDs preceded correction; scoped independent SPEC/QUALITY APPROVED,0Critical/0Important/0newMinor. M1 color-runner noise explicitly deferred Phase13 under prior ruling, not counted fixed.
+
+Local evidence: initial550 workspacepass/234native-gatedskip,54 realPG,42 focused pure,12 production browser(6desktop+6mobile), final amended ENmobile1, full lint/types/build. Fix affected16 pure plus four DE/EN desktop/mobile external transport cases and full lint/types/build pass; original full/native results are not misrepresented as fix reruns. Real production manual/default-off HTTP proof is separate from external browser GET transport generated by actual ingestion/query/trusted worker policy; no production grant backdoor, POST/auth/public interception or live provider call. Scoped credential fixtureIP only with exact owned rate-limit cleanup keeps actual auth/rate config; production reverse-proxy trust remains a separate gate. All RED, fixture/rate429/teardown/typing failures and successful recoveries retained honestly.
+
+Both exact corrected-source CI39098898037/job117590925497 and39098895696/job117590917344 SUCCESS, including actual new valuations production step, nativeDB, full browser/static/build/container/native-image gates. Primary returned120000-character tail truncated/no test-count lines, no remote totals inferred; both complete step metadata retained in task-5-ci-96bca47-steps.json before completion push. Both superseded204 runs alsoSUCCESS with separate primary tail/complete metadata; they do not substitute for corrected-source CI.
+
+Four synthetic screenshots outside repo labelled production/default-off versus query-generated external transport, with exact source limitations in reports; root independently inspected DEdesktopproduction and ENmobileexternal/readable crops, no required layout change. Final external captures match fix96; original production positive-path captures match204, unchanged by rejection-only fix. Owned fixture users/categories/observations clean, owned browser/server stopped, shared root-owned PG17 retained. Reports/reviews task-5-report/fix-report/review/fix-review.md and raw logs retained. Task6 actual committed Money/worker seams reconciled ready; approved Ruling7 acknowledgement and Ruling8 credential-byte clarifications retained, source GO still sequential after persistence. Future Phase07 preflight/legacy-money-design/progress remain provisional preparation only, no classification/migration/Phase07 checkoff. No source merge, Sammlerraum deployment, real provider/role/purge or real-data action.

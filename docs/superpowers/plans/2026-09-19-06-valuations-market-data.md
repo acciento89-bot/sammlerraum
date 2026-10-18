@@ -237,7 +237,7 @@ git commit -m "feat: compare manual and market valuations"
 - Consumes: valuation API.
 - Produces: localized source-separated valuation history page.
 
-- [ ] **Step 1: Write failing rendering test**
+- [x] **Step 1: Write failing rendering test**
 
 ```tsx
 it("labels asking price and sold median as different source types", async () => {
@@ -247,16 +247,16 @@ it("labels asking price and sold median as different source types", async () => 
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run apps/web/src/app/[locale]/\(app\)/items/[itemId]/values/page.test.tsx`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement page**
+- [x] **Step 3: Implement page**
 
 Use `Intl.NumberFormat` by locale/currency. Render provider, observation type, timestamp, qualifier, and history separately.
 
-- [ ] **Step 4: Run tests/build**
+- [x] **Step 4: Run tests/build**
 
 Run:
 ```bash
@@ -266,7 +266,7 @@ pnpm --filter @sammlerraum/web build
 
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/contracts/src/valuations.ts apps/web
