@@ -1,0 +1,6 @@
+
+> @sammlerraum/worker@ typecheck /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/worker
+> tsc --noEmit --project ../../tsconfig.base.json
+
+
+EXIT=0

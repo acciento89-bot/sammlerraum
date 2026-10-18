@@ -127,9 +127,15 @@ export async function providerRequest<T>(
           );
           context?.reportFetchedAt?.(body.receivedAt);
           checkSignal(transportSignal);
-          return decode(
-            decodeExactJson(new TextDecoder("utf-8", { fatal: true }).decode(body.bytes)),
-          );
+          let text: string;
+          try {
+            text = new TextDecoder("utf-8", { fatal: true }).decode(body.bytes);
+          } catch {
+            // The body has settled: malformed bytes are a terminal response failure,
+            // before the permit can sanitize an untyped callback error as transport.
+            throw new ProviderFailure("INVALID_RESPONSE");
+          }
+          return decode(decodeExactJson(text));
         } finally {
           clearTimeout(timer);
         }
