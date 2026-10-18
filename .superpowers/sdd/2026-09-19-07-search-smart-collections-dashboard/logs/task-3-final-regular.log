@@ -1,0 +1,125 @@
+
+> sammlerraum@ test /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+> vitest run
+
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ✓ |workspace| packages/config/src/client.test.ts (6 tests) 75ms
+ ✓ |workspace| packages/db/src/test-database.test.ts (4 tests) 114ms
+ ✓ |workspace| packages/storage/src/local-storage.test.ts (23 tests) 141ms
+ ✓ |workspace| packages/domain/src/search/filter-ast.test.ts (117 tests) 94ms
+ ✓ |workspace| apps/worker/src/run-wiring.test.ts (1 test) 353ms
+   ✓ passes the production-composed market lifecycle to startWorker and registers market.sync  352ms
+ ✓ |workspace| packages/market-data/src/production-providers.test.ts (43 tests) 80ms
+ ✓ |workspace| apps/worker/src/jobs/cleanup-media.test.ts (4 tests) 62ms
+ ✓ |workspace| packages/domain/src/media/media-service.test.ts (20 tests | 1 skipped) 62ms
+ ✓ |workspace| apps/web/src/components/catalog/catalog-form-values.test.ts (7 tests) 20ms
+ ✓ |workspace| apps/web/src/components/items/item-form-values.test.ts (17 tests) 41ms
+ ✓ |workspace| apps/worker/src/jobs/process-image.test.ts (8 tests) 501ms
+ ✓ |workspace| packages/market-data/src/exact-json.test.ts (5 tests) 16ms
+ ✓ |workspace| apps/web/src/app/api/v1/account/sessions/route.test.ts (4 tests) 7ms
+ ✓ |workspace| apps/web/src/lib/media-routes.test.ts (14 tests) 23ms
+ ✓ |workspace| apps/worker/src/jobs/sync-market-data.test.ts (16 tests) 11ms
+ ✓ |workspace| apps/worker/src/jobs/image-dispatcher.test.ts (2 tests) 6ms
+ ✓ |workspace| packages/domain/src/api/resource-query.test.ts (2 tests) 2ms
+ ✓ |workspace| apps/web/src/components/valuations/valuation-money.test.ts (27 tests) 31ms
+ ✓ |workspace| packages/domain/src/money/money.test.ts (50 tests) 12ms
+ ✓ |workspace| apps/worker/src/health.test.ts (2 tests) 23ms
+ ✓ |workspace| apps/web/src/lib/catalog-proposal-routes.test.ts (6 tests) 26ms
+ ✓ |workspace| packages/domain/src/locations/location-service.test.ts (17 tests | 3 skipped) 14ms
+ ✓ |workspace| packages/domain/src/search/search-url-integrity.test.ts (5 tests) 7ms
+ ✓ |workspace| packages/config/src/server.test.ts (30 tests) 12ms
+ ✓ |workspace| packages/domain/src/items/item-service.test.ts (15 tests | 5 skipped) 14ms
+ ✓ |workspace| apps/web/src/lib/api/route-handler.test.ts (5 tests) 16ms
+ ✓ |workspace| packages/domain/src/market-data/validation.test.ts (4 tests) 15ms
+ ✓ |workspace| packages/domain/src/catalog/category-template-service.test.ts (32 tests) 14ms
+ ✓ |workspace| packages/domain/src/custom-fields/custom-field-service.test.ts (36 tests | 1 skipped) 35ms
+ ✓ |workspace| apps/web/src/lib/auth.test.ts (3 tests) 14ms
+ ✓ |workspace| apps/web/src/app/api/v1/items/item-api.test.ts (10 tests) 19ms
+ ✓ |workspace| apps/web/src/lib/email.test.ts (2 tests) 3ms
+ ✓ |workspace| apps/web/src/lib/item-search-routes.test.ts (11 tests) 10ms
+ ✓ |workspace| apps/web/src/app/api/v1/collections/collection-api.test.ts (5 tests) 16ms
+ ✓ |workspace| apps/worker/src/run.test.ts (3 tests) 4ms
+ ✓ |workspace| apps/worker/src/jobs/market-provider-failure.test.ts (2 tests) 2019ms
+   ✓ malformed response through the actual request permit > preserves terminal UTF-8 classification after physical settlement and own clear  1015ms
+   ✓ malformed response through the actual request permit > acknowledges malformed UTF-8 without a receipt, commit or retry request  1003ms
+ ✓ |workspace| apps/web/src/app/api/v1/account/recovery-methods/route.test.ts (3 tests) 11ms
+ ✓ |workspace| packages/domain/src/items/identifier-service.test.ts (11 tests | 3 skipped) 12ms
+ ✓ |workspace| packages/contracts/src/valuations.test.ts (6 tests) 14ms
+ ✓ |workspace| packages/domain/src/locations/label-service.test.ts (2 tests) 7ms
+ ✓ |workspace| packages/domain/src/collections/collection-service.test.ts (14 tests | 4 skipped) 6ms
+ ✓ |workspace| apps/web/src/app/api/v1/media/media-read.test.ts (5 tests) 11ms
+ ✓ |workspace| apps/web/src/lib/auth-api-server-setup.test.ts (1 test) 27ms
+ ✓ |workspace| apps/web/src/components/valuations/valuation-client.test.ts (3 tests) 15ms
+ ✓ |workspace| packages/storage/src/staging-lock.integration.test.ts (3 tests | 2 skipped) 14ms
+ ✓ |workspace| packages/queue/src/pg-boss-queue.test.ts (11 tests) 11ms
+ ✓ |workspace| apps/worker/src/jobs/market-provider-composition.test.ts (11 tests) 7ms
+ ✓ |workspace| apps/web/src/lib/smart-collection-routes.test.ts (11 tests) 20ms
+ ✓ |workspace| packages/domain/src/media/media-read.test.ts (8 tests) 5ms
+ ✓ |workspace| packages/contracts/src/catalog-proposals.test.ts (2 tests) 5ms
+ ✓ |workspace| packages/domain/src/identity/profile-service.test.ts (6 tests | 1 skipped) 16ms
+ ✓ |workspace| packages/domain/src/search/search-input.test.ts (12 tests) 7ms
+ ✓ |workspace| packages/contracts/src/grading.test.ts (37 tests) 16ms
+ ✓ |workspace| apps/web/src/lib/account-profile-routes.test.ts (2 tests) 9ms
+ ✓ |workspace| apps/worker/src/jobs/market-sync-lifecycle.test.ts (4 tests) 5ms
+ ✓ |workspace| apps/worker/src/main.test.ts (6 tests) 5ms
+ ✓ |workspace| apps/web/src/components/valuations/valuation-state.test.ts (13 tests) 5ms
+ ✓ |workspace| packages/domain/src/search/search-read.test.ts (6 tests) 4ms
+ ✓ |workspace| apps/web/src/app/api/openapi.json/route.test.ts (1 test) 5ms
+ ✓ |workspace| apps/web/src/lib/request-id.test.ts (5 tests) 7ms
+ ✓ |workspace| apps/web/src/components/auth/account-ui-state.test.ts (9 tests) 10ms
+ ✓ |workspace| packages/domain/src/authz/policy.test.ts (25 tests) 4ms
+ ✓ |workspace| apps/web/src/i18n/routing.test.ts (3 tests) 2ms
+ ✓ |workspace| packages/contracts/src/openapi.test.ts (3 tests) 12ms
+ ✓ |workspace| packages/testing/src/production-config.test.ts (5 tests) 5ms
+ ✓ |workspace| apps/web/src/proxy.test.ts (3 tests) 8ms
+ ✓ |workspace| packages/domain/src/identity/security-service.test.ts (7 tests | 1 skipped) 6ms
+ ✓ |workspace| packages/domain/src/catalog/catalog-service.test.ts (2 tests) 5ms
+ ✓ |workspace| apps/web/src/app/api/health/route.test.ts (2 tests) 2ms
+ ✓ |workspace| packages/db/src/health.test.ts (1 test) 2ms
+ ✓ |workspace| packages/market-data/src/provider-registry.test.ts (3 tests) 4ms
+ ✓ |workspace| packages/testing/src/workspace.test.ts (1 test) 1ms
+ ↓ |workspace| packages/queue/src/postgres.integration.test.ts (1 test | 1 skipped)
+ ✓ |workspace| packages/domain/src/media/cleanup-service.test.ts (11 tests | 10 skipped) 1ms
+ ↓ |workspace| apps/worker/src/jobs/image-repository.integration.test.ts (2 tests | 2 skipped)
+ ↓ |workspace| apps/worker/src/jobs/market-request-permit.integration.test.ts (15 tests | 15 skipped)
+ ↓ |workspace| apps/worker/src/jobs/market-sync.integration.test.ts (16 tests | 16 skipped)
+ ↓ |workspace| apps/web/src/lib/catalog-history-routes.integration.test.ts (2 tests | 2 skipped)
+ ↓ |workspace| apps/worker/src/jobs/production-market.integration.test.ts (4 tests | 4 skipped)
+ ↓ |workspace| apps/web/src/lib/catalog-proposal-routes.integration.test.ts (4 tests | 4 skipped)
+ ↓ |workspace| apps/web/src/lib/catalog-link-routes.integration.test.ts (6 tests | 6 skipped)
+ ↓ |workspace| apps/web/src/lib/item-search-routes.integration.test.ts (12 tests | 12 skipped)
+ ↓ |workspace| apps/web/src/lib/condition-routes.integration.test.ts (5 tests | 5 skipped)
+ ↓ |workspace| apps/web/src/lib/grading-routes.integration.test.ts (10 tests | 10 skipped)
+ ↓ |workspace| apps/web/src/lib/smart-collection-routes.integration.test.ts (4 tests | 4 skipped)
+ ↓ |workspace| packages/db/src/media-lock.integration.test.ts (1 test | 1 skipped)
+ ↓ |workspace| packages/db/src/media-migration.integration.test.ts (1 test | 1 skipped)
+ ↓ |workspace| packages/db/src/postgres.integration.test.ts (1 test | 1 skipped)
+ ↓ |workspace| apps/web/src/lib/valuation-routes.integration.test.ts (10 tests | 10 skipped)
+ ↓ |workspace| packages/domain/src/grading/grading-service.test.ts (15 tests | 15 skipped)
+ ↓ |workspace| packages/domain/src/market-data/market-data-service.test.ts (13 tests | 13 skipped)
+ ↓ |workspace| packages/domain/src/media/media-management.integration.test.ts (1 test | 1 skipped)
+ ↓ |workspace| packages/domain/src/media/media-read.integration.test.ts (1 test | 1 skipped)
+ ↓ |workspace| packages/domain/src/condition/condition-service.test.ts (10 tests | 10 skipped)
+ ↓ |workspace| apps/web/src/lib/security-service.integration.test.ts (1 test | 1 skipped)
+ ↓ |workspace| packages/domain/src/catalog/catalog-history-service.test.ts (2 tests | 2 skipped)
+ ↓ |workspace| packages/domain/src/catalog/catalog-service.integration.test.ts (11 tests | 11 skipped)
+ ↓ |workspace| packages/domain/src/catalog/catalog-read-service.test.ts (6 tests | 6 skipped)
+ ↓ |workspace| packages/domain/src/catalog/category-template-service.integration.test.ts (4 tests | 4 skipped)
+ ↓ |workspace| packages/domain/src/catalog/initialize-catalog.test.ts (4 tests | 4 skipped)
+ ↓ |workspace| packages/domain/src/catalog/proposal-service.test.ts (16 tests | 16 skipped)
+ ↓ |workspace| packages/domain/src/catalog/item-catalog-link.test.ts (14 tests | 14 skipped)
+ ↓ |workspace| packages/domain/src/search/search-read.integration.test.ts (5 tests | 5 skipped)
+ ↓ |workspace| packages/domain/src/search/item-search-service.test.ts (78 tests | 78 skipped)
+ ↓ |workspace| packages/domain/src/search/search-retained-integrity.integration.test.ts (17 tests | 17 skipped)
+ ↓ |workspace| packages/domain/src/search/smart-collection-service.test.ts (18 tests | 18 skipped)
+ ↓ |workspace| packages/domain/src/valuations/valuation-query.test.ts (27 tests | 27 skipped)
+ ↓ |workspace| packages/domain/src/valuations/valuation-service.test.ts (17 tests | 17 skipped)
+ ↓ |workspace| apps/web/src/app/api/v1/items/resource-route.integration.test.ts (2 tests | 2 skipped)
+
+ Test Files  73 passed | 36 skipped (109)
+      Tests  785 passed | 387 skipped (1172)
+   Start at  10:12:30
+   Duration  6.44s (transform 2.26s, setup 295ms, collect 15.49s, tests 4.22s, environment 15ms, prepare 6.01s)
+

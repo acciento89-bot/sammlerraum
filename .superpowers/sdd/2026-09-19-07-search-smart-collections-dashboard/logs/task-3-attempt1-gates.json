@@ -1,0 +1,76 @@
+[
+  {
+    "name": "runtime",
+    "command": [
+      "npm",
+      "exec",
+      "--yes",
+      "--package=node@24.19.0",
+      "--package=pnpm@10.17.1",
+      "--",
+      "pnpm",
+      "exec",
+      "node",
+      "-e",
+      "console.log(JSON.stringify({node:process.version,pnpm:process.env.npm_config_user_agent,database:new URL(process.env.DATABASE_URL).pathname}))"
+    ],
+    "environmentOverrides": {},
+    "exitCode": 0,
+    "seconds": 0.59,
+    "log": ".superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-3-final-runtime.log"
+  },
+  {
+    "name": "schema",
+    "command": [
+      "npm",
+      "exec",
+      "--yes",
+      "--package=node@24.19.0",
+      "--package=pnpm@10.17.1",
+      "--",
+      "pnpm",
+      "--filter",
+      "@sammlerraum/db",
+      "prisma",
+      "validate"
+    ],
+    "environmentOverrides": {},
+    "exitCode": 0,
+    "seconds": 1.45,
+    "log": ".superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-3-final-schema.log"
+  },
+  {
+    "name": "regular",
+    "command": [
+      "npm",
+      "exec",
+      "--yes",
+      "--package=node@24.19.0",
+      "--package=pnpm@10.17.1",
+      "--",
+      "pnpm",
+      "test"
+    ],
+    "environmentOverrides": {},
+    "exitCode": 0,
+    "seconds": 9.26,
+    "log": ".superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-3-final-regular.log"
+  },
+  {
+    "name": "types",
+    "command": [
+      "npm",
+      "exec",
+      "--yes",
+      "--package=node@24.19.0",
+      "--package=pnpm@10.17.1",
+      "--",
+      "pnpm",
+      "typecheck"
+    ],
+    "environmentOverrides": {},
+    "exitCode": 2,
+    "seconds": 18.44,
+    "log": ".superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-3-final-types.log"
+  }
+]

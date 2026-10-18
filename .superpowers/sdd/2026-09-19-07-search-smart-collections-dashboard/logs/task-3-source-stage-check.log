@@ -1,0 +1,20 @@
+All18 indexed paths equal frozen SHA256 manifest. Staged diff check passed.
+ .github/workflows/ci.yml                           |   2 +
+ .../api/v1/smart-collections/[id]/items/route.ts   |   4 +
+ .../src/app/api/v1/smart-collections/[id]/route.ts |  11 +
+ apps/web/src/app/api/v1/smart-collections/route.ts |   7 +
+ apps/web/src/lib/item-search-routes.ts             |  11 +-
+ .../src/lib/smart-collection-route-dependencies.ts |  22 +
+ .../smart-collection-routes.integration.test.ts    | 170 ++++++
+ apps/web/src/lib/smart-collection-routes.test.ts   |  52 ++
+ apps/web/src/lib/smart-collection-routes.ts        | 163 ++++++
+ docs/search/smart-collections.md                   |  15 +
+ packages/contracts/package.json                    |   3 +-
+ packages/contracts/src/smart-collections.ts        | 156 ++++++
+ .../20261018090000_smart_collections/migration.sql |  25 +
+ packages/db/prisma/schema.prisma                   |  16 +
+ packages/domain/package.json                       |   3 +-
+ packages/domain/src/search/search-read.ts          |  15 +-
+ .../src/search/smart-collection-service.test.ts    | 581 +++++++++++++++++++++
+ .../domain/src/search/smart-collection-service.ts  | 217 ++++++++
+ 18 files changed, 1462 insertions(+), 11 deletions(-)
