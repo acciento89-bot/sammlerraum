@@ -1,0 +1,36 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| packages/domain/src/valuations/valuation-query.test.ts (10 tests | 1 failed) 432ms
+   ✓ owner valuation comparison PostgreSQL > does not calculate a combined total across mixed currencies, including groups outside the first page 69ms
+   ✓ owner valuation comparison PostgreSQL > keeps all same-currency kinds separate, preserving zero ranges and source metadata 25ms
+   ✓ owner valuation comparison PostgreSQL > refreshes latest independently of old manual pages and never multiplies by quantity 26ms
+   ✓ owner valuation comparison PostgreSQL > pages source histories with timestamp ties and retains availability beyond the last group 36ms
+   ✓ owner valuation comparison PostgreSQL > keeps current semantic mapping across title edits and identifier replacement, with original provenance 30ms
+   ✓ owner valuation comparison PostgreSQL > excludes changed mappings from current scope and shows explicitly permitted historical provenance 23ms
+   × owner valuation comparison PostgreSQL > keeps entry-only and exact variants isolated; retired variant history is explicit 43ms
+     → catalog(...).removeCatalogVariant is not a function
+   ✓ owner valuation comparison PostgreSQL > never leaks stored external existence under the default empty policy, including history 18ms
+   ✓ owner valuation comparison PostgreSQL > hides foreign/deleted-parent items but permits archived and disposed reads 16ms
+   ✓ owner valuation comparison PostgreSQL > invalidates source selectors after catalog edits or relinking and rejects cross-item cursors 28ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/valuations/valuation-query.test.ts > owner valuation comparison PostgreSQL > keeps entry-only and exact variants isolated; retired variant history is explicit
+TypeError: catalog(...).removeCatalogVariant is not a function
+ ❯ packages/domain/src/valuations/valuation-query.test.ts:117:21
+    115|     await items().linkItemToCatalog(f.itemId,f.entryId,variant.id);
+    116|     let s=await query().getItemValuationSummary(f.itemId,{userId:owner…
+    117|     await catalog().removeCatalogVariant(f.entryId,4,variant.id);
+       |                     ^
+    118|     s=await query().getItemValuationSummary(f.itemId,{userId:ownerId})…
+    119|     const h=await query().getItemValuationSummary(f.itemId,{userId:own…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 9 passed (10)
+   Start at  05:31:11
+   Duration  811ms (transform 114ms, setup 5ms, collect 219ms, tests 432ms, environment 0ms, prepare 42ms)
+

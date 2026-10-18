@@ -1,0 +1,82 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| apps/web/src/lib/valuation-routes.integration.test.ts (4 tests | 4 failed) 114ms
+   × valuation HTTP routes PostgreSQL > appends exact private manual values and reads the real owner query with no-store responses 15ms
+     → expected 501 to be 201 // Object.is equality
+   × valuation HTTP routes PostgreSQL > rejects unknown, duplicate, malformed and excessive query inputs before domain reading 3ms
+     → ?manualLimit=1&manualLimit=2: expected 501 to be 400 // Object.is equality
+   × valuation HTTP routes PostgreSQL > requires authentication, correct origin, owner scope and active writes 2ms
+     → expected 501 to be 401 // Object.is equality
+   × valuation HTTP routes PostgreSQL > rejects unsafe money, injected authors, unsupported new currencies and malformed Unicode 2ms
+     → expected 501 to be 400 // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/web/src/lib/valuation-routes.integration.test.ts > valuation HTTP routes PostgreSQL > appends exact private manual values and reads the real owner query with no-store responses
+AssertionError: expected 501 to be 201 // Object.is equality
+
+- Expected
++ Received
+
+- 201
++ 501
+
+ ❯ apps/web/src/lib/valuation-routes.integration.test.ts:18:27
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  |workspace| apps/web/src/lib/valuation-routes.integration.test.ts > valuation HTTP routes PostgreSQL > rejects unknown, duplicate, malformed and excessive query inputs before domain reading
+AssertionError: ?manualLimit=1&manualLimit=2: expected 501 to be 400 // Object.is equality
+
+- Expected
++ Received
+
+- 400
++ 501
+
+ ❯ apps/web/src/lib/valuation-routes.integration.test.ts:25:261
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  |workspace| apps/web/src/lib/valuation-routes.integration.test.ts > valuation HTTP routes PostgreSQL > requires authentication, correct origin, owner scope and active writes
+AssertionError: expected 501 to be 401 // Object.is equality
+
+- Expected
++ Received
+
+- 401
++ 501
+
+ ❯ apps/web/src/lib/valuation-routes.integration.test.ts:28:91
+     26|  });
+     27|  it('requires authentication, correct origin, owner scope and active w…
+     28|   session.mockResolvedValue(null);expect((await handlers().GET(request…
+       |                                                                                           ^
+     29|   session.mockResolvedValue({user:{id:'foreign'}});expect((await handl…
+     30|   session.mockResolvedValue({user:{id:ownerId}});expect((await handler…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  |workspace| apps/web/src/lib/valuation-routes.integration.test.ts > valuation HTTP routes PostgreSQL > rejects unsafe money, injected authors, unsupported new currencies and malformed Unicode
+AssertionError: expected 501 to be 400 // Object.is equality
+
+- Expected
++ Received
+
+- 400
++ 501
+
+ ❯ apps/web/src/lib/valuation-routes.integration.test.ts:36:377
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  4 failed (4)
+   Start at  05:32:07
+   Duration  400ms (transform 66ms, setup 6ms, collect 138ms, tests 114ms, environment 0ms, prepare 35ms)
+

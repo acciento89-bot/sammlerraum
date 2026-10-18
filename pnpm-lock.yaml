@@ -75,6 +75,9 @@ importers:
       '@playwright/test':
         specifier: 1.63.0
         version: 1.63.0
+      '@sammlerraum/market-data':
+        specifier: workspace:*
+        version: link:../../packages/market-data
       '@types/nodemailer':
         specifier: 8.0.2
         version: 8.0.2

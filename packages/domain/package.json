@@ -29,7 +29,9 @@
     "./catalog/initialize-catalog": "./src/catalog/initialize-catalog.ts",
     "./money/money": "./src/money/money.ts",
     "./valuations/valuation-service": "./src/valuations/valuation-service.ts",
-    "./market-data/market-data-service": "./src/market-data/market-data-service.ts"
+    "./market-data/market-data-service": "./src/market-data/market-data-service.ts",
+    "./valuations/valuation-query": "./src/valuations/valuation-query.ts",
+    "./valuations/market-display-policy": "./src/valuations/market-display-policy.ts"
   },
   "scripts": {
     "build": "pnpm typecheck",

@@ -889,6 +889,7 @@ model MarketObservation {
   revision            CatalogRevision         @relation(fields: [entryId, catalogRevision], references: [entryId, revision], onDelete: Restrict, onUpdate: Restrict)
 
   @@index([providerId])
+  @@index([entryId, variantId, providerId, identifierNamespace, identifierType, externalId, kind, currency, observedAt(sort: Desc), createdAt(sort: Desc), id(sort: Desc)], map: "MarketObservation_source_history_idx")
   @@index([entryId, variantId, providerId, kind, currency, observedAt(sort: Desc), createdAt(sort: Desc), id(sort: Desc)], map: "MarketObservation_history_idx")
 }
 

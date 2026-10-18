@@ -1,0 +1,43 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| packages/domain/src/valuations/valuation-query.test.ts (13 tests | 1 failed) 552ms
+   ✓ owner valuation comparison PostgreSQL > does not calculate a combined total across mixed currencies, including groups outside the first page 70ms
+   ✓ owner valuation comparison PostgreSQL > keeps all same-currency kinds separate, preserving zero ranges and source metadata 26ms
+   ✓ owner valuation comparison PostgreSQL > refreshes latest independently of old manual pages and never multiplies by quantity 29ms
+   ✓ owner valuation comparison PostgreSQL > pages source histories with timestamp ties and retains availability beyond the last group 40ms
+   ✓ owner valuation comparison PostgreSQL > keeps current semantic mapping across title edits and identifier replacement, with original provenance 36ms
+   ✓ owner valuation comparison PostgreSQL > excludes changed mappings from current scope and shows explicitly permitted historical provenance 27ms
+   ✓ owner valuation comparison PostgreSQL > keeps entry-only and exact variants isolated; retired variant history is explicit 53ms
+   ✓ owner valuation comparison PostgreSQL > never leaks stored external existence under the default empty policy, including history 17ms
+   ✓ owner valuation comparison PostgreSQL > hides foreign/deleted-parent items but permits archived and disposed reads 17ms
+   ✓ owner valuation comparison PostgreSQL > invalidates source selectors after catalog edits or relinking and rejects cross-item cursors 36ms
+   × owner valuation comparison PostgreSQL > reports source availability independently of a group cursor beyond the final group 25ms
+     → expected 'NO_OBSERVATIONS' to be 'AVAILABLE' // Object.is equality
+   ✓ owner valuation comparison PostgreSQL > validates hidden historical candidates before allowing them to affect currency diversity 19ms
+   ✓ owner valuation comparison PostgreSQL > retains one MVCC view while an independent catalog edit and ingestion commit between reads 33ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/valuations/valuation-query.test.ts > owner valuation comparison PostgreSQL > reports source availability independently of a group cursor beyond the final group
+AssertionError: expected 'NO_OBSERVATIONS' to be 'AVAILABLE' // Object.is equality
+
+Expected: "AVAILABLE"
+Received: "NO_OBSERVATIONS"
+
+ ❯ packages/domain/src/valuations/valuation-query.test.ts:149:81
+    147|     const token=encodeValuationToken({v:1,context:{itemId:f.itemId,ent…
+    148|     const last=await query().getItemValuationSummary(f.itemId,{userId:…
+    149|     expect(last.external.groups).toEqual([]);expect(last.external.avai…
+       |                                                                                 ^
+    150|   });
+    151|   it('validates hidden historical candidates before allowing them to a…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 12 passed (13)
+   Start at  05:33:38
+   Duration  933ms (transform 117ms, setup 6ms, collect 212ms, tests 552ms, environment 0ms, prepare 36ms)
+

@@ -1,0 +1,2 @@
+packages/domain/src/valuations/valuation-query.ts(144,21): error TS7022: 'batch' implicitly has type 'any' because it does not have a type annotation and is referenced directly or indirectly in its own initializer.
+packages/domain/src/valuations/valuation-query.ts(146,46): error TS7022: 'last' implicitly has type 'any' because it does not have a type annotation and is referenced directly or indirectly in its own initializer.
