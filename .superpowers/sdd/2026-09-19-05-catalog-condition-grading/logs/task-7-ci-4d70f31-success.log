@@ -1,0 +1,949 @@
+# Exact source4d70f3102b1039fda8754969448d7b0689f09435 / run39081210503 / job117538331002 SUCCESS
+# Backend logTruncated=true; exact returned tail preserved. Full run linked in ledger.
+GRES_PASSWORD: test
+2026-10-18T00:05:13.2499989Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+2026-10-18T00:05:13.2500305Z ##[endgroup]
+2026-10-18T00:05:15.5670047Z 
+2026-10-18T00:05:15.5670635Z Running 2 tests using 1 worker
+2026-10-18T00:05:22.0626074Z ··
+2026-10-18T00:05:22.0640047Z   2 passed (7.9s)
+2026-10-18T00:05:22.0978376Z ##[group]Run RUN_MEDIA_E2E=1 RUN_AUTH_E2E=1 RUN_PRODUCTION_E2E=1 pnpm --filter @sammlerraum/web exec playwright test e2e/media-read.spec.ts e2e/media-documents.spec.ts --workers=1
+2026-10-18T00:05:22.0980846Z [36;1mRUN_MEDIA_E2E=1 RUN_AUTH_E2E=1 RUN_PRODUCTION_E2E=1 pnpm --filter @sammlerraum/web exec playwright test e2e/media-read.spec.ts e2e/media-documents.spec.ts --workers=1[0m
+2026-10-18T00:05:22.1051627Z shell: /usr/bin/bash -e {0}
+2026-10-18T00:05:22.1052065Z env:
+2026-10-18T00:05:22.1052413Z   NODE_ENV: test
+2026-10-18T00:05:22.1053182Z   DATABASE_URL: ***localhost:5432/sammlerraum_test
+2026-10-18T00:05:22.1053776Z   APP_ORIGIN: http://localhost:3000
+2026-10-18T00:05:22.1054354Z   NEXT_PUBLIC_APP_ORIGIN: https://example.invalid
+2026-10-18T00:05:22.1054958Z   UPLOADS_DIR: /tmp/sammlerraum-test-uploads
+2026-10-18T00:05:22.1055782Z   LOG_LEVEL: info
+2026-10-18T00:05:22.1056141Z   WORKER_HEALTH_PORT: 3001
+2026-10-18T00:05:22.1056839Z   BETTER_AUTH_SECRET: test-only-secret-that-is-at-least-thirty-two-characters
+2026-10-18T00:05:22.1057617Z   GOOGLE_CLIENT_ID: test-google-client-id
+2026-10-18T00:05:22.1058175Z   GOOGLE_CLIENT_SECRET: test-google-client-secret
+2026-10-18T00:05:22.1058754Z   APPLE_CLIENT_ID: test-apple-client-id
+2026-10-18T00:05:22.1059690Z   APPLE_CLIENT_SECRET: test-apple-client-secret
+2026-10-18T00:05:22.1060053Z   SMTP_HOST: smtp.example.invalid
+2026-10-18T00:05:22.1060323Z   SMTP_PORT: 587
+2026-10-18T00:05:22.1060536Z   SMTP_SECURE: false
+2026-10-18T00:05:22.1060770Z   SMTP_USER: test-smtp-user
+2026-10-18T00:05:22.1061030Z   SMTP_PASSWORD: test-smtp-password
+2026-10-18T00:05:22.1061312Z   SMTP_FROM: noreply@example.invalid
+2026-10-18T00:05:22.1061586Z   POSTGRES_DB: sammlerraum_test
+2026-10-18T00:05:22.1061845Z   POSTGRES_USER: test
+2026-10-18T00:05:22.1062073Z   POSTGRES_PASSWORD: test
+2026-10-18T00:05:22.1062374Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+2026-10-18T00:05:22.1062694Z ##[endgroup]
+2026-10-18T00:05:24.6597883Z 
+2026-10-18T00:05:24.6598651Z Running 7 tests using 1 worker
+2026-10-18T00:08:18.9660993Z ·······
+2026-10-18T00:08:18.9667336Z   7 passed (2.9m)
+2026-10-18T00:08:18.9979898Z ##[group]Run RUN_AUTH_E2E=1 RUN_PRODUCTION_E2E=1 pnpm --filter @sammlerraum/web exec playwright test e2e/catalog-grading.spec.ts --workers=1
+2026-10-18T00:08:18.9980987Z [36;1mRUN_AUTH_E2E=1 RUN_PRODUCTION_E2E=1 pnpm --filter @sammlerraum/web exec playwright test e2e/catalog-grading.spec.ts --workers=1[0m
+2026-10-18T00:08:19.0044383Z shell: /usr/bin/bash -e {0}
+2026-10-18T00:08:19.0044686Z env:
+2026-10-18T00:08:19.0044909Z   NODE_ENV: test
+2026-10-18T00:08:19.0045406Z   DATABASE_URL: ***localhost:5432/sammlerraum_test
+2026-10-18T00:08:19.0045807Z   APP_ORIGIN: http://localhost:3000
+2026-10-18T00:08:19.0046181Z   NEXT_PUBLIC_APP_ORIGIN: https://example.invalid
+2026-10-18T00:08:19.0046606Z   UPLOADS_DIR: /tmp/sammlerraum-test-uploads
+2026-10-18T00:08:19.0046944Z   LOG_LEVEL: info
+2026-10-18T00:08:19.0047195Z   WORKER_HEALTH_PORT: 3001
+2026-10-18T00:08:19.0047641Z   BETTER_AUTH_SECRET: test-only-secret-that-is-at-least-thirty-two-characters
+2026-10-18T00:08:19.0048210Z   GOOGLE_CLIENT_ID: test-google-client-id
+2026-10-18T00:08:19.0048594Z   GOOGLE_CLIENT_SECRET: test-google-client-secret
+2026-10-18T00:08:19.0049262Z   APPLE_CLIENT_ID: test-apple-client-id
+2026-10-18T00:08:19.0049639Z   APPLE_CLIENT_SECRET: test-apple-client-secret
+2026-10-18T00:08:19.0050009Z   SMTP_HOST: smtp.example.invalid
+2026-10-18T00:08:19.0050306Z   SMTP_PORT: 587
+2026-10-18T00:08:19.0050545Z   SMTP_SECURE: false
+2026-10-18T00:08:19.0050802Z   SMTP_USER: test-smtp-user
+2026-10-18T00:08:19.0051103Z   SMTP_PASSWORD: test-smtp-password
+2026-10-18T00:08:19.0051429Z   SMTP_FROM: noreply@example.invalid
+2026-10-18T00:08:19.0051750Z   POSTGRES_DB: sammlerraum_test
+2026-10-18T00:08:19.0052041Z   POSTGRES_USER: test
+2026-10-18T00:08:19.0052311Z   POSTGRES_PASSWORD: test
+2026-10-18T00:08:19.0052638Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+2026-10-18T00:08:19.0053010Z ##[endgroup]
+2026-10-18T00:08:21.5315532Z 
+2026-10-18T00:08:21.5316121Z Running 36 tests using 1 worker
+2026-10-18T00:09:27.7165807Z ····································
+2026-10-18T00:09:27.7166557Z   36 passed (1.1m)
+2026-10-18T00:09:27.7604509Z ##[group]Run RUN_AUTH_E2E=1 RUN_PRODUCTION_E2E=1 pnpm --filter @sammlerraum/web exec playwright test e2e/auth.spec.ts
+2026-10-18T00:09:27.7605390Z [36;1mRUN_AUTH_E2E=1 RUN_PRODUCTION_E2E=1 pnpm --filter @sammlerraum/web exec playwright test e2e/auth.spec.ts[0m
+2026-10-18T00:09:27.7670485Z shell: /usr/bin/bash -e {0}
+2026-10-18T00:09:27.7670776Z env:
+2026-10-18T00:09:27.7670983Z   NODE_ENV: test
+2026-10-18T00:09:27.7671496Z   DATABASE_URL: ***localhost:5432/sammlerraum_test
+2026-10-18T00:09:27.7671852Z   APP_ORIGIN: http://localhost:3000
+2026-10-18T00:09:27.7672177Z   NEXT_PUBLIC_APP_ORIGIN: https://example.invalid
+2026-10-18T00:09:27.7672774Z   UPLOADS_DIR: /tmp/sammlerraum-test-uploads
+2026-10-18T00:09:27.7673060Z   LOG_LEVEL: info
+2026-10-18T00:09:27.7673277Z   WORKER_HEALTH_PORT: 3001
+2026-10-18T00:09:27.7673654Z   BETTER_AUTH_SECRET: test-only-secret-that-is-at-least-thirty-two-characters
+2026-10-18T00:09:27.7674100Z   GOOGLE_CLIENT_ID: test-google-client-id
+2026-10-18T00:09:27.7674456Z   GOOGLE_CLIENT_SECRET: test-google-client-secret
+2026-10-18T00:09:27.7674783Z   APPLE_CLIENT_ID: test-apple-client-id
+2026-10-18T00:09:27.7675092Z   APPLE_CLIENT_SECRET: test-apple-client-secret
+2026-10-18T00:09:27.7675402Z   SMTP_HOST: smtp.example.invalid
+2026-10-18T00:09:27.7675666Z   SMTP_PORT: 587
+2026-10-18T00:09:27.7675868Z   SMTP_SECURE: false
+2026-10-18T00:09:27.7676088Z   SMTP_USER: test-smtp-user
+2026-10-18T00:09:27.7676357Z   SMTP_PASSWORD: test-smtp-password
+2026-10-18T00:09:27.7676640Z   SMTP_FROM: noreply@example.invalid
+2026-10-18T00:09:27.7676909Z   POSTGRES_DB: sammlerraum_test
+2026-10-18T00:09:27.7677170Z   POSTGRES_USER: test
+2026-10-18T00:09:27.7677396Z   POSTGRES_PASSWORD: test
+2026-10-18T00:09:27.7677671Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+2026-10-18T00:09:27.7677981Z ##[endgroup]
+2026-10-18T00:09:30.3462079Z 
+2026-10-18T00:09:30.3462709Z Running 4 tests using 1 worker
+2026-10-18T00:09:33.3418003Z [WebServer] 2026-10-18T00:09:33.335Z ERROR [Better Auth]: Error Error: aborted
+2026-10-18T00:09:33.3430133Z [WebServer]     at ignore-listed frames {
+2026-10-18T00:09:33.3460270Z [WebServer]   code: 'ECONNRESET'
+2026-10-18T00:09:33.3461106Z [WebServer] }
+2026-10-18T00:09:33.3461875Z [WebServer] # SERVER_ERROR:  Error: aborted
+2026-10-18T00:09:33.3487096Z [WebServer]     at ignore-listed frames {
+2026-10-18T00:09:33.3505320Z [WebServer]   code: 'ECONNRESET'
+2026-10-18T00:09:33.3506084Z [WebServer] }
+2026-10-18T00:09:33.4919027Z [WebServer] 2026-10-18T00:09:33.490Z ERROR [Better Auth]: Error Error: aborted
+2026-10-18T00:09:33.4920109Z [WebServer]     at ignore-listed frames {
+2026-10-18T00:09:33.4923564Z [WebServer]   code: 'ECONNRESET'
+2026-10-18T00:09:33.4924102Z [WebServer] }
+2026-10-18T00:09:33.4924991Z [WebServer] # SERVER_ERROR:  Error: aborted
+2026-10-18T00:09:33.4925678Z [WebServer]     at ignore-listed frames {
+2026-10-18T00:09:33.4926279Z [WebServer]   code: 'ECONNRESET'
+2026-10-18T00:09:33.4926707Z [WebServer] }
+2026-10-18T00:09:39.2959899Z ····
+2026-10-18T00:09:39.2960317Z   4 passed (10.7s)
+2026-10-18T00:09:39.3327347Z ##[group]Run RUN_AUTH_E2E=1 RUN_PRODUCTION_E2E=1 pnpm --filter @sammlerraum/web exec playwright test e2e/collections-items.spec.ts --workers=1
+2026-10-18T00:09:39.3328395Z [36;1mRUN_AUTH_E2E=1 RUN_PRODUCTION_E2E=1 pnpm --filter @sammlerraum/web exec playwright test e2e/collections-items.spec.ts --workers=1[0m
+2026-10-18T00:09:39.3393981Z shell: /usr/bin/bash -e {0}
+2026-10-18T00:09:39.3394259Z env:
+2026-10-18T00:09:39.3394459Z   NODE_ENV: test
+2026-10-18T00:09:39.3394944Z   DATABASE_URL: ***localhost:5432/sammlerraum_test
+2026-10-18T00:09:39.3395287Z   APP_ORIGIN: http://localhost:3000
+2026-10-18T00:09:39.3395633Z   NEXT_PUBLIC_APP_ORIGIN: https://example.invalid
+2026-10-18T00:09:39.3396008Z   UPLOADS_DIR: /tmp/sammlerraum-test-uploads
+2026-10-18T00:09:39.3396288Z   LOG_LEVEL: info
+2026-10-18T00:09:39.3396501Z   WORKER_HEALTH_PORT: 3001
+2026-10-18T00:09:39.3396878Z   BETTER_AUTH_SECRET: test-only-secret-that-is-at-least-thirty-two-characters
+2026-10-18T00:09:39.3397355Z   GOOGLE_CLIENT_ID: test-google-client-id
+2026-10-18T00:09:39.3397671Z   GOOGLE_CLIENT_SECRET: test-google-client-secret
+2026-10-18T00:09:39.3397983Z   APPLE_CLIENT_ID: test-apple-client-id
+2026-10-18T00:09:39.3398293Z   APPLE_CLIENT_SECRET: test-apple-client-secret
+2026-10-18T00:09:39.3398595Z   SMTP_HOST: smtp.example.invalid
+2026-10-18T00:09:39.3399183Z   SMTP_PORT: 587
+2026-10-18T00:09:39.3399393Z   SMTP_SECURE: false
+2026-10-18T00:09:39.3399616Z   SMTP_USER: test-smtp-user
+2026-10-18T00:09:39.3399865Z   SMTP_PASSWORD: test-smtp-password
+2026-10-18T00:09:39.3400137Z   SMTP_FROM: noreply@example.invalid
+2026-10-18T00:09:39.3400591Z   POSTGRES_DB: sammlerraum_test
+2026-10-18T00:09:39.3400837Z   POSTGRES_USER: test
+2026-10-18T00:09:39.3401056Z   POSTGRES_PASSWORD: test
+2026-10-18T00:09:39.3401335Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+2026-10-18T00:09:39.3401640Z ##[endgroup]
+2026-10-18T00:09:41.3889705Z 
+2026-10-18T00:09:41.3890946Z Running 16 tests using 1 worker
+2026-10-18T00:10:02.0555260Z ················
+2026-10-18T00:10:02.0557067Z   16 passed (21.9s)
+2026-10-18T00:10:02.0948687Z ##[group]Run bash scripts/verify-compose.sh
+2026-10-18T00:10:02.0949391Z [36;1mbash scripts/verify-compose.sh[0m
+2026-10-18T00:10:02.1013145Z shell: /usr/bin/bash -e {0}
+2026-10-18T00:10:02.1013418Z env:
+2026-10-18T00:10:02.1013616Z   NODE_ENV: test
+2026-10-18T00:10:02.1014100Z   DATABASE_URL: ***localhost:5432/sammlerraum_test
+2026-10-18T00:10:02.1014445Z   APP_ORIGIN: http://localhost:3000
+2026-10-18T00:10:02.1014783Z   NEXT_PUBLIC_APP_ORIGIN: https://example.invalid
+2026-10-18T00:10:02.1015135Z   UPLOADS_DIR: /tmp/sammlerraum-test-uploads
+2026-10-18T00:10:02.1015449Z   LOG_LEVEL: info
+2026-10-18T00:10:02.1015665Z   WORKER_HEALTH_PORT: 3001
+2026-10-18T00:10:02.1016059Z   BETTER_AUTH_SECRET: test-only-secret-that-is-at-least-thirty-two-characters
+2026-10-18T00:10:02.1016512Z   GOOGLE_CLIENT_ID: test-google-client-id
+2026-10-18T00:10:02.1016834Z   GOOGLE_CLIENT_SECRET: test-google-client-secret
+2026-10-18T00:10:02.1017158Z   APPLE_CLIENT_ID: test-apple-client-id
+2026-10-18T00:10:02.1017512Z   APPLE_CLIENT_SECRET: test-apple-client-secret
+2026-10-18T00:10:02.1017835Z   SMTP_HOST: smtp.example.invalid
+2026-10-18T00:10:02.1018094Z   SMTP_PORT: 587
+2026-10-18T00:10:02.1018309Z   SMTP_SECURE: false
+2026-10-18T00:10:02.1018540Z   SMTP_USER: test-smtp-user
+2026-10-18T00:10:02.1019121Z   SMTP_PASSWORD: test-smtp-password
+2026-10-18T00:10:02.1019452Z   SMTP_FROM: noreply@example.invalid
+2026-10-18T00:10:02.1019741Z   POSTGRES_DB: sammlerraum_test
+2026-10-18T00:10:02.1019998Z   POSTGRES_USER: test
+2026-10-18T00:10:02.1020242Z   POSTGRES_PASSWORD: test
+2026-10-18T00:10:02.1020528Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+2026-10-18T00:10:02.1020855Z ##[endgroup]
+2026-10-18T00:10:02.3316885Z ##[group]Run docker build -f Dockerfile.web --build-arg NEXT_PUBLIC_APP_ORIGIN=https://example.invalid .
+2026-10-18T00:10:02.3317689Z [36;1mdocker build -f Dockerfile.web --build-arg NEXT_PUBLIC_APP_ORIGIN=https://example.invalid .[0m
+2026-10-18T00:10:02.3382105Z shell: /usr/bin/bash -e {0}
+2026-10-18T00:10:02.3382374Z env:
+2026-10-18T00:10:02.3382557Z   NODE_ENV: test
+2026-10-18T00:10:02.3383035Z   DATABASE_URL: ***localhost:5432/sammlerraum_test
+2026-10-18T00:10:02.3383373Z   APP_ORIGIN: http://localhost:3000
+2026-10-18T00:10:02.3383702Z   NEXT_PUBLIC_APP_ORIGIN: https://example.invalid
+2026-10-18T00:10:02.3384045Z   UPLOADS_DIR: /tmp/sammlerraum-test-uploads
+2026-10-18T00:10:02.3384361Z   LOG_LEVEL: info
+2026-10-18T00:10:02.3384568Z   WORKER_HEALTH_PORT: 3001
+2026-10-18T00:10:02.3384944Z   BETTER_AUTH_SECRET: test-only-secret-that-is-at-least-thirty-two-characters
+2026-10-18T00:10:02.3385407Z   GOOGLE_CLIENT_ID: test-google-client-id
+2026-10-18T00:10:02.3385750Z   GOOGLE_CLIENT_SECRET: test-google-client-secret
+2026-10-18T00:10:02.3386068Z   APPLE_CLIENT_ID: test-apple-client-id
+2026-10-18T00:10:02.3386370Z   APPLE_CLIENT_SECRET: test-apple-client-secret
+2026-10-18T00:10:02.3386676Z   SMTP_HOST: smtp.example.invalid
+2026-10-18T00:10:02.3386922Z   SMTP_PORT: 587
+2026-10-18T00:10:02.3387120Z   SMTP_SECURE: false
+2026-10-18T00:10:02.3387335Z   SMTP_USER: test-smtp-user
+2026-10-18T00:10:02.3387592Z   SMTP_PASSWORD: test-smtp-password
+2026-10-18T00:10:02.3387879Z   SMTP_FROM: noreply@example.invalid
+2026-10-18T00:10:02.3388148Z   POSTGRES_DB: sammlerraum_test
+2026-10-18T00:10:02.3388401Z   POSTGRES_USER: test
+2026-10-18T00:10:02.3388618Z   POSTGRES_PASSWORD: test
+2026-10-18T00:10:02.3389195Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+2026-10-18T00:10:02.3389512Z ##[endgroup]
+2026-10-18T00:10:02.9401967Z #0 building with "default" instance using docker driver
+2026-10-18T00:10:02.9402843Z 
+2026-10-18T00:10:02.9403174Z #1 [internal] load build definition from Dockerfile.web
+2026-10-18T00:10:02.9403818Z #1 transferring dockerfile: 1.61kB 0.0s done
+2026-10-18T00:10:02.9404241Z #1 DONE 0.0s
+2026-10-18T00:10:02.9404406Z 
+2026-10-18T00:10:02.9404733Z #2 [auth] library/node:pull token for registry-1.docker.io
+2026-10-18T00:10:02.9405211Z #2 DONE 0.0s
+2026-10-18T00:10:02.9405370Z 
+2026-10-18T00:10:02.9405813Z #3 [internal] load metadata for docker.io/library/node:24.19.0-bookworm-slim
+2026-10-18T00:10:03.1755661Z #3 DONE 0.5s
+2026-10-18T00:10:03.2991062Z 
+2026-10-18T00:10:03.2991996Z #4 [internal] load .dockerignore
+2026-10-18T00:10:03.2993199Z #4 transferring context: 237B done
+2026-10-18T00:10:03.2994002Z #4 DONE 0.0s
+2026-10-18T00:10:03.2994401Z 
+2026-10-18T00:10:03.2995655Z #5 [base 1/3] FROM docker.io/library/node:24.19.0-bookworm-slim@sha256:a9f5f7c91a432850b2a8a7797adf5eadb6c733ceed61167806cee7ea7fbc29df
+2026-10-18T00:10:03.2997921Z #5 resolve docker.io/library/node:24.19.0-bookworm-slim@sha256:a9f5f7c91a432850b2a8a7797adf5eadb6c733ceed61167806cee7ea7fbc29df done
+2026-10-18T00:10:03.3000130Z #5 sha256:4996e33358abd29e5daf56cdda6681efb4db3bd55b5ab63a7d3d44f8400195a4 1.05MB / 50.50MB 0.1s
+2026-10-18T00:10:03.3001792Z #5 sha256:f95897c2a1fb7bce26b018dd74b2845f816f7b86d5adff2939c6482b1d5b474c 0B / 1.71MB 0.1s
+2026-10-18T00:10:03.3004045Z #5 sha256:a9f5f7c91a432850b2a8a7797adf5eadb6c733ceed61167806cee7ea7fbc29df 3.93kB / 3.93kB done
+2026-10-18T00:10:03.3005515Z #5 sha256:e5a8dee7bc1e6a215d224a7ef8206f7e77271bc3cabd5febf2beafac0674f174 1.93kB / 1.93kB done
+2026-10-18T00:10:03.3006901Z #5 sha256:622f209f6c16ba5af4d9a337cae6577d096f17174b904cfc6a5b0c81a2679c24 6.76kB / 6.76kB done
+2026-10-18T00:10:03.3008339Z #5 sha256:a8ac7f6c67abc236e4c745052c404112b8fab6fe8ac3a329d1ef3b867ad67c71 17.83MB / 28.23MB 0.1s
+2026-10-18T00:10:03.3010008Z #5 sha256:990581063f5c8a03a57db7a0d116679ea6e6e335d4ac48ef457f26f82d917eba 3.32kB / 3.32kB 0.1s done
+2026-10-18T00:10:03.4712990Z #5 ...
+2026-10-18T00:10:03.4713530Z 
+2026-10-18T00:10:03.4714231Z #6 [internal] load build context
+2026-10-18T00:10:03.4715427Z #6 transferring context: 10.80MB 0.1s done
+2026-10-18T00:10:03.4716144Z #6 DONE 0.1s
+2026-10-18T00:10:03.4716518Z 
+2026-10-18T00:10:03.4717690Z #5 [base 1/3] FROM docker.io/library/node:24.19.0-bookworm-slim@sha256:a9f5f7c91a432850b2a8a7797adf5eadb6c733ceed61167806cee7ea7fbc29df
+2026-10-18T00:10:03.4719690Z #5 sha256:4996e33358abd29e5daf56cdda6681efb4db3bd55b5ab63a7d3d44f8400195a4 28.31MB / 50.50MB 0.2s
+2026-10-18T00:10:03.4721308Z #5 sha256:f95897c2a1fb7bce26b018dd74b2845f816f7b86d5adff2939c6482b1d5b474c 1.71MB / 1.71MB 0.1s done
+2026-10-18T00:10:03.4722927Z #5 sha256:a8ac7f6c67abc236e4c745052c404112b8fab6fe8ac3a329d1ef3b867ad67c71 28.23MB / 28.23MB 0.1s done
+2026-10-18T00:10:03.4724464Z #5 extracting sha256:a8ac7f6c67abc236e4c745052c404112b8fab6fe8ac3a329d1ef3b867ad67c71 0.1s
+2026-10-18T00:10:03.4725996Z #5 sha256:c35748eaa5ecc949b0f7cc349a9f7c4a5417dc008e2d9bebd53678d87238fcbf 450B / 450B 0.2s done
+2026-10-18T00:10:03.5802179Z #5 sha256:4996e33358abd29e5daf56cdda6681efb4db3bd55b5ab63a7d3d44f8400195a4 50.50MB / 50.50MB 0.3s done
+2026-10-18T00:10:04.4735213Z #5 extracting sha256:a8ac7f6c67abc236e4c745052c404112b8fab6fe8ac3a329d1ef3b867ad67c71 1.1s done
+2026-10-18T00:10:04.5974173Z #5 extracting sha256:990581063f5c8a03a57db7a0d116679ea6e6e335d4ac48ef457f26f82d917eba done
+2026-10-18T00:10:04.5975462Z #5 extracting sha256:4996e33358abd29e5daf56cdda6681efb4db3bd55b5ab63a7d3d44f8400195a4
+2026-10-18T00:10:05.9725513Z #5 extracting sha256:4996e33358abd29e5daf56cdda6681efb4db3bd55b5ab63a7d3d44f8400195a4 1.3s done
+2026-10-18T00:10:05.9727073Z #5 extracting sha256:f95897c2a1fb7bce26b018dd74b2845f816f7b86d5adff2939c6482b1d5b474c
+2026-10-18T00:10:06.0802296Z #5 extracting sha256:f95897c2a1fb7bce26b018dd74b2845f816f7b86d5adff2939c6482b1d5b474c 0.0s done
+2026-10-18T00:10:06.0803554Z #5 extracting sha256:c35748eaa5ecc949b0f7cc349a9f7c4a5417dc008e2d9bebd53678d87238fcbf done
+2026-10-18T00:10:06.0804942Z #5 DONE 2.9s
+2026-10-18T00:10:06.0805096Z 
+2026-10-18T00:10:06.0805231Z #7 [runtime 2/5] WORKDIR /app
+2026-10-18T00:10:06.0805514Z #7 DONE 0.0s
+2026-10-18T00:10:06.0805629Z 
+2026-10-18T00:10:06.0806127Z #8 [base 2/3] RUN corepack enable && corepack prepare pnpm@10.17.1 --activate
+2026-10-18T00:10:06.2226206Z #8 ...
+2026-10-18T00:10:06.2226901Z 
+2026-10-18T00:10:06.2227726Z #9 [runtime 3/5] RUN mkdir -p /data/uploads && chown node:node /data/uploads
+2026-10-18T00:10:06.3324817Z #9 DONE 0.1s
+2026-10-18T00:10:06.3325102Z 
+2026-10-18T00:10:06.3325864Z #8 [base 2/3] RUN corepack enable && corepack prepare pnpm@10.17.1 --activate
+2026-10-18T00:10:06.3326834Z #8 0.285 Preparing pnpm@10.17.1 for immediate activation...
+2026-10-18T00:10:07.3113889Z #8 DONE 1.3s
+2026-10-18T00:10:07.5526555Z 
+2026-10-18T00:10:07.5527157Z #10 [base 3/3] WORKDIR /app
+2026-10-18T00:10:07.5527645Z #10 DONE 0.0s
+2026-10-18T00:10:07.5527871Z 
+2026-10-18T00:10:07.5528086Z #11 [build 1/5] COPY . .
+2026-10-18T00:10:07.5528560Z #11 DONE 0.1s
+2026-10-18T00:10:07.5528784Z 
+2026-10-18T00:10:07.5529463Z #12 [build 2/5] RUN pnpm install --frozen-lockfile
+2026-10-18T00:10:07.9360880Z #12 0.534 Scope: all 10 workspace projects
+2026-10-18T00:10:08.0690695Z #12 0.618 Lockfile is up to date, resolution step is skipped
+2026-10-18T00:10:08.0691679Z #12 0.667 Progress: resolved 1, reused 0, downloaded 0, added 0
+2026-10-18T00:10:08.2656393Z #12 0.712 Packages: +339
+2026-10-18T00:10:08.2657248Z #12 0.712 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+2026-10-18T00:10:08.3151405Z #12 0.913 
+2026-10-18T00:10:08.3152500Z #12 0.913    ╭───────────────────────────────────────────────╮
+2026-10-18T00:10:08.3153463Z #12 0.913    │                                               │
+2026-10-18T00:10:08.3154413Z #12 0.913    │     Update available! 10.17.1 → 12.14.0.      │
+2026-10-18T00:10:08.3155431Z #12 0.913    │     Changelog: https://pnpm.io/v/12.14.0      │
+2026-10-18T00:10:08.3156438Z #12 0.913    │   To update, run: corepack use pnpm@12.14.0   │
+2026-10-18T00:10:08.3157416Z #12 0.913    │                                               │
+2026-10-18T00:10:08.3158736Z #12 0.913    ╰───────────────────────────────────────────────╯
+2026-10-18T00:10:08.3159679Z #12 0.913 
+2026-10-18T00:10:09.0727857Z #12 1.670 Progress: resolved 339, reused 0, downloaded 111, added 66
+2026-10-18T00:10:10.0744469Z #12 2.672 Progress: resolved 339, reused 0, downloaded 174, added 99
+2026-10-18T00:10:11.0752071Z #12 3.673 Progress: resolved 339, reused 0, downloaded 269, added 147
+2026-10-18T00:10:12.0756448Z #12 4.673 Progress: resolved 339, reused 0, downloaded 309, added 163
+2026-10-18T00:10:13.0760190Z #12 5.674 Progress: resolved 339, reused 0, downloaded 327, added 338
+2026-10-18T00:10:13.4666439Z #12 6.064 Progress: resolved 339, reused 0, downloaded 328, added 339, done
+2026-10-18T00:10:13.6229530Z #12 6.221 .../node_modules/@prisma/engines postinstall$ node scripts/postinstall.js
+2026-10-18T00:10:13.7793371Z #12 6.240 .../esbuild@0.28.2/node_modules/esbuild postinstall$ node install.js
+2026-10-18T00:10:13.7795216Z #12 6.302 .../esbuild@0.28.2/node_modules/esbuild postinstall: Done
+2026-10-18T00:10:13.7815469Z #12 6.376 .../node_modules/@prisma/engines postinstall: prisma:warn Prisma failed to detect the libssl/openssl version to use, and may not work as expected. Defaulting to "openssl-1.1.x".
+2026-10-18T00:10:13.9299927Z #12 6.377 .../node_modules/@prisma/engines postinstall: Please manually install OpenSSL via `apt-get update -y && apt-get install -y openssl` and try installing Prisma again. If you're running Prisma on Docker, add this command to your Dockerfile, or switch to an image that already has OpenSSL installed.
+2026-10-18T00:10:14.1994268Z #12 6.797 .../node_modules/@prisma/engines postinstall: Done
+2026-10-18T00:10:14.3216515Z #12 6.863 .../node_modules/prisma preinstall$ node scripts/preinstall-entry.js
+2026-10-18T00:10:14.3217634Z #12 6.865 .../node_modules/prisma preinstall$ node scripts/preinstall-entry.js
+2026-10-18T00:10:14.3218513Z #12 6.919 .../node_modules/prisma preinstall: Done
+2026-10-18T00:10:14.4876606Z #12 6.935 .../node_modules/prisma preinstall: Done
+2026-10-18T00:10:14.6295991Z #12 7.227 
+2026-10-18T00:10:14.6296475Z #12 7.227 devDependencies:
+2026-10-18T00:10:14.6296857Z #12 7.227 + @types/node 24.5.2
+2026-10-18T00:10:14.6297150Z #12 7.227 + prettier 3.6.2
+2026-10-18T00:10:14.6297421Z #12 7.227 + typescript 5.9.2
+2026-10-18T00:10:14.6297695Z #12 7.227 + vitest 3.2.7
+2026-10-18T00:10:14.6297919Z #12 7.227 
+2026-10-18T00:10:14.6299266Z #12 7.227 ╭ Warning ─────────────────────────────────────────────────────────────────────╮
+2026-10-18T00:10:14.6300141Z #12 7.227 │                                                                              │
+2026-10-18T00:10:14.6300792Z #12 7.227 │   Ignored build scripts: @parcel/watcher, @swc/core.                         │
+2026-10-18T00:10:14.6301808Z #12 7.227 │   Run "pnpm approve-builds" to pick which dependencies should be allowed     │
+2026-10-18T00:10:14.6302758Z #12 7.227 │   to run scripts.                                                            │
+2026-10-18T00:10:14.6303376Z #12 7.227 │                                                                              │
+2026-10-18T00:10:14.6304438Z #12 7.227 ╰──────────────────────────────────────────────────────────────────────────────╯
+2026-10-18T00:10:14.6304991Z #12 7.227 
+2026-10-18T00:10:14.7562110Z #12 7.354 Done in 7.1s using pnpm v10.17.1
+2026-10-18T00:10:16.8672934Z #12 DONE 9.5s
+2026-10-18T00:10:17.0187340Z 
+2026-10-18T00:10:17.0189296Z #13 [build 3/5] RUN DATABASE_URL=***127.0.0.1:5432/sammlerraum_build     pnpm --filter @sammlerraum/db prisma generate
+2026-10-18T00:10:17.3168791Z #13 0.449 
+2026-10-18T00:10:17.3169530Z #13 0.449 > @sammlerraum/db@ prisma /app/packages/db
+2026-10-18T00:10:17.3170107Z #13 0.449 > prisma generate
+2026-10-18T00:10:17.3170424Z #13 0.449 
+2026-10-18T00:10:18.2297707Z #13 1.362 Loaded Prisma config from prisma.config.ts.
+2026-10-18T00:10:18.2298432Z #13 1.362 
+2026-10-18T00:10:18.3797792Z #13 1.413 prisma:warn Prisma failed to detect the libssl/openssl version to use, and may not work as expected. Defaulting to "openssl-1.1.x".
+2026-10-18T00:10:18.3800407Z #13 1.413 Please manually install OpenSSL via `apt-get update -y && apt-get install -y openssl` and try installing Prisma again. If you're running Prisma on Docker, add this command to your Dockerfile, or switch to an image that already has OpenSSL installed.
+2026-10-18T00:10:18.3802327Z #13 1.415 prisma:warn Prisma failed to detect the libssl/openssl version to use, and may not work as expected. Defaulting to "openssl-1.1.x".
+2026-10-18T00:10:18.3804267Z #13 1.415 Please manually install OpenSSL via `apt-get update -y && apt-get install -y openssl` and try installing Prisma again. If you're running Prisma on Docker, add this command to your Dockerfile, or switch to an image that already has OpenSSL installed.
+2026-10-18T00:10:18.3805596Z #13 1.512 Prisma schema loaded from prisma/schema.prisma.
+2026-10-18T00:10:19.0531652Z #13 2.185 
+2026-10-18T00:10:19.0534550Z #13 2.185 ✔ Generated Prisma Client (v7.10.0) to ./../../node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client in 454ms
+2026-10-18T00:10:19.0535930Z #13 2.185 
+2026-10-18T00:10:19.0536662Z #13 2.185 Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+2026-10-18T00:10:19.0537299Z #13 2.185 
+2026-10-18T00:10:19.0537563Z #13 2.185 
+2026-10-18T00:10:19.2757223Z #13 DONE 2.3s
+2026-10-18T00:10:19.2757727Z 
+2026-10-18T00:10:19.2758262Z #14 [build 4/5] RUN test -n "https://example.invalid"
+2026-10-18T00:10:19.3701968Z #14 DONE 0.2s
+2026-10-18T00:10:19.5219888Z 
+2026-10-18T00:10:19.5225317Z #15 [build 5/5] RUN DATABASE_URL=***127.0.0.1:5432/sammlerraum_build     APP_ORIGIN=http://127.0.0.1:3000     NEXT_PUBLIC_APP_ORIGIN=https://example.invalid     UPLOADS_DIR=/tmp/sammlerraum-build-uploads     BETTER_AUTH_SECRET=build-only-secret-that-is-at-least-thirty-two-characters     GOOGLE_CLIENT_ID=build-only-google-client-id     GOOGLE_CLIENT_SECRET=build-only-google-client-secret     APPLE_CLIENT_ID=build-only-apple-client-id     APPLE_CLIENT_SECRET=build-only-apple-client-secret     SMTP_HOST=smtp.example.invalid     SMTP_PORT=587     SMTP_SECURE=false     SMTP_USER=build-only-smtp-user     SMTP_PASSWORD=build-only-smtp-password     SMTP_FROM=noreply@example.invalid     pnpm --filter @sammlerraum/web build
+2026-10-18T00:10:19.8122813Z #15 0.441 
+2026-10-18T00:10:19.8124321Z #15 0.441 > @sammlerraum/web@ build /app/apps/web
+2026-10-18T00:10:19.8125023Z #15 0.441 > next build
+2026-10-18T00:10:19.8125311Z #15 0.441 
+2026-10-18T00:10:20.2024370Z #15 0.831 ▲ Next.js 16.3.5 (Turbopack)
+2026-10-18T00:10:20.3230591Z #15 0.879 ✓ Running next.config.ts took 47ms
+2026-10-18T00:10:20.3234591Z #15 0.885 Attention: Next.js now collects completely anonymous telemetry regarding usage.
+2026-10-18T00:10:20.3236974Z #15 0.885 This information is used to shape Next.js' roadmap and prioritize features.
+2026-10-18T00:10:20.3238626Z #15 0.886 You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+2026-10-18T00:10:20.3240034Z #15 0.886 https://nextjs.org/telemetry
+2026-10-18T00:10:20.3240505Z #15 0.886 
+2026-10-18T00:10:20.3240845Z #15 0.904 
+2026-10-18T00:10:20.3241402Z #15 0.951   Creating an optimized production build ...
+2026-10-18T00:10:34.4256939Z #15 15.05 ✓ Compiled successfully in 13.3s
+2026-10-18T00:10:34.5845084Z #15 15.06   Running TypeScript ...
+2026-10-18T00:10:43.2713040Z #15 23.90   Finished TypeScript in 8.8s ...
+2026-10-18T00:10:43.4252154Z #15 23.90   Collecting page data using 3 workers ...
+2026-10-18T00:10:44.9256267Z #15 25.55   Generating static pages using 3 workers (0/24) ...
+2026-10-18T00:10:45.0498166Z #15 25.64   Generating static pages using 3 workers (6/24) 
+2026-10-18T00:10:45.0499368Z #15 25.68   Generating static pages using 3 workers (12/24) 
+2026-10-18T00:10:45.1956031Z #15 25.70   Generating static pages using 3 workers (18/24) 
+2026-10-18T00:10:45.1957090Z #15 25.82 ✓ Generating static pages using 3 workers (24/24) in 270ms
+2026-10-18T00:10:45.3514401Z #15 25.83   Finalizing page optimization ...
+2026-10-18T00:10:45.6583310Z #15 26.29 
+2026-10-18T00:10:45.8124931Z #15 26.29 Route (app)
+2026-10-18T00:10:45.8127387Z #15 26.29 ┌ ○ /_not-found
+2026-10-18T00:10:45.8127959Z #15 26.29 ├   /[locale]
+2026-10-18T00:10:45.8128426Z #15 26.29 │ ├ ● /de
+2026-10-18T00:10:45.8129107Z #15 26.29 │ └ ● /en
+2026-10-18T00:10:45.8129704Z #15 26.29 ├ ƒ /[locale]/account/profile
+2026-10-18T00:10:45.8130377Z #15 26.29 ├ ƒ /[locale]/account/security
+2026-10-18T00:10:45.8130986Z #15 26.29 ├ ƒ /[locale]/catalog
+2026-10-18T00:10:45.8131599Z #15 26.29 ├ ƒ /[locale]/catalog/[entryId]
+2026-10-18T00:10:45.8132252Z #15 26.29 ├ ƒ /[locale]/catalog/moderation
+2026-10-18T00:10:45.8132910Z #15 26.29 ├ ƒ /[locale]/catalog/proposals
+2026-10-18T00:10:45.8133540Z #15 26.29 ├ ƒ /[locale]/collections
+2026-10-18T00:10:45.8134352Z #15 26.29 ├ ƒ /[locale]/collections/[collectionId]
+2026-10-18T00:10:45.8134783Z #15 26.29 ├ ƒ /[locale]/items/[itemId]
+2026-10-18T00:10:45.8135163Z #15 26.29 ├ ƒ /[locale]/items/new
+2026-10-18T00:10:45.8135553Z #15 26.29 ├ ƒ /[locale]/locations/[locationId]
+2026-10-18T00:10:45.8135998Z #15 26.29 ├ ƒ /[locale]/locations/[locationId]/label
+2026-10-18T00:10:45.8136372Z #15 26.29 ├ ƒ /[locale]/login
+2026-10-18T00:10:45.8136698Z #15 26.29 ├ ƒ /[locale]/register
+2026-10-18T00:10:45.8137027Z #15 26.29 ├ ƒ /api/auth/[...all]
+2026-10-18T00:10:45.8137395Z #15 26.29 ├ ƒ /api/health
+2026-10-18T00:10:45.8138025Z #15 26.29 ├ ƒ /api/openapi.json
+2026-10-18T00:10:45.8138653Z #15 26.29 ├ ƒ /api/v1/account/profile
+2026-10-18T00:10:45.8139820Z #15 26.29 ├ ƒ /api/v1/account/recovery-methods
+2026-10-18T00:10:45.8140231Z #15 26.29 ├ ƒ /api/v1/account/sessions
+2026-10-18T00:10:45.8140910Z #15 26.29 ├ ƒ /api/v1/catalog/capabilities
+2026-10-18T00:10:45.8141634Z #15 26.29 ├ ƒ /api/v1/catalog/entries/[entryId]
+2026-10-18T00:10:45.8142492Z #15 26.29 ├ ƒ /api/v1/catalog/entries/[entryId]/revisions
+2026-10-18T00:10:45.8143442Z #15 26.29 ├ ƒ /api/v1/catalog/entries/[entryId]/revisions/[revision]
+2026-10-18T00:10:45.8144324Z #15 26.29 ├ ƒ /api/v1/catalog/entries/[entryId]/rollback
+2026-10-18T00:10:45.8145100Z #15 26.29 ├ ƒ /api/v1/catalog/moderation/proposals
+2026-10-18T00:10:45.8145945Z #15 26.29 ├ ƒ /api/v1/catalog/moderation/proposals/[proposalId]
+2026-10-18T00:10:45.8146703Z #15 26.29 ├ ƒ /api/v1/catalog/proposals
+2026-10-18T00:10:45.8147442Z #15 26.29 ├ ƒ /api/v1/catalog/proposals/[proposalId]
+2026-10-18T00:10:45.8148265Z #15 26.29 ├ ƒ /api/v1/catalog/proposals/[proposalId]/decision
+2026-10-18T00:10:45.8149158Z #15 26.29 ├ ƒ /api/v1/catalog/search
+2026-10-18T00:10:45.8149766Z #15 26.29 ├ ƒ /api/v1/categories
+2026-10-18T00:10:45.8150432Z #15 26.29 ├ ƒ /api/v1/categories/[categoryId]
+2026-10-18T00:10:45.8151258Z #15 26.29 ├ ƒ /api/v1/categories/[categoryId]/condition-scheme
+2026-10-18T00:10:45.8151973Z #15 26.29 ├ ƒ /api/v1/collections
+2026-10-18T00:10:45.8152677Z #15 26.29 ├ ƒ /api/v1/collections/[collectionId]
+2026-10-18T00:10:45.8153516Z #15 26.29 ├ ƒ /api/v1/collections/[collectionId]/custom-fields
+2026-10-18T00:10:45.8154335Z #15 26.29 ├ ƒ /api/v1/collections/[collectionId]/nodes
+2026-10-18T00:10:45.8155175Z #15 26.29 ├ ƒ /api/v1/collections/[collectionId]/nodes/[nodeId]
+2026-10-18T00:10:45.8155799Z #15 26.29 ├ ƒ /api/v1/items
+2026-10-18T00:10:45.8156322Z #15 26.29 ├ ƒ /api/v1/items/[itemId]
+2026-10-18T00:10:45.8156965Z #15 26.29 ├ ƒ /api/v1/items/[itemId]/archive
+2026-10-18T00:10:45.8157643Z #15 26.29 ├ ƒ /api/v1/items/[itemId]/catalog-link
+2026-10-18T00:10:45.8158322Z #15 26.29 ├ ƒ /api/v1/items/[itemId]/category
+2026-10-18T00:10:45.8159216Z #15 26.29 ├ ƒ /api/v1/items/[itemId]/condition
+2026-10-18T00:10:45.8160018Z #15 26.29 ├ ƒ /api/v1/items/[itemId]/custom-fields/[fieldId]
+2026-10-18T00:10:45.8160758Z #15 26.29 ├ ƒ /api/v1/items/[itemId]/documents
+2026-10-18T00:10:45.8161480Z #15 26.29 ├ ƒ /api/v1/items/[itemId]/documents/[linkId]
+2026-10-18T00:10:45.8162195Z #15 26.29 ├ ƒ /api/v1/items/[itemId]/gradings
+2026-10-18T00:10:45.8163181Z #15 26.29 ├ ƒ /api/v1/items/[itemId]/gradings/[gradingId]
+2026-10-18T00:10:45.8163938Z #15 26.29 ├ ƒ /api/v1/items/[itemId]/identifiers
+2026-10-18T00:10:45.8164618Z #15 26.29 ├ ƒ /api/v1/items/[itemId]/location
+2026-10-18T00:10:45.8165261Z #15 26.29 ├ ƒ /api/v1/items/[itemId]/media
+2026-10-18T00:10:45.8165940Z #15 26.29 ├ ƒ /api/v1/items/[itemId]/media/[linkId]
+2026-10-18T00:10:45.8166609Z #15 26.29 ├ ƒ /api/v1/items/[itemId]/split
+2026-10-18T00:10:45.8167233Z #15 26.29 ├ ƒ /api/v1/items/[itemId]/tags
+2026-10-18T00:10:45.8167806Z #15 26.29 ├ ƒ /api/v1/locations
+2026-10-18T00:10:45.8168405Z #15 26.29 ├ ƒ /api/v1/locations/[locationId]
+2026-10-18T00:10:45.8169271Z #15 26.29 ├ ƒ /api/v1/media/[assetId]/[variant]
+2026-10-18T00:10:45.8169896Z #15 26.29 ├ ƒ /api/v1/media/avatar
+2026-10-18T00:10:45.8170492Z #15 26.29 ├ ƒ /api/v1/media/documents
+2026-10-18T00:10:45.8171171Z #15 26.29 ├ ƒ /api/v1/media/images
+2026-10-18T00:10:45.8172299Z #15 26.29 └ ƒ /l/[token]
+2026-10-18T00:10:45.8172888Z #15 26.29 
+2026-10-18T00:10:45.8173545Z #15 26.29 
+2026-10-18T00:10:45.8174229Z #15 26.29 ƒ Proxy (Middleware)
+2026-10-18T00:10:45.8174618Z #15 26.29 
+2026-10-18T00:10:45.8175204Z #15 26.29 ○  (Static)   prerendered as static content
+2026-10-18T00:10:45.8176160Z #15 26.29 ●  (SSG)      prerendered as static HTML (uses generateStaticParams)
+2026-10-18T00:10:45.8177049Z #15 26.29 ƒ  (Dynamic)  server-rendered on demand
+2026-10-18T00:10:45.8177544Z #15 26.29 
+2026-10-18T00:10:45.8245133Z #15 DONE 26.5s
+2026-10-18T00:10:46.0840293Z 
+2026-10-18T00:10:46.0841451Z #16 [runtime 4/5] COPY --from=build --chown=node:node /app/apps/web/.next/standalone ./
+2026-10-18T00:10:46.4847546Z #16 DONE 0.4s
+2026-10-18T00:10:46.6556554Z 
+2026-10-18T00:10:46.6557606Z #17 [runtime 5/5] COPY --from=build --chown=node:node /app/apps/web/.next/static ./apps/web/.next/static
+2026-10-18T00:10:46.6558510Z #17 DONE 0.0s
+2026-10-18T00:10:46.6558722Z 
+2026-10-18T00:10:46.6559334Z #18 exporting to image
+2026-10-18T00:10:46.6559805Z #18 exporting layers
+2026-10-18T00:10:47.3190060Z #18 exporting layers 0.8s done
+2026-10-18T00:10:47.3361406Z #18 writing image sha256:9d886e0b0da57c9b84084c7acd93f02335ea445d8e22075a76584899536ced12 done
+2026-10-18T00:10:47.3362258Z #18 DONE 0.8s
+2026-10-18T00:10:47.3480249Z ##[group]Run docker build -f Dockerfile.worker -t sammlerraum-worker-ci .
+2026-10-18T00:10:47.3481227Z [36;1mdocker build -f Dockerfile.worker -t sammlerraum-worker-ci .[0m
+2026-10-18T00:10:47.3548142Z shell: /usr/bin/bash -e {0}
+2026-10-18T00:10:47.3548402Z env:
+2026-10-18T00:10:47.3548602Z   NODE_ENV: test
+2026-10-18T00:10:47.3549302Z   DATABASE_URL: ***localhost:5432/sammlerraum_test
+2026-10-18T00:10:47.3549656Z   APP_ORIGIN: http://localhost:3000
+2026-10-18T00:10:47.3549988Z   NEXT_PUBLIC_APP_ORIGIN: https://example.invalid
+2026-10-18T00:10:47.3550356Z   UPLOADS_DIR: /tmp/sammlerraum-test-uploads
+2026-10-18T00:10:47.3550648Z   LOG_LEVEL: info
+2026-10-18T00:10:47.3550876Z   WORKER_HEALTH_PORT: 3001
+2026-10-18T00:10:47.3551250Z   BETTER_AUTH_SECRET: test-only-secret-that-is-at-least-thirty-two-characters
+2026-10-18T00:10:47.3551689Z   GOOGLE_CLIENT_ID: test-google-client-id
+2026-10-18T00:10:47.3551995Z   GOOGLE_CLIENT_SECRET: test-google-client-secret
+2026-10-18T00:10:47.3552334Z   APPLE_CLIENT_ID: test-apple-client-id
+2026-10-18T00:10:47.3552642Z   APPLE_CLIENT_SECRET: test-apple-client-secret
+2026-10-18T00:10:47.3552948Z   SMTP_HOST: smtp.example.invalid
+2026-10-18T00:10:47.3553204Z   SMTP_PORT: 587
+2026-10-18T00:10:47.3553410Z   SMTP_SECURE: false
+2026-10-18T00:10:47.3553637Z   SMTP_USER: test-smtp-user
+2026-10-18T00:10:47.3553891Z   SMTP_PASSWORD: test-smtp-password
+2026-10-18T00:10:47.3554176Z   SMTP_FROM: noreply@example.invalid
+2026-10-18T00:10:47.3554444Z   POSTGRES_DB: sammlerraum_test
+2026-10-18T00:10:47.3554687Z   POSTGRES_USER: test
+2026-10-18T00:10:47.3554904Z   POSTGRES_PASSWORD: test
+2026-10-18T00:10:47.3555189Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+2026-10-18T00:10:47.3555502Z ##[endgroup]
+2026-10-18T00:10:47.6083317Z #0 building with "default" instance using docker driver
+2026-10-18T00:10:47.6084082Z 
+2026-10-18T00:10:47.6086184Z #1 [internal] load build definition from Dockerfile.worker
+2026-10-18T00:10:47.6087558Z #1 transferring dockerfile: 891B done
+2026-10-18T00:10:47.6088196Z #1 DONE 0.0s
+2026-10-18T00:10:47.6088564Z 
+2026-10-18T00:10:47.6089402Z #2 [internal] load metadata for docker.io/library/node:24.19.0-bookworm-slim
+2026-10-18T00:10:47.6090003Z #2 DONE 0.1s
+2026-10-18T00:10:47.7811692Z 
+2026-10-18T00:10:47.7812409Z #3 [internal] load .dockerignore
+2026-10-18T00:10:47.7813282Z #3 transferring context: 237B done
+2026-10-18T00:10:47.7814189Z #3 DONE 0.0s
+2026-10-18T00:10:47.7814744Z 
+2026-10-18T00:10:47.7815844Z #4 [base 1/3] FROM docker.io/library/node:24.19.0-bookworm-slim@sha256:a9f5f7c91a432850b2a8a7797adf5eadb6c733ceed61167806cee7ea7fbc29df
+2026-10-18T00:10:47.7816786Z #4 DONE 0.0s
+2026-10-18T00:10:47.7816976Z 
+2026-10-18T00:10:47.7817494Z #5 [runtime 2/5] WORKDIR /app
+2026-10-18T00:10:47.7817869Z #5 CACHED
+2026-10-18T00:10:47.7818049Z 
+2026-10-18T00:10:47.7818260Z #6 [internal] load build context
+2026-10-18T00:10:47.7818767Z #6 transferring context: 34.77kB 0.0s done
+2026-10-18T00:10:47.7819720Z #6 DONE 0.0s
+2026-10-18T00:10:47.7819922Z 
+2026-10-18T00:10:47.7820995Z #7 [base 2/3] RUN corepack enable && corepack prepare pnpm@10.17.1 --activate
+2026-10-18T00:10:47.7821947Z #7 CACHED
+2026-10-18T00:10:47.7822117Z 
+2026-10-18T00:10:47.7822302Z #8 [base 3/3] WORKDIR /app
+2026-10-18T00:10:47.7822664Z #8 CACHED
+2026-10-18T00:10:47.7823237Z 
+2026-10-18T00:10:47.7823420Z #9 [build 1/5] COPY . .
+2026-10-18T00:10:47.7823765Z #9 CACHED
+2026-10-18T00:10:47.7823962Z 
+2026-10-18T00:10:47.7824684Z #10 [runtime 3/5] RUN mkdir -p /data/uploads && chown node:node /data/uploads
+2026-10-18T00:10:47.7825281Z #10 DONE 0.2s
+2026-10-18T00:10:47.7825681Z 
+2026-10-18T00:10:47.7825978Z #11 [build 2/5] RUN pnpm install --frozen-lockfile
+2026-10-18T00:10:48.2374605Z #11 0.574 Scope: all 10 workspace projects
+2026-10-18T00:10:48.3880118Z #11 0.661 Lockfile is up to date, resolution step is skipped
+2026-10-18T00:10:48.3881159Z #11 0.724 Progress: resolved 1, reused 0, downloaded 0, added 0
+2026-10-18T00:10:48.5930141Z #11 0.778 Packages: +339
+2026-10-18T00:10:48.5931685Z #11 0.778 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+2026-10-18T00:10:48.7265146Z #11 1.063 
+2026-10-18T00:10:48.7267050Z #11 1.063    ╭───────────────────────────────────────────────╮
+2026-10-18T00:10:48.7268613Z #11 1.063    │                                               │
+2026-10-18T00:10:48.7270208Z #11 1.063    │     Update available! 10.17.1 → 12.14.0.      │
+2026-10-18T00:10:48.7271455Z #11 1.063    │     Changelog: https://pnpm.io/v/12.14.0      │
+2026-10-18T00:10:48.7272643Z #11 1.063    │   To update, run: corepack use pnpm@12.14.0   │
+2026-10-18T00:10:48.7273687Z #11 1.063    │                                               │
+2026-10-18T00:10:48.7274865Z #11 1.063    ╰───────────────────────────────────────────────╯
+2026-10-18T00:10:48.7275637Z #11 1.063 
+2026-10-18T00:10:49.4047748Z #11 1.741 Progress: resolved 339, reused 0, downloaded 114, added 66
+2026-10-18T00:10:50.4053360Z #11 2.741 Progress: resolved 339, reused 0, downloaded 174, added 93
+2026-10-18T00:10:51.4060897Z #11 3.742 Progress: resolved 339, reused 0, downloaded 271, added 149
+2026-10-18T00:10:52.4101529Z #11 4.744 Progress: resolved 339, reused 0, downloaded 324, added 169
+2026-10-18T00:10:53.4073687Z #11 5.743 Progress: resolved 339, reused 0, downloaded 327, added 338
+2026-10-18T00:10:53.7519908Z #11 6.088 Progress: resolved 339, reused 0, downloaded 328, added 339, done
+2026-10-18T00:10:53.9049258Z #11 6.241 .../node_modules/@prisma/engines postinstall$ node scripts/postinstall.js
+2026-10-18T00:10:54.0619551Z #11 6.261 .../esbuild@0.28.2/node_modules/esbuild postinstall$ node install.js
+2026-10-18T00:10:54.0620970Z #11 6.319 .../esbuild@0.28.2/node_modules/esbuild postinstall: Done
+2026-10-18T00:10:54.0623002Z #11 6.398 .../node_modules/@prisma/engines postinstall: prisma:warn Prisma failed to detect the libssl/openssl version to use, and may not work as expected. Defaulting to "openssl-1.1.x".
+2026-10-18T00:10:54.2127049Z #11 6.398 .../node_modules/@prisma/engines postinstall: Please manually install OpenSSL via `apt-get update -y && apt-get install -y openssl` and try installing Prisma again. If you're running Prisma on Docker, add this command to your Dockerfile, or switch to an image that already has OpenSSL installed.
+2026-10-18T00:10:54.4754733Z #11 6.812 .../node_modules/@prisma/engines postinstall: Done
+2026-10-18T00:10:54.5986624Z #11 6.874 .../node_modules/prisma preinstall$ node scripts/preinstall-entry.js
+2026-10-18T00:10:54.5987444Z #11 6.875 .../node_modules/prisma preinstall$ node scripts/preinstall-entry.js
+2026-10-18T00:10:54.5987973Z #11 6.935 .../node_modules/prisma preinstall: Done
+2026-10-18T00:10:54.7675670Z #11 6.953 .../node_modules/prisma preinstall: Done
+2026-10-18T00:10:54.8985936Z #11 7.235 
+2026-10-18T00:10:54.8986443Z #11 7.235 devDependencies:
+2026-10-18T00:10:54.8986991Z #11 7.235 + @types/node 24.5.2
+2026-10-18T00:10:54.8987437Z #11 7.235 + prettier 3.6.2
+2026-10-18T00:10:54.8987803Z #11 7.235 + typescript 5.9.2
+2026-10-18T00:10:54.8988084Z #11 7.235 + vitest 3.2.7
+2026-10-18T00:10:54.8988343Z #11 7.235 
+2026-10-18T00:10:54.8989501Z #11 7.235 ╭ Warning ─────────────────────────────────────────────────────────────────────╮
+2026-10-18T00:10:54.8990584Z #11 7.235 │                                                                              │
+2026-10-18T00:10:54.8991475Z #11 7.235 │   Ignored build scripts: @parcel/watcher, @swc/core.                         │
+2026-10-18T00:10:54.8992221Z #11 7.235 │   Run "pnpm approve-builds" to pick which dependencies should be allowed     │
+2026-10-18T00:10:54.8992936Z #11 7.235 │   to run scripts.                                                            │
+2026-10-18T00:10:54.8993516Z #11 7.235 │                                                                              │
+2026-10-18T00:10:54.8994147Z #11 7.235 ╰──────────────────────────────────────────────────────────────────────────────╯
+2026-10-18T00:10:54.8994498Z #11 7.235 
+2026-10-18T00:10:55.0276077Z #11 7.364 Done in 7.1s using pnpm v10.17.1
+2026-10-18T00:10:57.0689775Z #11 DONE 9.4s
+2026-10-18T00:10:57.2204350Z 
+2026-10-18T00:10:57.2205883Z #12 [build 3/5] RUN DATABASE_URL=***127.0.0.1:5432/sammlerraum_build     pnpm --filter @sammlerraum/db prisma generate
+2026-10-18T00:10:57.5036261Z #12 0.434 
+2026-10-18T00:10:57.5037341Z #12 0.434 > @sammlerraum/db@ prisma /app/packages/db
+2026-10-18T00:10:57.5038265Z #12 0.434 > prisma generate
+2026-10-18T00:10:57.5038974Z #12 0.434 
+2026-10-18T00:10:58.4150461Z #12 1.345 Loaded Prisma config from prisma.config.ts.
+2026-10-18T00:10:58.4151445Z #12 1.345 
+2026-10-18T00:10:58.5554703Z #12 1.389 prisma:warn Prisma failed to detect the libssl/openssl version to use, and may not work as expected. Defaulting to "openssl-1.1.x".
+2026-10-18T00:10:58.5557746Z #12 1.389 Please manually install OpenSSL via `apt-get update -y && apt-get install -y openssl` and try installing Prisma again. If you're running Prisma on Docker, add this command to your Dockerfile, or switch to an image that already has OpenSSL installed.
+2026-10-18T00:10:58.5561113Z #12 1.391 prisma:warn Prisma failed to detect the libssl/openssl version to use, and may not work as expected. Defaulting to "openssl-1.1.x".
+2026-10-18T00:10:58.5563600Z #12 1.391 Please manually install OpenSSL via `apt-get update -y && apt-get install -y openssl` and try installing Prisma again. If you're running Prisma on Docker, add this command to your Dockerfile, or switch to an image that already has OpenSSL installed.
+2026-10-18T00:10:58.5565048Z #12 1.486 Prisma schema loaded from prisma/schema.prisma.
+2026-10-18T00:10:59.2393350Z #12 2.170 
+2026-10-18T00:10:59.2395666Z #12 2.170 ✔ Generated Prisma Client (v7.10.0) to ./../../node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client in 470ms
+2026-10-18T00:10:59.2397672Z #12 2.170 
+2026-10-18T00:10:59.2398616Z #12 2.170 Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+2026-10-18T00:10:59.2399624Z #12 2.170 
+2026-10-18T00:10:59.2399932Z #12 2.170 
+2026-10-18T00:10:59.4597570Z #12 DONE 2.2s
+2026-10-18T00:10:59.4597793Z 
+2026-10-18T00:10:59.4598126Z #13 [build 4/5] RUN pnpm --filter @sammlerraum/worker build
+2026-10-18T00:10:59.7643665Z #13 0.455 
+2026-10-18T00:10:59.7644422Z #13 0.455 > @sammlerraum/worker@ build /app/apps/worker
+2026-10-18T00:10:59.7647021Z #13 0.455 > esbuild src/run.ts --bundle --platform=node --format=cjs --external:sharp --outfile=dist/worker.cjs && esbuild src/main.ts --bundle --platform=node --format=cjs --outfile=dist/main.cjs && esbuild src/maintenance/initialize-catalog.ts --bundle --platform=node --format=cjs --outfile=dist/initialize-catalog.cjs
+2026-10-18T00:10:59.7649169Z #13 0.455 
+2026-10-18T00:10:59.9101815Z #13 0.601 
+2026-10-18T00:10:59.9102615Z #13 0.601   dist/worker.cjs  6.9mb ⚠️
+2026-10-18T00:10:59.9103077Z #13 0.601 
+2026-10-18T00:10:59.9103516Z #13 0.601 ⚡ Done in 137ms
+2026-10-18T00:11:00.0282141Z #13 0.610 
+2026-10-18T00:11:00.0282489Z #13 0.610   dist/main.cjs  4.0kb
+2026-10-18T00:11:00.0282899Z #13 0.610 
+2026-10-18T00:11:00.0283554Z #13 0.610 ⚡ Done in 2ms
+2026-10-18T00:11:00.0283913Z #13 0.719 
+2026-10-18T00:11:00.0284428Z #13 0.719   dist/initialize-catalog.cjs  5.7mb ⚠️
+2026-10-18T00:11:00.0284741Z #13 0.719 
+2026-10-18T00:11:00.0284993Z #13 0.719 ⚡ Done in 104ms
+2026-10-18T00:11:00.2004091Z #13 DONE 0.7s
+2026-10-18T00:11:00.5212381Z 
+2026-10-18T00:11:00.5213446Z #14 [build 5/5] RUN pnpm --filter @sammlerraum/worker deploy --prod --legacy /app/worker-runtime
+2026-10-18T00:11:00.5214767Z #14 0.472  WARN  Shared workspace lockfile detected but configuration forces legacy deploy implementation.
+2026-10-18T00:11:00.7399602Z #14 0.507 Packages are copied from the content-addressable store to the virtual store.
+2026-10-18T00:11:00.7401809Z #14 0.507   Content-addressable store is at: /pnpm/store/v10
+2026-10-18T00:11:00.7403779Z #14 0.507   Virtual store is at:             worker-runtime/node_modules/.pnpm
+2026-10-18T00:11:00.7405462Z #14 0.539 Progress: resolved 1, reused 0, downloaded 0, added 0
+2026-10-18T00:11:01.7411045Z #14 1.691 Progress: resolved 33, reused 0, downloaded 0, added 0
+2026-10-18T00:11:02.7670785Z #14 2.717 Progress: resolved 127, reused 0, downloaded 0, added 0
+2026-10-18T00:11:03.7676285Z #14 3.718 Progress: resolved 255, reused 0, downloaded 0, added 0
+2026-10-18T00:11:04.7680637Z #14 4.718 Progress: resolved 398, reused 0, downloaded 0, added 0
+2026-10-18T00:11:05.3822971Z #14 5.332 Progress: resolved 432, reused 0, downloaded 0, added 0, done
+2026-10-18T00:11:05.5884672Z #14 5.388 .                                        | +195 ++++++++++++++++++++
+2026-10-18T00:11:08.7648593Z #14 DONE 8.7s
+2026-10-18T00:11:09.8191167Z 
+2026-10-18T00:11:09.8192246Z #15 [runtime 4/5] COPY --from=build --chown=node:node /app/apps/worker/dist/worker.cjs ./dist/worker.cjs
+2026-10-18T00:11:09.9882318Z #15 DONE 0.0s
+2026-10-18T00:11:09.9882540Z 
+2026-10-18T00:11:09.9883401Z #16 [runtime 5/5] COPY --from=build --chown=node:node /app/worker-runtime/node_modules ./node_modules
+2026-10-18T00:11:12.2507302Z #16 DONE 2.4s
+2026-10-18T00:11:12.4021909Z 
+2026-10-18T00:11:12.4022507Z #17 exporting to image
+2026-10-18T00:11:12.4023047Z #17 exporting layers
+2026-10-18T00:11:14.7178291Z #17 exporting layers 2.5s done
+2026-10-18T00:11:14.7345368Z #17 writing image sha256:1e263fcb7e6f379018715f076dd2e220c1e621628805b2be2638d8fdac59dc74 done
+2026-10-18T00:11:14.7346425Z #17 naming to docker.io/library/sammlerraum-worker-ci done
+2026-10-18T00:11:14.7346950Z #17 DONE 2.5s
+2026-10-18T00:11:14.7431951Z ##[group]Run docker run --rm --entrypoint node sammlerraum-worker-ci -e "const sharp=require('sharp'); sharp({create:{width:3,height:2,channels:3,background:'red'}}).webp().toBuffer().then(bytes=>sharp(bytes).raw().toBuffer({resolveWithObject:true})).then(({info})=>{if(info.width!==3||info.height!==2)process.exit(1)}).catch(()=>process.exit(1))"
+2026-10-18T00:11:14.7434387Z [36;1mdocker run --rm --entrypoint node sammlerraum-worker-ci -e "const sharp=require('sharp'); sharp({create:{width:3,height:2,channels:3,background:'red'}}).webp().toBuffer().then(bytes=>sharp(bytes).raw().toBuffer({resolveWithObject:true})).then(({info})=>{if(info.width!==3||info.height!==2)process.exit(1)}).catch(()=>process.exit(1))"[0m
+2026-10-18T00:11:14.7498183Z shell: /usr/bin/bash -e {0}
+2026-10-18T00:11:14.7498438Z env:
+2026-10-18T00:11:14.7498629Z   NODE_ENV: test
+2026-10-18T00:11:14.7499496Z   DATABASE_URL: ***localhost:5432/sammlerraum_test
+2026-10-18T00:11:14.7499897Z   APP_ORIGIN: http://localhost:3000
+2026-10-18T00:11:14.7500227Z   NEXT_PUBLIC_APP_ORIGIN: https://example.invalid
+2026-10-18T00:11:14.7500572Z   UPLOADS_DIR: /tmp/sammlerraum-test-uploads
+2026-10-18T00:11:14.7500850Z   LOG_LEVEL: info
+2026-10-18T00:11:14.7501066Z   WORKER_HEALTH_PORT: 3001
+2026-10-18T00:11:14.7501446Z   BETTER_AUTH_SECRET: test-only-secret-that-is-at-least-thirty-two-characters
+2026-10-18T00:11:14.7501881Z   GOOGLE_CLIENT_ID: test-google-client-id
+2026-10-18T00:11:14.7502184Z   GOOGLE_CLIENT_SECRET: test-google-client-secret
+2026-10-18T00:11:14.7502491Z   APPLE_CLIENT_ID: test-apple-client-id
+2026-10-18T00:11:14.7502795Z   APPLE_CLIENT_SECRET: test-apple-client-secret
+2026-10-18T00:11:14.7503097Z   SMTP_HOST: smtp.example.invalid
+2026-10-18T00:11:14.7503344Z   SMTP_PORT: 587
+2026-10-18T00:11:14.7503540Z   SMTP_SECURE: false
+2026-10-18T00:11:14.7503763Z   SMTP_USER: test-smtp-user
+2026-10-18T00:11:14.7504011Z   SMTP_PASSWORD: test-smtp-password
+2026-10-18T00:11:14.7504280Z   SMTP_FROM: noreply@example.invalid
+2026-10-18T00:11:14.7504545Z   POSTGRES_DB: sammlerraum_test
+2026-10-18T00:11:14.7504789Z   POSTGRES_USER: test
+2026-10-18T00:11:14.7505000Z   POSTGRES_PASSWORD: test
+2026-10-18T00:11:14.7505275Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+2026-10-18T00:11:14.7505582Z ##[endgroup]
+2026-10-18T00:11:15.0475253Z Post job cleanup.
+2026-10-18T00:11:15.1746965Z (node:11901) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-18T00:11:15.1748017Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-18T00:11:15.1752133Z Cache hit occurred on the primary key node-cache-Linux-x64-pnpm-a26c67511c64fcfb677366424b5d7991d4d67b801215505b2125479178c23344, not saving cache.
+2026-10-18T00:11:15.1860776Z Post job cleanup.
+2026-10-18T00:11:15.3329478Z Pruning is unnecessary.
+2026-10-18T00:11:15.3581542Z Post job cleanup.
+2026-10-18T00:11:15.4537835Z [command]/usr/bin/git version
+2026-10-18T00:11:15.4584344Z git version 2.55.0
+2026-10-18T00:11:15.4626309Z Temporarily overriding HOME='/home/runner/work/_temp/f3025e3d-59ea-460d-bd6f-0d8954ebac84' before making global git config changes
+2026-10-18T00:11:15.4627896Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-18T00:11:15.4632170Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/sammlerraum/sammlerraum
+2026-10-18T00:11:15.4676603Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-18T00:11:15.4715228Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-18T00:11:15.4975006Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-18T00:11:15.5005947Z http.https://github.com/.extraheader
+2026-10-18T00:11:15.5019319Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-10-18T00:11:15.5060609Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-18T00:11:15.5329434Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-18T00:11:15.5375908Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-18T00:11:15.5758440Z Print service container logs: d114c44532a94c9cb1161ca5defe4f4d_postgres17bookworm_0755b8
+2026-10-18T00:11:15.5763486Z ##[command]/usr/bin/docker logs --details 4c642733dda966e8d78da142ef027a028f6581439c1e1b9a4ac496500a499fc3
+2026-10-18T00:11:15.5897817Z  The files belonging to this database system will be owned by user "postgres".
+2026-10-18T00:11:15.5899182Z  This user must also own the server process.
+2026-10-18T00:11:15.5901513Z  initdb: warning: enabling "trust" authentication for local connections
+2026-10-18T00:11:15.5902784Z  initdb: hint: You can change this by editing pg_hba.conf or using the option -A, or --auth-local and --auth-host, the next time you run initdb.
+2026-10-18T00:11:15.5904621Z  2026-10-18 00:01:34.257 UTC [1] LOG:  starting PostgreSQL 17.11 (Debian 17.11-1.pgdg12+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14+deb12u1) 12.2.0, 64-bit
+2026-10-18T00:11:15.5906039Z  2026-10-18 00:01:34.258 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+2026-10-18T00:11:15.5906761Z  2026-10-18 00:01:34.258 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+2026-10-18T00:11:15.5907679Z  2026-10-18 00:01:34.259 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+2026-10-18T00:11:15.5908707Z  2026-10-18 00:01:34.262 UTC [64] LOG:  database system was shut down at 2026-10-18 00:01:34 UTC
+2026-10-18T00:11:15.5909826Z  2026-10-18 00:01:34.266 UTC [1] LOG:  database system is ready to accept connections
+2026-10-18T00:11:15.5911086Z  2026-10-18 00:04:25.609 UTC [216] ERROR:  update or delete on table "user" violates foreign key constraint "MediaAsset_ownerId_fkey" on table "MediaAsset"
+2026-10-18T00:11:15.5912688Z  2026-10-18 00:04:25.609 UTC [216] DETAIL:  Key (id)=(1e7abc61-09ff-4e91-b762-b9512990d454) is still referenced from table "MediaAsset".
+2026-10-18T00:11:15.5915076Z  2026-10-18 00:04:25.609 UTC [216] STATEMENT:  DELETE FROM "public"."user" WHERE ("public"."user"."id" = $1 AND 1=1) RETURNING "public"."user"."id", "public"."user"."name", "public"."user"."email", "public"."user"."emailVerified", "public"."user"."image", "public"."user"."createdAt", "public"."user"."updatedAt"
+2026-10-18T00:11:15.5917512Z  2026-10-18 00:04:25.680 UTC [217] ERROR:  insert or update on table "MediaLink" violates foreign key constraint "MediaLink_assetId_ownerId_fkey"
+2026-10-18T00:11:15.5919420Z  2026-10-18 00:04:25.680 UTC [217] DETAIL:  Key (assetId, ownerId)=(db9c525f-c0ac-4bf5-8f82-33e4b2a6fb2a, c94e7190-69b0-4d09-afd3-f2a36419d78a) is not present in table "MediaAsset".
+2026-10-18T00:11:15.5921492Z  2026-10-18 00:04:25.680 UTC [217] STATEMENT:  INSERT INTO "public"."MediaLink" ("id","assetId","ownerId","itemId","purpose","position","createdAt") VALUES ($1,$2,$3,$4,CAST($5::text AS "public"."MediaPurpose"),$6,$7) RETURNING "public"."MediaLink"."id", "public"."MediaLink"."assetId", "public"."MediaLink"."ownerId", "public"."MediaLink"."itemId", "public"."MediaLink"."purpose"::text, "public"."MediaLink"."position", "public"."MediaLink"."title", "public"."MediaLink"."createdAt"
+2026-10-18T00:11:15.5923429Z  2026-10-18 00:04:25.702 UTC [218] ERROR:  insert or update on table "UserProfile" violates foreign key constraint "UserProfile_avatarAssetId_userId_fkey"
+2026-10-18T00:11:15.5924516Z  2026-10-18 00:04:25.702 UTC [218] DETAIL:  Key (avatarAssetId, userId)=(db9c525f-c0ac-4bf5-8f82-33e4b2a6fb2a, c94e7190-69b0-4d09-afd3-f2a36419d78a) is not present in table "MediaAsset".
+2026-10-18T00:11:15.5926490Z  2026-10-18 00:04:25.702 UTC [218] STATEMENT:  INSERT INTO "public"."UserProfile" ("userId","handle","displayName","avatarAssetId","createdAt","updatedAt") VALUES ($1,$2,$3,$4,$5,$6) RETURNING "public"."UserProfile"."userId", "public"."UserProfile"."handle", "public"."UserProfile"."displayName", "public"."UserProfile"."bio", "public"."UserProfile"."avatarAssetId", "public"."UserProfile"."createdAt", "public"."UserProfile"."updatedAt"
+2026-10-18T00:11:15.5929898Z  2026-10-18 00:04:26.361 UTC [220] ERROR:  insert or update on table "StorageLocation" violates foreign key constraint "StorageLocation_parentId_ownerId_fkey"
+2026-10-18T00:11:15.5931479Z  2026-10-18 00:04:26.361 UTC [220] DETAIL:  Key (parentId, ownerId)=(ae3b3ba9-667a-49b7-83e2-6373cc7ed851, d2391043-1aa9-4ea2-b5b8-21e9e2cec2b7) is not present in table "StorageLocation".
+2026-10-18T00:11:15.5933749Z  2026-10-18 00:04:26.361 UTC [220] STATEMENT:  UPDATE "public"."StorageLocation" SET "parentId" = $1, "updatedAt" = $2 WHERE ("public"."StorageLocation"."id" = $3 AND 1=1) RETURNING "public"."StorageLocation"."id", "public"."StorageLocation"."ownerId", "public"."StorageLocation"."parentId", "public"."StorageLocation"."name", "public"."StorageLocation"."type"::text, "public"."StorageLocation"."visibility"::text, "public"."StorageLocation"."qrToken", "public"."StorageLocation"."createdAt", "public"."StorageLocation"."updatedAt"
+2026-10-18T00:11:15.5935931Z  2026-10-18 00:04:26.469 UTC [222] ERROR:  insert or update on table "CollectibleItem" violates foreign key constraint "CollectibleItem_storageLocationId_ownerId_fkey"
+2026-10-18T00:11:15.5937104Z  2026-10-18 00:04:26.469 UTC [222] DETAIL:  Key (storageLocationId, ownerId)=(ba90cf59-19ce-4c22-8465-810a3f77f6a7, f55e17be-c825-45dd-b0dd-29438b3100a8) is not present in table "StorageLocation".
+2026-10-18T00:11:15.5941994Z  2026-10-18 00:04:26.469 UTC [222] STATEMENT:  UPDATE "public"."CollectibleItem" SET "storageLocationId" = $1, "updatedAt" = $2 WHERE ("public"."CollectibleItem"."id" = $3 AND 1=1) RETURNING "public"."CollectibleItem"."id", "public"."CollectibleItem"."collectionId", "public"."CollectibleItem"."ownerId", "public"."CollectibleItem"."nodeId", "public"."CollectibleItem"."storageLocationId", "public"."CollectibleItem"."categoryTemplateId", "public"."CollectibleItem"."conditionOptionId", "public"."CollectibleItem"."catalogEntryId", "public"."CollectibleItem"."catalogVariantId", "public"."CollectibleItem"."title", "public"."CollectibleItem"."publicDescription", "public"."CollectibleItem"."privateNotes", "public"."CollectibleItem"."quantity", "public"."CollectibleItem"."acquisitionType"::text, "public"."CollectibleItem"."acquisitionDate", "public"."CollectibleItem"."purchaseAmountMinor", "public"."CollectibleItem"."purchaseCurrency", "public"."CollectibleItem"."visibility"::text, "public"."CollectibleItem"."tradeStatus"::text, "public"."CollectibleItem"."archivedAt", "public"."CollectibleItem"."disposedAt", "public"."CollectibleItem"."createdAt", "public"."CollectibleItem"."updatedAt", "public"."CollectibleItem"."deletedAt"
+2026-10-18T00:11:15.5946679Z  2026-10-18 00:04:27.293 UTC [224] ERROR:  insert or update on table "CustomFieldValue" violates foreign key constraint "CustomFieldValue_itemId_collectionId_fkey"
+2026-10-18T00:11:15.5947810Z  2026-10-18 00:04:27.293 UTC [224] DETAIL:  Key (itemId, collectionId)=(96aa3b0c-454c-4228-8aea-ba35c165f45a, b366fdcf-1438-417a-9e5f-c54c3d6e33c8) is not present in table "CollectibleItem".
+2026-10-18T00:11:15.5951750Z  2026-10-18 00:04:27.293 UTC [224] STATEMENT:  INSERT INTO "public"."CustomFieldValue" ("itemId","fieldDefinitionId","collectionId","fieldType","shortTextValue","createdAt","updatedAt") VALUES ($1,$2,$3,CAST($4::text AS "public"."CustomFieldType"),$5,$6,$7) RETURNING "public"."CustomFieldValue"."itemId", "public"."CustomFieldValue"."fieldDefinitionId", "public"."CustomFieldValue"."collectionId", "public"."CustomFieldValue"."fieldType"::text, "public"."CustomFieldValue"."shortTextValue", "public"."CustomFieldValue"."longTextValue", "public"."CustomFieldValue"."integerValue", "public"."CustomFieldValue"."decimalValue", "public"."CustomFieldValue"."dateValue", "public"."CustomFieldValue"."booleanValue", "public"."CustomFieldValue"."singleSelectOptionId", "public"."CustomFieldValue"."urlValue", "public"."CustomFieldValue"."moneyAmountMinor", "public"."CustomFieldValue"."moneyCurrency", "public"."CustomFieldValue"."createdAt", "public"."CustomFieldValue"."updatedAt"
+2026-10-18T00:11:15.5955597Z  2026-10-18 00:04:27.326 UTC [231] ERROR:  new row for relation "CustomFieldValue" violates check constraint "CustomFieldValue_typedShape_check"
+2026-10-18T00:11:15.5956959Z  2026-10-18 00:04:27.326 UTC [231] DETAIL:  Failing row contains (96aa3b0c-454c-4228-8aea-ba35c165f45a, 4e3dbd8e-9c99-4931-956c-5933bd56f5b9, 12dd84d4-a269-4971-9a18-08e6d5e72be5, SHORT_TEXT, null, null, 12, null, null, null, null, null, null, null, 2026-10-18 00:04:27.326, 2026-10-18 00:04:27.326).
+2026-10-18T00:11:15.5961361Z  2026-10-18 00:04:27.326 UTC [231] STATEMENT:  INSERT INTO "public"."CustomFieldValue" ("itemId","fieldDefinitionId","collectionId","fieldType","integerValue","createdAt","updatedAt") VALUES ($1,$2,$3,CAST($4::text AS "public"."CustomFieldType"),$5,$6,$7) RETURNING "public"."CustomFieldValue"."itemId", "public"."CustomFieldValue"."fieldDefinitionId", "public"."CustomFieldValue"."collectionId", "public"."CustomFieldValue"."fieldType"::text, "public"."CustomFieldValue"."shortTextValue", "public"."CustomFieldValue"."longTextValue", "public"."CustomFieldValue"."integerValue", "public"."CustomFieldValue"."decimalValue", "public"."CustomFieldValue"."dateValue", "public"."CustomFieldValue"."booleanValue", "public"."CustomFieldValue"."singleSelectOptionId", "public"."CustomFieldValue"."urlValue", "public"."CustomFieldValue"."moneyAmountMinor", "public"."CustomFieldValue"."moneyCurrency", "public"."CustomFieldValue"."createdAt", "public"."CustomFieldValue"."updatedAt"
+2026-10-18T00:11:15.5964981Z  2026-10-18 00:04:27.965 UTC [233] ERROR:  insert or update on table "CollectibleItem" violates foreign key constraint "CollectibleItem_nodeId_collectionId_fkey"
+2026-10-18T00:11:15.5966084Z  2026-10-18 00:04:27.965 UTC [233] DETAIL:  Key (nodeId, collectionId)=(64d8a4be-06fa-426c-95bc-bc387d0d7d19, ffdcda5d-d327-4605-826d-9e60e24019e5) is not present in table "CollectionNode".
+2026-10-18T00:11:15.5970801Z  2026-10-18 00:04:27.965 UTC [233] STATEMENT:  UPDATE "public"."CollectibleItem" SET "nodeId" = $1, "updatedAt" = $2 WHERE ("public"."CollectibleItem"."id" = $3 AND 1=1) RETURNING "public"."CollectibleItem"."id", "public"."CollectibleItem"."collectionId", "public"."CollectibleItem"."ownerId", "public"."CollectibleItem"."nodeId", "public"."CollectibleItem"."storageLocationId", "public"."CollectibleItem"."categoryTemplateId", "public"."CollectibleItem"."conditionOptionId", "public"."CollectibleItem"."catalogEntryId", "public"."CollectibleItem"."catalogVariantId", "public"."CollectibleItem"."title", "public"."CollectibleItem"."publicDescription", "public"."CollectibleItem"."privateNotes", "public"."CollectibleItem"."quantity", "public"."CollectibleItem"."acquisitionType"::text, "public"."CollectibleItem"."acquisitionDate", "public"."CollectibleItem"."purchaseAmountMinor", "public"."CollectibleItem"."purchaseCurrency", "public"."CollectibleItem"."visibility"::text, "public"."CollectibleItem"."tradeStatus"::text, "public"."CollectibleItem"."archivedAt", "public"."CollectibleItem"."disposedAt", "public"."CollectibleItem"."createdAt", "public"."CollectibleItem"."updatedAt", "public"."CollectibleItem"."deletedAt"
+2026-10-18T00:11:15.5975316Z  2026-10-18 00:04:28.042 UTC [234] ERROR:  new row for relation "CollectibleItem" violates check constraint "CollectibleItem_quantity_check"
+2026-10-18T00:11:15.5976805Z  2026-10-18 00:04:28.042 UTC [234] DETAIL:  Failing row contains (772f985e-15df-4b76-8175-51ff2bb1d0fd, ffdcda5d-d327-4605-826d-9e60e24019e5, null, Zero, null, null, 0, OTHER, null, null, null, PRIVATE, NOT_FOR_TRADE, null, null, 2026-10-18 00:04:28.041, 2026-10-18 00:04:28.041, 60b3faa5-481b-48c2-a402-ba7e40e78779, null, null, null, null, null, null).
+2026-10-18T00:11:15.5982740Z  2026-10-18 00:04:28.042 UTC [234] STATEMENT:  INSERT INTO "public"."CollectibleItem" ("id","collectionId","ownerId","title","quantity","acquisitionType","visibility","tradeStatus","createdAt","updatedAt") VALUES ($1,$2,$3,$4,$5,CAST($6::text AS "public"."AcquisitionType"),CAST($7::text AS "public"."Visibility"),CAST($8::text AS "public"."TradeStatus"),$9,$10) RETURNING "public"."CollectibleItem"."id", "public"."CollectibleItem"."collectionId", "public"."CollectibleItem"."ownerId", "public"."CollectibleItem"."nodeId", "public"."CollectibleItem"."storageLocationId", "public"."CollectibleItem"."categoryTemplateId", "public"."CollectibleItem"."conditionOptionId", "public"."CollectibleItem"."catalogEntryId", "public"."CollectibleItem"."catalogVariantId", "public"."CollectibleItem"."title", "public"."CollectibleItem"."publicDescription", "public"."CollectibleItem"."privateNotes", "public"."CollectibleItem"."quantity", "public"."CollectibleItem"."acquisitionType"::text, "public"."CollectibleItem"."acquisitionDate", "public"."CollectibleItem"."purchaseAmountMinor", "public"."CollectibleItem"."purchaseCurrency", "public"."CollectibleItem"."visibility"::text, "public"."CollectibleItem"."tradeStatus"::text, "public"."CollectibleItem"."archivedAt", "public"."CollectibleItem"."disposedAt", "public"."CollectibleItem"."createdAt", "public"."CollectibleItem"."updatedAt", "public"."CollectibleItem"."deletedAt"
+2026-10-18T00:11:15.5987991Z  2026-10-18 00:04:28.056 UTC [235] ERROR:  new row for relation "CollectibleItem" violates check constraint "CollectibleItem_purchaseMoneyPair_check"
+2026-10-18T00:11:15.5989789Z  2026-10-18 00:04:28.056 UTC [235] DETAIL:  Failing row contains (8ed9beb1-ffb7-42a2-8c6a-a25dcbcc74ba, ffdcda5d-d327-4605-826d-9e60e24019e5, null, Incomplete money, null, null, 1, OTHER, null, 100, null, PRIVATE, NOT_FOR_TRADE, null, null, 2026-10-18 00:04:28.048, 2026-10-18 00:04:28.048, 60b3faa5-481b-48c2-a402-ba7e40e78779, null, null, null, null, null, null).
+2026-10-18T00:11:15.5995507Z  2026-10-18 00:04:28.056 UTC [235] STATEMENT:  INSERT INTO "public"."CollectibleItem" ("id","collectionId","ownerId","title","quantity","acquisitionType","purchaseAmountMinor","visibility","tradeStatus","createdAt","updatedAt") VALUES ($1,$2,$3,$4,$5,CAST($6::text AS "public"."AcquisitionType"),$7,CAST($8::text AS "public"."Visibility"),CAST($9::text AS "public"."TradeStatus"),$10,$11) RETURNING "public"."CollectibleItem"."id", "public"."CollectibleItem"."collectionId", "public"."CollectibleItem"."ownerId", "public"."CollectibleItem"."nodeId", "public"."CollectibleItem"."storageLocationId", "public"."CollectibleItem"."categoryTemplateId", "public"."CollectibleItem"."conditionOptionId", "public"."CollectibleItem"."catalogEntryId", "public"."CollectibleItem"."catalogVariantId", "public"."CollectibleItem"."title", "public"."CollectibleItem"."publicDescription", "public"."CollectibleItem"."privateNotes", "public"."CollectibleItem"."quantity", "public"."CollectibleItem"."acquisitionType"::text, "public"."CollectibleItem"."acquisitionDate", "public"."CollectibleItem"."purchaseAmountMinor", "public"."CollectibleItem"."purchaseCurrency", "public"."CollectibleItem"."visibility"::text, "public"."CollectibleItem"."tradeStatus"::text, "public"."CollectibleItem"."archivedAt", "public"."CollectibleItem"."disposedAt", "public"."CollectibleItem"."createdAt", "public"."CollectibleItem"."updatedAt", "public"."CollectibleItem"."deletedAt"
+2026-10-18T00:11:15.6000968Z  2026-10-18 00:04:29.344 UTC [239] ERROR:  insert or update on table "CollectionNode" violates foreign key constraint "CollectionNode_parentId_collectionId_fkey"
+2026-10-18T00:11:15.6002079Z  2026-10-18 00:04:29.344 UTC [239] DETAIL:  Key (parentId, collectionId)=(026b517b-82d1-4ff2-8f97-f4cbb051e1d4, 319acdca-12ab-4e2b-9020-864a1d84979f) is not present in table "CollectionNode".
+2026-10-18T00:11:15.6004226Z  2026-10-18 00:04:29.344 UTC [239] STATEMENT:  INSERT INTO "public"."CollectionNode" ("id","collectionId","parentId","name","visibility","createdAt","updatedAt") VALUES ($1,$2,$3,$4,CAST($5::text AS "public"."Visibility"),$6,$7) RETURNING "public"."CollectionNode"."id", "public"."CollectionNode"."collectionId", "public"."CollectionNode"."parentId", "public"."CollectionNode"."name", "public"."CollectionNode"."visibility"::text, "public"."CollectionNode"."createdAt", "public"."CollectionNode"."updatedAt"
+2026-10-18T00:11:15.6006195Z  2026-10-18 00:04:30.538 UTC [247] FATAL:  terminating connection due to administrator command
+2026-10-18T00:11:15.6006853Z  2026-10-18 00:04:31.917 UTC [253] ERROR:  Media asset unavailable
+2026-10-18T00:11:15.6007371Z  2026-10-18 00:04:31.917 UTC [253] CONTEXT:  PL/pgSQL function media_reference_guard() line 14 at RAISE
+2026-10-18T00:11:15.6009317Z  2026-10-18 00:04:31.917 UTC [253] STATEMENT:  INSERT INTO "public"."MediaLink" ("id","assetId","ownerId","itemId","purpose","position","createdAt") VALUES ($1,$2,$3,$4,CAST($5::text AS "public"."MediaPurpose"),$6,$7) RETURNING "public"."MediaLink"."id", "public"."MediaLink"."assetId", "public"."MediaLink"."ownerId", "public"."MediaLink"."itemId", "public"."MediaLink"."purpose"::text, "public"."MediaLink"."position", "public"."MediaLink"."title", "public"."MediaLink"."createdAt"
+2026-10-18T00:11:15.6011277Z  2026-10-18 00:04:31.970 UTC [254] ERROR:  Media asset unavailable
+2026-10-18T00:11:15.6012122Z  2026-10-18 00:04:31.970 UTC [254] CONTEXT:  PL/pgSQL function media_reference_guard() line 14 at RAISE
+2026-10-18T00:11:15.6014911Z  2026-10-18 00:04:31.970 UTC [254] STATEMENT:  INSERT INTO "public"."UserProfile" ("userId","handle","displayName","avatarAssetId","createdAt","updatedAt") VALUES ($1,$2,$3,$4,$5,$6) RETURNING "public"."UserProfile"."userId", "public"."UserProfile"."handle", "public"."UserProfile"."displayName", "public"."UserProfile"."bio", "public"."UserProfile"."avatarAssetId", "public"."UserProfile"."createdAt", "public"."UserProfile"."updatedAt"
+2026-10-18T00:11:15.6017406Z  2026-10-18 00:04:32.232 UTC [264] ERROR:  Media asset unavailable
+2026-10-18T00:11:15.6018234Z  2026-10-18 00:04:32.232 UTC [264] CONTEXT:  PL/pgSQL function media_reference_guard() line 14 at RAISE
+2026-10-18T00:11:15.6020716Z  2026-10-18 00:04:32.232 UTC [264] STATEMENT:  INSERT INTO "public"."MediaLink" ("id","assetId","ownerId","itemId","purpose","position","createdAt") VALUES ($1,$2,$3,$4,CAST($5::text AS "public"."MediaPurpose"),$6,$7) RETURNING "public"."MediaLink"."id", "public"."MediaLink"."assetId", "public"."MediaLink"."ownerId", "public"."MediaLink"."itemId", "public"."MediaLink"."purpose"::text, "public"."MediaLink"."position", "public"."MediaLink"."title", "public"."MediaLink"."createdAt"
+2026-10-18T00:11:15.6022650Z  2026-10-18 00:04:33.224 UTC [274] ERROR:  insert or update on table "UserProfile" violates foreign key constraint "UserProfile_avatarAssetId_userId_fkey"
+2026-10-18T00:11:15.6023723Z  2026-10-18 00:04:33.224 UTC [274] DETAIL:  Key (avatarAssetId, userId)=(3577a50f-4a57-47b6-aa48-41423b102ec0, f70b9a53-61ff-4c33-8cad-9a5552a107c2) is not present in table "MediaAsset".
+2026-10-18T00:11:15.6024652Z  2026-10-18 00:04:33.224 UTC [274] STATEMENT:  UPDATE "UserProfile" SET "avatarAssetId" = $1 WHERE "userId" = $2
+2026-10-18T00:11:15.6025419Z  2026-10-18 00:04:37.881 UTC [297] ERROR:  duplicate key value violates unique constraint "Grading_ownerId_providerKey_certificateKey_key"
+2026-10-18T00:11:15.6026446Z  2026-10-18 00:04:37.881 UTC [297] DETAIL:  Key ("ownerId", "providerKey", "certificateKey")=(GradingRouteOwner_81d272cd-6507-4769-b119-2a40526d393d, conflict, duplicate) already exists.
+2026-10-18T00:11:15.6027188Z  2026-10-18 00:04:37.881 UTC [297] STATEMENT:  
+2026-10-18T00:11:15.6027995Z  	          INSERT INTO "Grading" (id,"itemId","ownerId",provider,"providerKey",grade,"comparableValue","comparableScale","certificateNo","certificateKey","gradedAt","verificationUrl",source,"updatedAt")
+2026-10-18T00:11:15.6029209Z  	          VALUES ($1::uuid,$2::uuid,$3,$4,$5,$6,$7::numeric,$8,$9,$10,$11::date,$12,$13,now()) RETURNING id
+2026-10-18T00:11:15.6029652Z  	        
+2026-10-18T00:11:15.6029962Z  2026-10-18 00:04:42.661 UTC [304] ERROR:  Catalog revision snapshots are immutable
+2026-10-18T00:11:15.6030546Z  2026-10-18 00:04:42.661 UTC [304] CONTEXT:  PL/pgSQL function reject_catalog_revision_update() line 3 at RAISE
+2026-10-18T00:11:15.6032507Z  2026-10-18 00:04:42.661 UTC [304] STATEMENT:  UPDATE "public"."CatalogRevision" SET "snapshot" = $1 WHERE (("public"."CatalogRevision"."entryId" = $2 AND "public"."CatalogRevision"."revision" = $3) AND 1=1) RETURNING "public"."CatalogRevision"."entryId", "public"."CatalogRevision"."revision", "public"."CatalogRevision"."snapshot", "public"."CatalogRevision"."rollbackFromRevision", "public"."CatalogRevision"."createdAt"
+2026-10-18T00:11:15.6034437Z  2026-10-18 00:04:42.825 UTC [305] ERROR:  insert or update on table "CatalogAttributeValue" violates foreign key constraint "CatalogAttributeValue_definitionId_categoryTemplateId_fkey"
+2026-10-18T00:11:15.6035748Z  2026-10-18 00:04:42.825 UTC [305] DETAIL:  Key (definitionId, categoryTemplateId)=(0afa6e38-97f5-4190-a735-4ba36f1e86d1, 3902cc79-6b59-42f5-bf3d-2ddebaafa486) is not present in table "CatalogAttributeDefinition".
+2026-10-18T00:11:15.6038117Z  2026-10-18 00:04:42.825 UTC [305] STATEMENT:  INSERT INTO "public"."CatalogAttributeValue" ("id","entryId","categoryTemplateId","targetKey","definitionId","value") VALUES ($1,$2,$3,$4,$5,$6) RETURNING "public"."CatalogAttributeValue"."id", "public"."CatalogAttributeValue"."entryId", "public"."CatalogAttributeValue"."categoryTemplateId", "public"."CatalogAttributeValue"."variantId", "public"."CatalogAttributeValue"."targetKey", "public"."CatalogAttributeValue"."definitionId", "public"."CatalogAttributeValue"."value"
+2026-10-18T00:11:15.6040676Z  2026-10-18 00:04:42.833 UTC [306] ERROR:  insert or update on table "CatalogAttributeValue" violates foreign key constraint "CatalogAttributeValue_entryId_categoryTemplateId_fkey"
+2026-10-18T00:11:15.6041884Z  2026-10-18 00:04:42.833 UTC [306] DETAIL:  Key (entryId, categoryTemplateId)=(0826d79d-36cf-4735-b6fb-bdc1a471507c, c4dbd469-5c37-4901-8750-25d9fe9a7881) is not present in table "CatalogEntry".
+2026-10-18T00:11:15.6044176Z  2026-10-18 00:04:42.833 UTC [306] STATEMENT:  INSERT INTO "public"."CatalogAttributeValue" ("id","entryId","categoryTemplateId","targetKey","definitionId","value") VALUES ($1,$2,$3,$4,$5,$6) RETURNING "public"."CatalogAttributeValue"."id", "public"."CatalogAttributeValue"."entryId", "public"."CatalogAttributeValue"."categoryTemplateId", "public"."CatalogAttributeValue"."variantId", "public"."CatalogAttributeValue"."targetKey", "public"."CatalogAttributeValue"."definitionId", "public"."CatalogAttributeValue"."value"
+2026-10-18T00:11:15.6046181Z  2026-10-18 00:04:43.715 UTC [310] ERROR:  duplicate key value violates unique constraint "CategoryTemplate_key_key"
+2026-10-18T00:11:15.6046875Z  2026-10-18 00:04:43.715 UTC [310] DETAIL:  Key (key)=(fixture_ba096719a03d45c2bd0900fc376067f5_race) already exists.
+2026-10-18T00:11:15.6047726Z  2026-10-18 00:04:43.715 UTC [310] STATEMENT:  INSERT INTO "public"."CategoryTemplate" ("id","key","createdAt") VALUES ($1,$2,$3) RETURNING "public"."CategoryTemplate"."id"
+2026-10-18T00:11:15.6048694Z  2026-10-18 00:04:43.773 UTC [310] ERROR:  duplicate key value violates unique constraint "CatalogAttributeDefinition_categoryTemplateId_key_key"
+2026-10-18T00:11:15.6049692Z  2026-10-18 00:04:43.773 UTC [310] DETAIL:  Key ("categoryTemplateId", key)=(7a8d724f-3073-43d6-822e-7ac6e209303d, year) already exists.
+2026-10-18T00:11:15.6052100Z  2026-10-18 00:04:43.773 UTC [310] STATEMENT:  INSERT INTO "public"."CatalogAttributeDefinition" ("id","categoryTemplateId","key","type","position") VALUES ($1,$2,$3,CAST($4::text AS "public"."CustomFieldType"),$5) RETURNING "public"."CatalogAttributeDefinition"."id", "public"."CatalogAttributeDefinition"."categoryTemplateId", "public"."CatalogAttributeDefinition"."key", "public"."CatalogAttributeDefinition"."type"::text, "public"."CatalogAttributeDefinition"."position"
+2026-10-18T00:11:15.6054656Z  2026-10-18 00:04:43.778 UTC [309] ERROR:  duplicate key value violates unique constraint "CatalogAttributeDefinition_categoryTemplateId_position_key"
+2026-10-18T00:11:15.6055895Z  2026-10-18 00:04:43.778 UTC [309] DETAIL:  Key ("categoryTemplateId", "position")=(7a8d724f-3073-43d6-822e-7ac6e209303d, 0) already exists.
+2026-10-18T00:11:15.6058580Z  2026-10-18 00:04:43.778 UTC [309] STATEMENT:  INSERT INTO "public"."CatalogAttributeDefinition" ("id","categoryTemplateId","key","type","position") VALUES ($1,$2,$3,CAST($4::text AS "public"."CustomFieldType"),$5) RETURNING "public"."CatalogAttributeDefinition"."id", "public"."CatalogAttributeDefinition"."categoryTemplateId", "public"."CatalogAttributeDefinition"."key", "public"."CatalogAttributeDefinition"."type"::text, "public"."CatalogAttributeDefinition"."position"
+2026-10-18T00:11:15.6060692Z  2026-10-18 00:04:43.788 UTC [311] ERROR:  duplicate key value violates unique constraint "CatalogAttributeOption_definitionId_key_key"
+2026-10-18T00:11:15.6061516Z  2026-10-18 00:04:43.788 UTC [311] DETAIL:  Key ("definitionId", key)=(0d818a55-92a6-4a1c-9218-0aef6f98c56a, silver) already exists.
+2026-10-18T00:11:15.6062965Z  2026-10-18 00:04:43.788 UTC [311] STATEMENT:  INSERT INTO "public"."CatalogAttributeOption" ("id","definitionId","key","position") VALUES ($1,$2,$3,$4) RETURNING "public"."CatalogAttributeOption"."id", "public"."CatalogAttributeOption"."definitionId", "public"."CatalogAttributeOption"."key", "public"."CatalogAttributeOption"."position"
+2026-10-18T00:11:15.6065053Z  2026-10-18 00:04:43.796 UTC [312] ERROR:  duplicate key value violates unique constraint "CatalogAttributeOption_definitionId_position_key"
+2026-10-18T00:11:15.6066378Z  2026-10-18 00:04:43.796 UTC [312] DETAIL:  Key ("definitionId", "position")=(0d818a55-92a6-4a1c-9218-0aef6f98c56a, 0) already exists.
+2026-10-18T00:11:15.6069180Z  2026-10-18 00:04:43.796 UTC [312] STATEMENT:  INSERT INTO "public"."CatalogAttributeOption" ("id","definitionId","key","position") VALUES ($1,$2,$3,$4) RETURNING "public"."CatalogAttributeOption"."id", "public"."CatalogAttributeOption"."definitionId", "public"."CatalogAttributeOption"."key", "public"."CatalogAttributeOption"."position"
+2026-10-18T00:11:15.6071503Z  2026-10-18 00:04:43.808 UTC [313] ERROR:  duplicate key value violates unique constraint "CatalogAttributeDefinition_categoryTemplateId_key_key"
+2026-10-18T00:11:15.6072709Z  2026-10-18 00:04:43.808 UTC [313] DETAIL:  Key ("categoryTemplateId", key)=(b979bdbf-9353-41e2-bf0c-1a1b87e21223, duplicate) already exists.
+2026-10-18T00:11:15.6074340Z  2026-10-18 00:04:43.808 UTC [313] STATEMENT:  INSERT INTO "public"."CatalogAttributeDefinition" ("id","categoryTemplateId","key","type","position") VALUES ($1,$2,$3,CAST($4::text AS "public"."CustomFieldType"),$5), ($6,$7,$8,CAST($9::text AS "public"."CustomFieldType"),$10)
+2026-10-18T00:11:15.6075623Z  2026-10-18 00:04:45.419 UTC [316] ERROR:  new row for relation "CollectibleItem" violates check constraint "item_catalog_entry_requires_category"
+2026-10-18T00:11:15.6077344Z  2026-10-18 00:04:45.419 UTC [316] DETAIL:  Failing row contains (cc2c6834-39fb-4c4f-a8d6-9f441fbfdb27, 9caa2d37-2dd4-4c80-9ec0-734c31ddac85, null, Database guards, null, null, 1, OTHER, null, null, null, PRIVATE, NOT_FOR_TRADE, null, null, 2026-10-18 00:04:45.417, 2026-10-18 00:04:45.417, CatalogOwner_67ffa0cf-8df8-4144-9f8e-8bcc3565ff8e, null, null, null, null, bd3e791d-9365-4196-9671-3d978598f45a, null).
+2026-10-18T00:11:15.6079240Z  2026-10-18 00:04:45.419 UTC [316] STATEMENT:  UPDATE "CollectibleItem" SET "catalogEntryId"=$1::uuid WHERE id=$2::uuid
+2026-10-18T00:11:15.6080062Z  2026-10-18 00:04:45.459 UTC [325] ERROR:  new row for relation "CollectibleItem" violates check constraint "item_catalog_variant_requires_entry"
+2026-10-18T00:11:15.6081766Z  2026-10-18 00:04:45.459 UTC [325] DETAIL:  Failing row contains (cc2c6834-39fb-4c4f-a8d6-9f441fbfdb27, 9caa2d37-2dd4-4c80-9ec0-734c31ddac85, null, Database guards, null, null, 1, OTHER, null, null, null, PRIVATE, NOT_FOR_TRADE, null, null, 2026-10-18 00:04:45.417, 2026-10-18 00:04:45.417, CatalogOwner_67ffa0cf-8df8-4144-9f8e-8bcc3565ff8e, null, null, null, null, null, 5fe4da8a-a45c-4a72-ad8a-8659739b9eea).
+2026-10-18T00:11:15.6083403Z  2026-10-18 00:04:45.459 UTC [325] STATEMENT:  UPDATE "CollectibleItem" SET "catalogVariantId"=$1::uuid WHERE id=$2::uuid
+2026-10-18T00:11:15.6084516Z  2026-10-18 00:04:45.469 UTC [326] ERROR:  insert or update on table "CollectibleItem" violates foreign key constraint "CollectibleItem_catalogEntryId_categoryTemplateId_fkey"
+2026-10-18T00:11:15.6085836Z  2026-10-18 00:04:45.469 UTC [326] DETAIL:  Key (catalogEntryId, categoryTemplateId)=(bd3e791d-9365-4196-9671-3d978598f45a, 57a726b8-dda5-4ca0-b000-578926ee946f) is not present in table "CatalogEntry".
+2026-10-18T00:11:15.6086945Z  2026-10-18 00:04:45.469 UTC [326] STATEMENT:  UPDATE "CollectibleItem" SET "catalogEntryId"=$1::uuid,"categoryTemplateId"=$2::uuid WHERE id=$3::uuid
+2026-10-18T00:11:15.6087955Z  2026-10-18 00:04:45.483 UTC [327] ERROR:  insert or update on table "CollectibleItem" violates foreign key constraint "CollectibleItem_catalogVariantId_catalogEntryId_fkey"
+2026-10-18T00:11:15.6089770Z  2026-10-18 00:04:45.483 UTC [327] DETAIL:  Key (catalogVariantId, catalogEntryId)=(5fe4da8a-a45c-4a72-ad8a-8659739b9eea, fccbe3bf-6bae-4aa5-a7f6-47831023b258) is not present in table "CatalogVariant".
+2026-10-18T00:11:15.6091428Z  2026-10-18 00:04:45.483 UTC [327] STATEMENT:  UPDATE "CollectibleItem" SET "catalogEntryId"=$1::uuid,"categoryTemplateId"=$2::uuid,"catalogVariantId"=$3::uuid WHERE id=$4::uuid
+2026-10-18T00:11:15.6092558Z  2026-10-18 00:04:45.515 UTC [328] ERROR:  update or delete on table "CatalogEntry" violates foreign key constraint "CatalogVariant_entryId_fkey" on table "CatalogVariant"
+2026-10-18T00:11:15.6093545Z  2026-10-18 00:04:45.515 UTC [328] DETAIL:  Key (id)=(bd3e791d-9365-4196-9671-3d978598f45a) is still referenced from table "CatalogVariant".
+2026-10-18T00:11:15.6095249Z  2026-10-18 00:04:45.515 UTC [328] STATEMENT:  DELETE FROM "public"."CatalogEntry" WHERE ("public"."CatalogEntry"."id" = $1 AND 1=1) RETURNING "public"."CatalogEntry"."id", "public"."CatalogEntry"."categoryTemplateId", "public"."CatalogEntry"."revision", "public"."CatalogEntry"."authored"
+2026-10-18T00:11:15.6096895Z  2026-10-18 00:04:46.848 UTC [333] ERROR:  update or delete on table "user" violates foreign key constraint "CatalogProposal_moderatorId_fkey" on table "CatalogProposal"
+2026-10-18T00:11:15.6097945Z  2026-10-18 00:04:46.848 UTC [333] DETAIL:  Key (id)=(fixture_c7ccfdfb43594d0aa673f3498cf078bf_revocable) is still referenced from table "CatalogProposal".
+2026-10-18T00:11:15.6099479Z  2026-10-18 00:04:46.848 UTC [333] STATEMENT:  DELETE FROM "public"."user" WHERE ("public"."user"."id" = $1 AND 1=1) RETURNING "public"."user"."id", "public"."user"."name", "public"."user"."email", "public"."user"."emailVerified", "public"."user"."image", "public"."user"."createdAt", "public"."user"."updatedAt"
+2026-10-18T00:11:15.6100945Z  2026-10-18 00:04:49.357 UTC [336] ERROR:  insert or update on table "CollectibleItem" violates foreign key constraint "CollectibleItem_conditionOptionId_categoryTemplateId_fkey"
+2026-10-18T00:11:15.6102219Z  2026-10-18 00:04:49.357 UTC [336] DETAIL:  Key (conditionOptionId, categoryTemplateId)=(b859dee5-dedf-4cd0-9463-80a564450310, 90a97b44-5760-4902-ac97-c997bb321325) is not present in table "ConditionOption".
+2026-10-18T00:11:15.6107006Z  2026-10-18 00:04:49.357 UTC [336] STATEMENT:  UPDATE "public"."CollectibleItem" SET "conditionOptionId" = $1, "updatedAt" = $2 WHERE ("public"."CollectibleItem"."id" = $3 AND 1=1) RETURNING "public"."CollectibleItem"."id", "public"."CollectibleItem"."collectionId", "public"."CollectibleItem"."ownerId", "public"."CollectibleItem"."nodeId", "public"."CollectibleItem"."storageLocationId", "public"."CollectibleItem"."categoryTemplateId", "public"."CollectibleItem"."conditionOptionId", "public"."CollectibleItem"."catalogEntryId", "public"."CollectibleItem"."catalogVariantId", "public"."CollectibleItem"."title", "public"."CollectibleItem"."publicDescription", "public"."CollectibleItem"."privateNotes", "public"."CollectibleItem"."quantity", "public"."CollectibleItem"."acquisitionType"::text, "public"."CollectibleItem"."acquisitionDate", "public"."CollectibleItem"."purchaseAmountMinor", "public"."CollectibleItem"."purchaseCurrency", "public"."CollectibleItem"."visibility"::text, "public"."CollectibleItem"."tradeStatus"::text, "public"."CollectibleItem"."archivedAt", "public"."CollectibleItem"."disposedAt", "public"."CollectibleItem"."createdAt", "public"."CollectibleItem"."updatedAt", "public"."CollectibleItem"."deletedAt"
+2026-10-18T00:11:15.6111827Z  2026-10-18 00:04:49.387 UTC [337] ERROR:  new row for relation "CollectibleItem" violates check constraint "item_condition_requires_category"
+2026-10-18T00:11:15.6113853Z  2026-10-18 00:04:49.387 UTC [337] DETAIL:  Failing row contains (dbc1abf2-c345-4cc1-bb64-e1d4e55b01f6, 93a35e76-a8ae-4da4-a84b-ed03399ed19b, null, Condition test, null, null, 3, OTHER, null, null, null, PRIVATE, NOT_FOR_TRADE, null, null, 2026-10-18 00:04:49.339, 2026-10-18 00:04:49.378, ConditionOwner_0141465c-b4a1-49b2-9e41-8ab7e4d6982d, null, null, null, be74f636-4f24-4033-8541-e7fc807a6114, null, null).
+2026-10-18T00:11:15.6119554Z  2026-10-18 00:04:49.387 UTC [337] STATEMENT:  UPDATE "public"."CollectibleItem" SET "categoryTemplateId" = $1, "updatedAt" = $2 WHERE ("public"."CollectibleItem"."id" = $3 AND 1=1) RETURNING "public"."CollectibleItem"."id", "public"."CollectibleItem"."collectionId", "public"."CollectibleItem"."ownerId", "public"."CollectibleItem"."nodeId", "public"."CollectibleItem"."storageLocationId", "public"."CollectibleItem"."categoryTemplateId", "public"."CollectibleItem"."conditionOptionId", "public"."CollectibleItem"."catalogEntryId", "public"."CollectibleItem"."catalogVariantId", "public"."CollectibleItem"."title", "public"."CollectibleItem"."publicDescription", "public"."CollectibleItem"."privateNotes", "public"."CollectibleItem"."quantity", "public"."CollectibleItem"."acquisitionType"::text, "public"."CollectibleItem"."acquisitionDate", "public"."CollectibleItem"."purchaseAmountMinor", "public"."CollectibleItem"."purchaseCurrency", "public"."CollectibleItem"."visibility"::text, "public"."CollectibleItem"."tradeStatus"::text, "public"."CollectibleItem"."archivedAt", "public"."CollectibleItem"."disposedAt", "public"."CollectibleItem"."createdAt", "public"."CollectibleItem"."updatedAt", "public"."CollectibleItem"."deletedAt"
+2026-10-18T00:11:15.6124249Z  2026-10-18 00:04:49.398 UTC [338] ERROR:  insert or update on table "ConditionOption" violates foreign key constraint "ConditionOption_schemeId_categoryTemplateId_fkey"
+2026-10-18T00:11:15.6125433Z  2026-10-18 00:04:49.398 UTC [338] DETAIL:  Key (schemeId, categoryTemplateId)=(7aeaf4d3-2135-4e24-b775-1f3f2e574bed, 90a97b44-5760-4902-ac97-c997bb321325) is not present in table "ConditionScheme".
+2026-10-18T00:11:15.6127855Z  2026-10-18 00:04:49.398 UTC [338] STATEMENT:  INSERT INTO "public"."ConditionOption" ("id","schemeId","categoryTemplateId","labelKey","labelDe","labelEn","position","active") VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING "public"."ConditionOption"."id", "public"."ConditionOption"."schemeId", "public"."ConditionOption"."categoryTemplateId", "public"."ConditionOption"."labelKey", "public"."ConditionOption"."labelDe", "public"."ConditionOption"."labelEn", "public"."ConditionOption"."normalizedBand", "public"."ConditionOption"."position", "public"."ConditionOption"."active"
+2026-10-18T00:11:15.6130181Z  2026-10-18 00:04:49.407 UTC [339] ERROR:  new row for relation "ConditionOption" violates check constraint "condition_band_range"
+2026-10-18T00:11:15.6131259Z  2026-10-18 00:04:49.407 UTC [339] DETAIL:  Failing row contains (44f6027e-e1db-4a42-a5eb-b1feeaa0eff4, 7aeaf4d3-2135-4e24-b775-1f3f2e574bed, a3e91fa2-5a27-481d-9079-e87e6b8fff34, foreign.band, A, A, 6, 1, t).
+2026-10-18T00:11:15.6133755Z  2026-10-18 00:04:49.407 UTC [339] STATEMENT:  INSERT INTO "public"."ConditionOption" ("id","schemeId","categoryTemplateId","labelKey","labelDe","labelEn","normalizedBand","position","active") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING "public"."ConditionOption"."id", "public"."ConditionOption"."schemeId", "public"."ConditionOption"."categoryTemplateId", "public"."ConditionOption"."labelKey", "public"."ConditionOption"."labelDe", "public"."ConditionOption"."labelEn", "public"."ConditionOption"."normalizedBand", "public"."ConditionOption"."position", "public"."ConditionOption"."active"
+2026-10-18T00:11:15.6135992Z  2026-10-18 00:04:49.629 UTC [340] ERROR:  condition option semantics are immutable
+2026-10-18T00:11:15.6136682Z  2026-10-18 00:04:49.629 UTC [340] CONTEXT:  PL/pgSQL function guard_condition_option_semantics() line 5 at RAISE
+2026-10-18T00:11:15.6138658Z  2026-10-18 00:04:49.629 UTC [340] STATEMENT:  UPDATE "public"."ConditionOption" SET "labelKey" = $1 WHERE ("public"."ConditionOption"."id" = $2 AND 1=1) RETURNING "public"."ConditionOption"."id", "public"."ConditionOption"."schemeId", "public"."ConditionOption"."categoryTemplateId", "public"."ConditionOption"."labelKey", "public"."ConditionOption"."labelDe", "public"."ConditionOption"."labelEn", "public"."ConditionOption"."normalizedBand", "public"."ConditionOption"."position", "public"."ConditionOption"."active"
+2026-10-18T00:11:15.6140638Z  2026-10-18 00:04:49.639 UTC [341] ERROR:  condition option semantics are immutable
+2026-10-18T00:11:15.6141220Z  2026-10-18 00:04:49.639 UTC [341] CONTEXT:  PL/pgSQL function guard_condition_option_semantics() line 5 at RAISE
+2026-10-18T00:11:15.6143176Z  2026-10-18 00:04:49.639 UTC [341] STATEMENT:  UPDATE "public"."ConditionOption" SET "labelDe" = $1 WHERE ("public"."ConditionOption"."id" = $2 AND 1=1) RETURNING "public"."ConditionOption"."id", "public"."ConditionOption"."schemeId", "public"."ConditionOption"."categoryTemplateId", "public"."ConditionOption"."labelKey", "public"."ConditionOption"."labelDe", "public"."ConditionOption"."labelEn", "public"."ConditionOption"."normalizedBand", "public"."ConditionOption"."position", "public"."ConditionOption"."active"
+2026-10-18T00:11:15.6145019Z  2026-10-18 00:04:49.647 UTC [342] ERROR:  condition option semantics are immutable
+2026-10-18T00:11:15.6145588Z  2026-10-18 00:04:49.647 UTC [342] CONTEXT:  PL/pgSQL function guard_condition_option_semantics() line 5 at RAISE
+2026-10-18T00:11:15.6147544Z  2026-10-18 00:04:49.647 UTC [342] STATEMENT:  UPDATE "public"."ConditionOption" SET "labelEn" = $1 WHERE ("public"."ConditionOption"."id" = $2 AND 1=1) RETURNING "public"."ConditionOption"."id", "public"."ConditionOption"."schemeId", "public"."ConditionOption"."categoryTemplateId", "public"."ConditionOption"."labelKey", "public"."ConditionOption"."labelDe", "public"."ConditionOption"."labelEn", "public"."ConditionOption"."normalizedBand", "public"."ConditionOption"."position", "public"."ConditionOption"."active"
+2026-10-18T00:11:15.6149676Z  2026-10-18 00:04:49.655 UTC [343] ERROR:  condition option semantics are immutable
+2026-10-18T00:11:15.6150247Z  2026-10-18 00:04:49.655 UTC [343] CONTEXT:  PL/pgSQL function guard_condition_option_semantics() line 5 at RAISE
+2026-10-18T00:11:15.6152234Z  2026-10-18 00:04:49.655 UTC [343] STATEMENT:  UPDATE "public"."ConditionOption" SET "normalizedBand" = $1 WHERE ("public"."ConditionOption"."id" = $2 AND 1=1) RETURNING "public"."ConditionOption"."id", "public"."ConditionOption"."schemeId", "public"."ConditionOption"."categoryTemplateId", "public"."ConditionOption"."labelKey", "public"."ConditionOption"."labelDe", "public"."ConditionOption"."labelEn", "public"."ConditionOption"."normalizedBand", "public"."ConditionOption"."position", "public"."ConditionOption"."active"
+2026-10-18T00:11:15.6154168Z  2026-10-18 00:04:49.664 UTC [344] ERROR:  condition option semantics are immutable
+2026-10-18T00:11:15.6154746Z  2026-10-18 00:04:49.664 UTC [344] CONTEXT:  PL/pgSQL function guard_condition_option_semantics() line 5 at RAISE
+2026-10-18T00:11:15.6156743Z  2026-10-18 00:04:49.664 UTC [344] STATEMENT:  UPDATE "public"."ConditionOption" SET "categoryTemplateId" = $1 WHERE ("public"."ConditionOption"."id" = $2 AND 1=1) RETURNING "public"."ConditionOption"."id", "public"."ConditionOption"."schemeId", "public"."ConditionOption"."categoryTemplateId", "public"."ConditionOption"."labelKey", "public"."ConditionOption"."labelDe", "public"."ConditionOption"."labelEn", "public"."ConditionOption"."normalizedBand", "public"."ConditionOption"."position", "public"."ConditionOption"."active"
+2026-10-18T00:11:15.6158982Z  2026-10-18 00:04:49.673 UTC [345] ERROR:  condition option semantics are immutable
+2026-10-18T00:11:15.6159717Z  2026-10-18 00:04:49.673 UTC [345] CONTEXT:  PL/pgSQL function guard_condition_option_semantics() line 5 at RAISE
+2026-10-18T00:11:15.6161652Z  2026-10-18 00:04:49.673 UTC [345] STATEMENT:  UPDATE "public"."ConditionOption" SET "id" = $1 WHERE ("public"."ConditionOption"."id" = $2 AND 1=1) RETURNING "public"."ConditionOption"."id", "public"."ConditionOption"."schemeId", "public"."ConditionOption"."categoryTemplateId", "public"."ConditionOption"."labelKey", "public"."ConditionOption"."labelDe", "public"."ConditionOption"."labelEn", "public"."ConditionOption"."normalizedBand", "public"."ConditionOption"."position", "public"."ConditionOption"."active"
+2026-10-18T00:11:15.6163478Z  2026-10-18 00:04:49.681 UTC [346] ERROR:  condition scheme semantics are immutable
+2026-10-18T00:11:15.6164048Z  2026-10-18 00:04:49.681 UTC [346] CONTEXT:  PL/pgSQL function guard_condition_scheme_semantics() line 5 at RAISE
+2026-10-18T00:11:15.6165588Z  2026-10-18 00:04:49.681 UTC [346] STATEMENT:  UPDATE "public"."ConditionScheme" SET "labelDe" = $1 WHERE ("public"."ConditionScheme"."id" = $2 AND 1=1) RETURNING "public"."ConditionScheme"."id", "public"."ConditionScheme"."categoryTemplateId", "public"."ConditionScheme"."key", "public"."ConditionScheme"."labelDe", "public"."ConditionScheme"."labelEn", "public"."ConditionScheme"."active"
+2026-10-18T00:11:15.6167020Z  2026-10-18 00:04:49.689 UTC [347] ERROR:  condition scheme semantics are immutable
+2026-10-18T00:11:15.6167588Z  2026-10-18 00:04:49.689 UTC [347] CONTEXT:  PL/pgSQL function guard_condition_scheme_semantics() line 5 at RAISE
+2026-10-18T00:11:15.6169259Z  2026-10-18 00:04:49.689 UTC [347] STATEMENT:  UPDATE "public"."ConditionScheme" SET "labelEn" = $1 WHERE ("public"."ConditionScheme"."id" = $2 AND 1=1) RETURNING "public"."ConditionScheme"."id", "public"."ConditionScheme"."categoryTemplateId", "public"."ConditionScheme"."key", "public"."ConditionScheme"."labelDe", "public"."ConditionScheme"."labelEn", "public"."ConditionScheme"."active"
+2026-10-18T00:11:15.6170705Z  2026-10-18 00:04:49.698 UTC [348] ERROR:  condition scheme semantics are immutable
+2026-10-18T00:11:15.6171264Z  2026-10-18 00:04:49.698 UTC [348] CONTEXT:  PL/pgSQL function guard_condition_scheme_semantics() line 5 at RAISE
+2026-10-18T00:11:15.6172773Z  2026-10-18 00:04:49.698 UTC [348] STATEMENT:  UPDATE "public"."ConditionScheme" SET "key" = $1 WHERE ("public"."ConditionScheme"."id" = $2 AND 1=1) RETURNING "public"."ConditionScheme"."id", "public"."ConditionScheme"."categoryTemplateId", "public"."ConditionScheme"."key", "public"."ConditionScheme"."labelDe", "public"."ConditionScheme"."labelEn", "public"."ConditionScheme"."active"
+2026-10-18T00:11:15.6174636Z  2026-10-18 00:04:49.706 UTC [349] ERROR:  update or delete on table "ConditionOption" violates foreign key constraint "CollectibleItem_conditionOptionId_categoryTemplateId_fkey" on table "CollectibleItem"
+2026-10-18T00:11:15.6175957Z  2026-10-18 00:04:49.706 UTC [349] DETAIL:  Key (id, categoryTemplateId)=(e47b299e-d797-4976-ba03-c961bfd57f7b, b1058ae1-41ce-4ece-968a-a5b14bf61462) is still referenced from table "CollectibleItem".
+2026-10-18T00:11:15.6178184Z  2026-10-18 00:04:49.706 UTC [349] STATEMENT:  DELETE FROM "public"."ConditionOption" WHERE ("public"."ConditionOption"."id" = $1 AND 1=1) RETURNING "public"."ConditionOption"."id", "public"."ConditionOption"."schemeId", "public"."ConditionOption"."categoryTemplateId", "public"."ConditionOption"."labelKey", "public"."ConditionOption"."labelDe", "public"."ConditionOption"."labelEn", "public"."ConditionOption"."normalizedBand", "public"."ConditionOption"."position", "public"."ConditionOption"."active"
+2026-10-18T00:11:15.6180502Z  2026-10-18 00:04:49.714 UTC [350] ERROR:  update or delete on table "CategoryTemplate" violates foreign key constraint "CollectibleItem_categoryTemplateId_fkey" on table "CollectibleItem"
+2026-10-18T00:11:15.6181843Z  2026-10-18 00:04:49.714 UTC [350] DETAIL:  Key (id)=(b1058ae1-41ce-4ece-968a-a5b14bf61462) is still referenced from table "CollectibleItem".
+2026-10-18T00:11:15.6183205Z  2026-10-18 00:04:49.714 UTC [350] STATEMENT:  DELETE FROM "public"."CategoryTemplate" WHERE ("public"."CategoryTemplate"."id" = $1 AND 1=1) RETURNING "public"."CategoryTemplate"."id", "public"."CategoryTemplate"."key", "public"."CategoryTemplate"."createdAt"
+2026-10-18T00:11:15.6184418Z  2026-10-18 00:04:49.739 UTC [351] ERROR:  duplicate key value violates unique constraint "ConditionScheme_categoryTemplateId_key"
+2026-10-18T00:11:15.6185198Z  2026-10-18 00:04:49.739 UTC [351] DETAIL:  Key ("categoryTemplateId")=(7d2c5542-544d-402f-a2fc-5000665f94a3) already exists.
+2026-10-18T00:11:15.6185734Z  2026-10-18 00:04:49.739 UTC [351] STATEMENT:  
+2026-10-18T00:11:15.6186280Z  	        INSERT INTO "ConditionScheme" (id, "categoryTemplateId", key, "labelDe", "labelEn", active)
+2026-10-18T00:11:15.6186842Z  	        VALUES ($1::uuid, $2::uuid, $3, $4, $5, $6) RETURNING *
+2026-10-18T00:11:15.6187146Z  	      
+2026-10-18T00:11:15.6187616Z  2026-10-18 00:04:49.742 UTC [351] ERROR:  duplicate key value violates unique constraint "ConditionOption_schemeId_labelKey_key"
+2026-10-18T00:11:15.6188449Z  2026-10-18 00:04:49.742 UTC [351] DETAIL:  Key ("schemeId", "labelKey")=(04acfd6e-8b9f-466b-99dd-093ee7a14cb2, vinyl.vg_plus) already exists.
+2026-10-18T00:11:15.6189225Z  2026-10-18 00:04:49.742 UTC [351] STATEMENT:  
+2026-10-18T00:11:15.6189834Z  	    INSERT INTO "ConditionOption" (id, "schemeId", "categoryTemplateId", "labelKey", "labelDe", "labelEn", "normalizedBand", position, active)
+2026-10-18T00:11:15.6190491Z  	    VALUES ($1::uuid, $2::uuid, $3::uuid, $4, $5, $6, $7, $8, $9) RETURNING *
+2026-10-18T00:11:15.6190834Z  	  
+2026-10-18T00:11:15.6191322Z  2026-10-18 00:04:50.552 UTC [354] ERROR:  duplicate key value violates unique constraint "Grading_ownerId_providerKey_certificateKey_key"
+2026-10-18T00:11:15.6192293Z  2026-10-18 00:04:50.552 UTC [354] DETAIL:  Key ("ownerId", "providerKey", "certificateKey")=(GradingOwner_ed2b8015-9d56-4ae8-bdd4-b857eff0bc3c, psa, 000456) already exists.
+2026-10-18T00:11:15.6192988Z  2026-10-18 00:04:50.552 UTC [354] STATEMENT:  
+2026-10-18T00:11:15.6193793Z  	          INSERT INTO "Grading" (id,"itemId","ownerId",provider,"providerKey",grade,"comparableValue","comparableScale","certificateNo","certificateKey","gradedAt","verificationUrl",source,"updatedAt")
+2026-10-18T00:11:15.6194723Z  	          VALUES ($1::uuid,$2::uuid,$3,$4,$5,$6,$7::numeric,$8,$9,$10,$11::date,$12,$13,now()) RETURNING id
+2026-10-18T00:11:15.6195124Z  	        
+2026-10-18T00:11:15.6195653Z  2026-10-18 00:04:51.216 UTC [355] ERROR:  duplicate key value violates unique constraint "Grading_ownerId_providerKey_certificateKey_key"
+2026-10-18T00:11:15.6196613Z  2026-10-18 00:04:51.216 UTC [355] DETAIL:  Key ("ownerId", "providerKey", "certificateKey")=(GradingOwner_ed2b8015-9d56-4ae8-bdd4-b857eff0bc3c, race, same) already exists.
+2026-10-18T00:11:15.6197305Z  2026-10-18 00:04:51.216 UTC [355] STATEMENT:  
+2026-10-18T00:11:15.6198102Z  	          INSERT INTO "Grading" (id,"itemId","ownerId",provider,"providerKey",grade,"comparableValue","comparableScale","certificateNo","certificateKey","gradedAt","verificationUrl",source,"updatedAt")
+2026-10-18T00:11:15.6199251Z  	          VALUES ($1::uuid,$2::uuid,$3,$4,$5,$6,$7::numeric,$8,$9,$10,$11::date,$12,$13,now()) RETURNING id
+2026-10-18T00:11:15.6199658Z  	        
+2026-10-18T00:11:15.6200190Z  2026-10-18 00:04:51.225 UTC [355] ERROR:  insert or update on table "Grading" violates foreign key constraint "Grading_itemId_ownerId_itemQuantity_fkey"
+2026-10-18T00:11:15.6201391Z  2026-10-18 00:04:51.225 UTC [355] DETAIL:  Key (itemId, ownerId, itemQuantity)=(82ccc478-7b7a-40ad-8eb7-895f5c7ef52b, ForeignGradingOwner_990f796a-ccda-4123-997f-8fe1634091e3, 1) is not present in table "CollectibleItem".
+2026-10-18T00:11:15.6204504Z  2026-10-18 00:04:51.225 UTC [355] STATEMENT:  INSERT INTO "public"."Grading" ("id","itemId","ownerId","itemQuantity","provider","providerKey","grade","createdAt","updatedAt") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING "public"."Grading"."id", "public"."Grading"."itemId", "public"."Grading"."ownerId", "public"."Grading"."itemQuantity", "public"."Grading"."provider", "public"."Grading"."providerKey", "public"."Grading"."grade", "public"."Grading"."comparableValue", "public"."Grading"."comparableScale", "public"."Grading"."certificateNo", "public"."Grading"."certificateKey", "public"."Grading"."gradedAt", "public"."Grading"."verificationUrl", "public"."Grading"."source", "public"."Grading"."createdAt", "public"."Grading"."updatedAt"
+2026-10-18T00:11:15.6207361Z  2026-10-18 00:04:51.231 UTC [354] ERROR:  insert or update on table "Grading" violates foreign key constraint "Grading_itemId_ownerId_itemQuantity_fkey"
+2026-10-18T00:11:15.6208536Z  2026-10-18 00:04:51.231 UTC [354] DETAIL:  Key (itemId, ownerId, itemQuantity)=(180f7067-4b38-41c2-9941-562ea12f8ae5, GradingOwner_ed2b8015-9d56-4ae8-bdd4-b857eff0bc3c, 1) is not present in table "CollectibleItem".
+2026-10-18T00:11:15.6211585Z  2026-10-18 00:04:51.231 UTC [354] STATEMENT:  INSERT INTO "public"."Grading" ("id","itemId","ownerId","itemQuantity","provider","providerKey","grade","createdAt","updatedAt") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING "public"."Grading"."id", "public"."Grading"."itemId", "public"."Grading"."ownerId", "public"."Grading"."itemQuantity", "public"."Grading"."provider", "public"."Grading"."providerKey", "public"."Grading"."grade", "public"."Grading"."comparableValue", "public"."Grading"."comparableScale", "public"."Grading"."certificateNo", "public"."Grading"."certificateKey", "public"."Grading"."gradedAt", "public"."Grading"."verificationUrl", "public"."Grading"."source", "public"."Grading"."createdAt", "public"."Grading"."updatedAt"
+2026-10-18T00:11:15.6214207Z  2026-10-18 00:04:51.242 UTC [356] ERROR:  new row for relation "Grading" violates check constraint "Grading_single_specimen_check"
+2026-10-18T00:11:15.6215546Z  2026-10-18 00:04:51.242 UTC [356] DETAIL:  Failing row contains (767e950c-5c28-47f9-a5b8-afcc0d1045d5, 180f7067-4b38-41c2-9941-562ea12f8ae5, GradingOwner_ed2b8015-9d56-4ae8-bdd4-b857eff0bc3c, 2, DB, db, A, null, null, null, null, null, null, null, 2026-10-18 00:04:51.235, 2026-10-18 00:04:51.235).
+2026-10-18T00:11:15.6218685Z  2026-10-18 00:04:51.242 UTC [356] STATEMENT:  INSERT INTO "public"."Grading" ("id","itemId","ownerId","itemQuantity","provider","providerKey","grade","createdAt","updatedAt") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING "public"."Grading"."id", "public"."Grading"."itemId", "public"."Grading"."ownerId", "public"."Grading"."itemQuantity", "public"."Grading"."provider", "public"."Grading"."providerKey", "public"."Grading"."grade", "public"."Grading"."comparableValue", "public"."Grading"."comparableScale", "public"."Grading"."certificateNo", "public"."Grading"."certificateKey", "public"."Grading"."gradedAt", "public"."Grading"."verificationUrl", "public"."Grading"."source", "public"."Grading"."createdAt", "public"."Grading"."updatedAt"
+2026-10-18T00:11:15.6221445Z  2026-10-18 00:04:51.252 UTC [357] ERROR:  new row for relation "Grading" violates check constraint "Grading_comparable_pair_check"
+2026-10-18T00:11:15.6222776Z  2026-10-18 00:04:51.252 UTC [357] DETAIL:  Failing row contains (70118efb-c9c6-4381-896c-d14a3c6521fb, 82ccc478-7b7a-40ad-8eb7-895f5c7ef52b, GradingOwner_ed2b8015-9d56-4ae8-bdd4-b857eff0bc3c, 1, DB, db, A, 1.0000, null, null, null, null, null, null, 2026-10-18 00:04:51.245, 2026-10-18 00:04:51.245).
+2026-10-18T00:11:15.6226119Z  2026-10-18 00:04:51.252 UTC [357] STATEMENT:  INSERT INTO "public"."Grading" ("id","itemId","ownerId","itemQuantity","provider","providerKey","grade","comparableValue","createdAt","updatedAt") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) RETURNING "public"."Grading"."id", "public"."Grading"."itemId", "public"."Grading"."ownerId", "public"."Grading"."itemQuantity", "public"."Grading"."provider", "public"."Grading"."providerKey", "public"."Grading"."grade", "public"."Grading"."comparableValue", "public"."Grading"."comparableScale", "public"."Grading"."certificateNo", "public"."Grading"."certificateKey", "public"."Grading"."gradedAt", "public"."Grading"."verificationUrl", "public"."Grading"."source", "public"."Grading"."createdAt", "public"."Grading"."updatedAt"
+2026-10-18T00:11:15.6229035Z  2026-10-18 00:04:51.260 UTC [358] ERROR:  new row for relation "Grading" violates check constraint "Grading_comparable_pair_check"
+2026-10-18T00:11:15.6230381Z  2026-10-18 00:04:51.260 UTC [358] DETAIL:  Failing row contains (1a58c359-7dd3-474d-8fbe-b55106514f8a, 82ccc478-7b7a-40ad-8eb7-895f5c7ef52b, GradingOwner_ed2b8015-9d56-4ae8-bdd4-b857eff0bc3c, 1, DB, db, A, -1.0000, scale, null, null, null, null, null, 2026-10-18 00:04:51.254, 2026-10-18 00:04:51.254).
+2026-10-18T00:11:15.6233679Z  2026-10-18 00:04:51.260 UTC [358] STATEMENT:  INSERT INTO "public"."Grading" ("id","itemId","ownerId","itemQuantity","provider","providerKey","grade","comparableValue","comparableScale","createdAt","updatedAt") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11) RETURNING "public"."Grading"."id", "public"."Grading"."itemId", "public"."Grading"."ownerId", "public"."Grading"."itemQuantity", "public"."Grading"."provider", "public"."Grading"."providerKey", "public"."Grading"."grade", "public"."Grading"."comparableValue", "public"."Grading"."comparableScale", "public"."Grading"."certificateNo", "public"."Grading"."certificateKey", "public"."Grading"."gradedAt", "public"."Grading"."verificationUrl", "public"."Grading"."source", "public"."Grading"."createdAt", "public"."Grading"."updatedAt"
+2026-10-18T00:11:15.6236465Z  2026-10-18 00:04:51.267 UTC [359] ERROR:  new row for relation "Grading" violates check constraint "Grading_certificate_identity_check"
+2026-10-18T00:11:15.6237787Z  2026-10-18 00:04:51.267 UTC [359] DETAIL:  Failing row contains (51795165-7922-41aa-a172-337f7640b7bb, 82ccc478-7b7a-40ad-8eb7-895f5c7ef52b, GradingOwner_ed2b8015-9d56-4ae8-bdd4-b857eff0bc3c, 1, DB, db, A, null, null, x, y, null, null, null, 2026-10-18 00:04:51.262, 2026-10-18 00:04:51.262).
+2026-10-18T00:11:15.6241139Z  2026-10-18 00:04:51.267 UTC [359] STATEMENT:  INSERT INTO "public"."Grading" ("id","itemId","ownerId","itemQuantity","provider","providerKey","grade","certificateNo","certificateKey","createdAt","updatedAt") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11) RETURNING "public"."Grading"."id", "public"."Grading"."itemId", "public"."Grading"."ownerId", "public"."Grading"."itemQuantity", "public"."Grading"."provider", "public"."Grading"."providerKey", "public"."Grading"."grade", "public"."Grading"."comparableValue", "public"."Grading"."comparableScale", "public"."Grading"."certificateNo", "public"."Grading"."certificateKey", "public"."Grading"."gradedAt", "public"."Grading"."verificationUrl", "public"."Grading"."source", "public"."Grading"."createdAt", "public"."Grading"."updatedAt"
+2026-10-18T00:11:15.6243892Z  2026-10-18 00:04:51.275 UTC [360] ERROR:  new row for relation "Grading" violates check constraint "Grading_provider_identity_check"
+2026-10-18T00:11:15.6245232Z  2026-10-18 00:04:51.275 UTC [360] DETAIL:  Failing row contains (dc3b702a-7902-463e-81a8-f78e2a1a2834, 82ccc478-7b7a-40ad-8eb7-895f5c7ef52b, GradingOwner_ed2b8015-9d56-4ae8-bdd4-b857eff0bc3c, 1, DB, DB, A, null, null, null, null, null, null, null, 2026-10-18 00:04:51.269, 2026-10-18 00:04:51.269).
+2026-10-18T00:11:15.6248383Z  2026-10-18 00:04:51.275 UTC [360] STATEMENT:  INSERT INTO "public"."Grading" ("id","itemId","ownerId","itemQuantity","provider","providerKey","grade","createdAt","updatedAt") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING "public"."Grading"."id", "public"."Grading"."itemId", "public"."Grading"."ownerId", "public"."Grading"."itemQuantity", "public"."Grading"."provider", "public"."Grading"."providerKey", "public"."Grading"."grade", "public"."Grading"."comparableValue", "public"."Grading"."comparableScale", "public"."Grading"."certificateNo", "public"."Grading"."certificateKey", "public"."Grading"."gradedAt", "public"."Grading"."verificationUrl", "public"."Grading"."source", "public"."Grading"."createdAt", "public"."Grading"."updatedAt"
+2026-10-18T00:11:15.6251347Z  2026-10-18 00:04:51.282 UTC [361] ERROR:  new row for relation "Grading" violates check constraint "Grading_comparable_finite_check"
+2026-10-18T00:11:15.6252699Z  2026-10-18 00:04:51.282 UTC [361] DETAIL:  Failing row contains (deb0f478-6416-408d-827e-a6765175987b, 82ccc478-7b7a-40ad-8eb7-895f5c7ef52b, GradingOwner_ed2b8015-9d56-4ae8-bdd4-b857eff0bc3c, 1, DB, db, A, NaN, scale, null, null, null, null, null, 2026-10-18 00:04:51.282, 2026-10-18 00:04:51.282).
+2026-10-18T00:11:15.6254399Z  2026-10-18 00:04:51.282 UTC [361] STATEMENT:  INSERT INTO "Grading" (id,"itemId","ownerId",provider,"providerKey",grade,"comparableValue","comparableScale","updatedAt") VALUES ($1::uuid,$2::uuid,$3,'DB','db','A','NaN'::numeric,'scale',now()) RETURNING id
+2026-10-18T00:11:15.6255748Z  2026-10-18 00:04:51.296 UTC [362] ERROR:  update or delete on table "CollectibleItem" violates foreign key constraint "Grading_itemId_ownerId_itemQuantity_fkey" on table "Grading"
+2026-10-18T00:11:15.6256991Z  2026-10-18 00:04:51.296 UTC [362] DETAIL:  Key (id, ownerId, quantity)=(82ccc478-7b7a-40ad-8eb7-895f5c7ef52b, GradingOwner_ed2b8015-9d56-4ae8-bdd4-b857eff0bc3c, 1) is still referenced from table "Grading".
+2026-10-18T00:11:15.6261710Z  2026-10-18 00:04:51.296 UTC [362] STATEMENT:  UPDATE "public"."CollectibleItem" SET "quantity" = $1, "updatedAt" = $2 WHERE ("public"."CollectibleItem"."id" = $3 AND 1=1) RETURNING "public"."CollectibleItem"."id", "public"."CollectibleItem"."collectionId", "public"."CollectibleItem"."ownerId", "public"."CollectibleItem"."nodeId", "public"."CollectibleItem"."storageLocationId", "public"."CollectibleItem"."categoryTemplateId", "public"."CollectibleItem"."conditionOptionId", "public"."CollectibleItem"."catalogEntryId", "public"."CollectibleItem"."catalogVariantId", "public"."CollectibleItem"."title", "public"."CollectibleItem"."publicDescription", "public"."CollectibleItem"."privateNotes", "public"."CollectibleItem"."quantity", "public"."CollectibleItem"."acquisitionType"::text, "public"."CollectibleItem"."acquisitionDate", "public"."CollectibleItem"."purchaseAmountMinor", "public"."CollectibleItem"."purchaseCurrency", "public"."CollectibleItem"."visibility"::text, "public"."CollectibleItem"."tradeStatus"::text, "public"."CollectibleItem"."archivedAt", "public"."CollectibleItem"."disposedAt", "public"."CollectibleItem"."createdAt", "public"."CollectibleItem"."updatedAt", "public"."CollectibleItem"."deletedAt"
+2026-10-18T00:11:15.6266458Z  2026-10-18 00:04:51.395 UTC [364] ERROR:  update or delete on table "CollectibleItem" violates foreign key constraint "Grading_itemId_ownerId_itemQuantity_fkey" on table "Grading"
+2026-10-18T00:11:15.6267705Z  2026-10-18 00:04:51.395 UTC [364] DETAIL:  Key (id, ownerId, quantity)=(d5cd4bf1-e7ea-4dcf-bafa-f4e3c766c6c9, GradingOwner_ed2b8015-9d56-4ae8-bdd4-b857eff0bc3c, 1) is still referenced from table "Grading".
+2026-10-18T00:11:15.6272448Z  2026-10-18 00:04:51.395 UTC [364] STATEMENT:  UPDATE "public"."CollectibleItem" SET "quantity" = $1, "updatedAt" = $2 WHERE ("public"."CollectibleItem"."id" = $3 AND 1=1) RETURNING "public"."CollectibleItem"."id", "public"."CollectibleItem"."collectionId", "public"."CollectibleItem"."ownerId", "public"."CollectibleItem"."nodeId", "public"."CollectibleItem"."storageLocationId", "public"."CollectibleItem"."categoryTemplateId", "public"."CollectibleItem"."conditionOptionId", "public"."CollectibleItem"."catalogEntryId", "public"."CollectibleItem"."catalogVariantId", "public"."CollectibleItem"."title", "public"."CollectibleItem"."publicDescription", "public"."CollectibleItem"."privateNotes", "public"."CollectibleItem"."quantity", "public"."CollectibleItem"."acquisitionType"::text, "public"."CollectibleItem"."acquisitionDate", "public"."CollectibleItem"."purchaseAmountMinor", "public"."CollectibleItem"."purchaseCurrency", "public"."CollectibleItem"."visibility"::text, "public"."CollectibleItem"."tradeStatus"::text, "public"."CollectibleItem"."archivedAt", "public"."CollectibleItem"."disposedAt", "public"."CollectibleItem"."createdAt", "public"."CollectibleItem"."updatedAt", "public"."CollectibleItem"."deletedAt"
+2026-10-18T00:11:15.6277238Z  2026-10-18 00:04:51.413 UTC [363] ERROR:  duplicate key value violates unique constraint "Grading_ownerId_providerKey_certificateKey_key"
+2026-10-18T00:11:15.6278291Z  2026-10-18 00:04:51.413 UTC [363] DETAIL:  Key ("ownerId", "providerKey", "certificateKey")=(GradingOwner_ed2b8015-9d56-4ae8-bdd4-b857eff0bc3c, retained, retained-physical) already exists.
+2026-10-18T00:11:15.6279169Z  2026-10-18 00:04:51.413 UTC [363] STATEMENT:  
+2026-10-18T00:11:15.6280170Z  	          INSERT INTO "Grading" (id,"itemId","ownerId",provider,"providerKey",grade,"comparableValue","comparableScale","certificateNo","certificateKey","gradedAt","verificationUrl",source,"updatedAt")
+2026-10-18T00:11:15.6281122Z  	          VALUES ($1::uuid,$2::uuid,$3,$4,$5,$6,$7::numeric,$8,$9,$10,$11::date,$12,$13,now()) RETURNING id
+2026-10-18T00:11:15.6281535Z  	        
+2026-10-18T00:11:15.6281793Z  2026-10-18 00:06:34.357 UTC [62] LOG:  checkpoint starting: time
+2026-10-18T00:11:15.6282894Z  2026-10-18 00:08:14.586 UTC [62] LOG:  checkpoint complete: wrote 1006 buffers (6.1%); 0 WAL file(s) added, 0 removed, 1 recycled; write=100.221 s, sync=0.004 s, total=100.230 s; sync files=550, longest=0.001 s, average=0.001 s; distance=14511 kB, estimate=14511 kB; lsn=0/27C9348, redo lsn=0/27366D0
+2026-10-18T00:11:15.6283899Z  
+2026-10-18T00:11:15.6284172Z  The database cluster will be initialized with locale "en_US.utf8".
+2026-10-18T00:11:15.6284621Z  The default database encoding has accordingly been set to "UTF8".
+2026-10-18T00:11:15.6285049Z  The default text search configuration will be set to "english".
+2026-10-18T00:11:15.6285375Z  
+2026-10-18T00:11:15.6285572Z  Data page checksums are disabled.
+2026-10-18T00:11:15.6285815Z  
+2026-10-18T00:11:15.6286108Z  fixing permissions on existing directory /var/lib/postgresql/data ... ok
+2026-10-18T00:11:15.6286505Z  creating subdirectories ... ok
+2026-10-18T00:11:15.6286831Z  selecting dynamic shared memory implementation ... posix
+2026-10-18T00:11:15.6287310Z  selecting default "max_connections" ... 100
+2026-10-18T00:11:15.6287894Z  selecting default "shared_buffers" ... 128MB
+2026-10-18T00:11:15.6304251Z  selecting default time zone ... Etc/UTC
+2026-10-18T00:11:15.6304779Z  creating configuration files ... ok
+2026-10-18T00:11:15.6305205Z  running bootstrap script ... ok
+2026-10-18T00:11:15.6305528Z  performing post-bootstrap initialization ... ok
+2026-10-18T00:11:15.6305837Z  syncing data to disk ... ok
+2026-10-18T00:11:15.6306061Z  
+2026-10-18T00:11:15.6306226Z  
+2026-10-18T00:11:15.6306448Z  Success. You can now start the database server using:
+2026-10-18T00:11:15.6306739Z  
+2026-10-18T00:11:15.6306974Z      pg_ctl -D /var/lib/postgresql/data -l logfile start
+2026-10-18T00:11:15.6307291Z  
+2026-10-18T00:11:15.6307964Z  waiting for server to start....2026-10-18 00:01:33.946 UTC [48] LOG:  starting PostgreSQL 17.11 (Debian 17.11-1.pgdg12+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14+deb12u1) 12.2.0, 64-bit
+2026-10-18T00:11:15.6309143Z  2026-10-18 00:01:33.946 UTC [48] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+2026-10-18T00:11:15.6309738Z  2026-10-18 00:01:33.949 UTC [51] LOG:  database system was shut down at 2026-10-18 00:01:33 UTC
+2026-10-18T00:11:15.6310243Z  2026-10-18 00:01:33.953 UTC [48] LOG:  database system is ready to accept connections
+2026-10-18T00:11:15.6310609Z   done
+2026-10-18T00:11:15.6310784Z  server started
+2026-10-18T00:11:15.6310970Z  CREATE DATABASE
+2026-10-18T00:11:15.6311151Z  
+2026-10-18T00:11:15.6311311Z  
+2026-10-18T00:11:15.6311615Z  /usr/local/bin/docker-entrypoint.sh: ignoring /docker-entrypoint-initdb.d/*
+2026-10-18T00:11:15.6311999Z  
+2026-10-18T00:11:15.6312351Z  waiting for server to shut down...2026-10-18 00:01:34.135 UTC [48] LOG:  received fast shutdown request
+2026-10-18T00:11:15.6313064Z  .2026-10-18 00:01:34.135 UTC [48] LOG:  aborting any active transactions
+2026-10-18T00:11:15.6313640Z  2026-10-18 00:01:34.138 UTC [48] LOG:  background worker "logical replication launcher" (PID 54) exited with exit code 1
+2026-10-18T00:11:15.6314343Z  2026-10-18 00:01:34.138 UTC [49] LOG:  shutting down
+2026-10-18T00:11:15.6314732Z  2026-10-18 00:01:34.138 UTC [49] LOG:  checkpoint starting: shutdown immediate
+2026-10-18T00:11:15.6315810Z  2026-10-18 00:01:34.153 UTC [49] LOG:  checkpoint complete: wrote 921 buffers (5.6%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.012 s, sync=0.003 s, total=0.016 s; sync files=301, longest=0.002 s, average=0.001 s; distance=4238 kB, estimate=4238 kB; lsn=0/190A9C8, redo lsn=0/190A9C8
+2026-10-18T00:11:15.6316856Z  2026-10-18 00:01:34.160 UTC [48] LOG:  database system is shut down
+2026-10-18T00:11:15.6317168Z   done
+2026-10-18T00:11:15.6317345Z  server stopped
+2026-10-18T00:11:15.6317539Z  
+2026-10-18T00:11:15.6317770Z  PostgreSQL init process complete; ready for start up.
+2026-10-18T00:11:15.6318070Z  
+2026-10-18T00:11:15.6324667Z Stop and remove container: d114c44532a94c9cb1161ca5defe4f4d_postgres17bookworm_0755b8
+2026-10-18T00:11:15.6330536Z ##[command]/usr/bin/docker rm --force 4c642733dda966e8d78da142ef027a028f6581439c1e1b9a4ac496500a499fc3
+2026-10-18T00:11:15.7520345Z 4c642733dda966e8d78da142ef027a028f6581439c1e1b9a4ac496500a499fc3
+2026-10-18T00:11:15.7547365Z Remove container network: github_network_376208eedb2b49b3888bca40e2dda137
+2026-10-18T00:11:15.7552530Z ##[command]/usr/bin/docker network rm github_network_376208eedb2b49b3888bca40e2dda137
+2026-10-18T00:11:15.8464348Z github_network_376208eedb2b49b3888bca40e2dda137
+2026-10-18T00:11:15.8535716Z Cleaning up orphan processes
+2026-10-18T00:11:15.8988700Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-node@v4, pnpm/action-setup@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+

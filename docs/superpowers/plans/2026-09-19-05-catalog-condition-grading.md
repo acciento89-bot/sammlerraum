@@ -316,7 +316,7 @@ git commit -m "feat: link personal items to global catalog"
 - Consumes: catalog search/link/proposal, condition, grading APIs.
 - Produces: reference lookup/linking, new-entry/correction proposal UI, category condition selection, independent grading editor.
 
-- [ ] **Step 1: Write failing separation E2E**
+- [x] **Step 1: Write failing separation E2E**
 
 ```ts
 test("changing own condition does not overwrite external grading", async ({ page }) => {
@@ -328,16 +328,16 @@ test("changing own condition does not overwrite external grading", async ({ page
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm --filter @sammlerraum/web exec playwright test e2e/catalog-grading.spec.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement UI**
+- [x] **Step 3: Implement UI**
 
 Catalog candidates always show variant-disambiguating fields such as language/edition/reference. Proposal forms require change summary and optional source URL. Condition and grading render as separate sections.
 
-- [ ] **Step 4: Run E2E/build**
+- [x] **Step 4: Run E2E/build**
 
 Run:
 ```bash
@@ -347,7 +347,7 @@ pnpm --filter @sammlerraum/web build
 
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add apps/web
