@@ -152,6 +152,9 @@ importers:
       '@sammlerraum/contracts':
         specifier: workspace:*
         version: link:../contracts
+      '@sammlerraum/market-data':
+        specifier: workspace:*
+        version: link:../market-data
       '@sammlerraum/storage':
         specifier: workspace:*
         version: link:../storage
@@ -165,6 +168,8 @@ importers:
       '@sammlerraum/db':
         specifier: workspace:*
         version: link:../db
+
+  packages/market-data: {}
 
   packages/queue:
     dependencies:

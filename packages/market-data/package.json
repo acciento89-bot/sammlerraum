@@ -1,0 +1,14 @@
+{
+  "name": "@sammlerraum/market-data",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./types": "./src/types.ts",
+    "./provider-registry": "./src/provider-registry.ts"
+  },
+  "scripts": {
+    "build": "pnpm typecheck",
+    "lint": "prettier --check .",
+    "typecheck": "tsc --noEmit --project ../../tsconfig.base.json"
+  }
+}

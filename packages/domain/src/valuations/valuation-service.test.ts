@@ -294,36 +294,46 @@ describe.runIf(enabled)("private manual valuation PostgreSQL", () => {
   });
   it("uses UTC only inside its transaction and preserves canonical instants in non-UTC sessions", async () => {
     const target = await item();
-    const zoned: ValuationDatabase = {
-      $transaction: (work, options) =>
-        db!.$transaction(async (tx) => {
-          await tx.$queryRaw`SELECT set_config('TimeZone','Europe/Berlin',true)`;
-          const result = await work(tx);
-          const [during] = await tx.$queryRaw<
-            Array<{ zone: string }>
-          >`SELECT current_setting('TimeZone') AS zone`;
-          expect(during!.zone).toBe("UTC");
-          return result;
-        }, options),
-    };
-    const [before] = await db!.$queryRaw<
-      Array<{ zone: string; pid: number }>
-    >`SELECT current_setting('TimeZone') AS zone, pg_backend_pid() AS pid`;
-    const row = await createValuationService(zoned, ownerId).addManualValuation(target.id, {
-      amountMinor: 1n,
-      currency: "EUR",
-      observedAt: "0001-01-01T00:00:00.000Z",
-    });
-    expect(row.observedAt.toISOString()).toBe("0001-01-01T00:00:00.000Z");
-    const [outside] = await db!.$queryRaw<
-      Array<{ zone: string; pid: number }>
-    >`SELECT current_setting('TimeZone') AS zone, pg_backend_pid() AS pid`;
-    expect(outside).toEqual(before);
-    expect(
-      (await createValuationService(zoned, ownerId).latestManualValuation(
-        target.id,
-      ))!.observedAt.toISOString(),
-    ).toBe("0001-01-01T00:00:00.000Z");
+    const connection = createTestDatabaseClient();
+    try {
+      await connection.$queryRaw`SELECT set_config('TimeZone','Europe/Berlin',false)`;
+      let duringPid: number | undefined;
+      const zoned: ValuationDatabase = {
+        $transaction: (work, options) =>
+          connection.$transaction(async (tx) => {
+            await tx.$queryRaw`SELECT set_config('TimeZone','Europe/Berlin',true)`;
+            const result = await work(tx);
+            const [during] = await tx.$queryRaw<
+              Array<{ zone: string; pid: number }>
+            >`SELECT current_setting('TimeZone') AS zone, pg_backend_pid() AS pid`;
+            duringPid = during!.pid;
+            expect(during!.zone).toBe("UTC");
+            return result;
+          }, options),
+      };
+      const [before] = await connection.$queryRaw<
+        Array<{ zone: string; pid: number }>
+      >`SELECT current_setting('TimeZone') AS zone, pg_backend_pid() AS pid`;
+      const row = await createValuationService(zoned, ownerId).addManualValuation(target.id, {
+        amountMinor: 1n,
+        currency: "EUR",
+        observedAt: "0001-01-01T00:00:00.000Z",
+      });
+      expect(row.observedAt.toISOString()).toBe("0001-01-01T00:00:00.000Z");
+      const [outside] = await connection.$queryRaw<
+        Array<{ zone: string; pid: number }>
+      >`SELECT current_setting('TimeZone') AS zone, pg_backend_pid() AS pid`;
+      expect(before!.zone).toBe("Europe/Berlin");
+      expect(outside).toEqual(before);
+      expect(duringPid).toBe(before!.pid);
+      expect(
+        (await createValuationService(zoned, ownerId).latestManualValuation(
+          target.id,
+        ))!.observedAt.toISOString(),
+      ).toBe("0001-01-01T00:00:00.000Z");
+    } finally {
+      await connection.$disconnect();
+    }
   });
   it.each(["quantity", "split", "archive", "dispose", "delete", "collection-delete"] as const)(
     "serializes actual %s mutation behind an append and captures clock after waiting",

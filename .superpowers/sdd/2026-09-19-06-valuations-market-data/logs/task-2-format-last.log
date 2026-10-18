@@ -1,0 +1,2 @@
+packages/domain/src/market-data/validation.test.ts 42ms
+packages/domain/src/market-data/market-data-service.test.ts 54ms

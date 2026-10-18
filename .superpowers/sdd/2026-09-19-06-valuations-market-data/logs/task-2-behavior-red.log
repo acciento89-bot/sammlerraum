@@ -1,0 +1,157 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| packages/domain/src/market-data/market-data-service.test.ts (9 tests | 9 failed) 235ms
+   × global market observations PostgreSQL > preserves sold median separately from asking price with exact native bigint values 37ms
+     → Not implemented
+   × global market observations PostgreSQL > preserves all seven kinds, zero ranges, source precision, source qualifiers and ISO scales 12ms
+     → Not implemented
+   × global market observations PostgreSQL > reuses equal poll content and first retrieval time but retains future polls 14ms
+     → Not implemented
+   × global market observations PostgreSQL > preserves event provenance after an unrelated revision and equivalent identifier re-add 10ms
+     → Not implemented
+   × global market observations PostgreSQL > deduplicates equal batch rows and rolls back all rows on a divergent existing identity 9ms
+     → Not implemented
+   × global market observations PostgreSQL > rejects malformed/private/oversized input atomically and permits an empty result 9ms
+     → Not implemented
+   × global market observations PostgreSQL > rejects stale revisions and entry-to-variant inference and preserves historical rows after retirement 9ms
+     → Not implemented
+   × global market observations PostgreSQL > serializes equal and conflicting concurrent observations without overwriting 8ms
+     → Not implemented
+   × global market observations PostgreSQL > belongs to its enclosing transaction and pages by exact stable timestamp/id order 8ms
+     → Not implemented
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 9 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/market-data/market-data-service.test.ts > global market observations PostgreSQL > preserves sold median separately from asking price with exact native bigint values
+Error: Not implemented
+ ❯ createMarketDataService packages/domain/src/market-data/market-data-service.ts:2:9
+      1| export function createMarketDataService(_database: unknown, _registry:…
+      2|   throw new Error('Not implemented');
+       |         ^
+      3| }
+      4| 
+ ❯ service packages/domain/src/market-data/market-data-service.test.ts:12:23
+ ❯ fixture packages/domain/src/market-data/market-data-service.test.ts:22:25
+ ❯ packages/domain/src/market-data/market-data-service.test.ts:44:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/9]⎯
+
+ FAIL  |workspace| packages/domain/src/market-data/market-data-service.test.ts > global market observations PostgreSQL > preserves all seven kinds, zero ranges, source precision, source qualifiers and ISO scales
+Error: Not implemented
+ ❯ createMarketDataService packages/domain/src/market-data/market-data-service.ts:2:9
+      1| export function createMarketDataService(_database: unknown, _registry:…
+      2|   throw new Error('Not implemented');
+       |         ^
+      3| }
+      4| 
+ ❯ service packages/domain/src/market-data/market-data-service.test.ts:12:23
+ ❯ fixture packages/domain/src/market-data/market-data-service.test.ts:22:25
+ ❯ packages/domain/src/market-data/market-data-service.test.ts:51:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/9]⎯
+
+ FAIL  |workspace| packages/domain/src/market-data/market-data-service.test.ts > global market observations PostgreSQL > reuses equal poll content and first retrieval time but retains future polls
+Error: Not implemented
+ ❯ createMarketDataService packages/domain/src/market-data/market-data-service.ts:2:9
+      1| export function createMarketDataService(_database: unknown, _registry:…
+      2|   throw new Error('Not implemented');
+       |         ^
+      3| }
+      4| 
+ ❯ service packages/domain/src/market-data/market-data-service.test.ts:12:23
+ ❯ fixture packages/domain/src/market-data/market-data-service.test.ts:22:25
+ ❯ packages/domain/src/market-data/market-data-service.test.ts:68:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/9]⎯
+
+ FAIL  |workspace| packages/domain/src/market-data/market-data-service.test.ts > global market observations PostgreSQL > preserves event provenance after an unrelated revision and equivalent identifier re-add
+Error: Not implemented
+ ❯ createMarketDataService packages/domain/src/market-data/market-data-service.ts:2:9
+      1| export function createMarketDataService(_database: unknown, _registry:…
+      2|   throw new Error('Not implemented');
+       |         ^
+      3| }
+      4| 
+ ❯ service packages/domain/src/market-data/market-data-service.test.ts:12:23
+ ❯ fixture packages/domain/src/market-data/market-data-service.test.ts:22:25
+ ❯ packages/domain/src/market-data/market-data-service.test.ts:78:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/9]⎯
+
+ FAIL  |workspace| packages/domain/src/market-data/market-data-service.test.ts > global market observations PostgreSQL > deduplicates equal batch rows and rolls back all rows on a divergent existing identity
+Error: Not implemented
+ ❯ createMarketDataService packages/domain/src/market-data/market-data-service.ts:2:9
+      1| export function createMarketDataService(_database: unknown, _registry:…
+      2|   throw new Error('Not implemented');
+       |         ^
+      3| }
+      4| 
+ ❯ service packages/domain/src/market-data/market-data-service.test.ts:12:23
+ ❯ fixture packages/domain/src/market-data/market-data-service.test.ts:22:25
+ ❯ packages/domain/src/market-data/market-data-service.test.ts:91:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/9]⎯
+
+ FAIL  |workspace| packages/domain/src/market-data/market-data-service.test.ts > global market observations PostgreSQL > rejects malformed/private/oversized input atomically and permits an empty result
+Error: Not implemented
+ ❯ createMarketDataService packages/domain/src/market-data/market-data-service.ts:2:9
+      1| export function createMarketDataService(_database: unknown, _registry:…
+      2|   throw new Error('Not implemented');
+       |         ^
+      3| }
+      4| 
+ ❯ service packages/domain/src/market-data/market-data-service.test.ts:12:23
+ ❯ fixture packages/domain/src/market-data/market-data-service.test.ts:22:25
+ ❯ packages/domain/src/market-data/market-data-service.test.ts:98:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/9]⎯
+
+ FAIL  |workspace| packages/domain/src/market-data/market-data-service.test.ts > global market observations PostgreSQL > rejects stale revisions and entry-to-variant inference and preserves historical rows after retirement
+Error: Not implemented
+ ❯ createMarketDataService packages/domain/src/market-data/market-data-service.ts:2:9
+      1| export function createMarketDataService(_database: unknown, _registry:…
+      2|   throw new Error('Not implemented');
+       |         ^
+      3| }
+      4| 
+ ❯ service packages/domain/src/market-data/market-data-service.test.ts:12:23
+ ❯ fixture packages/domain/src/market-data/market-data-service.test.ts:22:25
+ ❯ packages/domain/src/market-data/market-data-service.test.ts:114:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/9]⎯
+
+ FAIL  |workspace| packages/domain/src/market-data/market-data-service.test.ts > global market observations PostgreSQL > serializes equal and conflicting concurrent observations without overwriting
+Error: Not implemented
+ ❯ createMarketDataService packages/domain/src/market-data/market-data-service.ts:2:9
+      1| export function createMarketDataService(_database: unknown, _registry:…
+      2|   throw new Error('Not implemented');
+       |         ^
+      3| }
+      4| 
+ ❯ service packages/domain/src/market-data/market-data-service.test.ts:12:23
+ ❯ fixture packages/domain/src/market-data/market-data-service.test.ts:22:25
+ ❯ packages/domain/src/market-data/market-data-service.test.ts:125:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/9]⎯
+
+ FAIL  |workspace| packages/domain/src/market-data/market-data-service.test.ts > global market observations PostgreSQL > belongs to its enclosing transaction and pages by exact stable timestamp/id order
+Error: Not implemented
+ ❯ createMarketDataService packages/domain/src/market-data/market-data-service.ts:2:9
+      1| export function createMarketDataService(_database: unknown, _registry:…
+      2|   throw new Error('Not implemented');
+       |         ^
+      3| }
+      4| 
+ ❯ service packages/domain/src/market-data/market-data-service.test.ts:12:23
+ ❯ fixture packages/domain/src/market-data/market-data-service.test.ts:22:25
+ ❯ packages/domain/src/market-data/market-data-service.test.ts:134:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/9]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  9 failed (9)
+   Start at  04:18:24
+   Duration  555ms (transform 70ms, setup 6ms, collect 148ms, tests 235ms, environment 0ms, prepare 36ms)
+

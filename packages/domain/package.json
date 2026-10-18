@@ -28,7 +28,8 @@
     "./catalog/catalog-read-service": "./src/catalog/catalog-read-service.ts",
     "./catalog/initialize-catalog": "./src/catalog/initialize-catalog.ts",
     "./money/money": "./src/money/money.ts",
-    "./valuations/valuation-service": "./src/valuations/valuation-service.ts"
+    "./valuations/valuation-service": "./src/valuations/valuation-service.ts",
+    "./market-data/market-data-service": "./src/market-data/market-data-service.ts"
   },
   "scripts": {
     "build": "pnpm typecheck",
@@ -39,7 +40,8 @@
     "@sammlerraum/contracts": "workspace:*",
     "@sammlerraum/storage": "workspace:*",
     "file-type": "21.3.4",
-    "sharp": "0.35.4"
+    "sharp": "0.35.4",
+    "@sammlerraum/market-data": "workspace:*"
   },
   "devDependencies": {
     "@sammlerraum/db": "workspace:*"
