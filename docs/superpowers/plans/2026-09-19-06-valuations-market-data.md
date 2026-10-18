@@ -94,7 +94,7 @@ git commit -m "feat: add canonical money and manual valuations"
   - `MarketDataProvider.fetch(request): Promise<MarketObservation[]>`
   - `recordObservations(providerId, observations)`.
 
-- [ ] **Step 1: Write failing observation-type test**
+- [x] **Step 1: Write failing observation-type test**
 
 ```ts
 it("preserves sold median separately from asking price", async () => {
@@ -107,18 +107,18 @@ it("preserves sold median separately from asking price", async () => {
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run packages/domain/src/market-data/market-data-service.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement interface and model**
+- [x] **Step 3: Implement interface and model**
 
 Observation kinds: `LAST_SOLD`, `SOLD_AVERAGE`, `SOLD_MEDIAN`, `ASKING_PRICE`, `PRICE_RANGE`, `CATALOG_VALUE`, `DEALER_PRICE`.
 
 Persist provider ID, external observation ID, source URL/reference when licensed, catalog entry/variant, condition/grading qualifiers, currency, amount/range, observedAt, fetchedAt, confidence metadata.
 
-- [ ] **Step 4: Migrate and test**
+- [x] **Step 4: Migrate and test**
 
 Run:
 ```bash
@@ -128,7 +128,7 @@ pnpm vitest run packages/domain/src/market-data
 
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/market-data packages/domain/src/market-data packages/db
