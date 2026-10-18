@@ -118,6 +118,7 @@ model User {
   applicationRoleGrant       ApplicationRoleGrant?
   catalogProposals           CatalogProposal[]      @relation("ProposalProposer")
   catalogDecisions           CatalogProposal[]      @relation("ProposalModerator")
+  valuations                 Valuation[]
   catalogRollbacks           CatalogRollbackAudit[]
 
   @@unique([email])
@@ -201,6 +202,7 @@ model CollectibleItem {
   mediaLinks          MediaLink[]
   documentLinks       DocumentLink[]
   gradings            Grading[]
+  valuations          Valuation[]
 
   @@unique([id, collectionId])
   @@unique([id, ownerId])
@@ -796,4 +798,29 @@ model Grading {
 
   @@unique([ownerId, providerKey, certificateKey])
   @@index([itemId, ownerId])
+}
+
+enum ValuationType {
+  MANUAL
+}
+
+// Append-only personal per-unit estimates. SQL prohibits UPDATE; private erasure can DELETE.
+model Valuation {
+  id                String          @id @default(uuid()) @db.Uuid
+  itemId            String          @db.Uuid
+  ownerId           String
+  actorUserId       String
+  type              ValuationType   @default(MANUAL)
+  basis             String          @default("PER_UNIT") @db.VarChar(8)
+  amountMinor       BigInt
+  currency          String          @db.VarChar(3)
+  minorUnitExponent Int
+  note              String?         @db.VarChar(2000)
+  observedAt        DateTime        @db.Timestamptz(3)
+  createdAt         DateTime        @default(now()) @db.Timestamptz(3)
+  item              CollectibleItem @relation(fields: [itemId, ownerId], references: [id, ownerId], onDelete: Cascade, onUpdate: Restrict)
+  actor             User            @relation(fields: [actorUserId], references: [id], onDelete: Cascade, onUpdate: Restrict)
+
+  @@index([itemId, ownerId, observedAt(sort: Desc), createdAt(sort: Desc), id(sort: Desc)])
+  @@index([actorUserId])
 }

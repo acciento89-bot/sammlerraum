@@ -1,0 +1,8 @@
+packages/domain/src/money/currencies.ts 36ms
+packages/domain/src/money/money.test.ts 12ms
+packages/domain/src/money/money.ts 7ms
+packages/domain/src/valuations/valuation-service.test.ts 41ms
+packages/domain/src/valuations/valuation-service.ts 17ms
+packages/domain/package.json 10ms (unchanged)
+[error] No parser could be inferred for file "/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/db/prisma/schema.prisma".
+.github/workflows/ci.yml 16ms (unchanged)
