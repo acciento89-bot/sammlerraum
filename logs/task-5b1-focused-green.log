@@ -1,0 +1,90 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ✓ |workspace| apps/web/src/lib/private-search-routes.integration.test.ts (5 tests) 656ms
+   ✓ native private query POST transport > accepts valid raw f beyond 10000 characters through the real service  436ms
+ ❯ |workspace| packages/contracts/src/private-search-query.test.ts (33 tests | 2 failed) 20ms
+   ✓ private query wire contracts > applies existing text/filter/lifecycle defaults without dashboard pagination 4ms
+   ✓ private query wire contracts > rejects invalid/override item envelopes 0ms
+   ✓ private query wire contracts > rejects invalid/override item envelopes 0ms
+   ✓ private query wire contracts > rejects invalid/override item envelopes 0ms
+   ✓ private query wire contracts > rejects invalid/override item envelopes 0ms
+   ✓ private query wire contracts > rejects invalid/override item envelopes 0ms
+   ✓ private query wire contracts > rejects invalid/override item envelopes 0ms
+   ✓ private query wire contracts > rejects invalid/override item envelopes 0ms
+   ✓ private query wire contracts > rejects invalid/override item envelopes 0ms
+   ✓ private query wire contracts > rejects invalid/override item envelopes 0ms
+   ✓ private query wire contracts > rejects invalid/override item envelopes 0ms
+   ✓ private query wire contracts > rejects invalid/override item envelopes 0ms
+   ✓ private query wire contracts > rejects invalid/override item envelopes 0ms
+   ✓ private query wire contracts > rejects invalid/override item envelopes 0ms
+   ✓ private query wire contracts > rejects invalid/override item envelopes 0ms
+   ✓ private query wire contracts > rejects invalid/override item envelopes 0ms
+   ✓ private query wire contracts > rejects invalid/override item envelopes 0ms
+   ✓ private query wire contracts > rejects invalid/override item envelopes 0ms
+   ✓ private query wire contracts > rejects invalid/override item envelopes 0ms
+   ✓ private query wire contracts > rejects invalid/override item envelopes 0ms
+   ✓ private query wire contracts > rejects invalid/override item envelopes 0ms
+   ✓ private query wire contracts > rejects invalid/override item envelopes 0ms
+   ✓ private query wire contracts > rejects dashboard pagination and overrides 0ms
+   ✓ private query wire contracts > rejects dashboard pagination and overrides 0ms
+   ✓ private query wire contracts > rejects dashboard pagination and overrides 0ms
+   ✓ private query wire contracts > rejects dashboard pagination and overrides 0ms
+   ✓ private query wire contracts > preserves invalid raw-filter errors 0ms
+   ✓ private query wire contracts > preserves invalid raw-filter errors 0ms
+   ✓ private query wire contracts > preserves invalid raw-filter errors 0ms
+   ✓ private query wire contracts > preserves invalid raw-filter errors 0ms
+   × private query wire contracts > passes raw f intact at 10001 and 16384 characters, enforcing raw and canonical caps 7ms
+     → expected [Function] to throw an error
+   ✓ private query wire contracts > uses existing text limits before and after normalization 1ms
+   × private query wire contracts > retains depth, leaf and structural limits and version errors 4ms
+     → expected [Function] to throw an error
+ ✓ |workspace| apps/web/src/lib/api/read-search-body.test.ts (43 tests) 438ms
+   ✓ private scalar search body boundary > retains raw f above 10000 chars instead of applying filter guards to its envelope  421ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/contracts/src/private-search-query.test.ts > private query wire contracts > passes raw f intact at 10001 and 16384 characters, enforcing raw and canonical caps
+AssertionError: expected [Function] to throw an error
+
+- Expected: 
+null
+
++ Received: 
+undefined
+
+ ❯ packages/contracts/src/private-search-query.test.ts:30:41
+     28|     const expanded = f({ kind: "tags", test: { op: "hasAny", values: A…
+     29|     expect(new TextEncoder().encode(expanded).length).toBeLessThan(163…
+     30|     expect(() => item({ f: expanded })).toThrow("FILTER_TOO_COMPLEX");
+       |                                         ^
+     31|   });
+     32|   it("uses existing text limits before and after normalization", () =>…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |workspace| packages/contracts/src/private-search-query.test.ts > private query wire contracts > retains depth, leaf and structural limits and version errors
+AssertionError: expected [Function] to throw an error
+
+- Expected: 
+null
+
++ Received: 
+undefined
+
+ ❯ packages/contracts/src/private-search-query.test.ts:45:43
+     43|     expect(() => item({ f: f({ kind: "and", children: Array.from({ len…
+     44|     const structural = f({ kind: "and", children: Array.from({ length:…
+     45|     expect(() => item({ f: structural })).toThrow("FILTER_TOO_COMPLEX"…
+       |                                           ^
+     46|     expect(() => item({ f: '{"version":2,"root":{"kind":"duplicate","v…
+     47|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed | 2 passed (3)
+      Tests  2 failed | 79 passed (81)
+   Start at  12:02:40
+   Duration  2.05s (transform 189ms, setup 7ms, collect 517ms, tests 1.11s, environment 0ms, prepare 106ms)
+

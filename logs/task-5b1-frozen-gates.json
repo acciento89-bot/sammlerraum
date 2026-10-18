@@ -1,0 +1,23 @@
+[
+  {
+    "check": "native",
+    "sourceSHA": "72b023cf7f24d50c4cac228a742ee5c60d1da4a5",
+    "command": "RUN_DATABASE_INTEGRATION=1 npm exec --yes --package=node@24.19.0 --package=pnpm@10.17.1 -- pnpm vitest run --no-file-parallelism packages/domain/src/search packages/domain/src/dashboard packages/contracts/src/private-search-query.test.ts apps/web/src/lib/api/read-search-body.test.ts apps/web/src/lib/private-search-routes.integration.test.ts apps/web/src/lib/item-search-routes.integration.test.ts apps/web/src/lib/dashboard-routes.integration.test.ts apps/web/src/lib/smart-collection-routes.integration.test.ts apps/web/src/lib/item-search-routes.test.ts",
+    "startedAt": "2026-10-18T10:07:12.062562+00:00",
+    "exitCode": 0
+  },
+  {
+    "check": "regular",
+    "sourceSHA": "72b023cf7f24d50c4cac228a742ee5c60d1da4a5",
+    "command": "RUN_DATABASE_INTEGRATION=0 NODE_ENV=test npm exec --yes --package=node@24.19.0 --package=pnpm@10.17.1 -- pnpm test",
+    "startedAt": "2026-10-18T10:07:37.837043+00:00",
+    "exitCode": 0
+  },
+  {
+    "check": "types",
+    "sourceSHA": "72b023cf7f24d50c4cac228a742ee5c60d1da4a5",
+    "command": "npm exec --yes --package=node@24.19.0 --package=pnpm@10.17.1 -- pnpm typecheck",
+    "startedAt": "2026-10-18T10:07:46.251203+00:00",
+    "exitCode": 2
+  }
+]
