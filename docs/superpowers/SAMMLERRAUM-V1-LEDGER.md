@@ -17,7 +17,7 @@ This is the handoff/status file for long-running implementation. Update it after
 | 04 | Media & Documents | 6 | complete (6/6) | — |
 | 05 | Catalog, Condition & Grading | 7 | complete (7/7) | — |
 | 06 | Valuations & Market Data | 6 | complete (6/6) | — |
-| 07 | Search, Smart Collections & Dashboard | 5 | not started | Task 1 |
+| 07 | Search, Smart Collections & Dashboard | 5 | in progress (1/5) | Task 2 |
 | 08 | Import, Export, Insurance & Reports | 7 | not started | Task 1 |
 | 09 | Collaboration, Sharing & Audit | 7 | not started | Task 1 |
 | 10 | Community, Moderation & Notifications | 8 | not started | Task 1 |
@@ -70,8 +70,9 @@ This is the handoff/status file for long-running implementation. Update it after
 - [x] P06 T04 — Add source comparison API and item valuation summary
 - [x] P06 T05 — Add valuation history UI contracts and localization
 - [x] P06 T06 — Add the first two production market-data adapters
+- [x] P07 T01 — Define typed filter AST and complexity limits
 
-**Verified completion: 40/91 tasks.** Later tasks remain open as listed in the phase table and detail plans.
+**Verified completion: 41/91 tasks.** Later tasks remain open as listed in the phase table and detail plans.
 
 ## Update rule
 
@@ -879,3 +880,14 @@ One whole-phase review BASEeefd76a..570a9cc SPEC compliant/QUALITY Approved0C0I1
 Both exact testedproduct570CI39101603958 and39101601035 SUCCESS; retainedbefore anysupersedingpush. README-onlyeabe plus rootcompletionartifacts change no product/test/schema: explicitproduct-equivalence diff excluding exactREADME+tracking/docs/outputs exit0. Ruling: documentation-only fix is verified by scopedreview/format/link/diff, no duplicateproduct suite — no productbehavior changed — cost no new runtime evidence for documentation, while exact productCI remains570 and never falselyclaimed on a differentSHA. AnyautomaticpostdocsCI is separate.
 
 All six phasecapabilities integrated: exactcanonical/privateper-unitmanualhistory, immutableglobalsourcefacts, atomicsyncreceipts, ownercomparisonAPI, DE/ENdesktop/mobileUI, defaultOFFproviderfactories/durablesharedtokenlimits. Phase06 sixofsixCOMPLETE, globalverified40/91. No merge/deployment/liveactivation/purge. LegacyL1 remains load-bearing for Phase07canonicallegacyranges/totals/Phase08reports/Phase13release. FuturePhase07 design/preflight/Task1contractprepared only, noimplementation accepted by thisphasecheckoff.
+
+
+### Phase07 Task1 verified — bounded typed filter foundation
+
+BASEf4c7fe9, originalc00467d and corrected2e2943be1354a70cb3e09d4ae9239194f6c89ddb. Independent initial0C1ImportantI1/1MinorM1; fixround1 closes both with scopedSPECcompliant/QUALITYApproved0C0I0M. Both exact corrected CI39104148232/job117606324471 and39104145709/job117606316963 SUCCESS (30steps each), securitycheckSUCCESS, fullmetadata retained before completiondocs push. Retained winning39104145709 tooltail120000chars/truncated/no test-countlines; no remote totals inferred. Supersededc004 bothfinalCImetadataSUCCESS; pre-pushproviderlogHTTP502/unavailable preserved, not inventedoldlogs.
+
+Finalfrozen-source117pureAST cases,740regularworkspacepass/253explicitDB-gatedskip, allworkspace lint/types/productionbuild and isolatedbrowserimport/probe passed. Initial85/708 and earlier707 runs plus missingexport/scaffold/type/env/browsercommand/Unicode/decimal/capfailures preserved with accuratechronology. Sourceprivacyfix genuinely32RED/85existingpass→117GREEN: supportedZod4.1.11 nullishaddIssue reattachedrawinput; typed supported context.issues push masks it across bothpublicschemas/all4syncasyncAPIs/4secret-getter-toJSON-oversizefixtures, no invocation/cause/raw diagnostic. No localDB/native/browser server, realprovider or productionoperation was needed or claimed for thispuretask.
+
+Complete strictversionedAST and browser-safeexports use raw+normalized16KiB/32JSONcontainers/512values/32keys/50arrayelements, logicaldepth5/leaves50, rawduplicate/escapedmemberguards, safecloning/errorpaths and exacttypedscalars/ranges; no coerced/floatmoney/tableclone. Actualtypedfieldselectors expressmanufacturer/year, collection/acquisitiondates included, no inventedwishlistalias. Canonicaltag/customidentity caps200/400 preserveactual pre-fold producerfacts and repeatedparse; genericretiredcatalogfacts mean currentlyretainedtypedfacts only/nohistoricalfallback. Whole-tree currentavailability rejects duplicate/legacyamount/ALLmarket predicates even underNOT/OR/falseAND. Structuralvalidity is not execution/authorization.
+
+RulingsL1.1–4/P7.1–7 with why/cost and narrowed finalTask1scope are recorded in root-design-rulings.md/task-1-context.md. FutureTask2querypreparation and adjudicated direction in task-2-context.md are READONLYpreparation, no SQL/query/route/schema/UI/sourceGO/checkoff. Actualcollation/nativeproof/fullproducer-or-milestone scheduling remain preGOgates; L1legacyprovenance+completecoverage, batchmarketrights/eligibility, Phase09sharedauth andPhase10realrelations remainfullV1acceptancegates. Phase07only1/5, nextTask2notimplemented; globalverified41/91. No merge/deploy/provideractivation.

@@ -1,0 +1,55 @@
+{
+  "headRevision": "2e2943be1354a70cb3e09d4ae9239194f6c89ddb",
+  "checks": [
+    {
+      "id": 117606324471,
+      "name": "verify",
+      "head_sha": "2e2943be1354a70cb3e09d4ae9239194f6c89ddb",
+      "status": "completed",
+      "conclusion": "success",
+      "details_url": "https://github.com/acciento89-bot/sammlerraum/actions/runs/39104148232/job/117606324471",
+      "output": {
+        "title": null,
+        "summary": null,
+        "text": null,
+        "annotations_count": 2
+      }
+    },
+    {
+      "id": 117606319686,
+      "name": "GitGuardian Security Checks",
+      "head_sha": "2e2943be1354a70cb3e09d4ae9239194f6c89ddb",
+      "status": "completed",
+      "conclusion": "success",
+      "details_url": "https://dashboard.gitguardian.com",
+      "output": {
+        "title": "No secrets detected ✅",
+        "summary": "**157** commits were scanned without uncovering any secrets.\n",
+        "text": "Commits scanned: **157**\n\n\n\n-   Pull request #1: `work/sammlerraum-v1` 👉 `main`\n    \n\n🦉 [GitGuardian](https://dashboard.gitguardian.com/auth/login/?utm_medium=checkruns&amp;utm_source=github&amp;utm_campaign=cr1) detects secrets in your source code to help developers and security teams secure the modern development process. You are seeing this because you or someone else with access to this repository has authorized GitGuardian to scan your pull request.<br/>\n",
+        "annotations_count": 0
+      }
+    },
+    {
+      "id": 117606316963,
+      "name": "verify",
+      "head_sha": "2e2943be1354a70cb3e09d4ae9239194f6c89ddb",
+      "status": "completed",
+      "conclusion": "success",
+      "details_url": "https://github.com/acciento89-bot/sammlerraum/actions/runs/39104145709/job/117606316963",
+      "output": {
+        "title": null,
+        "summary": null,
+        "text": null,
+        "annotations_count": 2
+      }
+    }
+  ],
+  "statuses": [],
+  "annotations": [],
+  "hasMore": false,
+  "job": null,
+  "jobs": [],
+  "log": null,
+  "logTruncated": false,
+  "providerGuidance": "GitHub guidance for this response only: use checkRunId for output and annotations, runId from a GitHub Actions /runs/<id> link to list jobs, or jobId from a /jobs/<id> link for logs. page paginates checks, jobs or annotations. Keep the supplied account and returned headRevision on follow-up reads. Third-party CI exposes only the output reported to GitHub."
+}
