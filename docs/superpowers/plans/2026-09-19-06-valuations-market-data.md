@@ -191,7 +191,7 @@ git commit -m "feat: synchronize market data idempotently"
 **Interfaces:**
 - Produces: `getItemValuationSummary(itemId, actor)`.
 
-- [ ] **Step 1: Write failing mixed-currency test**
+- [x] **Step 1: Write failing mixed-currency test**
 
 ```ts
 it("does not calculate a combined total across mixed currencies", async () => {
@@ -201,21 +201,21 @@ it("does not calculate a combined total across mixed currencies", async () => {
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run packages/domain/src/valuations/valuation-query.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement transparent comparison**
+- [x] **Step 3: Implement transparent comparison**
 
 Return manual latest + history and external observations grouped by provider/kind/currency. Do not compute a blended value unless all required inputs share currency and a later explicit aggregation method exists.
 
-- [ ] **Step 4: Run tests**
+- [x] **Step 4: Run tests**
 
 Run: `pnpm vitest run packages/domain/src/valuations`  
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/domain/src/valuations apps/web/src/app/api/v1/items

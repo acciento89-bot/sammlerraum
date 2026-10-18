@@ -16,7 +16,7 @@ This is the handoff/status file for long-running implementation. Update it after
 | 03 | Collections, Items, Fields & Locations | 8 | complete (8/8) | — |
 | 04 | Media & Documents | 6 | complete (6/6) | — |
 | 05 | Catalog, Condition & Grading | 7 | complete (7/7) | — |
-| 06 | Valuations & Market Data | 6 | in progress (3/6) | Task 4 |
+| 06 | Valuations & Market Data | 6 | in progress (4/6) | Task 5 |
 | 07 | Search, Smart Collections & Dashboard | 5 | not started | Task 1 |
 | 08 | Import, Export, Insurance & Reports | 7 | not started | Task 1 |
 | 09 | Collaboration, Sharing & Audit | 7 | not started | Task 1 |
@@ -67,8 +67,9 @@ This is the handoff/status file for long-running implementation. Update it after
 - [x] P06 T01 — Canonical money and private append-only manual valuations
 - [x] P06 T02 — External market provider interface and immutable observations
 - [x] P06 T03 — Idempotent bounded market synchronization and safe worker lifecycle
+- [x] P06 T04 — Add source comparison API and item valuation summary
 
-**Verified completion: 37/91 tasks.** Later tasks remain open as listed in the phase table and detail plans.
+**Verified completion: 38/91 tasks.** Later tasks remain open as listed in the phase table and detail plans.
 
 ## Update rule
 
@@ -773,3 +774,41 @@ Cannot-verify inherited Task2 internals are resolved by its independent task-2-r
 Task4 private summary/manual API, Task5 UI and Task6 actual adapters/per-token permit remain pending. Task3 fetchedAt is explicitly legacy/fake-provider fetch-completion fallback; actual body-receipt callback and every-attempt shared token limiter are future Task6 responsibilities. Licensing/zero/currency/display/retention, verified fleet/queue/redrive/manual replay drain and authorized purge/reactivation are production gates. Current source does not activate providers, accept licenses, call paid APIs, grant real roles, purge data, merge or deploy. Earlier Task5/6 design rulings and the load-bearing legacy-money interpretation gap are preserved above, not resolved by this task.
 
 Canonical37/91, Phase06threeofsix. Completion docs/push/main-ledger-only persistence precede explicit fresh Task4 source GO; draft remains unmerged and undeployed.
+
+### Phase06 Task4 — coherent read implementation ruling
+
+
+Ruling: use one bounded RepeatableRead read transaction rather than one composite SELECT — exact historical eligibility and all-eligible currency diversity require canonical CatalogSnapshotSchema validation for encountered revision snapshots; reproducing the schema inside SQL would duplicate its authority, while validating only returned rows could let malformed hidden candidates alter a headline conflict flag — cost additional bounded query roundtrips, finite serialization retries and rare concurrency latency. This explicitly supersedes older one-SELECT/ReadCommitted read-query wording in the proposal and this context, not the existing manual POST transaction.
+
+Keep Collection→item SHARE lock order, no catalog locks and no HTTP; every manual/catalog/source/group/diversity read uses the same RepeatableRead MVCC snapshot. Cache canonical validation per encountered revision within that transaction. No independently owning service calls or validation after discarding the snapshot. Do not silently cap eligibility and return a false currencyConflict; unsupported/incoherent data fails closed and total processing exhaustion returns sanitized503.
+
+At most3 complete attempts, only for specifically recognized serialization/move races; rollback/release before retry. Do not retry invalid input, invariant/schema errors or ordinary timeout/dependency failure. Actual2s acquisition/maxWait,5s per-transaction,2s statement and500ms lock ceilings remain conservative defaults. Track a finite monotonic overall read-work budget across retries and candidate validation loops, clamping new attempts/work to remaining budget. Whole HTTP latency also includes acquisitions/retries/authentication, so do not claim a universal5second HTTP deadline or pretend Promise.race terminates SQL. Avoid a generic deadline framework. Report chosen overall bound and actual driver/SQL settlement evidence.
+
+The new query DB interface may use RepeatableRead; existing addManualValuation POST remains ReadCommitted and unchanged. Capture readAt once from database-authored read/transaction-start time and document its updated semantics; it is neither an exact single-statement/commit/snapshot-LSN time nor a version shared by cursor pages. DTO price observation/fetch/recorded timestamps retain their own meanings. Root approved this concrete change before query implementation; no user approval cycle needed.
+
+### Phase06 Task6 — verified worker seam reconciliation rulings
+
+
+Root read task-6-reconciliation.md against verified c7a4030. Task3 already supplies optional signal context, a bound fetch method forwarding context, MarketRequestPermit, explicit registrations input, bounded market client, accurate fetchedAt repository parameter and safe stop failure guard. Do not recreate these APIs or rewrite queue/receipt/scheduler code. Task4 is sole implementer; Task6 still NO SOURCE GO.
+
+5. Ruling: approve a small market-data-owned provider failure class with fixed allowlisted codes and internally determined terminal/retry classification, recognized by the existing sync handler — actual adapters need to avoid paid retries for known malformed mappings/permanent denial without importing domain errors backwards — cost a narrow shared error contract and focused handler/adapter tests. No arbitrary provider message/body/cause/stack may enter that class or broker output; validate codes at runtime and construct fresh constant broker errors. Cancellation still takes priority; unknown/transient exceptions retain bounded retry. No generic error framework, raw provider-status passthrough or dependency cycle.
+
+6. Ruling: approve an optional worker-owned requestLifecycle.stop hook in composeMarketSync, supplied by the real permit and included in the existing market stop aggregate — Promise.allSettled(handlerPromises) alone cannot prove cleanup/drain when an earlier settled handler left a durable unresolved claim — cost an extra lifecycle dependency and conservative failed shutdown/manual recovery after latched uncertainty. The permit tracks actual local transport/cooldown/cleanup work and latches unresolved local claims, never clears them automatically on startup/stop or forgets failure when a handler leaves the pending set. Stop is idempotent, closes admission synchronously, aborts requests, waits real settlement/cooldown and independent bounded compare-and-clear bookkeeping even if request signal is already aborted, then rejects on unresolved local uncertainty. Existing main no-DB-disconnect-on-market-failure guard must apply; watchdog timeout is failure, not physical cancellation. A normal successful local stop never claims fleet-wide drain or authority to clear another process's claim. Shared-token/fleet recovery remains the explicit later operator gate.
+
+Implement these only after future Task6 GO with final Task4/5 exports rechecked. Test an earlier completed handler whose permit cleanup failed still makes later stop reject/withhold DB disconnect, normal abort fully settles/releases before stop success, ignored cancellation remains unsafe, and callback forwarding/validation/time provenance. The existing15s watchdog is a failure bound, not a new promise that nominal per-stage timeouts prove every shutdown succeeds. No source changes now.
+
+### Phase06 Task6 — shared token identity clarification
+
+
+Ruling: credential request gates and attempted-call counters use a constant upstream-service scope plus exact API-token bytes; changing Scrydex team ID, catalog category, provider registration alias or worker instance must not create a fresh gate for the same token. Team ID remains a private request-authentication parameter, not evidence of independent quota. Why: otherwise configuration changes could bypass a still-active sender or reset token-level counters. Cost: conservative shared throughput/budget across teams and categories; a less restrictive split requires explicit provider quota evidence and a separate reviewed policy. PriceCharting always shares one gate per configured token across all product categories/replicas. Do not include raw credentials or fingerprints in broker/log/display output. This clarifies and supersedes the preflight's Scrydex-team-in-fingerprint suggestion before implementation.
+
+
+### Phase06 Task4 verified — private source comparison API (2026-10-18)
+
+Source fe15a8bcb40e926fffd69e991ae09e73f0fb048b plus fix e75067846afa112a78493d8d10b36682410f4eb2; exact tested HEAD25e36584bc1cea04ef12e672c629b040b4fea910 includes report-only final commit. Strict decimal-string bigint/stored-exponent contracts, real owner summary/source-history GET and manual POST, bounded semantic current/historical mapping groups and keyset histories, independent manual latest, page-independent all-eligible currency conflict and aggregate:null. Fresh owner sessions, explicit private DTO projection, actual streamed body/query/response bounds, no-store, default-empty independently trusted display policy; no GET fetch/queue work or public/private fact mixing. Query-proven additive migration20261018033424_valuation_source_history uses actual8,008-row plans with direct one-row group/six-row source scans. Earlier Task2 unconsumed provider-wide chronological-query performance Minor remains separate.
+
+Approved coherent bounded RepeatableRead adjustment is recorded above and in task-4-context.md: canonical immutable snapshot validation per encountered revision, Collection→item SHARE, no catalog locks/provider HTTP, bounded work/retry/SQL/acquisition budgets and honest readAt semantics. Initial independent SPEC/QUALITY found0Critical/2Important/0Minor: actual Prisma P1001/adapter outage shape incorrectly500, and stale pre-acquisition remaining SQL limits/missing post-query empty-history deadline. Fix round1 corrected supported outage→sanitized503 without masking unknown faults or broadening serialization retries; actual post-acquisition/per-query timeout clamps and post-await/before-return checks enforce processing/DB budget, with native cancellation and awaited settlement. Scoped independent re-review closes both, SPEC compliant/QUALITY Approved,0Critical/0Important/0newMinor. No universal whole-HTTP deadline asserted.
+
+Evidence: initial67/67 affected tests, workspace508pass/228native-gatedskip, full lint/types/build pass; fix affected native37/37 and strengthened6/6 targeted regressions, final scoped types/lint/format and production build pass. Actual ownership/foreign/deleted-parent/lifecycle, concurrency/item-move/deletion retry, append blocking/timeout, malformed retained snapshot exclusion, mapping/grant boundaries, UTC/year0001, exact money and1,419,287-byte worst-page response covered. Both exact corrected-source CI39095599056/job117581267901 and39095597661/job117581264889 SUCCESS, including native DB, production browser journeys, web/worker containers and native image processing. Tool-returned120000-character primary log tail is truncated and contains no test-count lines; no remote totals inferred. Complete metadata for both runs retained in task-4-ci-25e3658-steps.json. Both superseded fe15 CI runs later completed SUCCESS by metadata; this does not replace corrected-source CI, and original in-progress metadata/diagnostic gap is preserved.
+
+All expected REDs, typing/test-fixture and harness failures plus recoveries are retained in task-4-report.md/task-4-fix-report.md and logs. Reports/reviews are under .superpowers/sdd/2026-09-19-06-valuations-market-data/. Task5 actual-interface read-only reconciliation found no blocker; UI, real adapters and whole-phase review remain pending. Task6 additional readonly reconciliation and approved failure/lifecycle/token-only scope rulings are retained. Future Phase07 design preflight exists only as preparation, requires root adjudication and actual final Phase06 reconciliation; no Phase07 source/task completion. No real provider activation, role assignment, purge, merge or Sammlerraum deployment.
