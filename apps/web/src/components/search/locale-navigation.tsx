@@ -27,13 +27,20 @@ export function LocaleNavigation({ locale }: { locale: string }) {
       window.removeEventListener("sammlerraum:search-history", update);
     };
   }, [pathname]);
+  const saved = /^\/(de|en)\/smart-collections(?:\/[0-9a-f-]+)?$/u.test(pathname ?? "");
   const search = /^\/(de|en)\/search$/u.test(pathname ?? "");
   return (
     <nav className="language-nav" aria-label={t("language")}>
       {(["de", "en"] as const).map((language) => (
         <Link
           key={language}
-          href={search ? `/${language}/search${suffix}` : `/${language}`}
+          href={
+            search
+              ? `/${language}/search${suffix}`
+              : saved
+                ? `/${language}${pathname!.slice(3)}`
+                : `/${language}`
+          }
           hrefLang={language}
           prefetch={false}
           aria-current={locale === language ? "page" : undefined}

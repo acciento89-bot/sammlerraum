@@ -1,9 +1,11 @@
 "use client";
+import { SavedSearchDialog } from "./saved-search-dialog";
+import { containDialogTab } from "./dialog-keyboard";
 import { SearchLabel } from "./search-label";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { useCallback, useEffect, useRef, useState, type KeyboardEvent } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   parseItemSearchQuery,
   SearchLifecycleSchema,
@@ -16,30 +18,6 @@ import { MetadataCache, RequestChannel } from "./search-state";
 import { parseSearchLocation, tabQueryStore, writeSearchHistory } from "./search-url-state";
 import { SearchResults, type SearchPageData } from "./search-results";
 import { CollectorNavigation } from "./collector-navigation";
-function containDialogTab(event: KeyboardEvent<HTMLDialogElement>) {
-  if (event.key !== "Tab") return;
-  const controls = Array.from(
-    event.currentTarget.querySelectorAll<HTMLElement>(
-      'button:not(:disabled), input:not(:disabled), select:not(:disabled), textarea:not(:disabled), a[href], [tabindex="0"]',
-    ),
-  ).filter((element) => element.getClientRects().length > 0);
-  const first = controls[0],
-    last = controls.at(-1);
-  if (!first || !last) {
-    event.preventDefault();
-    return;
-  }
-  if (
-    event.shiftKey &&
-    (document.activeElement === first || !controls.includes(document.activeElement as HTMLElement))
-  ) {
-    event.preventDefault();
-    last.focus();
-  } else if (!event.shiftKey && document.activeElement === last) {
-    event.preventDefault();
-    first.focus();
-  }
-}
 const initial: NormalizedItemSearchQuery = {
   text: "",
   filter: null,
@@ -50,6 +28,7 @@ export function SearchPage({ locale, actor }: { locale: "de" | "en"; actor: stri
   const t = useTranslations("Search");
   const router = useRouter();
   const [query, setQuery] = useState(initial);
+  const [saveOpen, setSaveOpen] = useState(false);
   const [text, setText] = useState("");
   const [draft, setDraft] = useState<DraftNode | null>(null);
   const [lifecycle, setLifecycle] = useState(initial.lifecycle);
@@ -157,6 +136,7 @@ export function SearchPage({ locale, actor }: { locale: "de" | "en"; actor: stri
       focusResults.current = false;
       cancelAction.current = null;
       setConfirm(null);
+      setSaveOpen(false);
       drawer.current?.close();
       setQuery(initial);
       setLifecycle(initial.lifecycle);
@@ -417,11 +397,28 @@ export function SearchPage({ locale, actor }: { locale: "de" | "en"; actor: stri
   return (
     <section className="management-shell search-shell">
       <CollectorNavigation locale={locale} />
+      {error !== "session" && (
+        <SavedSearchDialog
+          open={saveOpen}
+          onClose={() => setSaveOpen(false)}
+          locale={locale}
+          query={query}
+          actor={actor}
+        />
+      )}
       <header className="management-heading">
         <p className="eyebrow">{t("eyebrow")}</p>
         <h1>{t("title")}</h1>
         <p>{t("intro")}</p>
         <p className="field-help">{t("tokenHelp")}</p>
+        <button
+          type="button"
+          disabled={loading || !data || !!error || dirty}
+          onClick={() => setSaveOpen(true)}
+        >
+          {t("saveSearch")}
+        </button>
+        {dirty && <p className="field-help">{t("saveApplied")}</p>}
       </header>
       <div className="search-layout">
         {mobile ? (

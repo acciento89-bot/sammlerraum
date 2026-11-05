@@ -23,6 +23,10 @@ const codes = new Set([
   "FILTER_REFERENCE_INVALID",
   "UNAUTHENTICATED",
   "FORBIDDEN",
+  "SMART_COLLECTION_INVALID",
+  "SMART_COLLECTION_NOT_FOUND",
+  "SMART_COLLECTION_CONFLICT",
+  "SMART_COLLECTION_UNRESOLVABLE",
 ]);
 export async function searchRequest<T>(
   url: string,
@@ -31,9 +35,10 @@ export async function searchRequest<T>(
   },
   signal: AbortSignal,
   body?: unknown,
+  method?: "POST" | "PATCH" | "DELETE",
 ): Promise<T> {
   const response = await fetch(url, {
-    method: body === undefined ? "GET" : "POST",
+    method: method ?? (body === undefined ? "GET" : "POST"),
     credentials: "same-origin",
     cache: "no-store",
     signal,

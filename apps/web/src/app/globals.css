@@ -1083,3 +1083,9 @@ body:has(.search-shell) .skip-link:not(:focus) {
   flex-shrink: 0;
   white-space: nowrap;
 }
+
+.search-shell button:disabled,
+.search-confirm button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

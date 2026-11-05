@@ -1,6 +1,7 @@
 "use client";
+import { DeferredFocus } from "./deferred-focus";
 import { SearchLabel } from "./search-label";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { FilterValidationError } from "@sammlerraum/contracts/search";
 import { FilterLeafEditor } from "./filter-leaf-editor";
@@ -11,18 +12,22 @@ export function FilterBuilder({
   onChange,
   locale,
   cache,
+  helpText,
 }: {
   value: DraftNode | null;
   onChange: (value: DraftNode | null) => void;
   locale: "de" | "en";
   cache: MetadataCache;
+  helpText?: string;
 }) {
   const t = useTranslations("Search");
   const [active, setActive] = useState<string | null>(value?.key ?? null);
   const [undo, setUndo] = useState<DraftNode | null>(null);
   const [status, setStatus] = useState("");
   const container = useRef<HTMLDivElement>(null);
-  function change(next: DraftNode | null, focus?: string) {
+  const focus = useRef(new DeferredFocus()).current;
+  useEffect(() => () => focus.cancel(), [focus]);
+  function change(next: DraftNode | null, focusId?: string) {
     try {
       fromDraft(next);
     } catch (error) {
@@ -33,10 +38,10 @@ export function FilterBuilder({
     }
     setUndo(null);
     onChange(next);
-    if (focus) {
-      setActive(focus);
+    if (focusId) {
+      setActive(focusId);
       setStatus(t("added"));
-      requestAnimationFrame(() => document.getElementById(focus)?.focus());
+      focus.afterRender(() => document.getElementById(focusId));
     }
   }
   function replace(key: string, next: DraftNode | null) {
@@ -94,8 +99,8 @@ export function FilterBuilder({
               replace(node.key, null);
               setUndo(value);
               setStatus(t("removed"));
-              requestAnimationFrame(() =>
-                container.current?.querySelector<HTMLButtonElement>("button")?.focus(),
+              focus.afterRender(() =>
+                container.current?.querySelector<HTMLButtonElement>("button"),
               );
             }}
           >
@@ -145,7 +150,7 @@ export function FilterBuilder({
   }
   return (
     <div ref={container} className="search-builder">
-      <p className="field-help">{t("builderHelp")}</p>
+      <p className="field-help">{helpText ?? t("builderHelp")}</p>
       {value && render(value, 1)}
       {(!value || value.kind === "leaf" || value.kind === "not") && (
         <div className="search-actions">

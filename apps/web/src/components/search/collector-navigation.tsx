@@ -1,7 +1,13 @@
 "use client";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-export function CollectorNavigation({ locale }: { locale: string }) {
+export function CollectorNavigation({
+  locale,
+  current = "search",
+}: {
+  locale: string;
+  current?: "search" | "saved";
+}) {
   const t = useTranslations("Search");
   return (
     <nav className="management-nav" aria-label={t("navigation")}>
@@ -11,8 +17,19 @@ export function CollectorNavigation({ locale }: { locale: string }) {
       <Link href={`/${locale}/catalog`} prefetch={false}>
         {t("catalog")}
       </Link>
-      <Link href={`/${locale}/search`} prefetch={false} aria-current="page">
+      <Link
+        href={`/${locale}/search`}
+        prefetch={false}
+        aria-current={current === "search" ? "page" : undefined}
+      >
         {t("navSearch")}
+      </Link>
+      <Link
+        href={`/${locale}/smart-collections`}
+        prefetch={false}
+        aria-current={current === "saved" ? "page" : undefined}
+      >
+        {t("navSaved")}
       </Link>
       <Link href={`/${locale}/account/profile`} prefetch={false}>
         {t("account")}

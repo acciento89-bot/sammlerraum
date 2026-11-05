@@ -1,3 +1,4 @@
+import { clearSavedAcknowledgements } from "./saved-acknowledgements";
 import {
   parseItemSearchQuery,
   type NormalizedItemSearchQuery,
@@ -85,6 +86,7 @@ export function tabQueryStore(actor: string) {
   return currentStore;
 }
 export function clearSearchSession() {
+  clearSavedAcknowledgements();
   currentStore?.clear();
   currentStore = undefined;
   try {

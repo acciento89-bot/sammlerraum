@@ -807,3 +807,669 @@ for (const locale of ["de", "en"] as const) {
     }
   });
 }
+
+for (const locale of ["de", "en"] as const) {
+  test(`${locale}: saved search follows real ItemForm tag changes without copying items`, async ({
+    page,
+  }) => {
+    test.skip(!enabled, "Requires guarded auth database");
+    const f = await searchFixture();
+    const c = copies[locale];
+    const saveSearch = locale === "de" ? "Suche speichern" : "Save search";
+    const searchName = locale === "de" ? "Name der Suche" : "Search name";
+    const saveItem = locale === "de" ? "Stück speichern" : "Save item";
+    try {
+      await start(page, locale, f);
+      await addLeaf(page, locale, "tags");
+      await page.getByLabel(c.values, { exact: true }).fill("signiert");
+      await apply(page, locale, 0);
+      await page.getByRole("button", { name: saveSearch, exact: true }).click();
+      const dialog = page.getByRole("dialog");
+      await dialog.getByLabel(searchName, { exact: true }).fill("Signiert — Live");
+      const created = page.waitForResponse(
+        (r) => r.url().endsWith("/api/v1/smart-collections") && r.request().method() === "POST",
+      );
+      await dialog
+        .getByRole("button", { name: locale === "de" ? "Speichern" : "Save", exact: true })
+        .click();
+      expect((await created).status()).toBe(201);
+      const saved = await (await created).json();
+      const savedUrl = `/${locale}/smart-collections/${saved.id}`;
+      await expect(page).toHaveURL(new RegExp(`${savedUrl}$`));
+      await expect(
+        page.getByRole("heading", { name: "Signiert — Live", exact: true }),
+      ).toBeVisible();
+      await expect(page.getByTestId("search-total")).toContainText("0");
+      for (const [tag, total] of [
+        ["signiert", 1],
+        ["", 0],
+      ] as const) {
+        await page.goto(`/${locale}/items/${f.itemId}`);
+        await page.getByLabel("Tags").fill(tag);
+        const updated = page.waitForResponse(
+          (r) =>
+            r.url().endsWith(`/api/v1/items/${f.itemId}/tags`) && r.request().method() === "PUT",
+        );
+        await page.getByRole("button", { name: saveItem, exact: true }).click();
+        expect((await updated).status()).toBe(200);
+        await expect(page.getByRole("button", { name: saveItem, exact: true })).toBeEnabled();
+        await page.goto(savedUrl);
+        await expect(page.getByTestId("search-total")).toContainText(String(total));
+      }
+    } finally {
+      await cleanupSearchFixture(f);
+    }
+  });
+}
+
+async function seededSavedSearch(page: Page, name: string, fields: Record<string, unknown> = {}) {
+  const response = await page.request.post("/api/v1/smart-collections", {
+    headers: { origin },
+    data: { name, text: "", lifecycle: "ACTIVE", f: null, ...fields },
+  });
+  expect(response.status()).toBe(201);
+  return response.json() as Promise<{
+    id: string;
+    revision: number;
+    name: string;
+    definition: unknown;
+  }>;
+}
+for (const locale of ["de", "en"] as const) {
+  const c = (locale === "de" ? de : en).SavedSearches;
+  test(`${locale}: saved search full replacement rename copy and confirmed delete retain items`, async ({
+    page,
+  }, info) => {
+    test.skip(!enabled, "Requires guarded auth database");
+    const f = await searchFixture();
+    try {
+      await signIn(page, f);
+      const saved = await seededSavedSearch(page, "Initial search");
+      await page.goto(`/${locale}/smart-collections/${saved.id}`);
+      await expect(page.getByTestId("search-total")).toContainText("1");
+      await page.getByRole("textbox", { name: c.name, exact: true }).fill("Revised search");
+      await page.getByLabel(copies[locale].text, { exact: true }).fill("No matching title");
+      await page.getByLabel(copies[locale].lifecycle, { exact: true }).selectOption("ARCHIVED");
+      const changed = page.waitForResponse(
+        (r) => r.request().method() === "PATCH" && r.url().endsWith(`/${saved.id}`),
+      );
+      await page.getByRole("button", { name: c.saveChanges, exact: true }).click();
+      expect((await changed).status()).toBe(200);
+      await expect(page.getByTestId("search-total")).toContainText("0");
+      await page.reload();
+      await expect(
+        page.getByRole("heading", { name: "Revised search", exact: true }),
+      ).toBeVisible();
+      await expect(page.getByLabel(copies[locale].text, { exact: true })).toHaveValue(
+        "No matching title",
+      );
+      await expect(page.getByLabel(copies[locale].lifecycle, { exact: true })).toHaveValue(
+        "ARCHIVED",
+      );
+      await page.getByRole("textbox", { name: c.name, exact: true }).fill("Renamed only");
+      await page.getByRole("button", { name: c.saveChanges, exact: true }).click();
+      await expect(page.getByTestId("search-total")).toContainText("0");
+      const original = await (
+        await page.request.get(`/api/v1/smart-collections/${saved.id}`)
+      ).json();
+      expect(original.revision).toBe(3);
+      await page.screenshot({
+        path: resolve(
+          `../../.superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/screenshots/task-5d-${locale}-${info.project.name}-detail.png`,
+        ),
+        fullPage: true,
+      });
+      await page.getByRole("button", { name: c.saveNew, exact: true }).click();
+      const dialog = page.getByRole("dialog");
+      await dialog.getByRole("textbox", { name: c.name, exact: true }).fill("Copied conditions");
+      const created = page.waitForResponse(
+        (r) => r.request().method() === "POST" && r.url().endsWith("/api/v1/smart-collections"),
+      );
+      await dialog.getByRole("button", { name: c.save, exact: true }).click();
+      const copy = await (await created).json();
+      expect(copy.id).not.toBe(saved.id);
+      expect(copy.revision).toBe(1);
+      expect(copy.definition).toEqual(original.definition);
+      await expect(page).toHaveURL(new RegExp(`/${copy.id}$`));
+      await expect(page.getByTestId("search-total")).toContainText("0");
+      await page.getByRole("button", { name: c.delete, exact: true }).click();
+      await expect(
+        page.getByRole("dialog").getByRole("button", { name: c.cancel, exact: true }),
+      ).toBeFocused();
+      await page.getByRole("dialog").getByRole("button", { name: c.cancel, exact: true }).click();
+      expect((await page.request.get(`/api/v1/smart-collections/${copy.id}`)).status()).toBe(200);
+      await page.getByRole("button", { name: c.delete, exact: true }).click();
+      await page.getByRole("dialog").getByRole("button", { name: c.delete, exact: true }).click();
+      await expect(page).toHaveURL(new RegExp(`/${locale}/smart-collections$`));
+      await expect(page.getByRole("link", { name: "Renamed only", exact: true })).toBeVisible();
+      await expect(page.getByRole("link", { name: "Copied conditions", exact: true })).toHaveCount(
+        0,
+      );
+      expect((await page.request.get(`/api/v1/items/${f.itemId}`)).status()).toBe(200);
+    } finally {
+      await cleanupSearchFixture(f);
+    }
+  });
+  test(`${locale}: two-tab stale revision preserves input and requires explicit latest adoption`, async ({
+    page,
+    context,
+  }) => {
+    test.skip(!enabled, "Requires guarded auth database");
+    const f = await searchFixture();
+    const other = await context.newPage();
+    try {
+      await signIn(page, f);
+      const saved = await seededSavedSearch(page, "Before both tabs"),
+        url = `/${locale}/smart-collections/${saved.id}`;
+      await page.goto(url);
+      await other.goto(url);
+      await expect(page.getByTestId("search-total")).toBeVisible();
+      await expect(other.getByTestId("search-total")).toBeVisible();
+      await page.getByRole("textbox", { name: c.name, exact: true }).fill("First writer");
+      await page.getByRole("button", { name: c.saveChanges, exact: true }).click();
+      await expect(page.getByRole("heading", { name: "First writer", exact: true })).toBeVisible();
+      await other.getByRole("textbox", { name: c.name, exact: true }).fill("Second private draft");
+      const conflict = other.waitForResponse(
+        (r) => r.request().method() === "PATCH" && r.url().endsWith(`/${saved.id}`),
+      );
+      await other.getByRole("button", { name: c.saveChanges, exact: true }).click();
+      expect((await conflict).status()).toBe(409);
+      await expect(other.getByText(c.conflict, { exact: true })).toBeVisible();
+      await expect(other.getByRole("textbox", { name: c.name, exact: true })).toHaveValue(
+        "Second private draft",
+      );
+      await expect(other.getByTestId("search-total")).toHaveCount(0);
+      await other.getByRole("button", { name: c.inspect, exact: true }).click();
+      await expect(other.getByRole("heading", { name: c.latestTitle, exact: true })).toBeVisible();
+      await expect(other.getByRole("textbox", { name: c.name, exact: true })).toHaveValue(
+        "Second private draft",
+      );
+      await expect(other.getByRole("button", { name: c.saveChanges, exact: true })).toBeDisabled();
+      await other.getByRole("button", { name: c.reopenLatest, exact: true }).click();
+      await other.getByRole("dialog").getByRole("button", { name: c.cancel, exact: true }).click();
+      await expect(other.getByRole("textbox", { name: c.name, exact: true })).toHaveValue(
+        "Second private draft",
+      );
+      await other.getByRole("button", { name: c.reopenLatest, exact: true }).click();
+      await other.getByRole("dialog").getByRole("button", { name: c.discard, exact: true }).click();
+      await expect(other.getByRole("textbox", { name: c.name, exact: true })).toHaveValue(
+        "First writer",
+      );
+      await expect(other.getByTestId("search-total")).toBeVisible();
+    } finally {
+      await other.close();
+      await cleanupSearchFixture(f);
+    }
+  });
+  for (const operation of ["create", "update", "delete"] as const) {
+    test(`${locale}: lost ${operation} acknowledgement never retries or silently changes expected revision`, async ({
+      page,
+    }) => {
+      test.skip(!enabled, "Requires guarded auth database");
+      const f = await searchFixture();
+      let writes = 0;
+      try {
+        await signIn(page, f);
+        const saved =
+          operation === "create" ? null : await seededSavedSearch(page, "Unknown original");
+        if (saved) {
+          await page.goto(`/${locale}/smart-collections/${saved.id}`);
+          await expect(page.getByTestId("search-total")).toBeVisible();
+        } else {
+          await start(page, locale, f);
+        }
+        const method =
+          operation === "create" ? "POST" : operation === "update" ? "PATCH" : "DELETE";
+        await page.route("**/api/v1/smart-collections{,/**}", async (route) => {
+          if (route.request().method() !== method) {
+            await route.continue();
+            return;
+          }
+          writes++;
+          const response = await route.fetch();
+          expect(response.status()).toBe(operation === "create" ? 201 : 200);
+          await route.abort("failed");
+        });
+        if (operation === "create") {
+          await page.getByRole("button", { name: copies[locale].saveSearch, exact: true }).click();
+          await page
+            .getByRole("dialog")
+            .getByRole("textbox", { name: c.name, exact: true })
+            .fill("Unknown created");
+          await page.getByRole("dialog").getByRole("button", { name: c.save, exact: true }).click();
+          await expect(page.getByText(c.unknownCreate, { exact: true })).toBeVisible();
+          await expect(
+            page.getByRole("dialog").getByRole("button", { name: c.save, exact: true }),
+          ).toBeDisabled();
+          await page.getByRole("link", { name: c.inspectList, exact: true }).click();
+          await expect(
+            page.getByRole("link", { name: "Unknown created", exact: true }),
+          ).toBeVisible();
+        } else if (operation === "update") {
+          await page.getByRole("textbox", { name: c.name, exact: true }).fill("Unknown updated");
+          await page.getByRole("button", { name: c.saveChanges, exact: true }).click();
+          await expect(page.getByText(c.unknownUpdate, { exact: true })).toBeVisible();
+          await page.getByRole("button", { name: c.inspect, exact: true }).click();
+          await expect(
+            page.getByRole("heading", { name: c.latestTitle, exact: true }),
+          ).toBeVisible();
+          await expect(page.getByRole("textbox", { name: c.name, exact: true })).toHaveValue(
+            "Unknown updated",
+          );
+          await expect(
+            page.getByRole("button", { name: c.saveChanges, exact: true }),
+          ).toBeDisabled();
+        } else {
+          await page.getByRole("button", { name: c.delete, exact: true }).click();
+          await page
+            .getByRole("dialog")
+            .getByRole("button", { name: c.delete, exact: true })
+            .click();
+          await expect(page.getByText(c.unknownDelete, { exact: true })).toBeVisible();
+          await page.getByRole("button", { name: c.inspect, exact: true }).click();
+          await expect(page.getByText(c.notFound, { exact: true })).toBeVisible();
+          await expect(page.getByRole("button", { name: c.delete, exact: true })).toBeDisabled();
+        }
+        expect(writes).toBe(1);
+      } finally {
+        await cleanupSearchFixture(f);
+      }
+    });
+  }
+  test(`${locale}: acknowledged update survives failed member refresh and exact revision is retained`, async ({
+    page,
+  }) => {
+    test.skip(!enabled, "Requires guarded auth database");
+    const f = await searchFixture();
+    let fail = false;
+    try {
+      await signIn(page, f);
+      const saved = await seededSavedSearch(page, "Before acknowledged");
+      await page.goto(`/${locale}/smart-collections/${saved.id}`);
+      await expect(page.getByTestId("search-total")).toBeVisible();
+      await page.route(`**/api/v1/smart-collections/${saved.id}/items?*`, (route) =>
+        fail
+          ? route.fulfill({ status: 503, json: { error: { code: "SEARCH_UNAVAILABLE" } } })
+          : route.continue(),
+      );
+      fail = true;
+      await page.getByRole("textbox", { name: c.name, exact: true }).fill("Acknowledged retained");
+      await page.getByRole("button", { name: c.saveChanges, exact: true }).click();
+      await expect(page.getByText(c.membersFailed, { exact: true })).toBeVisible();
+      await expect(
+        page.getByRole("heading", { name: "Acknowledged retained", exact: true }),
+      ).toBeVisible();
+      await expect(
+        page.getByText(c.revision.replace("{revision}", "2"), { exact: true }),
+      ).toBeVisible();
+      await expect(page.getByTestId("search-total")).toHaveCount(0);
+      fail = false;
+      await page.getByRole("button", { name: c.refresh, exact: true }).click();
+      await expect(page.getByTestId("search-total")).toContainText("1");
+    } finally {
+      await cleanupSearchFixture(f);
+    }
+  });
+}
+
+for (const locale of ["de", "en"] as const) {
+  const c = (locale === "de" ? de : en).SavedSearches;
+  test(`${locale}: late acknowledged-refresh response cannot replace a newer member read`, async ({
+    page,
+  }) => {
+    test.skip(!enabled, "Requires guarded auth database");
+    const f = await searchFixture();
+    let release!: () => void;
+    const gate = new Promise<void>((resolve) => {
+      release = resolve;
+    });
+    let captured!: () => void;
+    const held = new Promise<void>((resolve) => {
+      captured = resolve;
+    });
+    let hold = false,
+      once = false;
+    try {
+      await signIn(page, f);
+      const saved = await seededSavedSearch(page, "Late member read");
+      await page.goto(`/${locale}/smart-collections/${saved.id}`);
+      await expect(page.getByTestId("search-total")).toContainText("1");
+      await page.route(`**/api/v1/smart-collections/${saved.id}/items?*`, async (route) => {
+        if (!hold || once) {
+          await route.continue();
+          return;
+        }
+        once = true;
+        const response = await route.fetch();
+        captured();
+        await gate;
+        try {
+          await route.fulfill({ response });
+        } catch {
+          /* Correct cancellation may dispose the held route. */
+        }
+      });
+      hold = true;
+      await page
+        .getByRole("textbox", { name: c.name, exact: true })
+        .fill("Acknowledged before delay");
+      await page.getByRole("button", { name: c.saveChanges, exact: true }).click();
+      await held;
+      const second = await page.request.post("/api/v1/items", {
+        headers: { origin },
+        data: { collectionId: f.collectionId, title: "Second current item", quantity: 1 },
+      });
+      expect(second.status()).toBe(201);
+      await page.getByRole("button", { name: c.refresh, exact: true }).click();
+      await expect(page.getByTestId("search-total")).toContainText("2");
+      release();
+      await page.evaluate(
+        () =>
+          new Promise<void>((resolve) =>
+            requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
+          ),
+      );
+      await expect(page.getByTestId("search-total")).toContainText("2");
+    } finally {
+      release();
+      await cleanupSearchFixture(f);
+    }
+  });
+}
+
+for (const locale of ["de", "en"] as const) {
+  const c = (locale === "de" ? de : en).SavedSearches,
+    s = copies[locale];
+  test(`${locale}: unavailable references permit explicit repair while malformed definitions expose only list recovery`, async ({
+    page,
+  }) => {
+    test.skip(!enabled, "Requires guarded auth database");
+    const f = await searchFixture();
+    try {
+      await signIn(page, f);
+      const temp = await db!.collection.create({
+        data: { ownerId: f.ownerId, name: "Deleted saved reference" },
+      });
+      const saved = await seededSavedSearch(page, "Repairable reference", {
+        f: JSON.stringify({
+          version: 1,
+          root: { kind: "collection", test: { op: "eq", value: temp.id } },
+        }),
+      });
+      await db!.collection.update({ where: { id: temp.id }, data: { deletedAt: new Date() } });
+      await page.goto(`/${locale}/smart-collections/${saved.id}`);
+      await expect(page.getByText(c.unresolvable, { exact: true })).toBeVisible();
+      await expect(page.getByTestId("search-total")).toHaveCount(0);
+      await page.getByRole("button", { name: s.remove, exact: true }).click();
+      await page.getByRole("button", { name: c.saveChanges, exact: true }).click();
+      await expect(page.getByTestId("search-total")).toContainText("1");
+      const broken = await seededSavedSearch(page, "Malformed retained definition");
+      await db!.smartCollection.update({
+        where: { id: broken.id },
+        data: {
+          definition: {
+            version: 1,
+            text: "never-render-private-stored-json",
+            lifecycle: "ACTIVE",
+            filter: { version: 1, root: { kind: "invalid-stored-kind" } },
+          },
+        },
+      });
+      await page.goto(`/${locale}/smart-collections/${broken.id}`);
+      await expect(page.getByText(c.detailFailed, { exact: true })).toBeVisible();
+      await expect(page.getByTestId("search-total")).toHaveCount(0);
+      await expect(page.getByRole("textbox", { name: c.name, exact: true })).toHaveCount(0);
+      expect(await page.locator("body").innerText()).not.toContain(
+        "never-render-private-stored-json",
+      );
+      await page.getByRole("link", { name: c.back, exact: true }).click();
+      const row = page.getByRole("listitem").filter({
+        has: page.getByRole("link", { name: "Malformed retained definition", exact: true }),
+      });
+      await row.getByRole("button", { name: c.delete, exact: true }).click();
+      await page.getByRole("dialog").getByRole("button", { name: c.delete, exact: true }).click();
+      await expect(
+        page.getByRole("link", { name: "Malformed retained definition", exact: true }),
+      ).toHaveCount(0);
+    } finally {
+      await cleanupSearchFixture(f);
+    }
+  });
+  test(`${locale}: saved list paginates actual rows and foreign missing deleted details stay indistinguishable`, async ({
+    page,
+  }) => {
+    test.skip(!enabled, "Requires guarded auth database");
+    const f = await searchFixture();
+    try {
+      await signIn(page, f);
+      for (let n = 0; n < 21; n++)
+        await seededSavedSearch(page, `Owned saved ${String(n).padStart(2, "0")}`);
+      await page.goto(`/${locale}/smart-collections`);
+      const links = page.getByRole("link", { name: /^Owned saved /u });
+      await expect(links).toHaveCount(20);
+      const first = await links.allTextContents();
+      await page.getByRole("button", { name: c.nextPage, exact: true }).click();
+      await expect(links).toHaveCount(1);
+      expect(first).not.toContain(await links.first().innerText());
+      await page.getByRole("button", { name: c.firstPage, exact: true }).click();
+      await expect(links).toHaveCount(20);
+      const foreign = await db!.smartCollection.create({
+        data: {
+          ownerId: f.foreignId,
+          name: "Private foreign saved",
+          definition: { version: 1, text: "", filter: null, lifecycle: "ACTIVE" },
+        },
+      });
+      const deleted = await seededSavedSearch(page, "Deleted own");
+      expect(
+        (
+          await page.request.delete(`/api/v1/smart-collections/${deleted.id}`, {
+            headers: { origin },
+            data: { expectedRevision: 1 },
+          })
+        ).status(),
+      ).toBe(200);
+      for (const id of [foreign.id, deleted.id, "00000000-0000-4000-8000-000000000099"]) {
+        await page.goto(`/${locale}/smart-collections/${id}`);
+        await expect(page.getByText(c.notFound, { exact: true })).toBeVisible();
+        await expect(page.getByTestId("search-total")).toHaveCount(0);
+        expect(await page.locator("body").innerText()).not.toContain("Private foreign saved");
+      }
+    } finally {
+      await cleanupSearchFixture(f);
+    }
+  });
+  test(`${locale}: saved editor confirms locale history and clears private draft undo on 401`, async ({
+    page,
+  }) => {
+    test.skip(!enabled, "Requires guarded auth database");
+    const f = await searchFixture();
+    try {
+      await signIn(page, f);
+      const saved = await seededSavedSearch(page, "Private saved edit", {
+        f: JSON.stringify({
+          version: 1,
+          root: { kind: "tags", test: { op: "hasAll", values: ["private-operand"] } },
+        }),
+      });
+      await page.goto(`/${locale}/smart-collections`);
+      await page.getByRole("link", { name: "Private saved edit", exact: true }).click();
+      await expect(page.getByTestId("search-total")).toContainText("0");
+      await page.getByRole("textbox", { name: c.name, exact: true }).fill("Private local edit");
+      const otherLocale = locale === "de" ? "en" : "de";
+      await page.locator(`a[hreflang="${otherLocale}"]`).click();
+      await expect(
+        page.getByRole("dialog").getByRole("heading", { name: c.discardTitle, exact: true }),
+      ).toBeVisible();
+      await page.getByRole("dialog").getByRole("button", { name: c.cancel, exact: true }).click();
+      await expect(page.getByRole("textbox", { name: c.name, exact: true })).toHaveValue(
+        "Private local edit",
+      );
+      await expect(page).toHaveURL(new RegExp(`/${locale}/smart-collections/${saved.id}$`));
+      await page.goBack();
+      await expect(
+        page.getByRole("dialog").getByRole("heading", { name: c.discardTitle, exact: true }),
+      ).toBeVisible();
+      await page.getByRole("dialog").getByRole("button", { name: c.cancel, exact: true }).click();
+      await expect(page).toHaveURL(new RegExp(`/${saved.id}$`));
+      // An explicit discard may traverse; Forward reopens only the saved state.
+      await page.goBack();
+      await page.getByRole("dialog").getByRole("button", { name: c.discard, exact: true }).click();
+      await expect(page).toHaveURL(new RegExp(`/${locale}/smart-collections$`));
+      await page.goForward();
+      await expect(page.getByRole("textbox", { name: c.name, exact: true })).toHaveValue(
+        "Private saved edit",
+      );
+      await page.getByRole("button", { name: s.remove, exact: true }).click();
+      await expect(page.getByRole("button", { name: s.undo, exact: true })).toBeVisible();
+      await page.route(`**/api/v1/smart-collections/${saved.id}`, (route) =>
+        route.request().method() === "PATCH"
+          ? route.fulfill({ status: 401, json: { error: { code: "UNAUTHENTICATED" } } })
+          : route.continue(),
+      );
+      await page.getByRole("button", { name: c.saveChanges, exact: true }).click();
+      await expect(page.getByText(c.session, { exact: true })).toBeVisible();
+      await expect(page.getByRole("textbox", { name: c.name, exact: true })).toHaveCount(0);
+      await expect(page.getByRole("button", { name: s.undo, exact: true })).toHaveCount(0);
+      await expect(page.getByTestId("search-total")).toHaveCount(0);
+      expect(await page.locator("body").innerText()).not.toContain("private-operand");
+      expect(await page.locator("body").innerText()).not.toContain("Private local edit");
+    } finally {
+      await cleanupSearchFixture(f);
+    }
+  });
+  test(`${locale}: create acknowledgement remains readable when subsequent detail fetch fails`, async ({
+    page,
+  }) => {
+    test.skip(!enabled, "Requires guarded auth database");
+    const f = await searchFixture();
+    try {
+      await start(page, locale, f);
+      await page.route("**/api/v1/smart-collections/*", (route) =>
+        route.request().method() === "GET"
+          ? route.fulfill({ status: 503, json: { error: { code: "SEARCH_UNAVAILABLE" } } })
+          : route.continue(),
+      );
+      await page.getByRole("button", { name: s.saveSearch, exact: true }).click();
+      const dialog = page.getByRole("dialog");
+      await dialog
+        .getByRole("textbox", { name: c.name, exact: true })
+        .fill("Confirmed create identity");
+      await dialog.getByRole("button", { name: c.save, exact: true }).click();
+      await expect(page.getByText(c.detailFailed, { exact: true })).toBeVisible();
+      await expect(page.getByText("Confirmed create identity", { exact: true })).toBeVisible();
+      await expect(page.getByText(c.ack.replace("{revision}", "1"), { exact: true })).toBeVisible();
+      await expect(page.getByRole("textbox", { name: c.name, exact: true })).toHaveCount(0);
+    } finally {
+      await cleanupSearchFixture(f);
+    }
+  });
+  test(`${locale}: saved definition over fifty references survives cache eviction and replacement intact`, async ({
+    page,
+  }) => {
+    test.skip(!enabled, "Requires guarded auth database");
+    const f = await searchFixture();
+    try {
+      await signIn(page, f);
+      const ids = [f.collectionId];
+      for (let n = 1; n < 200; n++) {
+        const row = await db!.collection.create({
+          data: { ownerId: f.ownerId, name: `Saved reference ${String(n).padStart(3, "0")}` },
+        });
+        ids.push(row.id);
+      }
+      const filter = {
+        version: 1,
+        root: {
+          kind: "or",
+          children: [0, 50, 100, 150].map((offset) => ({
+            kind: "collection",
+            test: { op: "in", values: ids.slice(offset, offset + 50) },
+          })),
+        },
+      };
+      const saved = await seededSavedSearch(page, "Two hundred references", {
+        f: JSON.stringify(filter),
+      });
+      await page.goto(`/${locale}/smart-collections/${saved.id}`);
+      await expect(page.getByTestId("search-total")).toContainText("1");
+      const leaf = page
+        .locator("fieldset.search-node")
+        .filter({ has: page.locator(":scope > legend", { hasText: s.families.collection }) });
+      for (const n of [0, 1, 2, 3, 0]) {
+        const node = leaf.nth(n);
+        const edit = node.getByRole("button", { name: s.edit, exact: true });
+        if (await edit.isVisible()) await edit.click();
+        const picker = node.locator("fieldset.search-reference");
+        await picker.getByRole("button", { name: s.choose, exact: true }).click();
+        await expect(picker.getByLabel(s.availableChoices, { exact: true })).toBeEnabled();
+        await expect(picker.locator(".search-selected li")).toHaveCount(50);
+        await expect(picker.getByRole("alert")).toHaveCount(0);
+        await picker.getByRole("button", { name: s.closeChoices, exact: true }).click();
+      }
+      await page
+        .getByRole("textbox", { name: c.name, exact: true })
+        .fill("All references retained");
+      await page.getByRole("button", { name: c.saveChanges, exact: true }).click();
+      await expect(page.getByTestId("search-total")).toContainText("1");
+      const after = await (await page.request.get(`/api/v1/smart-collections/${saved.id}`)).json();
+      expect(after.definition).toEqual(saved.definition);
+      expect(after.revision).toBe(2);
+    } finally {
+      await cleanupSearchFixture(f);
+    }
+  });
+}
+
+for (const locale of ["de", "en"] as const) {
+  const c = (locale === "de" ? de : en).SavedSearches;
+  test(`${locale}: saved pages and dialogs fit 320px and 200 percent zoom with keyboard focus`, async ({
+    page,
+  }, info) => {
+    test.skip(!enabled, "Requires guarded auth database");
+    const f = await searchFixture();
+    try {
+      await signIn(page, f);
+      const saved = await seededSavedSearch(page, "Long owned saved name ".repeat(4));
+      await page.setViewportSize({ width: 320, height: 800 });
+      await page.goto(`/${locale}/smart-collections/${saved.id}`);
+      await expect(page.getByTestId("search-total")).toBeVisible();
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
+        true,
+      );
+      await page.getByRole("button", { name: c.saveNew, exact: true }).click();
+      const dialog = page.getByRole("dialog");
+      await expect(dialog.getByRole("textbox", { name: c.name, exact: true })).toBeFocused();
+      await page.keyboard.press("Tab");
+      await expect(dialog.getByRole("button", { name: c.cancel, exact: true })).toBeFocused();
+      await page.keyboard.press("Tab");
+      await expect(dialog.getByRole("button", { name: c.save, exact: true })).toBeFocused();
+      await page.keyboard.press("Tab");
+      await expect(dialog.getByRole("textbox", { name: c.name, exact: true })).toBeFocused();
+      await page.keyboard.press("Shift+Tab");
+      await expect(dialog.getByRole("button", { name: c.save, exact: true })).toBeFocused();
+      await page.keyboard.press("Escape");
+      await expect(dialog).toHaveCount(0);
+      await page.getByRole("link", { name: c.back, exact: true }).click();
+      await expect(page.getByRole("link", { name: saved.name, exact: true })).toBeVisible();
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
+        true,
+      );
+      await page.screenshot({
+        path: resolve(
+          `../../.superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/screenshots/task-5d-${locale}-${info.project.name}-list-320.png`,
+        ),
+        fullPage: true,
+      });
+      await page.setViewportSize({ width: 640, height: 900 });
+      await page.evaluate(() => {
+        document.documentElement.style.zoom = "2";
+      });
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
+        true,
+      );
+    } finally {
+      await cleanupSearchFixture(f);
+    }
+  });
+}

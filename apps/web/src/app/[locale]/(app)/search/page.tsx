@@ -17,5 +17,5 @@ export default async function CollectorSearchPage({
     query: { disableCookieCache: true, disableRefresh: true },
   });
   if (!session) redirect(`/${locale}/login`);
-  return <SearchPage locale={locale} actor={session.user.id} />;
+  return <SearchPage key={session.user.id} locale={locale} actor={session.user.id} />;
 }
