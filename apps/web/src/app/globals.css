@@ -920,3 +920,166 @@ fieldset {
     gap: 0.15rem;
   }
 }
+
+/* Collector search: extend the established warm management surfaces. */
+.search-layout {
+  display: grid;
+  grid-template-columns: minmax(17rem, 21rem) minmax(0, 1fr);
+  gap: 1.5rem;
+  align-items: start;
+}
+.search-shell,
+.search-shell * {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.search-shell :focus-visible {
+  outline: 3px solid var(--accent, #42684a);
+  outline-offset: 3px;
+}
+.search-filter-panel {
+  padding: 1rem;
+}
+.search-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-block: 0.7rem;
+}
+.search-actions > * {
+  max-width: 100%;
+}
+.search-node,
+.search-reference {
+  border: 1px solid var(--line, #cfc6b9);
+  border-radius: 0.6rem;
+  padding: 0.65rem;
+  margin-block: 0.8rem;
+}
+.search-node .search-node {
+  margin-inline: 0.15rem;
+}
+.search-node legend,
+.search-reference legend {
+  font-weight: 650;
+  padding-inline: 0.25rem;
+  max-width: 100%;
+}
+.search-builder label,
+.search-reference label {
+  display: grid;
+  gap: 0.4rem;
+}
+.search-shell input,
+.search-shell select,
+.search-shell textarea {
+  max-width: 100%;
+  width: 100%;
+}
+.search-shell select[multiple] {
+  min-height: 7rem;
+}
+.search-results,
+.search-selected {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 1rem;
+}
+.search-results {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+}
+.search-results dl > div {
+  display: grid;
+  grid-template-columns: minmax(6rem, 1fr) minmax(0, 1fr);
+  gap: 0.5rem;
+  margin-block: 0.4rem;
+}
+.search-results dd {
+  margin: 0;
+}
+.search-results dt {
+  color: var(--muted);
+}
+.search-count {
+  font-size: 1.25rem;
+}
+.search-selected li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.4rem;
+}
+.search-selected button {
+  flex-shrink: 0;
+}
+.search-drawer,
+.search-confirm {
+  background: var(--paper, #faf7ef);
+  color: inherit;
+  border: 1px solid var(--line, #cfc6b9);
+  border-radius: 1rem;
+  padding: 1.2rem;
+  width: min(38rem, calc(100% - 1rem));
+  max-height: 90dvh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.search-drawer::backdrop,
+.search-confirm::backdrop {
+  background: #201b16aa;
+}
+body:has(.search-drawer[open]),
+body:has(.search-confirm[open]) {
+  overflow: hidden;
+}
+.search-drawer button,
+.search-confirm button {
+  white-space: normal;
+}
+@media (max-width: 44rem) {
+  .search-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .search-node {
+    padding: 0.5rem;
+  }
+  .search-node .search-node {
+    margin-inline: 0;
+  }
+  .search-result-region {
+    width: 100%;
+  }
+}
+.search-field {
+  display: grid;
+  gap: 0.4rem;
+}
+.search-field > label {
+  font-weight: 650;
+}
+
+/* Search keeps the existing header usable at the narrowest supported width. */
+body:has(.search-shell) .header-inner {
+  flex-wrap: wrap;
+}
+body:has(.search-shell) .skip-link:not(:focus) {
+  clip-path: inset(50%);
+}
+
+.search-shell {
+  container-type: inline-size;
+}
+@container (max-width: 44rem) {
+  .search-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+.search-shell .management-nav {
+  flex-wrap: wrap;
+}
+.search-shell .management-nav a {
+  flex-shrink: 0;
+  white-space: nowrap;
+}

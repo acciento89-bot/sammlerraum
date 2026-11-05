@@ -5,6 +5,7 @@ import { getMessages, getTranslations, setRequestLocale } from "next-intl/server
 import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
 
+import { LocaleNavigation } from "../../components/search/locale-navigation";
 import { routing } from "../../i18n/routing";
 import "../globals.css";
 
@@ -49,24 +50,7 @@ export default async function LocaleLayout({ children, params }: Props) {
                   <small>{t("tagline")}</small>
                 </span>
               </Link>
-              <nav className="language-nav" aria-label={t("language")}>
-                <Link
-                  href="/de"
-                  hrefLang="de"
-                  prefetch={false}
-                  aria-current={locale === "de" ? "page" : undefined}
-                >
-                  {t("german")}
-                </Link>
-                <Link
-                  href="/en"
-                  hrefLang="en"
-                  prefetch={false}
-                  aria-current={locale === "en" ? "page" : undefined}
-                >
-                  {t("english")}
-                </Link>
-              </nav>
+              <LocaleNavigation locale={locale} />
             </div>
           </header>
           <main id="main-content">{children}</main>

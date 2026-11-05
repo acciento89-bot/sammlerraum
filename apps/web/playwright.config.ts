@@ -18,6 +18,7 @@ export default defineConfig({
       testMatch: [
         "**/catalog-grading.spec.ts",
         "**/valuations.spec.ts",
+        "**/search-dashboard.spec.ts",
         "**/collections-items.spec.ts",
         "**/location-labels.spec.ts",
         "**/media-documents.spec.ts",
@@ -29,6 +30,7 @@ export default defineConfig({
       testMatch: [
         "**/catalog-grading.spec.ts",
         "**/valuations.spec.ts",
+        "**/search-dashboard.spec.ts",
         "**/collections-items.spec.ts",
         "**/location-labels.spec.ts",
         "**/media-documents.spec.ts",

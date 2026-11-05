@@ -29,8 +29,12 @@ export function CatalogNavigation({
   canModerate: boolean;
 }) {
   const t = useTranslations("Catalog");
+  const search = useTranslations("Search");
   return (
     <nav className="management-nav catalog-nav" aria-label={t("navigation")}>
+      <Link href={`/${locale}/search`} prefetch={false}>
+        {search("navSearch")}
+      </Link>
       <Link href={`/${locale}/collections`}>{t("collections")}</Link>
       <Link href={`/${locale}/catalog`}>{t("catalog")}</Link>
       <Link href={`/${locale}/catalog/proposals`}>{t("myProposals")}</Link>

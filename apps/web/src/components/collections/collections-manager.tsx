@@ -10,6 +10,7 @@ type Translation = (key: string) => string;
 
 export function CollectionsManager({ locale }: { locale: "de" | "en" }) {
   const t = useTranslations("Collections");
+  const search = useTranslations("Search");
   const common = useTranslations("Management");
   const [collections, setCollections] = useState<Collection[]>([]);
   const [loading, setLoading] = useState(true);
@@ -69,6 +70,9 @@ export function CollectionsManager({ locale }: { locale: "de" | "en" }) {
       <nav className="management-nav" aria-label={common("navigation")}>
         <Link aria-current="page" href={`/${locale}/collections`}>
           {t("title")}
+        </Link>
+        <Link href={`/${locale}/search`} prefetch={false}>
+          {search("navSearch")}
         </Link>
         <Link href={`/${locale}/catalog`}>{common("catalog")}</Link>
         <Link href={`/${locale}/account/profile`}>{common("account")}</Link>
