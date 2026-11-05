@@ -74,6 +74,9 @@ export function CollectionsManager({ locale }: { locale: "de" | "en" }) {
         <Link href={`/${locale}/search`} prefetch={false}>
           {search("navSearch")}
         </Link>
+        <Link href={`/${locale}/dashboard`} prefetch={false}>
+          {search("navDashboard")}
+        </Link>
         <Link href={`/${locale}/catalog`}>{common("catalog")}</Link>
         <Link href={`/${locale}/account/profile`}>{common("account")}</Link>
       </nav>

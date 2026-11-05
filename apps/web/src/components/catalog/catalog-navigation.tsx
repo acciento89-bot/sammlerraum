@@ -35,6 +35,9 @@ export function CatalogNavigation({
       <Link href={`/${locale}/search`} prefetch={false}>
         {search("navSearch")}
       </Link>
+      <Link href={`/${locale}/dashboard`} prefetch={false}>
+        {search("navDashboard")}
+      </Link>
       <Link href={`/${locale}/collections`}>{t("collections")}</Link>
       <Link href={`/${locale}/catalog`}>{t("catalog")}</Link>
       <Link href={`/${locale}/catalog/proposals`}>{t("myProposals")}</Link>

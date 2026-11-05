@@ -6,7 +6,7 @@ export function CollectorNavigation({
   current = "search",
 }: {
   locale: string;
-  current?: "search" | "saved";
+  current?: "search" | "saved" | "dashboard";
 }) {
   const t = useTranslations("Search");
   return (
@@ -23,6 +23,13 @@ export function CollectorNavigation({
         aria-current={current === "search" ? "page" : undefined}
       >
         {t("navSearch")}
+      </Link>
+      <Link
+        href={`/${locale}/dashboard`}
+        prefetch={false}
+        aria-current={current === "dashboard" ? "page" : undefined}
+      >
+        {t("navDashboard")}
       </Link>
       <Link
         href={`/${locale}/smart-collections`}

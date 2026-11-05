@@ -373,13 +373,34 @@ describe.runIf(enabled)("dashboard actual observations and filters", () => {
           },
           condition: {
             missing: { itemCount: 1, unitCount: "4" },
-            groups: [{ conditionOptionId: option.id, itemCount: 1, unitCount: "1" }],
+            groups: [
+              {
+                conditionOptionId: option.id,
+                optionActive: false,
+                schemeActive: false,
+                itemCount: 1,
+                unitCount: "1",
+              },
+            ],
           },
           tradeReady: { itemCount: 1, unitCount: "1" },
           missing: {
             image: { itemCount: 1, unitCount: "4" },
             purchaseAmount: { itemCount: 1, unitCount: "4" },
           },
+        });
+        await db!.conditionOption.update({ where: { id: option.id }, data: { active: true } });
+        expect((await f.read()).condition.groups[0]).toMatchObject({
+          optionActive: true,
+          schemeActive: false,
+          itemCount: 1,
+        });
+        await db!.conditionScheme.update({ where: { id: scheme.id }, data: { active: true } });
+        await db!.conditionOption.update({ where: { id: option.id }, data: { active: false } });
+        expect((await f.read()).condition.groups[0]).toMatchObject({
+          optionActive: false,
+          schemeActive: true,
+          itemCount: 1,
         });
         await db!.mediaAsset.update({
           where: { id: asset.id },

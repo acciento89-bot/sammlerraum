@@ -1,10 +1,22 @@
 import { resolve } from "node:path";
 import { expect, test, type Page } from "@playwright/test";
 import { searchFixture, cleanupSearchFixture, db, enabled, origin } from "./support/search-fixture";
+import { dashboardFixture, cleanupDashboardFixture } from "./support/dashboard-fixture";
 test.use({ actionTimeout: 10000 });
 test.afterAll(async () => {
   await db?.$disconnect();
 });
+
+async function dashboardText(page: Page, locale: Locale, text: string, count: number) {
+  await panel(page, locale);
+  await page.getByLabel(copies[locale].text, { exact: true }).fill(text);
+  const response = page.waitForResponse(
+    (r) => r.url().endsWith("/api/v1/dashboard") && r.request().method() === "POST",
+  );
+  await page.getByRole("button", { name: copies[locale].apply, exact: true }).click();
+  expect((await (await response).json()).selection.itemCount).toBe(count);
+  await expect(page.getByTestId("dashboard-selection-rows")).toHaveText(String(count));
+}
 export async function signIn(page: Page, f: Awaited<ReturnType<typeof searchFixture>>) {
   expect(
     (
@@ -1739,6 +1751,452 @@ for (const locale of ["de", "en"] as const) {
       );
       await page.goBack();
       await expect(page).toHaveURL(new RegExp(`/${locale}/smart-collections$`));
+    } finally {
+      release();
+      await cleanupSearchFixture(f);
+    }
+  });
+}
+
+for (const locale of ["de", "en"] as const) {
+  test(`${locale}: collector opens a real same-selection dashboard with exact own-estimate totals`, async ({
+    page,
+  }) => {
+    test.skip(!enabled, "Requires guarded auth database");
+    const f = await searchFixture();
+    try {
+      await signIn(page, f);
+      const valuation = await page.request.post(`/api/v1/items/${f.itemId}/valuations`, {
+        headers: { origin },
+        data: { currency: "EUR", amountMinor: "9223372036854775807" },
+      });
+      expect(valuation.status()).toBe(201);
+      const response = await page.request.post("/api/v1/dashboard", {
+        headers: { origin },
+        data: { text: "", f: null, lifecycle: "ACTIVE" },
+      });
+      expect(response.status()).toBe(200);
+      const actual = await response.json();
+      expect(actual.selection).toMatchObject({
+        itemCount: 1,
+        unitCount: "3",
+        matchedCollectionCount: 1,
+      });
+      expect(actual.manualValues.groups[0].totalMinor).toBe("27670116110564327421");
+      await page.goto(`/${locale}/search`);
+      await expect(page.getByTestId("search-total")).toContainText("1");
+      await page
+        .getByRole("button", {
+          name: locale === "de" ? "Auswahl als Übersicht öffnen" : "Open selection dashboard",
+          exact: true,
+        })
+        .click();
+      await expect(
+        page.getByRole("heading", {
+          name: locale === "de" ? "Deine Sammlungsübersicht" : "Your collection overview",
+          exact: true,
+        }),
+      ).toBeVisible();
+      await expect(page.getByTestId("dashboard-selection-rows")).toHaveText("1");
+      await expect(page.getByTestId("dashboard-selection-units")).toHaveText("3");
+      await expect(page.getByTestId("dashboard-manual-EUR-2")).toContainText(
+        locale === "de" ? "276.701.161.105.643.274,21" : "276,701,161,105,643,274.21",
+      );
+      expect(new URL(page.url()).search).toMatch(/^\?q=[a-f0-9]{32}$/u);
+      expect(page.url()).not.toContain("922337");
+    } finally {
+      await cleanupSearchFixture(f);
+    }
+  });
+}
+
+for (const locale of ["de", "en"] as const) {
+  const c = copies[locale];
+  const d = (locale === "de" ? de : en).Dashboard;
+  test(`${locale}: dashboard renders real mixed denominations, exclusions and retained metadata`, async ({
+    page,
+  }, info) => {
+    test.skip(!enabled, "Requires guarded auth database");
+    const f = await dashboardFixture();
+    try {
+      await signIn(page, f);
+      const response = await page.request.post("/api/v1/dashboard", {
+        headers: { origin },
+        data: { text: "", f: null, lifecycle: "ACTIVE" },
+      });
+      expect(response.status()).toBe(200);
+      const actual = await response.json();
+      expect(actual.selection).toMatchObject({
+        itemCount: 6,
+        unitCount: "15",
+        matchedCollectionCount: 1,
+      });
+      expect(actual.collections.ownedLiveCount).toBe(2);
+      expect(actual.manualValues.state).toBe("PARTIAL");
+      expect(
+        actual.manualValues.groups.map((g: { currency: string; totalMinor: string }) => [
+          g.currency,
+          g.totalMinor,
+        ]),
+      ).toEqual(
+        expect.arrayContaining([
+          ["EUR", "27670116110564327418"],
+          ["USD", "4100"],
+          ["JPY", "0"],
+          ["BHD", "1234"],
+        ]),
+      );
+      expect(actual.manualChange.comparable).toEqual({ itemCount: 3, unitCount: "6" });
+      expect(actual.manualChange.excluded).toEqual({
+        NO_ESTIMATE: { itemCount: 1, unitCount: "4" },
+        INSUFFICIENT_HISTORY: { itemCount: 1, unitCount: "1" },
+        NONCOMPARABLE_DENOMINATION: { itemCount: 1, unitCount: "4" },
+      });
+      expect(actual.condition.groups[0]).toMatchObject({
+        optionActive: false,
+        schemeActive: false,
+      });
+      expect(actual.grading).toMatchObject({ gradedItemCount: 1, gradingRecordCount: 2 });
+      expect(actual.missing.image).toEqual({ itemCount: 5, unitCount: "12" });
+      expect(actual.missing.document).toEqual({ itemCount: 6, unitCount: "15" });
+      await page.goto(`/${locale}/dashboard`);
+      await expect(page.getByTestId("dashboard-selection-rows")).toHaveText("6");
+      await expect(page.getByTestId("dashboard-selection-units")).toHaveText("15");
+      await expect(page.getByTestId("dashboard-owned-collections")).toHaveText("2");
+      await expect(page.getByTestId("dashboard-matched-collections")).toHaveText("1");
+      await expect(page.getByTestId("dashboard-manual-EUR-2")).toContainText(
+        locale === "de" ? "276.701.161.105.643.274,18" : "276,701,161,105,643,274.18",
+      );
+      await expect(page.getByTestId("dashboard-manual-USD-2")).toContainText(
+        locale === "de" ? "41,00 USD" : "41.00 USD",
+      );
+      await expect(page.getByTestId("dashboard-manual-JPY-0")).toContainText("0 JPY");
+      await expect(page.getByTestId("dashboard-manual-BHD-3")).toContainText(
+        locale === "de" ? "1,234 BHD" : "1.234 BHD",
+      );
+      await expect(page.getByTestId("dashboard-change-EUR-2")).toContainText(
+        locale === "de" ? "-0,03 EUR" : "-0.03 EUR",
+      );
+      await expect(page.getByTestId("dashboard-change-JPY-0")).toContainText("0 JPY");
+      await expect(page.getByText(d.optionInactive, { exact: true })).toBeVisible();
+      await expect(page.getByText(d.schemeInactive, { exact: true })).toBeVisible();
+      await expect(
+        page.getByText(
+          locale === "de"
+            ? "Übersichtskarten · Beibehaltener Zustand"
+            : "Dashboard cards · Retained condition",
+          { exact: true },
+        ),
+      ).toBeVisible();
+      await expect(page.getByTestId("dashboard-unavailable")).toContainText(d.purchaseUnavailable);
+      await expect(page.locator("canvas, svg[data-chart]")).toHaveCount(0);
+      await page.setViewportSize({ width: 320, height: 900 });
+      await page.screenshot({
+        path: resolve(
+          `../../.superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/screenshots/task-5e-${locale}-${info.project.name}-success-320.png`,
+        ),
+        fullPage: true,
+      });
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
+        true,
+      );
+      await dashboardText(page, locale, "absent-private-dashboard-sentinel", 0);
+      await expect(page.getByTestId("dashboard-owned-collections")).toHaveText("2");
+      await expect(page.getByTestId("dashboard-manual-EUR-2")).toHaveCount(0);
+      await expect(page.getByTestId("dashboard-unavailable")).toContainText(d.marketUnavailable);
+      await page.screenshot({
+        path: resolve(
+          `../../.superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/screenshots/task-5e-${locale}-${info.project.name}-empty.png`,
+        ),
+        fullPage: true,
+      });
+      expect(page.url()).not.toContain("sentinel");
+    } finally {
+      await cleanupDashboardFixture(f);
+    }
+  });
+
+  test(`${locale}: dashboard preserves real Next history and private transfer through locale, item and reload`, async ({
+    page,
+    context,
+  }) => {
+    test.skip(!enabled, "Requires guarded auth database");
+    const f = await searchFixture();
+    try {
+      await signIn(page, f);
+      await page.goto(`/${locale}/dashboard`);
+      await expect(page.getByTestId("dashboard-selection-rows")).toHaveText("1");
+      const first = page.url();
+      expect(await page.evaluate(() => Object.keys(history.state))).toContain("__NA");
+      await page
+        .getByRole("link", { name: "Synthetic untagged card", exact: true })
+        .first()
+        .click();
+      await expect(page).toHaveURL(new RegExp(`/items/${f.itemId}$`));
+      await page.goBack();
+      await expect(page.getByTestId("dashboard-selection-rows")).toHaveText("1");
+      expect(page.url()).toBe(first);
+      await dashboardText(page, locale, "private-empty-dashboard-history", 0);
+      const second = page.url();
+      await page.goBack();
+      await expect(page.getByTestId("dashboard-selection-rows")).toHaveText("1");
+      await page.goForward();
+      await expect(page.getByTestId("dashboard-selection-rows")).toHaveText("0");
+      expect(page.url()).toBe(second);
+      await page.reload();
+      await expect(page.getByTestId("dashboard-selection-rows")).toHaveText("0");
+      const other = locale === "de" ? "en" : "de";
+      await page
+        .getByRole("link", { name: locale === "de" ? "English" : "Deutsch", exact: true })
+        .click();
+      await expect(page).toHaveURL(second.replace(`/${locale}/dashboard`, `/${other}/dashboard`));
+      await expect(page.getByTestId("dashboard-selection-rows")).toHaveText("0");
+      const copy = await context.newPage();
+      await copy.goto(page.url());
+      await expect(
+        copy.getByText(copies[other].errors.missingToken, { exact: true }),
+      ).toBeVisible();
+      await expect(copy.getByTestId("dashboard-selection-rows")).toHaveCount(0);
+      await copy.close();
+      await page
+        .getByRole("button", { name: (other === "de" ? de : en).Dashboard.openSearch, exact: true })
+        .click();
+      await expect(page.getByText(copies[other].empty, { exact: true })).toBeVisible();
+      expect(page.url()).not.toContain("private-empty");
+      await page.goBack();
+      await expect(page.getByTestId("dashboard-selection-rows")).toHaveText("0");
+    } finally {
+      await cleanupSearchFixture(f);
+    }
+  });
+
+  test(`${locale}: dashboard retains explicitly stale data only for a failed same-query refresh and clears on session expiry`, async ({
+    page,
+  }, info) => {
+    test.skip(!enabled, "Requires guarded auth database");
+    const f = await searchFixture();
+    try {
+      await signIn(page, f);
+      await page.goto(`/${locale}/dashboard`);
+      await expect(page.getByTestId("dashboard-selection-rows")).toHaveText("1");
+      await page.route("**/api/v1/dashboard", (route) =>
+        route.fulfill({
+          status: 503,
+          contentType: "application/json",
+          body: JSON.stringify({ error: { code: "DASHBOARD_UNAVAILABLE" } }),
+        }),
+      );
+      await page.getByRole("button", { name: c.refresh, exact: true }).click();
+      await expect(page.getByText(c.stale, { exact: true })).toBeVisible();
+      await expect(page.getByTestId("dashboard-selection-rows")).toHaveText("1");
+      await page.screenshot({
+        path: resolve(
+          `../../.superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/screenshots/task-5e-${locale}-${info.project.name}-error-stale.png`,
+        ),
+        fullPage: true,
+      });
+      await page.unroute("**/api/v1/dashboard");
+      await page.getByRole("button", { name: c.retry, exact: true }).click();
+      await expect(page.getByText(c.stale, { exact: true })).toHaveCount(0);
+      await expect(page.getByTestId("dashboard-selection-rows")).toHaveText("1");
+      await page.route("**/api/v1/dashboard", (route) =>
+        route.fulfill({
+          status: 401,
+          contentType: "application/json",
+          body: JSON.stringify({ error: { code: "UNAUTHORIZED" } }),
+        }),
+      );
+      await page.getByRole("button", { name: c.refresh, exact: true }).click();
+      await expect(page.getByText(c.errors.session, { exact: true })).toBeVisible();
+      await expect(page.getByTestId("dashboard-selection-rows")).toHaveCount(0);
+      expect(await page.evaluate(() => sessionStorage.length)).toBe(0);
+    } finally {
+      await cleanupSearchFixture(f);
+    }
+  });
+}
+
+for (const locale of ["de", "en"] as const) {
+  const c = copies[locale];
+  test(`${locale}: dashboard ignores a real delayed response after Back and exposes pending separately`, async ({
+    page,
+  }, info) => {
+    test.skip(!enabled, "Requires guarded auth database");
+    const f = await searchFixture();
+    let release!: () => void;
+    const gate = new Promise<void>((resolve) => {
+      release = resolve;
+    });
+    let arrived!: () => void;
+    const incoming = new Promise<void>((resolve) => {
+      arrived = resolve;
+    });
+    try {
+      await signIn(page, f);
+      await page.goto(`/${locale}/dashboard`);
+      await expect(page.getByTestId("dashboard-selection-rows")).toHaveText("1");
+      await dashboardText(page, locale, "absent-delayed-dashboard", 0);
+      let delay = true;
+      await page.route("**/api/v1/dashboard", async (route) => {
+        if (!delay) {
+          await route.continue();
+          return;
+        }
+        delay = false;
+        const response = await route.fetch();
+        expect(response.status()).toBe(200);
+        expect((await response.json()).selection.itemCount).toBe(0);
+        arrived();
+        await gate;
+        try {
+          await route.fulfill({ response });
+        } catch {
+          /* Back cancelled the real request. */
+        }
+      });
+      await page.getByRole("button", { name: c.refresh, exact: true }).click();
+      await incoming;
+      await expect(page.getByText(c.loading, { exact: true })).toBeVisible();
+      await expect(page.getByText(c.stale, { exact: true })).toHaveCount(0);
+      await page.screenshot({
+        path: resolve(
+          `../../.superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/screenshots/task-5e-${locale}-${info.project.name}-pending.png`,
+        ),
+        fullPage: true,
+      });
+      await page.goBack();
+      await expect(page.getByTestId("dashboard-selection-rows")).toHaveText("1");
+      release();
+      await expect(page.getByTestId("dashboard-selection-rows")).toHaveText("1");
+      await expect(page.getByText(c.loading, { exact: true })).toHaveCount(0);
+    } finally {
+      release();
+      await cleanupSearchFixture(f);
+    }
+  });
+  test(`${locale}: dashboard blocked storage and narrow keyboard navigation stay private`, async ({
+    page,
+  }, info) => {
+    test.skip(!enabled, "Requires guarded auth database");
+    const f = await searchFixture();
+    try {
+      await signIn(page, f);
+      await page.addInitScript(() =>
+        Object.defineProperty(window, "sessionStorage", {
+          get() {
+            throw new DOMException("Blocked", "SecurityError");
+          },
+        }),
+      );
+      await page.goto(`/${locale}/dashboard`);
+      await expect(page.getByTestId("dashboard-selection-rows")).toHaveText("1");
+      await dashboardText(page, locale, "private-blocked-dashboard", 0);
+      await page.goBack();
+      await expect(page.getByTestId("dashboard-selection-rows")).toHaveText("1");
+      await page.goForward();
+      await expect(page.getByTestId("dashboard-selection-rows")).toHaveText("0");
+      await page.reload();
+      await expect(page.getByText(c.errors.missingToken, { exact: true })).toBeVisible();
+      await expect(page.getByTestId("dashboard-selection-rows")).toHaveCount(0);
+      await page.getByRole("button", { name: c.reset, exact: true }).first().click();
+      await expect(page.getByTestId("dashboard-selection-rows")).toHaveText("1");
+      await page.setViewportSize({ width: 320, height: 900 });
+      await panel(page, locale);
+      await page.getByLabel(c.text, { exact: true }).fill("unapplied-dashboard-draft");
+      const drawer = page.locator("dialog.search-drawer[open]");
+      for (let i = 0; i < 15; i++) {
+        await page.keyboard.press("Tab");
+        expect(await drawer.evaluate((el) => el.contains(document.activeElement))).toBe(true);
+      }
+      await page.keyboard.press("Escape");
+      await expect(page.getByRole("button", { name: c.openFilters, exact: true })).toBeFocused();
+      await page
+        .getByRole("link", { name: locale === "de" ? "English" : "Deutsch", exact: true })
+        .click();
+      const confirm = page.getByRole("dialog", { name: c.discardTitle, exact: true });
+      await expect(confirm).toBeVisible();
+      await page.getByRole("button", { name: c.cancel, exact: true }).click();
+      await panel(page, locale);
+      await expect(page.getByLabel(c.text, { exact: true })).toHaveValue(
+        "unapplied-dashboard-draft",
+      );
+      await page.getByRole("button", { name: c.discard, exact: true }).click();
+      await page.getByRole("button", { name: c.discardConfirm, exact: true }).click();
+      await page.keyboard.press("Escape");
+      await page.setViewportSize({ width: 720, height: 500 });
+      await page.evaluate(() => {
+        document.documentElement.style.zoom = "2";
+      });
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
+        true,
+      );
+      await page.screenshot({
+        path: resolve(
+          `../../.superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/screenshots/task-5e-${locale}-${info.project.name}-zoom.png`,
+        ),
+        fullPage: true,
+      });
+    } finally {
+      await cleanupSearchFixture(f);
+    }
+  });
+}
+
+for (const locale of ["de", "en"] as const) {
+  test(`${locale}: clean dashboard cannot abandon an outstanding real saved-search creation through Back`, async ({
+    page,
+  }) => {
+    test.skip(!enabled, "Requires guarded auth database");
+    const f = await searchFixture();
+    const c = (locale === "de" ? de : en).SavedSearches;
+    let release!: () => void;
+    const gate = new Promise<void>((resolve) => {
+      release = resolve;
+    });
+    let arrived!: () => void;
+    const incoming = new Promise<void>((resolve) => {
+      arrived = resolve;
+    });
+    let writes = 0;
+    try {
+      await signIn(page, f);
+      await page.goto(`/${locale}/collections`);
+      await page
+        .getByRole("link", { name: locale === "de" ? "Übersicht" : "Dashboard", exact: true })
+        .click();
+      await expect(page.getByTestId("dashboard-selection-rows")).toHaveText("1");
+      await page.getByRole("button", { name: copies[locale].saveSearch, exact: true }).click();
+      await page
+        .getByRole("dialog")
+        .getByRole("textbox", { name: c.name, exact: true })
+        .fill("Actual pending dashboard save");
+      await page.route("**/api/v1/smart-collections", async (route) => {
+        if (route.request().method() !== "POST") {
+          await route.continue();
+          return;
+        }
+        writes++;
+        const response = await route.fetch();
+        expect(response.status()).toBe(201);
+        arrived();
+        await gate;
+        await route.fulfill({ response });
+      });
+      await page.getByRole("dialog").getByRole("button", { name: c.save, exact: true }).click();
+      await incoming;
+      await page.goBack();
+      await expect(page.getByRole("dialog", { name: c.create, exact: true })).toBeVisible();
+      await expect(page.locator("dialog[open]")).toHaveCount(1);
+      await expect(page.getByRole("button", { name: c.saving, exact: true })).toBeDisabled();
+      release();
+      await expect(
+        page.getByRole("heading", { name: "Actual pending dashboard save", exact: true }),
+      ).toBeVisible();
+      expect(writes).toBe(1);
+      await page.goBack();
+      await expect(page.getByTestId("dashboard-selection-rows")).toHaveText("1");
+      await page.goBack();
+      await expect(page).toHaveURL(new RegExp(`/${locale}/collections$`));
     } finally {
       release();
       await cleanupSearchFixture(f);

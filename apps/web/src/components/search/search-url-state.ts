@@ -111,7 +111,7 @@ export function writeSearchHistory(
   token: string,
   mode: "push" | "replace",
 ) {
-  if (!tokenPattern.test(token) || !/^\/(de|en)\/search$/u.test(path))
+  if (!tokenPattern.test(token) || !/^\/(de|en)\/(search|dashboard)$/u.test(path))
     throw Error("SEARCH_INVALID");
   history[mode === "push" ? "pushState" : "replaceState"](
     {

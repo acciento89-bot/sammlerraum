@@ -30,7 +30,7 @@ Comparable deltas use `(latest - prior) × current quantity`. EMPTY, INSUFFICIEN
 
 Trade buckets preserve NOT_FOR_TRADE, OPEN_TO_TRADE, FOR_SALE and RESERVED. Trade-ready means OPEN_TO_TRADE plus FOR_SALE; RESERVED is separate. Every bucket reports rows and units.
 
-Condition groups retain exact category/option identity and retired options. Null condition is missing. Grading counts distinguish distinct graded items from grading records. Groups preserve exact providerKey/grade, recordCount and distinct itemCount; one item can appear in several buckets. They do not claim certificate verification or comparable cross-provider grade scales.
+Condition groups retain exact category/option identity and retired options. `optionActive` and `schemeActive` preserve the actual canonical flags from the same bounded distribution snapshot; an inactive option or scheme remains included. These are metadata statuses, not inferred from labels. Null condition is missing. Grading counts distinguish distinct graded items from grading records. Groups preserve exact providerKey/grade, recordCount and distinct itemCount; one item can appear in several buckets. They do not claim certificate verification or comparable cross-provider grade scales.
 
 Missing-data counters overlap: category, condition, acquisition date, purchase amount pair, own estimate, grading, catalog entry link, image and document. Entry-only catalog links are valid; missing variant is not missing catalog linkage. Grading absence is an optional-data hint. A usable image/document requires its correct-kind same-owner asset to be READY and not cleanup-started. A mere link or pending/failed asset does not qualify. Purchase presence does not establish monetary interpretation.
 

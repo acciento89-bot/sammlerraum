@@ -205,3 +205,28 @@ it("permanently closes expired-session requests while ordinary cancellation rema
   expect(channel.current(next.id)).toBe(false);
   expect(() => channel.begin()).toThrow();
 });
+it("writes dashboard query identity privately while preserving framework state and rejecting other paths", () => {
+  let state: Record<string, unknown> = {
+      __NA: true,
+      __PRIVATE_NEXTJS_INTERNALS_TREE: { preserved: true },
+    },
+    url = "";
+  const history = {
+    get state() {
+      return state;
+    },
+    pushState: (next: unknown, _unused: string, nextUrl?: string | URL | null) => {
+      state = next as Record<string, unknown>;
+      url = String(nextUrl);
+    },
+    replaceState: (next: unknown, _unused: string, nextUrl?: string | URL | null) => {
+      state = next as Record<string, unknown>;
+      url = String(nextUrl);
+    },
+  };
+  writeSearchHistory(history, "/en/dashboard", "b".repeat(32), "replace");
+  expect(url).toBe("/en/dashboard?q=" + "b".repeat(32));
+  expect(state.__PRIVATE_NEXTJS_INTERNALS_TREE).toEqual({ preserved: true });
+  for (const path of ["/en/account", "/de/dashboard/other", "https://evil.invalid/de/dashboard"])
+    expect(() => writeSearchHistory(history, path, "b".repeat(32), "push")).toThrow();
+});

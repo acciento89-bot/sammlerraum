@@ -28,15 +28,15 @@ export function LocaleNavigation({ locale }: { locale: string }) {
     };
   }, [pathname]);
   const saved = /^\/(de|en)\/smart-collections(?:\/[0-9a-f-]+)?$/u.test(pathname ?? "");
-  const search = /^\/(de|en)\/search$/u.test(pathname ?? "");
+  const queryView = pathname?.match(/^\/(de|en)\/(search|dashboard)$/u)?.[2];
   return (
     <nav className="language-nav" aria-label={t("language")}>
       {(["de", "en"] as const).map((language) => (
         <Link
           key={language}
           href={
-            search
-              ? `/${language}/search${suffix}`
+            queryView
+              ? `/${language}/${queryView}${suffix}`
               : saved
                 ? `/${language}${pathname!.slice(3)}`
                 : `/${language}`
@@ -44,15 +44,6 @@ export function LocaleNavigation({ locale }: { locale: string }) {
           hrefLang={language}
           prefetch={false}
           aria-current={locale === language ? "page" : undefined}
-          onClick={(event) => {
-            if (search) {
-              const action = new CustomEvent("sammlerraum:search-locale", {
-                cancelable: true,
-                detail: { href: `/${language}/search${suffix}` },
-              });
-              if (!window.dispatchEvent(action)) event.preventDefault();
-            }
-          }}
         >
           {t(language === "de" ? "german" : "english")}
         </Link>

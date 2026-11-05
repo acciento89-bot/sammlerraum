@@ -33,6 +33,7 @@ export function SavedSearchDialog({
   initialName = "",
   modalRef,
   onCreated,
+  onProtectionChange,
 }: {
   open: boolean;
   onClose: () => void;
@@ -42,6 +43,7 @@ export function SavedSearchDialog({
   initialName?: string;
   modalRef?: RefObject<HTMLDialogElement | null>;
   onCreated?: (detail: SavedDetail) => void;
+  onProtectionChange?: (needed: boolean) => void;
 }) {
   const search = useTranslations("Search");
   const t = useTranslations("SavedSearches"),
@@ -50,16 +52,23 @@ export function SavedSearchDialog({
   const internalDialog = useRef<HTMLDialogElement>(null);
   const dialog = modalRef ?? internalDialog;
   const channel = useRef(new RequestChannel());
+  const [submittedQuery, setSubmittedQuery] = useState<NormalizedItemSearchQuery | null>(null);
+  const shownQuery = submittedQuery ?? query;
   const [name, setName] = useState(initialName),
     [busy, setBusy] = useState(false);
   const [error, setError] = useState(""),
     [unknown, setUnknown] = useState(false),
     [ack, setAck] = useState<SavedDetail | null>(null);
   useEffect(() => {
+    onProtectionChange?.(busy || unknown);
+  }, [busy, unknown, onProtectionChange]);
+  useEffect(() => () => onProtectionChange?.(false), [onProtectionChange]);
+  useEffect(() => {
     const close = () => {
       channel.current.close();
       clearSavedAcknowledgements();
       setName("");
+      setSubmittedQuery(null);
       setAck(null);
       setUnknown(false);
       setBusy(false);
@@ -85,7 +94,9 @@ export function SavedSearchDialog({
     setBusy(true);
     setError("");
     try {
-      const detail = await createSavedSearch(name, query, request.signal);
+      const submitted = structuredClone(query);
+      setSubmittedQuery(submitted);
+      const detail = await createSavedSearch(name, submitted, request.signal);
       if (!channel.current.current(request.id)) return;
       // Keep the acknowledged identity/revision even if the following navigation fails.
       rememberSavedAcknowledgement(actor, detail);
@@ -97,10 +108,12 @@ export function SavedSearchDialog({
       if (!channel.current.current(request.id)) return;
       setBusy(false);
       if (problem instanceof SavedMutationUnknownError) setUnknown(true);
-      else
+      else {
+        setSubmittedQuery(null);
         setError(
           problem instanceof SearchHttpError && problem.status === 401 ? "session" : "invalid",
         );
+      }
     }
   }
   return (
@@ -130,15 +143,15 @@ export function SavedSearchDialog({
         <dl>
           <div>
             <dt>{search("text")}</dt>
-            <dd>{query.text || t("allText")}</dd>
+            <dd>{shownQuery.text || t("allText")}</dd>
           </div>
           <div>
             <dt>{search("lifecycle")}</dt>
-            <dd>{search(`lifecycles.${query.lifecycle}`)}</dd>
+            <dd>{search(`lifecycles.${shownQuery.lifecycle}`)}</dd>
           </div>
           <div>
             <dt>{t("conditions")}</dt>
-            <dd>{query.filter ? clauses(query.filter.root) : 0}</dd>
+            <dd>{shownQuery.filter ? clauses(shownQuery.filter.root) : 0}</dd>
           </div>
         </dl>
         <SearchLabel>
@@ -148,7 +161,7 @@ export function SavedSearchDialog({
             value={name}
             required
             maxLength={100}
-            disabled={busy || !!ack}
+            disabled={busy || !!ack || unknown}
             onChange={(e) => setName(e.target.value)}
           />
         </SearchLabel>

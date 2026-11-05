@@ -65,24 +65,35 @@ export function SavedSearchDetail({
   const [unknown, setUnknown] = useState<"update" | "delete" | null>(null),
     [conflict, setConflict] = useState(false),
     [copyOpen, setCopyOpen] = useState(false),
+    [copyProtected, setCopyProtected] = useState(false),
     [deleteOpen, setDeleteOpen] = useState(false),
     [cursor, setCursor] = useState<string>();
   const deleteDialog = useRef<HTMLDialogElement>(null),
     copyDialog = useRef<HTMLDialogElement>(null);
-  const confirmation = useSavedConfirmation(dirty || !!unknown || busy, () => {
-    if (copyOpen) {
-      if (copyDialog.current?.getAttribute("aria-busy") === "true") return false;
-      copyDialog.current?.close();
-      setCopyOpen(false);
-      return () => setCopyOpen(true);
-    }
-    if (deleteOpen) {
-      if (busy) return false;
-      deleteDialog.current?.close();
-      setDeleteOpen(false);
-      return () => setDeleteOpen(true);
-    }
-  });
+  const confirmation = useSavedConfirmation(
+    dirty || !!unknown || busy || copyProtected,
+    () => {
+      if (copyOpen) {
+        if (copyDialog.current?.getAttribute("aria-busy") === "true") return false;
+        copyDialog.current?.close();
+        setCopyOpen(false);
+        return () => setCopyOpen(true);
+      }
+      if (deleteOpen) {
+        if (busy) return false;
+        deleteDialog.current?.close();
+        setDeleteOpen(false);
+        return () => setDeleteOpen(true);
+      }
+    },
+    {
+      isRecoveryNavigation: (destination) =>
+        copyProtected &&
+        !dirty &&
+        destination.pathname === `/${locale}/smart-collections` &&
+        !destination.search,
+    },
+  );
   const accept = useCallback(
     (detail: SavedDetail) => {
       setSaved(detail);
@@ -526,6 +537,7 @@ export function SavedSearchDetail({
       {saved && query && (
         <SavedSearchDialog
           modalRef={copyDialog}
+          onProtectionChange={setCopyProtected}
           onCreated={(detail) => {
             copyDialog.current?.close();
             setCopyOpen(false);

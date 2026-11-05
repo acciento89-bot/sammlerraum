@@ -11,6 +11,7 @@ export function AccountNav({ locale }: { locale: string }) {
   return (
     <nav className="account-nav" aria-label={t("nav")}>
       <a href={`/${locale}/search`}>{search("navSearch")}</a>
+      <a href={`/${locale}/dashboard`}>{search("navDashboard")}</a>
       <a href={`/${locale}/account/profile`}>{t("profile")}</a>
       <a href={`/${locale}/account/security`}>{t("security")}</a>
       <button

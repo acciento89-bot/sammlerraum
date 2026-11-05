@@ -1,12 +1,24 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { containDialogTab } from "./dialog-keyboard";
 
-export function useSavedConfirmation(dirty: boolean, suspend?: () => false | void | (() => void)) {
+export function useCollectorConfirmation(
+  dirty: boolean,
+  suspend?: () => false | void | (() => void),
+  settings?: {
+    copy?: { title: string; body: string; cancel: string; discard: string };
+    onDiscard?: () => void;
+    isRecoveryNavigation?: (destination: URL) => boolean;
+  },
+) {
   const t = useTranslations("SavedSearches"),
     router = useRouter();
+  const titleId = useId();
+  const settingsRef = useRef(settings);
+  settingsRef.current = settings;
+  const internalPops = useRef(new WeakSet<PopStateEvent>());
   const dialog = useRef<HTMLDialogElement>(null),
     action = useRef<(() => void) | null>(null),
     opener = useRef<HTMLElement | null>(null);
@@ -43,6 +55,23 @@ export function useSavedConfirmation(dirty: boolean, suspend?: () => false | voi
     window.addEventListener("popstate", finish, { once: true });
     window.history.back();
   }
+  function insertGuard() {
+    if (!dirtyRef.current || guard.current || allow.current || expired.current) return;
+    const token = crypto.randomUUID();
+    guard.current = token;
+    window.history.pushState(
+      { ...window.history.state, sammlerraumSavedGuard: token },
+      "",
+      window.location.href,
+    );
+  }
+  function changeLocation(next: () => void, protect: boolean) {
+    navigate(() => {
+      next();
+      allow.current = false;
+      if (protect) insertGuard();
+    });
+  }
   function confirm(next: () => void) {
     if (expired.current) return;
     const restore = suspendCurrent.current?.();
@@ -67,16 +96,7 @@ export function useSavedConfirmation(dirty: boolean, suspend?: () => false | voi
   }, [pending]);
   useEffect(() => {
     if (dirty && !guard.current && !allow.current) {
-      const token = crypto.randomUUID();
-      guard.current = token;
-      // Keep the immediately previous history entry on the same mounted editor.
-      // Next may consume a traversal before a component-level pop listener runs.
-      // This extra entry prevents it from replacing a meaningful draft first.
-      window.history.pushState(
-        { ...window.history.state, sammlerraumSavedGuard: token },
-        "",
-        window.location.href,
-      );
+      insertGuard();
     } else if (
       !dirty &&
       guard.current &&
@@ -111,10 +131,18 @@ export function useSavedConfirmation(dirty: boolean, suspend?: () => false | voi
         return;
       event.preventDefault();
       event.stopPropagation();
+      if (settingsRef.current?.isRecoveryNavigation?.(next)) {
+        const restored = suspendCurrent.current?.();
+        if (restored === false) return;
+        resume.current = null;
+        navigate(() => router.push(next.pathname + next.search + next.hash));
+        return;
+      }
       confirm(() => navigate(() => router.push(next.pathname + next.search + next.hash)));
     };
-    const pop = () => {
+    const pop = (event: PopStateEvent) => {
       if (restoring.current) {
+        internalPops.current.add(event);
         restoring.current = false;
         return;
       }
@@ -125,6 +153,7 @@ export function useSavedConfirmation(dirty: boolean, suspend?: () => false | voi
         window.history.state?.sammlerraumSavedGuard === guard.current
       )
         return;
+      internalPops.current.add(event);
       restoring.current = true;
       window.history.forward();
       confirm(() => {
@@ -167,16 +196,16 @@ export function useSavedConfirmation(dirty: boolean, suspend?: () => false | voi
     <dialog
       ref={dialog}
       className="search-confirm"
-      aria-labelledby="saved-discard-title"
+      aria-labelledby={titleId}
       onKeyDown={containDialogTab}
       onCancel={cancel}
       onClose={() => opener.current?.focus()}
     >
-      <h2 id="saved-discard-title">{t("discardTitle")}</h2>
-      <p>{t("discardHelp")}</p>
+      <h2 id={titleId}>{settings?.copy?.title ?? t("discardTitle")}</h2>
+      <p>{settings?.copy?.body ?? t("discardHelp")}</p>
       <div className="search-actions">
         <button autoFocus className="secondary-button" onClick={cancel}>
-          {t("cancel")}
+          {settings?.copy?.cancel ?? t("cancel")}
         </button>
         <button
           onClick={() => {
@@ -185,13 +214,23 @@ export function useSavedConfirmation(dirty: boolean, suspend?: () => false | voi
             resume.current = null;
             dialog.current?.close();
             setPending(false);
+            settingsRef.current?.onDiscard?.();
             next?.();
           }}
         >
-          {t("discard")}
+          {settings?.copy?.discard ?? t("discard")}
         </button>
       </div>
     </dialog>
   );
-  return { confirm, node, navigateAfterGuard: navigate };
+  return {
+    confirm,
+    node,
+    navigateAfterGuard: navigate,
+    changeLocation,
+    internalHistoryEvent: (event: PopStateEvent) =>
+      internalPops.current.has(event) || pendingExit.current !== null,
+  };
 }
+
+export const useSavedConfirmation = useCollectorConfirmation;

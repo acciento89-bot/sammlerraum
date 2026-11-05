@@ -1089,3 +1089,51 @@ body:has(.search-shell) .skip-link:not(:focus) {
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+.management-nav,
+.account-nav {
+  flex-wrap: wrap;
+}
+.dashboard-content {
+  display: grid;
+  gap: 1.8rem;
+}
+.dashboard-content section {
+  min-width: 0;
+}
+.dashboard-content h3 {
+  margin-block: 0 0.8rem;
+}
+.dashboard-metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+  gap: 1rem;
+  margin: 0;
+}
+.dashboard-metrics dd {
+  margin: 0;
+  font-size: 1.9rem;
+  font-variant-numeric: tabular-nums;
+}
+.dashboard-money {
+  font-size: clamp(1.4rem, 3vw, 2.1rem);
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+.dashboard-facts {
+  display: grid;
+  gap: 0.7rem;
+}
+.dashboard-facts > div {
+  padding-block: 0.5rem;
+  border-bottom: 1px solid var(--line);
+}
+.dashboard-facts dt {
+  font-weight: 650;
+}
+.dashboard-facts dd {
+  margin: 0;
+}
+.dashboard-content .management-card + .management-card {
+  margin-top: 1rem;
+}

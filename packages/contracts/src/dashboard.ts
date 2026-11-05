@@ -138,6 +138,8 @@ export const DashboardDistributionsSchema = z
                 labelKey: z.string().min(1).max(128),
                 labelDe: z.string().min(1).max(200),
                 labelEn: z.string().min(1).max(200),
+                optionActive: z.boolean(),
+                schemeActive: z.boolean(),
               })
               .strict(),
           )
