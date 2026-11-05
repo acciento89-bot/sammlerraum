@@ -1,0 +1,164 @@
+[WebServer] (node:23032) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 12 tests using 1 worker
+
+(node:23033) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘   1 [desktop] › e2e/search-dashboard.spec.ts:1816:3 › de: dashboard renders real mixed denominations, exclusions and retained metadata (522ms)
+(node:23039) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   2 [desktop] › e2e/search-dashboard.spec.ts:1919:3 › de: dashboard preserves real Next history and private transfer through locale, item and reload (2.2s)
+  ✓   3 [desktop] › e2e/search-dashboard.spec.ts:1973:3 › de: dashboard retains explicitly stale data only for a failed same-query refresh and clears on session expiry (867ms)
+  ✘   4 [desktop] › e2e/search-dashboard.spec.ts:1816:3 › en: dashboard renders real mixed denominations, exclusions and retained metadata (215ms)
+(node:23072) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   5 [desktop] › e2e/search-dashboard.spec.ts:1919:3 › en: dashboard preserves real Next history and private transfer through locale, item and reload (2.4s)
+  ✓   6 [desktop] › e2e/search-dashboard.spec.ts:1973:3 › en: dashboard retains explicitly stale data only for a failed same-query refresh and clears on session expiry (830ms)
+(node:23094) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘   7 [mobile] › e2e/search-dashboard.spec.ts:1816:3 › de: dashboard renders real mixed denominations, exclusions and retained metadata (338ms)
+(node:23100) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   8 [mobile] › e2e/search-dashboard.spec.ts:1919:3 › de: dashboard preserves real Next history and private transfer through locale, item and reload (1.4s)
+  ✓   9 [mobile] › e2e/search-dashboard.spec.ts:1973:3 › de: dashboard retains explicitly stale data only for a failed same-query refresh and clears on session expiry (1.4s)
+  ✘  10 [mobile] › e2e/search-dashboard.spec.ts:1816:3 › en: dashboard renders real mixed denominations, exclusions and retained metadata (262ms)
+(node:23113) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  11 [mobile] › e2e/search-dashboard.spec.ts:1919:3 › en: dashboard preserves real Next history and private transfer through locale, item and reload (1.4s)
+  ✓  12 [mobile] › e2e/search-dashboard.spec.ts:1973:3 › en: dashboard retains explicitly stale data only for a failed same-query refresh and clears on session expiry (1.3s)
+
+
+  1) [desktop] › e2e/search-dashboard.spec.ts:1816:3 › de: dashboard renders real mixed denominations, exclusions and retained metadata 
+
+    GradingServiceError: GRADING_REQUIRES_SINGLE_ITEM
+
+       at ../../../packages/domain/src/grading/grading-service.ts:128
+
+      126 |     return within(async (tx) => {
+      127 |       const item = await lockItem(tx, itemId, actorUserId, true);
+    > 128 |       if (item.quantity !== 1) throw new GradingServiceError("GRADING_REQUIRES_SINGLE_ITEM");
+          |                                      ^
+      129 |       const date = value.gradedAt === null ? null : new Date(`${value.gradedAt}T00:00:00.000Z`);
+      130 |       let savedId = gradingId;
+      131 |       if (gradingId === null) {
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/domain/src/grading/grading-service.ts:128:38
+        at Proxy._transactionWithCallback (/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:861:18)
+        at within (/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/domain/src/grading/grading-service.ts:100:14)
+        at dashboardFixture (/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/support/dashboard-fixture.ts:80:7)
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/search-dashboard.spec.ts:1820:15
+
+    Error Context: test-results/search-dashboard-de-dashbo-83070-sions-and-retained-metadata-desktop/error-context.md
+
+    Error Context: test-results/search-dashboard-de-dashbo-83070-sions-and-retained-metadata-desktop/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/search-dashboard-de-dashbo-83070-sions-and-retained-metadata-desktop/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/search-dashboard-de-dashbo-83070-sions-and-retained-metadata-desktop/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [desktop] › e2e/search-dashboard.spec.ts:1816:3 › en: dashboard renders real mixed denominations, exclusions and retained metadata 
+
+    GradingServiceError: GRADING_REQUIRES_SINGLE_ITEM
+
+       at ../../../packages/domain/src/grading/grading-service.ts:128
+
+      126 |     return within(async (tx) => {
+      127 |       const item = await lockItem(tx, itemId, actorUserId, true);
+    > 128 |       if (item.quantity !== 1) throw new GradingServiceError("GRADING_REQUIRES_SINGLE_ITEM");
+          |                                      ^
+      129 |       const date = value.gradedAt === null ? null : new Date(`${value.gradedAt}T00:00:00.000Z`);
+      130 |       let savedId = gradingId;
+      131 |       if (gradingId === null) {
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/domain/src/grading/grading-service.ts:128:38
+        at Proxy._transactionWithCallback (/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:861:18)
+        at within (/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/domain/src/grading/grading-service.ts:100:14)
+        at dashboardFixture (/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/support/dashboard-fixture.ts:80:7)
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/search-dashboard.spec.ts:1820:15
+
+    Error Context: test-results/search-dashboard-en-dashbo-bf97e-sions-and-retained-metadata-desktop/error-context.md
+
+    Error Context: test-results/search-dashboard-en-dashbo-bf97e-sions-and-retained-metadata-desktop/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/search-dashboard-en-dashbo-bf97e-sions-and-retained-metadata-desktop/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/search-dashboard-en-dashbo-bf97e-sions-and-retained-metadata-desktop/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [mobile] › e2e/search-dashboard.spec.ts:1816:3 › de: dashboard renders real mixed denominations, exclusions and retained metadata 
+
+    GradingServiceError: GRADING_REQUIRES_SINGLE_ITEM
+
+       at ../../../packages/domain/src/grading/grading-service.ts:128
+
+      126 |     return within(async (tx) => {
+      127 |       const item = await lockItem(tx, itemId, actorUserId, true);
+    > 128 |       if (item.quantity !== 1) throw new GradingServiceError("GRADING_REQUIRES_SINGLE_ITEM");
+          |                                      ^
+      129 |       const date = value.gradedAt === null ? null : new Date(`${value.gradedAt}T00:00:00.000Z`);
+      130 |       let savedId = gradingId;
+      131 |       if (gradingId === null) {
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/domain/src/grading/grading-service.ts:128:38
+        at Proxy._transactionWithCallback (/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:861:18)
+        at within (/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/domain/src/grading/grading-service.ts:100:14)
+        at dashboardFixture (/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/support/dashboard-fixture.ts:80:7)
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/search-dashboard.spec.ts:1820:15
+
+    Error Context: test-results/search-dashboard-de-dashbo-83070-sions-and-retained-metadata-mobile/error-context.md
+
+    Error Context: test-results/search-dashboard-de-dashbo-83070-sions-and-retained-metadata-mobile/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/search-dashboard-de-dashbo-83070-sions-and-retained-metadata-mobile/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/search-dashboard-de-dashbo-83070-sions-and-retained-metadata-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4) [mobile] › e2e/search-dashboard.spec.ts:1816:3 › en: dashboard renders real mixed denominations, exclusions and retained metadata 
+
+    GradingServiceError: GRADING_REQUIRES_SINGLE_ITEM
+
+       at ../../../packages/domain/src/grading/grading-service.ts:128
+
+      126 |     return within(async (tx) => {
+      127 |       const item = await lockItem(tx, itemId, actorUserId, true);
+    > 128 |       if (item.quantity !== 1) throw new GradingServiceError("GRADING_REQUIRES_SINGLE_ITEM");
+          |                                      ^
+      129 |       const date = value.gradedAt === null ? null : new Date(`${value.gradedAt}T00:00:00.000Z`);
+      130 |       let savedId = gradingId;
+      131 |       if (gradingId === null) {
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/domain/src/grading/grading-service.ts:128:38
+        at Proxy._transactionWithCallback (/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:861:18)
+        at within (/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/domain/src/grading/grading-service.ts:100:14)
+        at dashboardFixture (/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/support/dashboard-fixture.ts:80:7)
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/search-dashboard.spec.ts:1820:15
+
+    Error Context: test-results/search-dashboard-en-dashbo-bf97e-sions-and-retained-metadata-mobile/error-context.md
+
+    Error Context: test-results/search-dashboard-en-dashbo-bf97e-sions-and-retained-metadata-mobile/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/search-dashboard-en-dashbo-bf97e-sions-and-retained-metadata-mobile/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/search-dashboard-en-dashbo-bf97e-sions-and-retained-metadata-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4 failed
+    [desktop] › e2e/search-dashboard.spec.ts:1816:3 › de: dashboard renders real mixed denominations, exclusions and retained metadata 
+    [desktop] › e2e/search-dashboard.spec.ts:1816:3 › en: dashboard renders real mixed denominations, exclusions and retained metadata 
+    [mobile] › e2e/search-dashboard.spec.ts:1816:3 › de: dashboard renders real mixed denominations, exclusions and retained metadata 
+    [mobile] › e2e/search-dashboard.spec.ts:1816:3 › en: dashboard renders real mixed denominations, exclusions and retained metadata 
+  8 passed (17.6s)
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/search-dashboard.spec.ts --grep dashboard renders real mixed|dashboard preserves real Next|dashboard retains explicitly stale --workers=1 --trace=retain-on-failure

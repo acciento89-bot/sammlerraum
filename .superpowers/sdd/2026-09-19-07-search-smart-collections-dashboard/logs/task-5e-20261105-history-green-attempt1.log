@@ -1,0 +1,45 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| apps/web/src/components/search/search-state.test.ts (18 tests | 1 failed) 14ms
+   ✓ typed search drafts > keeps 100 selected IDs across label eviction without making 50 leaves a 50-ID cap 5ms
+   ✓ typed search drafts > roundtrips nested NOT, OR and false/zero and leaves unavailable subtrees intact for repair 1ms
+   ✓ typed search drafts > uses the actual parser for depth 5/6 and leaves 50/51 2ms
+   ✓ typed search drafts > offers every supported type operator and explicit unavailable families 0ms
+   ✓ bounded tab query identity > uses fresh opaque 128-bit tokens and restores only same actor validated query data 1ms
+   ✓ bounded tab query identity > evicts oldest after 20 and works with blocked storage; clearing removes private entries 1ms
+   ✓ bounded tab query identity > rejects unsafe URL ?text=private 0ms
+   ✓ bounded tab query identity > rejects unsafe URL ?f=%7B%7D 0ms
+   ✓ bounded tab query identity > rejects unsafe URL ?q=x 0ms
+   ✓ bounded tab query identity > rejects unsafe URL ?q=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&q=bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb 0ms
+   ✓ bounded tab query identity > rejects unsafe URL ?%71=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa 0ms
+   ✓ bounded tab query identity > rejects unsafe URL ?q=%ZZ 0ms
+   ✓ bounded tab query identity > rejects unsafe URL ?q=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&unknown=x 0ms
+   ✓ bounded tab query identity > rejects fragments and merges framework history keys 0ms
+   ✓ rejects stale callbacks independently of abort and disposal 0ms
+   ✓ bounds concurrent metadata expansion to two and skips aborted queued work 1ms
+   ✓ permanently closes expired-session requests while ordinary cancellation remains reusable 0ms
+   × writes dashboard query identity privately while preserving framework state and rejecting other paths 2ms
+     → SEARCH_INVALID
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/web/src/components/search/search-state.test.ts > writes dashboard query identity privately while preserving framework state and rejecting other paths
+Error: SEARCH_INVALID
+ ❯ writeSearchHistory apps/web/src/components/search/search-url-state.ts:115:11
+    113| ) {
+    114|   if (!tokenPattern.test(token) || !/^\/(de|en)\/search$/u.test(path))
+    115|     throw Error("SEARCH_INVALID");
+       |           ^
+    116|   history[mode === "push" ? "pushState" : "replaceState"](
+    117|     {
+ ❯ apps/web/src/components/search/search-state.test.ts:211:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 17 passed (18)
+   Start at  22:39:36
+   Duration  395ms (transform 78ms, setup 5ms, collect 142ms, tests 14ms, environment 0ms, prepare 37ms)
+

@@ -1,0 +1,23 @@
+[WebServer] (node:22468) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 12 tests using 1 worker
+
+(node:22469) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [desktop] › e2e/search-dashboard.spec.ts:1005:5 › de: lost create acknowledgement never retries or silently changes expected revision (1.6s)
+  ✓   2 [desktop] › e2e/search-dashboard.spec.ts:1005:5 › en: lost create acknowledgement never retries or silently changes expected revision (590ms)
+  ✓   3 [desktop] › e2e/search-dashboard.spec.ts:1557:3 › de: unknown save-as-new recovery suspends its dialog and preserves input on cancellation (756ms)
+  ✓   4 [desktop] › e2e/search-dashboard.spec.ts:1557:3 › en: unknown save-as-new recovery suspends its dialog and preserves input on cancellation (722ms)
+  ✓   5 [desktop] › e2e/search-dashboard.spec.ts:1750:3 › de: collector opens a real same-selection dashboard with exact own-estimate totals (518ms)
+  ✓   6 [desktop] › e2e/search-dashboard.spec.ts:1750:3 › en: collector opens a real same-selection dashboard with exact own-estimate totals (479ms)
+(node:22488) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   7 [mobile] › e2e/search-dashboard.spec.ts:1005:5 › de: lost create acknowledgement never retries or silently changes expected revision (796ms)
+  ✓   8 [mobile] › e2e/search-dashboard.spec.ts:1005:5 › en: lost create acknowledgement never retries or silently changes expected revision (585ms)
+  ✓   9 [mobile] › e2e/search-dashboard.spec.ts:1557:3 › de: unknown save-as-new recovery suspends its dialog and preserves input on cancellation (724ms)
+  ✓  10 [mobile] › e2e/search-dashboard.spec.ts:1557:3 › en: unknown save-as-new recovery suspends its dialog and preserves input on cancellation (728ms)
+  ✓  11 [mobile] › e2e/search-dashboard.spec.ts:1750:3 › de: collector opens a real same-selection dashboard with exact own-estimate totals (468ms)
+  ✓  12 [mobile] › e2e/search-dashboard.spec.ts:1750:3 › en: collector opens a real same-selection dashboard with exact own-estimate totals (482ms)
+
+  12 passed (10.4s)

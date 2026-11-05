@@ -1,0 +1,39 @@
+apps/web/src/components/search/collector-navigation.tsx 32ms
+apps/web/src/components/search/dashboard-client.ts 3ms
+apps/web/src/components/search/dashboard-format.test.ts 13ms (unchanged)
+apps/web/src/components/search/dashboard-format.ts 9ms (unchanged)
+apps/web/src/components/search/dashboard-results.tsx 36ms
+apps/web/src/components/search/deferred-focus.test.ts 4ms (unchanged)
+apps/web/src/components/search/deferred-focus.ts 3ms (unchanged)
+apps/web/src/components/search/dialog-keyboard.ts 2ms (unchanged)
+apps/web/src/components/search/filter-builder.tsx 10ms (unchanged)
+apps/web/src/components/search/filter-draft.test.ts 12ms (unchanged)
+apps/web/src/components/search/filter-draft.ts 8ms (unchanged)
+apps/web/src/components/search/filter-leaf-editor.tsx 30ms (unchanged)
+apps/web/src/components/search/filter-predicate-editor.tsx 16ms (unchanged)
+apps/web/src/components/search/locale-navigation.tsx 4ms (unchanged)
+apps/web/src/components/search/predicate-input.test.ts 1ms (unchanged)
+apps/web/src/components/search/predicate-input.ts 1ms (unchanged)
+apps/web/src/components/search/reference-picker.tsx 14ms (unchanged)
+apps/web/src/components/search/saved-acknowledgements.test.ts 2ms (unchanged)
+apps/web/src/components/search/saved-acknowledgements.ts 3ms (unchanged)
+apps/web/src/components/search/saved-search-detail.tsx 21ms (unchanged)
+apps/web/src/components/search/saved-search-dialog.tsx 7ms
+apps/web/src/components/search/saved-search-list.tsx 7ms (unchanged)
+apps/web/src/components/search/search-client.ts 5ms (unchanged)
+apps/web/src/components/search/search-label.tsx 2ms (unchanged)
+apps/web/src/components/search/search-page.tsx 21ms
+apps/web/src/components/search/search-results.tsx 6ms (unchanged)
+apps/web/src/components/search/search-state.test.ts 10ms
+apps/web/src/components/search/search-state.ts 5ms (unchanged)
+apps/web/src/components/search/search-url-state.ts 5ms (unchanged)
+apps/web/src/components/search/smart-collections-client.test.ts 10ms (unchanged)
+apps/web/src/components/search/smart-collections-client.ts 7ms (unchanged)
+apps/web/src/components/search/use-saved-confirmation.tsx 7ms
+apps/web/src/components/account/account-nav.tsx 2ms (unchanged)
+apps/web/src/components/catalog/catalog-navigation.tsx 2ms
+apps/web/src/components/collections/collections-manager.tsx 8ms
+apps/web/messages/de.json 23ms (unchanged)
+apps/web/messages/en.json 8ms (unchanged)
+apps/web/src/app/globals.css 41ms
+apps/web/src/app/[locale]/(app)/dashboard/page.tsx 2ms

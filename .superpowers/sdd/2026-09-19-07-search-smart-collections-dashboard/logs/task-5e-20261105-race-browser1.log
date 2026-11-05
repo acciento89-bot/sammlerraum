@@ -1,0 +1,19 @@
+[WebServer] (node:23536) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 8 tests using 1 worker
+
+(node:23537) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [desktop] › e2e/search-dashboard.spec.ts:2021:3 › de: dashboard ignores a real delayed response after Back and exposes pending separately (2.3s)
+  ✓  2 [desktop] › e2e/search-dashboard.spec.ts:2077:3 › de: dashboard blocked storage and narrow keyboard navigation stay private (1.6s)
+  ✓  3 [desktop] › e2e/search-dashboard.spec.ts:2021:3 › en: dashboard ignores a real delayed response after Back and exposes pending separately (812ms)
+  ✓  4 [desktop] › e2e/search-dashboard.spec.ts:2077:3 › en: dashboard blocked storage and narrow keyboard navigation stay private (1.6s)
+(node:23551) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  5 [mobile] › e2e/search-dashboard.spec.ts:2021:3 › de: dashboard ignores a real delayed response after Back and exposes pending separately (1.4s)
+  ✓  6 [mobile] › e2e/search-dashboard.spec.ts:2077:3 › de: dashboard blocked storage and narrow keyboard navigation stay private (3.4s)
+  ✓  7 [mobile] › e2e/search-dashboard.spec.ts:2021:3 › en: dashboard ignores a real delayed response after Back and exposes pending separately (1.2s)
+  ✓  8 [mobile] › e2e/search-dashboard.spec.ts:2077:3 › en: dashboard blocked storage and narrow keyboard navigation stay private (3.1s)
+
+  8 passed (17.5s)
