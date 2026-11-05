@@ -1,6 +1,7 @@
 import { ApiError } from "@sammlerraum/contracts/errors";
 import { searchFail } from "@sammlerraum/contracts/item-search";
 import { PRIVATE_SEARCH_MAX_BODY_BYTES } from "@sammlerraum/contracts/private-search-query";
+import { PERSONAL_MILESTONE_MAX_BODY_BYTES } from "@sammlerraum/contracts/personal-milestones";
 import { readBoundedBody } from "./read-bounded-body";
 
 type Shape =
@@ -8,15 +9,23 @@ type Shape =
   | "DASHBOARD_QUERY"
   | "COLLECTION_REFERENCES"
   | "CUSTOM_FIELD_REFERENCES"
-  | "CONDITION_REFERENCES";
+  | "CONDITION_REFERENCES"
+  | "MILESTONE_CREATE"
+  | "MILESTONE_UPDATE"
+  | "MILESTONE_DELETE"
+  | "MILESTONE_QUERY";
 const keys: Record<Shape, readonly string[]> = {
   ITEM_QUERY: ["text", "f", "lifecycle", "limit", "cursor"],
   DASHBOARD_QUERY: ["text", "f", "lifecycle"],
   COLLECTION_REFERENCES: ["ids"],
   CUSTOM_FIELD_REFERENCES: ["references", "detail"],
   CONDITION_REFERENCES: ["references"],
+  MILESTONE_CREATE: ["title", "milestoneDate"],
+  MILESTONE_UPDATE: ["title", "milestoneDate", "expectedRevision"],
+  MILESTONE_DELETE: ["expectedRevision"],
+  MILESTONE_QUERY: ["limit", "cursor"],
 };
-/** Five fixed envelopes. JSON.parse owns syntax; quoted values stay opaque. */
+/** Closed private envelopes. JSON.parse owns syntax; quoted values stay opaque. */
 function precheck(raw: string, shape: Shape): void {
   const text = raw.replace(/^[\t\n\r ]+|[\t\n\r ]+$/gu, "");
   if (!text.startsWith("{") || !text.endsWith("}")) searchFail("SEARCH_INVALID");
@@ -58,7 +67,12 @@ export async function readSearchBody(request: Request, shape: Shape): Promise<un
   if (!/^application\/json(?:\s*;|$)/iu.test(request.headers.get("content-type") ?? ""))
     return searchFail("SEARCH_INVALID");
   try {
-    const bytes = await readBoundedBody(request, PRIVATE_SEARCH_MAX_BODY_BYTES);
+    const bytes = await readBoundedBody(
+      request,
+      shape.startsWith("MILESTONE_")
+        ? PERSONAL_MILESTONE_MAX_BODY_BYTES
+        : PRIVATE_SEARCH_MAX_BODY_BYTES,
+    );
     // TextDecoder normally consumes this BOM silently; reject it before decoding.
     if (bytes[0] === 0xef && bytes[1] === 0xbb && bytes[2] === 0xbf) searchFail("SEARCH_INVALID");
     const raw = new TextDecoder("utf-8", { fatal: true }).decode(bytes);
