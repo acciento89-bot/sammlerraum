@@ -1,0 +1,30 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/dashboard/personal-milestone-service.test.ts (2 tests | 1 failed) 99ms
+   ✓ private authored milestones PostgreSQL > has an additive authored-record table rather than inventing inventory history 1ms
+   × private authored milestones PostgreSQL > authors a real private record and lists its entered date separately from recording time 25ms
+     → MILESTONE_INVALID
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/dashboard/personal-milestone-service.test.ts > private authored milestones PostgreSQL > authors a real private record and lists its entered date separately from recording time
+PersonalMilestoneError: MILESTONE_INVALID
+ ❯ milestoneFail packages/contracts/src/personal-milestones.ts:14:9
+     12| }
+     13| export function milestoneFail(code: PersonalMilestoneError["code"]): n…
+     14|   throw new PersonalMilestoneError(code);
+       |         ^
+     15| }
+     16| const rawTitle = (value: string) => validUnicode(value) && !/\p{Cc}/u.…
+ ❯ Object.createMilestone packages/domain/src/dashboard/personal-milestone-service.ts:6:99
+ ❯ packages/domain/src/dashboard/personal-milestone-service.test.ts:30:31
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 1 passed (2)
+   Start at  23:36:20
+   Duration  381ms (transform 45ms, setup 6ms, collect 125ms, tests 99ms, environment 0ms, prepare 35ms)
+

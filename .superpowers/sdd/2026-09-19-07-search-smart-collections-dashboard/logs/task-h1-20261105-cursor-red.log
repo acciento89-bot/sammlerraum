@@ -1,0 +1,56 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/dashboard/personal-milestone-cursor.test.ts (3 tests | 2 failed) 5ms
+   × authored milestone canonical three-column cursor > roundtrips a real date, time and UUID without losing date-only semantics 3ms
+     → expected '' to match /^[A-Za-z0-9_-]+$/u
+   × authored milestone canonical three-column cursor > binds actor, page size and the milestone sort independently 0ms
+     → expected '' to match /^[a-f0-9]{64}$/u
+   ✓ authored milestone canonical three-column cursor > rejects reordered, duplicate, extra, malformed and over-bound encodings 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/dashboard/personal-milestone-cursor.test.ts > authored milestone canonical three-column cursor > roundtrips a real date, time and UUID without losing date-only semantics
+AssertionError: expected '' to match /^[A-Za-z0-9_-]+$/u
+
+- Expected: 
+/^[A-Za-z0-9_-]+$/u
+
++ Received: 
+""
+
+ ❯ packages/domain/src/dashboard/personal-milestone-cursor.test.ts:6:61
+      4| describe("authored milestone canonical three-column cursor",()=>{
+      5|   it("roundtrips a real date, time and UUID without losing date-only s…
+      6|     const token=encodeMilestoneCursor(cursor);expect(token).toMatch(/^…
+       |                                                             ^
+      7|   });
+      8|   it("binds actor, page size and the milestone sort independently",()=…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |workspace| packages/domain/src/dashboard/personal-milestone-cursor.test.ts > authored milestone canonical three-column cursor > binds actor, page size and the milestone sort independently
+AssertionError: expected '' to match /^[a-f0-9]{64}$/u
+
+- Expected: 
+/^[a-f0-9]{64}$/u
+
++ Received: 
+""
+
+ ❯ packages/domain/src/dashboard/personal-milestone-cursor.test.ts:9:46
+      7|   });
+      8|   it("binds actor, page size and the milestone sort independently",()=…
+      9|     expect(milestoneContextHash("owner",20)).toMatch(/^[a-f0-9]{64}$/u…
+       |                                              ^
+     10|     expect(milestoneContextHash("owner",5)).not.toBe(cursor.contextHas…
+     11|     expect(milestoneContextHash("other",20)).not.toBe(cursor.contextHa…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 1 passed (3)
+   Start at  23:35:44
+   Duration  318ms (transform 51ms, setup 6ms, collect 81ms, tests 5ms, environment 0ms, prepare 69ms)
+

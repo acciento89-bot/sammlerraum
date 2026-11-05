@@ -1,0 +1,46 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/dashboard/personal-milestone-service.test.ts (13 tests | 1 failed | 12 skipped) 151ms
+   ↓ private authored milestones PostgreSQL > has an additive authored-record table rather than inventing inventory history
+   ↓ private authored milestones PostgreSQL > authors a real private record and lists its entered date separately from recording time
+   ↓ private authored milestones PostgreSQL > hides foreign and missing records for reads, edits and deletion
+   ↓ private authored milestones PostgreSQL > increments same-value CAS updates, rejects stale/max revisions and really deletes
+   ↓ private authored milestones PostgreSQL > paginates all retained dates with the exact three-column keyset and tied timestamps
+   ↓ private authored milestones PostgreSQL > allows exactly one concurrent edit and does not overwrite the newer revision
+   ↓ private authored milestones PostgreSQL > serializes edit/delete without resurrecting a permanently deleted record
+   ↓ private authored milestones PostgreSQL > keeps clock/count/page in one native snapshot while another writer commits
+   ↓ private authored milestones PostgreSQL > measures fixed wrapper calls and rejects malformed inputs before opening a transaction
+   ↓ private authored milestones PostgreSQL > enforces canonical title, revision and finite-date rules directly in PostgreSQL
+   × private authored milestones PostgreSQL > records successful edit time after an actual unmodified row-lock wait 80ms
+     → expected false to be true // Object.is equality
+   ↓ private authored milestones PostgreSQL > maps a genuine row-lock timeout to unavailable without committing an edit
+   ↓ private authored milestones PostgreSQL > keeps bounded pages for large owners and captures real1/50/500-row plans
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/dashboard/personal-milestone-service.test.ts > private authored milestones PostgreSQL > records successful edit time after an actual unmodified row-lock wait
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ packages/domain/src/dashboard/personal-milestone-service.test.ts:341:76
+    339|       await locker;
+    340|       const updated = await edit;
+    341|       expect(BigInt(Date.parse(updated.updatedAt)) >= clock!.milliseco…
+       |                                                                            ^
+    342|     } finally {
+    343|       release();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 12 skipped (13)
+   Start at  23:44:06
+   Duration  529ms (transform 114ms, setup 6ms, collect 228ms, tests 151ms, environment 0ms, prepare 35ms)
+
