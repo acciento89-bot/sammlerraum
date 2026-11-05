@@ -886,6 +886,7 @@
     "receiptHelp": "The write was acknowledged. The current contents could not subsequently be read; reload before editing.",
     "allText": "No text restriction",
     "conditions": "Filter conditions",
-    "builderHelp": "Conditions may be nested, combined with AND/OR and negated. Changes take effect only after Save changes."
+    "builderHelp": "Conditions may be nested, combined with AND/OR and negated. Changes take effect only after Save changes.",
+    "revisionChanged": "The saved definition changed. Inspect the latest state before reading more results."
   }
 }

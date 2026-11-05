@@ -3,7 +3,7 @@ import { rememberSavedAcknowledgement, clearSavedAcknowledgements } from "./save
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type RefObject } from "react";
 import type { ItemFilterNode } from "@sammlerraum/contracts/search";
 import type { NormalizedItemSearchQuery } from "@sammlerraum/contracts/item-search";
 import {
@@ -31,6 +31,8 @@ export function SavedSearchDialog({
   query,
   actor,
   initialName = "",
+  modalRef,
+  onCreated,
 }: {
   open: boolean;
   onClose: () => void;
@@ -38,13 +40,16 @@ export function SavedSearchDialog({
   query: NormalizedItemSearchQuery;
   actor: string;
   initialName?: string;
+  modalRef?: RefObject<HTMLDialogElement | null>;
+  onCreated?: (detail: SavedDetail) => void;
 }) {
   const search = useTranslations("Search");
   const t = useTranslations("SavedSearches"),
     router = useRouter();
   const nameInput = useRef<HTMLInputElement>(null);
-  const dialog = useRef<HTMLDialogElement>(null),
-    channel = useRef(new RequestChannel());
+  const internalDialog = useRef<HTMLDialogElement>(null);
+  const dialog = modalRef ?? internalDialog;
+  const channel = useRef(new RequestChannel());
   const [name, setName] = useState(initialName),
     [busy, setBusy] = useState(false);
   const [error, setError] = useState(""),
@@ -86,7 +91,8 @@ export function SavedSearchDialog({
       rememberSavedAcknowledgement(actor, detail);
       setAck(detail);
       setBusy(false);
-      router.push(`/${locale}/smart-collections/${detail.id}`);
+      if (onCreated) onCreated(detail);
+      else router.push(`/${locale}/smart-collections/${detail.id}`);
     } catch (problem) {
       if (!channel.current.current(request.id)) return;
       setBusy(false);
@@ -100,6 +106,7 @@ export function SavedSearchDialog({
   return (
     <dialog
       ref={dialog}
+      aria-busy={busy}
       onKeyDown={containDialogTab}
       aria-labelledby="save-search-title"
       className="search-confirm"

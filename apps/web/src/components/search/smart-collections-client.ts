@@ -139,3 +139,42 @@ export async function deleteSavedSearch(id: string, revision: number, signal: Ab
     searchRequest(`${base}/${validId}`, deletedSchema, signal, input, "DELETE"),
   );
 }
+
+export class SavedRevisionChangedError extends Error {
+  constructor(readonly current: SavedDetail) {
+    super("SAVED_REVISION_CHANGED");
+  }
+}
+/** Bind a live member snapshot to the displayed definition without changing the
+ * server DTO. Revisions are monotonic: an unchanged post-read revision proves
+ * the intervening resolver used that definition too. Never retry a read here. */
+export async function resolveSavedSearchPage(
+  id: string,
+  expectedRevision: number,
+  signal: AbortSignal,
+  options: { limit?: number; cursor?: string } = {},
+) {
+  SmartCollectionRevisionSchema.parse(expectedRevision);
+  async function verify() {
+    if (signal.aborted) throw new DOMException("Aborted", "AbortError");
+    const current = await getSavedSearch(id, signal);
+    if (signal.aborted) throw new DOMException("Aborted", "AbortError");
+    if (current.revision < expectedRevision) throw new SearchHttpError(500, "SEARCH_UNAVAILABLE");
+    if (current.revision !== expectedRevision) throw new SavedRevisionChangedError(current);
+  }
+  let page: Awaited<ReturnType<typeof resolveSavedItems>>;
+  try {
+    page = await resolveSavedItems(id, signal, options);
+  } catch (error) {
+    if (
+      signal.aborted ||
+      (error instanceof SearchHttpError && [401, 403, 404].includes(error.status))
+    )
+      throw error;
+    // A cursor can be rejected precisely because another tab changed definition.
+    await verify();
+    throw error;
+  }
+  await verify();
+  return page;
+}

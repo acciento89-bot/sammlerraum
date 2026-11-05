@@ -25,7 +25,8 @@ import { useSavedConfirmation } from "./use-saved-confirmation";
 import { containDialogTab } from "./dialog-keyboard";
 import {
   getSavedSearch,
-  resolveSavedItems,
+  resolveSavedSearchPage,
+  SavedRevisionChangedError,
   updateSavedSearch,
   deleteSavedSearch,
   SavedMutationUnknownError,
@@ -66,8 +67,22 @@ export function SavedSearchDetail({
     [copyOpen, setCopyOpen] = useState(false),
     [deleteOpen, setDeleteOpen] = useState(false),
     [cursor, setCursor] = useState<string>();
-  const confirmation = useSavedConfirmation(dirty || !!unknown || busy),
-    deleteDialog = useRef<HTMLDialogElement>(null);
+  const deleteDialog = useRef<HTMLDialogElement>(null),
+    copyDialog = useRef<HTMLDialogElement>(null);
+  const confirmation = useSavedConfirmation(dirty || !!unknown || busy, () => {
+    if (copyOpen) {
+      if (copyDialog.current?.getAttribute("aria-busy") === "true") return false;
+      copyDialog.current?.close();
+      setCopyOpen(false);
+      return () => setCopyOpen(true);
+    }
+    if (deleteOpen) {
+      if (busy) return false;
+      deleteDialog.current?.close();
+      setDeleteOpen(false);
+      return () => setDeleteOpen(true);
+    }
+  });
   const accept = useCallback(
     (detail: SavedDetail) => {
       setSaved(detail);
@@ -86,6 +101,22 @@ export function SavedSearchDetail({
     },
     [cache],
   );
+  function memberFailure(problem: unknown) {
+    setRows(null);
+    if (problem instanceof SavedRevisionChangedError) {
+      setCursor(undefined);
+      setLatest(problem.current);
+      setConflict(true);
+      setError("revisionChanged");
+    } else
+      setError(
+        problem instanceof SearchHttpError && problem.status === 404
+          ? "notFound"
+          : problem instanceof SearchHttpError && problem.code === "SMART_COLLECTION_UNRESOLVABLE"
+            ? "unresolvable"
+            : "membersFailed",
+      );
+  }
   const load = useCallback(async () => {
     if (read.current.closed) return;
     const request = read.current.begin();
@@ -98,15 +129,10 @@ export function SavedSearchDetail({
       if (!read.current.current(request.id)) return;
       accept(detail);
       try {
-        const result = await resolveSavedItems(id, request.signal);
+        const result = await resolveSavedSearchPage(id, detail.revision, request.signal);
         if (read.current.current(request.id)) setRows(result);
       } catch (problem) {
-        if (read.current.current(request.id))
-          setError(
-            problem instanceof SearchHttpError && problem.code === "SMART_COLLECTION_UNRESOLVABLE"
-              ? "unresolvable"
-              : "membersFailed",
-          );
+        if (read.current.current(request.id)) memberFailure(problem);
       }
     } catch (problem) {
       if (read.current.current(request.id))
@@ -174,18 +200,13 @@ export function SavedSearchDetail({
     setCursor(next);
     setError("");
     try {
-      const result = await resolveSavedItems(id, request.signal, {
+      const result = await resolveSavedSearchPage(id, saved.revision, request.signal, {
         limit: 20,
         ...(next ? { cursor: next } : {}),
       });
       if (read.current.current(request.id)) setRows(result);
     } catch (problem) {
-      if (read.current.current(request.id))
-        setError(
-          problem instanceof SearchHttpError && problem.code === "SMART_COLLECTION_UNRESOLVABLE"
-            ? "unresolvable"
-            : "membersFailed",
-        );
+      if (read.current.current(request.id)) memberFailure(problem);
     } finally {
       if (read.current.current(request.id)) setLoading(false);
     }
@@ -216,15 +237,10 @@ export function SavedSearchDetail({
       // Acknowledged revision is retained independently from member refresh.
       const memberRequest = read.current.begin();
       try {
-        const result = await resolveSavedItems(id, memberRequest.signal);
+        const result = await resolveSavedSearchPage(id, detail.revision, memberRequest.signal);
         if (read.current.current(memberRequest.id)) setRows(result);
       } catch (problem) {
-        if (read.current.current(memberRequest.id))
-          setError(
-            problem instanceof SearchHttpError && problem.code === "SMART_COLLECTION_UNRESOLVABLE"
-              ? "unresolvable"
-              : "membersFailed",
-          );
+        if (read.current.current(memberRequest.id)) memberFailure(problem);
       }
     } catch (problem) {
       if (!write.current.current(request.id)) return;
@@ -272,12 +288,13 @@ export function SavedSearchDetail({
     try {
       await deleteSavedSearch(id, saved.revision, request.signal);
       if (!write.current.current(request.id)) return;
-      confirmation.allowNavigation();
-      setDirty(false);
-      setSaved(null);
-      setDeleteOpen(false);
-      setBusy(false);
-      router.replace(`/${locale}/smart-collections`);
+      confirmation.navigateAfterGuard(() => {
+        setDirty(false);
+        setSaved(null);
+        setDeleteOpen(false);
+        setBusy(false);
+        router.replace(`/${locale}/smart-collections`);
+      });
     } catch (problem) {
       if (!write.current.current(request.id)) return;
       setBusy(false);
@@ -508,6 +525,14 @@ export function SavedSearchDetail({
       )}
       {saved && query && (
         <SavedSearchDialog
+          modalRef={copyDialog}
+          onCreated={(detail) => {
+            copyDialog.current?.close();
+            setCopyOpen(false);
+            confirmation.navigateAfterGuard(() =>
+              router.push(`/${locale}/smart-collections/${detail.id}`),
+            );
+          }}
           open={copyOpen}
           onClose={() => setCopyOpen(false)}
           locale={locale}
@@ -518,6 +543,7 @@ export function SavedSearchDetail({
       )}
       <dialog
         ref={deleteDialog}
+        aria-busy={busy}
         className="search-confirm"
         aria-labelledby="saved-detail-delete-title"
         onKeyDown={containDialogTab}

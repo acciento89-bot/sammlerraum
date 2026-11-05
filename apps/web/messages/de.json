@@ -886,6 +886,7 @@
     "receiptHelp": "Die Speicherung wurde bestätigt. Der aktuelle Inhalt konnte anschließend nicht gelesen werden; zum Bearbeiten bitte erneut laden.",
     "allText": "Ohne Texteinschränkung",
     "conditions": "Filterbedingungen",
-    "builderHelp": "Bedingungen können verschachtelt, mit UND/ODER verbunden und negiert werden. Änderungen werden erst mit Änderungen speichern ausgeführt."
+    "builderHelp": "Bedingungen können verschachtelt, mit UND/ODER verbunden und negiert werden. Änderungen werden erst mit Änderungen speichern ausgeführt.",
+    "revisionChanged": "Die gespeicherte Definition hat sich geändert. Prüfe den neuesten Stand, bevor du weitere Treffer liest."
   }
 }

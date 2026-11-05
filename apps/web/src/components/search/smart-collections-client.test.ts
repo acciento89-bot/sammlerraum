@@ -103,3 +103,99 @@ it("resolves saved membership with only server-saved ID, page size and cursor", 
   expect(url).toBe(`/api/v1/smart-collections/${id}/items?limit=20&cursor=opaque`);
   expect(url).not.toContain(query.text);
 });
+
+it("binds member reads to the displayed monotonic revision instead of mixing concurrent definitions", async () => {
+  const { resolveSavedSearchPage, SavedRevisionChangedError } = await import(
+    "./smart-collections-client"
+  );
+  const page = {
+    items: [],
+    total: 0,
+    nextCursor: null,
+    scope: "OWNED",
+    lifecycle: "ACTIVE",
+    readAt: "2026-11-05T12:00:00.000Z",
+  };
+  const fetcher = vi.fn(async (url: string) =>
+    Response.json(url.includes("/items?") ? page : detail),
+  );
+  vi.stubGlobal("fetch", fetcher);
+  await expect(resolveSavedSearchPage(id, 2, new AbortController().signal)).rejects.toBeInstanceOf(
+    SavedRevisionChangedError,
+  );
+  expect(fetcher).toHaveBeenCalledTimes(2);
+  await expect(resolveSavedSearchPage(id, 3, new AbortController().signal)).resolves.toEqual(page);
+});
+it("does not publish members when the post-read revision check fails or returns an older revision", async () => {
+  const { resolveSavedSearchPage } = await import("./smart-collections-client");
+  const page = {
+    items: [],
+    total: 0,
+    nextCursor: null,
+    scope: "OWNED",
+    lifecycle: "ACTIVE",
+    readAt: "2026-11-05T12:00:00.000Z",
+  };
+  const fetcher = vi.fn(async (url: string) => {
+    if (url.includes("/items?")) return Response.json(page);
+    throw new TypeError("verification connection lost");
+  });
+  vi.stubGlobal("fetch", fetcher);
+  await expect(resolveSavedSearchPage(id, 3, new AbortController().signal)).rejects.toThrow(
+    "verification connection lost",
+  );
+  expect(fetcher).toHaveBeenCalledTimes(2);
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async (url: string) =>
+      Response.json(url.includes("/items?") ? page : { ...detail, revision: 2 }),
+    ),
+  );
+  await expect(resolveSavedSearchPage(id, 3, new AbortController().signal)).rejects.toMatchObject({
+    status: 500,
+  });
+});
+it("detects a new definition behind a rejected revision-bound cursor without retrying the item read", async () => {
+  const { resolveSavedSearchPage, SavedRevisionChangedError } = await import(
+    "./smart-collections-client"
+  );
+  const fetcher = vi.fn(async (url: string) =>
+    url.includes("/items?")
+      ? Response.json({ error: { code: "SEARCH_INVALID" } }, { status: 400 })
+      : Response.json(detail),
+  );
+  vi.stubGlobal("fetch", fetcher);
+  await expect(
+    resolveSavedSearchPage(id, 2, new AbortController().signal, { cursor: "old-cursor" }),
+  ).rejects.toBeInstanceOf(SavedRevisionChangedError);
+  expect(fetcher).toHaveBeenCalledTimes(2);
+});
+it("does not make a revision check after an aborted read or an authorization rejection", async () => {
+  const { resolveSavedSearchPage } = await import("./smart-collections-client");
+  const controller = new AbortController(),
+    page = {
+      items: [],
+      total: 0,
+      nextCursor: null,
+      scope: "OWNED",
+      lifecycle: "ACTIVE",
+      readAt: "2026-11-05T12:00:00.000Z",
+    };
+  const fetcher = vi.fn(async () => {
+    controller.abort();
+    return Response.json(page);
+  });
+  vi.stubGlobal("fetch", fetcher);
+  await expect(resolveSavedSearchPage(id, 3, controller.signal)).rejects.toMatchObject({
+    name: "AbortError",
+  });
+  expect(fetcher).toHaveBeenCalledTimes(1);
+  const forbidden = vi.fn(async () =>
+    Response.json({ error: { code: "FORBIDDEN" } }, { status: 403 }),
+  );
+  vi.stubGlobal("fetch", forbidden);
+  await expect(resolveSavedSearchPage(id, 3, new AbortController().signal)).rejects.toMatchObject({
+    status: 403,
+  });
+  expect(forbidden).toHaveBeenCalledTimes(1);
+});

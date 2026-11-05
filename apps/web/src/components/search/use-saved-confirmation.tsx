@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { containDialogTab } from "./dialog-keyboard";
 
-export function useSavedConfirmation(dirty: boolean) {
+export function useSavedConfirmation(dirty: boolean, suspend?: () => false | void | (() => void)) {
   const t = useTranslations("SavedSearches"),
     router = useRouter();
   const dialog = useRef<HTMLDialogElement>(null),
@@ -14,12 +14,52 @@ export function useSavedConfirmation(dirty: boolean) {
     allow = useRef(false),
     dirtyRef = useRef(dirty),
     guard = useRef<string | null>(null),
-    restoring = useRef(false);
+    restoring = useRef(false),
+    active = useRef(true),
+    expired = useRef(false),
+    pendingExit = useRef<(() => void) | null>(null),
+    suspendCurrent = useRef(suspend),
+    resume = useRef<(() => void) | null>(null);
+  suspendCurrent.current = suspend;
   dirtyRef.current = dirty;
+  function navigate(next: () => void) {
+    allow.current = true;
+    const remove = guard.current && window.history.state?.sammlerraumSavedGuard === guard.current;
+    guard.current = null;
+    if (!remove) {
+      next();
+      return;
+    }
+    // Traverse to the real editor entry, then let the new navigation truncate
+    // the synthetic forward entry. Merely unmounting leaves a phantom Back step.
+    restoring.current = true;
+    const finish = () => {
+      pendingExit.current = null;
+      queueMicrotask(() => {
+        if (active.current && !expired.current) next();
+      });
+    };
+    pendingExit.current = finish;
+    window.addEventListener("popstate", finish, { once: true });
+    window.history.back();
+  }
   function confirm(next: () => void) {
+    if (expired.current) return;
+    const restore = suspendCurrent.current?.();
+    // A pending write cannot be safely abandoned through a second modal.
+    if (restore === false) return;
+    resume.current = typeof restore === "function" ? restore : null;
     opener.current = document.activeElement as HTMLElement;
     action.current = next;
     setPending(true);
+  }
+  function cancel() {
+    const restore = resume.current;
+    resume.current = null;
+    action.current = null;
+    dialog.current?.close();
+    setPending(false);
+    restore?.();
   }
   useEffect(() => {
     if (pending) dialog.current?.showModal();
@@ -48,6 +88,7 @@ export function useSavedConfirmation(dirty: boolean) {
     }
   }, [dirty]);
   useEffect(() => {
+    active.current = true;
     const click = (event: MouseEvent) => {
       if (
         !dirtyRef.current ||
@@ -70,10 +111,7 @@ export function useSavedConfirmation(dirty: boolean) {
         return;
       event.preventDefault();
       event.stopPropagation();
-      confirm(() => {
-        allow.current = true;
-        router.push(next.pathname + next.search + next.hash);
-      });
+      confirm(() => navigate(() => router.push(next.pathname + next.search + next.hash)));
     };
     const pop = () => {
       if (restoring.current) {
@@ -102,6 +140,10 @@ export function useSavedConfirmation(dirty: boolean) {
       }
     };
     const clear = () => {
+      expired.current = true;
+      resume.current = null;
+      if (pendingExit.current) window.removeEventListener("popstate", pendingExit.current);
+      pendingExit.current = null;
       action.current = null;
       setPending(false);
       allow.current = false;
@@ -111,6 +153,10 @@ export function useSavedConfirmation(dirty: boolean) {
     window.addEventListener("beforeunload", unload);
     window.addEventListener("sammlerraum:search-cleared", clear);
     return () => {
+      active.current = false;
+      resume.current = null;
+      if (pendingExit.current) window.removeEventListener("popstate", pendingExit.current);
+      pendingExit.current = null;
       document.removeEventListener("click", click, true);
       window.removeEventListener("popstate", pop, true);
       window.removeEventListener("beforeunload", unload);
@@ -123,29 +169,21 @@ export function useSavedConfirmation(dirty: boolean) {
       className="search-confirm"
       aria-labelledby="saved-discard-title"
       onKeyDown={containDialogTab}
-      onCancel={() => {
-        action.current = null;
-        setPending(false);
-      }}
+      onCancel={cancel}
       onClose={() => opener.current?.focus()}
     >
       <h2 id="saved-discard-title">{t("discardTitle")}</h2>
       <p>{t("discardHelp")}</p>
       <div className="search-actions">
-        <button
-          autoFocus
-          className="secondary-button"
-          onClick={() => {
-            action.current = null;
-            setPending(false);
-          }}
-        >
+        <button autoFocus className="secondary-button" onClick={cancel}>
           {t("cancel")}
         </button>
         <button
           onClick={() => {
             const next = action.current;
             action.current = null;
+            resume.current = null;
+            dialog.current?.close();
             setPending(false);
             next?.();
           }}
@@ -155,10 +193,5 @@ export function useSavedConfirmation(dirty: boolean) {
       </div>
     </dialog>
   );
-  function allowNavigation() {
-    allow.current = true;
-    guard.current = null;
-    restoring.current = false;
-  }
-  return { confirm, node, allowNavigation };
+  return { confirm, node, navigateAfterGuard: navigate };
 }
