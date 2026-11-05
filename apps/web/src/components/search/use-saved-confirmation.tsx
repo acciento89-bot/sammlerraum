@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useId, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useId, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { containDialogTab } from "./dialog-keyboard";
@@ -94,7 +94,7 @@ export function useCollectorConfirmation(
     if (pending) dialog.current?.showModal();
     else dialog.current?.close();
   }, [pending]);
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (dirty && !guard.current && !allow.current) {
       insertGuard();
     } else if (

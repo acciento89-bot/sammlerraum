@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import type { DashboardData } from "@sammlerraum/contracts/dashboard";
 import { MetadataCache, RequestChannel } from "./search-state";
+import { observationTime } from "../valuations/valuation-money";
 import { hydrateReferences, type Choice } from "./reference-picker";
 import {
   formatDashboardInteger as integer,
@@ -54,12 +55,7 @@ export function DashboardResults({
       });
     return () => channel.current.cancel();
   }, [data, locale, cache, retry]);
-  const date = (value: string) =>
-    new Intl.DateTimeFormat(locale, {
-      dateStyle: "medium",
-      timeStyle: "medium",
-      timeZone: "UTC",
-    }).format(new Date(value));
+  const date = (value: string) => observationTime(value, "MILLISECOND", locale);
   const span = (from: string, to: string) =>
     from === to ? date(from) : `${date(from)} – ${date(to)}`;
   const pair = (value: { itemCount: number; unitCount: string }) =>

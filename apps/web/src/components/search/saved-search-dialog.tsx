@@ -3,7 +3,7 @@ import { rememberSavedAcknowledgement, clearSavedAcknowledgements } from "./save
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { useEffect, useRef, useState, type RefObject } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type RefObject } from "react";
 import type { ItemFilterNode } from "@sammlerraum/contracts/search";
 import type { NormalizedItemSearchQuery } from "@sammlerraum/contracts/item-search";
 import {
@@ -59,7 +59,7 @@ export function SavedSearchDialog({
   const [error, setError] = useState(""),
     [unknown, setUnknown] = useState(false),
     [ack, setAck] = useState<SavedDetail | null>(null);
-  useEffect(() => {
+  useLayoutEffect(() => {
     onProtectionChange?.(busy || unknown);
   }, [busy, unknown, onProtectionChange]);
   useEffect(() => () => onProtectionChange?.(false), [onProtectionChange]);

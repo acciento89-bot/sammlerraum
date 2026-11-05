@@ -247,7 +247,7 @@ export function SearchPage({
       writeSearchHistory(window.history, `/${locale}/${view}`, token, mode);
       window.dispatchEvent(new Event("sammlerraum:search-history"));
       void load(next);
-    }, dirtyRef.current);
+    }, dirtyRef.current || saveProtected);
   }
   function openOtherView() {
     if (dirty || saveProtected || loading || error) return;

@@ -117,8 +117,11 @@ const copies = { de: de.Search, en: en.Search };
 type Locale = "de" | "en";
 async function panel(page: Page, locale: Locale) {
   const open = page.getByRole("button", { name: copies[locale].openFilters, exact: true });
-  if (!(await page.locator("dialog.search-drawer[open]").count()) && (await open.isVisible()))
-    await open.click();
+  if (await page.evaluate(() => matchMedia("(max-width: 44rem)").matches)) {
+    await expect(open).toBeVisible();
+    if (!(await page.locator("dialog.search-drawer[open]").count())) await open.click();
+    await expect(page.locator("dialog.search-drawer[open]")).toBeVisible();
+  }
 }
 async function apply(page: Page, locale: Locale, total: number) {
   const response = page.waitForResponse(
@@ -1878,6 +1881,12 @@ for (const locale of ["de", "en"] as const) {
         locale === "de" ? "-0,03 EUR" : "-0.03 EUR",
       );
       await expect(page.getByTestId("dashboard-change-JPY-0")).toContainText("0 JPY");
+      await expect(page.getByTestId("dashboard-change-EUR-2")).toContainText(
+        locale === "de" ? ",001" : ".001",
+      );
+      await expect(page.getByTestId("dashboard-change-EUR-2")).toContainText(
+        locale === "de" ? ",002" : ".002",
+      );
       await expect(page.getByText(d.optionInactive, { exact: true })).toBeVisible();
       await expect(page.getByText(d.schemeInactive, { exact: true })).toBeVisible();
       await expect(
@@ -2202,4 +2211,61 @@ for (const locale of ["de", "en"] as const) {
       await cleanupSearchFixture(f);
     }
   });
+}
+
+for (const locale of ["de", "en"] as const) {
+  for (const view of ["search", "dashboard"] as const) {
+    test(`${locale}: unresolved creation remains guarded after Cancel and ${view} Reset`, async ({
+      page,
+    }) => {
+      test.skip(!enabled, "Requires guarded auth database");
+      const f = await searchFixture();
+      const c = copies[locale],
+        s = (locale === "de" ? de : en).SavedSearches;
+      let writes = 0;
+      try {
+        await signIn(page, f);
+        await page.goto(`/${locale}/${view}`);
+        await expect(
+          page.getByTestId(view === "search" ? "search-total" : "dashboard-selection-rows"),
+        ).toContainText("1");
+        await page.route("**/api/v1/smart-collections", async (route) => {
+          if (route.request().method() !== "POST") {
+            await route.continue();
+            return;
+          }
+          writes++;
+          const response = await route.fetch();
+          expect(response.status()).toBe(201);
+          await route.abort("failed");
+        });
+        await page.getByRole("button", { name: c.saveSearch, exact: true }).click();
+        await page
+          .getByRole("dialog")
+          .getByRole("textbox", { name: s.name, exact: true })
+          .fill("Unresolved before Reset");
+        await page.getByRole("dialog").getByRole("button", { name: s.save, exact: true }).click();
+        await expect(page.getByText(s.unknownCreate, { exact: true })).toBeVisible();
+        await page.getByRole("dialog").getByRole("button", { name: s.cancel, exact: true }).click();
+        await panel(page, locale);
+        const response = page.waitForResponse((r) =>
+          r.url().endsWith(view === "search" ? "/api/v1/search/items" : "/api/v1/dashboard"),
+        );
+        await page.getByRole("button", { name: c.reset, exact: true }).click();
+        expect((await response).status()).toBe(200);
+        await page.keyboard.press("Escape");
+        await page.goBack();
+        await expect(page.getByRole("dialog", { name: c.discardTitle, exact: true })).toBeVisible();
+        await page.getByRole("button", { name: c.cancel, exact: true }).click();
+        await page.getByRole("button", { name: c.saveSearch, exact: true }).click();
+        await expect(page.getByText(s.unknownCreate, { exact: true })).toBeVisible();
+        await expect(
+          page.getByRole("dialog").getByRole("textbox", { name: s.name, exact: true }),
+        ).toHaveValue("Unresolved before Reset");
+        expect(writes).toBe(1);
+      } finally {
+        await cleanupSearchFixture(f);
+      }
+    });
+  }
 }

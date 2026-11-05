@@ -16,7 +16,7 @@ export async function dashboardFixture() {
     if (!db) throw new Error("Guarded database required");
     const items = createItemService(db, f.ownerId);
     const values = createValuationService(db, f.ownerId);
-    const dates = ["2026-01-01T00:00:00.000Z", "2026-02-01T00:00:00.000Z"];
+    const dates = ["2026-01-01T00:00:00.001Z", "2026-01-01T00:00:00.002Z"];
     const add = async (id: string, currency: string, amount: bigint, index: number) =>
       values.addManualValuation(id, { currency, amountMinor: amount, observedAt: dates[index] });
     await add(f.itemId, "EUR", 9223372036854775807n, 0);
