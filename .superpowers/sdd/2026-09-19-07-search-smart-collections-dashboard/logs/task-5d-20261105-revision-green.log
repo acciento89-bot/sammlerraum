@@ -1,0 +1,10 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ✓ |workspace| apps/web/src/components/search/smart-collections-client.test.ts (10 tests) 15ms
+
+ Test Files  1 passed (1)
+      Tests  10 passed (10)
+   Start at  22:15:42
+   Duration  419ms (transform 80ms, setup 6ms, collect 176ms, tests 15ms, environment 0ms, prepare 43ms)
+

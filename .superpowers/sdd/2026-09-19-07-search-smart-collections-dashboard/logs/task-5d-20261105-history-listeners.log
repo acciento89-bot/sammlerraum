@@ -1,0 +1,56 @@
+[WebServer] (node:13485) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:13486) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+saved-listeners [
+  { capture: true, description: undefined },
+  { capture: false, description: undefined },
+  { capture: false, description: undefined }
+]
+savedguard-cleanup true /de/smart-collections
+  ✘  1 [desktop] › e2e/search-dashboard.spec.ts:1280:3 › de: saved editor confirms locale history and clears private draft undo on 401 (6.2s)
+
+
+  1) [desktop] › e2e/search-dashboard.spec.ts:1280:3 › de: saved editor confirms locale history and clears private draft undo on 401 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('dialog').getByRole('heading', { name: 'Lokale Änderungen verwerfen?', exact: true })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('dialog').getByRole('heading', { name: 'Lokale Änderungen verwerfen?', exact: true }) with timeout 5000ms
+      - waiting for getByRole('dialog').getByRole('heading', { name: 'Lokale Änderungen verwerfen?', exact: true })
+
+
+      1314 |       await expect(
+      1315 |         page.getByRole("dialog").getByRole("heading", { name: c.discardTitle, exact: true }),
+    > 1316 |       ).toBeVisible();
+           |         ^
+      1317 |       await page.getByRole("dialog").getByRole("button", { name: c.cancel, exact: true }).click();
+      1318 |       await expect(page).toHaveURL(new RegExp(`/${saved.id}$`));
+      1319 |       await page.getByRole("button", { name: s.remove, exact: true }).click();
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/search-dashboard.spec.ts:1316:9
+
+    Error Context: test-results/search-dashboard-de-saved--781b9-s-private-draft-undo-on-401-desktop/error-context.md
+
+    Error Context: test-results/search-dashboard-de-saved--781b9-s-private-draft-undo-on-401-desktop/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/search-dashboard-de-saved--781b9-s-private-draft-undo-on-401-desktop/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/search-dashboard-de-saved--781b9-s-private-draft-undo-on-401-desktop/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [desktop] › e2e/search-dashboard.spec.ts:1280:3 › de: saved editor confirms locale history and clears private draft undo on 401 
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/search-dashboard.spec.ts --grep de: saved editor confirms --project desktop --workers=1 --trace=retain-on-failure

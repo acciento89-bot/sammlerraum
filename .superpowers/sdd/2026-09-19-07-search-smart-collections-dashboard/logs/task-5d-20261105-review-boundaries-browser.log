@@ -1,0 +1,35 @@
+[WebServer] (node:18708) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 24 tests using 1 worker
+
+(node:18711) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [desktop] › e2e/search-dashboard.spec.ts:1480:3 › de: refreshed saved membership is bound to displayed definition across concurrent tabs (1.7s)
+  ✓   2 [desktop] › e2e/search-dashboard.spec.ts:1520:3 › de: confirmed ordinary and locale navigation leave no phantom Back steps (1.0s)
+  ✓   3 [desktop] › e2e/search-dashboard.spec.ts:1557:3 › de: unknown save-as-new recovery suspends its dialog and preserves input on cancellation (730ms)
+  ✓   4 [desktop] › e2e/search-dashboard.spec.ts:1480:3 › en: refreshed saved membership is bound to displayed definition across concurrent tabs (926ms)
+  ✓   5 [desktop] › e2e/search-dashboard.spec.ts:1520:3 › en: confirmed ordinary and locale navigation leave no phantom Back steps (1.0s)
+  ✓   6 [desktop] › e2e/search-dashboard.spec.ts:1557:3 › en: unknown save-as-new recovery suspends its dialog and preserves input on cancellation (767ms)
+  ✓   7 [desktop] › e2e/search-dashboard.spec.ts:1617:5 › de: initial member resolution rejects a definition change before publication (713ms)
+  ✓   8 [desktop] › e2e/search-dashboard.spec.ts:1617:5 › de: acknowledged member resolution rejects a definition change before publication (962ms)
+  ✓   9 [desktop] › e2e/search-dashboard.spec.ts:1686:3 › de: pending save-as-new stays in one modal and successful navigation removes its history guard (689ms)
+  ✓  10 [desktop] › e2e/search-dashboard.spec.ts:1617:5 › en: initial member resolution rejects a definition change before publication (714ms)
+  ✓  11 [desktop] › e2e/search-dashboard.spec.ts:1617:5 › en: acknowledged member resolution rejects a definition change before publication (939ms)
+  ✓  12 [desktop] › e2e/search-dashboard.spec.ts:1686:3 › en: pending save-as-new stays in one modal and successful navigation removes its history guard (682ms)
+(node:18743) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  13 [mobile] › e2e/search-dashboard.spec.ts:1480:3 › de: refreshed saved membership is bound to displayed definition across concurrent tabs (984ms)
+  ✓  14 [mobile] › e2e/search-dashboard.spec.ts:1520:3 › de: confirmed ordinary and locale navigation leave no phantom Back steps (975ms)
+  ✓  15 [mobile] › e2e/search-dashboard.spec.ts:1557:3 › de: unknown save-as-new recovery suspends its dialog and preserves input on cancellation (715ms)
+  ✓  16 [mobile] › e2e/search-dashboard.spec.ts:1480:3 › en: refreshed saved membership is bound to displayed definition across concurrent tabs (925ms)
+  ✓  17 [mobile] › e2e/search-dashboard.spec.ts:1520:3 › en: confirmed ordinary and locale navigation leave no phantom Back steps (969ms)
+  ✓  18 [mobile] › e2e/search-dashboard.spec.ts:1557:3 › en: unknown save-as-new recovery suspends its dialog and preserves input on cancellation (670ms)
+  ✓  19 [mobile] › e2e/search-dashboard.spec.ts:1617:5 › de: initial member resolution rejects a definition change before publication (717ms)
+  ✓  20 [mobile] › e2e/search-dashboard.spec.ts:1617:5 › de: acknowledged member resolution rejects a definition change before publication (942ms)
+  ✓  21 [mobile] › e2e/search-dashboard.spec.ts:1686:3 › de: pending save-as-new stays in one modal and successful navigation removes its history guard (642ms)
+  ✓  22 [mobile] › e2e/search-dashboard.spec.ts:1617:5 › en: initial member resolution rejects a definition change before publication (730ms)
+  ✓  23 [mobile] › e2e/search-dashboard.spec.ts:1617:5 › en: acknowledged member resolution rejects a definition change before publication (948ms)
+  ✓  24 [mobile] › e2e/search-dashboard.spec.ts:1686:3 › en: pending save-as-new stays in one modal and successful navigation removes its history guard (638ms)
+
+  24 passed (22.9s)

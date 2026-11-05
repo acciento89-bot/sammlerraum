@@ -1,0 +1,43 @@
+[WebServer] (node:9666) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:9667) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [desktop] › e2e/search-dashboard.spec.ts:812:3 › de: saved search follows real ItemForm tag changes without copying items (11.9s)
+
+
+  1) [desktop] › e2e/search-dashboard.spec.ts:812:3 › de: saved search follows real ItemForm tag changes without copying items 
+
+    TimeoutError: locator.click: Timeout 10000ms exceeded.
+    Call log:
+      - waiting for getByRole('button', { name: 'Suche speichern', exact: true })
+
+
+      822 |       await page.getByLabel(c.values, { exact: true }).fill("signiert");
+      823 |       await apply(page, locale, 0);
+    > 824 |       await page.getByRole("button", { name: saveSearch, exact: true }).click();
+          |                                                                         ^
+      825 |       const dialog = page.getByRole("dialog");
+      826 |       await dialog.getByLabel(searchName, { exact: true }).fill("Signiert — Live");
+      827 |       const created = page.waitForResponse(r => r.url().endsWith("/api/v1/smart-collections") && r.request().method() === "POST");
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/search-dashboard.spec.ts:824:73
+
+    Error Context: test-results/search-dashboard-de-saved--f2f4e-anges-without-copying-items-desktop/error-context.md
+
+    Error Context: test-results/search-dashboard-de-saved--f2f4e-anges-without-copying-items-desktop/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/search-dashboard-de-saved--f2f4e-anges-without-copying-items-desktop/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/search-dashboard-de-saved--f2f4e-anges-without-copying-items-desktop/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [desktop] › e2e/search-dashboard.spec.ts:812:3 › de: saved search follows real ItemForm tag changes without copying items 
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/search-dashboard.spec.ts --project=desktop --grep de: saved search follows --workers=1 --trace=retain-on-failure
