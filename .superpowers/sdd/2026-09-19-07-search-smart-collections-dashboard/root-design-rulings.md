@@ -56,3 +56,7 @@ P7.3 producer clarification after static Task2 reconciliation: retired variant U
 ## Future query direction P7.5–7
 
 Root read full static query preparation and recorded one safe mixedSQL compiler/ownedMVCC/processingbounds, strict wire+livecursor+closederrors, and distinct literal typed/broadtext semantics in task-2-context.md, with why/cost. Actualcollation/nativeproof and full producer/milestone scheduling remain pre-GO gates; no Task2implementation or checkoff.
+
+## P7.41 — authored milestone preview and separate manager
+
+H3actualdashboard is sharedSearchPage(viewdashboard). Root chooses independentreadonly5recordpreview plus fresh-authenticated /{locale}/milestones pagedCRUD manager, keeping existingwarmUI/actualHTTPproducer. Why: onehistory/modalguard per editablepage avoids conflicting inventorydraft and personaldraft guards; independentpreview remainsquery/lifecycle-neutral. Cost: oneexplicitlinktomanagement. No extraGETone/API/feature/currency/achievement scope. This is root's routineimplementationchoice underexistingapprovedplan and user's explicitoptoutofquestionstops, not a new userdesignapprovalclaim. H3freshbrief owns exactstate/recovery/privacy/browsergates and sourcego afterreviewedH2.

@@ -1,0 +1,93 @@
+
+> sammlerraum@ typecheck /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+> pnpm -r typecheck
+
+Scope: 10 of 11 workspace projects
+packages/config typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+packages/contracts typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+packages/market-data typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+packages/queue typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+packages/config typecheck: ../../apps/web/src/lib/personal-milestone-routes.integration.test.ts(86,14): error TS18046: 'saved' is of type 'unknown'.
+packages/config typecheck: ../../apps/web/src/lib/personal-milestone-routes.integration.test.ts(92,13): error TS18046: 'saved' is of type 'unknown'.
+packages/config typecheck: ../../apps/web/src/lib/personal-milestone-routes.integration.test.ts(94,11): error TS18046: 'saved' is of type 'unknown'.
+packages/config typecheck: ../../apps/web/src/lib/personal-milestone-routes.integration.test.ts(99,13): error TS18046: 'saved' is of type 'unknown'.
+packages/config typecheck: ../../apps/web/src/lib/personal-milestone-routes.integration.test.ts(103,20): error TS18046: 'saved' is of type 'unknown'.
+packages/config typecheck: ../../apps/web/src/lib/personal-milestone-routes.integration.test.ts(106,78): error TS18046: 'saved' is of type 'unknown'.
+packages/config typecheck: ../../apps/web/src/lib/personal-milestone-routes.integration.test.ts(106,89): error TS18046: 'saved' is of type 'unknown'.
+packages/config typecheck: ../../apps/web/src/lib/personal-milestone-routes.integration.test.ts(109,14): error TS18046: 'stale' is of type 'unknown'.
+packages/config typecheck: ../../apps/web/src/lib/personal-milestone-routes.integration.test.ts(111,9): error TS2571: Object is of type 'unknown'.
+packages/config typecheck: ../../apps/web/src/lib/personal-milestone-routes.integration.test.ts(113,75): error TS18046: 'saved' is of type 'unknown'.
+packages/config typecheck: ../../apps/web/src/lib/personal-milestone-routes.integration.test.ts(113,86): error TS18046: 'saved' is of type 'unknown'.
+packages/config typecheck: ../../apps/web/src/lib/personal-milestone-routes.integration.test.ts(117,14): error TS18046: 'saved' is of type 'unknown'.
+packages/config typecheck: ../../apps/web/src/lib/personal-milestone-routes.integration.test.ts(118,68): error TS18046: 'saved' is of type 'unknown'.
+packages/config typecheck: ../../apps/web/src/lib/personal-milestone-routes.integration.test.ts(120,9): error TS2571: Object is of type 'unknown'.
+packages/config typecheck: ../../apps/web/src/lib/personal-milestone-routes.integration.test.ts(122,75): error TS18046: 'saved' is of type 'unknown'.
+packages/config typecheck: ../../apps/web/src/lib/personal-milestone-routes.integration.test.ts(122,86): error TS18046: 'saved' is of type 'unknown'.
+packages/config typecheck: ../../apps/web/src/lib/personal-milestone-routes.integration.test.ts(145,18): error TS18046: 'result' is of type 'unknown'.
+packages/config typecheck: ../../apps/web/src/lib/personal-milestone-routes.integration.test.ts(163,59): error TS18046: 'first' is of type 'unknown'.
+packages/config typecheck: ../../apps/web/src/lib/personal-milestone-routes.integration.test.ts(166,15): error TS18046: 'first' is of type 'unknown'.
+packages/config typecheck: ../../apps/web/src/lib/personal-milestone-routes.integration.test.ts(166,35): error TS18046: 'last' is of type 'unknown'.
+packages/config typecheck: ../../apps/web/src/lib/personal-milestone-routes.integration.test.ts(167,14): error TS18046: 'first' is of type 'unknown'.
+packages/config typecheck: ../../apps/web/src/lib/personal-milestone-routes.integration.test.ts(168,14): error TS18046: 'last' is of type 'unknown'.
+packages/config typecheck: ../../apps/web/src/lib/personal-milestone-routes.integration.test.ts(169,26): error TS18046: 'first' is of type 'unknown'.
+packages/config typecheck: ../../apps/web/src/lib/personal-milestone-routes.integration.test.ts(169,42): error TS18046: 'last' is of type 'unknown'.
+packages/config typecheck: ../../apps/web/src/lib/personal-milestone-routes.integration.test.ts(172,11): error TS2571: Object is of type 'unknown'.
+packages/config typecheck: ../../apps/web/src/lib/personal-milestone-routes.integration.test.ts(174,78): error TS18046: 'first' is of type 'unknown'.
+packages/config typecheck: ../../apps/web/src/lib/personal-milestone-routes.integration.test.ts(186,69): error TS18046: 'saved' is of type 'unknown'.
+packages/config typecheck: ../../apps/web/src/lib/personal-milestone-routes.integration.test.ts(187,13): error TS18046: 'saved' is of type 'unknown'.
+packages/config typecheck: ../../apps/web/src/lib/personal-milestone-routes.integration.test.ts(192,80): error TS18046: 'saved' is of type 'unknown'.
+packages/config typecheck: ../../apps/web/src/lib/personal-milestone-routes.integration.test.ts(205,16): error TS2571: Object is of type 'unknown'.
+packages/config typecheck: ../../apps/web/src/lib/personal-milestone-routes.integration.test.ts(211,22): error TS18046: 'saved' is of type 'unknown'.
+packages/config typecheck: ../../apps/web/src/lib/personal-milestone-routes.integration.test.ts(215,9): error TS2571: Object is of type 'unknown'.
+packages/config typecheck: ../../apps/web/src/lib/personal-milestone-routes.integration.test.ts(218,65): error TS18046: 'saved' is of type 'unknown'.
+packages/config typecheck: ../../apps/web/src/lib/personal-milestone-routes.integration.test.ts(219,15): error TS18046: 'saved' is of type 'unknown'.
+packages/config typecheck: ../../apps/web/src/lib/personal-milestone-routes.test.ts(47,10): error TS18046: 'body' is of type 'unknown'.
+packages/config typecheck: ../../apps/web/src/lib/personal-milestone-routes.test.ts(48,10): error TS18046: 'body' is of type 'unknown'.
+packages/config typecheck: ../../apps/web/src/lib/personal-milestone-routes.test.ts(62,14): error TS2571: Object is of type 'unknown'.
+packages/config typecheck: ../../apps/web/src/lib/personal-milestone-routes.test.ts(73,14): error TS2571: Object is of type 'unknown'.
+packages/config typecheck: ../../apps/web/src/lib/personal-milestone-routes.test.ts(138,14): error TS2571: Object is of type 'unknown'.
+packages/config typecheck: Failed
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/config:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @sammlerraum/config@ typecheck: `tsc --noEmit --project ../../tsconfig.base.json`
+Exit status 2
+packages/storage typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+packages/contracts typecheck: ../../apps/web/src/lib/personal-milestone-routes.integration.test.ts(86,14): error TS18046: 'saved' is of type 'unknown'.
+packages/contracts typecheck: ../../apps/web/src/lib/personal-milestone-routes.integration.test.ts(92,13): error TS18046: 'saved' is of type 'unknown'.
+packages/contracts typecheck: ../../apps/web/src/lib/personal-milestone-routes.integration.test.ts(94,11): error TS18046: 'saved' is of type 'unknown'.
+packages/contracts typecheck: ../../apps/web/src/lib/personal-milestone-routes.integration.test.ts(99,13): error TS18046: 'saved' is of type 'unknown'.
+packages/contracts typecheck: ../../apps/web/src/lib/personal-milestone-routes.integration.test.ts(103,20): error TS18046: 'saved' is of type 'unknown'.
+packages/contracts typecheck: ../../apps/web/src/lib/personal-milestone-routes.integration.test.ts(106,78): error TS18046: 'saved' is of type 'unknown'.
+packages/contracts typecheck: ../../apps/web/src/lib/personal-milestone-routes.integration.test.ts(106,89): error TS18046: 'saved' is of type 'unknown'.
+packages/contracts typecheck: ../../apps/web/src/lib/personal-milestone-routes.integration.test.ts(109,14): error TS18046: 'stale' is of type 'unknown'.
+packages/contracts typecheck: ../../apps/web/src/lib/personal-milestone-routes.integration.test.ts(111,9): error TS2571: Object is of type 'unknown'.
+packages/contracts typecheck: ../../apps/web/src/lib/personal-milestone-routes.integration.test.ts(113,75): error TS18046: 'saved' is of type 'unknown'.
+packages/contracts typecheck: ../../apps/web/src/lib/personal-milestone-routes.integration.test.ts(113,86): error TS18046: 'saved' is of type 'unknown'.
+packages/contracts typecheck: ../../apps/web/src/lib/personal-milestone-routes.integration.test.ts(117,14): error TS18046: 'saved' is of type 'unknown'.
+packages/contracts typecheck: ../../apps/web/src/lib/personal-milestone-routes.integration.test.ts(118,68): error TS18046: 'saved' is of type 'unknown'.
+packages/contracts typecheck: ../../apps/web/src/lib/personal-milestone-routes.integration.test.ts(120,9): error TS2571: Object is of type 'unknown'.
+packages/contracts typecheck: ../../apps/web/src/lib/personal-milestone-routes.integration.test.ts(122,75): error TS18046: 'saved' is of type 'unknown'.
+packages/contracts typecheck: ../../apps/web/src/lib/personal-milestone-routes.integration.test.ts(122,86): error TS18046: 'saved' is of type 'unknown'.
+packages/contracts typecheck: ../../apps/web/src/lib/personal-milestone-routes.integration.test.ts(145,18): error TS18046: 'result' is of type 'unknown'.
+packages/contracts typecheck: ../../apps/web/src/lib/personal-milestone-routes.integration.test.ts(163,59): error TS18046: 'first' is of type 'unknown'.
+packages/contracts typecheck: ../../apps/web/src/lib/personal-milestone-routes.integration.test.ts(166,15): error TS18046: 'first' is of type 'unknown'.
+packages/contracts typecheck: ../../apps/web/src/lib/personal-milestone-routes.integration.test.ts(166,35): error TS18046: 'last' is of type 'unknown'.
+packages/contracts typecheck: ../../apps/web/src/lib/personal-milestone-routes.integration.test.ts(167,14): error TS18046: 'first' is of type 'unknown'.
+packages/contracts typecheck: ../../apps/web/src/lib/personal-milestone-routes.integration.test.ts(168,14): error TS18046: 'last' is of type 'unknown'.
+packages/contracts typecheck: ../../apps/web/src/lib/personal-milestone-routes.integration.test.ts(169,26): error TS18046: 'first' is of type 'unknown'.
+packages/contracts typecheck: ../../apps/web/src/lib/personal-milestone-routes.integration.test.ts(169,42): error TS18046: 'last' is of type 'unknown'.
+packages/contracts typecheck: ../../apps/web/src/lib/personal-milestone-routes.integration.test.ts(172,11): error TS2571: Object is of type 'unknown'.
+packages/contracts typecheck: ../../apps/web/src/lib/personal-milestone-routes.integration.test.ts(174,78): error TS18046: 'first' is of type 'unknown'.
+packages/contracts typecheck: ../../apps/web/src/lib/personal-milestone-routes.integration.test.ts(186,69): error TS18046: 'saved' is of type 'unknown'.
+packages/contracts typecheck: ../../apps/web/src/lib/personal-milestone-routes.integration.test.ts(187,13): error TS18046: 'saved' is of type 'unknown'.
+packages/contracts typecheck: ../../apps/web/src/lib/personal-milestone-routes.integration.test.ts(192,80): error TS18046: 'saved' is of type 'unknown'.
+packages/contracts typecheck: ../../apps/web/src/lib/personal-milestone-routes.integration.test.ts(205,16): error TS2571: Object is of type 'unknown'.
+packages/contracts typecheck: ../../apps/web/src/lib/personal-milestone-routes.integration.test.ts(211,22): error TS18046: 'saved' is of type 'unknown'.
+packages/contracts typecheck: ../../apps/web/src/lib/personal-milestone-routes.integration.test.ts(215,9): error TS2571: Object is of type 'unknown'.
+packages/contracts typecheck: ../../apps/web/src/lib/personal-milestone-routes.integration.test.ts(218,65): error TS18046: 'saved' is of type 'unknown'.
+packages/contracts typecheck: ../../apps/web/src/lib/personal-milestone-routes.integration.test.ts(219,15): error TS18046: 'saved' is of type 'unknown'.
+packages/contracts typecheck: ../../apps/web/src/lib/personal-milestone-routes.test.ts(47,10): error TS18046: 'body' is of type 'unknown'.
+packages/contracts typecheck: ../../apps/web/src/lib/personal-milestone-routes.test.ts(48,10): error TS18046: 'body' is of type 'unknown'.
+packages/contracts typecheck: ../../apps/web/src/lib/personal-milestone-routes.test.ts(62,14): error TS2571: Object is of type 'unknown'.
+packages/contracts typecheck: ../../apps/web/src/lib/personal-milestone-routes.test.ts(73,14): error TS2571: Object is of type 'unknown'.
+packages/contracts typecheck: ../../apps/web/src/lib/personal-milestone-routes.test.ts(138,14): error TS2571: Object is of type 'unknown'.
+ ELIFECYCLE  Command failed with exit code 2.
