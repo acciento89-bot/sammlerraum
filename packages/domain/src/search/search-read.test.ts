@@ -1,3 +1,4 @@
+import { PersonalMilestoneError } from "@sammlerraum/contracts/personal-milestones";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { Prisma } from "@sammlerraum/db/search-sql";
 import { runSearchRead, type SearchDatabase } from "./search-read";
@@ -112,5 +113,27 @@ describe("search read processing budgets", () => {
       }),
     ).rejects.toMatchObject({ code: "SEARCH_UNAVAILABLE" });
     expect(statements).toBe(3);
+  });
+  it("preserves only branded personal milestone errors rather than arbitrary matching strings", async () => {
+    const database: SearchDatabase = {
+      $transaction: async (work) => work({ $queryRaw: async <T>() => [] as T }),
+    };
+    for (const code of [
+      "MILESTONE_INVALID",
+      "MILESTONE_NOT_FOUND",
+      "MILESTONE_CONFLICT",
+    ] as const) {
+      const error = new PersonalMilestoneError(code);
+      await expect(
+        runSearchRead(database, async () => {
+          throw error;
+        }),
+      ).rejects.toBe(error);
+    }
+    await expect(
+      runSearchRead(database, async () => {
+        throw { code: "MILESTONE_CONFLICT", message: "private cause" };
+      }),
+    ).rejects.toMatchObject({ code: "SEARCH_INVARIANT" });
   });
 });

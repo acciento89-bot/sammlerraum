@@ -1,6 +1,7 @@
 import { Prisma } from "@sammlerraum/db/search-sql";
 import { ItemSearchError, searchFail } from "@sammlerraum/contracts/item-search";
 import { SmartCollectionError } from "@sammlerraum/contracts/smart-collections";
+import { PersonalMilestoneError } from "@sammlerraum/contracts/personal-milestones";
 import { FilterValidationError } from "@sammlerraum/contracts/search";
 import { isReadDependencyFailure, isReadSerializationFailure } from "../api/read-dependency-errors";
 export type SearchReadTransaction = { $queryRaw<T>(sql: Prisma.Sql): Promise<T> };
@@ -65,7 +66,8 @@ export async function runSearchTransaction<T>(
       if (
         error instanceof ItemSearchError ||
         error instanceof FilterValidationError ||
-        error instanceof SmartCollectionError
+        error instanceof SmartCollectionError ||
+        error instanceof PersonalMilestoneError
       )
         throw error;
       if (isReadSerializationFailure(error) && attempt < 2 && performance.now() < stop) continue;

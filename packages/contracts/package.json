@@ -22,7 +22,8 @@
     "./smart-collections": "./src/smart-collections.ts",
     "./dashboard": "./src/dashboard.ts",
     "./private-search-query": "./src/private-search-query.ts",
-    "./search-references": "./src/search-references.ts"
+    "./search-references": "./src/search-references.ts",
+    "./personal-milestones": "./src/personal-milestones.ts"
   },
   "scripts": {
     "build": "pnpm typecheck",
