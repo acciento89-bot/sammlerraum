@@ -1,0 +1,32 @@
+[WebServer] (node:46536) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:46537) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 9 tests using 1 worker
+
+(node:46545) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [media] › e2e/media-read.spec.ts:18:3 › production media read headers and revocation › public derivative revalidates after revocation while private receipts never disclose bytes (419ms)
+(node:46551) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 [desktop] › e2e/media-documents.spec.ts:133:3 › item media and private documents › Unicode upload filenames preserve literal percent sequences (12.2s)
+  ✓  3 [desktop] › e2e/media-documents.spec.ts:163:3 › item media and private documents › failed asset upload permits retry without waiting for a gallery refresh (10.6s)
+MEDIA_CANCELLATION {"cancelStage":"link","events":["target link response fetched","cancel clicked","target link response fulfilled","compensating DELETE response","canceled visible","callbacks drained before unroute completed","upload finished including catch refresh"]}
+MEDIA_CANCELLATION {"cancelStage":"reload","events":["target link response fetched","target link response fulfilled","real target worker READY","actual onChange GET held","cancel clicked","actual onChange GET fulfilled","compensating DELETE response","post-delete cleanup GET held","canceled visible","cleanup held while upload remains busy","post-delete cleanup GET fulfilled","callbacks drained before unroute completed","upload finished including catch refresh"]}
+  ✓  4 [desktop] › e2e/media-documents.spec.ts:214:5 › item media and private documents › public item can have a purchase receipt that remains private (de) (49.4s)
+MEDIA_CANCELLATION {"cancelStage":"link","events":["target link response fetched","cancel clicked","target link response fulfilled","compensating DELETE response","canceled visible","callbacks drained before unroute completed","upload finished including catch refresh"]}
+MEDIA_CANCELLATION {"cancelStage":"reload","events":["target link response fetched","target link response fulfilled","real target worker READY","actual onChange GET held","cancel clicked","actual onChange GET fulfilled","compensating DELETE response","post-delete cleanup GET held","canceled visible","cleanup held while upload remains busy","post-delete cleanup GET fulfilled","callbacks drained before unroute completed","upload finished including catch refresh"]}
+  ✓  5 [desktop] › e2e/media-documents.spec.ts:214:5 › item media and private documents › public item can have a purchase receipt that remains private (en) (48.3s)
+(node:46822) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  6 [mobile] › e2e/media-documents.spec.ts:133:3 › item media and private documents › Unicode upload filenames preserve literal percent sequences (10.8s)
+  ✓  7 [mobile] › e2e/media-documents.spec.ts:163:3 › item media and private documents › failed asset upload permits retry without waiting for a gallery refresh (10.6s)
+MEDIA_CANCELLATION {"cancelStage":"link","events":["target link response fetched","cancel clicked","target link response fulfilled","compensating DELETE response","canceled visible","callbacks drained before unroute completed","upload finished including catch refresh"]}
+MEDIA_CANCELLATION {"cancelStage":"reload","events":["target link response fetched","target link response fulfilled","real target worker READY","actual onChange GET held","cancel clicked","actual onChange GET fulfilled","compensating DELETE response","post-delete cleanup GET held","canceled visible","cleanup held while upload remains busy","post-delete cleanup GET fulfilled","callbacks drained before unroute completed","upload finished including catch refresh"]}
+  ✓  8 [mobile] › e2e/media-documents.spec.ts:214:5 › item media and private documents › public item can have a purchase receipt that remains private (de) (50.4s)
+MEDIA_CANCELLATION {"cancelStage":"link","events":["target link response fetched","cancel clicked","target link response fulfilled","compensating DELETE response","canceled visible","callbacks drained before unroute completed","upload finished including catch refresh"]}
+MEDIA_CANCELLATION {"cancelStage":"reload","events":["target link response fetched","target link response fulfilled","real target worker READY","actual onChange GET held","cancel clicked","actual onChange GET fulfilled","compensating DELETE response","post-delete cleanup GET held","canceled visible","cleanup held while upload remains busy","post-delete cleanup GET fulfilled","callbacks drained before unroute completed","upload finished including catch refresh"]}
+  ✓  9 [mobile] › e2e/media-documents.spec.ts:214:5 › item media and private documents › public item can have a purchase receipt that remains private (en) (48.4s)
+
+  9 passed (4.1m)

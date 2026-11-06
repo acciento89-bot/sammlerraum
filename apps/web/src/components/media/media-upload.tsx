@@ -78,6 +78,7 @@ export function MediaUpload({
     const operation = state.current;
     setBusy(true);
     setProgress(0);
+    let linkStarted = false;
     try {
       const asset = await new Promise<{ id: string }>((resolve, reject) => {
         const xhr = new XMLHttpRequest();
@@ -113,6 +114,7 @@ export function MediaUpload({
       if (operation.canceled) throw new Error("canceled");
       const path = `/api/v1/items/${itemId}/${document ? "documents" : "media"}`;
       // Do not abort a link request: observe its outcome, then undo the link if canceled.
+      linkStarted = true;
       const response = await fetch(path, {
         method: "POST",
         headers: { "content-type": "application/json" },
@@ -144,7 +146,9 @@ export function MediaUpload({
             ? error.message
             : "actionError",
         );
-        await onChange();
+        // A failed asset transfer cannot have changed this item. Only reconcile
+        // after a link was attempted, including cancellation and unknown outcomes.
+        if (linkStarted) await onChange();
       }
     } finally {
       if (mounted.current) setBusy(false);

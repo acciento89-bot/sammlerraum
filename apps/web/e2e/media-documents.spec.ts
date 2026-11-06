@@ -160,6 +160,56 @@ test.describe("item media and private documents", () => {
       await cleanup(owner.id);
     }
   });
+  test("failed asset upload permits retry without waiting for a gallery refresh", async ({
+    page,
+  }) => {
+    const owner = await collector();
+    const collection = await db.collection.create({
+      data: { ownerId: owner.id, name: "Upload recovery", visibility: "PRIVATE" },
+    });
+    const item = await db.collectibleItem.create({
+      data: { ownerId: owner.id, collectionId: collection.id, title: "Upload recovery" },
+    });
+    const refresh = gate("release unnecessary gallery refresh");
+    let reads = 0;
+    try {
+      expect(
+        (
+          await page.request.post("/api/auth/sign-in/email", {
+            data: { email: owner.email, password: owner.password },
+            headers: { origin },
+          })
+        ).status(),
+      ).toBe(200);
+      await page.goto(`/en/items/${item.id}`);
+      const upload = page.getByLabel("Upload gallery image", { exact: true });
+      await expect(upload).toBeEnabled();
+      await page.route(`**/api/v1/items/${item.id}/media`, async (route) => {
+        if (route.request().method() !== "GET") return route.continue();
+        reads++;
+        const response = await route.fetch();
+        await refresh.wait();
+        await route.fulfill({ response });
+      });
+      await page.route("**/api/v1/media/images", (route) => route.abort("failed"));
+      await upload.setInputFiles({ name: "network.png", mimeType: "image/png", buffer: png });
+      await expect(page.locator(".item-media p[role=alert]")).toContainText("The action failed.");
+      await expect(upload).toBeEnabled();
+      expect(reads).toBe(0);
+      await page.unroute("**/api/v1/media/images");
+      await upload.setInputFiles({ name: "retry.png", mimeType: "image/png", buffer: png });
+      // Successful linking must still refresh the authoritative gallery.
+      refresh.release();
+      await expect(page.getByRole("img", { name: "retry.png", exact: true })).toBeVisible({
+        timeout: 50_000,
+      });
+      expect(reads).toBeGreaterThan(0);
+    } finally {
+      refresh.release();
+      await page.unrouteAll({ behavior: "wait" });
+      await cleanup(owner.id);
+    }
+  });
   for (const locale of ["de", "en"] as const) {
     test(`public item can have a purchase receipt that remains private (${locale})`, async ({
       page,
