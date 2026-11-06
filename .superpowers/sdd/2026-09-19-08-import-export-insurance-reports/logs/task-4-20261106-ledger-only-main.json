@@ -1,0 +1,9 @@
+{
+  "parent": "50f31f76f32f189ba472d4e2b63da4336c6ebe3a",
+  "commit": "a83e4a397760faa17446bda0503c53781dbaaff6",
+  "changedFiles": [
+    "docs/superpowers/SAMMLERRAUM-V1-LEDGER.md"
+  ],
+  "applicationMerge": false,
+  "mainHadWorkflows": false
+}

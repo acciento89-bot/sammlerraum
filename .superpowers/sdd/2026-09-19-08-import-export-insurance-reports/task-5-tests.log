@@ -1,0 +1,10 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ✓ |workspace| packages/domain/src/insurance/insurance-service.test.ts (19 tests) 506ms
+
+ Test Files  1 passed (1)
+      Tests  19 passed (19)
+   Start at  23:59:17
+   Duration  1.05s (transform 200ms, setup 5ms, collect 375ms, tests 506ms, environment 0ms, prepare 49ms)
+

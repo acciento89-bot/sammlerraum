@@ -1,0 +1,40 @@
+
+> @sammlerraum/db@ prisma /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/db
+> prisma migrate deploy
+
+Loaded Prisma config from prisma.config.ts.
+
+Prisma schema loaded from prisma/schema.prisma.
+Datasource "db": PostgreSQL database "sammlerraum_test", schema "public" at "localhost:5432"
+
+41 migrations found in prisma/migrations
+
+Applying migration `20261106235000_private_insurance`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20261106235000_private_insurance/
+    └─ migration.sql
+
+All migrations have been successfully applied.
+
+> @sammlerraum/db@ prisma /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/db
+> prisma migrate deploy
+
+Loaded Prisma config from prisma.config.ts.
+
+Prisma schema loaded from prisma/schema.prisma.
+Datasource "db": PostgreSQL database "sammlerraum_m4_browser_20261106_test", schema "public" at "localhost:5432"
+
+41 migrations found in prisma/migrations
+
+Applying migration `20261106235000_private_insurance`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20261106235000_private_insurance/
+    └─ migration.sql
+
+All migrations have been successfully applied.
