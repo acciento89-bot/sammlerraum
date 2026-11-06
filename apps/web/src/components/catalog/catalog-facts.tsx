@@ -8,6 +8,10 @@ import type {
 } from "@sammlerraum/contracts/catalog";
 import { authoredTitle, type Locale } from "./catalog-client";
 import { variantLabel } from "./catalog-search";
+import { HistoricalMoneyValueSchema, type MoneyView } from "@sammlerraum/contracts/legacy-money";
+import { MoneyReadout } from "../money/legacy-money-editor";
+import { catalogMoneyKey } from "./catalog-money-client";
+import type { CatalogMoneyPreview } from "./catalog-money-model";
 import { displayCatalogMoney } from "./catalog-money";
 export function SourceFacts({ sources }: { sources: CatalogSource[] }) {
   const t = useTranslations("Catalog");
@@ -69,12 +73,21 @@ export function AttributeFacts({
   attributes,
   category,
   locale,
+  money,
+  previews,
+  target = { kind: "ENTRY" },
+  onReview,
 }: {
   attributes: Array<{ definitionId: string; value: unknown }>;
   category: CategoryTemplate | null;
   locale: Locale;
+  money?: ReadonlyMap<string, MoneyView>;
+  previews?: ReadonlyMap<string, CatalogMoneyPreview>;
+  target?: Extract<MoneyView["subject"], { family: "CATALOG" }>["target"];
+  onReview?: (view: MoneyView) => void;
 }) {
-  const t = useTranslations("Catalog");
+  const t = useTranslations("Catalog"),
+    m = useTranslations("LegacyMoney");
   return (
     <dl>
       {attributes.map((row) => {
@@ -100,10 +113,68 @@ export function AttributeFacts({
             String(value ?? "")
           );
         };
+        const raw = HistoricalMoneyValueSchema.safeParse(row.value),
+          key = catalogMoneyKey(target, row.definitionId);
+        const view = money?.get(key),
+          preview = previews?.get(row.definitionId),
+          label = definition?.labels[locale] ?? t("unavailableAttribute");
+        const exactView =
+          raw.success &&
+          view?.subject.family === "CATALOG" &&
+          view.raw?.amountMinor === String(raw.data.amountMinor) &&
+          view.raw.currency === raw.data.currency
+            ? view
+            : null;
+        const exactPreview =
+          raw.success &&
+          preview?.raw.amountMinor === String(raw.data.amountMinor) &&
+          preview.raw.currency === raw.data.currency
+            ? preview
+            : null;
+        const amount = raw.success ? (
+          exactPreview?.kind === "CAPTURED" ? (
+            <div className="money-readout">
+              <output aria-label={`${label} · ${m("storedValue")}`}>
+                {exactPreview.decimal.replace(".", locale === "de" ? "," : ".")} {raw.data.currency}
+              </output>
+              <span>
+                {m(exactPreview.source === "AUTHORED" ? "capturedProposal" : "retainedProposal")}
+              </span>
+              {exactPreview.eligibility === "UNIT_UNSUPPORTED" && <small>{m("unsupported")}</small>}
+            </div>
+          ) : exactView && !exactPreview ? (
+            <>
+              <MoneyReadout view={exactView} locale={locale} label={label} />
+              {onReview && (
+                <button
+                  type="button"
+                  className="secondary-button"
+                  onClick={() => onReview(exactView)}
+                >
+                  {m("review")}
+                </button>
+              )}
+            </>
+          ) : (
+            <div className="money-readout">
+              <output aria-label={`${label} · ${m("storedValue")}`}>
+                {displayCatalogMoney(raw.data, locale)}
+              </output>
+              <span>{m("unknown")}</span>
+              <small>
+                {m(
+                  exactPreview?.kind === "RAW" && exactPreview.changed
+                    ? "proposalSourceChanged"
+                    : "rawValue",
+                )}
+              </small>
+            </div>
+          )
+        ) : null;
         return (
           <div key={row.definitionId}>
             <dt>{definition?.labels[locale] ?? t("unavailableAttribute")}</dt>
-            <dd>{display(row.value)}</dd>
+            <dd>{amount ?? display(row.value)}</dd>
           </div>
         );
       })}
@@ -114,16 +185,41 @@ export function CatalogFacts({
   state,
   category,
   locale,
+  money,
+  previews,
+  onReview,
 }: {
   state: CatalogSnapshot;
   category: CategoryTemplate | null;
   locale: Locale;
+  money?: ReadonlyMap<string, MoneyView>;
+  previews?: ReadonlyMap<string, CatalogMoneyPreview>;
+  onReview?: (view: MoneyView) => void;
 }) {
   const t = useTranslations("Catalog");
+  function scopedPreviews(
+    target: Extract<MoneyView["subject"], { family: "CATALOG" }>["target"],
+    attributes: { definitionId: string }[],
+  ) {
+    const values = new Map<string, CatalogMoneyPreview>();
+    if (previews)
+      for (const row of attributes) {
+        const value = previews.get(catalogMoneyKey(target, row.definitionId));
+        if (value) values.set(row.definitionId, value);
+      }
+    return values;
+  }
   return (
     <div className="catalog-facts">
       <TextFacts text={state.text} locale={locale} />
-      <AttributeFacts attributes={state.attributes} category={category} locale={locale} />
+      <AttributeFacts
+        attributes={state.attributes}
+        category={category}
+        locale={locale}
+        {...(money ? { money } : {})}
+        {...(previews ? { previews: scopedPreviews({ kind: "ENTRY" }, state.attributes) } : {})}
+        {...(onReview ? { onReview } : {})}
+      />
       <h3>{t("canonicalSources")}</h3>
       <SourceFacts sources={state.sources} />
       <h3>{t("variants")}</h3>
@@ -133,7 +229,22 @@ export function CatalogFacts({
             <li key={row.id}>
               <h4>{variantLabel(row, locale)}</h4>
               <TextFacts text={row.text} locale={locale} />
-              <AttributeFacts attributes={row.attributes} category={category} locale={locale} />
+              <AttributeFacts
+                attributes={row.attributes}
+                category={category}
+                locale={locale}
+                target={{ kind: "VARIANT", variantId: row.id }}
+                {...(money ? { money } : {})}
+                {...(previews
+                  ? {
+                      previews: scopedPreviews(
+                        { kind: "VARIANT", variantId: row.id },
+                        row.attributes,
+                      ),
+                    }
+                  : {})}
+                {...(onReview ? { onReview } : {})}
+              />
               <SourceFacts sources={row.sources} />
             </li>
           ))}

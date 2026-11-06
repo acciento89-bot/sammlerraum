@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef, useState, type FormEvent } from "react"
 import { useTranslations } from "next-intl";
 import type { CatalogEntryRevision, CategoryTemplate } from "@sammlerraum/contracts/catalog";
 import type { CatalogRevisionSummary } from "@sammlerraum/contracts/catalog-reads";
-import { CatalogFacts } from "./catalog-facts";
+import { CanonicalCatalogFacts } from "./canonical-catalog-facts";
 import { catalogRequest, catalogError, CatalogRequestError, type Locale } from "./catalog-client";
 export function CatalogHistory({
   entry,
@@ -159,7 +159,12 @@ export function CatalogHistory({
           <p>
             {t("currentRevision")} {entry.revision}
           </p>
-          <CatalogFacts state={preview.state} category={category} locale={locale} />
+          <CanonicalCatalogFacts
+            state={preview.state}
+            revision={preview.revision}
+            category={category}
+            locale={locale}
+          />
           {canModerate && preview.revision !== entry.revision && (
             <form
               key={`${preview.revision}-${expected}`}

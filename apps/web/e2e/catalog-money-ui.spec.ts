@@ -146,3 +146,136 @@ for (const locale of ["de", "en"] as const)
       await page.waitForLoadState("networkidle", { timeout: 5000 });
     });
   }
+
+for (const locale of ["de", "en"] as const) {
+  test(`${locale}: canonical readout uses the exact evidenced stored scale instead of the current locale currency scale`, async ({
+    page,
+  }) => {
+    test.skip(!active, "Requires owned monetary UI database");
+    const h = await fixture(page, false),
+      m = (locale === "de" ? de : en).LegacyMoney;
+    expect(
+      (
+        await page.request.post(`${h.base}/classifications`, {
+          headers: { origin },
+          data: {
+            schemaVersion: 1,
+            target: { kind: "ENTRY" },
+            definitionId: h.definitionId,
+            input: {
+              expectedFactToken: h.before.money[0]!.factToken,
+              exponent: 2,
+              unit: { kind: "SUPPORTED", unitKey: "iso4217-2026-09-17:AFN" },
+              evidence: {
+                category: "OPERATOR_VERIFIED_RECORD",
+                reason: "Synthetic evidenced hundredths",
+                reference: "PRIVATE-SCALE-RECORD",
+              },
+            },
+          },
+        })
+      ).status(),
+    ).toBe(201);
+    await page.goto(`/${locale}/catalog/${h.entry.state.id}`);
+    const readout = page.getByRole("status", {
+      name: `${h.category.definitions[0]!.labels[locale]} · ${m.storedValue}`,
+      exact: true,
+    });
+    await expect(readout).toContainText(locale === "de" ? "1,00 AFN" : "1.00 AFN", {
+      timeout: 3000,
+    });
+    await page.waitForLoadState("networkidle", { timeout: 5000 });
+  });
+}
+
+for (const locale of ["de", "en"] as const)
+  for (const retained of [false, true]) {
+    test(`${locale}: frozen ${retained ? "retained" : "authored"} proposal facts never borrow a newer source meaning`, async ({
+      page,
+    }) => {
+      test.skip(!active, "Requires owned monetary UI database");
+      const h = await fixture(page, true),
+        t = (locale === "de" ? de : en).Catalog,
+        m = (locale === "de" ? de : en).LegacyMoney;
+      const summary = `Frozen ${retained ? "retained" : "authored"} facts ${h.f.ownerId}`;
+      const intent = retained
+        ? { op: "RETAIN", expectedFactToken: h.before.money[0]!.factToken }
+        : {
+            op: "REPLACE",
+            expectedFactToken: h.before.money[0]!.factToken,
+            authoring: {
+              kind: "DECIMAL",
+              profileId: "legacy-money-iso-2026-09-17-v1",
+              currency: "AFN",
+              decimal: "1",
+            },
+          };
+      const submitted = await page.request.post("/api/v1/catalog/money-proposals", {
+        headers: { origin },
+        data: {
+          proposal: {
+            targetEntryId: h.entry.state.id,
+            baseRevision: 1,
+            summary,
+            patch: {
+              kind: "UPDATE_ENTRY",
+              input: {
+                attributes: [
+                  { definitionId: h.definitionId, value: { amountMinor: 100, currency: "AFN" } },
+                ],
+              },
+            },
+          },
+          money: {
+            schemaVersion: 1,
+            intents: [{ target: "ENTRY", definitionId: h.definitionId, intent }],
+          },
+        },
+      });
+      expect(submitted.status()).toBe(201);
+      expect(
+        (
+          await page.request.post(`${h.base}/classifications`, {
+            headers: { origin },
+            data: {
+              schemaVersion: 1,
+              target: { kind: "ENTRY" },
+              definitionId: h.definitionId,
+              input: {
+                expectedFactToken: h.before.money[0]!.factToken,
+                exponent: 1,
+                unit: { kind: "SUPPORTED", unitKey: "iso4217-2026-09-17:AFN" },
+                evidence: {
+                  category: "OPERATOR_VERIFIED_RECORD",
+                  reason: "Newer actual evidence after proposal froze",
+                  reference: "PRIVATE-NEWER-RECORD",
+                },
+              },
+            },
+          })
+        ).status(),
+      ).toBe(201);
+      await page.goto(`/${locale}/catalog/proposals`);
+      await page.getByRole("button", { name: summary, exact: true }).click();
+      const detail = page.getByRole("region", { name: t.proposalDetail, exact: true });
+      await expect(
+        detail
+          .getByText(retained ? m.proposalSourceChanged : m.capturedProposal, { exact: true })
+          .first(),
+      ).toBeVisible({ timeout: 3000 });
+      await detail.locator("summary").filter({ hasText: t.beforeChange }).click();
+      const amounts = detail.getByRole("status", {
+        name: `${h.category.definitions[0]!.labels[locale]} · ${m.storedValue}`,
+        exact: true,
+      });
+      await expect(amounts).toHaveCount(2);
+      await expect(amounts.nth(0)).toHaveText(
+        retained ? "100 AFN" : locale === "de" ? "1,00 AFN" : "1.00 AFN",
+      );
+      await expect(amounts.nth(1)).toHaveText("100 AFN");
+      await expect(
+        detail.getByText(locale === "de" ? "10,0 AFN" : "10.0 AFN", { exact: true }),
+      ).toHaveCount(0);
+      await page.waitForLoadState("networkidle", { timeout: 5000 });
+    });
+  }

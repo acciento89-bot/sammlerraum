@@ -1117,6 +1117,9 @@
       "REVOKE": "Assertion withdrawn"
     },
     "reviewedRaw": "Stored number when this review began: {amount} {currency}",
-    "proposalSummaryReason": "Explain this correction in the proposal’s change summary."
+    "proposalSummaryReason": "Explain this correction in the proposal’s change summary.",
+    "capturedProposal": "Meaning captured in this proposal",
+    "retainedProposal": "Retained from the captured source",
+    "proposalSourceChanged": "The original assertion changed or is no longer available."
   }
 }

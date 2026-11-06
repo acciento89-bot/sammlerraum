@@ -1,8 +1,9 @@
-import { displayCustomFieldValue } from "../items/item-form-values";
-/** Exact digits only; the existing legacy currency-scale interpretation is unchanged. */
+import { HistoricalMoneyValueSchema } from "@sammlerraum/contracts/legacy-money";
+/** A historical integer has no implied scale. Interpretation is supplied separately. */
 export function displayCatalogMoney(
   money: { amountMinor: number; currency: string },
-  locale: "de" | "en",
+  _locale: "de" | "en",
 ): string {
-  return displayCustomFieldValue(money, "MONEY", locale);
+  const raw = HistoricalMoneyValueSchema.parse(money);
+  return `${raw.amountMinor} ${raw.currency}`;
 }

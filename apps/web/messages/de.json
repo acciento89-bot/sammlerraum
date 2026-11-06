@@ -1117,6 +1117,9 @@
       "REVOKE": "Bestätigung widerrufen"
     },
     "reviewedRaw": "Zu Beginn dieser Belegprüfung gespeicherte Zahl: {amount} {currency}",
-    "proposalSummaryReason": "Begründe diese Korrektur in der Änderungszusammenfassung des Vorschlags."
+    "proposalSummaryReason": "Begründe diese Korrektur in der Änderungszusammenfassung des Vorschlags.",
+    "capturedProposal": "Im Vorschlag festgehaltene Bedeutung",
+    "retainedProposal": "Unverändert vom festgehaltenen Ursprung übernommen",
+    "proposalSourceChanged": "Die ursprüngliche Bestätigung wurde geändert oder ist nicht mehr verfügbar."
   }
 }

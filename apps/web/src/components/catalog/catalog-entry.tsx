@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import type { CatalogEntryRevision, CategoryTemplate } from "@sammlerraum/contracts/catalog";
-import { CatalogFacts } from "./catalog-facts";
+import { CanonicalCatalogFacts } from "./canonical-catalog-facts";
 import { CatalogHistory } from "./catalog-history";
 import { ProposalComposer } from "./proposal-composer";
 import { CatalogNavigation, useCatalogCapability } from "./catalog-navigation";
@@ -74,7 +74,12 @@ export function CatalogEntry({
             <h1>{authoredTitle(entry.state.text, locale)}</h1>
           </header>
           <section className="management-card">
-            <CatalogFacts state={entry.state} category={category} locale={locale} />
+            <CanonicalCatalogFacts
+              state={entry.state}
+              revision={entry.revision}
+              category={category}
+              locale={locale}
+            />
           </section>
           <button
             type="button"
