@@ -106,6 +106,7 @@ describe("monetary request acknowledgment", () => {
           cache: "no-store",
           credentials: "same-origin",
         });
+        expect(new Headers(init?.headers).get("x-money-actor")).toBe(capabilities.actorId);
         expect(JSON.parse(String(init?.body))).toEqual({ schemaVersion: 1 });
         return Response.json({ accepted: true }, { status: 201 });
       },

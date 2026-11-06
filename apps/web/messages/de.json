@@ -1116,6 +1116,7 @@
       "COPY": "Beleg vom Ursprung übernommen",
       "REVOKE": "Bestätigung widerrufen"
     },
-    "reviewedRaw": "Zu Beginn dieser Belegprüfung gespeicherte Zahl: {amount} {currency}"
+    "reviewedRaw": "Zu Beginn dieser Belegprüfung gespeicherte Zahl: {amount} {currency}",
+    "proposalSummaryReason": "Begründe diese Korrektur in der Änderungszusammenfassung des Vorschlags."
   }
 }

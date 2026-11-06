@@ -18,5 +18,7 @@ export default async function Page({
     query: { disableCookieCache: true, disableRefresh: true },
   });
   if (!session) redirect(`/${locale}/login`);
-  return <CatalogEntry locale={locale} entryId={entryId} />;
+  return (
+    <CatalogEntry key={session.user.id} actor={session.user.id} locale={locale} entryId={entryId} />
+  );
 }

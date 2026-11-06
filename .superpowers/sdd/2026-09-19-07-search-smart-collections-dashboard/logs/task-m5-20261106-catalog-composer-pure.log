@@ -1,0 +1,13 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ✓ |workspace| apps/web/src/components/catalog/catalog-form-values.test.ts (8 tests) 4ms
+ ✓ |workspace| apps/web/src/components/catalog/catalog-money-session.test.ts (1 test) 5ms
+ ✓ |workspace| apps/web/src/components/catalog/catalog-money-model.test.ts (6 tests) 10ms
+ ✓ |workspace| apps/web/src/components/catalog/catalog-money-client.test.ts (3 tests) 216ms
+
+ Test Files  4 passed (4)
+      Tests  18 passed (18)
+   Start at  11:24:46
+   Duration  712ms (transform 223ms, setup 24ms, collect 624ms, tests 234ms, environment 0ms, prepare 255ms)
+

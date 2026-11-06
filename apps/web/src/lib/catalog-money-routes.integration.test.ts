@@ -47,6 +47,26 @@ const create = () =>
     attributes: [{ definitionId, value: { amountMinor: 100, currency: "AFN" } }],
   });
 describe.runIf(enabled)("catalog money HTTP native boundary", () => {
+  it("does not create a global proposal after the browser account changed", async () => {
+    actor = moderator;
+    const input = {
+      proposal: {
+        targetEntryId: null,
+        baseRevision: null,
+        summary: "Actor-bound synthetic proposal",
+        patch: { kind: "CREATE_ENTRY", input: { categoryTemplateId: category, text } },
+      },
+      money: { schemaVersion: 1, intents: [] },
+    };
+    const before = await db.catalogProposal.count();
+    const stale = req("POST", input);
+    stale.headers.set("x-money-actor", owner);
+    expect((await api().SUBMIT(stale)).status).toBe(409);
+    expect(await db.catalogProposal.count()).toBe(before);
+    const current = req("POST", input);
+    current.headers.set("x-money-actor", moderator);
+    expect((await api().SUBMIT(current)).status).toBe(201);
+  });
   it("keeps reads available but declines explicit mutations while server authoring is disabled", async () => {
     actor = moderator;
     const entry = await create();

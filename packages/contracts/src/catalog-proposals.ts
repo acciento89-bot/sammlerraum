@@ -196,3 +196,27 @@ export const StoredProposalMoneyEnvelopeSchema = z
       });
   });
 export type StoredProposalMoneyEnvelope = z.infer<typeof StoredProposalMoneyEnvelopeSchema>;
+
+/** Private own-proposal/moderation receipt; immutable snapshot v1 remains unchanged. */
+export const CatalogMoneyProposalRecordSchema = z
+  .object({
+    id: CatalogProposalIdSchema,
+    proposerId: z.string().min(1).max(512),
+    targetEntryId: CatalogProposalIdSchema.nullable(),
+    baseRevision: CatalogRevisionNumberSchema.nullable(),
+    patch: CatalogProposalOperationSchema,
+    summary: AuthoredSummarySchema,
+    source: SubmitCatalogProposalInputSchema.shape.source.unwrap().nullable(),
+    state: z.enum(["PENDING", "APPROVED", "REJECTED", "CONFLICT"]),
+    createdAt: z.string().datetime(),
+    moderatorId: z.string().max(512).nullable(),
+    moderatedAt: z.string().datetime().nullable(),
+    decisionReason: z.string().max(1000).nullable(),
+    resultEntryId: CatalogProposalIdSchema.nullable(),
+    resultRevision: CatalogRevisionNumberSchema.nullable(),
+    moneyInterpretation: StoredProposalMoneyEnvelopeSchema.nullable(),
+  })
+  .strict();
+export const CatalogMoneyProposalResultSchema = z
+  .object({ proposal: CatalogMoneyProposalRecordSchema })
+  .strict();

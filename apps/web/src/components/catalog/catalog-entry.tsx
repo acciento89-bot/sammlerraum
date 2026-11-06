@@ -1,4 +1,5 @@
 "use client";
+import { recallCatalogMoneySession } from "./catalog-money-session";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
@@ -8,12 +9,22 @@ import { CatalogHistory } from "./catalog-history";
 import { ProposalComposer } from "./proposal-composer";
 import { CatalogNavigation, useCatalogCapability } from "./catalog-navigation";
 import { authoredTitle, catalogRequest, catalogError, type Locale } from "./catalog-client";
-export function CatalogEntry({ entryId, locale }: { entryId: string; locale: Locale }) {
+export function CatalogEntry({
+  entryId,
+  locale,
+  actor,
+}: {
+  entryId: string;
+  locale: Locale;
+  actor: string;
+}) {
   const t = useTranslations("Catalog");
   const capability = useCatalogCapability();
   const [entry, setEntry] = useState<CatalogEntryRevision | null>(null);
   const [category, setCategory] = useState<CategoryTemplate | null>(null);
-  const [proposing, setProposing] = useState(false);
+  const [proposing, setProposing] = useState(() =>
+    Boolean(recallCatalogMoneySession(actor, entryId)),
+  );
   const [error, setError] = useState("");
   const [status, setStatus] = useState("");
   const ticket = useRef(0);
@@ -76,6 +87,7 @@ export function CatalogEntry({ entryId, locale }: { entryId: string; locale: Loc
           </button>
           {proposing && (
             <ProposalComposer
+              actor={actor}
               key={entry.revision}
               locale={locale}
               entry={entry}

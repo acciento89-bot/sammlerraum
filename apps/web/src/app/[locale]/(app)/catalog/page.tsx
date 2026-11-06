@@ -14,5 +14,5 @@ export default async function Page({ params }: { params: Promise<{ locale: "de" 
     query: { disableCookieCache: true, disableRefresh: true },
   });
   if (!session) redirect(`/${locale}/login`);
-  return <CatalogIndex locale={locale} />;
+  return <CatalogIndex key={session.user.id} actor={session.user.id} locale={locale} />;
 }

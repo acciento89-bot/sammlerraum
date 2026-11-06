@@ -1,4 +1,5 @@
 "use client";
+import { recallCatalogMoneySession } from "./catalog-money-session";
 import { useState } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
@@ -6,10 +7,12 @@ import { CatalogSearch } from "./catalog-search";
 import { ProposalComposer } from "./proposal-composer";
 import { CatalogNavigation, useCatalogCapability } from "./catalog-navigation";
 import type { Locale } from "./catalog-client";
-export function CatalogIndex({ locale }: { locale: Locale }) {
+export function CatalogIndex({ locale, actor }: { locale: Locale; actor: string }) {
   const t = useTranslations("Catalog");
   const capability = useCatalogCapability();
-  const [proposing, setProposing] = useState(false);
+  const [proposing, setProposing] = useState(() =>
+    Boolean(recallCatalogMoneySession(actor, "new")),
+  );
   const [status, setStatus] = useState("");
   return (
     <section className="management-shell">
@@ -33,6 +36,7 @@ export function CatalogIndex({ locale }: { locale: Locale }) {
       </div>
       {proposing && (
         <ProposalComposer
+          actor={actor}
           locale={locale}
           onCancel={() => setProposing(false)}
           onSubmitted={() => {

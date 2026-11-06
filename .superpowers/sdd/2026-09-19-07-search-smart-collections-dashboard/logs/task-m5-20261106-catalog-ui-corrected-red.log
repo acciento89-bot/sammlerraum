@@ -1,0 +1,45 @@
+[WebServer] (node:96352) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 8 tests using 1 worker
+
+(node:96353) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [money-ui-desktop] › e2e/catalog-money-ui.spec.ts:90:5 › de: a text-only catalog proposal retains unresolved money using its exact frozen source (1.7s)
+Testing stopped early after 1 maximum allowed failures.
+
+
+  1) [money-ui-desktop] › e2e/catalog-money-ui.spec.ts:90:5 › de: a text-only catalog proposal retains unresolved money using its exact frozen source 
+
+    Error: locator.fill: Error: strict mode violation: locator('form').filter({ has: getByRole('button', { name: 'Vorschlag absenden', exact: true }) }).getByRole('textbox') resolved to 6 elements:
+        1) <input required="" name="title" maxlength="300" value="Canonical original 71ecb5a5-aed2-4868-af1b-1736b5dcf2bf"/> aka getByRole('textbox', { name: 'Titel' })
+        2) <input value="en" required="" maxlength="6" name="textLanguage" pattern="[a-z]{2,3}(-[A-Z]{2})?"/> aka getByRole('textbox', { name: 'Sprache des verfassten Textes' })
+        3) <textarea maxlength="20000" name="description"></textarea> aka getByRole('textbox', { name: 'Beschreibung' })
+        4) <input value="100" inputmode="decimal" name="attribute-5a40e7b9-27c5-4364-ac39-9a6feb144b7e-amount"/> aka getByRole('textbox', { name: 'Historischer Katalogpreis' })
+        5) <textarea required="" name="summary" maxlength="500"></textarea> aka getByRole('textbox', { name: 'Änderungszusammenfassung' })
+        6) <input type="url" maxlength="2048" name="evidenceUrl"/> aka getByRole('textbox', { name: 'Optionale Quelle für die Prü' })
+
+    Call log:
+      - waiting for locator('form').filter({ has: getByRole('button', { name: 'Vorschlag absenden', exact: true }) }).getByRole('textbox')
+
+
+      104 |       await form
+      105 |         .getByRole("textbox", { name: t.summary, exact: true })
+    > 106 |         .fill("Synthetic title-only correction preserves money");
+          |          ^
+      107 |       const response = page.waitForResponse(
+      108 |         (r) =>
+      109 |           r.request().method() === "POST" &&
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/catalog-money-ui.spec.ts:106:10
+
+    Error Context: test-results/catalog-money-ui-de-a-text-9bf40-ing-its-exact-frozen-source-money-ui-desktop/error-context.md
+
+    Error Context: test-results/catalog-money-ui-de-a-text-9bf40-ing-its-exact-frozen-source-money-ui-desktop/error-context.md
+
+  1 failed
+    [money-ui-desktop] › e2e/catalog-money-ui.spec.ts:90:5 › de: a text-only catalog proposal retains unresolved money using its exact frozen source 
+  7 did not run
+  1 error was not a part of any test, see above for details
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/catalog-money-ui.spec.ts --workers=1 --max-failures=1

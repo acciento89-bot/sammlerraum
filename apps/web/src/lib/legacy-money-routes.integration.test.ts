@@ -55,6 +55,19 @@ async function fixture() {
   };
 }
 describe.runIf(enabled)("personal money HTTP real database boundary", () => {
+  it("rejects a stale browser actor precondition before creating under the freshly authenticated account", async () => {
+    const f = await fixture(),
+      input = {
+        schemaVersion: 1,
+        item: { collectionId: f.collection, title: "Actor-bound creation" },
+      };
+    const refused = await f.api.CREATE(request("POST", input, { "x-money-actor": randomUUID() }));
+    expect(refused.status).toBe(409);
+    expect(await db!.collectibleItem.count({ where: { ownerId: f.actor } })).toBe(0);
+    expect((await f.api.CREATE(request("POST", input, { "x-money-actor": f.actor }))).status).toBe(
+      201,
+    );
+  });
   it("keeps explicit monetary writers closed when server authoring is disabled", async () => {
     const f = await fixture();
     const disabled = createLegacyMoneyRouteHandlers(

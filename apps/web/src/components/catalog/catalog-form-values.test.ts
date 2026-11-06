@@ -46,17 +46,15 @@ describe("authored catalog form boundaries", () => {
       },
     ]);
   });
-  it("serializes exact typed choices, explicit false and money without copying private fields", () => {
+  it("serializes non-money typed choices and explicit false without copying private fields", () => {
     const fields = [
       definition("integer", "INTEGER"),
       definition("boolean", "BOOLEAN"),
       definition("multi", "MULTI_SELECT"),
-      definition("money", "MONEY"),
       definition("unused", "SHORT_TEXT"),
     ];
     const form = new FormData();
-    for (const id of ["integer", "boolean", "multi", "money"])
-      form.set(`attribute-enabled-${id}`, "on");
+    for (const id of ["integer", "boolean", "multi"]) form.set(`attribute-enabled-${id}`, "on");
     form.set("attribute-integer", "9007199254740991");
     form.append("attribute-multi", "first_key");
     form.append("attribute-multi", "second_key");
@@ -67,7 +65,6 @@ describe("authored catalog form boundaries", () => {
       { definitionId: "integer", value: 9007199254740991 },
       { definitionId: "boolean", value: false },
       { definitionId: "multi", value: ["first_key", "second_key"] },
-      { definitionId: "money", value: { amountMinor: 1234, currency: "EUR" } },
     ]);
   });
   it("rejects precision loss before submitting an attribute proposal", () => {
@@ -97,5 +94,12 @@ describe("required catalog integer attributes", () => {
     expect(readAttributes(form, [definition("integer", "INTEGER")])).toEqual([
       { definitionId: "integer", value: 0 },
     ]);
+  });
+  it("refuses authoring a MONEY field through the legacy untyped form reader", () => {
+    const form = new FormData();
+    form.set("attribute-enabled-money", "on");
+    form.set("attribute-money-amount", "12.34");
+    form.set("attribute-money-currency", "EUR");
+    expect(() => readAttributes(form, [definition("money", "MONEY")])).toThrow();
   });
 });

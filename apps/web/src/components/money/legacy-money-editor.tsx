@@ -50,6 +50,7 @@ export function LegacyMoneyEditor({
   disabled,
   loaded = true,
   onReview,
+  correctionReasonFromSummary = false,
 }: {
   label: string;
   name: string;
@@ -61,6 +62,7 @@ export function LegacyMoneyEditor({
   disabled?: boolean;
   loaded?: boolean;
   onReview?(): void;
+  correctionReasonFromSummary?: boolean;
 }) {
   const t = useTranslations("LegacyMoney");
   const hasRaw = Boolean(view?.raw),
@@ -181,7 +183,10 @@ export function LegacyMoneyEditor({
               />
               {t(draft.mode === "CLEAR" ? "clearAck" : "replacementAck")}
             </label>
-            {draft.mode === "REPLACE" && (
+            {draft.mode === "REPLACE" && correctionReasonFromSummary && (
+              <p className="field-help">{t("proposalSummaryReason")}</p>
+            )}
+            {draft.mode === "REPLACE" && !correctionReasonFromSummary && (
               <label>
                 {t("reason")}
                 <textarea

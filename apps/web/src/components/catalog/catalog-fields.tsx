@@ -7,7 +7,6 @@ import type {
   CatalogAttributeDefinition,
   CatalogSnapshot,
 } from "@sammlerraum/contracts/catalog";
-import { majorUnits, itemCurrencyOptions } from "../items/item-form-values";
 import type { Locale } from "./catalog-client";
 export function TextFields({ text, locale }: { text?: CatalogText; locale: Locale }) {
   const t = useTranslations("Catalog");
@@ -182,101 +181,76 @@ export function AttributeFields({
   return (
     <fieldset>
       <legend>{t("referenceAttributes")}</legend>
-      {definitions.map((field) => {
-        const value = attributes.find((row) => row.definitionId === field.id)?.value;
-        const name = `attribute-${field.id}`;
-        const label = field.labels[locale];
-        const primitive =
-          typeof value === "string" || typeof value === "number" ? String(value) : "";
-        return (
-          <div className="compact-form" key={field.id}>
-            <label className="checkbox-label">
-              <input
-                name={`attribute-enabled-${field.id}`}
-                type="checkbox"
-                defaultChecked={value !== undefined}
-              />
-              {t("useAttribute")} — {label}
-            </label>
-            {field.type === "BOOLEAN" ? (
+      {definitions
+        .filter((field) => field.type !== "MONEY")
+        .map((field) => {
+          const value = attributes.find((row) => row.definitionId === field.id)?.value;
+          const name = `attribute-${field.id}`;
+          const label = field.labels[locale];
+          const primitive =
+            typeof value === "string" || typeof value === "number" ? String(value) : "";
+          return (
+            <div className="compact-form" key={field.id}>
               <label className="checkbox-label">
-                <input name={name} type="checkbox" defaultChecked={value === true} />
-                {label}
-              </label>
-            ) : field.type === "LONG_TEXT" ? (
-              <label>
-                {label}
-                <textarea name={name} defaultValue={primitive} maxLength={20000} />
-              </label>
-            ) : field.type === "SINGLE_SELECT" ? (
-              <label>
-                {label}
-                <select name={name} aria-label={label} defaultValue={primitive}>
-                  <option value="">{t("chooseOption")}</option>
-                  {field.options.map((option) => (
-                    <option key={option.key} value={option.key}>
-                      {option.labels[locale]}
-                    </option>
-                  ))}
-                </select>
-              </label>
-            ) : field.type === "MULTI_SELECT" ? (
-              <fieldset>
-                <legend>{label}</legend>
-                {field.options.map((option) => (
-                  <label className="checkbox-label" key={option.key}>
-                    <input
-                      name={name}
-                      type="checkbox"
-                      value={option.key}
-                      defaultChecked={Array.isArray(value) && value.includes(option.key)}
-                    />
-                    {option.labels[locale]}
-                  </label>
-                ))}
-              </fieldset>
-            ) : field.type === "MONEY" ? (
-              (() => {
-                const money =
-                  typeof value === "object" && value !== null && !Array.isArray(value)
-                    ? (value as { amountMinor: number; currency: string })
-                    : null;
-                return (
-                  <div className="form-row">
-                    <label>
-                      {label}
-                      <input
-                        name={`${name}-amount`}
-                        inputMode="decimal"
-                        defaultValue={money ? majorUnits(money.amountMinor, money.currency) : ""}
-                      />
-                    </label>
-                    <label>
-                      {t("currency")}
-                      <select name={`${name}-currency`} defaultValue={money?.currency ?? "EUR"}>
-                        {itemCurrencyOptions.map((currency) => (
-                          <option key={currency}>{currency}</option>
-                        ))}
-                      </select>
-                    </label>
-                  </div>
-                );
-              })()
-            ) : (
-              <label>
-                {label}
                 <input
-                  name={name}
-                  type={field.type === "DATE" ? "date" : field.type === "URL" ? "url" : "text"}
-                  inputMode={["INTEGER", "DECIMAL"].includes(field.type) ? "decimal" : "text"}
-                  defaultValue={primitive}
-                  maxLength={20000}
+                  name={`attribute-enabled-${field.id}`}
+                  type="checkbox"
+                  defaultChecked={value !== undefined}
                 />
+                {t("useAttribute")} — {label}
               </label>
-            )}
-          </div>
-        );
-      })}
+              {field.type === "BOOLEAN" ? (
+                <label className="checkbox-label">
+                  <input name={name} type="checkbox" defaultChecked={value === true} />
+                  {label}
+                </label>
+              ) : field.type === "LONG_TEXT" ? (
+                <label>
+                  {label}
+                  <textarea name={name} defaultValue={primitive} maxLength={20000} />
+                </label>
+              ) : field.type === "SINGLE_SELECT" ? (
+                <label>
+                  {label}
+                  <select name={name} aria-label={label} defaultValue={primitive}>
+                    <option value="">{t("chooseOption")}</option>
+                    {field.options.map((option) => (
+                      <option key={option.key} value={option.key}>
+                        {option.labels[locale]}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              ) : field.type === "MULTI_SELECT" ? (
+                <fieldset>
+                  <legend>{label}</legend>
+                  {field.options.map((option) => (
+                    <label className="checkbox-label" key={option.key}>
+                      <input
+                        name={name}
+                        type="checkbox"
+                        value={option.key}
+                        defaultChecked={Array.isArray(value) && value.includes(option.key)}
+                      />
+                      {option.labels[locale]}
+                    </label>
+                  ))}
+                </fieldset>
+              ) : (
+                <label>
+                  {label}
+                  <input
+                    name={name}
+                    type={field.type === "DATE" ? "date" : field.type === "URL" ? "url" : "text"}
+                    inputMode={["INTEGER", "DECIMAL"].includes(field.type) ? "decimal" : "text"}
+                    defaultValue={primitive}
+                    maxLength={20000}
+                  />
+                </label>
+              )}
+            </div>
+          );
+        })}
     </fieldset>
   );
 }

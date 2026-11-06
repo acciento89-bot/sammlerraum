@@ -1116,6 +1116,7 @@
       "COPY": "Evidence carried from its origin",
       "REVOKE": "Assertion withdrawn"
     },
-    "reviewedRaw": "Stored number when this review began: {amount} {currency}"
+    "reviewedRaw": "Stored number when this review began: {amount} {currency}",
+    "proposalSummaryReason": "Explain this correction in the proposal’s change summary."
   }
 }

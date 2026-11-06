@@ -72,6 +72,13 @@ export function createCatalogMoneyRouteHandlers(
           throw new ApiError("FORBIDDEN", 403, "Cross-origin request rejected");
         const session = await d.getSession(r.headers);
         if (!session) throw new ApiError("UNAUTHORIZED", 401, "Authentication required");
+        const expectedActor = r.headers.get("x-money-actor");
+        if (r.method !== "GET" && expectedActor !== null && expectedActor !== session.user.id)
+          throw new ApiError(
+            "MONEY_CONFLICT",
+            409,
+            "Signed-in account changed; reopen this editor",
+          );
         if (r.method !== "GET" && !d.authoringEnabled)
           throw new ApiError("MONEY_UNAVAILABLE", 503, "Monetary authoring is currently disabled");
         if (new URL(r.url).hash) return legacyMoneyFail("LEGACY_MONEY_INVALID");

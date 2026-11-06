@@ -12,12 +12,12 @@ export default defineConfig({
       ? [
           {
             name: "money-ui-desktop",
-            testMatch: "**/legacy-money.spec.ts",
+            testMatch: ["**/legacy-money.spec.ts", "**/catalog-money-ui.spec.ts"],
             use: { viewport: { width: 1440, height: 1000 } },
           },
           {
             name: "money-ui-mobile",
-            testMatch: "**/legacy-money.spec.ts",
+            testMatch: ["**/legacy-money.spec.ts", "**/catalog-money-ui.spec.ts"],
             use: { ...devices["Pixel 7"] },
           },
         ]

@@ -77,10 +77,11 @@ export function requireMoneyAuthoring(input: MoneyCapabilities): MoneyCapabiliti
     throw new MoneyClientError("CAPABILITY_UNAVAILABLE");
   return result.data;
 }
-export async function readMoney<T>(
+async function readBoundedMoney<T>(
   url: string,
   schema: { parse(value: unknown): T },
-  transport: MoneyTransport = browserTransport,
+  transport: MoneyTransport,
+  maxBytes: number,
 ): Promise<T> {
   try {
     const response = await transport(url, { cache: "no-store", credentials: "same-origin" });
@@ -88,10 +89,25 @@ export async function readMoney<T>(
       await discardErrorResponse(response);
       throw Error();
     }
-    return schema.parse(await json(response, 1024 * 1024));
+    return schema.parse(await json(response, maxBytes));
   } catch {
     throw new MoneyClientError("READ_FAILED");
   }
+}
+export function readMoney<T>(
+  url: string,
+  schema: { parse(value: unknown): T },
+  transport: MoneyTransport = browserTransport,
+): Promise<T> {
+  return readBoundedMoney(url, schema, transport, 1024 * 1024);
+}
+/** Full immutable canonical maps permit 10100 bounded ASCII MoneyViews, including 2048-byte tokens. */
+export function readCatalogMoneyRevision<T>(
+  url: string,
+  schema: { parse(value: unknown): T },
+  transport: MoneyTransport = browserTransport,
+): Promise<T> {
+  return readBoundedMoney(url, schema, transport, 32 * 1024 * 1024);
 }
 export async function writeMoney<T>(
   url: string,
@@ -116,7 +132,7 @@ export async function writeMoney<T>(
       method,
       cache: "no-store",
       credentials: "same-origin",
-      headers: { "content-type": "application/json" },
+      headers: { "content-type": "application/json", "x-money-actor": capabilities.actorId },
       body: serialized,
     });
   } catch {
