@@ -209,7 +209,7 @@ jobs:
           trap 'dropdb -h localhost -U test sammlerraum_m4_browser_20261106_test' EXIT
           export DATABASE_URL=postgresql://test:test@localhost:5432/sammlerraum_m4_browser_20261106_test
           pnpm --filter @sammlerraum/db exec prisma migrate deploy
-          RUN_CATALOG_MONEY_E2E=1 RUN_AUTH_E2E=1 RUN_PRODUCTION_E2E=1 pnpm --filter @sammlerraum/web exec playwright test e2e/catalog-money-api.spec.ts --workers=1
+          RUN_CATALOG_MONEY_E2E=1 RUN_MONEY_UI_E2E=1 RUN_AUTH_E2E=1 RUN_PRODUCTION_E2E=1 pnpm --filter @sammlerraum/web exec playwright test e2e/catalog-money-api.spec.ts e2e/catalog-money-ui.spec.ts e2e/legacy-money.spec.ts --workers=1
       - name: Run private valuations and ingestion-generated external transport rendering against production
         run: >-
           RUN_AUTH_E2E=1 RUN_PRODUCTION_E2E=1 pnpm --filter @sammlerraum/web exec playwright test

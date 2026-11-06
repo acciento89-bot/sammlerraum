@@ -1120,6 +1120,12 @@
     "proposalSummaryReason": "Begründe diese Korrektur in der Änderungszusammenfassung des Vorschlags.",
     "capturedProposal": "Im Vorschlag festgehaltene Bedeutung",
     "retainedProposal": "Unverändert vom festgehaltenen Ursprung übernommen",
-    "proposalSourceChanged": "Die ursprüngliche Bestätigung wurde geändert oder ist nicht mehr verfügbar."
+    "proposalSourceChanged": "Die ursprüngliche Bestätigung wurde geändert oder ist nicht mehr verfügbar.",
+    "newReconciled": "Ich habe die Sammlung geprüft und möchte einen getrennten neuen Eintrag beginnen.",
+    "restartNew": "Ausstehenden Entwurf verwerfen und neu beginnen",
+    "proposalReconciled": "Ich habe meine Vorschläge geprüft und möchte einen getrennten neuen Vorschlag beginnen.",
+    "retryMoneyFields": "Geld-Zusatzfelder erneut laden",
+    "privateHistory": "Private Belegverläufe",
+    "checking": "Wird geprüft …"
   }
 }

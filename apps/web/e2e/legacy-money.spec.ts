@@ -147,6 +147,10 @@ for (const locale of ["de", "en"] as const) {
       );
       expect(patches).toBe(0);
       await h.region.getByLabel(h.m.replacementAck, { exact: true }).check();
+      await page.screenshot({
+        path: test.info().outputPath("money-replacement.png"),
+        fullPage: true,
+      });
       const response = page.waitForResponse(
         (r) =>
           r.request().method() === "PATCH" &&
@@ -226,6 +230,7 @@ for (const locale of ["de", "en"] as const) {
       await page.getByRole("button", { name: h.t.save, exact: true }).click();
       expect((await response).status()).toBe(409);
       await expect(page.locator("p.error[role=alert]")).toContainText(h.m.conflict);
+      await page.screenshot({ path: test.info().outputPath("money-conflict.png"), fullPage: true });
       await expect(page.getByRole("button", { name: h.t.save, exact: true })).toBeDisabled();
       expect(await h.money.getMoney(h.subject)).toEqual(fresh);
       await page.getByRole("button", { name: h.m.checkCurrent, exact: true }).click();
@@ -775,3 +780,265 @@ for (const locale of ["de", "en"] as const) {
     }
   });
 }
+
+for (const locale of ["de", "en"] as const) {
+  test(`${locale}: an unknown new-item commit requires explicit collection reconciliation before a separate new entry`, async ({
+    page,
+  }) => {
+    test.skip(!active, "Requires owned monetary UI test database");
+    const h = await customPriceFixture(page, locale, 1, true);
+    try {
+      const title = "Committed item with lost acknowledgment",
+        save = page.getByRole("button", { name: h.t.save, exact: true });
+      await page.getByRole("textbox", { name: h.t.title, exact: true }).fill(title);
+      await page.route("**/api/v1/money/items", async (route) => {
+        if (route.request().method() !== "POST") return route.continue();
+        expect((await route.fetch()).status()).toBe(201);
+        await route.abort("failed");
+      });
+      await save.click();
+      await expect(page.locator('p.error[role="alert"]')).toHaveText(h.m.unknownOutcome);
+      await page.screenshot({ path: test.info().outputPath("money-unknown.png"), fullPage: true });
+      await expect(save).toBeDisabled();
+      expect(
+        await db!.collectibleItem.count({ where: { collectionId: h.f.collectionId, title } }),
+      ).toBe(1);
+      await page.unroute("**/api/v1/money/items");
+      const next = locale === "de" ? "en" : "de",
+        shell = (locale === "de" ? de : en).Shell;
+      await page
+        .getByRole("link", { name: locale === "de" ? shell.english : shell.german, exact: true })
+        .click();
+      const t = (next === "de" ? de : en).ItemForm;
+      await expect(page.getByRole("button", { name: t.save, exact: true })).toBeDisabled();
+      await page
+        .getByRole("checkbox", {
+          name:
+            next === "de"
+              ? "Ich habe die Sammlung geprüft und möchte einen getrennten neuen Eintrag beginnen."
+              : "I checked the collection and want to start a separate new entry.",
+          exact: true,
+        })
+        .check();
+      await page
+        .getByRole("button", {
+          name:
+            next === "de"
+              ? "Ausstehenden Entwurf verwerfen und neu beginnen"
+              : "Discard pending draft and start again",
+          exact: true,
+        })
+        .click();
+      await expect(
+        page.getByRole("checkbox", {
+          name:
+            next === "de"
+              ? "Ich habe die Sammlung geprüft und möchte einen getrennten neuen Eintrag beginnen."
+              : "I checked the collection and want to start a separate new entry.",
+          exact: true,
+        }),
+      ).toHaveCount(0);
+      await expect(page.getByRole("textbox", { name: t.title, exact: true })).toHaveValue("");
+      await page
+        .getByRole("textbox", { name: t.title, exact: true })
+        .fill("A separate explicitly started item");
+      const response = page.waitForResponse(
+        (r) =>
+          r.request().method() === "POST" && new URL(r.url()).pathname === "/api/v1/money/items",
+      );
+      await page.getByRole("button", { name: t.save, exact: true }).click();
+      expect((await response).status()).toBe(201);
+      await expect(page).not.toHaveURL(/\/items\/new/u);
+      await page.waitForLoadState("networkidle", { timeout: 5000 });
+      expect(
+        await db!.collectibleItem.count({ where: { collectionId: h.f.collectionId, title } }),
+      ).toBe(1);
+      expect(
+        await db!.collectibleItem.count({
+          where: { collectionId: h.f.collectionId, title: "A separate explicitly started item" },
+        }),
+      ).toBe(1);
+    } finally {
+      await cleanupSearchFixture(h.f);
+    }
+  });
+}
+
+for (const locale of ["de", "en"] as const) {
+  for (const failure of ["LOST", "UNREADABLE", "REFRESH"] as const)
+    test(`${locale}: committed purchase ${failure} recovery never reauthors an acknowledged correction`, async ({
+      page,
+    }) => {
+      test.skip(!active, "Requires owned monetary UI test database");
+      const h = await openHistoricalPrice(page, locale);
+      try {
+        await h.region.getByRole("textbox", { name: h.m.newAmount, exact: true }).fill("2");
+        await h.region
+          .getByRole("textbox", { name: h.m.reason, exact: true })
+          .fill("Explicit correction before simulated response failure");
+        await h.region.getByRole("checkbox").check();
+        const url = `**/api/v1/money/items/${h.f.itemId}`;
+        await page.route(url, async (route) => {
+          const response = await route.fetch();
+          if (route.request().method() !== "PATCH") return route.fulfill({ response });
+          expect(response.status()).toBe(200);
+          if (failure === "LOST") return route.abort("failed");
+          if (failure === "UNREADABLE")
+            return route.fulfill({ status: 200, json: { schemaVersion: 1 } });
+          await route.fulfill({ response });
+        });
+        if (failure === "REFRESH")
+          await page.route(`**/api/v1/items/${h.f.itemId}`, async (route) => {
+            if (route.request().method() === "GET")
+              return route.fulfill({
+                status: 503,
+                json: { error: "Synthetic failed snapshot refresh" },
+              });
+            return route.continue();
+          });
+        const save = page.getByRole("button", { name: h.t.save, exact: true });
+        await save.click();
+        await expect(page.locator('p.error[role="alert"]')).toBeVisible();
+        const committed = await h.money.getMoney(h.subject);
+        expect(committed.raw).toEqual({ amountMinor: "200", currency: "AFN" });
+        expect(committed.interpretation).toMatchObject({ kind: "INTERPRETED", decimal: "2.00" });
+        await page.unroute(url);
+        if (failure === "REFRESH") await page.unroute(`**/api/v1/items/${h.f.itemId}`);
+        else {
+          await expect(save).toBeDisabled();
+          await page.getByRole("button", { name: h.m.checkCurrent, exact: true }).click();
+          await page.getByRole("button", { name: h.m.adoptCurrent, exact: true }).click();
+        }
+        await expect(save).toBeEnabled();
+        await page
+          .getByRole("textbox", { name: h.t.title, exact: true })
+          .fill("Title after explicit recovery");
+        await save.click();
+        await expect(save).toBeEnabled();
+        await page.waitForLoadState("networkidle", { timeout: 5000 });
+        expect((await h.money.getMoney(h.subject)).factToken).toBe(committed.factToken);
+      } finally {
+        await cleanupSearchFixture(h.f);
+      }
+    });
+  test(`${locale}: a capability failure never falls back to raw item writes`, async ({ page }) => {
+    test.skip(!active, "Requires owned monetary UI test database");
+    const h = await openHistoricalPrice(page, locale, { edit: false });
+    try {
+      let mutations = 0;
+      page.on("request", (request) => {
+        if (
+          ["POST", "PUT", "PATCH"].includes(request.method()) &&
+          request.url().includes("/api/v1/")
+        )
+          mutations++;
+      });
+      await page.route("**/api/v1/money/capabilities", (route) =>
+        route.fulfill({ status: 404, json: { error: "Old server" } }),
+      );
+      await page.reload();
+      await expect(page.getByRole("button", { name: h.t.save, exact: true })).toBeDisabled();
+      await expect(page.getByText(h.m.disabled, { exact: true })).toBeVisible();
+      expect(mutations).toBe(0);
+      expect((await h.money.getMoney(h.subject)).factToken).toBe(h.before.factToken);
+    } finally {
+      await cleanupSearchFixture(h.f);
+    }
+  });
+  test(`${locale}: changing the authenticated account refuses a stale private form without a mutation`, async ({
+    page,
+  }) => {
+    test.skip(!active, "Requires owned monetary UI test database");
+    const h = await openHistoricalPrice(page, locale, { edit: false });
+    const other = await searchFixture();
+    try {
+      expect(
+        (
+          await page.request.post("/api/auth/sign-in/email", {
+            headers: { origin, "x-forwarded-for": other.ip },
+            data: { email: other.email, password: other.password },
+          })
+        ).status(),
+      ).toBe(200);
+      let mutations = 0;
+      page.on("request", (request) => {
+        if (
+          ["POST", "PUT", "PATCH"].includes(request.method()) &&
+          request.url().includes("/api/v1/")
+        )
+          mutations++;
+      });
+      await page
+        .getByRole("textbox", { name: h.t.title, exact: true })
+        .fill("Must not cross account boundary");
+      await page.getByRole("button", { name: h.t.save, exact: true }).click();
+      await expect(page.getByText(h.m.sessionChanged, { exact: true })).toBeVisible();
+      expect(mutations).toBe(0);
+      expect((await h.money.getMoney(h.subject)).factToken).toBe(h.before.factToken);
+    } finally {
+      await cleanupSearchFixture(other);
+      await cleanupSearchFixture(h.f);
+    }
+  });
+}
+
+for (const locale of ["de", "en"] as const)
+  test(`${locale}: failed custom monetary reads have an explicit read-only retry without raw writes`, async ({
+    page,
+  }) => {
+    test.skip(!active, "Requires owned monetary UI test database");
+    const h = await customPriceFixture(page, locale, 1);
+    try {
+      await page.route(`**/api/v1/items/${h.f.itemId}/money?*`, (route) =>
+        route.fulfill({ status: 503, json: { error: "Synthetic bulk read unavailable" } }),
+      );
+      await page.reload();
+      const retry = page.getByRole("button", {
+        name: locale === "de" ? "Geld-Zusatzfelder erneut laden" : "Reload monetary custom fields",
+        exact: true,
+      });
+      await expect(retry).toBeVisible();
+      await expect(page.getByRole("button", { name: h.t.save, exact: true })).toBeDisabled();
+      await page.unroute(`**/api/v1/items/${h.f.itemId}/money?*`);
+      await retry.click();
+      await expect(page.getByRole("button", { name: h.t.save, exact: true })).toBeEnabled();
+      await expect(retry).toHaveCount(0);
+    } finally {
+      await cleanupSearchFixture(h.f);
+    }
+  });
+
+for (const locale of ["de", "en"] as const)
+  test(`${locale}: a cleared purchase retains the private entry point for withdrawing its historical assertion`, async ({
+    page,
+  }) => {
+    test.skip(!active, "Requires owned monetary UI test database");
+    const h = await openHistoricalPrice(page, locale, { edit: false });
+    try {
+      await h.money.updateItemV2(h.f.itemId, {
+        schemaVersion: 1,
+        item: {},
+        purchase: { op: "CLEAR", expectedFactToken: h.before.factToken },
+      });
+      await page.reload();
+      await page.locator("summary").filter({ hasText: h.m.privateHistory }).click();
+      await page
+        .getByRole("button", { name: `${h.m.review}: ${h.t.unitPrice}`, exact: true })
+        .click();
+      const review = page.getByRole("region", { name: h.m.review, exact: true });
+      await review.locator("summary").filter({ hasText: h.m.history }).click();
+      await review.getByRole("button", { name: h.m.revoke, exact: true }).click();
+      const form = review.getByRole("group", { name: h.m.revoke, exact: true });
+      await form
+        .getByRole("textbox", { name: h.m.revokeReason, exact: true })
+        .fill("Withdraw historical evidence after clearing the amount");
+      await form.getByRole("checkbox").check();
+      await form.getByRole("button", { name: h.m.confirmRevoke, exact: true }).click();
+      await expect(review.getByText(h.m.savedSeparately, { exact: true })).toBeVisible();
+      expect((await h.money.getMoney(h.subject)).raw).toBeNull();
+      expect((await h.money.listHistory(h.subject, {})).events[0]!.operation).toBe("REVOKE");
+      await page.waitForLoadState("networkidle", { timeout: 5000 });
+    } finally {
+      await cleanupSearchFixture(h.f);
+    }
+  });

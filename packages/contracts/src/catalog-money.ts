@@ -50,3 +50,14 @@ export const CatalogMoneyHistoryResultSchema = z
     nextCursor: z.string().max(2048).nullable(),
   })
   .strict();
+
+/** Exact private acknowledgment for the selected historical assertion. */
+export const CatalogMoneyRevocationResultSchema = z
+  .object({
+    schemaVersion: z.literal(1),
+    subject: CatalogMoneySubjectSchema,
+    assertionId: LegacyMoneyIdSchema,
+    revoked: z.literal(true),
+    money: MoneyViewSchema,
+  })
+  .strict();

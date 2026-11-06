@@ -17,6 +17,7 @@ describe("parseServerEnv", () => {
   it("accepts the required foundation environment", () => {
     expect(parseServerEnv(validEnvironment)).toEqual({
       ...validEnvironment,
+      MONEY_AUTHORING_ENABLED: false,
       SCRYDEX_ENABLED: false,
       SCRYDEX_POLICY_APPROVED: false,
       SCRYDEX_HOURLY_CALL_BUDGET: 0,
@@ -156,6 +157,17 @@ it.each([
   ["MARKET_SYNC_MAX_PENDING", "257"],
 ])("rejects unsafe market configuration %s", (key, value) => {
   expect(() => parseServerEnv({ ...validEnvironment, [key]: value })).toThrow(
+    EnvironmentConfigurationError,
+  );
+});
+
+it.each(["true", "false"])("parses explicit monetary authoring capability %s", (value) => {
+  expect(
+    parseServerEnv({ ...validEnvironment, MONEY_AUTHORING_ENABLED: value }).MONEY_AUTHORING_ENABLED,
+  ).toBe(value === "true");
+});
+it("refuses an ambiguous monetary authoring switch", () => {
+  expect(() => parseServerEnv({ ...validEnvironment, MONEY_AUTHORING_ENABLED: "1" })).toThrow(
     EnvironmentConfigurationError,
   );
 });

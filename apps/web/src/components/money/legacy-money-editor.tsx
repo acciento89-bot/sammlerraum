@@ -78,7 +78,7 @@ export function LegacyMoneyEditor({
     ? currencyChoices
     : [draft.currency, ...currencyChoices];
   return (
-    <section className="money-editor" aria-label={label}>
+    <section id={`money-${name}`} className="money-editor" aria-label={label}>
       <h4>{label}</h4>
       {existing && !loaded ? (
         <p role="status">{t("loading")}</p>

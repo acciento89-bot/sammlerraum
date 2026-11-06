@@ -1,0 +1,69 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ✓ |workspace| packages/db/src/test-database.test.ts (7 tests) 1207ms
+   ✓ isolated native ORM schema > reads the same owned test schema through ORM and raw SQL  1023ms
+ ✓ |workspace| packages/domain/src/media/media-service.test.ts (20 tests) 361ms
+   ✓ media PostgreSQL integration > enforces owned item and avatar references on real rows  304ms
+ ✓ |workspace| packages/domain/src/collections/collection-service.test.ts (14 tests) 292ms
+ ✓ |workspace| packages/domain/src/items/item-service.test.ts (15 tests) 454ms
+ ✓ |workspace| packages/domain/src/locations/location-service.test.ts (17 tests) 352ms
+ ✓ |workspace| packages/storage/src/staging-lock.integration.test.ts (3 tests) 217ms
+ ✓ |workspace| packages/domain/src/custom-fields/custom-field-service.test.ts (36 tests) 389ms
+   ✓ custom field PostgreSQL integration > round-trips every typed column and enforces owner and same-collection boundaries  318ms
+ ✓ |workspace| packages/domain/src/identity/profile-service.test.ts (6 tests) 142ms
+ ✓ |workspace| packages/domain/src/items/identifier-service.test.ts (11 tests) 361ms
+ ✓ |workspace| packages/domain/src/identity/security-service.test.ts (7 tests) 173ms
+ ✓ |workspace| packages/domain/src/media/cleanup-service.test.ts (11 tests) 1166ms
+ ✓ |workspace| packages/db/src/author-correction.integration.test.ts (1 test) 248ms
+ ✓ |workspace| packages/db/src/legacy-money.integration.test.ts (15 tests) 2651ms
+ ✓ |workspace| packages/db/src/media-lock.integration.test.ts (1 test) 20ms
+ ✓ |workspace| packages/db/src/media-migration.integration.test.ts (1 test) 80ms
+ ✓ |workspace| packages/db/src/postgres.integration.test.ts (1 test) 96ms
+ ✓ |workspace| packages/queue/src/postgres.integration.test.ts (1 test) 59ms
+ ✓ |workspace| apps/worker/src/jobs/image-repository.integration.test.ts (2 tests) 291ms
+ ✓ |workspace| apps/worker/src/jobs/market-request-permit.integration.test.ts (15 tests) 13459ms
+   ✓ durable market gate on separate PostgreSQL clients > holds a paused admitted sender beyond one second, then enforces physical settlement plus cooldown  3110ms
+   ✓ durable market gate on separate PostgreSQL clients > racing first-row permits start exactly one physical callback  1059ms
+   ✓ durable market gate on separate PostgreSQL clients > keeps distinct tokens independent and never refunds failure or pre-send abort  2022ms
+   ✓ durable market gate on separate PostgreSQL clients > enforces hourly/daily budgets, non-regressing DB windows and policy consistency  2030ms
+   ✓ durable market gate on separate PostgreSQL clients > allows safe successor after clear committed/lost ACK while old local stop fails  2021ms
+   ✓ durable market gate on separate PostgreSQL clients > holds claim when clear fails before commit and never forgets settled handler uncertainty  1014ms
+   ✓ durable market gate on separate PostgreSQL clients > standalone stop aborts physical transport and waits settlement, cooldown and own clear  1011ms
+   ✓ durable market gate on separate PostgreSQL clients > keeps an ignored abort claimed until actual settlement rather than treating timeout as cancellation  1041ms
+ ✓ |workspace| apps/worker/src/jobs/market-sync.integration.test.ts (16 tests) 8272ms
+   ✓ market sync PostgreSQL > retries persisted queue data after ACK failure without refetching committed observations  2056ms
+   ✓ market sync PostgreSQL > runs the composed producer and cancels an in-flight fake provider before teardown without catalog HTTP locks  2049ms
+   ✓ forwards pg-boss active-expiry cancellation through the real runtime  3570ms
+ ✓ |workspace| apps/worker/src/jobs/production-market.integration.test.ts (4 tests) 14380ms
+   ✓ real production composition with fake HTTP and PostgreSQL > actual composed handler ingests exact zero/bigint with receipt time before cooldown and skips same-poll replay  1083ms
+   ✓ real production composition with fake HTTP and PostgreSQL > real pg-boss retry reuses receipt; raw provider errors never reach persisted broker output  11070ms
+   ✓ real production composition with fake HTTP and PostgreSQL > earlier completed handler cleanup failure remains latched through real composition/main shutdown  1040ms
+   ✓ real production composition with fake HTTP and PostgreSQL > standalone permit stop reaches the real adapter body signal and releases only after settlement/cooldown  1039ms
+ ✓ |workspace| apps/web/src/lib/catalog-history-routes.integration.test.ts (2 tests) 145ms
+ ✓ |workspace| apps/web/src/lib/catalog-link-routes.integration.test.ts (6 tests) 238ms
+ ✓ |workspace| apps/web/src/lib/catalog-money-routes.integration.test.ts (5 tests) 399ms
+ ✓ |workspace| apps/web/src/lib/catalog-proposal-routes.integration.test.ts (4 tests) 277ms
+ ✓ |workspace| apps/web/src/lib/condition-routes.integration.test.ts (5 tests) 170ms
+ ✓ |workspace| apps/web/src/lib/dashboard-routes.integration.test.ts (12 tests) 258ms
+ ✓ |workspace| apps/web/src/lib/grading-routes.integration.test.ts (10 tests) 229ms
+ ✓ |workspace| apps/web/src/lib/item-search-routes.integration.test.ts (12 tests) 229ms
+ ✓ |workspace| apps/web/src/lib/legacy-money-routes.integration.test.ts (6 tests) 196ms
+ ✓ |workspace| apps/web/src/lib/personal-milestone-routes.integration.test.ts (6 tests) 189ms
+ ✓ |workspace| apps/web/src/lib/private-search-routes.integration.test.ts (15 tests) 5060ms
+   ✓ native private query POST transport > accepts valid raw f beyond 10000 characters through the real service  447ms
+   ✓ native private query POST transport > preserves native dependency and output invariant failures for items  2057ms
+   ✓ native private query POST transport > preserves native dependency and output invariant failures for dashboard  2026ms
+ ✓ |workspace| apps/web/src/lib/search-reference-routes.integration.test.ts (29 tests) 210ms
+ ✓ |workspace| apps/web/src/lib/security-service.integration.test.ts (1 test) 247ms
+ ✓ |workspace| apps/web/src/lib/smart-collection-routes.integration.test.ts (4 tests) 295ms
+ ✓ |workspace| apps/web/src/lib/valuation-routes.integration.test.ts (10 tests) 541ms
+ ✓ |workspace| packages/domain/src/catalog/catalog-history-service.test.ts (2 tests) 149ms
+stdout | packages/domain/src/catalog/catalog-money-map.test.ts > native coherent catalog money map > writes all 10100 supported money paths in native batches of at most 500
+{"check":"M4_NATIVE_MAX_MONEY_WRITE","paths":10100,"batches":21,"elapsedMs":27526}
+
+ ✓ |workspace| packages/domain/src/catalog/catalog-money-map.test.ts (12 tests) 28415ms
+   ✓ native coherent catalog money map > writes all 10100 supported money paths in native batches of at most 500  27561ms
+stdout | packages/domain/src/catalog/catalog-money-mutation.test.ts > actual canonical catalog money mutation integration > carries all 10100 interpreted paths through the actual bounded canonical maintenance wrapper
+{"check":"M4_CANONICAL_MAX_CARRY_SOURCE_READY","paths":10100}
+

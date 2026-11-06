@@ -7,6 +7,7 @@ import {
 } from "@sammlerraum/contracts/personal-money";
 import type { MoneyCapabilities } from "@sammlerraum/contracts/money-capabilities";
 import { LegacyMoneyIdSchema, type MoneyView } from "@sammlerraum/contracts/legacy-money";
+import { readCurrentPersonalMoney } from "../money/money-review-client";
 import { LegacyMoneyReview } from "../money/legacy-money-review";
 import { activeMoneyReview, setActiveMoneyReview } from "../money/money-review-draft";
 import {
@@ -152,6 +153,8 @@ export function ItemForm({
   const customDraftsRef = useRef(customDrafts);
   const [customInspected, setCustomInspected] = useState<Record<string, boolean>>({});
   const [customReady, setCustomReady] = useState(false);
+  const [customReadFailed, setCustomReadFailed] = useState(false);
+  const [customRetry, setCustomRetry] = useState(0);
   const customDraftKey = (fieldId: string, targetId = workingItemId) =>
     `custom:${targetId || `new:${collectionId}`}:${fieldId}`;
   function changeCustomDraft(fieldId: string, draft: MoneyDraft, targetId = workingItemId) {
@@ -161,21 +164,96 @@ export function ItemForm({
   }
   const customCanSave =
     customReady && Object.values(customDrafts).every((draft) => draft.outcome === "READY");
+  const mounted = useRef(true);
+  useEffect(() => {
+    mounted.current = true;
+    return () => {
+      mounted.current = false;
+    };
+  }, []);
+  const [recoveringNew, setRecoveringNew] = useState(false);
+  const [newReconciled, setNewReconciled] = useState(false),
+    [newAttempt, setNewAttempt] = useState(0);
+  const reviewOpening = useRef(0);
+  useEffect(
+    () => () => {
+      reviewOpening.current++;
+    },
+    [actor, itemId],
+  );
   const [moneyInspected, setMoneyInspected] = useState(false);
   const monetaryOwner = actor;
   const [actorExpired, setActorExpired] = useState(false);
   const purchaseDraftKey = `purchase:${workingItemId || `new:${collectionId}`}`;
   const reviewView =
     reviewing === "PURCHASE" ? purchaseView : reviewing ? (customViews[reviewing] ?? null) : null;
-  function openReview(view: MoneyView) {
-    setActiveMoneyReview(actor, `item:${workingItemId}`, view.subject);
-    setReviewing(
-      view.subject.family === "PURCHASE"
-        ? "PURCHASE"
-        : view.subject.family === "CUSTOM"
-          ? view.subject.fieldDefinitionId
-          : null,
-    );
+  async function openReview(view: MoneyView) {
+    if (saving || reviewBusy) return;
+    const sequence = ++reviewOpening.current;
+    try {
+      const caps = await loadMoneyCapabilities();
+      if (!mounted.current) return;
+      if (caps.actorId !== actor) {
+        clearMoneyDrafts();
+        setActorExpired(true);
+        return;
+      }
+      const actual = await readCurrentPersonalMoney(view);
+      if (sequence !== reviewOpening.current) return;
+      setMoneyCapabilities(caps);
+      if (actual.subject.family === "PURCHASE") setPurchaseView(actual);
+      else if (actual.subject.family === "CUSTOM") {
+        const id = actual.subject.fieldDefinitionId;
+        setCustomViews((current) => ({ ...current, [id]: actual }));
+      }
+      setActiveMoneyReview(actor, `item:${workingItemId}`, actual.subject);
+      setReviewing(
+        actual.subject.family === "PURCHASE"
+          ? "PURCHASE"
+          : actual.subject.family === "CUSTOM"
+            ? actual.subject.fieldDefinitionId
+            : null,
+      );
+    } catch (problem) {
+      if (sequence === reviewOpening.current) setError(moneyMessage(problem));
+    }
+  }
+  async function restartNewDraft() {
+    if (workingItemId || !newReconciled || saving || recoveringNew) return;
+    setRecoveringNew(true);
+    try {
+      const caps = await loadMoneyCapabilities();
+      if (!mounted.current) return;
+      if (caps.actorId !== actor) {
+        clearMoneyDrafts();
+        setActorExpired(true);
+        return;
+      }
+      setMoneyCapabilities(caps);
+      forgetMoneyDraft(actor, purchaseDraftKey);
+      setPurchaseView(null);
+      setPurchaseDraft(initialMoneyDraft(null));
+      const drafts: Record<string, MoneyDraft> = {};
+      for (const field of fields.filter((field) => field.type === "MONEY")) {
+        forgetMoneyDraft(actor, customDraftKey(field.id));
+        drafts[field.id] = initialMoneyDraft(null);
+      }
+      customDraftsRef.current = drafts;
+      setCustomDrafts(drafts);
+      setCustomViews({});
+      setCustomInspected({});
+      setIdentifiers([{ type: "EAN", value: "" }]);
+      setNodeId("");
+      setInitialLocationId(null);
+      setNewAttempt((value) => value + 1);
+      setNewReconciled(false);
+      setError("");
+      setStatus("");
+    } catch (problem) {
+      if (mounted.current) setError(moneyMessage(problem));
+    } finally {
+      if (mounted.current) setRecoveringNew(false);
+    }
   }
   const moneyEnabled = moneyReady && moneyCapabilities?.authoringProfiles.length === 1;
   function changePurchaseDraft(next: MoneyDraft) {
@@ -348,6 +426,7 @@ export function ItemForm({
     setMoneyInspected(false);
     try {
       const capability = await loadMoneyCapabilities();
+      if (!mounted.current) return;
       if (capability.actorId !== actor) {
         clearMoneyDrafts();
         setActorExpired(true);
@@ -431,6 +510,7 @@ export function ItemForm({
     if (saving || optionsCollectionId !== collectionId || !moneyReady) return;
     let cancelled = false;
     setCustomReady(false);
+    setCustomReadFailed(false);
     const definitions = fields.filter((field) => field.type === "MONEY").map((field) => field.id);
     void (
       workingItemId
@@ -453,12 +533,24 @@ export function ItemForm({
         setCustomReady(true);
       })
       .catch((problem) => {
-        if (!cancelled) setError(moneyMessage(problem));
+        if (!cancelled) {
+          setCustomReadFailed(true);
+          setError(moneyMessage(problem));
+        }
       });
     return () => {
       cancelled = true;
     };
-  }, [actor, workingItemId, collectionId, optionsCollectionId, fields, moneyReady, saving]);
+  }, [
+    actor,
+    workingItemId,
+    collectionId,
+    optionsCollectionId,
+    fields,
+    moneyReady,
+    saving,
+    customRetry,
+  ]);
 
   const inactive = Boolean(item?.archivedAt || item?.disposedAt);
   const valueByField = new Map(
@@ -536,6 +628,7 @@ export function ItemForm({
     try {
       let targetId = workingItemId;
       const capability = await loadMoneyCapabilities();
+      if (!mounted.current) return;
       if (capability.actorId !== actor) {
         clearMoneyDrafts();
         setActorExpired(true);
@@ -600,6 +693,7 @@ export function ItemForm({
           }),
           capability,
         );
+        if (!mounted.current) return;
         // Install the receipt before metadata writes or a fallible refresh can occur.
         const acknowledgedDraft = initialMoneyDraft(coreBody.purchase);
         setPurchaseView(coreBody.purchase);
@@ -632,6 +726,7 @@ export function ItemForm({
           targetId,
           moneyFields.map((field) => field.id),
         );
+        if (!mounted.current) return;
         setCustomViews(currentViews);
         for (const field of moneyFields) {
           const draft = bindCreatedCustomDraft(
@@ -649,11 +744,13 @@ export function ItemForm({
           if (!intent) continue;
           if (intent.op === "NEW") throw new MoneyClientError("REFUSED");
           const acknowledged = await writeCustomMoney(targetId, field.id, intent, capability);
+          if (!mounted.current) return;
           currentViews = { ...currentViews, [field.id]: acknowledged };
           setCustomViews(currentViews);
           // Commit this acknowledgment before another field or metadata request can fail.
           changeCustomDraft(field.id, initialMoneyDraft(acknowledged), targetId);
         } catch (problem) {
+          if (!mounted.current) return;
           if (
             problem instanceof MoneyClientError &&
             ["OUTCOME_UNKNOWN", "ACKNOWLEDGED_UNREADABLE", "CONFLICT"].includes(problem.code)
@@ -722,6 +819,7 @@ export function ItemForm({
         router.refresh();
       });
     } catch (problem) {
+      if (!mounted.current) return;
       if (problem instanceof MoneyClientError) {
         if (
           problem.code === "OUTCOME_UNKNOWN" ||
@@ -881,10 +979,57 @@ export function ItemForm({
         </p>
       )}
 
-      {moneyReady && !moneyEnabled && (
+      {workingItemId && moneyReady && (
+        <details className="management-card">
+          <summary>{moneyText("privateHistory")}</summary>
+          {purchaseView && (
+            <button
+              type="button"
+              className="secondary-button"
+              disabled={saving || reviewBusy}
+              onClick={() => {
+                void openReview(purchaseView);
+              }}
+            >
+              {moneyText("review")}: {t("unitPrice")}
+            </button>
+          )}
+          {fields
+            .filter((field) => field.type === "MONEY")
+            .map(
+              (field) =>
+                customViews[field.id] && (
+                  <button
+                    key={field.id}
+                    type="button"
+                    className="secondary-button"
+                    disabled={saving || reviewBusy}
+                    onClick={() => {
+                      void openReview(customViews[field.id]!);
+                    }}
+                  >
+                    {moneyText("review")}: {field.name}
+                  </button>
+                ),
+            )}
+        </details>
+      )}
+      {!loading && !moneyEnabled && (
         <p className="notice" role="status">
           {moneyText("disabled")}
         </p>
+      )}
+      {customReadFailed && (
+        <div className="notice" role="status">
+          {moneyText("readFailed")}
+          <button
+            type="button"
+            disabled={saving || reviewBusy}
+            onClick={() => setCustomRetry((value) => value + 1)}
+          >
+            {moneyText("retryMoneyFields")}
+          </button>
+        </div>
       )}
       {(!moneyEnabled || purchaseDraft.outcome !== "READY") && !loading && (
         <div className="money-recovery notice">
@@ -901,6 +1046,26 @@ export function ItemForm({
             <Link href={`/${locale}/collections/${collectionId}`}>
               {moneyText("collectionCheck")}
             </Link>
+          )}
+          {!workingItemId && purchaseDraft.outcome !== "READY" && (
+            <div>
+              <label className="checkbox-label">
+                <input
+                  type="checkbox"
+                  checked={newReconciled}
+                  onChange={(event) => setNewReconciled(event.target.checked)}
+                />
+                {moneyText("newReconciled")}
+              </label>
+              <button
+                type="button"
+                className="secondary-button"
+                disabled={!newReconciled || saving || recoveringNew}
+                onClick={restartNewDraft}
+              >
+                {moneyText(recoveringNew ? "checking" : "restartNew")}
+              </button>
+            </div>
           )}
           {purchaseDraft.outcome !== "READY" && moneyInspected && purchaseView && (
             <button
@@ -924,8 +1089,8 @@ export function ItemForm({
           <Link href={`/${locale}/collections`}>{t("createCollection")}</Link>
         </div>
       ) : (
-        <form className="item-form" onSubmit={save}>
-          <fieldset disabled={inactive || saving || reviewBusy}>
+        <form key={newAttempt} className="item-form" onSubmit={save}>
+          <fieldset disabled={inactive || saving || reviewBusy || recoveringNew}>
             <legend>{t("basic")}</legend>
             {!item && (
               <label>
@@ -1020,7 +1185,10 @@ export function ItemForm({
 
           <details open>
             <summary>{t("acquisition")}</summary>
-            <fieldset disabled={inactive || saving || reviewBusy} className="details-fields">
+            <fieldset
+              disabled={inactive || saving || reviewBusy || recoveringNew}
+              className="details-fields"
+            >
               <label>
                 {t("acquisitionType")}
                 <select name="acquisitionType" defaultValue={item?.acquisitionType ?? "OTHER"}>
@@ -1068,7 +1236,10 @@ export function ItemForm({
 
           <details open>
             <summary>{t("organization")}</summary>
-            <fieldset disabled={inactive || saving || reviewBusy} className="details-fields">
+            <fieldset
+              disabled={inactive || saving || reviewBusy || recoveringNew}
+              className="details-fields"
+            >
               <label>
                 {t("tags")}
                 <input name="tags" defaultValue={tagsInputValue(metadata?.tags ?? [])} />
@@ -1090,7 +1261,10 @@ export function ItemForm({
 
           <details>
             <summary>{t("identifiers")}</summary>
-            <fieldset disabled={inactive || saving || reviewBusy} className="details-fields">
+            <fieldset
+              disabled={inactive || saving || reviewBusy || recoveringNew}
+              className="details-fields"
+            >
               {identifiers.map((identifier, index) => (
                 <div className="identifier-row" key={index}>
                   <label>
@@ -1115,7 +1289,7 @@ export function ItemForm({
                   <CodeScanner
                     label={t("identifierValue")}
                     value={identifier.value}
-                    disabled={inactive || saving || reviewBusy}
+                    disabled={inactive || saving || reviewBusy || recoveringNew}
                     onChange={(value) =>
                       setIdentifiers((current) =>
                         current.map((entry, entryIndex) =>
@@ -1163,7 +1337,7 @@ export function ItemForm({
             <details open>
               <summary>{t("customFields")}</summary>
               <fieldset
-                disabled={inactive || saving || reviewBusy}
+                disabled={inactive || saving || reviewBusy || recoveringNew}
                 className="details-fields custom-fields"
               >
                 {fields.map((field) =>
@@ -1255,6 +1429,7 @@ export function ItemForm({
                 !moneyEnabled ||
                 !customCanSave ||
                 reviewBusy ||
+                recoveringNew ||
                 purchaseDraft.outcome !== "READY"
               }
             >

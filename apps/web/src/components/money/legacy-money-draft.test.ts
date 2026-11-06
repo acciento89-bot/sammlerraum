@@ -1,3 +1,7 @@
+import {
+  rememberCatalogMoneySession,
+  recallCatalogMoneySession,
+} from "../catalog/catalog-money-session";
 import { afterEach, describe, expect, it } from "vitest";
 import { MoneyViewSchema, type MoneyView } from "@sammlerraum/contracts/legacy-money";
 import {
@@ -7,6 +11,7 @@ import {
   rememberMoneyDraft,
   recallMoneyDraft,
   clearMoneyDrafts,
+  forgetCatalogMoneyDrafts,
 } from "./legacy-money-draft";
 const view = (currency = "AFN"): MoneyView =>
   MoneyViewSchema.parse({
@@ -165,4 +170,35 @@ describe("deliberate monetary draft semantics", () => {
     for (let i = 0; i < 1000; i++)
       expect(recallMoneyDraft("owner-a", `custom:active:${i}`)?.decimal).toBe(String(i));
   });
+  it("does not erase a new account's already scoped catalog context when its monetary cache binds later", () => {
+    rememberMoneyDraft("owner-a", "purchase:old", initialMoneyDraft(view()));
+    const session = {
+      kind: "CREATE_ENTRY" as const,
+      categoryId: "",
+      variantId: "",
+      identifierId: "",
+      baseRevision: null,
+      summary: "New owner's draft",
+      outcome: "READY" as const,
+      proposalId: "",
+    };
+    rememberCatalogMoneySession("owner-b", "new", session);
+    expect(recallMoneyDraft("owner-b", "purchase:old")).toBeUndefined();
+    expect(recallCatalogMoneySession("owner-b", "new")).toEqual(session);
+    clearMoneyDrafts();
+    expect(recallCatalogMoneySession("owner-b", "new")).toBeUndefined();
+  });
+});
+
+it("explicit proposal reconciliation clears only that entry's drafts and preserves personal/other-entry edits", () => {
+  const id = "00000000-0000-4000-8000-000000000001";
+  const draft = initialMoneyDraft(view());
+  rememberMoneyDraft("actor", `catalog:${id}:1:UPDATE_ENTRY:x`, draft);
+  rememberMoneyDraft("actor", "catalog:new:new:CREATE_ENTRY:y", draft);
+  rememberMoneyDraft("actor", "purchase:owned-item", draft);
+  forgetCatalogMoneyDrafts("actor", id);
+  expect(recallMoneyDraft("actor", `catalog:${id}:1:UPDATE_ENTRY:x`)).toBeUndefined();
+  expect(recallMoneyDraft("actor", "catalog:new:new:CREATE_ENTRY:y")).toEqual(draft);
+  expect(recallMoneyDraft("actor", "purchase:owned-item")).toEqual(draft);
+  expect(() => forgetCatalogMoneyDrafts("actor", "")).toThrow();
 });

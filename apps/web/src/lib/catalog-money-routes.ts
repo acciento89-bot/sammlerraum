@@ -1,4 +1,5 @@
 import type { CatalogProposalDatabase } from "@sammlerraum/db/catalog-types";
+import { RevokeCatalogMoneyInputSchema } from "@sammlerraum/contracts/catalog-money";
 import { ApiError } from "@sammlerraum/contracts/errors";
 import { legacyMoneyFail } from "@sammlerraum/contracts/legacy-money";
 import { scanCatalogMoneyJson, copyCatalogMoneyInput } from "@sammlerraum/contracts/catalog-money";
@@ -107,10 +108,18 @@ export function createCatalogMoneyRouteHandlers(
       }),
       201,
     ),
-    REVOKE: handle(async (r, s, _actor, id, rev) => ({
-      schemaVersion: 1,
-      money: await s.revoke(id, revision(rev), await body(r)),
-    })),
+    REVOKE: handle(async (r, s, _actor, id, rev) => {
+      const parsed = RevokeCatalogMoneyInputSchema.safeParse(await body(r));
+      if (!parsed.success) return legacyMoneyFail("LEGACY_MONEY_INVALID");
+      const money = await s.revoke(id, revision(rev), parsed.data);
+      return {
+        schemaVersion: 1,
+        money,
+        subject: money.subject,
+        assertionId: parsed.data.input.assertionId,
+        revoked: true,
+      };
+    }),
     HISTORY: handle(
       (_r, s, _actor, id, rev, q) => {
         if (q.limit !== undefined && !/^[1-9][0-9]?$/u.test(q.limit))

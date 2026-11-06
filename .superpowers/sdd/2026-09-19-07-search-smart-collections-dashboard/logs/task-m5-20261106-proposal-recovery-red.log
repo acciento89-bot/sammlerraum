@@ -1,0 +1,40 @@
+[WebServer] (node:5444) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 1 worker
+
+(node:5445) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [money-ui-desktop] › e2e/catalog-money-ui.spec.ts:615:3 › de: a committed proposal with lost acknowledgment cannot replay until explicit proposal reconciliation (1.0m)
+Testing stopped early after 1 maximum allowed failures.
+
+
+  1) [money-ui-desktop] › e2e/catalog-money-ui.spec.ts:615:3 › de: a committed proposal with lost acknowledgment cannot replay until explicit proposal reconciliation 
+
+    Test timeout of 60000ms exceeded.
+
+    Error: locator.check: Test timeout of 60000ms exceeded.
+    Call log:
+      - waiting for getByRole('form', { name: 'Katalogvorschlag', exact: true }).getByRole('checkbox', { name: 'Ich habe meine Vorschläge geprüft und möchte einen getrennten neuen Vorschlag beginnen.', exact: true })
+
+
+      627 |     await expect(h.form.locator("p.error")).toHaveText(h.m.unknownOutcome);
+      628 |     await page.unroute("**/api/v1/catalog/money-proposals");
+    > 629 |     await h.form.getByRole("checkbox", { name: locale === "de" ? "Ich habe meine Vorschläge geprüft und möchte einen getrennten neuen Vorschlag beginnen." : "I checked my proposals and want to start a separate proposal.", exact: true }).check();
+          |                                                                                                                                                                                                                                              ^
+      630 |     await h.form.getByRole("button", { name: h.m.restartNew, exact: true }).click();
+      631 |     await expect(h.form).toHaveCount(0);
+      632 |     await page.getByRole("button", { name: h.t.proposeCorrection, exact: true }).click();
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/catalog-money-ui.spec.ts:629:238
+
+    Error Context: test-results/catalog-money-ui-de-a-comm-77d51-cit-proposal-reconciliation-money-ui-desktop/error-context.md
+
+    Error Context: test-results/catalog-money-ui-de-a-comm-77d51-cit-proposal-reconciliation-money-ui-desktop/error-context.md
+
+  1 failed
+    [money-ui-desktop] › e2e/catalog-money-ui.spec.ts:615:3 › de: a committed proposal with lost acknowledgment cannot replay until explicit proposal reconciliation 
+  1 did not run
+  1 error was not a part of any test, see above for details
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/catalog-money-ui.spec.ts --workers=1 --grep explicit proposal reconciliation --project=money-ui-desktop --max-failures=1

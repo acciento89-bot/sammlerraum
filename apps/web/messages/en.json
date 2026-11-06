@@ -1120,6 +1120,12 @@
     "proposalSummaryReason": "Explain this correction in the proposal’s change summary.",
     "capturedProposal": "Meaning captured in this proposal",
     "retainedProposal": "Retained from the captured source",
-    "proposalSourceChanged": "The original assertion changed or is no longer available."
+    "proposalSourceChanged": "The original assertion changed or is no longer available.",
+    "newReconciled": "I checked the collection and want to start a separate new entry.",
+    "restartNew": "Discard pending draft and start again",
+    "proposalReconciled": "I checked my proposals and want to start a separate proposal.",
+    "retryMoneyFields": "Reload monetary custom fields",
+    "privateHistory": "Private evidence histories",
+    "checking": "Checking…"
   }
 }

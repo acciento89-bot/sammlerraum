@@ -1,0 +1,38 @@
+[WebServer] (node:1421) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 4 tests using 1 worker
+
+(node:1422) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [money-ui-desktop] › e2e/catalog-money-ui.spec.ts:284:3 › de: a persisted moderator documents and withdraws one canonical assertion through the private UI (4.4s)
+Testing stopped early after 1 maximum allowed failures.
+
+
+  1) [money-ui-desktop] › e2e/catalog-money-ui.spec.ts:284:3 › de: a persisted moderator documents and withdraws one canonical assertion through the private UI 
+
+    TimeoutError: locator.click: Timeout 3000ms exceeded.
+    Call log:
+      - waiting for getByRole('button', { name: 'Vorhandenen Betrag belegen', exact: true })
+
+
+      289 |       m = (locale === "de" ? de : en).LegacyMoney;
+      290 |     await page.goto(`/${locale}/catalog/${h.entry.state.id}`);
+    > 291 |     await page.getByRole("button", { name: m.review, exact: true }).click({ timeout: 3000 });
+          |                                                                     ^
+      292 |     const review = page.getByRole("region", { name: m.review, exact: true });
+      293 |     await review.getByRole("textbox", { name: m.scale, exact: true }).fill("0");
+      294 |     await review
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/catalog-money-ui.spec.ts:291:69
+
+    Error Context: test-results/catalog-money-ui-de-a-pers-e95d6-tion-through-the-private-UI-money-ui-desktop/error-context.md
+
+    Error Context: test-results/catalog-money-ui-de-a-pers-e95d6-tion-through-the-private-UI-money-ui-desktop/error-context.md
+
+  1 failed
+    [money-ui-desktop] › e2e/catalog-money-ui.spec.ts:284:3 › de: a persisted moderator documents and withdraws one canonical assertion through the private UI 
+  3 did not run
+  1 error was not a part of any test, see above for details
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/catalog-money-ui.spec.ts --workers=1 --grep persisted moderator --max-failures=1

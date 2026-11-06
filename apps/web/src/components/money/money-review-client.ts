@@ -1,4 +1,9 @@
 import {
+  CatalogMoneyHistoryResultSchema,
+  CatalogMoneyRevisionResultSchema,
+  CatalogMoneyRevocationResultSchema,
+} from "@sammlerraum/contracts/catalog-money";
+import {
   MoneyViewSchema,
   type ClassifyMoneyInput,
   type MoneyView,
@@ -14,6 +19,7 @@ import {
 import {
   MoneyClientError,
   readMoney,
+  readCatalogMoneyRevision,
   writeMoney,
   type MoneyTransport,
 } from "./legacy-money-client";
@@ -123,4 +129,106 @@ export async function readCurrentPersonalMoney(
     transport,
   );
   return subject.family === "PURCHASE" ? result.purchase : result.custom[0]!;
+}
+
+function canonicalScope(view: MoneyView) {
+  const parsed = MoneyViewSchema.safeParse(view);
+  if (!parsed.success || parsed.data.subject.family !== "CATALOG")
+    throw new MoneyClientError("READ_FAILED");
+  const subject = parsed.data.subject;
+  return {
+    subject,
+    url: `/api/v1/catalog/entries/${subject.entryId}/revisions/${subject.revision}/money`,
+  };
+}
+export async function classifyReviewedMoney(
+  view: MoneyView,
+  input: ClassifyMoneyInput,
+  caps: MoneyCapabilities,
+  transport?: MoneyTransport,
+): Promise<MoneyView> {
+  if (view.subject.family !== "CATALOG") return classifyPersonalMoney(view, input, caps, transport);
+  const { subject, url } = canonicalScope(view);
+  const result = await writeMoney(
+    `${url}/classifications`,
+    "POST",
+    { schemaVersion: 1, target: subject.target, definitionId: subject.definitionId, input },
+    MoneyValueResultSchema.refine((value) => acceptsClassification(value.money, view, input)),
+    caps,
+    transport,
+  );
+  return result.money;
+}
+export async function readReviewedMoneyHistory(
+  view: MoneyView,
+  cursor?: string,
+  transport?: MoneyTransport,
+) {
+  if (view.subject.family !== "CATALOG") return readPersonalMoneyHistory(view, cursor, transport);
+  const { subject, url } = canonicalScope(view),
+    query = new URLSearchParams({
+      target: subject.target.kind,
+      definitionId: subject.definitionId,
+      limit: "20",
+      ...(subject.target.kind === "VARIANT" ? { variantId: subject.target.variantId } : {}),
+      ...(cursor ? { cursor } : {}),
+    });
+  return readMoney(
+    `${url}/classifications?${query}`,
+    CatalogMoneyHistoryResultSchema.refine((value) => same(value.subject, subject)),
+    transport,
+  );
+}
+export async function revokeReviewedMoney(
+  view: MoneyView,
+  input: RevokeMoneyInput,
+  caps: MoneyCapabilities,
+  transport?: MoneyTransport,
+): Promise<void> {
+  if (view.subject.family !== "CATALOG") return revokePersonalMoney(view, input, caps, transport);
+  const { subject, url } = canonicalScope(view);
+  await writeMoney(
+    `${url}/revocations`,
+    "POST",
+    { schemaVersion: 1, target: subject.target, definitionId: subject.definitionId, input },
+    CatalogMoneyRevocationResultSchema.refine(
+      (value) =>
+        same(value.subject, subject) &&
+        same(value.money.subject, subject) &&
+        value.assertionId === input.assertionId,
+    ),
+    caps,
+    transport,
+  );
+}
+export async function readCurrentReviewedMoney(
+  view: MoneyView,
+  transport?: MoneyTransport,
+): Promise<MoneyView> {
+  if (view.subject.family !== "CATALOG") return readCurrentPersonalMoney(view, transport);
+  const { subject, url } = canonicalScope(view);
+  const result = await readCatalogMoneyRevision(
+    url,
+    CatalogMoneyRevisionResultSchema.refine((value) => {
+      const seen = new Set<string>();
+      return (
+        value.entryId === subject.entryId &&
+        value.revision === subject.revision &&
+        value.money.every((item) => {
+          if (
+            item.subject.family !== "CATALOG" ||
+            item.subject.entryId !== subject.entryId ||
+            item.subject.revision !== subject.revision ||
+            seen.has(JSON.stringify(item.subject))
+          )
+            return false;
+          seen.add(JSON.stringify(item.subject));
+          return true;
+        }) &&
+        value.money.some((item) => same(item.subject, subject) && same(item.raw, view.raw))
+      );
+    }),
+    transport,
+  );
+  return result.money.find((item) => same(item.subject, subject))!;
 }

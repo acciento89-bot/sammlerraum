@@ -85,14 +85,14 @@ describe("manual draft interpretation", () => {
   });
 });
 
-it("catalog display keeps exact safe-number digits with existing legacy scale", () => {
+it("unconfirmed catalog display preserves exact raw digits without guessing a scale", () => {
   expect(displayCatalogMoney({ amountMinor: 9007199254740991, currency: "EUR" }, "en")).toBe(
-    "90,071,992,547,409.91 EUR",
+    "9007199254740991 EUR",
   );
   expect(displayCatalogMoney({ amountMinor: 9007199254740991, currency: "EUR" }, "de")).toBe(
-    "90.071.992.547.409,91 EUR",
+    "9007199254740991 EUR",
   );
-  expect(displayCatalogMoney({ amountMinor: 0, currency: "EUR" }, "de")).toBe("0,00 EUR");
+  expect(displayCatalogMoney({ amountMinor: 0, currency: "EUR" }, "de")).toBe("0 EUR");
 });
 it("formats a validated manual DTO without rejecting its non-money provenance", () => {
   expect(

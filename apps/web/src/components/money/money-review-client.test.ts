@@ -128,3 +128,98 @@ describe("private one-fact review browser receipts", () => {
     ).resolves.toBeUndefined();
   });
 });
+
+it("routes one canonical evidence review through its exact immutable scope and binds private history/revocation receipts", async () => {
+  const {
+    classifyReviewedMoney,
+    readReviewedMoneyHistory,
+    revokeReviewedMoney,
+    readCurrentReviewedMoney,
+  } = await import("./money-review-client");
+  const canonical = MoneyViewSchema.parse({
+    ...before,
+    subject: {
+      family: "CATALOG",
+      entryId: itemId,
+      revision: 3,
+      target: { kind: "ENTRY" },
+      definitionId: assertionId,
+    },
+  });
+  const declared = {
+    ...input,
+    evidence: {
+      category: "OPERATOR_VERIFIED_RECORD" as const,
+      reason: "Checked historical record",
+      reference: "PRIVATE-RECORD",
+    },
+  };
+  const classified = MoneyViewSchema.parse({
+    ...next,
+    subject: canonical.subject,
+    interpretation: {
+      ...next.interpretation,
+      kind: "INTERPRETED",
+      exponent: 0,
+      unitKey: "iso4217-2026-09-17:AFN",
+      basisId: "OPERATOR_VERIFIED_RECORD:v1",
+      evidenceCategory: "OPERATOR_VERIFIED_RECORD",
+    },
+  });
+  expect(
+    await classifyReviewedMoney(canonical, declared, capabilities, async (url, init) => {
+      expect(url).toBe(`/api/v1/catalog/entries/${itemId}/revisions/3/money/classifications`);
+      expect(JSON.parse(String(init?.body))).toEqual({
+        schemaVersion: 1,
+        target: { kind: "ENTRY" },
+        definitionId: assertionId,
+        input: declared,
+      });
+      return Response.json({ schemaVersion: 1, money: classified });
+    }),
+  ).toEqual(classified);
+  const history = await readReviewedMoneyHistory(canonical, undefined, async (url) => {
+    const query = new URL(url, "https://example.invalid").searchParams;
+    expect(query.get("definitionId")).toBe(assertionId);
+    expect(query.get("target")).toBe("ENTRY");
+    return Response.json({
+      schemaVersion: 1,
+      subject: canonical.subject,
+      events: [],
+      nextCursor: null,
+    });
+  });
+  expect(history.events).toEqual([]);
+  expect(
+    await readCurrentReviewedMoney(canonical, async () =>
+      Response.json({ schemaVersion: 1, entryId: itemId, revision: 3, money: [classified] }),
+    ),
+  ).toEqual(classified);
+  const revoke = {
+    assertionId,
+    expectedAssertionToken: "historical_token",
+    reason: "Explicit withdrawal",
+  };
+  await expect(
+    revokeReviewedMoney(canonical, revoke, capabilities, async () =>
+      Response.json({
+        schemaVersion: 1,
+        subject: canonical.subject,
+        assertionId: itemId,
+        revoked: true,
+        money: canonical,
+      }),
+    ),
+  ).rejects.toMatchObject({ code: "ACKNOWLEDGED_UNREADABLE" });
+  await expect(
+    revokeReviewedMoney(canonical, revoke, capabilities, async () =>
+      Response.json({
+        schemaVersion: 1,
+        subject: canonical.subject,
+        assertionId,
+        revoked: true,
+        money: canonical,
+      }),
+    ),
+  ).resolves.toBeUndefined();
+});

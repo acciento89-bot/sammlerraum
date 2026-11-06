@@ -1,0 +1,52 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| apps/web/src/components/money/legacy-money-draft.test.ts (10 tests | 1 failed) 21ms
+   ✓ deliberate monetary draft semantics > blocks even a normal save while a previous outcome has not been reconciled 3ms
+   ✓ deliberate monetary draft semantics > never parses or authors an untouched historical pair on an ordinary save 0ms
+   ✓ deliberate monetary draft semantics > requires explicit acknowledgment and audit note before replacing old AFN with the pinned new decimal 1ms
+   ✓ deliberate monetary draft semantics > separates explicit clear from blank/invalid replacement and never fabricates a missing token 1ms
+   ✓ deliberate monetary draft semantics > authors a new decimal only through the pinned explicit profile and rejects unsupported codes/grouping 1ms
+   ✓ deliberate monetary draft semantics > displays stored scale independently of locale and the current ISO exponent 0ms
+   ✓ deliberate monetary draft semantics > does not silently rebase an edited draft onto a newer fact token after locale navigation 0ms
+   ✓ deliberate monetary draft semantics > preserves exact typed draft through locale remount but separates accounts and clears on logout 0ms
+   ✓ deliberate monetary draft semantics > keeps a complete active form's 1000 custom drafts plus purchase through a locale remount 10ms
+   × deliberate monetary draft semantics > does not erase a new account's already scoped catalog context when its monetary cache binds later 4ms
+     → expected undefined to deeply equal { kind: 'CREATE_ENTRY', …(7) }
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/web/src/components/money/legacy-money-draft.test.ts > deliberate monetary draft semantics > does not erase a new account's already scoped catalog context when its monetary cache binds later
+AssertionError: expected undefined to deeply equal { kind: 'CREATE_ENTRY', …(7) }
+
+- Expected: 
+{
+  "baseRevision": null,
+  "categoryId": "",
+  "identifierId": "",
+  "kind": "CREATE_ENTRY",
+  "outcome": "READY",
+  "proposalId": "",
+  "summary": "New owner's draft",
+  "variantId": "",
+}
+
++ Received: 
+undefined
+
+ ❯ apps/web/src/components/money/legacy-money-draft.test.ts:174:56
+    172|     rememberCatalogMoneySession("owner-b","new",session);
+    173|     expect(recallMoneyDraft("owner-b","purchase:old")).toBeUndefined();
+    174|     expect(recallCatalogMoneySession("owner-b","new")).toEqual(session…
+       |                                                        ^
+    175|     clearMoneyDrafts();expect(recallCatalogMoneySession("owner-b","new…
+    176|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 9 passed (10)
+   Start at  11:59:56
+   Duration  379ms (transform 58ms, setup 5ms, collect 137ms, tests 21ms, environment 0ms, prepare 59ms)
+

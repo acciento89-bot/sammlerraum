@@ -10,11 +10,15 @@ export function CanonicalCatalogFacts({
   revision,
   category,
   locale,
+  onReview,
+  refresh = 0,
 }: {
   state: CatalogSnapshot;
   revision: number;
   category: CategoryTemplate | null;
   locale: "de" | "en";
+  onReview?: (view: MoneyView) => void;
+  refresh?: number;
 }) {
   const t = useTranslations("LegacyMoney");
   const [result, setResult] = useState<{
@@ -38,7 +42,7 @@ export function CanonicalCatalogFacts({
     return () => {
       cancelled = true;
     };
-  }, [state, revision, retry]);
+  }, [state, revision, retry, refresh]);
   const money = result?.entryId === state.id && result.revision === revision ? result.values : null;
   return (
     <>
@@ -55,6 +59,7 @@ export function CanonicalCatalogFacts({
         category={category}
         locale={locale}
         {...(money ? { money } : {})}
+        {...(onReview ? { onReview } : {})}
       />
     </>
   );

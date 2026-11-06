@@ -112,10 +112,8 @@ let activeOwner: string | null = null;
 function ownerScope(owner: string) {
   if (!owner || owner.length > 512) throw new MoneyDraftError("MONEY_INPUT_INVALID");
   if (activeOwner !== owner) {
-    if (activeOwner !== null) {
-      clearMoneyReviewDrafts();
-      clearCatalogMoneySessions();
-    }
+    // Other actor-scoped caches bind independently; do not erase a new owner's
+    // already initialized context just because this particular cache binds later.
     drafts.clear();
     activeOwner = owner;
   }
@@ -147,4 +145,16 @@ export function clearMoneyDrafts(): void {
   clearMoneyReviewDrafts();
   drafts.clear();
   activeOwner = null;
+}
+
+// Discard only this entry's proposal drafts after explicit reconciliation.
+export function forgetCatalogMoneyDrafts(owner: string, scope: string): void {
+  ownerScope(owner);
+  if (
+    scope !== "new" &&
+    !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/iu.test(scope)
+  )
+    throw new MoneyDraftError("MONEY_INPUT_INVALID");
+  const prefix = `catalog:${scope}:`;
+  for (const key of drafts.keys()) if (key.startsWith(prefix)) drafts.delete(key);
 }

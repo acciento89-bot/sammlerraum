@@ -2,14 +2,13 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import type { MoneyView } from "@sammlerraum/contracts/legacy-money";
-import type { PersonalMoneyHistoryResultSchema } from "@sammlerraum/contracts/personal-money";
+import type { MoneyView, MoneySubject } from "@sammlerraum/contracts/legacy-money";
 import { loadMoneyCapabilities, MoneyClientError } from "./legacy-money-client";
 import {
-  classifyPersonalMoney,
-  readCurrentPersonalMoney,
-  readPersonalMoneyHistory,
-  revokePersonalMoney,
+  classifyReviewedMoney,
+  readCurrentReviewedMoney,
+  readReviewedMoneyHistory,
+  revokeReviewedMoney,
 } from "./money-review-client";
 import {
   initialReviewDraft,
@@ -21,7 +20,7 @@ import {
 } from "./money-review-draft";
 import { valuationCurrencyCodes } from "@sammlerraum/domain/money/currencies";
 import { MoneyReadout } from "./legacy-money-editor";
-type History = ReturnType<typeof PersonalMoneyHistoryResultSchema.parse>;
+type History = Awaited<ReturnType<typeof readReviewedMoneyHistory>>;
 export function LegacyMoneyReview({
   view,
   actor,
@@ -31,6 +30,7 @@ export function LegacyMoneyReview({
   onBusy,
   onExpired,
   onClose,
+  onOrigin,
 }: {
   view: MoneyView;
   actor: string;
@@ -40,6 +40,7 @@ export function LegacyMoneyReview({
   onBusy(busy: boolean): void;
   onExpired(): void;
   onClose(): void;
+  onOrigin?: (subject: MoneySubject) => void;
 }) {
   const t = useTranslations("LegacyMoney");
   const [draft, setDraft] = useState(
@@ -77,6 +78,7 @@ export function LegacyMoneyReview({
   }
   async function authenticated() {
     const caps = await loadMoneyCapabilities();
+    if (!alive.current || expired.current) throw new MoneyClientError("READ_FAILED");
     if (caps.actorId !== actor) {
       expired.current = true;
       onExpired();
@@ -88,7 +90,7 @@ export function LegacyMoneyReview({
     const sequence = ++generation.current;
     try {
       await authenticated();
-      const result = await readPersonalMoneyHistory(view, cursor);
+      const result = await readReviewedMoneyHistory(view, cursor);
       if (alive.current && sequence === generation.current) setHistory(result);
     } catch (error) {
       if (alive.current && sequence === generation.current)
@@ -121,7 +123,7 @@ export function LegacyMoneyReview({
       const caps = await authenticated();
       // Persist uncertainty before dispatch; a lost view must never automatically replay this action.
       change({ ...draft, outcome: "UNKNOWN" });
-      const next = await classifyPersonalMoney(view, input, caps);
+      const next = await classifyReviewedMoney(view, input, caps);
       if (!alive.current || expired.current) return;
       onChanged(next);
       change(initialReviewDraft(next));
@@ -150,7 +152,7 @@ export function LegacyMoneyReview({
     setMessage("");
     try {
       await authenticated();
-      const next = await readCurrentPersonalMoney(view);
+      const next = await readCurrentReviewedMoney(view);
       if (!alive.current || expired.current) return;
       onChanged(next);
       setInspected(next);
@@ -178,7 +180,7 @@ export function LegacyMoneyReview({
     try {
       const caps = await authenticated();
       change({ ...draft, outcome: "UNKNOWN" });
-      await revokePersonalMoney(
+      await revokeReviewedMoney(
         view,
         {
           assertionId: event.id,
@@ -194,7 +196,7 @@ export function LegacyMoneyReview({
       setRevokeReason("");
       setRevokeAck(false);
       change({ ...draft, outcome: "ACKNOWLEDGED_UNREADABLE" });
-      const next = await readCurrentPersonalMoney(view);
+      const next = await readCurrentReviewedMoney(view);
       if (!alive.current || expired.current) return;
       onChanged(next);
       change(initialReviewDraft(next));
@@ -299,7 +301,9 @@ export function LegacyMoneyReview({
             }
           >
             <option value="">{t("choose")}</option>
-            <option value="OWNER_ATTESTATION">{t("ownerEvidence")}</option>
+            <option value="OWNER_ATTESTATION" disabled={view.subject.family === "CATALOG"}>
+              {t("ownerEvidence")}
+            </option>
             <option value="OPERATOR_VERIFIED_RECORD">{t("operatorEvidence")}</option>
           </select>
         </label>
@@ -382,7 +386,21 @@ export function LegacyMoneyReview({
             )}
             {event.evidenceErasedAt && <p>{t("evidenceRemoved")}</p>}
             {event.originSubject && event.originSubject.family !== "CATALOG" && (
-              <Link href={`/${locale}/items/${event.originSubject.itemId}`}>{t("openOrigin")}</Link>
+              <Link
+                href={`/${locale}/items/${event.originSubject.itemId}#money-${event.originSubject.family === "PURCHASE" ? "purchaseAmount" : `custom-money-${event.originSubject.fieldDefinitionId}`}`}
+              >
+                {t("openOrigin")}
+              </Link>
+            )}
+            {event.originSubject?.family === "CATALOG" && onOrigin && (
+              <button
+                type="button"
+                className="secondary-button"
+                disabled={busy || disabled}
+                onClick={() => onOrigin(event.originSubject!)}
+              >
+                {t("openOrigin")} · {event.originSubject.revision}
+              </button>
             )}
             {event.operation === "COPY" && <p>{t("copiedEvidence")}</p>}
             {event.expectedAssertionToken &&

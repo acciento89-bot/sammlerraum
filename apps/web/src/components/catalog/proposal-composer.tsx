@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { useTranslations } from "next-intl";
 import type { CatalogEntryRevision, CategoryTemplate } from "@sammlerraum/contracts/catalog";
 import {
@@ -15,6 +15,7 @@ import {
   rememberMoneyDraft,
   recallMoneyDraft,
   forgetMoneyDraft,
+  forgetCatalogMoneyDrafts,
   clearMoneyDrafts,
   MoneyDraftError,
   type MoneyDraft,
@@ -74,6 +75,14 @@ export function ProposalComposer({
   const [identifierId, setIdentifierId] = useState(
     cached?.identifierId || entry?.state.identifiers[0]?.id || "",
   );
+  const mounted = useRef(true);
+  useEffect(() => {
+    mounted.current = true;
+    return () => {
+      mounted.current = false;
+    };
+  }, []);
+  const [reconciled, setReconciled] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -88,6 +97,8 @@ export function ProposalComposer({
   const [moneyMap, setMoneyMap] = useState(new Map<string, MoneyView>());
   const [moneyReady, setMoneyReady] = useState(false),
     [moneyRetry, setMoneyRetry] = useState(0);
+  const [draftSource, setDraftSource] = useState("");
+  const draftScopeSignature = `${actor}:${scope}:${baseRevision}:${kind}:${category}:${variantId}`;
   const [moneyDrafts, setMoneyDrafts] = useState<Record<string, MoneyDraft>>({});
   const pendingNavigation = useCollectorConfirmation(busy, () => false);
   const session = (nextOutcome = outcome, nextId = proposalId): CatalogMoneySession => ({
@@ -120,6 +131,7 @@ export function ProposalComposer({
     void (async () => {
       try {
         const actual = await loadMoneyCapabilities();
+        if (cancelled) return;
         if (actual.actorId !== actor) {
           clearMoneyDrafts();
           if (!cancelled) setActorExpired(true);
@@ -235,9 +247,12 @@ export function ProposalComposer({
         recallMoneyDraft(actor, draftKey(field.id)) ?? initialMoneyDraft(view ?? null);
     }
     setMoneyDrafts(drafts);
+    setDraftSource(draftScopeSignature);
   }, [actor, scope, baseRevision, kind, category, variantId, template, moneyMap, moneyReady]);
   const draftsReady =
-    moneyReady && moneyDefinitions.every((field) => Boolean(moneyDrafts[field.id]));
+    moneyReady &&
+    draftSource === draftScopeSignature &&
+    moneyDefinitions.every((field) => Boolean(moneyDrafts[field.id]));
   function changeMoney(definitionId: string, draft: MoneyDraft) {
     setMoneyDrafts((current) => ({ ...current, [definitionId]: draft }));
     rememberMoneyDraft(actor, draftKey(definitionId), draft);
@@ -278,6 +293,7 @@ export function ProposalComposer({
     setBusy(true);
     try {
       const actual = await loadMoneyCapabilities();
+      if (!mounted.current) return;
       if (actual.actorId !== actor) {
         clearMoneyDrafts();
         setActorExpired(true);
@@ -351,6 +367,7 @@ export function ProposalComposer({
       });
       rememberCatalogMoneySession(actor, scope, session("UNKNOWN"));
       const receipt = await submitCanonicalMoneyProposal(request, actual);
+      if (!mounted.current) return;
       setOutcome("SAVED");
       setProposalId(receipt.id);
       rememberCatalogMoneySession(actor, scope, session("SAVED", receipt.id));
@@ -360,6 +377,7 @@ export function ProposalComposer({
         onSubmitted();
       });
     } catch (problem) {
+      if (!mounted.current) return;
       const next =
         problem instanceof MoneyClientError && problem.code === "OUTCOME_UNKNOWN"
           ? "UNKNOWN"
@@ -372,7 +390,27 @@ export function ProposalComposer({
       rememberCatalogMoneySession(actor, scope, session(next));
       setError(moneyError(problem));
     } finally {
-      setBusy(false);
+      if (mounted.current) setBusy(false);
+    }
+  }
+  async function restartProposal() {
+    if (!reconciled || busy || outcome === "READY") return;
+    setBusy(true);
+    try {
+      const actual = await loadMoneyCapabilities();
+      if (!mounted.current) return;
+      if (actual.actorId !== actor) {
+        clearMoneyDrafts();
+        setActorExpired(true);
+        return;
+      }
+      forgetCatalogMoneyDrafts(actor, scope);
+      forgetCatalogMoneySession(actor, scope);
+      pendingNavigation.navigateAfterGuard(onCancel);
+    } catch (problem) {
+      if (mounted.current) setError(moneyError(problem));
+    } finally {
+      if (mounted.current) setBusy(false);
     }
   }
   const kinds: Kind[] = entry
@@ -427,6 +465,26 @@ export function ProposalComposer({
           )}{" "}
           <a href={`/${locale}/catalog/proposals`}>{t("myProposals")}</a>
         </p>
+      )}
+      {outcome !== "READY" && outcome !== "SAVED" && (
+        <div className="notice">
+          <label>
+            <input
+              type="checkbox"
+              checked={reconciled}
+              disabled={busy}
+              onChange={(event) => setReconciled(event.target.checked)}
+            />
+            {m("proposalReconciled")}
+          </label>
+          <button
+            type="button"
+            disabled={!reconciled || busy}
+            onClick={() => void restartProposal()}
+          >
+            {m(busy ? "checking" : "restartNew")}
+          </button>
+        </div>
       )}
       <p className="field-help">{t("proposalHelp")}</p>
       {entry && (
@@ -589,7 +647,11 @@ export function ProposalComposer({
             locale={locale}
             view={selectedViews.get(field.id) ?? null}
             existing={Boolean(attributes?.some((row) => row.definitionId === field.id))}
-            draft={moneyDrafts[field.id] ?? initialMoneyDraft(null)}
+            draft={
+              draftSource === draftScopeSignature
+                ? (moneyDrafts[field.id] ?? initialMoneyDraft(null))
+                : initialMoneyDraft(null)
+            }
             onChange={(draft) => changeMoney(field.id, draft)}
             loaded={draftsReady}
             disabled={busy || !caps?.authoringProfiles.length || outcome !== "READY"}

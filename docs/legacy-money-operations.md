@@ -1,0 +1,35 @@
+# Monetary provenance deployment and recovery
+
+This document describes the additive rollout. It does not authorize or record a production cutover. The M5 source keeps `canonicalConsumers: false`; exact search, saved queries and purchase-cost consumers require M6 acceptance.
+
+## Upgrade order
+
+1. Disable canonical consumers and new monetary authoring before changing live application versions. Preserve existing raw columns, revisions, and evidence.
+2. Apply the additive provenance migrations and install UNKNOWN-capable readers. Existing integers without surviving evidence remain unknown; never infer their scale from the current currency table, locale, title, or a matching value.
+3. Drain old catalog mutation/proposal/rollback workers and requests. An old catalog no-op writer can lose retained evidence; database changes alone do not retrofit that old application code.
+4. Deploy all personal and canonical writer adapters, exact private history/revocation readers, capability routes and the new UI together. Keep raw legacy personal writers invalidating rather than silently preserving meaning.
+5. Enable the single pinned authoring profile only after the exact versioned endpoints and acknowledgments are available. Exercise synthetic creation, preservation, replacement, classification, copying, rollback and revocation, including competing updates and dropped responses. There is no fallback from absent/refused capabilities to raw CRUD.
+6. Enable canonical consumers only after M6 complete-scope search/dashboard/saved-query and purchase-cost validation is independently accepted. M5 alone does not enable those features.
+
+## Downgrade
+
+Disable new authoring and canonical consumer capabilities first. Drain current workers before changing application versions. Retain provenance tables, generation columns, audit history and immutable revision envelopes; do not roll back by deleting evidence or by converting unknown integers. Historical personal raw writers must continue to invalidate meaning. Do not resume old catalog workers while expecting provenance preservation.
+
+## User-visible recovery
+
+- An unchanged stored pair is retained with its captured fact token. Explicit replacement uses the pinned decimal profile, acknowledgment and correction reason; a canonical proposal records that reason in its change summary. Clear is a distinct acknowledged action.
+- A missing/refused/malformed capability or authoring profile is read-only. Retry uses GET; it does not select an older raw write endpoint.
+- A stale token is a conflict. Inspect current state, then explicitly adopt it before a new attempt. Reading alone does not silently replace a pending edit.
+- A transport failure or uncertain server outcome is not proof of failure. A malformed successful acknowledgment is also not permission to repeat. Inspect the known item, or review the collection/proposal list for an unknown creation. Start a separate new item/proposal only after explicit reconciliation; never fabricate a server identifier or automatically replay a creation.
+- Exact successful receipts are installed before metadata writes or display refresh. A later metadata/refresh failure does not reauthor the successful monetary operation. Multiple custom fields can partially succeed and are reported separately, not as an atomic form transaction.
+- Classification documents meaning without changing raw values. Withdrawal selects the exact historical assertion; copies are withdrawn at their actual origin. Cleared amounts retain a private history entry point. Global evidence mutation requires a fresh persisted moderator grant; public catalog rendering must not expose private notes/references.
+
+## Bounds and private state
+
+Private edit/review context is bounded memory scoped to the authenticated actor and original fact/revision. Explicit logout and observed account mismatch clear it. It is not stored in URLs or browser storage. An optional `x-money-actor` header is only a stale-session precondition; the server independently authenticates every request and authorizes its real subject.
+
+Personal response reads are bounded to 1 MiB, capabilities/error bodies to 4 KiB, and full immutable canonical maps to 32 MiB for the explicit maximum of 10,100 bounded monetary paths. Full maps are validated before exposure; custom batches use at most 50 definitions per request and at most 1,000 active fields. No partial read map is presented as complete.
+
+## Verification records
+
+The milestone context and exact commands/counts live in `.superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/task-m5-execution-context.md` and its `logs/` directory. Milestone acceptance, review, source commit and remote CI must be recorded there before claiming cutover readiness. Disposable browser data and private screenshots are synthetic; production data, mail and purchases are outside this validation.

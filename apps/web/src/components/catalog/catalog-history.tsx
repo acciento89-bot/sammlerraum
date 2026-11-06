@@ -11,12 +11,18 @@ export function CatalogHistory({
   locale,
   canModerate,
   onChange,
+  onReview,
+  moneyRefresh = 0,
+  disabled = false,
 }: {
   entry: CatalogEntryRevision;
   category: CategoryTemplate;
   locale: Locale;
   canModerate: boolean;
   onChange: () => Promise<void>;
+  onReview?: (view: import("@sammlerraum/contracts/legacy-money").MoneyView) => void;
+  moneyRefresh?: number;
+  disabled?: boolean;
 }) {
   const t = useTranslations("Catalog");
   const [rows, setRows] = useState<CatalogRevisionSummary[]>([]);
@@ -91,6 +97,10 @@ export function CatalogHistory({
     }
   }
   async function restore(event: FormEvent<HTMLFormElement>) {
+    if (disabled) {
+      event.preventDefault();
+      return;
+    }
     event.preventDefault();
     if (busy || !preview || !canModerate) return;
     const form = new FormData(event.currentTarget);
@@ -137,7 +147,7 @@ export function CatalogHistory({
             <button
               type="button"
               className="secondary-button"
-              disabled={busy}
+              disabled={busy || disabled}
               onClick={() => void inspect(row.revision)}
             >
               {t("previewRevision")} {row.revision}
@@ -147,7 +157,7 @@ export function CatalogHistory({
         ))}
       </ul>
       {cursor && (
-        <button type="button" disabled={busy} onClick={() => void more()}>
+        <button type="button" disabled={busy || disabled} onClick={() => void more()}>
           {t("moreHistory")}
         </button>
       )}
@@ -164,6 +174,8 @@ export function CatalogHistory({
             revision={preview.revision}
             category={category}
             locale={locale}
+            refresh={moneyRefresh}
+            {...(onReview ? { onReview } : {})}
           />
           {canModerate && preview.revision !== entry.revision && (
             <form
@@ -180,7 +192,7 @@ export function CatalogHistory({
                 <input name="confirm" type="checkbox" required />
                 {t("confirmRevision")}
               </label>
-              <button type="submit" disabled={busy || expected !== entry.revision}>
+              <button type="submit" disabled={busy || disabled || expected !== entry.revision}>
                 {t("confirmRestoration")}
               </button>
             </form>

@@ -1,0 +1,35 @@
+[WebServer] (node:5301) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 24 tests using 1 worker
+
+(node:5304) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [money-ui-desktop] › e2e/catalog-money-ui.spec.ts:358:3 › de: a copied canonical assertion opens its actual origin scope and is withdrawn there (2.7s)
+  ✓   2 [money-ui-desktop] › e2e/catalog-money-ui.spec.ts:358:3 › en: a copied canonical assertion opens its actual origin scope and is withdrawn there (1.4s)
+  ✓   3 [money-ui-desktop] › e2e/catalog-money-ui.spec.ts:467:5 › de: deliberate canonical REPLACE is separate from retained raw and uses the required proposal summary (1.3s)
+  ✓   4 [money-ui-desktop] › e2e/catalog-money-ui.spec.ts:467:5 › de: deliberate canonical CLEAR is separate from retained raw and uses the required proposal summary (1.2s)
+  ✓   5 [money-ui-desktop] › e2e/catalog-money-ui.spec.ts:522:3 › de: new variant money uses operation-relative NEW intent and only the server assigns its UUID (1.1s)
+  ✓   6 [money-ui-desktop] › e2e/catalog-money-ui.spec.ts:573:3 › de: canonical monetary draft and correction summary survive locale navigation (1.4s)
+  ✓   7 [money-ui-desktop] › e2e/catalog-money-ui.spec.ts:467:5 › en: deliberate canonical REPLACE is separate from retained raw and uses the required proposal summary (1.2s)
+  ✓   8 [money-ui-desktop] › e2e/catalog-money-ui.spec.ts:467:5 › en: deliberate canonical CLEAR is separate from retained raw and uses the required proposal summary (1.2s)
+  ✓   9 [money-ui-desktop] › e2e/catalog-money-ui.spec.ts:522:3 › en: new variant money uses operation-relative NEW intent and only the server assigns its UUID (1.1s)
+  ✓  10 [money-ui-desktop] › e2e/catalog-money-ui.spec.ts:573:3 › en: canonical monetary draft and correction summary survive locale navigation (1.4s)
+  ✓  11 [money-ui-desktop] › e2e/legacy-money.spec.ts:780:3 › de: an unknown new-item commit requires explicit collection reconciliation before a separate new entry (2.1s)
+  ✓  12 [money-ui-desktop] › e2e/legacy-money.spec.ts:780:3 › en: an unknown new-item commit requires explicit collection reconciliation before a separate new entry (1.5s)
+(node:5358) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  13 [money-ui-mobile] › e2e/catalog-money-ui.spec.ts:358:3 › de: a copied canonical assertion opens its actual origin scope and is withdrawn there (1.5s)
+  ✓  14 [money-ui-mobile] › e2e/catalog-money-ui.spec.ts:358:3 › en: a copied canonical assertion opens its actual origin scope and is withdrawn there (1.3s)
+  ✓  15 [money-ui-mobile] › e2e/catalog-money-ui.spec.ts:467:5 › de: deliberate canonical REPLACE is separate from retained raw and uses the required proposal summary (1.2s)
+  ✓  16 [money-ui-mobile] › e2e/catalog-money-ui.spec.ts:467:5 › de: deliberate canonical CLEAR is separate from retained raw and uses the required proposal summary (1.2s)
+  ✓  17 [money-ui-mobile] › e2e/catalog-money-ui.spec.ts:522:3 › de: new variant money uses operation-relative NEW intent and only the server assigns its UUID (1.2s)
+  ✓  18 [money-ui-mobile] › e2e/catalog-money-ui.spec.ts:573:3 › de: canonical monetary draft and correction summary survive locale navigation (1.3s)
+  ✓  19 [money-ui-mobile] › e2e/catalog-money-ui.spec.ts:467:5 › en: deliberate canonical REPLACE is separate from retained raw and uses the required proposal summary (1.2s)
+  ✓  20 [money-ui-mobile] › e2e/catalog-money-ui.spec.ts:467:5 › en: deliberate canonical CLEAR is separate from retained raw and uses the required proposal summary (1.2s)
+  ✓  21 [money-ui-mobile] › e2e/catalog-money-ui.spec.ts:522:3 › en: new variant money uses operation-relative NEW intent and only the server assigns its UUID (1.1s)
+  ✓  22 [money-ui-mobile] › e2e/catalog-money-ui.spec.ts:573:3 › en: canonical monetary draft and correction summary survive locale navigation (1.3s)
+  ✓  23 [money-ui-mobile] › e2e/legacy-money.spec.ts:780:3 › de: an unknown new-item commit requires explicit collection reconciliation before a separate new entry (1.5s)
+  ✓  24 [money-ui-mobile] › e2e/legacy-money.spec.ts:780:3 › en: an unknown new-item commit requires explicit collection reconciliation before a separate new entry (1.4s)
+
+  24 passed (35.7s)

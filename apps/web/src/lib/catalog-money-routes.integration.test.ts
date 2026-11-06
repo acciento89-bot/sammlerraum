@@ -163,24 +163,28 @@ describe.runIf(enabled)("catalog money HTTP native boundary", () => {
     ).toBe(403);
     actor = moderator;
     const event = records.events[0]!;
-    expect(
-      (
-        await h.REVOKE(
-          req("POST", {
-            schemaVersion: 1,
-            target: { kind: "ENTRY" },
-            definitionId,
-            input: {
-              assertionId: event.id,
-              expectedAssertionToken: event.expectedAssertionToken,
-              reason: "HTTP withdrawal",
-            },
-          }),
-          id,
-          "1",
-        )
-      ).status,
-    ).toBe(200);
+    const revoked = await h.REVOKE(
+      req("POST", {
+        schemaVersion: 1,
+        target: { kind: "ENTRY" },
+        definitionId,
+        input: {
+          assertionId: event.id,
+          expectedAssertionToken: event.expectedAssertionToken,
+          reason: "HTTP withdrawal",
+        },
+      }),
+      id,
+      "1",
+    );
+    expect(revoked.status).toBe(200);
+    expect(await revoked.json()).toMatchObject({
+      schemaVersion: 1,
+      revoked: true,
+      subject: records.subject,
+      assertionId: event.id,
+      money: { subject: records.subject, interpretation: { kind: "UNKNOWN", reason: "REVOKED" } },
+    });
     actor = null;
     expect((await h.READ(req("GET"), id, "1")).status).toBe(401);
     actor = moderator;
