@@ -1,0 +1,55 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| apps/web/src/components/money/money-locale-navigation.test.ts (2 tests | 2 failed) 4ms
+   × private money locale navigation > keeps only recognized item and catalog paths 3ms
+     → expected null to be '/en/items/00000000-0000-4000-8000-000…' // Object.is equality
+   × private money locale navigation > preserves only the validated new-item collection identity, never money or evidence 0ms
+     → expected null to be '/en/items/new?collectionId=00000000-0…' // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/web/src/components/money/money-locale-navigation.test.ts > private money locale navigation > keeps only recognized item and catalog paths
+AssertionError: expected null to be '/en/items/00000000-0000-4000-8000-000…' // Object.is equality
+
+- Expected: 
+"/en/items/00000000-0000-4000-8000-000000000001"
+
++ Received: 
+null
+
+ ❯ apps/web/src/components/money/money-locale-navigation.test.ts:6:56
+      4| describe("private money locale navigation", () => {
+      5|  it("keeps only recognized item and catalog paths", () => {
+      6|   expect(moneyLocaleHref(`/de/items/${id}`, "en", "")).toBe(`/en/items…
+       |                                                        ^
+      7|   for (const tail of ["", "/proposals", "/moderation", `/${id}`]) expe…
+      8|   for (const path of ["/de/items/not-an-id", "/de/catalog/unknown", "/…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |workspace| apps/web/src/components/money/money-locale-navigation.test.ts > private money locale navigation > preserves only the validated new-item collection identity, never money or evidence
+AssertionError: expected null to be '/en/items/new?collectionId=00000000-0…' // Object.is equality
+
+- Expected: 
+"/en/items/new?collectionId=00000000-0000-4000-8000-000000000001"
+
++ Received: 
+null
+
+ ❯ apps/web/src/components/money/money-locale-navigation.test.ts:11:103
+      9|  });
+     10|  it("preserves only the validated new-item collection identity, never …
+     11|   expect(moneyLocaleHref("/de/items/new", "en", `?collectionId=${id}&a…
+       |                                                                                                       ^
+     12|   expect(moneyLocaleHref("/de/items/new", "en", "?collectionId=bad&amo…
+     13|   expect(moneyLocaleHref("/de/items/new", "en", `?collectionId=${id}&c…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed (2)
+   Start at  09:06:52
+   Duration  272ms (transform 26ms, setup 5ms, collect 16ms, tests 4ms, environment 0ms, prepare 57ms)
+

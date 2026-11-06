@@ -1,0 +1,31 @@
+[WebServer] (node:87187) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 20 tests using 1 worker
+
+(node:87188) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [money-ui-desktop] › e2e/legacy-money.spec.ts:20:5 › de: title-only save preserves unknown raw money (1.4s)
+  ✓   2 [money-ui-desktop] › e2e/legacy-money.spec.ts:20:5 › de: title-only save preserves known historical scale (591ms)
+  ✓   3 [money-ui-desktop] › e2e/legacy-money.spec.ts:20:5 › en: title-only save preserves unknown raw money (524ms)
+  ✓   4 [money-ui-desktop] › e2e/legacy-money.spec.ts:20:5 › en: title-only save preserves known historical scale (533ms)
+  ✓   5 [money-ui-desktop] › e2e/legacy-money.spec.ts:119:3 › de: deliberate AFN correction requires confirmation and stores its own receipt (661ms)
+  ✓   6 [money-ui-desktop] › e2e/legacy-money.spec.ts:163:3 › de: locale switch preserves exact monetary draft and original source token (610ms)
+  ✓   7 [money-ui-desktop] › e2e/legacy-money.spec.ts:191:3 › de: stale monetary draft reports conflict without rewriting the newer meaning (654ms)
+  ✓   8 [money-ui-desktop] › e2e/legacy-money.spec.ts:119:3 › en: deliberate AFN correction requires confirmation and stores its own receipt (677ms)
+  ✓   9 [money-ui-desktop] › e2e/legacy-money.spec.ts:163:3 › en: locale switch preserves exact monetary draft and original source token (583ms)
+  ✓  10 [money-ui-desktop] › e2e/legacy-money.spec.ts:191:3 › en: stale monetary draft reports conflict without rewriting the newer meaning (639ms)
+(node:87216) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  11 [money-ui-mobile] › e2e/legacy-money.spec.ts:20:5 › de: title-only save preserves unknown raw money (687ms)
+  ✓  12 [money-ui-mobile] › e2e/legacy-money.spec.ts:20:5 › de: title-only save preserves known historical scale (580ms)
+  ✓  13 [money-ui-mobile] › e2e/legacy-money.spec.ts:20:5 › en: title-only save preserves unknown raw money (625ms)
+  ✓  14 [money-ui-mobile] › e2e/legacy-money.spec.ts:20:5 › en: title-only save preserves known historical scale (511ms)
+  ✓  15 [money-ui-mobile] › e2e/legacy-money.spec.ts:119:3 › de: deliberate AFN correction requires confirmation and stores its own receipt (653ms)
+  ✓  16 [money-ui-mobile] › e2e/legacy-money.spec.ts:163:3 › de: locale switch preserves exact monetary draft and original source token (587ms)
+  ✓  17 [money-ui-mobile] › e2e/legacy-money.spec.ts:191:3 › de: stale monetary draft reports conflict without rewriting the newer meaning (656ms)
+  ✓  18 [money-ui-mobile] › e2e/legacy-money.spec.ts:119:3 › en: deliberate AFN correction requires confirmation and stores its own receipt (654ms)
+  ✓  19 [money-ui-mobile] › e2e/legacy-money.spec.ts:163:3 › en: locale switch preserves exact monetary draft and original source token (593ms)
+  ✓  20 [money-ui-mobile] › e2e/legacy-money.spec.ts:191:3 › en: stale monetary draft reports conflict without rewriting the newer meaning (636ms)
+
+  20 passed (15.1s)

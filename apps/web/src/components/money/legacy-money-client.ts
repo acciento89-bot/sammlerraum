@@ -1,4 +1,3 @@
-import type { z } from "zod";
 import {
   MoneyCapabilitiesSchema,
   type MoneyCapabilities,
@@ -69,7 +68,7 @@ export function requireMoneyAuthoring(input: MoneyCapabilities): MoneyCapabiliti
 }
 export async function readMoney<T>(
   url: string,
-  schema: z.ZodType<T>,
+  schema: { parse(value: unknown): T },
   transport: MoneyTransport = browserTransport,
 ): Promise<T> {
   try {
@@ -84,7 +83,7 @@ export async function writeMoney<T>(
   url: string,
   method: string,
   body: unknown,
-  schema: z.ZodType<T>,
+  schema: { parse(value: unknown): T },
   capabilities: MoneyCapabilities,
   transport: MoneyTransport = browserTransport,
 ): Promise<T> {

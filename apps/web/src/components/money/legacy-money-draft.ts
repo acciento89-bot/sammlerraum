@@ -10,6 +10,7 @@ import {
 import { parseLegacyMoneyAuthoring } from "@sammlerraum/domain/money/legacy-money-policy";
 const MoneyDraftSchema = z
   .object({
+    outcome: z.enum(["READY", "UNKNOWN", "ACKNOWLEDGED_UNREADABLE", "CONFLICT"]).default("READY"),
     expectedFactToken: z.string().min(1).max(2048).nullable(),
     mode: z.enum(["KEEP", "REPLACE", "CLEAR"]),
     decimal: z.string().max(96),
@@ -22,6 +23,7 @@ export type MoneyDraft = z.infer<typeof MoneyDraftSchema>;
 export class MoneyDraftError extends Error {
   constructor(
     readonly code:
+      | "MONEY_OUTCOME_UNCERTAIN"
       | "MONEY_DRAFT_NOT_LOADED"
       | "MONEY_REPLACEMENT_ACK_REQUIRED"
       | "MONEY_CORRECTION_REASON_REQUIRED"
@@ -33,6 +35,7 @@ export class MoneyDraftError extends Error {
 export function initialMoneyDraft(view: MoneyView | null): MoneyDraft {
   // An existing integer never becomes an editable decimal merely by opening a form.
   return {
+    outcome: "READY",
     expectedFactToken: view?.factToken ?? null,
     mode: "KEEP",
     decimal: "",
@@ -55,6 +58,7 @@ export function moneyDraftIntent(
   existing: boolean,
 ): ExistingMoneyIntent | NewMoneyIntent | undefined {
   const draft = MoneyDraftSchema.parse(value);
+  if (draft.outcome !== "READY") throw new MoneyDraftError("MONEY_OUTCOME_UNCERTAIN");
   if (draft.mode === "KEEP") return undefined;
   if (existing && (!view || !draft.expectedFactToken))
     throw new MoneyDraftError("MONEY_DRAFT_NOT_LOADED");

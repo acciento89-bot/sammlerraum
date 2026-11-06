@@ -8,6 +8,20 @@ export default defineConfig({
     baseURL: "http://localhost:3000",
   },
   projects: [
+    ...(process.env.RUN_MONEY_UI_E2E === "1"
+      ? [
+          {
+            name: "money-ui-desktop",
+            testMatch: "**/legacy-money.spec.ts",
+            use: { viewport: { width: 1440, height: 1000 } },
+          },
+          {
+            name: "money-ui-mobile",
+            testMatch: "**/legacy-money.spec.ts",
+            use: { ...devices["Pixel 7"] },
+          },
+        ]
+      : []),
     ...(process.env.RUN_CATALOG_MONEY_E2E === "1"
       ? [
           {

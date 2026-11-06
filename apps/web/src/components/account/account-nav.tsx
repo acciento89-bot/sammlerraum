@@ -1,6 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { clearMoneyDrafts } from "../money/legacy-money-draft";
 import { clearSearchSession } from "../search/search-url-state";
 import { authClient } from "../../lib/auth-client";
 
@@ -17,6 +18,7 @@ export function AccountNav({ locale }: { locale: string }) {
       <button
         onClick={async () => {
           clearSearchSession();
+          clearMoneyDrafts();
           await authClient.signOut();
           router.push(`/${locale}/login`);
         }}

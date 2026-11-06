@@ -35,7 +35,10 @@ export default async function ItemPage({
       },
       select: { id: true },
     });
-    if (owned) return <ItemForm itemId={itemId} locale={locale} />;
+    if (owned)
+      return (
+        <ItemForm key={session.user.id} actor={session.user.id} itemId={itemId} locale={locale} />
+      );
   }
   let item;
   try {

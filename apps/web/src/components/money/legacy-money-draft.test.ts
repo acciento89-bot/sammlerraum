@@ -18,6 +18,10 @@ const view = (currency = "AFN"): MoneyView =>
   });
 afterEach(clearMoneyDrafts);
 describe("deliberate monetary draft semantics", () => {
+  it("blocks even a normal save while a previous outcome has not been reconciled", () => {
+    const draft = { ...initialMoneyDraft(view()), outcome: "UNKNOWN" as const };
+    expect(() => moneyDraftIntent(draft, view(), true)).toThrow("MONEY_OUTCOME_UNCERTAIN");
+  });
   it("never parses or authors an untouched historical pair on an ordinary save", () => {
     const historical = view("ZZZ");
     const draft = initialMoneyDraft(historical);

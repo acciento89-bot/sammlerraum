@@ -1,0 +1,399 @@
+[WebServer] (node:85666) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 12 tests using 1 worker
+
+(node:85687) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘   1 [money-ui-desktop] › e2e/legacy-money.spec.ts:99:2 › de: deliberate AFN correction requires confirmation and stores its own receipt (1.4s)
+(node:85700) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘   2 [money-ui-desktop] › e2e/legacy-money.spec.ts:117:2 › de: locale switch preserves exact monetary draft and original source token (5.8s)
+(node:85707) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘   3 [money-ui-desktop] › e2e/legacy-money.spec.ts:131:2 › de: stale monetary draft reports conflict without rewriting the newer meaning (778ms)
+(node:85713) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘   4 [money-ui-desktop] › e2e/legacy-money.spec.ts:99:2 › en: deliberate AFN correction requires confirmation and stores its own receipt (689ms)
+(node:85719) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘   5 [money-ui-desktop] › e2e/legacy-money.spec.ts:117:2 › en: locale switch preserves exact monetary draft and original source token (5.7s)
+(node:85727) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘   6 [money-ui-desktop] › e2e/legacy-money.spec.ts:131:2 › en: stale monetary draft reports conflict without rewriting the newer meaning (743ms)
+(node:85736) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘   7 [money-ui-mobile] › e2e/legacy-money.spec.ts:99:2 › de: deliberate AFN correction requires confirmation and stores its own receipt (663ms)
+(node:85742) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘   8 [money-ui-mobile] › e2e/legacy-money.spec.ts:117:2 › de: locale switch preserves exact monetary draft and original source token (5.7s)
+(node:85748) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘   9 [money-ui-mobile] › e2e/legacy-money.spec.ts:131:2 › de: stale monetary draft reports conflict without rewriting the newer meaning (731ms)
+(node:85754) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  10 [money-ui-mobile] › e2e/legacy-money.spec.ts:99:2 › en: deliberate AFN correction requires confirmation and stores its own receipt (705ms)
+(node:85770) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  11 [money-ui-mobile] › e2e/legacy-money.spec.ts:117:2 › en: locale switch preserves exact monetary draft and original source token (5.7s)
+(node:85777) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  12 [money-ui-mobile] › e2e/legacy-money.spec.ts:131:2 › en: stale monetary draft reports conflict without rewriting the newer meaning (751ms)
+
+
+  1) [money-ui-desktop] › e2e/legacy-money.spec.ts:99:2 › de: deliberate AFN correction requires confirmation and stores its own receipt 
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: getByRole('alert')
+    Expected substring: "Bitte die Korrektur ausdrücklich bestätigen."
+    Error: strict mode violation: getByRole('alert') resolved to 2 elements:
+        1) <p role="alert" class="error">Bitte einen gültigen Betrag ohne Tausendertrennze…</p> aka getByText('Bitte einen gültigen Betrag')
+        2) <div role="alert" aria-live="assertive" id="__next-route-announcer__"></div> aka locator('[id="__next-route-announcer__"]')
+
+    Call log:
+      - Expect "toContainText" getByRole('alert') with timeout 5000ms
+      - waiting for getByRole('alert')
+
+
+      105 |    await h.region.getByLabel(h.m.reason, { exact: true }).fill("Use the new acquisition record");
+      106 |    await page.getByRole("button", { name: h.t.save, exact: true }).click();
+    > 107 |    await expect(page.getByRole("alert")).toContainText(locale === "de" ? "Bitte die Korrektur ausdrücklich bestätigen." : "Explicitly confirm this correction.");
+          |                                          ^
+      108 |    expect(patches).toBe(0);
+      109 |    await h.region.getByLabel(h.m.replacementAck, { exact: true }).check();
+      110 |    const response = page.waitForResponse(r => r.request().method() === "PATCH" && new URL(r.url()).pathname.endsWith(`/items/${h.f.itemId}`));
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/legacy-money.spec.ts:107:42
+
+    Error Context: test-results/legacy-money-de-deliberate-78127--and-stores-its-own-receipt-money-ui-desktop/error-context.md
+
+    Error Context: test-results/legacy-money-de-deliberate-78127--and-stores-its-own-receipt-money-ui-desktop/error-context.md
+
+  2) [money-ui-desktop] › e2e/legacy-money.spec.ts:117:2 › de: locale switch preserves exact monetary draft and original source token 
+
+    Error: expect(page).toHaveURL(expected) failed
+
+    Expected pattern: /\/en\/items\/526312d6-cab6-4633-9ec0-5129d5c7e3a6$/
+    Received string:  "http://localhost:3000/en"
+    Timeout: 5000ms
+
+    Call log:
+      - Expect "toHaveURL" with timeout 5000ms
+        - locator resolved to <html lang="de">…</html>
+        - unexpected value "http://localhost:3000/de/items/526312d6-cab6-4633-9ec0-5129d5c7e3a6"
+        13 × locator resolved to <html lang="en">…</html>
+           - unexpected value "http://localhost:3000/en"
+
+
+      122 |    const next = locale === "de" ? "en" : "de", shell = (locale === "de" ? de : en).Shell;
+      123 |    await page.getByRole("link", { name: locale === "de" ? shell.english : shell.german, exact: true }).click();
+    > 124 |    await expect(page).toHaveURL(new RegExp(`/${next}/items/${h.f.itemId}$`));
+          |                       ^
+      125 |    const mt = (next === "de" ? de : en).LegacyMoney, t = (next === "de" ? de : en).ItemForm;
+      126 |    const region = page.getByRole("region", { name: t.unitPrice, exact: true });
+      127 |    await expect(region.getByLabel(mt.newAmount, { exact: true })).toHaveValue("1,23"); await expect(region.getByLabel(mt.reason, { exact: true })).toHaveValue("Private bilingual draft"); await expect(region.getByLabel(mt.replacementAck, { exact: true })).toBeChecked();
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/legacy-money.spec.ts:124:23
+
+    Error Context: test-results/legacy-money-de-locale-swi-082a7-t-and-original-source-token-money-ui-desktop/error-context.md
+
+    Error Context: test-results/legacy-money-de-locale-swi-082a7-t-and-original-source-token-money-ui-desktop/error-context.md
+
+  3) [money-ui-desktop] › e2e/legacy-money.spec.ts:131:2 › de: stale monetary draft reports conflict without rewriting the newer meaning 
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: getByRole('alert')
+    Expected substring: "Dieser Betrag wurde zwischenzeitlich geändert. Bitte zuerst den aktuellen Stand prüfen."
+    Error: strict mode violation: getByRole('alert') resolved to 2 elements:
+        1) <p role="alert" class="error">Dieser Betrag wurde zwischenzeitlich geändert. Bi…</p> aka getByText('Dieser Betrag wurde')
+        2) <div role="alert" aria-live="assertive" id="__next-route-announcer__"></div> aka locator('[id="__next-route-announcer__"]')
+
+    Call log:
+      - Expect "toContainText" getByRole('alert') with timeout 5000ms
+      - waiting for getByRole('alert')
+
+
+      137 |    const fresh = await h.money.getMoney(h.subject);
+      138 |    const response = page.waitForResponse(r => r.request().method() === "PATCH" && new URL(r.url()).pathname.endsWith(`/items/${h.f.itemId}`)); await page.getByRole("button", { name: h.t.save, exact: true }).click(); expect((await response).status()).toBe(409);
+    > 139 |    await expect(page.getByRole("alert")).toContainText(h.m.conflict); await expect(page.getByRole("button", { name: h.t.save, exact: true })).toBeDisabled();
+          |                                          ^
+      140 |    expect(await h.money.getMoney(h.subject)).toEqual(fresh);
+      141 |    await page.getByRole("button", { name: h.m.checkCurrent, exact: true }).click(); await expect(page.getByRole("button", { name: h.m.adoptCurrent, exact: true })).toBeVisible();
+      142 |    await expect(h.region.getByLabel(h.m.newAmount, { exact: true })).toHaveValue("2"); await expect(page.getByRole("button", { name: h.t.save, exact: true })).toBeDisabled();
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/legacy-money.spec.ts:139:42
+
+    Error Context: test-results/legacy-money-de-stale-mone-e3929-rewriting-the-newer-meaning-money-ui-desktop/error-context.md
+
+    Error Context: test-results/legacy-money-de-stale-mone-e3929-rewriting-the-newer-meaning-money-ui-desktop/error-context.md
+
+  4) [money-ui-desktop] › e2e/legacy-money.spec.ts:99:2 › en: deliberate AFN correction requires confirmation and stores its own receipt 
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: getByRole('alert')
+    Expected substring: "Explicitly confirm this correction."
+    Error: strict mode violation: getByRole('alert') resolved to 2 elements:
+        1) <p role="alert" class="error">Enter a valid amount without thousands separators.</p> aka getByText('Enter a valid amount without')
+        2) <div role="alert" aria-live="assertive" id="__next-route-announcer__"></div> aka locator('[id="__next-route-announcer__"]')
+
+    Call log:
+      - Expect "toContainText" getByRole('alert') with timeout 5000ms
+      - waiting for getByRole('alert')
+
+
+      105 |    await h.region.getByLabel(h.m.reason, { exact: true }).fill("Use the new acquisition record");
+      106 |    await page.getByRole("button", { name: h.t.save, exact: true }).click();
+    > 107 |    await expect(page.getByRole("alert")).toContainText(locale === "de" ? "Bitte die Korrektur ausdrücklich bestätigen." : "Explicitly confirm this correction.");
+          |                                          ^
+      108 |    expect(patches).toBe(0);
+      109 |    await h.region.getByLabel(h.m.replacementAck, { exact: true }).check();
+      110 |    const response = page.waitForResponse(r => r.request().method() === "PATCH" && new URL(r.url()).pathname.endsWith(`/items/${h.f.itemId}`));
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/legacy-money.spec.ts:107:42
+
+    Error Context: test-results/legacy-money-en-deliberate-0a070--and-stores-its-own-receipt-money-ui-desktop/error-context.md
+
+    Error Context: test-results/legacy-money-en-deliberate-0a070--and-stores-its-own-receipt-money-ui-desktop/error-context.md
+
+  5) [money-ui-desktop] › e2e/legacy-money.spec.ts:117:2 › en: locale switch preserves exact monetary draft and original source token 
+
+    Error: expect(page).toHaveURL(expected) failed
+
+    Expected pattern: /\/de\/items\/9f85ea87-4035-4893-ac6d-86601cae581e$/
+    Received string:  "http://localhost:3000/de"
+    Timeout: 5000ms
+
+    Call log:
+      - Expect "toHaveURL" with timeout 5000ms
+        - locator resolved to <html lang="en">…</html>
+        - unexpected value "http://localhost:3000/en/items/9f85ea87-4035-4893-ac6d-86601cae581e"
+        13 × locator resolved to <html lang="de">…</html>
+           - unexpected value "http://localhost:3000/de"
+
+
+      122 |    const next = locale === "de" ? "en" : "de", shell = (locale === "de" ? de : en).Shell;
+      123 |    await page.getByRole("link", { name: locale === "de" ? shell.english : shell.german, exact: true }).click();
+    > 124 |    await expect(page).toHaveURL(new RegExp(`/${next}/items/${h.f.itemId}$`));
+          |                       ^
+      125 |    const mt = (next === "de" ? de : en).LegacyMoney, t = (next === "de" ? de : en).ItemForm;
+      126 |    const region = page.getByRole("region", { name: t.unitPrice, exact: true });
+      127 |    await expect(region.getByLabel(mt.newAmount, { exact: true })).toHaveValue("1,23"); await expect(region.getByLabel(mt.reason, { exact: true })).toHaveValue("Private bilingual draft"); await expect(region.getByLabel(mt.replacementAck, { exact: true })).toBeChecked();
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/legacy-money.spec.ts:124:23
+
+    Error Context: test-results/legacy-money-en-locale-swi-3086b-t-and-original-source-token-money-ui-desktop/error-context.md
+
+    Error Context: test-results/legacy-money-en-locale-swi-3086b-t-and-original-source-token-money-ui-desktop/error-context.md
+
+  6) [money-ui-desktop] › e2e/legacy-money.spec.ts:131:2 › en: stale monetary draft reports conflict without rewriting the newer meaning 
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: getByRole('alert')
+    Expected substring: "This amount changed in the meantime. Check the current record first."
+    Error: strict mode violation: getByRole('alert') resolved to 2 elements:
+        1) <p role="alert" class="error">This amount changed in the meantime. Check the cu…</p> aka getByText('This amount changed in the')
+        2) <div role="alert" aria-live="assertive" id="__next-route-announcer__"></div> aka locator('[id="__next-route-announcer__"]')
+
+    Call log:
+      - Expect "toContainText" getByRole('alert') with timeout 5000ms
+      - waiting for getByRole('alert')
+
+
+      137 |    const fresh = await h.money.getMoney(h.subject);
+      138 |    const response = page.waitForResponse(r => r.request().method() === "PATCH" && new URL(r.url()).pathname.endsWith(`/items/${h.f.itemId}`)); await page.getByRole("button", { name: h.t.save, exact: true }).click(); expect((await response).status()).toBe(409);
+    > 139 |    await expect(page.getByRole("alert")).toContainText(h.m.conflict); await expect(page.getByRole("button", { name: h.t.save, exact: true })).toBeDisabled();
+          |                                          ^
+      140 |    expect(await h.money.getMoney(h.subject)).toEqual(fresh);
+      141 |    await page.getByRole("button", { name: h.m.checkCurrent, exact: true }).click(); await expect(page.getByRole("button", { name: h.m.adoptCurrent, exact: true })).toBeVisible();
+      142 |    await expect(h.region.getByLabel(h.m.newAmount, { exact: true })).toHaveValue("2"); await expect(page.getByRole("button", { name: h.t.save, exact: true })).toBeDisabled();
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/legacy-money.spec.ts:139:42
+
+    Error Context: test-results/legacy-money-en-stale-mone-b8f26-rewriting-the-newer-meaning-money-ui-desktop/error-context.md
+
+    Error Context: test-results/legacy-money-en-stale-mone-b8f26-rewriting-the-newer-meaning-money-ui-desktop/error-context.md
+
+  7) [money-ui-mobile] › e2e/legacy-money.spec.ts:99:2 › de: deliberate AFN correction requires confirmation and stores its own receipt 
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: getByRole('alert')
+    Expected substring: "Bitte die Korrektur ausdrücklich bestätigen."
+    Error: strict mode violation: getByRole('alert') resolved to 2 elements:
+        1) <p role="alert" class="error">Bitte einen gültigen Betrag ohne Tausendertrennze…</p> aka getByText('Bitte einen gültigen Betrag')
+        2) <div role="alert" aria-live="assertive" id="__next-route-announcer__"></div> aka locator('[id="__next-route-announcer__"]')
+
+    Call log:
+      - Expect "toContainText" getByRole('alert') with timeout 5000ms
+      - waiting for getByRole('alert')
+
+
+      105 |    await h.region.getByLabel(h.m.reason, { exact: true }).fill("Use the new acquisition record");
+      106 |    await page.getByRole("button", { name: h.t.save, exact: true }).click();
+    > 107 |    await expect(page.getByRole("alert")).toContainText(locale === "de" ? "Bitte die Korrektur ausdrücklich bestätigen." : "Explicitly confirm this correction.");
+          |                                          ^
+      108 |    expect(patches).toBe(0);
+      109 |    await h.region.getByLabel(h.m.replacementAck, { exact: true }).check();
+      110 |    const response = page.waitForResponse(r => r.request().method() === "PATCH" && new URL(r.url()).pathname.endsWith(`/items/${h.f.itemId}`));
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/legacy-money.spec.ts:107:42
+
+    Error Context: test-results/legacy-money-de-deliberate-78127--and-stores-its-own-receipt-money-ui-mobile/error-context.md
+
+    Error Context: test-results/legacy-money-de-deliberate-78127--and-stores-its-own-receipt-money-ui-mobile/error-context.md
+
+  8) [money-ui-mobile] › e2e/legacy-money.spec.ts:117:2 › de: locale switch preserves exact monetary draft and original source token 
+
+    Error: expect(page).toHaveURL(expected) failed
+
+    Expected pattern: /\/en\/items\/b08b6bf7-00ba-4c31-8568-33b98a0b084c$/
+    Received string:  "http://localhost:3000/en"
+    Timeout: 5000ms
+
+    Call log:
+      - Expect "toHaveURL" with timeout 5000ms
+        - locator resolved to <html lang="de">…</html>
+        - unexpected value "http://localhost:3000/de/items/b08b6bf7-00ba-4c31-8568-33b98a0b084c"
+        13 × locator resolved to <html lang="en">…</html>
+           - unexpected value "http://localhost:3000/en"
+
+
+      122 |    const next = locale === "de" ? "en" : "de", shell = (locale === "de" ? de : en).Shell;
+      123 |    await page.getByRole("link", { name: locale === "de" ? shell.english : shell.german, exact: true }).click();
+    > 124 |    await expect(page).toHaveURL(new RegExp(`/${next}/items/${h.f.itemId}$`));
+          |                       ^
+      125 |    const mt = (next === "de" ? de : en).LegacyMoney, t = (next === "de" ? de : en).ItemForm;
+      126 |    const region = page.getByRole("region", { name: t.unitPrice, exact: true });
+      127 |    await expect(region.getByLabel(mt.newAmount, { exact: true })).toHaveValue("1,23"); await expect(region.getByLabel(mt.reason, { exact: true })).toHaveValue("Private bilingual draft"); await expect(region.getByLabel(mt.replacementAck, { exact: true })).toBeChecked();
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/legacy-money.spec.ts:124:23
+
+    Error Context: test-results/legacy-money-de-locale-swi-082a7-t-and-original-source-token-money-ui-mobile/error-context.md
+
+    Error Context: test-results/legacy-money-de-locale-swi-082a7-t-and-original-source-token-money-ui-mobile/error-context.md
+
+  9) [money-ui-mobile] › e2e/legacy-money.spec.ts:131:2 › de: stale monetary draft reports conflict without rewriting the newer meaning 
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: getByRole('alert')
+    Expected substring: "Dieser Betrag wurde zwischenzeitlich geändert. Bitte zuerst den aktuellen Stand prüfen."
+    Error: strict mode violation: getByRole('alert') resolved to 2 elements:
+        1) <p role="alert" class="error">Dieser Betrag wurde zwischenzeitlich geändert. Bi…</p> aka getByText('Dieser Betrag wurde')
+        2) <div role="alert" aria-live="assertive" id="__next-route-announcer__"></div> aka locator('[id="__next-route-announcer__"]')
+
+    Call log:
+      - Expect "toContainText" getByRole('alert') with timeout 5000ms
+      - waiting for getByRole('alert')
+
+
+      137 |    const fresh = await h.money.getMoney(h.subject);
+      138 |    const response = page.waitForResponse(r => r.request().method() === "PATCH" && new URL(r.url()).pathname.endsWith(`/items/${h.f.itemId}`)); await page.getByRole("button", { name: h.t.save, exact: true }).click(); expect((await response).status()).toBe(409);
+    > 139 |    await expect(page.getByRole("alert")).toContainText(h.m.conflict); await expect(page.getByRole("button", { name: h.t.save, exact: true })).toBeDisabled();
+          |                                          ^
+      140 |    expect(await h.money.getMoney(h.subject)).toEqual(fresh);
+      141 |    await page.getByRole("button", { name: h.m.checkCurrent, exact: true }).click(); await expect(page.getByRole("button", { name: h.m.adoptCurrent, exact: true })).toBeVisible();
+      142 |    await expect(h.region.getByLabel(h.m.newAmount, { exact: true })).toHaveValue("2"); await expect(page.getByRole("button", { name: h.t.save, exact: true })).toBeDisabled();
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/legacy-money.spec.ts:139:42
+
+    Error Context: test-results/legacy-money-de-stale-mone-e3929-rewriting-the-newer-meaning-money-ui-mobile/error-context.md
+
+    Error Context: test-results/legacy-money-de-stale-mone-e3929-rewriting-the-newer-meaning-money-ui-mobile/error-context.md
+
+  10) [money-ui-mobile] › e2e/legacy-money.spec.ts:99:2 › en: deliberate AFN correction requires confirmation and stores its own receipt 
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: getByRole('alert')
+    Expected substring: "Explicitly confirm this correction."
+    Error: strict mode violation: getByRole('alert') resolved to 2 elements:
+        1) <p role="alert" class="error">Enter a valid amount without thousands separators.</p> aka getByText('Enter a valid amount without')
+        2) <div role="alert" aria-live="assertive" id="__next-route-announcer__"></div> aka locator('[id="__next-route-announcer__"]')
+
+    Call log:
+      - Expect "toContainText" getByRole('alert') with timeout 5000ms
+      - waiting for getByRole('alert')
+
+
+      105 |    await h.region.getByLabel(h.m.reason, { exact: true }).fill("Use the new acquisition record");
+      106 |    await page.getByRole("button", { name: h.t.save, exact: true }).click();
+    > 107 |    await expect(page.getByRole("alert")).toContainText(locale === "de" ? "Bitte die Korrektur ausdrücklich bestätigen." : "Explicitly confirm this correction.");
+          |                                          ^
+      108 |    expect(patches).toBe(0);
+      109 |    await h.region.getByLabel(h.m.replacementAck, { exact: true }).check();
+      110 |    const response = page.waitForResponse(r => r.request().method() === "PATCH" && new URL(r.url()).pathname.endsWith(`/items/${h.f.itemId}`));
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/legacy-money.spec.ts:107:42
+
+    Error Context: test-results/legacy-money-en-deliberate-0a070--and-stores-its-own-receipt-money-ui-mobile/error-context.md
+
+    Error Context: test-results/legacy-money-en-deliberate-0a070--and-stores-its-own-receipt-money-ui-mobile/error-context.md
+
+  11) [money-ui-mobile] › e2e/legacy-money.spec.ts:117:2 › en: locale switch preserves exact monetary draft and original source token 
+
+    Error: expect(page).toHaveURL(expected) failed
+
+    Expected pattern: /\/de\/items\/22a154f4-80d5-4685-9f88-3ae713cc28a4$/
+    Received string:  "http://localhost:3000/de"
+    Timeout: 5000ms
+
+    Call log:
+      - Expect "toHaveURL" with timeout 5000ms
+        - locator resolved to <html lang="en">…</html>
+        - unexpected value "http://localhost:3000/en/items/22a154f4-80d5-4685-9f88-3ae713cc28a4"
+        13 × locator resolved to <html lang="de">…</html>
+           - unexpected value "http://localhost:3000/de"
+
+
+      122 |    const next = locale === "de" ? "en" : "de", shell = (locale === "de" ? de : en).Shell;
+      123 |    await page.getByRole("link", { name: locale === "de" ? shell.english : shell.german, exact: true }).click();
+    > 124 |    await expect(page).toHaveURL(new RegExp(`/${next}/items/${h.f.itemId}$`));
+          |                       ^
+      125 |    const mt = (next === "de" ? de : en).LegacyMoney, t = (next === "de" ? de : en).ItemForm;
+      126 |    const region = page.getByRole("region", { name: t.unitPrice, exact: true });
+      127 |    await expect(region.getByLabel(mt.newAmount, { exact: true })).toHaveValue("1,23"); await expect(region.getByLabel(mt.reason, { exact: true })).toHaveValue("Private bilingual draft"); await expect(region.getByLabel(mt.replacementAck, { exact: true })).toBeChecked();
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/legacy-money.spec.ts:124:23
+
+    Error Context: test-results/legacy-money-en-locale-swi-3086b-t-and-original-source-token-money-ui-mobile/error-context.md
+
+    Error Context: test-results/legacy-money-en-locale-swi-3086b-t-and-original-source-token-money-ui-mobile/error-context.md
+
+  12) [money-ui-mobile] › e2e/legacy-money.spec.ts:131:2 › en: stale monetary draft reports conflict without rewriting the newer meaning 
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: getByRole('alert')
+    Expected substring: "This amount changed in the meantime. Check the current record first."
+    Error: strict mode violation: getByRole('alert') resolved to 2 elements:
+        1) <p role="alert" class="error">This amount changed in the meantime. Check the cu…</p> aka getByText('This amount changed in the')
+        2) <div role="alert" aria-live="assertive" id="__next-route-announcer__"></div> aka locator('[id="__next-route-announcer__"]')
+
+    Call log:
+      - Expect "toContainText" getByRole('alert') with timeout 5000ms
+      - waiting for getByRole('alert')
+
+
+      137 |    const fresh = await h.money.getMoney(h.subject);
+      138 |    const response = page.waitForResponse(r => r.request().method() === "PATCH" && new URL(r.url()).pathname.endsWith(`/items/${h.f.itemId}`)); await page.getByRole("button", { name: h.t.save, exact: true }).click(); expect((await response).status()).toBe(409);
+    > 139 |    await expect(page.getByRole("alert")).toContainText(h.m.conflict); await expect(page.getByRole("button", { name: h.t.save, exact: true })).toBeDisabled();
+          |                                          ^
+      140 |    expect(await h.money.getMoney(h.subject)).toEqual(fresh);
+      141 |    await page.getByRole("button", { name: h.m.checkCurrent, exact: true }).click(); await expect(page.getByRole("button", { name: h.m.adoptCurrent, exact: true })).toBeVisible();
+      142 |    await expect(h.region.getByLabel(h.m.newAmount, { exact: true })).toHaveValue("2"); await expect(page.getByRole("button", { name: h.t.save, exact: true })).toBeDisabled();
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/legacy-money.spec.ts:139:42
+
+    Error Context: test-results/legacy-money-en-stale-mone-b8f26-rewriting-the-newer-meaning-money-ui-mobile/error-context.md
+
+    Error Context: test-results/legacy-money-en-stale-mone-b8f26-rewriting-the-newer-meaning-money-ui-mobile/error-context.md
+
+  12 failed
+    [money-ui-desktop] › e2e/legacy-money.spec.ts:99:2 › de: deliberate AFN correction requires confirmation and stores its own receipt 
+    [money-ui-desktop] › e2e/legacy-money.spec.ts:117:2 › de: locale switch preserves exact monetary draft and original source token 
+    [money-ui-desktop] › e2e/legacy-money.spec.ts:131:2 › de: stale monetary draft reports conflict without rewriting the newer meaning 
+    [money-ui-desktop] › e2e/legacy-money.spec.ts:99:2 › en: deliberate AFN correction requires confirmation and stores its own receipt 
+    [money-ui-desktop] › e2e/legacy-money.spec.ts:117:2 › en: locale switch preserves exact monetary draft and original source token 
+    [money-ui-desktop] › e2e/legacy-money.spec.ts:131:2 › en: stale monetary draft reports conflict without rewriting the newer meaning 
+    [money-ui-mobile] › e2e/legacy-money.spec.ts:99:2 › de: deliberate AFN correction requires confirmation and stores its own receipt 
+    [money-ui-mobile] › e2e/legacy-money.spec.ts:117:2 › de: locale switch preserves exact monetary draft and original source token 
+    [money-ui-mobile] › e2e/legacy-money.spec.ts:131:2 › de: stale monetary draft reports conflict without rewriting the newer meaning 
+    [money-ui-mobile] › e2e/legacy-money.spec.ts:99:2 › en: deliberate AFN correction requires confirmation and stores its own receipt 
+    [money-ui-mobile] › e2e/legacy-money.spec.ts:117:2 › en: locale switch preserves exact monetary draft and original source token 
+    [money-ui-mobile] › e2e/legacy-money.spec.ts:131:2 › en: stale monetary draft reports conflict without rewriting the newer meaning 
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/legacy-money.spec.ts --grep deliberate AFN|locale switch|stale monetary --workers=1

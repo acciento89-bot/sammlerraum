@@ -1,5 +1,31 @@
 "use client";
 
+import {
+  CreateItemMoneyInputSchema,
+  UpdateItemMoneyInputSchema,
+  ItemMoneyResultSchema,
+} from "@sammlerraum/contracts/personal-money";
+import type { MoneyCapabilities } from "@sammlerraum/contracts/money-capabilities";
+import { LegacyMoneyIdSchema, type MoneyView } from "@sammlerraum/contracts/legacy-money";
+import { LegacyMoneyEditor } from "../money/legacy-money-editor";
+import {
+  MoneyDraftError,
+  initialMoneyDraft,
+  moneyDraftIntent,
+  rememberMoneyDraft,
+  recallMoneyDraft,
+  clearMoneyDrafts,
+  forgetMoneyDraft,
+  type MoneyDraft,
+} from "../money/legacy-money-draft";
+import {
+  loadMoneyCapabilities,
+  requireMoneyAuthoring,
+  readMoney,
+  writeMoney,
+  MoneyClientError,
+} from "../money/legacy-money-client";
+import { acceptsMoneyAcknowledgement } from "../money/legacy-money-acknowledgement";
 import { ConditionGradingEditor } from "./condition-grading-editor";
 import { ItemGalleryEditor } from "../media/item-gallery-editor";
 import type { Collection, CollectionNode } from "@sammlerraum/contracts/collections";
@@ -69,16 +95,19 @@ async function read<T>(url: string): Promise<T> {
 }
 
 export function ItemForm({
+  actor,
   locale,
   itemId,
   initialCollectionId = "",
 }: {
+  actor: string;
   locale: "de" | "en";
   itemId?: string;
   initialCollectionId?: string;
 }) {
   const media = useTranslations("Media");
   const t = useTranslations("ItemForm");
+  const moneyText = useTranslations("LegacyMoney");
   const common = useTranslations("Management");
   const router = useRouter();
   const [collections, setCollections] = useState<Collection[]>([]);
@@ -99,6 +128,49 @@ export function ItemForm({
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [status, setStatus] = useState("");
+  const [moneyCapabilities, setMoneyCapabilities] = useState<MoneyCapabilities>();
+  const [moneyReady, setMoneyReady] = useState(false);
+  const [purchaseView, setPurchaseView] = useState<MoneyView | null>(null);
+  const [purchaseDraft, setPurchaseDraft] = useState<MoneyDraft>(() => initialMoneyDraft(null));
+  const [moneyInspected, setMoneyInspected] = useState(false);
+  const monetaryOwner = actor;
+  const [actorExpired, setActorExpired] = useState(false);
+  const purchaseDraftKey = `purchase:${workingItemId || `new:${collectionId}`}`;
+  const moneyEnabled = moneyReady && moneyCapabilities?.authoringProfiles.length === 1;
+  function changePurchaseDraft(next: MoneyDraft) {
+    setPurchaseDraft(next);
+    if (monetaryOwner) rememberMoneyDraft(monetaryOwner, purchaseDraftKey, next);
+  }
+  function moneyMessage(problem: unknown) {
+    if (problem instanceof MoneyDraftError)
+      return moneyText(
+        problem.code === "MONEY_REPLACEMENT_ACK_REQUIRED"
+          ? "confirmRequired"
+          : problem.code === "MONEY_CORRECTION_REASON_REQUIRED"
+            ? "reasonRequired"
+            : problem.code === "MONEY_DRAFT_NOT_LOADED"
+              ? "readFailed"
+              : problem.code === "MONEY_OUTCOME_UNCERTAIN"
+                ? "unknownOutcome"
+                : "invalid",
+      );
+    return moneyText(
+      problem instanceof MoneyClientError
+        ? problem.code === "CONFLICT"
+          ? "conflict"
+          : problem.code === "OUTCOME_UNKNOWN"
+            ? "unknownOutcome"
+            : problem.code === "ACKNOWLEDGED_UNREADABLE"
+              ? "ackUnreadable"
+              : problem.code === "CAPABILITY_UNAVAILABLE"
+                ? "disabled"
+                : problem.code === "READ_FAILED"
+                  ? "readFailed"
+                  : "refused"
+        : "invalid",
+    );
+  }
+
   // Reads started before an acknowledged write cannot restore an older item snapshot.
   const snapshotGeneration = useRef(0);
 
@@ -147,6 +219,46 @@ export function ItemForm({
         } else if (!initialCollectionId && collectionBody.collections[0]) {
           setCollectionId(collectionBody.collections[0].id);
         }
+        try {
+          const capability = await loadMoneyCapabilities();
+          if (capability.actorId !== actor) {
+            clearMoneyDrafts();
+            setActorExpired(true);
+            throw new MoneyClientError("REFUSED", 401);
+          }
+          const actual = itemId
+            ? await readMoney(
+                `/api/v1/money/items/${itemId}`,
+                ItemMoneyResultSchema.refine(
+                  (value) =>
+                    value.item.id === itemId &&
+                    value.item.purchaseAmountMinor ===
+                      (value.purchase.raw ? Number(value.purchase.raw.amountMinor) : null) &&
+                    value.item.purchaseCurrency === (value.purchase.raw?.currency ?? null) &&
+                    acceptsMoneyAcknowledgement(
+                      value.purchase,
+                      { family: "PURCHASE", itemId },
+                      undefined,
+                    ),
+                ),
+              )
+            : undefined;
+          if (cancelled || generation !== snapshotGeneration.current) return;
+          setMoneyCapabilities(capability);
+          if (actual && itemBody) {
+            applyItemSnapshot({ ...itemBody, item: actual.item });
+            setPurchaseView(actual.purchase);
+            setPurchaseDraft(
+              recallMoneyDraft(actor, `purchase:${itemId}`) ?? initialMoneyDraft(actual.purchase),
+            );
+          }
+          setMoneyReady(true);
+        } catch (problem) {
+          if (!cancelled && generation === snapshotGeneration.current) {
+            setMoneyReady(false);
+            setError(moneyMessage(problem));
+          }
+        }
       } catch (problem) {
         const message =
           problem instanceof Response
@@ -161,7 +273,73 @@ export function ItemForm({
       cancelled = true;
       snapshotGeneration.current++;
     };
-  }, [itemId, initialCollectionId, common]);
+  }, [itemId, initialCollectionId, common, moneyText, actor]);
+
+  useEffect(() => {
+    if (workingItemId || !LegacyMoneyIdSchema.safeParse(collectionId).success) return;
+    const url = new URL(window.location.href);
+    if (url.pathname !== `/${locale}/items/new`) return;
+    if (
+      url.searchParams.getAll("collectionId").length !== 1 ||
+      url.searchParams.get("collectionId") !== collectionId
+    ) {
+      url.searchParams.set("collectionId", collectionId);
+      window.history.replaceState(window.history.state, "", url);
+    }
+    window.dispatchEvent(new Event("sammlerraum:money-history"));
+  }, [workingItemId, collectionId, locale]);
+
+  useEffect(() => {
+    if (!moneyReady || workingItemId) return;
+    const owner = actor;
+    if (owner)
+      setPurchaseDraft(
+        recallMoneyDraft(owner, `purchase:new:${collectionId}`) ?? initialMoneyDraft(null),
+      );
+  }, [moneyReady, workingItemId, collectionId, actor]);
+
+  async function inspectCurrentMoney() {
+    if (saving) return;
+    const generation = ++snapshotGeneration.current;
+    setSaving(true);
+    setMoneyInspected(false);
+    try {
+      const capability = await loadMoneyCapabilities();
+      if (capability.actorId !== actor) {
+        clearMoneyDrafts();
+        setActorExpired(true);
+        throw new MoneyClientError("REFUSED", 401);
+      }
+      if (workingItemId) {
+        const actual = await readMoney(
+          `/api/v1/money/items/${workingItemId}`,
+          ItemMoneyResultSchema.refine(
+            (value) =>
+              value.item.id === workingItemId &&
+              value.item.purchaseAmountMinor ===
+                (value.purchase.raw ? Number(value.purchase.raw.amountMinor) : null) &&
+              value.item.purchaseCurrency === (value.purchase.raw?.currency ?? null) &&
+              acceptsMoneyAcknowledgement(
+                value.purchase,
+                { family: "PURCHASE", itemId: workingItemId },
+                undefined,
+              ),
+          ),
+        );
+        if (generation !== snapshotGeneration.current) return;
+        setPurchaseView(actual.purchase);
+        setMoneyInspected(true);
+      }
+      if (generation === snapshotGeneration.current) {
+        setMoneyCapabilities(capability);
+        setMoneyReady(true);
+      }
+    } catch (problem) {
+      if (generation === snapshotGeneration.current) setError(moneyMessage(problem));
+    } finally {
+      setSaving(false);
+    }
+  }
 
   useEffect(() => {
     if (!collectionId) {
@@ -213,19 +391,23 @@ export function ItemForm({
 
   async function save(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!collectionId || optionsCollectionId !== collectionId || inactive) return;
+    if (
+      !collectionId ||
+      optionsCollectionId !== collectionId ||
+      inactive ||
+      !moneyEnabled ||
+      purchaseDraft.outcome !== "READY"
+    )
+      return;
     setSaving(true);
     setError("");
     setStatus("");
     const form = new FormData(event.currentTarget);
-    let purchaseAmountMinor: number | null;
+    let purchaseIntent: ReturnType<typeof moneyDraftIntent>;
     try {
-      purchaseAmountMinor = minorUnits(
-        String(form.get("purchaseAmount") ?? ""),
-        String(form.get("purchaseCurrency") ?? "EUR"),
-      );
-    } catch {
-      setError(t("moneyInvalid"));
+      purchaseIntent = moneyDraftIntent(purchaseDraft, purchaseView, Boolean(workingItemId));
+    } catch (problem) {
+      setError(moneyMessage(problem));
       setSaving(false);
       return;
     }
@@ -237,8 +419,6 @@ export function ItemForm({
       quantity: Number(form.get("quantity")),
       acquisitionType: form.get("acquisitionType"),
       acquisitionDate: String(form.get("acquisitionDate") ?? "") || null,
-      purchaseAmountMinor,
-      purchaseCurrency: purchaseAmountMinor === null ? null : form.get("purchaseCurrency"),
       visibility: form.get("visibility"),
       tradeStatus: form.get("tradeStatus"),
     };
@@ -263,16 +443,66 @@ export function ItemForm({
     let createdNow = false;
     try {
       let targetId = workingItemId;
-      const coreResponse = await fetch(targetId ? `/api/v1/items/${targetId}` : "/api/v1/items", {
-        method: targetId ? "PATCH" : "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify(targetId ? core : { ...core, collectionId }),
-      });
-      if (!coreResponse.ok) {
-        setError(await errorMessage(coreResponse, common("error")));
-        return;
+      const capability = await loadMoneyCapabilities();
+      if (capability.actorId !== actor) {
+        clearMoneyDrafts();
+        setActorExpired(true);
+        throw new MoneyClientError("REFUSED", 401);
       }
-      const coreBody = (await coreResponse.json()) as { item: CollectibleItem };
+      setMoneyCapabilities(capability);
+      requireMoneyAuthoring(capability);
+      const requestBody = targetId
+        ? UpdateItemMoneyInputSchema.parse({
+            schemaVersion: 1,
+            item: core,
+            ...(purchaseIntent ? { purchase: purchaseIntent } : {}),
+          })
+        : CreateItemMoneyInputSchema.parse({
+            schemaVersion: 1,
+            item: { ...core, collectionId },
+            ...(purchaseIntent ? { purchase: purchaseIntent } : {}),
+          });
+      ++snapshotGeneration.current;
+      const oldId = targetId;
+      const coreBody = await writeMoney(
+        targetId ? `/api/v1/money/items/${targetId}` : "/api/v1/money/items",
+        targetId ? "PATCH" : "POST",
+        requestBody,
+        ItemMoneyResultSchema.refine((value) => {
+          if ((oldId && value.item.id !== oldId) || value.item.collectionId !== collectionId)
+            return false;
+          const actual = value.item as unknown as Record<string, unknown>;
+          if (
+            !Object.entries(requestBody.item).every(
+              ([key, expected]) => JSON.stringify(actual[key]) === JSON.stringify(expected),
+            )
+          )
+            return false;
+          if (
+            !acceptsMoneyAcknowledgement(
+              value.purchase,
+              { family: "PURCHASE", itemId: value.item.id },
+              purchaseIntent,
+            )
+          )
+            return false;
+          return (
+            value.item.purchaseAmountMinor ===
+              (value.purchase.raw ? Number(value.purchase.raw.amountMinor) : null) &&
+            value.item.purchaseCurrency === (value.purchase.raw?.currency ?? null)
+          );
+        }),
+        capability,
+      );
+      // Install the receipt before metadata writes or a fallible refresh can occur.
+      const acknowledgedDraft = initialMoneyDraft(coreBody.purchase);
+      setPurchaseView(coreBody.purchase);
+      setPurchaseDraft(acknowledgedDraft);
+      setMoneyInspected(false);
+      if (monetaryOwner) {
+        forgetMoneyDraft(monetaryOwner, purchaseDraftKey);
+        rememberMoneyDraft(monetaryOwner, `purchase:${coreBody.item.id}`, acknowledgedDraft);
+      }
       const generation = ++snapshotGeneration.current;
       setItem(coreBody.item);
       if (!targetId) {
@@ -326,6 +556,22 @@ export function ItemForm({
       router.push(`/${locale}/items/${targetId}`);
       router.refresh();
     } catch (problem) {
+      if (problem instanceof MoneyClientError) {
+        if (
+          problem.code === "OUTCOME_UNKNOWN" ||
+          problem.code === "ACKNOWLEDGED_UNREADABLE" ||
+          problem.code === "CONFLICT"
+        ) {
+          ++snapshotGeneration.current;
+          changePurchaseDraft({
+            ...purchaseDraft,
+            outcome: problem.code === "OUTCOME_UNKNOWN" ? "UNKNOWN" : problem.code,
+          });
+          setMoneyInspected(false);
+        }
+        setError(moneyMessage(problem));
+        return;
+      }
       setError(
         problem instanceof Response
           ? await errorMessage(problem, common("error"))
@@ -374,6 +620,15 @@ export function ItemForm({
     }
   }
 
+  if (actorExpired)
+    return (
+      <section className="management-shell">
+        <p className="notice" role="alert">
+          {moneyText("sessionChanged")}
+        </p>
+        <Link href={`/${locale}/login`}>{moneyText("signIn")}</Link>
+      </section>
+    );
   if (loading) {
     return (
       <section className="management-shell">
@@ -413,6 +668,38 @@ export function ItemForm({
         <p className="error" role="alert">
           {error}
         </p>
+      )}
+
+      {(!moneyReady || purchaseDraft.outcome !== "READY") && !loading && (
+        <div className="money-recovery notice">
+          {workingItemId || purchaseDraft.outcome === "READY" ? (
+            <button
+              type="button"
+              className="secondary-button"
+              disabled={saving}
+              onClick={inspectCurrentMoney}
+            >
+              {moneyText("checkCurrent")}
+            </button>
+          ) : (
+            <Link href={`/${locale}/collections/${collectionId}`}>
+              {moneyText("collectionCheck")}
+            </Link>
+          )}
+          {moneyInspected && purchaseView && (
+            <button
+              type="button"
+              className="secondary-button"
+              onClick={() => {
+                changePurchaseDraft(initialMoneyDraft(purchaseView));
+                setMoneyInspected(false);
+                setError("");
+              }}
+            >
+              {moneyText("adoptCurrent")}
+            </button>
+          )}
+        </div>
       )}
 
       {collections.length === 0 ? (
@@ -536,30 +823,17 @@ export function ItemForm({
                   defaultValue={item?.acquisitionDate ?? ""}
                 />
               </label>
-              <div className="form-row">
-                <label>
-                  {t("unitPrice")}
-                  <input
-                    name="purchaseAmount"
-                    inputMode="decimal"
-                    defaultValue={majorUnits(
-                      item?.purchaseAmountMinor ?? null,
-                      item?.purchaseCurrency ?? "EUR",
-                    )}
-                    placeholder="0.00"
-                  />
-                </label>
-                <label>
-                  {t("currency")}
-                  <select name="purchaseCurrency" defaultValue={item?.purchaseCurrency ?? "EUR"}>
-                    {itemCurrencyOptions.map((currency) => (
-                      <option key={currency} value={currency}>
-                        {currency}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-              </div>
+              <LegacyMoneyEditor
+                label={t("unitPrice")}
+                name="purchaseAmount"
+                locale={locale}
+                view={purchaseView}
+                existing={Boolean(workingItemId)}
+                draft={purchaseDraft}
+                onChange={changePurchaseDraft}
+                loaded={moneyReady}
+                disabled={!moneyEnabled || saving || inactive || purchaseDraft.outcome !== "READY"}
+              />
               <label>
                 {t("tradeStatus")}
                 <select name="tradeStatus" defaultValue={item?.tradeStatus ?? "NOT_FOR_TRADE"}>
@@ -685,7 +959,13 @@ export function ItemForm({
           <div className="form-actions">
             <button
               type="submit"
-              disabled={inactive || saving || optionsCollectionId !== collectionId}
+              disabled={
+                inactive ||
+                saving ||
+                optionsCollectionId !== collectionId ||
+                !moneyEnabled ||
+                purchaseDraft.outcome !== "READY"
+              }
             >
               {saving ? t("saving") : t("save")}
             </button>

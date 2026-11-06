@@ -23,5 +23,12 @@ export default async function NewItemPage({
     query: { disableCookieCache: true, disableRefresh: true },
   });
   if (!session) redirect(`/${locale}/login`);
-  return <ItemForm initialCollectionId={collectionId ?? ""} locale={locale} />;
+  return (
+    <ItemForm
+      key={session.user.id}
+      actor={session.user.id}
+      initialCollectionId={collectionId ?? ""}
+      locale={locale}
+    />
+  );
 }

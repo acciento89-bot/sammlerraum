@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { MoneyCapabilitiesSchema } from "./money-capabilities";
 import { LEGACY_MONEY_PROFILE_ID, LEGACY_MONEY_AUTHORITY_HASH } from "./legacy-money";
 const supported = {
+  actorId: "synthetic",
   schemaVersion: 1,
   readVersion: 1,
   authoringProfiles: [

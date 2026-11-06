@@ -3,13 +3,16 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
+import { moneyLocaleHref } from "../money/money-locale-navigation";
 import { parseSearchLocation } from "./search-url-state";
 export function LocaleNavigation({ locale }: { locale: string }) {
   const t = useTranslations("Shell");
   const pathname = usePathname();
   const [suffix, setSuffix] = useState("");
+  const [moneySearch, setMoneySearch] = useState("");
   useEffect(() => {
     const update = () => {
+      setMoneySearch(window.location.search);
       const parsed = parseSearchLocation(window.location.search, window.location.hash);
       setSuffix(
         parsed.kind === "token"
@@ -22,9 +25,11 @@ export function LocaleNavigation({ locale }: { locale: string }) {
     update();
     window.addEventListener("popstate", update);
     window.addEventListener("sammlerraum:search-history", update);
+    window.addEventListener("sammlerraum:money-history", update);
     return () => {
       window.removeEventListener("popstate", update);
       window.removeEventListener("sammlerraum:search-history", update);
+      window.removeEventListener("sammlerraum:money-history", update);
     };
   }, [pathname]);
   const saved = /^\/(de|en)\/smart-collections(?:\/[0-9a-f-]+)?$/u.test(pathname ?? "");
@@ -36,11 +41,12 @@ export function LocaleNavigation({ locale }: { locale: string }) {
         <Link
           key={language}
           href={
-            queryView
+            moneyLocaleHref(pathname ?? "", language, moneySearch) ??
+            (queryView
               ? `/${language}/${queryView}${suffix}`
               : saved || milestones
                 ? `/${language}${pathname!.slice(3)}`
-                : `/${language}`
+                : `/${language}`)
           }
           hrefLang={language}
           prefetch={false}

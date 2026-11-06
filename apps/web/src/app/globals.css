@@ -1202,3 +1202,46 @@ body:has(.search-shell) .skip-link:not(:focus) {
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+.money-editor {
+  grid-column: 1 / -1;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 1rem;
+  background: var(--surface);
+}
+.money-editor h4 {
+  margin: 0 0 0.6rem;
+}
+.money-editor fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0.75rem 0 0;
+  min-width: 0;
+}
+.money-readout {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.4rem 0.8rem;
+}
+.money-readout output {
+  font-size: 1.15rem;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+.money-status {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+.money-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.money-preview {
+  border-left: 3px solid var(--green);
+  padding: 0.4rem 0.75rem;
+  background: #edf4ec;
+  color: var(--green);
+}

@@ -7,6 +7,7 @@ import {
 } from "@sammlerraum/contracts/legacy-money";
 import { loadMoneyCapabilities, writeMoney } from "./legacy-money-client";
 const capabilities = MoneyCapabilitiesSchema.parse({
+  actorId: "synthetic",
   schemaVersion: 1,
   readVersion: 1,
   authoringProfiles: [

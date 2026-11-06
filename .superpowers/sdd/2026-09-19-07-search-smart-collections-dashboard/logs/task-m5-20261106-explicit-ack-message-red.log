@@ -1,0 +1,44 @@
+[WebServer] (node:85938) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:85941) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [money-ui-desktop] › e2e/legacy-money.spec.ts:99:2 › de: deliberate AFN correction requires confirmation and stores its own receipt (6.9s)
+
+
+  1) [money-ui-desktop] › e2e/legacy-money.spec.ts:99:2 › de: deliberate AFN correction requires confirmation and stores its own receipt 
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: locator('p.error[role=alert]')
+    Expected substring: "Bitte die Korrektur ausdrücklich bestätigen."
+    Received string:    "Bitte einen gültigen Betrag ohne Tausendertrennzeichen eingeben."
+    Timeout: 5000ms
+
+    Call log:
+      - Expect "toContainText" locator('p.error[role=alert]') with timeout 5000ms
+      - waiting for locator('p.error[role=alert]')
+        14 × locator resolved to <p role="alert" class="error">Bitte einen gültigen Betrag ohne Tausendertrennze…</p>
+           - unexpected value "Bitte einen gültigen Betrag ohne Tausendertrennzeichen eingeben."
+
+
+      105 |    await h.region.getByLabel(h.m.reason, { exact: true }).fill("Use the new acquisition record");
+      106 |    await page.getByRole("button", { name: h.t.save, exact: true }).click();
+    > 107 |    await expect(page.locator("p.error[role=alert]")).toContainText(locale === "de" ? "Bitte die Korrektur ausdrücklich bestätigen." : "Explicitly confirm this correction.");
+          |                                                      ^
+      108 |    expect(patches).toBe(0);
+      109 |    await h.region.getByLabel(h.m.replacementAck, { exact: true }).check();
+      110 |    const response = page.waitForResponse(r => r.request().method() === "PATCH" && new URL(r.url()).pathname.endsWith(`/items/${h.f.itemId}`));
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/legacy-money.spec.ts:107:54
+
+    Error Context: test-results/legacy-money-de-deliberate-78127--and-stores-its-own-receipt-money-ui-desktop/error-context.md
+
+    Error Context: test-results/legacy-money-de-deliberate-78127--and-stores-its-own-receipt-money-ui-desktop/error-context.md
+
+  1 failed
+    [money-ui-desktop] › e2e/legacy-money.spec.ts:99:2 › de: deliberate AFN correction requires confirmation and stores its own receipt 
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/legacy-money.spec.ts --project money-ui-desktop --grep de: deliberate AFN --workers=1

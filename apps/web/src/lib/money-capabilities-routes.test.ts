@@ -19,6 +19,7 @@ describe("private monetary capability response", () => {
       expect(response.headers.get("cache-control")).toBe("no-store");
       expect(response.headers.get("x-request-id")).toBeTruthy();
       expect(MoneyCapabilitiesSchema.parse(await response.json())).toMatchObject({
+        actorId: "synthetic",
         canonicalConsumers: false,
         authoringProfiles: enabled ? [expect.anything()] : [],
       });
