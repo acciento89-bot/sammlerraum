@@ -283,6 +283,30 @@ describe.runIf(enabled)("legacy money real Prisma transaction store", () => {
     >`SELECT count(*) AS total FROM "CatalogMoneyInterpretationEvent" WHERE "entryId"=${s.entryId}::uuid AND operation='CLASSIFY'`;
     expect(count!.total).toBe(1n);
   });
+  it.each([
+    ["42", "42", false],
+    ["42", "4294967338", true],
+    ["4294967295", "4294967295", false],
+    ["4294967295", "8589934591", true],
+    ["42", "43", true],
+  ] as const)(
+    "native installed full-XID predicate preserves epoch for raw%s and full%s",
+    async (rawXmin, fullXid, mustAdvance) => {
+      const [guard] = await db.$queryRaw<
+        Array<{ source: string }>
+      >`SELECT pg_get_functiondef('legacy_money_event_guard()'::regprocedure) AS source`;
+      const installed = /AND (xmin::text::xid8<>pg_current_xact_id\(\))/.exec(guard!.source);
+      expect(installed).not.toBeNull();
+      if (!installed) throw Error("Installed guard has no full-XID predicate");
+      const expression = Prisma.raw(
+        installed[1]!.replace("xmin", 'p."rawXmin"').replace("pg_current_xact_id()", 'p."fullXid"'),
+      );
+      const [result] = await db.$queryRaw<Array<{ advance: boolean }>>(
+        Prisma.sql`SELECT ${expression} AS advance FROM (SELECT ${rawXmin}::xid AS "rawXmin",${fullXid}::xid8 AS "fullXid") p`,
+      );
+      expect(result!.advance).toBe(mustAdvance);
+    },
+  );
   it("rejects malformed selected catalog money rather than turning it into missing", async () => {
     const f = await fixture(),
       s = await canonical({ amountMinor: "1", currency: 1 });

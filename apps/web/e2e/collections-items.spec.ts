@@ -1,9 +1,12 @@
+import de from "../messages/de.json" with { type: "json" };
+import en from "../messages/en.json" with { type: "json" };
 import { randomUUID } from "node:crypto";
 
 import { expect, test, type Page, type TestInfo } from "@playwright/test";
 import { createPrismaClient } from "@sammlerraum/db/create-client";
 import { hashPassword } from "better-auth/crypto";
 
+const moneyCopy = { de: de.LegacyMoney, en: en.LegacyMoney };
 const runManagementE2E = process.env.RUN_AUTH_E2E === "1";
 
 type Locale = "de" | "en";
@@ -334,8 +337,11 @@ test.describe("localized collection and item management", () => {
       await page.getByLabel(labels.title).fill("Glurak");
       await page.getByLabel(labels.publicDescription).fill("Holographic card");
       await page.getByLabel(labels.privateNotes).fill("Kept in a protective sleeve");
-      await page.getByLabel(labels.unitPrice).fill("12.34");
-      await page.getByLabel(labels.currency).selectOption("EUR");
+      await page.getByRole("textbox", { name: labels.unitPrice, exact: true }).fill("12.34");
+      await page
+        .getByRole("region", { name: labels.unitPrice, exact: true })
+        .getByRole("combobox", { name: moneyCopy[locale].currency, exact: true })
+        .selectOption("EUR");
       await page.getByLabel(labels.tags).fill("holo, favorite");
       await page.getByText(labels.identifiers, { exact: true }).click();
       await page.getByLabel(labels.identifierType).selectOption("EAN");
@@ -355,7 +361,7 @@ test.describe("localized collection and item management", () => {
       await page.getByLabel(labels.location).selectOption({ label: "Fach 2" });
       const itemCreated = page.waitForResponse(
         (response) =>
-          response.url().endsWith("/api/v1/items") && response.request().method() === "POST",
+          response.url().endsWith("/api/v1/money/items") && response.request().method() === "POST",
       );
       await page.getByRole("button", { name: labels.saveItem }).click();
       const itemCreatedResponse = await itemCreated;
@@ -444,13 +450,29 @@ test.describe("localized collection and item management", () => {
       await page.goto("/" + locale + "/items/" + item.id);
       await expect(page.getByLabel("Valuation", { exact: true })).toBeVisible();
       await page.getByLabel(labels.title).fill("Preserved edit");
-      const customValueSaved = page.waitForResponse(
+      const moneyUrl = `/api/v1/items/${item.id}/money?fields=${customField.id}`;
+      const beforeMoney = await (await page.request.get(moneyUrl)).json();
+      let moneyWrites = 0;
+      page.on("request", (request) => {
+        if (
+          request.method() === "PUT" &&
+          request.url().endsWith(`/custom-fields/${customField.id}`)
+        )
+          moneyWrites++;
+      });
+      const coreSaved = page.waitForResponse(
         (response) =>
-          response.url().endsWith("/custom-fields/" + customField.id) &&
-          response.request().method() === "PUT",
+          response.url().endsWith(`/api/v1/money/items/${item.id}`) &&
+          response.request().method() === "PATCH",
       );
       await page.getByRole("button", { name: labels.saveItem }).click();
-      expect((await customValueSaved).status()).toBe(200);
+      expect((await coreSaved).status()).toBe(200);
+      await expect(page.getByRole("button", { name: labels.saveItem })).toBeEnabled();
+      await page.waitForLoadState("networkidle");
+      const afterMoney = await (await page.request.get(moneyUrl)).json();
+      expect(afterMoney.purchase.factToken).toBe(beforeMoney.purchase.factToken);
+      expect(afterMoney.custom[0].factToken).toBe(beforeMoney.custom[0].factToken);
+      expect(moneyWrites).toBe(0);
 
       const loaded = await page.request.get("/api/v1/items/" + item.id);
       const body = (await loaded.json()) as {
@@ -492,14 +514,15 @@ test.describe("localized collection and item management", () => {
       const { collection } = await createCollectionApi(page, "Core retry");
       await page.goto("/" + locale + "/items/new?collectionId=" + collection.id);
       await page.getByLabel(labels.title).fill("Network retry");
-      await page.route("**/api/v1/items", async (route) => {
-        if (route.request().method() === "POST") await route.abort("failed");
+      await page.route("**/api/v1/money/items", async (route) => {
+        if (route.request().method() === "POST")
+          await route.fulfill({ status: 400, json: { error: { code: "VALIDATION_ERROR" } } });
         else await route.continue();
       });
       const save = page.getByRole("button", { name: labels.saveItem });
       await save.click();
       await expect(page.locator(".management-shell p[role='alert']")).toContainText(
-        labels.actionError,
+        moneyCopy[locale].refused,
       );
       await expect(save).toBeEnabled();
     } finally {
@@ -609,13 +632,13 @@ test.describe("localized collection and item management", () => {
         await route.continue();
       });
       page.on("request", (request) => {
-        if (!/\/api\/v1\/items$/.test(request.url())) return;
+        if (!/\/api\/v1\/money\/items$/.test(request.url())) return;
         if (request.method() === "POST") corePosts += 1;
       });
       const save = page.getByRole("button", { name: labels.saveItem });
       const itemCreated = page.waitForResponse(
         (response) =>
-          response.url().endsWith("/api/v1/items") && response.request().method() === "POST",
+          response.url().endsWith("/api/v1/money/items") && response.request().method() === "POST",
       );
       await save.click();
       const created = (await (await itemCreated).json()) as { item: { id: string } };
@@ -624,7 +647,7 @@ test.describe("localized collection and item management", () => {
 
       page.on("request", (request) => {
         if (
-          request.url().endsWith("/api/v1/items/" + created.item.id) &&
+          request.url().endsWith("/api/v1/money/items/" + created.item.id) &&
           request.method() === "PATCH"
         ) {
           corePatches += 1;
@@ -632,9 +655,10 @@ test.describe("localized collection and item management", () => {
       });
       const retried = page.waitForResponse(
         (response) =>
-          response.url().endsWith("/api/v1/items/" + created.item.id) &&
+          response.url().endsWith("/api/v1/money/items/" + created.item.id) &&
           response.request().method() === "PATCH",
       );
+      await page.getByLabel(labels.title).fill("Retry item updated");
       await save.click();
       expect((await retried).status()).toBe(200);
       await expect(page).toHaveURL(new RegExp("/" + locale + "/items/" + created.item.id + "$"));
@@ -653,6 +677,7 @@ test.describe("localized collection and item management", () => {
     const locale = localeFor(testInfo);
     const labels = copy[locale];
     const collector = await seedTestCollector();
+    let releaseEarlyPut: () => void = () => undefined;
 
     try {
       await loginTestCollector(page, locale, collector);
@@ -680,13 +705,8 @@ test.describe("localized collection and item management", () => {
         .locator(".custom-field")
         .filter({ has: page.getByLabel("Count", { exact: true }) });
       await countField.getByRole("checkbox", { name: labels.setCustomField, exact: true }).check();
-      await countField.getByLabel("Count", { exact: true }).fill("1e3");
-      const moneyField = page
-        .locator(".custom-field")
-        .filter({ has: page.getByLabel("Valuation", { exact: true }) });
-      await moneyField.getByRole("checkbox", { name: labels.setCustomField, exact: true }).check();
+      await countField.getByLabel("Count", { exact: true }).fill("9007199254740992");
 
-      let releaseEarlyPut: () => void = () => undefined;
       const earlyPutBlocked = new Promise<void>((resolve) => {
         releaseEarlyPut = () => resolve();
       });
@@ -697,7 +717,7 @@ test.describe("localized collection and item management", () => {
       const mutations: string[] = [];
       page.on("request", (request) => {
         if (
-          request.url().includes("/api/v1/items") &&
+          /\/api\/v1\/(?:money\/)?items(?:\/|$)/u.test(new URL(request.url()).pathname) &&
           ["POST", "PATCH", "PUT"].includes(request.method())
         ) {
           mutations.push(request.method() + " " + new URL(request.url()).pathname);
@@ -711,6 +731,7 @@ test.describe("localized collection and item management", () => {
       expect(mutations).toEqual([]);
       releaseEarlyPut();
     } finally {
+      releaseEarlyPut();
       await cleanupCollector(collector.userId);
     }
   });
@@ -1002,8 +1023,9 @@ test.describe("localized collection and item management", () => {
       let updates = 0;
       page.on("request", (request) => {
         const pathname = new URL(request.url()).pathname;
-        if (pathname === "/api/v1/items" && request.method() === "POST") creates++;
-        if (/^\/api\/v1\/items\/[^/]+$/u.test(pathname) && request.method() === "PATCH") updates++;
+        if (pathname === "/api/v1/money/items" && request.method() === "POST") creates++;
+        if (/^\/api\/v1\/money\/items\/[^/]+$/u.test(pathname) && request.method() === "PATCH")
+          updates++;
       });
       await page.route(/\/api\/v1\/items\/[^/?]+$/u, async (route) => {
         if (route.request().method() === "GET" && failNextRead) {
@@ -1016,7 +1038,7 @@ test.describe("localized collection and item management", () => {
       await page.getByLabel(labels.tags).fill("retained tag");
       const created = page.waitForResponse(
         (response) =>
-          response.url().endsWith("/api/v1/items") && response.request().method() === "POST",
+          response.url().endsWith("/api/v1/money/items") && response.request().method() === "POST",
       );
       await save.click();
       const createdResponse = await created;
@@ -1043,7 +1065,9 @@ test.describe("localized collection and item management", () => {
       expect((await (await page.request.get(path)).json()).metadata.tags).toEqual(["retained tag"]);
       await page.getByLabel(labels.title, { exact: true }).fill("Acknowledged retry");
       const updated = page.waitForResponse(
-        (response) => response.url().endsWith(path) && response.request().method() === "PATCH",
+        (response) =>
+          response.url().endsWith(path.replace("/api/v1/items/", "/api/v1/money/items/")) &&
+          response.request().method() === "PATCH",
       );
       await save.click();
       expect((await updated).status()).toBe(200);

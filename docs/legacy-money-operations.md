@@ -5,7 +5,7 @@ This document describes the additive rollout. It does not authorize or record a 
 ## Upgrade order
 
 1. Disable canonical consumers and new monetary authoring before changing live application versions. Preserve existing raw columns, revisions, and evidence.
-2. Apply the additive provenance migrations and install UNKNOWN-capable readers. Existing integers without surviving evidence remain unknown; never infer their scale from the current currency table, locale, title, or a matching value.
+2. Keep writers disabled through the entire migration sequence, including both catalog guard performance/compatibility migrations; do not resume at an intermediate migration. Apply the additive provenance migrations and install UNKNOWN-capable readers. Existing integers without surviving evidence remain unknown; never infer their scale from the current currency table, locale, title, or a matching value.
 3. Drain old catalog mutation/proposal/rollback workers and requests. An old catalog no-op writer can lose retained evidence; database changes alone do not retrofit that old application code.
 4. Deploy all personal and canonical writer adapters, exact private history/revocation readers, capability routes and the new UI together. Keep raw legacy personal writers invalidating rather than silently preserving meaning.
 5. Enable the single pinned authoring profile only after the exact versioned endpoints and acknowledgments are available. Exercise synthetic creation, preservation, replacement, classification, copying, rollback and revocation, including competing updates and dropped responses. There is no fallback from absent/refused capabilities to raw CRUD.

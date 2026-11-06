@@ -27,3 +27,11 @@ Earlier real REDs and fixture mistakes are retained in named logs/context. Initi
 ## Rollout boundary
 
 Additive upgrade/drain/downgrade order is in docs/legacy-money-operations.md. canonicalConsumers remainsfalse. No operational cutover is performed. Root locally accepts M5 after the complete154money/API and224existing regression cohorts, finding closure and native/type/pure/lint/build evidence. Remote acceptance remains pending both exact-head CI workflows before dependent publication. Both required exact-head GitHub workflows must pass before marking remote M5 acceptance.
+
+## Exact first-head failures and corrected native/browser integration
+
+40dd7dePRCI42219260436/job127896918315FAILEDactual10100COPYat45s (25P04,728othernativePASS). OtherpushCI42219251441/job127896889414passed729native,154money/APIbrowser,60catalog,9media,2storage,12valuation,4authcasesbutFAILED12/22legacycollection-itembrowsercases. Theseareactualfailedgates, no unchangedreruns or remoteacceptanceclaimed. Fullprimarylogs+hashreceiptsretainedprivately.
+
+Scopedforwardnativeguardcorrection usesstrictselectedJSONPathandepoch-safeconservativeparentMVCCdedup. InitialprototypeoverwroteM3auditpolicyandhadwrapP2: bothareexplicitlyrecorded/fixedbynewforwardcompatmigration, withwhole738nativePASS/0skip (183.77s),actual10100carry28.413sunderunchanged45s, originalaudit/privacy/concurrencycasesgreen.1414purePASS/623explicitnative-skips,types/lintPASS. NoapplicationruntimeTSchanged; existingbuiltUIisproductequivalentto40dd7de. SeeL1.18/task-m5-native-guard-review.md.
+
+Generalcollection/itembrowserfixturesnowfollowactualtypedmoneyPOST/PATCH, scopepriceinputbyrole, assertordinarycustommoneyretainsfacttokensanddoesNOTrawPUT, distinguishdefinitive400refusal(retryenabled)fromunknowncreation(alreadycoveredbyM5reconciliationtests), andforceameaningfulcoreeditwhenexpectingPATCH. Oldinvalidcustomfixture1e3isavalidinteger1000; useactualMAX_SAFE+1andreleaseheldrequestsinfinally. COMPLETE22generalbrowsercasesPASSin24.3swithoutweakeningzerowrite/onecreation/locationreuse/archive/refreshassertions. Currentfinaltypes/lintwere rerunafterfixturechanges. Bothcorrectedexactremotegatesremainrequired.
