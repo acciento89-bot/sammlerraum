@@ -17,6 +17,7 @@ ENV NODE_ENV=production
 WORKDIR /app
 RUN mkdir -p /data/uploads && chown node:node /data/uploads
 COPY --from=build --chown=node:node /app/apps/worker/dist/worker.cjs ./dist/worker.cjs
+COPY --from=build --chown=node:node /app/apps/worker/dist/IMPORT-PARSER-LICENSES.txt ./dist/IMPORT-PARSER-LICENSES.txt
 COPY --from=build --chown=node:node /app/worker-runtime/node_modules ./node_modules
 USER node
 EXPOSE 3001
