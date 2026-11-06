@@ -383,7 +383,7 @@ describe.runIf(enabled)("resumable frozen import generations", () => {
       ["First", "1", "one", "1,25"],
       ["Second", "1", "two", "1,25"],
     ]);
-    await service.buildImportPreview(f.actor, {
+    const complete = await service.buildImportPreview(f.actor, {
       jobId: job.id,
       expectedRevision: job.revision,
       mapping,
@@ -391,6 +391,13 @@ describe.runIf(enabled)("resumable frozen import generations", () => {
     await db.$queryRaw`DELETE FROM "ImportRow" WHERE "jobId"=${job.id}::uuid AND "rowNumber"=2 RETURNING id`;
     await expect(
       service.getImportPreviewPage(f.actor, { jobId: job.id, limit: 1 }),
+    ).rejects.toMatchObject({ code: "SEARCH_INVARIANT" });
+    await expect(
+      service.buildImportPreview(f.actor, {
+        jobId: job.id,
+        expectedRevision: complete.job.revision,
+        mapping,
+      }),
     ).rejects.toMatchObject({ code: "SEARCH_INVARIANT" });
   });
   it("persists invalid rows as skippable errors while leaving inventory empty", async () => {

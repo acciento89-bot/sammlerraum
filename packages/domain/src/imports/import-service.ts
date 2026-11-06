@@ -430,8 +430,6 @@ async function buildPreview(
       profileRevision = profile.revision;
     }
     if (mapping.locale !== job.locale) return importFail("IMPORT_INVALID");
-    if (job.status === "REVIEW_READY")
-      return ImportPreviewBatchSchema.parse({ job: jobDto(job), rows: [], complete: true });
     const generation = job.mappingSnapshot === null ? 1 : job.previewGeneration;
     const [coverage] = await tx.$queryRaw<{ total: string; pending: string; bad: boolean }[]>(
       Prisma.sql`SELECT count(*)::text AS total,(count(*) FILTER(WHERE status='PENDING'))::text AS pending,coalesce(bool_or(status NOT IN ('PENDING','READY','CONFLICT','INVALID') OR (status<>'PENDING' AND "previewGeneration"<>${generation})),false) AS bad FROM "ImportRow" WHERE "jobId"=${job.id}::uuid`,
@@ -443,6 +441,8 @@ async function buildPreview(
       Number(coverage.total) - Number(coverage.pending) !== job.previewedRows
     )
       return searchFail("SEARCH_INVARIANT");
+    if (job.status === "REVIEW_READY")
+      return ImportPreviewBatchSchema.parse({ job: jobDto(job), rows: [], complete: true });
     const rows = await tx.$queryRaw<PendingRow[]>(
       Prisma.sql`SELECT id,"rowNumber","rowKey","rawCells" FROM "ImportRow" WHERE "jobId"=${job.id}::uuid AND status='PENDING' ORDER BY "rowNumber" LIMIT ${request.batchSize}`,
     );
