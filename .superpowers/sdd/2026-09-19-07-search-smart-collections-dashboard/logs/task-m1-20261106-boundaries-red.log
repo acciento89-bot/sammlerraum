@@ -1,0 +1,102 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/money/legacy-money-policy.test.ts (14 tests | 1 failed) 11ms
+   ✓ explicit prospective legacy money policy > prospective_afn_is_explicit_iso 3ms
+   ✓ explicit prospective legacy money policy > legacy_comma_dot_without_grouping 1ms
+   ✓ explicit prospective legacy money policy > raw_profile_mismatch_rejects 1ms
+   ✓ explicit prospective legacy money policy > max_safe_boundary_exact 0ms
+   × stored-scale and declared-unit policy > rejects non-UUID assertion identities even for unsupported declarations 3ms
+     → expected [Function] to throw an error
+   ✓ stored-scale and declared-unit policy > reuses the existing frozen authority without changing its165 values 0ms
+   ✓ stored-scale and declared-unit policy > authors the pinned explicit JPY scale 0ms
+   ✓ stored-scale and declared-unit policy > authors the pinned explicit KWD scale 0ms
+   ✓ stored-scale and declared-unit policy > authors the pinned explicit CLF scale 0ms
+   ✓ stored-scale and declared-unit policy > authors the pinned explicit UYW scale 0ms
+   ✓ stored-scale and declared-unit policy > authors the pinned explicit EUR scale 0ms
+   ✓ stored-scale and declared-unit policy > formats supplied historical scales without a current-list or unit inference 1ms
+   ✓ stored-scale and declared-unit policy > requires deliberate supported-unit declarations and makes unsupported units noncomparable 0ms
+   ✓ stored-scale and declared-unit policy > rejects unknown profiles/currencies, oversized inputs and surplus fractions with closed errors 0ms
+ ❯ |workspace| packages/contracts/src/legacy-money.test.ts (14 tests | 2 failed) 16ms
+   ✓ legacy money bounded contracts > historical_codes_survive_current_list 3ms
+   ✓ legacy money bounded contracts > strict_envelopes_bound_tokens_and_evidence 2ms
+   × legacy money structural boundaries > rejects malformed decimal syntax at the authoring wire boundary 4ms
+     → expected true to be false // Object.is equality
+   × legacy money structural boundaries > binds interpreted units and evidence basis to the actual raw currency 1ms
+     → expected true to be false // Object.is equality
+   ✓ legacy money structural boundaries > has fixed typed subject identities without arbitrary paths {"family":"CUSTOM","itemId":"b42572c3-dbf8-4c64-9203-593c5f181a41","fieldDefinitionId":"b42572c3-dbf8-4c64-9203-593c5f181a41"} 0ms
+   ✓ legacy money structural boundaries > has fixed typed subject identities without arbitrary paths {"family":"CATALOG","entryId":"b42572c3-dbf8-4c64-9203-593c5f181a41","revision":1,"target":{"kind":"ENTRY"},"definitionId":"b42572c3-dbf8-4c64-9203-593c5f181a41"} 0ms
+   ✓ legacy money structural boundaries > has fixed typed subject identities without arbitrary paths {"family":"CATALOG","entryId":"b42572c3-dbf8-4c64-9203-593c5f181a41","revision":2147483647,"target":{"kind":"VARIANT","variantId":"b42572c3-dbf8-4c64-9203-593c5f181a41"},"definitionId":"b42572c3-dbf8-4c64-9203-593c5f181a41"} 0ms
+   ✓ legacy money structural boundaries > rejects noncanonical identities and undeclared subjects 0ms
+   ✓ legacy money structural boundaries > accepts only canonical exact raw integer strings and bounded durable sequences 1ms
+   ✓ legacy money structural boundaries > requires canonical assertion-erasure timestamps and closed revocation shapes 1ms
+   ✓ legacy money structural boundaries > keeps missing, unknown and interpreted zero distinct without fabricated scale 0ms
+   ✓ legacy money structural boundaries > retains independently evidenced scale for supported and ineligible unsupported units 0ms
+   ✓ legacy money structural boundaries > validates receipt bindings without treating a parsed receipt as client authority 1ms
+   ✓ legacy money structural boundaries > normalizes bounded private evidence without accepting controls or surrogate damage 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/contracts/src/legacy-money.test.ts > legacy money structural boundaries > rejects malformed decimal syntax at the authoring wire boundary
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ packages/contracts/src/legacy-money.test.ts:104:84
+    102|     expect(LegacyMoneyAuthoringSchema.safeParse(authoring).success).to…
+    103|     for(const decimal of ["-1","1e2","1,234.00",".5","1.","1 000","\ud…
+    104|       expect(LegacyMoneyAuthoringSchema.safeParse({...authoring,decima…
+       |                                                                                    ^
+    105|   });
+    106|   it("binds interpreted units and evidence basis to the actual raw cur…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  |workspace| packages/contracts/src/legacy-money.test.ts > legacy money structural boundaries > binds interpreted units and evidence basis to the actual raw currency
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ packages/contracts/src/legacy-money.test.ts:108:126
+    106|   it("binds interpreted units and evidence basis to the actual raw cur…
+    107|     expect(MoneyViewSchema.safeParse(view).success).toBe(true);
+    108|     expect(MoneyViewSchema.safeParse({...view,interpretation:{...inter…
+       |                                                                                                                              ^
+    109|     expect(MoneyViewSchema.safeParse({...view,interpretation:{...inter…
+    110|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  |workspace| packages/domain/src/money/legacy-money-policy.test.ts > stored-scale and declared-unit policy > rejects non-UUID assertion identities even for unsupported declarations
+AssertionError: expected [Function] to throw an error
+
+- Expected: 
+null
+
++ Received: 
+undefined
+
+ ❯ packages/domain/src/money/legacy-money-policy.test.ts:72:125
+     70| describe("stored-scale and declared-unit policy",()=>{
+     71|   it("rejects non-UUID assertion identities even for unsupported decla…
+     72|     expect(()=>validateLegacyUnit("ZZZ",{kind:"UNSUPPORTED",label:"His…
+       |                                                                                                                             ^
+     73|   });
+     74|   it("reuses the existing frozen authority without changing its165 val…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  3 failed | 25 passed (28)
+   Start at  01:22:19
+   Duration  380ms (transform 86ms, setup 12ms, collect 205ms, tests 27ms, environment 0ms, prepare 99ms)
+
