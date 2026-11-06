@@ -45,7 +45,8 @@
     "./catalog/catalog-serialization": "./src/catalog/catalog-serialization.ts",
     "./money/money-transfer": "./src/money/money-transfer.ts",
     "./imports/import-service": "./src/imports/import-service.ts",
-    "./imports/import-commit-service": "./src/imports/import-commit-service.ts"
+    "./imports/import-commit-service": "./src/imports/import-commit-service.ts",
+    "./exports/export-service": "./src/exports/export-service.ts"
   },
   "scripts": {
     "build": "pnpm typecheck",

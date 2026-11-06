@@ -55,6 +55,10 @@ it("passes the production-composed market lifecycle to startWorker and registers
     expect.any(Function),
   );
   expect(wiring.registerCancellable).toHaveBeenCalledWith("imports.commit", expect.any(Function));
+  expect(wiring.registerCancellable).toHaveBeenCalledWith(
+    "exports.build-tabular",
+    expect.any(Function),
+  );
   const options = wiring.startWorker.mock.calls[0]![0] as unknown as {
     marketSync: { start(): void; stop(): Promise<void> };
     disconnectDatabase(): Promise<void>;

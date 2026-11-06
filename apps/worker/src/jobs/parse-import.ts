@@ -37,11 +37,41 @@ const optionsSchema = z
     schemaVersion: z.literal(1).default(1),
     format: z.enum(["CSV", "XLSX"]),
     hasHeader: z.boolean(),
+    sourceProfile: z.enum(["GENERIC", "SAMMLERRAUM_TABULAR_V1"]).default("GENERIC"),
     delimiter: z.enum([",", ";", "\t"]).default(","),
     sheetName: z.string().min(1).max(31).optional(),
   })
   .strict()
-  .refine((v) => v.format !== "CSV" || v.sheetName === undefined);
+  .refine((v) => v.format !== "CSV" || v.sheetName === undefined)
+  .refine((v) => v.sourceProfile === "GENERIC" || v.hasHeader);
+function profileCells(
+  input: unknown,
+  profile: "GENERIC" | "SAMMLERRAUM_TABULAR_V1",
+  format: "CSV" | "XLSX",
+  header: boolean,
+): unknown {
+  if (profile === "GENERIC") return input;
+  if (!Array.isArray(input) || input.length < 2 || input.length > 256)
+    return fail("IMPORT_SOURCE_INVALID");
+  const schema = input.at(-2),
+    encoding = input.at(-1);
+  if (header) {
+    if (schema !== "sammlerraum_schema" || encoding !== "text_encoding")
+      return fail("IMPORT_SOURCE_INVALID");
+    return input;
+  }
+  if (
+    schema !== "sammlerraum.tabular.v1" ||
+    encoding !== (format === "CSV" ? "APOSTROPHE_PREFIX_V1" : "XLSX_LITERAL_V1")
+  )
+    return fail("IMPORT_SOURCE_INVALID");
+  if (format === "XLSX") return input;
+  return input.map((value, index) => {
+    if (index >= input.length - 2) return value;
+    if (typeof value !== "string" || !value.startsWith("'")) return fail("IMPORT_SOURCE_INVALID");
+    return value.slice(1);
+  });
+}
 export function parseImportOptions(input: unknown) {
   const result = optionsSchema.safeParse(input);
   if (!result.success) return fail("IMPORT_PARSE_OPTIONS_INVALID");
@@ -89,13 +119,17 @@ export async function* parseImportSource(
     for (const row of rows) {
       check();
       if (row.cells.every((value) => value === null || value === "")) continue;
+      const profiled = ImportRawRowSchema.safeParse(
+        profileCells(row.cells, options.data.sourceProfile, "XLSX", !headerSeen),
+      );
+      if (!profiled.success) return fail("IMPORT_ROW_TOO_LARGE");
       if (!headerSeen) {
         headerSeen = true;
-        await context.onHeader?.([...row.cells]);
+        await context.onHeader?.([...profiled.data]);
         continue;
       }
       if (++rowNumber > limits.data.maxRows) return fail("IMPORT_ROW_LIMIT_EXCEEDED");
-      yield { ...row, rowNumber };
+      yield { ...row, rowNumber, cells: profiled.data };
     }
     check();
     return;
@@ -123,7 +157,8 @@ export async function* parseImportSource(
       columns: false,
       skip_empty_lines: false,
       relax_column_count: true,
-      max_record_size: IMPORT_MAX_ROW_BYTES,
+      // The known profile adds at most one transport prefix per decoded cell.
+      max_record_size: IMPORT_MAX_ROW_BYTES + (options.data.sourceProfile === "GENERIC" ? 0 : 256),
     });
   input.on("error", (error) => parser.destroy(error));
   const abort = () => {
@@ -142,7 +177,9 @@ export async function* parseImportSource(
       sourceRowNumber++;
       if (sourceRowNumber > limits.data.maxRows + (options.data.hasHeader ? 1 : 0))
         return fail("IMPORT_ROW_LIMIT_EXCEEDED");
-      const cells = ImportRawRowSchema.safeParse(record);
+      const cells = ImportRawRowSchema.safeParse(
+        profileCells(record, options.data.sourceProfile, "CSV", !headerSeen),
+      );
       if (!cells.success) return fail("IMPORT_ROW_TOO_LARGE");
       if (cells.data.every((value) => value === null || value === "")) continue;
       if (!headerSeen) {

@@ -205,3 +205,38 @@ it("decodes escaped UTF-16 pairs in shared strings without evaluating anything",
     rows.push(row);
   expect(rows[0]?.cells).toEqual(["Fox 🦊"]);
 });
+
+it("preserves the decoded cell boundary after SpreadsheetML transport expansion", async () => {
+  const { workbookFixture } = await import("./import-xlsx-fixture.test-helper");
+  const allowed = workbookFixture(
+    '<row r="1"><c r="A1" t="str"><v>' + "_x000D_".repeat(16384) + "</v></c></row>",
+  );
+  const rows = [];
+  for await (const row of parseImportSource(allowed, { format: "XLSX", hasHeader: false }))
+    rows.push(row);
+  expect(rows[0]?.cells[0]).toBe("\r".repeat(16384));
+  const oversized = workbookFixture(
+    '<row r="1"><c r="A1" t="inlineStr"><is><t>' + "_x000D_".repeat(16385) + "</t></is></c></row>",
+  );
+  await expect(
+    (async () => {
+      for await (const row of parseImportSource(oversized, { format: "XLSX", hasHeader: false }))
+        void row;
+    })(),
+  ).rejects.toMatchObject({ code: "IMPORT_XLSX_INVALID" });
+});
+it.each(["_x0000_", "_xD83E_"])(
+  "rejects decoded invalid Unicode %s instead of trusting escaped source text",
+  async (value) => {
+    const { workbookFixture } = await import("./import-xlsx-fixture.test-helper");
+    await expect(
+      (async () => {
+        for await (const row of parseImportSource(
+          workbookFixture('<row r="1"><c r="A1" t="str"><v>' + value + "</v></c></row>"),
+          { format: "XLSX", hasHeader: false },
+        ))
+          void row;
+      })(),
+    ).rejects.toMatchObject({ code: "IMPORT_ROW_TOO_LARGE" });
+  },
+);

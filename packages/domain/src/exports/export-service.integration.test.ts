@@ -69,6 +69,59 @@ describe.runIf(process.env.RUN_DATABASE_INTEGRATION === "1")(
         code: "EXPORT_LIMIT_EXCEEDED",
       });
     });
+    it("exports a real subtree including descendants but neither siblings nor unassigned items", async () => {
+      const f = await fixture(),
+        root = randomUUID(),
+        child = randomUUID(),
+        sibling = randomUUID(),
+        childItem = randomUUID(),
+        siblingItem = randomUUID();
+      await db.$executeRaw`INSERT INTO "CollectionNode" (id,"collectionId",name,"updatedAt") VALUES (${root}::uuid,${f.collection}::uuid,'Root',now()),(${sibling}::uuid,${f.collection}::uuid,'Sibling',now())`;
+      await db.$executeRaw`INSERT INTO "CollectionNode" (id,"collectionId","parentId",name,"updatedAt") VALUES (${child}::uuid,${f.collection}::uuid,${root}::uuid,'Child',now())`;
+      await db.$executeRaw`UPDATE "CollectibleItem" SET "nodeId"=${root}::uuid WHERE id=${f.item}::uuid`;
+      await db.$executeRaw`INSERT INTO "CollectibleItem" (id,"ownerId","collectionId","nodeId",title,"updatedAt") VALUES (${childItem}::uuid,${f.owner},${f.collection}::uuid,${child}::uuid,'Child item',now()),(${siblingItem}::uuid,${f.owner},${f.collection}::uuid,${sibling}::uuid,'Sibling item',now())`;
+      const result = await createExportService(db).captureExportSource(f.actor, {
+        scope: { kind: "SUBTREE", collectionId: f.collection, nodeId: root },
+        format: "CSV",
+        locale: "de",
+      });
+      expect(result.money.rows.map((r) => r.itemId).sort()).toEqual([f.item, childItem].sort());
+    });
+    it("exports every filtered match beyond the first search page and enforces the full-set ceiling", async () => {
+      const f = await fixture();
+      await db.$executeRaw`INSERT INTO "CollectibleItem" (id,"ownerId","collectionId",title,"updatedAt") SELECT gen_random_uuid(),${f.owner},${f.collection}::uuid,'Selected export '||n,now() FROM generate_series(1,25) n`;
+      const service = createExportService(db),
+        input = {
+          scope: { kind: "SEARCH" },
+          query: { text: "Selected export" },
+          format: "CSV",
+          locale: "en",
+        };
+      const snapshot = await service.captureExportSource(f.actor, input);
+      expect(snapshot.money.rows).toHaveLength(25);
+      expect(snapshot.money.rows.map((r) => r.itemId)).not.toContain(f.item);
+      await db.$executeRaw`INSERT INTO "CollectibleItem" (id,"ownerId","collectionId",title,"updatedAt") SELECT gen_random_uuid(),${f.owner},${f.collection}::uuid,'Selected export ceiling '||n,now() FROM generate_series(1,976) n`;
+      await expect(service.captureExportSource(f.actor, input)).rejects.toMatchObject({
+        code: "MONEY_EXPORT_LIMIT_EXCEEDED",
+      });
+    });
+    it("does not fetch physical locations until explicitly opted in and excludes deleted parents", async () => {
+      const f = await fixture(),
+        location = randomUUID();
+      await db.$executeRaw`INSERT INTO "StorageLocation" (id,"ownerId",name,"qrToken","updatedAt") VALUES (${location}::uuid,${f.owner},'Secret physical shelf',${randomUUID().replaceAll("-", "") + "abcdefghijk"},now())`;
+      await db.$executeRaw`UPDATE "CollectibleItem" SET "storageLocationId"=${location}::uuid WHERE id=${f.item}::uuid`;
+      const service = createExportService(db),
+        input = { scope: { kind: "ALL" }, format: "CSV", locale: "en" };
+      const safe = await service.captureExportSource(f.actor, input);
+      expect(JSON.stringify(safe)).not.toContain("Secret physical shelf");
+      expect(safe.metadata[0]).not.toHaveProperty("location");
+      expect(
+        (await service.captureExportSource(f.actor, { ...input, includeLocations: true }))
+          .metadata[0],
+      ).toMatchObject({ location: { id: location, name: "Secret physical shelf" } });
+      await db.$executeRaw`UPDATE "Collection" SET "deletedAt"=now() WHERE id=${f.collection}::uuid`;
+      expect((await service.captureExportSource(f.actor, input)).money.rows).toHaveLength(0);
+    });
     it("includes private notes only after an explicit owned metadata opt-in", async () => {
       const f = await fixture(),
         service = createExportService(db),

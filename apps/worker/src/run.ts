@@ -1,3 +1,7 @@
+import { createExportService } from "@sammlerraum/domain/exports/export-service";
+import { createPrismaTabularExportRepository } from "./jobs/tabular-export-repository";
+import { createTabularExportJob, TABULAR_EXPORT_JOB } from "./jobs/tabular-export-runtime";
+import { createTabularExportDispatcher } from "./jobs/tabular-export-dispatcher";
 import { createImportCommitService } from "@sammlerraum/domain/imports/import-commit-service";
 import { createImportCommitter, IMPORT_COMMIT_JOB } from "./jobs/commit-import";
 import { createPrismaImportParserRepository } from "./jobs/import-parser-repository";
@@ -82,6 +86,19 @@ async function startProductionWorker(): Promise<void> {
     maxBytes: serverEnv.IMPORT_MAX_BYTES,
     maxRows: serverEnv.IMPORT_MAX_ROWS,
   });
+  const exportRepository = createPrismaTabularExportRepository(prisma);
+  registry.registerCancellable(
+    TABULAR_EXPORT_JOB,
+    createTabularExportJob(
+      exportRepository,
+      createExportService(prisma, {
+        canonicalMoneyEnabled: serverEnv.MONEY_CANONICAL_CONSUMERS_ENABLED,
+      }),
+      storage,
+      withAssetLock,
+    ),
+  );
+  const exportDispatcher = createTabularExportDispatcher(exportRepository, client, console);
   registry.registerCancellable(IMPORT_PARSE_JOB, parseImport);
   registry.registerCancellable(
     IMPORT_COMMIT_JOB,
@@ -96,6 +113,7 @@ async function startProductionWorker(): Promise<void> {
   await worker.startWorker({
     queue: runtime,
     imageDispatcher,
+    exportDispatcher,
     mediaCleanup,
     marketSync,
     databaseHealth: () => checkDatabaseHealth(prisma),

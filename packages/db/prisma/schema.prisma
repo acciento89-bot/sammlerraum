@@ -1243,6 +1243,7 @@ model ExportJob {
   processingToken      String?         @db.Uuid
   processingLeaseUntil DateTime?
   processingAttempts   Int             @default(0)
+  lastDispatchedAt     DateTime?
   errorCode            String?         @db.VarChar(64)
   expiresAt            DateTime
   createdAt            DateTime        @default(now())

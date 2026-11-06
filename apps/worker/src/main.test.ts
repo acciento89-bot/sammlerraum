@@ -27,6 +27,14 @@ describe("startWorker", () => {
           calls.push("cleanup-stop");
         },
       },
+      exportDispatcher: {
+        start: () => {
+          calls.push("export-start");
+        },
+        stop: async () => {
+          calls.push("export-stop");
+        },
+      },
       imageDispatcher: {
         start: () => {
           calls.push("dispatch-start");
@@ -54,10 +62,12 @@ describe("startWorker", () => {
     expect(calls).toEqual([
       "queue-start",
       "dispatch-start",
+      "export-start",
       "cleanup-start",
       "health-stop",
       "cleanup-stop",
       "dispatch-stop",
+      "export-stop",
       "queue-stop",
       "database-stop",
     ]);

@@ -59,107 +59,116 @@ export function createExportService(
     if (request.query.filter) validateCurrentFilterAvailability(request.query.filter, canonical);
     return request;
   }
-  async function captureExportSource(actor: { userId: string }, input: unknown) {
+  async function captureExportSourceInTransaction(
+    tx: BoundedSearchReadTransaction,
+    actor: { userId: string },
+    input: unknown,
+  ) {
     const owner = who(actor),
       request = requestValue(input);
-    return runSearchTransaction(database, async (tx) => {
-      const scope = await scopeRestriction(tx, owner, request),
-        selection = await prepareItemSelection(tx, actor, request.query, canonical, {
-          predicate: scope,
-        });
-      const money = await captureMoneyExport(
-        tx,
-        {
-          scope: { ownerId: owner, predicate: selection.outerPredicate },
-          matchedPredicate: selection.matchedPredicate,
-          selectors: [{ family: "PURCHASE" }],
-        },
-        request.money,
-      );
-      const metadata: ExportMetadata[] = [];
-      let bytes = Buffer.byteLength(
-        JSON.stringify({ schemaVersion: 1, ownerId: owner, request, money, metadata: [] }),
-      );
-      for (let offset = 0; offset < money.rows.length; offset += 16) {
-        tx.checkBudget();
-        const ids = money.rows.slice(offset, offset + 16).map((row) => row.itemId);
-        const batch = await tx.$queryRaw<
-          {
-            itemId: string;
-            collectionId: string;
-            nodeId: string | null;
-            acquisitionType: ExportMetadata["acquisitionType"];
-            visibility: ExportMetadata["visibility"];
-            tradeStatus: ExportMetadata["tradeStatus"];
-            publicDescription: string | null;
-            archivedAt: string | null;
-            disposedAt: string | null;
-            categoryTemplateId: string | null;
-            conditionOptionId: string | null;
-            catalogEntryId: string | null;
-            catalogVariantId: string | null;
-            acquisitionDate: string | null;
-            identifiers: { type: string; value: string; normalizedValue: string }[];
-            privateNotes: string | null;
-            locationId: string | null;
-            locationName: string | null;
-            sourceLocationId: string | null;
-          }[]
-        >(
-          Prisma.sql`SELECT i.id AS "itemId",i."collectionId",i."nodeId",i."acquisitionType",i.visibility,i."tradeStatus",i."publicDescription",to_char(i."archivedAt",'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') AS "archivedAt",to_char(i."disposedAt",'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') AS "disposedAt",i."categoryTemplateId",i."conditionOptionId",i."catalogEntryId",i."catalogVariantId",to_char(i."acquisitionDate",'YYYY-MM-DD') AS "acquisitionDate",COALESCE(ids.data,'[]'::jsonb) AS identifiers,${request.includePrivateNotes ? Prisma.sql`i."privateNotes"` : Prisma.sql`NULL::text`} AS "privateNotes",${request.includeLocations ? Prisma.sql`s.id` : Prisma.sql`NULL::uuid`} AS "locationId",${request.includeLocations ? Prisma.sql`s.name` : Prisma.sql`NULL::text`} AS "locationName",${request.includeLocations ? Prisma.sql`i."storageLocationId"` : Prisma.sql`NULL::uuid`} AS "sourceLocationId" FROM "CollectibleItem" i JOIN "Collection" c ON c.id=i."collectionId" AND c."ownerId"=i."ownerId" LEFT JOIN LATERAL (SELECT jsonb_agg(jsonb_build_object('type',ii.type,'value',ii.value,'normalizedValue',ii."normalizedValue") ORDER BY ii.type,ii."normalizedValue") AS data FROM (SELECT type,value,"normalizedValue" FROM "ItemIdentifier" WHERE "itemId"=i.id ORDER BY type,"normalizedValue" LIMIT 101) ii) ids ON TRUE ${request.includeLocations ? Prisma.sql`LEFT JOIN "StorageLocation" s ON s.id=i."storageLocationId" AND s."ownerId"=i."ownerId"` : Prisma.empty} WHERE i."ownerId"=${owner} AND i."deletedAt" IS NULL AND c."deletedAt" IS NULL AND i.id IN (${Prisma.join(ids.map((id) => Prisma.sql`${id}::uuid`))}) ORDER BY i.id`,
-        );
-        if (batch.length !== ids.length) throw new ExportError("EXPORT_INTEGRITY");
-        for (const row of batch) {
-          if (
-            request.includeLocations &&
-            row.sourceLocationId !== null &&
-            (row.locationId === null || row.locationName === null)
-          )
-            throw new ExportError("EXPORT_INTEGRITY");
-          const checkedMetadata = ExportMetadataSchema.safeParse({
-            itemId: row.itemId,
-            collectionId: row.collectionId,
-            nodeId: row.nodeId,
-            acquisitionType: row.acquisitionType,
-            visibility: row.visibility,
-            tradeStatus: row.tradeStatus,
-            publicDescription: row.publicDescription,
-            archivedAt: row.archivedAt,
-            disposedAt: row.disposedAt,
-            categoryTemplateId: row.categoryTemplateId,
-            conditionOptionId: row.conditionOptionId,
-            catalogEntryId: row.catalogEntryId,
-            catalogVariantId: row.catalogVariantId,
-            acquisitionDate: row.acquisitionDate,
-            identifiers: row.identifiers,
-            ...(request.includePrivateNotes ? { privateNotes: row.privateNotes } : {}),
-            ...(request.includeLocations
-              ? {
-                  location:
-                    row.locationId === null
-                      ? null
-                      : { id: row.locationId, name: row.locationName! },
-                }
-              : {}),
-          });
-          if (!checkedMetadata.success) throw new ExportError("EXPORT_INTEGRITY");
-          const value = checkedMetadata.data;
-          bytes += Buffer.byteLength(JSON.stringify(value)) + 1;
-          if (bytes > MONEY_EXPORT_MAX_BYTES) throw new ExportError("EXPORT_LIMIT_EXCEEDED");
-          metadata.push(value);
-        }
-      }
-      const snapshot = TabularExportSnapshotSchema.safeParse({
-        schemaVersion: 1,
-        ownerId: owner,
-        request,
-        money,
-        metadata,
+    const scope = await scopeRestriction(tx, owner, request),
+      selection = await prepareItemSelection(tx, actor, request.query, canonical, {
+        predicate: scope,
       });
-      if (!snapshot.success) throw new ExportError("EXPORT_INTEGRITY");
+    const money = await captureMoneyExport(
+      tx,
+      {
+        scope: { ownerId: owner, predicate: selection.outerPredicate },
+        matchedPredicate: selection.matchedPredicate,
+        selectors: [{ family: "PURCHASE" }],
+      },
+      request.money,
+    );
+    const metadata: ExportMetadata[] = [];
+    let bytes = Buffer.byteLength(
+      JSON.stringify({ schemaVersion: 1, ownerId: owner, request, money, metadata: [] }),
+    );
+    for (let offset = 0; offset < money.rows.length; offset += 16) {
       tx.checkBudget();
-      return snapshot.data;
+      const ids = money.rows.slice(offset, offset + 16).map((row) => row.itemId);
+      const batch = await tx.$queryRaw<
+        {
+          itemId: string;
+          collectionId: string;
+          nodeId: string | null;
+          acquisitionType: ExportMetadata["acquisitionType"];
+          visibility: ExportMetadata["visibility"];
+          tradeStatus: ExportMetadata["tradeStatus"];
+          publicDescription: string | null;
+          archivedAt: string | null;
+          disposedAt: string | null;
+          categoryTemplateId: string | null;
+          conditionOptionId: string | null;
+          catalogEntryId: string | null;
+          catalogVariantId: string | null;
+          acquisitionDate: string | null;
+          identifiers: { type: string; value: string; normalizedValue: string }[];
+          privateNotes: string | null;
+          locationId: string | null;
+          locationName: string | null;
+          sourceLocationId: string | null;
+        }[]
+      >(
+        Prisma.sql`SELECT i.id AS "itemId",i."collectionId",i."nodeId",i."acquisitionType",i.visibility,i."tradeStatus",i."publicDescription",to_char(i."archivedAt",'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') AS "archivedAt",to_char(i."disposedAt",'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') AS "disposedAt",i."categoryTemplateId",i."conditionOptionId",i."catalogEntryId",i."catalogVariantId",to_char(i."acquisitionDate",'YYYY-MM-DD') AS "acquisitionDate",COALESCE(ids.data,'[]'::jsonb) AS identifiers,${request.includePrivateNotes ? Prisma.sql`i."privateNotes"` : Prisma.sql`NULL::text`} AS "privateNotes",${request.includeLocations ? Prisma.sql`s.id` : Prisma.sql`NULL::uuid`} AS "locationId",${request.includeLocations ? Prisma.sql`s.name` : Prisma.sql`NULL::text`} AS "locationName",${request.includeLocations ? Prisma.sql`i."storageLocationId"` : Prisma.sql`NULL::uuid`} AS "sourceLocationId" FROM "CollectibleItem" i JOIN "Collection" c ON c.id=i."collectionId" AND c."ownerId"=i."ownerId" LEFT JOIN LATERAL (SELECT jsonb_agg(jsonb_build_object('type',ii.type,'value',ii.value,'normalizedValue',ii."normalizedValue") ORDER BY ii.type,ii."normalizedValue") AS data FROM (SELECT type,value,"normalizedValue" FROM "ItemIdentifier" WHERE "itemId"=i.id ORDER BY type,"normalizedValue" LIMIT 101) ii) ids ON TRUE ${request.includeLocations ? Prisma.sql`LEFT JOIN "StorageLocation" s ON s.id=i."storageLocationId" AND s."ownerId"=i."ownerId"` : Prisma.empty} WHERE i."ownerId"=${owner} AND i."deletedAt" IS NULL AND c."deletedAt" IS NULL AND i.id IN (${Prisma.join(ids.map((id) => Prisma.sql`${id}::uuid`))}) ORDER BY i.id`,
+      );
+      if (batch.length !== ids.length) throw new ExportError("EXPORT_INTEGRITY");
+      // Money capture has its own canonical order; SQL UUID order is not that order.
+      const byId = new Map(batch.map((row) => [row.itemId, row]));
+      for (const id of ids) {
+        const row = byId.get(id);
+        if (!row) throw new ExportError("EXPORT_INTEGRITY");
+        if (
+          request.includeLocations &&
+          row.sourceLocationId !== null &&
+          (row.locationId === null || row.locationName === null)
+        )
+          throw new ExportError("EXPORT_INTEGRITY");
+        const checkedMetadata = ExportMetadataSchema.safeParse({
+          itemId: row.itemId,
+          collectionId: row.collectionId,
+          nodeId: row.nodeId,
+          acquisitionType: row.acquisitionType,
+          visibility: row.visibility,
+          tradeStatus: row.tradeStatus,
+          publicDescription: row.publicDescription,
+          archivedAt: row.archivedAt,
+          disposedAt: row.disposedAt,
+          categoryTemplateId: row.categoryTemplateId,
+          conditionOptionId: row.conditionOptionId,
+          catalogEntryId: row.catalogEntryId,
+          catalogVariantId: row.catalogVariantId,
+          acquisitionDate: row.acquisitionDate,
+          identifiers: row.identifiers,
+          ...(request.includePrivateNotes ? { privateNotes: row.privateNotes } : {}),
+          ...(request.includeLocations
+            ? {
+                location:
+                  row.locationId === null ? null : { id: row.locationId, name: row.locationName! },
+              }
+            : {}),
+        });
+        if (!checkedMetadata.success) throw new ExportError("EXPORT_INTEGRITY");
+        const value = checkedMetadata.data;
+        bytes += Buffer.byteLength(JSON.stringify(value)) + 1;
+        if (bytes > MONEY_EXPORT_MAX_BYTES) throw new ExportError("EXPORT_LIMIT_EXCEEDED");
+        metadata.push(value);
+      }
+    }
+    const snapshot = TabularExportSnapshotSchema.safeParse({
+      schemaVersion: 1,
+      ownerId: owner,
+      request,
+      money,
+      metadata,
     });
+    if (!snapshot.success) throw new ExportError("EXPORT_INTEGRITY");
+    tx.checkBudget();
+    return snapshot.data;
+  }
+  async function captureExportSource(actor: { userId: string }, input: unknown) {
+    return runSearchTransaction(database, (tx) =>
+      captureExportSourceInTransaction(tx, actor, input),
+    );
   }
   async function requestExport(actor: { userId: string }, input: unknown) {
     const owner = who(actor),
@@ -186,5 +195,5 @@ export function createExportService(
       return job;
     });
   }
-  return { requestExport, captureExportSource };
+  return { requestExport, captureExportSource, captureExportSourceInTransaction };
 }
