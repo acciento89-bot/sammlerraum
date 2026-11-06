@@ -42,7 +42,8 @@
     "./money/legacy-money-policy": "./src/money/legacy-money-policy.ts",
     "./money/personal-money-service": "./src/money/personal-money-service.ts",
     "./catalog/catalog-money-service": "./src/catalog/catalog-money-service.ts",
-    "./catalog/catalog-serialization": "./src/catalog/catalog-serialization.ts"
+    "./catalog/catalog-serialization": "./src/catalog/catalog-serialization.ts",
+    "./money/money-transfer": "./src/money/money-transfer.ts"
   },
   "scripts": {
     "build": "pnpm typecheck",

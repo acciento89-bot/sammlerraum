@@ -154,6 +154,7 @@ jobs:
           packages/domain/src/search/legacy-money-query.integration.test.ts
           packages/domain/src/search/legacy-money-query.test.ts
           packages/domain/src/money/purchase-cost.test.ts
+          packages/domain/src/money/money-transfer.integration.test.ts
           apps/web/src/lib/legacy-money-query-routes.integration.test.ts
           packages/domain/src/dashboard/dashboard-service.test.ts
           packages/domain/src/dashboard/personal-milestone-service.test.ts

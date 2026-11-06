@@ -1,3 +1,4 @@
+import { MoneyTransferError } from "@sammlerraum/contracts/money-transfer";
 import { LegacyMoneyError } from "@sammlerraum/contracts/legacy-money";
 import { Prisma } from "@sammlerraum/db/search-sql";
 import { ItemSearchError, searchFail } from "@sammlerraum/contracts/item-search";
@@ -69,6 +70,7 @@ export async function runSearchTransaction<T>(
         error instanceof FilterValidationError ||
         error instanceof SmartCollectionError ||
         error instanceof PersonalMilestoneError ||
+        error instanceof MoneyTransferError ||
         error instanceof LegacyMoneyError
       )
         throw error;
