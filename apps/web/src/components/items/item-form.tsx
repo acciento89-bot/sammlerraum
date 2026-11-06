@@ -7,7 +7,13 @@ import {
 } from "@sammlerraum/contracts/personal-money";
 import type { MoneyCapabilities } from "@sammlerraum/contracts/money-capabilities";
 import { LegacyMoneyIdSchema, type MoneyView } from "@sammlerraum/contracts/legacy-money";
-import { readCustomMoney, writeCustomMoney, bindCreatedCustomDraft } from "../money/custom-money-client";
+import { LegacyMoneyReview } from "../money/legacy-money-review";
+import { activeMoneyReview, setActiveMoneyReview } from "../money/money-review-draft";
+import {
+  readCustomMoney,
+  writeCustomMoney,
+  bindCreatedCustomDraft,
+} from "../money/custom-money-client";
 import { LegacyMoneyEditor, MoneyReadout } from "../money/legacy-money-editor";
 import {
   MoneyDraftError,
@@ -125,7 +131,16 @@ export function ItemForm({
   const [initialLocationId, setInitialLocationId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const pendingNavigation = useCollectorConfirmation(saving, () => false);
+  const [reviewBusy, setReviewBusy] = useState(false);
+  const pendingNavigation = useCollectorConfirmation(saving || reviewBusy, () => false);
+  const [reviewing, setReviewing] = useState<string | null>(() => {
+    const subject = activeMoneyReview(actor, `item:${itemId ?? ""}`);
+    return subject?.family === "PURCHASE"
+      ? "PURCHASE"
+      : subject?.family === "CUSTOM"
+        ? subject.fieldDefinitionId
+        : null;
+  });
   const [error, setError] = useState("");
   const [status, setStatus] = useState("");
   const [moneyCapabilities, setMoneyCapabilities] = useState<MoneyCapabilities>();
@@ -137,17 +152,31 @@ export function ItemForm({
   const customDraftsRef = useRef(customDrafts);
   const [customInspected, setCustomInspected] = useState<Record<string, boolean>>({});
   const [customReady, setCustomReady] = useState(false);
-  const customDraftKey = (fieldId: string, targetId = workingItemId) => `custom:${targetId || `new:${collectionId}`}:${fieldId}`;
+  const customDraftKey = (fieldId: string, targetId = workingItemId) =>
+    `custom:${targetId || `new:${collectionId}`}:${fieldId}`;
   function changeCustomDraft(fieldId: string, draft: MoneyDraft, targetId = workingItemId) {
     customDraftsRef.current = { ...customDraftsRef.current, [fieldId]: draft };
     setCustomDrafts(customDraftsRef.current);
     rememberMoneyDraft(actor, customDraftKey(fieldId, targetId), draft);
   }
-  const customCanSave = customReady && Object.values(customDrafts).every(draft => draft.outcome === "READY");
+  const customCanSave =
+    customReady && Object.values(customDrafts).every((draft) => draft.outcome === "READY");
   const [moneyInspected, setMoneyInspected] = useState(false);
   const monetaryOwner = actor;
   const [actorExpired, setActorExpired] = useState(false);
   const purchaseDraftKey = `purchase:${workingItemId || `new:${collectionId}`}`;
+  const reviewView =
+    reviewing === "PURCHASE" ? purchaseView : reviewing ? (customViews[reviewing] ?? null) : null;
+  function openReview(view: MoneyView) {
+    setActiveMoneyReview(actor, `item:${workingItemId}`, view.subject);
+    setReviewing(
+      view.subject.family === "PURCHASE"
+        ? "PURCHASE"
+        : view.subject.family === "CUSTOM"
+          ? view.subject.fieldDefinitionId
+          : null,
+    );
+  }
   const moneyEnabled = moneyReady && moneyCapabilities?.authoringProfiles.length === 1;
   function changePurchaseDraft(next: MoneyDraft) {
     setPurchaseDraft(next);
@@ -402,21 +431,33 @@ export function ItemForm({
     if (saving || optionsCollectionId !== collectionId || !moneyReady) return;
     let cancelled = false;
     setCustomReady(false);
-    const definitions = fields.filter(field => field.type === "MONEY").map(field => field.id);
-    void (workingItemId ? readCustomMoney(workingItemId, definitions) : Promise.resolve({} as Record<string, MoneyView>))
-      .then(views => {
+    const definitions = fields.filter((field) => field.type === "MONEY").map((field) => field.id);
+    void (
+      workingItemId
+        ? readCustomMoney(workingItemId, definitions)
+        : Promise.resolve({} as Record<string, MoneyView>)
+    )
+      .then((views) => {
         if (cancelled) return;
         const drafts: Record<string, MoneyDraft> = {};
         for (const id of definitions) {
           const stored = recallMoneyDraft(actor, customDraftKey(id));
-          drafts[id] = stored && views[id] ? bindCreatedCustomDraft(stored, views[id]!) : stored ?? initialMoneyDraft(views[id] ?? null);
+          drafts[id] =
+            stored && views[id]
+              ? bindCreatedCustomDraft(stored, views[id]!)
+              : (stored ?? initialMoneyDraft(views[id] ?? null));
         }
         setCustomViews(views);
         customDraftsRef.current = drafts;
         setCustomDrafts(drafts);
         setCustomReady(true);
-      }).catch(problem => { if (!cancelled) setError(moneyMessage(problem)); });
-    return () => { cancelled = true; };
+      })
+      .catch((problem) => {
+        if (!cancelled) setError(moneyMessage(problem));
+      });
+    return () => {
+      cancelled = true;
+    };
   }, [actor, workingItemId, collectionId, optionsCollectionId, fields, moneyReady, saving]);
 
   const inactive = Boolean(item?.archivedAt || item?.disposedAt);
@@ -432,6 +473,7 @@ export function ItemForm({
       inactive ||
       !moneyEnabled ||
       !customCanSave ||
+      reviewBusy ||
       purchaseDraft.outcome !== "READY"
     )
       return;
@@ -478,10 +520,16 @@ export function ItemForm({
 
     // Validate every deliberate field edit before any core mutation begins.
     try {
-      for (const field of fields.filter(field => field.type === "MONEY"))
-        moneyDraftIntent(customDraftsRef.current[field.id]!, customViews[field.id] ?? null, Boolean(workingItemId));
+      for (const field of fields.filter((field) => field.type === "MONEY"))
+        moneyDraftIntent(
+          customDraftsRef.current[field.id]!,
+          customViews[field.id] ?? null,
+          Boolean(workingItemId),
+        );
     } catch (problem) {
-      setError(moneyMessage(problem)); setSaving(false); return;
+      setError(moneyMessage(problem));
+      setSaving(false);
+      return;
     }
     const selectedLocationId = String(form.get("locationId") ?? "") || null;
     let createdNow = false;
@@ -571,7 +619,7 @@ export function ItemForm({
         }
       }
 
-      const moneyFields = fields.filter(field => field.type === "MONEY");
+      const moneyFields = fields.filter((field) => field.type === "MONEY");
       let currentViews = customViews;
       if (createdNow && moneyFields.length) {
         // Bind pending new-item edits to actual server absence, never a fabricated token.
@@ -580,10 +628,16 @@ export function ItemForm({
           forgetMoneyDraft(actor, customDraftKey(field.id));
           changeCustomDraft(field.id, draft, targetId);
         }
-        currentViews = await readCustomMoney(targetId, moneyFields.map(field => field.id));
+        currentViews = await readCustomMoney(
+          targetId,
+          moneyFields.map((field) => field.id),
+        );
         setCustomViews(currentViews);
         for (const field of moneyFields) {
-          const draft = bindCreatedCustomDraft(customDraftsRef.current[field.id]!, currentViews[field.id]!);
+          const draft = bindCreatedCustomDraft(
+            customDraftsRef.current[field.id]!,
+            currentViews[field.id]!,
+          );
           forgetMoneyDraft(actor, customDraftKey(field.id));
           changeCustomDraft(field.id, draft, targetId);
         }
@@ -600,8 +654,23 @@ export function ItemForm({
           // Commit this acknowledgment before another field or metadata request can fail.
           changeCustomDraft(field.id, initialMoneyDraft(acknowledged), targetId);
         } catch (problem) {
-          if (problem instanceof MoneyClientError && ["OUTCOME_UNKNOWN", "ACKNOWLEDGED_UNREADABLE", "CONFLICT"].includes(problem.code))
-            changeCustomDraft(field.id, { ...draft, outcome: problem.code === "OUTCOME_UNKNOWN" ? "UNKNOWN" : problem.code === "CONFLICT" ? "CONFLICT" : "ACKNOWLEDGED_UNREADABLE" }, targetId);
+          if (
+            problem instanceof MoneyClientError &&
+            ["OUTCOME_UNKNOWN", "ACKNOWLEDGED_UNREADABLE", "CONFLICT"].includes(problem.code)
+          )
+            changeCustomDraft(
+              field.id,
+              {
+                ...draft,
+                outcome:
+                  problem.code === "OUTCOME_UNKNOWN"
+                    ? "UNKNOWN"
+                    : problem.code === "CONFLICT"
+                      ? "CONFLICT"
+                      : "ACKNOWLEDGED_UNREADABLE",
+              },
+              targetId,
+            );
           setError(`${field.name}: ${moneyMessage(problem)}`);
           setStatus(t("retryWithoutDuplicate"));
           return;
@@ -751,8 +820,52 @@ export function ItemForm({
         <p className="form-intro">{t("intro")}</p>
       </header>
 
+      {reviewView && (
+        <LegacyMoneyReview
+          key={JSON.stringify(reviewView.subject)}
+          view={reviewView}
+          actor={actor}
+          locale={locale}
+          disabled={
+            !moneyEnabled ||
+            saving ||
+            (reviewing === "PURCHASE"
+              ? purchaseDraft.mode !== "KEEP" || purchaseDraft.outcome !== "READY"
+              : customDrafts[reviewing!]?.mode !== "KEEP" ||
+                customDrafts[reviewing!]?.outcome !== "READY")
+          }
+          onBusy={setReviewBusy}
+          onExpired={() => {
+            clearMoneyDrafts();
+            setActorExpired(true);
+          }}
+          onClose={() => {
+            setActiveMoneyReview(actor, `item:${workingItemId}`, null);
+            setReviewing(null);
+          }}
+          onChanged={(next) => {
+            if (next.subject.family === "PURCHASE") {
+              setPurchaseView(next);
+              changePurchaseDraft(initialMoneyDraft(next));
+            } else if (next.subject.family === "CUSTOM") {
+              setCustomViews((current) => ({
+                ...current,
+                [next.subject.family === "CUSTOM" ? next.subject.fieldDefinitionId : ""]: next,
+              }));
+              changeCustomDraft(next.subject.fieldDefinitionId, initialMoneyDraft(next));
+            }
+          }}
+        />
+      )}
       {item && metadata && (
-        <ItemSummary item={item} metadata={metadata} fields={fields} moneyViews={customViews} locale={locale} t={t} />
+        <ItemSummary
+          item={item}
+          metadata={metadata}
+          fields={fields}
+          moneyViews={customViews}
+          locale={locale}
+          t={t}
+        />
       )}
       {inactive && (
         <p className="notice">{t(item?.disposedAt ? "disposedNotice" : "archivedNotice")}</p>
@@ -812,7 +925,7 @@ export function ItemForm({
         </div>
       ) : (
         <form className="item-form" onSubmit={save}>
-          <fieldset disabled={inactive || saving}>
+          <fieldset disabled={inactive || saving || reviewBusy}>
             <legend>{t("basic")}</legend>
             {!item && (
               <label>
@@ -907,7 +1020,7 @@ export function ItemForm({
 
           <details open>
             <summary>{t("acquisition")}</summary>
-            <fieldset disabled={inactive || saving} className="details-fields">
+            <fieldset disabled={inactive || saving || reviewBusy} className="details-fields">
               <label>
                 {t("acquisitionType")}
                 <select name="acquisitionType" defaultValue={item?.acquisitionType ?? "OTHER"}>
@@ -935,6 +1048,9 @@ export function ItemForm({
                 draft={purchaseDraft}
                 onChange={changePurchaseDraft}
                 loaded={moneyReady}
+                onReview={() => {
+                  if (purchaseView) openReview(purchaseView);
+                }}
                 disabled={!moneyEnabled || saving || inactive || purchaseDraft.outcome !== "READY"}
               />
               <label>
@@ -952,7 +1068,7 @@ export function ItemForm({
 
           <details open>
             <summary>{t("organization")}</summary>
-            <fieldset disabled={inactive || saving} className="details-fields">
+            <fieldset disabled={inactive || saving || reviewBusy} className="details-fields">
               <label>
                 {t("tags")}
                 <input name="tags" defaultValue={tagsInputValue(metadata?.tags ?? [])} />
@@ -974,7 +1090,7 @@ export function ItemForm({
 
           <details>
             <summary>{t("identifiers")}</summary>
-            <fieldset disabled={inactive || saving} className="details-fields">
+            <fieldset disabled={inactive || saving || reviewBusy} className="details-fields">
               {identifiers.map((identifier, index) => (
                 <div className="identifier-row" key={index}>
                   <label>
@@ -999,7 +1115,7 @@ export function ItemForm({
                   <CodeScanner
                     label={t("identifierValue")}
                     value={identifier.value}
-                    disabled={inactive || saving}
+                    disabled={inactive || saving || reviewBusy}
                     onChange={(value) =>
                       setIdentifiers((current) =>
                         current.map((entry, entryIndex) =>
@@ -1046,42 +1162,85 @@ export function ItemForm({
           {fields.length > 0 && (
             <details open>
               <summary>{t("customFields")}</summary>
-              <fieldset disabled={inactive || saving} className="details-fields custom-fields">
-                {fields.map((field) => field.type === "MONEY" ? (
-                  <div key={field.id} className="money-editor">
-                    <LegacyMoneyEditor label={field.name} name={`custom-money-${field.id}`} locale={locale}
-                      view={customViews[field.id] ?? null} existing={Boolean(workingItemId)}
-                      draft={customDrafts[field.id] ?? initialMoneyDraft(null)}
-                      onChange={draft => changeCustomDraft(field.id, draft)} loaded={customReady}
-                      disabled={!moneyEnabled || saving || inactive || customDrafts[field.id]?.outcome !== "READY"} />
-                    {customDrafts[field.id]?.outcome !== "READY" && customDrafts[field.id] && (
-                      <button type="button" className="secondary-button" disabled={saving} onClick={async () => {
-                        try {
-                          const caps = await loadMoneyCapabilities();
-                          if (caps.actorId !== actor) { clearMoneyDrafts(); setActorExpired(true); return; }
-                          const fresh = await readCustomMoney(workingItemId, [field.id]);
-                          setCustomViews(current => ({ ...current, ...fresh }));
-                          // Inspection alone never resets a frozen or uncertain draft.
-                          setCustomInspected(current => ({ ...current, [field.id]: true }));
-                        } catch (problem) { setError(moneyMessage(problem)); }
-                      }}>{moneyText("checkCurrent")}</button>
-                    )}
-                    {customInspected[field.id] && customDrafts[field.id]?.outcome !== "READY" && customViews[field.id] && (
-                      <button type="button" className="secondary-button" onClick={() => {
-                        changeCustomDraft(field.id, initialMoneyDraft(customViews[field.id]!));
-                        setCustomInspected(current => ({ ...current, [field.id]: false }));
-                        setError("");
-                      }}>{moneyText("adoptCurrent")}</button>
-                    )}
-                  </div>
-                ) : (
-                  <CustomFieldControl
-                    key={field.id}
-                    field={field}
-                    value={valueByField.get(field.id)}
-                    t={t}
-                  />
-                ))}
+              <fieldset
+                disabled={inactive || saving || reviewBusy}
+                className="details-fields custom-fields"
+              >
+                {fields.map((field) =>
+                  field.type === "MONEY" ? (
+                    <div key={field.id} className="money-editor">
+                      <LegacyMoneyEditor
+                        label={field.name}
+                        name={`custom-money-${field.id}`}
+                        locale={locale}
+                        view={customViews[field.id] ?? null}
+                        existing={Boolean(workingItemId)}
+                        draft={customDrafts[field.id] ?? initialMoneyDraft(null)}
+                        onChange={(draft) => changeCustomDraft(field.id, draft)}
+                        loaded={customReady}
+                        onReview={() => {
+                          if (customViews[field.id]) openReview(customViews[field.id]!);
+                        }}
+                        disabled={
+                          !moneyEnabled ||
+                          saving ||
+                          inactive ||
+                          customDrafts[field.id]?.outcome !== "READY"
+                        }
+                      />
+                      {customDrafts[field.id]?.outcome !== "READY" && customDrafts[field.id] && (
+                        <button
+                          type="button"
+                          className="secondary-button"
+                          disabled={saving}
+                          onClick={async () => {
+                            try {
+                              const caps = await loadMoneyCapabilities();
+                              if (caps.actorId !== actor) {
+                                clearMoneyDrafts();
+                                setActorExpired(true);
+                                return;
+                              }
+                              const fresh = await readCustomMoney(workingItemId, [field.id]);
+                              setCustomViews((current) => ({ ...current, ...fresh }));
+                              // Inspection alone never resets a frozen or uncertain draft.
+                              setCustomInspected((current) => ({ ...current, [field.id]: true }));
+                            } catch (problem) {
+                              setError(moneyMessage(problem));
+                            }
+                          }}
+                        >
+                          {moneyText("checkCurrent")}
+                        </button>
+                      )}
+                      {customInspected[field.id] &&
+                        customDrafts[field.id]?.outcome !== "READY" &&
+                        customViews[field.id] && (
+                          <button
+                            type="button"
+                            className="secondary-button"
+                            onClick={() => {
+                              changeCustomDraft(
+                                field.id,
+                                initialMoneyDraft(customViews[field.id]!),
+                              );
+                              setCustomInspected((current) => ({ ...current, [field.id]: false }));
+                              setError("");
+                            }}
+                          >
+                            {moneyText("adoptCurrent")}
+                          </button>
+                        )}
+                    </div>
+                  ) : (
+                    <CustomFieldControl
+                      key={field.id}
+                      field={field}
+                      value={valueByField.get(field.id)}
+                      t={t}
+                    />
+                  ),
+                )}
               </fieldset>
             </details>
           )}
@@ -1095,6 +1254,7 @@ export function ItemForm({
                 optionsCollectionId !== collectionId ||
                 !moneyEnabled ||
                 !customCanSave ||
+                reviewBusy ||
                 purchaseDraft.outcome !== "READY"
               }
             >
@@ -1138,11 +1298,15 @@ export function ItemForm({
 }
 
 async function put(url: string, body: unknown): Promise<Response> {
-  return fetch(url, {
+  const response = await fetch(url, {
     method: "PUT",
     headers: { "content-type": "application/json" },
     body: JSON.stringify(body),
   });
+  // Finish the bounded owned API response before considering this metadata request settled.
+  // Preserve its original body for the existing error-message reader.
+  await response.clone().arrayBuffer();
+  return response;
 }
 
 function customValue(field: CustomFieldDefinition, form: FormData): CanonicalCustomFieldValue {
@@ -1281,9 +1445,24 @@ function ItemSummary({
         const field = fields.find((candidate) => candidate.id === record.fieldDefinitionId);
         return field ? (
           <div key={record.fieldDefinitionId}>
-            {field.type === "MONEY" ? moneyViews[field.id] ? <MoneyReadout view={moneyViews[field.id]!} locale={locale} label={field.name} /> :
-              <span>{field.name}: {typeof record.value === "object" && record.value !== null && "amountMinor" in record.value ? `${record.value.amountMinor} ${record.value.currency}` : "—"}</span> :
-              <p>{field.name}: {displayCustomFieldValue(record.value, field.type, locale)}</p>}
+            {field.type === "MONEY" ? (
+              moneyViews[field.id] ? (
+                <MoneyReadout view={moneyViews[field.id]!} locale={locale} label={field.name} />
+              ) : (
+                <span>
+                  {field.name}:{" "}
+                  {typeof record.value === "object" &&
+                  record.value !== null &&
+                  "amountMinor" in record.value
+                    ? `${record.value.amountMinor} ${record.value.currency}`
+                    : "—"}
+                </span>
+              )
+            ) : (
+              <p>
+                {field.name}: {displayCustomFieldValue(record.value, field.type, locale)}
+              </p>
+            )}
           </div>
         ) : null;
       })}

@@ -159,9 +159,10 @@ describe("deliberate monetary draft semantics", () => {
     const draft = { ...initialMoneyDraft(null), mode: "REPLACE" as const, decimal: "1,23" };
     for (let i = 0; i < 128; i++) rememberMoneyDraft("owner-a", `older:${i}`, draft);
     rememberMoneyDraft("owner-a", "purchase:active", draft);
-    for (let i = 0; i < 1000; i++) rememberMoneyDraft("owner-a", `custom:active:${i}`, { ...draft, decimal: String(i) });
+    for (let i = 0; i < 1000; i++)
+      rememberMoneyDraft("owner-a", `custom:active:${i}`, { ...draft, decimal: String(i) });
     expect(recallMoneyDraft("owner-a", "purchase:active")).toEqual(draft);
-    for (let i = 0; i < 1000; i++) expect(recallMoneyDraft("owner-a", `custom:active:${i}`)?.decimal).toBe(String(i));
+    for (let i = 0; i < 1000; i++)
+      expect(recallMoneyDraft("owner-a", `custom:active:${i}`)?.decimal).toBe(String(i));
   });
-
 });

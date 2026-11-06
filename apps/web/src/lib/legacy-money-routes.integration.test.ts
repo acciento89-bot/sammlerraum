@@ -162,6 +162,12 @@ describe.runIf(enabled)("personal money HTTP real database boundary", () => {
       body.item.id,
     );
     expect(revoked.status).toBe(200);
+    expect(await revoked.json()).toEqual({
+      schemaVersion: 1,
+      revoked: true,
+      subject: { family: "PURCHASE", itemId: body.item.id },
+      assertionId: author.id,
+    });
     const stale = await f.api.UPDATE(
       request("PATCH", {
         schemaVersion: 1,

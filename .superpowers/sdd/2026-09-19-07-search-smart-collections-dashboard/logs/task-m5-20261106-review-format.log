@@ -1,0 +1,26 @@
+apps/web/src/components/money/custom-money-client.test.ts 44ms
+apps/web/src/components/money/custom-money-client.ts 11ms
+apps/web/src/components/money/legacy-money-acknowledgement.test.ts 6ms (unchanged)
+apps/web/src/components/money/legacy-money-acknowledgement.ts 3ms (unchanged)
+apps/web/src/components/money/legacy-money-client.test.ts 7ms (unchanged)
+apps/web/src/components/money/legacy-money-client.ts 9ms (unchanged)
+apps/web/src/components/money/legacy-money-draft.test.ts 10ms
+apps/web/src/components/money/legacy-money-draft.ts 8ms
+apps/web/src/components/money/legacy-money-editor.tsx 13ms (unchanged)
+apps/web/src/components/money/legacy-money-review.tsx 21ms
+apps/web/src/components/money/money-locale-navigation.test.ts 2ms (unchanged)
+apps/web/src/components/money/money-locale-navigation.ts 3ms (unchanged)
+apps/web/src/components/money/money-review-client.test.ts 5ms
+apps/web/src/components/money/money-review-client.ts 5ms
+apps/web/src/components/money/money-review-draft.test.ts 3ms
+apps/web/src/components/money/money-review-draft.ts 6ms
+apps/web/src/components/items/item-form.tsx 72ms
+apps/web/e2e/legacy-money.spec.ts 40ms
+packages/contracts/src/personal-money.ts 8ms
+packages/domain/src/money/personal-money-history.ts 6ms (unchanged)
+packages/domain/src/money/personal-money-service.test.ts 24ms
+apps/web/src/lib/legacy-money-routes.ts 8ms
+apps/web/src/lib/legacy-money-routes.integration.test.ts 9ms
+apps/web/messages/de.json 25ms (unchanged)
+apps/web/messages/en.json 9ms (unchanged)
+apps/web/src/app/globals.css 45ms

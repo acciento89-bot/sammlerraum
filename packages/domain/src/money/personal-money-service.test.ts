@@ -204,6 +204,14 @@ describe.runIf(enabled)("personal money authoring real transactions", () => {
       Array<{ count: string }>
     >`SELECT count(*)::text AS count FROM "CustomMoneyInterpretationEvent" WHERE "itemId"=${split.created.id}::uuid AND "fieldDefinitionId"=${definition.id}::uuid AND operation='COPY'`;
     expect(counts!.count).toBe("1");
+    const history = await f.service.listHistory({ ...subject, itemId: split.created.id }, {});
+    const copied = history.events.find((event) => event.operation === "COPY")!;
+    expect(copied).toMatchObject({ originSubject: subject, expectedAssertionToken: null });
+    await createItemService(db!, f.actor).deleteItem(created.item.id);
+    const removedOrigin = await f.service.listHistory({ ...subject, itemId: split.created.id }, {});
+    expect(removedOrigin.events.find((event) => event.operation === "COPY")).toMatchObject({
+      originSubject: null,
+    });
   });
   it("hides foreign facts and rejects legacy raw fields in the explicit authoring envelope", async () => {
     const f = await fixture(),

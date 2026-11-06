@@ -37,6 +37,7 @@ export type ItemMoneyResult = z.infer<typeof ItemMoneyResultSchema>;
 import { scanFilterJson, copyBoundedFilterInput } from "./search-parser";
 import {
   LegacyMoneyIdSchema,
+  LegacyMoneySubjectSchema,
   LegacyRawMoneySchema,
   LegacyMoneyExponentSchema,
   AuthoringReceiptSchema,
@@ -69,8 +70,10 @@ export const MoneyHistoryEventSchema = z.object({
   basisId: z.string().max(80).nullable(),
   receipt: AuthoringReceiptSchema.nullable(),
   sourceEventId: LegacyMoneyIdSchema.nullable(),
+  originSubject: LegacyMoneySubjectSchema.nullable().default(null),
   originEventId: LegacyMoneyIdSchema.nullable(),
   revokedAssertionId: LegacyMoneyIdSchema.nullable(),
+  revocationId: LegacyMoneyIdSchema.nullable().default(null),
   actorId: z.string().max(512).nullable(),
   evidenceCategory: z.enum(["OWNER_ATTESTATION", "OPERATOR_VERIFIED_RECORD"]).nullable(),
   evidenceReference: z.string().max(800).nullable(),
@@ -81,5 +84,30 @@ export const MoneyHistoryEventSchema = z.object({
 });
 
 /** Exact existing private bulk/read response, separate from an immutable item snapshot. */
-export const PersonalMoneyBulkResultSchema = z.object({ schemaVersion: z.literal(1), purchase: MoneyViewSchema, custom: z.array(MoneyViewSchema).max(50) }).strict();
-export const MoneyValueResultSchema = z.object({ schemaVersion: z.literal(1), money: MoneyViewSchema }).strict();
+export const PersonalMoneyBulkResultSchema = z
+  .object({
+    schemaVersion: z.literal(1),
+    purchase: MoneyViewSchema,
+    custom: z.array(MoneyViewSchema).max(50),
+  })
+  .strict();
+export const MoneyValueResultSchema = z
+  .object({ schemaVersion: z.literal(1), money: MoneyViewSchema })
+  .strict();
+
+export const PersonalMoneyHistoryResultSchema = z
+  .object({
+    schemaVersion: z.literal(1),
+    subject: LegacyMoneySubjectSchema,
+    events: z.array(MoneyHistoryEventSchema).max(50),
+    nextCursor: z.string().max(2048).nullable(),
+  })
+  .strict();
+export const MoneyRevocationResultSchema = z
+  .object({
+    schemaVersion: z.literal(1),
+    subject: LegacyMoneySubjectSchema,
+    assertionId: LegacyMoneyIdSchema,
+    revoked: z.literal(true),
+  })
+  .strict();

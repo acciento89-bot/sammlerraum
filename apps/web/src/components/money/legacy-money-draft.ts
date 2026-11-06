@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { clearMoneyReviewDrafts } from "./money-review-draft";
 import {
   ExistingMoneyIntentSchema,
   NewMoneyIntentSchema,
@@ -110,6 +111,7 @@ let activeOwner: string | null = null;
 function ownerScope(owner: string) {
   if (!owner || owner.length > 512) throw new MoneyDraftError("MONEY_INPUT_INVALID");
   if (activeOwner !== owner) {
+    clearMoneyReviewDrafts();
     drafts.clear();
     activeOwner = owner;
   }
@@ -126,7 +128,10 @@ export function rememberMoneyDraft(owner: string, key: string, draft: MoneyDraft
 export function recallMoneyDraft(owner: string, key: string): MoneyDraft | undefined {
   ownerScope(owner);
   const draft = drafts.get(key);
-  if (draft) { drafts.delete(key); drafts.set(key, draft); }
+  if (draft) {
+    drafts.delete(key);
+    drafts.set(key, draft);
+  }
   return draft ? { ...draft } : undefined;
 }
 export function forgetMoneyDraft(owner: string, key: string): void {
@@ -134,6 +139,7 @@ export function forgetMoneyDraft(owner: string, key: string): void {
   drafts.delete(key);
 }
 export function clearMoneyDrafts(): void {
+  clearMoneyReviewDrafts();
   drafts.clear();
   activeOwner = null;
 }

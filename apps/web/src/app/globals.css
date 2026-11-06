@@ -1245,3 +1245,25 @@ body:has(.search-shell) .skip-link:not(:focus) {
   background: #edf4ec;
   color: var(--green);
 }
+
+.money-review {
+  display: grid;
+  gap: 1rem;
+}
+.money-review > fieldset {
+  display: grid;
+  gap: 1rem;
+  border: 0;
+  padding: 0;
+}
+.money-history-event {
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--line);
+}
+.money-history-event time {
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+.money-history-event p {
+  overflow-wrap: anywhere;
+}

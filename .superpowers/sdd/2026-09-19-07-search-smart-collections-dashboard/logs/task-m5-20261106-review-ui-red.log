@@ -1,0 +1,107 @@
+[WebServer] (node:92152) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 4 tests using 1 worker
+
+(node:92153) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [money-ui-desktop] › e2e/legacy-money.spec.ts:454:3 › de: documenting a historical purchase changes only its evidenced meaning, not the raw amount (4.1s)
+(node:92166) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  2 [money-ui-desktop] › e2e/legacy-money.spec.ts:454:3 › en: documenting a historical purchase changes only its evidenced meaning, not the raw amount (3.1s)
+(node:92178) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  3 [money-ui-mobile] › e2e/legacy-money.spec.ts:454:3 › de: documenting a historical purchase changes only its evidenced meaning, not the raw amount (3.1s)
+(node:92201) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  4 [money-ui-mobile] › e2e/legacy-money.spec.ts:454:3 › en: documenting a historical purchase changes only its evidenced meaning, not the raw amount (3.1s)
+
+
+  1) [money-ui-desktop] › e2e/legacy-money.spec.ts:454:3 › de: documenting a historical purchase changes only its evidenced meaning, not the raw amount 
+
+    TimeoutError: locator.click: Timeout 2500ms exceeded.
+    Call log:
+      - waiting for getByRole('region', { name: 'Kaufpreis pro Stück', exact: true }).getByRole('button', { name: 'Vorhandenen Betrag belegen', exact: true })
+
+
+      456 |     const h = await openHistoricalPrice(page, locale, { edit: false });
+      457 |     try {
+    > 458 |       await h.region.getByRole("button", { name: h.m.review, exact: true }).click({ timeout: 2500 });
+          |                                                                             ^
+      459 |       const review = page.getByRole("region", { name: h.m.review, exact: true });
+      460 |       await expect(review).toBeVisible();
+      461 |       await review.getByRole("textbox", { name: locale === "de" ? "Belegte Dezimalstellen" : "Evidenced decimal places", exact: true }).fill("2");
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/legacy-money.spec.ts:458:77
+
+    Error Context: test-results/legacy-money-de-documentin-0fb92--meaning-not-the-raw-amount-money-ui-desktop/error-context.md
+
+    Error Context: test-results/legacy-money-de-documentin-0fb92--meaning-not-the-raw-amount-money-ui-desktop/error-context.md
+
+  2) [money-ui-desktop] › e2e/legacy-money.spec.ts:454:3 › en: documenting a historical purchase changes only its evidenced meaning, not the raw amount 
+
+    TimeoutError: locator.click: Timeout 2500ms exceeded.
+    Call log:
+      - waiting for getByRole('region', { name: 'Purchase price per unit', exact: true }).getByRole('button', { name: 'Document the stored amount', exact: true })
+
+
+      456 |     const h = await openHistoricalPrice(page, locale, { edit: false });
+      457 |     try {
+    > 458 |       await h.region.getByRole("button", { name: h.m.review, exact: true }).click({ timeout: 2500 });
+          |                                                                             ^
+      459 |       const review = page.getByRole("region", { name: h.m.review, exact: true });
+      460 |       await expect(review).toBeVisible();
+      461 |       await review.getByRole("textbox", { name: locale === "de" ? "Belegte Dezimalstellen" : "Evidenced decimal places", exact: true }).fill("2");
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/legacy-money.spec.ts:458:77
+
+    Error Context: test-results/legacy-money-en-documentin-eef0a--meaning-not-the-raw-amount-money-ui-desktop/error-context.md
+
+    Error Context: test-results/legacy-money-en-documentin-eef0a--meaning-not-the-raw-amount-money-ui-desktop/error-context.md
+
+  3) [money-ui-mobile] › e2e/legacy-money.spec.ts:454:3 › de: documenting a historical purchase changes only its evidenced meaning, not the raw amount 
+
+    TimeoutError: locator.click: Timeout 2500ms exceeded.
+    Call log:
+      - waiting for getByRole('region', { name: 'Kaufpreis pro Stück', exact: true }).getByRole('button', { name: 'Vorhandenen Betrag belegen', exact: true })
+
+
+      456 |     const h = await openHistoricalPrice(page, locale, { edit: false });
+      457 |     try {
+    > 458 |       await h.region.getByRole("button", { name: h.m.review, exact: true }).click({ timeout: 2500 });
+          |                                                                             ^
+      459 |       const review = page.getByRole("region", { name: h.m.review, exact: true });
+      460 |       await expect(review).toBeVisible();
+      461 |       await review.getByRole("textbox", { name: locale === "de" ? "Belegte Dezimalstellen" : "Evidenced decimal places", exact: true }).fill("2");
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/legacy-money.spec.ts:458:77
+
+    Error Context: test-results/legacy-money-de-documentin-0fb92--meaning-not-the-raw-amount-money-ui-mobile/error-context.md
+
+    Error Context: test-results/legacy-money-de-documentin-0fb92--meaning-not-the-raw-amount-money-ui-mobile/error-context.md
+
+  4) [money-ui-mobile] › e2e/legacy-money.spec.ts:454:3 › en: documenting a historical purchase changes only its evidenced meaning, not the raw amount 
+
+    TimeoutError: locator.click: Timeout 2500ms exceeded.
+    Call log:
+      - waiting for getByRole('region', { name: 'Purchase price per unit', exact: true }).getByRole('button', { name: 'Document the stored amount', exact: true })
+
+
+      456 |     const h = await openHistoricalPrice(page, locale, { edit: false });
+      457 |     try {
+    > 458 |       await h.region.getByRole("button", { name: h.m.review, exact: true }).click({ timeout: 2500 });
+          |                                                                             ^
+      459 |       const review = page.getByRole("region", { name: h.m.review, exact: true });
+      460 |       await expect(review).toBeVisible();
+      461 |       await review.getByRole("textbox", { name: locale === "de" ? "Belegte Dezimalstellen" : "Evidenced decimal places", exact: true }).fill("2");
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/legacy-money.spec.ts:458:77
+
+    Error Context: test-results/legacy-money-en-documentin-eef0a--meaning-not-the-raw-amount-money-ui-mobile/error-context.md
+
+    Error Context: test-results/legacy-money-en-documentin-eef0a--meaning-not-the-raw-amount-money-ui-mobile/error-context.md
+
+  4 failed
+    [money-ui-desktop] › e2e/legacy-money.spec.ts:454:3 › de: documenting a historical purchase changes only its evidenced meaning, not the raw amount 
+    [money-ui-desktop] › e2e/legacy-money.spec.ts:454:3 › en: documenting a historical purchase changes only its evidenced meaning, not the raw amount 
+    [money-ui-mobile] › e2e/legacy-money.spec.ts:454:3 › de: documenting a historical purchase changes only its evidenced meaning, not the raw amount 
+    [money-ui-mobile] › e2e/legacy-money.spec.ts:454:3 › en: documenting a historical purchase changes only its evidenced meaning, not the raw amount 
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/legacy-money.spec.ts --workers=1 --grep documenting a historical purchase

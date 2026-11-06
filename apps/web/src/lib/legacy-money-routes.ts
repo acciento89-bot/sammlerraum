@@ -2,6 +2,7 @@ import { ApiError } from "@sammlerraum/contracts/errors";
 import {
   LegacyMoneyError,
   LegacyMoneySubjectSchema,
+  RevokeMoneyInputSchema,
   legacyMoneyFail,
   type MoneySubject,
 } from "@sammlerraum/contracts/legacy-money";
@@ -178,8 +179,16 @@ export function createLegacyMoneyRouteHandlers(
       ["limit", "cursor"],
     ),
     REVOKE: handle(async (r, s, id, field) => {
-      await s.revokeAssertion(subject(id, field), await body(r));
-      return { schemaVersion: 1, revoked: true };
+      const target = subject(id, field),
+        parsed = RevokeMoneyInputSchema.safeParse(await body(r));
+      if (!parsed.success) return legacyMoneyFail("LEGACY_MONEY_INVALID");
+      await s.revokeAssertion(target, parsed.data);
+      return {
+        schemaVersion: 1,
+        revoked: true,
+        subject: target,
+        assertionId: parsed.data.assertionId,
+      };
     }),
   };
 }

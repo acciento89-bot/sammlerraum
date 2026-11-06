@@ -46,6 +46,14 @@ async function json(response: Response, maxBytes: number): Promise<unknown> {
   if (joined[0] === 0xef && joined[1] === 0xbb && joined[2] === 0xbf) throw Error("Unexpected BOM");
   return JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(joined)) as unknown;
 }
+/** Close a bounded error response without trusting its contents or changing outcome semantics. */
+async function discardErrorResponse(response: Response): Promise<void> {
+  try {
+    await json(response, 4096);
+  } catch {
+    /* The status, never an error body, determines recovery. */
+  }
+}
 export async function loadMoneyCapabilities(
   transport: MoneyTransport = browserTransport,
 ): Promise<MoneyCapabilities> {
@@ -54,7 +62,10 @@ export async function loadMoneyCapabilities(
       cache: "no-store",
       credentials: "same-origin",
     });
-    if (!response.ok) throw Error();
+    if (!response.ok) {
+      await discardErrorResponse(response);
+      throw Error();
+    }
     return MoneyCapabilitiesSchema.parse(await json(response, 4096));
   } catch {
     throw new MoneyClientError("CAPABILITY_UNAVAILABLE");
@@ -73,7 +84,10 @@ export async function readMoney<T>(
 ): Promise<T> {
   try {
     const response = await transport(url, { cache: "no-store", credentials: "same-origin" });
-    if (!response.ok) throw Error();
+    if (!response.ok) {
+      await discardErrorResponse(response);
+      throw Error();
+    }
     return schema.parse(await json(response, 1024 * 1024));
   } catch {
     throw new MoneyClientError("READ_FAILED");
@@ -109,6 +123,7 @@ export async function writeMoney<T>(
     throw new MoneyClientError("OUTCOME_UNKNOWN");
   }
   if (!response.ok) {
+    await discardErrorResponse(response);
     // Even a server timeout can occur after commit. Never infer rollback or auto-retry it.
     throw new MoneyClientError(
       response.status >= 500 ? "OUTCOME_UNKNOWN" : response.status === 409 ? "CONFLICT" : "REFUSED",

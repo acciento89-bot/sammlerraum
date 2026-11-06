@@ -65,8 +65,13 @@ export async function readPersonalMoneyHistory(
     Array<{ value: Record<string, unknown> | null; revocationId: string | null }>
   >(Prisma.sql`
  WITH owned AS (${parent}) SELECT h.value,h."revocationId" FROM owned
- LEFT JOIN LATERAL(SELECT to_jsonb(e)||jsonb_build_object('sequence',e.sequence::text,'rawAmountMinor',e."rawAmountMinor"::text) AS value,r.id::text AS "revocationId"
+ LEFT JOIN LATERAL(SELECT to_jsonb(e)||jsonb_build_object('sequence',e.sequence::text,'rawAmountMinor',e."rawAmountMinor"::text,
+ 'originSubject', CASE WHEN oi.id IS NOT NULL AND oc.id IS NOT NULL THEN
+ ${custom ? Prisma.sql`jsonb_build_object('family','CUSTOM','itemId',o."itemId",'fieldDefinitionId',o."fieldDefinitionId")` : Prisma.sql`jsonb_build_object('family','PURCHASE','itemId',o."itemId")`} ELSE NULL END) AS value,r.id::text AS "revocationId"
  FROM ${table} e LEFT JOIN ${table} r ON r."revokedAssertionId"=e.id
+ LEFT JOIN ${table} o ON o.id=e."originEventId" AND e.operation='COPY'
+ LEFT JOIN "CollectibleItem" oi ON oi.id=o."itemId" AND oi."ownerId"=${user} AND oi."deletedAt" IS NULL
+ LEFT JOIN "Collection" oc ON oc.id=oi."collectionId" AND oc."ownerId"=${user} AND oc."deletedAt" IS NULL
  WHERE e."itemId"=owned.id ${custom ? Prisma.sql`AND e."fieldDefinitionId"=${subject.fieldDefinitionId}::uuid` : Prisma.empty}
  ${after ? Prisma.sql`AND (e.sequence,e.id)<(${after.sequence}::bigint,${after.id}::uuid)` : Prisma.empty}
  ORDER BY e.sequence DESC,e.id DESC LIMIT ${q.data.limit + 1}) h ON true`);
@@ -85,6 +90,7 @@ export async function readPersonalMoneyHistory(
             : { amountMinor: v.rawAmountMinor, currency: v.rawCurrency },
         createdAt: instant(v.createdAt),
         evidenceErasedAt: erased,
+        revocationId: r.revocationId,
         expectedAssertionToken: assertion
           ? encodeMoneyAssertionToken({
               v: 1,

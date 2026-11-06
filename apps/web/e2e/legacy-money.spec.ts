@@ -313,57 +313,121 @@ for (const locale of ["de", "en"] as const) {
 }
 
 for (const locale of ["de", "en"] as const) {
-  test(`${locale}: title-only save preserves a custom MONEY field's historical receipt`, async ({ page }) => {
+  test(`${locale}: title-only save preserves a custom MONEY field's historical receipt`, async ({
+    page,
+  }) => {
     test.skip(!active, "Requires owned monetary UI test database");
     const f = await searchFixture();
     try {
-      const { createCustomFieldService } = await import("@sammlerraum/domain/custom-fields/custom-field-service");
+      const { createCustomFieldService } = await import(
+        "@sammlerraum/domain/custom-fields/custom-field-service"
+      );
       const custom = createCustomFieldService(db!, f.ownerId);
-      const field = await custom.createFieldDefinition({ collectionId: f.collectionId, name: "Historical custom price", type: "MONEY" });
+      const field = await custom.createFieldDefinition({
+        collectionId: f.collectionId,
+        name: "Historical custom price",
+        type: "MONEY",
+      });
       await custom.setFieldValue(f.itemId, field.id, { amountMinor: 100, currency: "AFN" });
-      const money = createPersonalMoneyService(db!, f.ownerId), subject = { family: "CUSTOM" as const, itemId: f.itemId, fieldDefinitionId: field.id };
+      const money = createPersonalMoneyService(db!, f.ownerId),
+        subject = { family: "CUSTOM" as const, itemId: f.itemId, fieldDefinitionId: field.id };
       const raw = await money.getMoney(subject);
-      await money.classifyMoney(subject, { expectedFactToken: raw.factToken, exponent: 0, unit: { kind: "SUPPORTED", unitKey: "iso4217-2026-09-17:AFN" }, evidence: { category: "OWNER_ATTESTATION", reason: "Synthetic historical custom value" } });
+      await money.classifyMoney(subject, {
+        expectedFactToken: raw.factToken,
+        exponent: 0,
+        unit: { kind: "SUPPORTED", unitKey: "iso4217-2026-09-17:AFN" },
+        evidence: { category: "OWNER_ATTESTATION", reason: "Synthetic historical custom value" },
+      });
       const before = await money.getMoney(subject);
-      expect((await page.request.post("/api/auth/sign-in/email", { headers: { origin, "x-forwarded-for": f.ip }, data: { email: f.email, password: f.password } })).status()).toBe(200);
+      expect(
+        (
+          await page.request.post("/api/auth/sign-in/email", {
+            headers: { origin, "x-forwarded-for": f.ip },
+            data: { email: f.email, password: f.password },
+          })
+        ).status(),
+      ).toBe(200);
       await page.goto(`/${locale}/items/${f.itemId}`);
       const t = (locale === "de" ? de : en).ItemForm;
       const save = page.getByRole("button", { name: t.save, exact: true });
       await expect(save).toBeEnabled();
       await page.getByLabel(t.title, { exact: true }).fill("Changed title with custom receipt");
-      const response = page.waitForResponse(r => r.request().method() === "PATCH" && new URL(r.url()).pathname.endsWith(`/items/${f.itemId}`));
-      await save.click(); expect((await response).status()).toBe(200); await expect(save).toBeEnabled();
+      const response = page.waitForResponse(
+        (r) =>
+          r.request().method() === "PATCH" &&
+          new URL(r.url()).pathname.endsWith(`/items/${f.itemId}`),
+      );
+      await save.click();
+      expect((await response).status()).toBe(200);
+      await expect(save).toBeEnabled();
       expect((await money.getMoney(subject)).factToken).toBe(before.factToken);
-      await expect(page.getByRole("region", { name: field.name, exact: true }).getByRole("status").first()).toContainText("100 AFN");
-    } finally { await cleanupSearchFixture(f); }
+      await expect(
+        page.getByRole("region", { name: field.name, exact: true }).getByRole("status").first(),
+      ).toContainText("100 AFN");
+    } finally {
+      await cleanupSearchFixture(f);
+    }
   });
 }
 
 async function customPriceFixture(page: Page, locale: "de" | "en", count = 1, newItem = false) {
   const f = await searchFixture();
   try {
-    const { createCustomFieldService } = await import("@sammlerraum/domain/custom-fields/custom-field-service");
-    const custom = createCustomFieldService(db!, f.ownerId), money = createPersonalMoneyService(db!, f.ownerId);
+    const { createCustomFieldService } = await import(
+      "@sammlerraum/domain/custom-fields/custom-field-service"
+    );
+    const custom = createCustomFieldService(db!, f.ownerId),
+      money = createPersonalMoneyService(db!, f.ownerId);
     const fields = [];
     for (let i = 0; i < count; i++) {
-      const field = await custom.createFieldDefinition({ collectionId: f.collectionId, name: `Custom price ${i + 1}`, type: "MONEY" });
+      const field = await custom.createFieldDefinition({
+        collectionId: f.collectionId,
+        name: `Custom price ${i + 1}`,
+        type: "MONEY",
+      });
       if (!newItem) {
         await custom.setFieldValue(f.itemId, field.id, { amountMinor: 100, currency: "AFN" });
-        const subject = { family: "CUSTOM" as const, itemId: f.itemId, fieldDefinitionId: field.id };
+        const subject = {
+          family: "CUSTOM" as const,
+          itemId: f.itemId,
+          fieldDefinitionId: field.id,
+        };
         const raw = await money.getMoney(subject);
-        await money.classifyMoney(subject, { expectedFactToken: raw.factToken, exponent: 0, unit: { kind: "SUPPORTED", unitKey: "iso4217-2026-09-17:AFN" }, evidence: { category: "OWNER_ATTESTATION", reason: "Synthetic historical custom price" } });
+        await money.classifyMoney(subject, {
+          expectedFactToken: raw.factToken,
+          exponent: 0,
+          unit: { kind: "SUPPORTED", unitKey: "iso4217-2026-09-17:AFN" },
+          evidence: { category: "OWNER_ATTESTATION", reason: "Synthetic historical custom price" },
+        });
       }
       fields.push(field);
     }
-    expect((await page.request.post("/api/auth/sign-in/email", { headers: { origin, "x-forwarded-for": f.ip }, data: { email: f.email, password: f.password } })).status()).toBe(200);
-    await page.goto(newItem ? `/${locale}/items/new?collectionId=${f.collectionId}` : `/${locale}/items/${f.itemId}`);
-    const t = (locale === "de" ? de : en).ItemForm, m = (locale === "de" ? de : en).LegacyMoney;
+    expect(
+      (
+        await page.request.post("/api/auth/sign-in/email", {
+          headers: { origin, "x-forwarded-for": f.ip },
+          data: { email: f.email, password: f.password },
+        })
+      ).status(),
+    ).toBe(200);
+    await page.goto(
+      newItem
+        ? `/${locale}/items/new?collectionId=${f.collectionId}`
+        : `/${locale}/items/${f.itemId}`,
+    );
+    const t = (locale === "de" ? de : en).ItemForm,
+      m = (locale === "de" ? de : en).LegacyMoney;
     await expect(page.getByRole("button", { name: t.save, exact: true })).toBeEnabled();
     return { f, fields, money, t, m };
-  } catch (error) { await cleanupSearchFixture(f); throw error; }
+  } catch (error) {
+    await cleanupSearchFixture(f);
+    throw error;
+  }
 }
 for (const locale of ["de", "en"] as const) {
-  test(`${locale}: custom replacement acknowledges each field before a later uncertain result and never replays the first`, async ({ page }) => {
+  test(`${locale}: custom replacement acknowledges each field before a later uncertain result and never replays the first`, async ({
+    page,
+  }) => {
     test.skip(!active, "Requires owned monetary UI test database");
     const { f, fields, money, t, m } = await customPriceFixture(page, locale, 2);
     try {
@@ -371,35 +435,61 @@ for (const locale of ["de", "en"] as const) {
         const region = page.getByRole("region", { name: field.name, exact: true });
         await region.getByRole("button", { name: m.replace, exact: true }).click();
         await region.getByRole("textbox", { name: m.newAmount, exact: true }).fill("2");
-        await region.getByRole("textbox", { name: m.reason, exact: true }).fill("Synthetic deliberate custom correction");
+        await region
+          .getByRole("textbox", { name: m.reason, exact: true })
+          .fill("Synthetic deliberate custom correction");
         await region.getByRole("checkbox").check();
       }
       const secondPath = `/api/v1/money/items/${f.itemId}/custom-fields/${fields[1]!.id}`;
-      await page.route(`**${secondPath}`, route => route.fulfill({ status: 503, contentType: "application/json", body: '{}' }));
+      await page.route(`**${secondPath}`, (route) =>
+        route.fulfill({ status: 503, contentType: "application/json", body: "{}" }),
+      );
       const save = page.getByRole("button", { name: t.save, exact: true });
       await save.click();
       await expect(page.locator('p.error[role="alert"]')).toContainText(fields[1]!.name);
       await expect(save).toBeDisabled();
-      const firstSubject = { family: "CUSTOM" as const, itemId: f.itemId, fieldDefinitionId: fields[0]!.id };
+      const firstSubject = {
+        family: "CUSTOM" as const,
+        itemId: f.itemId,
+        fieldDefinitionId: fields[0]!.id,
+      };
       const first = await money.getMoney(firstSubject);
       expect(first.raw).toEqual({ amountMinor: "200", currency: "AFN" });
-      expect(first.interpretation).toMatchObject({ kind: "INTERPRETED", exponent: 2, decimal: "2.00" });
+      expect(first.interpretation).toMatchObject({
+        kind: "INTERPRETED",
+        exponent: 2,
+        decimal: "2.00",
+      });
       const firstRegion = page.getByRole("region", { name: fields[0]!.name, exact: true });
       await expect(firstRegion.getByRole("button", { name: m.replace, exact: true })).toBeVisible();
-      const secondShell = page.getByRole("region", { name: fields[1]!.name, exact: true }).locator('..');
+      const secondShell = page
+        .getByRole("region", { name: fields[1]!.name, exact: true })
+        .locator("..");
       await secondShell.getByRole("button", { name: m.checkCurrent, exact: true }).click();
       await expect(save).toBeDisabled();
       await secondShell.getByRole("button", { name: m.adoptCurrent, exact: true }).click();
       await expect(save).toBeEnabled();
       await page.unroute(`**${secondPath}`);
-      await page.getByLabel(t.title, { exact: true }).fill("Retry keeps acknowledged custom receipt");
-      const response = page.waitForResponse(r => r.request().method() === "PATCH" && new URL(r.url()).pathname.endsWith(`/items/${f.itemId}`));
-      await save.click(); expect((await response).status()).toBe(200); await expect(save).toBeEnabled();
+      await page
+        .getByLabel(t.title, { exact: true })
+        .fill("Retry keeps acknowledged custom receipt");
+      const response = page.waitForResponse(
+        (r) =>
+          r.request().method() === "PATCH" &&
+          new URL(r.url()).pathname.endsWith(`/items/${f.itemId}`),
+      );
+      await save.click();
+      expect((await response).status()).toBe(200);
+      await expect(save).toBeEnabled();
       expect((await money.getMoney(firstSubject)).factToken).toBe(first.factToken);
-    } finally { await cleanupSearchFixture(f); }
+    } finally {
+      await cleanupSearchFixture(f);
+    }
   });
 
-  test(`${locale}: a new item binds its custom amount to actual absence without duplicate creation`, async ({ page }) => {
+  test(`${locale}: a new item binds its custom amount to actual absence without duplicate creation`, async ({
+    page,
+  }) => {
     test.skip(!active, "Requires owned monetary UI test database");
     const { f, fields, money, t } = await customPriceFixture(page, locale, 1, true);
     try {
@@ -407,45 +497,281 @@ for (const locale of ["de", "en"] as const) {
       const region = page.getByRole("region", { name: fields[0]!.name, exact: true });
       await region.getByRole("textbox", { name: fields[0]!.name, exact: true }).fill("1,25");
       const save = page.getByRole("button", { name: t.save, exact: true });
-      const response = page.waitForResponse(r => r.request().method() === "POST" && new URL(r.url()).pathname === "/api/v1/money/items");
-      await save.click(); const created = await response; expect(created.status()).toBe(201);
+      const response = page.waitForResponse(
+        (r) =>
+          r.request().method() === "POST" && new URL(r.url()).pathname === "/api/v1/money/items",
+      );
+      await save.click();
+      const created = await response;
+      expect(created.status()).toBe(201);
       const result = await created.json();
       await expect(page).toHaveURL(new RegExp(`/${locale}/items/${result.item.id}$`));
       await expect(save).toBeEnabled();
-      const actual = await money.getMoney({ family: "CUSTOM", itemId: result.item.id, fieldDefinitionId: fields[0]!.id });
+      const actual = await money.getMoney({
+        family: "CUSTOM",
+        itemId: result.item.id,
+        fieldDefinitionId: fields[0]!.id,
+      });
       expect(actual.raw).toEqual({ amountMinor: "125", currency: "EUR" });
-      expect(actual.interpretation).toMatchObject({ kind: "INTERPRETED", decimal: "1.25", exponent: 2 });
-      expect(await db!.collectibleItem.count({ where: { collectionId: f.collectionId, title: "New item with explicit custom money" } })).toBe(1);
-    } finally { await cleanupSearchFixture(f); }
+      expect(actual.interpretation).toMatchObject({
+        kind: "INTERPRETED",
+        decimal: "1.25",
+        exponent: 2,
+      });
+      expect(
+        await db!.collectibleItem.count({
+          where: { collectionId: f.collectionId, title: "New item with explicit custom money" },
+        }),
+      ).toBe(1);
+    } finally {
+      await cleanupSearchFixture(f);
+    }
   });
 }
 
 for (const locale of ["de", "en"] as const) {
-  test(`${locale}: a pending committed core write cannot be abandoned by a locale click`, async ({ page }) => {
+  test(`${locale}: a pending committed core write cannot be abandoned by a locale click`, async ({
+    page,
+  }) => {
     test.skip(!active, "Requires owned monetary UI test database");
     const h = await openHistoricalPrice(page, locale, { edit: false });
+    const activeRequests = new Set<string>();
+    page.on("request", (request) => activeRequests.add(request.method() + " " + request.url()));
+    page.on("requestfinished", (request) =>
+      activeRequests.delete(request.method() + " " + request.url()),
+    );
+    page.on("requestfailed", (request) =>
+      activeRequests.delete(request.method() + " " + request.url()),
+    );
     let release!: () => void;
-    const held = new Promise<void>(resolve => { release = resolve; });
+    const held = new Promise<void>((resolve) => {
+      release = resolve;
+    });
     let committed!: () => void;
-    const committedSignal = new Promise<void>(resolve => { committed = resolve; });
+    const committedSignal = new Promise<void>((resolve) => {
+      committed = resolve;
+    });
     try {
-      await page.route(`**/api/v1/money/items/${h.f.itemId}`, async route => {
+      await page.route(`**/api/v1/money/items/${h.f.itemId}`, async (route) => {
         if (route.request().method() !== "PATCH") return route.continue();
-        const response = await route.fetch(); committed(); await held; await route.fulfill({ response });
+        const response = await route.fetch();
+        committed();
+        await held;
+        await route.fulfill({ response });
       });
       await page.getByLabel(h.t.title, { exact: true }).fill("Held committed acknowledgment");
       await page.getByRole("button", { name: h.t.save, exact: true }).click();
       await committedSignal;
       const shell = (locale === "de" ? de : en).Shell;
-      await page.getByRole("link", { name: locale === "de" ? shell.english : shell.german, exact: true }).click();
+      await page
+        .getByRole("link", { name: locale === "de" ? shell.english : shell.german, exact: true })
+        .click();
       // Observe the entire held-response interval, rather than an immediate old-route assertion.
-      const escaped = await page.waitForURL(new RegExp(`/${locale === "de" ? "en" : "de"}/items/${h.f.itemId}$`), { timeout: 1200 }).then(() => true, () => false);
+      const escaped = await page
+        .waitForURL(new RegExp(`/${locale === "de" ? "en" : "de"}/items/${h.f.itemId}$`), {
+          timeout: 1200,
+        })
+        .then(
+          () => true,
+          () => false,
+        );
       expect(escaped).toBe(false);
       await expect(page).toHaveURL(new RegExp(`/${locale}/items/${h.f.itemId}$`));
       await expect(page.getByRole("button", { name: h.t.saving, exact: true })).toBeDisabled();
       release();
       await expect(page.getByRole("button", { name: h.t.save, exact: true })).toBeEnabled();
+      await expect.poll(() => [...activeRequests], { timeout: 2500 }).toEqual([]);
+      await page.waitForLoadState("networkidle", { timeout: 5000 });
+    } finally {
+      release();
+      await cleanupSearchFixture(h.f);
+    }
+  });
+}
+
+for (const locale of ["de", "en"] as const) {
+  test(`${locale}: documenting a historical purchase changes only its evidenced meaning, not the raw amount`, async ({
+    page,
+  }) => {
+    test.skip(!active, "Requires owned monetary UI test database");
+    const h = await openHistoricalPrice(page, locale, { edit: false });
+    try {
+      await h.region
+        .getByRole("button", { name: h.m.review, exact: true })
+        .click({ timeout: 2500 });
+      const review = page.getByRole("region", { name: h.m.review, exact: true });
+      await expect(review).toBeVisible();
+      await review
+        .getByRole("textbox", {
+          name: locale === "de" ? "Belegte Dezimalstellen" : "Evidenced decimal places",
+          exact: true,
+        })
+        .fill("2");
+      await review
+        .getByRole("combobox", {
+          name: locale === "de" ? "Bedeutung der Währung" : "Currency meaning",
+          exact: true,
+        })
+        .selectOption("SUPPORTED");
+      await review
+        .getByRole("combobox", {
+          name: locale === "de" ? "Art des Belegs" : "Evidence category",
+          exact: true,
+        })
+        .selectOption("OWNER_ATTESTATION");
+      await review
+        .getByRole("textbox", {
+          name: locale === "de" ? "Begründung des Belegs" : "Evidence reason",
+          exact: true,
+        })
+        .fill("Synthetic private historical clarification");
+      await review.getByRole("checkbox").first().check();
+      await review
+        .getByRole("button", {
+          name: locale === "de" ? "Bedeutung bestätigen" : "Confirm meaning",
+          exact: true,
+        })
+        .click();
+      await expect(
+        review.getByRole("button", {
+          name: locale === "de" ? "Bedeutung bestätigen" : "Confirm meaning",
+          exact: true,
+        }),
+      ).toBeDisabled();
+      await expect(h.region.getByRole("status").first()).toContainText(
+        locale === "de" ? "1,00 AFN" : "1.00 AFN",
+      );
+      const after = await h.money.getMoney(h.subject);
+      expect(after.raw).toEqual(h.before.raw);
+      expect(after.factToken).not.toBe(h.before.factToken);
+      expect(after.interpretation).toMatchObject({
+        kind: "INTERPRETED",
+        exponent: 2,
+        decimal: "1.00",
+        evidenceCategory: "OWNER_ATTESTATION",
+      });
+      const history = await h.money.listHistory(h.subject, {});
+      expect(history.events[0]!.reason).toBe("Synthetic private historical clarification");
       await page.waitForLoadState("networkidle");
-    } finally { release(); await cleanupSearchFixture(h.f); }
+    } finally {
+      await cleanupSearchFixture(h.f);
+    }
+  });
+}
+
+async function editReview(page: Page, locale: "de" | "en") {
+  const m = (locale === "de" ? de : en).LegacyMoney;
+  const review = page.getByRole("region", { name: m.review, exact: true });
+  await review.getByRole("textbox", { name: m.scale, exact: true }).fill("2");
+  await review
+    .getByRole("combobox", { name: m.unitMeaning, exact: true })
+    .selectOption("SUPPORTED");
+  await review
+    .getByRole("combobox", { name: m.evidenceCategory, exact: true })
+    .selectOption("OWNER_ATTESTATION");
+  await review
+    .getByRole("textbox", { name: m.evidenceReason, exact: true })
+    .fill("Synthetic explicit evidence draft");
+  await review.getByRole("checkbox").first().check();
+  return { review, m };
+}
+for (const locale of ["de", "en"] as const) {
+  test(`${locale}: historical evidence draft survives locale navigation with its original fact precondition`, async ({
+    page,
+  }) => {
+    test.skip(!active, "Requires owned monetary UI test database");
+    const h = await openHistoricalPrice(page, locale, { edit: false });
+    try {
+      await h.region.getByRole("button", { name: h.m.review, exact: true }).click();
+      await editReview(page, locale);
+      const next = locale === "de" ? "en" : "de",
+        shell = (locale === "de" ? de : en).Shell,
+        m = (next === "de" ? de : en).LegacyMoney;
+      await page
+        .getByRole("link", { name: locale === "de" ? shell.english : shell.german, exact: true })
+        .click();
+      await expect(page).toHaveURL(new RegExp(`/${next}/items/${h.f.itemId}$`));
+      const review = page.getByRole("region", { name: m.review, exact: true });
+      await expect(review).toBeVisible();
+      await expect(review.getByRole("textbox", { name: m.scale, exact: true })).toHaveValue("2");
+      await expect(
+        review.getByRole("textbox", { name: m.evidenceReason, exact: true }),
+      ).toHaveValue("Synthetic explicit evidence draft");
+      await expect(review.getByRole("checkbox").first()).toBeChecked();
+      expect((await h.money.getMoney(h.subject)).factToken).toBe(h.before.factToken);
+      await review.getByRole("button", { name: m.confirmMeaning, exact: true }).click();
+      await expect(review.getByText(m.savedSeparately, { exact: true })).toBeVisible();
+      expect((await h.money.getMoney(h.subject)).interpretation).toMatchObject({
+        kind: "INTERPRETED",
+        exponent: 2,
+      });
+      await page.waitForLoadState("networkidle", { timeout: 5000 });
+    } finally {
+      await cleanupSearchFixture(h.f);
+    }
+  });
+  test(`${locale}: a competing historical classification blocks stale evidence until explicit inspection and adoption`, async ({
+    page,
+  }) => {
+    test.skip(!active, "Requires owned monetary UI test database");
+    const h = await openHistoricalPrice(page, locale, { edit: false });
+    try {
+      await h.region.getByRole("button", { name: h.m.review, exact: true }).click();
+      const { review, m } = await editReview(page, locale);
+      const newer = await h.money.classifyMoney(h.subject, {
+        expectedFactToken: h.before.factToken,
+        exponent: 1,
+        unit: { kind: "SUPPORTED", unitKey: "iso4217-2026-09-17:AFN" },
+        evidence: { category: "OWNER_ATTESTATION", reason: "Competing actual historical evidence" },
+      });
+      await review.getByRole("button", { name: m.confirmMeaning, exact: true }).click();
+      await expect(review.getByText(m.conflict, { exact: true })).toBeVisible();
+      await expect(
+        review.getByRole("button", { name: m.confirmMeaning, exact: true }),
+      ).toBeDisabled();
+      expect((await h.money.getMoney(h.subject)).factToken).toBe(newer.factToken);
+      await review.getByRole("button", { name: m.checkCurrent, exact: true }).click();
+      await expect(review.getByRole("button", { name: m.adoptCurrent, exact: true })).toBeVisible();
+      await expect(
+        review.getByRole("button", { name: m.confirmMeaning, exact: true }),
+      ).toBeDisabled();
+      await review.getByRole("button", { name: m.adoptCurrent, exact: true }).click();
+      await expect(review.getByRole("textbox", { name: m.scale, exact: true })).toHaveValue("");
+      expect((await h.money.getMoney(h.subject)).factToken).toBe(newer.factToken);
+      await page.waitForLoadState("networkidle", { timeout: 5000 });
+    } finally {
+      await cleanupSearchFixture(h.f);
+    }
+  });
+  test(`${locale}: withdrawing the exact historical assertion preserves raw money and invalidates its meaning`, async ({
+    page,
+  }) => {
+    test.skip(!active, "Requires owned monetary UI test database");
+    const h = await openHistoricalPrice(page, locale, { edit: false });
+    try {
+      await h.region.getByRole("button", { name: h.m.review, exact: true }).click();
+      const review = page.getByRole("region", { name: h.m.review, exact: true });
+      await review.locator("summary").filter({ hasText: h.m.history }).click();
+      await review.getByRole("button", { name: h.m.revoke, exact: true }).click();
+      const revoke = review.getByRole("group", { name: h.m.revoke, exact: true });
+      await revoke
+        .getByRole("textbox", { name: h.m.revokeReason, exact: true })
+        .fill("Synthetic deliberate withdrawal");
+      await revoke.getByRole("checkbox").check();
+      await revoke.getByRole("button", { name: h.m.confirmRevoke, exact: true }).click();
+      await expect(review.getByText(h.m.savedSeparately, { exact: true })).toBeVisible();
+      const after = await h.money.getMoney(h.subject);
+      expect(after.raw).toEqual(h.before.raw);
+      expect(after.interpretation).toMatchObject({ kind: "UNKNOWN", reason: "REVOKED" });
+      const history = await h.money.listHistory(h.subject, {});
+      expect(history.events[0]!).toMatchObject({
+        operation: "REVOKE",
+        reason: "Synthetic deliberate withdrawal",
+      });
+      await expect(review.getByRole("button", { name: h.m.revoke, exact: true })).toHaveCount(0);
+      await page.waitForLoadState("networkidle", { timeout: 5000 });
+    } finally {
+      await cleanupSearchFixture(h.f);
+    }
   });
 }
