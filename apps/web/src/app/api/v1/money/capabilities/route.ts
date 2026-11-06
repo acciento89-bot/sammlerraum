@@ -9,6 +9,7 @@ export async function GET(request: Request) {
   return createMoneyCapabilitiesRouteHandler({
     appOrigin: serverEnv.APP_ORIGIN,
     authoringEnabled: serverEnv.MONEY_AUTHORING_ENABLED,
+    canonicalConsumersEnabled: serverEnv.MONEY_CANONICAL_CONSUMERS_ENABLED,
     getSession: (headers) =>
       auth.api.getSession({ headers, query: { disableCookieCache: true, disableRefresh: true } }),
   })(request);

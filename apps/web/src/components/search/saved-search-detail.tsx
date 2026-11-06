@@ -1,4 +1,5 @@
 "use client";
+import { useMoneyConsumers } from "./money-consumer-context";
 import {
   readSavedAcknowledgement,
   rememberSavedAcknowledgement,
@@ -42,6 +43,7 @@ export function SavedSearchDetail({
   locale: "de" | "en";
   actor: string;
 }) {
+  const canonicalMoneyEnabled = useMoneyConsumers();
   const t = useTranslations("SavedSearches"),
     search = useTranslations("Search"),
     router = useRouter();
@@ -197,7 +199,7 @@ export function SavedSearchDetail({
   let query: NormalizedItemSearchQuery | null = null;
   try {
     const filter = fromDraft(draft);
-    if (filter && !available(filter.root)) throw Error();
+    if (filter && !available(filter.root, canonicalMoneyEnabled)) throw Error();
     const d = parseSmartCollectionDefinition({ version: 1, text, filter, lifecycle });
     query = { ...d, limit: 20 };
   } catch {

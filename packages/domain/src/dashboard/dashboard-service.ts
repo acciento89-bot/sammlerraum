@@ -1,3 +1,4 @@
+import { readPurchaseCost } from "../money/purchase-cost";
 import { checkedDashboardPart, finalizeDashboard, type Schema } from "./dashboard-result";
 import { searchFail } from "@sammlerraum/contracts/item-search";
 import {
@@ -42,7 +43,11 @@ async function read<T>(
   return checkedDashboardPart(schema, rows[0]!.data, tx.checkBudget);
 }
 /** Partial owned milestone. Producer capability states are explicit, never numeric placeholders. */
-export function createDashboardService(database: SearchDatabase) {
+export function createDashboardService(
+  database: SearchDatabase,
+  options: { canonicalMoneyEnabled?: boolean } = {},
+) {
+  const canonicalMoneyEnabled = options.canonicalMoneyEnabled === true;
   return {
     getDashboard: async (actor: { userId: string }, input: unknown): Promise<DashboardData> => {
       if (
@@ -53,9 +58,9 @@ export function createDashboardService(database: SearchDatabase) {
       )
         return searchFail("SEARCH_INVALID");
       const query = parseDashboardQuery(input);
-      if (query.filter) validateCurrentFilterAvailability(query.filter);
+      if (query.filter) validateCurrentFilterAvailability(query.filter, canonicalMoneyEnabled);
       return runSearchRead(database, async (tx) => {
-        const selection = await prepareItemSelection(tx, actor, query),
+        const selection = await prepareItemSelection(tx, actor, query, canonicalMoneyEnabled),
           predicate = selection.matchedPredicate;
         const summary = await read(
           tx,
@@ -79,11 +84,17 @@ export function createDashboardService(database: SearchDatabase) {
             ...manual,
             ...distributions,
             ...rankings,
-            purchaseTotals: {
-              state: "UNAVAILABLE",
-              reason: "LEGACY_MONEY_INTERPRETATION_UNAVAILABLE",
-              groups: null,
-            },
+            purchaseTotals: canonicalMoneyEnabled
+              ? await readPurchaseCost(
+                  tx,
+                  { ownerId: actor.userId, predicate: selection.outerPredicate },
+                  predicate,
+                )
+              : {
+                  state: "UNAVAILABLE",
+                  reason: "LEGACY_MONEY_INTERPRETATION_UNAVAILABLE",
+                  groups: null,
+                },
             marketValues: {
               state: "UNAVAILABLE",
               reason: "MARKET_AGGREGATION_UNAVAILABLE",

@@ -20,12 +20,13 @@ export function createItemSearchRouteDependencies(
   database: SearchDatabase,
   auth: Authentication,
   appOrigin: string,
+  money: Parameters<typeof createItemSearchService>[1] = {},
 ) {
   return {
     appOrigin,
     getSession: (headers: Headers) =>
       auth.api.getSession({ headers, query: { disableCookieCache: true, disableRefresh: true } }),
-    service: createItemSearchService(database),
+    service: createItemSearchService(database, money),
   };
 }
 export function readSearchQueryMap(request: Request, allowedKeys: readonly string[]) {

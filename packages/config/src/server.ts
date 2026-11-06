@@ -59,6 +59,7 @@ const providerBudget = (maximum: number) => z.coerce.number().int().min(0).max(m
 const schema = z
   .object({
     MONEY_AUTHORING_ENABLED: providerFlag(),
+    MONEY_CANONICAL_CONSUMERS_ENABLED: providerFlag(),
     SCRYDEX_ENABLED: providerFlag(),
     SCRYDEX_POLICY_APPROVED: providerFlag(),
     SCRYDEX_API_KEY: providerCredential(),

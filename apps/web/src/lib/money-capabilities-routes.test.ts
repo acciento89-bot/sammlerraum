@@ -60,3 +60,15 @@ describe("private monetary capability response", () => {
     ).toBe(400);
   });
 });
+
+it("reports the same explicit server consumer rollout used by search and dashboard", async () => {
+  const handler = createMoneyCapabilitiesRouteHandler({
+    appOrigin: "https://example.invalid",
+    authoringEnabled: false,
+    canonicalConsumersEnabled: true,
+    getSession: async () => ({ user: { id: "synthetic-owner" } }),
+  });
+  const response = await handler(new Request("https://example.invalid/api/v1/money/capabilities"));
+  expect(response.status).toBe(200);
+  expect(await response.json()).toMatchObject({ canonicalConsumers: true, authoringProfiles: [] });
+});

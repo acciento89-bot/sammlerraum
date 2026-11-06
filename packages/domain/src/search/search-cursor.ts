@@ -21,6 +21,7 @@ export function searchContextHash(
   actor: string,
   query: NormalizedItemSearchQuery,
   context: SearchResolutionContext,
+  canonicalMoneyEnabled = false,
 ): string {
   return createHash("sha256")
     .update(
@@ -35,6 +36,7 @@ export function searchContextHash(
           query.filter,
           query.lifecycle,
           "CREATED_DESC_ID_DESC",
+          canonicalMoneyEnabled ? "legacy-money-consumers-v1" : "legacy-money-consumers-off",
           query.limit,
           context,
         ]),

@@ -5,9 +5,20 @@ export const MAX_AMOUNT_MINOR = 9223372036854775807n;
 
 /** Explicit locale grammar; no floating point, currency inference or FX conversion. */
 export function parseLocalizedMoney(input: string, locale: "de" | "en", currency: string): Money {
+  return parseLocalizedMoneyAtScale(input, locale, currency, currencyMinorUnitExponent(currency));
+}
+/** Query bounds have an explicit scale; this never reinterprets a stored fact. */
+export function parseLocalizedMoneyAtScale(
+  input: string,
+  locale: "de" | "en",
+  currency: string,
+  exponent: number,
+): Money {
+  currencyMinorUnitExponent(currency);
+  if (!Number.isInteger(exponent) || exponent < 0 || exponent > 9)
+    throw new Error("Invalid query scale");
   if (typeof input !== "string" || input.length > 80 || (locale !== "de" && locale !== "en"))
     throw new Error("Invalid localized money");
-  const exponent = currencyMinorUnitExponent(currency);
   const decimal = locale === "de" ? "," : ".";
   const group = locale === "de" ? "." : ",";
   const parts = input.trim().split(decimal);

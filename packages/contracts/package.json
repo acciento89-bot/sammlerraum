@@ -27,7 +27,8 @@
     "./personal-milestones": "./src/personal-milestones.ts",
     "./legacy-money": "./src/legacy-money.ts",
     "./personal-money": "./src/personal-money.ts",
-    "./money-capabilities": "./src/money-capabilities.ts"
+    "./money-capabilities": "./src/money-capabilities.ts",
+    "./money-coverage": "./src/money-coverage.ts"
   },
   "scripts": {
     "build": "pnpm typecheck",

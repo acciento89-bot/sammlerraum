@@ -151,6 +151,10 @@ jobs:
           packages/domain/src/grading/grading-service.test.ts
           packages/domain/src/valuations/valuation-service.test.ts
           packages/domain/src/valuations/valuation-query.test.ts
+          packages/domain/src/search/legacy-money-query.integration.test.ts
+          packages/domain/src/search/legacy-money-query.test.ts
+          packages/domain/src/money/purchase-cost.test.ts
+          apps/web/src/lib/legacy-money-query-routes.integration.test.ts
           packages/domain/src/dashboard/dashboard-service.test.ts
           packages/domain/src/dashboard/personal-milestone-service.test.ts
           packages/db/src/legacy-money.integration.test.ts
@@ -210,6 +214,7 @@ jobs:
           export DATABASE_URL=postgresql://test:test@localhost:5432/sammlerraum_m4_browser_20261106_test
           pnpm --filter @sammlerraum/db exec prisma migrate deploy
           RUN_CATALOG_MONEY_E2E=1 RUN_MONEY_UI_E2E=1 RUN_AUTH_E2E=1 RUN_PRODUCTION_E2E=1 pnpm --filter @sammlerraum/web exec playwright test e2e/catalog-money-api.spec.ts e2e/catalog-money-ui.spec.ts e2e/legacy-money.spec.ts --workers=1
+          MONEY_CANONICAL_CONSUMERS_ENABLED=true RUN_MONEY_CONSUMERS_E2E=1 RUN_AUTH_E2E=1 RUN_PRODUCTION_E2E=1 pnpm --filter @sammlerraum/web exec playwright test e2e/money-consumers.spec.ts --workers=1
       - name: Run private valuations and ingestion-generated external transport rendering against production
         run: >-
           RUN_AUTH_E2E=1 RUN_PRODUCTION_E2E=1 pnpm --filter @sammlerraum/web exec playwright test

@@ -1,4 +1,6 @@
 "use client";
+import { useMoneyConsumers } from "./money-consumer-context";
+import { CURRENCY_AUTHORITY_VERSION } from "@sammlerraum/domain/money/currencies";
 import { fromUtcControl, toUtcControl } from "./predicate-input";
 import { SearchLabel } from "./search-label";
 import { useState } from "react";
@@ -7,8 +9,8 @@ import {
   valuationCurrencyCodes,
   currencyMinorUnitExponent,
 } from "@sammlerraum/domain/money/currencies";
-import { parseLocalizedMoney } from "@sammlerraum/domain/money/money";
-import { defaultTest, type TestDraft } from "./filter-draft";
+import { parseLocalizedMoney, parseLocalizedMoneyAtScale } from "@sammlerraum/domain/money/money";
+import { defaultTest, supportedLegacyQueryUnit, type TestDraft } from "./filter-draft";
 export type ValueChoice = { value: string; label: string };
 function scalar(value: string, type: string): string | number {
   return type === "INTEGER" && /^[+-]?\d+$/u.test(value) ? Number(value) : value;
@@ -20,6 +22,7 @@ export function PredicateEditor({
   type = "TEXT",
   choices,
   customChoices = false,
+  locale = "en",
 }: {
   test: TestDraft;
   onChange: (test: TestDraft) => void;
@@ -27,8 +30,10 @@ export function PredicateEditor({
   type?: string;
   choices?: ValueChoice[] | undefined;
   customChoices?: boolean;
+  locale?: "de" | "en";
 }) {
   const t = useTranslations("Search");
+  const canonicalMoneyEnabled = useMoneyConsumers();
   const multi = ["in", "hasAny", "hasAll"].includes(test.op);
   const presence = ["present", "missing"].includes(test.op);
   const valueInput = (label: string, value: unknown, change: (value: string | number) => void) => (
@@ -61,7 +66,7 @@ export function PredicateEditor({
               {t("unsupportedOperator")}
             </option>
           )}
-          {type === "MONEY" && test.op !== "range" && (
+          {type === "MONEY" && test.op !== "range" && !ops.includes("range") && (
             <option value="range" disabled>
               {t("operators.range")} · {t("notAvailable")}
             </option>
@@ -75,7 +80,18 @@ export function PredicateEditor({
       </SearchLabel>
       {type === "INSTANT" && <p className="field-help">{t("utcHelp")}</p>}
       {type === "DATE" && <p className="field-help">{t("dateHelp")}</p>}
-      {test.op === "range" && <RetainedRange test={test} />}
+      {test.op === "range" &&
+        (canonicalMoneyEnabled && supportedLegacyQueryUnit(test.unit) ? (
+          <MoneyRange
+            key={`${test.unit?.currency}:${test.unit?.minorUnitExponent}:${locale}`}
+            test={test}
+            onChange={onChange}
+            locale={locale}
+            legacy
+          />
+        ) : (
+          <RetainedRange test={test} />
+        ))}
       {!presence &&
         test.op !== "range" &&
         (multi ? (
@@ -222,10 +238,12 @@ export function MoneyRange({
   test,
   onChange,
   locale,
+  legacy = false,
 }: {
   test: TestDraft;
   onChange: (test: TestDraft) => void;
   locale: "de" | "en";
+  legacy?: boolean;
 }) {
   const t = useTranslations("Search");
   const currency = test.unit?.currency ?? "EUR";
@@ -241,7 +259,11 @@ export function MoneyRange({
     if (value === "") delete next[field];
     else {
       try {
-        next[field] = parseLocalizedMoney(value, locale, currency).amountMinor.toString();
+        next[field] = (
+          legacy
+            ? parseLocalizedMoneyAtScale(value, locale, currency, exponent)
+            : parseLocalizedMoney(value, locale, currency)
+        ).amountMinor.toString();
       } catch {
         next[field] = `invalid:${value}`;
       }
@@ -250,7 +272,7 @@ export function MoneyRange({
   }
   return (
     <>
-      <p>{t("moneyHelp")}</p>
+      <p>{t(legacy ? "canonicalRangeHelp" : "moneyHelp")}</p>
       <SearchLabel>
         {t("currency")}
         <select
@@ -261,7 +283,11 @@ export function MoneyRange({
             setRaw({ min: "", max: "" });
             onChange({
               op: "range",
-              unit: { currency: nextCurrency, minorUnitExponent: nextExponent },
+              unit: {
+                currency: nextCurrency,
+                minorUnitExponent: nextExponent,
+                ...(legacy ? { unitKey: `${CURRENCY_AUTHORITY_VERSION}:${nextCurrency}` } : {}),
+              },
             });
           }}
         >

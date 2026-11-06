@@ -1,4 +1,5 @@
 "use client";
+import { PurchaseCosts } from "./purchase-costs";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
@@ -328,14 +329,19 @@ export function DashboardResults({
           ))}
         </ol>
       </section>
+      {"coverage" in data.purchaseTotals && (
+        <PurchaseCosts data={data.purchaseTotals} locale={locale} />
+      )}
       <section aria-labelledby="dashboard-capabilities-heading">
         <h3 id="dashboard-capabilities-heading">{t("capabilitiesTitle")}</h3>
         <p>{t("capabilitiesHelp")}</p>
         <dl className="dashboard-facts" data-testid="dashboard-unavailable">
-          <div>
-            <dt>{t("purchaseTotals")}</dt>
-            <dd>{t("purchaseUnavailable")}</dd>
-          </div>
+          {!("coverage" in data.purchaseTotals) && (
+            <div>
+              <dt>{t("purchaseTotals")}</dt>
+              <dd>{t("purchaseUnavailable")}</dd>
+            </div>
+          )}
           <div>
             <dt>{t("marketValues")}</dt>
             <dd>{t("marketUnavailable")}</dd>

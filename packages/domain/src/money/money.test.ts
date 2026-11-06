@@ -64,3 +64,12 @@ describe("canonical localized money", () => {
     expect(() => parseLocalizedMoney(input, locale as "de" | "en", currency)).toThrow();
   });
 });
+
+it("parses query bounds using their explicitly declared scale, without changing stored money", async () => {
+  const { parseLocalizedMoneyAtScale } = await import("./money");
+  expect(parseLocalizedMoneyAtScale("0,000000001", "de", "EUR", 9).amountMinor).toBe(1n);
+  expect(parseLocalizedMoneyAtScale("1", "en", "AFN", 0).amountMinor).toBe(1n);
+  expect(() => parseLocalizedMoneyAtScale("1.01", "en", "AFN", 0)).toThrow();
+  expect(() => parseLocalizedMoneyAtScale("1", "en", "ZZZ", 2)).toThrow();
+  expect(() => parseLocalizedMoneyAtScale("1", "en", "EUR", 10)).toThrow();
+});

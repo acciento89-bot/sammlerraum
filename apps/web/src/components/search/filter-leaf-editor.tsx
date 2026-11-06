@@ -1,4 +1,5 @@
 "use client";
+import { useMoneyConsumers } from "./money-consumer-context";
 import { SearchLabel } from "./search-label";
 import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
@@ -37,6 +38,7 @@ export function FilterLeafEditor({
   locale: "de" | "en";
   cache: MetadataCache;
 }) {
+  const canonicalMoneyEnabled = useMoneyConsumers();
   const t = useTranslations("Search");
   const kind = value.kind;
   const test = value.test ?? { op: "present" };
@@ -47,7 +49,8 @@ export function FilterLeafEditor({
   if (kind === "tags") ops = ["hasAny", "hasAll", "present", "missing"];
   if (kind === "createdAt" || kind === "updatedAt") ops = orderedOperators;
   if (kind === "acquisitionDate") ops = [...orderedOperators, "present", "missing"];
-  if (kind === "manualMoney") ops = ["present", "missing", "range"];
+  if (kind === "manualMoney" || (kind === "purchaseMoney" && canonicalMoneyEnabled))
+    ops = ["present", "missing", "range"];
   if (kind === "grading") ops = ["present", "missing", "authored", "comparable"];
   const ref = kind === "collection" || kind === "category" || kind === "condition";
   return (
@@ -298,6 +301,7 @@ export function FilterLeafEditor({
                 </>
               ) : (
                 <PredicateEditor
+                  locale={locale}
                   test={test}
                   onChange={setTest}
                   ops={ops}
@@ -325,7 +329,9 @@ export function FilterLeafEditor({
                   }
                 />
               )}{" "}
-              {kind === "purchaseMoney" && <p>{t("legacyMoneyHelp")}</p>}
+              {kind === "purchaseMoney" && (
+                <p>{t(canonicalMoneyEnabled ? "canonicalRangeHelp" : "legacyMoneyHelp")}</p>
+              )}
               {kind === "visibility" && <p>{t("visibilityHelp")}</p>}
             </>
           )}
@@ -345,6 +351,7 @@ function DefinitionEditor({
   locale: "de" | "en";
   cache: MetadataCache;
 }) {
+  const canonicalMoneyEnabled = useMoneyConsumers();
   const t = useTranslations("Search");
   const custom = value.kind === "customField";
   const selector = value.selector ?? {};
@@ -485,10 +492,15 @@ function DefinitionEditor({
           )}
           {status === "unavailable" && <p role="alert">{t("unavailableReference")}</p>}
           <PredicateEditor
+            locale={locale}
             type={predicate.valueType}
             test={predicate.test}
             onChange={(test) => onChange({ ...value, predicate: { ...predicate, test } })}
-            ops={operators(predicate.valueType)}
+            ops={
+              predicate.valueType === "MONEY" && canonicalMoneyEnabled
+                ? ["present", "missing", "range"]
+                : operators(predicate.valueType)
+            }
             choices={
               predicate.valueType === "SINGLE_SELECT" || predicate.valueType === "MULTI_SELECT"
                 ? options
@@ -496,7 +508,9 @@ function DefinitionEditor({
             }
             customChoices={custom}
           />
-          {predicate.valueType === "MONEY" && <p>{t("legacyMoneyHelp")}</p>}
+          {predicate.valueType === "MONEY" && (
+            <p>{t(canonicalMoneyEnabled ? "canonicalRangeHelp" : "legacyMoneyHelp")}</p>
+          )}
           <p>{t("presenceHelp")}</p>
         </>
       )}

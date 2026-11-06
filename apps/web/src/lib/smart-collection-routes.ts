@@ -23,12 +23,13 @@ export function createSmartCollectionRouteDependencies(
   database: SearchDatabase,
   auth: Authentication,
   appOrigin: string,
+  money: Parameters<typeof createSmartCollectionService>[1] = {},
 ) {
   return {
     appOrigin,
     getSession: (headers: Headers) =>
       auth.api.getSession({ headers, query: { disableCookieCache: true, disableRefresh: true } }),
-    service: createSmartCollectionService(database),
+    service: createSmartCollectionService(database, money),
   };
 }
 function mapped(error: unknown): never {

@@ -1,4 +1,5 @@
 "use client";
+import { useMoneyConsumers } from "./money-consumer-context";
 import { PersonalMilestones } from "../dashboard/personal-milestones";
 import type { DashboardData } from "@sammlerraum/contracts/dashboard";
 import { DashboardResults } from "./dashboard-results";
@@ -38,6 +39,7 @@ export function SearchPage({
   actor: string;
   view?: "search" | "dashboard";
 }) {
+  const canonicalMoneyEnabled = useMoneyConsumers();
   const t = useTranslations("Search");
   const dt = useTranslations("Dashboard");
   const savedT = useTranslations("SavedSearches");
@@ -264,7 +266,7 @@ export function SearchPage({
     if (channel.current.closed) return;
     try {
       const filter = fromDraft(draft);
-      if (filter && !available(filter.root)) throw Error();
+      if (filter && !available(filter.root, canonicalMoneyEnabled)) throw Error();
       const next = parseItemSearchQuery({ text, filter, lifecycle, limit });
       setLocalError("");
       setText(next.text);
@@ -313,7 +315,7 @@ export function SearchPage({
   let unavailable = false;
   try {
     const filter = fromDraft(draft);
-    unavailable = !!filter && !available(filter.root);
+    unavailable = !!filter && !available(filter.root, canonicalMoneyEnabled);
   } catch {
     /* Incomplete drafts are validated by Apply. */
   }

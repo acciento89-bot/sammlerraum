@@ -78,8 +78,15 @@ async function validateDefinition(
   tx: BoundedSearchReadTransaction,
   actor: SearchActor,
   definition: SmartCollectionDetail["definition"],
+  canonicalMoneyEnabled: boolean,
 ) {
-  await executeItemSearch(tx, actor, { ...definitionQuery(definition), limit: 1 });
+  await executeItemSearch(
+    tx,
+    actor,
+    { ...definitionQuery(definition), limit: 1 },
+    null,
+    canonicalMoneyEnabled,
+  );
 }
 function definitionQuery(definition: SmartCollectionDetail["definition"]) {
   return { text: definition.text, filter: definition.filter, lifecycle: definition.lifecycle };
@@ -92,7 +99,11 @@ function storedAvailability(error: unknown): never {
     return smartFail("SMART_COLLECTION_UNRESOLVABLE");
   throw error;
 }
-export function createSmartCollectionService(database: SearchDatabase) {
+export function createSmartCollectionService(
+  database: SearchDatabase,
+  options: { canonicalMoneyEnabled?: boolean } = {},
+) {
+  const canonicalMoneyEnabled = options.canonicalMoneyEnabled === true;
   return {
     async createSmartCollection(
       actor: SearchActor,
@@ -102,7 +113,7 @@ export function createSmartCollectionService(database: SearchDatabase) {
         mutation = parseSmartCollectionMutation(input),
         id = randomUUID();
       return runSearchTransaction(database, async (tx) => {
-        await validateDefinition(tx, actor, mutation.definition);
+        await validateDefinition(tx, actor, mutation.definition, canonicalMoneyEnabled);
         const [row] = await tx.$queryRaw<SavedRow[]>(
           Prisma.sql`INSERT INTO "SmartCollection" (id,"ownerId",name,"filterVersion",definition,revision,"createdAt","updatedAt") VALUES (${id}::uuid,${owner},${mutation.name},1,${JSON.stringify(mutation.definition)}::jsonb,1,date_trunc('milliseconds',transaction_timestamp()),date_trunc('milliseconds',transaction_timestamp())) RETURNING id,name,revision,"filterVersion",definition,"createdAt","updatedAt"`,
         );
@@ -163,7 +174,7 @@ export function createSmartCollectionService(database: SearchDatabase) {
           current.revision >= SMART_COLLECTION_MAX_REVISION
         )
           return smartFail("SMART_COLLECTION_CONFLICT");
-        await validateDefinition(tx, actor, mutation.definition);
+        await validateDefinition(tx, actor, mutation.definition, canonicalMoneyEnabled);
         const [row] = await tx.$queryRaw<SavedRow[]>(
           Prisma.sql`UPDATE "SmartCollection" SET name=${mutation.name},definition=${JSON.stringify(mutation.definition)}::jsonb,revision=revision+1,"updatedAt"=date_trunc('milliseconds',transaction_timestamp()) WHERE id=${id}::uuid AND "ownerId"=${owner} AND "deletedAt" IS NULL AND revision=${expectedRevision} RETURNING id,name,revision,"filterVersion",definition,"createdAt","updatedAt"`,
         );
@@ -199,6 +210,7 @@ export function createSmartCollectionService(database: SearchDatabase) {
               owner,
               { ...definitionQuery(saved.definition), ...page },
               { smartCollectionId: id, revision: saved.revision },
+              canonicalMoneyEnabled,
             ),
           );
         try {
@@ -207,6 +219,7 @@ export function createSmartCollectionService(database: SearchDatabase) {
             actor,
             { ...definitionQuery(saved.definition), ...page },
             { smartCollectionId: id, revision: saved.revision },
+            canonicalMoneyEnabled,
           );
         } catch (error) {
           return storedAvailability(error);

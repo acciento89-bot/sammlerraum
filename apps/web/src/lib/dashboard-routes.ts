@@ -13,12 +13,13 @@ export function createDashboardRouteDependencies(
   database: SearchDatabase,
   auth: Parameters<typeof createItemSearchRouteDependencies>[1],
   appOrigin: string,
+  money: Parameters<typeof createDashboardService>[1] = {},
 ) {
   return {
     appOrigin,
     getSession: (headers: Headers) =>
       auth.api.getSession({ headers, query: { disableCookieCache: true, disableRefresh: true } }),
-    service: createDashboardService(database),
+    service: createDashboardService(database, money),
   };
 }
 export function createDashboardRouteHandlers(

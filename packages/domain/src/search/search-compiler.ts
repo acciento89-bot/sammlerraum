@@ -129,10 +129,16 @@ export function exactCatalog(
     catalogTarget(leaf.selector.target),
   ]);
 }
-export function compileFilter(node: ItemFilterNode, owner: string): Prisma.Sql {
+export function compileFilter(
+  node: ItemFilterNode,
+  owner: string,
+  money?: { compile(leaf: ItemFilterLeaf): Prisma.Sql },
+): Prisma.Sql {
   if ("children" in node)
-    return (node.kind === "and" ? and : or)(node.children.map((n) => compileFilter(n, owner)));
-  if (node.kind === "not") return Prisma.sql`NOT (${compileFilter(node.child, owner)})`;
+    return (node.kind === "and" ? and : or)(
+      node.children.map((n) => compileFilter(n, owner, money)),
+    );
+  if (node.kind === "not") return Prisma.sql`NOT (${compileFilter(node.child, owner, money)})`;
   switch (node.kind) {
     case "collection":
       return comparison(Prisma.sql`i."collectionId"`, node.test, "uuid");
@@ -154,7 +160,8 @@ export function compileFilter(node: ItemFilterNode, owner: string): Prisma.Sql {
     case "acquisitionDate":
       return comparison(Prisma.sql`i."acquisitionDate"`, node.test, "date");
     case "purchaseMoney":
-      if (node.test.op === "range") return searchFail("SEARCH_INVARIANT");
+      if (node.test.op === "range")
+        return money ? money.compile(node) : searchFail("SEARCH_INVARIANT");
       return presence(
         Prisma.sql`i."purchaseAmountMinor" IS NOT NULL AND i."purchaseCurrency" IS NOT NULL`,
         node.test,
@@ -226,7 +233,7 @@ export function compileFilter(node: ItemFilterNode, owner: string): Prisma.Sql {
           scope,
           presence(Prisma.sql`EXISTS(SELECT 1 FROM "CustomFieldValue" v WHERE ${base})`, t),
         ]);
-      if (t.op === "range") return searchFail("SEARCH_INVARIANT");
+      if (t.op === "range") return money ? money.compile(node) : searchFail("SEARCH_INVARIANT");
       let match: Prisma.Sql;
       if (node.predicate.valueType === "MULTI_SELECT" && (t.op === "hasAny" || t.op === "hasAll"))
         match = (t.op === "hasAll" ? and : or)(
@@ -257,7 +264,7 @@ export function compileFilter(node: ItemFilterNode, owner: string): Prisma.Sql {
           scope,
           presence(Prisma.sql`EXISTS(SELECT 1 FROM "CatalogAttributeValue" a WHERE ${base})`, t),
         ]);
-      if (t.op === "range") return searchFail("SEARCH_INVARIANT");
+      if (t.op === "range") return money ? money.compile(node) : searchFail("SEARCH_INVARIANT");
       const match =
         t.op === "hasAll" || t.op === "hasAny"
           ? (t.op === "hasAll" ? and : or)(

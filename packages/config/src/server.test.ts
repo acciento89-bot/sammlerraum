@@ -18,6 +18,7 @@ describe("parseServerEnv", () => {
     expect(parseServerEnv(validEnvironment)).toEqual({
       ...validEnvironment,
       MONEY_AUTHORING_ENABLED: false,
+      MONEY_CANONICAL_CONSUMERS_ENABLED: false,
       SCRYDEX_ENABLED: false,
       SCRYDEX_POLICY_APPROVED: false,
       SCRYDEX_HOURLY_CALL_BUDGET: 0,
@@ -170,4 +171,15 @@ it("refuses an ambiguous monetary authoring switch", () => {
   expect(() => parseServerEnv({ ...validEnvironment, MONEY_AUTHORING_ENABLED: "1" })).toThrow(
     EnvironmentConfigurationError,
   );
+});
+
+it("requires an explicit server opt-in before canonical monetary consumers are enabled", () => {
+  expect(parseServerEnv(validEnvironment).MONEY_CANONICAL_CONSUMERS_ENABLED).toBe(false);
+  expect(
+    parseServerEnv({ ...validEnvironment, MONEY_CANONICAL_CONSUMERS_ENABLED: "true" })
+      .MONEY_CANONICAL_CONSUMERS_ENABLED,
+  ).toBe(true);
+  expect(() =>
+    parseServerEnv({ ...validEnvironment, MONEY_CANONICAL_CONSUMERS_ENABLED: "1" }),
+  ).toThrow(EnvironmentConfigurationError);
 });

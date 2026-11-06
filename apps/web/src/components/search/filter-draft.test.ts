@@ -176,3 +176,31 @@ it("supports repair/removal without discarding neighbouring NOT/OR operands", ()
     },
   });
 });
+
+it("enables supported legacy ranges only with affirmative consumer rollout", () => {
+  const root = parseItemFilter({
+    version: 1,
+    root: {
+      kind: "purchaseMoney",
+      test: {
+        op: "range",
+        unit: { currency: "AFN", minorUnitExponent: 0, unitKey: "iso4217-2026-09-17:AFN" },
+        minMinor: "1",
+      },
+    },
+  }).root;
+  expect(available(root)).toBe(false);
+  expect(available(root, true)).toBe(true);
+  const unsupported = parseItemFilter({
+    version: 1,
+    root: {
+      kind: "purchaseMoney",
+      test: {
+        op: "range",
+        unit: { currency: "ZZZ", minorUnitExponent: 2, unitKey: "historical:ZZZ" },
+        minMinor: "1",
+      },
+    },
+  }).root;
+  expect(available(unsupported, true)).toBe(false);
+});

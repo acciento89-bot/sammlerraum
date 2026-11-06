@@ -828,7 +828,8 @@
     "saveSearch": "Save search",
     "saveApplied": "Apply your changes before saving this search.",
     "navDashboard": "Dashboard",
-    "openDashboard": "Open selection dashboard"
+    "openDashboard": "Open selection dashboard",
+    "canonicalRangeHelp": "Amount bounds compare evidenced prices exactly, including different recorded decimal places. Unresolved prices anywhere in the checked owned inventory prevent this search."
   },
   "SavedSearches": {
     "title": "Saved searches",
@@ -973,7 +974,21 @@
     "wishlist": "Wishlist",
     "relationsUnavailable": "This analysis is not available yet.",
     "shared": "Shared inventory",
-    "sharedUnavailable": "This overview covers only your own inventory."
+    "sharedUnavailable": "This overview covers only your own inventory.",
+    "purchaseTitle": "Purchase costs for the selection",
+    "purchaseStates": {
+      "EMPTY": "No items in this selection.",
+      "NO_PRICES": "No purchase prices are recorded for this selection.",
+      "UNAVAILABLE": "A reliable sum is unavailable.",
+      "PARTIAL": "Known purchase costs · subtotal",
+      "COMPLETE": "Fully evidenced purchase costs"
+    },
+    "purchaseOuterCoverage": "Checked owned inventory: {items} entries · {units} units. Prices without an eligible interpretation: {unknown}.",
+    "purchaseSelectedCoverage": "Current selection: {items} entries · {units} units. With an evidenced price: {priced}; without a purchase price: {missing}.",
+    "purchasePartialHelp": "This subtotal includes only units with an evidenced purchase price. Missing prices have not been treated as zero.",
+    "purchaseUnknownHelp": "At least one price in the checked inventory has no valid, unambiguous interpretation. Review those entries before using a purchase-cost sum.",
+    "purchaseStoredScale": "Evidenced decimal places: {scale}",
+    "purchaseGroupingHelp": "Currencies and evidenced decimal places remain separate. No currency conversion is applied."
   },
   "Milestones": {
     "title": "Your milestones",

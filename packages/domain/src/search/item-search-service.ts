@@ -48,13 +48,19 @@ export async function executeItemSearch(
   actor: SearchActor,
   query: NormalizedItemSearchQuery,
   context: SearchResolutionContext = null,
+  canonicalMoneyEnabled = false,
 ): Promise<SearchPage<ItemSummary>> {
   if (!actor || typeof actor.userId !== "string" || !actor.userId || actor.userId.includes("\0"))
     return searchFail("SEARCH_INVALID");
-  if (query.filter) validateCurrentFilterAvailability(query.filter);
-  const hash = searchContextHash(actor.userId, query, context);
+  if (query.filter) validateCurrentFilterAvailability(query.filter, canonicalMoneyEnabled);
+  const hash = searchContextHash(actor.userId, query, context, canonicalMoneyEnabled);
   const cursor = query.cursor ? decodeSearchCursor(query.cursor, hash) : null;
-  const { readAt, matchedPredicate: predicate } = await prepareItemSelection(tx, actor, query);
+  const { readAt, matchedPredicate: predicate } = await prepareItemSelection(
+    tx,
+    actor,
+    query,
+    canonicalMoneyEnabled,
+  );
   const [count] = await tx.$queryRaw<{ total: bigint }[]>(
     Prisma.sql`SELECT count(*) AS total ${candidateFrom} WHERE ${predicate}`,
   );
@@ -92,7 +98,11 @@ export async function executeItemSearch(
     return searchFail("SEARCH_INVARIANT");
   return result.data;
 }
-export function createItemSearchService(database: SearchDatabase) {
+export function createItemSearchService(
+  database: SearchDatabase,
+  options: { canonicalMoneyEnabled?: boolean } = {},
+) {
+  const canonicalMoneyEnabled = options.canonicalMoneyEnabled === true;
   return {
     searchItems: async (actor: SearchActor, input: unknown): Promise<SearchPage<ItemSummary>> => {
       if (
@@ -103,11 +113,16 @@ export function createItemSearchService(database: SearchDatabase) {
       )
         return searchFail("SEARCH_INVALID");
       const query = parseItemSearchQuery(input);
-      if (query.filter) validateCurrentFilterAvailability(query.filter);
+      if (query.filter) validateCurrentFilterAvailability(query.filter, canonicalMoneyEnabled);
       // Reject replay and syntax before acquiring a database connection.
       if (query.cursor)
-        decodeSearchCursor(query.cursor, searchContextHash(actor.userId, query, null));
-      return runSearchRead(database, (tx) => executeItemSearch(tx, actor, query));
+        decodeSearchCursor(
+          query.cursor,
+          searchContextHash(actor.userId, query, null, canonicalMoneyEnabled),
+        );
+      return runSearchRead(database, (tx) =>
+        executeItemSearch(tx, actor, query, null, canonicalMoneyEnabled),
+      );
     },
   };
 }

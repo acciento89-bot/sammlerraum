@@ -1,4 +1,8 @@
 import {
+  CURRENCY_AUTHORITY_VERSION,
+  currencyMinorUnitExponent,
+} from "@sammlerraum/domain/money/currencies";
+import {
   parseItemFilter,
   type ItemFilter,
   type ItemFilterNode,
@@ -52,13 +56,30 @@ export function rawNode(node: DraftNode): unknown {
 export function fromDraft(draft: DraftNode | null): ItemFilter | null {
   return draft ? parseItemFilter({ version: 1, root: rawNode(draft) }) : null;
 }
-export function available(node: ItemFilterNode): boolean {
-  if (node.kind === "and" || node.kind === "or") return node.children.every(available);
-  if (node.kind === "not") return available(node.child);
+export function supportedLegacyQueryUnit(unit: TestDraft["unit"]): boolean {
+  if (!unit) return false;
+  try {
+    currencyMinorUnitExponent(unit.currency);
+    return unit.unitKey === `${CURRENCY_AUTHORITY_VERSION}:${unit.currency}`;
+  } catch {
+    return false;
+  }
+}
+export function available(node: ItemFilterNode, canonicalMoneyEnabled = false): boolean {
+  if (node.kind === "and" || node.kind === "or")
+    return node.children.every((child) => available(child, canonicalMoneyEnabled));
+  if (node.kind === "not") return available(node.child, canonicalMoneyEnabled);
   if (node.kind === "marketMoney" || node.kind === "duplicate") return false;
-  if (node.kind === "purchaseMoney") return node.test.op !== "range";
+  if (node.kind === "purchaseMoney")
+    return (
+      node.test.op !== "range" ||
+      (canonicalMoneyEnabled && supportedLegacyQueryUnit(node.test.unit))
+    );
   if (node.kind === "customField" || node.kind === "catalogAttribute")
-    return node.predicate.test.op !== "range";
+    return (
+      node.predicate.test.op !== "range" ||
+      (canonicalMoneyEnabled && supportedLegacyQueryUnit(node.predicate.test.unit))
+    );
   return true;
 }
 export const families = [
@@ -98,7 +119,15 @@ export function defaultTest(op: string, type = "TEXT"): TestDraft {
   if (op === "between") return { op, min: "", max: "" };
   if (op === "authored") return { op, provider: "" };
   if (op === "comparable") return { op, provider: "", scale: "", value: { op: "eq", value: "" } };
-  if (op === "range") return { op, unit: { currency: "EUR", minorUnitExponent: 2 } };
+  if (op === "range")
+    return {
+      op,
+      unit: {
+        currency: "EUR",
+        minorUnitExponent: 2,
+        ...(type === "MONEY" ? { unitKey: `${CURRENCY_AUTHORITY_VERSION}:EUR` } : {}),
+      },
+    };
   return { op, value: type === "BOOLEAN" ? false : "" };
 }
 export function newLeaf(

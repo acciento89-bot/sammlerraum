@@ -1,3 +1,4 @@
+import { collectLegacyMoneyRequests } from "./legacy-money-query";
 import {
   FilterValidationError,
   parseItemFilter,
@@ -14,8 +15,12 @@ export function validateFilterComplexity(value: unknown): void {
  * This is not an evaluator, definition resolver, entitlement or executable permit.
  * Task2 must still resolve references and authorize the independent outer scope.
  */
-export function validateCurrentFilterAvailability(value: unknown): void {
+export function validateCurrentFilterAvailability(
+  value: unknown,
+  canonicalMoneyEnabled = false,
+): void {
   const filter = parseItemFilter(value);
+  if (canonicalMoneyEnabled) collectLegacyMoneyRequests(filter);
   const pending: ItemFilterNode[] = [filter.root];
   while (pending.length) {
     const node = pending.pop()!;
@@ -33,10 +38,11 @@ export function validateCurrentFilterAvailability(value: unknown): void {
         node.predicate.valueType === "MONEY" &&
         node.predicate.test.op === "range")
     ) {
-      throw new FilterValidationError(
-        "FILTER_UNAVAILABLE",
-        "LEGACY_MONEY_INTERPRETATION_UNAVAILABLE",
-      );
+      if (!canonicalMoneyEnabled)
+        throw new FilterValidationError(
+          "FILTER_UNAVAILABLE",
+          "LEGACY_MONEY_INTERPRETATION_UNAVAILABLE",
+        );
     }
   }
 }

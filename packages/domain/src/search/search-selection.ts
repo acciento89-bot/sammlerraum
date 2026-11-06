@@ -1,3 +1,4 @@
+import { prepareLegacyMoneyPredicates } from "./legacy-money-query";
 import { Prisma } from "@sammlerraum/db/search-sql";
 import { searchFail, type NormalizedItemSearchQuery } from "@sammlerraum/contracts/item-search";
 import { validateCurrentFilterAvailability } from "./filter-ast";
@@ -20,10 +21,11 @@ export async function prepareItemSelection(
   tx: BoundedSearchReadTransaction,
   actor: { userId: string },
   query: Pick<NormalizedItemSearchQuery, "text" | "filter" | "lifecycle">,
+  canonicalMoneyEnabled = false,
 ) {
   if (!actor || typeof actor.userId !== "string" || !actor.userId || actor.userId.includes("\0"))
     return searchFail("SEARCH_INVALID");
-  if (query.filter) validateCurrentFilterAvailability(query.filter);
+  if (query.filter) validateCurrentFilterAvailability(query.filter, canonicalMoneyEnabled);
   const [clock] = await tx.$queryRaw<{ now: Date; collation: boolean }[]>(
     Prisma.sql`SELECT date_trunc('milliseconds',transaction_timestamp()) AS now,EXISTS(SELECT 1 FROM pg_collation WHERE collname='und-x-icu' AND collprovider='i' AND collisdeterministic AND collnamespace='pg_catalog'::regnamespace) AS collation`,
   );
@@ -39,9 +41,16 @@ export async function prepareItemSelection(
   );
   if (integrity?.invalid) return searchFail("SEARCH_INVARIANT");
   await validateRetainedUrls(tx, nodes, outer);
+  const money = canonicalMoneyEnabled
+    ? await prepareLegacyMoneyPredicates(
+        tx,
+        { ownerId: actor.userId, predicate: outer },
+        query.filter,
+      )
+    : undefined;
   const predicate = and([
     outer,
-    query.filter ? compileFilter(query.filter.root, actor.userId) : TRUE,
+    query.filter ? compileFilter(query.filter.root, actor.userId, money) : TRUE,
     query.text ? compileBroadText(query.text, actor.userId) : TRUE,
   ]);
   return {

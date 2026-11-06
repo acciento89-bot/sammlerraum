@@ -1,3 +1,5 @@
+import { serverEnv } from "@sammlerraum/config/server";
+import { MoneyConsumerProvider } from "../../../../../components/search/money-consumer-context";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { setRequestLocale } from "next-intl/server";
@@ -18,11 +20,13 @@ export default async function CollectorSavedSearchDetail({
   });
   if (!session) redirect(`/${locale}/login`);
   return (
-    <SavedSearchDetail
-      key={`${session.user.id}:${id}`}
-      id={id}
-      locale={locale}
-      actor={session.user.id}
-    />
+    <MoneyConsumerProvider enabled={serverEnv.MONEY_CANONICAL_CONSUMERS_ENABLED}>
+      <SavedSearchDetail
+        key={`${session.user.id}:${id}`}
+        id={id}
+        locale={locale}
+        actor={session.user.id}
+      />
+    </MoneyConsumerProvider>
   );
 }

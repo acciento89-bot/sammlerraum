@@ -8,6 +8,7 @@ import { apiRoute } from "./api/route-handler";
 type Dependencies = {
   appOrigin: string;
   authoringEnabled: boolean;
+  canonicalConsumersEnabled?: boolean;
   getSession(headers: Headers): Promise<{ user: { id: string } } | null>;
 };
 export function createMoneyCapabilitiesRouteHandler(d: Dependencies) {
@@ -29,7 +30,7 @@ export function createMoneyCapabilitiesRouteHandler(d: Dependencies) {
           ? [{ profileId: LEGACY_MONEY_PROFILE_ID, authorityHash: LEGACY_MONEY_AUTHORITY_HASH }]
           : [],
         classificationVersion: 1,
-        canonicalConsumers: false,
+        canonicalConsumers: d.canonicalConsumersEnabled === true,
       }),
       { headers: { "cache-control": "no-store" } },
     );

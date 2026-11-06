@@ -21,7 +21,8 @@ import {
   type RawMoney,
 } from "@sammlerraum/contracts/legacy-money";
 import { Prisma } from "@sammlerraum/db/search-sql";
-import type { SearchReadTransaction } from "../search/search-read";
+import type { LegacyMoneySelector } from "../search/legacy-money-query";
+import type { SearchReadTransaction, BoundedSearchReadTransaction } from "../search/search-read";
 import {
   parseLegacyMoneyAuthoring,
   validateLegacyUnit,
@@ -97,27 +98,44 @@ function table(s: MoneySubject): Prisma.Sql {
         : '"CatalogMoneyInterpretationEvent"',
   );
 }
-function predicate(s: MoneySubject, alias: "h" | "e" | "q"): Prisma.Sql {
+type SubjectBindings = Partial<
+  Record<
+    | "itemId"
+    | "fieldDefinitionId"
+    | "entryId"
+    | "revision"
+    | "targetKey"
+    | "variantId"
+    | "definitionId",
+    Prisma.Sql
+  >
+>;
+function predicate(
+  s: MoneySubject,
+  alias: "h" | "e" | "q",
+  bindings: SubjectBindings = {},
+): Prisma.Sql {
   const col = (
     name: "itemId" | "fieldDefinitionId" | "entryId" | "revision" | "targetKey" | "definitionId",
   ) => Prisma.raw(`${alias}."${name}"`);
-  if (s.family === "PURCHASE") return Prisma.sql`${col("itemId")}=${s.itemId}::uuid`;
+  if (s.family === "PURCHASE")
+    return Prisma.sql`${col("itemId")}=${bindings.itemId ?? Prisma.sql`${s.itemId}`}::uuid`;
   if (s.family === "CUSTOM")
-    return Prisma.sql`${col("itemId")}=${s.itemId}::uuid AND ${col("fieldDefinitionId")}=${s.fieldDefinitionId}::uuid`;
-  return Prisma.sql`${col("entryId")}=${s.entryId}::uuid AND ${col("revision")}=${s.revision} AND ${col("targetKey")}=${s.target.kind === "ENTRY" ? "entry" : s.target.variantId} AND ${col("definitionId")}=${s.definitionId}::uuid`;
+    return Prisma.sql`${col("itemId")}=${bindings.itemId ?? Prisma.sql`${s.itemId}`}::uuid AND ${col("fieldDefinitionId")}=${bindings.fieldDefinitionId ?? Prisma.sql`${s.fieldDefinitionId}`}::uuid`;
+  return Prisma.sql`${col("entryId")}=${bindings.entryId ?? Prisma.sql`${s.entryId}`}::uuid AND ${col("revision")}=${bindings.revision ?? Prisma.sql`${s.revision}`} AND ${col("targetKey")}=${bindings.targetKey ?? Prisma.sql`${s.target.kind === "ENTRY" ? "entry" : s.target.variantId}`} AND ${col("definitionId")}=${bindings.definitionId ?? Prisma.sql`${s.definitionId}`}::uuid`;
 }
 function eventJson(alias: "e" | "o"): Prisma.Sql {
   const a = Prisma.raw(alias);
   return Prisma.sql`CASE WHEN ${a}.id IS NULL THEN NULL ELSE to_jsonb(${a})||jsonb_build_object('sequence',${a}.sequence::text,'rawAmountMinor',${a}."rawAmountMinor"::text) END`;
 }
-function base(s: MoneySubject, user: string): Prisma.Sql {
+function base(s: MoneySubject, user: string, bindings: SubjectBindings = {}): Prisma.Sql {
   if (s.family === "PURCHASE")
     return Prisma.sql`
  SELECT i."purchaseAmountMinor"::text AS amount,i."purchaseCurrency"::text AS currency,
  CASE WHEN i."purchaseAmountMinor" IS NOT NULL THEN COALESCE(i."purchaseMoneyGeneration",${nil}::uuid)::text ELSE i."purchaseMoneyGeneration"::text END AS generation,
  false AS bad,true AS "targetExists"
  FROM "CollectibleItem" i JOIN "Collection" c ON c.id=i."collectionId" AND c."ownerId"=i."ownerId"
- WHERE i.id=${s.itemId}::uuid AND i."ownerId"=${user} AND i."deletedAt" IS NULL AND c."deletedAt" IS NULL`;
+ WHERE i.id=${bindings.itemId ?? Prisma.sql`${s.itemId}`}::uuid AND i."ownerId"=${user} AND i."deletedAt" IS NULL AND c."deletedAt" IS NULL`;
   if (s.family === "CUSTOM")
     return Prisma.sql`
  SELECT v."moneyAmountMinor"::text AS amount,v."moneyCurrency"::text AS currency,
@@ -125,10 +143,10 @@ function base(s: MoneySubject, user: string): Prisma.Sql {
  WHEN v."itemId" IS NULL AND tomb.operation='CLEAR' THEN tomb.generation::text ELSE NULL END AS generation,
  ((v."itemId" IS NULL AND tomb.id IS NOT NULL AND tomb.operation<>'CLEAR') OR (v."itemId" IS NOT NULL AND (v."fieldType"<>'MONEY' OR v."moneyAmountMinor" IS NULL))) AS bad,true AS "targetExists"
  FROM "CollectibleItem" i JOIN "Collection" c ON c.id=i."collectionId" AND c."ownerId"=i."ownerId"
- JOIN "CustomFieldDefinition" d ON d.id=${s.fieldDefinitionId}::uuid AND d."collectionId"=i."collectionId" AND d.type='MONEY'
+ JOIN "CustomFieldDefinition" d ON d.id=${bindings.fieldDefinitionId ?? Prisma.sql`${s.fieldDefinitionId}`}::uuid AND d."collectionId"=i."collectionId" AND d.type='MONEY'
  LEFT JOIN "CustomFieldValue" v ON v."itemId"=i.id AND v."fieldDefinitionId"=d.id
- LEFT JOIN LATERAL (SELECT h.id,h.generation,h.operation FROM "CustomMoneyInterpretationEvent" h WHERE ${predicate(s, "h")} AND h.operation<>'REVOKE' ORDER BY h.sequence DESC LIMIT 1) tomb ON true
- WHERE i.id=${s.itemId}::uuid AND i."ownerId"=${user} AND i."deletedAt" IS NULL AND c."deletedAt" IS NULL`;
+ LEFT JOIN LATERAL (SELECT h.id,h.generation,h.operation FROM "CustomMoneyInterpretationEvent" h WHERE ${predicate(s, "h", bindings)} AND h.operation<>'REVOKE' ORDER BY h.sequence DESC LIMIT 1) tomb ON true
+ WHERE i.id=${bindings.itemId ?? Prisma.sql`${s.itemId}`}::uuid AND i."ownerId"=${user} AND i."deletedAt" IS NULL AND c."deletedAt" IS NULL`;
   const isEntry = s.target.kind === "ENTRY",
     variant = s.target.kind === "ENTRY" ? null : s.target.variantId;
   return Prisma.sql`
@@ -142,16 +160,16 @@ function base(s: MoneySubject, user: string): Prisma.Sql {
  CASE WHEN jsonb_typeof(m.value->'value')='object' THEN (SELECT count(*) FROM jsonb_object_keys(m.value->'value'))<>2 ELSE false END))) AS bad,
  (${isEntry} OR variants.n=1) AS "targetExists"
  FROM "CatalogRevision" r JOIN "CatalogEntry" c ON c.id=r."entryId"
- JOIN "CatalogAttributeDefinition" d ON d.id=${s.definitionId}::uuid AND d."categoryTemplateId"=c."categoryTemplateId" AND d.type='MONEY'
+ JOIN "CatalogAttributeDefinition" d ON d.id=${bindings.definitionId ?? Prisma.sql`${s.definitionId}`}::uuid AND d."categoryTemplateId"=c."categoryTemplateId" AND d.type='MONEY'
  LEFT JOIN LATERAL (SELECT count(*) AS n,(jsonb_agg(v))->0 AS value FROM (
-   SELECT v FROM jsonb_array_elements(CASE WHEN jsonb_typeof(r.snapshot->'variants')='array' THEN CASE WHEN jsonb_array_length(r.snapshot->'variants')<=100 THEN r.snapshot->'variants' ELSE '[]'::jsonb END ELSE '[]'::jsonb END) v WHERE v->>'id'=${variant} LIMIT 2
+   SELECT v FROM jsonb_array_elements(CASE WHEN jsonb_typeof(r.snapshot->'variants')='array' THEN CASE WHEN jsonb_array_length(r.snapshot->'variants')<=100 THEN r.snapshot->'variants' ELSE '[]'::jsonb END ELSE '[]'::jsonb END) v WHERE v->>'id'=${bindings.variantId ?? Prisma.sql`${variant}`} LIMIT 2
  ) selected) variants ON true
  LEFT JOIN LATERAL (SELECT CASE WHEN ${isEntry} THEN r.snapshot->'attributes' ELSE variants.value->'attributes' END AS attrs) a ON true
  LEFT JOIN LATERAL (SELECT count(*) AS n,bool_or(too_big) AS too_big,(jsonb_agg(value))->0 AS value FROM (
    SELECT CASE WHEN pg_column_size(v)<=2048 THEN v ELSE NULL END AS value,pg_column_size(v)>2048 AS too_big
-   FROM jsonb_array_elements(CASE WHEN jsonb_typeof(a.attrs)='array' THEN CASE WHEN jsonb_array_length(a.attrs)<=100 THEN a.attrs ELSE '[]'::jsonb END ELSE '[]'::jsonb END) v WHERE v->>'definitionId'=${s.definitionId} LIMIT 2
+   FROM jsonb_array_elements(CASE WHEN jsonb_typeof(a.attrs)='array' THEN CASE WHEN jsonb_array_length(a.attrs)<=100 THEN a.attrs ELSE '[]'::jsonb END ELSE '[]'::jsonb END) v WHERE v->>'definitionId'=${bindings.definitionId ?? Prisma.sql`${s.definitionId}`} LIMIT 2
  ) selected) m ON true
- WHERE r."entryId"=${s.entryId}::uuid AND r.revision=${s.revision}`;
+ WHERE r."entryId"=${bindings.entryId ?? Prisma.sql`${s.entryId}`}::uuid AND r.revision=${bindings.revision ?? Prisma.sql`${s.revision}`}`;
 }
 type Row = {
   amount: string | null;
@@ -371,6 +389,121 @@ function resolvedRow(
     revocationId: row.revocationId,
   });
 }
+/** Internal complete-selection SQL. The candidate relation contains IDs only;
+ * owner/live-parent/live-item authorization is rechecked here independently.
+ * Scalar readers and this batch use the SAME raw path SQL and origin policy.
+ */
+export function ownedMoneySelectorRowsSql(
+  who: MoneyActor,
+  selector: LegacyMoneySelector,
+  candidates: Prisma.Sql,
+): Prisma.Sql {
+  const user = actor(who);
+  const s: MoneySubject =
+    selector.family === "PURCHASE"
+      ? { family: "PURCHASE", itemId: nil }
+      : selector.family === "CUSTOM"
+        ? { family: "CUSTOM", itemId: nil, fieldDefinitionId: selector.definitionId }
+        : {
+            family: "CATALOG",
+            entryId: nil,
+            revision: 1,
+            definitionId: selector.definitionId,
+            target:
+              selector.target === "ENTRY" ? { kind: "ENTRY" } : { kind: "VARIANT", variantId: nil },
+          };
+  const bindings: SubjectBindings =
+    selector.family === "CATALOG"
+      ? {
+          entryId: Prisma.sql`b."catalogEntryId"`,
+          revision: Prisma.sql`b."moneyRevision"`,
+          variantId: Prisma.sql`b."catalogVariantId"::text`,
+          targetKey:
+            selector.target === "ENTRY"
+              ? Prisma.sql`'entry'::text`
+              : Prisma.sql`b."catalogVariantId"::text`,
+        }
+      : { itemId: Prisma.sql`b.id` };
+  const t = table(s);
+  const generation =
+    s.family === "CATALOG" ? Prisma.sql`true` : Prisma.sql`e.generation=base.generation::uuid`;
+  const owner =
+    s.family === "CATALOG"
+      ? Prisma.sql`NULL::text`
+      : Prisma.sql`(SELECT "ownerId" FROM "CollectibleItem" WHERE id=o."itemId")`;
+  return Prisma.sql`WITH b AS MATERIALIZED (
+    SELECT mi.id,mi.quantity,mi."catalogEntryId",mi."catalogVariantId",ce.revision AS "moneyRevision"
+    FROM (${candidates}) chosen JOIN "CollectibleItem" mi ON mi.id=chosen.id
+    JOIN "Collection" mc ON mc.id=mi."collectionId" AND mc."ownerId"=mi."ownerId"
+    LEFT JOIN "CatalogEntry" ce ON ce.id=mi."catalogEntryId"
+    WHERE mi."ownerId"=${user} AND mc."ownerId"=${user} AND mi."deletedAt" IS NULL AND mc."deletedAt" IS NULL
+  ) SELECT b.id,b.id::text AS "itemId",b.quantity,b."catalogEntryId"::text AS "entryId",b."moneyRevision" AS revision,b."catalogVariantId"::text AS "variantId",
+    base.*,seq.sequence,${eventJson("e")} AS event,${eventJson("o")} AS origin,
+    rev.id::text AS "revocationId",${owner} AS "originOwnerId",o.exponent,o."unitKey",
+    base.amount::numeric AS raw
+    FROM b LEFT JOIN LATERAL (${base(s, user, bindings)}) base ON true
+    LEFT JOIN LATERAL (SELECT COALESCE(MAX(h.sequence),0)::text AS sequence FROM ${t} h WHERE ${predicate(s, "h", bindings)}) seq ON true
+    LEFT JOIN LATERAL (SELECT e.* FROM ${t} e WHERE ${predicate(s, "e", bindings)} AND ${generation} AND e.operation<>'REVOKE' ORDER BY e.sequence DESC LIMIT 1) e ON true
+    LEFT JOIN ${t} o ON o.id=CASE WHEN e.operation IN ('AUTHOR','CLASSIFY') THEN e.id WHEN e.operation='COPY' THEN e."originEventId" ELSE NULL END
+    LEFT JOIN ${t} rev ON rev."revokedAssertionId"=o.id`;
+}
+export async function visitOwnedMoneySelectorFacts(
+  tx: BoundedSearchReadTransaction,
+  who: MoneyActor,
+  selector: LegacyMoneySelector,
+  candidates: Prisma.Sql,
+  visit: (itemId: string, quantity: number, view: MoneyView | null) => void,
+): Promise<void> {
+  type SelectedRow = Row & {
+    itemId: string;
+    quantity: number;
+    entryId: string | null;
+    revision: number | null;
+    variantId: string | null;
+  };
+  const user = actor(who);
+  const rows = await tx.$queryRaw<SelectedRow[]>(
+    ownedMoneySelectorRowsSql(who, selector, candidates),
+  );
+  const seen = new Set<string>();
+  for (const row of rows) {
+    tx.checkBudget();
+    if (
+      !LegacyMoneyIdSchema.safeParse(row.itemId).success ||
+      seen.has(row.itemId) ||
+      !Number.isSafeInteger(row.quantity) ||
+      row.quantity < 1 ||
+      row.quantity > 2147483647 ||
+      row.bad
+    )
+      return integrity();
+    seen.add(row.itemId);
+    if (row.targetExists !== true) {
+      if (selector.family === "PURCHASE") return integrity();
+      visit(row.itemId, row.quantity, null);
+      continue;
+    }
+    const checkedSubject = LegacyMoneySubjectSchema.safeParse(
+      selector.family === "PURCHASE"
+        ? { family: "PURCHASE", itemId: row.itemId }
+        : selector.family === "CUSTOM"
+          ? { family: "CUSTOM", itemId: row.itemId, fieldDefinitionId: selector.definitionId }
+          : {
+              family: "CATALOG",
+              entryId: row.entryId,
+              revision: row.revision,
+              definitionId: selector.definitionId,
+              target:
+                selector.target === "ENTRY"
+                  ? { kind: "ENTRY" }
+                  : { kind: "VARIANT", variantId: row.variantId },
+            },
+    );
+    if (!checkedSubject.success) return integrity();
+    visit(row.itemId, row.quantity, resolvedRow(tx, checkedSubject.data, user, row).view);
+  }
+}
+
 /** Caller owns one active enclosing transaction and its budget; no transaction is opened here. */
 export async function readMoneyFact(
   tx: SearchReadTransaction,

@@ -1,3 +1,4 @@
+import { PurchaseCostResultSchema } from "./money-coverage";
 import { z } from "zod";
 import {
   parseItemSearchQuery,
@@ -194,13 +195,16 @@ export const DashboardDataSchema = DashboardSummarySchema.extend({
   ...DashboardManualSchema.shape,
   ...DashboardDistributionsSchema.shape,
   ...DashboardRankingsSchema.shape,
-  purchaseTotals: z
-    .object({
-      state: z.literal("UNAVAILABLE"),
-      reason: z.literal("LEGACY_MONEY_INTERPRETATION_UNAVAILABLE"),
-      groups: z.null(),
-    })
-    .strict(),
+  purchaseTotals: z.union([
+    z
+      .object({
+        state: z.literal("UNAVAILABLE"),
+        reason: z.literal("LEGACY_MONEY_INTERPRETATION_UNAVAILABLE"),
+        groups: z.null(),
+      })
+      .strict(),
+    PurchaseCostResultSchema,
+  ]),
   marketValues: z
     .object({
       state: z.literal("UNAVAILABLE"),

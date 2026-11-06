@@ -10,6 +10,7 @@ const dependencies = async () => {
       createPrismaClient(serverEnv.DATABASE_URL, { bounded: true }),
       auth,
       serverEnv.APP_ORIGIN,
+      { canonicalMoneyEnabled: serverEnv.MONEY_CANONICAL_CONSUMERS_ENABLED },
     ),
   );
 };
