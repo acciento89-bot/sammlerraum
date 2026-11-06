@@ -32,6 +32,7 @@ import {
   decodeMoneyAssertionToken,
 } from "./legacy-money-tokens";
 import { ApplicationRoleError, requireApplicationModerator } from "../authz/application-role";
+import { isReadSerializationFailure } from "../api/read-dependency-errors";
 export type MoneyActor = { userId: string };
 const nil = "00000000-0000-0000-0000-000000000000";
 const integrity = (): never => legacyMoneyFail("MONEY_DATA_INTEGRITY");
@@ -574,17 +575,25 @@ export async function copyMoneyFact(
   // Unknown source meaning is never promoted by copying raw values.
   if (from.view.interpretation.kind !== "INTERPRETED") return to.view;
   if (!from.event || !from.origin || !to.view.raw) return integrity();
-  await appendEvent(tx, to.view.subject, user, to.sequence, {
-    operation: "COPY",
-    raw: to.view.raw,
-    generation: to.generation,
-    exponent: from.view.interpretation.exponent,
-    unitKey: from.view.interpretation.unitKey,
-    unitLabel: from.origin.unitLabel,
-    basisId: from.view.interpretation.basisId,
-    sourceEventId: from.event.id,
-    originEventId: from.origin.id,
-  });
+  try {
+    await appendEvent(tx, to.view.subject, user, to.sequence, {
+      operation: "COPY",
+      raw: to.view.raw,
+      generation: to.generation,
+      exponent: from.view.interpretation.exponent,
+      unitKey: from.view.interpretation.unitKey,
+      unitLabel: from.origin.unitLabel,
+      basisId: from.view.interpretation.basisId,
+      sourceEventId: from.event.id,
+      originEventId: from.origin.id,
+    });
+  } catch (error) {
+    // Under ReadCommitted a flattened origin can be invalidated after refresh.
+    // Only the native stale-origin/serialization signal becomes a domain conflict;
+    // genuine constraint/invariant failures must retain their diagnostic boundary.
+    if (isReadSerializationFailure(error)) return legacyMoneyFail("MONEY_CONFLICT");
+    throw error;
+  }
   return readMoneyFact(tx, to.view.subject, who);
 }
 async function assertionState(tx: SearchReadTransaction, s: MoneySubject, id: string) {

@@ -321,9 +321,9 @@ BEGIN
     EXECUTE format('SELECT to_jsonb(e) FROM %I.%I e WHERE id=$1',TG_TABLE_SCHEMA,TG_TABLE_NAME) INTO origin USING NEW."originEventId";
     IF source IS NULL OR origin IS NULL OR origin->>'operation' NOT IN ('AUTHOR','CLASSIFY') OR source->>'operation' NOT IN ('AUTHOR','CLASSIFY','COPY') OR COALESCE(CASE WHEN source->>'operation'='COPY' THEN source->>'originEventId' ELSE source->>'id' END,'')<>origin->>'id' THEN RAISE EXCEPTION 'Invalid flattened money origin' USING ERRCODE='23514'; END IF;
     IF (d->'rawAmountMinor',d->'rawCurrency',d->'exponent',d->'unitKey',d->'unitLabel',d->'basisId') IS DISTINCT FROM (origin->'rawAmountMinor',origin->'rawCurrency',origin->'exponent',origin->'unitKey',origin->'unitLabel',origin->'basisId') OR (d->'rawAmountMinor',d->'rawCurrency',d->'exponent',d->'unitKey',d->'unitLabel',d->'basisId') IS DISTINCT FROM (source->'rawAmountMinor',source->'rawCurrency',source->'exponent',source->'unitKey',source->'unitLabel',source->'basisId') THEN RAISE EXCEPTION 'Money copy meaning mismatch' USING ERRCODE='23514'; END IF;
-    IF origin->>'operation'='CLASSIFY' AND origin->>'evidenceErasedAt' IS NOT NULL THEN RAISE EXCEPTION 'Money origin evidence erased' USING ERRCODE='23514'; END IF;
+    IF origin->>'operation'='CLASSIFY' AND origin->>'evidenceErasedAt' IS NOT NULL THEN RAISE EXCEPTION 'Money origin evidence erased' USING ERRCODE='40001'; END IF;
     EXECUTE format('SELECT EXISTS(SELECT 1 FROM %I.%I WHERE "revokedAssertionId"=$1)',TG_TABLE_SCHEMA,TG_TABLE_NAME) INTO present USING NEW."originEventId";
-    IF present THEN RAISE EXCEPTION 'Money origin revoked' USING ERRCODE='23514'; END IF;
+    IF present THEN RAISE EXCEPTION 'Money origin revoked' USING ERRCODE='40001'; END IF;
     IF family='CATALOG' THEN
       IF (d->'entryId',d->'targetKey',d->'definitionId') IS DISTINCT FROM (origin->'entryId',origin->'targetKey',origin->'definitionId') OR (d->'entryId',d->'targetKey',d->'definitionId') IS DISTINCT FROM (source->'entryId',source->'targetKey',source->'definitionId') THEN RAISE EXCEPTION 'Wrong catalog copy path' USING ERRCODE='23514'; END IF;
     ELSE

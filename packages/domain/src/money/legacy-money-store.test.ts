@@ -694,4 +694,95 @@ describe.runIf(enabled)("legacy money real Prisma transaction store", () => {
       runSearchTransaction(db, (tx) => readMoneyFact(tx, s, { userId: f.actor })),
     ).rejects.toMatchObject({ code: "MONEY_DATA_INTEGRITY" });
   });
+  for (const invalidation of ["ERASE", "REVOKE"] as const) {
+    it(`closes ReadCommitted COPY origin ${invalidation} races without partial copy`, async () => {
+      const f = await fixture(),
+        origin = await classifyFact(f),
+        otherCollection = randomUUID();
+      if (origin.interpretation.kind !== "INTERPRETED") throw Error("Expected assertion");
+      const assertionId = origin.interpretation.assertionId;
+      const precondition = await runSearchTransaction(db, (tx) =>
+        readMoneyAssertion(tx, f.subject, { userId: f.actor }, assertionId),
+      );
+      await db.$queryRaw`INSERT INTO "Collection" (id,"ownerId",name,"updatedAt") VALUES (${otherCollection}::uuid,${f.actor},'Other owned collection',now()) RETURNING id`;
+      const source = await copyFact({ ...f, collection: otherCollection });
+      const destination = { family: "PURCHASE" as const, itemId: randomUUID() };
+      await db.$queryRaw`INSERT INTO "CollectibleItem" (id,"collectionId","ownerId",title,"purchaseAmountMinor","purchaseCurrency","updatedAt") VALUES (${destination.itemId}::uuid,${otherCollection}::uuid,${f.actor},'Concurrent destination',1,'AFN',now()) RETURNING id`;
+      let reached = () => {},
+        release = () => {};
+      const entered = new Promise<void>((resolve) => {
+        reached = resolve;
+      });
+      const resume = new Promise<void>((resolve) => {
+        release = resolve;
+      });
+      const pending = db
+        .$transaction(
+          async (tx) => {
+            const wrapped = {
+              $queryRaw: async <T>(query: Prisma.Sql): Promise<T> => {
+                if (
+                  query.sql.includes('INSERT INTO "PurchaseMoneyInterpretationEvent"') &&
+                  query.values.includes("COPY")
+                ) {
+                  reached();
+                  await resume;
+                }
+                return tx.$queryRaw<T>(query);
+              },
+            };
+            const a = await readMoneyFact(wrapped, source.subject, { userId: f.actor }),
+              b = await readMoneyFact(wrapped, destination, { userId: f.actor });
+            const af = await requireMoneyToken(
+                wrapped,
+                source.subject,
+                { userId: f.actor },
+                a.factToken,
+              ),
+              bf = await requireMoneyToken(wrapped, destination, { userId: f.actor }, b.factToken);
+            return copyMoneyFact(wrapped, af, bf, { userId: f.actor });
+          },
+          { isolationLevel: "ReadCommitted", timeout: 5000, maxWait: 2000 },
+        )
+        .then(
+          (value) => ({ value, error: null }),
+          (error) => ({ value: null, error }),
+        );
+      let timer: ReturnType<typeof setTimeout> | undefined;
+      try {
+        await Promise.race([
+          entered,
+          new Promise<never>((_, reject) => {
+            timer = setTimeout(() => reject(Error("COPY did not reach insert gate")), 2000);
+          }),
+        ]);
+        if (invalidation === "ERASE")
+          await runSearchTransaction(db, (tx) =>
+            eraseMoneyEvidenceForActor(tx, { userId: f.actor }, f.actor),
+          );
+        else
+          await runSearchTransaction(db, (tx) =>
+            revokeMoneyAssertion(
+              tx,
+              f.subject,
+              { assertionId, ...precondition, reason: "Concurrent correction" },
+              { userId: f.actor },
+            ),
+          );
+      } finally {
+        clearTimeout(timer);
+        release();
+      }
+      const result = await pending;
+      expect(result.error).toMatchObject({ code: "MONEY_CONFLICT" });
+      const current = await runSearchTransaction(db, (tx) =>
+        readMoneyFact(tx, destination, { userId: f.actor }),
+      );
+      expect(current.interpretation).toEqual({ kind: "UNKNOWN", reason: "RAW_WRITER" });
+      const [count] = await db.$queryRaw<
+        Array<{ count: string }>
+      >`SELECT count(*)::text AS count FROM "PurchaseMoneyInterpretationEvent" WHERE "itemId"=${destination.itemId}::uuid AND operation='COPY'`;
+      expect(count!.count).toBe("0");
+    });
+  }
 });

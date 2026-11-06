@@ -28,3 +28,31 @@ Completed results, immutable review source and exact CI evidence will be appende
 M3–M7, public migration regression, independent review, exact CI and all remaining V1 gates remain open until separately evidenced. No new UI, authoring HTTP path, financial coverage, captured valuation history or live migration is claimed by this milestone.
 
 Pre-review frozen candidate local evidence:68focusedPASS/0skip (`serial-accepted.log`), including40real native cases;1342purePASS/541explicit native skips/96pass files (`pure-final.log`); whole lintPASS (`lint-final.log`), whole production buildPASS (`build-final.log`), whole typesPASS (`typecheck3.log`, followed by the final whole build including the final fixture/snapshot-source refinement). Prisma validate and explicit generatePASS. All DB work so far uses owned isolated synthetic schemas; the common public test schema still has no M2 migration. These checks establish a review candidate, not final M2 acceptance or production readiness.
+
+## Independent review and root closure
+
+Independent reviewer `/root/sammlerraum_m2_review` reviewed immutable3c484dd read-only and returned0Critical/1Important(P2)/0Minor, SPECFAIL/QUALITYFAIL pending the P2. That original verdict is retained; root does not relabel it as an independent zero-finding pass.
+
+P2 is accepted. Deterministic real ReadCommitted tests pause the actual COPY INSERT after refresh, then separately commit original CLASSIFY evidence erasure or original revocation from another transaction/owned collection. Both genuinely reproduced a PrismaP2010 instead of a money conflict. The two specific native invalidation guards now signal40001; only recognized serialization/stale-origin failure from COPY insertion becomes MONEY_CONFLICT. Other23514 constraints remain genuine invariant errors. Root's completed follow-up focused suite passes70cases, including42native cases, with zero skips. Both race cases verify destination COPY count0 and unchanged RAW_WRITER interpretation after whole-transaction rollback. A failed statement's conflict must propagate out of the caller transaction; it is not an in-place statement retry.
+
+An additional exploratory concurrent DELETE gate timed out because the attempted deletion could not complete while the copy held its parent/FK locks. It is retained as a diagnostic, not counted as either a product RED or successful deletion-interleaving proof. Existing completed original-deletion and intermediate-deletion cases pass and establish conservative as-of/next-read behavior. No stronger instantaneous deletion guarantee is claimed.
+
+Each independent declined behavior is explicitly adjudicated:
+
+1. M3–M7 writers/routes/UI/coverage/transfers/captured consumers: accepted boundary; no completion credit awarded to these pending integrations.
+2. Internal matching AUTHOR receipt seam: accepted; M3/M4 enforce explicit authoring intent and actual raw replacement. No client receipt is trusted by an exposed endpoint here.
+3. Canonical raw reads without moderator: accepted existing public/history policy; mutation/private assertion conditions still require persisted authority.
+4. Private administrator access: verified no bypass; owner/item/collection checks remain mandatory.
+5. Parent id=id MVCC synchronization: accepted L1.11; no raw/domain-time/generation changes; BASELINE recursion excluded and native tests pass.
+6. Cross-item origin reads without new locks: accepted intended bounded snapshot model; actual unhandled RC erasure/revocation race is separately fixed above, not silently set aside.
+7. RepeatableRead observed-state semantics: accepted; later privacy/revocation changes must affect fresh reads/tokens, no post-commit instantaneous guarantee fabricated.
+8. Deferred personal parent FKs: accepted SQL-owned behavior with real User/item/definition erasure and forced immediate final constraint checks.
+9. Native shape versus full policy verification: accepted; domain revalidation is required before ELIGIBLE and malformed scale/unsupported-currency tests genuinely reject.
+10. Trusted SQL can insert application-invalid metadata: accepted operator trust boundary; resolver fails closed instead of treating native shape as truth.
+11. Bulk self-evidence erasure: accepted bounded aggregate output and caller-owned operation budget; no public bulk-classification or automatic evidence decision added.
+12. Unsigned tokens: accepted equality-only preconditions with fresh actual authorization and canonical bounded decoding, never bearer credentials.
+13. Shallow freezing of trusted in-process facts: accepted because the store refreshes actual authorized persisted facts and compares the actual token before mutation; no external JS object is an authority.
+14. Static review cannot establish runtime/production/exact CI: accepted; root records actual executions and retains production/deployment gates. Parent13b2bb6 now has both exact CI SUCCESS:42147012409/job127660820241 and42147007611/job127660805555,31successful steps each. M2 exact CI remains pending until its own source is pushed.
+15. Legal retention/external verification/account-erasure orchestration: accepted unclaimed scope; privacy content transition mechanics are implemented, surrounding orchestration remains in later authorized adapters.
+
+Root review-fix verification:70focusedPASS/0skip,1342purePASS/543explicit native skips, full lintPASS and root tscPASS. The initial broad native regression created and migrated a separate owned test database successfully, but vitest.setup.ts intentionally overwrote DATABASE_URL with the common sammlerraum_test URL. Its79missing-column failures therefore exercised the old common schema, not the newly migrated database; that failed log is retained as fixture evidence, not a product-regression verdict. The temporary database was dropped by the owned cleanup. The common loopback cluster/data-directory guard will precede applying the frozen corrected migration there, followed by the actual complete native allowlist. Existing test isolation safeguards are not weakened.
