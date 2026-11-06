@@ -386,3 +386,9 @@ it("returns schema failure rather than throwing while validating dirty stored ex
       }).success,
     ).toBe(false);
 });
+it("keeps an optional undefined mapping property stable after JSON preview persistence", () => {
+  const preview = validateMoneyImportRow({ ...row, sourceContract: undefined });
+  const persisted: unknown = JSON.parse(JSON.stringify(preview));
+  expect(() => validateMoneyImportRow(row, persisted)).not.toThrow();
+  expect(validateMoneyImportRow(row).sourceDigest).toBe(preview.sourceDigest);
+});

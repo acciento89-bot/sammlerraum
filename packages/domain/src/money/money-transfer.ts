@@ -47,6 +47,7 @@ function stable(value: unknown): string {
   if (Array.isArray(value)) return `[${value.map(stable).join(",")}]`;
   if (value !== null && typeof value === "object")
     return `{${Object.entries(value)
+      .filter(([, child]) => child !== undefined)
       .sort(([a], [b]) => a.localeCompare(b, "en"))
       .map(([k, v]) => `${JSON.stringify(k)}:${stable(v)}`)
       .join(",")}}`;
