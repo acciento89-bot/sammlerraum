@@ -1,3 +1,11 @@
+import { moneyTransaction } from "../money/legacy-money-transaction";
+import {
+  readMoneyFact,
+  requireMoneyToken,
+  copyMoneyFact,
+  type ResolvedMoneyFact,
+} from "../money/legacy-money-store";
+import type { MoneySubject } from "@sammlerraum/contracts/legacy-money";
 import {
   CatalogReadIdSchema,
   ItemCatalogLinkSchema,
@@ -102,7 +110,7 @@ type ItemUpdateData = Partial<Omit<ItemWriteData, "collectionId">> & {
   deletedAt?: Date;
 };
 
-type ItemTransaction = {
+export type ItemTransaction = {
   itemIdentifier: {
     findMany(args: {
       where: { itemId: string };
@@ -432,6 +440,94 @@ async function ensureNodeInCollection(
   }
 }
 
+/** Strict input validation belongs to the caller; owner/parent checks remain here. */
+export async function readOwnedItemInTransaction(
+  transaction: ItemTransaction,
+  actorUserId: string,
+  itemIdInput: string,
+): Promise<CollectibleItem> {
+  const id = CollectibleItemSchema.shape.id.parse(itemIdInput);
+  return toItem(await lockOwnedItem(transaction, id, actorUserId));
+}
+
+export async function createItemInTransaction(
+  transaction: ItemTransaction,
+  actorUserId: string,
+  data: ReturnType<typeof CreateItemInputSchema.parse>,
+): Promise<CollectibleItem> {
+  await lockOwnedCollection(transaction, data.collectionId, actorUserId);
+  await ensureNodeInCollection(transaction, data.nodeId, data.collectionId);
+  const item = await transaction.collectibleItem.create({
+    data: {
+      collectionId: data.collectionId,
+      ownerId: actorUserId,
+      nodeId: data.nodeId,
+      title: data.title,
+      publicDescription: data.publicDescription,
+      privateNotes: data.privateNotes,
+      quantity: data.quantity,
+      acquisitionType: data.acquisitionType,
+      acquisitionDate:
+        data.acquisitionDate === null ? null : new Date(`${data.acquisitionDate}T00:00:00.000Z`),
+      purchaseAmountMinor:
+        data.purchaseAmountMinor === null ? null : BigInt(data.purchaseAmountMinor),
+      purchaseCurrency: data.purchaseCurrency,
+      visibility: data.visibility,
+      tradeStatus: data.tradeStatus,
+    },
+    select: itemSelect,
+  });
+  return toItem(item);
+}
+
+export async function updateItemInTransaction(
+  transaction: ItemTransaction,
+  actorUserId: string,
+  itemIdInput: string,
+  input: UpdateItemInput,
+): Promise<CollectibleItem> {
+  const itemId = CollectibleItemSchema.shape.id.parse(itemIdInput);
+  const data = input; // Validated by the legacy or explicit-money service before entering this body.
+  const existing = await lockOwnedItem(transaction, itemId, actorUserId);
+  ensureActive(existing);
+  if (data.nodeId !== undefined) {
+    await ensureNodeInCollection(transaction, data.nodeId, existing.collectionId);
+  }
+
+  const update: ItemUpdateData = {};
+  if (data.nodeId !== undefined) update.nodeId = data.nodeId;
+  if (data.title !== undefined) update.title = data.title;
+  if (data.publicDescription !== undefined) update.publicDescription = data.publicDescription;
+  if (data.privateNotes !== undefined) update.privateNotes = data.privateNotes;
+  if (data.quantity !== undefined) {
+    if (data.quantity !== existing.quantity) await ensureNoGrading(transaction, existing.id);
+    update.quantity = data.quantity;
+  }
+  if (data.acquisitionType !== undefined) update.acquisitionType = data.acquisitionType;
+  if (data.acquisitionDate !== undefined) {
+    update.acquisitionDate =
+      data.acquisitionDate === null ? null : new Date(`${data.acquisitionDate}T00:00:00.000Z`);
+  }
+  if (data.purchaseAmountMinor !== undefined) {
+    update.purchaseAmountMinor =
+      data.purchaseAmountMinor === null ? null : BigInt(data.purchaseAmountMinor);
+    update.purchaseCurrency = data.purchaseCurrency ?? null;
+  }
+  if (data.visibility !== undefined) update.visibility = data.visibility;
+  if (data.tradeStatus !== undefined) update.tradeStatus = data.tradeStatus;
+  if (data.disposedAt !== undefined) {
+    update.disposedAt = new Date(data.disposedAt);
+    update.tradeStatus = "NOT_FOR_TRADE";
+  }
+  return toItem(
+    await transaction.collectibleItem.update({
+      where: { id: existing.id },
+      data: update,
+      select: itemSelect,
+    }),
+  );
+}
+
 export function createItemService(
   database: ItemDatabase,
   actorUserId: string,
@@ -442,33 +538,7 @@ export function createItemService(
   async function createItem(input: CreateItemInput): Promise<CollectibleItem> {
     const data = CreateItemInputSchema.parse(input);
     return database.$transaction(
-      async (transaction) => {
-        await lockOwnedCollection(transaction, data.collectionId, actorUserId);
-        await ensureNodeInCollection(transaction, data.nodeId, data.collectionId);
-        const item = await transaction.collectibleItem.create({
-          data: {
-            collectionId: data.collectionId,
-            ownerId: actorUserId,
-            nodeId: data.nodeId,
-            title: data.title,
-            publicDescription: data.publicDescription,
-            privateNotes: data.privateNotes,
-            quantity: data.quantity,
-            acquisitionType: data.acquisitionType,
-            acquisitionDate:
-              data.acquisitionDate === null
-                ? null
-                : new Date(`${data.acquisitionDate}T00:00:00.000Z`),
-            purchaseAmountMinor:
-              data.purchaseAmountMinor === null ? null : BigInt(data.purchaseAmountMinor),
-            purchaseCurrency: data.purchaseCurrency,
-            visibility: data.visibility,
-            tradeStatus: data.tradeStatus,
-          },
-          select: itemSelect,
-        });
-        return toItem(item);
-      },
+      (transaction) => createItemInTransaction(transaction, actorUserId, data),
       { isolationLevel: "ReadCommitted" },
     );
   }
@@ -477,48 +547,7 @@ export function createItemService(
     const itemId = CollectibleItemSchema.shape.id.parse(itemIdInput);
     const data = UpdateItemInputSchema.parse(input);
     return database.$transaction(
-      async (transaction) => {
-        const existing = await lockOwnedItem(transaction, itemId, actorUserId);
-        ensureActive(existing);
-        if (data.nodeId !== undefined) {
-          await ensureNodeInCollection(transaction, data.nodeId, existing.collectionId);
-        }
-
-        const update: ItemUpdateData = {};
-        if (data.nodeId !== undefined) update.nodeId = data.nodeId;
-        if (data.title !== undefined) update.title = data.title;
-        if (data.publicDescription !== undefined) update.publicDescription = data.publicDescription;
-        if (data.privateNotes !== undefined) update.privateNotes = data.privateNotes;
-        if (data.quantity !== undefined) {
-          if (data.quantity !== existing.quantity) await ensureNoGrading(transaction, existing.id);
-          update.quantity = data.quantity;
-        }
-        if (data.acquisitionType !== undefined) update.acquisitionType = data.acquisitionType;
-        if (data.acquisitionDate !== undefined) {
-          update.acquisitionDate =
-            data.acquisitionDate === null
-              ? null
-              : new Date(`${data.acquisitionDate}T00:00:00.000Z`);
-        }
-        if (data.purchaseAmountMinor !== undefined) {
-          update.purchaseAmountMinor =
-            data.purchaseAmountMinor === null ? null : BigInt(data.purchaseAmountMinor);
-          update.purchaseCurrency = data.purchaseCurrency ?? null;
-        }
-        if (data.visibility !== undefined) update.visibility = data.visibility;
-        if (data.tradeStatus !== undefined) update.tradeStatus = data.tradeStatus;
-        if (data.disposedAt !== undefined) {
-          update.disposedAt = new Date(data.disposedAt);
-          update.tradeStatus = "NOT_FOR_TRADE";
-        }
-        return toItem(
-          await transaction.collectibleItem.update({
-            where: { id: existing.id },
-            data: update,
-            select: itemSelect,
-          }),
-        );
-      },
+      (transaction) => updateItemInTransaction(transaction, actorUserId, itemId, data),
       { isolationLevel: "ReadCommitted" },
     );
   }
@@ -612,6 +641,32 @@ export function createItemService(
               }),
             ]);
 
+            // Capture actual current generation/meaning while the source is locked.
+            // Missing money has no evidence to duplicate; present unknown money stays unknown.
+            const money = moneyTransaction(transaction);
+            const moneySources: Array<{ subject: MoneySubject; fact: ResolvedMoneyFact }> = [];
+            const captureMoney = async (subject: MoneySubject) => {
+              const view = await readMoneyFact(money, subject, { userId: actorUserId });
+              moneySources.push({
+                subject,
+                fact: await requireMoneyToken(
+                  money,
+                  subject,
+                  { userId: actorUserId },
+                  view.factToken,
+                ),
+              });
+            };
+            if (item.purchaseAmountMinor !== null)
+              await captureMoney({ family: "PURCHASE", itemId: item.id });
+            for (const field of fields)
+              if (field.fieldType === "MONEY" && field.moneyAmountMinor !== null)
+                await captureMoney({
+                  family: "CUSTOM",
+                  itemId: item.id,
+                  fieldDefinitionId: field.fieldDefinitionId,
+                });
+
             // Reference triggers lock assets too. Lock the complete shared set in UUID order
             // before either bulk insert so parallel splits and avatar replacement agree.
             const assetIds = [
@@ -685,6 +740,22 @@ export function createItemService(
               if (selections.length > 0) {
                 await transaction.customFieldMultiSelectValue.createMany({ data: selections });
               }
+            }
+            // Native child writes assigned their own generations. Bind each copy to
+            // those actual returned facts in this same enclosing split transaction.
+            for (const sourceMoney of moneySources) {
+              const target: MoneySubject =
+                sourceMoney.subject.family === "CUSTOM"
+                  ? { ...sourceMoney.subject, itemId: created.id }
+                  : { family: "PURCHASE", itemId: created.id };
+              const view = await readMoneyFact(money, target, { userId: actorUserId });
+              const destination = await requireMoneyToken(
+                money,
+                target,
+                { userId: actorUserId },
+                view.factToken,
+              );
+              await copyMoneyFact(money, sourceMoney.fact, destination, { userId: actorUserId });
             }
             if (media.length > 0) {
               await transaction.mediaLink.createMany({

@@ -1,3 +1,5 @@
+import { LegacyMoneyError } from "@sammlerraum/contracts/legacy-money";
+import { mapLegacyMoneyError } from "./legacy-money-routes";
 import {
   CreateCollectionInputSchema,
   CreateCollectionNodeInputSchema,
@@ -80,6 +82,7 @@ async function asNotFound<T>(operation: () => Promise<T>): Promise<T> {
   try {
     return await operation();
   } catch (error) {
+    if (error instanceof LegacyMoneyError) return mapLegacyMoneyError(error);
     const code =
       typeof error === "object" && error !== null && "code" in error ? String(error.code) : "";
     if (code.includes("NOT_FOUND")) throw new ApiError("NOT_FOUND", 404, "Resource not found");

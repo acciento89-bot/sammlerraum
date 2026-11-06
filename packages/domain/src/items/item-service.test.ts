@@ -462,7 +462,25 @@ describe("item service", () => {
       purchaseCurrency: "EUR",
     });
     const transaction = {
-      $queryRaw: async () => [original],
+      // This is an explicit query simulation of untracked legacy raw money;
+      // real COPY provenance/rollback is covered by personal-money-service native tests.
+      $queryRaw: async (strings: TemplateStringsArray) =>
+        strings.join("").includes("WITH base AS")
+          ? [
+              {
+                amount: "299",
+                currency: "EUR",
+                generation: "00000000-0000-0000-0000-000000000000",
+                bad: false,
+                targetExists: true,
+                sequence: "0",
+                event: null,
+                origin: null,
+                revocationId: null,
+                originOwnerId: null,
+              },
+            ]
+          : [original],
       itemIdentifier: { findMany: async () => [] },
       mediaLink: { findMany: async () => [] },
       documentLink: { findMany: async () => [] },

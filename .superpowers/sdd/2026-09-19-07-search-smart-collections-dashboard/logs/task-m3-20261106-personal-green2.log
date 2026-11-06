@@ -1,0 +1,50 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ✓ |workspace| packages/domain/src/money/personal-money-service.test.ts (7 tests) 323ms
+ ✓ |workspace| packages/domain/src/money/legacy-money-store.test.ts (27 tests) 690ms
+ ❯ |workspace| packages/domain/src/items/item-service.test.ts (15 tests | 1 failed) 276ms
+   ✓ item service > splits a quantity item without changing total quantity 3ms
+   ✓ item service > copies populated metadata in the locked split transaction 1ms
+   ✓ item service > creates a private item for the trusted owner in a node from the same collection 2ms
+   ✓ item service > rejects non-canonical dates and invalid or incomplete money before persistence 1ms
+   ✓ item service > does not create for another owner's collection or a node from another collection 0ms
+   ✓ item service > rejects moving an item to a node in another collection before mutation 1ms
+   ✓ item service > archives an active item at the service clock and rejects later mutations 0ms
+   ✓ item service > allows a disposed item to be archived while retaining both lifecycle timestamps 0ms
+   ✓ item service > rejects invalid split counts against the freshly locked quantity 0ms
+   × item service > preserves total acquisition value by copying a per-unit purchase amount 5ms
+     → MONEY_NOT_FOUND
+   ✓ item service PostgreSQL integration > enforces same-collection nodes and owner-only item mutations 127ms
+   ✓ item service PostgreSQL integration > serializes simultaneous splits against the fresh row quantity 40ms
+   ✓ item service PostgreSQL integration > keeps image and document links on both portions with shared asset IDs 28ms
+   ✓ item service PostgreSQL integration > rolls back the source decrement when creating the split row fails 10ms
+   ✓ item service PostgreSQL integration > rolls back the source and new row when copying metadata fails 10ms
+ ✓ |workspace| packages/domain/src/custom-fields/custom-field-service.test.ts (36 tests) 239ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/items/item-service.test.ts > item service > preserves total acquisition value by copying a per-unit purchase amount
+LegacyMoneyError: MONEY_NOT_FOUND
+ ❯ legacyMoneyFail packages/contracts/src/legacy-money.ts:27:9
+     25| }
+     26| export function legacyMoneyFail(code: LegacyMoneyError["code"]): never…
+     27|   throw new LegacyMoneyError(code);
+       |         ^
+     28| }
+     29| export const LegacyMoneyIdSchema = z
+ ❯ resolveFact packages/domain/src/money/legacy-money-store.ts:306:33
+ ❯ readMoneyFact packages/domain/src/money/legacy-money-store.ts:370:11
+ ❯ captureMoney packages/domain/src/items/item-service.ts:640:28
+ ❯ database.$transaction.isolationLevel packages/domain/src/items/item-service.ts:652:15
+ ❯ Object.splitQuantityItem packages/domain/src/items/item-service.ts:589:16
+ ❯ packages/domain/src/items/item-service.test.ts:491:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 3 passed (4)
+      Tests  1 failed | 84 passed (85)
+   Start at  04:04:05
+   Duration  2.60s (transform 162ms, setup 7ms, collect 539ms, tests 1.53s, environment 0ms, prepare 126ms)
+

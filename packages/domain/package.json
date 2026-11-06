@@ -39,7 +39,8 @@
     "./dashboard/dashboard-service": "./src/dashboard/dashboard-service.ts",
     "./search/search-reference-service": "./src/search/search-reference-service.ts",
     "./dashboard/personal-milestone-service": "./src/dashboard/personal-milestone-service.ts",
-    "./money/legacy-money-policy": "./src/money/legacy-money-policy.ts"
+    "./money/legacy-money-policy": "./src/money/legacy-money-policy.ts",
+    "./money/personal-money-service": "./src/money/personal-money-service.ts"
   },
   "scripts": {
     "build": "pnpm typecheck",

@@ -1,4 +1,9 @@
 import {
+  HistoricalMoneyValueSchema,
+  type AuthoringReceipt,
+} from "@sammlerraum/contracts/legacy-money";
+import { parseLegacyMoneyAuthoring } from "../money/legacy-money-policy";
+import {
   CreateCustomFieldDefinitionInputSchema,
   CustomFieldDefinitionSchema,
   CustomFieldMoneyValueSchema,
@@ -41,7 +46,7 @@ type ValueWriteData = {
   moneyCurrency: string | null;
 };
 
-type CustomFieldTransaction = {
+export type CustomFieldTransaction = {
   $queryRaw<T>(query: TemplateStringsArray, ...values: unknown[]): Promise<T>;
   customFieldDefinition: {
     findUnique(args: {
@@ -361,6 +366,107 @@ function persistenceData(
   return data;
 }
 
+export async function setFieldValueInTransaction(
+  transaction: CustomFieldTransaction,
+  actorUserId: string,
+  itemIdInput: string,
+  fieldDefinitionIdInput: string,
+  value: unknown,
+  options: { authoringReceipt?: AuthoringReceipt } = {},
+): Promise<CustomFieldValueRecord | null> {
+  const itemIdResult = CustomFieldDefinitionSchema.shape.id.safeParse(itemIdInput);
+  const fieldIdResult = CustomFieldDefinitionSchema.shape.id.safeParse(fieldDefinitionIdInput);
+  if (!itemIdResult.success || !fieldIdResult.success) {
+    throw new CustomFieldServiceError("CUSTOM_FIELD_NOT_FOUND");
+  }
+  const itemId = itemIdResult.data;
+  const fieldDefinitionId = fieldIdResult.data;
+
+  const fields = await transaction.$queryRaw<FieldTypeRow[]>`
+    SELECT definition."type", definition."collectionId"
+    FROM "CollectibleItem" item
+    JOIN "Collection" collection ON collection."id" = item."collectionId"
+    JOIN "CustomFieldDefinition" definition
+      ON definition."collectionId" = item."collectionId"
+    WHERE item."id" = ${itemId}::uuid
+      AND definition."id" = ${fieldDefinitionId}::uuid
+      AND collection."ownerId" = ${actorUserId}
+      AND item."ownerId" = ${actorUserId}
+      AND item."deletedAt" IS NULL
+      AND collection."deletedAt" IS NULL
+    FOR UPDATE OF item, definition
+  `;
+  const field = fields[0];
+  if (!field) {
+    throw new CustomFieldServiceError("CUSTOM_FIELD_NOT_FOUND");
+  }
+  if (value === null) {
+    await transaction.customFieldValue.deleteMany({ where: { itemId, fieldDefinitionId } });
+    return null;
+  }
+  const optionsRows = await transaction.customFieldOption.findMany({
+    where: { fieldDefinitionId },
+    select: { id: true, value: true, position: true },
+    orderBy: { position: "asc" },
+  });
+  let canonical: CanonicalCustomFieldValue;
+  if (options.authoringReceipt) {
+    if (field.type !== "MONEY") return typeMismatch();
+    const receipt = options.authoringReceipt;
+    const verified = parseLegacyMoneyAuthoring({
+      kind: "RAW",
+      profileId: receipt.profileId,
+      currency: receipt.raw.currency,
+      amountMinor: receipt.raw.amountMinor,
+      exponent: receipt.exponent,
+      unitKey: receipt.unitKey,
+    });
+    const parsedValue = HistoricalMoneyValueSchema.safeParse(value);
+    if (
+      !parsedValue.success ||
+      String(parsedValue.data.amountMinor) !== verified.raw.amountMinor ||
+      parsedValue.data.currency !== verified.raw.currency ||
+      JSON.stringify(verified) !== JSON.stringify(receipt)
+    )
+      return invalidValue();
+    canonical = parsedValue.data;
+  } else {
+    canonical = validateFieldValue(
+      field.type,
+      value,
+      optionsRows.map((option) => option.value),
+    );
+  }
+  const data = persistenceData(field.type, canonical, optionsRows);
+  await transaction.customFieldValue.upsert({
+    where: { itemId_fieldDefinitionId: { itemId, fieldDefinitionId } },
+    create: {
+      itemId,
+      fieldDefinitionId,
+      collectionId: field.collectionId,
+      ...data,
+    },
+    update: data,
+  });
+  await transaction.customFieldMultiSelectValue.deleteMany({
+    where: { itemId, fieldDefinitionId },
+  });
+  if (field.type === "MULTI_SELECT") {
+    const selected = canonical as string[];
+    const optionByValue = new Map(optionsRows.map((option) => [option.value, option]));
+    if (selected.length > 0) {
+      await transaction.customFieldMultiSelectValue.createMany({
+        data: selected.map((optionValue, position) => {
+          const option = optionByValue.get(optionValue);
+          if (!option) invalidValue();
+          return { itemId, fieldDefinitionId, optionId: option.id, position };
+        }),
+      });
+    }
+  }
+  return { itemId, fieldDefinitionId, type: field.type, value: canonical };
+}
+
 export function createCustomFieldService(database: CustomFieldDatabase, actorUserId: string) {
   async function createFieldDefinition(
     input: CreateCustomFieldDefinitionInput,
@@ -436,67 +542,8 @@ export function createCustomFieldService(database: CustomFieldDatabase, actorUse
     const fieldDefinitionId = fieldIdResult.data;
 
     return database.$transaction(
-      async (transaction) => {
-        const fields = await transaction.$queryRaw<FieldTypeRow[]>`
-          SELECT definition."type", definition."collectionId"
-          FROM "CollectibleItem" item
-          JOIN "Collection" collection ON collection."id" = item."collectionId"
-          JOIN "CustomFieldDefinition" definition
-            ON definition."collectionId" = item."collectionId"
-          WHERE item."id" = ${itemId}::uuid
-            AND definition."id" = ${fieldDefinitionId}::uuid
-            AND collection."ownerId" = ${actorUserId}
-            AND item."deletedAt" IS NULL
-            AND collection."deletedAt" IS NULL
-          FOR UPDATE OF item, definition
-        `;
-        const field = fields[0];
-        if (!field) {
-          throw new CustomFieldServiceError("CUSTOM_FIELD_NOT_FOUND");
-        }
-        if (value === null) {
-          await transaction.customFieldValue.deleteMany({ where: { itemId, fieldDefinitionId } });
-          return null;
-        }
-        const options = await transaction.customFieldOption.findMany({
-          where: { fieldDefinitionId },
-          select: { id: true, value: true, position: true },
-          orderBy: { position: "asc" },
-        });
-        const canonical = validateFieldValue(
-          field.type,
-          value,
-          options.map((option) => option.value),
-        );
-        const data = persistenceData(field.type, canonical, options);
-        await transaction.customFieldValue.upsert({
-          where: { itemId_fieldDefinitionId: { itemId, fieldDefinitionId } },
-          create: {
-            itemId,
-            fieldDefinitionId,
-            collectionId: field.collectionId,
-            ...data,
-          },
-          update: data,
-        });
-        await transaction.customFieldMultiSelectValue.deleteMany({
-          where: { itemId, fieldDefinitionId },
-        });
-        if (field.type === "MULTI_SELECT") {
-          const selected = canonical as string[];
-          const optionByValue = new Map(options.map((option) => [option.value, option]));
-          if (selected.length > 0) {
-            await transaction.customFieldMultiSelectValue.createMany({
-              data: selected.map((optionValue, position) => {
-                const option = optionByValue.get(optionValue);
-                if (!option) invalidValue();
-                return { itemId, fieldDefinitionId, optionId: option.id, position };
-              }),
-            });
-          }
-        }
-        return { itemId, fieldDefinitionId, type: field.type, value: canonical };
-      },
+      (transaction) =>
+        setFieldValueInTransaction(transaction, actorUserId, itemId, fieldDefinitionId, value),
       { isolationLevel: "ReadCommitted" },
     );
   }

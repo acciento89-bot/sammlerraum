@@ -24,7 +24,8 @@
     "./private-search-query": "./src/private-search-query.ts",
     "./search-references": "./src/search-references.ts",
     "./personal-milestones": "./src/personal-milestones.ts",
-    "./legacy-money": "./src/legacy-money.ts"
+    "./legacy-money": "./src/legacy-money.ts",
+    "./personal-money": "./src/personal-money.ts"
   },
   "scripts": {
     "build": "pnpm typecheck",

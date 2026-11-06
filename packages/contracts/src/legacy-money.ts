@@ -16,7 +16,8 @@ export class LegacyMoneyError extends Error {
       | "MONEY_NOT_FOUND"
       | "MONEY_FORBIDDEN"
       | "MONEY_CONFLICT"
-      | "MONEY_DATA_INTEGRITY",
+      | "MONEY_DATA_INTEGRITY"
+      | "MONEY_UNAVAILABLE",
   ) {
     super(code);
     this.name = "LegacyMoneyError";
