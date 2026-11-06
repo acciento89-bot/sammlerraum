@@ -159,5 +159,54 @@ describe.runIf(process.env.RUN_DATABASE_INTEGRATION === "1")(
         )[0]!.rawCells,
       ).toEqual(["9007199254740993"]);
     });
+    it("releases transient failures for a real retry and eventually closes exhausted attempts", async () => {
+      const f = await fixture("Title\nOne"),
+        repo = createPrismaImportParserRepository(db);
+      let first = true;
+      const flaky = {
+        read: async (key: string, options?: { maxBytes: number; signal?: AbortSignal }) => {
+          if (first) {
+            first = false;
+            throw new Error("synthetic transient storage error");
+          }
+          return storage.read(key, options);
+        },
+        put: storage.put.bind(storage),
+        exists: storage.exists.bind(storage),
+        delete: storage.delete.bind(storage),
+      };
+      const handler = createImportParser(repo, flaky);
+      await expect(handler({ jobId: f.id })).rejects.toMatchObject({
+        code: "IMPORT_PROCESSING_ERROR",
+      });
+      expect((await job(f.id)).status).toBe("AWAITING_UPLOAD");
+      await handler({ jobId: f.id });
+      expect(await job(f.id)).toMatchObject({ status: "PARSED", parsedRows: 1 });
+      const exhausted = await fixture("Title\nOne"),
+        unavailable = {
+          ...flaky,
+          read: async () => {
+            throw new Error("synthetic outage");
+          },
+        };
+      const retry = createImportParser(repo, unavailable);
+      for (let attempt = 0; attempt < 5; attempt++)
+        await expect(retry({ jobId: exhausted.id })).rejects.toMatchObject({
+          code: "IMPORT_PROCESSING_ERROR",
+        });
+      await retry({ jobId: exhausted.id });
+      expect(await job(exhausted.id)).toMatchObject({
+        status: "FAILED",
+        errorCode: "IMPORT_PARSE_ATTEMPTS_EXHAUSTED",
+      });
+    });
+    it("normalizes UUID aliases before deriving durable row keys", async () => {
+      const f = await fixture("Title\nOne");
+      await createImportParser(
+        createPrismaImportParserRepository(db),
+        storage,
+      )({ jobId: f.id.toUpperCase() });
+      expect(await job(f.id)).toMatchObject({ status: "PARSED", parsedRows: 1 });
+    });
   },
 );

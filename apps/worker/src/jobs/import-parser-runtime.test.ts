@@ -55,7 +55,7 @@ it("keeps ownership until a storage read that ignores cancellation has really se
   expect(f.repo.fail).not.toHaveBeenCalled();
   expect(f.repo.finish).not.toHaveBeenCalled();
   release(f.bytes);
-  await running;
+  await expect(running).rejects.toMatchObject({ code: "IMPORT_PARSE_CANCELLED" });
   expect(f.repo.fail).toHaveBeenCalledWith(f.claim, "IMPORT_PARSE_CANCELLED", true);
   expect(f.repo.verified).not.toHaveBeenCalled();
 });
@@ -69,7 +69,9 @@ it("does not complete a partially consumed source after persistence fails", asyn
   f.repo.append = vi.fn(async () => {
     throw new Error("synthetic transient");
   });
-  await createImportParser(f.repo, f.storage)({ jobId: f.id });
+  await expect(createImportParser(f.repo, f.storage)({ jobId: f.id })).rejects.toMatchObject({
+    code: "IMPORT_PROCESSING_ERROR",
+  });
   expect(f.repo.finish).not.toHaveBeenCalled();
   expect(f.repo.fail).toHaveBeenCalledOnce();
 });

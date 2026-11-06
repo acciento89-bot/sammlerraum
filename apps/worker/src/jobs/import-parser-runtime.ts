@@ -10,7 +10,9 @@ import {
 } from "./parse-import";
 import type { ImportParserRepository } from "./import-parser-repository";
 export const IMPORT_PARSE_JOB = "imports.parse-source";
-const payloadSchema = z.object({ jobId: z.uuid() }).strict();
+const payloadSchema = z
+  .object({ jobId: z.uuid().transform((value) => value.toLowerCase()) })
+  .strict();
 /** Retains the lease until all parser/storage/DB work actually settles, even on cancellation. */
 export function createImportParser(
   repository: ImportParserRepository,
@@ -115,11 +117,11 @@ export function createImportParser(
       settled = true;
       if (timer) clearTimeout(timer);
       await renewal;
-      await repository.fail(
-        claim,
-        code,
-        code === "IMPORT_PARSE_CANCELLED" || code === "IMPORT_PROCESSING_ERROR",
-      );
+      const retry = code === "IMPORT_PARSE_CANCELLED" || code === "IMPORT_PROCESSING_ERROR";
+      await repository.fail(claim, code, retry);
+      // A resolved queue handler acknowledges success. Release durable ownership first,
+      // then reject retryable failures so pg-boss can actually schedule another attempt.
+      if (retry) throw new ImportParseError(code);
     } finally {
       settled = true;
       if (timer) clearTimeout(timer);
