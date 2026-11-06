@@ -149,6 +149,140 @@ describe.runIf(enabled)("legacy money real Prisma transaction store", () => {
       definitionId: definition,
     };
   }
+  it.each(["ENTRY", "VARIANT"] as const)(
+    "native strict catalog lookup still rejects duplicate %s paths without an event",
+    async (target) => {
+      const s = await canonical({ amountMinor: 1, currency: "AFN" });
+      const [original] = await db.$queryRaw<
+        Array<{ snapshot: { attributes: unknown[]; variants: unknown[] } }>
+      >`SELECT snapshot FROM "CatalogRevision" WHERE "entryId"=${s.entryId}::uuid AND revision=1`;
+      const variant = randomUUID();
+      const value = {
+        id: variant,
+        text: { language: "en", title: "Duplicated target" },
+        sources: [],
+        attributes: original!.snapshot.attributes,
+      };
+      const snapshot =
+        target === "ENTRY"
+          ? {
+              ...original!.snapshot,
+              attributes: [...original!.snapshot.attributes, ...original!.snapshot.attributes],
+            }
+          : { ...original!.snapshot, variants: [value, value] };
+      await db.$queryRaw`INSERT INTO "CatalogRevision" ("entryId",revision,snapshot) VALUES (${s.entryId}::uuid,2,${JSON.stringify(snapshot)}::jsonb) RETURNING "entryId"`;
+      const rejected =
+        await db.$queryRaw`INSERT INTO "CatalogMoneyInterpretationEvent" (id,"entryId",revision,"targetKey","variantId","definitionId",sequence,operation,"rawAmountMinor","rawCurrency") VALUES (${randomUUID()}::uuid,${s.entryId}::uuid,2,${target === "ENTRY" ? "entry" : variant},${target === "ENTRY" ? null : variant}::uuid,${s.definitionId}::uuid,1,'RAW_WRITE',1,'AFN') RETURNING id`.then(
+          () => null,
+          (error) => error,
+        );
+      expect(rejected).toMatchObject({
+        meta: { driverAdapterError: { cause: { originalCode: "23514" } } },
+      });
+      const [count] = await db.$queryRaw<
+        Array<{ total: bigint }>
+      >`SELECT count(*) AS total FROM "CatalogMoneyInterpretationEvent" WHERE "entryId"=${s.entryId}::uuid AND revision=2`;
+      expect(count!.total).toBe(0n);
+    },
+  );
+  it("advances canonical parent MVCC once while repeated metadata in the same top-level transaction keeps its tuple", async () => {
+    const f = await fixture(),
+      s = await canonical({ amountMinor: 1, currency: "AFN" });
+    await db.$queryRaw`INSERT INTO "ApplicationRoleGrant" ("userId",role,"grantedBy",reason) VALUES (${f.actor},'MODERATOR','synthetic','Synthetic MVCC guard proof') RETURNING "userId"`;
+    const tuples = await runSearchTransaction(db, async (tx) => {
+      const [before] = await tx.$queryRaw<Array<{ tuple: string }>>(
+        Prisma.sql`SELECT ctid::text AS tuple FROM "CatalogEntry" WHERE id=${s.entryId}::uuid`,
+      );
+      let current = await readMoneyFact(tx, s, { userId: f.actor });
+      const observed = [before!.tuple];
+      for (const exponent of [0, 1]) {
+        const fact = await requireMoneyToken(tx, s, { userId: f.actor }, current.factToken);
+        current = await appendMoneyAssertion(tx, fact, {
+          kind: "CLASSIFY",
+          input: {
+            expectedFactToken: current.factToken,
+            exponent,
+            unit: { kind: "SUPPORTED", unitKey: "iso4217-2026-09-17:AFN" },
+            evidence: {
+              category: "OPERATOR_VERIFIED_RECORD",
+              reason: "Synthetic repeated metadata",
+              reference: "PRIVATE-TEST",
+            },
+          },
+        });
+        const [parent] = await tx.$queryRaw<Array<{ tuple: string }>>(
+          Prisma.sql`SELECT ctid::text AS tuple FROM "CatalogEntry" WHERE id=${s.entryId}::uuid`,
+        );
+        observed.push(parent!.tuple);
+      }
+      return observed;
+    });
+    expect(tuples[1]).not.toBe(tuples[0]);
+    expect(tuples[2]).toBe(tuples[1]);
+  });
+  it("canonical metadata still invalidates a separate client's stale RepeatableRead snapshot", async () => {
+    const f = await fixture(),
+      s = await canonical({ amountMinor: 1, currency: "AFN" });
+    await db.$queryRaw`INSERT INTO "ApplicationRoleGrant" ("userId",role,"grantedBy",reason) VALUES (${f.actor},'MODERATOR','synthetic','Synthetic catalog snapshot proof') RETURNING "userId"`;
+    const initial = await runSearchTransaction(db, (tx) =>
+      readMoneyFact(tx, s, { userId: f.actor }),
+    );
+    let ready!: () => void, release!: () => void;
+    const established = new Promise<void>((resolve) => {
+        ready = resolve;
+      }),
+      resume = new Promise<void>((resolve) => {
+        release = resolve;
+      });
+    const stale = runSearchTransaction(db, async (tx) => {
+      await readMoneyFact(tx, s, { userId: f.actor });
+      ready();
+      await resume;
+      const fact = await requireMoneyToken(tx, s, { userId: f.actor }, initial.factToken);
+      return appendMoneyAssertion(tx, fact, {
+        kind: "CLASSIFY",
+        input: {
+          expectedFactToken: initial.factToken,
+          exponent: 1,
+          unit: { kind: "SUPPORTED", unitKey: "iso4217-2026-09-17:AFN" },
+          evidence: {
+            category: "OPERATOR_VERIFIED_RECORD",
+            reason: "Stale synthetic record",
+            reference: "PRIVATE-STALE",
+          },
+        },
+      });
+    }).then(
+      (value) => ({ value }),
+      (error) => ({ error }),
+    );
+    await established;
+    try {
+      await runSearchTransaction(db, async (tx) => {
+        const fact = await requireMoneyToken(tx, s, { userId: f.actor }, initial.factToken);
+        return appendMoneyAssertion(tx, fact, {
+          kind: "CLASSIFY",
+          input: {
+            expectedFactToken: initial.factToken,
+            exponent: 0,
+            unit: { kind: "SUPPORTED", unitKey: "iso4217-2026-09-17:AFN" },
+            evidence: {
+              category: "OPERATOR_VERIFIED_RECORD",
+              reason: "Fresh synthetic record",
+              reference: "PRIVATE-FRESH",
+            },
+          },
+        });
+      });
+    } finally {
+      release();
+    }
+    expect(await stale).toMatchObject({ error: { code: "MONEY_CONFLICT" } });
+    const [count] = await db.$queryRaw<
+      Array<{ total: bigint }>
+    >`SELECT count(*) AS total FROM "CatalogMoneyInterpretationEvent" WHERE "entryId"=${s.entryId}::uuid AND operation='CLASSIFY'`;
+    expect(count!.total).toBe(1n);
+  });
   it("rejects malformed selected catalog money rather than turning it into missing", async () => {
     const f = await fixture(),
       s = await canonical({ amountMinor: "1", currency: 1 });
