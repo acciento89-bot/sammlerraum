@@ -1,0 +1,10 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ✓ |workspace| packages/domain/src/exports/export-service.integration.test.ts (4 tests) 317ms
+
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+   Start at  22:59:56
+   Duration  839ms (transform 159ms, setup 6ms, collect 289ms, tests 317ms, environment 0ms, prepare 35ms)
+

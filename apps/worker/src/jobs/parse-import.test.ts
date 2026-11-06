@@ -181,3 +181,27 @@ it.each([
     ).rejects.toMatchObject({ code: "IMPORT_XLSX_INVALID" });
   },
 );
+
+it("decodes SpreadsheetML escaped strings once while retaining literal escape-looking text", async () => {
+  const { workbookFixture } = await import("./import-xlsx-fixture.test-helper");
+  const bytes = workbookFixture(
+    '<row r="1"><c r="A1" t="inlineStr"><is><t>First_x000D_Second _x005F_x0041_</t></is></c></row>',
+  );
+  const rows = [];
+  for await (const row of parseImportSource(bytes, { format: "XLSX", hasHeader: false }))
+    rows.push(row);
+  expect(rows[0]?.cells).toEqual(["First\rSecond _x0041_"]);
+});
+it("decodes escaped UTF-16 pairs in shared strings without evaluating anything", async () => {
+  const { workbookFixture } = await import("./import-xlsx-fixture.test-helper");
+  const bytes = workbookFixture('<row r="1"><c r="A1" t="s"><v>0</v></c></row>', {
+    "xl/_rels/workbook.xml.rels":
+      '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="r1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="ss" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/sharedStrings" Target="sharedStrings.xml"/></Relationships>',
+    "xl/sharedStrings.xml":
+      '<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><si><t>Fox _xD83E__xDD8A_</t></si></sst>',
+  });
+  const rows = [];
+  for await (const row of parseImportSource(bytes, { format: "XLSX", hasHeader: false }))
+    rows.push(row);
+  expect(rows[0]?.cells).toEqual(["Fox 🦊"]);
+});

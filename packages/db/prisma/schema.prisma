@@ -115,6 +115,7 @@ model User {
   personalMilestones         PersonalMilestone[]
   importJobs                 ImportJob[]
   importMappingProfiles      ImportMappingProfile[]
+  exportJobs                 ExportJob[]
   tags                       Tag[]
   storageLocations           StorageLocation[]
   locationHistoryAssignments ItemLocationHistory[]              @relation("LocationHistoryAssignee")
@@ -480,6 +481,7 @@ model MediaAsset {
   createdAt            DateTime              @default(now())
   updatedAt            DateTime              @updatedAt
   owner                User                  @relation(fields: [ownerId], references: [id], onDelete: Restrict)
+  exportJobs           ExportJob[]
   variants             MediaVariant[]
   mediaLinks           MediaLink[]
   documentLinks        DocumentLink[]
@@ -1211,4 +1213,43 @@ model ImportMappingProfile {
 
   @@unique([ownerId, normalizedName])
   @@index([ownerId, updatedAt(sort: Desc), id])
+}
+
+enum ExportFormat {
+  CSV
+  XLSX
+}
+
+enum ExportJobStatus {
+  PENDING
+  BUILDING
+  READY
+  FAILED
+  CANCELLED
+}
+
+model ExportJob {
+  id                   String          @id @default(uuid()) @db.Uuid
+  ownerId              String
+  format               ExportFormat
+  locale               String          @db.VarChar(2)
+  request              Json
+  status               ExportJobStatus @default(PENDING)
+  revision             Int             @default(1)
+  sourceJson           String?         @db.Text
+  sourceHash           String?         @db.Char(64)
+  sourceAt             DateTime?
+  artifactId           String?         @db.Uuid
+  processingToken      String?         @db.Uuid
+  processingLeaseUntil DateTime?
+  processingAttempts   Int             @default(0)
+  errorCode            String?         @db.VarChar(64)
+  expiresAt            DateTime
+  createdAt            DateTime        @default(now())
+  updatedAt            DateTime        @updatedAt
+  owner                User            @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  artifact             MediaAsset?     @relation(fields: [artifactId, ownerId], references: [id, ownerId], onDelete: Cascade)
+
+  @@index([ownerId, createdAt(sort: Desc), id])
+  @@index([status, processingLeaseUntil, id])
 }

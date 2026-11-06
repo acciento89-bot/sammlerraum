@@ -30,7 +30,8 @@
     "./money-capabilities": "./src/money-capabilities.ts",
     "./money-coverage": "./src/money-coverage.ts",
     "./money-transfer": "./src/money-transfer.ts",
-    "./imports": "./src/imports.ts"
+    "./imports": "./src/imports.ts",
+    "./exports": "./src/exports.ts"
   },
   "scripts": {
     "build": "pnpm typecheck",

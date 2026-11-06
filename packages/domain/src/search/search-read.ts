@@ -1,3 +1,4 @@
+import { ExportError } from "@sammlerraum/contracts/exports";
 import { ImportServiceError } from "@sammlerraum/contracts/imports";
 import { MoneyTransferError } from "@sammlerraum/contracts/money-transfer";
 import { LegacyMoneyError } from "@sammlerraum/contracts/legacy-money";
@@ -72,6 +73,7 @@ export async function runSearchTransaction<T>(
         error instanceof SmartCollectionError ||
         error instanceof PersonalMilestoneError ||
         error instanceof ImportServiceError ||
+        error instanceof ExportError ||
         error instanceof MoneyTransferError ||
         error instanceof LegacyMoneyError
       )

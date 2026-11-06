@@ -14,6 +14,15 @@ function attr(tag: SaxesTagNS, name: string): string | undefined {
   const value = tag.attributes[name];
   return value?.value;
 }
+/** SpreadsheetML ST_Xstring: one pass also preserves _x005F_xHHHH_ literals. */
+function decodeXstring(text: string): string {
+  const decoded = text.replace(/_x([0-9A-Fa-f]{4})_/gu, (_match, hex: string) =>
+    String.fromCharCode(Number.parseInt(hex, 16)),
+  );
+  if (!ImportRawRowSchema.safeParse([decoded]).success)
+    throw new ImportParseError("IMPORT_ROW_TOO_LARGE");
+  return decoded;
+}
 function xml(
   bytes: Buffer,
   namespace: string,
@@ -246,12 +255,12 @@ export async function readXlsx(
         text(text, path) {
           if (currentString !== undefined && path.at(-1) === "t" && !path.includes("rPh")) {
             currentString += text;
-            if (Buffer.byteLength(currentString) > 16384) invalid();
+            if (Buffer.byteLength(currentString) > 7 * 16384) invalid();
           }
         },
         close(tag, path) {
           if (path.join("/") === "sst/si") {
-            strings.push(currentString ?? "");
+            strings.push(decodeXstring(currentString ?? ""));
             currentString = undefined;
           }
         },
@@ -317,7 +326,8 @@ export async function readXlsx(
       text(text, path) {
         if (path.join("/") === "worksheet/sheetData/row/c/v") value += text;
         if (path.at(-1) === "t" && path.includes("is") && !path.includes("rPh")) inline += text;
-        if (Buffer.byteLength(value) > 16384 || Buffer.byteLength(inline) > 16384) invalid();
+        if (Buffer.byteLength(value) > 7 * 16384 || Buffer.byteLength(inline) > 7 * 16384)
+          invalid();
       },
       close(tag, path) {
         if (path.join("/") === "worksheet/sheetData/row/c") {
@@ -328,6 +338,7 @@ export async function readXlsx(
               invalid();
             raw = strings[Number(raw)]!;
           }
+          if (raw !== null && (kind === "inlineStr" || kind === "str")) raw = decodeXstring(raw);
           cells[column] = raw;
         } else if (path.join("/") === "worksheet/sheetData/row") {
           const parsed = ImportRawRowSchema.safeParse(cells);

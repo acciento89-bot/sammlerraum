@@ -22,6 +22,7 @@ export async function prepareItemSelection(
   actor: { userId: string },
   query: Pick<NormalizedItemSearchQuery, "text" | "filter" | "lifecycle">,
   canonicalMoneyEnabled = false,
+  trustedOuterRestriction?: { predicate: Prisma.Sql },
 ) {
   if (!actor || typeof actor.userId !== "string" || !actor.userId || actor.userId.includes("\0"))
     return searchFail("SEARCH_INVALID");
@@ -35,7 +36,8 @@ export async function prepareItemSelection(
     Prisma.sql`SELECT ${referencePredicate(nodes, actor.userId)} AS valid`,
   );
   if (!refs?.valid) return searchFail("FILTER_REFERENCE_INVALID");
-  const outer = ownedCandidates(actor.userId, query.lifecycle);
+  const owned = ownedCandidates(actor.userId, query.lifecycle);
+  const outer = trustedOuterRestriction ? and([owned, trustedOuterRestriction.predicate]) : owned;
   const [integrity] = await tx.$queryRaw<{ invalid: boolean }[]>(
     Prisma.sql`SELECT EXISTS(SELECT 1 ${candidateFrom} WHERE ${outer} AND ${or([invalidFacts(nodes), query.text ? invalidBroadFacts : Prisma.sql`FALSE`])}) AS invalid`,
   );
