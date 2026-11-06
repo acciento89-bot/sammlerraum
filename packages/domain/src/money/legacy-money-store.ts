@@ -1,5 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { z } from "zod";
+import { CatalogSnapshotSchema } from "@sammlerraum/contracts/catalog";
 import {
   LegacyMoneyIdSchema,
   LegacyMoneySubjectSchema,
@@ -302,7 +303,15 @@ async function resolveFact(
  LEFT JOIN ${t} rev ON rev."revokedAssertionId"=o.id`);
   if (rows.length === 0) return legacyMoneyFail("MONEY_NOT_FOUND");
   if (rows.length !== 1) return integrity();
-  const row = rows[0]!;
+  return resolvedRow(tx, s, user, rows[0]!);
+}
+/** Both scalar and bounded catalog-map reads share the exact origin/receipt policy. */
+function resolvedRow(
+  tx: SearchReadTransaction,
+  s: MoneySubject,
+  user: string,
+  row: Row,
+): ResolvedMoneyFact {
   if (row.bad) return integrity();
   if (!row.targetExists) return legacyMoneyFail("MONEY_NOT_FOUND");
   const r = raw(row.amount, row.currency, s.family === "CATALOG"),
@@ -369,6 +378,101 @@ export async function readMoneyFact(
   who: MoneyActor,
 ): Promise<MoneyView> {
   return (await resolveFact(tx, s, who)).view;
+}
+
+/** M4 internal batch-read foundation. Not exposed by a route yet. */
+export async function readCatalogMoneyMap(
+  tx: SearchReadTransaction,
+  entryId: string,
+  revision: number,
+  who: MoneyActor,
+): Promise<MoneyView[]> {
+  const user = actor(who);
+  if (
+    !LegacyMoneyIdSchema.safeParse(entryId).success ||
+    !Number.isInteger(revision) ||
+    revision < 1 ||
+    revision > 2147483647
+  )
+    return legacyMoneyFail("LEGACY_MONEY_INVALID");
+  type MapRow = Row & {
+    header: unknown | null;
+    category: string | null;
+    target: string | null;
+    definition: string | null;
+  };
+  // One MVCC statement for header, raw paths, current events, direct origins and
+  // revocations. No read per path, and no incoherent cross-chunk ReadCommitted map.
+  const rows = await tx.$queryRaw<MapRow[]>(Prisma.sql`
+WITH selected AS MATERIALIZED (
+ SELECT r.snapshot,c."categoryTemplateId"::text AS category FROM "CatalogRevision" r
+ JOIN "CatalogEntry" c ON c.id=r."entryId" WHERE r."entryId"=${entryId}::uuid AND r.revision=${revision}
+), arrays AS MATERIALIZED (
+ SELECT 'entry'::text AS target,s.snapshot->'attributes' AS attrs FROM selected s
+ UNION ALL
+ SELECT v->>'id',v->'attributes' FROM selected s,
+ jsonb_array_elements(CASE WHEN jsonb_typeof(s.snapshot->'variants')='array' THEN CASE WHEN jsonb_array_length(s.snapshot->'variants')<=100 THEN s.snapshot->'variants' ELSE '[]'::jsonb END ELSE '[]'::jsonb END) v
+), paths AS MATERIALIZED (
+ SELECT a.target,v AS attribute,d.type AS "definitionType",d."categoryTemplateId"::text AS category
+ FROM arrays a CROSS JOIN LATERAL jsonb_array_elements(CASE WHEN jsonb_typeof(a.attrs)='array' THEN CASE WHEN jsonb_array_length(a.attrs)<=100 THEN a.attrs ELSE '[]'::jsonb END ELSE '[]'::jsonb END) v
+ LEFT JOIN "CatalogAttributeDefinition" d ON d.id::text=v->>'definitionId'
+ WHERE v->>'type'='MONEY' OR d.type='MONEY'
+)
+SELECT s.snapshot AS header,s.category,NULL::text AS target,NULL::text AS definition,
+ NULL::text AS amount,NULL::text AS currency,NULL::text AS generation,false AS bad,false AS "targetExists",NULL::text AS sequence,
+ NULL::jsonb AS event,NULL::jsonb AS origin,NULL::text AS "revocationId",NULL::text AS "originOwnerId"
+FROM selected s
+UNION ALL
+SELECT NULL::jsonb,p.category,p.target,p.attribute->>'definitionId',
+ CASE WHEN jsonb_typeof(p.attribute->'value'->'amountMinor')='number' THEN p.attribute#>>'{value,amountMinor}' ELSE NULL END,
+ CASE WHEN jsonb_typeof(p.attribute->'value'->'currency')='string' THEN p.attribute#>>'{value,currency}' ELSE NULL END,
+ NULL::text,
+ (p."definitionType" IS DISTINCT FROM 'MONEY' OR p.attribute->>'type' IS DISTINCT FROM 'MONEY' OR p.category IS DISTINCT FROM s.category OR
+ pg_column_size(p.attribute)>2048 OR jsonb_typeof(p.attribute->'value') IS DISTINCT FROM 'object' OR
+ jsonb_typeof(p.attribute->'value'->'amountMinor') IS DISTINCT FROM 'number' OR jsonb_typeof(p.attribute->'value'->'currency') IS DISTINCT FROM 'string' OR
+ CASE WHEN jsonb_typeof(p.attribute->'value')='object' THEN (SELECT count(*) FROM jsonb_object_keys(p.attribute->'value'))<>2 ELSE false END),
+ true,seq.sequence,${eventJson("e")},${eventJson("o")},rev.id::text,NULL::text
+FROM paths p CROSS JOIN selected s
+LEFT JOIN LATERAL (SELECT COALESCE(MAX(h.sequence),0)::text AS sequence FROM "CatalogMoneyInterpretationEvent" h
+ WHERE h."entryId"=${entryId}::uuid AND h.revision=${revision} AND h."targetKey"=p.target AND h."definitionId"::text=p.attribute->>'definitionId') seq ON true
+LEFT JOIN LATERAL (SELECT e.* FROM "CatalogMoneyInterpretationEvent" e
+ WHERE e."entryId"=${entryId}::uuid AND e.revision=${revision} AND e."targetKey"=p.target AND e."definitionId"::text=p.attribute->>'definitionId' AND e.operation<>'REVOKE' ORDER BY e.sequence DESC LIMIT 1) e ON true
+LEFT JOIN "CatalogMoneyInterpretationEvent" o ON o.id=CASE WHEN e.operation IN ('AUTHOR','CLASSIFY') THEN e.id WHEN e.operation='COPY' THEN e."originEventId" ELSE NULL END
+LEFT JOIN "CatalogMoneyInterpretationEvent" rev ON rev."revokedAssertionId"=o.id
+LIMIT 10102`);
+  if (rows.length === 0) return legacyMoneyFail("MONEY_NOT_FOUND");
+  if (rows.length > 10101) return integrity();
+  const headers = rows.filter((r) => r.header !== null);
+  if (headers.length !== 1) return integrity();
+  const header = headers[0]!;
+  const parsed = CatalogSnapshotSchema.safeParse(header.header);
+  if (
+    !parsed.success ||
+    parsed.data.id !== entryId ||
+    parsed.data.categoryTemplateId !== header.category
+  )
+    return integrity();
+  if (new Set(parsed.data.variants.map((v) => v.id)).size !== parsed.data.variants.length)
+    return integrity();
+  const seen = new Set<string>();
+  const result: MoneyView[] = [];
+  for (const row of rows) {
+    if (row.header !== null) continue;
+    if (row.target === null || row.definition === null) return integrity();
+    const key = `${row.target}:${row.definition}`;
+    if (seen.has(key)) return integrity();
+    seen.add(key);
+    const s = subject({
+      family: "CATALOG",
+      entryId,
+      revision,
+      target:
+        row.target === "entry" ? { kind: "ENTRY" } : { kind: "VARIANT", variantId: row.target },
+      definitionId: row.definition,
+    });
+    result.push(resolvedRow(tx, s, user, row).view);
+  }
+  return result;
 }
 
 async function moderator(tx: SearchReadTransaction, user: string): Promise<void> {
