@@ -4,7 +4,7 @@ import { createTestDatabaseClient } from "@sammlerraum/db/test-database";
 import { createPersonalMoneyService } from "./personal-money-service";
 import { createItemService } from "../items/item-service";
 import { createCustomFieldService } from "../custom-fields/custom-field-service";
-import { readMoneyFact } from "./legacy-money-store";
+import { readMoneyFact, eraseMoneyEvidenceForActor } from "./legacy-money-store";
 import { runSearchTransaction } from "../search/search-read";
 const enabled = process.env.RUN_DATABASE_INTEGRATION === "1";
 const db = enabled ? createTestDatabaseClient() : undefined;
@@ -391,5 +391,63 @@ describe.runIf(enabled)("personal money authoring real transactions", () => {
       await db!.$executeRawUnsafe(`DROP TRIGGER "${name}" ON "PurchaseMoneyInterpretationEvent"`);
       await db!.$executeRawUnsafe(`DROP FUNCTION "${name}"()`);
     }
+  });
+  it("retains purchase/custom correction reasons privately and erases them without invalidating receipts", async () => {
+    const f = await fixture(),
+      created = await f.service.createItemV2({
+        schemaVersion: 1,
+        item: { collectionId: f.collection, title: "Correction audit" },
+        purchase: { op: "NEW", authoring: authored("1") },
+      });
+    const subject = { family: "PURCHASE" as const, itemId: created.item.id },
+      reason = "Original invoice was entered incorrectly";
+    const replacement = await f.service.updateItemV2(created.item.id, {
+      schemaVersion: 1,
+      purchase: {
+        op: "REPLACE",
+        expectedFactToken: created.purchase.factToken,
+        authoring: authored("2"),
+        correctionReason: reason,
+      },
+    });
+    const history = await f.service.listHistory(subject, {});
+    expect(history.events[0]!.reason).toBe(reason);
+    const definition = await createCustomFieldService(db!, f.actor).createFieldDefinition({
+      collectionId: f.collection,
+      name: "Correction custom",
+      type: "MONEY",
+    });
+    const custom = {
+        family: "CUSTOM" as const,
+        itemId: created.item.id,
+        fieldDefinitionId: definition.id,
+      },
+      missing = await f.service.getMoney(custom);
+    await f.service.setCustomMoneyV2(created.item.id, definition.id, {
+      schemaVersion: 1,
+      intent: {
+        op: "REPLACE",
+        expectedFactToken: missing.factToken,
+        authoring: authored("3"),
+        correctionReason: reason,
+      },
+    });
+    expect((await f.service.listHistory(custom, {})).events[0]!.reason).toBe(reason);
+    await runSearchTransaction(db!, (tx) =>
+      eraseMoneyEvidenceForActor(tx, { userId: f.actor }, f.actor),
+    );
+    const erased = await f.service.listHistory(subject, {});
+    expect(erased.events[0]).toMatchObject({ reason: null, actorId: null });
+    expect(erased.events[0]!.evidenceErasedAt).not.toBeNull();
+    expect((await f.service.getMoney(subject)).interpretation).toMatchObject({
+      kind: "INTERPRETED",
+      exponent: 2,
+      decimal: "2.00",
+    });
+    expect((await f.service.getMoney(custom)).interpretation).toMatchObject({
+      kind: "INTERPRETED",
+      decimal: "3.00",
+    });
+    expect((await f.service.getMoney(subject)).factToken).not.toBe(replacement.purchase.factToken);
   });
 });

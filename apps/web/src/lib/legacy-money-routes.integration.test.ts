@@ -164,6 +164,23 @@ describe.runIf(enabled)("personal money HTTP real database boundary", () => {
         400,
       );
     }
+    for (const [sequence, status] of [
+      ["9223372036854775807", 200],
+      ["9223372036854775808", 400],
+    ] as const) {
+      const cursor = Buffer.from(
+        JSON.stringify({
+          v: 1,
+          subject: { family: "PURCHASE", itemId: body.item.id },
+          sequence,
+          id: randomUUID(),
+        }),
+      ).toString("base64url");
+      expect(
+        (await f.api.HISTORY(request("GET", undefined, {}, `?cursor=${cursor}`), body.item.id))
+          .status,
+      ).toBe(status);
+    }
     const big = await f.api.CREATE(request("POST", " ".repeat(16 * 1024 + 1)));
     expect(big.status).toBe(413);
     const noOrigin = new Request(`${origin}/api/v1/money/items/${body.item.id}`, { method: "GET" });

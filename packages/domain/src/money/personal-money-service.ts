@@ -149,7 +149,13 @@ export function createPersonalMoneyService(database: PersonalMoneyDatabase, acto
       if (receipt) {
         const view = await readMoneyFact(money, s, who),
           fact = await requireMoneyToken(money, s, who, view.factToken);
-        await appendMoneyAssertion(money, fact, { kind: "AUTHOR", receipt });
+        await appendMoneyAssertion(money, fact, {
+          kind: "AUTHOR",
+          receipt,
+          ...(data.purchase?.op === "REPLACE" && data.purchase.correctionReason !== undefined
+            ? { correctionReason: data.purchase.correctionReason }
+            : {}),
+        });
       }
       return result(tx, money, id);
     });
@@ -179,7 +185,13 @@ export function createPersonalMoneyService(database: PersonalMoneyDatabase, acto
       if (receipt) {
         const view = await readMoneyFact(money, s, who),
           fact = await requireMoneyToken(money, s, who, view.factToken);
-        await appendMoneyAssertion(money, fact, { kind: "AUTHOR", receipt });
+        await appendMoneyAssertion(money, fact, {
+          kind: "AUTHOR",
+          receipt,
+          ...(data.intent.op === "REPLACE" && data.intent.correctionReason !== undefined
+            ? { correctionReason: data.intent.correctionReason }
+            : {}),
+        });
       }
       return readMoneyFact(money, s, who);
     });

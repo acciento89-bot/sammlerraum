@@ -2,6 +2,7 @@ import { z } from "zod";
 import {
   MoneyHistoryQuerySchema,
   MoneyHistoryEventSchema,
+  MoneyHistorySequenceSchema,
 } from "@sammlerraum/contracts/personal-money";
 import {
   LegacyMoneySubjectSchema,
@@ -17,7 +18,7 @@ const cursorSchema = z
   .object({
     v: z.literal(1),
     subject: LegacyMoneySubjectSchema,
-    sequence: z.string().regex(/^[1-9][0-9]{0,18}$/u),
+    sequence: MoneyHistorySequenceSchema,
     id: LegacyMoneyIdSchema,
   })
   .strict();

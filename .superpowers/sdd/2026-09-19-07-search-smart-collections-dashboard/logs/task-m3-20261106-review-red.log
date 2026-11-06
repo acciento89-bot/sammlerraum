@@ -1,0 +1,66 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| apps/web/src/lib/legacy-money-routes.integration.test.ts (4 tests | 1 failed) 256ms
+   ✓ personal money HTTP real database boundary > creates and reads explicit money only after fresh authentication, with no-store and request IDs 175ms
+   ✓ personal money HTTP real database boundary > rejects cross-origin before session access and duplicate nested keys/invalid bytes before mutation 11ms
+   ✓ personal money HTTP real database boundary > hides foreign reads and exposes owned history/revocation as closed request states 25ms
+   × personal money HTTP real database boundary > bounds history/field queries and streamed authoring bodies without weakening authentication 29ms
+     → expected 500 to be 400 // Object.is equality
+ ❯ |workspace| packages/domain/src/money/personal-money-service.test.ts (13 tests | 1 failed) 560ms
+   ✓ personal money authoring real transactions > authors AFN decimal units explicitly and never infers them from an old raw write 110ms
+   ✓ personal money authoring real transactions > preserves nonmoney updates but invalidates equal-value explicit replacement tokens 36ms
+   ✓ personal money authoring real transactions > splits known per-unit purchase meaning without changing the exact total 42ms
+   ✓ personal money authoring real transactions > rolls back split quantity and child when a provenance copy insert fails 43ms
+   ✓ personal money authoring real transactions > clear and readd cannot revive a previous fact token or meaning 24ms
+   ✓ personal money authoring real transactions > authors custom money and copies its original assertion once per field during split 54ms
+   ✓ personal money authoring real transactions > hides foreign facts and rejects legacy raw fields in the explicit authoring envelope 8ms
+   ✓ personal money authoring real transactions > pages private assertion history and supplies a fresh historical revocation precondition 103ms
+   ✓ personal money authoring real transactions > the legacy custom writer checks both actual item owner and collection owner 16ms
+   ✓ personal money authoring real transactions > serializes competing classify/replace and clear/replace with one exact token winner 46ms
+   ✓ personal money authoring real transactions > concurrent split and replacement never pair copied raw with a different receipt 30ms
+   ✓ personal money authoring real transactions > an authoring insert failure rolls back both a new raw item and its native generation 9ms
+   × personal money authoring real transactions > retains purchase/custom correction reasons privately and erases them without invalidating receipts 19ms
+     → expected null to be 'Original invoice was entered incorrec…' // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/web/src/lib/legacy-money-routes.integration.test.ts > personal money HTTP real database boundary > bounds history/field queries and streamed authoring bodies without weakening authentication
+AssertionError: expected 500 to be 400 // Object.is equality
+
+- Expected
++ Received
+
+- 400
++ 500
+
+ ❯ apps/web/src/lib/legacy-money-routes.integration.test.ts:169:106
+    167|     for(const [sequence,status] of [["9223372036854775807",200],["9223…
+    168|       const cursor=Buffer.from(JSON.stringify({v:1,subject:{family:"PU…
+    169|       expect((await f.api.HISTORY(request("GET",undefined,{},`?cursor=…
+       |                                                                                                          ^
+    170|     }
+    171|     const big = await f.api.CREATE(request("POST", " ".repeat(16 * 102…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |workspace| packages/domain/src/money/personal-money-service.test.ts > personal money authoring real transactions > retains purchase/custom correction reasons privately and erases them without invalidating receipts
+AssertionError: expected null to be 'Original invoice was entered incorrec…' // Object.is equality
+
+- Expected: 
+"Original invoice was entered incorrectly"
+
++ Received: 
+null
+
+ ❯ packages/domain/src/money/personal-money-service.test.ts:399:93
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  2 failed | 15 passed (17)
+   Start at  04:31:42
+   Duration  1.71s (transform 210ms, setup 6ms, collect 574ms, tests 816ms, environment 0ms, prepare 85ms)
+

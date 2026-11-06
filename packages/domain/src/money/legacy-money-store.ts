@@ -11,6 +11,7 @@ import {
   MoneyViewSchema,
   AuthoringReceiptSchema,
   ClassifyMoneyInputSchema,
+  CorrectMoneyInputSchema,
   RevokeMoneyInputSchema,
   LEGACY_MONEY_PROFILE_ID,
   legacyMoneyFail,
@@ -479,7 +480,13 @@ async function appendEvent(
   VALUES (${d.id ?? randomUUID()}::uuid,${next.toString()}::bigint,${d.operation}::"MoneyInterpretationOperation",${d.raw.amountMinor}::bigint,${d.raw.currency},${d.exponent ?? null}::smallint,${d.unitKey ?? null},${d.unitLabel ?? null},${d.basisId ?? null},${d.receipt === undefined ? null : JSON.stringify(d.receipt)}::jsonb,${d.sourceEventId ?? null}::uuid,${d.originEventId ?? null}::uuid,${d.revokedAssertionId ?? null}::uuid,${user},${d.evidenceCategory ?? null}::"MoneyEvidenceCategory",${d.evidenceReference ?? null},${d.reason ?? null},${values}) RETURNING id`);
 }
 const assertionSchema = z.discriminatedUnion("kind", [
-  z.object({ kind: z.literal("AUTHOR"), receipt: AuthoringReceiptSchema }).strict(),
+  z
+    .object({
+      kind: z.literal("AUTHOR"),
+      receipt: AuthoringReceiptSchema,
+      correctionReason: CorrectMoneyInputSchema.shape.correctionReason.optional(),
+    })
+    .strict(),
   z.object({ kind: z.literal("CLASSIFY"), input: ClassifyMoneyInputSchema }).strict(),
 ]);
 export async function appendMoneyAssertion(
@@ -515,6 +522,9 @@ export async function appendMoneyAssertion(
       exponent: receipt.exponent,
       unitKey: receipt.unitKey,
       basisId: receipt.profileId,
+      ...(parsed.data.correctionReason === undefined
+        ? {}
+        : { reason: parsed.data.correctionReason }),
       receipt,
     };
   } else {
@@ -667,10 +677,10 @@ export async function eraseMoneyEvidenceForActor(
           : '"CatalogMoneyInterpretationEvent"',
     );
     await tx.$queryRaw(
-      Prisma.sql`WITH erased AS (UPDATE ${t} SET "actorId"=NULL WHERE "actorId"=${user} AND operation='AUTHOR' RETURNING 1) SELECT count(*)::text AS count FROM erased`,
+      Prisma.sql`WITH erased AS (UPDATE ${t} SET "actorId"=NULL WHERE "actorId"=${user} AND operation='AUTHOR' AND reason IS NULL RETURNING 1) SELECT count(*)::text AS count FROM erased`,
     );
     await tx.$queryRaw(
-      Prisma.sql`WITH erased AS (UPDATE ${t} SET "actorId"=NULL,"evidenceReference"=NULL,reason=NULL,"evidenceErasedAt"=transaction_timestamp()::timestamptz(3) WHERE "actorId"=${user} AND operation<>'AUTHOR' AND "evidenceErasedAt" IS NULL RETURNING 1) SELECT count(*)::text AS count FROM erased`,
+      Prisma.sql`WITH erased AS (UPDATE ${t} SET "actorId"=NULL,"evidenceReference"=NULL,reason=NULL,"evidenceErasedAt"=transaction_timestamp()::timestamptz(3) WHERE "actorId"=${user} AND (operation<>'AUTHOR' OR reason IS NOT NULL) AND "evidenceErasedAt" IS NULL RETURNING 1) SELECT count(*)::text AS count FROM erased`,
     );
   }
 }

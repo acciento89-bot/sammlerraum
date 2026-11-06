@@ -40,6 +40,7 @@ import {
   LegacyRawMoneySchema,
   LegacyMoneyExponentSchema,
   AuthoringReceiptSchema,
+  MoneyFactTokenV1Schema,
 } from "./legacy-money";
 /** Reuse the existing bounded Unicode/duplicate-key scanner; JSON.parse owns syntax. */
 export const scanPersonalMoneyJson = scanFilterJson;
@@ -53,9 +54,12 @@ export const MoneyHistoryQuerySchema = z
       .optional(),
   })
   .strict();
+export const MoneyHistorySequenceSchema = MoneyFactTokenV1Schema.shape.sequence.refine(
+  (value) => value !== "0",
+);
 export const MoneyHistoryEventSchema = z.object({
   id: LegacyMoneyIdSchema,
-  sequence: z.string().regex(/^[1-9][0-9]{0,18}$/u),
+  sequence: MoneyHistorySequenceSchema,
   generation: LegacyMoneyIdSchema,
   operation: z.enum(["BASELINE", "RAW_WRITE", "CLEAR", "AUTHOR", "CLASSIFY", "COPY", "REVOKE"]),
   raw: LegacyRawMoneySchema.nullable(),

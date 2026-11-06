@@ -154,6 +154,7 @@ jobs:
           packages/domain/src/dashboard/personal-milestone-service.test.ts
           packages/db/src/legacy-money.integration.test.ts
           packages/domain/src/money/legacy-money-store.test.ts
+          packages/db/src/author-correction.integration.test.ts
           packages/domain/src/money/personal-money-service.test.ts
           apps/web/src/lib/legacy-money-routes.integration.test.ts
           apps/web/src/lib/personal-milestone-routes.integration.test.ts
