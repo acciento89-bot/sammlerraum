@@ -26,3 +26,5 @@ Root locally accepts M6 after all frozen gates and single whole review. Four add
 ## Exact-head CI correction
 
 11120c9pushCI42268243443failedin1/154oldbrowsercaseswithChromiumresponsebodyinvalidatedbyimmediatesuccessfulnavigation;153passed. Applicationfreeze093b714unchanged. See task-m6-response-navigation-report.md forprimaryRED, narrowtest-onlyfixand20repeat+full154PASS. BothfreshCIstillrequirepass; donotrepresentoriginalpushasgreen.
+
+Both full corrected CI gates on00b9062400343cd36219df4136b766ae81bdecbb are now SUCCESS: PR42272242129 and push42272230439. The complete job/step metadata is retained in logs/task-m6-20261106-corrected-ci-success.json. This closes the predecessor publication gate; original111push failure remains recorded.
