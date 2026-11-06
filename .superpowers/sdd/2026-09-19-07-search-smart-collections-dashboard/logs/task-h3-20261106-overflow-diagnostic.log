@@ -1,0 +1,45 @@
+[WebServer] (node:35940) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:35942) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [desktop] › e2e/personal-milestones.spec.ts:450:3 › de: keyboard, dirty locale navigation, 320px and zoom keep one protected editor (1.5s)
+
+
+  1) [desktop] › e2e/personal-milestones.spec.ts:450:3 › de: keyboard, dirty locale navigation, 320px and zoom keep one protected editor 
+
+    Error: {"viewport":320,"width":403,"elements":[{"tag":"NAV","cls":"language-nav","width":145.28125,"text":"DeutschEnglish"},{"tag":"A","cls":"","width":69.890625,"text":"Deutsch"},{"tag":"A","cls":"","width":63.015625,"text":"English"}]}
+
+    expect(received).toBeLessThanOrEqual(expected)
+
+    Expected: <= 320
+    Received:    403
+
+      491 |         }).slice(0, 12).map(el => ({ tag: el.tagName, cls: el.className, width: el.getBoundingClientRect().width, text: el.textContent?.slice(0, 45) }))
+      492 |       }));
+    > 493 |       expect(overflow.width, JSON.stringify(overflow)).toBeLessThanOrEqual(overflow.viewport);
+          |                                                        ^
+      494 |       await shot(page, locale, info.project.name, "320");
+      495 |       await page.setViewportSize({ width: 720, height: 500 });
+      496 |       await page.evaluate(() => {
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/personal-milestones.spec.ts:493:56
+
+    Error Context: test-results/personal-milestones-de-key-fce7e-m-keep-one-protected-editor-desktop/error-context.md
+
+    Error Context: test-results/personal-milestones-de-key-fce7e-m-keep-one-protected-editor-desktop/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/personal-milestones-de-key-fce7e-m-keep-one-protected-editor-desktop/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/personal-milestones-de-key-fce7e-m-keep-one-protected-editor-desktop/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [desktop] › e2e/personal-milestones.spec.ts:450:3 › de: keyboard, dirty locale navigation, 320px and zoom keep one protected editor 
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/personal-milestones.spec.ts --project=desktop --grep de: keyboard --workers=1 --trace=retain-on-failure

@@ -1,0 +1,50 @@
+[WebServer] (node:35157) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:35159) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [desktop] › e2e/personal-milestones.spec.ts:263:5 › de: committed create response loss is retained without automatic replay (6.2s)
+
+
+  1) [desktop] › e2e/personal-milestones.spec.ts:263:5 › de: committed create response loss is retained without automatic replay 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByText('Die angezeigte Liste konnte nicht aktualisiert werden. Ihr bisheriger Lesestand bleibt sichtbar.', { exact: true })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByText('Die angezeigte Liste konnte nicht aktualisiert werden. Ihr bisheriger Lesestand bleibt sichtbar.', { exact: true }) with timeout 5000ms
+      - waiting for getByText('Die angezeigte Liste konnte nicht aktualisiert werden. Ihr bisheriger Lesestand bleibt sichtbar.', { exact: true })
+
+
+      313 |         await expect(page.getByTestId("milestone-unknown")).toContainText(c.unknown[operation]);
+      314 |         await expect(page.getByTestId("milestone-ack")).toHaveCount(0);
+    > 315 |         await expect(page.getByText(c.stale, { exact: true })).toBeVisible();
+          |                                                                ^
+      316 |         expect(writes).toBe(1);
+      317 |         await shot(page, locale, info.project.name, `unknown-${operation}`);
+      318 |         await page.getByRole("button", { name: c.inspect, exact: true }).click();
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/personal-milestones.spec.ts:315:64
+
+    Error Context: test-results/personal-milestones-de-com-2671f-ed-without-automatic-replay-desktop/error-context.md
+
+    Error Context: test-results/personal-milestones-de-com-2671f-ed-without-automatic-replay-desktop/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/personal-milestones-de-com-2671f-ed-without-automatic-replay-desktop/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/personal-milestones-de-com-2671f-ed-without-automatic-replay-desktop/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [desktop] › e2e/personal-milestones.spec.ts:263:5 › de: committed create response loss is retained without automatic replay 
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/personal-milestones.spec.ts --project=desktop --grep de: committed create --workers=1 --trace=retain-on-failure

@@ -1,0 +1,11 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ✓ |workspace| apps/web/src/components/dashboard/personal-milestone-state.test.ts (5 tests) 5ms
+ ✓ |workspace| apps/web/src/components/dashboard/personal-milestone-client.test.ts (19 tests) 12ms
+
+ Test Files  2 passed (2)
+      Tests  24 passed (24)
+   Start at  00:36:02
+   Duration  443ms (transform 99ms, setup 7ms, collect 271ms, tests 17ms, environment 0ms, prepare 81ms)
+

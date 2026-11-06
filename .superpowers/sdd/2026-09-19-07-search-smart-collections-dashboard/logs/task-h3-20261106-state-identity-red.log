@@ -1,0 +1,38 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| apps/web/src/components/dashboard/personal-milestone-state.test.ts (5 tests | 1 failed) 7ms
+   ✓ private milestone editor state > starts edits from a detached fetched revision rather than inventing the next revision 1ms
+   ✓ private milestone editor state > protects actual unsaved content without inventing dirtiness for an empty or unchanged form 0ms
+   ✓ private milestone editor state > freezes a normalized submitted snapshot independently from later typing 2ms
+   ✓ private milestone editor state > does not treat a record absent from one page as deleted or adopt an older revision 0ms
+   × private milestone editor state > never silently turns an edit without a fetched identity into a creation 3ms
+     → expected [Function] to throw an error
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/web/src/components/dashboard/personal-milestone-state.test.ts > private milestone editor state > never silently turns an edit without a fetched identity into a creation
+AssertionError: expected [Function] to throw an error
+
+- Expected: 
+null
+
++ Received: 
+undefined
+
+ ❯ apps/web/src/components/dashboard/personal-milestone-state.test.ts:75:111
+     73|   });
+     74|   it("never silently turns an edit without a fetched identity into a c…
+     75|     expect(()=>snapshotMilestoneDraft({kind:"update",title:"Kept",mile…
+       |                                                                                                               ^
+     76|     expect(()=>snapshotMilestoneDraft({...editMilestoneDraft(record),k…
+     77|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 4 passed (5)
+   Start at  00:35:21
+   Duration  336ms (transform 47ms, setup 7ms, collect 83ms, tests 7ms, environment 0ms, prepare 58ms)
+
