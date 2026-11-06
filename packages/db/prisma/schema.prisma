@@ -1253,4 +1253,5 @@ model ExportJob {
 
   @@index([ownerId, createdAt(sort: Desc), id])
   @@index([status, processingLeaseUntil, id])
+  @@index([status, lastDispatchedAt, id])
 }
