@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { HistoricalMoneyValueSchema } from "./legacy-money";
 
 import { PurchaseAmountMinorSchema, PurchaseCurrencySchema } from "./items";
 
@@ -63,6 +64,8 @@ export const CustomFieldMoneyValueSchema = z
     currency: PurchaseCurrencySchema,
   })
   .strict();
+/** Read/copy syntax does not borrow the current prospective currency list. */
+export const HistoricalCustomFieldMoneyValueSchema = HistoricalMoneyValueSchema;
 export type CustomFieldMoneyValue = z.infer<typeof CustomFieldMoneyValueSchema>;
 
 export type CanonicalCustomFieldValue =

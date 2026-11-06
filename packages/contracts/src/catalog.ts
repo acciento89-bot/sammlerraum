@@ -3,7 +3,7 @@ import { z } from "zod";
 import {
   CustomFieldTypeSchema,
   type CanonicalCustomFieldValue,
-  CustomFieldMoneyValueSchema,
+  HistoricalCustomFieldMoneyValueSchema,
 } from "./custom-fields";
 
 // Keys are authored maintenance identities; labels must never generate or translate them.
@@ -216,7 +216,7 @@ const CatalogCanonicalValueSchema = z.union([
   z.number().int().safe(),
   z.boolean(),
   z.array(z.string()).max(100),
-  CustomFieldMoneyValueSchema,
+  HistoricalCustomFieldMoneyValueSchema,
 ]);
 export const CatalogAttributeValueSchema = z
   .object({

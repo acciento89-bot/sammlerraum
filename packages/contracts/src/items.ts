@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { HistoricalCurrencySchema } from "./legacy-money";
+
 import { VisibilitySchema } from "./collections";
 
 export type { Visibility } from "./collections";
@@ -145,7 +147,7 @@ export const CollectibleItemSchema = z.object({
   acquisitionType: AcquisitionTypeSchema,
   acquisitionDate: AcquisitionDateSchema.nullable(),
   purchaseAmountMinor: PurchaseAmountMinorSchema.nullable(),
-  purchaseCurrency: PurchaseCurrencySchema.nullable(),
+  purchaseCurrency: HistoricalCurrencySchema.nullable(),
   visibility: VisibilitySchema,
   tradeStatus: TradeStatusSchema,
   archivedAt: CanonicalTimestampSchema.nullable(),

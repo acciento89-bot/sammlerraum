@@ -4,6 +4,9 @@
  * Deliberate reviewed updates only: update this map and native accepted pairs together;
  * retain historical DB pairs and interpret history using its stored exponent. No ICU fallback.
  */
+export const CURRENCY_AUTHORITY_VERSION = "iso4217-2026-09-17" as const;
+export const CURRENCY_AUTHORITY_SHA256 =
+  "33139b438657d1cee116ba737807ea71d19d6de4b90f799a09c56f0cc6a1b0ff" as const;
 const exponents: Readonly<Record<string, number>> = Object.freeze({
   AED: 2,
   AFN: 2,
