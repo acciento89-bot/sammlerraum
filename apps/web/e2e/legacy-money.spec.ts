@@ -504,19 +504,27 @@ for (const locale of ["de", "en"] as const) {
       const region = page.getByRole("region", { name: fields[0]!.name, exact: true });
       await region.getByRole("textbox", { name: fields[0]!.name, exact: true }).fill("1,25");
       const save = page.getByRole("button", { name: t.save, exact: true });
-      const response = page.waitForResponse(
-        (r) =>
-          r.request().method() === "POST" && new URL(r.url()).pathname === "/api/v1/money/items",
-      );
+      let createdId = "",
+        createdStatus = 0;
+      // Read the real server response before releasing it to the page. The
+      // successful UI flow navigates immediately, which can invalidate a
+      // page Response body in Chromium before the test reads it.
+      await page.route("**/api/v1/money/items", async (route) => {
+        expect(route.request().method()).toBe("POST");
+        const response = await route.fetch();
+        const result = await response.json();
+        createdId = result.item.id;
+        createdStatus = response.status();
+        await route.fulfill({ response });
+      });
       await save.click();
-      const created = await response;
-      expect(created.status()).toBe(201);
-      const result = await created.json();
-      await expect(page).toHaveURL(new RegExp(`/${locale}/items/${result.item.id}$`));
+      await expect.poll(() => createdStatus).toBe(201);
+      expect(createdId).toMatch(/^[0-9a-f-]{36}$/u);
+      await expect(page).toHaveURL(new RegExp(`/${locale}/items/${createdId}$`));
       await expect(save).toBeEnabled();
       const actual = await money.getMoney({
         family: "CUSTOM",
-        itemId: result.item.id,
+        itemId: createdId,
         fieldDefinitionId: fields[0]!.id,
       });
       expect(actual.raw).toEqual({ amountMinor: "125", currency: "EUR" });

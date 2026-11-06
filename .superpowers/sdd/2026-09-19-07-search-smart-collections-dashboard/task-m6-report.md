@@ -22,3 +22,7 @@ One fresh-context whole53-file review: SPEC PASS / QUALITY PASS, no actionablefi
 Early genuine REDs, test fixture corrections and one caught nullable-subject typing error are retained in named logs/context. No safety assertions, native constraints, budgets or checks weakened. Native snapshot erasure uses actualauthorizedproducer instead of bypassing ApplicationRoleGrantRESTRICT. Source/purecapability flags remain disabled bydefault. No main merge/deployment. Both new exact-head remote workflows must pass before dependent publication; M7 localpipeline may start only after thislocalrootacceptance and must stoponrealdependencyfailure.
 
 Root locally accepts M6 after all frozen gates and single whole review. Four additional DE/ENdesktop/mobile full-page visual captures were inspected and hashed privately; these repeat successful cases for visual evidence, not extra unique functional coverage. Source code093b714 unchanged. Both exact-head remote CI gates remain required after the proof-only persistence commit.
+
+## Exact-head CI correction
+
+11120c9pushCI42268243443failedin1/154oldbrowsercaseswithChromiumresponsebodyinvalidatedbyimmediatesuccessfulnavigation;153passed. Applicationfreeze093b714unchanged. See task-m6-response-navigation-report.md forprimaryRED, narrowtest-onlyfixand20repeat+full154PASS. BothfreshCIstillrequirepass; donotrepresentoriginalpushasgreen.
