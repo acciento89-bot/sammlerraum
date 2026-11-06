@@ -18,7 +18,7 @@ This is the handoff/status file for long-running implementation. Update it after
 | 05 | Catalog, Condition & Grading | 7 | complete (7/7) | — |
 | 06 | Valuations & Market Data | 6 | complete (6/6) | — |
 | 07 | Search, Smart Collections & Dashboard | 5 | in progress (1/5) | Task 2 |
-| 08 | Import, Export, Insurance & Reports | 7 | in progress (1/7) | Task 2 |
+| 08 | Import, Export, Insurance & Reports | 7 | in progress (2/7) | Task 3 |
 | 09 | Collaboration, Sharing & Audit | 7 | not started | Task 1 |
 | 10 | Community, Moderation & Notifications | 8 | not started | Task 1 |
 | 11 | AI-Assisted Capture | 5 | not started | Task 1 |
@@ -72,8 +72,9 @@ This is the handoff/status file for long-running implementation. Update it after
 - [x] P06 T06 — Add the first two production market-data adapters
 - [x] P07 T01 — Define typed filter AST and complexity limits
 - [x] P08 T01 — Persisted import jobs, versioned mapping profiles and conflict-safe previews
+- [x] P08 T02 — Bounded verified CSV/XLSX worker with durable retry-safe parsed rows
 
-**Verified completion: 42/91 tasks.** Later tasks remain open as listed in the phase table and detail plans.
+**Verified completion: 43/91 tasks.** Later tasks remain open as listed in the phase table and detail plans.
 
 ## Update rule
 
@@ -1031,3 +1032,7 @@ Bounded same-snapshot monetary capture preserves exact quantities/provenance/pri
 Sourcecc754f4b2a48d62ddde63f990f358cd1db27edf1 and reviewed closurec4938aaaec6ad773501f0972861bd9b5fa67ee14. Final827nativePASS/0skip in72files,1475regularPASS/698explicitdisabled-native cases, wholetypes/lint/build and22actual-built collection/item browserPASS. One whole review found a P2 completed-preview retry bypass; genuine native RED and scoped fix/closure are retained. Final combined SPEC/QUALITYPASS, no open findings.
 
 Three persisted models and actual owned service methods provide pending source jobs, reusable profiles, frozen resumable previews, source/existing duplicates, explicit actions and bounded page reads without inventory writes. Real CSV/XLSX parsing is Task2; committing inventory is Task3; upload/API/UI/cleanup integration remains assigned to later tasks. Both prior M7 fullCIs42276619939/42276608472PASS on08fa12e. Root accepts local Task1, count42/91; new exact-head CI follows feature-branch publication. No main application merge or production/provider activation. See Phase08 task-1-report.md and task-1-review.md.
+
+### Phase08 Task2 locally verified — bounded durable source parsing (2026-11-06)
+
+Wholecandidatef90e6d4 plus closure4437e0c implements the actual internal CSV/XLSX worker, bounded real storage/SHA verification, immutable source addresses/options, fenced leases,100row batches and validated retry prefixes. It does not change inventory or expose upload/API/UI. Whole review's oneP2 queue acknowledgement was reproduced and fixed; root closure and honest originalFAIL retained.835native/73files/0skip,1501regular/706explicitnative-off, types/lint/build and22actual-built inventorybrowserPASS. Root accepts Task2:43/91, Phase08twoofseven. Task3 is next; later upload dispatch/cleanup and real UI remain explicit obligations. Dependent publication waits for both0611d35correctedTask1 workflows; localTask3workmaycontinue, stop onactualdependencyfailure. No main application merge or production/provider action.

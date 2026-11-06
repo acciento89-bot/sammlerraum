@@ -90,7 +90,7 @@ git commit -m "feat: add staged import jobs and profiles"
 - Consumes: uploaded source asset + import job.
 - Produces: parsed preview rows/errors.
 
-- [ ] **Step 1: Write failing row-limit and formula tests**
+- [x] **Step 1: Write failing row-limit and formula tests**
 
 ```ts
 it("fails a workbook over the configured row limit", async () => {
@@ -104,21 +104,21 @@ it("reads formula cells as stored values and never evaluates them", async () => 
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run apps/worker/src/jobs/parse-import.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement bounded parser**
+- [x] **Step 3: Implement bounded parser**
 
 Add `IMPORT_MAX_BYTES` and `IMPORT_MAX_ROWS` config. Stream CSV. For XLSX, reject macro-enabled formats, ignore formulas as executable logic, and persist preview rows in chunks.
 
-- [ ] **Step 4: Run tests**
+- [x] **Step 4: Run tests**
 
 Run: `pnpm vitest run apps/worker/src/jobs/parse-import.test.ts`  
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add apps/worker/src/jobs/parse-import.ts apps/worker/src/jobs/parse-import.test.ts packages/config
