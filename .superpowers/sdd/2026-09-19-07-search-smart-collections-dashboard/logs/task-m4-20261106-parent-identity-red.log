@@ -1,0 +1,42 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/catalog/catalog-money-submission.test.ts (8 tests | 1 failed) 272ms
+   ✓ catalog money submission selected from actual definitions and revisions > freezes the server's exact pinned authoring receipt 11ms
+   ✓ catalog money submission selected from actual definitions and revisions > rejects missing, extraneous, foreign and unknown-definition intents 6ms
+   ✓ catalog money submission selected from actual definitions and revisions > rejects authoring whose exact raw patch amount or currency differs 2ms
+   ✓ catalog money submission selected from actual definitions and revisions > preserves a historical raw path only with its exact current fact token 27ms
+   ✓ catalog money submission selected from actual definitions and revisions > does not demand intents for untouched fields or removed fields 15ms
+   ✓ catalog money submission selected from actual definitions and revisions > distinguishes new paths from deliberate same-raw replacements 19ms
+   ✓ catalog money submission selected from actual definitions and revisions > binds variant retention to that exact variant rather than its entry 21ms
+   × catalog money submission selected from actual definitions and revisions > rejects a snapshot whose category differs from its actual parent 7ms
+     → promise resolved "{ schemaVersion: 1, …(3) }" instead of rejecting
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/catalog/catalog-money-submission.test.ts > catalog money submission selected from actual definitions and revisions > rejects a snapshot whose category differs from its actual parent
+AssertionError: promise resolved "{ schemaVersion: 1, …(3) }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "baseRevision": 1,
++   "patchDigest": "e4c8ac3b7cbf3b0314fd0bc268fa1adba33aecde449dc5424e7cb03904abc920",
++   "paths": [],
++   "schemaVersion": 1,
+  }
+
+ ❯ packages/domain/src/catalog/catalog-money-submission.test.ts:334:88
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 7 passed (8)
+   Start at  05:10:38
+   Duration  679ms (transform 108ms, setup 6ms, collect 226ms, tests 272ms, environment 0ms, prepare 51ms)
+
