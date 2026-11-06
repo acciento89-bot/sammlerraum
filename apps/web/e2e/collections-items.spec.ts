@@ -359,15 +359,20 @@ test.describe("localized collection and item management", () => {
         .check();
       await editionField.getByLabel("Edition", { exact: true }).fill("1st");
       await page.getByLabel(labels.location).selectOption({ label: "Fach 2" });
-      const itemCreated = page.waitForResponse(
-        (response) =>
-          response.url().endsWith("/api/v1/money/items") && response.request().method() === "POST",
-      );
+      let itemCreatedStatus = 0,
+        createdItemBody: { item: { id: string } } | undefined;
+      // The create flow navigates immediately. Read the actual API body before
+      // releasing it to the page, retaining the original no-redirect semantics.
+      await page.route("**/api/v1/money/items", async (route) => {
+        if (route.request().method() !== "POST") return route.continue();
+        const response = await route.fetch({ maxRedirects: 0 });
+        createdItemBody = await response.json();
+        itemCreatedStatus = response.status();
+        await route.fulfill({ response });
+      });
       await page.getByRole("button", { name: labels.saveItem }).click();
-      const itemCreatedResponse = await itemCreated;
-      expect(itemCreatedResponse.status()).toBe(201);
-      const createdItemBody = (await itemCreatedResponse.json()) as { item: { id: string } };
-      await expect(page).toHaveURL(new RegExp(`/${locale}/items/${createdItemBody.item.id}$`));
+      await expect.poll(() => itemCreatedStatus).toBe(201);
+      await expect(page).toHaveURL(new RegExp(`/${locale}/items/${createdItemBody!.item.id}$`));
       await expect(
         page.getByRole("heading", { level: 1, name: "Glurak", exact: true }),
       ).toBeVisible();

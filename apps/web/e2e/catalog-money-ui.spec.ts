@@ -104,16 +104,25 @@ for (const locale of ["de", "en"] as const)
       await form
         .getByRole("textbox", { name: t.changeSummary, exact: true })
         .fill("Synthetic title-only correction preserves money");
-      const response = page.waitForResponse(
-        (r) =>
-          r.request().method() === "POST" &&
-          /\/api\/v1\/catalog\/(money-)?proposals$/u.test(new URL(r.url()).pathname),
-      );
+      let submitted:
+        | {
+            status: number;
+            url: string;
+            body: { proposal: { id: string; moneyInterpretation: { paths: unknown[] } } };
+          }
+        | undefined;
+      // Capture the real server body before the successful UI navigation can
+      // invalidate Chromium's page-response resource. Do not follow redirects.
+      await page.route(/\/api\/v1\/catalog\/(money-)?proposals$/u, async (route) => {
+        if (route.request().method() !== "POST") return route.continue();
+        const response = await route.fetch({ maxRedirects: 0 });
+        submitted = { status: response.status(), url: response.url(), body: await response.json() };
+        await route.fulfill({ response });
+      });
       await form.getByRole("button", { name: t.submitProposal, exact: true }).click();
-      const submitted = await response;
-      expect(submitted.status()).toBe(201);
-      expect(new URL(submitted.url()).pathname).toBe("/api/v1/catalog/money-proposals");
-      const body = await submitted.json();
+      await expect.poll(() => submitted?.status).toBe(201);
+      expect(new URL(submitted!.url).pathname).toBe("/api/v1/catalog/money-proposals");
+      const body = submitted!.body;
       expect(body.proposal.moneyInterpretation.paths).toEqual([
         {
           target: "ENTRY",
