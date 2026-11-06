@@ -1125,6 +1125,7 @@
     "restartNew": "Ausstehenden Entwurf verwerfen und neu beginnen",
     "proposalReconciled": "Ich habe meine Vorschläge geprüft und möchte einen getrennten neuen Vorschlag beginnen.",
     "retryMoneyFields": "Geld-Zusatzfelder erneut laden",
+    "acknowledgedCreation": "Dieser Eintrag wurde bereits angelegt. Ausstehende Details werden am vorhandenen Eintrag fortgesetzt.",
     "privateHistory": "Private Belegverläufe",
     "checking": "Wird geprüft …"
   }

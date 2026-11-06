@@ -1,0 +1,19 @@
+[WebServer] (node:11642) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 8 tests using 1 worker
+
+(node:11643) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [money-ui-desktop] › e2e/legacy-money.spec.ts:1047:3 › de: acknowledged creation survives metadata failure and locale without duplicate POST or custom authoring (3.2s)
+  ✓  2 [money-ui-desktop] › e2e/legacy-money.spec.ts:1101:3 › de: collection selection cannot bypass an unknown creation barrier (585ms)
+  ✓  3 [money-ui-desktop] › e2e/legacy-money.spec.ts:1047:3 › en: acknowledged creation survives metadata failure and locale without duplicate POST or custom authoring (1.4s)
+  ✓  4 [money-ui-desktop] › e2e/legacy-money.spec.ts:1101:3 › en: collection selection cannot bypass an unknown creation barrier (617ms)
+(node:11663) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  5 [money-ui-mobile] › e2e/legacy-money.spec.ts:1047:3 › de: acknowledged creation survives metadata failure and locale without duplicate POST or custom authoring (1.5s)
+  ✓  6 [money-ui-mobile] › e2e/legacy-money.spec.ts:1101:3 › de: collection selection cannot bypass an unknown creation barrier (587ms)
+  ✓  7 [money-ui-mobile] › e2e/legacy-money.spec.ts:1047:3 › en: acknowledged creation survives metadata failure and locale without duplicate POST or custom authoring (1.3s)
+  ✓  8 [money-ui-mobile] › e2e/legacy-money.spec.ts:1101:3 › en: collection selection cannot bypass an unknown creation barrier (535ms)
+
+  8 passed (12.0s)

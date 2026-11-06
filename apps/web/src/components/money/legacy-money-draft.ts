@@ -1,3 +1,4 @@
+import { clearAcknowledgedItemCreations } from "./acknowledged-item-creation";
 import { z } from "zod";
 import { clearCatalogMoneySessions } from "../catalog/catalog-money-session";
 import { clearMoneyReviewDrafts } from "./money-review-draft";
@@ -141,6 +142,7 @@ export function forgetMoneyDraft(owner: string, key: string): void {
   drafts.delete(key);
 }
 export function clearMoneyDrafts(): void {
+  clearAcknowledgedItemCreations();
   clearCatalogMoneySessions();
   clearMoneyReviewDrafts();
   drafts.clear();

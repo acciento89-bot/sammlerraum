@@ -1,4 +1,9 @@
 "use client";
+import {
+  recallAcknowledgedItemCreation,
+  rememberAcknowledgedItemCreation,
+  forgetAcknowledgedItemCreation,
+} from "../money/acknowledged-item-creation";
 
 import {
   CreateItemMoneyInputSchema,
@@ -116,6 +121,9 @@ export function ItemForm({
   const moneyText = useTranslations("LegacyMoney");
   const common = useTranslations("Management");
   const router = useRouter();
+  const [initialItemId] = useState(
+    () => itemId ?? recallAcknowledgedItemCreation(actor, initialCollectionId),
+  );
   const [collections, setCollections] = useState<Collection[]>([]);
   const [collectionId, setCollectionId] = useState(initialCollectionId);
   const [nodeId, setNodeId] = useState("");
@@ -128,14 +136,14 @@ export function ItemForm({
   const [item, setItem] = useState<CollectibleItem>();
   const [metadata, setMetadata] = useState<ItemMetadata>();
   const [identifiers, setIdentifiers] = useState<Identifier[]>([{ type: "EAN", value: "" }]);
-  const [workingItemId, setWorkingItemId] = useState(itemId ?? "");
+  const [workingItemId, setWorkingItemId] = useState(initialItemId ?? "");
   const [initialLocationId, setInitialLocationId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [reviewBusy, setReviewBusy] = useState(false);
   const pendingNavigation = useCollectorConfirmation(saving || reviewBusy, () => false);
   const [reviewing, setReviewing] = useState<string | null>(() => {
-    const subject = activeMoneyReview(actor, `item:${itemId ?? ""}`);
+    const subject = activeMoneyReview(actor, `item:${initialItemId ?? ""}`);
     return subject?.family === "PURCHASE"
       ? "PURCHASE"
       : subject?.family === "CUSTOM"
@@ -330,7 +338,9 @@ export function ItemForm({
         const [collectionBody, locationBody, itemBody] = await Promise.all([
           read<{ collections: Collection[] }>("/api/v1/collections"),
           read<{ locations: StorageLocation[] }>("/api/v1/locations"),
-          itemId ? read<ItemResponse>(`/api/v1/items/${itemId}`) : Promise.resolve(undefined),
+          initialItemId
+            ? read<ItemResponse>(`/api/v1/items/${initialItemId}`)
+            : Promise.resolve(undefined),
         ]);
         if (cancelled || generation !== snapshotGeneration.current) return;
         setCollections(collectionBody.collections);
@@ -342,23 +352,24 @@ export function ItemForm({
         }
         try {
           const capability = await loadMoneyCapabilities();
+          if (cancelled || generation !== snapshotGeneration.current) return;
           if (capability.actorId !== actor) {
             clearMoneyDrafts();
             setActorExpired(true);
             throw new MoneyClientError("REFUSED", 401);
           }
-          const actual = itemId
+          const actual = initialItemId
             ? await readMoney(
-                `/api/v1/money/items/${itemId}`,
+                `/api/v1/money/items/${initialItemId}`,
                 ItemMoneyResultSchema.refine(
                   (value) =>
-                    value.item.id === itemId &&
+                    value.item.id === initialItemId &&
                     value.item.purchaseAmountMinor ===
                       (value.purchase.raw ? Number(value.purchase.raw.amountMinor) : null) &&
                     value.item.purchaseCurrency === (value.purchase.raw?.currency ?? null) &&
                     acceptsMoneyAcknowledgement(
                       value.purchase,
-                      { family: "PURCHASE", itemId },
+                      { family: "PURCHASE", itemId: initialItemId },
                       undefined,
                     ),
                 ),
@@ -370,7 +381,8 @@ export function ItemForm({
             applyItemSnapshot({ ...itemBody, item: actual.item });
             setPurchaseView(actual.purchase);
             setPurchaseDraft(
-              recallMoneyDraft(actor, `purchase:${itemId}`) ?? initialMoneyDraft(actual.purchase),
+              recallMoneyDraft(actor, `purchase:${initialItemId}`) ??
+                initialMoneyDraft(actual.purchase),
             );
           }
           setMoneyReady(true);
@@ -394,7 +406,7 @@ export function ItemForm({
       cancelled = true;
       snapshotGeneration.current++;
     };
-  }, [itemId, initialCollectionId, common, moneyText, actor]);
+  }, [initialItemId, initialCollectionId, common, moneyText, actor]);
 
   useEffect(() => {
     if (workingItemId || !LegacyMoneyIdSchema.safeParse(collectionId).success) return;
@@ -694,6 +706,7 @@ export function ItemForm({
           capability,
         );
         if (!mounted.current) return;
+        if (!oldId) rememberAcknowledgedItemCreation(actor, collectionId, coreBody.item.id);
         // Install the receipt before metadata writes or a fallible refresh can occur.
         const acknowledgedDraft = initialMoneyDraft(coreBody.purchase);
         setPurchaseView(coreBody.purchase);
@@ -795,6 +808,7 @@ export function ItemForm({
         });
       }
       const responses = await Promise.allSettled(requests.map((request) => request.response));
+      if (!mounted.current) return;
       const locationIndex = requests.findIndex((request) => request.kind === "location");
       const locationResult = responses[locationIndex];
       if (locationResult?.status === "fulfilled" && locationResult.value.ok) {
@@ -814,6 +828,8 @@ export function ItemForm({
         setStatus(t("retryWithoutDuplicate"));
         return;
       }
+      if (!mounted.current) return;
+      forgetAcknowledgedItemCreation(actor, collectionId, targetId);
       pendingNavigation.navigateAfterGuard(() => {
         router.push(`/${locale}/items/${targetId}`);
         router.refresh();
@@ -1019,6 +1035,12 @@ export function ItemForm({
           {moneyText("disabled")}
         </p>
       )}
+      {!itemId && workingItemId && (
+        <p className="notice" role="status">
+          {moneyText("acknowledgedCreation")}{" "}
+          <Link href={`/${locale}/items/${workingItemId}`}>{t("title")}</Link>
+        </p>
+      )}
       {customReadFailed && (
         <div className="notice" role="status">
           {moneyText("readFailed")}
@@ -1098,8 +1120,10 @@ export function ItemForm({
                 <select
                   aria-label={t("collection")}
                   name="collectionId"
+                  disabled={purchaseDraft.outcome !== "READY"}
                   value={collectionId}
                   onChange={(event) => {
+                    if (purchaseDraft.outcome !== "READY") return;
                     setNodeId("");
                     setCollectionId(event.target.value);
                   }}

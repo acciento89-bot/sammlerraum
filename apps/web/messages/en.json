@@ -1125,6 +1125,7 @@
     "restartNew": "Discard pending draft and start again",
     "proposalReconciled": "I checked my proposals and want to start a separate proposal.",
     "retryMoneyFields": "Reload monetary custom fields",
+    "acknowledgedCreation": "This item was already created. Pending details continue on the existing item.",
     "privateHistory": "Private evidence histories",
     "checking": "Checking…"
   }

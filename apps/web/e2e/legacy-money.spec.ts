@@ -286,7 +286,9 @@ for (const locale of ["de", "en"] as const) {
       );
       await page.reload();
       await expect(page.getByRole("button", { name: h.t.save, exact: true })).toBeDisabled();
-      await expect(page.getByText(h.m.disabled, { exact: true })).toBeVisible();
+      await expect(
+        page.locator('p.notice[role="status"]').filter({ hasText: h.m.disabled }),
+      ).toBeVisible();
       await expect(h.region.getByText("100 AFN", { exact: true })).toBeVisible();
       expect((await h.money.getMoney(h.subject)).factToken).toBe(h.before.factToken);
     } finally {
@@ -938,7 +940,9 @@ for (const locale of ["de", "en"] as const) {
       );
       await page.reload();
       await expect(page.getByRole("button", { name: h.t.save, exact: true })).toBeDisabled();
-      await expect(page.getByText(h.m.disabled, { exact: true })).toBeVisible();
+      await expect(
+        page.locator('p.notice[role="status"]').filter({ hasText: h.m.disabled }),
+      ).toBeVisible();
       expect(mutations).toBe(0);
       expect((await h.money.getMoney(h.subject)).factToken).toBe(h.before.factToken);
     } finally {
@@ -1042,3 +1046,92 @@ for (const locale of ["de", "en"] as const)
       await cleanupSearchFixture(h.f);
     }
   });
+
+for (const locale of ["de", "en"] as const) {
+  test(`${locale}: acknowledged creation survives metadata failure and locale without duplicate POST or custom authoring`, async ({
+    page,
+  }) => {
+    test.skip(!active, "Requires owned monetary UI test database");
+    const h = await customPriceFixture(page, locale, 1, true);
+    try {
+      const title = "Acknowledged creation before metadata failure";
+      await page.getByRole("textbox", { name: h.t.title, exact: true }).fill(title);
+      await page
+        .getByRole("region", { name: h.fields[0]!.name, exact: true })
+        .getByRole("textbox", { name: h.fields[0]!.name, exact: true })
+        .fill("1,25");
+      let posts = 0,
+        createdId = "";
+      await page.route("**/api/v1/money/items", async (route) => {
+        posts++;
+        const response = await route.fetch();
+        createdId = (await response.json()).item.id;
+        await route.fulfill({ response });
+      });
+      await page.route("**/api/v1/items/*/tags", (route) =>
+        route.fulfill({ status: 503, json: { error: "Synthetic metadata failure" } }),
+      );
+      await page.getByRole("button", { name: h.t.save, exact: true }).click();
+      await expect(page.locator('p.error[role="alert"]')).toBeVisible();
+      const subject = {
+        family: "CUSTOM" as const,
+        itemId: createdId,
+        fieldDefinitionId: h.fields[0]!.id,
+      };
+      const committed = await h.money.getMoney(subject);
+      await page.unroute("**/api/v1/items/*/tags");
+      const next = locale === "de" ? "en" : "de",
+        shell = (locale === "de" ? de : en).Shell;
+      await page
+        .getByRole("link", { name: locale === "de" ? shell.english : shell.german, exact: true })
+        .click();
+      const t = (next === "de" ? de : en).ItemForm;
+      await expect(page.getByRole("textbox", { name: t.title, exact: true })).toHaveValue(title);
+      await page
+        .getByRole("textbox", { name: t.title, exact: true })
+        .fill("Continued acknowledged item");
+      await page.getByRole("button", { name: t.save, exact: true }).click();
+      await expect(page).toHaveURL(new RegExp(`/${next}/items/${createdId}$`));
+      await page.waitForLoadState("networkidle", { timeout: 5000 });
+      expect(posts).toBe(1);
+      expect((await h.money.getMoney(subject)).factToken).toBe(committed.factToken);
+      expect(await db!.collectibleItem.count({ where: { collectionId: h.f.collectionId } })).toBe(
+        2,
+      );
+    } finally {
+      await cleanupSearchFixture(h.f);
+    }
+  });
+  test(`${locale}: collection selection cannot bypass an unknown creation barrier`, async ({
+    page,
+  }) => {
+    test.skip(!active, "Requires owned monetary UI test database");
+    const h = await customPriceFixture(page, locale, 1, true);
+    try {
+      await db!.collection.create({
+        data: { ownerId: h.f.ownerId, name: "Other synthetic collection" },
+      });
+      await page.reload();
+      const save = page.getByRole("button", { name: h.t.save, exact: true });
+      await expect(save).toBeEnabled();
+      await page
+        .getByRole("textbox", { name: h.t.title, exact: true })
+        .fill("Unknown creation in original collection");
+      await page.route("**/api/v1/money/items", async (route) => {
+        expect((await route.fetch()).status()).toBe(201);
+        await route.abort("failed");
+      });
+      await save.click();
+      await expect(page.locator('p.error[role="alert"]')).toHaveText(h.m.unknownOutcome);
+      await expect(
+        page.getByRole("combobox", { name: h.t.collection, exact: true }),
+      ).toBeDisabled();
+      await expect(save).toBeDisabled();
+      expect(await db!.collectibleItem.count({ where: { collectionId: h.f.collectionId } })).toBe(
+        2,
+      );
+    } finally {
+      await cleanupSearchFixture(h.f);
+    }
+  });
+}

@@ -152,9 +152,31 @@ async function addLeaf(page: Page, locale: Locale, kind: string) {
 async function chooseReference(page: Page, locale: Locale, label: string, option: string) {
   const group = page.getByRole("group", { name: label, exact: true }).last();
   await group.getByRole("button", { name: copies[locale].choose, exact: true }).click();
-  await group
-    .getByLabel(copies[locale].availableChoices, { exact: true })
-    .selectOption({ label: option });
+  const choices = group.getByLabel(copies[locale].availableChoices, { exact: true });
+  await expect.poll(() => choices.locator("option").count()).toBeGreaterThan(1);
+  // Canonical fixtures retain their immutable audit graph. The desired reference
+  // may be beyond page one; use the real bounded picker instead of assuming it.
+  for (let pageIndex = 0; pageIndex < 64; pageIndex++) {
+    await expect(choices).toBeEnabled();
+    if (await choices.getByRole("option", { name: option, exact: true }).count()) {
+      await choices.selectOption({ label: option });
+      return;
+    }
+    const before = await choices
+      .locator("option")
+      .evaluateAll((rows) => rows.map((row) => (row as HTMLOptionElement).value));
+    const next = group.getByRole("button", { name: copies[locale].nextPage, exact: true });
+    await expect(next).toBeEnabled();
+    await next.click();
+    await expect
+      .poll(() =>
+        choices
+          .locator("option")
+          .evaluateAll((rows) => rows.map((row) => (row as HTMLOptionElement).value)),
+      )
+      .not.toEqual(before);
+  }
+  throw Error("Synthetic reference was not found within the bounded fixture pages");
 }
 async function cleanFilter(page: Page, locale: Locale) {
   await panel(page, locale);
