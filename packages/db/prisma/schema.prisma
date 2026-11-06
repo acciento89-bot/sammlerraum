@@ -116,6 +116,7 @@ model User {
   importJobs                 ImportJob[]
   importMappingProfiles      ImportMappingProfile[]
   exportJobs                 ExportJob[]
+  insuranceRecords           InsuranceRecord[]
   tags                       Tag[]
   storageLocations           StorageLocation[]
   locationHistoryAssignments ItemLocationHistory[]              @relation("LocationHistoryAssignee")
@@ -146,6 +147,8 @@ model Collection {
   items                  CollectibleItem[]
   customFieldDefinitions CustomFieldDefinition[]
   importJobs             ImportJob[]
+
+  insuranceRecords InsuranceRecord[]
 
   @@unique([id, ownerId])
   @@index([ownerId])
@@ -215,6 +218,8 @@ model CollectibleItem {
   valuations              Valuation[]
   purchaseMoneyEvents     PurchaseMoneyInterpretationEvent[]
   customMoneyEvents       CustomMoneyInterpretationEvent[]
+
+  insuranceRecords InsuranceRecord[]
 
   @@unique([id, collectionId])
   @@unique([id, ownerId])
@@ -1254,4 +1259,27 @@ model ExportJob {
   @@index([ownerId, createdAt(sort: Desc), id])
   @@index([status, processingLeaseUntil, id])
   @@index([status, lastDispatchedAt, id])
+}
+
+model InsuranceRecord {
+  id                String           @id @default(uuid()) @db.Uuid
+  ownerId           String
+  collectionId      String?          @unique @db.Uuid
+  itemId            String?          @unique @db.Uuid
+  revision          Int              @default(1)
+  basis             String           @db.VarChar(16)
+  amountMinor       BigInt?
+  currency          String?          @db.VarChar(3)
+  minorUnitExponent Int?
+  valuationDate     DateTime?        @db.Date
+  insurer           String?          @db.VarChar(200)
+  policyReference   String?          @db.VarChar(500)
+  notes             String?          @db.VarChar(2000)
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+  owner             User             @relation(fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: Restrict)
+  collection        Collection?      @relation(fields: [collectionId, ownerId], references: [id, ownerId], onDelete: Cascade, onUpdate: Restrict)
+  item              CollectibleItem? @relation(fields: [itemId, ownerId], references: [id, ownerId], onDelete: Cascade, onUpdate: Restrict)
+
+  @@index([ownerId, updatedAt, id])
 }
