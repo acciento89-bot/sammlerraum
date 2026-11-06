@@ -7,6 +7,8 @@ import { createCatalogMaintenanceService } from "./catalog-service";
 import { prepareCatalogMoneySubmission } from "./catalog-money-submission";
 import { readCatalogMoneyMap } from "../money/legacy-money-store";
 import { moneyTransaction } from "../money/legacy-money-transaction";
+import { createCatalogProposalService } from "./proposal-service";
+import { decodeMoneyFactToken } from "../money/legacy-money-tokens";
 const enabled = process.env.RUN_DATABASE_INTEGRATION === "1";
 let db: ReturnType<typeof createTestDatabaseClient>;
 let isolated: Awaited<ReturnType<typeof createLegacyMoneyTestSchema>>;
@@ -266,6 +268,74 @@ describe.runIf(enabled)("actual canonical catalog money mutation integration", (
         where: { entryId_revision: { entryId: entry.state.id, revision: 2 } },
       }),
     ).toBeNull();
+  });
+  it("rolls back target meaning and saves selected evidence even when the complete raw snapshot is identical", async () => {
+    const entry = await service().createCatalogEntry(input());
+    const targetFact = (await read(entry.state.id, 1))[0]!;
+    const selected = decodeMoneyFactToken(targetFact.factToken);
+    const other = await service().updateCatalogEntry(entry.state.id, 1, {
+      text: { ...text, title: "Temporary wording" },
+    });
+    const prior = (await read(entry.state.id, other.revision))[0]!;
+    const patch = { kind: "UPDATE_ENTRY", input: { text, attributes: input().attributes } };
+    const ctx = await context(
+      patch,
+      [
+        {
+          target: "ENTRY",
+          definitionId: money,
+          intent: { op: "REPLACE", expectedFactToken: prior.factToken, authoring },
+        },
+      ],
+      entry.state.id,
+      other.revision,
+    );
+    const known = await service(ctx).updateCatalogEntry(
+      entry.state.id,
+      other.revision,
+      patch.input,
+    );
+    expect((await read(entry.state.id, known.revision))[0]!.interpretation.kind).toBe(
+      "INTERPRETED",
+    );
+    const before = await db.catalogRevision.findMany({
+      where: { entryId: entry.state.id },
+      orderBy: { revision: "asc" },
+    });
+    expect(before[0]!.snapshot).toEqual(before.at(-1)!.snapshot);
+    const result = await createCatalogProposalService(db).rollbackCatalogEntry(
+      entry.state.id,
+      actor,
+      {
+        expectedRevision: known.revision,
+        targetRevision: 1,
+        reason: "Restore the selected historical financial meaning",
+      },
+    );
+    expect(result.revision).toBe(known.revision);
+    expect((await read(entry.state.id, result.revision))[0]!.interpretation.kind).toBe("UNKNOWN");
+    expect(await db.catalogRevision.count({ where: { entryId: entry.state.id } })).toBe(
+      before.length,
+    );
+    const audit = await db.catalogRollbackAudit.findFirstOrThrow({
+      where: { entryId: entry.state.id },
+    });
+    expect(audit.moneyInterpretation).toMatchObject({
+      schemaVersion: 1,
+      sourceRevision: 1,
+      paths: [
+        {
+          target: { kind: "ENTRY" },
+          definitionId: money,
+          sequence: selected.sequence,
+          effectiveEventId: selected.effectiveEventId,
+          originId: null,
+        },
+      ],
+    });
+    expect(Object.keys(result).sort()).toEqual(
+      ["revision", "rollbackFromRevision", "state"].sort(),
+    );
   });
   it("retains historical raw codes without current-list reinterpretation and permits explicit replacement", async () => {
     const id = randomUUID(),

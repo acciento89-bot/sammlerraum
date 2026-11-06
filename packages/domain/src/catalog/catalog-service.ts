@@ -19,12 +19,15 @@ import type {
 import { validateAttributeValue } from "./category-template-service";
 import { serializeCatalogValue } from "./catalog-serialization";
 import type { CatalogProposalOperation } from "@sammlerraum/contracts/catalog-proposals";
-import { legacyMoneyFail } from "@sammlerraum/contracts/legacy-money";
 import {
   beginCatalogMoneyMutation,
   capturedCatalogMoneyAttribute,
   finishCatalogMoneyMutation,
+  beginCatalogMoneyRollback,
+  capturedCatalogRollbackAttribute,
+  finishCatalogMoneyRollback,
   type CatalogMoneyMutationPlan,
+  type CatalogMoneyRollbackPlan,
 } from "./catalog-money-mutation";
 
 type ErrorCode =
@@ -81,6 +84,7 @@ async function attributes(
   values: AttributeInput[],
   moneyPlan?: CatalogMoneyMutationPlan,
   moneyTarget: "ENTRY" | "OPERATION_VARIANT" = "ENTRY",
+  rollbackMoney?: { plan: CatalogMoneyRollbackPlan; targetKey: string },
 ) {
   const result: CatalogSnapshot["attributes"] = [];
   if (values.length === 0) return result;
@@ -96,7 +100,14 @@ async function attributes(
     }
     const captured =
       definition.type === "MONEY"
-        ? capturedCatalogMoneyAttribute(moneyPlan, moneyTarget, definition.id, value.value)
+        ? rollbackMoney
+          ? capturedCatalogRollbackAttribute(
+              rollbackMoney.plan,
+              rollbackMoney.targetKey,
+              definition.id,
+              value.value,
+            )
+          : capturedCatalogMoneyAttribute(moneyPlan, moneyTarget, definition.id, value.value)
         : undefined;
     const canonical =
       captured ??
@@ -254,9 +265,9 @@ export function createCatalogMutationService(tx: CatalogTransaction, moneyContex
   async function mutate(
     entryId: string,
     expectedRevision: number,
-    change: (state: CatalogSnapshot, moneyPlan?: CatalogMoneyMutationPlan) => Promise<void>,
-    rollbackFromRevision: number | null = null,
-    operation: CatalogProposalOperation | null = null,
+    change: (state: CatalogSnapshot, moneyPlan: CatalogMoneyMutationPlan) => Promise<void>,
+    rollbackFromRevision: number | null,
+    operation: CatalogProposalOperation,
   ) {
     entryId = canonicalId(entryId);
     validRevision(expectedRevision);
@@ -265,12 +276,7 @@ export function createCatalogMutationService(tx: CatalogTransaction, moneyContex
     // CAS is required even for a no-op: stale proposals must never be silently approved.
     if (current.revision !== expectedRevision)
       throw new CatalogServiceError("CATALOG_REVISION_CONFLICT");
-    if (operation === null && moneyContext !== undefined)
-      return legacyMoneyFail("MONEY_UNAVAILABLE");
-    const moneyPlan =
-      operation === null
-        ? undefined
-        : await beginCatalogMoneyMutation(tx, moneyContext, operation, current);
+    const moneyPlan = await beginCatalogMoneyMutation(tx, moneyContext, operation, current);
     const state = structuredClone(current.state);
     await change(state, moneyPlan);
     const parsed = CatalogSnapshotSchema.safeParse(state);
@@ -282,7 +288,7 @@ export function createCatalogMutationService(tx: CatalogTransaction, moneyContex
         throw new CatalogServiceError("CATALOG_LIMIT_EXCEEDED");
       result = await persistState(tx, parsed.data, current.revision + 1, rollbackFromRevision);
     }
-    if (moneyPlan) await finishCatalogMoneyMutation(tx, moneyPlan, result);
+    await finishCatalogMoneyMutation(tx, moneyPlan, result);
     return result;
   }
   async function createCatalogEntry(input: unknown): Promise<CatalogEntryRevision> {
@@ -493,32 +499,66 @@ export function createCatalogMutationService(tx: CatalogTransaction, moneyContex
       { kind: "REMOVE_IDENTIFIER", identifierId },
     );
   }
-  async function rollbackCatalogEntry(
+  async function rollbackCatalogEntryWithMoneyAudit(
     entryId: string,
     expectedRevision: number,
     targetRevision: number,
   ) {
     entryId = canonicalId(entryId);
+    validRevision(expectedRevision);
     validRevision(targetRevision);
-    return mutate(
-      entryId,
-      expectedRevision,
-      async (state) => {
-        const target = await tx.catalogRevision.findUnique({
-          where: { entryId_revision: { entryId, revision: targetRevision } },
-        });
-        if (!target) throw new CatalogServiceError("CATALOG_NOT_FOUND");
-        const restored = CatalogSnapshotSchema.parse(target.snapshot);
-        if (restored.id !== state.id || restored.categoryTemplateId !== state.categoryTemplateId)
-          invalid();
-        restored.attributes = await attributes(tx, state.categoryTemplateId, restored.attributes);
-        for (const variant of restored.variants) {
-          variant.attributes = await attributes(tx, state.categoryTemplateId, variant.attributes);
-        }
-        Object.assign(state, restored);
-      },
-      targetRevision,
+    await tx.$queryRaw`SELECT id FROM "CatalogEntry" WHERE id=${entryId}::uuid FOR UPDATE`;
+    const current = await readState(tx, entryId);
+    if (current.revision !== expectedRevision)
+      throw new CatalogServiceError("CATALOG_REVISION_CONFLICT");
+    const target = await tx.catalogRevision.findUnique({
+      where: { entryId_revision: { entryId, revision: targetRevision } },
+    });
+    if (!target) throw new CatalogServiceError("CATALOG_NOT_FOUND");
+    const restored = CatalogSnapshotSchema.parse(target.snapshot);
+    if (
+      restored.id !== current.state.id ||
+      restored.categoryTemplateId !== current.state.categoryTemplateId
+    )
+      invalid();
+    const moneyPlan = await beginCatalogMoneyRollback(tx, moneyContext, current, {
+      revision: targetRevision,
+      state: restored,
+      rollbackFromRevision: target.rollbackFromRevision,
+    });
+    restored.attributes = await attributes(
+      tx,
+      restored.categoryTemplateId,
+      restored.attributes,
+      undefined,
+      "ENTRY",
+      { plan: moneyPlan, targetKey: "entry" },
     );
+    for (const variant of restored.variants)
+      variant.attributes = await attributes(
+        tx,
+        restored.categoryTemplateId,
+        variant.attributes,
+        undefined,
+        "OPERATION_VARIANT",
+        { plan: moneyPlan, targetKey: variant.id },
+      );
+    ordered(restored);
+    let result = current;
+    if (serializeCatalogSnapshot(restored) !== serializeCatalogSnapshot(current.state)) {
+      if (current.revision === 2147483647) throw new CatalogServiceError("CATALOG_LIMIT_EXCEEDED");
+      result = await persistState(tx, restored, current.revision + 1, targetRevision);
+    }
+    const moneyInterpretation = await finishCatalogMoneyRollback(tx, moneyPlan, result);
+    return { result, moneyInterpretation };
+  }
+  async function rollbackCatalogEntry(
+    entryId: string,
+    expectedRevision: number,
+    targetRevision: number,
+  ) {
+    return (await rollbackCatalogEntryWithMoneyAudit(entryId, expectedRevision, targetRevision))
+      .result;
   }
   return {
     createCatalogEntry,
@@ -529,6 +569,7 @@ export function createCatalogMutationService(tx: CatalogTransaction, moneyContex
     updateExternalIdentifier,
     removeExternalIdentifier,
     rollbackCatalogEntry,
+    rollbackCatalogEntryWithMoneyAudit,
   };
 }
 

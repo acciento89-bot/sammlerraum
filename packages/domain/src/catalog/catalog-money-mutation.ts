@@ -16,6 +16,7 @@ import { ApplicationRoleError, requireApplicationModerator } from "../authz/appl
 import { moneyTransaction } from "../money/legacy-money-transaction";
 import { readCatalogMoneyMap, applyCatalogMoneyRevision } from "../money/legacy-money-store";
 import { digestCatalogMoneyPatch } from "./catalog-money-envelope";
+import { decodeMoneyFactToken } from "../money/legacy-money-tokens";
 
 export type CatalogMoneyMutationContext =
   | { kind: "LEGACY"; actorId?: string | undefined }
@@ -225,4 +226,138 @@ export async function finishCatalogMoneyMutation(
         actions,
       },
     );
+}
+
+const rollbackBrand = Symbol("actual canonical money rollback transaction");
+export type CatalogMoneyRollbackPlan = {
+  readonly [rollbackBrand]: CatalogTransaction;
+  readonly actorId: string | undefined;
+  readonly entryId: string;
+  readonly sourceRevision: number;
+  readonly selected: MoneyView[];
+};
+export async function beginCatalogMoneyRollback(
+  tx: CatalogTransaction,
+  contextInput: unknown,
+  current: CatalogEntryRevision,
+  target: CatalogEntryRevision,
+): Promise<CatalogMoneyRollbackPlan> {
+  const parsed = contextSchema.safeParse(
+    contextInput === undefined ? { kind: "LEGACY" } : contextInput,
+  );
+  if (!parsed.success || parsed.data.kind !== "LEGACY") return legacyMoneyFail("MONEY_CONFLICT");
+  const context = parsed.data;
+  if (context.actorId !== undefined) {
+    try {
+      await requireApplicationModerator(tx, context.actorId);
+    } catch (error) {
+      if (error instanceof ApplicationRoleError) return legacyMoneyFail("MONEY_FORBIDDEN");
+      throw error;
+    }
+  }
+  if (
+    target.state.id !== current.state.id ||
+    target.state.categoryTemplateId !== current.state.categoryTemplateId
+  )
+    return legacyMoneyFail("MONEY_DATA_INTEGRITY");
+  const selected = await readCatalogMoneyMap(
+    moneyTransaction(tx),
+    current.state.id,
+    target.revision,
+    { userId: context.actorId ?? "catalog-public-read" },
+  );
+  if (
+    context.actorId === undefined &&
+    selected.some(
+      (v) =>
+        v.interpretation.kind === "INTERPRETED" ||
+        decodeMoneyFactToken(v.factToken).originId !== null,
+    )
+  )
+    return legacyMoneyFail("MONEY_FORBIDDEN");
+  return Object.freeze({
+    [rollbackBrand]: tx,
+    actorId: context.actorId,
+    entryId: current.state.id,
+    sourceRevision: target.revision,
+    selected,
+  });
+}
+export function capturedCatalogRollbackAttribute(
+  plan: CatalogMoneyRollbackPlan,
+  targetKey: string,
+  definitionId: string,
+  input: unknown,
+) {
+  const raw = HistoricalMoneyValueSchema.safeParse(input);
+  const selected = plan.selected.find((v) => pathKey(v) === `${targetKey}:${definitionId}`);
+  if (
+    !raw.success ||
+    !selected ||
+    selected.raw?.amountMinor !== String(raw.data.amountMinor) ||
+    selected.raw.currency !== raw.data.currency
+  )
+    return legacyMoneyFail("MONEY_DATA_INTEGRITY");
+  return raw.data;
+}
+export async function finishCatalogMoneyRollback(
+  tx: CatalogTransaction,
+  plan: CatalogMoneyRollbackPlan,
+  result: CatalogEntryRevision,
+) {
+  if (plan[rollbackBrand] !== tx || result.state.id !== plan.entryId)
+    return legacyMoneyFail("MONEY_FORBIDDEN");
+  const views = await readCatalogMoneyMap(moneyTransaction(tx), plan.entryId, result.revision, {
+    userId: plan.actorId ?? "catalog-public-read",
+  });
+  const source = new Map(plan.selected.map((v) => [pathKey(v), v]));
+  if (views.length !== source.size) return legacyMoneyFail("MONEY_DATA_INTEGRITY");
+  const actions: object[] = [];
+  for (const view of views) {
+    const prior = source.get(pathKey(view));
+    const s = view.subject;
+    if (!prior || !sameRaw(prior.raw, view.raw) || s.family !== "CATALOG")
+      return legacyMoneyFail("MONEY_DATA_INTEGRITY");
+    actions.push(
+      plan.actorId === undefined
+        ? { target: s.target, definitionId: s.definitionId, op: "RAW_WRITE" }
+        : {
+            target: s.target,
+            definitionId: s.definitionId,
+            op: "COPY",
+            expectedFactToken: prior.factToken,
+          },
+    );
+  }
+  // Freeze selected IDs before appending, including equal-snapshot/current-revision cases.
+  const moneyInterpretation = {
+    schemaVersion: 1,
+    sourceRevision: plan.sourceRevision,
+    paths: plan.selected.map((view) => {
+      const s = view.subject,
+        token = decodeMoneyFactToken(view.factToken);
+      if (s.family !== "CATALOG") return legacyMoneyFail("MONEY_DATA_INTEGRITY");
+      return {
+        target: s.target,
+        definitionId: s.definitionId,
+        sequence: token.sequence,
+        effectiveEventId: token.effectiveEventId,
+        originId: token.originId,
+        revocationId: token.revocationId,
+        originEvidenceErasedAt: token.originEvidenceErasedAt,
+      };
+    }),
+  };
+  if (actions.length)
+    await applyCatalogMoneyRevision(
+      moneyTransaction(tx),
+      plan.actorId === undefined ? null : { userId: plan.actorId },
+      {
+        entryId: plan.entryId,
+        destinationRevision: result.revision,
+        sourceRevision: plan.actorId === undefined ? null : plan.sourceRevision,
+        actions,
+      },
+    );
+  return moneyInterpretation;
 }

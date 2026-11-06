@@ -7,6 +7,7 @@ import {
   CatalogProposalListInputSchema,
   CatalogRollbackInputSchema,
   SubmitCatalogProposalInputSchema,
+  SubmitCatalogMoneyProposalInputSchema,
   type CatalogProposalOperation,
 } from "@sammlerraum/contracts/catalog-proposals";
 import type {
@@ -17,6 +18,8 @@ import type {
 } from "@sammlerraum/db/catalog-types";
 import { requireApplicationModerator } from "../authz/application-role";
 import { createCatalogMutationService } from "./catalog-service";
+import { prepareCatalogMoneySubmission } from "./catalog-money-submission";
+import { LegacyMoneyError } from "@sammlerraum/contracts/legacy-money";
 
 type Code =
   | "CATALOG_PROPOSAL_INPUT_INVALID"
@@ -78,9 +81,7 @@ function cursor(value: string | undefined) {
 
 /** Active transaction seam. Submission requires ReadCommitted; CONFLICT is an outcome, never thrown here. */
 export function createCatalogProposalTransactionService(tx: CatalogProposalTransaction) {
-  async function submitProposal(proposerId: string, input: unknown) {
-    const data = parse(SubmitCatalogProposalInputSchema, boundedJson(input));
-    boundedJson(data);
+  async function enforceSubmitQuota(proposerId: string) {
     // A RepeatableRead snapshot can predate a quota lock's preceding submitter.
     const [transaction] = await tx.$queryRaw<{ isolation: string }[]>`
       SELECT current_setting('transaction_isolation') AS isolation
@@ -98,6 +99,12 @@ export function createCatalogProposalTransactionService(tx: CatalogProposalTrans
     ];
     if (pending >= 20 || daily >= 50 || total >= 10_000)
       throw new CatalogProposalError("CATALOG_PROPOSAL_LIMIT_EXCEEDED");
+  }
+  async function persistProposal(
+    proposerId: string,
+    data: ReturnType<typeof SubmitCatalogProposalInputSchema.parse>,
+    moneyInterpretation?: CatalogJson,
+  ) {
     if (
       data.targetEntryId &&
       !(await tx.catalogEntry.findUnique({
@@ -116,9 +123,23 @@ export function createCatalogProposalTransactionService(tx: CatalogProposalTrans
           summary: data.summary,
           patch: data.patch as CatalogJson,
           ...(data.source ? { source: data.source as CatalogJson } : {}),
+          ...(moneyInterpretation === undefined ? {} : { moneyInterpretation }),
         },
       }),
     );
+  }
+  async function submitProposal(proposerId: string, input: unknown) {
+    const data = parse(SubmitCatalogProposalInputSchema, boundedJson(input));
+    boundedJson(data);
+    await enforceSubmitQuota(proposerId);
+    return persistProposal(proposerId, data);
+  }
+  async function submitMoneyProposal(proposerId: string, input: unknown) {
+    const data = parse(SubmitCatalogMoneyProposalInputSchema, boundedJson(input));
+    boundedJson(data);
+    await enforceSubmitQuota(proposerId);
+    const money = await prepareCatalogMoneySubmission(tx, proposerId, data);
+    return persistProposal(proposerId, data.proposal, money as CatalogJson);
   }
   async function getProposal(proposalId: string, actorId: string, review = false) {
     if (review) await requireApplicationModerator(tx, actorId);
@@ -165,8 +186,9 @@ export function createCatalogProposalTransactionService(tx: CatalogProposalTrans
     patch: CatalogProposalOperation,
     entryId: string | null,
     revision: number | null,
+    moneyContext: unknown,
   ) {
-    const canonical = createCatalogMutationService(tx);
+    const canonical = createCatalogMutationService(tx, moneyContext);
     switch (patch.kind) {
       case "CREATE_ENTRY": {
         const result = await canonical.createCatalogEntry(patch.input);
@@ -262,7 +284,36 @@ export function createCatalogProposalTransactionService(tx: CatalogProposalTrans
         };
       }
     }
-    const result = await apply(validated.patch, row.targetEntryId, row.baseRevision);
+    const moneyContext =
+      row.moneyInterpretation === null
+        ? { kind: "LEGACY", actorId: moderatorId }
+        : { kind: "VALIDATED", actorId: moderatorId, envelope: row.moneyInterpretation };
+    await tx.$queryRaw`SAVEPOINT catalog_proposal_apply`;
+    let result: { entryId: string; revision: number };
+    try {
+      result = await apply(validated.patch, row.targetEntryId, row.baseRevision, moneyContext);
+      await tx.$queryRaw`RELEASE SAVEPOINT catalog_proposal_apply`;
+    } catch (error) {
+      if (
+        !(error instanceof LegacyMoneyError) ||
+        ![
+          "MONEY_CONFLICT",
+          "LEGACY_MONEY_INVALID",
+          "LEGACY_MONEY_INTERPRETATION_UNSUPPORTED",
+        ].includes(error.code)
+      )
+        throw error;
+      // Same physical transaction: undo every raw/sidecar change, then durably
+      // record the conflict instead of committing a partial canonical mutation.
+      await tx.$queryRaw`ROLLBACK TO SAVEPOINT catalog_proposal_apply`;
+      await tx.$queryRaw`RELEASE SAVEPOINT catalog_proposal_apply`;
+      return {
+        conflict: true as const,
+        proposal: dto(
+          await tx.catalogProposal.update({ where: { id }, data: { ...audit, state: "CONFLICT" } }),
+        ),
+      };
+    }
     return {
       conflict: false as const,
       proposal: dto(
@@ -282,11 +333,10 @@ export function createCatalogProposalTransactionService(tx: CatalogProposalTrans
     await requireApplicationModerator(tx, moderatorId);
     const id = parse(CatalogProposalIdSchema, entryId);
     const data = parse(CatalogRollbackInputSchema, input);
-    const result = await createCatalogMutationService(tx).rollbackCatalogEntry(
-      id,
-      data.expectedRevision,
-      data.targetRevision,
-    );
+    const { result, moneyInterpretation } = await createCatalogMutationService(tx, {
+      kind: "LEGACY",
+      actorId: moderatorId,
+    }).rollbackCatalogEntryWithMoneyAudit(id, data.expectedRevision, data.targetRevision);
     await tx.catalogRollbackAudit.create({
       data: {
         entryId: id,
@@ -295,12 +345,14 @@ export function createCatalogProposalTransactionService(tx: CatalogProposalTrans
         reason: data.reason,
         expectedRevision: data.expectedRevision,
         targetRevision: data.targetRevision,
+        moneyInterpretation: moneyInterpretation as CatalogJson,
       },
     });
     return result;
   }
   return {
     submitProposal,
+    submitMoneyProposal,
     getProposal,
     listProposals,
     rollbackCatalogEntry,
@@ -315,9 +367,13 @@ export function createCatalogProposalService(database: CatalogProposalDatabase) 
   const within = <T>(
     work: (service: ReturnType<typeof createCatalogProposalTransactionService>) => Promise<T>,
   ) =>
-    database.$transaction((tx) => work(createCatalogProposalTransactionService(tx)), {
-      isolationLevel: "ReadCommitted",
-    });
+    database.$transaction(
+      async (tx) => {
+        await tx.$queryRaw`SELECT set_config('TimeZone','UTC',true),set_config('statement_timeout','5000ms',true),set_config('lock_timeout','1000ms',true),set_config('transaction_timeout','45000ms',true)`;
+        return work(createCatalogProposalTransactionService(tx));
+      },
+      { isolationLevel: "ReadCommitted", maxWait: 2000, timeout: 45000 },
+    );
   async function decision(id: string, actor: string, reason: unknown, approve: boolean) {
     const result = await within((service) =>
       approve
@@ -331,6 +387,8 @@ export function createCatalogProposalService(database: CatalogProposalDatabase) 
   return {
     submitProposal: (actor: string, input: unknown) =>
       within((service) => service.submitProposal(actor, input)),
+    submitMoneyProposal: (actor: string, input: unknown) =>
+      within((service) => service.submitMoneyProposal(actor, input)),
     getProposal: (id: string, actor: string, review = false) =>
       within((service) => service.getProposal(id, actor, review)),
     listProposals: (actor: string, input: unknown = {}, review = false) =>
