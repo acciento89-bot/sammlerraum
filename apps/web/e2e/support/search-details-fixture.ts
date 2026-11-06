@@ -22,15 +22,25 @@ const typedValues: Record<CustomFieldType, unknown> = {
   URL: "https://example.test/",
   MONEY: { amountMinor: 0, currency: "EUR" },
 };
+function requireOwnedBrowserDatabase() {
+  const name = new URL(process.env.DATABASE_URL ?? "").pathname.slice(1);
+  if (!/^sammlerraum_m4_browser_[0-9]+_test$/u.test(name))
+    throw Error("Catalog-money browser fixtures require their owned disposable database");
+}
 export async function searchDetailsFixture() {
+  // Canonical raw MONEY writes now leave immutable sidecar records. Do not seed
+  // these fixtures into a shared database that a per-test cleanup would mutate.
+  requireOwnedBrowserDatabase();
   const f = {
     ...(await searchFixture()),
     categoryId: "",
     entryId: "",
     conditionId: "",
+    categoryLabels: { de: "", en: "" },
     custom: {} as Record<string, string>,
     catalog: {} as Record<string, string>,
   };
+  f.categoryLabels = { de: `Suchkarten ${f.ownerId}`, en: `Search cards ${f.ownerId}` };
   try {
     if (!db) throw Error();
     const items = createItemService(db, f.ownerId);
@@ -53,7 +63,7 @@ export async function searchDetailsFixture() {
     }
     const category = await createCategoryTemplateMaintenanceService(db).createCategoryTemplate({
       key: `search_${f.ownerId.replaceAll("-", "")}`,
-      labels: { de: "Suchkarten", en: "Search cards" },
+      labels: f.categoryLabels,
       definitions: Object.keys(typedValues).map((type) => ({
         key: type.toLowerCase(),
         type,
@@ -127,16 +137,8 @@ export async function cleanupSearchDetailsFixture(
   f: Awaited<ReturnType<typeof searchDetailsFixture>>,
 ) {
   if (!db) return;
+  requireOwnedBrowserDatabase();
   await cleanupSearchFixture(f);
-  if (f.entryId) {
-    await db.catalogAttributeValue.deleteMany({ where: { entryId: f.entryId } });
-    await db.catalogVariant.deleteMany({ where: { entryId: f.entryId } });
-    await db.catalogRevision.deleteMany({ where: { entryId: f.entryId } });
-    await db.catalogEntry.deleteMany({ where: { id: f.entryId } });
-  }
-  if (f.categoryId) {
-    await db.conditionOption.deleteMany({ where: { categoryTemplateId: f.categoryId } });
-    await db.conditionScheme.deleteMany({ where: { categoryTemplateId: f.categoryId } });
-    await db.categoryTemplate.deleteMany({ where: { id: f.categoryId } });
-  }
+  // Keep the synthetic canonical revision graph intact, including its protected
+  // financial evidence. The runner drops only this owned database after all cases.
 }

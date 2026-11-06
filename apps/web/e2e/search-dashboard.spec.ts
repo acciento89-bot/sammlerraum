@@ -538,12 +538,7 @@ for (const locale of ["de", "en"] as const) {
         if (kind === "collection")
           await chooseReference(page, locale, c.collection, "Synthetic search collection");
         if (kind === "condition") {
-          await chooseReference(
-            page,
-            locale,
-            c.category,
-            locale === "de" ? "Suchkarten" : "Search cards",
-          );
+          await chooseReference(page, locale, c.category, f.categoryLabels[locale]);
           await page.getByLabel(c.operator, { exact: true }).selectOption("eq");
           await chooseReference(
             page,
@@ -603,11 +598,7 @@ for (const locale of ["de", "en"] as const) {
           page,
           locale,
           source === "customField" ? c.collection : c.category,
-          source === "customField"
-            ? "Synthetic search collection"
-            : locale === "de"
-              ? "Suchkarten"
-              : "Search cards",
+          source === "customField" ? "Synthetic search collection" : f.categoryLabels[locale],
         );
         await chooseReference(
           page,
