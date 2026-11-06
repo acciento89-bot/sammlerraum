@@ -1,0 +1,43 @@
+[WebServer] (node:53568) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 24 tests using 1 worker
+
+(node:53569) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [money-ui-desktop] › e2e/catalog-money-ui.spec.ts:90:5 › de: a text-only catalog proposal retains unresolved money using its exact frozen source (2.4s)
+  ✓   2 [money-ui-desktop] › e2e/catalog-money-ui.spec.ts:90:5 › de: a text-only catalog proposal retains known historical money using its exact frozen source (1.1s)
+  ✓   3 [money-ui-desktop] › e2e/catalog-money-ui.spec.ts:90:5 › en: a text-only catalog proposal retains unresolved money using its exact frozen source (1.1s)
+  ✓   4 [money-ui-desktop] › e2e/catalog-money-ui.spec.ts:90:5 › en: a text-only catalog proposal retains known historical money using its exact frozen source (1.0s)
+(node:53584) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   5 [money-ui-desktop] › e2e/catalog-money-ui.spec.ts:90:5 › de: a text-only catalog proposal retains unresolved money using its exact frozen source (1.2s)
+  ✓   6 [money-ui-desktop] › e2e/catalog-money-ui.spec.ts:90:5 › de: a text-only catalog proposal retains known historical money using its exact frozen source (1.1s)
+  ✓   7 [money-ui-desktop] › e2e/catalog-money-ui.spec.ts:90:5 › en: a text-only catalog proposal retains unresolved money using its exact frozen source (1.0s)
+  ✓   8 [money-ui-desktop] › e2e/catalog-money-ui.spec.ts:90:5 › en: a text-only catalog proposal retains known historical money using its exact frozen source (1.1s)
+(node:53597) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   9 [money-ui-desktop] › e2e/catalog-money-ui.spec.ts:90:5 › de: a text-only catalog proposal retains unresolved money using its exact frozen source (1.2s)
+  ✓  10 [money-ui-desktop] › e2e/catalog-money-ui.spec.ts:90:5 › de: a text-only catalog proposal retains known historical money using its exact frozen source (1.0s)
+  ✓  11 [money-ui-desktop] › e2e/catalog-money-ui.spec.ts:90:5 › en: a text-only catalog proposal retains unresolved money using its exact frozen source (1.0s)
+  ✓  12 [money-ui-desktop] › e2e/catalog-money-ui.spec.ts:90:5 › en: a text-only catalog proposal retains known historical money using its exact frozen source (1.0s)
+(node:53606) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  13 [money-ui-mobile] › e2e/catalog-money-ui.spec.ts:90:5 › de: a text-only catalog proposal retains unresolved money using its exact frozen source (1.2s)
+  ✓  14 [money-ui-mobile] › e2e/catalog-money-ui.spec.ts:90:5 › de: a text-only catalog proposal retains known historical money using its exact frozen source (1.1s)
+  ✓  15 [money-ui-mobile] › e2e/catalog-money-ui.spec.ts:90:5 › en: a text-only catalog proposal retains unresolved money using its exact frozen source (991ms)
+  ✓  16 [money-ui-mobile] › e2e/catalog-money-ui.spec.ts:90:5 › en: a text-only catalog proposal retains known historical money using its exact frozen source (1.0s)
+(node:53618) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  17 [money-ui-mobile] › e2e/catalog-money-ui.spec.ts:90:5 › de: a text-only catalog proposal retains unresolved money using its exact frozen source (1.1s)
+  ✓  18 [money-ui-mobile] › e2e/catalog-money-ui.spec.ts:90:5 › de: a text-only catalog proposal retains known historical money using its exact frozen source (1.0s)
+  ✓  19 [money-ui-mobile] › e2e/catalog-money-ui.spec.ts:90:5 › en: a text-only catalog proposal retains unresolved money using its exact frozen source (1.0s)
+  ✓  20 [money-ui-mobile] › e2e/catalog-money-ui.spec.ts:90:5 › en: a text-only catalog proposal retains known historical money using its exact frozen source (1.0s)
+(node:53627) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  21 [money-ui-mobile] › e2e/catalog-money-ui.spec.ts:90:5 › de: a text-only catalog proposal retains unresolved money using its exact frozen source (1.2s)
+  ✓  22 [money-ui-mobile] › e2e/catalog-money-ui.spec.ts:90:5 › de: a text-only catalog proposal retains known historical money using its exact frozen source (1.0s)
+  ✓  23 [money-ui-mobile] › e2e/catalog-money-ui.spec.ts:90:5 › en: a text-only catalog proposal retains unresolved money using its exact frozen source (1.0s)
+  ✓  24 [money-ui-mobile] › e2e/catalog-money-ui.spec.ts:90:5 › en: a text-only catalog proposal retains known historical money using its exact frozen source (1.0s)
+
+  24 passed (31.8s)
