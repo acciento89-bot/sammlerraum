@@ -330,3 +330,49 @@ export const ImportPreviewPageSchema = z
       : v.nextAfterRowNumber === null,
   );
 export type ImportPreviewPage = z.infer<typeof ImportPreviewPageSchema>;
+
+const importRowNumber = z.number().int().min(1).max(IMPORT_MAX_SOURCE_ROWS);
+export const ImportMergeFieldSchema = z.enum([
+  "title",
+  "quantity",
+  "identifier",
+  "purchaseMoney",
+  "acquiredOn",
+]);
+export const ImportDecisionInputSchema = z.discriminatedUnion("action", [
+  z.object({ rowNumber: importRowNumber, action: z.literal("CREATE") }).strict(),
+  z.object({ rowNumber: importRowNumber, action: z.literal("CREATE_SEPARATE") }).strict(),
+  z.object({ rowNumber: importRowNumber, action: z.literal("SKIP") }).strict(),
+  z
+    .object({
+      rowNumber: importRowNumber,
+      action: z.literal("MERGE"),
+      targetItemId: id,
+      expectedTargetToken: z.string().regex(/^[0-9a-f]{64}$/u),
+      fields: z
+        .array(ImportMergeFieldSchema)
+        .min(1)
+        .max(5)
+        .refine((v) => new Set(v).size === v.length),
+    })
+    .strict(),
+]);
+export const ImportDecisionsInputSchema = z
+  .object({
+    jobId: id,
+    expectedRevision: revision,
+    previewGeneration: revision,
+    decisions: z
+      .array(ImportDecisionInputSchema)
+      .min(1)
+      .max(100)
+      .refine((rows) => new Set(rows.map((r) => r.rowNumber)).size === rows.length),
+  })
+  .strict();
+export const ImportCommitApprovalInputSchema = z
+  .object({ jobId: id, expectedRevision: revision, previewGeneration: revision })
+  .strict();
+export const ImportMergeTargetInputSchema = z
+  .object({ jobId: id, previewGeneration: revision, rowNumber: importRowNumber, targetItemId: id })
+  .strict();
+export type ImportDecisionInput = z.infer<typeof ImportDecisionInputSchema>;

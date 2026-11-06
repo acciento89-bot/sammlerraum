@@ -157,6 +157,7 @@ jobs:
           packages/domain/src/money/money-transfer.integration.test.ts
           packages/domain/src/imports/import-service.integration.test.ts
           apps/worker/src/jobs/import-parser.integration.test.ts
+          apps/worker/src/jobs/commit-import.test.ts
           packages/db/src/import-jobs.integration.test.ts
           apps/web/src/lib/legacy-money-query-routes.integration.test.ts
           packages/domain/src/dashboard/dashboard-service.test.ts

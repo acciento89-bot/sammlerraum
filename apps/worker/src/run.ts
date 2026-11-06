@@ -1,3 +1,5 @@
+import { createImportCommitService } from "@sammlerraum/domain/imports/import-commit-service";
+import { createImportCommitter, IMPORT_COMMIT_JOB } from "./jobs/commit-import";
 import { createPrismaImportParserRepository } from "./jobs/import-parser-repository";
 import { createImportParser, IMPORT_PARSE_JOB } from "./jobs/import-parser-runtime";
 import { createProductionMarketProviders } from "./jobs/market-provider-composition";
@@ -81,6 +83,10 @@ async function startProductionWorker(): Promise<void> {
     maxRows: serverEnv.IMPORT_MAX_ROWS,
   });
   registry.registerCancellable(IMPORT_PARSE_JOB, parseImport);
+  registry.registerCancellable(
+    IMPORT_COMMIT_JOB,
+    createImportCommitter(createImportCommitService(prisma)),
+  );
   // Register before queue.start locks the registry.
   registry.register(IMAGE_JOB, async ({ assetId }: { assetId: string }) => {
     if (typeof assetId !== "string") return;

@@ -1155,6 +1155,8 @@ model ImportJob {
   parsedRows             Int                @default(0)
   previewedRows          Int                @default(0)
   committedRows          Int                @default(0)
+  commitApprovedAt       DateTime?
+  commitApprovalRevision Int?
   previewGeneration      Int                @default(0)
   mappingSnapshot        Json?
   mappingHash            String?            @db.Char(64)

@@ -25,7 +25,7 @@ const identifierSelect = {
 
 type IdentifierCreateData = Omit<StoredIdentifier, "id">;
 
-type IdentifierTransaction = {
+export type IdentifierTransaction = {
   itemIdentifier: {
     deleteMany(args: { where: { itemId: string } }): Promise<{ count: number }>;
     createMany(args: { data: IdentifierCreateData[] }): Promise<{ count: number }>;
