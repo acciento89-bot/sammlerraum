@@ -243,7 +243,11 @@ describe.runIf(enabled)(
             ),
           )
         ).paths[0],
-      ).toMatchObject({ kind: "AUTHORED", receipt: { raw: { amountMinor: "100" } } });
+      ).toMatchObject({
+        kind: "AUTHORED",
+        replacesFactToken: fact.factToken,
+        receipt: { raw: { amountMinor: "100" } },
+      });
       const changed = {
         ...patch,
         input: { attributes: [{ definitionId: money, value: { ...raw, amountMinor: 200 } }] },

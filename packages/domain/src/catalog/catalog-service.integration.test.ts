@@ -1,13 +1,15 @@
 import { randomUUID } from "node:crypto";
 
 import { createTestDatabaseClient } from "@sammlerraum/db/test-database";
+import { createLegacyMoneyTestSchema } from "@sammlerraum/db/test-legacy-money-schema";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 import { createCategoryTemplateMaintenanceService } from "./category-template-service";
 import { createCatalogMaintenanceService, createCatalogMutationService } from "./catalog-service";
 
 const enabled = process.env.RUN_DATABASE_INTEGRATION === "1";
-const prisma = enabled ? createTestDatabaseClient() : undefined;
+let prisma: ReturnType<typeof createTestDatabaseClient> | undefined;
+let isolated: Awaited<ReturnType<typeof createLegacyMoneyTestSchema>>;
 const prefix = `fixture_${randomUUID().replaceAll("-", "")}`;
 const labels = { de: "Katalog", en: "Catalog" };
 const text = { language: "pl", title: "Moneta", description: "Autorski opis" };
@@ -29,6 +31,11 @@ const create = (extra: object = {}) =>
 
 describe.runIf(enabled)("revisioned global catalog PostgreSQL", () => {
   beforeAll(async () => {
+    isolated = await createLegacyMoneyTestSchema();
+    prisma = createTestDatabaseClient({
+      databaseUrl: isolated.databaseUrl,
+      schema: isolated.schema,
+    });
     const templates = createCategoryTemplateMaintenanceService(prisma!);
     const template = await templates.createCategoryTemplate({
       key: `${prefix}_main`,
@@ -76,25 +83,8 @@ describe.runIf(enabled)("revisioned global catalog PostgreSQL", () => {
     foreignDefinitionId = foreign.definitions[0]!.id;
   });
   afterAll(async () => {
-    if (!prisma) return;
-    const scope = { categoryTemplate: { key: { startsWith: prefix } } };
-    await prisma.catalogRevision.deleteMany({ where: { entry: scope } });
-    await prisma.catalogAttributeValue.deleteMany({ where: { entry: scope } });
-    await prisma.catalogExternalIdentifier.deleteMany({ where: { entry: scope } });
-    await prisma.catalogVariant.deleteMany({ where: { entry: scope } });
-    await prisma.catalogEntry.deleteMany({ where: scope });
-    const definitionScope = { categoryTemplate: { key: { startsWith: prefix } } };
-    await prisma.catalogAttributeOptionLabel.deleteMany({
-      where: { option: { definition: definitionScope } },
-    });
-    await prisma.catalogAttributeOption.deleteMany({ where: { definition: definitionScope } });
-    await prisma.catalogAttributeLabel.deleteMany({ where: { definition: definitionScope } });
-    await prisma.catalogAttributeDefinition.deleteMany({ where: definitionScope });
-    await prisma.categoryTemplateLabel.deleteMany({
-      where: { categoryTemplate: { key: { startsWith: prefix } } },
-    });
-    await prisma.categoryTemplate.deleteMany({ where: { key: { startsWith: prefix } } });
-    await prisma.$disconnect();
+    await prisma?.$disconnect();
+    await isolated?.cleanup();
   });
 
   it("canonicalizes uppercase category UUIDs through rollback and no-op commands", async () => {

@@ -18,6 +18,14 @@ import type {
 
 import { validateAttributeValue } from "./category-template-service";
 import { serializeCatalogValue } from "./catalog-serialization";
+import type { CatalogProposalOperation } from "@sammlerraum/contracts/catalog-proposals";
+import { legacyMoneyFail } from "@sammlerraum/contracts/legacy-money";
+import {
+  beginCatalogMoneyMutation,
+  capturedCatalogMoneyAttribute,
+  finishCatalogMoneyMutation,
+  type CatalogMoneyMutationPlan,
+} from "./catalog-money-mutation";
 
 type ErrorCode =
   | "CATALOG_INPUT_INVALID"
@@ -71,6 +79,8 @@ async function attributes(
   tx: CatalogTransaction,
   categoryTemplateId: string,
   values: AttributeInput[],
+  moneyPlan?: CatalogMoneyMutationPlan,
+  moneyTarget: "ENTRY" | "OPERATION_VARIANT" = "ENTRY",
 ) {
   const result: CatalogSnapshot["attributes"] = [];
   if (values.length === 0) return result;
@@ -84,18 +94,24 @@ async function attributes(
     if (!definition || definition.categoryTemplateId !== categoryTemplateId) {
       throw new CatalogServiceError("CATALOG_ATTRIBUTE_CATEGORY_MISMATCH");
     }
-    const canonical = await validateAttributeValue(
-      {
-        key: definition.key,
-        labels: Object.fromEntries(definition.labels.map((label) => [label.locale, label.label])),
-        type: definition.type,
-        options: definition.options.map((option) => ({
-          key: option.key,
-          labels: Object.fromEntries(option.labels.map((label) => [label.locale, label.label])),
-        })),
-      },
-      value.value,
-    );
+    const captured =
+      definition.type === "MONEY"
+        ? capturedCatalogMoneyAttribute(moneyPlan, moneyTarget, definition.id, value.value)
+        : undefined;
+    const canonical =
+      captured ??
+      (await validateAttributeValue(
+        {
+          key: definition.key,
+          labels: Object.fromEntries(definition.labels.map((label) => [label.locale, label.label])),
+          type: definition.type,
+          options: definition.options.map((option) => ({
+            key: option.key,
+            labels: Object.fromEntries(option.labels.map((label) => [label.locale, label.label])),
+          })),
+        },
+        value.value,
+      ));
     result.push({
       definitionId: definition.id,
       key: definition.key,
@@ -234,12 +250,13 @@ async function persistState(
  * Task3 verifies persisted moderator authority and proposal state before calling it.
  * This factory neither starts nor commits a transaction; errors must abort its caller.
  */
-export function createCatalogMutationService(tx: CatalogTransaction) {
+export function createCatalogMutationService(tx: CatalogTransaction, moneyContext?: unknown) {
   async function mutate(
     entryId: string,
     expectedRevision: number,
-    change: (state: CatalogSnapshot) => Promise<void>,
+    change: (state: CatalogSnapshot, moneyPlan?: CatalogMoneyMutationPlan) => Promise<void>,
     rollbackFromRevision: number | null = null,
+    operation: CatalogProposalOperation | null = null,
   ) {
     entryId = canonicalId(entryId);
     validRevision(expectedRevision);
@@ -248,20 +265,36 @@ export function createCatalogMutationService(tx: CatalogTransaction) {
     // CAS is required even for a no-op: stale proposals must never be silently approved.
     if (current.revision !== expectedRevision)
       throw new CatalogServiceError("CATALOG_REVISION_CONFLICT");
+    if (operation === null && moneyContext !== undefined)
+      return legacyMoneyFail("MONEY_UNAVAILABLE");
+    const moneyPlan =
+      operation === null
+        ? undefined
+        : await beginCatalogMoneyMutation(tx, moneyContext, operation, current);
     const state = structuredClone(current.state);
-    await change(state);
+    await change(state, moneyPlan);
     const parsed = CatalogSnapshotSchema.safeParse(state);
     if (!parsed.success) throw new CatalogServiceError("CATALOG_LIMIT_EXCEEDED");
     ordered(parsed.data);
-    if (serializeCatalogSnapshot(parsed.data) === serializeCatalogSnapshot(current.state))
-      return current;
-    if (current.revision === 2_147_483_647) throw new CatalogServiceError("CATALOG_LIMIT_EXCEEDED");
-    return persistState(tx, parsed.data, current.revision + 1, rollbackFromRevision);
+    let result = current;
+    if (serializeCatalogSnapshot(parsed.data) !== serializeCatalogSnapshot(current.state)) {
+      if (current.revision === 2_147_483_647)
+        throw new CatalogServiceError("CATALOG_LIMIT_EXCEEDED");
+      result = await persistState(tx, parsed.data, current.revision + 1, rollbackFromRevision);
+    }
+    if (moneyPlan) await finishCatalogMoneyMutation(tx, moneyPlan, result);
+    return result;
   }
   async function createCatalogEntry(input: unknown): Promise<CatalogEntryRevision> {
     const parsed = CreateCatalogEntryInputSchema.safeParse(input);
     if (!parsed.success) invalid();
     const data = parsed.data;
+    const moneyPlan = await beginCatalogMoneyMutation(
+      tx,
+      moneyContext,
+      { kind: "CREATE_ENTRY", input: data },
+      null,
+    );
     if (!(await tx.categoryTemplate.findUnique({ where: { id: data.categoryTemplateId } }))) {
       throw new CatalogServiceError("CATALOG_NOT_FOUND");
     }
@@ -270,7 +303,7 @@ export function createCatalogMutationService(tx: CatalogTransaction) {
         schemaVersion: 1,
         id: randomUUID(),
         ...data,
-        attributes: await attributes(tx, data.categoryTemplateId, data.attributes),
+        attributes: await attributes(tx, data.categoryTemplateId, data.attributes, moneyPlan),
         variants: [],
         identifiers: [],
       }),
@@ -282,31 +315,56 @@ export function createCatalogMutationService(tx: CatalogTransaction) {
         authored: json({ text: state.text, sources: state.sources }),
       },
     });
-    return persistState(tx, state, 1, null);
+    const result = await persistState(tx, state, 1, null);
+    await finishCatalogMoneyMutation(tx, moneyPlan, result);
+    return result;
   }
   async function updateCatalogEntry(entryId: string, expectedRevision: number, input: unknown) {
     const parsed = CatalogEntryPatchSchema.safeParse(input);
     if (!parsed.success) invalid();
-    return mutate(entryId, expectedRevision, async (state) => {
-      const patch = parsed.data;
-      if (patch.text) state.text = patch.text;
-      if (patch.sources) state.sources = patch.sources;
-      if (patch.attributes)
-        state.attributes = await attributes(tx, state.categoryTemplateId, patch.attributes);
-    });
+    return mutate(
+      entryId,
+      expectedRevision,
+      async (state, moneyPlan) => {
+        const patch = parsed.data;
+        if (patch.text) state.text = patch.text;
+        if (patch.sources) state.sources = patch.sources;
+        if (patch.attributes)
+          state.attributes = await attributes(
+            tx,
+            state.categoryTemplateId,
+            patch.attributes,
+            moneyPlan,
+          );
+      },
+      null,
+      { kind: "UPDATE_ENTRY", input: parsed.data },
+    );
   }
   async function addCatalogVariant(entryId: string, expectedRevision: number, input: unknown) {
     const parsed = CatalogVariantInputSchema.safeParse(input);
     if (!parsed.success) invalid();
     const id = randomUUID();
-    const result = await mutate(entryId, expectedRevision, async (state) => {
-      if (state.variants.length >= 100) throw new CatalogServiceError("CATALOG_LIMIT_EXCEEDED");
-      state.variants.push({
-        id,
-        ...parsed.data,
-        attributes: await attributes(tx, state.categoryTemplateId, parsed.data.attributes),
-      });
-    });
+    const result = await mutate(
+      entryId,
+      expectedRevision,
+      async (state, moneyPlan) => {
+        if (state.variants.length >= 100) throw new CatalogServiceError("CATALOG_LIMIT_EXCEEDED");
+        state.variants.push({
+          id,
+          ...parsed.data,
+          attributes: await attributes(
+            tx,
+            state.categoryTemplateId,
+            parsed.data.attributes,
+            moneyPlan,
+            "OPERATION_VARIANT",
+          ),
+        });
+      },
+      null,
+      { kind: "ADD_VARIANT", input: parsed.data },
+    );
     return {
       ...result.state.variants.find((variant) => variant.id === id)!,
       revision: result.revision,
@@ -321,44 +379,62 @@ export function createCatalogMutationService(tx: CatalogTransaction) {
     variantId = canonicalId(variantId);
     const parsed = CatalogVariantInputSchema.safeParse(input);
     if (!parsed.success) invalid();
-    return mutate(entryId, expectedRevision, async (state) => {
-      const index = state.variants.findIndex((variant) => variant.id === variantId);
-      if (index < 0) throw new CatalogServiceError("CATALOG_VARIANT_NOT_FOUND");
-      state.variants[index] = {
-        id: variantId,
-        ...parsed.data,
-        attributes: await attributes(tx, state.categoryTemplateId, parsed.data.attributes),
-      };
-    });
+    return mutate(
+      entryId,
+      expectedRevision,
+      async (state, moneyPlan) => {
+        const index = state.variants.findIndex((variant) => variant.id === variantId);
+        if (index < 0) throw new CatalogServiceError("CATALOG_VARIANT_NOT_FOUND");
+        state.variants[index] = {
+          id: variantId,
+          ...parsed.data,
+          attributes: await attributes(
+            tx,
+            state.categoryTemplateId,
+            parsed.data.attributes,
+            moneyPlan,
+            "OPERATION_VARIANT",
+          ),
+        };
+      },
+      null,
+      { kind: "UPDATE_VARIANT", variantId, input: parsed.data },
+    );
   }
   async function addExternalIdentifier(entryId: string, expectedRevision: number, input: unknown) {
     const parsed = CatalogExternalIdentifierInputSchema.safeParse(input);
     if (!parsed.success) invalid();
     let id: string = randomUUID();
-    const result = await mutate(entryId, expectedRevision, async (state) => {
-      const data = parsed.data;
-      if (data.variantId && !state.variants.some((variant) => variant.id === data.variantId)) {
-        throw new CatalogServiceError("CATALOG_VARIANT_NOT_FOUND");
-      }
-      const existing = state.identifiers.find(
-        (identifier) =>
-          identifier.variantId === data.variantId &&
-          identifier.namespace === data.namespace &&
-          identifier.type === data.type &&
-          identifier.value === data.value,
-      );
-      // Duplicate authored identifiers with identical provenance are a no-op; differing sources are a canonical change.
-      // Re-adding an inactive historical tuple creates a new UUID; restoring a
-      // snapshot is the operation that reactivates its retained historical UUID.
-      if (existing) {
-        id = existing.id;
-        existing.sources = data.sources;
-      } else {
-        if (state.identifiers.length >= 200)
-          throw new CatalogServiceError("CATALOG_LIMIT_EXCEEDED");
-        state.identifiers.push({ id, ...data });
-      }
-    });
+    const result = await mutate(
+      entryId,
+      expectedRevision,
+      async (state) => {
+        const data = parsed.data;
+        if (data.variantId && !state.variants.some((variant) => variant.id === data.variantId)) {
+          throw new CatalogServiceError("CATALOG_VARIANT_NOT_FOUND");
+        }
+        const existing = state.identifiers.find(
+          (identifier) =>
+            identifier.variantId === data.variantId &&
+            identifier.namespace === data.namespace &&
+            identifier.type === data.type &&
+            identifier.value === data.value,
+        );
+        // Duplicate authored identifiers with identical provenance are a no-op; differing sources are a canonical change.
+        // Re-adding an inactive historical tuple creates a new UUID; restoring a
+        // snapshot is the operation that reactivates its retained historical UUID.
+        if (existing) {
+          id = existing.id;
+          existing.sources = data.sources;
+        } else {
+          if (state.identifiers.length >= 200)
+            throw new CatalogServiceError("CATALOG_LIMIT_EXCEEDED");
+          state.identifiers.push({ id, ...data });
+        }
+      },
+      null,
+      { kind: "ADD_IDENTIFIER", input: parsed.data },
+    );
     return {
       ...result.state.identifiers.find((identifier) => identifier.id === id)!,
       revision: result.revision,
@@ -373,25 +449,31 @@ export function createCatalogMutationService(tx: CatalogTransaction) {
     identifierId = canonicalId(identifierId);
     const parsed = CatalogExternalIdentifierInputSchema.safeParse(input);
     if (!parsed.success) invalid();
-    return mutate(entryId, expectedRevision, async (state) => {
-      const index = state.identifiers.findIndex((identifier) => identifier.id === identifierId);
-      if (index < 0) throw new CatalogServiceError("CATALOG_IDENTIFIER_NOT_FOUND");
-      const data = parsed.data;
-      if (data.variantId && !state.variants.some((variant) => variant.id === data.variantId))
-        throw new CatalogServiceError("CATALOG_VARIANT_NOT_FOUND");
-      if (
-        state.identifiers.some(
-          (identifier) =>
-            identifier.id !== identifierId &&
-            identifier.variantId === data.variantId &&
-            identifier.namespace === data.namespace &&
-            identifier.type === data.type &&
-            identifier.value === data.value,
+    return mutate(
+      entryId,
+      expectedRevision,
+      async (state) => {
+        const index = state.identifiers.findIndex((identifier) => identifier.id === identifierId);
+        if (index < 0) throw new CatalogServiceError("CATALOG_IDENTIFIER_NOT_FOUND");
+        const data = parsed.data;
+        if (data.variantId && !state.variants.some((variant) => variant.id === data.variantId))
+          throw new CatalogServiceError("CATALOG_VARIANT_NOT_FOUND");
+        if (
+          state.identifiers.some(
+            (identifier) =>
+              identifier.id !== identifierId &&
+              identifier.variantId === data.variantId &&
+              identifier.namespace === data.namespace &&
+              identifier.type === data.type &&
+              identifier.value === data.value,
+          )
         )
-      )
-        throw new CatalogServiceError("CATALOG_IDENTIFIER_CONFLICT");
-      state.identifiers[index] = { id: identifierId, ...data };
-    });
+          throw new CatalogServiceError("CATALOG_IDENTIFIER_CONFLICT");
+        state.identifiers[index] = { id: identifierId, ...data };
+      },
+      null,
+      { kind: "UPDATE_IDENTIFIER", identifierId, input: parsed.data },
+    );
   }
   async function removeExternalIdentifier(
     entryId: string,
@@ -399,11 +481,17 @@ export function createCatalogMutationService(tx: CatalogTransaction) {
     identifierId: string,
   ) {
     identifierId = canonicalId(identifierId);
-    return mutate(entryId, expectedRevision, async (state) => {
-      const index = state.identifiers.findIndex((identifier) => identifier.id === identifierId);
-      if (index < 0) throw new CatalogServiceError("CATALOG_IDENTIFIER_NOT_FOUND");
-      state.identifiers.splice(index, 1);
-    });
+    return mutate(
+      entryId,
+      expectedRevision,
+      async (state) => {
+        const index = state.identifiers.findIndex((identifier) => identifier.id === identifierId);
+        if (index < 0) throw new CatalogServiceError("CATALOG_IDENTIFIER_NOT_FOUND");
+        state.identifiers.splice(index, 1);
+      },
+      null,
+      { kind: "REMOVE_IDENTIFIER", identifierId },
+    );
   }
   async function rollbackCatalogEntry(
     entryId: string,
@@ -445,13 +533,21 @@ export function createCatalogMutationService(tx: CatalogTransaction) {
 }
 
 /** Maintenance-only wrappers; never expose canonical writes as ordinary-user routes. */
-export function createCatalogMaintenanceService(database: CatalogDatabase) {
+export function createCatalogMaintenanceService(database: CatalogDatabase, moneyContext?: unknown) {
   const within = <T>(
     work: (service: ReturnType<typeof createCatalogMutationService>) => Promise<T>,
   ) =>
-    database.$transaction((tx) => work(createCatalogMutationService(tx)), {
-      isolationLevel: "ReadCommitted",
-    });
+    database.$transaction(
+      async (tx) => {
+        await tx.$queryRaw`SELECT set_config('TimeZone','UTC',true),set_config('statement_timeout','5000ms',true),set_config('lock_timeout','1000ms',true),set_config('transaction_timeout','45000ms',true)`;
+        return work(createCatalogMutationService(tx, moneyContext));
+      },
+      {
+        isolationLevel: "ReadCommitted",
+        maxWait: 2000,
+        timeout: 45000,
+      },
+    );
   async function getCatalogEntryAtRevision(
     entryId: string,
     revision: number,

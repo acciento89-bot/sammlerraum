@@ -510,7 +510,12 @@ export async function applyCatalogMoneyRevision(
   await tx.$queryRaw(
     Prisma.sql`UPDATE "CatalogEntry" SET id=id WHERE id=${data.entryId}::uuid RETURNING id`,
   );
-  const copies = data.actions.filter((a) => a.op === "COPY");
+  const copies = data.actions.filter(
+    (a) =>
+      a.op === "COPY" ||
+      a.op === "VERIFY" ||
+      (a.op === "AUTHOR" && a.expectedFactToken !== undefined),
+  );
   if (copies.length && data.sourceRevision === null) return legacyMoneyFail("LEGACY_MONEY_INVALID");
   let source =
     data.sourceRevision === null
@@ -558,6 +563,14 @@ export async function applyCatalogMoneyRevision(
     if (!target || target.view.raw === null) return legacyMoneyFail("MONEY_NOT_FOUND");
     const s = target.view.subject;
     if (s.family !== "CATALOG") return integrity();
+    if (action.op === "VERIFY") {
+      if (data.sourceRevision !== data.destinationRevision)
+        return legacyMoneyFail("LEGACY_MONEY_INVALID");
+      const original = from.get(path);
+      if (!original || original.view.factToken !== action.expectedFactToken)
+        return legacyMoneyFail("MONEY_CONFLICT");
+      continue;
+    }
     const next = BigInt(target.sequence) + 1n;
     if (next > 9223372036854775807n) return integrity();
     let draft: CatalogBatchDraft = {
@@ -566,6 +579,11 @@ export async function applyCatalogMoneyRevision(
       generation: null,
     };
     if (action.op === "AUTHOR") {
+      if (
+        action.expectedFactToken !== undefined &&
+        from.get(path)?.view.factToken !== action.expectedFactToken
+      )
+        return legacyMoneyFail("MONEY_CONFLICT");
       const receipt = action.receipt;
       const verified = parseLegacyMoneyAuthoring({
         kind: "RAW",
@@ -634,12 +652,24 @@ const catalogBatchPath = {
 };
 const catalogBatchAction = z.discriminatedUnion("op", [
   z
-    .object({ ...catalogBatchPath, op: z.literal("AUTHOR"), receipt: AuthoringReceiptSchema })
+    .object({
+      ...catalogBatchPath,
+      op: z.literal("AUTHOR"),
+      receipt: AuthoringReceiptSchema,
+      expectedFactToken: ClassifyMoneyInputSchema.shape.expectedFactToken.optional(),
+    })
     .strict(),
   z
     .object({
       ...catalogBatchPath,
       op: z.literal("COPY"),
+      expectedFactToken: ClassifyMoneyInputSchema.shape.expectedFactToken,
+    })
+    .strict(),
+  z
+    .object({
+      ...catalogBatchPath,
+      op: z.literal("VERIFY"),
       expectedFactToken: ClassifyMoneyInputSchema.shape.expectedFactToken,
     })
     .strict(),

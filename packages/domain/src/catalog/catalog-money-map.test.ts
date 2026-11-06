@@ -10,6 +10,7 @@ import {
   appendMoneyAssertion,
   readMoneyAssertion,
   revokeMoneyAssertion,
+  eraseMoneyEvidenceForActor,
 } from "../money/legacy-money-store";
 import { parseLegacyMoneyAuthoring } from "../money/legacy-money-policy";
 import { moneyTransaction } from "../money/legacy-money-transaction";
@@ -378,6 +379,144 @@ describe.runIf(enabled)("native coherent catalog money map", () => {
         }),
       ),
     ).rejects.toMatchObject({ code: "MONEY_FORBIDDEN" });
+  });
+  it("verifies retained meaning without appending an event and checks replacement tokens", async () => {
+    const id = await snapshot(category, [
+      { definitionId: money, key: "price_0", type: "MONEY", value: raw },
+    ]);
+    const target = { kind: "ENTRY" };
+    const read = () =>
+      db.$transaction((tx) => readCatalogMoneyMap(moneyTransaction(tx), id, 1, { userId: actor }));
+    const first = (await read())[0]!;
+    const apply = (action: object) =>
+      db.$transaction((tx) =>
+        applyCatalogMoneyRevision(
+          moneyTransaction(tx),
+          { userId: actor },
+          {
+            entryId: id,
+            sourceRevision: 1,
+            destinationRevision: 1,
+            actions: [{ target, definitionId: money, ...action }],
+          },
+        ),
+      );
+    await apply({ op: "VERIFY", expectedFactToken: first.factToken });
+    expect((await read())[0]).toEqual(first);
+    await apply({
+      op: "AUTHOR",
+      expectedFactToken: first.factToken,
+      receipt: parseLegacyMoneyAuthoring(authoring),
+    });
+    const authored = (await read())[0]!;
+    await expect(
+      apply({
+        op: "AUTHOR",
+        expectedFactToken: first.factToken,
+        receipt: parseLegacyMoneyAuthoring(authoring),
+      }),
+    ).rejects.toMatchObject({ code: "MONEY_CONFLICT" });
+    await apply({ op: "VERIFY", expectedFactToken: authored.factToken });
+    expect((await read())[0]).toEqual(authored);
+  });
+  it("observes fresh erasure before acquiring direct-origin locks and rolls back the destination", async () => {
+    const id = await snapshot(category, [
+      { definitionId: money, key: "price_0", type: "MONEY", value: raw },
+    ]);
+    const s = {
+      family: "CATALOG" as const,
+      entryId: id,
+      revision: 1,
+      target: { kind: "ENTRY" as const },
+      definitionId: money,
+    };
+    const classified = await db.$transaction(async (tx) => {
+      const m = moneyTransaction(tx),
+        current = await readMoneyFact(m, s, { userId: actor });
+      return appendMoneyAssertion(
+        m,
+        await requireMoneyToken(m, s, { userId: actor }, current.factToken),
+        {
+          kind: "CLASSIFY",
+          input: {
+            expectedFactToken: current.factToken,
+            exponent: 2,
+            unit: { kind: "SUPPORTED", unitKey: "iso4217-2026-09-17:AFN" },
+            evidence: {
+              category: "OPERATOR_VERIFIED_RECORD",
+              reason: "Private source evidence",
+              reference: "PRIVATE-SYNTHETIC-RECORD",
+            },
+          },
+        },
+      );
+    });
+    await db.$queryRaw`INSERT INTO "CatalogRevision" ("entryId",revision,snapshot) SELECT "entryId",2,snapshot FROM "CatalogRevision" WHERE "entryId"=${id}::uuid AND revision=1 RETURNING revision`;
+    let enter!: () => void, release!: () => void;
+    const reached = new Promise<void>((resolve) => {
+      enter = resolve;
+    });
+    const held = new Promise<void>((resolve) => {
+      release = resolve;
+    });
+    const applying = db
+      .$transaction(
+        (tx) => {
+          const actual = moneyTransaction(tx);
+          return applyCatalogMoneyRevision(
+            {
+              $queryRaw: async (query) => {
+                if (query.sql.includes("FOR SHARE OF e")) {
+                  enter();
+                  await held;
+                }
+                return actual.$queryRaw(query);
+              },
+            },
+            { userId: actor },
+            {
+              entryId: id,
+              sourceRevision: 1,
+              destinationRevision: 2,
+              actions: [
+                {
+                  target: s.target,
+                  definitionId: money,
+                  op: "COPY",
+                  expectedFactToken: classified.factToken,
+                },
+              ],
+            },
+          );
+        },
+        { timeout: 10000 },
+      )
+      .then(
+        () => ({ success: true as const }),
+        (error) => ({ error }),
+      );
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    try {
+      await Promise.race([
+        reached,
+        applying.then(() => {
+          throw Error("Batch settled before its native origin-lock gate");
+        }),
+        new Promise<never>((_, reject) => {
+          timer = setTimeout(() => reject(Error("Native origin-lock gate timeout")), 2000);
+        }),
+      ]);
+      await db.$transaction((tx) =>
+        eraseMoneyEvidenceForActor(moneyTransaction(tx), { userId: actor }, actor),
+      );
+    } finally {
+      if (timer) clearTimeout(timer);
+      release();
+    }
+    expect(await applying).toMatchObject({ error: { code: "MONEY_CONFLICT" } });
+    expect(
+      await db.$queryRaw`SELECT id FROM "CatalogMoneyInterpretationEvent" WHERE "entryId"=${id}::uuid AND revision=2`,
+    ).toEqual([]);
   });
   it("rolls back all earlier chunks when a later native batch fails", async () => {
     const t = await template(100);

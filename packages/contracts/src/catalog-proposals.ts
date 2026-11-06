@@ -164,6 +164,7 @@ const storedPath = z.discriminatedUnion("kind", [
       definitionId: LegacyMoneyIdSchema,
       kind: z.literal("AUTHORED"),
       receipt: AuthoringReceiptSchema,
+      replacesFactToken: retainedMoneyIntent.shape.expectedFactToken.optional(),
     })
     .strict(),
   z
@@ -183,5 +184,15 @@ export const StoredProposalMoneyEnvelopeSchema = z
     paths: z.array(storedPath).max(100).refine(uniqueMoneyPaths),
   })
   .strict()
-  .superRefine(boundedMoneyProposal);
+  .superRefine((value, context) => {
+    boundedMoneyProposal(value, context);
+    if (
+      value.baseRevision === null &&
+      value.paths.some((p) => p.kind === "RETAIN" || p.replacesFactToken !== undefined)
+    )
+      context.addIssue({
+        code: "custom",
+        message: "A new entry cannot replace or retain an existing interpretation",
+      });
+  });
 export type StoredProposalMoneyEnvelope = z.infer<typeof StoredProposalMoneyEnvelopeSchema>;

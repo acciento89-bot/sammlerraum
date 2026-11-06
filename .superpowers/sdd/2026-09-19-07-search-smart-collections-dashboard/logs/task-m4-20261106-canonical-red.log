@@ -1,0 +1,129 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/catalog/catalog-money-mutation.test.ts (4 tests | 4 failed) 378ms
+   × actual canonical catalog money mutation integration > authors exact money and carries it through a text-only revision without rewriting old snapshots 38ms
+     → expected { kind: 'UNKNOWN', …(1) } to match object { kind: 'INTERPRETED', …(2) }
+(1 matching property omitted from actual)
+   × actual canonical catalog money mutation integration > invalidates an explicit legacy same-pair write even if the snapshot revision does not advance 10ms
+     → expected 'UNKNOWN' to be 'INTERPRETED' // Object.is equality
+   × actual canonical catalog money mutation integration > applies a deliberate same-pair replacement and preserves its captured precondition 24ms
+     → expected { kind: 'UNKNOWN', …(1) } to match object { Object (kind, decimal) }
+(1 matching property omitted from actual)
+   × actual canonical catalog money mutation integration > rejects mismatched frozen patch digests without creating a partial entry 8ms
+     → promise resolved "{ revision: 1, state: { …(8) }, …(1) }" instead of rejecting
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/catalog/catalog-money-mutation.test.ts > actual canonical catalog money mutation integration > authors exact money and carries it through a text-only revision without rewriting old snapshots
+AssertionError: expected { kind: 'UNKNOWN', …(1) } to match object { kind: 'INTERPRETED', …(2) }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "decimal": "1.00",
+-   "exponent": 2,
+-   "kind": "INTERPRETED",
++   "kind": "UNKNOWN",
+  }
+
+ ❯ packages/domain/src/catalog/catalog-money-mutation.test.ts:40:34
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  |workspace| packages/domain/src/catalog/catalog-money-mutation.test.ts > actual canonical catalog money mutation integration > invalidates an explicit legacy same-pair write even if the snapshot revision does not advance
+AssertionError: expected 'UNKNOWN' to be 'INTERPRETED' // Object.is equality
+
+Expected: "INTERPRETED"
+Received: "UNKNOWN"
+
+ ❯ packages/domain/src/catalog/catalog-money-mutation.test.ts:48:39
+     46|     const entry = await service(await authored()).createCatalogEntry(i…
+     47|     const first = (await read(entry.state.id, 1))[0]!;
+     48|     expect(first.interpretation.kind).toBe("INTERPRETED");
+       |                                       ^
+     49|     const same = await service().updateCatalogEntry(entry.state.id, 1,…
+     50|     expect(same.revision).toBe(1);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  |workspace| packages/domain/src/catalog/catalog-money-mutation.test.ts > actual canonical catalog money mutation integration > applies a deliberate same-pair replacement and preserves its captured precondition
+AssertionError: expected { kind: 'UNKNOWN', …(1) } to match object { Object (kind, decimal) }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "decimal": "1.00",
+-   "kind": "INTERPRETED",
++   "kind": "UNKNOWN",
+  }
+
+ ❯ packages/domain/src/catalog/catalog-money-mutation.test.ts:62:64
+     60|     const same = await service(ctx).updateCatalogEntry(entry.state.id,…
+     61|     expect(same.revision).toBe(1);
+     62|     expect((await read(entry.state.id, 1))[0]!.interpretation).toMatch…
+       |                                                                ^
+     63|     await expect(service(ctx).updateCatalogEntry(entry.state.id, 1, pa…
+     64|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  |workspace| packages/domain/src/catalog/catalog-money-mutation.test.ts > actual canonical catalog money mutation integration > rejects mismatched frozen patch digests without creating a partial entry
+AssertionError: promise resolved "{ revision: 1, state: { …(8) }, …(1) }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "revision": 1,
++   "rollbackFromRevision": null,
++   "state": {
++     "attributes": [
++       {
++         "definitionId": "08337e16-2c15-47bf-a0c3-ceb521795a35",
++         "key": "price",
++         "type": "MONEY",
++         "value": {
++           "amountMinor": 100,
++           "currency": "AFN",
++         },
++       },
++     ],
++     "categoryTemplateId": "1df015ab-0288-4679-badb-ab9a74ddfd2c",
++     "id": "6b24ca99-48f8-488f-85e2-9475a155d8e9",
++     "identifiers": [],
++     "schemaVersion": 1,
++     "sources": [],
++     "text": {
++       "description": "",
++       "language": "en",
++       "title": "Synthetic priced reference",
++       "translations": [],
++     },
++     "variants": [],
++   },
+  }
+
+ ❯ packages/domain/src/catalog/catalog-money-mutation.test.ts:68:125
+     66|     const ctx = await authored();
+     67|     const before = await db.catalogEntry.count();
+     68|     await expect(service({ ...ctx, envelope: { ...ctx.envelope, patchD…
+       |                                                                                                                             ^
+     69|     expect(await db.catalogEntry.count()).toBe(before);
+     70|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  4 failed (4)
+   Start at  06:07:58
+   Duration  773ms (transform 113ms, setup 5ms, collect 228ms, tests 378ms, environment 0ms, prepare 48ms)
+

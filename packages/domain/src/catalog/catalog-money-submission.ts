@@ -119,7 +119,13 @@ export async function prepareCatalogMoneySubmission(
       receipt.raw.currency !== raw.data.currency
     )
       return legacyMoneyFail("LEGACY_MONEY_INVALID");
-    paths.push({ target, definitionId: attribute.definitionId, kind: "AUTHORED", receipt });
+    paths.push({
+      target,
+      definitionId: attribute.definitionId,
+      kind: "AUTHORED",
+      receipt,
+      ...(intent.op === "REPLACE" ? { replacesFactToken: intent.expectedFactToken } : {}),
+    });
   }
   if (paths.length !== money.intents.length) return legacyMoneyFail("LEGACY_MONEY_INVALID");
   return StoredProposalMoneyEnvelopeSchema.parse({
