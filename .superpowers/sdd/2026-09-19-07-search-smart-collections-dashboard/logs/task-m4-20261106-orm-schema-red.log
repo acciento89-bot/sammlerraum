@@ -1,0 +1,78 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/db/src/test-database.test.ts (7 tests | 3 failed) 378ms
+   ✓ createTestDatabaseClient > imports without loading the production environment 36ms
+   ✓ createTestDatabaseClient > rejects production mode 2ms
+   ✓ createTestDatabaseClient > rejects an actual production process despite a test override 1ms
+   ✓ createTestDatabaseClient > rejects a database without a test name 1ms
+   × createTestDatabaseClient > rejects an isolated schema that does not match the raw connection search path 24ms
+     → expected [Function] to throw an error
+   × createTestDatabaseClient > never accepts public or an arbitrary schema as an isolated native fixture 10ms
+     → expected [Function] to throw an error
+   × isolated native ORM schema > reads the same owned test schema through ORM and raw SQL 303ms
+     → expected null to deeply equal { …(2) }
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/db/src/test-database.test.ts > createTestDatabaseClient > rejects an isolated schema that does not match the raw connection search path
+AssertionError: expected [Function] to throw an error
+
+- Expected: 
+null
+
++ Received: 
+undefined
+
+ ❯ packages/db/src/test-database.test.ts:57:159
+     55|   it("rejects an isolated schema that does not match the raw connectio…
+     56|     const { createTestDatabaseClient } = await import("@sammlerraum/db…
+     57|     expect(() => createTestDatabaseClient({ databaseUrl: "postgresql:/…
+       |                                                                                                                                                               ^
+     58|   });
+     59|   it("never accepts public or an arbitrary schema as an isolated nativ…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  |workspace| packages/db/src/test-database.test.ts > createTestDatabaseClient > never accepts public or an arbitrary schema as an isolated native fixture
+AssertionError: expected [Function] to throw an error
+
+- Expected: 
+null
+
++ Received: 
+undefined
+
+ ❯ packages/db/src/test-database.test.ts:61:184
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  |workspace| packages/db/src/test-database.test.ts > isolated native ORM schema > reads the same owned test schema through ORM and raw SQL
+AssertionError: expected null to deeply equal { …(2) }
+
+- Expected: 
+{
+  "id": "f396eb84-38e1-4498-a9e7-3ad8f215fcbc",
+  "name": "Isolated synthetic ORM",
+}
+
++ Received: 
+null
+
+ ❯ packages/db/src/test-database.test.ts:75:93
+     73|       const id = randomUUID();
+     74|       await db.$queryRaw`INSERT INTO "user" (id,name,email,"emailVerif…
+     75|       expect(await db.user.findUnique({ where: { id }, select: { id: t…
+       |                                                                                             ^
+     76|       expect(await db.$queryRaw`SELECT id FROM public."user" WHERE id=…
+     77|     } finally {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 4 passed (7)
+   Start at  05:55:54
+   Duration  570ms (transform 33ms, setup 6ms, collect 13ms, tests 378ms, environment 0ms, prepare 36ms)
+

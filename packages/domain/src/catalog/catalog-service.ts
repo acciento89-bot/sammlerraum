@@ -17,6 +17,7 @@ import type {
 } from "@sammlerraum/db/catalog-types";
 
 import { validateAttributeValue } from "./category-template-service";
+import { serializeCatalogValue } from "./catalog-serialization";
 
 type ErrorCode =
   | "CATALOG_INPUT_INVALID"
@@ -49,17 +50,7 @@ export function catalogTextForLocale(text: CatalogText, locale: string) {
 }
 /** Stable serialization for comparison and snapshot writes; precision remains in canonical strings. */
 export function serializeCatalogSnapshot(value: unknown): string {
-  if (Array.isArray(value)) return `[${value.map(serializeCatalogSnapshot).join(",")}]`;
-  if (typeof value === "object" && value !== null) {
-    return `{${Object.entries(value)
-      .filter(([, item]) => item !== undefined)
-      .sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0))
-      .map(([key, item]) => `${JSON.stringify(key)}:${serializeCatalogSnapshot(item)}`)
-      .join(",")}}`;
-  }
-  const serialized = JSON.stringify(value);
-  if (serialized === undefined) invalid();
-  return serialized;
+  return serializeCatalogValue(value, invalid);
 }
 function ordered(state: CatalogSnapshot): CatalogSnapshot {
   state.text.translations.sort((a, b) => a.language.localeCompare(b.language, "en"));

@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { beforeAll, afterAll, describe, expect, it } from "vitest";
 import { createTestDatabaseClient } from "@sammlerraum/db/test-database";
+import { createLegacyMoneyTestSchema } from "@sammlerraum/db/test-legacy-money-schema";
 import { createCategoryTemplateMaintenanceService } from "./category-template-service";
 import { createCatalogMaintenanceService } from "./catalog-service";
 import { prepareCatalogMoneySubmission } from "./catalog-money-submission";
@@ -8,6 +9,7 @@ import { readMoneyFact } from "../money/legacy-money-store";
 import { moneyTransaction } from "../money/legacy-money-transaction";
 const enabled = process.env.RUN_DATABASE_INTEGRATION === "1";
 let db: ReturnType<typeof createTestDatabaseClient>;
+let isolated: Awaited<ReturnType<typeof createLegacyMoneyTestSchema>>;
 let category: string, money: string, label: string, foreign: string;
 const actor = randomUUID();
 const text = { language: "en", title: "Synthetic reference" };
@@ -45,7 +47,8 @@ describe.runIf(enabled)(
   "catalog money submission selected from actual definitions and revisions",
   () => {
     beforeAll(async () => {
-      db = createTestDatabaseClient();
+      isolated = await createLegacyMoneyTestSchema();
+      db = createTestDatabaseClient({ databaseUrl: isolated.databaseUrl, schema: isolated.schema });
       await db.user.create({
         data: { id: actor, name: "Synthetic proposer", email: `${actor}@example.invalid` },
       });
@@ -69,25 +72,8 @@ describe.runIf(enabled)(
       foreign = other.definitions[0]!.id;
     });
     afterAll(async () => {
-      if (!db) return;
-      const keys = [`fixture_${actor.replaceAll("-", "")}`, `other_${actor.replaceAll("-", "")}`];
-      const entry = { categoryTemplate: { key: { in: keys } } };
-      await db.catalogRevision.deleteMany({ where: { entry } });
-      await db.catalogAttributeValue.deleteMany({ where: { entry } });
-      await db.catalogVariant.deleteMany({ where: { entry } });
-      await db.catalogEntry.deleteMany({ where: entry });
-      await db.catalogAttributeLabel.deleteMany({
-        where: { definition: { categoryTemplate: { key: { in: keys } } } },
-      });
-      await db.catalogAttributeDefinition.deleteMany({
-        where: { categoryTemplate: { key: { in: keys } } },
-      });
-      await db.categoryTemplateLabel.deleteMany({
-        where: { categoryTemplate: { key: { in: keys } } },
-      });
-      await db.categoryTemplate.deleteMany({ where: { key: { in: keys } } });
-      await db.user.deleteMany({ where: { id: actor } });
       await db?.$disconnect();
+      await isolated?.cleanup();
     });
     it("freezes the server's exact pinned authoring receipt", async () => {
       const envelope = await prepare(input(create(), [path({ op: "NEW", authoring })]));
