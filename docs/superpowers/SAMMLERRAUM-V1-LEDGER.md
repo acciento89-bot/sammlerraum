@@ -18,7 +18,7 @@ This is the handoff/status file for long-running implementation. Update it after
 | 05 | Catalog, Condition & Grading | 7 | complete (7/7) | — |
 | 06 | Valuations & Market Data | 6 | complete (6/6) | — |
 | 07 | Search, Smart Collections & Dashboard | 5 | in progress (1/5) | Task 2 |
-| 08 | Import, Export, Insurance & Reports | 7 | not started | Task 1 |
+| 08 | Import, Export, Insurance & Reports | 7 | in progress (1/7) | Task 2 |
 | 09 | Collaboration, Sharing & Audit | 7 | not started | Task 1 |
 | 10 | Community, Moderation & Notifications | 8 | not started | Task 1 |
 | 11 | AI-Assisted Capture | 5 | not started | Task 1 |
@@ -71,8 +71,9 @@ This is the handoff/status file for long-running implementation. Update it after
 - [x] P06 T05 — Add valuation history UI contracts and localization
 - [x] P06 T06 — Add the first two production market-data adapters
 - [x] P07 T01 — Define typed filter AST and complexity limits
+- [x] P08 T01 — Persisted import jobs, versioned mapping profiles and conflict-safe previews
 
-**Verified completion: 41/91 tasks.** Later tasks remain open as listed in the phase table and detail plans.
+**Verified completion: 42/91 tasks.** Later tasks remain open as listed in the phase table and detail plans.
 
 ## Update rule
 
@@ -1024,3 +1025,9 @@ Affirmative capabilities, exact personal/custom/canonical authoring, private own
 Source192fcad0a5e203902b51539f1921401ca7cc3d6c plus isolated JSON-persistence closurebf65d085b665b3d2a3793019bb8717faa36e3fe6. A whole independent review returned SPEC/QUALITY PASS; the final seven-line patch also passed scoped review. Full70-file native gate812PASS/0skip on192; final patch9nativePASS/0skip, fullpure1465PASS/683explicitdisabled-native cases, types/lint/build and actual-built400+8browserPASS. The report attributes each run to its real source.
 
 Bounded same-snapshot monetary capture preserves exact quantities/provenance/privacy and inclusive1,000-item/8MiB boundaries. Import preview pins source/profile/receipt and refuses changed meaning, with explicit legacy UNKNOWN support. Real CSV/XLSX/PDF jobs, durable commits/artifacts and UI remain Phase08 work. Macro41/91 is unchanged. See task-m7-report.md and task-m7-review.md. Root may continue local Phase08 Task1; publication waits for both corrected M6 remote gates. No main merge, production/provider activation or real-data operation.
+
+### Phase08 Task1 verified locally — staged imports and frozen previews (2026-11-06)
+
+Sourcecc754f4b2a48d62ddde63f990f358cd1db27edf1 and reviewed closurec4938aaaec6ad773501f0972861bd9b5fa67ee14. Final827nativePASS/0skip in72files,1475regularPASS/698explicitdisabled-native cases, wholetypes/lint/build and22actual-built collection/item browserPASS. One whole review found a P2 completed-preview retry bypass; genuine native RED and scoped fix/closure are retained. Final combined SPEC/QUALITYPASS, no open findings.
+
+Three persisted models and actual owned service methods provide pending source jobs, reusable profiles, frozen resumable previews, source/existing duplicates, explicit actions and bounded page reads without inventory writes. Real CSV/XLSX parsing is Task2; committing inventory is Task3; upload/API/UI/cleanup integration remains assigned to later tasks. Both prior M7 fullCIs42276619939/42276608472PASS on08fa12e. Root accepts local Task1, count42/91; new exact-head CI follows feature-branch publication. No main application merge or production/provider activation. See Phase08 task-1-report.md and task-1-review.md.

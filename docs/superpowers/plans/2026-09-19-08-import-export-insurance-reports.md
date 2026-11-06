@@ -39,7 +39,7 @@
 **Interfaces:**
 - Produces: `createImportJob`, `buildImportPreview`, `saveImportProfile`.
 
-- [ ] **Step 1: Write failing overwrite-protection test**
+- [x] **Step 1: Write failing overwrite-protection test**
 
 ```ts
 it("marks an existing-match row for a user decision instead of overwriting", async () => {
@@ -51,16 +51,16 @@ it("marks an existing-match row for a user decision instead of overwriting", asy
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run packages/domain/src/imports/import-service.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement models**
+- [x] **Step 3: Implement models**
 
 Add `ImportJob`, `ImportRow`, `ImportMappingProfile`, source checksum, locale, status, progress, row errors, conflict resolution. Persist source row number and stable row idempotency key.
 
-- [ ] **Step 4: Migrate and test**
+- [x] **Step 4: Migrate and test**
 
 Run:
 ```bash
@@ -70,7 +70,7 @@ pnpm vitest run packages/domain/src/imports
 
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/db packages/domain/src/imports packages/contracts/src/imports.ts

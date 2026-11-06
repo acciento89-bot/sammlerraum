@@ -1,0 +1,10 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ✓ |workspace| packages/db/src/import-jobs.integration.test.ts (4 tests) 362ms
+
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+   Start at  20:18:21
+   Duration  618ms (transform 41ms, setup 6ms, collect 81ms, tests 362ms, environment 0ms, prepare 50ms)
+

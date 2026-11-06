@@ -1,0 +1,84 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/imports/import-service.integration.test.ts (7 tests | 2 failed) 2742ms
+   ✓ persisted owned import preview > creates only an owned pending source intent and conceals foreign jobs/collections 83ms
+   ✓ persisted owned import preview > persists duplicate decisions while leaving real existing inventory unchanged 37ms
+   × resumable frozen import generations > resumes bounded batches and updates duplicates from earlier batches before complete review 97ms
+     → service.getImportPreviewPage is not a function
+   ✓ resumable frozen import generations > freezes a selected profile revision across edits and rejects a changed mapping 26ms
+   × resumable frozen import generations > keeps foreign profiles hidden even when the requested name collides with an own profile 9ms
+     → expected ImportServiceError: IMPORT_CONFLICT { code: '…' } to match object { code: 'IMPORT_NOT_FOUND' }
+(1 matching property omitted from actual)
+   ✓ resumable frozen import generations > serializes actual concurrent profile creation on separate PostgreSQL clients 16ms
+   ✓ resumable frozen import generations > rolls back row previews and progress after an actual final statement timeout  2050ms
+ ❯ |workspace| packages/domain/src/imports/import-service.test.ts (8 tests | 1 failed) 18ms
+   ✓ requires an explicit duplicate decision and never treats a matching item as an automatic overwrite 11ms
+   ✓ maps exact values with the existing identifier and pinned money policies 1ms
+   ✓ keeps invalid 'quantity' as a row error without coercion or write actions 0ms
+   ✓ keeps invalid 'purchaseMoney' as a row error without coercion or write actions 1ms
+   ✓ keeps invalid 'acquiredOn' as a row error without coercion or write actions 0ms
+   ✓ keeps invalid 'title' as a row error without coercion or write actions 0ms
+   ✓ does not invent a merge target when duplicates occur only inside the source 0ms
+   × canonicalizes UUID input aliases before persisting profile identity 4ms
+     → expected 'ABCDEFAB-ABCD-4ABC-8ABC-ABCDEFABCDEF' to be 'abcdefab-abcd-4abc-8abc-abcdefabcdef' // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/imports/import-service.integration.test.ts > resumable frozen import generations > resumes bounded batches and updates duplicates from earlier batches before complete review
+TypeError: service.getImportPreviewPage is not a function
+ ❯ packages/domain/src/imports/import-service.integration.test.ts:127:28
+    125|   const second=await service.buildImportPreview(f.actor,{jobId:job.id,…
+    126|   expect(second).toMatchObject({complete:true,job:{status:"REVIEW_READ…
+    127|   const page=await service.getImportPreviewPage(f.actor,{jobId:job.id,…
+       |                            ^
+    128|   expect(page).toMatchObject({hasMore:true,nextAfterRowNumber:1,items:…
+    129|   await expect(service.buildImportPreview(f.actor,{jobId:job.id,expect…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  |workspace| packages/domain/src/imports/import-service.integration.test.ts > resumable frozen import generations > keeps foreign profiles hidden even when the requested name collides with an own profile
+AssertionError: expected ImportServiceError: IMPORT_CONFLICT { code: '…' } to match object { code: 'IMPORT_NOT_FOUND' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+- {
+-   "code": "IMPORT_NOT_FOUND",
++ ImportServiceError {
++   "code": "IMPORT_CONFLICT",
+  }
+
+ ❯ packages/domain/src/imports/import-service.integration.test.ts:146:3
+    144|   const f=await fixture(),other=await fixture(),service=createImportSe…
+    145|   const own=await service.saveImportProfile(f.actor,{name:"Own profile…
+    146|   await expect(service.saveImportProfile(f.actor,{profileId:foreign.id…
+       |   ^
+    147|  });
+    148|  it("serializes actual concurrent profile creation on separate Postgre…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  |workspace| packages/domain/src/imports/import-service.test.ts > canonicalizes UUID input aliases before persisting profile identity
+AssertionError: expected 'ABCDEFAB-ABCD-4ABC-8ABC-ABCDEFABCDEF' to be 'abcdefab-abcd-4abc-8abc-abcdefabcdef' // Object.is equality
+
+Expected: "abcdefab-abcd-4abc-8abc-abcdefabcdef"
+Received: "ABCDEFAB-ABCD-4ABC-8ABC-ABCDEFABCDEF"
+
+ ❯ packages/domain/src/imports/import-service.test.ts:83:160
+     81|  const {ImportPreviewInputSchema}=await import("@sammlerraum/contracts…
+     82|  const profile="abcdefab-abcd-4abc-8abc-abcdefabcdef";
+     83|  expect(ImportPreviewInputSchema.parse({jobId:existing,expectedRevisio…
+       |                                                                                                                                                                ^
+     84| });
+     85| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  3 failed | 12 passed (15)
+   Start at  20:34:28
+   Duration  3.49s (transform 162ms, setup 6ms, collect 424ms, tests 2.76s, environment 0ms, prepare 78ms)
+

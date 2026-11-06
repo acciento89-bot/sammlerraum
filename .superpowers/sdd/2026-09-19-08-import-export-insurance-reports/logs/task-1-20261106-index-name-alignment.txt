@@ -1,0 +1,4 @@
+Prisma migrate diff --from-empty --to-schema prisma/schema.prisma --script
+CREATE INDEX "ImportRow_jobId_normalizedIdentifierType_normalizedIdentifi_idx" ON "ImportRow"("jobId", "normalizedIdentifierType", "normalizedIdentifierValue");
+Actual PostgreSQL truncation of first migration index: ImportRow_jobId_normalizedIdentifierType_normalizedIdentifierVa
+Additive alignment migration replayed in focused/native suites and both retained owned test databases.

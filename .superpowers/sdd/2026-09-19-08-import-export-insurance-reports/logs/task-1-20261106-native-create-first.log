@@ -1,0 +1,28 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/imports/import-service.integration.test.ts (2 tests | 1 failed) 347ms
+   ✓ persisted owned import preview > creates only an owned pending source intent and conceals foreign jobs/collections 101ms
+   × persisted owned import preview > persists duplicate decisions while leaving real existing inventory unchanged 25ms
+     → service.buildImportPreview is not a function
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/imports/import-service.integration.test.ts > persisted owned import preview > persists duplicate decisions while leaving real existing inventory unchanged
+TypeError: service.buildImportPreview is not a function
+ ❯ packages/domain/src/imports/import-service.integration.test.ts:88:35
+     86|     const job = await service.createImportJob(f.actor, input(f.collect…
+     87|     await parsed(job.id, [["Imported title", "2", "978-1 234", "1,25"]…
+     88|     const preview = await service.buildImportPreview(f.actor, {
+       |                                   ^
+     89|       jobId: job.id,
+     90|       expectedRevision: job.revision,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 1 passed (2)
+   Start at  20:20:23
+   Duration  862ms (transform 170ms, setup 7ms, collect 345ms, tests 347ms, environment 0ms, prepare 46ms)
+
