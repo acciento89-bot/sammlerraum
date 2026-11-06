@@ -155,4 +155,13 @@ describe("deliberate monetary draft semantics", () => {
     clearMoneyDrafts();
     expect(recallMoneyDraft("owner-a", "purchase:item")).toBeUndefined();
   });
+  it("keeps a complete active form's 1000 custom drafts plus purchase through a locale remount", () => {
+    const draft = { ...initialMoneyDraft(null), mode: "REPLACE" as const, decimal: "1,23" };
+    for (let i = 0; i < 128; i++) rememberMoneyDraft("owner-a", `older:${i}`, draft);
+    rememberMoneyDraft("owner-a", "purchase:active", draft);
+    for (let i = 0; i < 1000; i++) rememberMoneyDraft("owner-a", `custom:active:${i}`, { ...draft, decimal: String(i) });
+    expect(recallMoneyDraft("owner-a", "purchase:active")).toEqual(draft);
+    for (let i = 0; i < 1000; i++) expect(recallMoneyDraft("owner-a", `custom:active:${i}`)?.decimal).toBe(String(i));
+  });
+
 });

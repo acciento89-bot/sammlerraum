@@ -1079,6 +1079,7 @@
     "sessionChanged": "Die Anmeldung hat sich geändert. Bitte die Seite mit dem aktuellen Konto neu öffnen.",
     "signIn": "Zur Anmeldung",
     "confirmRequired": "Bitte die Korrektur ausdrücklich bestätigen.",
-    "reasonRequired": "Bitte den Grund der Korrektur angeben."
+    "reasonRequired": "Bitte den Grund der Korrektur angeben.",
+    "requestTooLarge": "Die gemeinsame Eingabe ist zu groß. Bitte Texte kürzen oder getrennt ändern."
   }
 }

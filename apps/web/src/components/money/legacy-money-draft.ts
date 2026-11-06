@@ -120,11 +120,13 @@ export function rememberMoneyDraft(owner: string, key: string, draft: MoneyDraft
   const parsed = MoneyDraftSchema.parse(draft);
   drafts.delete(key);
   drafts.set(key, parsed);
-  while (drafts.size > 128) drafts.delete(drafts.keys().next().value!);
+  // One active bounded form can hold 1000 custom MONEY edits plus purchase.
+  while (drafts.size > 1024) drafts.delete(drafts.keys().next().value!);
 }
 export function recallMoneyDraft(owner: string, key: string): MoneyDraft | undefined {
   ownerScope(owner);
   const draft = drafts.get(key);
+  if (draft) { drafts.delete(key); drafts.set(key, draft); }
   return draft ? { ...draft } : undefined;
 }
 export function forgetMoneyDraft(owner: string, key: string): void {

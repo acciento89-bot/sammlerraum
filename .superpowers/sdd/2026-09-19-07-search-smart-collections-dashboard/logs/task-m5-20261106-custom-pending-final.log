@@ -1,0 +1,91 @@
+[WebServer] (node:91511) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 48 tests using 1 worker
+
+(node:91512) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [money-ui-desktop] › e2e/legacy-money.spec.ts:20:5 › de: title-only save preserves unknown raw money (1.9s)
+  ✓   2 [money-ui-desktop] › e2e/legacy-money.spec.ts:20:5 › de: title-only save preserves known historical scale (536ms)
+  ✓   3 [money-ui-desktop] › e2e/legacy-money.spec.ts:20:5 › en: title-only save preserves unknown raw money (508ms)
+  ✓   4 [money-ui-desktop] › e2e/legacy-money.spec.ts:20:5 › en: title-only save preserves known historical scale (533ms)
+  ✓   5 [money-ui-desktop] › e2e/legacy-money.spec.ts:127:3 › de: deliberate AFN correction requires confirmation and stores its own receipt (659ms)
+  ✓   6 [money-ui-desktop] › e2e/legacy-money.spec.ts:173:3 › de: locale switch preserves exact monetary draft and original source token (619ms)
+  ✓   7 [money-ui-desktop] › e2e/legacy-money.spec.ts:203:3 › de: stale monetary draft reports conflict without rewriting the newer meaning (695ms)
+  ✓   8 [money-ui-desktop] › e2e/legacy-money.spec.ts:127:3 › en: deliberate AFN correction requires confirmation and stores its own receipt (749ms)
+  ✓   9 [money-ui-desktop] › e2e/legacy-money.spec.ts:173:3 › en: locale switch preserves exact monetary draft and original source token (629ms)
+  ✓  10 [money-ui-desktop] › e2e/legacy-money.spec.ts:203:3 › en: stale monetary draft reports conflict without rewriting the newer meaning (700ms)
+  ✓  11 [money-ui-desktop] › e2e/legacy-money.spec.ts:244:3 › de: legal long existing texts do not block a title-only monetary form save (571ms)
+  ✓  12 [money-ui-desktop] › e2e/legacy-money.spec.ts:268:3 › de: disabled authoring profile explains read-only state and retains the stored display (505ms)
+  ✓  13 [money-ui-desktop] › e2e/legacy-money.spec.ts:291:3 › de: metadata-only save still commits tags while retaining the purchase receipt (504ms)
+  ✓  14 [money-ui-desktop] › e2e/legacy-money.spec.ts:244:3 › en: legal long existing texts do not block a title-only monetary form save (560ms)
+  ✓  15 [money-ui-desktop] › e2e/legacy-money.spec.ts:268:3 › en: disabled authoring profile explains read-only state and retains the stored display (505ms)
+  ✓  16 [money-ui-desktop] › e2e/legacy-money.spec.ts:291:3 › en: metadata-only save still commits tags while retaining the purchase receipt (499ms)
+  ✓  17 [money-ui-desktop] › e2e/legacy-money.spec.ts:316:3 › de: title-only save preserves a custom MONEY field's historical receipt (591ms)
+  ✓  18 [money-ui-desktop] › e2e/legacy-money.spec.ts:316:3 › en: title-only save preserves a custom MONEY field's historical receipt (709ms)
+  ✓  19 [money-ui-desktop] › e2e/legacy-money.spec.ts:366:3 › de: custom replacement acknowledges each field before a later uncertain result and never replays the first (984ms)
+  ✓  20 [money-ui-desktop] › e2e/legacy-money.spec.ts:402:3 › de: a new item binds its custom amount to actual absence without duplicate creation (661ms)
+  ✓  21 [money-ui-desktop] › e2e/legacy-money.spec.ts:366:3 › en: custom replacement acknowledges each field before a later uncertain result and never replays the first (1.1s)
+  ✓  22 [money-ui-desktop] › e2e/legacy-money.spec.ts:402:3 › en: a new item binds its custom amount to actual absence without duplicate creation (637ms)
+  ✓  23 [money-ui-desktop] › e2e/legacy-money.spec.ts:424:3 › de: a pending committed core write cannot be abandoned by a locale click (1.8s)
+[WebServer] ⨯ Error: The destination stream closed early.
+[WebServer]     at ignore-listed frames {
+[WebServer]   digest: '3437032557'
+[WebServer] }
+[WebServer] ⨯ Error: The destination stream closed early.
+[WebServer]     at ignore-listed frames {
+[WebServer]   digest: '3437032557'
+[WebServer] }
+[WebServer] ⨯ Error: The destination stream closed early.
+[WebServer]     at ignore-listed frames {
+[WebServer]   digest: '3437032557'
+[WebServer] }
+[WebServer] ⨯ Error: The destination stream closed early.
+[WebServer]     at ignore-listed frames {
+[WebServer]   digest: '3437032557'
+[WebServer] }
+  ✓  24 [money-ui-desktop] › e2e/legacy-money.spec.ts:424:3 › en: a pending committed core write cannot be abandoned by a locale click (1.8s)
+(node:91556) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  25 [money-ui-mobile] › e2e/legacy-money.spec.ts:20:5 › de: title-only save preserves unknown raw money (692ms)
+  ✓  26 [money-ui-mobile] › e2e/legacy-money.spec.ts:20:5 › de: title-only save preserves known historical scale (531ms)
+  ✓  27 [money-ui-mobile] › e2e/legacy-money.spec.ts:20:5 › en: title-only save preserves unknown raw money (517ms)
+  ✓  28 [money-ui-mobile] › e2e/legacy-money.spec.ts:20:5 › en: title-only save preserves known historical scale (528ms)
+  ✓  29 [money-ui-mobile] › e2e/legacy-money.spec.ts:127:3 › de: deliberate AFN correction requires confirmation and stores its own receipt (702ms)
+  ✓  30 [money-ui-mobile] › e2e/legacy-money.spec.ts:173:3 › de: locale switch preserves exact monetary draft and original source token (609ms)
+  ✓  31 [money-ui-mobile] › e2e/legacy-money.spec.ts:203:3 › de: stale monetary draft reports conflict without rewriting the newer meaning (5.7s)
+  ✓  32 [money-ui-mobile] › e2e/legacy-money.spec.ts:127:3 › en: deliberate AFN correction requires confirmation and stores its own receipt (731ms)
+  ✓  33 [money-ui-mobile] › e2e/legacy-money.spec.ts:173:3 › en: locale switch preserves exact monetary draft and original source token (594ms)
+  ✓  34 [money-ui-mobile] › e2e/legacy-money.spec.ts:203:3 › en: stale monetary draft reports conflict without rewriting the newer meaning (665ms)
+  ✓  35 [money-ui-mobile] › e2e/legacy-money.spec.ts:244:3 › de: legal long existing texts do not block a title-only monetary form save (561ms)
+  ✓  36 [money-ui-mobile] › e2e/legacy-money.spec.ts:268:3 › de: disabled authoring profile explains read-only state and retains the stored display (493ms)
+  ✓  37 [money-ui-mobile] › e2e/legacy-money.spec.ts:291:3 › de: metadata-only save still commits tags while retaining the purchase receipt (496ms)
+  ✓  38 [money-ui-mobile] › e2e/legacy-money.spec.ts:244:3 › en: legal long existing texts do not block a title-only monetary form save (562ms)
+  ✓  39 [money-ui-mobile] › e2e/legacy-money.spec.ts:268:3 › en: disabled authoring profile explains read-only state and retains the stored display (498ms)
+  ✓  40 [money-ui-mobile] › e2e/legacy-money.spec.ts:291:3 › en: metadata-only save still commits tags while retaining the purchase receipt (498ms)
+  ✓  41 [money-ui-mobile] › e2e/legacy-money.spec.ts:316:3 › de: title-only save preserves a custom MONEY field's historical receipt (581ms)
+  ✓  42 [money-ui-mobile] › e2e/legacy-money.spec.ts:316:3 › en: title-only save preserves a custom MONEY field's historical receipt (579ms)
+  ✓  43 [money-ui-mobile] › e2e/legacy-money.spec.ts:366:3 › de: custom replacement acknowledges each field before a later uncertain result and never replays the first (943ms)
+  ✓  44 [money-ui-mobile] › e2e/legacy-money.spec.ts:402:3 › de: a new item binds its custom amount to actual absence without duplicate creation (610ms)
+  ✓  45 [money-ui-mobile] › e2e/legacy-money.spec.ts:366:3 › en: custom replacement acknowledges each field before a later uncertain result and never replays the first (947ms)
+  ✓  46 [money-ui-mobile] › e2e/legacy-money.spec.ts:402:3 › en: a new item binds its custom amount to actual absence without duplicate creation (567ms)
+[WebServer] ⨯ Error: The destination stream closed early.
+[WebServer]     at ignore-listed frames {
+[WebServer]   digest: '3437032557'
+[WebServer] }
+[WebServer] ⨯ Error: The destination stream closed early.
+[WebServer]     at ignore-listed frames {
+[WebServer]   digest: '3437032557'
+[WebServer] }
+  ✓  47 [money-ui-mobile] › e2e/legacy-money.spec.ts:424:3 › de: a pending committed core write cannot be abandoned by a locale click (1.7s)
+[WebServer] ⨯ Error: The destination stream closed early.
+[WebServer]     at ignore-listed frames {
+[WebServer]   digest: '3437032557'
+[WebServer] }
+[WebServer] ⨯ Error: The destination stream closed early.
+[WebServer]     at ignore-listed frames {
+[WebServer]   digest: '3437032557'
+[WebServer] }
+  ✓  48 [money-ui-mobile] › e2e/legacy-money.spec.ts:424:3 › en: a pending committed core write cannot be abandoned by a locale click (1.8s)
+
+  48 passed (43.3s)

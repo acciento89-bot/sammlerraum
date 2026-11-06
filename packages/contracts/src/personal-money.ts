@@ -79,3 +79,7 @@ export const MoneyHistoryEventSchema = z.object({
   evidenceErasedAt: z.string().datetime().nullable(),
   expectedAssertionToken: z.string().max(2048).nullable(),
 });
+
+/** Exact existing private bulk/read response, separate from an immutable item snapshot. */
+export const PersonalMoneyBulkResultSchema = z.object({ schemaVersion: z.literal(1), purchase: MoneyViewSchema, custom: z.array(MoneyViewSchema).max(50) }).strict();
+export const MoneyValueResultSchema = z.object({ schemaVersion: z.literal(1), money: MoneyViewSchema }).strict();

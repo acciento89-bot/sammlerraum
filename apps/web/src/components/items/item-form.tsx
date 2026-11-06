@@ -7,7 +7,8 @@ import {
 } from "@sammlerraum/contracts/personal-money";
 import type { MoneyCapabilities } from "@sammlerraum/contracts/money-capabilities";
 import { LegacyMoneyIdSchema, type MoneyView } from "@sammlerraum/contracts/legacy-money";
-import { LegacyMoneyEditor } from "../money/legacy-money-editor";
+import { readCustomMoney, writeCustomMoney, bindCreatedCustomDraft } from "../money/custom-money-client";
+import { LegacyMoneyEditor, MoneyReadout } from "../money/legacy-money-editor";
 import {
   MoneyDraftError,
   initialMoneyDraft,
@@ -26,6 +27,7 @@ import {
   MoneyClientError,
 } from "../money/legacy-money-client";
 import { acceptsMoneyAcknowledgement } from "../money/legacy-money-acknowledgement";
+import { useCollectorConfirmation } from "../search/use-saved-confirmation";
 import { ConditionGradingEditor } from "./condition-grading-editor";
 import { ItemGalleryEditor } from "../media/item-gallery-editor";
 import type { Collection, CollectionNode } from "@sammlerraum/contracts/collections";
@@ -46,9 +48,6 @@ import { CodeScanner } from "./code-scanner";
 import {
   displayCustomFieldValue,
   integerCustomFieldValue,
-  itemCurrencyOptions,
-  majorUnits,
-  minorUnits,
   tagsFromInput,
   tagsInputValue,
 } from "./item-form-values";
@@ -126,12 +125,25 @@ export function ItemForm({
   const [initialLocationId, setInitialLocationId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const pendingNavigation = useCollectorConfirmation(saving, () => false);
   const [error, setError] = useState("");
   const [status, setStatus] = useState("");
   const [moneyCapabilities, setMoneyCapabilities] = useState<MoneyCapabilities>();
   const [moneyReady, setMoneyReady] = useState(false);
   const [purchaseView, setPurchaseView] = useState<MoneyView | null>(null);
   const [purchaseDraft, setPurchaseDraft] = useState<MoneyDraft>(() => initialMoneyDraft(null));
+  const [customViews, setCustomViews] = useState<Record<string, MoneyView>>({});
+  const [customDrafts, setCustomDrafts] = useState<Record<string, MoneyDraft>>({});
+  const customDraftsRef = useRef(customDrafts);
+  const [customInspected, setCustomInspected] = useState<Record<string, boolean>>({});
+  const [customReady, setCustomReady] = useState(false);
+  const customDraftKey = (fieldId: string, targetId = workingItemId) => `custom:${targetId || `new:${collectionId}`}:${fieldId}`;
+  function changeCustomDraft(fieldId: string, draft: MoneyDraft, targetId = workingItemId) {
+    customDraftsRef.current = { ...customDraftsRef.current, [fieldId]: draft };
+    setCustomDrafts(customDraftsRef.current);
+    rememberMoneyDraft(actor, customDraftKey(fieldId, targetId), draft);
+  }
+  const customCanSave = customReady && Object.values(customDrafts).every(draft => draft.outcome === "READY");
   const [moneyInspected, setMoneyInspected] = useState(false);
   const monetaryOwner = actor;
   const [actorExpired, setActorExpired] = useState(false);
@@ -156,17 +168,19 @@ export function ItemForm({
       );
     return moneyText(
       problem instanceof MoneyClientError
-        ? problem.code === "CONFLICT"
-          ? "conflict"
-          : problem.code === "OUTCOME_UNKNOWN"
-            ? "unknownOutcome"
-            : problem.code === "ACKNOWLEDGED_UNREADABLE"
-              ? "ackUnreadable"
-              : problem.code === "CAPABILITY_UNAVAILABLE"
-                ? "disabled"
-                : problem.code === "READ_FAILED"
-                  ? "readFailed"
-                  : "refused"
+        ? problem.status === 413
+          ? "requestTooLarge"
+          : problem.code === "CONFLICT"
+            ? "conflict"
+            : problem.code === "OUTCOME_UNKNOWN"
+              ? "unknownOutcome"
+              : problem.code === "ACKNOWLEDGED_UNREADABLE"
+                ? "ackUnreadable"
+                : problem.code === "CAPABILITY_UNAVAILABLE"
+                  ? "disabled"
+                  : problem.code === "READ_FAILED"
+                    ? "readFailed"
+                    : "refused"
         : "invalid",
     );
   }
@@ -384,6 +398,27 @@ export function ItemForm({
     };
   }, [collectionId, common, optionsRetry]);
 
+  useEffect(() => {
+    if (saving || optionsCollectionId !== collectionId || !moneyReady) return;
+    let cancelled = false;
+    setCustomReady(false);
+    const definitions = fields.filter(field => field.type === "MONEY").map(field => field.id);
+    void (workingItemId ? readCustomMoney(workingItemId, definitions) : Promise.resolve({} as Record<string, MoneyView>))
+      .then(views => {
+        if (cancelled) return;
+        const drafts: Record<string, MoneyDraft> = {};
+        for (const id of definitions) {
+          const stored = recallMoneyDraft(actor, customDraftKey(id));
+          drafts[id] = stored && views[id] ? bindCreatedCustomDraft(stored, views[id]!) : stored ?? initialMoneyDraft(views[id] ?? null);
+        }
+        setCustomViews(views);
+        customDraftsRef.current = drafts;
+        setCustomDrafts(drafts);
+        setCustomReady(true);
+      }).catch(problem => { if (!cancelled) setError(moneyMessage(problem)); });
+    return () => { cancelled = true; };
+  }, [actor, workingItemId, collectionId, optionsCollectionId, fields, moneyReady, saving]);
+
   const inactive = Boolean(item?.archivedAt || item?.disposedAt);
   const valueByField = new Map(
     metadata?.customFieldValues.map((record) => [record.fieldDefinitionId, record.value]) ?? [],
@@ -396,6 +431,7 @@ export function ItemForm({
       optionsCollectionId !== collectionId ||
       inactive ||
       !moneyEnabled ||
+      !customCanSave ||
       purchaseDraft.outcome !== "READY"
     )
       return;
@@ -429,6 +465,7 @@ export function ItemForm({
     const fieldValues: Array<{ id: string; value: CanonicalCustomFieldValue | null }> = [];
     try {
       for (const field of fields) {
+        if (field.type === "MONEY") continue;
         const enabled = form.has(`field-enabled-${field.id}`);
         const value = enabled ? customValue(field, form) : null;
         fieldValues.push({ id: field.id, value });
@@ -439,6 +476,13 @@ export function ItemForm({
       return;
     }
 
+    // Validate every deliberate field edit before any core mutation begins.
+    try {
+      for (const field of fields.filter(field => field.type === "MONEY"))
+        moneyDraftIntent(customDraftsRef.current[field.id]!, customViews[field.id] ?? null, Boolean(workingItemId));
+    } catch (problem) {
+      setError(moneyMessage(problem)); setSaving(false); return;
+    }
     const selectedLocationId = String(form.get("locationId") ?? "") || null;
     let createdNow = false;
     try {
@@ -451,67 +495,118 @@ export function ItemForm({
       }
       setMoneyCapabilities(capability);
       requireMoneyAuthoring(capability);
-      const requestBody = targetId
-        ? UpdateItemMoneyInputSchema.parse({
-            schemaVersion: 1,
-            item: core,
-            ...(purchaseIntent ? { purchase: purchaseIntent } : {}),
-          })
-        : CreateItemMoneyInputSchema.parse({
-            schemaVersion: 1,
-            item: { ...core, collectionId },
-            ...(purchaseIntent ? { purchase: purchaseIntent } : {}),
-          });
-      ++snapshotGeneration.current;
-      const oldId = targetId;
-      const coreBody = await writeMoney(
-        targetId ? `/api/v1/money/items/${targetId}` : "/api/v1/money/items",
-        targetId ? "PATCH" : "POST",
-        requestBody,
-        ItemMoneyResultSchema.refine((value) => {
-          if ((oldId && value.item.id !== oldId) || value.item.collectionId !== collectionId)
-            return false;
-          const actual = value.item as unknown as Record<string, unknown>;
-          if (
-            !Object.entries(requestBody.item).every(
-              ([key, expected]) => JSON.stringify(actual[key]) === JSON.stringify(expected),
+      if (targetId && !item) throw new MoneyClientError("READ_FAILED");
+      const previous = item as unknown as Record<string, unknown> | undefined;
+      const changedCore =
+        targetId && previous
+          ? Object.fromEntries(
+              Object.entries(core).filter(
+                ([key, value]) => JSON.stringify(previous[key]) !== JSON.stringify(value),
+              ),
             )
-          )
-            return false;
-          if (
-            !acceptsMoneyAcknowledgement(
-              value.purchase,
-              { family: "PURCHASE", itemId: value.item.id },
-              purchaseIntent,
+          : core;
+      let generation = ++snapshotGeneration.current;
+      // Existing text/metadata that was not edited never consumes the strict money-body budget.
+      // A metadata-only save has no core write or fabricated financial acknowledgment.
+      if (!targetId || Object.keys(changedCore).length > 0 || purchaseIntent !== undefined) {
+        const requestBody = targetId
+          ? UpdateItemMoneyInputSchema.parse({
+              schemaVersion: 1,
+              item: changedCore,
+              ...(purchaseIntent ? { purchase: purchaseIntent } : {}),
+            })
+          : CreateItemMoneyInputSchema.parse({
+              schemaVersion: 1,
+              item: { ...core, collectionId },
+              ...(purchaseIntent ? { purchase: purchaseIntent } : {}),
+            });
+        const oldId = targetId;
+        const coreBody = await writeMoney(
+          targetId ? `/api/v1/money/items/${targetId}` : "/api/v1/money/items",
+          targetId ? "PATCH" : "POST",
+          requestBody,
+          ItemMoneyResultSchema.refine((value) => {
+            if ((oldId && value.item.id !== oldId) || value.item.collectionId !== collectionId)
+              return false;
+            if (!oldId && !purchaseIntent && value.purchase.raw !== null) return false;
+            const actual = value.item as unknown as Record<string, unknown>;
+            if (
+              !Object.entries(requestBody.item).every(
+                ([key, expected]) => JSON.stringify(actual[key]) === JSON.stringify(expected),
+              )
             )
-          )
-            return false;
-          return (
-            value.item.purchaseAmountMinor ===
-              (value.purchase.raw ? Number(value.purchase.raw.amountMinor) : null) &&
-            value.item.purchaseCurrency === (value.purchase.raw?.currency ?? null)
-          );
-        }),
-        capability,
-      );
-      // Install the receipt before metadata writes or a fallible refresh can occur.
-      const acknowledgedDraft = initialMoneyDraft(coreBody.purchase);
-      setPurchaseView(coreBody.purchase);
-      setPurchaseDraft(acknowledgedDraft);
-      setMoneyInspected(false);
-      if (monetaryOwner) {
-        forgetMoneyDraft(monetaryOwner, purchaseDraftKey);
-        rememberMoneyDraft(monetaryOwner, `purchase:${coreBody.item.id}`, acknowledgedDraft);
-      }
-      const generation = ++snapshotGeneration.current;
-      setItem(coreBody.item);
-      if (!targetId) {
-        targetId = coreBody.item.id;
-        createdNow = true;
-        setWorkingItemId(targetId);
-        setStatus(t("coreCreated"));
+              return false;
+            if (
+              !acceptsMoneyAcknowledgement(
+                value.purchase,
+                { family: "PURCHASE", itemId: value.item.id },
+                purchaseIntent,
+              )
+            )
+              return false;
+            return (
+              value.item.purchaseAmountMinor ===
+                (value.purchase.raw ? Number(value.purchase.raw.amountMinor) : null) &&
+              value.item.purchaseCurrency === (value.purchase.raw?.currency ?? null)
+            );
+          }),
+          capability,
+        );
+        // Install the receipt before metadata writes or a fallible refresh can occur.
+        const acknowledgedDraft = initialMoneyDraft(coreBody.purchase);
+        setPurchaseView(coreBody.purchase);
+        setPurchaseDraft(acknowledgedDraft);
+        setMoneyInspected(false);
+        if (monetaryOwner) {
+          forgetMoneyDraft(monetaryOwner, purchaseDraftKey);
+          rememberMoneyDraft(monetaryOwner, `purchase:${coreBody.item.id}`, acknowledgedDraft);
+        }
+        generation = ++snapshotGeneration.current;
+        setItem(coreBody.item);
+        if (!targetId) {
+          targetId = coreBody.item.id;
+          createdNow = true;
+          setWorkingItemId(targetId);
+          setStatus(t("coreCreated"));
+        }
       }
 
+      const moneyFields = fields.filter(field => field.type === "MONEY");
+      let currentViews = customViews;
+      if (createdNow && moneyFields.length) {
+        // Bind pending new-item edits to actual server absence, never a fabricated token.
+        for (const field of moneyFields) {
+          const draft = customDraftsRef.current[field.id]!;
+          forgetMoneyDraft(actor, customDraftKey(field.id));
+          changeCustomDraft(field.id, draft, targetId);
+        }
+        currentViews = await readCustomMoney(targetId, moneyFields.map(field => field.id));
+        setCustomViews(currentViews);
+        for (const field of moneyFields) {
+          const draft = bindCreatedCustomDraft(customDraftsRef.current[field.id]!, currentViews[field.id]!);
+          forgetMoneyDraft(actor, customDraftKey(field.id));
+          changeCustomDraft(field.id, draft, targetId);
+        }
+      }
+      for (const field of moneyFields) {
+        const draft = customDraftsRef.current[field.id]!;
+        try {
+          const intent = moneyDraftIntent(draft, currentViews[field.id] ?? null, true);
+          if (!intent) continue;
+          if (intent.op === "NEW") throw new MoneyClientError("REFUSED");
+          const acknowledged = await writeCustomMoney(targetId, field.id, intent, capability);
+          currentViews = { ...currentViews, [field.id]: acknowledged };
+          setCustomViews(currentViews);
+          // Commit this acknowledgment before another field or metadata request can fail.
+          changeCustomDraft(field.id, initialMoneyDraft(acknowledged), targetId);
+        } catch (problem) {
+          if (problem instanceof MoneyClientError && ["OUTCOME_UNKNOWN", "ACKNOWLEDGED_UNREADABLE", "CONFLICT"].includes(problem.code))
+            changeCustomDraft(field.id, { ...draft, outcome: problem.code === "OUTCOME_UNKNOWN" ? "UNKNOWN" : problem.code === "CONFLICT" ? "CONFLICT" : "ACKNOWLEDGED_UNREADABLE" }, targetId);
+          setError(`${field.name}: ${moneyMessage(problem)}`);
+          setStatus(t("retryWithoutDuplicate"));
+          return;
+        }
+      }
       const requests: Array<{ kind: string; response: Promise<Response> }> = [
         {
           kind: "identifiers",
@@ -553,8 +648,10 @@ export function ItemForm({
         setStatus(t("retryWithoutDuplicate"));
         return;
       }
-      router.push(`/${locale}/items/${targetId}`);
-      router.refresh();
+      pendingNavigation.navigateAfterGuard(() => {
+        router.push(`/${locale}/items/${targetId}`);
+        router.refresh();
+      });
     } catch (problem) {
       if (problem instanceof MoneyClientError) {
         if (
@@ -639,6 +736,7 @@ export function ItemForm({
 
   return (
     <section className="management-shell">
+      {pendingNavigation.node}
       <nav className="management-nav" aria-label={common("navigation")}>
         <Link
           href={collectionId ? `/${locale}/collections/${collectionId}` : `/${locale}/collections`}
@@ -654,7 +752,7 @@ export function ItemForm({
       </header>
 
       {item && metadata && (
-        <ItemSummary item={item} metadata={metadata} fields={fields} locale={locale} t={t} />
+        <ItemSummary item={item} metadata={metadata} fields={fields} moneyViews={customViews} locale={locale} t={t} />
       )}
       {inactive && (
         <p className="notice">{t(item?.disposedAt ? "disposedNotice" : "archivedNotice")}</p>
@@ -670,7 +768,12 @@ export function ItemForm({
         </p>
       )}
 
-      {(!moneyReady || purchaseDraft.outcome !== "READY") && !loading && (
+      {moneyReady && !moneyEnabled && (
+        <p className="notice" role="status">
+          {moneyText("disabled")}
+        </p>
+      )}
+      {(!moneyEnabled || purchaseDraft.outcome !== "READY") && !loading && (
         <div className="money-recovery notice">
           {workingItemId || purchaseDraft.outcome === "READY" ? (
             <button
@@ -686,7 +789,7 @@ export function ItemForm({
               {moneyText("collectionCheck")}
             </Link>
           )}
-          {moneyInspected && purchaseView && (
+          {purchaseDraft.outcome !== "READY" && moneyInspected && purchaseView && (
             <button
               type="button"
               className="secondary-button"
@@ -944,7 +1047,34 @@ export function ItemForm({
             <details open>
               <summary>{t("customFields")}</summary>
               <fieldset disabled={inactive || saving} className="details-fields custom-fields">
-                {fields.map((field) => (
+                {fields.map((field) => field.type === "MONEY" ? (
+                  <div key={field.id} className="money-editor">
+                    <LegacyMoneyEditor label={field.name} name={`custom-money-${field.id}`} locale={locale}
+                      view={customViews[field.id] ?? null} existing={Boolean(workingItemId)}
+                      draft={customDrafts[field.id] ?? initialMoneyDraft(null)}
+                      onChange={draft => changeCustomDraft(field.id, draft)} loaded={customReady}
+                      disabled={!moneyEnabled || saving || inactive || customDrafts[field.id]?.outcome !== "READY"} />
+                    {customDrafts[field.id]?.outcome !== "READY" && customDrafts[field.id] && (
+                      <button type="button" className="secondary-button" disabled={saving} onClick={async () => {
+                        try {
+                          const caps = await loadMoneyCapabilities();
+                          if (caps.actorId !== actor) { clearMoneyDrafts(); setActorExpired(true); return; }
+                          const fresh = await readCustomMoney(workingItemId, [field.id]);
+                          setCustomViews(current => ({ ...current, ...fresh }));
+                          // Inspection alone never resets a frozen or uncertain draft.
+                          setCustomInspected(current => ({ ...current, [field.id]: true }));
+                        } catch (problem) { setError(moneyMessage(problem)); }
+                      }}>{moneyText("checkCurrent")}</button>
+                    )}
+                    {customInspected[field.id] && customDrafts[field.id]?.outcome !== "READY" && customViews[field.id] && (
+                      <button type="button" className="secondary-button" onClick={() => {
+                        changeCustomDraft(field.id, initialMoneyDraft(customViews[field.id]!));
+                        setCustomInspected(current => ({ ...current, [field.id]: false }));
+                        setError("");
+                      }}>{moneyText("adoptCurrent")}</button>
+                    )}
+                  </div>
+                ) : (
                   <CustomFieldControl
                     key={field.id}
                     field={field}
@@ -964,6 +1094,7 @@ export function ItemForm({
                 saving ||
                 optionsCollectionId !== collectionId ||
                 !moneyEnabled ||
+                !customCanSave ||
                 purchaseDraft.outcome !== "READY"
               }
             >
@@ -1031,12 +1162,8 @@ function customValue(field: CustomFieldDefinition, form: FormData): CanonicalCus
       return form.has(name);
     case "MULTI_SELECT":
       return form.getAll(name).map(String);
-    case "MONEY": {
-      const currency = String(form.get(`${name}-currency`) ?? "");
-      const amountMinor = minorUnits(String(form.get(`${name}-amount`) ?? ""), currency);
-      if (amountMinor === null) throw new Error("money");
-      return { amountMinor, currency };
-    }
+    case "MONEY":
+      throw new Error("Money fields require an explicit money intent");
   }
 }
 
@@ -1110,34 +1237,7 @@ function CustomFieldControl({
       </fieldset>,
     );
   }
-  if (field.type === "MONEY") {
-    const money =
-      typeof value === "object" && value !== null && !Array.isArray(value)
-        ? (value as { amountMinor: number; currency: string })
-        : undefined;
-    return wrapper(
-      <div className="form-row">
-        <label>
-          {field.name}
-          <input
-            name={`${name}-amount`}
-            inputMode="decimal"
-            defaultValue={money ? majorUnits(money.amountMinor, money.currency) : ""}
-          />
-        </label>
-        <label>
-          {t("currency")}
-          <select name={`${name}-currency`} defaultValue={money?.currency ?? "EUR"}>
-            {itemCurrencyOptions.map((currency) => (
-              <option key={currency} value={currency}>
-                {currency}
-              </option>
-            ))}
-          </select>
-        </label>
-      </div>,
-    );
-  }
+  if (field.type === "MONEY") return null;
   const inputType =
     field.type === "DATE"
       ? "date"
@@ -1164,12 +1264,14 @@ function CustomFieldControl({
 function ItemSummary({
   metadata,
   fields,
+  moneyViews,
   locale,
   t,
 }: {
   item: CollectibleItem;
   metadata: ItemMetadata;
   fields: CustomFieldDefinition[];
+  moneyViews: Record<string, MoneyView>;
   locale: "de" | "en";
   t: Translation;
 }) {
@@ -1178,9 +1280,11 @@ function ItemSummary({
       {metadata.customFieldValues.map((record) => {
         const field = fields.find((candidate) => candidate.id === record.fieldDefinitionId);
         return field ? (
-          <p key={record.fieldDefinitionId}>
-            {field.name}: {displayCustomFieldValue(record.value, field.type, locale)}
-          </p>
+          <div key={record.fieldDefinitionId}>
+            {field.type === "MONEY" ? moneyViews[field.id] ? <MoneyReadout view={moneyViews[field.id]!} locale={locale} label={field.name} /> :
+              <span>{field.name}: {typeof record.value === "object" && record.value !== null && "amountMinor" in record.value ? `${record.value.amountMinor} ${record.value.currency}` : "—"}</span> :
+              <p>{field.name}: {displayCustomFieldValue(record.value, field.type, locale)}</p>}
+          </div>
         ) : null;
       })}
       {metadata.location && <p>{metadata.location.name}</p>}

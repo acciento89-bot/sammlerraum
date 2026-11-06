@@ -1,0 +1,231 @@
+[WebServer] (node:87570) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 8 tests using 1 worker
+
+(node:87571) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [money-ui-desktop] › e2e/legacy-money.spec.ts:233:2 › de: legal long existing texts do not block a title-only monetary form save (1.8s)
+(node:87585) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  2 [money-ui-desktop] › e2e/legacy-money.spec.ts:244:2 › de: disabled authoring profile explains read-only state and retains the stored display (5.7s)
+(node:87592) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  3 [money-ui-desktop] › e2e/legacy-money.spec.ts:233:2 › en: legal long existing texts do not block a title-only monetary form save (632ms)
+(node:87598) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  4 [money-ui-desktop] › e2e/legacy-money.spec.ts:244:2 › en: disabled authoring profile explains read-only state and retains the stored display (5.7s)
+(node:87609) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  5 [money-ui-mobile] › e2e/legacy-money.spec.ts:233:2 › de: legal long existing texts do not block a title-only monetary form save (609ms)
+(node:87615) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  6 [money-ui-mobile] › e2e/legacy-money.spec.ts:244:2 › de: disabled authoring profile explains read-only state and retains the stored display (5.7s)
+(node:87621) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  7 [money-ui-mobile] › e2e/legacy-money.spec.ts:233:2 › en: legal long existing texts do not block a title-only monetary form save (663ms)
+(node:87627) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  8 [money-ui-mobile] › e2e/legacy-money.spec.ts:244:2 › en: disabled authoring profile explains read-only state and retains the stored display (5.7s)
+
+
+  1) [money-ui-desktop] › e2e/legacy-money.spec.ts:233:2 › de: legal long existing texts do not block a title-only monetary form save 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 413
+
+      237 |    await page.getByLabel(h.t.title, { exact: true }).fill("A short title correction");
+      238 |    const response = page.waitForResponse(r => r.request().method() === "PATCH" && new URL(r.url()).pathname.endsWith(`/items/${h.f.itemId}`));
+    > 239 |    await page.getByRole("button", { name: h.t.save, exact: true }).click(); expect((await response).status()).toBe(200);
+          |                                                                                                               ^
+      240 |    await expect(page.getByRole("button", { name: h.t.save, exact: true })).toBeEnabled();
+      241 |    const item = await db!.collectibleItem.findUniqueOrThrow({ where: { id: h.f.itemId } }); expect(item.publicDescription).toHaveLength(9000); expect(item.privateNotes).toHaveLength(9000); expect(item.title).toBe("A short title correction"); expect((await h.money.getMoney(h.subject)).factToken).toBe(h.before.factToken);
+      242 |   } finally { await cleanupSearchFixture(h.f); }
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/legacy-money.spec.ts:239:111
+
+    Error Context: test-results/legacy-money-de-legal-long-3a3a9-tle-only-monetary-form-save-money-ui-desktop/error-context.md
+
+    Error Context: test-results/legacy-money-de-legal-long-3a3a9-tle-only-monetary-form-save-money-ui-desktop/error-context.md
+
+  2) [money-ui-desktop] › e2e/legacy-money.spec.ts:244:2 › de: disabled authoring profile explains read-only state and retains the stored display 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByText('Monetäre Eingaben sind auf diesem Server noch nicht freigeschaltet.', { exact: true })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByText('Monetäre Eingaben sind auf diesem Server noch nicht freigeschaltet.', { exact: true }) with timeout 5000ms
+      - waiting for getByText('Monetäre Eingaben sind auf diesem Server noch nicht freigeschaltet.', { exact: true })
+
+
+      248 |    const capability = await (await page.request.get("/api/v1/money/capabilities")).json();
+      249 |    await page.route("**/api/v1/money/capabilities", route => route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ ...capability, authoringProfiles: [] }) }));
+    > 250 |    await page.reload(); await expect(page.getByRole("button", { name: h.t.save, exact: true })).toBeDisabled(); await expect(page.getByText(h.m.disabled, { exact: true })).toBeVisible(); await expect(h.region.getByText("100 AFN", { exact: true })).toBeVisible();
+          |                                                                                                                                                                             ^
+      251 |    expect((await h.money.getMoney(h.subject)).factToken).toBe(h.before.factToken);
+      252 |   } finally { await cleanupSearchFixture(h.f); }
+      253 |  });
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/legacy-money.spec.ts:250:173
+
+    Error Context: test-results/legacy-money-de-disabled-a-f2f4f--retains-the-stored-display-money-ui-desktop/error-context.md
+
+    Error Context: test-results/legacy-money-de-disabled-a-f2f4f--retains-the-stored-display-money-ui-desktop/error-context.md
+
+  3) [money-ui-desktop] › e2e/legacy-money.spec.ts:233:2 › en: legal long existing texts do not block a title-only monetary form save 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 413
+
+      237 |    await page.getByLabel(h.t.title, { exact: true }).fill("A short title correction");
+      238 |    const response = page.waitForResponse(r => r.request().method() === "PATCH" && new URL(r.url()).pathname.endsWith(`/items/${h.f.itemId}`));
+    > 239 |    await page.getByRole("button", { name: h.t.save, exact: true }).click(); expect((await response).status()).toBe(200);
+          |                                                                                                               ^
+      240 |    await expect(page.getByRole("button", { name: h.t.save, exact: true })).toBeEnabled();
+      241 |    const item = await db!.collectibleItem.findUniqueOrThrow({ where: { id: h.f.itemId } }); expect(item.publicDescription).toHaveLength(9000); expect(item.privateNotes).toHaveLength(9000); expect(item.title).toBe("A short title correction"); expect((await h.money.getMoney(h.subject)).factToken).toBe(h.before.factToken);
+      242 |   } finally { await cleanupSearchFixture(h.f); }
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/legacy-money.spec.ts:239:111
+
+    Error Context: test-results/legacy-money-en-legal-long-71c2e-tle-only-monetary-form-save-money-ui-desktop/error-context.md
+
+    Error Context: test-results/legacy-money-en-legal-long-71c2e-tle-only-monetary-form-save-money-ui-desktop/error-context.md
+
+  4) [money-ui-desktop] › e2e/legacy-money.spec.ts:244:2 › en: disabled authoring profile explains read-only state and retains the stored display 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByText('Monetary editing has not been enabled on this server.', { exact: true })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByText('Monetary editing has not been enabled on this server.', { exact: true }) with timeout 5000ms
+      - waiting for getByText('Monetary editing has not been enabled on this server.', { exact: true })
+
+
+      248 |    const capability = await (await page.request.get("/api/v1/money/capabilities")).json();
+      249 |    await page.route("**/api/v1/money/capabilities", route => route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ ...capability, authoringProfiles: [] }) }));
+    > 250 |    await page.reload(); await expect(page.getByRole("button", { name: h.t.save, exact: true })).toBeDisabled(); await expect(page.getByText(h.m.disabled, { exact: true })).toBeVisible(); await expect(h.region.getByText("100 AFN", { exact: true })).toBeVisible();
+          |                                                                                                                                                                             ^
+      251 |    expect((await h.money.getMoney(h.subject)).factToken).toBe(h.before.factToken);
+      252 |   } finally { await cleanupSearchFixture(h.f); }
+      253 |  });
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/legacy-money.spec.ts:250:173
+
+    Error Context: test-results/legacy-money-en-disabled-a-5f9b8--retains-the-stored-display-money-ui-desktop/error-context.md
+
+    Error Context: test-results/legacy-money-en-disabled-a-5f9b8--retains-the-stored-display-money-ui-desktop/error-context.md
+
+  5) [money-ui-mobile] › e2e/legacy-money.spec.ts:233:2 › de: legal long existing texts do not block a title-only monetary form save 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 413
+
+      237 |    await page.getByLabel(h.t.title, { exact: true }).fill("A short title correction");
+      238 |    const response = page.waitForResponse(r => r.request().method() === "PATCH" && new URL(r.url()).pathname.endsWith(`/items/${h.f.itemId}`));
+    > 239 |    await page.getByRole("button", { name: h.t.save, exact: true }).click(); expect((await response).status()).toBe(200);
+          |                                                                                                               ^
+      240 |    await expect(page.getByRole("button", { name: h.t.save, exact: true })).toBeEnabled();
+      241 |    const item = await db!.collectibleItem.findUniqueOrThrow({ where: { id: h.f.itemId } }); expect(item.publicDescription).toHaveLength(9000); expect(item.privateNotes).toHaveLength(9000); expect(item.title).toBe("A short title correction"); expect((await h.money.getMoney(h.subject)).factToken).toBe(h.before.factToken);
+      242 |   } finally { await cleanupSearchFixture(h.f); }
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/legacy-money.spec.ts:239:111
+
+    Error Context: test-results/legacy-money-de-legal-long-3a3a9-tle-only-monetary-form-save-money-ui-mobile/error-context.md
+
+    Error Context: test-results/legacy-money-de-legal-long-3a3a9-tle-only-monetary-form-save-money-ui-mobile/error-context.md
+
+  6) [money-ui-mobile] › e2e/legacy-money.spec.ts:244:2 › de: disabled authoring profile explains read-only state and retains the stored display 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByText('Monetäre Eingaben sind auf diesem Server noch nicht freigeschaltet.', { exact: true })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByText('Monetäre Eingaben sind auf diesem Server noch nicht freigeschaltet.', { exact: true }) with timeout 5000ms
+      - waiting for getByText('Monetäre Eingaben sind auf diesem Server noch nicht freigeschaltet.', { exact: true })
+
+
+      248 |    const capability = await (await page.request.get("/api/v1/money/capabilities")).json();
+      249 |    await page.route("**/api/v1/money/capabilities", route => route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ ...capability, authoringProfiles: [] }) }));
+    > 250 |    await page.reload(); await expect(page.getByRole("button", { name: h.t.save, exact: true })).toBeDisabled(); await expect(page.getByText(h.m.disabled, { exact: true })).toBeVisible(); await expect(h.region.getByText("100 AFN", { exact: true })).toBeVisible();
+          |                                                                                                                                                                             ^
+      251 |    expect((await h.money.getMoney(h.subject)).factToken).toBe(h.before.factToken);
+      252 |   } finally { await cleanupSearchFixture(h.f); }
+      253 |  });
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/legacy-money.spec.ts:250:173
+
+    Error Context: test-results/legacy-money-de-disabled-a-f2f4f--retains-the-stored-display-money-ui-mobile/error-context.md
+
+    Error Context: test-results/legacy-money-de-disabled-a-f2f4f--retains-the-stored-display-money-ui-mobile/error-context.md
+
+  7) [money-ui-mobile] › e2e/legacy-money.spec.ts:233:2 › en: legal long existing texts do not block a title-only monetary form save 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 413
+
+      237 |    await page.getByLabel(h.t.title, { exact: true }).fill("A short title correction");
+      238 |    const response = page.waitForResponse(r => r.request().method() === "PATCH" && new URL(r.url()).pathname.endsWith(`/items/${h.f.itemId}`));
+    > 239 |    await page.getByRole("button", { name: h.t.save, exact: true }).click(); expect((await response).status()).toBe(200);
+          |                                                                                                               ^
+      240 |    await expect(page.getByRole("button", { name: h.t.save, exact: true })).toBeEnabled();
+      241 |    const item = await db!.collectibleItem.findUniqueOrThrow({ where: { id: h.f.itemId } }); expect(item.publicDescription).toHaveLength(9000); expect(item.privateNotes).toHaveLength(9000); expect(item.title).toBe("A short title correction"); expect((await h.money.getMoney(h.subject)).factToken).toBe(h.before.factToken);
+      242 |   } finally { await cleanupSearchFixture(h.f); }
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/legacy-money.spec.ts:239:111
+
+    Error Context: test-results/legacy-money-en-legal-long-71c2e-tle-only-monetary-form-save-money-ui-mobile/error-context.md
+
+    Error Context: test-results/legacy-money-en-legal-long-71c2e-tle-only-monetary-form-save-money-ui-mobile/error-context.md
+
+  8) [money-ui-mobile] › e2e/legacy-money.spec.ts:244:2 › en: disabled authoring profile explains read-only state and retains the stored display 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByText('Monetary editing has not been enabled on this server.', { exact: true })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByText('Monetary editing has not been enabled on this server.', { exact: true }) with timeout 5000ms
+      - waiting for getByText('Monetary editing has not been enabled on this server.', { exact: true })
+
+
+      248 |    const capability = await (await page.request.get("/api/v1/money/capabilities")).json();
+      249 |    await page.route("**/api/v1/money/capabilities", route => route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ ...capability, authoringProfiles: [] }) }));
+    > 250 |    await page.reload(); await expect(page.getByRole("button", { name: h.t.save, exact: true })).toBeDisabled(); await expect(page.getByText(h.m.disabled, { exact: true })).toBeVisible(); await expect(h.region.getByText("100 AFN", { exact: true })).toBeVisible();
+          |                                                                                                                                                                             ^
+      251 |    expect((await h.money.getMoney(h.subject)).factToken).toBe(h.before.factToken);
+      252 |   } finally { await cleanupSearchFixture(h.f); }
+      253 |  });
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/legacy-money.spec.ts:250:173
+
+    Error Context: test-results/legacy-money-en-disabled-a-5f9b8--retains-the-stored-display-money-ui-mobile/error-context.md
+
+    Error Context: test-results/legacy-money-en-disabled-a-5f9b8--retains-the-stored-display-money-ui-mobile/error-context.md
+
+  8 failed
+    [money-ui-desktop] › e2e/legacy-money.spec.ts:233:2 › de: legal long existing texts do not block a title-only monetary form save 
+    [money-ui-desktop] › e2e/legacy-money.spec.ts:244:2 › de: disabled authoring profile explains read-only state and retains the stored display 
+    [money-ui-desktop] › e2e/legacy-money.spec.ts:233:2 › en: legal long existing texts do not block a title-only monetary form save 
+    [money-ui-desktop] › e2e/legacy-money.spec.ts:244:2 › en: disabled authoring profile explains read-only state and retains the stored display 
+    [money-ui-mobile] › e2e/legacy-money.spec.ts:233:2 › de: legal long existing texts do not block a title-only monetary form save 
+    [money-ui-mobile] › e2e/legacy-money.spec.ts:244:2 › de: disabled authoring profile explains read-only state and retains the stored display 
+    [money-ui-mobile] › e2e/legacy-money.spec.ts:233:2 › en: legal long existing texts do not block a title-only monetary form save 
+    [money-ui-mobile] › e2e/legacy-money.spec.ts:244:2 › en: disabled authoring profile explains read-only state and retains the stored display 
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/legacy-money.spec.ts --grep legal long|disabled authoring --workers=1

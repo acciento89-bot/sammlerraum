@@ -1079,6 +1079,7 @@
     "sessionChanged": "The signed-in account changed. Reopen this page with the current account.",
     "signIn": "Open sign-in",
     "confirmRequired": "Explicitly confirm this correction.",
-    "reasonRequired": "Enter the reason for this correction."
+    "reasonRequired": "Enter the reason for this correction.",
+    "requestTooLarge": "The combined entry is too large. Shorten the texts or change them separately."
   }
 }

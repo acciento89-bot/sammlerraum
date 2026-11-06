@@ -1,0 +1,50 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| apps/web/src/components/money/legacy-money-draft.test.ts (9 tests | 1 failed) 13ms
+   ✓ deliberate monetary draft semantics > blocks even a normal save while a previous outcome has not been reconciled 3ms
+   ✓ deliberate monetary draft semantics > never parses or authors an untouched historical pair on an ordinary save 0ms
+   ✓ deliberate monetary draft semantics > requires explicit acknowledgment and audit note before replacing old AFN with the pinned new decimal 1ms
+   ✓ deliberate monetary draft semantics > separates explicit clear from blank/invalid replacement and never fabricates a missing token 1ms
+   ✓ deliberate monetary draft semantics > authors a new decimal only through the pinned explicit profile and rejects unsupported codes/grouping 0ms
+   ✓ deliberate monetary draft semantics > displays stored scale independently of locale and the current ISO exponent 0ms
+   ✓ deliberate monetary draft semantics > does not silently rebase an edited draft onto a newer fact token after locale navigation 1ms
+   ✓ deliberate monetary draft semantics > preserves exact typed draft through locale remount but separates accounts and clears on logout 0ms
+   × deliberate monetary draft semantics > keeps a complete active form's 1000 custom drafts plus purchase through a locale remount 5ms
+     → expected undefined to deeply equal { outcome: 'READY', …(6) }
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/web/src/components/money/legacy-money-draft.test.ts > deliberate monetary draft semantics > keeps a complete active form's 1000 custom drafts plus purchase through a locale remount
+AssertionError: expected undefined to deeply equal { outcome: 'READY', …(6) }
+
+- Expected: 
+{
+  "acknowledged": false,
+  "correctionReason": "",
+  "currency": "EUR",
+  "decimal": "1,23",
+  "expectedFactToken": null,
+  "mode": "REPLACE",
+  "outcome": "READY",
+}
+
++ Received: 
+undefined
+
+ ❯ apps/web/src/components/money/legacy-money-draft.test.ts:163:60
+    161|     rememberMoneyDraft("owner-a", "purchase:active", draft);
+    162|     for (let i = 0; i < 1000; i++) rememberMoneyDraft("owner-a", `cust…
+    163|     expect(recallMoneyDraft("owner-a", "purchase:active")).toEqual(dra…
+       |                                                            ^
+    164|     for (let i = 0; i < 1000; i++) expect(recallMoneyDraft("owner-a", …
+    165|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 8 passed (9)
+   Start at  10:15:24
+   Duration  378ms (transform 52ms, setup 6ms, collect 132ms, tests 13ms, environment 0ms, prepare 51ms)
+
