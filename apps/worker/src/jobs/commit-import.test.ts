@@ -5,6 +5,7 @@ import { randomUUID } from "node:crypto";
 import { beforeAll, afterAll, describe, expect, it } from "vitest";
 import { createLegacyMoneyTestSchema } from "@sammlerraum/db/test-legacy-money-schema";
 import { createTestDatabaseClient } from "@sammlerraum/db/test-database";
+import { createIdentifierService } from "@sammlerraum/domain/items/identifier-service";
 import { createImportService } from "@sammlerraum/domain/imports/import-service";
 import { createImportCommitService } from "@sammlerraum/domain/imports/import-commit-service";
 import { createPersonalMoneyService } from "@sammlerraum/domain/money/personal-money-service";
@@ -736,6 +737,43 @@ describe.runIf(process.env.RUN_DATABASE_INTEGRATION === "1")(
       expect(await f.source.getImportJob(f.actor, f.job.id)).toMatchObject({
         status: "COMPLETED",
         progress: { committedRows: 101 },
+      });
+    });
+
+    it("detects an owner-changed identifier on an earlier own-created item before the next chunk", async () => {
+      const rows = Array.from({ length: 12 }, (_, i) => [
+        "Item " + i,
+        "1",
+        i === 0 ? "9781111" : i === 10 ? "9782222" : "",
+      ]);
+      const f = await fixture(rows),
+        service = createImportCommitService(db);
+      const saved = await service.saveDecisions(f.actor, {
+        jobId: f.job.id,
+        expectedRevision: f.job.revision,
+        previewGeneration: f.job.previewGeneration,
+        decisions: rows.map((_, i) => ({ rowNumber: i + 1, action: "CREATE" })),
+      });
+      await service.approveCommit(f.actor, {
+        jobId: f.job.id,
+        expectedRevision: saved.revision,
+        previewGeneration: f.job.previewGeneration,
+      });
+      expect(await service.commitNextBatch(f.job.id)).toMatchObject({
+        complete: false,
+        processed: 10,
+      });
+      const [first] = await db.$queryRaw<
+        { committedItemId: string }[]
+      >`SELECT "committedItemId" FROM "ImportRow" WHERE "jobId"=${f.job.id}::uuid AND "rowNumber"=1`;
+      await createIdentifierService(db, f.owner).setItemIdentifiers(first!.committedItemId, [
+        { type: "ISBN", value: "9782222" },
+      ]);
+      await createImportCommitter(service)({ jobId: f.job.id });
+      expect(await count(f.owner)).toBe(10);
+      expect(await f.source.getImportJob(f.actor, f.job.id)).toMatchObject({
+        status: "FAILED",
+        progress: { committedRows: 10 },
       });
     });
   },

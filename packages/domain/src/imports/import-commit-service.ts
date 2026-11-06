@@ -248,7 +248,7 @@ async function recheckMatches(tx: Tx, job: Job, value: ImportPreviewRow) {
   if (!identifier) return;
   const matches = await q<{ id: string }[]>(
     tx,
-    Prisma.sql`SELECT i.id FROM "CollectibleItem" i JOIN "ItemIdentifier" ii ON ii."itemId"=i.id WHERE i."ownerId"=${job.ownerId} AND i."collectionId"=${job.collectionId}::uuid AND i."deletedAt" IS NULL AND ii.type=${identifier.type} AND ii."normalizedValue"=${identifier.normalizedValue} AND NOT EXISTS(SELECT 1 FROM "ImportRow" r WHERE r."jobId"=${job.id}::uuid AND r."committedItemId"=i.id AND r.status='COMMITTED' AND r.decision->'choice'->>'action' IN ('CREATE','CREATE_SEPARATE')) ORDER BY i.id LIMIT 10001`,
+    Prisma.sql`SELECT i.id FROM "CollectibleItem" i JOIN "ItemIdentifier" ii ON ii."itemId"=i.id WHERE i."ownerId"=${job.ownerId} AND i."collectionId"=${job.collectionId}::uuid AND i."deletedAt" IS NULL AND ii.type=${identifier.type} AND ii."normalizedValue"=${identifier.normalizedValue} AND NOT EXISTS(SELECT 1 FROM "ImportRow" r WHERE r."jobId"=${job.id}::uuid AND r."committedItemId"=i.id AND r.status='COMMITTED' AND r.decision->'choice'->>'action' IN ('CREATE','CREATE_SEPARATE') AND r.preview->'values'->'identifier'->>'type'=ii.type AND r.preview->'values'->'identifier'->>'normalizedValue'=ii."normalizedValue") ORDER BY i.id LIMIT 10001`,
   );
   if (
     matches.length > 10000 ||

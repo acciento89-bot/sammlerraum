@@ -44,3 +44,17 @@ it("rejects injected payload authority and stops on cancellation before a write"
   ).rejects.toThrow("Import commit cancelled");
   expect(service.commitNextBatch).not.toHaveBeenCalled();
 });
+
+it("normalizes a dependency rejection while recording a permanent failure", async () => {
+  const service = {
+    commitNextBatch: vi.fn(async () => {
+      throw new ImportCommitRejected(9);
+    }),
+    failCommit: vi.fn(async () => {
+      throw new Error("private second-transaction error");
+    }),
+  };
+  await expect(createImportCommitter(service)({ jobId: randomUUID() })).rejects.toThrow(
+    "Import commit temporarily unavailable",
+  );
+});

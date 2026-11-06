@@ -19,7 +19,12 @@ export function createImportCommitter(
         if (result.complete) return;
       } catch (error) {
         if (error instanceof ImportCommitRejected) {
-          if (await service.failCommit(request.data.jobId, error.expectedJobRevision)) return;
+          try {
+            if (await service.failCommit(request.data.jobId, error.expectedJobRevision)) return;
+          } catch {
+            // Failure recording has the same private dependency boundary as the write.
+            // Keep the revision CAS and let the broker retry with a controlled message.
+          }
         } else if (error instanceof ImportServiceError && error.code === "IMPORT_NOT_FOUND") return;
         throw new Error("Import commit temporarily unavailable");
       }
