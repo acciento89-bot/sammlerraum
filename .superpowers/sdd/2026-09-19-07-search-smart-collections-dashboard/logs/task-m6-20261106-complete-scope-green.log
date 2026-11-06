@@ -1,0 +1,104 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/search/legacy-money-query.integration.test.ts (5 tests | 5 failed) 493ms
+   × complete owned legacy money scope > rejects a known-price query while any outer candidate remains unknown 179ms
+     → expected ItemSearchError: SEARCH_INVARIANT { code: '…' } to match object { code: 'FILTER_UNAVAILABLE' }
+(1 matching property omitted from actual)
+   × complete owned legacy money scope > excludes other owners and lifecycle states from the independent gate 22ms
+     → SEARCH_INVARIANT
+   × complete owned legacy money scope > keeps missing prices and known zero distinct in quantity-weighted costs 14ms
+     → SEARCH_INVARIANT
+   × complete owned legacy money scope > does not let a matched selection hide unresolved outer purchase evidence 17ms
+     → SEARCH_INVARIANT
+   × complete owned legacy money scope > sums actual maximum raw values times intmax quantities beyond int64 21ms
+     → SEARCH_INVARIANT
+ ✓ |workspace| packages/domain/src/money/purchase-cost.test.ts (24 tests) 151ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/search/legacy-money-query.integration.test.ts > complete owned legacy money scope > rejects a known-price query while any outer candidate remains unknown
+AssertionError: expected ItemSearchError: SEARCH_INVARIANT { code: '…' } to match object { code: 'FILTER_UNAVAILABLE' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+- {
+-   "code": "FILTER_UNAVAILABLE",
++ ItemSearchError {
++   "code": "SEARCH_INVARIANT",
+  }
+
+ ❯ packages/domain/src/search/legacy-money-query.integration.test.ts:40:3
+     38|  it("rejects a known-price query while any outer candidate remains unk…
+     39|   const f=await fixture(); await classify(f,await item(f,100)); await …
+     40|   await expect(runSearchRead(db,tx=>prepareLegacyMoneyPredicates(tx,f.…
+       |   ^
+     41|  });
+     42|  it("excludes other owners and lifecycle states from the independent g…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ FAIL  |workspace| packages/domain/src/search/legacy-money-query.integration.test.ts > complete owned legacy money scope > excludes other owners and lifecycle states from the independent gate
+ItemSearchError: SEARCH_INVARIANT
+ ❯ searchFail packages/contracts/src/item-search.ts:24:9
+     22| }
+     23| export function searchFail(code: ItemSearchError["code"]): never {
+     24|   throw new ItemSearchError(code);
+       |         ^
+     25| }
+     26| const textValid = (v: string) =>
+ ❯ runSearchTransaction packages/domain/src/search/search-read.ts:80:14
+ ❯ packages/domain/src/search/legacy-money-query.integration.test.ts:46:14
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+ FAIL  |workspace| packages/domain/src/search/legacy-money-query.integration.test.ts > complete owned legacy money scope > keeps missing prices and known zero distinct in quantity-weighted costs
+ItemSearchError: SEARCH_INVARIANT
+ ❯ searchFail packages/contracts/src/item-search.ts:24:9
+     22| }
+     23| export function searchFail(code: ItemSearchError["code"]): never {
+     24|   throw new ItemSearchError(code);
+       |         ^
+     25| }
+     26| const textValid = (v: string) =>
+ ❯ runSearchTransaction packages/domain/src/search/search-read.ts:80:14
+ ❯ packages/domain/src/search/legacy-money-query.integration.test.ts:51:16
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+
+ FAIL  |workspace| packages/domain/src/search/legacy-money-query.integration.test.ts > complete owned legacy money scope > does not let a matched selection hide unresolved outer purchase evidence
+ItemSearchError: SEARCH_INVARIANT
+ ❯ searchFail packages/contracts/src/item-search.ts:24:9
+     22| }
+     23| export function searchFail(code: ItemSearchError["code"]): never {
+     24|   throw new ItemSearchError(code);
+       |         ^
+     25| }
+     26| const textValid = (v: string) =>
+ ❯ runSearchTransaction packages/domain/src/search/search-read.ts:80:14
+ ❯ packages/domain/src/search/legacy-money-query.integration.test.ts:56:16
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯
+
+ FAIL  |workspace| packages/domain/src/search/legacy-money-query.integration.test.ts > complete owned legacy money scope > sums actual maximum raw values times intmax quantities beyond int64
+ItemSearchError: SEARCH_INVARIANT
+ ❯ searchFail packages/contracts/src/item-search.ts:24:9
+     22| }
+     23| export function searchFail(code: ItemSearchError["code"]): never {
+     24|   throw new ItemSearchError(code);
+       |         ^
+     25| }
+     26| const textValid = (v: string) =>
+ ❯ runSearchTransaction packages/domain/src/search/search-read.ts:80:14
+ ❯ packages/domain/src/search/legacy-money-query.integration.test.ts:61:16
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/5]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  5 failed | 24 passed (29)
+   Start at  18:17:09
+   Duration  1.57s (transform 183ms, setup 6ms, collect 562ms, tests 644ms, environment 0ms, prepare 86ms)
+

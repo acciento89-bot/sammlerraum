@@ -1,0 +1,25 @@
+
+> sammlerraum@ typecheck /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+> pnpm -r typecheck
+
+Scope: 10 of 11 workspace projects
+packages/config typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+packages/queue typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+packages/market-data typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+packages/contracts typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+packages/config typecheck: ../domain/src/money/legacy-money-store.ts(442,23): error TS2345: Argument of type '{ family: "PURCHASE"; itemId: string; } | { family: "CUSTOM"; itemId: string; fieldDefinitionId: string; } | { family: "CATALOG"; entryId: string | null; revision: number | null; definitionId: string; target: { ...; } | { ...; }; }' is not assignable to parameter of type '{ family: "PURCHASE"; itemId: string; } | { family: "CUSTOM"; itemId: string; fieldDefinitionId: string; } | { family: "CATALOG"; entryId: string; revision: number; target: { kind: "ENTRY"; } | { ...; }; definitionId: string; }'.
+packages/config typecheck:   Type '{ family: "CATALOG"; entryId: string | null; revision: number | null; definitionId: string; target: { kind: "ENTRY"; } | { kind: "VARIANT"; variantId: string | null; }; }' is not assignable to type '{ family: "PURCHASE"; itemId: string; } | { family: "CUSTOM"; itemId: string; fieldDefinitionId: string; } | { family: "CATALOG"; entryId: string; revision: number; target: { kind: "ENTRY"; } | { ...; }; definitionId: string; }'.
+packages/config typecheck:     Types of property 'entryId' are incompatible.
+packages/config typecheck:       Type 'string | null' is not assignable to type 'string'.
+packages/config typecheck:         Type 'null' is not assignable to type 'string'.
+packages/config typecheck: Failed
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/config:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @sammlerraum/config@ typecheck: `tsc --noEmit --project ../../tsconfig.base.json`
+Exit status 2
+packages/storage typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+packages/contracts typecheck: ../domain/src/money/legacy-money-store.ts(442,23): error TS2345: Argument of type '{ family: "PURCHASE"; itemId: string; } | { family: "CUSTOM"; itemId: string; fieldDefinitionId: string; } | { family: "CATALOG"; entryId: string | null; revision: number | null; definitionId: string; target: { ...; } | { ...; }; }' is not assignable to parameter of type '{ family: "PURCHASE"; itemId: string; } | { family: "CUSTOM"; itemId: string; fieldDefinitionId: string; } | { family: "CATALOG"; entryId: string; revision: number; target: { kind: "ENTRY"; } | { ...; }; definitionId: string; }'.
+packages/contracts typecheck:   Type '{ family: "CATALOG"; entryId: string | null; revision: number | null; definitionId: string; target: { kind: "ENTRY"; } | { kind: "VARIANT"; variantId: string | null; }; }' is not assignable to type '{ family: "PURCHASE"; itemId: string; } | { family: "CUSTOM"; itemId: string; fieldDefinitionId: string; } | { family: "CATALOG"; entryId: string; revision: number; target: { kind: "ENTRY"; } | { ...; }; definitionId: string; }'.
+packages/contracts typecheck:     Types of property 'entryId' are incompatible.
+packages/contracts typecheck:       Type 'string | null' is not assignable to type 'string'.
+packages/contracts typecheck:         Type 'null' is not assignable to type 'string'.
+ ELIFECYCLE  Command failed with exit code 2.

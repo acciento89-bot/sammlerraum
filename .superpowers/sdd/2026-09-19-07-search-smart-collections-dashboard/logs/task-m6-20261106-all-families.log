@@ -1,0 +1,46 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/search/legacy-money-query.integration.test.ts (16 tests | 1 failed) 855ms
+   ✓ complete owned legacy money scope > rejects a known-price query while any outer candidate remains unknown 140ms
+   ✓ complete owned legacy money scope > excludes other owners and lifecycle states from the independent gate 22ms
+   ✓ complete owned legacy money scope > keeps missing prices and known zero distinct in quantity-weighted costs 23ms
+   ✓ complete owned legacy money scope > does not let a matched selection hide unresolved outer purchase evidence 15ms
+   ✓ complete owned legacy money scope > sums actual maximum raw values times intmax quantities beyond int64 29ms
+   ✓ complete owned legacy money scope > real search checks unknown candidates outside matching text before count/page 21ms
+   ✓ complete owned legacy money scope > real search returns both exact cross-exponent matches and the NOT complement of missing prices 34ms
+   ✓ complete owned legacy money scope > repeats complete coverage on cursor pages after a same-pair legacy write 29ms
+   ✓ complete owned legacy money scope > real saved search revalidates monetary evidence rather than retaining an executable permit 22ms
+   ✓ complete owned legacy money scope > real dashboard labels quantity-weighted partial costs and separate evidenced scales 38ms
+   ✓ complete owned legacy money scope > gates every custom selector before text and includes missing candidates outside its collection 75ms
+   ✓ complete owned legacy money scope > validates foreign custom selectors on an empty owned scope without exposing their counts 6ms
+   × complete owned legacy money scope > requires both canonical entry and selected-variant coverage under OR/NOT 31ms
+     → expected FilterValidationError: FILTER_INVALID { …(2) } to match object { code: 'FILTER_UNAVAILABLE' }
+(2 matching properties omitted from actual)
+   ✓ complete owned legacy money scope > does not fall back to historical variant evidence when that path is removed from the current revision 36ms
+   ✓ complete owned legacy money scope > revalidates withdrawn canonical assertions through the shared origin policy 28ms
+   ✓ complete owned legacy money scope > keeps amounts, quantities and provenance coherent across concurrent raw replacement 26ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/search/legacy-money-query.integration.test.ts > complete owned legacy money scope > requires both canonical entry and selected-variant coverage under OR/NOT
+AssertionError: expected FilterValidationError: FILTER_INVALID { …(2) } to match object { code: 'FILTER_UNAVAILABLE' }
+(2 matching properties omitted from actual)
+
+- Expected
++ Received
+
+- {
+-   "code": "FILTER_UNAVAILABLE",
++ FilterValidationError {
++   "code": "FILTER_INVALID",
+  }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 15 passed (16)
+   Start at  18:24:56
+   Duration  1.57s (transform 207ms, setup 7ms, collect 392ms, tests 855ms, environment 0ms, prepare 64ms)
+

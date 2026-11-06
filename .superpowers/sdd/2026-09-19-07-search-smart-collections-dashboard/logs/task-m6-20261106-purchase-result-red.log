@@ -1,0 +1,204 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/money/purchase-cost.test.ts (10 tests | 10 failed) 88ms
+   × gates the independent whole scope unknownPaths before loading any matched selection 2ms
+     → M6_NOT_IMPLEMENTED
+   × gates the independent whole scope ineligiblePaths before loading any matched selection 0ms
+     → M6_NOT_IMPLEMENTED
+   × keeps a narrowed matched subtotal separately labelled after whole-scope eligibility 0ms
+     → M6_NOT_IMPLEMENTED
+   × keeps known zero, empty and complete states distinct 0ms
+     → M6_NOT_IMPLEMENTED
+   × refuses inconsistent grouping or a selection escaping outer coverage 0 3ms
+     → expected Error: M6_NOT_IMPLEMENTED to match object { code: 'MONEY_DATA_INTEGRITY' }
+   × refuses inconsistent grouping or a selection escaping outer coverage 1 0ms
+     → expected Error: M6_NOT_IMPLEMENTED to match object { code: 'MONEY_DATA_INTEGRITY' }
+   × refuses inconsistent grouping or a selection escaping outer coverage 2 0ms
+     → expected Error: M6_NOT_IMPLEMENTED to match object { code: 'MONEY_DATA_INTEGRITY' }
+   × refuses inconsistent grouping or a selection escaping outer coverage 3 0ms
+     → expected Error: M6_NOT_IMPLEMENTED to match object { code: 'MONEY_DATA_INTEGRITY' }
+   × native quantity-weighted purchase grouping > sums two maximum-raw times intmax quantities beyond bigint without rounding 78ms
+     → SEARCH_INVARIANT
+   × native quantity-weighted purchase grouping > groups different evidenced scales separately and preserves exact zero 1ms
+     → SEARCH_INVARIANT
+ ❯ |workspace| packages/contracts/src/money-coverage.test.ts (12 tests | 3 failed) 4ms
+   × preserves exact separately weighted unit coverage and counts 2ms
+     → [
+  {
+    "expected": "never",
+    "code": "invalid_type",
+    "path": [],
+    "message": "Invalid input: expected never, received object"
+  }
+]
+   ✓ refuses contradictory or unbounded coverage 0 0ms
+   ✓ refuses contradictory or unbounded coverage 1 0ms
+   ✓ refuses contradictory or unbounded coverage 2 0ms
+   ✓ refuses contradictory or unbounded coverage 3 0ms
+   ✓ refuses contradictory or unbounded coverage 4 0ms
+   ✓ refuses contradictory or unbounded coverage 5 0ms
+   ✓ refuses contradictory or unbounded coverage 6 0ms
+   ✓ refuses contradictory or unbounded coverage 7 0ms
+   ✓ refuses contradictory or unbounded coverage 8 0ms
+   × never represents a known zero price as missing or an incomplete subtotal as COMPLETE 0ms
+     → [
+  {
+    "expected": "never",
+    "code": "invalid_type",
+    "path": [],
+    "message": "Invalid input: expected never, received object"
+  }
+]
+   × distinguishes no inventory, no prices, and unavailable interpretation 0ms
+     → [
+  {
+    "expected": "never",
+    "code": "invalid_type",
+    "path": [],
+    "message": "Invalid input: expected never, received object"
+  }
+]
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 13 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/contracts/src/money-coverage.test.ts > preserves exact separately weighted unit coverage and counts
+ZodError: [
+  {
+    "expected": "never",
+    "code": "invalid_type",
+    "path": [],
+    "message": "Invalid input: expected never, received object"
+  }
+]
+ ❯ packages/contracts/src/money-coverage.test.ts:6:111
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/13]⎯
+
+ FAIL  |workspace| packages/contracts/src/money-coverage.test.ts > never represents a known zero price as missing or an incomplete subtotal as COMPLETE
+ZodError: [
+  {
+    "expected": "never",
+    "code": "invalid_type",
+    "path": [],
+    "message": "Invalid input: expected never, received object"
+  }
+]
+ ❯ packages/contracts/src/money-coverage.test.ts:11:35
+      9| ])("refuses contradictory or unbounded coverage %#", change => { expec…
+     10| it("never represents a known zero price as missing or an incomplete su…
+     11|   expect(PurchaseCostResultSchema.parse({ state: "PARTIAL", coverage, …
+       |                                   ^
+     12|   expect(PurchaseCostResultSchema.safeParse({ state: "COMPLETE", cover…
+     13| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/13]⎯
+
+ FAIL  |workspace| packages/contracts/src/money-coverage.test.ts > distinguishes no inventory, no prices, and unavailable interpretation
+ZodError: [
+  {
+    "expected": "never",
+    "code": "invalid_type",
+    "path": [],
+    "message": "Invalid input: expected never, received object"
+  }
+]
+ ❯ packages/contracts/src/money-coverage.test.ts:15:35
+     13| });
+     14| it("distinguishes no inventory, no prices, and unavailable interpretat…
+     15|   expect(PurchaseCostResultSchema.parse({ state: "EMPTY", coverage: em…
+       |                                   ^
+     16|   const missing = { ...empty, selectedItems: 1, selectedPaths: 1, miss…
+     17|   expect(PurchaseCostResultSchema.parse({ state: "NO_PRICES", coverage…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/13]⎯
+
+ FAIL  |workspace| packages/domain/src/money/purchase-cost.test.ts > gates the independent whole scope unknownPaths before loading any matched selection
+ FAIL  |workspace| packages/domain/src/money/purchase-cost.test.ts > gates the independent whole scope ineligiblePaths before loading any matched selection
+Error: M6_NOT_IMPLEMENTED
+ ❯ finalizePurchaseCost packages/domain/src/money/purchase-cost.ts:3:171
+      1| import type { Prisma } from "@sammlerraum/db/search-sql";
+      2| export function purchaseCostGroupsSql(_resolvedSelection: Prisma.Sql):…
+      3| export async function finalizePurchaseCost(_outerCoverage: unknown, _r…
+       |                                                                                                                                                                           ^
+      4| 
+ ❯ packages/domain/src/money/purchase-cost.test.ts:11:24
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/13]⎯
+
+ FAIL  |workspace| packages/domain/src/money/purchase-cost.test.ts > keeps a narrowed matched subtotal separately labelled after whole-scope eligibility
+Error: M6_NOT_IMPLEMENTED
+ ❯ finalizePurchaseCost packages/domain/src/money/purchase-cost.ts:3:171
+      1| import type { Prisma } from "@sammlerraum/db/search-sql";
+      2| export function purchaseCostGroupsSql(_resolvedSelection: Prisma.Sql):…
+      3| export async function finalizePurchaseCost(_outerCoverage: unknown, _r…
+       |                                                                                                                                                                           ^
+      4| 
+ ❯ packages/domain/src/money/purchase-cost.test.ts:17:24
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/13]⎯
+
+ FAIL  |workspace| packages/domain/src/money/purchase-cost.test.ts > keeps known zero, empty and complete states distinct
+Error: M6_NOT_IMPLEMENTED
+ ❯ finalizePurchaseCost packages/domain/src/money/purchase-cost.ts:3:171
+      1| import type { Prisma } from "@sammlerraum/db/search-sql";
+      2| export function purchaseCostGroupsSql(_resolvedSelection: Prisma.Sql):…
+      3| export async function finalizePurchaseCost(_outerCoverage: unknown, _r…
+       |                                                                                                                                                                           ^
+      4| 
+ ❯ packages/domain/src/money/purchase-cost.test.ts:21:17
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/13]⎯
+
+ FAIL  |workspace| packages/domain/src/money/purchase-cost.test.ts > refuses inconsistent grouping or a selection escaping outer coverage 0
+ FAIL  |workspace| packages/domain/src/money/purchase-cost.test.ts > refuses inconsistent grouping or a selection escaping outer coverage 1
+ FAIL  |workspace| packages/domain/src/money/purchase-cost.test.ts > refuses inconsistent grouping or a selection escaping outer coverage 2
+ FAIL  |workspace| packages/domain/src/money/purchase-cost.test.ts > refuses inconsistent grouping or a selection escaping outer coverage 3
+AssertionError: expected Error: M6_NOT_IMPLEMENTED to match object { code: 'MONEY_DATA_INTEGRITY' }
+
+- Expected
++ Received
+
+- {
+-   "code": "MONEY_DATA_INTEGRITY",
++ Error {
++   "message": "M6_NOT_IMPLEMENTED",
+  }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/13]⎯
+
+ FAIL  |workspace| packages/domain/src/money/purchase-cost.test.ts > native quantity-weighted purchase grouping > sums two maximum-raw times intmax quantities beyond bigint without rounding
+ItemSearchError: SEARCH_INVARIANT
+ ❯ searchFail packages/contracts/src/item-search.ts:24:9
+     22| }
+     23| export function searchFail(code: ItemSearchError["code"]): never {
+     24|   throw new ItemSearchError(code);
+       |         ^
+     25| }
+     26| const textValid = (v: string) =>
+ ❯ runSearchTransaction packages/domain/src/search/search-read.ts:80:14
+ ❯ packages/domain/src/money/purchase-cost.test.ts:38:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/13]⎯
+
+ FAIL  |workspace| packages/domain/src/money/purchase-cost.test.ts > native quantity-weighted purchase grouping > groups different evidenced scales separately and preserves exact zero
+ItemSearchError: SEARCH_INVARIANT
+ ❯ searchFail packages/contracts/src/item-search.ts:24:9
+     22| }
+     23| export function searchFail(code: ItemSearchError["code"]): never {
+     24|   throw new ItemSearchError(code);
+       |         ^
+     25| }
+     26| const textValid = (v: string) =>
+ ❯ runSearchTransaction packages/domain/src/search/search-read.ts:80:14
+ ❯ packages/domain/src/money/purchase-cost.test.ts:43:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/13]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  13 failed | 9 passed (22)
+   Start at  13:47:44
+   Duration  667ms (transform 97ms, setup 6ms, collect 262ms, tests 92ms, environment 0ms, prepare 81ms)
+

@@ -1,0 +1,27 @@
+
+> sammlerraum@ typecheck /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+> pnpm -r typecheck
+
+Scope: 10 of 11 workspace projects
+packages/contracts typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+packages/config typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+packages/market-data typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+packages/queue typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+packages/queue typecheck: ../domain/src/search/legacy-money-query.ts(61,7): error TS2375: Type '{ op: "range"; unit: { currency: string; minorUnitExponent: number; unitKey: string; }; minMinor?: string | undefined; maxMinor?: string | undefined; }' is not assignable to type 'LegacyMoneyRange' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+packages/queue typecheck:   Types of property 'minMinor' are incompatible.
+packages/queue typecheck:     Type 'string | undefined' is not assignable to type 'string'.
+packages/queue typecheck:       Type 'undefined' is not assignable to type 'string'.
+packages/queue typecheck: ../domain/src/search/legacy-money-query.ts(73,7): error TS2375: Type '{ op: "range"; unit: { currency: string; minorUnitExponent: number; unitKey: string; }; minMinor?: string | undefined; maxMinor?: string | undefined; }' is not assignable to type 'LegacyMoneyRange' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+packages/queue typecheck:   Types of property 'minMinor' are incompatible.
+packages/queue typecheck:     Type 'string | undefined' is not assignable to type 'string'.
+packages/queue typecheck:       Type 'undefined' is not assignable to type 'string'.
+packages/queue typecheck: ../domain/src/search/legacy-money-query.ts(86,7): error TS2375: Type '{ op: "range"; unit: { currency: string; minorUnitExponent: number; unitKey: string; }; minMinor?: string | undefined; maxMinor?: string | undefined; }' is not assignable to type 'LegacyMoneyRange' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+packages/queue typecheck:   Types of property 'minMinor' are incompatible.
+packages/queue typecheck:     Type 'string | undefined' is not assignable to type 'string'.
+packages/queue typecheck:       Type 'undefined' is not assignable to type 'string'.
+packages/queue typecheck: Failed
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/queue:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @sammlerraum/queue@ typecheck: `tsc --noEmit --project ../../tsconfig.base.json`
+Exit status 2
+packages/storage typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+ ELIFECYCLE  Command failed with exit code 2.

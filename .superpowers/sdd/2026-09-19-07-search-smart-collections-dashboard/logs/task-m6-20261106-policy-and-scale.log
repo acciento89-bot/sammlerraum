@@ -1,0 +1,68 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+stdout | packages/domain/src/search/legacy-money-query.integration.test.ts > complete owned legacy money scope > keeps complete-scope reads at a fixed statement count above one thousand prices
+M6_COMPLETE_SCOPE_MEASUREMENT {"smallRead":{"calls":13,"elapsedMs":7,"total":1},"largeRead":{"calls":13,"elapsedMs":781,"total":1250}}
+
+ ❯ |workspace| packages/domain/src/search/legacy-money-query.integration.test.ts (19 tests | 1 failed) 2826ms
+   ✓ complete owned legacy money scope > rejects a known-price query while any outer candidate remains unknown 101ms
+   ✓ complete owned legacy money scope > excludes other owners and lifecycle states from the independent gate 15ms
+   ✓ complete owned legacy money scope > keeps missing prices and known zero distinct in quantity-weighted costs 18ms
+   ✓ complete owned legacy money scope > does not let a matched selection hide unresolved outer purchase evidence 13ms
+   ✓ complete owned legacy money scope > sums actual maximum raw values times intmax quantities beyond int64 24ms
+   ✓ complete owned legacy money scope > real search checks unknown candidates outside matching text before count/page 17ms
+   ✓ complete owned legacy money scope > real search returns both exact cross-exponent matches and the NOT complement of missing prices 29ms
+   ✓ complete owned legacy money scope > repeats complete coverage on cursor pages after a same-pair legacy write 24ms
+   ✓ complete owned legacy money scope > real saved search revalidates monetary evidence rather than retaining an executable permit 20ms
+   ✓ complete owned legacy money scope > real dashboard labels quantity-weighted partial costs and separate evidenced scales 35ms
+   ✓ complete owned legacy money scope > gates every custom selector before text and includes missing candidates outside its collection 68ms
+   ✓ complete owned legacy money scope > validates foreign custom selectors on an empty owned scope without exposing their counts 6ms
+   ✓ complete owned legacy money scope > requires both canonical entry and selected-variant coverage under OR/NOT 57ms
+   ✓ complete owned legacy money scope > does not fall back to historical variant evidence when that path is removed from the current revision 32ms
+   ✓ complete owned legacy money scope > revalidates withdrawn canonical assertions through the shared origin policy 25ms
+   ✓ complete owned legacy money scope > keeps amounts, quantities and provenance coherent across concurrent raw replacement 26ms
+   ✓ complete owned legacy money scope > keeps eligible other currencies out of the positive range and never converts cost groups 23ms
+   × complete owned legacy money scope > invalidates shared canonical classifications after the evidence actor is erased 39ms
+     → 
+Invalid `db.user.delete()` invocation in
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/domain/src/search/legacy-money-query.integration.test.ts:477:19
+
+  474 await db.$queryRaw`UPDATE "CollectibleItem" SET "categoryTemplateId"=${reference.category}::uuid,"catalogEntryId"=${reference.entry}::uuid WHERE id=${linked}::uuid RETURNING id`;
+  475 const service=createItemSearchService(db,{canonicalMoneyEnabled:true}),input={filter:{version:1,root:reference.leaf("ENTRY")}};
+  476 expect((await service.searchItems({userId:owner.actor},input)).total).toBe(1);
+→ 477 await db.user.delete(
+Foreign key constraint violated on the constraint: `ApplicationRoleGrant_userId_fkey`
+   ✓ complete owned legacy money scope > keeps complete-scope reads at a fixed statement count above one thousand prices  2032ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/search/legacy-money-query.integration.test.ts > complete owned legacy money scope > invalidates shared canonical classifications after the evidence actor is erased
+PrismaClientKnownRequestError: 
+Invalid `db.user.delete()` invocation in
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/domain/src/search/legacy-money-query.integration.test.ts:477:19
+
+  474 await db.$queryRaw`UPDATE "CollectibleItem" SET "categoryTemplateId"=${reference.category}::uuid,"catalogEntryId"=${reference.entry}::uuid WHERE id=${linked}::uuid RETURNING id`;
+  475 const service=createItemSearchService(db,{canonicalMoneyEnabled:true}),input={filter:{version:1,root:reference.leaf("ENTRY")}};
+  476 expect((await service.searchItems({userId:owner.actor},input)).total).toBe(1);
+→ 477 await db.user.delete(
+Foreign key constraint violated on the constraint: `ApplicationRoleGrant_userId_fkey`
+ ❯ vn.handleRequestError node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:238:13
+ ❯ vn.handleAndLogRequestError node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:184:12
+ ❯ vn.request node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:153:12
+ ❯ a node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:1014:24
+ ❯ packages/domain/src/search/legacy-money-query.integration.test.ts:477:5
+    475|     const service=createItemSearchService(db,{canonicalMoneyEnabled:tr…
+    476|     expect((await service.searchItems({userId:owner.actor},input)).tot…
+    477|     await db.user.delete({where:{id:f.actor}});
+       |     ^
+    478|     await expect(service.searchItems({userId:owner.actor},input)).reje…
+    479|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 18 passed (19)
+   Start at  18:40:00
+   Duration  3.42s (transform 184ms, setup 6ms, collect 333ms, tests 2.83s, environment 0ms, prepare 52ms)
+
