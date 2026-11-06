@@ -34,3 +34,7 @@ Personal response reads are bounded to 1 MiB, capabilities/error bodies to 4 KiB
 ## Verification records
 
 The milestone context and exact commands/counts live in `.superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/task-m5-execution-context.md` and its `logs/` directory. Milestone acceptance, review, source commit and remote CI must be recorded there before claiming cutover readiness. Disposable browser data and private screenshots are synthetic; production data, mail and purchases are outside this validation.
+
+### Statement raw-validator performance closure (2026-11-06)
+
+The additive `20261106135500_catalog_money_statement_raw_guard` migration installs the catalog AFTER INSERT transition-table validator before replacing the older row function. Thus an intermediate installation state retains both checks; no state omits raw validation. Every non-REVOKE event is still checked against its exact immutable entry/revision/target/definition/raw pair, with the same duplicate/shape/amount rules. Each distinct snapshot is loaded and materialized once per statement, not once per row. Exceptions abort the entire statement; surrounding batch transactions still roll back earlier chunks. Personal, actor, sequence, MVCC, audit/redaction, COPY lineage and revocation checks remain in the row guard. There is no session flag, application assertion or persistent validation cache. Keep the documented writer-drain and consumer-disabled rollout boundary; no production deployment is performed by local verification.

@@ -70,6 +70,31 @@ describe.runIf(enabled)("native coherent catalog money map", () => {
     await db?.$disconnect();
     await isolated?.cleanup();
   });
+  it("validates every revision in one native INSERT and rolls the whole statement back", async () => {
+    const first = await snapshot(category, [
+      { definitionId: money, key: "price_0", type: "MONEY", value: raw },
+    ]);
+    const second = await snapshot(category, [
+      { definitionId: money, key: "price_0", type: "MONEY", value: raw },
+    ]);
+    const firstEvent = randomUUID(),
+      secondEvent = randomUUID();
+    await expect(db.$queryRaw`INSERT INTO "CatalogMoneyInterpretationEvent" (id,"entryId",revision,"targetKey","definitionId",sequence,operation,"rawAmountMinor","rawCurrency") VALUES
+      (${firstEvent}::uuid,${first}::uuid,1,'entry',${money}::uuid,1,'RAW_WRITE',100,'AFN'),
+      (${secondEvent}::uuid,${second}::uuid,1,'entry',${money}::uuid,1,'RAW_WRITE',101,'AFN') RETURNING id`).rejects.toMatchObject(
+      { meta: { driverAdapterError: { cause: { originalCode: "23514" } } } },
+    );
+    const rows = await db.$queryRaw<
+      { count: bigint }[]
+    >`SELECT count(*) FROM "CatalogMoneyInterpretationEvent" WHERE id IN (${firstEvent}::uuid,${secondEvent}::uuid)`;
+    expect(rows[0]!.count).toBe(0n);
+    const saved = await db.$queryRaw<
+      { id: string }[]
+    >`INSERT INTO "CatalogMoneyInterpretationEvent" (id,"entryId",revision,"targetKey","definitionId",sequence,operation,"rawAmountMinor","rawCurrency") VALUES
+      (${firstEvent}::uuid,${first}::uuid,1,'entry',${money}::uuid,1,'RAW_WRITE',100,'AFN'),
+      (${secondEvent}::uuid,${second}::uuid,1,'entry',${money}::uuid,1,'RAW_WRITE',100,'AFN') RETURNING id`;
+    expect(new Set(saved.map((row) => row.id))).toEqual(new Set([firstEvent, secondEvent]));
+  });
   it("matches exact single-fact reads and observes revocation without leaking evidence", async () => {
     const variant = { id: randomUUID() };
     const entryId = await snapshot(

@@ -1,0 +1,23 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+stdout | packages/domain/src/catalog/catalog-money-map.test.ts > native coherent catalog money map > writes all 10100 supported money paths in native batches of at most 500
+{"check":"M4_NATIVE_MAX_MONEY_WRITE","paths":10100,"batches":21,"elapsedMs":23088}
+
+ ✓ |workspace| packages/domain/src/catalog/catalog-money-map.test.ts (12 tests) 24588ms
+   ✓ native coherent catalog money map > keeps all 10100 supported snapshot paths with bounded database round trips  505ms
+   ✓ native coherent catalog money map > writes all 10100 supported money paths in native batches of at most 500  23118ms
+stdout | packages/domain/src/catalog/catalog-money-mutation.test.ts > actual canonical catalog money mutation integration > carries all 10100 interpreted paths through the actual bounded canonical maintenance wrapper
+{"check":"M4_CANONICAL_MAX_CARRY_SOURCE_READY","paths":10100}
+
+stdout | packages/domain/src/catalog/catalog-money-mutation.test.ts > actual canonical catalog money mutation integration > carries all 10100 interpreted paths through the actual bounded canonical maintenance wrapper
+{"check":"M4_CANONICAL_MAX_CARRY","paths":10100,"elapsedMs":27608,"revision":2}
+
+ ✓ |workspace| packages/domain/src/catalog/catalog-money-mutation.test.ts (14 tests) 53306ms
+   ✓ actual canonical catalog money mutation integration > carries all 10100 interpreted paths through the actual bounded canonical maintenance wrapper  52092ms
+
+ Test Files  2 passed (2)
+      Tests  26 passed (26)
+   Start at  14:49:40
+   Duration  78.70s (transform 167ms, setup 7ms, collect 430ms, tests 77.89s, environment 0ms, prepare 93ms)
+

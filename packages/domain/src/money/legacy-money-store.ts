@@ -421,9 +421,13 @@ WITH selected AS MATERIALIZED (
  SELECT v->>'id',v->'attributes' FROM selected s,
  jsonb_array_elements(CASE WHEN jsonb_typeof(s.snapshot->'variants')='array' THEN CASE WHEN jsonb_array_length(s.snapshot->'variants')<=100 THEN s.snapshot->'variants' ELSE '[]'::jsonb END ELSE '[]'::jsonb END) v
 ), paths AS MATERIALIZED (
- SELECT a.target,v AS attribute,d.type AS "definitionType",d."categoryTemplateId"::text AS category
+ SELECT a.target,v AS attribute,d.type AS "definitionType",d."categoryTemplateId"::text AS category,
+ CASE WHEN v->>'definitionId' ~ '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$' COLLATE pg_catalog."C"
+ THEN (v->>'definitionId')::uuid ELSE NULL::uuid END AS definition
  FROM arrays a CROSS JOIN LATERAL jsonb_array_elements(CASE WHEN jsonb_typeof(a.attrs)='array' THEN CASE WHEN jsonb_array_length(a.attrs)<=100 THEN a.attrs ELSE '[]'::jsonb END ELSE '[]'::jsonb END) v
- LEFT JOIN "CatalogAttributeDefinition" d ON d.id::text=v->>'definitionId'
+ LEFT JOIN "CatalogAttributeDefinition" d ON d.id=CASE
+ WHEN v->>'definitionId' ~ '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$' COLLATE pg_catalog."C"
+ THEN (v->>'definitionId')::uuid ELSE NULL::uuid END
  WHERE v->>'type'='MONEY' OR d.type='MONEY'
 )
 SELECT s.snapshot AS header,s.category,NULL::text AS target,NULL::text AS definition,
@@ -442,9 +446,9 @@ SELECT NULL::jsonb,p.category,p.target,p.attribute->>'definitionId',
  true,seq.sequence,${eventJson("e")},${eventJson("o")},rev.id::text,NULL::text
 FROM paths p CROSS JOIN selected s
 LEFT JOIN LATERAL (SELECT COALESCE(MAX(h.sequence),0)::text AS sequence FROM "CatalogMoneyInterpretationEvent" h
- WHERE h."entryId"=${entryId}::uuid AND h.revision=${revision} AND h."targetKey"=p.target AND h."definitionId"::text=p.attribute->>'definitionId') seq ON true
+ WHERE h."entryId"=${entryId}::uuid AND h.revision=${revision} AND h."targetKey"=p.target AND h."definitionId"=p.definition) seq ON true
 LEFT JOIN LATERAL (SELECT e.* FROM "CatalogMoneyInterpretationEvent" e
- WHERE e."entryId"=${entryId}::uuid AND e.revision=${revision} AND e."targetKey"=p.target AND e."definitionId"::text=p.attribute->>'definitionId' AND e.operation<>'REVOKE' ORDER BY e.sequence DESC LIMIT 1) e ON true
+ WHERE e."entryId"=${entryId}::uuid AND e.revision=${revision} AND e."targetKey"=p.target AND e."definitionId"=p.definition AND e.operation<>'REVOKE' ORDER BY e.sequence DESC LIMIT 1) e ON true
 LEFT JOIN "CatalogMoneyInterpretationEvent" o ON o.id=CASE WHEN e.operation IN ('AUTHOR','CLASSIFY') THEN e.id WHEN e.operation='COPY' THEN e."originEventId" ELSE NULL END
 LEFT JOIN "CatalogMoneyInterpretationEvent" rev ON rev."revokedAssertionId"=o.id
 LIMIT 10102`);
