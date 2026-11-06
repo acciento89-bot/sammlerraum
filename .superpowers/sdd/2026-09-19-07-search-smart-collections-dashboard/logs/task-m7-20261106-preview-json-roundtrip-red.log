@@ -1,0 +1,48 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/money/money-transfer.test.ts (15 tests | 1 failed) 784ms
+   ✓ pins a canonical preview and refuses changed amount, profile or row identity at commit 12ms
+   ✓ requires the canonical RAW source contract and keeps explicit legacy UNKNOWN imports unpromoted 1ms
+   ✓ rejects nonopaque row identity  0ms
+   ✓ rejects nonopaque row identity bad row 0ms
+   ✓ rejects nonopaque row identity xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 0ms
+   ✓ rejects nonopaque row identity row/1 0ms
+   ✓ captures RAW unknown amounts without decimal/total/private evidence 3ms
+   ✓ refuses incomplete interpreted exports and never returns a truncated artifact on timeout 0ms
+   ✓ rejects mixed source kinds, unexpected fields, stale replacement preconditions and preview tampering 1ms
+   ✓ accepts 1000 items but refuses 1001 before touching the fact iterator 35ms
+   ✓ includes unresolved interpreted rows without decimal fields or totals 0ms
+   ✓ counts actual UTF-8 envelope and multiple paths: exactly 8 MiB succeeds, one byte more fails  724ms
+   ✓ closes invalid selectors, quantities, duplicate facts and foreign subjects without partial output 2ms
+   ✓ returns schema failure rather than throwing while validating dirty stored exponents 1ms
+   × keeps an optional undefined mapping property stable after JSON preview persistence 4ms
+     → expected [Function] to not throw an error but 'MoneyTransferError: MONEY_TRANSFER_CO…' was thrown
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/money/money-transfer.test.ts > keeps an optional undefined mapping property stable after JSON preview persistence
+AssertionError: expected [Function] to not throw an error but 'MoneyTransferError: MONEY_TRANSFER_CO…' was thrown
+
+- Expected: 
+undefined
+
++ Received: 
+"MoneyTransferError: MONEY_TRANSFER_CONFLICT"
+
+ ❯ packages/domain/src/money/money-transfer.test.ts:392:56
+    390|  const preview=validateMoneyImportRow({...row,sourceContract:undefined…
+    391|  const persisted:unknown=JSON.parse(JSON.stringify(preview));
+    392|  expect(()=>validateMoneyImportRow(row,persisted)).not.toThrow();
+       |                                                        ^
+    393|  expect(validateMoneyImportRow(row).sourceDigest).toBe(preview.sourceD…
+    394| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 14 passed (15)
+   Start at  19:48:57
+   Duration  1.36s (transform 160ms, setup 7ms, collect 275ms, tests 784ms, environment 0ms, prepare 47ms)
+

@@ -1,0 +1,19 @@
+[WebServer] (node:45198) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 8 tests using 1 worker
+
+(node:45199) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [money-consumers-desktop] › e2e/money-consumers.spec.ts:73:3 › de: exact quantity subtotal and usable purchase range retain historical scale (1.6s)
+  ✓  2 [money-consumers-desktop] › e2e/money-consumers.spec.ts:125:3 › de: known zero is shown as an evidenced subtotal instead of missing or complete (403ms)
+  ✓  3 [money-consumers-desktop] › e2e/money-consumers.spec.ts:73:3 › en: exact quantity subtotal and usable purchase range retain historical scale (764ms)
+  ✓  4 [money-consumers-desktop] › e2e/money-consumers.spec.ts:125:3 › en: known zero is shown as an evidenced subtotal instead of missing or complete (349ms)
+(node:45214) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  5 [money-consumers-mobile] › e2e/money-consumers.spec.ts:73:3 › de: exact quantity subtotal and usable purchase range retain historical scale (981ms)
+  ✓  6 [money-consumers-mobile] › e2e/money-consumers.spec.ts:125:3 › de: known zero is shown as an evidenced subtotal instead of missing or complete (377ms)
+  ✓  7 [money-consumers-mobile] › e2e/money-consumers.spec.ts:73:3 › en: exact quantity subtotal and usable purchase range retain historical scale (687ms)
+  ✓  8 [money-consumers-mobile] › e2e/money-consumers.spec.ts:125:3 › en: known zero is shown as an evidenced subtotal instead of missing or complete (360ms)
+
+  8 passed (7.7s)

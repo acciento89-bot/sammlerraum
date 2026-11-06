@@ -1,0 +1,26 @@
+
+> sammlerraum@ typecheck /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+> pnpm -r typecheck
+
+Scope: 10 of 11 workspace projects
+packages/config typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+packages/contracts typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+packages/market-data typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+packages/queue typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+packages/queue typecheck: ../domain/src/money/money-transfer.ts(409,5): error TS2322: Type '{ kind: "customField"; selector: { source: "CUSTOM"; collectionId: string; definitionId: string; }; predicate: { valueType: "MONEY"; test: { op: "exists"; }; }; }[] | { kind: "catalogAttribute"; selector: { ...; }; predicate: { ...; }; }[]' is not assignable to type '{ kind: "marketMoney"; selector: { mode: "CURRENT_ITEM_MAPPING"; providerId: string; identifierNamespace: string; identifierType: string; kind: "LAST_SOLD" | "SOLD_AVERAGE" | "SOLD_MEDIAN" | "ASKING_PRICE" | "PRICE_RANGE" | "CATALOG_VALUE" | "DEALER_PRICE"; currency: string; sourceMetric: string; qualifiers: Record<...'.
+packages/queue typecheck:   Type '{ kind: "customField"; selector: { source: "CUSTOM"; collectionId: string; definitionId: string; }; predicate: { valueType: "MONEY"; test: { op: "exists"; }; }; }[]' is not assignable to type '{ kind: "marketMoney"; selector: { mode: "CURRENT_ITEM_MAPPING"; providerId: string; identifierNamespace: string; identifierType: string; kind: "LAST_SOLD" | "SOLD_AVERAGE" | "SOLD_MEDIAN" | "ASKING_PRICE" | "PRICE_RANGE" | "CATALOG_VALUE" | "DEALER_PRICE"; currency: string; sourceMetric: string; qualifiers: Record<...'.
+packages/queue typecheck:     Type '{ kind: "customField"; selector: { source: "CUSTOM"; collectionId: string; definitionId: string; }; predicate: { valueType: "MONEY"; test: { op: "exists"; }; }; }[]' is not assignable to type 'readonly ({ kind: "marketMoney"; selector: { mode: "CURRENT_ITEM_MAPPING"; providerId: string; identifierNamespace: string; identifierType: string; kind: "LAST_SOLD" | "SOLD_AVERAGE" | "SOLD_MEDIAN" | "ASKING_PRICE" | "PRICE_RANGE" | "CATALOG_VALUE" | "DEALER_PRICE"; currency: string; sourceMetric: string; qualifier...'.
+packages/queue typecheck:       Type '{ kind: "customField"; selector: { source: "CUSTOM"; collectionId: string; definitionId: string; }; predicate: { valueType: "MONEY"; test: { op: "exists"; }; }; }' is not assignable to type '{ kind: "marketMoney"; selector: { mode: "CURRENT_ITEM_MAPPING"; providerId: string; identifierNamespace: string; identifierType: string; kind: "LAST_SOLD" | "SOLD_AVERAGE" | "SOLD_MEDIAN" | "ASKING_PRICE" | "PRICE_RANGE" | "CATALOG_VALUE" | "DEALER_PRICE"; currency: string; sourceMetric: string; qualifiers: Record<...'.
+packages/queue typecheck:         Type '{ kind: "customField"; selector: { source: "CUSTOM"; collectionId: string; definitionId: string; }; predicate: { valueType: "MONEY"; test: { op: "exists"; }; }; }' is not assignable to type '{ kind: "customField"; selector: { source: "CUSTOM"; collectionId: string; definitionId: string; }; predicate: { valueType: "SHORT_TEXT"; test: { op: "present"; } | { op: "missing"; } | { op: "eq"; value: string; } | { ...; } | { ...; }; } | ... 8 more ... | { ...; }; }'.
+packages/queue typecheck:           Types of property 'predicate' are incompatible.
+packages/queue typecheck:             Type '{ valueType: "MONEY"; test: { op: "exists"; }; }' is not assignable to type '{ valueType: "SHORT_TEXT"; test: { op: "present"; } | { op: "missing"; } | { op: "eq"; value: string; } | { op: "in"; values: string[]; } | { op: "startsWith" | "contains"; value: string; }; } | { valueType: "LONG_TEXT"; test: { ...; } | ... 3 more ... | { ...; }; } | ... 7 more ... | { ...; }'.
+packages/queue typecheck:               Type '{ valueType: "MONEY"; test: { op: "exists"; }; }' is not assignable to type '{ valueType: "MONEY"; test: { op: "present"; } | { op: "missing"; } | { op: "range"; unit: { currency: string; minorUnitExponent: number; unitKey: string; }; minMinor?: string | undefined; maxMinor?: string | undefined; }; }'.
+packages/queue typecheck:                 Types of property 'test' are incompatible.
+packages/queue typecheck:                   Type '{ op: "exists"; }' is not assignable to type '{ op: "present"; } | { op: "missing"; } | { op: "range"; unit: { currency: string; minorUnitExponent: number; unitKey: string; }; minMinor?: string | undefined; maxMinor?: string | undefined; }'.
+packages/queue typecheck:                     Property 'unit' is missing in type '{ op: "exists"; }' but required in type '{ op: "range"; unit: { currency: string; minorUnitExponent: number; unitKey: string; }; minMinor?: string | undefined; maxMinor?: string | undefined; }'.
+packages/queue typecheck: Failed
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/queue:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @sammlerraum/queue@ typecheck: `tsc --noEmit --project ../../tsconfig.base.json`
+Exit status 2
+packages/storage typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+ ELIFECYCLE  Command failed with exit code 2.

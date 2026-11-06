@@ -1,0 +1,10 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ✓ |workspace| packages/domain/src/money/money-transfer.test.ts (8 tests) 16ms
+
+ Test Files  1 passed (1)
+      Tests  8 passed (8)
+   Start at  19:24:34
+   Duration  433ms (transform 73ms, setup 7ms, collect 114ms, tests 16ms, environment 0ms, prepare 65ms)
+
