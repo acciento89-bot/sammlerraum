@@ -152,6 +152,8 @@ jobs:
           packages/domain/src/valuations/valuation-query.test.ts
           packages/domain/src/dashboard/dashboard-service.test.ts
           packages/domain/src/dashboard/personal-milestone-service.test.ts
+          packages/db/src/legacy-money.integration.test.ts
+          packages/domain/src/money/legacy-money-store.test.ts
           apps/web/src/lib/personal-milestone-routes.integration.test.ts
           apps/web/src/lib/dashboard-routes.integration.test.ts
           packages/domain/src/search/smart-collection-service.test.ts

@@ -1,0 +1,205 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/money/legacy-money-store.test.ts (10 tests | 8 failed) 369ms
+   ✓ legacy money real Prisma transaction store > reads actual present raw money as unknown rather than inventing absence 21ms
+   × legacy money real Prisma transaction store > rejects malformed selected catalog money rather than turning it into missing 15ms
+     → promise resolved "{ schemaVersion: 1, …(4) }" instead of rejecting
+   × legacy money real Prisma transaction store > rejects oversized selected variant arrays rather than reporting an absent target 9ms
+     → expected LegacyMoneyError: MONEY_NOT_FOUND { code: '…' } to match object { code: 'MONEY_DATA_INTEGRITY' }
+(1 matching property omitted from actual)
+   ✓ legacy money real Prisma transaction store > reads real missing and valid historical catalog values without current-unit inference 10ms
+   × legacy money real Prisma transaction store > authorizes before decoding foreign tokens and compares every actual fact field 5ms
+     → expected LegacyMoneyError: LEGACY_MONEY_INVALID { code: '…' } to match object { code: 'MONEY_NOT_FOUND' }
+(1 matching property omitted from actual)
+   × legacy money real Prisma transaction store > classifies the actual raw generation without changing its amount or generation 22ms
+     → LEGACY_MONEY_INVALID
+   × legacy money real Prisma transaction store > copies ineligible declared units using the original assertion identity 12ms
+     → LEGACY_MONEY_INVALID
+   × legacy money real Prisma transaction store > origin revocation makes dependent copies unknown and invalidates stale retain 14ms
+     → LEGACY_MONEY_INVALID
+   × legacy money real Prisma transaction store > evidence erasure invalidates the old token without inventing revocation 4ms
+     → LEGACY_MONEY_INVALID
+   × legacy money real Prisma transaction store > authoring receipts survive actor-only redaction 5ms
+     → LEGACY_MONEY_INVALID
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 8 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/money/legacy-money-store.test.ts > legacy money real Prisma transaction store > rejects malformed selected catalog money rather than turning it into missing
+AssertionError: promise resolved "{ schemaVersion: 1, …(4) }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "factToken": "eyJ2IjoxLCJzdWJqZWN0Ijp7ImZhbWlseSI6IkNBVEFMT0ciLCJlbnRyeUlkIjoiOTA4NzcxOTYtOTIxZi00NDdiLWI0ZWQtYmY5NmM0NTdjNjU5IiwicmV2aXNpb24iOjEsInRhcmdldCI6eyJraW5kIjoiRU5UUlkifSwiZGVmaW5pdGlvbklkIjoiZmUzNzM5YWEtYjYwOC00Y2U3LWFhZDctNGUyZWM5ZDgyMjk5In0sImdlbmVyYXRpb24iOm51bGwsInNlcXVlbmNlIjoiMCIsInJhdyI6bnVsbCwiZWZmZWN0aXZlRXZlbnRJZCI6bnVsbCwib3JpZ2luSWQiOm51bGwsIm9yaWdpbkV2aWRlbmNlRXJhc2VkQXQiOm51bGwsInJldm9jYXRpb25JZCI6bnVsbH0",
++   "interpretation": {
++     "kind": "MISSING",
++   },
++   "raw": null,
++   "schemaVersion": 1,
++   "subject": {
++     "definitionId": "fe3739aa-b608-4ce7-aad7-4e2ec9d82299",
++     "entryId": "90877196-921f-447b-b4ed-bf96c457c659",
++     "family": "CATALOG",
++     "revision": 1,
++     "target": {
++       "kind": "ENTRY",
++     },
++   },
+  }
+
+ ❯ packages/domain/src/money/legacy-money-store.test.ts:66:83
+     64|   it("rejects malformed selected catalog money rather than turning it …
+     65|     const f=await fixture(),s=await canonical({amountMinor:"1",currenc…
+     66|     await expect(runSearchTransaction(db,tx=>readMoneyFact(tx,s,{userI…
+       |                                                                                   ^
+     67|   });
+     68|   it("rejects oversized selected variant arrays rather than reporting …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/8]⎯
+
+ FAIL  |workspace| packages/domain/src/money/legacy-money-store.test.ts > legacy money real Prisma transaction store > rejects oversized selected variant arrays rather than reporting an absent target
+AssertionError: expected LegacyMoneyError: MONEY_NOT_FOUND { code: '…' } to match object { code: 'MONEY_DATA_INTEGRITY' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+- {
+-   "code": "MONEY_DATA_INTEGRITY",
++ LegacyMoneyError {
++   "code": "MONEY_NOT_FOUND",
+  }
+
+ ❯ packages/domain/src/money/legacy-money-store.test.ts:70:5
+     68|   it("rejects oversized selected variant arrays rather than reporting …
+     69|     const f=await fixture(),id=randomUUID(),s=await canonical({amountM…
+     70|     await expect(runSearchTransaction(db,tx=>readMoneyFact(tx,{...s,ta…
+       |     ^
+     71|   });
+     72|   it("reads real missing and valid historical catalog values without c…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/8]⎯
+
+ FAIL  |workspace| packages/domain/src/money/legacy-money-store.test.ts > legacy money real Prisma transaction store > authorizes before decoding foreign tokens and compares every actual fact field
+AssertionError: expected LegacyMoneyError: LEGACY_MONEY_INVALID { code: '…' } to match object { code: 'MONEY_NOT_FOUND' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+- {
+-   "code": "MONEY_NOT_FOUND",
++ LegacyMoneyError {
++   "code": "LEGACY_MONEY_INVALID",
+  }
+
+ ❯ packages/domain/src/money/legacy-money-store.test.ts:80:5
+     78|   it("authorizes before decoding foreign tokens and compares every act…
+     79|     const f=await fixture(),view=await runSearchTransaction(db,tx=>rea…
+     80|     await expect(runSearchTransaction(db,tx=>requireMoneyToken(tx,f.su…
+       |     ^
+     81|     await expect(runSearchTransaction(db,tx=>requireMoneyToken(tx,f.su…
+     82|     const content=decodeMoneyFactToken(view.factToken);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/8]⎯
+
+ FAIL  |workspace| packages/domain/src/money/legacy-money-store.test.ts > legacy money real Prisma transaction store > classifies the actual raw generation without changing its amount or generation
+LegacyMoneyError: LEGACY_MONEY_INVALID
+ ❯ legacyMoneyFail packages/contracts/src/legacy-money.ts:18:9
+     16| }
+     17| export function legacyMoneyFail(code: LegacyMoneyError["code"]): never…
+     18|   throw new LegacyMoneyError(code);
+       |         ^
+     19| }
+     20| export const LegacyMoneyIdSchema = z
+ ❯ requireMoneyToken packages/domain/src/money/legacy-money-store.ts:170:157
+ ❯ packages/domain/src/money/legacy-money-store.test.ts:39:24
+ ❯ database.$transaction.isolationLevel packages/domain/src/search/search-read.ts:54:26
+ ❯ Proxy._transactionWithCallback node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:861:18
+ ❯ runSearchTransaction packages/domain/src/search/search-read.ts:26:22
+ ❯ packages/domain/src/money/legacy-money-store.test.ts:89:16
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/8]⎯
+
+ FAIL  |workspace| packages/domain/src/money/legacy-money-store.test.ts > legacy money real Prisma transaction store > copies ineligible declared units using the original assertion identity
+LegacyMoneyError: LEGACY_MONEY_INVALID
+ ❯ legacyMoneyFail packages/contracts/src/legacy-money.ts:18:9
+     16| }
+     17| export function legacyMoneyFail(code: LegacyMoneyError["code"]): never…
+     18|   throw new LegacyMoneyError(code);
+       |         ^
+     19| }
+     20| export const LegacyMoneyIdSchema = z
+ ❯ requireMoneyToken packages/domain/src/money/legacy-money-store.ts:170:157
+ ❯ packages/domain/src/money/legacy-money-store.test.ts:39:24
+ ❯ database.$transaction.isolationLevel packages/domain/src/search/search-read.ts:54:26
+ ❯ Proxy._transactionWithCallback node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:861:18
+ ❯ runSearchTransaction packages/domain/src/search/search-read.ts:26:22
+ ❯ packages/domain/src/money/legacy-money-store.test.ts:95:36
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/8]⎯
+
+ FAIL  |workspace| packages/domain/src/money/legacy-money-store.test.ts > legacy money real Prisma transaction store > origin revocation makes dependent copies unknown and invalidates stale retain
+LegacyMoneyError: LEGACY_MONEY_INVALID
+ ❯ legacyMoneyFail packages/contracts/src/legacy-money.ts:18:9
+     16| }
+     17| export function legacyMoneyFail(code: LegacyMoneyError["code"]): never…
+     18|   throw new LegacyMoneyError(code);
+       |         ^
+     19| }
+     20| export const LegacyMoneyIdSchema = z
+ ❯ requireMoneyToken packages/domain/src/money/legacy-money-store.ts:170:157
+ ❯ packages/domain/src/money/legacy-money-store.test.ts:39:24
+ ❯ database.$transaction.isolationLevel packages/domain/src/search/search-read.ts:54:26
+ ❯ Proxy._transactionWithCallback node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:861:18
+ ❯ runSearchTransaction packages/domain/src/search/search-read.ts:26:22
+ ❯ packages/domain/src/money/legacy-money-store.test.ts:101:36
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/8]⎯
+
+ FAIL  |workspace| packages/domain/src/money/legacy-money-store.test.ts > legacy money real Prisma transaction store > evidence erasure invalidates the old token without inventing revocation
+LegacyMoneyError: LEGACY_MONEY_INVALID
+ ❯ legacyMoneyFail packages/contracts/src/legacy-money.ts:18:9
+     16| }
+     17| export function legacyMoneyFail(code: LegacyMoneyError["code"]): never…
+     18|   throw new LegacyMoneyError(code);
+       |         ^
+     19| }
+     20| export const LegacyMoneyIdSchema = z
+ ❯ requireMoneyToken packages/domain/src/money/legacy-money-store.ts:170:157
+ ❯ packages/domain/src/money/legacy-money-store.test.ts:39:24
+ ❯ database.$transaction.isolationLevel packages/domain/src/search/search-read.ts:54:26
+ ❯ Proxy._transactionWithCallback node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:861:18
+ ❯ runSearchTransaction packages/domain/src/search/search-read.ts:26:22
+ ❯ packages/domain/src/money/legacy-money-store.test.ts:112:29
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/8]⎯
+
+ FAIL  |workspace| packages/domain/src/money/legacy-money-store.test.ts > legacy money real Prisma transaction store > authoring receipts survive actor-only redaction
+LegacyMoneyError: LEGACY_MONEY_INVALID
+ ❯ legacyMoneyFail packages/contracts/src/legacy-money.ts:18:9
+     16| }
+     17| export function legacyMoneyFail(code: LegacyMoneyError["code"]): never…
+     18|   throw new LegacyMoneyError(code);
+       |         ^
+     19| }
+     20| export const LegacyMoneyIdSchema = z
+ ❯ requireMoneyToken packages/domain/src/money/legacy-money-store.ts:170:157
+ ❯ packages/domain/src/money/legacy-money-store.test.ts:123:85
+ ❯ database.$transaction.isolationLevel packages/domain/src/search/search-read.ts:54:26
+ ❯ Proxy._transactionWithCallback node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:861:18
+ ❯ runSearchTransaction packages/domain/src/search/search-read.ts:26:22
+ ❯ packages/domain/src/money/legacy-money-store.test.ts:122:16
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/8]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  8 failed | 2 passed (10)
+   Start at  02:33:04
+   Duration  839ms (transform 131ms, setup 7ms, collect 270ms, tests 369ms, environment 0ms, prepare 59ms)
+

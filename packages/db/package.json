@@ -9,7 +9,8 @@
     "./media-lock": "./src/media-lock.ts",
     "./test-database": "./src/test-database.ts",
     "./catalog-types": "./src/catalog-types.ts",
-    "./search-sql": "./src/search-sql.ts"
+    "./search-sql": "./src/search-sql.ts",
+    "./test-legacy-money-schema": "./src/testing/legacy-money-schema.ts"
   },
   "scripts": {
     "build": "pnpm typecheck",

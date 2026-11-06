@@ -1,0 +1,20 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ✓ |workspace| packages/domain/src/money/legacy-money-store.test.ts (25 tests) 681ms
+ ✓ |workspace| packages/db/src/legacy-money.integration.test.ts (15 tests) 3891ms
+   ✓ legacy money native erasure and history > native_actor_and_origin_fk_erasure  328ms
+   ✓ legacy money native erasure and history > definition cascade removes personal events without absence resurrection  322ms
+   ✓ legacy money native erasure and history > a classified logical baseline is not hidden by a later raw write  508ms
+   ✓ legacy money native erasure and history > snapshot_target_guard  421ms
+   ✓ legacy money native erasure and history > actual catalog actor FK erasure distinguishes CLASSIFY origin  301ms
+   ✓ legacy money native erasure and history > actual catalog actor FK erasure distinguishes AUTHOR origin  318ms
+ ✓ |workspace| packages/contracts/src/legacy-money.test.ts (16 tests) 13ms
+ ✓ |workspace| packages/domain/src/money/legacy-money-tokens.test.ts (4 tests) 5ms
+ ✓ |workspace| packages/domain/src/search/search-read.test.ts (8 tests) 4ms
+
+ Test Files  5 passed (5)
+      Tests  68 passed (68)
+   Start at  03:10:43
+   Duration  5.73s (transform 173ms, setup 7ms, collect 472ms, tests 4.59s, environment 0ms, prepare 159ms)
+

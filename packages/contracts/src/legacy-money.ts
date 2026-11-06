@@ -9,7 +9,15 @@ export const LEGACY_MONEY_MAX_TOKEN_LENGTH = 2048;
 export const LEGACY_MONEY_MAX_RAW = "9007199254740991";
 export const LEGACY_MONEY_MAX_SEQUENCE = "9223372036854775807";
 export class LegacyMoneyError extends Error {
-  constructor(readonly code: "LEGACY_MONEY_INVALID" | "LEGACY_MONEY_INTERPRETATION_UNSUPPORTED") {
+  constructor(
+    readonly code:
+      | "LEGACY_MONEY_INVALID"
+      | "LEGACY_MONEY_INTERPRETATION_UNSUPPORTED"
+      | "MONEY_NOT_FOUND"
+      | "MONEY_FORBIDDEN"
+      | "MONEY_CONFLICT"
+      | "MONEY_DATA_INTEGRITY",
+  ) {
     super(code);
     this.name = "LegacyMoneyError";
   }
@@ -173,6 +181,7 @@ export const MoneyFactTokenV1Schema = z
     raw: LegacyRawMoneySchema.nullable(),
     effectiveEventId: id.nullable(),
     originId: id.nullable(),
+    originEvidenceErasedAt: timestamp.nullable(),
     revocationId: id.nullable(),
   })
   .strict();

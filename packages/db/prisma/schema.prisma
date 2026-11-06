@@ -99,13 +99,13 @@ model UserProfile {
 }
 
 model User {
-  id                         String                 @id
+  id                         String                             @id
   name                       String
   email                      String
-  emailVerified              Boolean                @default(false)
+  emailVerified              Boolean                            @default(false)
   image                      String?
-  createdAt                  DateTime               @default(now())
-  updatedAt                  DateTime               @updatedAt
+  createdAt                  DateTime                           @default(now())
+  updatedAt                  DateTime                           @updatedAt
   sessions                   Session[]
   accounts                   Account[]
   passkeys                   Passkey[]
@@ -115,13 +115,16 @@ model User {
   personalMilestones         PersonalMilestone[]
   tags                       Tag[]
   storageLocations           StorageLocation[]
-  locationHistoryAssignments ItemLocationHistory[]  @relation("LocationHistoryAssignee")
+  locationHistoryAssignments ItemLocationHistory[]              @relation("LocationHistoryAssignee")
   mediaAssets                MediaAsset[]
   applicationRoleGrant       ApplicationRoleGrant?
-  catalogProposals           CatalogProposal[]      @relation("ProposalProposer")
-  catalogDecisions           CatalogProposal[]      @relation("ProposalModerator")
+  catalogProposals           CatalogProposal[]                  @relation("ProposalProposer")
+  catalogDecisions           CatalogProposal[]                  @relation("ProposalModerator")
   valuations                 Valuation[]
   catalogRollbacks           CatalogRollbackAudit[]
+  purchaseMoneyEvents        PurchaseMoneyInterpretationEvent[]
+  customMoneyEvents          CustomMoneyInterpretationEvent[]
+  catalogMoneyEvents         CatalogMoneyInterpretationEvent[]
 
   @@unique([email])
   @@map("user")
@@ -164,47 +167,50 @@ model CollectionNode {
 }
 
 model CollectibleItem {
-  id                  String                @id @default(uuid()) @db.Uuid
-  collectionId        String                @db.Uuid
-  ownerId             String
-  nodeId              String?               @db.Uuid
-  storageLocationId   String?               @db.Uuid
-  categoryTemplateId  String?               @db.Uuid
-  conditionOptionId   String?               @db.Uuid
-  catalogEntryId      String?               @db.Uuid
-  catalogVariantId    String?               @db.Uuid
-  title               String
-  publicDescription   String?
-  privateNotes        String?
-  quantity            Int                   @default(1)
-  acquisitionType     AcquisitionType       @default(OTHER)
-  acquisitionDate     DateTime?             @db.Date
-  purchaseAmountMinor BigInt?
-  purchaseCurrency    String?               @db.Char(3)
-  visibility          Visibility            @default(PRIVATE)
-  tradeStatus         TradeStatus           @default(NOT_FOR_TRADE)
-  archivedAt          DateTime?
-  disposedAt          DateTime?
-  createdAt           DateTime              @default(now())
-  updatedAt           DateTime              @updatedAt
-  deletedAt           DateTime?
-  collection          Collection            @relation(fields: [collectionId, ownerId], references: [id, ownerId], onDelete: Cascade)
-  node                CollectionNode?       @relation(fields: [nodeId, collectionId], references: [id, collectionId], onDelete: Restrict)
-  storageLocation     StorageLocation?      @relation(fields: [storageLocationId, ownerId], references: [id, ownerId], onDelete: Restrict)
-  categoryTemplate    CategoryTemplate?     @relation(fields: [categoryTemplateId], references: [id], onDelete: Restrict)
-  conditionOption     ConditionOption?      @relation(fields: [conditionOptionId, categoryTemplateId], references: [id, categoryTemplateId], onDelete: Restrict)
+  id                      String                             @id @default(uuid()) @db.Uuid
+  collectionId            String                             @db.Uuid
+  ownerId                 String
+  nodeId                  String?                            @db.Uuid
+  storageLocationId       String?                            @db.Uuid
+  categoryTemplateId      String?                            @db.Uuid
+  conditionOptionId       String?                            @db.Uuid
+  catalogEntryId          String?                            @db.Uuid
+  catalogVariantId        String?                            @db.Uuid
+  title                   String
+  publicDescription       String?
+  privateNotes            String?
+  quantity                Int                                @default(1)
+  acquisitionType         AcquisitionType                    @default(OTHER)
+  acquisitionDate         DateTime?                          @db.Date
+  purchaseAmountMinor     BigInt?
+  purchaseCurrency        String?                            @db.Char(3)
+  purchaseMoneyGeneration String?                            @db.Uuid
+  visibility              Visibility                         @default(PRIVATE)
+  tradeStatus             TradeStatus                        @default(NOT_FOR_TRADE)
+  archivedAt              DateTime?
+  disposedAt              DateTime?
+  createdAt               DateTime                           @default(now())
+  updatedAt               DateTime                           @updatedAt
+  deletedAt               DateTime?
+  collection              Collection                         @relation(fields: [collectionId, ownerId], references: [id, ownerId], onDelete: Cascade)
+  node                    CollectionNode?                    @relation(fields: [nodeId, collectionId], references: [id, collectionId], onDelete: Restrict)
+  storageLocation         StorageLocation?                   @relation(fields: [storageLocationId, ownerId], references: [id, ownerId], onDelete: Restrict)
+  categoryTemplate        CategoryTemplate?                  @relation(fields: [categoryTemplateId], references: [id], onDelete: Restrict)
+  conditionOption         ConditionOption?                   @relation(fields: [conditionOptionId, categoryTemplateId], references: [id, categoryTemplateId], onDelete: Restrict)
   // SQL migration narrows SET NULL to the catalog ID, preserving personal category.
-  catalogEntry        CatalogEntry?         @relation(fields: [catalogEntryId, categoryTemplateId], references: [id, categoryTemplateId], onDelete: SetNull, onUpdate: Restrict)
+  catalogEntry            CatalogEntry?                      @relation(fields: [catalogEntryId, categoryTemplateId], references: [id, categoryTemplateId], onDelete: SetNull, onUpdate: Restrict)
   // SQL migration narrows SET NULL to variant ID, retaining the entry.
-  catalogVariant      CatalogVariant?       @relation(fields: [catalogVariantId, catalogEntryId], references: [id, entryId], onDelete: SetNull, onUpdate: Restrict)
-  locationHistory     ItemLocationHistory[]
-  identifiers         ItemIdentifier[]
-  itemTags            ItemTag[]
-  customFieldValues   CustomFieldValue[]
-  mediaLinks          MediaLink[]
-  documentLinks       DocumentLink[]
-  gradings            Grading[]
-  valuations          Valuation[]
+  catalogVariant          CatalogVariant?                    @relation(fields: [catalogVariantId, catalogEntryId], references: [id, entryId], onDelete: SetNull, onUpdate: Restrict)
+  locationHistory         ItemLocationHistory[]
+  identifiers             ItemIdentifier[]
+  itemTags                ItemTag[]
+  customFieldValues       CustomFieldValue[]
+  mediaLinks              MediaLink[]
+  documentLinks           DocumentLink[]
+  gradings                Grading[]
+  valuations              Valuation[]
+  purchaseMoneyEvents     PurchaseMoneyInterpretationEvent[]
+  customMoneyEvents       CustomMoneyInterpretationEvent[]
 
   @@unique([id, collectionId])
   @@unique([id, ownerId])
@@ -261,16 +267,17 @@ model ItemLocationHistory {
 }
 
 model CustomFieldDefinition {
-  id             String              @id @default(uuid()) @db.Uuid
-  collectionId   String              @db.Uuid
+  id             String                           @id @default(uuid()) @db.Uuid
+  collectionId   String                           @db.Uuid
   name           String
   normalizedName String
   type           CustomFieldType
-  createdAt      DateTime            @default(now())
-  updatedAt      DateTime            @updatedAt
-  collection     Collection          @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  createdAt      DateTime                         @default(now())
+  updatedAt      DateTime                         @updatedAt
+  collection     Collection                       @relation(fields: [collectionId], references: [id], onDelete: Cascade)
   options        CustomFieldOption[]
   values         CustomFieldValue[]
+  moneyEvents    CustomMoneyInterpretationEvent[]
 
   @@unique([collectionId, normalizedName])
   @@unique([id, collectionId])
@@ -309,6 +316,7 @@ model CustomFieldValue {
   urlValue             String?                       @db.VarChar(2048)
   moneyAmountMinor     BigInt?
   moneyCurrency        String?                       @db.Char(3)
+  moneyGeneration      String?                       @db.Uuid
   createdAt            DateTime                      @default(now())
   updatedAt            DateTime                      @updatedAt
   item                 CollectibleItem               @relation(fields: [itemId, collectionId], references: [id, collectionId], onDelete: Cascade)
@@ -563,15 +571,16 @@ model CategoryTemplateLabel {
 }
 
 model CatalogAttributeDefinition {
-  id                 String                   @id @default(uuid()) @db.Uuid
-  categoryTemplateId String                   @db.Uuid
-  key                String                   @db.VarChar(64)
+  id                 String                            @id @default(uuid()) @db.Uuid
+  categoryTemplateId String                            @db.Uuid
+  key                String                            @db.VarChar(64)
   type               CustomFieldType
   position           Int
-  categoryTemplate   CategoryTemplate         @relation(fields: [categoryTemplateId], references: [id], onDelete: Cascade)
+  categoryTemplate   CategoryTemplate                  @relation(fields: [categoryTemplateId], references: [id], onDelete: Cascade)
   labels             CatalogAttributeLabel[]
   options            CatalogAttributeOption[]
   catalogValues      CatalogAttributeValue[]
+  moneyEvents        CatalogMoneyInterpretationEvent[]
 
   @@unique([id, categoryTemplateId])
   @@unique([categoryTemplateId, key])
@@ -683,6 +692,7 @@ model CatalogRevision {
 
   proposals      CatalogProposal[]
   rollbackAudits CatalogRollbackAudit[]
+  moneyEvents    CatalogMoneyInterpretationEvent[]
 
   @@id([entryId, revision])
 }
@@ -710,24 +720,25 @@ model ApplicationRoleGrant {
 }
 
 model CatalogProposal {
-  id             String               @id @default(uuid()) @db.Uuid
-  proposerId     String
-  targetEntryId  String?              @db.Uuid
-  baseRevision   Int?
-  patch          Json
-  summary        String               @db.VarChar(500)
-  source         Json?
-  state          CatalogProposalState @default(PENDING)
-  createdAt      DateTime             @default(now())
-  moderatorId    String?
-  moderatedAt    DateTime?
-  decisionReason String?              @db.VarChar(1000)
-  resultEntryId  String?              @db.Uuid
-  resultRevision Int?
-  proposer       User                 @relation("ProposalProposer", fields: [proposerId], references: [id], onDelete: Restrict)
-  moderator      User?                @relation("ProposalModerator", fields: [moderatorId], references: [id], onDelete: Restrict)
-  targetEntry    CatalogEntry?        @relation(fields: [targetEntryId], references: [id], onDelete: Restrict)
-  result         CatalogRevision?     @relation(fields: [resultEntryId, resultRevision], references: [entryId, revision], onDelete: Restrict)
+  id                  String               @id @default(uuid()) @db.Uuid
+  proposerId          String
+  targetEntryId       String?              @db.Uuid
+  baseRevision        Int?
+  patch               Json
+  summary             String               @db.VarChar(500)
+  source              Json?
+  state               CatalogProposalState @default(PENDING)
+  createdAt           DateTime             @default(now())
+  moderatorId         String?
+  moderatedAt         DateTime?
+  decisionReason      String?              @db.VarChar(1000)
+  resultEntryId       String?              @db.Uuid
+  resultRevision      Int?
+  proposer            User                 @relation("ProposalProposer", fields: [proposerId], references: [id], onDelete: Restrict)
+  moderator           User?                @relation("ProposalModerator", fields: [moderatorId], references: [id], onDelete: Restrict)
+  targetEntry         CatalogEntry?        @relation(fields: [targetEntryId], references: [id], onDelete: Restrict)
+  result              CatalogRevision?     @relation(fields: [resultEntryId, resultRevision], references: [entryId, revision], onDelete: Restrict)
+  moneyInterpretation Json?
 
   @@index([proposerId, state])
   @@index([proposerId, createdAt, id])
@@ -735,16 +746,17 @@ model CatalogProposal {
 }
 
 model CatalogRollbackAudit {
-  id               String          @id @default(uuid()) @db.Uuid
-  entryId          String          @db.Uuid
-  expectedRevision Int
-  targetRevision   Int
-  revision         Int
-  actorId          String
-  reason           String          @db.VarChar(1000)
-  createdAt        DateTime        @default(now())
-  result           CatalogRevision @relation(fields: [entryId, revision], references: [entryId, revision], onDelete: Restrict)
-  actor            User            @relation(fields: [actorId], references: [id], onDelete: Restrict)
+  id                  String          @id @default(uuid()) @db.Uuid
+  entryId             String          @db.Uuid
+  expectedRevision    Int
+  targetRevision      Int
+  revision            Int
+  actorId             String
+  reason              String          @db.VarChar(1000)
+  createdAt           DateTime        @default(now())
+  result              CatalogRevision @relation(fields: [entryId, revision], references: [entryId, revision], onDelete: Restrict)
+  actor               User            @relation(fields: [actorId], references: [id], onDelete: Restrict)
+  moneyInterpretation Json?
 
   @@index([entryId, revision])
 }
@@ -956,4 +968,138 @@ model PersonalMilestone {
   owner         User     @relation(fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: Restrict)
 
   @@index([ownerId, milestoneDate(sort: Desc), createdAt(sort: Desc), id(sort: Desc)], map: "PersonalMilestone_owner_date_created_id_idx")
+}
+
+enum MoneyInterpretationOperation {
+  BASELINE
+  RAW_WRITE
+  CLEAR
+  AUTHOR
+  CLASSIFY
+  COPY
+  REVOKE
+}
+
+enum MoneyEvidenceCategory {
+  OWNER_ATTESTATION
+  OPERATOR_VERIFIED_RECORD
+}
+
+model PurchaseMoneyInterpretationEvent {
+  id                 String                             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  itemId             String                             @db.Uuid
+  generation         String                             @db.Uuid
+  item               CollectibleItem                    @relation(fields: [itemId], references: [id], onDelete: Cascade, onUpdate: Restrict)
+  sequence           BigInt
+  operation          MoneyInterpretationOperation
+  rawAmountMinor     BigInt?
+  rawCurrency        String?                            @db.Char(3)
+  exponent           Int?                               @db.SmallInt
+  unitKey            String?                            @db.VarChar(128)
+  unitLabel          String?                            @db.VarChar(120)
+  basisId            String?                            @db.VarChar(80)
+  receipt            Json?
+  sourceEventId      String?                            @db.Uuid
+  originEventId      String?                            @db.Uuid
+  revokedAssertionId String?                            @unique @db.Uuid
+  actorId            String?
+  evidenceCategory   MoneyEvidenceCategory?
+  evidenceReference  String?                            @db.VarChar(200)
+  reason             String?                            @db.VarChar(1000)
+  createdAt          DateTime                           @default(now()) @db.Timestamptz(3)
+  evidenceErasedAt   DateTime?                          @db.Timestamptz(3)
+  actor              User?                              @relation(fields: [actorId], references: [id], onDelete: SetNull, onUpdate: Restrict)
+  sourceEvent        PurchaseMoneyInterpretationEvent?  @relation("PurchaseMoneyInterpretationEventSource", fields: [sourceEventId], references: [id], onDelete: SetNull, onUpdate: Restrict)
+  copiesAsSource     PurchaseMoneyInterpretationEvent[] @relation("PurchaseMoneyInterpretationEventSource")
+  originEvent        PurchaseMoneyInterpretationEvent?  @relation("PurchaseMoneyInterpretationEventOrigin", fields: [originEventId], references: [id], onDelete: SetNull, onUpdate: Restrict)
+  copiesAsOrigin     PurchaseMoneyInterpretationEvent[] @relation("PurchaseMoneyInterpretationEventOrigin")
+  revokedAssertion   PurchaseMoneyInterpretationEvent?  @relation("PurchaseMoneyInterpretationEventRevocation", fields: [revokedAssertionId], references: [id], onDelete: SetNull, onUpdate: Restrict)
+  revocation         PurchaseMoneyInterpretationEvent?  @relation("PurchaseMoneyInterpretationEventRevocation")
+
+  @@unique([itemId, sequence], map: "PurchaseMoneyInterpretationEvent_sequence_key")
+  @@index([itemId, generation, sequence(sort: Desc)], map: "PurchaseMoneyInterpretationEvent_latest_idx")
+  @@index([sourceEventId])
+  @@index([originEventId])
+  @@index([actorId])
+}
+
+model CustomMoneyInterpretationEvent {
+  id                 String                           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  itemId             String                           @db.Uuid
+  fieldDefinitionId  String                           @db.Uuid
+  generation         String                           @db.Uuid
+  item               CollectibleItem                  @relation(fields: [itemId], references: [id], onDelete: Cascade, onUpdate: Restrict)
+  fieldDefinition    CustomFieldDefinition            @relation(fields: [fieldDefinitionId], references: [id], onDelete: Cascade, onUpdate: Restrict)
+  sequence           BigInt
+  operation          MoneyInterpretationOperation
+  rawAmountMinor     BigInt?
+  rawCurrency        String?                          @db.Char(3)
+  exponent           Int?                             @db.SmallInt
+  unitKey            String?                          @db.VarChar(128)
+  unitLabel          String?                          @db.VarChar(120)
+  basisId            String?                          @db.VarChar(80)
+  receipt            Json?
+  sourceEventId      String?                          @db.Uuid
+  originEventId      String?                          @db.Uuid
+  revokedAssertionId String?                          @unique @db.Uuid
+  actorId            String?
+  evidenceCategory   MoneyEvidenceCategory?
+  evidenceReference  String?                          @db.VarChar(200)
+  reason             String?                          @db.VarChar(1000)
+  createdAt          DateTime                         @default(now()) @db.Timestamptz(3)
+  evidenceErasedAt   DateTime?                        @db.Timestamptz(3)
+  actor              User?                            @relation(fields: [actorId], references: [id], onDelete: SetNull, onUpdate: Restrict)
+  sourceEvent        CustomMoneyInterpretationEvent?  @relation("CustomMoneyInterpretationEventSource", fields: [sourceEventId], references: [id], onDelete: SetNull, onUpdate: Restrict)
+  copiesAsSource     CustomMoneyInterpretationEvent[] @relation("CustomMoneyInterpretationEventSource")
+  originEvent        CustomMoneyInterpretationEvent?  @relation("CustomMoneyInterpretationEventOrigin", fields: [originEventId], references: [id], onDelete: SetNull, onUpdate: Restrict)
+  copiesAsOrigin     CustomMoneyInterpretationEvent[] @relation("CustomMoneyInterpretationEventOrigin")
+  revokedAssertion   CustomMoneyInterpretationEvent?  @relation("CustomMoneyInterpretationEventRevocation", fields: [revokedAssertionId], references: [id], onDelete: SetNull, onUpdate: Restrict)
+  revocation         CustomMoneyInterpretationEvent?  @relation("CustomMoneyInterpretationEventRevocation")
+
+  @@unique([itemId, fieldDefinitionId, sequence], map: "CustomMoneyInterpretationEvent_sequence_key")
+  @@index([itemId, fieldDefinitionId, generation, sequence(sort: Desc)], map: "CustomMoneyInterpretationEvent_latest_idx")
+  @@index([sourceEventId])
+  @@index([originEventId])
+  @@index([actorId])
+}
+
+model CatalogMoneyInterpretationEvent {
+  id                 String                            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  entryId            String                            @db.Uuid
+  revision           Int
+  targetKey          String                            @db.VarChar(36)
+  variantId          String?                           @db.Uuid
+  definitionId       String                            @db.Uuid
+  catalogRevision    CatalogRevision                   @relation(fields: [entryId, revision], references: [entryId, revision], onDelete: Restrict, onUpdate: Restrict, map: "CatalogMoneyInterpretationEvent_revision_fkey")
+  definition         CatalogAttributeDefinition        @relation(fields: [definitionId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  sequence           BigInt
+  operation          MoneyInterpretationOperation
+  rawAmountMinor     BigInt?
+  rawCurrency        String?                           @db.Char(3)
+  exponent           Int?                              @db.SmallInt
+  unitKey            String?                           @db.VarChar(128)
+  unitLabel          String?                           @db.VarChar(120)
+  basisId            String?                           @db.VarChar(80)
+  receipt            Json?
+  sourceEventId      String?                           @db.Uuid
+  originEventId      String?                           @db.Uuid
+  revokedAssertionId String?                           @unique @db.Uuid
+  actorId            String?
+  evidenceCategory   MoneyEvidenceCategory?
+  evidenceReference  String?                           @db.VarChar(200)
+  reason             String?                           @db.VarChar(1000)
+  createdAt          DateTime                          @default(now()) @db.Timestamptz(3)
+  evidenceErasedAt   DateTime?                         @db.Timestamptz(3)
+  actor              User?                             @relation(fields: [actorId], references: [id], onDelete: SetNull, onUpdate: Restrict)
+  sourceEvent        CatalogMoneyInterpretationEvent?  @relation("CatalogMoneyInterpretationEventSource", fields: [sourceEventId], references: [id], onDelete: SetNull, onUpdate: Restrict)
+  copiesAsSource     CatalogMoneyInterpretationEvent[] @relation("CatalogMoneyInterpretationEventSource")
+  originEvent        CatalogMoneyInterpretationEvent?  @relation("CatalogMoneyInterpretationEventOrigin", fields: [originEventId], references: [id], onDelete: SetNull, onUpdate: Restrict)
+  copiesAsOrigin     CatalogMoneyInterpretationEvent[] @relation("CatalogMoneyInterpretationEventOrigin")
+  revokedAssertion   CatalogMoneyInterpretationEvent?  @relation("CatalogMoneyInterpretationEventRevocation", fields: [revokedAssertionId], references: [id], onDelete: SetNull, onUpdate: Restrict)
+  revocation         CatalogMoneyInterpretationEvent?  @relation("CatalogMoneyInterpretationEventRevocation")
+
+  @@unique([entryId, revision, targetKey, definitionId, sequence], map: "CatalogMoneyInterpretationEvent_sequence_key")
+  @@index([sourceEventId])
+  @@index([originEventId])
+  @@index([actorId])
 }

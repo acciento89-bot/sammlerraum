@@ -1,0 +1,5 @@
+.                                        |  WARN  `node_modules` is present. Lockfile only installation will make it out-of-date
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/domain:
+ ERR_PNPM_NO_OFFLINE_META  Failed to resolve zod@4.1.11 in package mirror /Users/piotrkaminski/Library/Caches/pnpm/metadata-v1.3/registry.npmjs.org/zod.json
+
+This error happened while installing a direct dependency of /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/domain

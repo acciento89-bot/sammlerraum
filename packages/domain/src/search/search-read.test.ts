@@ -1,3 +1,4 @@
+import { LegacyMoneyError } from "@sammlerraum/contracts/legacy-money";
 import { PersonalMilestoneError } from "@sammlerraum/contracts/personal-milestones";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { Prisma } from "@sammlerraum/db/search-sql";
@@ -133,6 +134,22 @@ describe("search read processing budgets", () => {
     await expect(
       runSearchRead(database, async () => {
         throw { code: "MILESTONE_CONFLICT", message: "private cause" };
+      }),
+    ).rejects.toMatchObject({ code: "SEARCH_INVARIANT" });
+  });
+  it("preserves branded money conflicts without trusting lookalike error payloads", async () => {
+    const database: SearchDatabase = {
+      $transaction: async (work) => work({ $queryRaw: async <T>() => [] as T }),
+    };
+    const error = new LegacyMoneyError("MONEY_CONFLICT");
+    await expect(
+      runSearchRead(database, async () => {
+        throw error;
+      }),
+    ).rejects.toBe(error);
+    await expect(
+      runSearchRead(database, async () => {
+        throw { code: "MONEY_CONFLICT", message: "private" };
       }),
     ).rejects.toMatchObject({ code: "SEARCH_INVARIANT" });
   });

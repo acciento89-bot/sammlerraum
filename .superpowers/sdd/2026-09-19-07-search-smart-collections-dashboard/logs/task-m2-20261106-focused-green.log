@@ -1,0 +1,28 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ✓ |workspace| packages/domain/src/money/legacy-money-tokens.test.ts (4 tests) 100ms
+ ✓ |workspace| packages/contracts/src/legacy-money.test.ts (16 tests) 15ms
+ ✓ |workspace| packages/domain/src/money/legacy-money-store.test.ts (21 tests) 2290ms
+ ✓ |workspace| packages/db/src/legacy-money.integration.test.ts (15 tests) 7663ms
+   ✓ legacy money native upgrade > migration_preserves_untracked_raw  546ms
+   ✓ legacy money native behavior > same_pair_sql_invalidates  610ms
+   ✓ legacy money native behavior > aba_and_custom_absence_stale_tokens  500ms
+   ✓ legacy money native behavior > classification_never_changes_raw and rejects mismatched raw facts  511ms
+   ✓ legacy money native behavior > event_failure_rolls_back_raw  379ms
+   ✓ legacy money native behavior > event_and_proposal_immutability  462ms
+   ✓ legacy money native behavior > copy_origin_rejects_cross_owner  464ms
+   ✓ legacy money native erasure and history > native_redaction_content_transitions  1267ms
+   ✓ legacy money native erasure and history > native_actor_and_origin_fk_erasure  356ms
+   ✓ legacy money native erasure and history > definition cascade removes personal events without absence resurrection  770ms
+   ✓ legacy money native erasure and history > a classified logical baseline is not hidden by a later raw write  383ms
+   ✓ legacy money native erasure and history > snapshot_target_guard  370ms
+   ✓ legacy money native erasure and history > actual catalog actor FK erasure distinguishes CLASSIFY origin  348ms
+   ✓ legacy money native erasure and history > actual catalog actor FK erasure distinguishes AUTHOR origin  350ms
+   ✓ legacy money native erasure and history > authoring receipts have a native byte bound, including otherwise valid extra content  346ms
+
+ Test Files  4 passed (4)
+      Tests  56 passed (56)
+   Start at  03:02:16
+   Duration  7.98s (transform 568ms, setup 25ms, collect 1.07s, tests 10.07s, environment 1ms, prepare 190ms)
+

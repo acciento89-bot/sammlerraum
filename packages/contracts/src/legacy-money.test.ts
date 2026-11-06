@@ -83,6 +83,7 @@ describe("legacy money bounded contracts", () => {
         raw: null,
         effectiveEventId: null,
         originId: null,
+        originEvidenceErasedAt: null,
         revocationId: null,
       }).success,
     ).toBe(false);
@@ -192,6 +193,7 @@ describe("legacy money structural boundaries", () => {
       raw: { amountMinor: "9007199254740991", currency: "ZZZ" },
       effectiveEventId: null,
       originId: null,
+      originEvidenceErasedAt: null,
       revocationId: null,
     };
     expect(MoneyFactTokenV1Schema.safeParse(token).success).toBe(true);

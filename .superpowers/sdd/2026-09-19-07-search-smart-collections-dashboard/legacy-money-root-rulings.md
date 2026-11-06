@@ -61,3 +61,15 @@ Approve M7's finite1000selecteditem/8MiB totalserialized snapshot cap within exi
 | M5 | capability guard vs locale/dirty/unknown-network UI cases | No raw fallback/automatic retry/classification from ordinary save |
 | M6 | outer coverage vs matchedtotal/native NOT/OR tests | Exact independent outer gate beforetext, then exact matchedselection; no amountsort expansion |
 | M7 | captured rows/bytes vs Phase08/fullreport claims | Exact1000/8MiB boundaries, no truncation; real largerjobs/artifacts not claimed |
+
+## Ruling L1.9 — actual evidence erasure in pre-release tokens
+
+M2 adds required nullable originEvidenceErasedAt to the decoded fact token before any route/persisted token exists. Physical originId, evidence-erasure instant and revocationId are different facts; the original field list could not detect redaction of an existing origin. Why: stale RETAIN must conflict after erasure without forging a revocation or nulling an existing physical origin. Cost: one bounded timestamp field and updated pre-release fixtures; no live token compatibility is claimed. Native erasure/token regression is mandatory.
+
+## Ruling L1.10 — existing transaction/authorization seams
+
+M2 store functions never open nested transactions or force isolation inside existing ReadCommitted writers. One-statement fact/lineage reads give a coherent observed result; actual owner-item/catalog locks protect CAS mutations and parent callers own budgets. Actor erasure takes explicit actor+target and rejects different targets, preserving the no-private-admin-bypass rule. Existing persisted moderator authority remains the canonical mutation seam. Why: this respects actual item/custom/catalog services rather than assuming future wrappers. Cost: M3/M4 must configure/retain real outer bounds and use same-transaction resolved facts; a parsed token/receipt/role string remains no authority. Detailed bindings and first-untracked-baseline semantics are in task-m2-execution-context.md.
+
+## Ruling L1.11 — actual MVCC synchronization and copy destinations
+
+The real concurrent-classification regression found that FOR UPDATE alone does not advance an established RepeatableRead snapshot when metadata merely appends an event. Native metadata insertion now updates only the subject parent's MVCC tuple (`id=id`), so stale waiters serialize/retry rather than racing sequence insertion. Raw purchase writes already change that tuple; BASELINE must not recursively update it from their BEFORE trigger. Custom raw writes update the parent separately. This changes no raw value, generation, domain timestamp or stored interpretation. The same test now produces exactly one winner and a closed conflict. Cost: one parent tuple update per metadata assertion, using existing tables/locks rather than a new lock registry. COPY additionally requires a current raw-only destination; otherwise an unknown source could silently preserve unrelated destination interpretation. These are M2 correctness fixes, not new user features or permission/role infrastructure.

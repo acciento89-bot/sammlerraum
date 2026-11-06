@@ -1,0 +1,67 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/money/legacy-money-tokens.test.ts (4 tests | 3 failed) 7ms
+   × canonical money equality tokens > binds the actual origin evidence-erasure state in the fact shape 5ms
+     → expected false to be true // Object.is equality
+   × canonical money equality tokens > canonicalizes key order and roundtrips bounded fact contents including erasure 1ms
+     → LEGACY_MONEY_INVALID
+   ✓ canonical money equality tokens > rejects padding, noncanonical JSON/encoding, duplicate fields and damage 0ms
+   × canonical money equality tokens > keeps assertion preconditions separate and rejects cross-kind replay 0ms
+     → LEGACY_MONEY_INVALID
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/money/legacy-money-tokens.test.ts > canonical money equality tokens > binds the actual origin evidence-erasure state in the fact shape
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ packages/domain/src/money/legacy-money-tokens.test.ts:8:58
+      6| describe("canonical money equality tokens",()=>{
+      7|  it("binds the actual origin evidence-erasure state in the fact shape"…
+      8|   expect(MoneyFactTokenV1Schema.safeParse(fact).success).toBe(true);
+       |                                                          ^
+      9|   const {originEvidenceErasedAt:_,...old}=fact;
+     10|   expect(MoneyFactTokenV1Schema.safeParse(old).success).toBe(false);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  |workspace| packages/domain/src/money/legacy-money-tokens.test.ts > canonical money equality tokens > canonicalizes key order and roundtrips bounded fact contents including erasure
+LegacyMoneyError: LEGACY_MONEY_INVALID
+ ❯ legacyMoneyFail packages/contracts/src/legacy-money.ts:18:9
+     16| }
+     17| export function legacyMoneyFail(code: LegacyMoneyError["code"]): never…
+     18|   throw new LegacyMoneyError(code);
+       |         ^
+     19| }
+     20| export const LegacyMoneyIdSchema = z
+ ❯ decodeMoneyFactToken packages/domain/src/money/legacy-money-tokens.ts:3:69
+ ❯ packages/domain/src/money/legacy-money-tokens.test.ts:14:10
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  |workspace| packages/domain/src/money/legacy-money-tokens.test.ts > canonical money equality tokens > keeps assertion preconditions separate and rejects cross-kind replay
+LegacyMoneyError: LEGACY_MONEY_INVALID
+ ❯ legacyMoneyFail packages/contracts/src/legacy-money.ts:18:9
+     16| }
+     17| export function legacyMoneyFail(code: LegacyMoneyError["code"]): never…
+     18|   throw new LegacyMoneyError(code);
+       |         ^
+     19| }
+     20| export const LegacyMoneyIdSchema = z
+ ❯ decodeMoneyAssertionToken packages/domain/src/money/legacy-money-tokens.ts:5:74
+ ❯ packages/domain/src/money/legacy-money-tokens.test.ts:29:10
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 1 passed (4)
+   Start at  02:11:20
+   Duration  319ms (transform 37ms, setup 6ms, collect 72ms, tests 7ms, environment 0ms, prepare 47ms)
+

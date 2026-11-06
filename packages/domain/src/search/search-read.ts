@@ -1,3 +1,4 @@
+import { LegacyMoneyError } from "@sammlerraum/contracts/legacy-money";
 import { Prisma } from "@sammlerraum/db/search-sql";
 import { ItemSearchError, searchFail } from "@sammlerraum/contracts/item-search";
 import { SmartCollectionError } from "@sammlerraum/contracts/smart-collections";
@@ -67,7 +68,8 @@ export async function runSearchTransaction<T>(
         error instanceof ItemSearchError ||
         error instanceof FilterValidationError ||
         error instanceof SmartCollectionError ||
-        error instanceof PersonalMilestoneError
+        error instanceof PersonalMilestoneError ||
+        error instanceof LegacyMoneyError
       )
         throw error;
       if (isReadSerializationFailure(error) && attempt < 2 && performance.now() < stop) continue;
