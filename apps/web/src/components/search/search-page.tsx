@@ -1,4 +1,5 @@
 "use client";
+import { PersonalMilestones } from "../dashboard/personal-milestones";
 import type { DashboardData } from "@sammlerraum/contracts/dashboard";
 import { DashboardResults } from "./dashboard-results";
 import { loadDashboard } from "./dashboard-client";
@@ -472,6 +473,9 @@ export function SearchPage({
         </button>
         {dirty && <p className="field-help">{t("saveApplied")}</p>}
       </header>
+      {view === "dashboard" && error !== "session" && (
+        <PersonalMilestones key={`${actor}:milestones-preview`} actor={actor} locale={locale} />
+      )}
       <div className="search-layout">
         {mobile ? (
           <>

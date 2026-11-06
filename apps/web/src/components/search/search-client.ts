@@ -27,6 +27,9 @@ const codes = new Set([
   "SMART_COLLECTION_NOT_FOUND",
   "SMART_COLLECTION_CONFLICT",
   "SMART_COLLECTION_UNRESOLVABLE",
+  "MILESTONE_INVALID",
+  "MILESTONE_NOT_FOUND",
+  "MILESTONE_CONFLICT",
 ]);
 export async function searchRequest<T>(
   url: string,
@@ -36,6 +39,7 @@ export async function searchRequest<T>(
   signal: AbortSignal,
   body?: unknown,
   method?: "POST" | "PATCH" | "DELETE",
+  maxResponseBytes = 1048576,
 ): Promise<T> {
   const response = await fetch(url, {
     method: method ?? (body === undefined ? "GET" : "POST"),
@@ -51,7 +55,7 @@ export async function searchRequest<T>(
     throw new SearchHttpError(401, "UNAUTHENTICATED");
   }
   const text = await response.text();
-  if (new TextEncoder().encode(text).length > 1048576)
+  if (new TextEncoder().encode(text).length > maxResponseBytes)
     throw new SearchHttpError(500, "SEARCH_UNAVAILABLE");
   let value: unknown;
   try {

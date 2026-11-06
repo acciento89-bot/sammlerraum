@@ -28,6 +28,7 @@ export function LocaleNavigation({ locale }: { locale: string }) {
     };
   }, [pathname]);
   const saved = /^\/(de|en)\/smart-collections(?:\/[0-9a-f-]+)?$/u.test(pathname ?? "");
+  const milestones = /^\/(de|en)\/milestones$/u.test(pathname ?? "");
   const queryView = pathname?.match(/^\/(de|en)\/(search|dashboard)$/u)?.[2];
   return (
     <nav className="language-nav" aria-label={t("language")}>
@@ -37,7 +38,7 @@ export function LocaleNavigation({ locale }: { locale: string }) {
           href={
             queryView
               ? `/${language}/${queryView}${suffix}`
-              : saved
+              : saved || milestones
                 ? `/${language}${pathname!.slice(3)}`
                 : `/${language}`
           }

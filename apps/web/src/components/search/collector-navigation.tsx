@@ -6,7 +6,7 @@ export function CollectorNavigation({
   current = "search",
 }: {
   locale: string;
-  current?: "search" | "saved" | "dashboard";
+  current?: "search" | "saved" | "dashboard" | "milestones";
 }) {
   const t = useTranslations("Search");
   return (

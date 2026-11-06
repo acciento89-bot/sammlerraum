@@ -55,6 +55,7 @@ a {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
   gap: 2rem;
 }
 .brand {
@@ -339,6 +340,7 @@ button {
 @media (max-width: 36rem) {
   .header-inner {
     align-items: flex-start;
+    gap: 1rem;
   }
   .brand small {
     display: none;
@@ -1136,4 +1138,67 @@ body:has(.search-shell) .skip-link:not(:focus) {
 }
 .dashboard-content .management-card + .management-card {
   margin-top: 1rem;
+}
+
+.milestone-preview {
+  margin-block: 1.5rem;
+}
+.milestone-list {
+  display: grid;
+  gap: 0.8rem;
+  padding: 0;
+  list-style: none;
+}
+.milestone-list > li {
+  min-width: 0;
+}
+.milestone-title,
+.milestone-list h3,
+.milestone-manager p,
+.milestone-preview p {
+  overflow-wrap: anywhere;
+}
+.milestone-list h3 {
+  margin-block: 0 0.5rem;
+  font-size: 1.1rem;
+}
+.milestone-list time {
+  font-variant-numeric: tabular-nums;
+}
+.milestone-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.65rem;
+  margin-block: 0.8rem;
+}
+.milestone-actions > * {
+  min-width: 0;
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.milestone-editor {
+  display: grid;
+  gap: 0.8rem;
+  max-width: 45rem;
+  margin-block: 1.5rem;
+}
+.milestone-editor input {
+  min-width: 0;
+  width: 100%;
+}
+.milestone-manager > section,
+.milestone-manager > form {
+  margin-block: 1.4rem;
+}
+.milestone-dialog {
+  max-width: calc(100% - 2rem);
+  max-height: calc(100dvh - 2rem);
+  overflow: auto;
+}
+.milestone-manager button:disabled,
+.milestone-preview button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
