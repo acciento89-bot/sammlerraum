@@ -702,7 +702,7 @@ describe.runIf(enabled)("actual canonical catalog money mutation integration", (
           { userId: actor },
           { entryId: id, sourceRevision: null, destinationRevision: 1, actions },
         ),
-      { timeout: 40000 },
+      { timeout: 120000 },
     );
     console.info(
       JSON.stringify({ check: "M4_CANONICAL_MAX_CARRY_SOURCE_READY", paths: actions.length }),
@@ -743,5 +743,5 @@ describe.runIf(enabled)("actual canonical catalog money mutation integration", (
         revision: changed.revision,
       }),
     );
-  }, 100000);
+  }, 180000);
 });

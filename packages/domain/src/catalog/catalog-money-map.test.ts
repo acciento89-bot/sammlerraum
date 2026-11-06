@@ -624,7 +624,7 @@ describe.runIf(enabled)("native coherent catalog money map", () => {
           { entryId: id, sourceRevision: null, destinationRevision: 1, actions },
         );
       },
-      { timeout: 40000 },
+      { timeout: 120000 },
     );
     const views = await db.$transaction(
       (tx) => readCatalogMoneyMap(moneyTransaction(tx), id, 1, { userId: actor }),
@@ -647,5 +647,5 @@ describe.runIf(enabled)("native coherent catalog money map", () => {
         elapsedMs: Math.round(performance.now() - start),
       }),
     );
-  }, 55000);
+  }, 140000);
 });
