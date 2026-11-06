@@ -39,7 +39,7 @@ const auth = {
   },
 };
 const api = () =>
-  createCatalogMoneyRouteHandlers(createCatalogMoneyRouteDependencies(db, auth, origin));
+  createCatalogMoneyRouteHandlers(createCatalogMoneyRouteDependencies(db, auth, origin, true));
 const create = () =>
   createCatalogMaintenanceService(db).createCatalogEntry({
     categoryTemplateId: category,
@@ -47,6 +47,20 @@ const create = () =>
     attributes: [{ definitionId, value: { amountMinor: 100, currency: "AFN" } }],
   });
 describe.runIf(enabled)("catalog money HTTP native boundary", () => {
+  it("keeps reads available but declines explicit mutations while server authoring is disabled", async () => {
+    actor = moderator;
+    const entry = await create();
+    const disabled = createCatalogMoneyRouteHandlers(
+      createCatalogMoneyRouteDependencies(db, auth, origin, false),
+    );
+    expect((await disabled.READ(req("GET"), entry.state.id, "1")).status).toBe(200);
+    const prior = await db.catalogProposal.count();
+    expect((await disabled.SUBMIT(req("POST", {}))).status).toBe(503);
+    expect((await disabled.CLASSIFY(req("POST", {}), entry.state.id, "1")).status).toBe(503);
+    expect((await disabled.REVOKE(req("POST", {}), entry.state.id, "1")).status).toBe(503);
+    expect(await db.catalogProposal.count()).toBe(prior);
+  });
+
   beforeAll(async () => {
     isolated = await createLegacyMoneyTestSchema();
     db = createTestDatabaseClient({ databaseUrl: isolated.databaseUrl, schema: isolated.schema });

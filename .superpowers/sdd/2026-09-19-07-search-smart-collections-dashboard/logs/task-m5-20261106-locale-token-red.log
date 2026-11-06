@@ -1,0 +1,44 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| apps/web/src/components/money/legacy-money-draft.test.ts (7 tests | 1 failed) 12ms
+   ✓ deliberate monetary draft semantics > never parses or authors an untouched historical pair on an ordinary save 3ms
+   ✓ deliberate monetary draft semantics > requires explicit acknowledgment and audit note before replacing old AFN with the pinned new decimal 2ms
+   ✓ deliberate monetary draft semantics > separates explicit clear from blank/invalid replacement and never fabricates a missing token 1ms
+   ✓ deliberate monetary draft semantics > authors a new decimal only through the pinned explicit profile and rejects unsupported codes/grouping 1ms
+   ✓ deliberate monetary draft semantics > displays stored scale independently of locale and the current ISO exponent 0ms
+   × deliberate monetary draft semantics > does not silently rebase an edited draft onto a newer fact token after locale navigation 5ms
+     → expected { op: 'REPLACE', …(3) } to match object { Object (expectedFactToken) }
+(7 matching properties omitted from actual)
+   ✓ deliberate monetary draft semantics > preserves exact typed draft through locale remount but separates accounts and clears on logout 0ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/web/src/components/money/legacy-money-draft.test.ts > deliberate monetary draft semantics > does not silently rebase an edited draft onto a newer fact token after locale navigation
+AssertionError: expected { op: 'REPLACE', …(3) } to match object { Object (expectedFactToken) }
+(7 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "expectedFactToken": "synthetic_token",
++   "expectedFactToken": "newer_token",
+  }
+
+ ❯ apps/web/src/components/money/legacy-money-draft.test.ts:124:51
+    122|     const old = view(), latest = { ...old, factToken: "newer_token" };
+    123|     const draft = { ...initialMoneyDraft(old), mode: "REPLACE" as cons…
+    124|     expect(moneyDraftIntent(draft, latest, true)).toMatchObject({ expe…
+       |                                                   ^
+    125|   });
+    126|   it("preserves exact typed draft through locale remount but separates…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 6 passed (7)
+   Start at  08:01:04
+   Duration  385ms (transform 50ms, setup 7ms, collect 138ms, tests 12ms, environment 0ms, prepare 59ms)
+

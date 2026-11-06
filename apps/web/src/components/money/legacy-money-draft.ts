@@ -1,0 +1,133 @@
+import { z } from "zod";
+import {
+  ExistingMoneyIntentSchema,
+  NewMoneyIntentSchema,
+  LEGACY_MONEY_PROFILE_ID,
+  type MoneyView,
+  type ExistingMoneyIntent,
+  type NewMoneyIntent,
+} from "@sammlerraum/contracts/legacy-money";
+import { parseLegacyMoneyAuthoring } from "@sammlerraum/domain/money/legacy-money-policy";
+const MoneyDraftSchema = z
+  .object({
+    expectedFactToken: z.string().min(1).max(2048).nullable(),
+    mode: z.enum(["KEEP", "REPLACE", "CLEAR"]),
+    decimal: z.string().max(96),
+    currency: z.string().max(3),
+    acknowledged: z.boolean(),
+    correctionReason: z.string().max(4000),
+  })
+  .strict();
+export type MoneyDraft = z.infer<typeof MoneyDraftSchema>;
+export class MoneyDraftError extends Error {
+  constructor(
+    readonly code:
+      | "MONEY_DRAFT_NOT_LOADED"
+      | "MONEY_REPLACEMENT_ACK_REQUIRED"
+      | "MONEY_CORRECTION_REASON_REQUIRED"
+      | "MONEY_INPUT_INVALID",
+  ) {
+    super(code);
+  }
+}
+export function initialMoneyDraft(view: MoneyView | null): MoneyDraft {
+  // An existing integer never becomes an editable decimal merely by opening a form.
+  return {
+    expectedFactToken: view?.factToken ?? null,
+    mode: "KEEP",
+    decimal: "",
+    currency: view?.raw?.currency ?? "EUR",
+    acknowledged: false,
+    correctionReason: "",
+  };
+}
+export function previewMoneyDraft(draft: MoneyDraft) {
+  return parseLegacyMoneyAuthoring({
+    kind: "DECIMAL",
+    profileId: LEGACY_MONEY_PROFILE_ID,
+    currency: draft.currency,
+    decimal: draft.decimal,
+  });
+}
+export function moneyDraftIntent(
+  value: MoneyDraft,
+  view: MoneyView | null,
+  existing: boolean,
+): ExistingMoneyIntent | NewMoneyIntent | undefined {
+  const draft = MoneyDraftSchema.parse(value);
+  if (draft.mode === "KEEP") return undefined;
+  if (existing && (!view || !draft.expectedFactToken))
+    throw new MoneyDraftError("MONEY_DRAFT_NOT_LOADED");
+  if (draft.mode === "CLEAR") {
+    if (!existing || !view?.raw) throw new MoneyDraftError("MONEY_INPUT_INVALID");
+    if (!draft.acknowledged) throw new MoneyDraftError("MONEY_REPLACEMENT_ACK_REQUIRED");
+    return ExistingMoneyIntentSchema.parse({
+      op: "CLEAR",
+      expectedFactToken: draft.expectedFactToken,
+    });
+  }
+  if (view?.raw && !draft.acknowledged) throw new MoneyDraftError("MONEY_REPLACEMENT_ACK_REQUIRED");
+  if (view?.raw && !draft.correctionReason.trim())
+    throw new MoneyDraftError("MONEY_CORRECTION_REASON_REQUIRED");
+  // This browser preview grants no authority: the server re-parses the authoring request.
+  previewMoneyDraft(draft);
+  const authoring = {
+    kind: "DECIMAL",
+    profileId: LEGACY_MONEY_PROFILE_ID,
+    currency: draft.currency,
+    decimal: draft.decimal,
+  };
+  return existing
+    ? ExistingMoneyIntentSchema.parse({
+        op: "REPLACE",
+        expectedFactToken: draft.expectedFactToken,
+        authoring,
+        ...(view?.raw ? { correctionReason: draft.correctionReason } : {}),
+      })
+    : NewMoneyIntentSchema.parse({ op: "NEW", authoring });
+}
+export function displayStoredMoney(view: MoneyView, locale: "de" | "en") {
+  const meaning = view.interpretation;
+  return {
+    amount:
+      meaning.kind === "INTERPRETED"
+        ? meaning.decimal.replace(".", locale === "de" ? "," : ".")
+        : (view.raw?.amountMinor ?? null),
+    currency: view.raw?.currency ?? null,
+    status:
+      meaning.kind === "INTERPRETED" && meaning.eligibility === "UNIT_UNSUPPORTED"
+        ? ("UNIT_UNSUPPORTED" as const)
+        : meaning.kind,
+  };
+}
+// Bounded in-memory only. Never persist money/evidence in URLs or browser storage.
+const drafts = new Map<string, MoneyDraft>();
+let activeOwner: string | null = null;
+function ownerScope(owner: string) {
+  if (!owner || owner.length > 512) throw new MoneyDraftError("MONEY_INPUT_INVALID");
+  if (activeOwner !== owner) {
+    drafts.clear();
+    activeOwner = owner;
+  }
+}
+export function rememberMoneyDraft(owner: string, key: string, draft: MoneyDraft): void {
+  ownerScope(owner);
+  if (!key || key.length > 512) throw new MoneyDraftError("MONEY_INPUT_INVALID");
+  const parsed = MoneyDraftSchema.parse(draft);
+  drafts.delete(key);
+  drafts.set(key, parsed);
+  while (drafts.size > 128) drafts.delete(drafts.keys().next().value!);
+}
+export function recallMoneyDraft(owner: string, key: string): MoneyDraft | undefined {
+  ownerScope(owner);
+  const draft = drafts.get(key);
+  return draft ? { ...draft } : undefined;
+}
+export function forgetMoneyDraft(owner: string, key: string): void {
+  ownerScope(owner);
+  drafts.delete(key);
+}
+export function clearMoneyDrafts(): void {
+  drafts.clear();
+  activeOwner = null;
+}

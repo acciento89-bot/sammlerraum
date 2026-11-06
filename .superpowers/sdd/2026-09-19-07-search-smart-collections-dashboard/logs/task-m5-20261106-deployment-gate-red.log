@@ -1,0 +1,63 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| apps/web/src/lib/catalog-money-routes.integration.test.ts (4 tests | 1 failed | 3 skipped) 387ms
+   × catalog money HTTP native boundary > keeps reads available but declines explicit mutations while server authoring is disabled 61ms
+     → expected 400 to be 503 // Object.is equality
+   ↓ catalog money HTTP native boundary > reads public-safe revision money, classifies, privately audits and revokes with fresh sessions
+   ↓ catalog money HTTP native boundary > queues explicit authoring without applying it and keeps legacy quota/shared audit
+   ↓ catalog money HTTP native boundary > rejects foreign origins, ambiguous query/body keys, BOM and oversized streamed bytes
+ ❯ |workspace| apps/web/src/lib/legacy-money-routes.integration.test.ts (5 tests | 1 failed | 4 skipped) 136ms
+   × personal money HTTP real database boundary > keeps explicit monetary writers closed when server authoring is disabled 116ms
+     → expected 201 to be 503 // Object.is equality
+   ↓ personal money HTTP real database boundary > creates and reads explicit money only after fresh authentication, with no-store and request IDs
+   ↓ personal money HTTP real database boundary > rejects cross-origin before session access and duplicate nested keys/invalid bytes before mutation
+   ↓ personal money HTTP real database boundary > hides foreign reads and exposes owned history/revocation as closed request states
+   ↓ personal money HTTP real database boundary > bounds history/field queries and streamed authoring bodies without weakening authentication
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/web/src/lib/catalog-money-routes.integration.test.ts > catalog money HTTP native boundary > keeps reads available but declines explicit mutations while server authoring is disabled
+AssertionError: expected 400 to be 503 // Object.is equality
+
+- Expected
++ Received
+
+- 503
++ 400
+
+ ❯ apps/web/src/lib/catalog-money-routes.integration.test.ts:55:61
+     53|     expect((await disabled.READ(req("GET"), entry.state.id, "1")).stat…
+     54|     const prior = await db.catalogProposal.count();
+     55|     expect((await disabled.SUBMIT(req("POST", {}))).status).toBe(503);
+       |                                                             ^
+     56|     expect((await disabled.CLASSIFY(req("POST", {}), entry.state.id, "…
+     57|     expect((await disabled.REVOKE(req("POST", {}), entry.state.id, "1"…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |workspace| apps/web/src/lib/legacy-money-routes.integration.test.ts > personal money HTTP real database boundary > keeps explicit monetary writers closed when server authoring is disabled
+AssertionError: expected 201 to be 503 // Object.is equality
+
+- Expected
++ Received
+
+- 503
++ 201
+
+ ❯ apps/web/src/lib/legacy-money-routes.integration.test.ts:60:29
+     58|     const disabled = createLegacyMoneyRouteHandlers(createLegacyMoneyR…
+     59|     const response = await disabled.CREATE(request("POST", { schemaVer…
+     60|     expect(response.status).toBe(503);
+       |                             ^
+     61|     expect(await db!.collectibleItem.count({ where: { collectionId: f.…
+     62|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  2 failed | 7 skipped (9)
+   Start at  07:54:39
+   Duration  1.51s (transform 265ms, setup 7ms, collect 679ms, tests 522ms, environment 0ms, prepare 85ms)
+

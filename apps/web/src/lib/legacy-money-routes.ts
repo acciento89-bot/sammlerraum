@@ -23,9 +23,11 @@ export function createLegacyMoneyRouteDependencies(
   database: PersonalMoneyDatabase,
   auth: Parameters<typeof createItemSearchRouteDependencies>[1],
   appOrigin: string,
+  authoringEnabled: boolean,
 ) {
   return {
     appOrigin,
+    authoringEnabled,
     getSession: (headers: Headers) =>
       auth.api.getSession({ headers, query: { disableCookieCache: true, disableRefresh: true } }),
     service: (id: string) => createPersonalMoneyService(database, id),
@@ -123,6 +125,8 @@ export function createLegacyMoneyRouteHandlers(
           throw new ApiError("FORBIDDEN", 403, "Cross-origin request rejected");
         const session = await d.getSession(request.headers);
         if (!session) throw new ApiError("UNAUTHORIZED", 401, "Authentication required");
+        if (request.method !== "GET" && !d.authoringEnabled)
+          throw new ApiError("MONEY_UNAVAILABLE", 503, "Monetary authoring is currently disabled");
         if (new URL(request.url).hash) return legacyMoneyFail("LEGACY_MONEY_INVALID");
         const query = readSearchQueryMap(request, allowed);
         const value = await work(request, d.service(session.user.id), id, field, query);

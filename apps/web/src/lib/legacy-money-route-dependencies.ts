@@ -13,6 +13,7 @@ const dependencies = async () => {
       createPrismaClient(serverEnv.DATABASE_URL, { bounded: true }),
       auth,
       serverEnv.APP_ORIGIN,
+      serverEnv.MONEY_AUTHORING_ENABLED,
     ),
   );
 };

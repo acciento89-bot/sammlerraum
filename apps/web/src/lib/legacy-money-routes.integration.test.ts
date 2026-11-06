@@ -41,7 +41,9 @@ async function fixture() {
       },
     },
   };
-  const api = createLegacyMoneyRouteHandlers(createLegacyMoneyRouteDependencies(db!, auth, origin));
+  const api = createLegacyMoneyRouteHandlers(
+    createLegacyMoneyRouteDependencies(db!, auth, origin, true),
+  );
   return {
     actor,
     collection: collection.id,
@@ -53,6 +55,26 @@ async function fixture() {
   };
 }
 describe.runIf(enabled)("personal money HTTP real database boundary", () => {
+  it("keeps explicit monetary writers closed when server authoring is disabled", async () => {
+    const f = await fixture();
+    const disabled = createLegacyMoneyRouteHandlers(
+      createLegacyMoneyRouteDependencies(
+        db!,
+        { api: { getSession: async () => ({ user: { id: f.actor } }) } },
+        origin,
+        false,
+      ),
+    );
+    const response = await disabled.CREATE(
+      request("POST", {
+        schemaVersion: 1,
+        item: { collectionId: f.collection, title: "Must not be created" },
+      }),
+    );
+    expect(response.status).toBe(503);
+    expect(await db!.collectibleItem.count({ where: { collectionId: f.collection } })).toBe(0);
+  });
+
   afterAll(async () => {
     if (db) {
       await db.user.deleteMany({ where: { id: { in: users } } });
