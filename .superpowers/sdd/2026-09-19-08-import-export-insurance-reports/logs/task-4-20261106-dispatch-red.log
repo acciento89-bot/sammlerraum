@@ -1,0 +1,66 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| apps/worker/src/main.test.ts (6 tests | 1 failed) 8ms
+   × startWorker > starts durable dispatch after queue startup and stops it before queue teardown 5ms
+     → expected [ 'queue-start', …(7) ] to deeply equal [ 'queue-start', …(9) ]
+   ✓ startWorker > installs the queue error listener before startup and keeps an emitted error unhealthy 1ms
+   ✓ startWorker > rolls back queue, endpoint, and database resources in reverse lifecycle order 0ms
+   ✓ runWorkerMain > returns exit code 1 and logs a generic startup configuration error 0ms
+   ✓ shares stop completion and never disconnects DB when market work cannot settle 1ms
+   ✓ attempts independent cleanup when market stop throws synchronously 0ms
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/worker/src/jobs/tabular-export-dispatcher.test.ts [ apps/worker/src/jobs/tabular-export-dispatcher.test.ts ]
+Error: Cannot find module './tabular-export-dispatcher' imported from '/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/worker/src/jobs/tabular-export-dispatcher.test.ts'
+ ❯ apps/worker/src/jobs/tabular-export-dispatcher.test.ts:2:1
+      1| import {describe,it,expect,vi} from 'vitest';
+      2| import {createTabularExportDispatcher} from './tabular-export-dispatch…
+       | ^
+      3| describe('durable tabular export dispatch',()=>{
+      4|  it('retries a queue outage without acknowledging its durable intent o…
+
+Caused by: Error: Failed to load url ./tabular-export-dispatcher (resolved id: ./tabular-export-dispatcher) in /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/worker/src/jobs/tabular-export-dispatcher.test.ts. Does the file exist?
+ ❯ loadAndTransform ../../../../SSK%20SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/node_modules/.pnpm/vite@7.3.6_@types+node@24.5.2_jiti@2.7.0/node_modules/vite/dist/node/chunks/config.js:22739:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/worker/src/main.test.ts > startWorker > starts durable dispatch after queue startup and stops it before queue teardown
+AssertionError: expected [ 'queue-start', …(7) ] to deeply equal [ 'queue-start', …(9) ]
+
+- Expected
++ Received
+
+  [
+    "queue-start",
+    "dispatch-start",
+-   "export-start",
+    "cleanup-start",
+    "health-stop",
+    "cleanup-stop",
+    "dispatch-stop",
+-   "export-stop",
+    "queue-stop",
+    "database-stop",
+  ]
+
+ ❯ apps/worker/src/main.test.ts:58:19
+     56|     });
+     57|     await worker.stop();
+     58|     expect(calls).toEqual([
+       |                   ^
+     59|       "queue-start",
+     60|       "dispatch-start",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  1 failed | 5 passed (6)
+   Start at  23:29:57
+   Duration  264ms (transform 42ms, setup 13ms, collect 31ms, tests 8ms, environment 0ms, prepare 89ms)
+

@@ -18,7 +18,7 @@ This is the handoff/status file for long-running implementation. Update it after
 | 05 | Catalog, Condition & Grading | 7 | complete (7/7) | — |
 | 06 | Valuations & Market Data | 6 | complete (6/6) | — |
 | 07 | Search, Smart Collections & Dashboard | 5 | in progress (1/5) | Task 2 |
-| 08 | Import, Export, Insurance & Reports | 7 | in progress (3/7) | Task 4 |
+| 08 | Import, Export, Insurance & Reports | 7 | in progress (4/7) | Task 5 |
 | 09 | Collaboration, Sharing & Audit | 7 | not started | Task 1 |
 | 10 | Community, Moderation & Notifications | 8 | not started | Task 1 |
 | 11 | AI-Assisted Capture | 5 | not started | Task 1 |
@@ -74,8 +74,9 @@ This is the handoff/status file for long-running implementation. Update it after
 - [x] P08 T01 — Persisted import jobs, versioned mapping profiles and conflict-safe previews
 - [x] P08 T02 — Bounded verified CSV/XLSX worker with durable retry-safe parsed rows
 - [x] P08 T03 — Explicit approved atomic inventory commit with target preconditions and durable receipts
+- [x] P08 T04 — Owned bounded CSV/XLSX export source, durable private artifacts and retry-safe producer
 
-**Verified completion: 44/91 tasks.** Later tasks remain open as listed in the phase table and detail plans.
+**Verified completion: 45/91 tasks.** Later tasks remain open as listed in the phase table and detail plans.
 
 ## Update rule
 
@@ -1041,3 +1042,11 @@ Wholecandidatef90e6d4 plus closure4437e0c implements the actual internal CSV/XLS
 ### Phase08 Task3 verified locally — explicit atomic inventory commit (2026-11-06)
 
 Source dc8d735 plus P2closure4da56a0 and mechanical final-image noticeCOPY9d9f207. Root accepts the complete local task after854native/74files/0skip,1505regular/725explicitnative-off, types/lint/build and22actual-built inventorybrowserPASS. Whole review's2P2s were reproduced and fixed in one pass; originalFAIL/rootclosure retained. Actual101row commits, duplicate workers, transaction rollback, exact canonical/UNKNOWN money, current identifier conflicts and complete receipt validation are covered. No upload/API/UI or deployment claimed. Macro44/91, Phase08threeofseven, nextTask4. Dependent publication waits for both de2c264Task2 workflows42294953390/42294945841. Bounded FAILED-job duplicate retries remain a named Task7/Phase13 minor; no additional inventory mutation occurs. See task-3-report.md/review.md/execution-context.md.
+
+## 06 November 2026 — Phase08 Task4 private tabular exports
+
+Source356e94e, schema-only reviewed index closurecfa24a6; frozen-capture checkpointdb9dceb is included. Actual owned collection/subtree/search/full inventory export uses current selection and M7 authority, not paginated results. Default private metadata exclusions, explicit opt-ins, immutable source, reserved owned asset manifests, fenced retries/cancellation, current-source final authorization and atomic complete CSV/XLSX assets are implemented. CSV transport is explicitly reversible and formula-neutral text; XLSX cells are literal and bounded. No document/policy bytes exported.
+
+871native cases in76files passed with0skips147.66s;1523regular passed with742native-disabled skips11.87s. Workspace types/lint/build passed;22actual-built DE/EN desktop/mobile inventory browser cases passed25.6s. Final task-done28cases passed. Both owned retained test DBs migrated forward. Whole independent review found one missing Prisma declaration for an applied dispatch index; fixed once and validated without altering migrations, original verdict retained. No second independent final PASS or Excel/LibreOffice UI test is claimed.
+
+Task4 is locally accepted:45/91, Phase08fourofseven; next private insurance recordsTask5. Internal producer only: actual authenticated export UI/download/current-permission delivery/expiry still Task7 obligations; no live deployment/provider/main application merge. Task3 exact head d1a9016 has both full workflows42299346673/42299338431 SUCCESS. Task4 publication follows this local proof and must obtain its own exact CI evidence.

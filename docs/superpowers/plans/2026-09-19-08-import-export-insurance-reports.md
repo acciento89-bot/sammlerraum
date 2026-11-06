@@ -181,7 +181,7 @@ git commit -m "feat: commit imports idempotently"
 **Interfaces:**
 - Produces: `requestExport(actor, scope, format)`, output media asset.
 
-- [ ] **Step 1: Write failing scope/privacy test**
+- [x] **Step 1: Write failing scope/privacy test**
 
 ```ts
 it("does not export inaccessible items or private document bytes", async () => {
@@ -191,21 +191,21 @@ it("does not export inaccessible items or private document bytes", async () => {
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run apps/worker/src/jobs/build-tabular-export.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement export**
+- [x] **Step 3: Implement export**
 
 Support collection, subtree, filtered search, full authorized inventory, and wishlist later when model exists. CSV and XLSX use localized display labels but canonical raw data values.
 
-- [ ] **Step 4: Run tests**
+- [x] **Step 4: Run tests**
 
 Run: `pnpm vitest run packages/domain/src/exports apps/worker/src/jobs/build-tabular-export.test.ts`  
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/domain/src/exports packages/contracts/src/exports.ts apps/worker/src/jobs/build-tabular-export*
