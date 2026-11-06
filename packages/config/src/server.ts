@@ -85,6 +85,8 @@ const schema = z
     MEDIA_MAX_IMAGE_BYTES: mediaLimit(100 * 1024 * 1024, 20 * 1024 * 1024),
     MEDIA_MAX_DOCUMENT_BYTES: mediaLimit(100 * 1024 * 1024, 25 * 1024 * 1024),
     MEDIA_MAX_IMAGE_PIXELS: mediaLimit(100_000_000, 40_000_000),
+    IMPORT_MAX_BYTES: mediaLimit(20 * 1024 * 1024, 20 * 1024 * 1024),
+    IMPORT_MAX_ROWS: mediaLimit(10000, 10000),
     NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
     DATABASE_URL: z.string().transform(postgresUrl),
     APP_ORIGIN: z.string().transform(applicationOrigin),

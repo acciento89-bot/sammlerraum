@@ -5,9 +5,16 @@ import { dirname, isAbsolute, join, relative, resolve, sep, win32 } from "node:p
 
 import type { StorageProvider } from "./types";
 
-export type StorageErrorCode = "INVALID_STORAGE_KEY" | "STORAGE_NOT_FOUND" | "STORAGE_IO_ERROR";
+export type StorageErrorCode =
+  | "INVALID_STORAGE_KEY"
+  | "STORAGE_NOT_FOUND"
+  | "STORAGE_IO_ERROR"
+  | "STORAGE_TOO_LARGE"
+  | "STORAGE_READ_CANCELLED";
 
 const messages: Record<StorageErrorCode, string> = {
+  STORAGE_TOO_LARGE: "Stored object exceeds read limit",
+  STORAGE_READ_CANCELLED: "Storage read cancelled",
   INVALID_STORAGE_KEY: "Invalid storage key",
   STORAGE_NOT_FOUND: "Stored object not found",
   STORAGE_IO_ERROR: "Storage operation failed",
@@ -255,7 +262,13 @@ export class LocalPersistentStorage implements StorageProvider {
     } else await write();
   }
 
-  async read(key: string): Promise<Uint8Array> {
+  async read(
+    key: string,
+    options?: { maxBytes: number; signal?: AbortSignal },
+  ): Promise<Uint8Array> {
+    if (options && (!Number.isSafeInteger(options.maxBytes) || options.maxBytes < 1))
+      throw new StorageError("STORAGE_IO_ERROR");
+    if (options?.signal?.aborted) throw new StorageError("STORAGE_READ_CANCELLED");
     const path = await this.pathFor(key, false);
     if (!path) throw new StorageError("STORAGE_NOT_FOUND");
     try {
@@ -265,7 +278,21 @@ export class LocalPersistentStorage implements StorageProvider {
       const handle = await open(path, constants.O_RDONLY | constants.O_NOFOLLOW);
       try {
         if (!(await handle.stat()).isFile()) throw new StorageError("STORAGE_IO_ERROR");
-        return new Uint8Array(await handle.readFile());
+        if (!options) return new Uint8Array(await handle.readFile());
+        if ((await handle.stat()).size > options.maxBytes)
+          throw new StorageError("STORAGE_TOO_LARGE");
+        const chunks: Buffer[] = [];
+        let size = 0;
+        while (true) {
+          if (options.signal?.aborted) throw new StorageError("STORAGE_READ_CANCELLED");
+          const chunk = Buffer.alloc(Math.min(65536, options.maxBytes - size + 1));
+          const { bytesRead } = await handle.read(chunk, 0, chunk.length, null);
+          if (!bytesRead) break;
+          size += bytesRead;
+          if (size > options.maxBytes) throw new StorageError("STORAGE_TOO_LARGE");
+          chunks.push(chunk.subarray(0, bytesRead));
+        }
+        return new Uint8Array(Buffer.concat(chunks, size));
       } finally {
         await handle.close();
       }

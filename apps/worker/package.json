@@ -13,14 +13,20 @@
   "dependencies": {
     "@prisma/client": "7.10.0",
     "@sammlerraum/config": "workspace:*",
+    "@sammlerraum/contracts": "workspace:*",
     "@sammlerraum/db": "workspace:*",
+    "@sammlerraum/domain": "workspace:*",
+    "@sammlerraum/market-data": "workspace:*",
     "@sammlerraum/queue": "workspace:*",
     "@sammlerraum/storage": "workspace:*",
+    "csv-parse": "7.0.3",
+    "saxes": "6.0.0",
     "sharp": "0.35.4",
-    "@sammlerraum/domain": "workspace:*",
-    "@sammlerraum/market-data": "workspace:*"
+    "yauzl": "3.4.0",
+    "zod": "4.1.11"
   },
   "devDependencies": {
+    "@types/yauzl": "3.4.0",
     "esbuild": "0.28.2"
   }
 }

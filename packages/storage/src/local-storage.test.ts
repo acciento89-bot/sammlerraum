@@ -256,3 +256,18 @@ it.skipIf(process.getuid?.() === 0).each([
     await chmod(blocked, 0o700);
   }
 });
+
+it("bounds actual source bytes and rejects cancelled reads without leaking paths", async () => {
+  const root = await temporaryRoot();
+  const storage = new LocalPersistentStorage(root);
+  await storage.put("imports/owned/source", new Uint8Array(65537));
+  await expect(storage.read("imports/owned/source", { maxBytes: 65536 })).rejects.toMatchObject({
+    code: "STORAGE_TOO_LARGE",
+  });
+  expect((await storage.read("imports/owned/source", { maxBytes: 65537 })).length).toBe(65537);
+  const controller = new AbortController();
+  controller.abort();
+  await expect(
+    storage.read("imports/owned/source", { maxBytes: 65537, signal: controller.signal }),
+  ).rejects.toMatchObject({ code: "STORAGE_READ_CANCELLED" });
+});

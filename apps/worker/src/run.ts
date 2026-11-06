@@ -1,3 +1,5 @@
+import { createPrismaImportParserRepository } from "./jobs/import-parser-repository";
+import { createImportParser, IMPORT_PARSE_JOB } from "./jobs/import-parser-runtime";
 import { createProductionMarketProviders } from "./jobs/market-provider-composition";
 import { composeMarketSync } from "./jobs/market-sync-runtime";
 import type { StorageCleanupCursor } from "@sammlerraum/storage";
@@ -74,6 +76,11 @@ async function startProductionWorker(): Promise<void> {
     maxDocumentBytes: serverEnv.MEDIA_MAX_DOCUMENT_BYTES,
     maxPixels: serverEnv.MEDIA_MAX_IMAGE_PIXELS,
   });
+  const parseImport = createImportParser(createPrismaImportParserRepository(prisma), storage, {
+    maxBytes: serverEnv.IMPORT_MAX_BYTES,
+    maxRows: serverEnv.IMPORT_MAX_ROWS,
+  });
+  registry.registerCancellable(IMPORT_PARSE_JOB, parseImport);
   // Register before queue.start locks the registry.
   registry.register(IMAGE_JOB, async ({ assetId }: { assetId: string }) => {
     if (typeof assetId !== "string") return;

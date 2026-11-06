@@ -36,6 +36,8 @@ describe("parseServerEnv", () => {
       MEDIA_MAX_IMAGE_BYTES: 20 * 1024 * 1024,
       MEDIA_MAX_DOCUMENT_BYTES: 25 * 1024 * 1024,
       MEDIA_MAX_IMAGE_PIXELS: 40_000_000,
+      IMPORT_MAX_BYTES: 20 * 1024 * 1024,
+      IMPORT_MAX_ROWS: 10000,
       MEDIA_RETENTION_HOURS: 168,
       MEDIA_CLEANUP_INTERVAL_MS: 60000,
       MEDIA_CLEANUP_BATCH_SIZE: 100,
@@ -134,6 +136,8 @@ describe("media configuration", () => {
       MEDIA_MAX_IMAGE_BYTES: 20 * 1024 * 1024,
       MEDIA_MAX_DOCUMENT_BYTES: 25 * 1024 * 1024,
       MEDIA_MAX_IMAGE_PIXELS: 40_000_000,
+      IMPORT_MAX_BYTES: 20 * 1024 * 1024,
+      IMPORT_MAX_ROWS: 10000,
       MEDIA_RETENTION_HOURS: 168,
       MEDIA_CLEANUP_INTERVAL_MS: 60000,
       MEDIA_CLEANUP_BATCH_SIZE: 100,
@@ -182,4 +186,15 @@ it("requires an explicit server opt-in before canonical monetary consumers are e
   expect(() =>
     parseServerEnv({ ...validEnvironment, MONEY_CANONICAL_CONSUMERS_ENABLED: "1" }),
   ).toThrow(EnvironmentConfigurationError);
+});
+
+it.each([
+  ["IMPORT_MAX_BYTES", "20971521"],
+  ["IMPORT_MAX_ROWS", "10001"],
+  ["IMPORT_MAX_ROWS", "0"],
+  ["IMPORT_MAX_BYTES", "1.5"],
+])("rejects raised or invalid import limit %s", (key, value) => {
+  expect(() => parseServerEnv({ ...validEnvironment, [key]: value })).toThrow(
+    EnvironmentConfigurationError,
+  );
 });

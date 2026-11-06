@@ -50,6 +50,10 @@ it("passes the production-composed market lifecycle to startWorker and registers
   await import("./run");
   await vi.waitFor(() => expect(wiring.startWorker).toHaveBeenCalledOnce());
   expect(wiring.registerCancellable).toHaveBeenCalledWith("market.sync", expect.any(Function));
+  expect(wiring.registerCancellable).toHaveBeenCalledWith(
+    "imports.parse-source",
+    expect.any(Function),
+  );
   const options = wiring.startWorker.mock.calls[0]![0] as unknown as {
     marketSync: { start(): void; stop(): Promise<void> };
     disconnectDatabase(): Promise<void>;

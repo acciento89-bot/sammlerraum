@@ -1146,6 +1146,11 @@ model ImportJob {
   sourceChecksumSha256   String             @db.Char(64)
   sourceStorageKey       String             @unique
   sourceVerifiedAt       DateTime?
+  parserOptions          Json?
+  parsedHeader           Json?
+  parsingToken           String?            @db.Uuid
+  parsingLeaseUntil      DateTime?
+  parsingAttempts        Int                @default(0)
   totalRows              Int?
   parsedRows             Int                @default(0)
   previewedRows          Int                @default(0)
@@ -1170,6 +1175,7 @@ model ImportRow {
   id                        String          @id @default(uuid()) @db.Uuid
   jobId                     String          @db.Uuid
   rowNumber                 Int
+  sourceRowNumber           Int?
   rowKey                    String          @unique @db.VarChar(128)
   rawCells                  Json
   status                    ImportRowStatus @default(PENDING)
