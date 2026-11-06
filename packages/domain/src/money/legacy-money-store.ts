@@ -387,6 +387,14 @@ export async function readCatalogMoneyMap(
   revision: number,
   who: MoneyActor,
 ): Promise<MoneyView[]> {
+  return (await resolveCatalogMoneyMap(tx, entryId, revision, who)).map((f) => f.view);
+}
+async function resolveCatalogMoneyMap(
+  tx: SearchReadTransaction,
+  entryId: string,
+  revision: number,
+  who: MoneyActor,
+): Promise<ResolvedMoneyFact[]> {
   const user = actor(who);
   if (
     !LegacyMoneyIdSchema.safeParse(entryId).success ||
@@ -455,7 +463,7 @@ LIMIT 10102`);
   if (new Set(parsed.data.variants.map((v) => v.id)).size !== parsed.data.variants.length)
     return integrity();
   const seen = new Set<string>();
-  const result: MoneyView[] = [];
+  const result: ResolvedMoneyFact[] = [];
   for (const row of rows) {
     if (row.header !== null) continue;
     if (row.target === null || row.definition === null) return integrity();
@@ -470,10 +478,192 @@ LIMIT 10102`);
         row.target === "entry" ? { kind: "ENTRY" } : { kind: "VARIANT", variantId: row.target },
       definitionId: row.definition,
     });
-    result.push(resolvedRow(tx, s, user, row).view);
+    result.push(resolvedRow(tx, s, user, row));
   }
   return result;
 }
+
+/** M4 native writer foundation; caller owns the enclosing rollback/commit. */
+type CatalogBatchDraft = Omit<Draft, "operation"> & { operation: "AUTHOR" | "COPY" | "RAW_WRITE" };
+export async function applyCatalogMoneyRevision(
+  tx: SearchReadTransaction,
+  who: MoneyActor | null,
+  input: unknown,
+): Promise<void> {
+  const parsed = catalogBatchSchema.safeParse(input);
+  if (!parsed.success) return legacyMoneyFail("LEGACY_MONEY_INVALID");
+  const data = parsed.data,
+    user = who === null ? null : actor(who);
+  if (user === null) {
+    // Existing trusted canonical maintenance can invalidate raw meaning without
+    // inventing a person. It can never author or carry an interpretation here.
+    if (data.sourceRevision !== null || data.actions.some((a) => a.op !== "RAW_WRITE"))
+      return legacyMoneyFail("MONEY_FORBIDDEN");
+  } else await moderator(tx, user);
+  // This read scope is not an account and is never stored as an event actor.
+  const readWho = who ?? { userId: "catalog-public-read" };
+  const parent = await tx.$queryRaw<Array<{ id: string }>>(
+    Prisma.sql`SELECT id FROM "CatalogEntry" WHERE id=${data.entryId}::uuid FOR UPDATE`,
+  );
+  if (parent.length !== 1) return legacyMoneyFail("MONEY_NOT_FOUND");
+  // Equal-raw metadata invalidation must also advance the parent MVCC version.
+  await tx.$queryRaw(
+    Prisma.sql`UPDATE "CatalogEntry" SET id=id WHERE id=${data.entryId}::uuid RETURNING id`,
+  );
+  const copies = data.actions.filter((a) => a.op === "COPY");
+  if (copies.length && data.sourceRevision === null) return legacyMoneyFail("LEGACY_MONEY_INVALID");
+  let source =
+    data.sourceRevision === null
+      ? []
+      : await resolveCatalogMoneyMap(tx, data.entryId, data.sourceRevision, readWho);
+  // Privacy erasure does not take the canonical parent lock. Hold actual direct
+  // evidence rows while checking source tokens and writing their descendants.
+  const originIds = [...new Set(source.flatMap((f) => (f.origin ? [f.origin.id] : [])))].sort();
+  for (let i = 0; i < originIds.length; i += 500) {
+    await tx.$queryRaw(
+      Prisma.sql`SELECT e.id FROM "CatalogMoneyInterpretationEvent" e JOIN jsonb_array_elements_text(${JSON.stringify(originIds.slice(i, i + 500))}::jsonb) x(id) ON e.id=x.id::uuid ORDER BY e.id FOR SHARE OF e`,
+    );
+  }
+  if (originIds.length)
+    source = await resolveCatalogMoneyMap(tx, data.entryId, data.sourceRevision!, readWho);
+  const destination =
+    data.sourceRevision === data.destinationRevision
+      ? source
+      : await resolveCatalogMoneyMap(tx, data.entryId, data.destinationRevision, readWho);
+  const key = (
+    target: { kind: "ENTRY" } | { kind: "VARIANT"; variantId: string },
+    definition: string,
+  ) => `${target.kind === "ENTRY" ? "entry" : target.variantId}:${definition}`;
+  const byPath = (facts: ResolvedMoneyFact[]) =>
+    new Map(
+      facts.map((f) => {
+        const s = f.view.subject;
+        if (s.family !== "CATALOG") return integrity();
+        return [key(s.target, s.definitionId), f] as const;
+      }),
+    );
+  const from = byPath(source),
+    to = byPath(destination);
+  const inserts: Array<{
+    subject: Extract<MoneySubject, { family: "CATALOG" }>;
+    sequence: string;
+    draft: CatalogBatchDraft;
+  }> = [];
+  const actions = [...data.actions].sort((a, b) =>
+    key(a.target, a.definitionId).localeCompare(key(b.target, b.definitionId), "en"),
+  );
+  for (const action of actions) {
+    const path = key(action.target, action.definitionId),
+      target = to.get(path);
+    if (!target || target.view.raw === null) return legacyMoneyFail("MONEY_NOT_FOUND");
+    const s = target.view.subject;
+    if (s.family !== "CATALOG") return integrity();
+    const next = BigInt(target.sequence) + 1n;
+    if (next > 9223372036854775807n) return integrity();
+    let draft: CatalogBatchDraft = {
+      operation: "RAW_WRITE",
+      raw: target.view.raw,
+      generation: null,
+    };
+    if (action.op === "AUTHOR") {
+      const receipt = action.receipt;
+      const verified = parseLegacyMoneyAuthoring({
+        kind: "RAW",
+        profileId: receipt.profileId,
+        currency: receipt.raw.currency,
+        amountMinor: receipt.raw.amountMinor,
+        exponent: receipt.exponent,
+        unitKey: receipt.unitKey,
+      });
+      if (!equal(verified, receipt) || !equal(verified.raw, target.view.raw))
+        return legacyMoneyFail("LEGACY_MONEY_INVALID");
+      draft = {
+        operation: "AUTHOR",
+        raw: target.view.raw,
+        generation: null,
+        receipt,
+        exponent: receipt.exponent,
+        unitKey: receipt.unitKey,
+        basisId: receipt.profileId,
+      };
+    } else if (action.op === "COPY") {
+      const original = from.get(path);
+      if (!original || !equal(original.view.raw, target.view.raw))
+        return legacyMoneyFail("LEGACY_MONEY_INVALID");
+      if (original.view.factToken !== action.expectedFactToken)
+        return legacyMoneyFail("MONEY_CONFLICT");
+      // Replacing a known destination with an unresolved historical source must
+      // actively invalidate it, including when the raw snapshot is identical.
+      if (original.view.interpretation.kind === "INTERPRETED") {
+        if (!original.event || !original.origin) return integrity();
+        draft = {
+          operation: "COPY",
+          raw: target.view.raw,
+          generation: null,
+          exponent: original.view.interpretation.exponent,
+          unitKey: original.view.interpretation.unitKey,
+          basisId: original.view.interpretation.basisId,
+          unitLabel: original.origin.unitLabel,
+          sourceEventId: original.event.id,
+          originEventId: original.origin.id,
+        };
+      }
+    }
+    inserts.push({ subject: s, sequence: next.toString(), draft });
+  }
+  for (let i = 0; i < inserts.length; i += 500) {
+    const chunk = inserts.slice(i, i + 500);
+    const tuples = chunk.map(
+      ({ subject: s, sequence, draft: d }) =>
+        Prisma.sql`(${randomUUID()}::uuid,${s.entryId}::uuid,${s.revision},${s.target.kind === "ENTRY" ? "entry" : s.target.variantId},${s.target.kind === "ENTRY" ? null : s.target.variantId}::uuid,${s.definitionId}::uuid,${sequence}::bigint,${d.operation}::"MoneyInterpretationOperation",${d.raw.amountMinor}::bigint,${d.raw.currency},${d.exponent ?? null}::smallint,${d.unitKey ?? null},${d.unitLabel ?? null},${d.basisId ?? null},${d.receipt === undefined ? null : JSON.stringify(d.receipt)}::jsonb,${d.sourceEventId ?? null}::uuid,${d.originEventId ?? null}::uuid,${d.operation === "RAW_WRITE" ? null : user})`,
+    );
+    try {
+      const saved = await tx.$queryRaw<Array<{ id: string }>>(
+        Prisma.sql`INSERT INTO "CatalogMoneyInterpretationEvent" (id,"entryId",revision,"targetKey","variantId","definitionId",sequence,operation,"rawAmountMinor","rawCurrency",exponent,"unitKey","unitLabel","basisId",receipt,"sourceEventId","originEventId","actorId") VALUES ${Prisma.join(tuples)} RETURNING id`,
+      );
+      if (saved.length !== chunk.length) return integrity();
+    } catch (error) {
+      if (isReadSerializationFailure(error)) return legacyMoneyFail("MONEY_CONFLICT");
+      throw error;
+    }
+  }
+}
+const catalogBatchPath = {
+  target: LegacyMoneySubjectSchema.options[2].shape.target,
+  definitionId: LegacyMoneyIdSchema,
+};
+const catalogBatchAction = z.discriminatedUnion("op", [
+  z
+    .object({ ...catalogBatchPath, op: z.literal("AUTHOR"), receipt: AuthoringReceiptSchema })
+    .strict(),
+  z
+    .object({
+      ...catalogBatchPath,
+      op: z.literal("COPY"),
+      expectedFactToken: ClassifyMoneyInputSchema.shape.expectedFactToken,
+    })
+    .strict(),
+  z.object({ ...catalogBatchPath, op: z.literal("RAW_WRITE") }).strict(),
+]);
+const catalogBatchSchema = z
+  .object({
+    entryId: LegacyMoneyIdSchema,
+    destinationRevision: LegacyMoneySubjectSchema.options[2].shape.revision,
+    sourceRevision: LegacyMoneySubjectSchema.options[2].shape.revision.nullable(),
+    actions: z
+      .array(catalogBatchAction)
+      .max(10100)
+      .refine(
+        (actions) =>
+          new Set(
+            actions.map(
+              (a) =>
+                `${a.target.kind === "ENTRY" ? "entry" : a.target.variantId}:${a.definitionId}`,
+            ),
+          ).size === actions.length,
+      ),
+  })
+  .strict();
 
 async function moderator(tx: SearchReadTransaction, user: string): Promise<void> {
   try {

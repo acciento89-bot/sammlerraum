@@ -1,0 +1,14 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+stdout | packages/domain/src/catalog/catalog-money-map.test.ts > native coherent catalog money map > writes all 10100 supported money paths in native batches of at most 500
+{"check":"M4_NATIVE_MAX_MONEY_WRITE","paths":10100,"batches":21,"elapsedMs":26522}
+
+ ✓ |workspace| packages/domain/src/catalog/catalog-money-map.test.ts (9 tests | 8 skipped) 26845ms
+   ✓ native coherent catalog money map > writes all 10100 supported money paths in native batches of at most 500  26560ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 8 skipped (9)
+   Start at  05:36:29
+   Duration  27.24s (transform 93ms, setup 5ms, collect 209ms, tests 26.85s, environment 0ms, prepare 51ms)
+

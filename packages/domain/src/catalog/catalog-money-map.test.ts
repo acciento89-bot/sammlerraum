@@ -5,6 +5,7 @@ import { createLegacyMoneyTestSchema } from "@sammlerraum/db/test-legacy-money-s
 import {
   readMoneyFact,
   readCatalogMoneyMap,
+  applyCatalogMoneyRevision,
   requireMoneyToken,
   appendMoneyAssertion,
   readMoneyAssertion,
@@ -229,4 +230,283 @@ describe.runIf(enabled)("native coherent catalog money map", () => {
       ).rejects.toMatchObject({ code: "MONEY_DATA_INTEGRITY" });
     }
   });
+  it("authors, carries a direct origin, and invalidates equal raw money without changing snapshots", async () => {
+    const id = await snapshot(category, [
+      { definitionId: money, key: "price_0", type: "MONEY", value: raw },
+    ]);
+    const target = { kind: "ENTRY" };
+    const receipt = parseLegacyMoneyAuthoring(authoring);
+    const apply = (destinationRevision: number, sourceRevision: number | null, actions: object[]) =>
+      db.$transaction((tx) =>
+        applyCatalogMoneyRevision(
+          moneyTransaction(tx),
+          { userId: actor },
+          { entryId: id, destinationRevision, sourceRevision, actions },
+        ),
+      );
+    await apply(1, null, [{ target, definitionId: money, op: "AUTHOR", receipt }]);
+    await db.$queryRaw`INSERT INTO "CatalogRevision" ("entryId",revision,snapshot) SELECT "entryId",2,snapshot FROM "CatalogRevision" WHERE "entryId"=${id}::uuid AND revision=1 RETURNING revision`;
+    await db.$queryRaw`UPDATE "CatalogEntry" SET revision=2 WHERE id=${id}::uuid RETURNING id`;
+    const read = (revision: number) =>
+      db.$transaction((tx) =>
+        readCatalogMoneyMap(moneyTransaction(tx), id, revision, { userId: actor }),
+      );
+    const first = (await read(1))[0]!;
+    await apply(2, 1, [
+      { target, definitionId: money, op: "COPY", expectedFactToken: first.factToken },
+    ]);
+    const second = (await read(2))[0]!;
+    expect(first.interpretation.kind).toBe("INTERPRETED");
+    expect(second.interpretation).toMatchObject({
+      kind: "INTERPRETED",
+      assertionId:
+        first.interpretation.kind === "INTERPRETED" ? first.interpretation.assertionId : "missing",
+      decimal: "1.00",
+    });
+    expect(second.factToken).not.toBe(first.factToken);
+    await apply(2, null, [{ target, definitionId: money, op: "RAW_WRITE" }]);
+    expect((await read(2))[0]!.interpretation).toEqual({ kind: "UNKNOWN", reason: "RAW_WRITER" });
+    const unknown = (await read(2))[0]!;
+    await apply(1, 2, [
+      { target, definitionId: money, op: "COPY", expectedFactToken: unknown.factToken },
+    ]);
+    expect((await read(1))[0]!.interpretation.kind).toBe("UNKNOWN");
+    const rows = await db.$queryRaw<
+      Array<{ count: number; identical: boolean }>
+    >`SELECT count(*)::integer AS count, count(DISTINCT snapshot)=1 AS identical FROM "CatalogRevision" WHERE "entryId"=${id}::uuid`;
+    expect(rows).toEqual([{ count: 2, identical: true }]);
+  });
+  it("rejects stale same-raw interpretation tokens and non-moderator writes before any event is inserted", async () => {
+    const id = await snapshot(category, [
+      { definitionId: money, key: "price_0", type: "MONEY", value: raw },
+    ]);
+    await db.$queryRaw`INSERT INTO "CatalogRevision" ("entryId",revision,snapshot) SELECT "entryId",2,snapshot FROM "CatalogRevision" WHERE "entryId"=${id}::uuid AND revision=1 RETURNING revision`;
+    const receipt = parseLegacyMoneyAuthoring(authoring),
+      target = { kind: "ENTRY" };
+    const old = await db.$transaction((tx) =>
+      readCatalogMoneyMap(moneyTransaction(tx), id, 1, { userId: actor }),
+    );
+    await db.$transaction((tx) =>
+      applyCatalogMoneyRevision(
+        moneyTransaction(tx),
+        { userId: actor },
+        {
+          entryId: id,
+          destinationRevision: 1,
+          sourceRevision: null,
+          actions: [{ target, definitionId: money, op: "AUTHOR", receipt }],
+        },
+      ),
+    );
+    await expect(
+      db.$transaction((tx) =>
+        applyCatalogMoneyRevision(
+          moneyTransaction(tx),
+          { userId: actor },
+          {
+            entryId: id,
+            destinationRevision: 2,
+            sourceRevision: 1,
+            actions: [
+              { target, definitionId: money, op: "COPY", expectedFactToken: old[0]!.factToken },
+            ],
+          },
+        ),
+      ),
+    ).rejects.toMatchObject({ code: "MONEY_CONFLICT" });
+    await expect(
+      db.$transaction((tx) =>
+        applyCatalogMoneyRevision(
+          moneyTransaction(tx),
+          { userId: "no-authority" },
+          {
+            entryId: id,
+            destinationRevision: 2,
+            sourceRevision: null,
+            actions: [{ target, definitionId: money, op: "AUTHOR", receipt }],
+          },
+        ),
+      ),
+    ).rejects.toMatchObject({ code: "MONEY_FORBIDDEN" });
+    expect(
+      await db.$queryRaw`SELECT id FROM "CatalogMoneyInterpretationEvent" WHERE "entryId"=${id}::uuid AND revision=2`,
+    ).toEqual([]);
+  });
+  it("allows actorless legacy invalidation only, never authoring or interpretation carry", async () => {
+    const id = await snapshot(category, [
+      { definitionId: money, key: "price_0", type: "MONEY", value: raw },
+    ]);
+    const target = { kind: "ENTRY" };
+    await db.$transaction((tx) =>
+      applyCatalogMoneyRevision(moneyTransaction(tx), null, {
+        entryId: id,
+        sourceRevision: null,
+        destinationRevision: 1,
+        actions: [{ target, definitionId: money, op: "RAW_WRITE" }],
+      }),
+    );
+    const views = await db.$transaction((tx) =>
+      readCatalogMoneyMap(moneyTransaction(tx), id, 1, { userId: actor }),
+    );
+    expect(views[0]!.interpretation).toEqual({ kind: "UNKNOWN", reason: "RAW_WRITER" });
+    await expect(
+      db.$transaction((tx) =>
+        applyCatalogMoneyRevision(moneyTransaction(tx), null, {
+          entryId: id,
+          sourceRevision: null,
+          destinationRevision: 1,
+          actions: [
+            {
+              target,
+              definitionId: money,
+              op: "AUTHOR",
+              receipt: parseLegacyMoneyAuthoring(authoring),
+            },
+          ],
+        }),
+      ),
+    ).rejects.toMatchObject({ code: "MONEY_FORBIDDEN" });
+    await expect(
+      db.$transaction((tx) =>
+        applyCatalogMoneyRevision(moneyTransaction(tx), null, {
+          entryId: id,
+          sourceRevision: 1,
+          destinationRevision: 1,
+          actions: [
+            { target, definitionId: money, op: "COPY", expectedFactToken: views[0]!.factToken },
+          ],
+        }),
+      ),
+    ).rejects.toMatchObject({ code: "MONEY_FORBIDDEN" });
+  });
+  it("rolls back all earlier chunks when a later native batch fails", async () => {
+    const t = await template(100);
+    const attrs = t.definitions.map((d) => ({
+      definitionId: d.id,
+      key: d.key,
+      type: "MONEY",
+      value: raw,
+    }));
+    const variants = Array.from({ length: 5 }, () => ({
+      id: randomUUID(),
+      text,
+      attributes: attrs,
+    }));
+    const id = await snapshot(t.id, attrs, variants);
+    const receipt = parseLegacyMoneyAuthoring(authoring);
+    const actions = [
+      ...attrs.map((a) => ({
+        target: { kind: "ENTRY" },
+        definitionId: a.definitionId,
+        op: "AUTHOR",
+        receipt,
+      })),
+      ...variants.flatMap((v) =>
+        attrs.map((a) => ({
+          target: { kind: "VARIANT", variantId: v.id },
+          definitionId: a.definitionId,
+          op: "AUTHOR",
+          receipt,
+        })),
+      ),
+    ];
+    let batches = 0;
+    await expect(
+      db.$transaction(
+        (tx) => {
+          const actual = moneyTransaction(tx);
+          return applyCatalogMoneyRevision(
+            {
+              $queryRaw: (query) => {
+                if (query.sql.includes('INSERT INTO "CatalogMoneyInterpretationEvent"')) {
+                  batches++;
+                  if (batches === 2) throw Error("synthetic later chunk failure");
+                }
+                return actual.$queryRaw(query);
+              },
+            },
+            { userId: actor },
+            { entryId: id, sourceRevision: null, destinationRevision: 1, actions },
+          );
+        },
+        { timeout: 15000 },
+      ),
+    ).rejects.toThrow("synthetic later chunk failure");
+    expect(batches).toBe(2);
+    expect(
+      await db.$queryRaw`SELECT id FROM "CatalogMoneyInterpretationEvent" WHERE "entryId"=${id}::uuid`,
+    ).toEqual([]);
+  });
+  it("writes all 10100 supported money paths in native batches of at most 500", async () => {
+    const t = await template(100);
+    const attrs = t.definitions.map((d) => ({
+      definitionId: d.id,
+      key: d.key,
+      type: "MONEY",
+      value: raw,
+    }));
+    const variants = Array.from({ length: 100 }, () => ({
+      id: randomUUID(),
+      text,
+      attributes: attrs,
+    }));
+    const id = await snapshot(t.id, attrs, variants);
+    const receipt = parseLegacyMoneyAuthoring(authoring);
+    const actions = [
+      ...attrs.map((a) => ({
+        target: { kind: "ENTRY" },
+        definitionId: a.definitionId,
+        op: "AUTHOR",
+        receipt,
+      })),
+      ...variants.flatMap((v) =>
+        attrs.map((a) => ({
+          target: { kind: "VARIANT", variantId: v.id },
+          definitionId: a.definitionId,
+          op: "AUTHOR",
+          receipt,
+        })),
+      ),
+    ];
+    const batchSizes: number[] = [];
+    const start = performance.now();
+    await db.$transaction(
+      (tx) => {
+        const actual = moneyTransaction(tx);
+        return applyCatalogMoneyRevision(
+          {
+            $queryRaw: (query) => {
+              if (query.sql.includes('INSERT INTO "CatalogMoneyInterpretationEvent"'))
+                batchSizes.push(query.values.length / 18);
+              return actual.$queryRaw(query);
+            },
+          },
+          { userId: actor },
+          { entryId: id, sourceRevision: null, destinationRevision: 1, actions },
+        );
+      },
+      { timeout: 40000 },
+    );
+    const views = await db.$transaction(
+      (tx) => readCatalogMoneyMap(moneyTransaction(tx), id, 1, { userId: actor }),
+      { timeout: 10000 },
+    );
+    expect(views).toHaveLength(10100);
+    expect(
+      views.every(
+        (v) => v.interpretation.kind === "INTERPRETED" && v.interpretation.decimal === "1.00",
+      ),
+    ).toBe(true);
+    expect(batchSizes).toHaveLength(21);
+    expect(batchSizes.every((n) => Number.isInteger(n) && n <= 500)).toBe(true);
+    expect(batchSizes.reduce((sum, n) => sum + n, 0)).toBe(10100);
+    console.info(
+      JSON.stringify({
+        check: "M4_NATIVE_MAX_MONEY_WRITE",
+        paths: views.length,
+        batches: batchSizes.length,
+        elapsedMs: Math.round(performance.now() - start),
+      }),
+    );
+  }, 55000);
 });
