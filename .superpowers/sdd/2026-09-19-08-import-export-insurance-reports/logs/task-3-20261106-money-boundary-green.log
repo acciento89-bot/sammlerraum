@@ -1,0 +1,61 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| apps/worker/src/jobs/commit-import.test.ts (8 tests | 2 failed) 663ms
+   ✓ actual approved import commit > does not create another item when the same approved commit is retried 135ms
+   ✓ actual approved import commit > merges only explicitly chosen mapped fields and preserves private data 47ms
+   × actual approved import commit > writes CANONICAL money through the existing exact authority 47ms
+     → expected undefined to be 'INTERPRETED' // Object.is equality
+   × actual approved import commit > writes UNKNOWN money through the existing exact authority 20ms
+     → expected undefined to be 'UNKNOWN' // Object.is equality
+   ✓ actual approved import commit > requires complete decisions and skips invalid rows without inventing inventory 19ms
+   ✓ actual approved import commit > resumes after a committed chunk without creating duplicates 45ms
+   ✓ actual approved import commit > creates explicitly separate source duplicates and refuses corrupted completed membership 25ms
+   ✓ actual approved import commit > rejects foreign actors and target changes after explicit merge approval 24ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/worker/src/jobs/commit-import.test.ts > actual approved import commit > writes CANONICAL money through the existing exact authority
+AssertionError: expected undefined to be 'INTERPRETED' // Object.is equality
+
+- Expected: 
+"INTERPRETED"
+
++ Received: 
+undefined
+
+ ❯ apps/worker/src/jobs/commit-import.test.ts:54:74
+     52|   const item=(await db.collectibleItem.findMany({where:{ownerId:f.owne…
+     53|   const view=await db.$transaction(tx=>readMoneyFact(moneyTransaction(…
+     54|   expect(view.raw).toEqual({amountMinor:raw,currency});expect(view.kin…
+       |                                                                          ^
+     55|  });
+     56|  it('requires complete decisions and skips invalid rows without invent…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |workspace| apps/worker/src/jobs/commit-import.test.ts > actual approved import commit > writes UNKNOWN money through the existing exact authority
+AssertionError: expected undefined to be 'UNKNOWN' // Object.is equality
+
+- Expected: 
+"UNKNOWN"
+
++ Received: 
+undefined
+
+ ❯ apps/worker/src/jobs/commit-import.test.ts:54:74
+     52|   const item=(await db.collectibleItem.findMany({where:{ownerId:f.owne…
+     53|   const view=await db.$transaction(tx=>readMoneyFact(moneyTransaction(…
+     54|   expect(view.raw).toEqual({amountMinor:raw,currency});expect(view.kin…
+       |                                                                          ^
+     55|  });
+     56|  it('requires complete decisions and skips invalid rows without invent…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 6 passed (8)
+   Start at  22:15:57
+   Duration  1.21s (transform 181ms, setup 5ms, collect 324ms, tests 663ms, environment 0ms, prepare 41ms)
+

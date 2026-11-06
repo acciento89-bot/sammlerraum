@@ -1,0 +1,66 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| apps/worker/src/jobs/commit-import.test.ts (10 tests | 2 failed) 626ms
+   ✓ actual approved import commit > does not create another item when the same approved commit is retried 148ms
+   ✓ actual approved import commit > merges only explicitly chosen mapped fields and preserves private data 48ms
+   ✓ actual approved import commit > writes CANONICAL money through the existing exact authority 40ms
+   ✓ actual approved import commit > writes UNKNOWN money through the existing exact authority 20ms
+   ✓ actual approved import commit > requires complete decisions and skips invalid rows without inventing inventory 19ms
+   ✓ actual approved import commit > resumes after a committed chunk without creating duplicates 46ms
+   ✓ actual approved import commit > creates explicitly separate source duplicates and refuses corrupted completed membership 24ms
+   ✓ actual approved import commit > rejects foreign actors and target changes after explicit merge approval 23ms
+   × actual approved import commit > rejects a forged completed receipt even when row counts agree 20ms
+     → promise resolved "{ complete: true, processed: +0, …(1) }" instead of rejecting
+   × actual approved import commit > pins a target-bound monetary replacement preview before merging a zero price 21ms
+     → expected undefined to match object { intent: 'REPLACE', …(1) }
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/worker/src/jobs/commit-import.test.ts > actual approved import commit > rejects a forged completed receipt even when row counts agree
+AssertionError: promise resolved "{ complete: true, processed: +0, …(1) }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "committedRows": 1,
++   "complete": true,
++   "processed": 0,
+  }
+
+ ❯ apps/worker/src/jobs/commit-import.test.ts:89:49
+     87|   await db.$executeRaw`UPDATE "ImportRow" SET status='COMMITTED',"comm…
+     88|   await db.$executeRaw`UPDATE "ImportJob" SET status='COMPLETED',"comm…
+     89|   await expect(service.commitNextBatch(f.job.id)).rejects.toMatchObjec…
+       |                                                 ^
+     90|  });
+     91|  it('pins a target-bound monetary replacement preview before merging a…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |workspace| apps/worker/src/jobs/commit-import.test.ts > actual approved import commit > pins a target-bound monetary replacement preview before merging a zero price
+AssertionError: expected undefined to match object { intent: 'REPLACE', …(1) }
+
+- Expected: 
+{
+  "expectedFactToken": "eyJ2IjoxLCJzdWJqZWN0Ijp7ImZhbWlseSI6IlBVUkNIQVNFIiwiaXRlbUlkIjoiY2UxYTM0MDgtNmY5Yi00Y2MwLThkODgtMWQyM2M0YjkwNzQ4In0sImdlbmVyYXRpb24iOiI0ODkxOGFkYS1hZGJiLTRlNzUtYTUzYS01ZDdlOTlhMTkzNjAiLCJzZXF1ZW5jZSI6IjEiLCJyYXciOnsiYW1vdW50TWlub3IiOiIxMjUiLCJjdXJyZW5jeSI6IkVVUiJ9LCJlZmZlY3RpdmVFdmVudElkIjoiODIwN2FjOGUtNDhkYi00NDA2LTk2YzktNzk0ZmNhODc0ZWMzIiwib3JpZ2luSWQiOm51bGwsIm9yaWdpbkV2aWRlbmNlRXJhc2VkQXQiOm51bGwsInJldm9jYXRpb25JZCI6bnVsbH0",
+  "intent": "REPLACE",
+}
+
++ Received: 
+undefined
+
+ ❯ apps/worker/src/jobs/commit-import.test.ts:98:57
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 8 passed (10)
+   Start at  22:17:31
+   Duration  1.27s (transform 197ms, setup 6ms, collect 391ms, tests 626ms, environment 0ms, prepare 45ms)
+

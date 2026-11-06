@@ -137,7 +137,7 @@ git commit -m "feat: parse bounded CSV and XLSX imports"
 - Consumes: approved preview + row resolutions.
 - Produces: created/merged/skipped item results.
 
-- [ ] **Step 1: Write failing retry test**
+- [x] **Step 1: Write failing retry test**
 
 ```ts
 it("does not create a second item when the same commit job is retried", async () => {
@@ -147,21 +147,21 @@ it("does not create a second item when the same commit job is retried", async ()
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run apps/worker/src/jobs/commit-import.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement transaction/chunk commit**
+- [x] **Step 3: Implement transaction/chunk commit**
 
 Each row has stable idempotency identity. Apply `CREATE`, `SKIP`, `MERGE`, or `CREATE_SEPARATE`. Update job progress after each chunk and retain row-level result.
 
-- [ ] **Step 4: Run tests**
+- [x] **Step 4: Run tests**
 
 Run: `pnpm vitest run apps/worker/src/jobs/commit-import.test.ts`  
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add apps/worker/src/jobs/commit-import.ts apps/worker/src/jobs/commit-import.test.ts

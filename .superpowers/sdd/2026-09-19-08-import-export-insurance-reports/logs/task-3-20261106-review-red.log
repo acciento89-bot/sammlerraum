@@ -1,0 +1,69 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| apps/worker/src/jobs/commit-import-runtime.test.ts (4 tests | 1 failed) 8ms
+   ✓ rejects transient queue failures without exposing raw dependency errors 2ms
+   ✓ records a permanent failure only against the exact observed revision 1ms
+   ✓ rejects injected payload authority and stops on cancellation before a write 1ms
+   × normalizes a dependency rejection while recording a permanent failure 4ms
+     → expected [Function] to throw error including 'Import commit temporarily unavailable' but got 'private second-transaction error'
+ ❯ |workspace| apps/worker/src/jobs/commit-import.test.ts (19 tests | 1 failed) 1085ms
+   ✓ actual approved import commit > does not create another item when the same approved commit is retried 136ms
+   ✓ actual approved import commit > merges only explicitly chosen mapped fields and preserves private data 45ms
+   ✓ actual approved import commit > writes CANONICAL money through the existing exact authority 39ms
+   ✓ actual approved import commit > writes UNKNOWN money through the existing exact authority 19ms
+   ✓ actual approved import commit > requires complete decisions and skips invalid rows without inventing inventory 19ms
+   ✓ actual approved import commit > resumes after a committed chunk without creating duplicates 46ms
+   ✓ actual approved import commit > creates explicitly separate source duplicates and refuses corrupted completed membership 26ms
+   ✓ actual approved import commit > rejects foreign actors and target changes after explicit merge approval 23ms
+   ✓ actual approved import commit > rejects a forged completed receipt even when row counts agree 14ms
+   ✓ actual approved import commit > pins a target-bound monetary replacement preview before merging a zero price 37ms
+   ✓ actual approved import commit > atomically rolls back inventory, money and row receipts on a real interrupted receipt write 42ms
+   ✓ actual approved import commit > serializes duplicate workers and freezes decisions after approval 31ms
+   ✓ actual approved import commit > does not turn an unmapped default quantity into a merge overwrite 16ms
+   ✓ actual approved import commit > refuses a changed money generation and closes the approved worker job without overwriting it 35ms
+   ✓ actual approved import commit > rejects a duplicate introduced after preview before creating inventory 16ms
+   ✓ actual approved import commit > requires one unambiguous merge per target in an approved job 20ms
+   ✓ actual approved import commit > does not retain an old interpretation when UNKNOWN replaces the same raw numbers 33ms
+   ✓ actual approved import commit > commits101 approved rows over bounded transactions and checks all durable receipts 228ms
+   × actual approved import commit > detects an owner-changed identifier on an earlier own-created item before the next chunk 38ms
+     → expected 12 to be 10 // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/worker/src/jobs/commit-import-runtime.test.ts > normalizes a dependency rejection while recording a permanent failure
+AssertionError: expected [Function] to throw error including 'Import commit temporarily unavailable' but got 'private second-transaction error'
+
+Expected: "Import commit temporarily unavailable"
+Received: "private second-transaction error"
+
+ ❯ apps/worker/src/jobs/commit-import-runtime.test.ts:50:2
+     48| it("normalizes a dependency rejection while recording a permanent fail…
+     49|  const service={commitNextBatch:vi.fn(async()=>{throw new ImportCommit…
+     50|  await expect(createImportCommitter(service)({jobId:randomUUID()})).re…
+       |  ^
+     51| });
+     52| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |workspace| apps/worker/src/jobs/commit-import.test.ts > actual approved import commit > detects an owner-changed identifier on an earlier own-created item before the next chunk
+AssertionError: expected 12 to be 10 // Object.is equality
+
+- Expected
++ Received
+
+- 10
++ 12
+
+ ❯ apps/worker/src/jobs/commit-import.test.ts:750:91
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  2 failed | 21 passed (23)
+   Start at  22:29:55
+   Duration  1.86s (transform 202ms, setup 7ms, collect 472ms, tests 1.09s, environment 0ms, prepare 79ms)
+
