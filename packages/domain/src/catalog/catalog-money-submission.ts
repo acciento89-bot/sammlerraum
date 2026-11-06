@@ -11,7 +11,7 @@ import { moneyTransaction } from "../money/legacy-money-transaction";
 import { readMoneyFact } from "../money/legacy-money-store";
 import { digestCatalogMoneyPatch } from "./catalog-money-envelope";
 
-/** Internal preparation seam; no route or approval adapter consumes this yet. */
+/** Capture immutable exact-base receipts for the explicit monetary proposal workflow. */
 export async function prepareCatalogMoneySubmission(
   tx: CatalogProposalTransaction,
   actorId: string,

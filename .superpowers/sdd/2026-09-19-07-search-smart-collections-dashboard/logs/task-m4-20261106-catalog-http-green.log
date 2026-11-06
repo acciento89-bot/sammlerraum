@@ -1,0 +1,32 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| apps/web/src/lib/catalog-money-routes.integration.test.ts (3 tests | 1 failed) 426ms
+   ✓ catalog money HTTP native boundary > reads public-safe revision money, classifies, privately audits and revokes with fresh sessions 81ms
+   ✓ catalog money HTTP native boundary > queues explicit authoring without applying it and keeps legacy quota/shared audit 11ms
+   × catalog money HTTP native boundary > rejects foreign origins, ambiguous query/body keys, BOM and oversized streamed bytes 15ms
+     → expected 500 to be 400 // Object.is equality
+ ✓ |workspace| apps/web/src/lib/catalog-proposal-routes.integration.test.ts (4 tests) 281ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/web/src/lib/catalog-money-routes.integration.test.ts > catalog money HTTP native boundary > rejects foreign origins, ambiguous query/body keys, BOM and oversized streamed bytes
+AssertionError: expected 500 to be 400 // Object.is equality
+
+- Expected
++ Received
+
+- 400
++ 500
+
+ ❯ apps/web/src/lib/catalog-money-routes.integration.test.ts:46:287
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  1 failed | 6 passed (7)
+   Start at  07:27:23
+   Duration  1.73s (transform 266ms, setup 7ms, collect 695ms, tests 708ms, environment 0ms, prepare 86ms)
+

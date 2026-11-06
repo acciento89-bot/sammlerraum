@@ -1,0 +1,10 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ✓ |workspace| packages/contracts/src/catalog-money-parser.test.ts (3 tests) 6ms
+
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+   Start at  07:25:16
+   Duration  427ms (transform 53ms, setup 6ms, collect 101ms, tests 6ms, environment 0ms, prepare 53ms)
+

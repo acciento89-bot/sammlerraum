@@ -35,8 +35,36 @@ export function validUnicode(value: string): boolean {
   return !/[\uD800-\uDFFF\0]/u.test(value);
 }
 
+type JsonBounds = {
+  bytes: number;
+  nodes: number;
+  array: number;
+  stringUnits: number;
+  stringBytes: number;
+};
+const filterBounds: JsonBounds = {
+  bytes: FILTER_MAX_BYTES,
+  nodes: 512,
+  array: 50,
+  stringUnits: 10000,
+  stringBytes: 40000,
+};
+const catalogMoneyBounds: JsonBounds = {
+  bytes: 64 * 1024,
+  nodes: 16384,
+  array: 100,
+  stringUnits: 20000,
+  stringBytes: 65536,
+};
+/** Fixed trusted entry points share one parser; clients cannot select their own limits. */
+export const copyBoundedFilterInput = (input: unknown): unknown =>
+  copyJsonInput(input, filterBounds);
+export const copyBoundedCatalogMoneyInput = (input: unknown): unknown =>
+  copyJsonInput(input, catalogMoneyBounds);
+export const scanFilterJson = (raw: string): void => scanJson(raw, filterBounds);
+export const scanCatalogMoneyJson = (raw: string): void => scanJson(raw, catalogMoneyBounds);
 /** Bounds and snapshots own JSON data iteratively; never invokes accessors/toJSON. */
-export function copyBoundedFilterInput(input: unknown): unknown {
+function copyJsonInput(input: unknown, bounds: JsonBounds): unknown {
   let output: unknown;
   const pending: Array<{ value: unknown; depth: number; assign: (value: unknown) => void }> = [
     {
@@ -51,7 +79,7 @@ export function copyBoundedFilterInput(input: unknown): unknown {
   let visited = 0;
   while (pending.length) {
     const { value, depth, assign } = pending.pop()!;
-    if (++visited > 512) filterTooComplex();
+    if (++visited > bounds.nodes) filterTooComplex();
     if (value === null || typeof value === "boolean") {
       assign(value);
       continue;
@@ -63,7 +91,8 @@ export function copyBoundedFilterInput(input: unknown): unknown {
     }
     if (typeof value === "string") {
       if (!validUnicode(value)) filterInvalid();
-      if (value.length > 10_000 || utf8Length(value) > 40_000) filterTooComplex();
+      if (value.length > bounds.stringUnits || utf8Length(value) > bounds.stringBytes)
+        filterTooComplex();
       assign(value);
       continue;
     }
@@ -76,7 +105,7 @@ export function copyBoundedFilterInput(input: unknown): unknown {
     if (!array && prototype !== Object.prototype && prototype !== null) filterInvalid();
     if (array && prototype !== Array.prototype) filterInvalid();
     const keys = Reflect.ownKeys(value);
-    if (array ? value.length > 50 : keys.length > 32) filterTooComplex();
+    if (array ? value.length > bounds.array : keys.length > 32) filterTooComplex();
     if (array && keys.length !== value.length + 1) filterInvalid();
     const copy: unknown[] | Record<string, unknown> = array ? [] : Object.create(null);
     assign(copy);
@@ -104,14 +133,14 @@ export function copyBoundedFilterInput(input: unknown): unknown {
       });
     }
   }
-  if (utf8Length(JSON.stringify(output)) > FILTER_MAX_BYTES) filterTooComplex();
+  if (utf8Length(JSON.stringify(output)) > bounds.bytes) filterTooComplex();
   return output;
 }
 
 /** Size/nesting/duplicate-key precheck. JSON.parse still owns the JSON grammar. */
-export function scanFilterJson(raw: string): void {
+function scanJson(raw: string, bounds: JsonBounds): void {
   if (typeof raw !== "string" || !validUnicode(raw)) filterInvalid();
-  if (utf8Length(raw) > FILTER_MAX_BYTES) filterTooComplex();
+  if (utf8Length(raw) > bounds.bytes) filterTooComplex();
   const stack: Array<{ kind: "{" | "["; keys: Set<string>; keyExpected: boolean }> = [];
   for (let i = 0; i < raw.length; i++) {
     const c = raw[i]!;

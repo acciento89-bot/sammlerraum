@@ -157,6 +157,13 @@ jobs:
           packages/db/src/author-correction.integration.test.ts
           packages/domain/src/money/personal-money-service.test.ts
           apps/web/src/lib/legacy-money-routes.integration.test.ts
+          packages/db/src/test-database.test.ts
+          packages/domain/src/catalog/catalog-money-submission.test.ts
+          packages/domain/src/catalog/catalog-money-map.test.ts
+          packages/domain/src/catalog/catalog-money-mutation.test.ts
+          packages/domain/src/catalog/catalog-money-proposals.test.ts
+          packages/domain/src/catalog/catalog-money-service.test.ts
+          apps/web/src/lib/catalog-money-routes.integration.test.ts
           apps/web/src/lib/personal-milestone-routes.integration.test.ts
           apps/web/src/lib/dashboard-routes.integration.test.ts
           packages/domain/src/search/smart-collection-service.test.ts
@@ -193,6 +200,15 @@ jobs:
         run: >-
           RUN_AUTH_E2E=1 RUN_PRODUCTION_E2E=1 pnpm --filter @sammlerraum/web exec playwright test
           e2e/catalog-grading.spec.ts --workers=1
+      - name: Run immutable catalog money browser lifecycle in an owned disposable database
+        run: |
+          set -euo pipefail
+          export PGPASSWORD=test
+          createdb -h localhost -U test sammlerraum_m4_browser_20261106_test
+          trap 'dropdb -h localhost -U test sammlerraum_m4_browser_20261106_test' EXIT
+          export DATABASE_URL=postgresql://test:test@localhost:5432/sammlerraum_m4_browser_20261106_test
+          pnpm --filter @sammlerraum/db exec prisma migrate deploy
+          RUN_CATALOG_MONEY_E2E=1 RUN_AUTH_E2E=1 RUN_PRODUCTION_E2E=1 pnpm --filter @sammlerraum/web exec playwright test e2e/catalog-money-api.spec.ts --workers=1
       - name: Run private valuations and ingestion-generated external transport rendering against production
         run: >-
           RUN_AUTH_E2E=1 RUN_PRODUCTION_E2E=1 pnpm --filter @sammlerraum/web exec playwright test

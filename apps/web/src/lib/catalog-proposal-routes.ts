@@ -14,6 +14,8 @@ import {
   CatalogProposalError,
   type createCatalogProposalService,
 } from "@sammlerraum/domain/catalog/proposal-service";
+import { LegacyMoneyError } from "@sammlerraum/contracts/legacy-money";
+import { mapLegacyMoneyError } from "./legacy-money-routes";
 import { apiRoute } from "./api/route-handler";
 import { readBoundedBody } from "./api/read-bounded-body";
 
@@ -23,7 +25,8 @@ type Dependencies = {
   createService(): ReturnType<typeof createCatalogProposalService>;
 };
 const noStore = { "cache-control": "no-store" };
-function mapped(error: unknown): never {
+export function mapCatalogProposalError(error: unknown): never {
+  if (error instanceof LegacyMoneyError) return mapLegacyMoneyError(error);
   if (error instanceof ApplicationRoleError)
     throw new ApiError("FORBIDDEN", 403, "Moderator authority required");
   if (error instanceof CatalogProposalError) {
@@ -103,7 +106,7 @@ export function createCatalogProposalRouteHandlers(dependencies: Dependencies) {
     try {
       return Response.json({ [key]: await work() }, { status, headers: noStore });
     } catch (error) {
-      mapped(error);
+      mapCatalogProposalError(error);
     }
   }
   async function list(request: Request, review: boolean) {
@@ -115,7 +118,7 @@ export function createCatalogProposalRouteHandlers(dependencies: Dependencies) {
         { headers: noStore },
       );
     } catch (error) {
-      mapped(error);
+      mapCatalogProposalError(error);
     }
   }
   async function detail(request: Request, proposalId: string, review: boolean) {

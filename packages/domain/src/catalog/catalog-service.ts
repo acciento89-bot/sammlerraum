@@ -227,9 +227,11 @@ async function persistState(
       variant.attributes.map((attribute) => ({ ...attribute, variantId: variant.id })),
     ),
   ];
-  if (values.length)
+  // Stay below the connector's automatic multi-query splitting threshold and
+  // serialize bounded writes on this one active pg transaction client.
+  for (let offset = 0; offset < values.length; offset += 500)
     await tx.catalogAttributeValue.createMany({
-      data: values.map((value) => ({
+      data: values.slice(offset, offset + 500).map((value) => ({
         entryId: state.id,
         categoryTemplateId: state.categoryTemplateId,
         variantId: value.variantId,

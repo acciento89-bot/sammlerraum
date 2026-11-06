@@ -1,0 +1,19 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+stdout | packages/domain/src/catalog/catalog-money-mutation.test.ts > actual canonical catalog money mutation integration > carries all 10100 interpreted paths through the actual bounded canonical maintenance wrapper
+{"check":"M4_CANONICAL_MAX_CARRY_SOURCE_READY","paths":10100}
+
+stdout | packages/domain/src/catalog/catalog-money-mutation.test.ts > actual canonical catalog money mutation integration > carries all 10100 interpreted paths through the actual bounded canonical maintenance wrapper
+{"check":"M4_CANONICAL_MAX_CARRY","paths":10100,"elapsedMs":31140,"revision":2}
+
+ ✓ |workspace| packages/domain/src/catalog/catalog-money-mutation.test.ts (14 tests) 60194ms
+   ✓ actual canonical catalog money mutation integration > carries all 10100 interpreted paths through the actual bounded canonical maintenance wrapper  59366ms
+ ✓ |workspace| packages/domain/src/catalog/catalog-money-service.test.ts (4 tests) 475ms
+ ✓ |workspace| apps/web/src/lib/catalog-money-routes.integration.test.ts (3 tests) 372ms
+
+ Test Files  3 passed (3)
+      Tests  21 passed (21)
+   Start at  07:33:01
+   Duration  62.16s (transform 250ms, setup 7ms, collect 680ms, tests 61.04s, environment 0ms, prepare 109ms)
+

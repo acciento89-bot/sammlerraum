@@ -8,6 +8,20 @@ export default defineConfig({
     baseURL: "http://localhost:3000",
   },
   projects: [
+    ...(process.env.RUN_CATALOG_MONEY_E2E === "1"
+      ? [
+          {
+            name: "catalog-money-desktop",
+            testMatch: "**/catalog-money-api.spec.ts",
+            use: { viewport: { width: 1440, height: 1000 } },
+          },
+          {
+            name: "catalog-money-mobile",
+            testMatch: "**/catalog-money-api.spec.ts",
+            use: { ...devices["Pixel 7"] },
+          },
+        ]
+      : []),
     {
       name: "auth",
       testMatch: "**/auth.spec.ts",
