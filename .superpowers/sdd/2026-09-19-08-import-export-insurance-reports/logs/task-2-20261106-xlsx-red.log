@@ -1,0 +1,58 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| apps/worker/src/jobs/parse-import.test.ts (5 tests | 2 failed) 17ms
+   ✓ preserves quoted CSV values and original addresses without numeric coercion 5ms
+   ✓ closes an over-limit source instead of returning a truncated success 2ms
+   ✓ keeps formula-looking CSV text inert and exact 0ms
+   × reads only stored XLSX formula values and preserves exact numeric lexemes 6ms
+     → IMPORT_FORMAT_UNSUPPORTED
+   × rejects an oversized workbook rather than claiming a partial parse 3ms
+     → expected ImportParseError: IMPORT_FORMAT_UNSUPPORT… { code: '…' } to match object { code: 'IMPORT_ROW_LIMIT_EXCEEDED' }
+(1 matching property omitted from actual)
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/worker/src/jobs/parse-import.test.ts > reads only stored XLSX formula values and preserves exact numeric lexemes
+ImportParseError: IMPORT_FORMAT_UNSUPPORTED
+ ❯ fail apps/worker/src/jobs/parse-import.ts:28:9
+     26| }
+     27| function fail(code: ImportParseCode): never {
+     28|   throw new ImportParseError(code);
+       |         ^
+     29| }
+     30| const optionsSchema = z
+ ❯ parseImportSource apps/worker/src/jobs/parse-import.ts:75:45
+ ❯ apps/worker/src/jobs/parse-import.test.ts:39:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |workspace| apps/worker/src/jobs/parse-import.test.ts > rejects an oversized workbook rather than claiming a partial parse
+AssertionError: expected ImportParseError: IMPORT_FORMAT_UNSUPPORT… { code: '…' } to match object { code: 'IMPORT_ROW_LIMIT_EXCEEDED' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+- {
+-   "code": "IMPORT_ROW_LIMIT_EXCEEDED",
++ ImportParseError {
++   "code": "IMPORT_FORMAT_UNSUPPORTED",
+  }
+
+ ❯ apps/worker/src/jobs/parse-import.test.ts:45:3
+     43|   const { workbookFixture } = await import("./import-xlsx-fixture.test…
+     44|   const bytes = workbookFixture('<row r="1"><c r="A1"><v>1</v></c></ro…
+     45|   await expect((async () => { for await (const row of parseImportSourc…
+       |   ^
+     46| });
+     47| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 3 passed (5)
+   Start at  21:42:30
+   Duration  325ms (transform 56ms, setup 6ms, collect 96ms, tests 17ms, environment 0ms, prepare 39ms)
+

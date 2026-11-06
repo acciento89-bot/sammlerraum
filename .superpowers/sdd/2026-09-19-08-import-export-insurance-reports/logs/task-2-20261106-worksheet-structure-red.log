@@ -1,0 +1,50 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| apps/worker/src/jobs/parse-import.test.ts (18 tests | 2 failed) 51ms
+   ✓ preserves quoted CSV values and original addresses without numeric coercion 5ms
+   ✓ closes an over-limit source instead of returning a truncated success 2ms
+   ✓ keeps formula-looking CSV text inert and exact 0ms
+   ✓ reads only stored XLSX formula values and preserves exact numeric lexemes 9ms
+   ✓ rejects an oversized workbook rather than claiming a partial parse 2ms
+   ✓ rejects unsafe XLSX macro content 1ms
+   ✓ rejects unsafe XLSX macro binary 1ms
+   ✓ rejects unsafe XLSX path traversal 1ms
+   ✓ rejects unsafe XLSX DTD 2ms
+   ✓ rejects unsafe XLSX external relation 1ms
+   ✓ preserves shared/inline Unicode strings, sparse addresses and explicit headers 2ms
+   ✓ rejects malformed cell or row coordinates <row r="1"><c r="A1" t="s"><v>99</v></c></row> 1ms
+   ✓ rejects malformed cell or row coordinates <row r="1"><c r="IW1"><v>1</v></c></row> 1ms
+   ✓ rejects malformed cell or row coordinates <row r="1"><c r="A2"><v>1</v></c></row> 1ms
+   ✓ rejects malformed cell or row coordinates <row r="1"/><row r="1"/> 1ms
+   ✓ rejects invalid UTF-8, oversized cells and cancelled CSV reads 15ms
+   × rejects missing or ambiguous worksheet data instead of claiming an empty import 4ms
+     → promise resolved "undefined" instead of rejecting
+   × rejects missing or ambiguous worksheet data instead of claiming an empty import 1ms
+     → promise resolved "undefined" instead of rejecting
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/worker/src/jobs/parse-import.test.ts > rejects missing or ambiguous worksheet data instead of claiming an empty import
+ FAIL  |workspace| apps/worker/src/jobs/parse-import.test.ts > rejects missing or ambiguous worksheet data instead of claiming an empty import
+AssertionError: promise resolved "undefined" instead of rejecting
+
+- Expected: 
+Error {
+  "message": "rejected promise",
+}
+
++ Received: 
+undefined
+
+ ❯ apps/worker/src/jobs/parse-import.test.ts:171:172
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 16 passed (18)
+   Start at  21:50:57
+   Duration  448ms (transform 72ms, setup 5ms, collect 143ms, tests 51ms, environment 0ms, prepare 59ms)
+

@@ -1,0 +1,168 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/config/src/server.test.ts (38 tests | 6 failed) 15ms
+   ✓ parseServerEnv > rejects missing database configuration 1ms
+   × parseServerEnv > accepts the required foundation environment 5ms
+     → expected { …(27) } to deeply equal { NODE_ENV: 'test', …(28) }
+   ✓ parseServerEnv > rejects invalid WORKER_HEALTH_PORT 0 0ms
+   ✓ parseServerEnv > rejects invalid WORKER_HEALTH_PORT 65536 0ms
+   ✓ parseServerEnv > rejects invalid WORKER_HEALTH_PORT 3.5 0ms
+   ✓ parseServerEnv > rejects invalid WORKER_HEALTH_PORT not-a-port 0ms
+   ✓ parseServerEnv > rejects an invalid NODE_ENV value 0ms
+   ✓ parseServerEnv > rejects an invalid DATABASE_URL value 0ms
+   ✓ parseServerEnv > rejects an invalid DATABASE_URL value 0ms
+   ✓ parseServerEnv > rejects an invalid APP_ORIGIN value 0ms
+   ✓ parseServerEnv > rejects an invalid APP_ORIGIN value 0ms
+   ✓ parseServerEnv > rejects an invalid APP_ORIGIN value 0ms
+   ✓ parseServerEnv > rejects an invalid APP_ORIGIN value 0ms
+   ✓ parseServerEnv > rejects an invalid APP_ORIGIN value 0ms
+   ✓ parseServerEnv > rejects an invalid UPLOADS_DIR value 0ms
+   ✓ parseServerEnv > rejects an invalid LOG_LEVEL value 0ms
+   ✓ parseServerEnv > normalizes APP_ORIGIN to its origin 0ms
+   ✓ parseServerEnv > reports invalid variable names without exposing values 1ms
+   ✓ parseAuthEnv > requires provider, auth-secret, and SMTP delivery configuration 2ms
+   ✓ parseAuthEnv > never exposes auth or SMTP secret values in validation errors 0ms
+   × media configuration > uses explicit bounded upload defaults 1ms
+     → expected { …(27) } to match object { …(9) }
+(20 matching properties omitted from actual)
+   ✓ media configuration > rejects unsafe byte limit 0 0ms
+   ✓ media configuration > rejects unsafe byte limit -1 0ms
+   ✓ media configuration > rejects unsafe byte limit 1.5 0ms
+   ✓ media configuration > rejects unsafe byte limit 9007199254740992 0ms
+   ✓ media configuration > rejects unsafe byte limit NaN 0ms
+   ✓ rejects unsafe market configuration MARKET_SYNC_ENABLED 0ms
+   ✓ rejects unsafe market configuration MARKET_SYNC_INTERVAL_MS 0ms
+   ✓ rejects unsafe market configuration MARKET_SYNC_BATCH_SIZE 0ms
+   ✓ rejects unsafe market configuration MARKET_SYNC_MAX_PENDING 0ms
+   ✓ parses explicit monetary authoring capability true 0ms
+   ✓ parses explicit monetary authoring capability false 0ms
+   ✓ refuses an ambiguous monetary authoring switch 0ms
+   ✓ requires an explicit server opt-in before canonical monetary consumers are enabled 0ms
+   × rejects raised or invalid import limit IMPORT_MAX_BYTES 0ms
+     → expected function to throw an error, but it didn't
+   × rejects raised or invalid import limit IMPORT_MAX_ROWS 0ms
+     → expected function to throw an error, but it didn't
+   × rejects raised or invalid import limit IMPORT_MAX_ROWS 0ms
+     → expected function to throw an error, but it didn't
+   × rejects raised or invalid import limit IMPORT_MAX_BYTES 0ms
+     → expected function to throw an error, but it didn't
+ ❯ |workspace| apps/worker/src/run-wiring.test.ts (1 test | 1 failed) 331ms
+   × passes the production-composed market lifecycle to startWorker and registers market.sync 331ms
+     → expected "spy" to be called with arguments: [ 'imports.parse-source', …(1) ]
+
+Received: 
+
+  1st spy call:
+
+  [
+-   "imports.parse-source",
+-   Any<Function>,
++   "market.sync",
++   [Function anonymous],
+  ]
+
+
+Number of calls: 1
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 7 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/config/src/server.test.ts > parseServerEnv > accepts the required foundation environment
+AssertionError: expected { …(27) } to deeply equal { NODE_ENV: 'test', …(28) }
+
+- Expected
++ Received
+
+@@ -1,10 +1,8 @@
+  {
+    "APP_ORIGIN": "http://localhost:3000",
+    "DATABASE_URL": "postgresql://user:pass@localhost:5432/sammlerraum",
+-   "IMPORT_MAX_BYTES": 20971520,
+-   "IMPORT_MAX_ROWS": 10000,
+    "LOG_LEVEL": "info",
+    "MARKET_SYNC_BATCH_SIZE": 32,
+    "MARKET_SYNC_ENABLED": false,
+    "MARKET_SYNC_INTERVAL_MS": 60000,
+    "MARKET_SYNC_MAX_PENDING": 256,
+
+ ❯ packages/config/src/server.test.ts:18:46
+     16| 
+     17|   it("accepts the required foundation environment", () => {
+     18|     expect(parseServerEnv(validEnvironment)).toEqual({
+       |                                              ^
+     19|       ...validEnvironment,
+     20|       MONEY_AUTHORING_ENABLED: false,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/7]⎯
+
+ FAIL  |workspace| packages/config/src/server.test.ts > media configuration > uses explicit bounded upload defaults
+AssertionError: expected { …(27) } to match object { …(9) }
+(20 matching properties omitted from actual)
+
+- Expected
++ Received
+
+@@ -1,8 +1,6 @@
+  {
+-   "IMPORT_MAX_BYTES": 20971520,
+-   "IMPORT_MAX_ROWS": 10000,
+    "MEDIA_CLEANUP_BATCH_SIZE": 100,
+    "MEDIA_CLEANUP_INTERVAL_MS": 60000,
+    "MEDIA_MAX_DOCUMENT_BYTES": 26214400,
+    "MEDIA_MAX_IMAGE_BYTES": 20971520,
+    "MEDIA_MAX_IMAGE_PIXELS": 40000000,
+
+ ❯ packages/config/src/server.test.ts:135:46
+    133| describe("media configuration", () => {
+    134|   it("uses explicit bounded upload defaults", () => {
+    135|     expect(parseServerEnv(validEnvironment)).toMatchObject({
+       |                                              ^
+    136|       MEDIA_MAX_IMAGE_BYTES: 20 * 1024 * 1024,
+    137|       MEDIA_MAX_DOCUMENT_BYTES: 25 * 1024 * 1024,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/7]⎯
+
+ FAIL  |workspace| packages/config/src/server.test.ts > rejects raised or invalid import limit IMPORT_MAX_BYTES
+ FAIL  |workspace| packages/config/src/server.test.ts > rejects raised or invalid import limit IMPORT_MAX_ROWS
+ FAIL  |workspace| packages/config/src/server.test.ts > rejects raised or invalid import limit IMPORT_MAX_ROWS
+ FAIL  |workspace| packages/config/src/server.test.ts > rejects raised or invalid import limit IMPORT_MAX_BYTES
+AssertionError: expected function to throw an error, but it didn't
+ ❯ packages/config/src/server.test.ts:191:244
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/7]⎯
+
+ FAIL  |workspace| apps/worker/src/run-wiring.test.ts > passes the production-composed market lifecycle to startWorker and registers market.sync
+AssertionError: expected "spy" to be called with arguments: [ 'imports.parse-source', …(1) ]
+
+Received: 
+
+  1st spy call:
+
+  [
+-   "imports.parse-source",
+-   Any<Function>,
++   "market.sync",
++   [Function anonymous],
+  ]
+
+
+Number of calls: 1
+
+ ❯ apps/worker/src/run-wiring.test.ts:53:38
+     51|   await vi.waitFor(() => expect(wiring.startWorker).toHaveBeenCalledOn…
+     52|   expect(wiring.registerCancellable).toHaveBeenCalledWith("market.sync…
+     53|   expect(wiring.registerCancellable).toHaveBeenCalledWith("imports.par…
+       |                                      ^
+     54|   const options = wiring.startWorker.mock.calls[0]![0] as unknown as {
+     55|     marketSync: { start(): void; stop(): Promise<void> };
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/7]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  7 failed | 32 passed (39)
+   Start at  21:49:13
+   Duration  568ms (transform 137ms, setup 8ms, collect 70ms, tests 346ms, environment 0ms, prepare 84ms)
+

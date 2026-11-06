@@ -1,0 +1,15 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ✓ |workspace| packages/config/src/server.test.ts (38 tests) 10ms
+ ✓ |workspace| apps/worker/src/jobs/import-parser-runtime.test.ts (3 tests) 10ms
+ ✓ |workspace| packages/storage/src/local-storage.test.ts (24 tests) 129ms
+ ✓ |workspace| apps/worker/src/jobs/parse-import.test.ts (16 tests) 78ms
+ ✓ |workspace| apps/worker/src/run-wiring.test.ts (1 test) 390ms
+   ✓ passes the production-composed market lifecycle to startWorker and registers market.sync  390ms
+
+ Test Files  5 passed (5)
+      Tests  82 passed (82)
+   Start at  21:49:53
+   Duration  666ms (transform 378ms, setup 31ms, collect 560ms, tests 617ms, environment 0ms, prepare 268ms)
+

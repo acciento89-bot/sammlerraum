@@ -1,0 +1,35 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| apps/worker/src/jobs/import-parser.integration.test.ts (8 tests | 1 failed | 7 skipped) 924ms
+   ↓ actual source-to-PostgreSQL import parser > verifies actual bytes and persists over100 rows without touching inventory
+   ↓ actual source-to-PostgreSQL import parser > rejects mismatched source checksums and late row-limit failures
+   ↓ actual source-to-PostgreSQL import parser > fences expired claims and verifies rather than replacing a persisted retry prefix
+   ↓ actual source-to-PostgreSQL import parser > refuses jobs whose target is deleted and pins claimed parser options
+   ↓ actual source-to-PostgreSQL import parser > rejects divergent retry rows and missing membership before finishing
+   ↓ actual source-to-PostgreSQL import parser > persists exact cached workbook cells through actual storage and database
+   ↓ actual source-to-PostgreSQL import parser > releases transient failures for a real retry and eventually closes exhausted attempts
+   × actual source-to-PostgreSQL import parser > normalizes UUID aliases before deriving durable row keys 259ms
+     → IMPORT_PROCESSING_ERROR
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/worker/src/jobs/import-parser.integration.test.ts > actual source-to-PostgreSQL import parser > normalizes UUID aliases before deriving durable row keys
+ImportParseError: IMPORT_PROCESSING_ERROR
+ ❯ apps/worker/src/jobs/import-parser-runtime.ts:122:24
+    120|       // A resolved queue handler acknowledges success. Release durabl…
+    121|       // then reject retryable failures so pg-boss can actually schedu…
+    122|       if (retry) throw new ImportParseError(code);
+       |                        ^
+    123|     } finally {
+    124|       settled = true;
+ ❯ apps/worker/src/jobs/import-parser.integration.test.ts:205:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 7 skipped (8)
+   Start at  21:57:41
+   Duration  2.07s (transform 415ms, setup 24ms, collect 645ms, tests 924ms, environment 0ms, prepare 121ms)
+
