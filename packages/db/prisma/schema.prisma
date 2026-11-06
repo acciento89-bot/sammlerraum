@@ -113,6 +113,8 @@ model User {
   collections                Collection[]
   smartCollections           SmartCollection[]
   personalMilestones         PersonalMilestone[]
+  importJobs                 ImportJob[]
+  importMappingProfiles      ImportMappingProfile[]
   tags                       Tag[]
   storageLocations           StorageLocation[]
   locationHistoryAssignments ItemLocationHistory[]              @relation("LocationHistoryAssignee")
@@ -142,6 +144,7 @@ model Collection {
   nodes                  CollectionNode[]
   items                  CollectibleItem[]
   customFieldDefinitions CustomFieldDefinition[]
+  importJobs             ImportJob[]
 
   @@unique([id, ownerId])
   @@index([ownerId])
@@ -1102,4 +1105,102 @@ model CatalogMoneyInterpretationEvent {
   @@index([sourceEventId])
   @@index([originEventId])
   @@index([actorId])
+}
+
+enum ImportSourceFormat {
+  CSV
+  XLSX
+}
+
+enum ImportJobStatus {
+  AWAITING_UPLOAD
+  PARSING
+  PARSED
+  PREVIEWING
+  REVIEW_READY
+  COMMITTING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+enum ImportRowStatus {
+  PENDING
+  READY
+  CONFLICT
+  INVALID
+  COMMITTED
+  SKIPPED
+}
+
+model ImportJob {
+  id                     String             @id @default(uuid()) @db.Uuid
+  ownerId                String
+  collectionId           String             @db.Uuid
+  locale                 String             @db.VarChar(2)
+  status                 ImportJobStatus    @default(AWAITING_UPLOAD)
+  revision               Int                @default(1)
+  sourceFormat           ImportSourceFormat
+  sourceFileName         String             @db.VarChar(255)
+  sourceByteSize         BigInt
+  sourceChecksumSha256   String             @db.Char(64)
+  sourceStorageKey       String             @unique
+  sourceVerifiedAt       DateTime?
+  totalRows              Int?
+  parsedRows             Int                @default(0)
+  previewedRows          Int                @default(0)
+  committedRows          Int                @default(0)
+  previewGeneration      Int                @default(0)
+  mappingSnapshot        Json?
+  mappingHash            String?            @db.Char(64)
+  mappingProfileId       String?            @db.Uuid
+  mappingProfileRevision Int?
+  errorCode              String?            @db.VarChar(64)
+  createdAt              DateTime           @default(now())
+  updatedAt              DateTime           @updatedAt
+  owner                  User               @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  collection             Collection         @relation(fields: [collectionId, ownerId], references: [id, ownerId], onDelete: Cascade)
+  rows                   ImportRow[]
+
+  @@index([ownerId, createdAt(sort: Desc), id])
+  @@index([status, updatedAt, id])
+}
+
+model ImportRow {
+  id                        String          @id @default(uuid()) @db.Uuid
+  jobId                     String          @db.Uuid
+  rowNumber                 Int
+  rowKey                    String          @unique @db.VarChar(128)
+  rawCells                  Json
+  status                    ImportRowStatus @default(PENDING)
+  previewGeneration         Int             @default(0)
+  preview                   Json?
+  normalizedIdentifierType  String?         @db.VarChar(64)
+  normalizedIdentifierValue String?         @db.VarChar(512)
+  decision                  Json?
+  committedItemId           String?         @db.Uuid
+  commitReceipt             Json?
+  committedAt               DateTime?
+  createdAt                 DateTime        @default(now())
+  updatedAt                 DateTime        @updatedAt
+  job                       ImportJob       @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  @@unique([jobId, rowNumber])
+  @@index([jobId, status, rowNumber])
+  @@index([jobId, normalizedIdentifierType, normalizedIdentifierValue])
+}
+
+model ImportMappingProfile {
+  id             String   @id @default(uuid()) @db.Uuid
+  ownerId        String
+  name           String   @db.VarChar(120)
+  normalizedName String   @db.VarChar(120)
+  revision       Int      @default(1)
+  mapping        Json
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  owner          User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  @@unique([ownerId, normalizedName])
+  @@index([ownerId, updatedAt(sort: Desc), id])
 }

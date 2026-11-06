@@ -182,3 +182,6 @@ export function createIdentifierService(database: IdentifierDatabase, actorUserI
 
   return { setItemIdentifiers };
 }
+
+/** Reuse the exact item identifier policy for staged imports; this does not write. */
+export { parseIdentifiers as parseItemIdentifiers };

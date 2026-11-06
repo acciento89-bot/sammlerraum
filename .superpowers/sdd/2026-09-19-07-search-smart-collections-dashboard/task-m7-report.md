@@ -31,3 +31,5 @@ M6 original PR run42268254760 succeeded; original push42268243443 failed one old
 Phase08 must still implement real persisted jobs/rows/profiles, parsing, decisions, retry-safe inventory writes, protected artifacts and UI. Source preparation is in the separate Phase08 Task1 execution context. Full Phase07 market/sharing/duplicate/wishlist integration and the remaining V1 tasks are not claimed complete.
 
 Publication gate update: both full corrected M6 workflows on00b9062400343cd36219df4136b766ae81bdecbb succeeded (PR42272242129, push42272230439). Root permits the M7 source/evidence push to the existing draft branch. Its new exact-head CI must then be observed; local Phase08 Task1 may continue under the documented pipeline rule.
+
+Both complete M7 workflows on08fa12ea726fea4218d9e48c31533d3b1e6e0929 are now SUCCESS: PR42276619939 and push42276608472. Full job/step metadata is retained in logs/task-m7-20261106-ci-success.json. Root accepts this predecessor gate for subsequent Phase08 work.

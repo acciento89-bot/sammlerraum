@@ -43,7 +43,8 @@
     "./money/personal-money-service": "./src/money/personal-money-service.ts",
     "./catalog/catalog-money-service": "./src/catalog/catalog-money-service.ts",
     "./catalog/catalog-serialization": "./src/catalog/catalog-serialization.ts",
-    "./money/money-transfer": "./src/money/money-transfer.ts"
+    "./money/money-transfer": "./src/money/money-transfer.ts",
+    "./imports/import-service": "./src/imports/import-service.ts"
   },
   "scripts": {
     "build": "pnpm typecheck",
