@@ -1,0 +1,90 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/audit/restore-service.test.ts (9 tests | 2 failed) 680ms
+   ✓ owned conflict-aware restoration on real PostgreSQL > refuses restoration when a newer conflicting visibility change exists 158ms
+   ✓ owned conflict-aware restoration on real PostgreSQL > also refuses a changed-away-and-back field although its current value matches the original event 29ms
+   ✓ owned conflict-aware restoration on real PostgreSQL > restores only the selected field and appends a new original-actor event without deleting history 35ms
+   ✓ owned conflict-aware restoration on real PostgreSQL > rejects a stale confirmation even if only an unrelated field changed after preview 17ms
+   × owned conflict-aware restoration on real PostgreSQL > restores an actual trashed item but permanently keeps its previous direct share revoked 36ms
+     → promise resolved "{ data: { …(5) } }" instead of rejecting
+   × owned conflict-aware restoration on real PostgreSQL > restores a soft-deleted collection without reviving its old grants 26ms
+     → promise resolved "{ data: { …(5) } }" instead of rejecting
+   ✓ owned conflict-aware restoration on real PostgreSQL > uses the actual current owner after transfer and denies the old owner even though they remain Admin 47ms
+   ✓ owned conflict-aware restoration on real PostgreSQL > cannot restore financial provenance, roles or private text from a content digest 13ms
+   ✓ owned conflict-aware restoration on real PostgreSQL > rolls the restored field back when insertion of its real restore audit fails 31ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/audit/restore-service.test.ts > owned conflict-aware restoration on real PostgreSQL > restores an actual trashed item but permanently keeps its previous direct share revoked
+AssertionError: promise resolved "{ data: { …(5) } }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "data": {
++     "exportAllowed": false,
++     "items": [
++       {
++         "id": "f2d3940d-3f6e-497e-954d-6cd07f3039d7",
++         "publicDescription": null,
++         "quantity": 2,
++         "title": "Restore item",
++       },
++     ],
++     "next": null,
++     "shareId": "2c3798bf-fd4b-44cc-b054-3cc44a6d151c",
++     "target": {
++       "id": "f2d3940d-3f6e-497e-954d-6cd07f3039d7",
++       "kind": "ITEM",
++     },
++   },
+  }
+
+ ❯ packages/domain/src/audit/restore-service.test.ts:21:753
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |workspace| packages/domain/src/audit/restore-service.test.ts > owned conflict-aware restoration on real PostgreSQL > restores a soft-deleted collection without reviving its old grants
+AssertionError: promise resolved "{ data: { …(5) } }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "data": {
++     "exportAllowed": false,
++     "items": [
++       {
++         "id": "e6887e48-4f0d-43b7-9157-28a1b1799b00",
++         "publicDescription": null,
++         "quantity": 2,
++         "title": "Restore item",
++       },
++     ],
++     "next": null,
++     "shareId": "ff4c5432-4bd9-41ec-8e10-2ac05b908fd6",
++     "target": {
++       "id": "507404b4-4c9b-4898-84c2-4f524d9911c3",
++       "kind": "COLLECTION",
++     },
++   },
+  }
+
+ ❯ packages/domain/src/audit/restore-service.test.ts:22:826
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 7 passed (9)
+   Start at  09:23:21
+   Duration  1.36s (transform 260ms, setup 6ms, collect 467ms, tests 680ms, environment 0ms, prepare 60ms)
+

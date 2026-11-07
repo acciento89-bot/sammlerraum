@@ -1,0 +1,7 @@
+[
+  {
+    "path": "packages/db/prisma/migrations/20261107070000_restore_safe_capability_retirement/migration.sql",
+    "sha256": "9b5d86310b40a6d68ef2af9d5fb3475d7f09143ca47f3921160a06ae56288dff",
+    "bytes": 3671
+  }
+]

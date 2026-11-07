@@ -1,0 +1,44 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/audit/restore-service.test.ts (16 tests | 1 failed) 873ms
+   ✓ owned conflict-aware restoration on real PostgreSQL > refuses restoration when a newer conflicting visibility change exists 149ms
+   ✓ owned conflict-aware restoration on real PostgreSQL > also refuses a changed-away-and-back field although its current value matches the original event 32ms
+   ✓ owned conflict-aware restoration on real PostgreSQL > restores only the selected field and appends a new original-actor event without deleting history 40ms
+   ✓ owned conflict-aware restoration on real PostgreSQL > rejects a stale confirmation even if only an unrelated field changed after preview 19ms
+   ✓ owned conflict-aware restoration on real PostgreSQL > restores an actual trashed item but permanently keeps its previous direct share revoked 30ms
+   ✓ owned conflict-aware restoration on real PostgreSQL > restores a soft-deleted collection without reviving its old grants 22ms
+   ✓ owned conflict-aware restoration on real PostgreSQL > uses the actual current owner after transfer and denies the old owner even though they remain Admin 47ms
+   ✓ owned conflict-aware restoration on real PostgreSQL > cannot restore financial provenance, roles or private text from a content digest 13ms
+   ✓ owned conflict-aware restoration on real PostgreSQL > rolls the restored field back when insertion of its real restore audit fails 37ms
+   ✓ owned conflict-aware restoration on real PostgreSQL > does not deadlock a held guest share read and rejects a trash/restore round trip before returning its data 38ms
+   ✓ owned conflict-aware restoration on real PostgreSQL > permanently retires pending invitations when a collection enters trash 30ms
+   ✓ owned conflict-aware restoration on real PostgreSQL > keeps trash revocation markers immutable but permits actual parent erasure 29ms
+   × owned conflict-aware restoration on real PostgreSQL > restores an owned storage location and appends the true physical movement history 39ms
+     → expected [ { …(7) }, { …(7) } ] to have a length of 3 but got 2
+   ✓ owned conflict-aware restoration on real PostgreSQL > refuses an old owner's location namespace after an actual ownership transfer 45ms
+   ✓ owned conflict-aware restoration on real PostgreSQL > refuses quantity restoration when a new single-item grading now binds the quantity 20ms
+   ✓ owned conflict-aware restoration on real PostgreSQL > unarchives without silently reactivating a prior sales offer 21ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/audit/restore-service.test.ts > owned conflict-aware restoration on real PostgreSQL > restores an owned storage location and appends the true physical movement history
+AssertionError: expected [ { …(7) }, { …(7) } ] to have a length of 3 but got 2
+
+- Expected
++ Received
+
+- 3
++ 2
+
+ ❯ packages/domain/src/audit/restore-service.test.ts:45:927
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 15 passed (16)
+   Start at  09:40:08
+   Duration  1.47s (transform 245ms, setup 7ms, collect 436ms, tests 873ms, environment 0ms, prepare 36ms)
+
