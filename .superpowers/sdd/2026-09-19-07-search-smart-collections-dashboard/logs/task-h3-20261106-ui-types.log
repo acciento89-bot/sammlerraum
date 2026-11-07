@@ -1,0 +1,18 @@
+
+> @sammlerraum/web@ typecheck /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web
+> tsc --noEmit --project tsconfig.json
+
+src/components/dashboard/use-personal-milestones.ts(26,16): error TS2345: Argument of type '(old: MilestoneRead) => { page: { version: 1; scope: "OWNED"; selectionBasis: "ALL_PERSONAL_MILESTONES"; readAt: string; items: { id: string; title: string; milestoneDate: string; revision: number; dateBasis: "OWNER_ENTERED"; createdAt: string; updatedAt: string; }[]; total: number; nextCursor: string | null; } | nu...' is not assignable to parameter of type 'SetStateAction<MilestoneRead>'.
+  Type '(old: MilestoneRead) => { page: { version: 1; scope: "OWNED"; selectionBasis: "ALL_PERSONAL_MILESTONES"; readAt: string; items: { id: string; title: string; milestoneDate: string; revision: number; dateBasis: "OWNER_ENTERED"; createdAt: string; updatedAt: string; }[]; total: number; nextCursor: string | null; } | nu...' is not assignable to type '(prevState: MilestoneRead) => MilestoneRead'.
+    Call signature return types '{ page: { version: 1; scope: "OWNED"; selectionBasis: "ALL_PERSONAL_MILESTONES"; readAt: string; items: { id: string; title: string; milestoneDate: string; revision: number; dateBasis: "OWNER_ENTERED"; createdAt: string; updatedAt: string; }[]; total: number; nextCursor: string | null; } | null; ... 4 more ...; nonc...' and 'MilestoneRead' are incompatible.
+      The types of 'cursor' are incompatible between these types.
+        Type 'string | undefined' is not assignable to type 'string'.
+          Type 'undefined' is not assignable to type 'string'.
+src/components/dashboard/use-personal-milestones.ts(37,18): error TS2345: Argument of type '{ page: { version: 1; scope: "OWNED"; selectionBasis: "ALL_PERSONAL_MILESTONES"; readAt: string; items: { id: string; title: string; milestoneDate: string; revision: number; dateBasis: "OWNER_ENTERED"; createdAt: string; updatedAt: string; }[]; total: number; nextCursor: string | null; }; ... 4 more ...; nonce: numb...' is not assignable to parameter of type 'SetStateAction<MilestoneRead>'.
+  Type '{ page: { version: 1; scope: "OWNED"; selectionBasis: "ALL_PERSONAL_MILESTONES"; readAt: string; items: { id: string; title: string; milestoneDate: string; revision: number; dateBasis: "OWNER_ENTERED"; createdAt: string; updatedAt: string; }[]; total: number; nextCursor: string | null; }; ... 4 more ...; nonce: numb...' is not assignable to type 'MilestoneRead' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+    Types of property 'cursor' are incompatible.
+      Type 'string | undefined' is not assignable to type 'string'.
+        Type 'undefined' is not assignable to type 'string'.
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @sammlerraum/web@ typecheck: `tsc --noEmit --project tsconfig.json`
+Exit status 2

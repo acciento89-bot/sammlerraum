@@ -1,0 +1,23 @@
+[WebServer] (node:85222) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 8 tests using 1 worker
+
+(node:85224) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [money-ui-desktop] › e2e/legacy-money.spec.ts:20:5 › de: title-only save preserves unknown raw money (1.7s)
+  ✓  2 [money-ui-desktop] › e2e/legacy-money.spec.ts:20:5 › de: title-only save preserves known historical scale (511ms)
+  ✓  3 [money-ui-desktop] › e2e/legacy-money.spec.ts:20:5 › en: title-only save preserves unknown raw money (493ms)
+  ✓  4 [money-ui-desktop] › e2e/legacy-money.spec.ts:20:5 › en: title-only save preserves known historical scale (444ms)
+(node:85240) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] ⨯ Error: The destination stream closed early.
+[WebServer]     at ignore-listed frames {
+[WebServer]   digest: '3437032557'
+[WebServer] }
+  ✓  5 [money-ui-mobile] › e2e/legacy-money.spec.ts:20:5 › de: title-only save preserves unknown raw money (604ms)
+  ✓  6 [money-ui-mobile] › e2e/legacy-money.spec.ts:20:5 › de: title-only save preserves known historical scale (436ms)
+  ✓  7 [money-ui-mobile] › e2e/legacy-money.spec.ts:20:5 › en: title-only save preserves unknown raw money (498ms)
+  ✓  8 [money-ui-mobile] › e2e/legacy-money.spec.ts:20:5 › en: title-only save preserves known historical scale (509ms)
+
+  8 passed (12.7s)

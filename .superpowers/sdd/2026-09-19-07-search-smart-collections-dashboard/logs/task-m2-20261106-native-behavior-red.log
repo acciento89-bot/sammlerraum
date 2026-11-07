@@ -1,0 +1,144 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/db/src/legacy-money.integration.test.ts (7 tests | 6 failed) 958ms
+   ✓ legacy money native upgrade > migration_preserves_untracked_raw 159ms
+   × legacy money native behavior > same_pair_sql_invalidates 134ms
+     → expected null not to be null
+   × legacy money native behavior > aba_and_custom_absence_stale_tokens 135ms
+     → expected [] to deeply equal [ 'BASELINE', 'CLEAR' ]
+   × legacy money native behavior > classification_never_changes_raw and rejects mismatched raw facts 133ms
+     → expected undefined to match object { code: '23514' }
+   × legacy money native behavior > event_failure_rolls_back_raw 131ms
+     → expected undefined to match object { code: '23514' }
+   × legacy money native behavior > event_and_proposal_immutability 129ms
+     → expected undefined to match object { code: '23514' }
+   × legacy money native behavior > copy_origin_rejects_cross_owner 136ms
+     → expected undefined to match object { code: '23514' }
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/db/src/legacy-money.integration.test.ts > legacy money native behavior > same_pair_sql_invalidates
+AssertionError: expected null not to be null
+ ❯ packages/db/src/legacy-money.integration.test.ts:66:23
+
+ ❯ upgrade packages/db/src/legacy-money.integration.test.ts:21:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  |workspace| packages/db/src/legacy-money.integration.test.ts > legacy money native behavior > aba_and_custom_absence_stale_tokens
+AssertionError: expected [] to deeply equal [ 'BASELINE', 'CLEAR' ]
+
+- Expected
++ Received
+
+- [
+-   "BASELINE",
+-   "CLEAR",
+- ]
++ []
+
+ ❯ packages/db/src/legacy-money.integration.test.ts:78:40
+
+ ❯ upgrade packages/db/src/legacy-money.integration.test.ts:21:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  |workspace| packages/db/src/legacy-money.integration.test.ts > legacy money native behavior > classification_never_changes_raw and rejects mismatched raw facts
+AssertionError: expected undefined to match object { code: '23514' }
+
+- Expected: 
+{
+  "code": "23514",
+}
+
++ Received: 
+undefined
+
+ ❯ rejects packages/db/src/legacy-money.integration.test.ts:55:17
+     53|   try{await client.query(sql,values);}catch(caught){error=caught;}
+     54|   await client.query("ROLLBACK TO SAVEPOINT expected_rejection");await…
+     55|   expect(error).toMatchObject({code});
+       |                 ^
+     56| }
+     57| const nil="00000000-0000-0000-0000-000000000000";
+ ❯ packages/db/src/legacy-money.integration.test.ts:89:5
+ ❯ upgrade packages/db/src/legacy-money.integration.test.ts:21:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+ FAIL  |workspace| packages/db/src/legacy-money.integration.test.ts > legacy money native behavior > event_failure_rolls_back_raw
+AssertionError: expected undefined to match object { code: '23514' }
+
+- Expected: 
+{
+  "code": "23514",
+}
+
++ Received: 
+undefined
+
+ ❯ rejects packages/db/src/legacy-money.integration.test.ts:55:17
+     53|   try{await client.query(sql,values);}catch(caught){error=caught;}
+     54|   await client.query("ROLLBACK TO SAVEPOINT expected_rejection");await…
+     55|   expect(error).toMatchObject({code});
+       |                 ^
+     56| }
+     57| const nil="00000000-0000-0000-0000-000000000000";
+ ❯ packages/db/src/legacy-money.integration.test.ts:95:5
+ ❯ upgrade packages/db/src/legacy-money.integration.test.ts:21:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯
+
+ FAIL  |workspace| packages/db/src/legacy-money.integration.test.ts > legacy money native behavior > event_and_proposal_immutability
+AssertionError: expected undefined to match object { code: '23514' }
+
+- Expected: 
+{
+  "code": "23514",
+}
+
++ Received: 
+undefined
+
+ ❯ rejects packages/db/src/legacy-money.integration.test.ts:55:17
+     53|   try{await client.query(sql,values);}catch(caught){error=caught;}
+     54|   await client.query("ROLLBACK TO SAVEPOINT expected_rejection");await…
+     55|   expect(error).toMatchObject({code});
+       |                 ^
+     56| }
+     57| const nil="00000000-0000-0000-0000-000000000000";
+ ❯ packages/db/src/legacy-money.integration.test.ts:100:5
+ ❯ upgrade packages/db/src/legacy-money.integration.test.ts:21:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/6]⎯
+
+ FAIL  |workspace| packages/db/src/legacy-money.integration.test.ts > legacy money native behavior > copy_origin_rejects_cross_owner
+AssertionError: expected undefined to match object { code: '23514' }
+
+- Expected: 
+{
+  "code": "23514",
+}
+
++ Received: 
+undefined
+
+ ❯ rejects packages/db/src/legacy-money.integration.test.ts:55:17
+     53|   try{await client.query(sql,values);}catch(caught){error=caught;}
+     54|   await client.query("ROLLBACK TO SAVEPOINT expected_rejection");await…
+     55|   expect(error).toMatchObject({code});
+       |                 ^
+     56| }
+     57| const nil="00000000-0000-0000-0000-000000000000";
+ ❯ packages/db/src/legacy-money.integration.test.ts:111:5
+ ❯ upgrade packages/db/src/legacy-money.integration.test.ts:21:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/6]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  6 failed | 1 passed (7)
+   Start at  01:52:29
+   Duration  1.16s (transform 23ms, setup 6ms, collect 38ms, tests 958ms, environment 0ms, prepare 44ms)
+

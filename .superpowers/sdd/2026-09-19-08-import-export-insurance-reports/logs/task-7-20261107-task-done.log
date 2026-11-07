@@ -1,0 +1,6 @@
+  ✓  36 [mobile] › e2e/import-report.spec.ts:553:3 › real import, export and private report flow › review: a named worksheet imports the intended sheet from a real multi-sheet XLSX (24.4s)
+  ✓  37 [mobile] › e2e/import-report.spec.ts:599:3 › real import, export and private report flow › review: actual filtered search exports all matching rows without unrelated inventory (11.8s)
+  ✓  38 [mobile] › e2e/import-report.spec.ts:643:3 › real import, export and private report flow › review: an actual collection subtree export includes descendants and excludes siblings (11.5s)
+
+  38 passed (6.4m)
+ledger: Task 7: complete (commits 672da96..b295fc3, tests: env DATABASE_URL=postgresql://test:test@localhost:5432/sammlerraum_m4_browser_20261106_test RUN_IMPORT_E2E=1 RUN_AUTH_E2E=1 RUN_PRODUCTION_E2E=1 MONEY_AUTHORING_ENABLED=true MONEY_CANONICAL_CONSUMERS_ENABLED=false npm exec --yes --package=node@24.19.0 --package=pnpm@10.17.1 -- pnpm --filter @sammlerraum/web exec playwright test e2e/import-report.spec.ts e2e/collections-items.spec.ts --workers=1 →   38 passed (6.4m))

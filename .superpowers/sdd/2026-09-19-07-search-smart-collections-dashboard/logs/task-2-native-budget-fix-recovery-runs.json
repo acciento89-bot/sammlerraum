@@ -1,0 +1,74 @@
+[
+  {
+    "label": "typegen",
+    "command": [
+      "npm",
+      "exec",
+      "--yes",
+      "--package=node@24.19.0",
+      "--package=pnpm@10.17.1",
+      "--",
+      "pnpm",
+      "--filter",
+      "@sammlerraum/web",
+      "exec",
+      "next",
+      "typegen"
+    ],
+    "exitCode": 0,
+    "durationSeconds": 1.458,
+    "log": "task-2-native-budget-fix-typegen.log"
+  },
+  {
+    "label": "types-recovered",
+    "command": [
+      "npm",
+      "exec",
+      "--yes",
+      "--package=node@24.19.0",
+      "--package=pnpm@10.17.1",
+      "--",
+      "pnpm",
+      "typecheck"
+    ],
+    "exitCode": 0,
+    "durationSeconds": 34.684,
+    "log": "task-2-native-budget-fix-types-recovered.log"
+  },
+  {
+    "label": "lint",
+    "command": [
+      "npm",
+      "exec",
+      "--yes",
+      "--package=node@24.19.0",
+      "--package=pnpm@10.17.1",
+      "--",
+      "pnpm",
+      "lint"
+    ],
+    "exitCode": 0,
+    "durationSeconds": 4.195,
+    "log": "task-2-native-budget-fix-lint.log"
+  },
+  {
+    "label": "owned-format",
+    "command": [
+      "npm",
+      "exec",
+      "--yes",
+      "--package=node@24.19.0",
+      "--package=pnpm@10.17.1",
+      "--",
+      "pnpm",
+      "exec",
+      "prettier",
+      "--check",
+      "packages/domain/src/search/search-retained-integrity.integration.test.ts",
+      "docs/search/owned-item-search.md"
+    ],
+    "exitCode": 0,
+    "durationSeconds": 0.666,
+    "log": "task-2-native-budget-fix-owned-format.log"
+  }
+]

@@ -1,0 +1,15 @@
+[WebServer] (node:58493) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 4 tests using 1 worker
+
+(node:58508) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [desktop] › e2e/collections-items.spec.ts:236:3 › localized collection and item management › collector creates a nested collection and item with custom field and location (2.2s)
+  ✓  2 [desktop] › e2e/collections-items.spec.ts:577:3 › localized collection and item management › metadata retry reuses the item and does not repeat a successful location (702ms)
+(node:58523) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  3 [mobile] › e2e/collections-items.spec.ts:236:3 › localized collection and item management › collector creates a nested collection and item with custom field and location (1.7s)
+  ✓  4 [mobile] › e2e/collections-items.spec.ts:577:3 › localized collection and item management › metadata retry reuses the item and does not repeat a successful location (630ms)
+
+  4 passed (6.8s)

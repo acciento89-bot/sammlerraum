@@ -1,0 +1,32 @@
+
+> sammlerraum@ typecheck /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+> pnpm -r typecheck
+
+Scope: 10 of 11 workspace projects
+packages/config typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+packages/contracts typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+packages/queue typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+packages/market-data typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+packages/queue typecheck: ../../apps/web/src/lib/catalog-money-routes.integration.test.ts(91,30): error TS18046: 'before' is of type 'unknown'.
+packages/queue typecheck: ../../apps/web/src/lib/catalog-money-routes.integration.test.ts(112,12): error TS18046: 'records' is of type 'unknown'.
+packages/queue typecheck: ../../apps/web/src/lib/catalog-money-routes.integration.test.ts(126,19): error TS18046: 'records' is of type 'unknown'.
+packages/queue typecheck: ../../apps/web/src/lib/catalog-money-routes.integration.test.ts(189,12): error TS18046: 'value' is of type 'unknown'.
+packages/queue typecheck: ../../apps/web/src/lib/catalog-money-routes.ts(76,70): error TS2345: Argument of type 'unknown' is not assignable to parameter of type 'string'.
+packages/contracts typecheck: ../../apps/web/src/lib/catalog-money-routes.integration.test.ts(91,30): error TS18046: 'before' is of type 'unknown'.
+packages/contracts typecheck: ../../apps/web/src/lib/catalog-money-routes.integration.test.ts(112,12): error TS18046: 'records' is of type 'unknown'.
+packages/contracts typecheck: ../../apps/web/src/lib/catalog-money-routes.integration.test.ts(126,19): error TS18046: 'records' is of type 'unknown'.
+packages/contracts typecheck: ../../apps/web/src/lib/catalog-money-routes.integration.test.ts(189,12): error TS18046: 'value' is of type 'unknown'.
+packages/contracts typecheck: ../../apps/web/src/lib/catalog-money-routes.ts(76,70): error TS2345: Argument of type 'unknown' is not assignable to parameter of type 'string'.
+packages/queue typecheck: Failed
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/queue:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @sammlerraum/queue@ typecheck: `tsc --noEmit --project ../../tsconfig.base.json`
+Exit status 2
+packages/storage typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+packages/market-data typecheck: ../../apps/web/src/lib/catalog-money-routes.integration.test.ts(91,30): error TS18046: 'before' is of type 'unknown'.
+packages/market-data typecheck: ../../apps/web/src/lib/catalog-money-routes.integration.test.ts(112,12): error TS18046: 'records' is of type 'unknown'.
+packages/market-data typecheck: ../../apps/web/src/lib/catalog-money-routes.integration.test.ts(126,19): error TS18046: 'records' is of type 'unknown'.
+packages/market-data typecheck: ../../apps/web/src/lib/catalog-money-routes.integration.test.ts(189,12): error TS18046: 'value' is of type 'unknown'.
+packages/market-data typecheck: ../../apps/web/src/lib/catalog-money-routes.ts(76,70): error TS2345: Argument of type 'unknown' is not assignable to parameter of type 'string'.
+packages/contracts typecheck: Failed
+packages/testing typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+ ELIFECYCLE  Command failed with exit code 2.

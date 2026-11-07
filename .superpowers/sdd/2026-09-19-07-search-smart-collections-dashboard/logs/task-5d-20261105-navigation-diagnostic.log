@@ -1,0 +1,158 @@
+[WebServer] (node:13297) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 4 tests using 1 worker
+
+(node:13298) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+saved-list-geometry {
+  ul: {
+    x: 144,
+    y: 515.65625,
+    width: 1152,
+    height: 1087.203125,
+    top: 515.65625,
+    right: 1296,
+    bottom: 1602.859375,
+    left: 144
+  },
+  last: {
+    x: 1020,
+    y: 1398.21875,
+    width: 276,
+    height: 204.640625,
+    top: 1398.21875,
+    right: 1296,
+    bottom: 1602.859375,
+    left: 1020
+  },
+  actions: {
+    x: 144,
+    y: 1614.046875,
+    width: 1152,
+    height: 48.375,
+    top: 1614.046875,
+    right: 1296,
+    bottom: 1662.421875,
+    left: 144
+  }
+}
+  ✓  1 [desktop] › e2e/search-dashboard.spec.ts:1235:3 › de: saved list paginates actual rows and foreign missing deleted details stay indistinguishable (1.8s)
+savedguard-cleanup true /de/smart-collections
+  ✘  2 [desktop] › e2e/search-dashboard.spec.ts:1280:3 › de: saved editor confirms locale history and clears private draft undo on 401 (5.7s)
+(node:13310) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+saved-list-geometry {
+  ul: {
+    x: 16,
+    y: 651.34375,
+    width: 380,
+    height: 4013.0625,
+    top: 651.34375,
+    right: 396,
+    bottom: 4664.40625,
+    left: 16
+  },
+  last: {
+    x: 16,
+    y: 4478.953125,
+    width: 380,
+    height: 185.453125,
+    top: 4478.953125,
+    right: 396,
+    bottom: 4664.40625,
+    left: 16
+  },
+  actions: {
+    x: 16,
+    y: 4675.59375,
+    width: 380,
+    height: 48.375,
+    top: 4675.59375,
+    right: 396,
+    bottom: 4723.96875,
+    left: 16
+  }
+}
+  ✓  3 [mobile] › e2e/search-dashboard.spec.ts:1235:3 › de: saved list paginates actual rows and foreign missing deleted details stay indistinguishable (1.1s)
+savedguard-cleanup true /de/smart-collections
+  ✘  4 [mobile] › e2e/search-dashboard.spec.ts:1280:3 › de: saved editor confirms locale history and clears private draft undo on 401 (5.7s)
+
+
+  1) [desktop] › e2e/search-dashboard.spec.ts:1280:3 › de: saved editor confirms locale history and clears private draft undo on 401 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('dialog').getByRole('heading', { name: 'Lokale Änderungen verwerfen?', exact: true })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('dialog').getByRole('heading', { name: 'Lokale Änderungen verwerfen?', exact: true }) with timeout 5000ms
+      - waiting for getByRole('dialog').getByRole('heading', { name: 'Lokale Änderungen verwerfen?', exact: true })
+
+
+      1309 |       await expect(
+      1310 |         page.getByRole("dialog").getByRole("heading", { name: c.discardTitle, exact: true }),
+    > 1311 |       ).toBeVisible();
+           |         ^
+      1312 |       await page.getByRole("dialog").getByRole("button", { name: c.cancel, exact: true }).click();
+      1313 |       await expect(page).toHaveURL(new RegExp(`/${saved.id}$`));
+      1314 |       await page.getByRole("button", { name: s.remove, exact: true }).click();
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/search-dashboard.spec.ts:1311:9
+
+    Error Context: test-results/search-dashboard-de-saved--781b9-s-private-draft-undo-on-401-desktop/error-context.md
+
+    Error Context: test-results/search-dashboard-de-saved--781b9-s-private-draft-undo-on-401-desktop/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/search-dashboard-de-saved--781b9-s-private-draft-undo-on-401-desktop/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/search-dashboard-de-saved--781b9-s-private-draft-undo-on-401-desktop/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [mobile] › e2e/search-dashboard.spec.ts:1280:3 › de: saved editor confirms locale history and clears private draft undo on 401 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('dialog').getByRole('heading', { name: 'Lokale Änderungen verwerfen?', exact: true })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('dialog').getByRole('heading', { name: 'Lokale Änderungen verwerfen?', exact: true }) with timeout 5000ms
+      - waiting for getByRole('dialog').getByRole('heading', { name: 'Lokale Änderungen verwerfen?', exact: true })
+
+
+      1309 |       await expect(
+      1310 |         page.getByRole("dialog").getByRole("heading", { name: c.discardTitle, exact: true }),
+    > 1311 |       ).toBeVisible();
+           |         ^
+      1312 |       await page.getByRole("dialog").getByRole("button", { name: c.cancel, exact: true }).click();
+      1313 |       await expect(page).toHaveURL(new RegExp(`/${saved.id}$`));
+      1314 |       await page.getByRole("button", { name: s.remove, exact: true }).click();
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/search-dashboard.spec.ts:1311:9
+
+    Error Context: test-results/search-dashboard-de-saved--781b9-s-private-draft-undo-on-401-mobile/error-context.md
+
+    Error Context: test-results/search-dashboard-de-saved--781b9-s-private-draft-undo-on-401-mobile/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/search-dashboard-de-saved--781b9-s-private-draft-undo-on-401-mobile/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/search-dashboard-de-saved--781b9-s-private-draft-undo-on-401-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2 failed
+    [desktop] › e2e/search-dashboard.spec.ts:1280:3 › de: saved editor confirms locale history and clears private draft undo on 401 
+    [mobile] › e2e/search-dashboard.spec.ts:1280:3 › de: saved editor confirms locale history and clears private draft undo on 401 
+  2 passed (16.3s)
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/search-dashboard.spec.ts --grep de: saved editor confirms|de: saved list paginates --workers=1 --trace=retain-on-failure

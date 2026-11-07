@@ -1,0 +1,58 @@
+[WebServer] (node:57605) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:57606) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:57615) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+MEDIA_CAUSAL {"cancelStage":"link","event":"POST-entered","routeId":1,"ms":45}
+MEDIA_CAUSAL {"cancelStage":"link","event":"POST-fetch-done","routeId":1,"ms":54}
+MEDIA_CAUSAL {"cancelStage":"link","event":"stage-reached","routeId":0,"ms":54}
+MEDIA_CAUSAL {"cancelStage":"link","event":"cancel-clicked","routeId":0,"ms":81}
+MEDIA_CAUSAL {"cancelStage":"link","event":"stage-released","routeId":0,"ms":81}
+MEDIA_CAUSAL {"cancelStage":"link","event":"POST-fulfill-start","routeId":1,"ms":82}
+MEDIA_CAUSAL {"cancelStage":"link","event":"POST-fulfill-done","routeId":1,"ms":83}
+MEDIA_CAUSAL {"cancelStage":"link","event":"handler-settled","routeId":1,"ms":83}
+MEDIA_CAUSAL {"cancelStage":"link","event":"compensating-delete-response","routeId":0,"ms":117}
+MEDIA_CAUSAL {"cancelStage":"link","event":"GET-entered-cleanup","routeId":2,"ms":117}
+MEDIA_CAUSAL {"cancelStage":"link","event":"canceled-visible","routeId":0,"ms":120}
+MEDIA_CAUSAL {"cancelStage":"link","event":"handler-settled","routeId":2,"ms":121}
+MEDIA_CAUSAL {"cancelStage":"link","event":"original-link-count-restored","routeId":0,"ms":128}
+MEDIA_CAUSAL {"cancelStage":"link","event":"cleanup-released-before-drain","routeId":0,"ms":128}
+MEDIA_CAUSAL {"cancelStage":"link","event":"input-enabled-after-cleanup","routeId":0,"ms":132}
+MEDIA_CAUSAL {"cancelStage":"link","event":"handlers-drained","routeId":0,"ms":132}
+MEDIA_CAUSAL {"cancelStage":"link","event":"unroute-start","routeId":0,"ms":132}
+MEDIA_CAUSAL {"cancelStage":"link","event":"unroute-done","routeId":0,"ms":134}
+MEDIA_CAUSAL {"cancelStage":"reload","event":"POST-entered","routeId":1,"ms":27}
+MEDIA_CAUSAL {"cancelStage":"reload","event":"POST-fetch-done","routeId":1,"ms":33}
+MEDIA_CAUSAL {"cancelStage":"reload","event":"POST-fulfill-start","routeId":1,"ms":33}
+MEDIA_CAUSAL {"cancelStage":"reload","event":"POST-fulfill-done","routeId":1,"ms":34}
+MEDIA_CAUSAL {"cancelStage":"reload","event":"handler-settled","routeId":1,"ms":34}
+MEDIA_CAUSAL {"cancelStage":"reload","event":"GET-entered","routeId":2,"ms":35}
+MEDIA_CAUSAL {"cancelStage":"reload","event":"GET-fetch-done","routeId":2,"ms":40}
+MEDIA_CAUSAL {"cancelStage":"reload","event":"stage-reached","routeId":0,"ms":40}
+MEDIA_CAUSAL {"cancelStage":"reload","event":"cancel-clicked","routeId":0,"ms":54}
+MEDIA_CAUSAL {"cancelStage":"reload","event":"stage-released","routeId":0,"ms":54}
+MEDIA_CAUSAL {"cancelStage":"reload","event":"GET-fulfill-start","routeId":2,"ms":55}
+MEDIA_CAUSAL {"cancelStage":"reload","event":"GET-fulfill-done","routeId":2,"ms":56}
+MEDIA_CAUSAL {"cancelStage":"reload","event":"handler-settled","routeId":2,"ms":56}
+MEDIA_CAUSAL {"cancelStage":"reload","event":"compensating-delete-response","routeId":0,"ms":76}
+MEDIA_CAUSAL {"cancelStage":"reload","event":"GET-entered-cleanup","routeId":3,"ms":77}
+MEDIA_CAUSAL {"cancelStage":"reload","event":"GET-fetch-done","routeId":3,"ms":81}
+MEDIA_CAUSAL {"cancelStage":"reload","event":"cleanup-real-listing-has-original-two","routeId":3,"ms":82}
+MEDIA_CAUSAL {"cancelStage":"reload","event":"canceled-visible","routeId":0,"ms":94}
+MEDIA_CAUSAL {"cancelStage":"reload","event":"original-link-count-restored","routeId":0,"ms":107}
+MEDIA_CAUSAL {"cancelStage":"reload","event":"cleanup-held-input-still-disabled","routeId":0,"ms":111}
+MEDIA_CAUSAL {"cancelStage":"reload","event":"cleanup-released-before-drain","routeId":0,"ms":111}
+MEDIA_CAUSAL {"cancelStage":"reload","event":"GET-fulfill-start","routeId":3,"ms":112}
+MEDIA_CAUSAL {"cancelStage":"reload","event":"GET-fulfill-done","routeId":3,"ms":114}
+MEDIA_CAUSAL {"cancelStage":"reload","event":"handler-settled","routeId":3,"ms":114}
+MEDIA_CAUSAL {"cancelStage":"reload","event":"input-enabled-after-cleanup","routeId":0,"ms":118}
+MEDIA_CAUSAL {"cancelStage":"reload","event":"handlers-drained","routeId":0,"ms":118}
+MEDIA_CAUSAL {"cancelStage":"reload","event":"unroute-start","routeId":0,"ms":118}
+MEDIA_CAUSAL {"cancelStage":"reload","event":"unroute-done","routeId":0,"ms":119}
+  ✓  1 [desktop] › e2e/media-documents.spec.ts:143:5 › item media and private documents › public item can have a purchase receipt that remains private (de) (39.6s)
+
+  1 passed (41.6s)

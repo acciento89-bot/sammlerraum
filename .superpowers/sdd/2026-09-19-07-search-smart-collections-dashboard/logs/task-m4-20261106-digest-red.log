@@ -1,0 +1,30 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/catalog/catalog-money-envelope.test.ts (2 tests | 1 failed) 4ms
+   × catalog money canonical patch binding foundation > uses stable existing serialization while binding the actual raw patch 2ms
+     → LEGACY_MONEY_INVALID
+   ✓ catalog money canonical patch binding foundation > rejects malformed or oversized patches instead of hashing an unbounded payload 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/catalog/catalog-money-envelope.test.ts > catalog money canonical patch binding foundation > uses stable existing serialization while binding the actual raw patch
+LegacyMoneyError: LEGACY_MONEY_INVALID
+ ❯ legacyMoneyFail packages/contracts/src/legacy-money.ts:27:9
+     25| }
+     26| export function legacyMoneyFail(code: LegacyMoneyError["code"]): never…
+     27|   throw new LegacyMoneyError(code);
+       |         ^
+     28| }
+     29| export const LegacyMoneyIdSchema = z
+ ❯ digestCatalogMoneyPatch packages/domain/src/catalog/catalog-money-envelope.ts:3:71
+ ❯ packages/domain/src/catalog/catalog-money-envelope.test.ts:7:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 1 passed (2)
+   Start at  04:54:07
+   Duration  290ms (transform 39ms, setup 7ms, collect 59ms, tests 4ms, environment 0ms, prepare 50ms)
+

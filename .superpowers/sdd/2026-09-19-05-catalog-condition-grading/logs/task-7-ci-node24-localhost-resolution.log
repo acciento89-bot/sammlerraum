@@ -1,0 +1,3 @@
+{"node":"v24.19.0","method":"lookup","addresses":1,"loopback":1,"nonLoopback":0}
+{"node":"v24.19.0","method":"resolve4","addresses":2,"loopback":1,"nonLoopback":1}
+{"node":"v24.19.0","method":"resolve6","addresses":4,"loopback":0,"nonLoopback":4}

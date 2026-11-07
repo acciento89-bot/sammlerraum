@@ -1,0 +1,44 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/contracts/src/catalog-money-parser.test.ts (3 tests | 2 failed) 6ms
+   × catalog money fixed JSON boundary > accepts 100 independent paths and a 20000-character description without widening filter bounds 4ms
+     → expected [Function] to not throw an error but 'Error: pending catalog bound' was thrown
+   ✓ catalog money fixed JSON boundary > rejects escaped nested duplicate keys and oversized bodies 0ms
+   × catalog money fixed JSON boundary > retains Unicode, accessor, alias and cycle defenses 0ms
+     → pending catalog bound
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/contracts/src/catalog-money-parser.test.ts > catalog money fixed JSON boundary > accepts 100 independent paths and a 20000-character description without widening filter bounds
+AssertionError: expected [Function] to not throw an error but 'Error: pending catalog bound' was thrown
+
+- Expected: 
+undefined
+
++ Received: 
+"Error: pending catalog bound"
+
+ ❯ packages/contracts/src/catalog-money-parser.test.ts:7:49
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |workspace| packages/contracts/src/catalog-money-parser.test.ts > catalog money fixed JSON boundary > retains Unicode, accessor, alias and cycle defenses
+Error: pending catalog bound
+ ❯ copyCatalogMoneyInput packages/contracts/src/catalog-money.ts:36:73
+     34| 
+     35| export function scanCatalogMoneyJson(_raw: string): void { throw new E…
+     36| export function copyCatalogMoneyInput(_input: unknown): unknown { thro…
+       |                                                                         ^
+     37| 
+ ❯ packages/contracts/src/catalog-money-parser.test.ts:19:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 1 passed (3)
+   Start at  07:24:41
+   Duration  389ms (transform 50ms, setup 6ms, collect 97ms, tests 6ms, environment 0ms, prepare 52ms)
+

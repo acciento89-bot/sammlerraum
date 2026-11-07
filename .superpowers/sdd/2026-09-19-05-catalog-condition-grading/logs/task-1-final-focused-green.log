@@ -1,0 +1,11 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ✓ |workspace| packages/domain/src/catalog/category-template-service.test.ts (29 tests) 8ms
+ ✓ |workspace| packages/domain/src/catalog/category-template-service.integration.test.ts (4 tests) 200ms
+
+ Test Files  2 passed (2)
+      Tests  33 passed (33)
+   Start at  22:17:39
+   Duration  534ms (transform 72ms, setup 11ms, collect 202ms, tests 208ms, environment 0ms, prepare 95ms)
+

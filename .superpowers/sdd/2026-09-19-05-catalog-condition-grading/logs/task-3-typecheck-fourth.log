@@ -1,0 +1,4 @@
+
+> @sammlerraum/domain@ typecheck /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain
+> tsc --noEmit --project ../../tsconfig.base.json
+

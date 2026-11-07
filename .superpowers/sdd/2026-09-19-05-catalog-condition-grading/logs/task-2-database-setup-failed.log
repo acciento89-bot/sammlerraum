@@ -1,0 +1,83 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| packages/domain/src/catalog/catalog-service.integration.test.ts (8 tests | 1 failed | 7 skipped) 160ms
+   × revisioned global catalog PostgreSQL > guards persisted revision snapshots against database UPDATE 35ms
+     → 
+Invalid `tx.catalogEntry.create()` invocation in
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/catalog/catalog-service.ts:192:27
+
+  189   schemaVersion: 1, id: randomUUID(), ...data,
+  190   attributes: await attributes(tx, data.categoryTemplateId, data.attributes), variants: [], identifiers: [],
+  191 }));
+→ 192 await tx.catalogEntry.create(
+The table `public.CatalogEntry` does not exist in the current database.
+   ↓ revisioned global catalog PostgreSQL > keeps same-title language and edition variants separate and preserves authored text
+   ↓ revisioned global catalog PostgreSQL > stores typed entry and variant attributes canonically and rejects foreign definitions atomically
+   ↓ revisioned global catalog PostgreSQL > retains original identifier values, namespaces, target and provenance in past snapshots
+   ↓ revisioned global catalog PostgreSQL > serializes concurrent writes with expected-revision conflicts and checks stale no-ops
+   ↓ revisioned global catalog PostgreSQL > shares the caller transaction so failed approval work rolls back state and snapshots
+   ↓ revisioned global catalog PostgreSQL > records rollback as a new revision while retaining inactive UUID identities and old snapshots
+   ↓ revisioned global catalog PostgreSQL > strictly bounds maintenance inputs and does not write personal data or unsafe provenance
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/catalog/catalog-service.integration.test.ts > revisioned global catalog PostgreSQL
+PrismaClientKnownRequestError: 
+Invalid `prisma.catalogRevision.deleteMany()` invocation in
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/catalog/catalog-service.integration.test.ts:41:34
+
+  38 afterAll(async () => {
+  39   if (!prisma) return;
+  40   const scope = { categoryTemplate: { key: { startsWith: prefix } } };
+→ 41   await prisma.catalogRevision.deleteMany(
+The table `public.CatalogRevision` does not exist in the current database.
+ ❯ vn.handleRequestError node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:238:13
+ ❯ vn.handleAndLogRequestError node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:184:12
+ ❯ vn.request node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:153:12
+ ❯ a node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:1014:24
+ ❯ packages/domain/src/catalog/catalog-service.integration.test.ts:41:5
+     39|     if (!prisma) return;
+     40|     const scope = { categoryTemplate: { key: { startsWith: prefix } } …
+     41|     await prisma.catalogRevision.deleteMany({ where: { entry: scope } …
+       |     ^
+     42|     await prisma.catalogAttributeValue.deleteMany({ where: { entry: sc…
+     43|     await prisma.catalogExternalIdentifier.deleteMany({ where: { entry…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/catalog/catalog-service.integration.test.ts > revisioned global catalog PostgreSQL > guards persisted revision snapshots against database UPDATE
+PrismaClientKnownRequestError: 
+Invalid `tx.catalogEntry.create()` invocation in
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/catalog/catalog-service.ts:192:27
+
+  189   schemaVersion: 1, id: randomUUID(), ...data,
+  190   attributes: await attributes(tx, data.categoryTemplateId, data.attributes), variants: [], identifiers: [],
+  191 }));
+→ 192 await tx.catalogEntry.create(
+The table `public.CatalogEntry` does not exist in the current database.
+ ❯ vn.handleRequestError node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:238:13
+ ❯ vn.handleAndLogRequestError node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:184:12
+ ❯ vn.request node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:153:12
+ ❯ a node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:1014:24
+ ❯ Object.createCatalogEntry packages/domain/src/catalog/catalog-service.ts:192:5
+    190|       attributes: await attributes(tx, data.categoryTemplateId, data.a…
+    191|     }));
+    192|     await tx.catalogEntry.create({ data: {
+       |     ^
+    193|       id: state.id, categoryTemplateId: state.categoryTemplateId,
+    194|       authored: json({ text: state.text, sources: state.sources }),
+ ❯ Proxy._transactionWithCallback node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:861:18
+ ❯ packages/domain/src/catalog/catalog-service.integration.test.ts:57:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 7 skipped (8)
+   Start at  22:39:08
+   Duration  570ms (transform 67ms, setup 6ms, collect 151ms, tests 160ms, environment 0ms, prepare 57ms)
+

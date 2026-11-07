@@ -1,0 +1,12 @@
+
+> @sammlerraum/worker@ build /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/worker
+> esbuild src/run.ts --bundle --platform=node --format=cjs --external:sharp --outfile=dist/worker.cjs && esbuild src/main.ts --bundle --platform=node --format=cjs --outfile=dist/main.cjs
+
+
+  dist/worker.cjs  6.8mb ⚠️
+
+⚡ Done in 105ms
+
+  dist/main.cjs  4.0kb
+
+⚡ Done in 1ms

@@ -1,0 +1,26 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/worker/src/jobs/parse-import.test.ts [ apps/worker/src/jobs/parse-import.test.ts ]
+Error: Cannot find module './parse-import' imported from '/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/worker/src/jobs/parse-import.test.ts'
+ ❯ apps/worker/src/jobs/parse-import.test.ts:2:1
+      1| import { expect,it } from "vitest";
+      2| import { parseImportSource } from "./parse-import";
+       | ^
+      3| async function collect(source:Uint8Array,options:{format:"CSV";hasHead…
+      4|  const rows=[];for await(const row of parseImportSource(source,options…
+
+Caused by: Error: Failed to load url ./parse-import (resolved id: ./parse-import) in /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/worker/src/jobs/parse-import.test.ts. Does the file exist?
+ ❯ loadAndTransform ../../../../SSK%20SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/node_modules/.pnpm/vite@7.3.6_@types+node@24.5.2_jiti@2.7.0/node_modules/vite/dist/node/chunks/config.js:22739:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  no tests
+   Start at  21:18:11
+   Duration  300ms (transform 32ms, setup 6ms, collect 0ms, tests 0ms, environment 0ms, prepare 63ms)
+

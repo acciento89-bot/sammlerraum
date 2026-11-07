@@ -1,0 +1,141 @@
+[
+  {
+    "name": "runtime",
+    "command": [
+      "npm",
+      "exec",
+      "--yes",
+      "--package=node@24.19.0",
+      "--package=pnpm@10.17.1",
+      "--",
+      "pnpm",
+      "exec",
+      "node",
+      "-e",
+      "console.log(JSON.stringify({node:process.version,pnpm:process.env.npm_config_user_agent,database:new URL(process.env.DATABASE_URL).pathname}))"
+    ],
+    "environmentOverrides": {},
+    "exitCode": 0,
+    "seconds": 0.54,
+    "log": ".superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-3-final-runtime.log"
+  },
+  {
+    "name": "schema",
+    "command": [
+      "npm",
+      "exec",
+      "--yes",
+      "--package=node@24.19.0",
+      "--package=pnpm@10.17.1",
+      "--",
+      "pnpm",
+      "--filter",
+      "@sammlerraum/db",
+      "prisma",
+      "validate"
+    ],
+    "environmentOverrides": {},
+    "exitCode": 0,
+    "seconds": 1.54,
+    "log": ".superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-3-final-schema.log"
+  },
+  {
+    "name": "regular",
+    "command": [
+      "npm",
+      "exec",
+      "--yes",
+      "--package=node@24.19.0",
+      "--package=pnpm@10.17.1",
+      "--",
+      "pnpm",
+      "test"
+    ],
+    "environmentOverrides": {},
+    "exitCode": 0,
+    "seconds": 7.43,
+    "log": ".superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-3-final-regular.log"
+  },
+  {
+    "name": "types",
+    "command": [
+      "npm",
+      "exec",
+      "--yes",
+      "--package=node@24.19.0",
+      "--package=pnpm@10.17.1",
+      "--",
+      "pnpm",
+      "typecheck"
+    ],
+    "environmentOverrides": {},
+    "exitCode": 0,
+    "seconds": 44.42,
+    "log": ".superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-3-final-types.log"
+  },
+  {
+    "name": "lint",
+    "command": [
+      "npm",
+      "exec",
+      "--yes",
+      "--package=node@24.19.0",
+      "--package=pnpm@10.17.1",
+      "--",
+      "pnpm",
+      "lint"
+    ],
+    "environmentOverrides": {},
+    "exitCode": 0,
+    "seconds": 4.49,
+    "log": ".superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-3-final-lint.log"
+  },
+  {
+    "name": "build",
+    "command": [
+      "npm",
+      "exec",
+      "--yes",
+      "--package=node@24.19.0",
+      "--package=pnpm@10.17.1",
+      "--",
+      "pnpm",
+      "build"
+    ],
+    "environmentOverrides": {
+      "NODE_ENV": "production"
+    },
+    "exitCode": 0,
+    "seconds": 50.24,
+    "log": ".superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-3-final-build.log"
+  },
+  {
+    "name": "native",
+    "command": [
+      "npm",
+      "exec",
+      "--yes",
+      "--package=node@24.19.0",
+      "--package=pnpm@10.17.1",
+      "--",
+      "pnpm",
+      "vitest",
+      "run",
+      "--no-file-parallelism",
+      "packages/domain/src/search/smart-collection-service.test.ts",
+      "apps/web/src/lib/smart-collection-routes.integration.test.ts",
+      "packages/domain/src/search/item-search-service.test.ts",
+      "packages/domain/src/search/search-read.integration.test.ts",
+      "packages/domain/src/search/search-retained-integrity.integration.test.ts",
+      "apps/web/src/lib/item-search-routes.integration.test.ts",
+      "packages/domain/src/valuations/valuation-query.test.ts",
+      "apps/web/src/lib/valuation-routes.integration.test.ts"
+    ],
+    "environmentOverrides": {
+      "RUN_DATABASE_INTEGRATION": "1"
+    },
+    "exitCode": 0,
+    "seconds": 27.38,
+    "log": ".superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-3-final-native.log"
+  }
+]

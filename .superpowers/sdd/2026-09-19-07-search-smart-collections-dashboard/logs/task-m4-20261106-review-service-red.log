@@ -1,0 +1,82 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/catalog/catalog-money-service.test.ts (4 tests | 4 failed) 398ms
+   × native catalog monetary review service > declares the evidenced scale without changing raw bytes and keeps evidence moderator-only 43ms
+     → LEGACY_MONEY_INVALID
+   × native catalog monetary review service > rejects an ordinary owner before decoding private history cursors or fact tokens 16ms
+     → expected LegacyMoneyError: LEGACY_MONEY_INVALID { code: '…' } to match object { code: 'MONEY_FORBIDDEN' }
+(1 matching property omitted from actual)
+   × native catalog monetary review service > pages exact-subject history with signed-bigint cursor bounds and revokes the original assertion 10ms
+     → LEGACY_MONEY_INVALID
+   × native catalog monetary review service > provides exact original scope for copied history and propagates original revocation 8ms
+     → LEGACY_MONEY_INVALID
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/catalog/catalog-money-service.test.ts > native catalog monetary review service > declares the evidenced scale without changing raw bytes and keeps evidence moderator-only
+LegacyMoneyError: LEGACY_MONEY_INVALID
+ ❯ legacyMoneyFail packages/contracts/src/legacy-money.ts:27:9
+     25| }
+     26| export function legacyMoneyFail(code: LegacyMoneyError["code"]): never…
+     27|   throw new LegacyMoneyError(code);
+       |         ^
+     28| }
+     29| export const LegacyMoneyIdSchema = z
+ ❯ Object.getRevision packages/domain/src/catalog/catalog-money-service.ts:8:65
+ ❯ classify packages/domain/src/catalog/catalog-money-service.test.ts:31:33
+ ❯ packages/domain/src/catalog/catalog-money-service.test.ts:37:30
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  |workspace| packages/domain/src/catalog/catalog-money-service.test.ts > native catalog monetary review service > rejects an ordinary owner before decoding private history cursors or fact tokens
+AssertionError: expected LegacyMoneyError: LEGACY_MONEY_INVALID { code: '…' } to match object { code: 'MONEY_FORBIDDEN' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+- {
+-   "code": "MONEY_FORBIDDEN",
++ LegacyMoneyError {
++   "code": "LEGACY_MONEY_INVALID",
+  }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  |workspace| packages/domain/src/catalog/catalog-money-service.test.ts > native catalog monetary review service > pages exact-subject history with signed-bigint cursor bounds and revokes the original assertion
+LegacyMoneyError: LEGACY_MONEY_INVALID
+ ❯ legacyMoneyFail packages/contracts/src/legacy-money.ts:27:9
+     25| }
+     26| export function legacyMoneyFail(code: LegacyMoneyError["code"]): never…
+     27|   throw new LegacyMoneyError(code);
+       |         ^
+     28| }
+     29| export const LegacyMoneyIdSchema = z
+ ❯ Object.getRevision packages/domain/src/catalog/catalog-money-service.ts:8:65
+ ❯ classify packages/domain/src/catalog/catalog-money-service.test.ts:31:33
+ ❯ packages/domain/src/catalog/catalog-money-service.test.ts:57:30
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  |workspace| packages/domain/src/catalog/catalog-money-service.test.ts > native catalog monetary review service > provides exact original scope for copied history and propagates original revocation
+LegacyMoneyError: LEGACY_MONEY_INVALID
+ ❯ legacyMoneyFail packages/contracts/src/legacy-money.ts:27:9
+     25| }
+     26| export function legacyMoneyFail(code: LegacyMoneyError["code"]): never…
+     27|   throw new LegacyMoneyError(code);
+       |         ^
+     28| }
+     29| export const LegacyMoneyIdSchema = z
+ ❯ Object.getRevision packages/domain/src/catalog/catalog-money-service.ts:8:65
+ ❯ classify packages/domain/src/catalog/catalog-money-service.test.ts:31:33
+ ❯ packages/domain/src/catalog/catalog-money-service.test.ts:74:30
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  4 failed (4)
+   Start at  07:18:34
+   Duration  861ms (transform 138ms, setup 7ms, collect 262ms, tests 398ms, environment 0ms, prepare 55ms)
+

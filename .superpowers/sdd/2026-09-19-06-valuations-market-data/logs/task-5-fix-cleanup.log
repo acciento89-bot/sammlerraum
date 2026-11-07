@@ -1,0 +1,4 @@
+{"ownedFixtureUsers":0,"ownedFixtureCategories":0,"ownedFixtureObservations":0}
+COMMAND    PID          USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+postgres 21136 piotrkaminski    7u  IPv6 0xe271dd2921e478bf      0t0  TCP [::1]:5432 (LISTEN)
+postgres 21136 piotrkaminski    8u  IPv4 0xe818170b528624ac      0t0  TCP 127.0.0.1:5432 (LISTEN)

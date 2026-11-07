@@ -1,0 +1,8 @@
+apps/web/src/lib/legacy-money-routes.integration.test.ts(82,12): error TS18046: 'body' is of type 'unknown'.
+apps/web/src/lib/legacy-money-routes.integration.test.ts(83,56): error TS18046: 'body' is of type 'unknown'.
+apps/web/src/lib/legacy-money-routes.integration.test.ts(86,58): error TS18046: 'body' is of type 'unknown'.
+apps/web/src/lib/legacy-money-routes.ts(127,71): error TS2345: Argument of type 'unknown' is not assignable to parameter of type 'string'.
+apps/web/src/lib/legacy-money-routes.ts(135,68): error TS2339: Property 'itemId' does not exist on type '{ family: "PURCHASE"; itemId: string; } | { family: "CUSTOM"; itemId: string; fieldDefinitionId: string; } | { family: "CATALOG"; entryId: string; revision: number; target: { kind: "ENTRY"; } | { ...; }; definitionId: string; }'.
+  Property 'itemId' does not exist on type '{ family: "CATALOG"; entryId: string; revision: number; target: { kind: "ENTRY"; } | { kind: "VARIANT"; variantId: string; }; definitionId: string; }'.
+apps/web/src/lib/legacy-money-routes.ts(136,67): error TS2339: Property 'itemId' does not exist on type '{ family: "PURCHASE"; itemId: string; } | { family: "CUSTOM"; itemId: string; fieldDefinitionId: string; } | { family: "CATALOG"; entryId: string; revision: number; target: { kind: "ENTRY"; } | { ...; }; definitionId: string; }'.
+  Property 'itemId' does not exist on type '{ family: "CATALOG"; entryId: string; revision: number; target: { kind: "ENTRY"; } | { kind: "VARIANT"; variantId: string; }; definitionId: string; }'.

@@ -1,0 +1,139 @@
+[WebServer] (node:11806) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 4 tests using 1 worker
+
+(node:11807) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [desktop] › e2e/search-dashboard.spec.ts:812:3 › de: saved search follows real ItemForm tag changes without copying items (11.9s)
+(node:11826) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  2 [desktop] › e2e/search-dashboard.spec.ts:812:3 › en: saved search follows real ItemForm tag changes without copying items (11.0s)
+(node:11883) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  3 [mobile] › e2e/search-dashboard.spec.ts:812:3 › de: saved search follows real ItemForm tag changes without copying items (11.0s)
+(node:11923) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  4 [mobile] › e2e/search-dashboard.spec.ts:812:3 › en: saved search follows real ItemForm tag changes without copying items (11.0s)
+
+
+  1) [desktop] › e2e/search-dashboard.spec.ts:812:3 › de: saved search follows real ItemForm tag changes without copying items 
+
+    TimeoutError: locator.fill: Timeout 10000ms exceeded.
+    Call log:
+      - waiting for getByLabel('Tags', { exact: true })
+
+
+      846 |       ] as const) {
+      847 |         await page.goto(`/${locale}/items/${f.itemId}`);
+    > 848 |         await page.getByLabel("Tags", { exact: true }).fill(tag);
+          |                                                        ^
+      849 |         const updated = page.waitForResponse(
+      850 |           (r) =>
+      851 |             r.url().endsWith(`/api/v1/items/${f.itemId}/tags`) && r.request().method() === "PUT",
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/search-dashboard.spec.ts:848:56
+
+    Error Context: test-results/search-dashboard-de-saved--f2f4e-anges-without-copying-items-desktop/error-context.md
+
+    Error Context: test-results/search-dashboard-de-saved--f2f4e-anges-without-copying-items-desktop/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/search-dashboard-de-saved--f2f4e-anges-without-copying-items-desktop/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/search-dashboard-de-saved--f2f4e-anges-without-copying-items-desktop/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [desktop] › e2e/search-dashboard.spec.ts:812:3 › en: saved search follows real ItemForm tag changes without copying items 
+
+    TimeoutError: locator.fill: Timeout 10000ms exceeded.
+    Call log:
+      - waiting for getByLabel('Tags', { exact: true })
+
+
+      846 |       ] as const) {
+      847 |         await page.goto(`/${locale}/items/${f.itemId}`);
+    > 848 |         await page.getByLabel("Tags", { exact: true }).fill(tag);
+          |                                                        ^
+      849 |         const updated = page.waitForResponse(
+      850 |           (r) =>
+      851 |             r.url().endsWith(`/api/v1/items/${f.itemId}/tags`) && r.request().method() === "PUT",
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/search-dashboard.spec.ts:848:56
+
+    Error Context: test-results/search-dashboard-en-saved--7553f-anges-without-copying-items-desktop/error-context.md
+
+    Error Context: test-results/search-dashboard-en-saved--7553f-anges-without-copying-items-desktop/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/search-dashboard-en-saved--7553f-anges-without-copying-items-desktop/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/search-dashboard-en-saved--7553f-anges-without-copying-items-desktop/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [mobile] › e2e/search-dashboard.spec.ts:812:3 › de: saved search follows real ItemForm tag changes without copying items 
+
+    TimeoutError: locator.fill: Timeout 10000ms exceeded.
+    Call log:
+      - waiting for getByLabel('Tags', { exact: true })
+
+
+      846 |       ] as const) {
+      847 |         await page.goto(`/${locale}/items/${f.itemId}`);
+    > 848 |         await page.getByLabel("Tags", { exact: true }).fill(tag);
+          |                                                        ^
+      849 |         const updated = page.waitForResponse(
+      850 |           (r) =>
+      851 |             r.url().endsWith(`/api/v1/items/${f.itemId}/tags`) && r.request().method() === "PUT",
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/search-dashboard.spec.ts:848:56
+
+    Error Context: test-results/search-dashboard-de-saved--f2f4e-anges-without-copying-items-mobile/error-context.md
+
+    Error Context: test-results/search-dashboard-de-saved--f2f4e-anges-without-copying-items-mobile/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/search-dashboard-de-saved--f2f4e-anges-without-copying-items-mobile/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/search-dashboard-de-saved--f2f4e-anges-without-copying-items-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4) [mobile] › e2e/search-dashboard.spec.ts:812:3 › en: saved search follows real ItemForm tag changes without copying items 
+
+    TimeoutError: locator.fill: Timeout 10000ms exceeded.
+    Call log:
+      - waiting for getByLabel('Tags', { exact: true })
+
+
+      846 |       ] as const) {
+      847 |         await page.goto(`/${locale}/items/${f.itemId}`);
+    > 848 |         await page.getByLabel("Tags").fill(tag);
+          |                                                 ^
+      849 |         const updated = page.waitForResponse(
+      850 |           (r) =>
+      851 |             r.url().endsWith(`/api/v1/items/${f.itemId}/tags`) && r.request().method() === "PUT",
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/search-dashboard.spec.ts:848:56
+
+    Error Context: test-results/search-dashboard-en-saved--7553f-anges-without-copying-items-mobile/error-context.md
+
+    Error Context: test-results/search-dashboard-en-saved--7553f-anges-without-copying-items-mobile/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/search-dashboard-en-saved--7553f-anges-without-copying-items-mobile/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/search-dashboard-en-saved--7553f-anges-without-copying-items-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4 failed
+    [desktop] › e2e/search-dashboard.spec.ts:812:3 › de: saved search follows real ItemForm tag changes without copying items 
+    [desktop] › e2e/search-dashboard.spec.ts:812:3 › en: saved search follows real ItemForm tag changes without copying items 
+    [mobile] › e2e/search-dashboard.spec.ts:812:3 › de: saved search follows real ItemForm tag changes without copying items 
+    [mobile] › e2e/search-dashboard.spec.ts:812:3 › en: saved search follows real ItemForm tag changes without copying items 
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/search-dashboard.spec.ts --grep saved search follows --workers=1 --trace=retain-on-failure

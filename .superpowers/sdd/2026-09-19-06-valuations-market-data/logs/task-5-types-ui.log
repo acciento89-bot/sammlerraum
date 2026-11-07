@@ -1,0 +1,9 @@
+
+> @sammlerraum/web@ typecheck /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web
+> tsc --noEmit --project tsconfig.json
+
+src/components/valuations/manual-valuation-form.tsx(13,731): error TS2657: JSX expressions must have one parent element.
+src/components/valuations/manual-valuation-form.tsx(13,1021): error TS1005: '}' expected.
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @sammlerraum/web@ typecheck: `tsc --noEmit --project tsconfig.json`
+Exit status 2

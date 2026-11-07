@@ -1,0 +1,46 @@
+[WebServer] (node:45719) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:45720) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:45740) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [desktop] › e2e/media-documents.spec.ts:163:3 › item media and private documents › failed asset upload permits retry without waiting for a gallery refresh (7.2s)
+
+
+  1) [desktop] › e2e/media-documents.spec.ts:163:3 › item media and private documents › failed asset upload permits retry without waiting for a gallery refresh 
+
+    Error: expect(locator).toBeEnabled() failed
+
+    Locator:  getByLabel('Upload gallery image', { exact: true })
+    Expected: enabled
+    Received: disabled
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toBeEnabled" getByLabel('Upload gallery image', { exact: true }) with timeout 5000ms
+      - waiting for getByLabel('Upload gallery image', { exact: true })
+        14 × locator resolved to <input disabled type="file" accept="image/jpeg,image/png,image/webp"/>
+           - unexpected value "disabled"
+
+
+      188 |       await upload.setInputFiles({ name: "network.png", mimeType: "image/png", buffer: png });
+      189 |       await expect(page.locator(".item-media p[role=alert]")).toContainText("The action failed.");
+    > 190 |       await expect(upload).toBeEnabled();
+          |                            ^
+      191 |       expect(reads).toBe(0);
+      192 |       await page.unroute("**/api/v1/media/images");
+      193 |       await upload.setInputFiles({ name: "retry.png", mimeType: "image/png", buffer: png });
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/media-documents.spec.ts:190:28
+
+    Error Context: test-results/media-documents-item-media-dfdbe-iting-for-a-gallery-refresh-desktop/error-context.md
+
+    Error Context: test-results/media-documents-item-media-dfdbe-iting-for-a-gallery-refresh-desktop/error-context.md
+
+  1 failed
+    [desktop] › e2e/media-documents.spec.ts:163:3 › item media and private documents › failed asset upload permits retry without waiting for a gallery refresh 
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/media-documents.spec.ts --grep failed asset upload permits --project=desktop --workers=1

@@ -1,0 +1,143 @@
+[WebServer] (node:10906) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 4 tests using 1 worker
+
+(node:10907) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [money-ui-desktop] › e2e/legacy-money.spec.ts:1047:3 › de: acknowledged creation survives metadata failure and locale without duplicate POST or custom authoring (7.3s)
+(node:10920) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  2 [money-ui-desktop] › e2e/legacy-money.spec.ts:1080:3 › de: collection selection cannot bypass an unknown creation barrier (5.8s)
+(node:10928) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  3 [money-ui-desktop] › e2e/legacy-money.spec.ts:1047:3 › en: acknowledged creation survives metadata failure and locale without duplicate POST or custom authoring (5.8s)
+(node:10934) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  4 [money-ui-desktop] › e2e/legacy-money.spec.ts:1080:3 › en: collection selection cannot bypass an unknown creation barrier (5.8s)
+
+
+  1) [money-ui-desktop] › e2e/legacy-money.spec.ts:1047:3 › de: acknowledged creation survives metadata failure and locale without duplicate POST or custom authoring 
+
+    Error: expect(locator).toHaveValue(expected) failed
+
+    Locator:  getByRole('textbox', { name: 'Title', exact: true })
+    Expected: "Acknowledged creation before metadata failure"
+    Received: ""
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveValue" getByRole('textbox', { name: 'Title', exact: true }) with timeout 5000ms
+      - waiting for getByRole('textbox', { name: 'Title', exact: true })
+        12 × locator resolved to <input value="" required="" name="title" maxlength="200"/>
+           - unexpected value ""
+
+
+      1068 |       await page.getByRole("link", { name: locale === "de" ? shell.english : shell.german, exact: true }).click();
+      1069 |       const t = (next === "de" ? de : en).ItemForm;
+    > 1070 |       await expect(page.getByRole("textbox", { name: t.title, exact: true })).toHaveValue(title);
+           |                                                                               ^
+      1071 |       await page.getByRole("textbox", { name: t.title, exact: true }).fill("Continued acknowledged item");
+      1072 |       await page.getByRole("button", { name: t.save, exact: true }).click();
+      1073 |       await expect(page).toHaveURL(new RegExp(`/${next}/items/${createdId}$`));
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/legacy-money.spec.ts:1070:79
+
+    Error Context: test-results/legacy-money-de-acknowledg-1175a-te-POST-or-custom-authoring-money-ui-desktop/error-context.md
+
+    Error Context: test-results/legacy-money-de-acknowledg-1175a-te-POST-or-custom-authoring-money-ui-desktop/error-context.md
+
+  2) [money-ui-desktop] › e2e/legacy-money.spec.ts:1080:3 › de: collection selection cannot bypass an unknown creation barrier 
+
+    Error: expect(locator).toBeDisabled() failed
+
+    Locator:  getByRole('combobox', { name: 'Sammlung', exact: true })
+    Expected: disabled
+    Received: enabled
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toBeDisabled" getByRole('combobox', { name: 'Sammlung', exact: true }) with timeout 5000ms
+      - waiting for getByRole('combobox', { name: 'Sammlung', exact: true })
+        14 × locator resolved to <select required="" name="collectionId" aria-label="Sammlung">…</select>
+           - unexpected value "enabled"
+
+
+      1093 |       await save.click();
+      1094 |       await expect(page.locator('p.error[role="alert"]')).toHaveText(h.m.unknownOutcome);
+    > 1095 |       await expect(page.getByRole("combobox", { name: h.t.collection, exact: true })).toBeDisabled();
+           |                                                                                       ^
+      1096 |       await expect(save).toBeDisabled();
+      1097 |       expect(await db!.collectibleItem.count({ where: { collectionId: h.f.collectionId } })).toBe(2);
+      1098 |     } finally { await cleanupSearchFixture(h.f); }
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/legacy-money.spec.ts:1095:87
+
+    Error Context: test-results/legacy-money-de-collection-ac8c1-an-unknown-creation-barrier-money-ui-desktop/error-context.md
+
+    Error Context: test-results/legacy-money-de-collection-ac8c1-an-unknown-creation-barrier-money-ui-desktop/error-context.md
+
+  3) [money-ui-desktop] › e2e/legacy-money.spec.ts:1047:3 › en: acknowledged creation survives metadata failure and locale without duplicate POST or custom authoring 
+
+    Error: expect(locator).toHaveValue(expected) failed
+
+    Locator:  getByRole('textbox', { name: 'Titel', exact: true })
+    Expected: "Acknowledged creation before metadata failure"
+    Received: ""
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveValue" getByRole('textbox', { name: 'Titel', exact: true }) with timeout 5000ms
+      - waiting for getByRole('textbox', { name: 'Titel', exact: true })
+        12 × locator resolved to <input value="" required="" name="title" maxlength="200"/>
+           - unexpected value ""
+
+
+      1068 |       await page.getByRole("link", { name: locale === "de" ? shell.english : shell.german, exact: true }).click();
+      1069 |       const t = (next === "de" ? de : en).ItemForm;
+    > 1070 |       await expect(page.getByRole("textbox", { name: t.title, exact: true })).toHaveValue(title);
+           |                                                                               ^
+      1071 |       await page.getByRole("textbox", { name: t.title, exact: true }).fill("Continued acknowledged item");
+      1072 |       await page.getByRole("button", { name: t.save, exact: true }).click();
+      1073 |       await expect(page).toHaveURL(new RegExp(`/${next}/items/${createdId}$`));
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/legacy-money.spec.ts:1070:79
+
+    Error Context: test-results/legacy-money-en-acknowledg-b4b72-te-POST-or-custom-authoring-money-ui-desktop/error-context.md
+
+    Error Context: test-results/legacy-money-en-acknowledg-b4b72-te-POST-or-custom-authoring-money-ui-desktop/error-context.md
+
+  4) [money-ui-desktop] › e2e/legacy-money.spec.ts:1080:3 › en: collection selection cannot bypass an unknown creation barrier 
+
+    Error: expect(locator).toBeDisabled() failed
+
+    Locator:  getByRole('combobox', { name: 'Collection', exact: true })
+    Expected: disabled
+    Received: enabled
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toBeDisabled" getByRole('combobox', { name: 'Collection', exact: true }) with timeout 5000ms
+      - waiting for getByRole('combobox', { name: 'Collection', exact: true })
+        14 × locator resolved to <select required="" name="collectionId" aria-label="Collection">…</select>
+           - unexpected value "enabled"
+
+
+      1093 |       await save.click();
+      1094 |       await expect(page.locator('p.error[role="alert"]')).toHaveText(h.m.unknownOutcome);
+    > 1095 |       await expect(page.getByRole("combobox", { name: h.t.collection, exact: true })).toBeDisabled();
+           |                                                                                       ^
+      1096 |       await expect(save).toBeDisabled();
+      1097 |       expect(await db!.collectibleItem.count({ where: { collectionId: h.f.collectionId } })).toBe(2);
+      1098 |     } finally { await cleanupSearchFixture(h.f); }
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/legacy-money.spec.ts:1095:87
+
+    Error Context: test-results/legacy-money-en-collection-8ba1d-an-unknown-creation-barrier-money-ui-desktop/error-context.md
+
+    Error Context: test-results/legacy-money-en-collection-8ba1d-an-unknown-creation-barrier-money-ui-desktop/error-context.md
+
+  4 failed
+    [money-ui-desktop] › e2e/legacy-money.spec.ts:1047:3 › de: acknowledged creation survives metadata failure and locale without duplicate POST or custom authoring 
+    [money-ui-desktop] › e2e/legacy-money.spec.ts:1080:3 › de: collection selection cannot bypass an unknown creation barrier 
+    [money-ui-desktop] › e2e/legacy-money.spec.ts:1047:3 › en: acknowledged creation survives metadata failure and locale without duplicate POST or custom authoring 
+    [money-ui-desktop] › e2e/legacy-money.spec.ts:1080:3 › en: collection selection cannot bypass an unknown creation barrier 
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/legacy-money.spec.ts --workers=1 --grep acknowledged creation survives|collection selection cannot --project=money-ui-desktop

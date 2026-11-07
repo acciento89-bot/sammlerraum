@@ -1,0 +1,14 @@
+BASE 3861f5186b1e9e905308824cfff8d5ecb7f5f3f2
+Launcher: npm exec --yes --package=node@24.19.0 --package=pnpm@10.17.1 -- pnpm
+Final serial focused command: RUN_DATABASE_INTEGRATION=1 <launcher> vitest run apps/worker/src/jobs/market-sync.integration.test.ts apps/worker/src/jobs/sync-market-data.test.ts apps/worker/src/main.test.ts apps/worker/src/run.test.ts apps/worker/src/run-wiring.test.ts packages/queue/src/pg-boss-queue.test.ts packages/config/src/server.test.ts --no-file-parallelism
+Exit 0; 7 files, 76 tests passed, including 16 PostgreSQL tests.
+Affected Task2/queue/Task3 serial integration command in task-3-affected-db.log: exit 0, 36 passed.
+<launcher> test: exit 0, 502 passed, 195 DB-gated skipped at that run. Two additional DB tests were subsequently verified in the final serial run.
+<launcher> lint: exit 0.
+<launcher> typecheck: exit 2 only for duplicate generated web .next/types/* 2.ts declarations; worker/packages passed.
+<launcher> build: exit 0; regenerated web output eliminated those duplicate generated declarations.
+<launcher> --filter @sammlerraum/web typecheck: exit 0 after regeneration.
+<launcher> exec tsc --noEmit --project tsconfig.base.json: exit 0 after final added test.
+<launcher> --filter @sammlerraum/worker build: exit 0 after final paging-query refinement.
+Targeted final prettier check: exit 0.
+Raw logs deliberately preserve tool-generated whitespace and all failed attempts.

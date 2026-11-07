@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "target": "ES2023",
+    "lib": ["ES2023"],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "types": ["node", "vitest"]
+  },
+  "include": [
+    "apps/worker/**/*.ts",
+    "apps/web/src/lib/**/*.ts",
+    "apps/web/src/app/api/**/*.ts",
+    "packages/**/*.ts",
+    "vitest*.ts"
+  ],
+  "exclude": ["**/.next/**", "**/dist/**", "**/node_modules/**"]
+}

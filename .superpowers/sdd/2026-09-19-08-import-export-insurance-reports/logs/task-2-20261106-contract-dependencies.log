@@ -1,0 +1,6 @@
+.                                        |  WARN  `node_modules` is present. Lockfile only installation will make it out-of-date
+Progress: resolved 1, reused 0, downloaded 0, added 0
+Progress: resolved 250, reused 0, downloaded 0, added 0
+Progress: resolved 432, reused 0, downloaded 0, added 0
+Progress: resolved 432, reused 0, downloaded 0, added 0, done
+Done in 2.6s using pnpm v10.17.1

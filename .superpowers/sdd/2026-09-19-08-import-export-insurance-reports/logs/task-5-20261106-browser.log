@@ -1,0 +1,33 @@
+[WebServer] (node:74488) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 22 tests using 1 worker
+
+(node:74489) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [desktop] › e2e/collections-items.spec.ts:239:3 › localized collection and item management › collector creates a nested collection and item with custom field and location (3.8s)
+  ✓   2 [desktop] › e2e/collections-items.spec.ts:399:3 › localized collection and item management › unrelated edits preserve nested placement, currencies, and canonical tags (2.3s)
+  ✓   3 [desktop] › e2e/collections-items.spec.ts:512:3 › localized collection and item management › a rejected core request releases the form for retry (579ms)
+  ✓   4 [desktop] › e2e/collections-items.spec.ts:538:3 › localized collection and item management › failed collection options can retry without losing the item draft (590ms)
+  ✓   5 [desktop] › e2e/collections-items.spec.ts:572:3 › localized collection and item management › failed collection detail load shows a retry instead of endless loading (531ms)
+  ✓   6 [desktop] › e2e/collections-items.spec.ts:605:3 › localized collection and item management › metadata retry reuses the item and does not repeat a successful location (792ms)
+  ✓   7 [desktop] › e2e/collections-items.spec.ts:679:3 › localized collection and item management › invalid later custom fields cause zero writes before correction (858ms)
+  ✓   8 [desktop] › e2e/collections-items.spec.ts:744:3 › localized collection and item management › concurrent scanner starts acquire at most one fully disposable stream (643ms)
+  ✓   9 [desktop] › e2e/collections-items.spec.ts:855:5 › localized collection and item management › acknowledged archive ignores an older active item snapshot (de) (826ms)
+  ✓  10 [desktop] › e2e/collections-items.spec.ts:855:5 › localized collection and item management › acknowledged archive ignores an older active item snapshot (en) (785ms)
+  ✓  11 [desktop] › e2e/collections-items.spec.ts:1009:3 › localized collection and item management › acknowledged creation and archive survive snapshot refresh failures (977ms)
+(node:74519) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  12 [mobile] › e2e/collections-items.spec.ts:239:3 › localized collection and item management › collector creates a nested collection and item with custom field and location (1.9s)
+  ✓  13 [mobile] › e2e/collections-items.spec.ts:399:3 › localized collection and item management › unrelated edits preserve nested placement, currencies, and canonical tags (2.3s)
+  ✓  14 [mobile] › e2e/collections-items.spec.ts:512:3 › localized collection and item management › a rejected core request releases the form for retry (579ms)
+  ✓  15 [mobile] › e2e/collections-items.spec.ts:538:3 › localized collection and item management › failed collection options can retry without losing the item draft (602ms)
+  ✓  16 [mobile] › e2e/collections-items.spec.ts:572:3 › localized collection and item management › failed collection detail load shows a retry instead of endless loading (545ms)
+  ✓  17 [mobile] › e2e/collections-items.spec.ts:605:3 › localized collection and item management › metadata retry reuses the item and does not repeat a successful location (701ms)
+  ✓  18 [mobile] › e2e/collections-items.spec.ts:679:3 › localized collection and item management › invalid later custom fields cause zero writes before correction (847ms)
+  ✓  19 [mobile] › e2e/collections-items.spec.ts:744:3 › localized collection and item management › concurrent scanner starts acquire at most one fully disposable stream (635ms)
+  ✓  20 [mobile] › e2e/collections-items.spec.ts:855:5 › localized collection and item management › acknowledged archive ignores an older active item snapshot (de) (756ms)
+  ✓  21 [mobile] › e2e/collections-items.spec.ts:855:5 › localized collection and item management › acknowledged archive ignores an older active item snapshot (en) (750ms)
+  ✓  22 [mobile] › e2e/collections-items.spec.ts:1009:3 › localized collection and item management › acknowledged creation and archive survive snapshot refresh failures (973ms)
+
+  22 passed (26.0s)

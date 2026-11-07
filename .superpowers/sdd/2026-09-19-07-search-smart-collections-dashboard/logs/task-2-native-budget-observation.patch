@@ -1,0 +1,320 @@
+diff --git a/packages/domain/src/search/search-retained-integrity.integration.test.ts b/packages/domain/src/search/search-retained-integrity.integration.test.ts
+index 1507d8c..1b95ba8 100644
+--- a/packages/domain/src/search/search-retained-integrity.integration.test.ts
++++ b/packages/domain/src/search/search-retained-integrity.integration.test.ts
+@@ -1,4 +1,5 @@
+ import { randomUUID } from "node:crypto";
++import { createNativeBudgetDiagnostic } from "./search-native-budget-diagnostic";
+ import { afterAll, beforeAll, describe, expect, it } from "vitest";
+ import { Prisma } from "@sammlerraum/db/search-sql";
+ import { createTestDatabaseClient } from "@sammlerraum/db/test-database";
+@@ -346,6 +347,8 @@ describe.runIf(enabled)("retained search integrity producer parity", () => {
+     }
+   });
+   it("bounds distinct URL count and UTF8 bytes before transfer, without partial count/page or value disclosure", async () => {
++    const diagnostic = createNativeBudgetDiagnostic(db!);
++    await diagnostic.snapshot("before-bulk");
+     const created = await db!.collectibleItem.createManyAndReturn({
+       data: Array.from({ length: 4097 }, () => ({
+         ownerId: owner,
+@@ -359,7 +362,7 @@ describe.runIf(enabled)("retained search integrity producer parity", () => {
+     let countOrPage = 0;
+     const observed: SearchDatabase = {
+       $transaction: (work, options) =>
+-        db!.$transaction(
++        diagnostic.database.$transaction(
+           (tx) =>
+             work({
+               $queryRaw: async <T>(sql: Prisma.Sql) => {
+@@ -402,7 +405,14 @@ describe.runIf(enabled)("retained search integrity producer parity", () => {
+       await db!.collectibleItem.delete({ where: { id: created.at(-1)!.id } });
+       manifest.length = 0;
+       countOrPage = 0;
+-      expect((await search(leaf("customField", "URL"), undefined, observed)).total).toBe(4097);
++      expect(
++        (
++          await diagnostic.boundary(
++            () => search(leaf("customField", "URL"), undefined, observed),
++            () => search(leaf("customField", "URL"), undefined, diagnostic.database),
++          )
++        ).total,
++      ).toBe(4097);
+       expect(manifest).toHaveLength(1);
+       expect(manifest[0]!.count).toBe(4096n);
+       expect(manifest[0]!.bytes).toBe(8388608n);
+@@ -423,6 +433,7 @@ describe.runIf(enabled)("retained search integrity producer parity", () => {
+         data: { urlValue: originals.URL },
+       });
+       manifest.length = 0;
++      diagnostic.setBranch("duplicate");
+       expect((await search(leaf("customField", "URL"), undefined, observed)).total).toBe(4097);
+       expect(manifest).toEqual([
+         { count: 1n, bytes: BigInt(Buffer.byteLength(originals.URL)), values: [originals.URL] },
+@@ -431,7 +442,7 @@ describe.runIf(enabled)("retained search integrity producer parity", () => {
+       await setValue("customField", "URL", originals.URL);
+       await db!.collectibleItem.deleteMany({ where: { id: { in: created.map((row) => row.id) } } });
+     }
+-  }, 30000);
++  }, 90000);
+   it.each(["integrity", "manifest"] as const)(
+     "keeps URL validation and matching in one snapshot across an edit after %s",
+     async (stage) => {
+diff --git a/packages/domain/src/search/search-native-budget-diagnostic.ts b/packages/domain/src/search/search-native-budget-diagnostic.ts
+new file mode 100644
+index 0000000..ac4546a
+--- /dev/null
++++ b/packages/domain/src/search/search-native-budget-diagnostic.ts
+@@ -0,0 +1,238 @@
++import { writeFileSync } from "node:fs";
++import { join } from "node:path";
++import { Prisma } from "@sammlerraum/db/search-sql";
++import { runSearchRead, type SearchDatabase } from "./search-read";
++import { errorCode } from "../api/read-dependency-errors";
++
++// Temporary P7.23/P7.24 observation; removed after this finite diagnostic.
++export function createNativeBudgetDiagnostic(db: SearchDatabase) {
++  const output = process.env.SEARCH_BUDGET_EVIDENCE_DIR!;
++  if (
++    !output ||
++    !new URL(process.env.DATABASE_URL!).pathname.endsWith("/sammlerraum_budget_20261018_test")
++  )
++    throw Error("Diagnostic database guard");
++  const data: {
++    requests: any[];
++    snapshots: any[];
++    plans: any[];
++    comparisons: any[];
++    analysis?: any;
++  } = { requests: [], snapshots: [], plans: [], comparisons: [] };
++  const queries = new Map<string, Map<string, Prisma.Sql>>();
++  let branch = "overcount";
++  const round = (n: number) => Math.round(n * 1000) / 1000;
++  const save = () =>
++    writeFileSync(
++      join(output, "task-2-native-budget-measurements.json"),
++      JSON.stringify(data, (_, v) => (typeof v === "bigint" ? v.toString() : v), 2) + "\n",
++    );
++  function phase(sql: Prisma.Sql) {
++    if (sql.text.includes("set_config")) return "settings";
++    if (sql.text.includes("AS collation")) return "clock";
++    if (sql.text.endsWith(" AS valid")) return "references";
++    if (sql.text.endsWith(" AS invalid")) return "integrity";
++    if (sql.text.includes("search_url_manifest")) return "manifest";
++    if (sql.text.startsWith("SELECT count(*) AS total")) return "count";
++    if (sql.text.startsWith("SELECT i.id,i.title")) return "page";
++    return "unknown";
++  }
++  const database: SearchDatabase = {
++    $transaction: async (work, options) => {
++      const started = performance.now();
++      const request: any = { branch, options, events: [] };
++      data.requests.push(request);
++      const requestQueries = new Map<string, Prisma.Sql>();
++      queries.set(branch, requestQueries);
++      try {
++        const result = await db.$transaction(async (tx) => {
++          request.acquisitionMs = round(performance.now() - started);
++          return work({
++            $queryRaw: async <T>(sql: Prisma.Sql) => {
++              const label = phase(sql);
++              const began = performance.now();
++              const event: any = { phase: label, startMs: round(began - started) };
++              request.events.push(event);
++              if (label === "settings")
++                event.timeoutArguments = sql.values.filter(
++                  (v) => typeof v === "string" && /^[0-9]+ms$/.test(v),
++                );
++              else requestQueries.set(label, sql);
++              try {
++                const rows = await tx.$queryRaw<T>(sql);
++                event.endMs = round(performance.now() - started);
++                event.durationMs = round(performance.now() - began);
++                if (label === "manifest") {
++                  const r = (rows as any[])[0];
++                  event.manifest = {
++                    count: String(r.count),
++                    bytes: String(r.bytes),
++                    valueCount: r.values?.length ?? null,
++                  };
++                }
++                if (label === "count") event.total = String((rows as any[])[0].total);
++                if (label === "page") event.rowCount = (rows as any[]).length;
++                return rows;
++              } catch (error) {
++                event.endMs = round(performance.now() - started);
++                event.durationMs = round(performance.now() - began);
++                event.errorCode = errorCode(error) ?? (error as any)?.code ?? "unknown";
++                throw error;
++              }
++            },
++          });
++        }, options);
++        request.elapsedMs = round(performance.now() - started);
++        request.success = true;
++        return result;
++      } catch (error) {
++        request.elapsedMs = round(performance.now() - started);
++        request.success = false;
++        request.errorCode = errorCode(error) ?? (error as any)?.code ?? "unknown";
++        throw error;
++      } finally {
++        save();
++      }
++    },
++  };
++  const read = <T>(sql: Prisma.Sql) => runSearchRead(db, (tx) => tx.$queryRaw<T>(sql));
++  async function snapshot(label: string) {
++    const tables = await read(
++      Prisma.sql`SELECT c.relname,c.reltuples,c.relpages,s.n_live_tup,s.n_dead_tup,s.n_mod_since_analyze,s.last_analyze,s.last_autoanalyze,s.last_autovacuum,s.analyze_count,s.autoanalyze_count FROM pg_class c JOIN pg_stat_all_tables s ON s.relid=c.oid WHERE c.relnamespace='public'::regnamespace AND c.relname IN ('CollectibleItem','CustomFieldValue','Collection') ORDER BY c.relname`,
++    );
++    const columns = await read(
++      Prisma.sql`SELECT tablename,attname,null_frac,n_distinct,correlation FROM pg_stats WHERE schemaname='public' AND tablename IN ('CollectibleItem','CustomFieldValue','Collection') AND attname IN ('id','ownerId','collectionId','fieldDefinitionId','fieldType','deletedAt','archivedAt','disposedAt') ORDER BY tablename,attname`,
++    );
++    const settings = await read(
++      Prisma.sql`SELECT name,setting,unit FROM pg_settings WHERE name IN ('server_version','work_mem','jit','random_page_cost','seq_page_cost','effective_cache_size','default_statistics_target','plan_cache_mode','autovacuum','autovacuum_analyze_threshold','autovacuum_analyze_scale_factor','transaction_timeout','statement_timeout','lock_timeout','transaction_isolation') ORDER BY name`,
++    );
++    data.snapshots.push({ label, at: new Date().toISOString(), tables, columns, settings });
++    save();
++  }
++  function redact(value: unknown, sql: Prisma.Sql): unknown {
++    if (typeof value === "string") {
++      let result = value;
++      sql.values.forEach((bound, i) => {
++        if (typeof bound === "string" && bound.length)
++          result = result.split(bound).join(`<bound-${i + 1}>`);
++      });
++      return result;
++    }
++    if (Array.isArray(value)) return value.map((v) => redact(v, sql));
++    if (value && typeof value === "object")
++      return Object.fromEntries(Object.entries(value).map(([k, v]) => [k, redact(v, sql)]));
++    return value;
++  }
++  async function plans(label: string, requestBranch: string) {
++    for (const p of ["integrity", "manifest", "count", "page"]) {
++      const sql = queries.get(requestBranch)?.get(p);
++      if (!sql) continue;
++      const record: any = {
++        label,
++        phase: p,
++        sql: sql.text,
++        parameterTypes: sql.values.map((v) => typeof v),
++        bounds: { transactionMs: 5000, statementMs: 2000, lockMs: 500 },
++      };
++      data.plans.push(record);
++      for (const analyze of [false, true]) {
++        const started = performance.now();
++        const key = analyze ? "actual" : "estimated";
++        try {
++          const result = await read(
++            analyze
++              ? Prisma.sql`EXPLAIN (ANALYZE,BUFFERS,SETTINGS,FORMAT JSON) ${sql}`
++              : Prisma.sql`EXPLAIN (FORMAT JSON) ${sql}`,
++          );
++          record[key] = {
++            elapsedMs: round(performance.now() - started),
++            result: redact(result, sql),
++          };
++        } catch (error) {
++          record[key] = {
++            elapsedMs: round(performance.now() - started),
++            errorCode: (error as any)?.code ?? "unknown",
++          };
++        }
++        save();
++      }
++    }
++  }
++  function statsHypothesisSupported() {
++    function largeRepeat(x: any): boolean {
++      if (!x || typeof x !== "object") return false;
++      if (
++        (x["Actual Loops"] >= 1024 && x["Actual Rows"] >= 1024) ||
++        x["Rows Removed by Join Filter"] >= 1_000_000 ||
++        (x["Actual Loops"] ?? 0) * (x["Rows Removed by Filter"] ?? 0) >= 1_000_000
++      )
++        return true;
++      return Object.values(x).some(largeRepeat);
++    }
++    return data.plans.some((p) => p.label === "baseline" && largeRepeat(p.actual));
++  }
++  async function boundary<T>(original: () => Promise<T>, replay: () => Promise<T>): Promise<T> {
++    branch = "exact8MiB";
++    let result: T | undefined;
++    let failure: unknown;
++    try {
++      result = await original();
++    } catch (error) {
++      failure = error;
++    }
++    await snapshot("after-original-boundary");
++    await plans("baseline", "exact8MiB");
++    branch = "unchanged-cache-comparator";
++    try {
++      await replay();
++      data.comparisons.push({ label: branch, success: true });
++    } catch (error) {
++      data.comparisons.push({
++        label: branch,
++        success: false,
++        errorCode: (error as any)?.code ?? "unknown",
++      });
++    }
++    await snapshot("after-unchanged-comparator");
++    await plans("unchanged", "unchanged-cache-comparator");
++    if (statsHypothesisSupported()) {
++      data.analysis = { supported: true, tables: ["CollectibleItem", "CustomFieldValue"] };
++      save();
++      try {
++        await read(Prisma.sql`ANALYZE "CollectibleItem", "CustomFieldValue"`);
++        await snapshot("after-targeted-analyze");
++        branch = "analyzed-comparator";
++        try {
++          await replay();
++          data.comparisons.push({ label: branch, success: true });
++        } catch (error) {
++          data.comparisons.push({
++            label: branch,
++            success: false,
++            errorCode: (error as any)?.code ?? "unknown",
++          });
++        }
++        await plans("analyzed", "analyzed-comparator");
++      } catch (error) {
++        data.analysis.errorCode = (error as any)?.code ?? "unknown";
++      }
++    } else
++      data.analysis = {
++        supported: false,
++        reason: "No measured large repeated scan/join-filter evidence; no speculative ANALYZE",
++      };
++    save();
++    branch = "byte-overflow";
++    if (failure) throw failure;
++    return result!;
++  }
++  return {
++    database,
++    snapshot,
++    boundary,
++    setBranch: (name: string) => {
++      branch = name;
++    },
++    save,
++  };
++}
+diff --git a/packages/domain/src/search/search-native-budget-preflight.test.ts b/packages/domain/src/search/search-native-budget-preflight.test.ts
+new file mode 100644
+index 0000000..953f0b8
+--- /dev/null
++++ b/packages/domain/src/search/search-native-budget-preflight.test.ts
+@@ -0,0 +1,9 @@
++import { expect, it } from "vitest";
++import { createTestDatabaseClient } from "@sammlerraum/db/test-database";
++it("proves the diagnostic setup selected the positively-created database", async () => {
++  const db = createTestDatabaseClient();
++  try {
++    const rows = await db.$queryRaw<Array<{ database: string }>>`SELECT current_database() AS database`;
++    expect(rows).toEqual([{ database: "sammlerraum_budget_20261018_test" }]);
++  } finally { await db.$disconnect(); }
++});

@@ -1,0 +1,78 @@
+.superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-1-build-final.log:55: trailing whitespace.
++apps/web build:   Generating static pages using 7 workers (6/24) 
+.superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-1-build-final.log:56: trailing whitespace.
++apps/web build:   Generating static pages using 7 workers (12/24) 
+.superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-1-build-final.log:57: trailing whitespace.
++apps/web build:   Generating static pages using 7 workers (18/24) 
+.superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-1-green-attempt-1.log:151: new blank line at EOF.
+.superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-1-green-attempt-2.log:10: new blank line at EOF.
+.superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-1-red-behavior.log:141: trailing whitespace.
++- Expected: 
+.superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-1-red-behavior.log:144: trailing whitespace.
+++ Received: 
+.superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-1-red-behavior.log:161: trailing whitespace.
++- Expected: 
+.superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-1-red-behavior.log:164: trailing whitespace.
+++ Received: 
+.superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-1-red-behavior.log:188: trailing whitespace.
++- Expected: 
+.superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-1-red-behavior.log:191: trailing whitespace.
+++ Received: 
+.superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-1-red-behavior.log:208: trailing whitespace.
++- Expected: 
+.superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-1-red-behavior.log:211: trailing whitespace.
+++ Received: 
+.superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-1-red-behavior.log:247: trailing whitespace.
++- Expected: 
+.superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-1-red-behavior.log:250: trailing whitespace.
+++ Received: 
+.superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-1-red-behavior.log:267: trailing whitespace.
++- Expected: 
+.superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-1-red-behavior.log:270: trailing whitespace.
+++ Received: 
+.superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-1-red-behavior.log:287: trailing whitespace.
++- Expected: 
+.superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-1-red-behavior.log:290: trailing whitespace.
+++ Received: 
+.superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-1-red-behavior.log:307: trailing whitespace.
++- Expected: 
+.superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-1-red-behavior.log:310: trailing whitespace.
+++ Received: 
+.superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-1-red-behavior.log:377: trailing whitespace.
++- Expected: 
+.superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-1-red-behavior.log:380: trailing whitespace.
+++ Received: 
+.superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-1-red-behavior.log:397: trailing whitespace.
++- Expected: 
+.superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-1-red-behavior.log:400: trailing whitespace.
+++ Received: 
+.superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-1-red-behavior.log:417: trailing whitespace.
++- Expected: 
+.superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-1-red-behavior.log:420: trailing whitespace.
+++ Received: 
+.superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-1-red-behavior.log:442: trailing whitespace.
++- Expected: 
+.superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-1-red-behavior.log:445: trailing whitespace.
+++ Received: 
+.superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-1-red-behavior.log:464: new blank line at EOF.
+.superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-1-red-boundaries.log:96: trailing whitespace.
++- Expected: 
+.superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-1-red-boundaries.log:99: trailing whitespace.
+++ Received: 
+.superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-1-red-boundaries.log:116: trailing whitespace.
++- Expected: 
+.superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-1-red-boundaries.log:119: trailing whitespace.
+++ Received: 
+.superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-1-red-boundaries.log:138: new blank line at EOF.
+.superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-1-red-decimal-compatibility.log:112: new blank line at EOF.
+.superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-1-red-identity-expansion.log:113: new blank line at EOF.
+.superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-1-red.log:34: new blank line at EOF.
+.superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-1-verified-build.log:55: trailing whitespace.
++apps/web build:   Generating static pages using 7 workers (6/24) 
+.superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-1-verified-build.log:56: trailing whitespace.
++apps/web build:   Generating static pages using 7 workers (12/24) 
+.superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-1-verified-build.log:57: trailing whitespace.
++apps/web build:   Generating static pages using 7 workers (18/24) 
+.superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-1-verified-tests.log:115: new blank line at EOF.
+.superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-1-workspace-tests-final.log:116: new blank line at EOF.
+.superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-1-workspace-tests.log:114: new blank line at EOF.

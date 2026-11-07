@@ -1,0 +1,74 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| packages/domain/src/market-data/validation.test.ts (3 tests | 3 failed) 9ms
+   × market validation boundary > rejects malformed input before acquiring any database transaction 6ms
+     → expected Error: Database unavailable to match object { code: 'MARKET_INPUT_INVALID' }
+   × market validation boundary > captures source qualifier/confidence snapshots before any asynchronous work 2ms
+     → expected { condition: 'Damaged' } to deeply equal { condition: 'NM' }
+   × market validation boundary > uses the exact native JSONB metadata byte budget rather than compact JSON length 1ms
+     → expected [Function] to throw an error
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/market-data/validation.test.ts > market validation boundary > rejects malformed input before acquiring any database transaction
+AssertionError: expected Error: Database unavailable to match object { code: 'MARKET_INPUT_INVALID' }
+
+- Expected
++ Received
+
+- {
+-   "code": "MARKET_INPUT_INVALID",
++ Error {
++   "message": "Database unavailable",
+  }
+
+ ❯ packages/domain/src/market-data/validation.test.ts:11:5
+      9|   it('rejects malformed input before acquiring any database transactio…
+     10|     const service=createMarketDataService({$transaction:async()=>{thro…
+     11|     await expect(service.recordObservations('fixture',[point({amountMi…
+       |     ^
+     12|   });
+     13|   it('captures source qualifier/confidence snapshots before any asynch…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  |workspace| packages/domain/src/market-data/validation.test.ts > market validation boundary > captures source qualifier/confidence snapshots before any asynchronous work
+AssertionError: expected { condition: 'Damaged' } to deeply equal { condition: 'NM' }
+
+- Expected
++ Received
+
+  {
+-   "condition": "NM",
++   "condition": "Damaged",
+  }
+
+ ❯ packages/domain/src/market-data/validation.test.ts:17:28
+     15|     const row=parseBatch('fixture',[point({qualifiers,confidence})],co…
+     16|     qualifiers.condition='Damaged';confidence.sourceLabel='changed';
+     17|     expect(row.qualifiers).toEqual({condition:'NM'});expect(row.confid…
+       |                            ^
+     18|   });
+     19|   it('uses the exact native JSONB metadata byte budget rather than com…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  |workspace| packages/domain/src/market-data/validation.test.ts > market validation boundary > uses the exact native JSONB metadata byte budget rather than compact JSON length
+AssertionError: expected [Function] to throw an error
+ ❯ packages/domain/src/market-data/validation.test.ts:24:53
+     22|     // Native JSONB spaces count: this metadata is 4097 bytes but comp…
+     23|     const row=point({qualifiers,confidence,sourceReference:'x'.repeat(…
+     24|     expect(()=>parseBatch('fixture',[row],context)).toThrow();
+       |                                                     ^
+     25|   });
+     26| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed (3)
+   Start at  04:26:23
+   Duration  324ms (transform 53ms, setup 5ms, collect 90ms, tests 9ms, environment 0ms, prepare 51ms)
+

@@ -1,0 +1,50 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| apps/web/src/components/money/legacy-money-draft.test.ts (8 tests | 1 failed) 13ms
+   × deliberate monetary draft semantics > blocks even a normal save while a previous outcome has not been reconciled 8ms
+     → expected [Function] to throw error including 'MONEY_OUTCOME_UNCERTAIN' but got '[\n  {\n    "code": "unrecognized_key…'
+   ✓ deliberate monetary draft semantics > never parses or authors an untouched historical pair on an ordinary save 0ms
+   ✓ deliberate monetary draft semantics > requires explicit acknowledgment and audit note before replacing old AFN with the pinned new decimal 2ms
+   ✓ deliberate monetary draft semantics > separates explicit clear from blank/invalid replacement and never fabricates a missing token 1ms
+   ✓ deliberate monetary draft semantics > authors a new decimal only through the pinned explicit profile and rejects unsupported codes/grouping 1ms
+   ✓ deliberate monetary draft semantics > displays stored scale independently of locale and the current ISO exponent 0ms
+   ✓ deliberate monetary draft semantics > does not silently rebase an edited draft onto a newer fact token after locale navigation 0ms
+   ✓ deliberate monetary draft semantics > preserves exact typed draft through locale remount but separates accounts and clears on logout 0ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/web/src/components/money/legacy-money-draft.test.ts > deliberate monetary draft semantics > blocks even a normal save while a previous outcome has not been reconciled
+AssertionError: expected [Function] to throw error including 'MONEY_OUTCOME_UNCERTAIN' but got '[\n  {\n    "code": "unrecognized_key…'
+
+- Expected
++ Received
+
+- MONEY_OUTCOME_UNCERTAIN
++ [
++   {
++     "code": "unrecognized_keys",
++     "keys": [
++       "outcome"
++     ],
++     "path": [],
++     "message": "Unrecognized key: \"outcome\""
++   }
++ ]
+
+ ❯ apps/web/src/components/money/legacy-money-draft.test.ts:23:57
+     21|   it("blocks even a normal save while a previous outcome has not been …
+     22|     const draft = { ...initialMoneyDraft(view()), outcome: "UNKNOWN" a…
+     23|     expect(() => moneyDraftIntent(draft, view(), true)).toThrow("MONEY…
+       |                                                         ^
+     24|   });
+     25|   it("never parses or authors an untouched historical pair on an ordin…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 7 passed (8)
+   Start at  08:35:07
+   Duration  359ms (transform 43ms, setup 6ms, collect 125ms, tests 13ms, environment 0ms, prepare 40ms)
+

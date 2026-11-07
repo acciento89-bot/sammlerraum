@@ -1,0 +1,31 @@
+[WebServer] (node:26575) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 20 tests using 1 worker
+
+(node:26628) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [desktop] › e2e/search-dashboard.spec.ts:1819:3 › de: dashboard renders real mixed denominations, exclusions and retained metadata (3.3s)
+  ✓   2 [desktop] › e2e/search-dashboard.spec.ts:1819:3 › en: dashboard renders real mixed denominations, exclusions and retained metadata (1.9s)
+  ✓   3 [desktop] › e2e/search-dashboard.spec.ts:2086:3 › de: dashboard blocked storage and narrow keyboard navigation stay private (2.8s)
+  ✓   4 [desktop] › e2e/search-dashboard.spec.ts:2086:3 › en: dashboard blocked storage and narrow keyboard navigation stay private (2.3s)
+  ✓   5 [desktop] › e2e/search-dashboard.spec.ts:2155:3 › de: clean dashboard cannot abandon an outstanding real saved-search creation through Back (737ms)
+  ✓   6 [desktop] › e2e/search-dashboard.spec.ts:2155:3 › en: clean dashboard cannot abandon an outstanding real saved-search creation through Back (814ms)
+  ✓   7 [desktop] › e2e/search-dashboard.spec.ts:2218:5 › de: unresolved creation remains guarded after Cancel and search Reset (724ms)
+  ✓   8 [desktop] › e2e/search-dashboard.spec.ts:2218:5 › de: unresolved creation remains guarded after Cancel and dashboard Reset (733ms)
+  ✓   9 [desktop] › e2e/search-dashboard.spec.ts:2218:5 › en: unresolved creation remains guarded after Cancel and search Reset (698ms)
+  ✓  10 [desktop] › e2e/search-dashboard.spec.ts:2218:5 › en: unresolved creation remains guarded after Cancel and dashboard Reset (848ms)
+(node:26944) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  11 [mobile] › e2e/search-dashboard.spec.ts:1819:3 › de: dashboard renders real mixed denominations, exclusions and retained metadata (2.6s)
+  ✓  12 [mobile] › e2e/search-dashboard.spec.ts:1819:3 › en: dashboard renders real mixed denominations, exclusions and retained metadata (2.3s)
+  ✓  13 [mobile] › e2e/search-dashboard.spec.ts:2086:3 › de: dashboard blocked storage and narrow keyboard navigation stay private (3.3s)
+  ✓  14 [mobile] › e2e/search-dashboard.spec.ts:2086:3 › en: dashboard blocked storage and narrow keyboard navigation stay private (3.0s)
+  ✓  15 [mobile] › e2e/search-dashboard.spec.ts:2155:3 › de: clean dashboard cannot abandon an outstanding real saved-search creation through Back (697ms)
+  ✓  16 [mobile] › e2e/search-dashboard.spec.ts:2155:3 › en: clean dashboard cannot abandon an outstanding real saved-search creation through Back (592ms)
+  ✓  17 [mobile] › e2e/search-dashboard.spec.ts:2218:5 › de: unresolved creation remains guarded after Cancel and search Reset (649ms)
+  ✓  18 [mobile] › e2e/search-dashboard.spec.ts:2218:5 › de: unresolved creation remains guarded after Cancel and dashboard Reset (666ms)
+  ✓  19 [mobile] › e2e/search-dashboard.spec.ts:2218:5 › en: unresolved creation remains guarded after Cancel and search Reset (649ms)
+  ✓  20 [mobile] › e2e/search-dashboard.spec.ts:2218:5 › en: unresolved creation remains guarded after Cancel and dashboard Reset (634ms)
+
+  20 passed (32.7s)

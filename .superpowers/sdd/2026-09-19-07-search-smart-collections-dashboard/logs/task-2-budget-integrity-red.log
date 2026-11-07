@@ -1,0 +1,158 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| packages/domain/src/search/item-search-service.test.ts (67 tests | 1 failed) 813ms
+   ✓ owned item search PostgreSQL > does not include inaccessible private/public items in rows or total count 15ms
+   ✓ owned item search PostgreSQL > executes custom SHORT_TEXT stored type 11ms
+   ✓ owned item search PostgreSQL > executes custom LONG_TEXT stored type 8ms
+   ✓ owned item search PostgreSQL > executes custom INTEGER stored type 8ms
+   ✓ owned item search PostgreSQL > executes custom DECIMAL stored type 8ms
+   ✓ owned item search PostgreSQL > executes custom DATE stored type 7ms
+   ✓ owned item search PostgreSQL > executes custom BOOLEAN stored type 7ms
+   ✓ owned item search PostgreSQL > executes custom URL stored type 7ms
+   ✓ owned item search PostgreSQL > executes custom SINGLE_SELECT stored type 8ms
+   ✓ owned item search PostgreSQL > executes custom MULTI_SELECT stored type 6ms
+   ✓ owned item search PostgreSQL > executes custom MONEY stored type 7ms
+   ✓ owned item search PostgreSQL > executes catalog SHORT_TEXT stored type and scoped absence 13ms
+   ✓ owned item search PostgreSQL > executes catalog LONG_TEXT stored type and scoped absence 10ms
+   ✓ owned item search PostgreSQL > executes catalog INTEGER stored type and scoped absence 10ms
+   ✓ owned item search PostgreSQL > executes catalog DECIMAL stored type and scoped absence 11ms
+   ✓ owned item search PostgreSQL > executes catalog DATE stored type and scoped absence 14ms
+   ✓ owned item search PostgreSQL > executes catalog BOOLEAN stored type and scoped absence 10ms
+   ✓ owned item search PostgreSQL > executes catalog URL stored type and scoped absence 10ms
+   ✓ owned item search PostgreSQL > executes catalog SINGLE_SELECT stored type and scoped absence 10ms
+   ✓ owned item search PostgreSQL > executes catalog MULTI_SELECT stored type and scoped absence 11ms
+   ✓ owned item search PostgreSQL > executes catalog MONEY stored type and scoped absence 10ms
+   ✓ owned item search PostgreSQL > handles collection/category/condition and stored enums 29ms
+   ✓ owned item search PostgreSQL > uses two-valued mixed NOT/OR, tags identity and literal values 13ms
+   ✓ owned item search PostgreSQL > matches every ordered operator exactly, preserving decimal precision 35ms
+   ✓ owned item search PostgreSQL > requires grading components from one row and folds only provider ASCII 10ms
+   ✓ owned item search PostgreSQL > selects latest manual before denomination, keeps bigint/per-unit values 20ms
+   ✓ owned item search PostgreSQL > searches literal Unicode broad whitelist: äöüß 5ms
+   ✓ owned item search PostgreSQL > searches literal Unicode broad whitelist: Café 4ms
+   ✓ owned item search PostgreSQL > searches literal Unicode broad whitelist: Café 4ms
+   ✓ owned item search PostgreSQL > searches literal Unicode broad whitelist: 100%_\' 5ms
+   ✓ owned item search PostgreSQL > searches literal Unicode broad whitelist: Public phrase 5ms
+   ✓ owned item search PostgreSQL > searches literal Unicode broad whitelist: i̇ tag 5ms
+   ✓ owned item search PostgreSQL > searches literal Unicode broad whitelist: ID-literal 5ms
+   ✓ owned item search PostgreSQL > searches literal Unicode broad whitelist: certificate-one 5ms
+   ✓ owned item search PostgreSQL > searches literal Unicode broad whitelist: Long authored 5ms
+   ✓ owned item search PostgreSQL > searches literal Unicode broad whitelist: Selected 5ms
+   ✓ owned item search PostgreSQL > searches literal Unicode broad whitelist: Uhrenkategorie 5ms
+   ✓ owned item search PostgreSQL > searches literal Unicode broad whitelist: Clock category 5ms
+   ✓ owned item search PostgreSQL > searches literal Unicode broad whitelist: Katalogübersetzung 5ms
+   ✓ owned item search PostgreSQL > searches literal Unicode broad whitelist: Retired selected variant 5ms
+   ✓ owned item search PostgreSQL > searches literal Unicode broad whitelist: Chosen option 5ms
+   ✓ owned item search PostgreSQL > searches literal Unicode broad whitelist: Ausgewählte Option 5ms
+   ✓ owned item search PostgreSQL > excludes non-whitelisted/unselected/literal mismatch: Private secret phrase 5ms
+   ✓ owned item search PostgreSQL > excludes non-whitelisted/unselected/literal mismatch: Secret other variant 5ms
+   ✓ owned item search PostgreSQL > excludes non-whitelisted/unselected/literal mismatch: 100ZZ 5ms
+   ✓ owned item search PostgreSQL > excludes non-whitelisted/unselected/literal mismatch: unselected option 5ms
+   ✓ owned item search PostgreSQL > uses retained exact selected variant facts, no entry fallback after removal 13ms
+   ✓ owned item search PostgreSQL > rejects all unavailable families below NOT/OR even on empty candidates 3ms
+   ✓ owned item search PostgreSQL > validates private/nonexistent/type/option references independent of Boolean matches 17ms
+   ✓ owned item search PostgreSQL > rejects malformed relevant catalog DECIMAL under NOT independently of match 6ms
+   ✓ owned item search PostgreSQL > rejects malformed relevant catalog DECIMAL under NOT independently of match 3ms
+   ✓ owned item search PostgreSQL > rejects malformed relevant catalog DECIMAL under NOT independently of match 3ms
+   ✓ owned item search PostgreSQL > rejects malformed relevant catalog DECIMAL under NOT independently of match 3ms
+   ✓ owned item search PostgreSQL > rejects malformed relevant catalog DATE under NOT independently of match 4ms
+   ✓ owned item search PostgreSQL > rejects malformed relevant catalog DATE under NOT independently of match 4ms
+   ✓ owned item search PostgreSQL > rejects malformed relevant catalog INTEGER under NOT independently of match 5ms
+   ✓ owned item search PostgreSQL > rejects malformed relevant catalog INTEGER under NOT independently of match 3ms
+   ✓ owned item search PostgreSQL > rejects malformed relevant catalog BOOLEAN under NOT independently of match 4ms
+   ✓ owned item search PostgreSQL > rejects malformed relevant catalog MULTI_SELECT under NOT independently of match 4ms
+   ✓ owned item search PostgreSQL > rejects malformed relevant catalog MULTI_SELECT under NOT independently of match 3ms
+   ✓ owned item search PostgreSQL > rejects malformed relevant catalog MULTI_SELECT under NOT independently of match 3ms
+   ✓ owned item search PostgreSQL > rejects malformed relevant catalog MONEY under NOT independently of match 3ms
+   ✓ owned item search PostgreSQL > paginates tied keys, keeps pre-cursor total on exhausted pages and revalidates live state 8ms
+   ✓ owned item search PostgreSQL > enforces all lifecycle states, item deletion and deleted parent 23ms
+   ✓ owned item search PostgreSQL > keeps one MVCC snapshot between count and rows then sees the next edit 12ms
+   ✓ owned item search PostgreSQL > requires READY usable assets and exact document category/owner 69ms
+   × owned item search PostgreSQL > rejects native nonfinite decimal and noncanonical date facts before NOT/filter narrowing 13ms
+     → promise resolved "{ items: [], total: +0, …(4) }" instead of rejecting
+stdout | packages/domain/src/search/search-read.integration.test.ts > native search transaction dependency behavior > settles a real statement timeout and maps captured installed-driver error
+native search timeout mapping {"outerCode":"P2010","recognizedCode":"57014"}
+
+stdout | packages/domain/src/search/search-read.integration.test.ts > native search transaction dependency behavior > recognizes real serialization errors and retries exactly three transactions
+native search serialization mapping {"outerCode":"P2010","recognizedCode":"40001","attempts":3}
+
+ ❯ |workspace| packages/domain/src/search/search-read.integration.test.ts (4 tests | 1 failed) 7123ms
+   ✓ native search transaction dependency behavior > configures actual RepeatableRead/UTC/statement/lock/transaction budgets 63ms
+   ✓ native search transaction dependency behavior > settles a real statement timeout and maps captured installed-driver error  2036ms
+   ✓ native search transaction dependency behavior > recognizes real serialization errors and retries exactly three transactions 12ms
+   × native search transaction dependency behavior > maps actual lock timeout without returning a partial result 5006ms
+     → Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ✓ |workspace| packages/domain/src/search/search-read.test.ts (6 tests) 4ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/search/item-search-service.test.ts > owned item search PostgreSQL > rejects native nonfinite decimal and noncanonical date facts before NOT/filter narrowing
+AssertionError: promise resolved "{ items: [], total: +0, …(4) }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "items": [],
++   "lifecycle": "ACTIVE",
++   "nextCursor": null,
++   "readAt": "2026-10-18T07:16:14.578Z",
++   "scope": "OWNED",
++   "total": 0,
+  }
+
+ ❯ packages/domain/src/search/item-search-service.test.ts:125:110
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |workspace| packages/domain/src/search/search-read.integration.test.ts > native search transaction dependency behavior > maps actual lock timeout without returning a partial result
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ packages/domain/src/search/search-read.integration.test.ts:26:2
+     24|  console.info("native search serialization mapping",JSON.stringify({ou…
+     25|  });
+     26|  it("maps actual lock timeout without returning a partial result",asyn…
+       |  ^
+     27|  let release!:()=>void,locked!:()=>void;const held=new Promise<void>(r…
+     28|  const locker=db!.$transaction(async tx=>{await tx.$queryRaw`SELECT pg…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+⎯⎯⎯⎯⎯⎯ Unhandled Errors ⎯⎯⎯⎯⎯⎯
+
+Vitest caught 1 unhandled error during the test run.
+This might cause false positive tests. Resolve unhandled errors to make sure your tests are not affected.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+PrismaClientKnownRequestError: 
+Invalid `prisma.$queryRaw()` invocation:
+
+
+Raw query failed. Code: `N/A`. Message: `Failed to deserialize column of type 'void'. If you're using $queryRaw and this column is explicitly marked as `Unsupported` in your Prisma schema, try casting this column to any supported Prisma type such as `String`.`
+ ❯ vn.handleRequestError node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:238:13
+ ❯ vn.handleAndLogRequestError node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:184:12
+ ❯ vn.request node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:153:12
+ ❯ processTicksAndRejections node:internal/process/task_queues:104:5
+ ❯ a node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:1014:24
+ ❯ db.$transaction.timeout packages/domain/src/search/search-read.integration.test.ts:28:43
+ ❯ Proxy._transactionWithCallback node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:861:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { code: 'P2010', meta: { driverAdapterError: { stack: 'DriverAdapterError: UnsupportedNativeDataType\n    at PgTransaction.queryRaw (file:///Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/node_modules/.pnpm/@prisma+adapter-pg@7.10.0/node_modules/@prisma/adapter-pg/dist/index.mjs:602:15)\n    at processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client-engine-runtime/src/interpreter/query-interpreter.ts:200:28\n    at e.run (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client-engine-runtime/src/interpreter/query-interpreter.ts:115:40)\n    at execute (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/core/engines/client/LocalExecutor.ts:81:12)\n    at yr.request (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/core/engines/client/ClientEngine.ts:510:22)\n    at Object.singleLoader (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:113:26)', message: 'UnsupportedNativeDataType', name: 'DriverAdapterError', cause: { kind: 'UnsupportedNativeDataType', type: 'void' }, constructor: 'Function<DriverAdapterError>', toString: 'Function<toString>' } }, clientVersion: '7.10.0', batchRequestIdx: undefined }
+This error originated in "packages/domain/src/search/search-read.integration.test.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The latest test that might've caused the error is "maps actual lock timeout without returning a partial result". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+
+
+ Test Files  2 failed | 1 passed (3)
+      Tests  2 failed | 75 passed (77)
+     Errors  1 error
+   Start at  09:16:13
+   Duration  8.81s (transform 114ms, setup 7ms, collect 404ms, tests 7.94s, environment 0ms, prepare 105ms)
+

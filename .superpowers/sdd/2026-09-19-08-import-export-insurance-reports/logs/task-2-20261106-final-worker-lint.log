@@ -1,0 +1,6 @@
+
+> @sammlerraum/worker@ lint /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/worker
+> prettier --check src package.json
+
+Checking formatting...
+All matched files use Prettier code style!

@@ -1,0 +1,31 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| apps/web/src/lib/catalog-history-routes.integration.test.ts (2 tests | 2 failed) 130ms
+   × history HTTP and advisory authority > serves bounded canonical history with no-store and strict inputs 3ms
+     → handlers(...).HISTORY is not a function
+   × history HTTP and advisory authority > reports only actual own grant capability and immediately observes revocation 0ms
+     → handlers(...).CAPABILITIES is not a function
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/web/src/lib/catalog-history-routes.integration.test.ts > history HTTP and advisory authority > serves bounded canonical history with no-store and strict inputs
+TypeError: handlers(...).HISTORY is not a function
+ ❯ apps/web/src/lib/catalog-history-routes.integration.test.ts:14:122
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |workspace| apps/web/src/lib/catalog-history-routes.integration.test.ts > history HTTP and advisory authority > reports only actual own grant capability and immediately observes revocation
+TypeError: handlers(...).CAPABILITIES is not a function
+ ❯ apps/web/src/lib/catalog-history-routes.integration.test.ts:15:137
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed (2)
+   Start at  00:56:50
+   Duration  519ms (transform 97ms, setup 5ms, collect 224ms, tests 130ms, environment 0ms, prepare 44ms)
+

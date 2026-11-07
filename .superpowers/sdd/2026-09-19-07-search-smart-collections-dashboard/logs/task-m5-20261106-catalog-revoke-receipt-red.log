@@ -1,0 +1,62 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| apps/web/src/lib/catalog-money-routes.integration.test.ts (5 tests | 1 failed) 433ms
+   ✓ catalog money HTTP native boundary > does not create a global proposal after the browser account changed 26ms
+   ✓ catalog money HTTP native boundary > keeps reads available but declines explicit mutations while server authoring is disabled 39ms
+   × catalog money HTTP native boundary > reads public-safe revision money, classifies, privately audits and revokes with fresh sessions 43ms
+     → expected { schemaVersion: 1, money: { …(5) } } to match object { schemaVersion: 1, …(4) }
+   ✓ catalog money HTTP native boundary > queues explicit authoring without applying it and keeps legacy quota/shared audit 7ms
+   ✓ catalog money HTTP native boundary > rejects foreign origins, ambiguous query/body keys, BOM and oversized streamed bytes 12ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/web/src/lib/catalog-money-routes.integration.test.ts > catalog money HTTP native boundary > reads public-safe revision money, classifies, privately audits and revokes with fresh sessions
+AssertionError: expected { schemaVersion: 1, money: { …(5) } } to match object { schemaVersion: 1, …(4) }
+
+- Expected
++ Received
+
+@@ -1,7 +1,6 @@
+  {
+-   "assertionId": "9a30dfab-4760-42d7-87fb-730e2a940671",
+    "money": {
+      "interpretation": {
+        "kind": "UNKNOWN",
+        "reason": "REVOKED",
+      },
+@@ -13,17 +12,7 @@
+        "target": {
+          "kind": "ENTRY",
+        },
+      },
+    },
+-   "revoked": true,
+    "schemaVersion": 1,
+-   "subject": {
+-     "definitionId": "f03d8110-fd97-4e14-9fc0-c15dfed0c9a4",
+-     "entryId": "f34b31eb-0581-490e-a4cf-84008789f6c6",
+-     "family": "CATALOG",
+-     "revision": 1,
+-     "target": {
+-       "kind": "ENTRY",
+-     },
+-   },
+  }
+
+ ❯ apps/web/src/lib/catalog-money-routes.integration.test.ts:181:34
+    179|         );
+    180|     expect(revoked.status).toBe(200);
+    181|     expect(await revoked.json()).toMatchObject({ schemaVersion:1, revo…
+       |                                  ^
+    182|       money:{subject:records.subject,interpretation:{kind:"UNKNOWN",re…
+    183|     actor = null;
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 4 passed (5)
+   Start at  11:45:38
+   Duration  1.07s (transform 245ms, setup 6ms, collect 463ms, tests 433ms, environment 0ms, prepare 49ms)
+

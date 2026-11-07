@@ -1,0 +1,444 @@
+[WebServer] (node:12900) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 24 tests using 1 worker
+
+(node:12901) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [desktop] › e2e/search-dashboard.spec.ts:1117:3 › de: late acknowledged-refresh response cannot replace a newer member read (1.5s)
+  ✓   2 [desktop] › e2e/search-dashboard.spec.ts:1117:3 › en: late acknowledged-refresh response cannot replace a newer member read (603ms)
+  ✘   3 [desktop] › e2e/search-dashboard.spec.ts:1183:3 › de: unavailable references permit explicit repair while malformed definitions expose only list recovery (636ms)
+(node:12915) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   4 [desktop] › e2e/search-dashboard.spec.ts:1235:3 › de: saved list paginates actual rows and foreign missing deleted details stay indistinguishable (1.1s)
+  ✘   5 [desktop] › e2e/search-dashboard.spec.ts:1279:3 › de: saved editor confirms locale history and clears private draft undo on 401 (5.7s)
+(node:12926) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   6 [desktop] › e2e/search-dashboard.spec.ts:1330:3 › de: create acknowledgement remains readable when subsequent detail fetch fails (725ms)
+  ✓   7 [desktop] › e2e/search-dashboard.spec.ts:1356:3 › de: saved definition over fifty references survives cache eviction and replacement intact (1.4s)
+  ✘   8 [desktop] › e2e/search-dashboard.spec.ts:1183:3 › en: unavailable references permit explicit repair while malformed definitions expose only list recovery (626ms)
+(node:12937) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   9 [desktop] › e2e/search-dashboard.spec.ts:1235:3 › en: saved list paginates actual rows and foreign missing deleted details stay indistinguishable (1.1s)
+  ✘  10 [desktop] › e2e/search-dashboard.spec.ts:1279:3 › en: saved editor confirms locale history and clears private draft undo on 401 (5.6s)
+(node:12962) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  11 [desktop] › e2e/search-dashboard.spec.ts:1330:3 › en: create acknowledgement remains readable when subsequent detail fetch fails (715ms)
+  ✓  12 [desktop] › e2e/search-dashboard.spec.ts:1356:3 › en: saved definition over fifty references survives cache eviction and replacement intact (1.4s)
+(node:12970) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  13 [mobile] › e2e/search-dashboard.spec.ts:1117:3 › de: late acknowledged-refresh response cannot replace a newer member read (735ms)
+  ✓  14 [mobile] › e2e/search-dashboard.spec.ts:1117:3 › en: late acknowledged-refresh response cannot replace a newer member read (575ms)
+  ✘  15 [mobile] › e2e/search-dashboard.spec.ts:1183:3 › de: unavailable references permit explicit repair while malformed definitions expose only list recovery (572ms)
+(node:12992) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  16 [mobile] › e2e/search-dashboard.spec.ts:1235:3 › de: saved list paginates actual rows and foreign missing deleted details stay indistinguishable (10.7s)
+(node:13017) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  17 [mobile] › e2e/search-dashboard.spec.ts:1279:3 › de: saved editor confirms locale history and clears private draft undo on 401 (5.8s)
+(node:13026) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  18 [mobile] › e2e/search-dashboard.spec.ts:1330:3 › de: create acknowledgement remains readable when subsequent detail fetch fails (718ms)
+  ✓  19 [mobile] › e2e/search-dashboard.spec.ts:1356:3 › de: saved definition over fifty references survives cache eviction and replacement intact (1.3s)
+  ✘  20 [mobile] › e2e/search-dashboard.spec.ts:1183:3 › en: unavailable references permit explicit repair while malformed definitions expose only list recovery (559ms)
+(node:13038) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  21 [mobile] › e2e/search-dashboard.spec.ts:1235:3 › en: saved list paginates actual rows and foreign missing deleted details stay indistinguishable (10.8s)
+(node:13059) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  22 [mobile] › e2e/search-dashboard.spec.ts:1279:3 › en: saved editor confirms locale history and clears private draft undo on 401 (5.8s)
+(node:13070) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  23 [mobile] › e2e/search-dashboard.spec.ts:1330:3 › en: create acknowledgement remains readable when subsequent detail fetch fails (752ms)
+  ✓  24 [mobile] › e2e/search-dashboard.spec.ts:1356:3 › en: saved definition over fifty references survives cache eviction and replacement intact (1.2s)
+
+
+  1) [desktop] › e2e/search-dashboard.spec.ts:1183:3 › de: unavailable references permit explicit repair while malformed definitions expose only list recovery 
+
+    PrismaClientKnownRequestError: 
+    Invalid `prisma.smartCollection.update()` invocation:
+
+
+    Database error. Code: `23514`. Message: `new row for relation "SmartCollection" violates check constraint "SmartCollection_definition_check"`
+
+      1205 |       await expect(page.getByTestId("search-total")).toContainText("1");
+      1206 |       const broken = await seededSavedSearch(page, "Malformed retained definition");
+    > 1207 |       await db!.smartCollection.update({
+           |       ^
+      1208 |         where: { id: broken.id },
+      1209 |         data: {
+      1210 |           definition: { privateMarker: "never-render-private-stored-json", filterVersion: 99 },
+        at vn.handleRequestError (/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:238:13)
+        at vn.handleAndLogRequestError (/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:184:12)
+        at vn.request (/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:153:12)
+        at a (/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:1014:24)
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/search-dashboard.spec.ts:1207:7
+
+    Error Context: test-results/search-dashboard-de-unavai-f4ca7-s-expose-only-list-recovery-desktop/error-context.md
+
+    Error Context: test-results/search-dashboard-de-unavai-f4ca7-s-expose-only-list-recovery-desktop/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/search-dashboard-de-unavai-f4ca7-s-expose-only-list-recovery-desktop/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/search-dashboard-de-unavai-f4ca7-s-expose-only-list-recovery-desktop/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [desktop] › e2e/search-dashboard.spec.ts:1279:3 › de: saved editor confirms locale history and clears private draft undo on 401 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('dialog').getByRole('heading', { name: 'Lokale Änderungen verwerfen?', exact: true })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('dialog').getByRole('heading', { name: 'Lokale Änderungen verwerfen?', exact: true }) with timeout 5000ms
+      - waiting for getByRole('dialog').getByRole('heading', { name: 'Lokale Änderungen verwerfen?', exact: true })
+
+
+      1307 |       await expect(
+      1308 |         page.getByRole("dialog").getByRole("heading", { name: c.discardTitle, exact: true }),
+    > 1309 |       ).toBeVisible();
+           |         ^
+      1310 |       await page.getByRole("dialog").getByRole("button", { name: c.cancel, exact: true }).click();
+      1311 |       await expect(page).toHaveURL(new RegExp(`/${saved.id}$`));
+      1312 |       await page.getByRole("button", { name: s.remove, exact: true }).click();
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/search-dashboard.spec.ts:1309:9
+
+    Error Context: test-results/search-dashboard-de-saved--781b9-s-private-draft-undo-on-401-desktop/error-context.md
+
+    Error Context: test-results/search-dashboard-de-saved--781b9-s-private-draft-undo-on-401-desktop/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/search-dashboard-de-saved--781b9-s-private-draft-undo-on-401-desktop/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/search-dashboard-de-saved--781b9-s-private-draft-undo-on-401-desktop/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [desktop] › e2e/search-dashboard.spec.ts:1183:3 › en: unavailable references permit explicit repair while malformed definitions expose only list recovery 
+
+    PrismaClientKnownRequestError: 
+    Invalid `prisma.smartCollection.update()` invocation:
+
+
+    Database error. Code: `23514`. Message: `new row for relation "SmartCollection" violates check constraint "SmartCollection_definition_check"`
+
+      1205 |       await expect(page.getByTestId("search-total")).toContainText("1");
+      1206 |       const broken = await seededSavedSearch(page, "Malformed retained definition");
+    > 1207 |       await db!.smartCollection.update({
+           |       ^
+      1208 |         where: { id: broken.id },
+      1209 |         data: {
+      1210 |           definition: { privateMarker: "never-render-private-stored-json", filterVersion: 99 },
+        at vn.handleRequestError (/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:238:13)
+        at vn.handleAndLogRequestError (/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:184:12)
+        at vn.request (/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:153:12)
+        at a (/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:1014:24)
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/search-dashboard.spec.ts:1207:7
+
+    Error Context: test-results/search-dashboard-en-unavai-5e230-s-expose-only-list-recovery-desktop/error-context.md
+
+    Error Context: test-results/search-dashboard-en-unavai-5e230-s-expose-only-list-recovery-desktop/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/search-dashboard-en-unavai-5e230-s-expose-only-list-recovery-desktop/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/search-dashboard-en-unavai-5e230-s-expose-only-list-recovery-desktop/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4) [desktop] › e2e/search-dashboard.spec.ts:1279:3 › en: saved editor confirms locale history and clears private draft undo on 401 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('dialog').getByRole('heading', { name: 'Discard local changes?', exact: true })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('dialog').getByRole('heading', { name: 'Discard local changes?', exact: true }) with timeout 5000ms
+      - waiting for getByRole('dialog').getByRole('heading', { name: 'Discard local changes?', exact: true })
+
+
+      1307 |       await expect(
+      1308 |         page.getByRole("dialog").getByRole("heading", { name: c.discardTitle, exact: true }),
+    > 1309 |       ).toBeVisible();
+           |         ^
+      1310 |       await page.getByRole("dialog").getByRole("button", { name: c.cancel, exact: true }).click();
+      1311 |       await expect(page).toHaveURL(new RegExp(`/${saved.id}$`));
+      1312 |       await page.getByRole("button", { name: s.remove, exact: true }).click();
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/search-dashboard.spec.ts:1309:9
+
+    Error Context: test-results/search-dashboard-en-saved--c538a-s-private-draft-undo-on-401-desktop/error-context.md
+
+    Error Context: test-results/search-dashboard-en-saved--c538a-s-private-draft-undo-on-401-desktop/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/search-dashboard-en-saved--c538a-s-private-draft-undo-on-401-desktop/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/search-dashboard-en-saved--c538a-s-private-draft-undo-on-401-desktop/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  5) [mobile] › e2e/search-dashboard.spec.ts:1183:3 › de: unavailable references permit explicit repair while malformed definitions expose only list recovery 
+
+    PrismaClientKnownRequestError: 
+    Invalid `prisma.smartCollection.update()` invocation:
+
+
+    Database error. Code: `23514`. Message: `new row for relation "SmartCollection" violates check constraint "SmartCollection_definition_check"`
+
+      1205 |       await expect(page.getByTestId("search-total")).toContainText("1");
+      1206 |       const broken = await seededSavedSearch(page, "Malformed retained definition");
+    > 1207 |       await db!.smartCollection.update({
+           |       ^
+      1208 |         where: { id: broken.id },
+      1209 |         data: {
+      1210 |           definition: { privateMarker: "never-render-private-stored-json", filterVersion: 99 },
+        at vn.handleRequestError (/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:238:13)
+        at vn.handleAndLogRequestError (/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:184:12)
+        at vn.request (/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:153:12)
+        at a (/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:1014:24)
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/search-dashboard.spec.ts:1207:7
+
+    Error Context: test-results/search-dashboard-de-unavai-f4ca7-s-expose-only-list-recovery-mobile/error-context.md
+
+    Error Context: test-results/search-dashboard-de-unavai-f4ca7-s-expose-only-list-recovery-mobile/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/search-dashboard-de-unavai-f4ca7-s-expose-only-list-recovery-mobile/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/search-dashboard-de-unavai-f4ca7-s-expose-only-list-recovery-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  6) [mobile] › e2e/search-dashboard.spec.ts:1235:3 › de: saved list paginates actual rows and foreign missing deleted details stay indistinguishable 
+
+    TimeoutError: locator.click: Timeout 10000ms exceeded.
+    Call log:
+      - waiting for getByRole('button', { name: 'Nächste Seite', exact: true })
+        - locator resolved to <button>Nächste Seite</button>
+      - attempting click action
+        2 × waiting for element to be visible, enabled and stable
+          - element is visible, enabled and stable
+          - scrolling into view if needed
+          - done scrolling
+          - <li class="management-card">…</li> from <ul class="search-results">…</ul> subtree intercepts pointer events
+        - retrying click action
+        - waiting 20ms
+        2 × waiting for element to be visible, enabled and stable
+          - element is visible, enabled and stable
+          - scrolling into view if needed
+          - done scrolling
+          - <li class="management-card">…</li> from <ul class="search-results">…</ul> subtree intercepts pointer events
+        - retrying click action
+          - waiting 100ms
+        19 × waiting for element to be visible, enabled and stable
+           - element is visible, enabled and stable
+           - scrolling into view if needed
+           - done scrolling
+           - <li class="management-card">…</li> from <ul class="search-results">…</ul> subtree intercepts pointer events
+         - retrying click action
+           - waiting 500ms
+
+
+      1246 |       await expect(links).toHaveCount(20);
+      1247 |       const first = await links.allTextContents();
+    > 1248 |       await page.getByRole("button", { name: c.nextPage, exact: true }).click();
+           |                                                                         ^
+      1249 |       await expect(links).toHaveCount(1);
+      1250 |       expect(first).not.toContain(await links.first().innerText());
+      1251 |       await page.getByRole("button", { name: c.firstPage, exact: true }).click();
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/search-dashboard.spec.ts:1248:73
+
+    Error Context: test-results/search-dashboard-de-saved--951b2-ails-stay-indistinguishable-mobile/error-context.md
+
+    Error Context: test-results/search-dashboard-de-saved--951b2-ails-stay-indistinguishable-mobile/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/search-dashboard-de-saved--951b2-ails-stay-indistinguishable-mobile/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/search-dashboard-de-saved--951b2-ails-stay-indistinguishable-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  7) [mobile] › e2e/search-dashboard.spec.ts:1279:3 › de: saved editor confirms locale history and clears private draft undo on 401 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('dialog').getByRole('heading', { name: 'Lokale Änderungen verwerfen?', exact: true })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('dialog').getByRole('heading', { name: 'Lokale Änderungen verwerfen?', exact: true }) with timeout 5000ms
+      - waiting for getByRole('dialog').getByRole('heading', { name: 'Lokale Änderungen verwerfen?', exact: true })
+
+
+      1307 |       await expect(
+      1308 |         page.getByRole("dialog").getByRole("heading", { name: c.discardTitle, exact: true }),
+    > 1309 |       ).toBeVisible();
+           |         ^
+      1310 |       await page.getByRole("dialog").getByRole("button", { name: c.cancel, exact: true }).click();
+      1311 |       await expect(page).toHaveURL(new RegExp(`/${saved.id}$`));
+      1312 |       await page.getByRole("button", { name: s.remove, exact: true }).click();
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/search-dashboard.spec.ts:1309:9
+
+    Error Context: test-results/search-dashboard-de-saved--781b9-s-private-draft-undo-on-401-mobile/error-context.md
+
+    Error Context: test-results/search-dashboard-de-saved--781b9-s-private-draft-undo-on-401-mobile/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/search-dashboard-de-saved--781b9-s-private-draft-undo-on-401-mobile/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/search-dashboard-de-saved--781b9-s-private-draft-undo-on-401-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  8) [mobile] › e2e/search-dashboard.spec.ts:1183:3 › en: unavailable references permit explicit repair while malformed definitions expose only list recovery 
+
+    PrismaClientKnownRequestError: 
+    Invalid `prisma.smartCollection.update()` invocation:
+
+
+    Database error. Code: `23514`. Message: `new row for relation "SmartCollection" violates check constraint "SmartCollection_definition_check"`
+
+      1205 |       await expect(page.getByTestId("search-total")).toContainText("1");
+      1206 |       const broken = await seededSavedSearch(page, "Malformed retained definition");
+    > 1207 |       await db!.smartCollection.update({
+           |       ^
+      1208 |         where: { id: broken.id },
+      1209 |         data: {
+      1210 |           definition: { privateMarker: "never-render-private-stored-json", filterVersion: 99 },
+        at vn.handleRequestError (/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:238:13)
+        at vn.handleAndLogRequestError (/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:184:12)
+        at vn.request (/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:153:12)
+        at a (/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:1014:24)
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/search-dashboard.spec.ts:1207:7
+
+    Error Context: test-results/search-dashboard-en-unavai-5e230-s-expose-only-list-recovery-mobile/error-context.md
+
+    Error Context: test-results/search-dashboard-en-unavai-5e230-s-expose-only-list-recovery-mobile/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/search-dashboard-en-unavai-5e230-s-expose-only-list-recovery-mobile/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/search-dashboard-en-unavai-5e230-s-expose-only-list-recovery-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  9) [mobile] › e2e/search-dashboard.spec.ts:1235:3 › en: saved list paginates actual rows and foreign missing deleted details stay indistinguishable 
+
+    TimeoutError: locator.click: Timeout 10000ms exceeded.
+    Call log:
+      - waiting for getByRole('button', { name: 'Next page', exact: true })
+        - locator resolved to <button>Next page</button>
+      - attempting click action
+        2 × waiting for element to be visible, enabled and stable
+          - element is visible, enabled and stable
+          - scrolling into view if needed
+          - done scrolling
+          - <li class="management-card">…</li> from <ul class="search-results">…</ul> subtree intercepts pointer events
+        - retrying click action
+        - waiting 20ms
+        2 × waiting for element to be visible, enabled and stable
+          - element is visible, enabled and stable
+          - scrolling into view if needed
+          - done scrolling
+          - <li class="management-card">…</li> from <ul class="search-results">…</ul> subtree intercepts pointer events
+        - retrying click action
+          - waiting 100ms
+        19 × waiting for element to be visible, enabled and stable
+           - element is visible, enabled and stable
+           - scrolling into view if needed
+           - done scrolling
+           - <li class="management-card">…</li> from <ul class="search-results">…</ul> subtree intercepts pointer events
+         - retrying click action
+           - waiting 500ms
+
+
+      1246 |       await expect(links).toHaveCount(20);
+      1247 |       const first = await links.allTextContents();
+    > 1248 |       await page.getByRole("button", { name: c.nextPage, exact: true }).click();
+           |                                                                         ^
+      1249 |       await expect(links).toHaveCount(1);
+      1250 |       expect(first).not.toContain(await links.first().innerText());
+      1251 |       await page.getByRole("button", { name: c.firstPage, exact: true }).click();
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/search-dashboard.spec.ts:1248:73
+
+    Error Context: test-results/search-dashboard-en-saved--98b1a-ails-stay-indistinguishable-mobile/error-context.md
+
+    Error Context: test-results/search-dashboard-en-saved--98b1a-ails-stay-indistinguishable-mobile/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/search-dashboard-en-saved--98b1a-ails-stay-indistinguishable-mobile/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/search-dashboard-en-saved--98b1a-ails-stay-indistinguishable-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  10) [mobile] › e2e/search-dashboard.spec.ts:1279:3 › en: saved editor confirms locale history and clears private draft undo on 401 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('dialog').getByRole('heading', { name: 'Discard local changes?', exact: true })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('dialog').getByRole('heading', { name: 'Discard local changes?', exact: true }) with timeout 5000ms
+      - waiting for getByRole('dialog').getByRole('heading', { name: 'Discard local changes?', exact: true })
+
+
+      1307 |       await expect(
+      1308 |         page.getByRole("dialog").getByRole("heading", { name: c.discardTitle, exact: true }),
+    > 1309 |       ).toBeVisible();
+           |         ^
+      1310 |       await page.getByRole("dialog").getByRole("button", { name: c.cancel, exact: true }).click();
+      1311 |       await expect(page).toHaveURL(new RegExp(`/${saved.id}$`));
+      1312 |       await page.getByRole("button", { name: s.remove, exact: true }).click();
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/search-dashboard.spec.ts:1309:9
+
+    Error Context: test-results/search-dashboard-en-saved--c538a-s-private-draft-undo-on-401-mobile/error-context.md
+
+    Error Context: test-results/search-dashboard-en-saved--c538a-s-private-draft-undo-on-401-mobile/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/search-dashboard-en-saved--c538a-s-private-draft-undo-on-401-mobile/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/search-dashboard-en-saved--c538a-s-private-draft-undo-on-401-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  10 failed
+    [desktop] › e2e/search-dashboard.spec.ts:1183:3 › de: unavailable references permit explicit repair while malformed definitions expose only list recovery 
+    [desktop] › e2e/search-dashboard.spec.ts:1279:3 › de: saved editor confirms locale history and clears private draft undo on 401 
+    [desktop] › e2e/search-dashboard.spec.ts:1183:3 › en: unavailable references permit explicit repair while malformed definitions expose only list recovery 
+    [desktop] › e2e/search-dashboard.spec.ts:1279:3 › en: saved editor confirms locale history and clears private draft undo on 401 
+    [mobile] › e2e/search-dashboard.spec.ts:1183:3 › de: unavailable references permit explicit repair while malformed definitions expose only list recovery 
+    [mobile] › e2e/search-dashboard.spec.ts:1235:3 › de: saved list paginates actual rows and foreign missing deleted details stay indistinguishable 
+    [mobile] › e2e/search-dashboard.spec.ts:1279:3 › de: saved editor confirms locale history and clears private draft undo on 401 
+    [mobile] › e2e/search-dashboard.spec.ts:1183:3 › en: unavailable references permit explicit repair while malformed definitions expose only list recovery 
+    [mobile] › e2e/search-dashboard.spec.ts:1235:3 › en: saved list paginates actual rows and foreign missing deleted details stay indistinguishable 
+    [mobile] › e2e/search-dashboard.spec.ts:1279:3 › en: saved editor confirms locale history and clears private draft undo on 401 
+  14 passed (1.1m)
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/search-dashboard.spec.ts --grep late acknowledged-refresh|unavailable references permit|saved list paginates|saved editor confirms|create acknowledgement remains|saved definition over fifty --workers=1 --trace=retain-on-failure

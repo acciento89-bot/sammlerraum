@@ -1,0 +1,74 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/imports/import-workflow.integration.test.ts (14 tests | 1 failed) 807ms
+   ✓ actual owned source upload lifecycle > stores actual bytes and an owned uploaded manifest without claiming parsed or writing inventory 136ms
+   ✓ actual owned source upload lifecycle > reuses an owner-scoped upload key on exact retry and rejects changed data under that key 38ms
+   ✓ actual owned source upload lifecycle > retains a failed write manifest and allows the same upload to recover without duplicate jobs 31ms
+   ✓ actual owned source upload lifecycle > hides foreign targets before source I/O and rejects caller storage or byte-count claims 4ms
+   ✓ actual owned source upload lifecycle > dispatches parsing and explicit commit as distinct stages without inherited cooldown 74ms
+   ✓ actual owned source upload lifecycle > limits active source jobs but allows an exact retry at the quota 71ms
+   ✓ actual owned source upload lifecycle > does not expose an expired source job or let the parser claim it 3ms
+   ✓ actual owned source upload lifecycle > gives source manifests exactly24hours even when the database session uses Berlin time 2ms
+   ✓ actual owned source upload lifecycle > pages all owned mapping profiles without truncating those beyond the first50 21ms
+   ✓ actual owned source upload lifecycle > cancels an own unapproved import and cleans its known bytes without changing inventory 36ms
+   ✓ actual owned source upload lifecycle > hides foreign cancellations and refuses a stale cancellation revision 26ms
+   ✓ actual owned source upload lifecycle > lists only current owned import jobs and never returns a storage path 22ms
+   ✓ actual owned source upload lifecycle > never cancels a durable approved commit 48ms
+   × actual owned source upload lifecycle > does not offer cancellation for an already approved import that failed 53ms
+     → promise resolved "{ …(13) }" instead of rejecting
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/imports/import-workflow.integration.test.ts > actual owned source upload lifecycle > does not offer cancellation for an already approved import that failed
+AssertionError: promise resolved "{ …(13) }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "collectionId": "529dda3c-7476-4f63-ad5a-cce1aa6f2062",
++   "createdAt": "2026-11-07T02:27:30.556Z",
++   "id": "6c5f5997-11bf-4e30-bd5b-01a0cd20f7f7",
++   "locale": "de",
++   "mapping": {
++     "columns": {
++       "title": 0,
++     },
++     "locale": "de",
++     "schemaVersion": 1,
++   },
++   "mappingHash": "892d0175d4eb1b0fb2a07806fc727f291940a2df250bb9ead522664d57efea5e",
++   "mappingProfile": null,
++   "previewGeneration": 1,
++   "progress": {
++     "committedRows": 0,
++     "parsedRows": 1,
++     "previewedRows": 1,
++     "totalRows": 1,
++   },
++   "revision": 11,
++   "source": {
++     "byteSize": "22",
++     "checksumSha256": "9992a773c322a35bca47ad4d699f93322e9ff74720748b070c816b9c7b4d8228",
++     "fileName": "own.csv",
++     "format": "CSV",
++     "verified": true,
++   },
++   "status": "CANCELLED",
++   "updatedAt": "2026-11-07T02:27:30.600Z",
+  }
+
+ ❯ packages/domain/src/imports/import-workflow.integration.test.ts:270:260
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 13 passed (14)
+   Start at  03:27:29
+   Duration  1.44s (transform 243ms, setup 7ms, collect 448ms, tests 807ms, environment 0ms, prepare 52ms)
+

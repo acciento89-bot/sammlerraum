@@ -1,0 +1,18 @@
+
+> sammlerraum@ typecheck /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+> pnpm -r typecheck
+
+Scope: 10 of 11 workspace projects
+packages/contracts typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+packages/config typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+packages/queue typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+packages/market-data typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+packages/market-data typecheck: ../domain/src/market-data/validation.ts(45,12): error TS2550: Property 'isWellFormed' does not exist on type 'string'. Do you need to change your target library? Try changing the 'lib' compiler option to 'es2024' or later.
+packages/market-data typecheck: Failed
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/market-data:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @sammlerraum/market-data@ typecheck: `tsc --noEmit --project ../../tsconfig.base.json`
+Exit status 2
+ WARN   Local package.json exists, but node_modules missing, did you mean to install?
+packages/storage typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+packages/config typecheck: ../domain/src/market-data/validation.ts(45,12): error TS2550: Property 'isWellFormed' does not exist on type 'string'. Do you need to change your target library? Try changing the 'lib' compiler option to 'es2024' or later.
+ ELIFECYCLE  Command failed with exit code 2.

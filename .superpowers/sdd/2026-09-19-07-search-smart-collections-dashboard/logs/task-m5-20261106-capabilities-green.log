@@ -1,0 +1,10 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ✓ |workspace| packages/contracts/src/money-capabilities.test.ts (2 tests) 3ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Start at  07:53:45
+   Duration  345ms (transform 46ms, setup 7ms, collect 71ms, tests 3ms, environment 0ms, prepare 55ms)
+

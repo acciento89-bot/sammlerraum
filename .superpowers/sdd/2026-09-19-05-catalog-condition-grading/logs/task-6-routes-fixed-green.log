@@ -1,0 +1,10 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ✓ |workspace| apps/web/src/lib/catalog-link-routes.integration.test.ts (4 tests) 221ms
+
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+   Start at  00:32:23
+   Duration  692ms (transform 126ms, setup 5ms, collect 249ms, tests 221ms, environment 0ms, prepare 34ms)
+

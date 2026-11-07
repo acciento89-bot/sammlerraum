@@ -1,0 +1,1066 @@
+# Review package: 52dfd875270da103c63313d7a93480e93bb4ff4b..3d52a5cefdbc66e5cc7dea68f18bbdbb688b809f
+
+## Commits
+3d52a5c fix: enforce retained search text and URL integrity
+
+## Files changed
+ .github/workflows/ci.yml                           |   1 +
+ docs/search/owned-item-search.md                   |   2 +
+ packages/domain/src/search/item-search-service.ts  |  16 +-
+ packages/domain/src/search/search-read.ts          |   8 +-
+ .../search-retained-integrity.integration.test.ts  | 568 +++++++++++++++++++++
+ packages/domain/src/search/search-text.ts          |   7 +-
+ packages/domain/src/search/search-typed-guards.ts  |  19 +-
+ .../domain/src/search/search-url-integrity.test.ts |  99 ++++
+ packages/domain/src/search/search-url-integrity.ts |  83 +++
+ 9 files changed, 792 insertions(+), 11 deletions(-)
+
+## Diff
+diff --git a/.github/workflows/ci.yml b/.github/workflows/ci.yml
+index 6faea80..8858d3b 100644
+--- a/.github/workflows/ci.yml
++++ b/.github/workflows/ci.yml
+@@ -145,20 +145,21 @@ jobs:
+           packages/domain/src/catalog/initialize-catalog.test.ts
+           apps/web/src/lib/catalog-history-routes.integration.test.ts
+           apps/web/src/lib/catalog-link-routes.integration.test.ts
+           packages/domain/src/catalog/proposal-service.test.ts
+           packages/domain/src/condition/condition-service.test.ts
+           packages/domain/src/grading/grading-service.test.ts
+           packages/domain/src/valuations/valuation-service.test.ts
+           packages/domain/src/valuations/valuation-query.test.ts
+           packages/domain/src/search/item-search-service.test.ts
+           packages/domain/src/search/search-read.integration.test.ts
++          packages/domain/src/search/search-retained-integrity.integration.test.ts
+           apps/web/src/lib/item-search-routes.integration.test.ts
+           apps/web/src/lib/valuation-routes.integration.test.ts
+           packages/domain/src/market-data/market-data-service.test.ts apps/worker/src/jobs/market-sync.integration.test.ts
+           apps/worker/src/jobs/market-request-permit.integration.test.ts
+           apps/worker/src/jobs/production-market.integration.test.ts
+           apps/web/src/lib/grading-routes.integration.test.ts
+           apps/web/src/lib/condition-routes.integration.test.ts
+           apps/web/src/lib/catalog-proposal-routes.integration.test.ts
+           packages/domain/src/locations/location-service.test.ts
+           apps/web/src/lib/security-service.integration.test.ts
+diff --git a/docs/search/owned-item-search.md b/docs/search/owned-item-search.md
+index e064368..1b6a73e 100644
+--- a/docs/search/owned-item-search.md
++++ b/docs/search/owned-item-search.md
+@@ -1,17 +1,19 @@
+ # Owned item search (Phase07 Task2A)
+ 
+ `GET /api/v1/search/items` searches the fresh authenticated user's live items under live owned collections. It supports `text`, raw versioned filter JSON in `f`, `lifecycle` (`ACTIVE` default, `ARCHIVED`, `DISPOSED`, `ALL`), `limit` (20 default, 50 maximum), and `cursor`. Unknown or repeated keys, malformed percent/UTF-8 sequences, and nondecimal limits are rejected. The encoded query is bounded to 32 KiB before decoding; filters retain their separate 16 KiB raw/canonical and structural limits. Text is bounded to 200 codepoints/800 UTF-8 bytes both before and after NFKC normalization and trimming. JSON `f=null` is invalid; omission means no filter.
+ 
+ Every response contains a whitelisted item summary, an exact safe-integer total before the cursor, `nextCursor`, fixed `scope: OWNED`, lifecycle, and `readAt`. Stored visibility is a fact to filter; it does not authorize access to another owner's items. Disposed items take precedence over archived items when both timestamps exist. Private notes, prices, document names, storage identifiers and valuation history never enter the summary.
+ 
+ One RepeatableRead transaction resolves references, checks relevant retained typed facts, counts matches, and fetches the limited page. Search uses fixed parameterized SQL and EXISTS relations; there is no client SQL, column, JSON path or sort interpolation. Invalid references and unavailable families reject the entire filter even under NOT/OR or on an empty result. Missing scoped custom/catalog values only match the selected collection/category. NOT complements the resulting nonnull boolean, including outside that selector scope.
+ 
++Retained custom/catalog text uses producer NFKC-then-JavaScript-trim canonical equality and UTF-16 length limits, including when broad text touches native values without a typed leaf. Typed URL leaves add one distinct relevant-value manifest within the same transaction before matching. Only the selected owned custom definitions and exact catalog targets contribute. PostgreSQL bounds the manifest to 4,096 distinct strings and 8 MiB of UTF-8 value bytes before transfer; exceeding either cap returns `SEARCH_UNAVAILABLE` without values or a partial result. The existing URL producer validates each retained string and exact canonical serialization; malformed values return `SEARCH_INVARIANT`. No URL leaf means no manifest or URL parsing. Parsing also checks the remaining transaction budget.
++
+ Exact typed string comparisons use deterministic `C` collation and are case-sensitive. Substring/prefix operands and broad text treat percent, underscore, backslash and quotes literally. Broad text uses PostgreSQL NFKC plus `ILIKE COLLATE "und-x-icu"` over title/public description, tag identity, item identifiers, grading text, custom text/selected options, exact linked catalog entry/selected variant titles and explicit translations, retained text/selected option keys and labels, and DE/EN category labels. Private notes and other variants/unselected options are excluded. Tag and custom-selection identity comparisons retain their JavaScript producer folding. Broad matching does not promise Unicode case-fold equivalence or German ß=ss equivalence.
+ 
+ Deployment requires PostgreSQL17 with the deterministic ICU root collation `pg_catalog."und-x-icu"`. Missing collation fails closed as `SEARCH_UNAVAILABLE`; no database-default collation fallback is used. Native tests exercise DE/EN, composed/decomposed accents, uppercase umlauts/ẞ and literal wildcard characters. ICU upgrades require rerunning these regressions. The CI postgres17-bookworm service runs the same tests.
+ 
+ Each read has a 12-second total processing/acquisition/retry budget, at most three attempts for recognized SQLSTATE40001 serialization failures, a maximum 5-second transaction and 2-second acquisition, per-statement 2-second and lock-wait 500-ms limits, recomputed from remaining time with post-await checks. These bound processing, not authentication or network response transfer. LIMIT bounds returned rows, not count/scans/guards. Timeout/dependency failures return no partial page. HTTP uses closed 400 syntax/complexity/version/cursor, 401 authentication, 414 encoded size, 422 reference/unavailable, 503 dependency/budget, and 500 invariant errors with no submitted values or database causes. Responses are no-store and include request IDs.
+ 
+ Cursors use canonical bounded base64url JSON and bind actor, normalized query/filter, lifecycle, limit, fixed sort, compiler/text versions and optional trusted saved-query id/revision. They are unsigned replay-context checks, not authorization or a retained snapshot. Every later request revalidates live definitions and facts; edits, inserts and deletions may change subsequent page membership and totals. `readAt` labels only that response's snapshot.
+ 
+ This is a partial Task2A milestone. Legacy monetary ranges, all market leaves, duplicates and shared discovery remain unavailable pending their actual interpretation/eligibility/authorization/relation producers. Raw purchase/custom/catalog money presence and latest manual per-unit comparisons are supported. Manual denomination matches the latest stored row before applying range criteria; older matching currencies cannot reappear. The native producer currently admits stored exponents 0,2,3,4; a syntactically valid exponent1 query matches no current manual row. No migration, provider activation, classification or full Task2/Phase07 completion is implied.
+diff --git a/packages/domain/src/search/item-search-service.ts b/packages/domain/src/search/item-search-service.ts
+index 4aaf62d..578d867 100644
+--- a/packages/domain/src/search/item-search-service.ts
++++ b/packages/domain/src/search/item-search-service.ts
+@@ -13,47 +13,56 @@ import {
+   and,
+   or,
+   TRUE,
+   candidateFrom,
+   ownedCandidates,
+   compileFilter,
+   leaves,
+   referencePredicate,
+   invalidFacts,
+ } from "./search-compiler";
++import { validateRetainedUrls } from "./search-url-integrity";
+ import { compileBroadText, invalidBroadFacts } from "./search-text";
+ import {
+   searchContextHash,
+   decodeSearchCursor,
+   encodeSearchCursor,
+   type SearchResolutionContext,
+ } from "./search-cursor";
+-import { runSearchRead, type SearchDatabase, type SearchReadTransaction } from "./search-read";
++import {
++  runSearchRead,
++  type SearchDatabase,
++  type BoundedSearchReadTransaction,
++} from "./search-read";
+ export { ItemSearchError } from "@sammlerraum/contracts/item-search";
+-export type { SearchDatabase, SearchReadTransaction } from "./search-read";
++export type {
++  SearchDatabase,
++  SearchReadTransaction,
++  BoundedSearchReadTransaction,
++} from "./search-read";
+ export { runSearchRead } from "./search-read";
+ export type SearchActor = { userId: string };
+ type Row = Omit<ItemSummary, "createdAt" | "updatedAt" | "archivedAt" | "disposedAt"> & {
+   createdAt: Date;
+   updatedAt: Date;
+   archivedAt: Date | null;
+   disposedAt: Date | null;
+ };
+ export function checkedSearchTotal(value: bigint): number {
+   if (typeof value !== "bigint" || value < 0n || value > BigInt(Number.MAX_SAFE_INTEGER))
+     return searchFail("SEARCH_INVARIANT");
+   return Number(value);
+ }
+ /** Internal composition seam: callers load an owned saved query in this bounded tx,
+  * then pass its trusted id/revision. Public query parsing never accepts this context. */
+ export async function executeItemSearch(
+-  tx: SearchReadTransaction,
++  tx: BoundedSearchReadTransaction,
+   actor: SearchActor,
+   query: NormalizedItemSearchQuery,
+   context: SearchResolutionContext = null,
+ ): Promise<SearchPage<ItemSummary>> {
+   if (!actor || typeof actor.userId !== "string" || !actor.userId || actor.userId.includes("\0"))
+     return searchFail("SEARCH_INVALID");
+   if (query.filter) validateCurrentFilterAvailability(query.filter);
+   const hash = searchContextHash(actor.userId, query, context);
+   const cursor = query.cursor ? decodeSearchCursor(query.cursor, hash) : null;
+   const [clock] = await tx.$queryRaw<{ now: Date; collation: boolean }[]>(
+@@ -63,20 +72,21 @@ export async function executeItemSearch(
+   const nodes = leaves(query.filter?.root ?? null);
+   const [refs] = await tx.$queryRaw<{ valid: boolean }[]>(
+     Prisma.sql`SELECT ${referencePredicate(nodes, actor.userId)} AS valid`,
+   );
+   if (!refs?.valid) return searchFail("FILTER_REFERENCE_INVALID");
+   const outer = ownedCandidates(actor.userId, query.lifecycle);
+   const [integrity] = await tx.$queryRaw<{ invalid: boolean }[]>(
+     Prisma.sql`SELECT EXISTS(SELECT 1 ${candidateFrom} WHERE ${outer} AND ${or([invalidFacts(nodes), query.text ? invalidBroadFacts : Prisma.sql`FALSE`])}) AS invalid`,
+   );
+   if (integrity?.invalid) return searchFail("SEARCH_INVARIANT");
++  await validateRetainedUrls(tx, nodes, outer);
+   const predicate = and([
+     outer,
+     query.filter ? compileFilter(query.filter.root, actor.userId) : TRUE,
+     query.text ? compileBroadText(query.text, actor.userId) : TRUE,
+   ]);
+   const [count] = await tx.$queryRaw<{ total: bigint }[]>(
+     Prisma.sql`SELECT count(*) AS total ${candidateFrom} WHERE ${predicate}`,
+   );
+   const total = checkedSearchTotal(count!.total);
+   const after = cursor
+diff --git a/packages/domain/src/search/search-read.ts b/packages/domain/src/search/search-read.ts
+index 4c30b61..a3dbf94 100644
+--- a/packages/domain/src/search/search-read.ts
++++ b/packages/domain/src/search/search-read.ts
+@@ -1,45 +1,49 @@
+ import { Prisma } from "@sammlerraum/db/search-sql";
+ import { ItemSearchError, searchFail } from "@sammlerraum/contracts/item-search";
+ import { FilterValidationError } from "@sammlerraum/contracts/search";
+ import { isReadDependencyFailure, isReadSerializationFailure } from "../api/read-dependency-errors";
+ export type SearchReadTransaction = { $queryRaw<T>(sql: Prisma.Sql): Promise<T> };
++export type BoundedSearchReadTransaction = SearchReadTransaction & { checkBudget(): void };
+ export type SearchDatabase = {
+   $transaction<T>(
+     work: (tx: SearchReadTransaction) => Promise<T>,
+     options: { isolationLevel: "RepeatableRead"; maxWait: number; timeout: number },
+   ): Promise<T>;
+ };
+ /** Entire read retries within 12s; no locks or snapshot survive a response. */
+ export async function runSearchRead<T>(
+   database: SearchDatabase,
+-  work: (tx: SearchReadTransaction) => Promise<T>,
++  work: (tx: BoundedSearchReadTransaction) => Promise<T>,
+ ): Promise<T> {
+   const stop = performance.now() + 12000;
+   for (let attempt = 0; attempt < 3; attempt++) {
+     const remaining = Math.floor(stop - performance.now());
+     if (remaining < 1) return searchFail("SEARCH_UNAVAILABLE");
+     try {
+       const result = await database.$transaction(
+         async (raw) => {
+           const txStop = Math.min(stop, performance.now() + 5000);
+           const budget = () => {
+             const left = Math.floor(txStop - performance.now());
+             if (left < 1) return searchFail("SEARCH_UNAVAILABLE");
+             return left;
+           };
+           const first = budget();
+           await raw.$queryRaw(
+             Prisma.sql`SELECT set_config('TimeZone','UTC',true),set_config('statement_timeout',${`${Math.min(2000, first)}ms`},true),set_config('lock_timeout',${`${Math.min(500, first)}ms`},true),set_config('transaction_timeout',${`${first}ms`},true)`,
+           );
+           budget();
+-          const tx: SearchReadTransaction = {
++          const tx: BoundedSearchReadTransaction = {
++            checkBudget: () => {
++              budget();
++            },
+             $queryRaw: async <T>(query: Prisma.Sql) => {
+               const left = budget();
+               await raw.$queryRaw(
+                 Prisma.sql`SELECT set_config('statement_timeout',${`${Math.min(2000, left)}ms`},true),set_config('lock_timeout',${`${Math.min(500, left)}ms`},true)`,
+               );
+               budget();
+               const rows = await raw.$queryRaw<T>(query);
+               budget();
+               return rows;
+             },
+diff --git a/packages/domain/src/search/search-retained-integrity.integration.test.ts b/packages/domain/src/search/search-retained-integrity.integration.test.ts
+new file mode 100644
+index 0000000..1507d8c
+--- /dev/null
++++ b/packages/domain/src/search/search-retained-integrity.integration.test.ts
+@@ -0,0 +1,568 @@
++import { randomUUID } from "node:crypto";
++import { afterAll, beforeAll, describe, expect, it } from "vitest";
++import { Prisma } from "@sammlerraum/db/search-sql";
++import { createTestDatabaseClient } from "@sammlerraum/db/test-database";
++import { createItemSearchService, type SearchDatabase } from "./item-search-service";
++import { validateFieldValue } from "../custom-fields/custom-field-service";
++
++const enabled = process.env.RUN_DATABASE_INTEGRATION === "1";
++const db = enabled ? createTestDatabaseClient() : undefined;
++const owner = `search_integrity_${randomUUID()}`,
++  foreign = `search_integrity_${randomUUID()}`;
++let collection: string,
++  otherCollection: string,
++  item: string,
++  otherItem: string,
++  category: string,
++  entry: string,
++  variant: string;
++const custom = new Map<string, string>(),
++  catalog = new Map<string, string>();
++type Family = "customField" | "catalogAttribute";
++type Field = "SHORT_TEXT" | "LONG_TEXT" | "URL";
++const originals = {
++  SHORT_TEXT: "Canonical watch",
++  LONG_TEXT: "Canonical long watch",
++  URL: "https://example.invalid/",
++};
++const query = (database: SearchDatabase = db!) => createItemSearchService(database);
++function leaf(kind: Family, type: Field, op = "present", target = "ENTRY") {
++  return {
++    kind,
++    selector:
++      kind === "customField"
++        ? { source: "CUSTOM", collectionId: collection, definitionId: custom.get(type) }
++        : {
++            source: "CATALOG",
++            categoryTemplateId: category,
++            definitionId: catalog.get(type),
++            target,
++          },
++    predicate: { valueType: type, test: { op } },
++  };
++}
++async function search(root?: unknown, text?: string, database: SearchDatabase = db!) {
++  return query(database).searchItems(
++    { userId: owner },
++    { ...(root ? { filter: { version: 1, root } } : {}), ...(text !== undefined ? { text } : {}) },
++  );
++}
++async function setValue(kind: Family, type: Field, value: string) {
++  if (kind === "customField")
++    await db!.customFieldValue.update({
++      where: { itemId_fieldDefinitionId: { itemId: item, fieldDefinitionId: custom.get(type)! } },
++      data:
++        type === "URL"
++          ? { urlValue: value }
++          : type === "SHORT_TEXT"
++            ? { shortTextValue: value }
++            : { longTextValue: value },
++    });
++  else
++    await db!.catalogAttributeValue.update({
++      where: {
++        entryId_targetKey_definitionId: {
++          entryId: entry,
++          targetKey: "entry",
++          definitionId: catalog.get(type)!,
++        },
++      },
++      data: { value },
++    });
++}
++const trimChars = [
++  "\t",
++  "\n",
++  "\v",
++  "\f",
++  "\r",
++  " ",
++  "\u00a0",
++  "\u1680",
++  ...Array.from({ length: 11 }, (_, i) => String.fromCharCode(0x2000 + i)),
++  "\u2028",
++  "\u2029",
++  "\u202f",
++  "\u205f",
++  "\u3000",
++  "\ufeff",
++];
++describe.runIf(enabled)("retained search integrity producer parity", () => {
++  beforeAll(async () => {
++    await db!.user.createMany({
++      data: [owner, foreign].map((id) => ({
++        id,
++        name: "Integrity",
++        email: `${id}@example.invalid`,
++      })),
++    });
++    collection = (await db!.collection.create({ data: { ownerId: owner, name: "Integrity" } })).id;
++    otherCollection = (
++      await db!.collection.create({ data: { ownerId: foreign, name: "Integrity" } })
++    ).id;
++    category = (
++      await db!.categoryTemplate.create({
++        data: { key: `integrity_${randomUUID().replaceAll("-", "")}` },
++      })
++    ).id;
++    entry = (
++      await db!.catalogEntry.create({
++        data: { categoryTemplateId: category, authored: { text: { title: "Reference" } } },
++      })
++    ).id;
++    variant = (
++      await db!.catalogVariant.create({ data: { entryId: entry, active: false, authored: {} } })
++    ).id;
++    item = (
++      await db!.collectibleItem.create({
++        data: {
++          ownerId: owner,
++          collectionId: collection,
++          title: "Neutral",
++          categoryTemplateId: category,
++          catalogEntryId: entry,
++          catalogVariantId: variant,
++        },
++      })
++    ).id;
++    otherItem = (
++      await db!.collectibleItem.create({
++        data: { ownerId: foreign, collectionId: otherCollection, title: "Foreign" },
++      })
++    ).id;
++    for (const [position, type] of (["SHORT_TEXT", "LONG_TEXT", "URL"] as const).entries()) {
++      const def = await db!.customFieldDefinition.create({
++        data: { collectionId: collection, name: type, normalizedName: type, type },
++      });
++      custom.set(type, def.id);
++      await db!.customFieldValue.create({
++        data: {
++          itemId: item,
++          collectionId: collection,
++          fieldDefinitionId: def.id,
++          fieldType: type,
++          ...(type === "URL"
++            ? { urlValue: originals[type] }
++            : type === "SHORT_TEXT"
++              ? { shortTextValue: originals[type] }
++              : { longTextValue: originals[type] }),
++        },
++      });
++      const attr = await db!.catalogAttributeDefinition.create({
++        data: { categoryTemplateId: category, key: type.toLowerCase(), type, position },
++      });
++      catalog.set(type, attr.id);
++      await db!.catalogAttributeValue.create({
++        data: {
++          entryId: entry,
++          categoryTemplateId: category,
++          definitionId: attr.id,
++          targetKey: "entry",
++          value: originals[type],
++        },
++      });
++    }
++  });
++  afterAll(async () => {
++    await db?.user.deleteMany({ where: { id: { in: [owner, foreign] } } });
++    if (db && entry) {
++      await db.catalogAttributeValue.deleteMany({ where: { entryId: entry } });
++      await db.catalogVariant.deleteMany({ where: { entryId: entry } });
++      await db.catalogEntry.delete({ where: { id: entry } });
++    }
++    if (db && category) await db.categoryTemplate.delete({ where: { id: category } });
++    await db?.$disconnect();
++  });
++  it.each(["SHORT_TEXT", "LONG_TEXT"] as const)(
++    "rejects non-NFKC native %s under broad-only and independently nonmatching predicates",
++    async (type) => {
++      await setValue("customField", type, "Ｗａｔｃｈ");
++      try {
++        for (const root of [undefined, { kind: "visibility", test: { op: "eq", value: "PUBLIC" } }])
++          for (const text of ["watch", "nothing matches"])
++            await expect(search(root, text)).rejects.toMatchObject({ code: "SEARCH_INVARIANT" });
++      } finally {
++        await setValue("customField", type, originals[type]);
++      }
++    },
++  );
++  it.each(["customField", "catalogAttribute"] as const)(
++    "rejects every ECMAScript boundary whitespace in retained %s text",
++    async (kind) => {
++      for (const type of ["SHORT_TEXT", "LONG_TEXT"] as const)
++        for (const char of trimChars) {
++          const value = `${char}watch${char}`;
++          expect(validateFieldValue(type, value)).toBe("watch");
++          await setValue(kind, type, value);
++          try {
++            for (const root of [
++              leaf(kind, type),
++              { kind: "not", child: leaf(kind, type, "missing") },
++              undefined,
++            ])
++              await expect(search(root, "no match")).rejects.toMatchObject({
++                code: "SEARCH_INVARIANT",
++              });
++          } finally {
++            await setValue(kind, type, originals[type]);
++          }
++        }
++    },
++    20000,
++  );
++  it.each(["customField", "catalogAttribute"] as const)(
++    "uses producer UTF16 bounds and accepts legitimate Unicode for %s",
++    async (kind) => {
++      for (const type of ["SHORT_TEXT", "LONG_TEXT"] as const) {
++        const max = type === "SHORT_TEXT" ? 255 : 10000;
++        const valid = "😀".repeat(Math.floor(max / 2)) + (max % 2 ? "a" : "");
++        expect(validateFieldValue(type, valid)).toBe(valid);
++        await setValue(kind, type, valid);
++        expect((await search(leaf(kind, type))).total).toBe(1);
++        const invalid = "😀".repeat(Math.floor(max / 2) + 1);
++        expect(() => validateFieldValue(type, invalid)).toThrow();
++        await setValue(kind, type, invalid);
++        try {
++          await expect(
++            search({ kind: "not", child: leaf(kind, type, "missing") }, "no match"),
++          ).rejects.toMatchObject({ code: "SEARCH_INVARIANT" });
++        } finally {
++          await setValue(kind, type, originals[type]);
++        }
++        for (const value of [
++          "é Café",
++          "\u0085watch\u0085",
++          "\u180ewatch\u180e",
++          "\u200bwatch\u200b",
++          "a\t\nb",
++          "\u{10000}\u{10ffff}\uffff",
++        ]) {
++          expect(validateFieldValue(type, value)).toBe(value);
++          await setValue(kind, type, value);
++          expect((await search(leaf(kind, type))).total).toBe(1);
++        }
++        await setValue(kind, type, originals[type]);
++      }
++    },
++  );
++  const invalidUrls = [
++    "https://user:pass@example.invalid/",
++    "https://example.invalid:99999/",
++    "https://[broken]/",
++    "https://example.invalid:",
++    "https://EXAMPLE.invalid/",
++    "https://example.invalid:443/",
++    "https://example.invalid",
++    "https://example.invalid/a/../b",
++    "https://example.invalid/\tpath",
++  ];
++  it.each(["customField", "catalogAttribute"] as const)(
++    "rejects invalid/noncanonical %s URLs under presence/NOT and no-match text",
++    async (kind) => {
++      for (const value of invalidUrls) {
++        let valid = false;
++        try {
++          valid = validateFieldValue("URL", value) === value;
++        } catch {}
++        expect(valid).toBe(false);
++        await setValue(kind, "URL", value);
++        try {
++          for (const root of [
++            leaf(kind, "URL"),
++            { kind: "not", child: leaf(kind, "URL", "missing") },
++            {
++              kind: "and",
++              children: [
++                leaf(kind, "URL"),
++                { kind: "visibility", test: { op: "eq", value: "PUBLIC" } },
++              ],
++            },
++          ])
++            await expect(search(root, "no match")).rejects.toMatchObject({
++              code: "SEARCH_INVARIANT",
++            });
++        } finally {
++          await setValue(kind, "URL", originals.URL);
++        }
++      }
++    },
++  );
++  it.each(["customField", "catalogAttribute"] as const)(
++    "accepts producer-canonical %s URLs with IPv6, path/query/fragment @ and percent escapes",
++    async (kind) => {
++      for (const value of [
++        "http://[::1]:8080/a@b?q=user@example.invalid#@fragment",
++        "https://example.invalid/%E2%82%AC/%2f?a=%40&b=@#%E2%98%83",
++        "https://xn--bcher-kva.example/a",
++        "https://example.invalid/a%20b",
++      ]) {
++        expect(validateFieldValue("URL", value)).toBe(value);
++        await setValue(kind, "URL", value);
++        expect((await search(leaf(kind, "URL"))).total).toBe(1);
++      }
++      await setValue(kind, "URL", originals.URL);
++    },
++  );
++  it("ignores foreign, unselected definition/variant URL corruption and does no URL work without a URL leaf", async () => {
++    const foreignDef = await db!.customFieldDefinition.create({
++      data: {
++        collectionId: otherCollection,
++        name: "Foreign text",
++        normalizedName: "foreign",
++        type: "SHORT_TEXT",
++      },
++    });
++    await db!.customFieldValue.create({
++      data: {
++        itemId: otherItem,
++        collectionId: otherCollection,
++        fieldDefinitionId: foreignDef.id,
++        fieldType: "SHORT_TEXT",
++        shortTextValue: "Ｗａｔｃｈ",
++      },
++    });
++    const unselected = await db!.catalogVariant.create({ data: { entryId: entry, authored: {} } });
++    await db!.catalogAttributeValue.create({
++      data: {
++        entryId: entry,
++        categoryTemplateId: category,
++        variantId: unselected.id,
++        targetKey: unselected.id,
++        definitionId: catalog.get("URL")!,
++        value: "https://user:pass@example.invalid/",
++      },
++    });
++    await setValue("customField", "URL", "https://user:pass@example.invalid/");
++    try {
++      expect((await search(undefined, "Canonical")).total).toBe(1);
++      expect((await search(leaf("catalogAttribute", "URL"))).total).toBe(1);
++      expect(
++        (await search(leaf("catalogAttribute", "URL", "missing", "SELECTED_VARIANT"))).total,
++      ).toBe(1);
++    } finally {
++      await setValue("customField", "URL", originals.URL);
++      await db!.catalogAttributeValue.deleteMany({ where: { variantId: unselected.id } });
++      await db!.catalogVariant.delete({ where: { id: unselected.id } });
++    }
++  });
++  it("bounds distinct URL count and UTF8 bytes before transfer, without partial count/page or value disclosure", async () => {
++    const created = await db!.collectibleItem.createManyAndReturn({
++      data: Array.from({ length: 4097 }, () => ({
++        ownerId: owner,
++        collectionId: collection,
++        title: "URL cap",
++      })),
++      select: { id: true },
++    });
++    const urls = created.map((_, n) => `https://example.invalid/${n}/`.padEnd(2048, "a"));
++    const manifest: Array<{ count: bigint; bytes: bigint; values: string[] | null }> = [];
++    let countOrPage = 0;
++    const observed: SearchDatabase = {
++      $transaction: (work, options) =>
++        db!.$transaction(
++          (tx) =>
++            work({
++              $queryRaw: async <T>(sql: Prisma.Sql) => {
++                const rows = await tx.$queryRaw<T>(sql);
++                if (sql.text.includes("search_url_manifest"))
++                  manifest.push(...(rows as typeof manifest));
++                if (
++                  sql.text.startsWith("SELECT count(*) AS total") ||
++                  sql.text.startsWith("SELECT i.id,i.title")
++                )
++                  countOrPage++;
++                return rows;
++              },
++            }),
++          options,
++        ),
++    };
++    try {
++      for (let i = 0; i < created.length; i += 500)
++        await db!.customFieldValue.createMany({
++          data: created.slice(i, i + 500).map((row, n) => ({
++            itemId: row.id,
++            collectionId: collection,
++            fieldDefinitionId: custom.get("URL")!,
++            fieldType: "URL",
++            urlValue: urls[i + n]!,
++          })),
++        });
++      await setValue("customField", "URL", urls[0]!);
++      const rejectWithoutValues = async (expectedCount: bigint, expectedBytes: bigint) => {
++        manifest.length = 0;
++        countOrPage = 0;
++        await expect(search(leaf("customField", "URL"), undefined, observed)).rejects.toMatchObject(
++          { code: "SEARCH_UNAVAILABLE", message: "SEARCH_UNAVAILABLE" },
++        );
++        expect(manifest).toEqual([{ count: expectedCount, bytes: expectedBytes, values: null }]);
++        expect(countOrPage).toBe(0);
++      };
++      await rejectWithoutValues(4097n, 4097n * 2048n);
++      await db!.collectibleItem.delete({ where: { id: created.at(-1)!.id } });
++      manifest.length = 0;
++      countOrPage = 0;
++      expect((await search(leaf("customField", "URL"), undefined, observed)).total).toBe(4097);
++      expect(manifest).toHaveLength(1);
++      expect(manifest[0]!.count).toBe(4096n);
++      expect(manifest[0]!.bytes).toBe(8388608n);
++      expect(manifest[0]!.values).toHaveLength(4096);
++      expect(countOrPage).toBe(2);
++      await db!.customFieldValue.update({
++        where: {
++          itemId_fieldDefinitionId: {
++            itemId: created[1]!.id,
++            fieldDefinitionId: custom.get("URL")!,
++          },
++        },
++        data: { urlValue: urls[1]!.slice(0, -1) + "é" },
++      });
++      await rejectWithoutValues(4096n, 8388609n);
++      await db!.customFieldValue.updateMany({
++        where: { fieldDefinitionId: custom.get("URL")! },
++        data: { urlValue: originals.URL },
++      });
++      manifest.length = 0;
++      expect((await search(leaf("customField", "URL"), undefined, observed)).total).toBe(4097);
++      expect(manifest).toEqual([
++        { count: 1n, bytes: BigInt(Buffer.byteLength(originals.URL)), values: [originals.URL] },
++      ]);
++    } finally {
++      await setValue("customField", "URL", originals.URL);
++      await db!.collectibleItem.deleteMany({ where: { id: { in: created.map((row) => row.id) } } });
++    }
++  }, 30000);
++  it.each(["integrity", "manifest"] as const)(
++    "keeps URL validation and matching in one snapshot across an edit after %s",
++    async (stage) => {
++      let changed = false;
++      const observed: SearchDatabase = {
++        $transaction: (work, options) =>
++          db!.$transaction(
++            (tx) =>
++              work({
++                $queryRaw: async <T>(sql: Prisma.Sql) => {
++                  const rows = await tx.$queryRaw<T>(sql);
++                  if (
++                    !changed &&
++                    (stage === "manifest"
++                      ? sql.text.includes("search_url_manifest")
++                      : sql.text.endsWith(" AS invalid"))
++                  ) {
++                    changed = true;
++                    await setValue("customField", "URL", "https://user:pass@example.invalid/");
++                  }
++                  return rows;
++                },
++              }),
++            options,
++          ),
++      };
++      try {
++        expect((await search(leaf("customField", "URL"), undefined, observed)).total).toBe(1);
++        expect(changed).toBe(true);
++        await expect(search(leaf("customField", "URL"))).rejects.toMatchObject({
++          code: "SEARCH_INVARIANT",
++        });
++      } finally {
++        await setValue("customField", "URL", originals.URL);
++      }
++    },
++  );
++  it("reads only exact URL definitions and selected targets, deduplicating across native/catalog scopes", async () => {
++    const value = "https://example.invalid/exact";
++    await setValue("customField", "URL", value);
++    await db!.catalogAttributeValue.create({
++      data: {
++        entryId: entry,
++        categoryTemplateId: category,
++        variantId: variant,
++        targetKey: variant,
++        definitionId: catalog.get("URL")!,
++        value,
++      },
++    });
++    const manifests: Array<{ count: bigint; bytes: bigint; values: string[] | null }> = [];
++    const observed: SearchDatabase = {
++      $transaction: (work, options) =>
++        db!.$transaction(
++          (tx) =>
++            work({
++              $queryRaw: async <T>(sql: Prisma.Sql) => {
++                const rows = await tx.$queryRaw<T>(sql);
++                if (sql.text.includes("search_url_manifest"))
++                  manifests.push(...(rows as typeof manifests));
++                return rows;
++              },
++            }),
++          options,
++        ),
++    };
++    const selected = leaf("catalogAttribute", "URL", "present", "SELECTED_VARIANT");
++    try {
++      expect(
++        (
++          await search(
++            {
++              kind: "or",
++              children: [leaf("customField", "URL"), selected, structuredClone(selected)],
++            },
++            undefined,
++            observed,
++          )
++        ).total,
++      ).toBe(1);
++      expect(manifests).toEqual([
++        { count: 1n, bytes: BigInt(Buffer.byteLength(value)), values: [value] },
++      ]);
++      await db!.catalogAttributeValue.update({
++        where: {
++          entryId_targetKey_definitionId: {
++            entryId: entry,
++            targetKey: variant,
++            definitionId: catalog.get("URL")!,
++          },
++        },
++        data: { value: "https://user:pass@example.invalid/" },
++      });
++      expect((await search(leaf("catalogAttribute", "URL"))).total).toBe(1);
++      await expect(search({ kind: "not", child: selected }, "no match")).rejects.toMatchObject({
++        code: "SEARCH_INVARIANT",
++      });
++    } finally {
++      await setValue("customField", "URL", originals.URL);
++      await db!.catalogAttributeValue.deleteMany({ where: { variantId: variant } });
++    }
++  });
++  it.each(["customField", "catalogAttribute"] as const)(
++    "rejects %s URL UTF16 overflow in the boolean guard before manifest transfer",
++    async (kind) => {
++      const value = "https://example.invalid/" + "😀".repeat(1024);
++      expect(value.length).toBeGreaterThan(2048);
++      expect(() => validateFieldValue("URL", value)).toThrow();
++      await setValue(kind, "URL", value);
++      let manifests = 0;
++      const observed: SearchDatabase = {
++        $transaction: (work, options) =>
++          db!.$transaction(
++            (tx) =>
++              work({
++                $queryRaw: async <T>(sql: Prisma.Sql) => {
++                  if (sql.text.includes("search_url_manifest")) manifests++;
++                  return tx.$queryRaw<T>(sql);
++                },
++              }),
++            options,
++          ),
++      };
++      try {
++        await expect(search(leaf(kind, "URL"), "no match", observed)).rejects.toMatchObject({
++          code: "SEARCH_INVARIANT",
++        });
++        expect(manifests).toBe(0);
++      } finally {
++        await setValue(kind, "URL", originals.URL);
++      }
++    },
++  );
++});
+diff --git a/packages/domain/src/search/search-text.ts b/packages/domain/src/search/search-text.ts
+index 0815e79..1f99fd2 100644
+--- a/packages/domain/src/search/search-text.ts
++++ b/packages/domain/src/search/search-text.ts
+@@ -1,18 +1,21 @@
+ import { Prisma } from "@sammlerraum/db/search-sql";
+-import { catalogGuard } from "./search-typed-guards";
++import { catalogGuard, customGuard } from "./search-typed-guards";
+ import { or } from "./search-compiler";
+ const selected = Prisma.sql`a."entryId"=i."catalogEntryId" AND a."categoryTemplateId"=i."categoryTemplateId" AND ((a."variantId" IS NULL AND a."targetKey"='entry') OR (a."variantId"=i."catalogVariantId" AND a."targetKey"=i."catalogVariantId"::text))`;
+ const catalogFrom = Prisma.sql`FROM "CatalogAttributeValue" a JOIN "CatalogAttributeDefinition" d ON d.id=a."definitionId" AND d."categoryTemplateId"=a."categoryTemplateId"`;
+ const relevant = Prisma.sql`d.type IN ('SHORT_TEXT','LONG_TEXT','SINGLE_SELECT','MULTI_SELECT')`;
+ const guards = Prisma.sql`CASE d.type WHEN 'SHORT_TEXT' THEN ${catalogGuard("SHORT_TEXT")} WHEN 'LONG_TEXT' THEN ${catalogGuard("LONG_TEXT")} WHEN 'SINGLE_SELECT' THEN ${catalogGuard("SINGLE_SELECT")} WHEN 'MULTI_SELECT' THEN ${catalogGuard("MULTI_SELECT")} ELSE TRUE END`;
+-export const invalidBroadFacts = Prisma.sql`EXISTS(SELECT 1 ${catalogFrom} WHERE ${selected} AND ${relevant} AND NOT COALESCE((${guards}),FALSE))`;
++export const invalidBroadFacts = or([
++  Prisma.sql`EXISTS(SELECT 1 ${catalogFrom} WHERE ${selected} AND ${relevant} AND NOT COALESCE((${guards}),FALSE))`,
++  Prisma.sql`EXISTS(SELECT 1 FROM "CustomFieldValue" v WHERE v."itemId"=i.id AND v."collectionId"=i."collectionId" AND ((v."fieldType"='SHORT_TEXT' AND NOT COALESCE((${customGuard("SHORT_TEXT")}),FALSE)) OR (v."fieldType"='LONG_TEXT' AND NOT COALESCE((${customGuard("LONG_TEXT")}),FALSE))))`,
++]);
+ /** Broad text is literal NFKC/ILIKE with the fixed deterministic root ICU collation. */
+ export function compileBroadText(query: string, owner: string): Prisma.Sql {
+   const pattern = `%${query.replace(/[\\%_]/gu, (c) => `\\${c}`)}%`;
+   const matches = (column: Prisma.Sql) =>
+     Prisma.sql`COALESCE(normalize(${column},NFKC) COLLATE pg_catalog."und-x-icu" ILIKE ${pattern} ESCAPE ${"\\"},FALSE)`;
+   const title = (column: Prisma.Sql) =>
+     or([
+       Prisma.sql`CASE WHEN jsonb_typeof(${column}->'text'->'title')='string' THEN ${matches(Prisma.sql`${column}->'text'->>'title'`)} ELSE FALSE END`,
+       Prisma.sql`EXISTS(SELECT 1 FROM jsonb_array_elements(CASE WHEN jsonb_typeof(${column}->'text'->'translations')='array' THEN ${column}->'text'->'translations' ELSE '[]'::jsonb END) tr WHERE jsonb_typeof(tr->'title')='string' AND ${matches(Prisma.sql`tr->>'title'`)})`,
+     ]);
+diff --git a/packages/domain/src/search/search-typed-guards.ts b/packages/domain/src/search/search-typed-guards.ts
+index 1a875ed..aa9edfc 100644
+--- a/packages/domain/src/search/search-typed-guards.ts
++++ b/packages/domain/src/search/search-typed-guards.ts
+@@ -1,22 +1,31 @@
+ import { Prisma } from "@sammlerraum/db/search-sql";
+ import type { CustomFieldType } from "@sammlerraum/contracts/custom-fields";
+ const text = Prisma.sql`(a.value #>> '{}')`;
+ const string = Prisma.sql`jsonb_typeof(a.value)='string'`;
+ const array = Prisma.sql`CASE WHEN jsonb_typeof(a.value)='array' THEN a.value ELSE '[]'::jsonb END`;
++// ECMAScript WhiteSpace + LineTerminator, applied after NFKC like the producer.
++const jsTrim =
++  "\u0009\u000a\u000b\u000c\u000d\u0020\u00a0\u1680\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u2028\u2029\u202f\u205f\u3000\ufeff";
++// PostgreSQL counts code points; JavaScript string.length counts UTF-16 units.
++const utf16Length = (value: Prisma.Sql) =>
++  Prisma.sql`char_length(${value}) + regexp_count(${value} COLLATE pg_catalog."C",${"[\u{10000}-\u{10ffff}]"})`;
++const canonicalText = (value: Prisma.Sql, maximum: number) =>
++  Prisma.sql`${utf16Length(value)} BETWEEN 1 AND ${maximum} AND ${value}=btrim(normalize(${value},NFKC),${jsTrim}) COLLATE pg_catalog."C"`;
+ export function catalogGuard(type: CustomFieldType): Prisma.Sql {
+   switch (type) {
+     case "SHORT_TEXT":
+     case "LONG_TEXT":
+-      return Prisma.sql`${string} AND char_length(${text}) BETWEEN 1 AND ${type === "SHORT_TEXT" ? 255 : 10000} AND ${text}=normalize(btrim(${text}),NFKC) COLLATE pg_catalog."C"`;
++      return Prisma.sql`${string} AND ${canonicalText(text, type === "SHORT_TEXT" ? 255 : 10000)}`;
++    // Final URL validity uses the bounded manifest and existing producer parser.
+     case "URL":
+-      return Prisma.sql`${string} AND char_length(${text})<=2048 AND ${text} ~ '^https?://[^/@[:space:]]+[^[:space:]]*$'`;
++      return Prisma.sql`${string} AND ${utf16Length(text)} BETWEEN 1 AND 2048`;
+     case "INTEGER":
+       return Prisma.sql`CASE WHEN jsonb_typeof(a.value)='number' AND ${text} ~ '^-?(0|[1-9][0-9]*)$' AND char_length(${text})<=17 THEN ${text}::numeric BETWEEN -9007199254740991 AND 9007199254740991 ELSE FALSE END`;
+     case "DECIMAL":
+       return Prisma.sql`${string} AND ${text} ~ '^-?(0|[1-9][0-9]{0,19})([.][0-9]{0,17}[1-9])?$' AND ${text}<>'-0'`;
+     case "DATE":
+       return Prisma.sql`CASE WHEN ${string} AND ${text} ~ '^[0-9]{4}-[0-9]{2}-[0-9]{2}$' AND left(${text},4)<>'0000' AND pg_input_is_valid(${text},'date') THEN to_char(${text}::date,'YYYY-MM-DD')=${text} ELSE FALSE END`;
+     case "BOOLEAN":
+       return Prisma.sql`jsonb_typeof(a.value)='boolean'`;
+     case "SINGLE_SELECT":
+       return Prisma.sql`${string} AND EXISTS(SELECT 1 FROM "CatalogAttributeOption" o WHERE o."definitionId"=a."definitionId" AND o.key COLLATE pg_catalog."C"=${text})`;
+@@ -36,17 +45,19 @@ export function catalogScalar(type: CustomFieldType): Prisma.Sql {
+ }
+ /** SQL constraints protect native discriminants and paired columns. These guards
+  * cover values the native date/numeric/text types can hold outside producer bounds. */
+ export function customGuard(type: CustomFieldType): Prisma.Sql {
+   switch (type) {
+     case "DECIMAL":
+       return Prisma.sql`v."decimalValue" IS NOT NULL AND v."decimalValue"::text NOT IN ('NaN','Infinity','-Infinity')`;
+     case "DATE":
+       return Prisma.sql`v."dateValue" BETWEEN DATE '0001-01-01' AND DATE '9999-12-31'`;
+     case "SHORT_TEXT":
+-      return Prisma.sql`v."shortTextValue"=normalize(btrim(v."shortTextValue"),NFKC) COLLATE pg_catalog."C"`;
++      return canonicalText(Prisma.sql`v."shortTextValue"`, 255);
+     case "LONG_TEXT":
+-      return Prisma.sql`v."longTextValue"=normalize(btrim(v."longTextValue"),NFKC) COLLATE pg_catalog."C"`;
++      return canonicalText(Prisma.sql`v."longTextValue"`, 10000);
++    case "URL":
++      return Prisma.sql`${utf16Length(Prisma.sql`v."urlValue"`)} BETWEEN 1 AND 2048`;
+     default:
+       return Prisma.sql`TRUE`;
+   }
+ }
+diff --git a/packages/domain/src/search/search-url-integrity.test.ts b/packages/domain/src/search/search-url-integrity.test.ts
+new file mode 100644
+index 0000000..1de5b75
+--- /dev/null
++++ b/packages/domain/src/search/search-url-integrity.test.ts
+@@ -0,0 +1,99 @@
++import { afterEach, describe, expect, it, vi } from "vitest";
++import { parseItemSearchQuery } from "@sammlerraum/contracts/item-search";
++import { Prisma } from "@sammlerraum/db/search-sql";
++import { leaves } from "./search-compiler";
++import { runSearchRead, type SearchDatabase } from "./search-read";
++import { validateRetainedUrls } from "./search-url-integrity";
++import * as producer from "../custom-fields/custom-field-service";
++const nodes = leaves(
++  parseItemSearchQuery({
++    filter: {
++      version: 1,
++      root: {
++        kind: "customField",
++        selector: {
++          source: "CUSTOM",
++          collectionId: "00000000-0000-4000-8000-000000000001",
++          definitionId: "00000000-0000-4000-8000-000000000002",
++        },
++        predicate: { valueType: "URL", test: { op: "present" } },
++      },
++    },
++  }).filter!.root,
++);
++afterEach(() => vi.restoreAllMocks());
++describe("URL validation processing boundary", () => {
++  it("does no manifest query or producer parsing without a URL leaf", async () => {
++    const read = vi.fn(),
++      checkBudget = vi.fn(),
++      parse = vi.spyOn(producer, "validateFieldValue");
++    await validateRetainedUrls({ $queryRaw: read, checkBudget }, [], Prisma.sql`TRUE`);
++    expect(read).not.toHaveBeenCalled();
++    expect(parse).not.toHaveBeenCalled();
++    expect(checkBudget).not.toHaveBeenCalled();
++  });
++  it.each(["before read", "after read", "during parsing"] as const)(
++    "closes when the actual transaction deadline expires %s",
++    async (stage) => {
++      let now = 0,
++        reads = 0;
++      vi.spyOn(performance, "now").mockImplementation(() => now);
++      const actual = producer.validateFieldValue;
++      const parse = vi.spyOn(producer, "validateFieldValue").mockImplementation((...args) => {
++        const result = actual(...args);
++        if (stage === "during parsing") now = 5001;
++        return result;
++      });
++      const database: SearchDatabase = {
++        $transaction: async (work) =>
++          work({
++            $queryRaw: async <T>(sql: Prisma.Sql) => {
++              if (sql.text.includes("search_url_manifest")) {
++                reads++;
++                if (stage === "after read") now = 5001;
++                return [
++                  {
++                    count: 2n,
++                    bytes: 42n,
++                    values: ["https://example.org/", "https://example.net/"],
++                  },
++                ] as T;
++              }
++              return [] as T;
++            },
++          }),
++      };
++      await expect(
++        runSearchRead(database, async (tx) => {
++          if (stage === "before read") now = 5001;
++          await validateRetainedUrls(tx, nodes, Prisma.sql`TRUE`);
++          throw new Error("Must never proceed to match/count/page");
++        }),
++      ).rejects.toMatchObject({ code: "SEARCH_UNAVAILABLE" });
++      expect(reads).toBe(stage === "before read" ? 0 : 1);
++      expect(parse).toHaveBeenCalledTimes(stage === "during parsing" ? 1 : 0);
++    },
++  );
++  it("closes raw manifest driver failures without parsing or exposing values", async () => {
++    const parse = vi.spyOn(producer, "validateFieldValue");
++    const database: SearchDatabase = {
++      $transaction: async (work) =>
++        work({
++          $queryRaw: async <T>(sql: Prisma.Sql) => {
++            if (sql.text.includes("search_url_manifest"))
++              throw {
++                code: "P2010",
++                meta: { code: "57014", message: "https://private.invalid/secret" },
++              };
++            return [] as T;
++          },
++        }),
++    };
++    const error = await runSearchRead(database, (tx) =>
++      validateRetainedUrls(tx, nodes, Prisma.sql`TRUE`),
++    ).catch((error) => error);
++    expect(error).toMatchObject({ code: "SEARCH_UNAVAILABLE", message: "SEARCH_UNAVAILABLE" });
++    expect(JSON.stringify(error)).not.toContain("private");
++    expect(parse).not.toHaveBeenCalled();
++  });
++});
+diff --git a/packages/domain/src/search/search-url-integrity.ts b/packages/domain/src/search/search-url-integrity.ts
+new file mode 100644
+index 0000000..88cce0b
+--- /dev/null
++++ b/packages/domain/src/search/search-url-integrity.ts
+@@ -0,0 +1,83 @@
++import { Prisma } from "@sammlerraum/db/search-sql";
++import type { ItemFilterLeaf } from "@sammlerraum/contracts/search";
++import { searchFail } from "@sammlerraum/contracts/item-search";
++import { validateFieldValue } from "../custom-fields/custom-field-service";
++import { candidateFrom, exactCatalog, or } from "./search-compiler";
++import type { BoundedSearchReadTransaction } from "./search-read";
++
++/** The existing producer owns WHATWG URL validity and canonical serialization.
++ * Only distinct selected values cross this internal seam, never item inventories. */
++export async function validateRetainedUrls(
++  tx: BoundedSearchReadTransaction,
++  nodes: ItemFilterLeaf[],
++  outer: Prisma.Sql,
++): Promise<void> {
++  const custom: Prisma.Sql[] = [],
++    catalog: Prisma.Sql[] = [];
++  const seen = new Set<string>();
++  for (const node of nodes) {
++    if (
++      (node.kind !== "customField" && node.kind !== "catalogAttribute") ||
++      node.predicate.valueType !== "URL"
++    )
++      continue;
++    const key = JSON.stringify([node.kind, node.selector]);
++    if (seen.has(key)) continue;
++    seen.add(key);
++    if (node.kind === "customField")
++      custom.push(
++        Prisma.sql`i."collectionId"=${node.selector.collectionId}::uuid AND v."fieldDefinitionId"=${node.selector.definitionId}::uuid`,
++      );
++    else
++      catalog.push(
++        Prisma.sql`i."categoryTemplateId"=${node.selector.categoryTemplateId}::uuid AND ${exactCatalog(node)}`,
++      );
++  }
++  if (!seen.size) return;
++  const sources: Prisma.Sql[] = [];
++  if (custom.length)
++    sources.push(
++      Prisma.sql`SELECT v."urlValue" AS value ${candidateFrom} JOIN "CustomFieldValue" v ON v."itemId"=i.id AND v."collectionId"=i."collectionId" AND v."fieldType"='URL' WHERE ${outer} AND ${or(custom)}`,
++    );
++  if (catalog.length)
++    sources.push(
++      Prisma.sql`SELECT CASE WHEN jsonb_typeof(a.value)='string' THEN a.value #>> '{}' ELSE NULL END AS value ${candidateFrom} JOIN "CatalogAttributeValue" a ON a."entryId"=i."catalogEntryId" AND a."categoryTemplateId"=i."categoryTemplateId" WHERE ${outer} AND ${or(catalog)}`,
++    );
++  tx.checkBudget();
++  const [manifest] = await tx.$queryRaw<
++    { count: bigint; bytes: bigint; values: string[] | null }[]
++  >(Prisma.sql`
++    WITH search_url_manifest AS MATERIALIZED (
++      SELECT DISTINCT value COLLATE pg_catalog."C" AS value FROM (${Prisma.join(sources, " UNION ALL ")}) selected_urls LIMIT 4097
++    ), sizes AS (
++      SELECT count(*) AS count, COALESCE(sum(octet_length(value)),0)::bigint AS bytes FROM search_url_manifest
++    )
++    SELECT count,bytes,CASE WHEN count<=4096 AND bytes<=8388608
++      THEN (SELECT array_agg(value) FROM search_url_manifest) ELSE NULL END AS values FROM sizes
++  `);
++  tx.checkBudget();
++  if (
++    !manifest ||
++    typeof manifest.count !== "bigint" ||
++    typeof manifest.bytes !== "bigint" ||
++    manifest.count < 0n ||
++    manifest.bytes < 0n
++  )
++    return searchFail("SEARCH_INVARIANT");
++  if (manifest.count > 4096n || manifest.bytes > 8388608n) return searchFail("SEARCH_UNAVAILABLE");
++  if (manifest.count === 0n && manifest.values === null) return;
++  if (!Array.isArray(manifest.values) || BigInt(manifest.values.length) !== manifest.count)
++    return searchFail("SEARCH_INVARIANT");
++  for (const value of manifest.values) {
++    tx.checkBudget();
++    let valid = false;
++    try {
++      valid = typeof value === "string" && validateFieldValue("URL", value) === value;
++    } catch {
++      /* Only the closed invariant code may leave this seam. */
++    }
++    tx.checkBudget();
++    if (!valid) return searchFail("SEARCH_INVARIANT");
++  }
++  tx.checkBudget();
++}

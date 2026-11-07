@@ -1,0 +1,61 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| packages/domain/src/dashboard/dashboard-service.test.ts (13 tests | 1 failed) 2547ms
+   ✓ owned dashboard PostgreSQL > weights latest own estimates without leaking foreign money and includes empty owned collections 22ms
+   ✓ dashboard actual observations and filters > selects latest before denomination and never turns absent or incomparable history into zero 50ms
+   ✓ dashboard actual observations and filters > requires distinct observation times and uses exact large current-quantity sums 20ms
+   ✓ dashboard actual observations and filters > uses disjoint lifecycles and excludes deleted parents while keeping collection counts independent 76ms
+   ✓ dashboard actual observations and filters > counts grading records separately, retains retired conditions and distinguishes usable media 36ms
+   ✓ dashboard actual observations and filters > keeps unavailable producer metrics explicit and rejects unsupported leaves even for empty matches 12ms
+   ✓ dashboard bounded sets and consistency > matches actual search selection and does not use a limited page as inventory 29ms
+   ✓ dashboard bounded sets and consistency > caps per-denomination value rankings and recency with stable ties 16ms
+   ✓ dashboard bounded sets and consistency > uses createdAt then id to resolve equal observed times and does not copy history on a real split 28ms
+   ✓ dashboard bounded sets and consistency > holds one snapshot through summary, values and rankings and next read sees changes 29ms
+   ✓ dashboard bounded sets and consistency > returns all 128 grading groups and rejects 129 instead of truncating 43ms
+   × dashboard bounded sets and consistency > returns all 128 condition groups and rejects 129 before group transfer 42ms
+     → 
+Invalid `db!.conditionOption.createMany()` invocation in
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/dashboard/dashboard-service.test.ts:147:30
+
+  144 try{
+  145  const scheme=await db!.conditionScheme.create({data:{categoryTemplateId:category.id,key:`dash_cap_${randomUUID()}`,labelDe:"Z",labelEn:"C"}});
+  146  const options=Array.from({length:129},(_,n)=>({id:randomUUID(),schemeId:scheme.id,categoryTemplateId:category.id,labelKey:`p${n}`,labelDe:`Z${n}`,labelEn:`C${n}`,position:n}));
+→ 147  await db!.conditionOption.createMany(
+Database error. Code: `23514`. Message: `new row for relation "ConditionOption" violates check constraint "condition_option_position_range"`
+   ✓ dashboard bounded sets and consistency > settles a real dashboard SQL timeout with closed installed-driver mapping  2015ms
+ ✓ |workspace| apps/web/src/lib/dashboard-routes.integration.test.ts (12 tests) 261ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/dashboard/dashboard-service.test.ts > dashboard bounded sets and consistency > returns all 128 condition groups and rejects 129 before group transfer
+PrismaClientKnownRequestError: 
+Invalid `db!.conditionOption.createMany()` invocation in
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/dashboard/dashboard-service.test.ts:147:30
+
+  144 try{
+  145  const scheme=await db!.conditionScheme.create({data:{categoryTemplateId:category.id,key:`dash_cap_${randomUUID()}`,labelDe:"Z",labelEn:"C"}});
+  146  const options=Array.from({length:129},(_,n)=>({id:randomUUID(),schemeId:scheme.id,categoryTemplateId:category.id,labelKey:`p${n}`,labelDe:`Z${n}`,labelEn:`C${n}`,position:n}));
+→ 147  await db!.conditionOption.createMany(
+Database error. Code: `23514`. Message: `new row for relation "ConditionOption" violates check constraint "condition_option_position_range"`
+ ❯ vn.handleRequestError node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:238:13
+ ❯ vn.handleAndLogRequestError node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:184:12
+ ❯ vn.request node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:153:12
+ ❯ a node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:1014:24
+ ❯ packages/domain/src/dashboard/dashboard-service.test.ts:147:4
+    145|    const scheme=await db!.conditionScheme.create({data:{categoryTempla…
+    146|    const options=Array.from({length:129},(_,n)=>({id:randomUUID(),sche…
+    147|    await db!.conditionOption.createMany({data:options});
+       |    ^
+    148|    await db!.collectibleItem.createMany({data:options.slice(0,128).map…
+    149|    expect((await f.read()).condition.groups).toHaveLength(128);
+ ❯ fixture packages/domain/src/dashboard/dashboard-service.test.ts:42:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  1 failed | 24 passed (25)
+   Start at  11:28:06
+   Duration  3.42s (transform 153ms, setup 6ms, collect 299ms, tests 2.81s, environment 0ms, prepare 65ms)
+

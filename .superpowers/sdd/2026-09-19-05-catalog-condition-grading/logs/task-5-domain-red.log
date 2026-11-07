@@ -1,0 +1,205 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| packages/domain/src/grading/grading-service.test.ts (11 tests | 9 failed) 305ms
+   ✓ personal grading PostgreSQL > allows equal certificate numbers across different providers 27ms
+   × personal grading PostgreSQL > preserves authored facts, leading zeros and exact optional decimal strings 9ms
+     → expected { …(16) } to match object { provider: 'Unknown Provider', …(6) }
+(9 matching properties omitted from actual)
+   × personal grading PostgreSQL > scopes certificate conflicts to one owner and provider without guessing number equivalence 18ms
+     → expected PrismaClientKnownRequestError{ …(7) } to match object { Object (code) }
+(4 matching properties omitted from actual)
+   × personal grading PostgreSQL > supports multiple uncertified records and full replacement/removal releasing a certificate 5ms
+     → service(...).updateGrading is not a function
+   × personal grading PostgreSQL > hides foreign and mismatched grading IDs on reads and all mutations 4ms
+     → foreign.listGradings is not a function
+   × personal grading PostgreSQL > retains inactive item reads but rejects lifecycle mutations and deleted parents 7ms
+     → service(...).updateGrading is not a function
+   × personal grading PostgreSQL > requires split before grading and enforces the shared item quantity mutation path 8ms
+     → expected PrismaClientKnownRequestError{ …(7) } to match object { Object (code) }
+(4 matching properties omitted from actual)
+   × personal grading PostgreSQL > rejects malformed authored facts and never rounds or synthesizes comparable values 3ms
+     → expected PrismaClientKnownRequestError{ …(7) } to match object { code: 'GRADING_INVALID' }
+(4 matching properties omitted from actual)
+   × personal grading PostgreSQL > caps records under the shared item lock and handles racing certificate additions 74ms
+     → promise resolved "{ …(16) }" instead of rejecting
+   ✓ personal grading PostgreSQL > enforces owner, single-specimen, paired scale and provider identity in PostgreSQL 39ms
+   × personal grading PostgreSQL > keeps exact condition and grading independent through condition edits and grading removal 22ms
+     → service(...).getGrading is not a function
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 9 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/grading/grading-service.test.ts > personal grading PostgreSQL > preserves authored facts, leading zeros and exact optional decimal strings
+AssertionError: expected { …(16) } to match object { provider: 'Unknown Provider', …(6) }
+(9 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "certificateNo": "00123-A b",
+-   "comparableScale": "Authored scale",
+-   "comparableValue": "99999999.9999",
+-   "grade": "Gem  Mint +",
+-   "gradedAt": "2024-02-29",
+-   "provider": "Unknown Provider",
+-   "source": "Owner's receipt — unverifiziert",
++   "certificateNo": "  00123-A b  ",
++   "comparableScale": null,
++   "comparableValue": null,
++   "grade": "  Gem  Mint +  ",
++   "gradedAt": null,
++   "provider": "  Unknown Provider  ",
++   "source": null,
+  }
+
+ ❯ packages/domain/src/grading/grading-service.test.ts:44:17
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/9]⎯
+
+ FAIL  |workspace| packages/domain/src/grading/grading-service.test.ts > personal grading PostgreSQL > scopes certificate conflicts to one owner and provider without guessing number equivalence
+AssertionError: expected PrismaClientKnownRequestError{ …(7) } to match object { Object (code) }
+(4 matching properties omitted from actual)
+
+- Expected
++ Received
+
+- {
+-   "code": "GRADING_CERTIFICATE_CONFLICT",
++ PrismaClientKnownRequestError {
++   "code": "P2010",
+  }
+
+ ❯ packages/domain/src/grading/grading-service.test.ts:56:5
+     54|     const a = await item(); const b = await item();
+     55|     await service().addGrading(a.id, { provider: "PSA", grade: "10", c…
+     56|     await expect(service().addGrading(b.id, { provider: "psa", grade: …
+       |     ^
+     57|     await service().addGrading(b.id, { provider: "PSA", grade: "9", ce…
+     58|     for (const certificateNo of ["abc", "ABC", "a bc", "a-bc"]) await …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/9]⎯
+
+ FAIL  |workspace| packages/domain/src/grading/grading-service.test.ts > personal grading PostgreSQL > supports multiple uncertified records and full replacement/removal releasing a certificate
+TypeError: service(...).updateGrading is not a function
+ ❯ packages/domain/src/grading/grading-service.test.ts:67:35
+     65|     for (let i = 0; i < 2; i++) expect(await service().addGrading(targ…
+     66|     const before = await service().addGrading(target.id, { provider: "…
+     67|     const after = await service().updateGrading(target.id, before.id, …
+       |                                   ^
+     68|     expect(after).toMatchObject({ id: before.id, createdAt: before.cre…
+     69|     expect(Date.parse(after.updatedAt)).toBeGreaterThanOrEqual(Date.pa…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/9]⎯
+
+ FAIL  |workspace| packages/domain/src/grading/grading-service.test.ts > personal grading PostgreSQL > hides foreign and mismatched grading IDs on reads and all mutations
+TypeError: foreign.listGradings is not a function
+ ❯ packages/domain/src/grading/grading-service.test.ts:79:33
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/9]⎯
+
+ FAIL  |workspace| packages/domain/src/grading/grading-service.test.ts > personal grading PostgreSQL > retains inactive item reads but rejects lifecycle mutations and deleted parents
+TypeError: service(...).updateGrading is not a function
+ ❯ packages/domain/src/grading/grading-service.test.ts:88:94
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/9]⎯
+
+ FAIL  |workspace| packages/domain/src/grading/grading-service.test.ts > personal grading PostgreSQL > requires split before grading and enforces the shared item quantity mutation path
+AssertionError: expected PrismaClientKnownRequestError{ …(7) } to match object { Object (code) }
+(4 matching properties omitted from actual)
+
+- Expected
++ Received
+
+- {
+-   "code": "GRADING_REQUIRES_SINGLE_ITEM",
++ PrismaClientKnownRequestError {
++   "code": "P2010",
+  }
+
+ ❯ packages/domain/src/grading/grading-service.test.ts:101:5
+     99|   it("requires split before grading and enforces the shared item quant…
+    100|     const bulk = await item(3);
+    101|     await expect(service().addGrading(bulk.id,{provider:"Bulk",grade:"…
+       |     ^
+    102|     const split = await createItemService(db!,ownerId).splitQuantityIt…
+    103|     const row = await service().addGrading(split.created.id,{provider:…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/9]⎯
+
+ FAIL  |workspace| packages/domain/src/grading/grading-service.test.ts > personal grading PostgreSQL > rejects malformed authored facts and never rounds or synthesizes comparable values
+AssertionError: expected PrismaClientKnownRequestError{ …(7) } to match object { code: 'GRADING_INVALID' }
+(4 matching properties omitted from actual)
+
+- Expected
++ Received
+
+- {
+-   "code": "GRADING_INVALID",
++ PrismaClientKnownRequestError {
++   "code": "P2010",
+  }
+
+ ❯ packages/domain/src/grading/grading-service.test.ts:120:8
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/9]⎯
+
+ FAIL  |workspace| packages/domain/src/grading/grading-service.test.ts > personal grading PostgreSQL > caps records under the shared item lock and handles racing certificate additions
+AssertionError: promise resolved "{ …(16) }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "certificateKey": null,
++   "certificateNo": null,
++   "comparableScale": null,
++   "comparableValue": null,
++   "createdAt": 2026-10-17T23:59:17.038Z,
++   "grade": "overflow",
++   "gradedAt": null,
++   "id": "e7159132-b295-47c8-9492-9514dd01e2ee",
++   "itemId": "057933cd-88cf-474d-9ccd-80e212e42349",
++   "itemQuantity": 1,
++   "ownerId": "GradingOwner_e1261c89-98e4-485f-a9a6-be433a868e49",
++   "provider": "Capacity",
++   "providerKey": "capacity",
++   "source": null,
++   "updatedAt": 2026-10-17T23:59:17.038Z,
++   "verificationUrl": null,
+  }
+
+ ❯ packages/domain/src/grading/grading-service.test.ts:127:88
+    125|     const target = await item();
+    126|     for(let i=0;i<100;i++) await service().addGrading(target.id,{provi…
+    127|     await expect(service().addGrading(target.id,{provider:"Capacity",g…
+       |                                                                                        ^
+    128|     expect(await service().listGradings(target.id)).toHaveLength(100);
+    129|     const a=await item();const b=await item();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/9]⎯
+
+ FAIL  |workspace| packages/domain/src/grading/grading-service.test.ts > personal grading PostgreSQL > keeps exact condition and grading independent through condition edits and grading removal
+TypeError: service(...).getGrading is not a function
+ ❯ packages/domain/src/grading/grading-service.test.ts:152:31
+    150|       const row=await service().addGrading(target.id,{provider:"Separa…
+    151|       await condition.setItemCondition(target.id,null);
+    152|       expect((await service().getGrading(target.id,row.id)).grade).toB…
+       |                               ^
+    153|       await condition.setItemCondition(target.id,scheme.options[0]!.id…
+    154|       await service().removeGrading(target.id,row.id);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/9]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  9 failed | 2 passed (11)
+   Start at  23:59:16
+   Duration  589ms (transform 60ms, setup 5ms, collect 133ms, tests 305ms, environment 0ms, prepare 33ms)
+

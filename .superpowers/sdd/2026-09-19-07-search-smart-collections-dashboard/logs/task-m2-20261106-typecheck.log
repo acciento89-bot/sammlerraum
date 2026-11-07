@@ -1,0 +1,39 @@
+
+> sammlerraum@ typecheck /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+> pnpm -r typecheck
+
+Scope: 10 of 11 workspace projects
+packages/config typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+packages/contracts typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+packages/queue typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+packages/market-data typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+packages/queue typecheck: ../domain/src/money/legacy-money-store.ts(130,41): error TS2339: Property 'variantId' does not exist on type '{ kind: "ENTRY"; } | { kind: "VARIANT"; variantId: string; }'.
+packages/queue typecheck:   Property 'variantId' does not exist on type '{ kind: "ENTRY"; }'.
+packages/queue typecheck: ../domain/src/money/legacy-money-store.ts(528,5): error TS2375: Type '{ id: `${string}-${string}-${string}-${string}-${string}`; operation: "CLASSIFY"; raw: { amountMinor: string; currency: string; }; generation: string | null; exponent: number; unitKey: string; unitLabel: string | null; basisId: string; evidenceCategory: "OWNER_ATTESTATION" | "OPERATOR_VERIFIED_RECORD"; evidenceRefer...' is not assignable to type 'Draft' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+packages/queue typecheck:   Types of property 'evidenceReference' are incompatible.
+packages/queue typecheck:     Type 'string | undefined' is not assignable to type 'string'.
+packages/queue typecheck:       Type 'undefined' is not assignable to type 'string'.
+packages/contracts typecheck: ../domain/src/money/legacy-money-store.ts(130,41): error TS2339: Property 'variantId' does not exist on type '{ kind: "ENTRY"; } | { kind: "VARIANT"; variantId: string; }'.
+packages/contracts typecheck:   Property 'variantId' does not exist on type '{ kind: "ENTRY"; }'.
+packages/contracts typecheck: ../domain/src/money/legacy-money-store.ts(528,5): error TS2375: Type '{ id: `${string}-${string}-${string}-${string}-${string}`; operation: "CLASSIFY"; raw: { amountMinor: string; currency: string; }; generation: string | null; exponent: number; unitKey: string; unitLabel: string | null; basisId: string; evidenceCategory: "OWNER_ATTESTATION" | "OPERATOR_VERIFIED_RECORD"; evidenceRefer...' is not assignable to type 'Draft' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+packages/contracts typecheck:   Types of property 'evidenceReference' are incompatible.
+packages/contracts typecheck:     Type 'string | undefined' is not assignable to type 'string'.
+packages/contracts typecheck:       Type 'undefined' is not assignable to type 'string'.
+packages/config typecheck: ../domain/src/money/legacy-money-store.ts(130,41): error TS2339: Property 'variantId' does not exist on type '{ kind: "ENTRY"; } | { kind: "VARIANT"; variantId: string; }'.
+packages/config typecheck:   Property 'variantId' does not exist on type '{ kind: "ENTRY"; }'.
+packages/config typecheck: ../domain/src/money/legacy-money-store.ts(528,5): error TS2375: Type '{ id: `${string}-${string}-${string}-${string}-${string}`; operation: "CLASSIFY"; raw: { amountMinor: string; currency: string; }; generation: string | null; exponent: number; unitKey: string; unitLabel: string | null; basisId: string; evidenceCategory: "OWNER_ATTESTATION" | "OPERATOR_VERIFIED_RECORD"; evidenceRefer...' is not assignable to type 'Draft' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+packages/config typecheck:   Types of property 'evidenceReference' are incompatible.
+packages/config typecheck:     Type 'string | undefined' is not assignable to type 'string'.
+packages/config typecheck:       Type 'undefined' is not assignable to type 'string'.
+packages/queue typecheck: Failed
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/queue:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @sammlerraum/queue@ typecheck: `tsc --noEmit --project ../../tsconfig.base.json`
+Exit status 2
+packages/storage typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+packages/market-data typecheck: ../domain/src/money/legacy-money-store.ts(130,41): error TS2339: Property 'variantId' does not exist on type '{ kind: "ENTRY"; } | { kind: "VARIANT"; variantId: string; }'.
+packages/market-data typecheck:   Property 'variantId' does not exist on type '{ kind: "ENTRY"; }'.
+packages/market-data typecheck: ../domain/src/money/legacy-money-store.ts(528,5): error TS2375: Type '{ id: `${string}-${string}-${string}-${string}-${string}`; operation: "CLASSIFY"; raw: { amountMinor: string; currency: string; }; generation: string | null; exponent: number; unitKey: string; unitLabel: string | null; basisId: string; evidenceCategory: "OWNER_ATTESTATION" | "OPERATOR_VERIFIED_RECORD"; evidenceRefer...' is not assignable to type 'Draft' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+packages/market-data typecheck:   Types of property 'evidenceReference' are incompatible.
+packages/market-data typecheck:     Type 'string | undefined' is not assignable to type 'string'.
+packages/market-data typecheck:       Type 'undefined' is not assignable to type 'string'.
+ ELIFECYCLE  Command failed with exit code 2.

@@ -1,0 +1,11 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ✓ |workspace| packages/domain/src/grading/grading-service.test.ts (14 tests) 450ms
+ ✓ |workspace| packages/domain/src/items/item-service.test.ts (15 tests) 242ms
+
+ Test Files  2 passed (2)
+      Tests  29 passed (29)
+   Start at  00:00:38
+   Duration  1.19s (transform 76ms, setup 5ms, collect 212ms, tests 692ms, environment 0ms, prepare 64ms)
+

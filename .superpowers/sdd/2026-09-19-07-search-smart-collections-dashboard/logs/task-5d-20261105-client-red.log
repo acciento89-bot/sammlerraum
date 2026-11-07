@@ -1,0 +1,31 @@
+
+> sammlerraum@ test /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+> vitest run apps/web/src/components/search/smart-collections-client.test.ts
+
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/web/src/components/search/smart-collections-client.test.ts [ apps/web/src/components/search/smart-collections-client.test.ts ]
+Error: Cannot find module './smart-collections-client' imported from '/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/src/components/search/smart-collections-client.test.ts'
+ ❯ apps/web/src/components/search/smart-collections-client.test.ts:2:1
+      1| import { afterEach, expect, it, vi } from "vitest";
+      2| import {
+       | ^
+      3|   createSavedSearch,
+      4|   updateSavedSearch,
+
+Caused by: Error: Failed to load url ./smart-collections-client (resolved id: ./smart-collections-client) in /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/src/components/search/smart-collections-client.test.ts. Does the file exist?
+ ❯ loadAndTransform ../../../../SSK%20SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/node_modules/.pnpm/vite@7.3.6_@types+node@24.5.2_jiti@2.7.0/node_modules/vite/dist/node/chunks/config.js:22739:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  no tests
+   Start at  21:27:16
+   Duration  269ms (transform 28ms, setup 6ms, collect 0ms, tests 0ms, environment 0ms, prepare 57ms)
+
+ ELIFECYCLE  Test failed. See above for more details.

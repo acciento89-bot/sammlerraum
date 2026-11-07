@@ -1,0 +1,47 @@
+[WebServer] (node:38596) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 20 tests using 1 worker
+
+(node:38597) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [money-ui-desktop] › e2e/legacy-money.spec.ts:497:3 › de: a new item binds its custom amount to actual absence without duplicate creation (2.8s)
+  ✓   2 [money-ui-desktop] › e2e/legacy-money.spec.ts:497:3 › en: a new item binds its custom amount to actual absence without duplicate creation (730ms)
+(node:38614) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   3 [money-ui-desktop] › e2e/legacy-money.spec.ts:497:3 › de: a new item binds its custom amount to actual absence without duplicate creation (891ms)
+  ✓   4 [money-ui-desktop] › e2e/legacy-money.spec.ts:497:3 › en: a new item binds its custom amount to actual absence without duplicate creation (717ms)
+(node:38626) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   5 [money-ui-desktop] › e2e/legacy-money.spec.ts:497:3 › de: a new item binds its custom amount to actual absence without duplicate creation (859ms)
+  ✓   6 [money-ui-desktop] › e2e/legacy-money.spec.ts:497:3 › en: a new item binds its custom amount to actual absence without duplicate creation (631ms)
+(node:38634) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   7 [money-ui-desktop] › e2e/legacy-money.spec.ts:497:3 › de: a new item binds its custom amount to actual absence without duplicate creation (892ms)
+  ✓   8 [money-ui-desktop] › e2e/legacy-money.spec.ts:497:3 › en: a new item binds its custom amount to actual absence without duplicate creation (689ms)
+(node:38644) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   9 [money-ui-desktop] › e2e/legacy-money.spec.ts:497:3 › de: a new item binds its custom amount to actual absence without duplicate creation (815ms)
+  ✓  10 [money-ui-desktop] › e2e/legacy-money.spec.ts:497:3 › en: a new item binds its custom amount to actual absence without duplicate creation (658ms)
+(node:38652) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  11 [money-ui-mobile] › e2e/legacy-money.spec.ts:497:3 › de: a new item binds its custom amount to actual absence without duplicate creation (788ms)
+  ✓  12 [money-ui-mobile] › e2e/legacy-money.spec.ts:497:3 › en: a new item binds its custom amount to actual absence without duplicate creation (682ms)
+(node:38659) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  13 [money-ui-mobile] › e2e/legacy-money.spec.ts:497:3 › de: a new item binds its custom amount to actual absence without duplicate creation (766ms)
+  ✓  14 [money-ui-mobile] › e2e/legacy-money.spec.ts:497:3 › en: a new item binds its custom amount to actual absence without duplicate creation (686ms)
+(node:38686) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  15 [money-ui-mobile] › e2e/legacy-money.spec.ts:497:3 › de: a new item binds its custom amount to actual absence without duplicate creation (780ms)
+  ✓  16 [money-ui-mobile] › e2e/legacy-money.spec.ts:497:3 › en: a new item binds its custom amount to actual absence without duplicate creation (695ms)
+(node:38693) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  17 [money-ui-mobile] › e2e/legacy-money.spec.ts:497:3 › de: a new item binds its custom amount to actual absence without duplicate creation (784ms)
+  ✓  18 [money-ui-mobile] › e2e/legacy-money.spec.ts:497:3 › en: a new item binds its custom amount to actual absence without duplicate creation (620ms)
+(node:38703) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  19 [money-ui-mobile] › e2e/legacy-money.spec.ts:497:3 › de: a new item binds its custom amount to actual absence without duplicate creation (772ms)
+  ✓  20 [money-ui-mobile] › e2e/legacy-money.spec.ts:497:3 › en: a new item binds its custom amount to actual absence without duplicate creation (619ms)
+
+  20 passed (23.7s)

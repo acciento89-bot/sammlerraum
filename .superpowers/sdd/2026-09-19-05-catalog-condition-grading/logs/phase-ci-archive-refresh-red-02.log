@@ -1,0 +1,73 @@
+[WebServer] (node:82020) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 1 worker
+
+(node:82023) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [desktop] › e2e/collections-items.spec.ts:983:3 › localized collection and item management › acknowledged creation and archive survive snapshot refresh failures (6.4s)
+(node:82040) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  2 [mobile] › e2e/collections-items.spec.ts:983:3 › localized collection and item management › acknowledged creation and archive survive snapshot refresh failures (5.6s)
+
+
+  1) [desktop] › e2e/collections-items.spec.ts:983:3 › localized collection and item management › acknowledged creation and archive survive snapshot refresh failures 
+
+    Error: expect(locator).toHaveText(expected) failed
+
+    Locator: getByRole('alert').filter({ hasText: 'Die Änderungen wurden gespeichert, aber die Stückdetails konnten nicht neu geladen werden. Lade die Seite erneut, um den aktuellen Stand zu sehen.' })
+    Expected: "Die Änderungen wurden gespeichert, aber die Stückdetails konnten nicht neu geladen werden. Lade die Seite erneut, um den aktuellen Stand zu sehen."
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toHaveText" getByRole('alert').filter({ hasText: 'Die Änderungen wurden gespeichert, aber die Stückdetails konnten nicht neu geladen werden. Lade die Seite erneut, um den aktuellen Stand zu sehen.' }) with timeout 5000ms
+      - waiting for getByRole('alert').filter({ hasText: 'Die Änderungen wurden gespeichert, aber die Stückdetails konnten nicht neu geladen werden. Lade die Seite erneut, um den aktuellen Stand zu sehen.' })
+
+
+      1024 |       const { item } = await createdResponse.json();
+      1025 |       const path = `/api/v1/items/${item.id}`;
+    > 1026 |       await expect(page.getByRole("alert").filter({ hasText: refreshError })).toHaveText(
+           |                                                                               ^
+      1027 |         refreshError,
+      1028 |       );
+      1029 |       await expect(
+        at /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/collections-items.spec.ts:1026:79
+
+    Error Context: test-results/collections-items-localize-f9a95-e-snapshot-refresh-failures-desktop/error-context.md
+
+    Error Context: test-results/collections-items-localize-f9a95-e-snapshot-refresh-failures-desktop/error-context.md
+
+  2) [mobile] › e2e/collections-items.spec.ts:983:3 › localized collection and item management › acknowledged creation and archive survive snapshot refresh failures 
+
+    Error: expect(locator).toHaveText(expected) failed
+
+    Locator: getByRole('alert').filter({ hasText: 'The changes were saved, but the item details could not be refreshed. Reload to see the current details.' })
+    Expected: "The changes were saved, but the item details could not be refreshed. Reload to see the current details."
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toHaveText" getByRole('alert').filter({ hasText: 'The changes were saved, but the item details could not be refreshed. Reload to see the current details.' }) with timeout 5000ms
+      - waiting for getByRole('alert').filter({ hasText: 'The changes were saved, but the item details could not be refreshed. Reload to see the current details.' })
+
+
+      1024 |       const { item } = await createdResponse.json();
+      1025 |       const path = `/api/v1/items/${item.id}`;
+    > 1026 |       await expect(page.getByRole("alert").filter({ hasText: refreshError })).toHaveText(
+           |                                                                               ^
+      1027 |         refreshError,
+      1028 |       );
+      1029 |       await expect(
+        at /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/collections-items.spec.ts:1026:79
+
+    Error Context: test-results/collections-items-localize-f9a95-e-snapshot-refresh-failures-mobile/error-context.md
+
+    Error Context: test-results/collections-items-localize-f9a95-e-snapshot-refresh-failures-mobile/error-context.md
+
+  2 failed
+    [desktop] › e2e/collections-items.spec.ts:983:3 › localized collection and item management › acknowledged creation and archive survive snapshot refresh failures 
+    [mobile] › e2e/collections-items.spec.ts:983:3 › localized collection and item management › acknowledged creation and archive survive snapshot refresh failures 
+undefined
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test collections-items.spec.ts --project=desktop --project=mobile --grep acknowledged creation and archive --workers=1

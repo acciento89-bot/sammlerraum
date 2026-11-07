@@ -1,0 +1,35 @@
+[WebServer] (node:10778) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:10791) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [desktop] › e2e/valuations.spec.ts:7:5 › private valuation history › production manual journey (en) (3.0s)
+
+
+  1) [desktop] › e2e/valuations.spec.ts:7:5 › private valuation history › production manual journey (en) 
+
+    TimeoutError: locator.click: Timeout 2000ms exceeded.
+    Call log:
+      - waiting for getByRole('link', { name: 'Valuation history', exact: true })
+
+
+      10 |         expect((await page.request.post("/api/auth/sign-in/email",{data:{email:f.email,password:f.password},headers:{origin}})).status()).toBe(200);
+      11 |         await page.goto(`/${locale}/items/${f.itemId}`);
+    > 12 |         await page.getByRole("link",{name:locale==="de"?"Wertverlauf":"Valuation history",exact:true}).click({timeout:2000});
+         |                                                                                                        ^
+      13 |         await expect(page.getByRole("heading",{name:locale==="de"?"Wertverlauf":"Valuation history",exact:true})).toBeVisible();
+      14 |       } finally {try{await page.unrouteAll({behavior:"wait"})}finally{await cleanupValuationFixture(f)}}
+      15 |     });
+        at /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/valuations.spec.ts:12:104
+
+    Error Context: test-results/valuations-private-valuati-7d031-oduction-manual-journey-en--desktop/error-context.md
+
+    Error Context: test-results/valuations-private-valuati-7d031-oduction-manual-journey-en--desktop/error-context.md
+
+  1 failed
+    [desktop] › e2e/valuations.spec.ts:7:5 › private valuation history › production manual journey (en) 
+undefined
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/valuations.spec.ts --project=desktop --grep production manual journey \(en\) --workers=1

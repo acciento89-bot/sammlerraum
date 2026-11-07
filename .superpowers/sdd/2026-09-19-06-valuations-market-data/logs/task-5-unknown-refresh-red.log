@@ -1,0 +1,39 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| apps/web/src/components/valuations/valuation-state.test.ts (7 tests | 1 failed) 6ms
+   ✓ valuation request authority > ignores an old GET after append acknowledgement and sends a double click only once 1ms
+   ✓ valuation request authority > retains a confirmed row when refresh fails, and retries only GET 0ms
+   × valuation request authority > holds an unknown POST outcome across refresh and requires explicit new-entry action 3ms
+     → expected '' to be 'unknown' // Object.is equality
+   ✓ valuation request authority > makes an inactive rejection authoritative over an earlier ACTIVE read 0ms
+   ✓ valuation request authority > bounds stale-cursor recovery to one fresh summary 0ms
+   ✓ valuation request authority > clears private facts on summary 404, but checks source 404 with a fresh owner summary 0ms
+   ✓ valuation request authority > does not let a previous scope or source overwrite a newer selection 0ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/web/src/components/valuations/valuation-state.test.ts > valuation request authority > holds an unknown POST outcome across refresh and requires explicit new-entry action
+AssertionError: expected '' to be 'unknown' // Object.is equality
+
+- Expected
++ Received
+
+- unknown
+
+ ❯ apps/web/src/components/valuations/valuation-state.test.ts:25:90
+     23|     let posts=0; const c=fixture({append:async()=>{posts++;throw new E…
+     24|     await c.append(input); await c.load(); await c.append(input);
+     25|     expect(posts).toBe(1);expect(c.state.mutation).toBe("unknown");exp…
+       |                                                                                          ^
+     26|   });
+     27|   it("makes an inactive rejection authoritative over an earlier ACTIVE…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 6 passed (7)
+   Start at  06:23:09
+   Duration  290ms (transform 34ms, setup 7ms, collect 25ms, tests 6ms, environment 0ms, prepare 54ms)
+

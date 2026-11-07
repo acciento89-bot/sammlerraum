@@ -1,0 +1,40 @@
+[WebServer] (node:8187) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:8188) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [desktop] › e2e/search-dashboard.spec.ts:295:3 › de: actual delayed response, failure/stale states and 401 clearing (2.6s)
+
+
+  1) [desktop] › e2e/search-dashboard.spec.ts:295:3 › de: actual delayed response, failure/stale states and 401 clearing 
+
+    ReferenceError: info is not defined
+
+      349 |       await page.getByRole("button", { name: c.remove, exact: true }).click();
+      350 |       await expect(page.getByRole("button", { name: c.undo, exact: true })).toBeVisible();
+    > 351 |       if (info.project.name === "mobile")
+          |       ^
+      352 |         await page.getByRole("button", { name: c.closeFilters, exact: true }).click();
+      353 |       await page.route("**/api/v1/search/items", (route) =>
+      354 |         route.fulfill({
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/search-dashboard.spec.ts:351:7
+
+    Error Context: test-results/search-dashboard-de-actual-3a2a4-ale-states-and-401-clearing-desktop/error-context.md
+
+    Error Context: test-results/search-dashboard-de-actual-3a2a4-ale-states-and-401-clearing-desktop/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/search-dashboard-de-actual-3a2a4-ale-states-and-401-clearing-desktop/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/search-dashboard-de-actual-3a2a4-ale-states-and-401-clearing-desktop/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [desktop] › e2e/search-dashboard.spec.ts:295:3 › de: actual delayed response, failure/stale states and 401 clearing 
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/search-dashboard.spec.ts --project=desktop --grep de: actual delayed --workers=1 --trace=retain-on-failure

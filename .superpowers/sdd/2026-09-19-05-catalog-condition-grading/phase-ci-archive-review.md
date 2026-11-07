@@ -1,0 +1,36 @@
+# Independent review: acknowledged archive versus stale ItemForm reads
+
+Reviewed base `fdd1753db409ac3a65386df7094e263505a15209` → HEAD `75de79d966ad0ee7e9af2a7d8c6c1f714202daa5` (one commit). HEAD and the unchanged working source were verified during review. Binding scope: `phase-ci-archive-context.md`; evidence: the archive appendix of `phase-fix-report.md`, the complete 108734-byte `review-fdd1753..75de79d.diff`, and its retained `phase-ci-archive-*` logs. This is solely the new CI archive fix review, not another Phase 05 audit.
+
+**Spec compliance: PASS. Code quality: APPROVE with one nonblocking test-cleanup issue. Critical: 0. Important: 0. Minor: 1.** No product correction is required by this review. Fresh exact-source CI remains a mandatory root-owned integration gate; this verdict does not close the phase or declare the combined local matrix clean.
+
+## Finding
+
+**R1 — Minor / P3: ensure fixture cleanup runs when browser-route cleanup rejects.** `apps/web/e2e/collections-items.spec.ts:1087–1088`, also `:978–979`.
+
+Both new test finalizers await `page.unrouteAll()` before calling `cleanupCollector()`. When a test times out and Playwright has closed the page, `unrouteAll` throws and the database cleanup is skipped. This is directly evidenced by `phase-ci-archive-refresh-red.log` and `phase-ci-archive-refresh-setup-diagnosis-02.log`, which show the closed-page exception at this finalizer, and the documented four leftover synthetic collectors requiring manual cleanup. Correcting the Tags setup locator removes that trigger but leaves this failure path in the final tests. Reproduction: cause either new journey to exceed its existing test timeout, then inspect its collector rows after the closed-page `unrouteAll` error. Impact is test-fixture leakage and noisier failure diagnosis, not archive correctness or a false GREEN.
+
+Minimal fix: wrap `await page.unrouteAll({ behavior: "wait" })` in a `try` with `await cleanupCollector(collector.userId)` in its `finally`; retain `release()` first in the held-response test. Preserve the original test/route error rather than silently swallowing it. No new broad run is warranted for this nonblocking cleanup hardening. The already documented four-row cleanup is acknowledged; this finding concerns recurrence in the newly added finalizers.
+
+## Spec and source assessment
+
+- `item-form.tsx:102–164`: one local read generation protects initialization and explicit snapshot reads. `applyItemSnapshot` includes every formerly inline item-scoped setter: item, metadata, collection, node, known ID, identifiers, and initial location. The initializer gates its full result, checks cancellation/generation **after** asynchronous error parsing, and gates loading finalization. Effect cleanup invalidates both kinds of reads. No stale initializer result can partly restore old metadata or release loading for a newer initialization.
+- `:275–282` and `:347–351`: successfully parsed main-write acknowledgements advance the generation before applying the authoritative item response. A created ID is retained before metadata/refresh work. Archive status and lifecycle are applied before its follow-up GET. These are the correct boundaries for the proven old-read race.
+- `:119–129` and `:306–327`: the actor-bound no-store snapshot refresh occurs after successful metadata writes for save. It shares the coherent snapshot application; superseded successes and failures make no snapshot/error change. Its explicit failure result prevents navigation after a current failed save refresh while retaining the known ID and localized saved-but-refresh-failed message. User retry uses PATCH via `workingItemId`; there is no automatic write retry. Archive refresh failure leaves the acknowledged item/status intact, so `inactive` still disables core controls, passes read-only state to catalog/condition/grading consumers, and removes the gallery editor.
+- The changed consumers remain local to ItemForm and its existing authenticated API. The unchanged GET handler checks session/authorization and supplies owner metadata using the actor ID; no shared/private cache, authority, schema, service, serialization, or grading-editor change was introduced. Scope contains only this component, one DE/EN message each, additive regressions, and evidence/report files.
+
+## Evidence assessment
+
+The diagnosis log proves the old failure after saving had settled: a real active-item GET was held; archive returned 200 and its timestamp matched persisted truth; delivering the old GET re-enabled Save while the DB remained archived. This occurred in DE desktop and EN mobile. The separate delayed real tags-PUT acknowledgement control passed twice. Waiting for save completion alone therefore does not explain away the defect.
+
+The permanent regression additions are substantive. They hold and forward the actual authenticated GET response unchanged, require real archive 200 plus DB/API archive timestamps, and check disabled core and sibling controls after release and browser presentation. Edition metadata is checked against both visible details and the current API. On the final implementation the first held post-save GET is the new explicit refresh; the initializer guard is additionally verified by source inspection. The original core archive assertion at `collections-items.spec.ts:381` and all earlier privacy/authority assertions remain unchanged (the test diff adds 264 lines and deletes none).
+
+The two refresh-failure cases fake only the failed read (503), not successful writes or authority. They require actual create 201, exactly one POST and one explicit PATCH, one persisted item, retained tags, real archive 200, matching DB/API archive truth, and disabled controls. Desktop/mobile project selection gives DE desktop and EN mobile for these cases; the stale-read cases explicitly cover both languages on both projects.
+
+Retained chronology is accurately represented: diagnosis 2 invariant failures/2 controls passing; old-build permanent regression 4 failures; intermediate stale-read 4 passing with refresh-test setup timeouts; corrected refresh-failure RED 2 failures; final focused 6 passing. The setup errors are not misrepresented as product RED. Final build, typecheck and lint evidence is consistent with the report.
+
+The combined production log records **85 passing / 1 failing**, including **all 82 affected core/catalog cases passing**. The remaining unchanged auth journey fails before ItemForm at `auth.spec.ts:75`/`:327`; accompanying ECONNRESET output does not establish causation. Its one exact-case retry passes. Neither that retry nor the previous parallel fdd1753 CI success erases a failed run. The previous primary archive failure and secondary full pass remain separate evidence; fresh exact-source CI is still required.
+
+## Review limits and preservation
+
+No tests or suites were rerun: source inspection and existing focused/affected evidence resolved the archive questions, and retained failure logs already establish R1. Read-only source/report whitespace verification passed. No source, index, HEAD, database, root progress/context, CI log, or Phase 06 preparation was modified; only this report was written. No child agents or remote writes were used. Earlier closed I1/I2/M1–M5 and deferred M6/M7 were not reopened.

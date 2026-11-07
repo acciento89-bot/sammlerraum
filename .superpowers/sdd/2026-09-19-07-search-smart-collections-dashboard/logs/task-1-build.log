@@ -1,0 +1,79 @@
+
+> sammlerraum@ build /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+> pnpm -r build
+
+Scope: 10 of 11 workspace projects
+packages/config build$ pnpm typecheck
+packages/contracts build$ pnpm typecheck
+packages/market-data build$ pnpm typecheck
+packages/queue build$ pnpm typecheck
+packages/contracts build: > @sammlerraum/contracts@ typecheck /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/contracts
+packages/contracts build: > tsc --noEmit --project ../../tsconfig.base.json
+packages/config build: > @sammlerraum/config@ typecheck /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/config
+packages/config build: > tsc --noEmit --project ../../tsconfig.base.json
+packages/queue build: > @sammlerraum/queue@ typecheck /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/queue
+packages/queue build: > tsc --noEmit --project ../../tsconfig.base.json
+packages/market-data build: > @sammlerraum/market-data@ typecheck /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/market-data
+packages/market-data build: > tsc --noEmit --project ../../tsconfig.base.json
+packages/config build: Done
+packages/storage build$ pnpm typecheck
+packages/market-data build: Done
+packages/testing build$ pnpm typecheck
+packages/contracts build: Done
+packages/queue build: Done
+packages/storage build: > @sammlerraum/storage@ typecheck /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/storage
+packages/storage build: > tsc --noEmit --project ../../tsconfig.base.json
+packages/testing build: > @sammlerraum/testing@ typecheck /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/testing
+packages/testing build: > tsc --noEmit --project ../../tsconfig.base.json
+packages/testing build: Done
+packages/storage build: Done
+packages/db build$ pnpm typecheck
+packages/db build: > @sammlerraum/db@ typecheck /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/db
+packages/db build: > tsc --noEmit --project ../../tsconfig.base.json
+packages/db build: Done
+packages/domain build$ pnpm typecheck
+packages/domain build: > @sammlerraum/domain@ typecheck /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain
+packages/domain build: > tsc --noEmit --project ../../tsconfig.base.json
+packages/domain build: Done
+apps/web build$ next build
+apps/worker build$ esbuild src/run.ts --bundle --platform=node --format=cjs --external:sharp --outfile=dist/worker.cjs && esbuild src/main.ts --bundle --platform=node --format=cjs --outfile=dist/main.cjs && esbuild src/maintenance/initialize-catalog.ts --bundle --platform=node --format=cjs --outfile=dist/initialize-catalog.cjs
+apps/worker build:   dist/worker.cjs  7.0mb ⚠️
+apps/worker build: ⚡ Done in 85ms
+apps/worker build:   dist/main.cjs  4.8kb
+apps/worker build: ⚡ Done in 2ms
+apps/worker build:   dist/initialize-catalog.cjs  5.7mb ⚠️
+apps/worker build: ⚡ Done in 70ms
+apps/worker build: Done
+apps/web build: ▲ Next.js 16.3.5 (Turbopack)
+apps/web build: ✓ Running next.config.ts took 103ms
+apps/web build:   Creating an optimized production build ...
+apps/web build: ✓ Compiled successfully in 1169ms
+apps/web build:   Running TypeScript ...
+apps/web build:   Finished TypeScript in 4.9s ...
+apps/web build:   Collecting page data using 7 workers ...
+apps/web build: Error: Failed to collect configuration for /api/openapi.json
+apps/web build:     at ignore-listed frames {
+apps/web build:   [cause]: Error [EnvironmentConfigurationError]: Invalid environment configuration: DATABASE_URL, APP_ORIGIN, UPLOADS_DIR
+apps/web build:       at m (../../packages/config/src/server.ts:150:9)
+apps/web build:       at module evaluation (../../packages/config/src/server.ts:165:26)
+apps/web build:       at module evaluation (src/app/api/openapi.json/route.ts:2:1)
+apps/web build:     148 |     ...new Set(result.error.issues.map((issue) => String(issue.path[0] ?? "environment"))),
+apps/web build:     149 |   ];
+apps/web build:   > 150 |   throw new EnvironmentConfigurationError(invalidVariables);
+apps/web build:         |         ^
+apps/web build:     151 | }
+apps/web build:     152 |
+apps/web build:     153 | export function parseAuthEnv(input: Record<string, string | undefined>): AuthEnv { {
+apps/web build:     invalidVariables: [ 'DATABASE_URL', 'APP_ORIGIN', 'UPLOADS_DIR' ]
+apps/web build:   }
+apps/web build: }
+apps/web build: > Build error occurred
+apps/web build: Error: Failed to collect page data for /api/openapi.json
+apps/web build:     at ignore-listed frames {
+apps/web build:   type: 'Error'
+apps/web build: }
+apps/web build: Failed
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @sammlerraum/web@ build: `next build`
+Exit status 1
+ ELIFECYCLE  Command failed with exit code 1.

@@ -1,0 +1,44 @@
+[WebServer] (node:19041) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:19042) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [desktop] › e2e/valuations.spec.ts:359:5 › private valuation history › external UI transport rendering from real ingestion and query (en) (7.1s)
+
+
+  1) [desktop] › e2e/valuations.spec.ts:359:5 › private valuation history › external UI transport rendering from real ingestion and query (en) 
+
+    Error: expect(locator).toHaveCount(expected) failed
+
+    Locator:  getByRole('region', { name: 'External sources', exact: true }).locator('[data-observation-id]')
+    Expected: 0
+    Received: 20
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveCount" getByRole('region', { name: 'External sources', exact: true }).locator('[data-observation-id]') with timeout 5000ms
+      - waiting for getByRole('region', { name: 'External sources', exact: true }).locator('[data-observation-id]')
+        14 × locator resolved to 20 elements
+           - unexpected value "20"
+
+
+      507 |         await asking.getByRole("button",{name:locale === "de" ? "Quellverlauf anzeigen" : "View source history",exact:true}).click();
+      508 |         await recheckCaptured.promise;
+    > 509 |         await expect(external.locator("[data-observation-id]")).toHaveCount(0);
+          |                                                                 ^
+      510 |         await expect(external.locator(".value-source")).toHaveCount(0);
+      511 |         await expect(external.getByText(locale === "de" ? /Mehrere Währungen; keine Umrechnung/ : /Multiple currencies; no conversion/)).toHaveCount(0);
+      512 |         await expect(external.getByRole("button",{name:c.next,exact:true})).toHaveCount(0);
+        at /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/valuations.spec.ts:509:65
+
+    Error Context: test-results/valuations-private-valuati-7c7b2-eal-ingestion-and-query-en--desktop/error-context.md
+
+    Error Context: test-results/valuations-private-valuati-7c7b2-eal-ingestion-and-query-en--desktop/error-context.md
+
+  1 failed
+    [desktop] › e2e/valuations.spec.ts:359:5 › private valuation history › external UI transport rendering from real ingestion and query (en) 
+undefined
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/valuations.spec.ts --project=desktop --grep external UI transport.*\(en\) --workers=1

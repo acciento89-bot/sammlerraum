@@ -1,0 +1,73 @@
+2026-10-17T23:58:12.193Z pw:webserver HTTP GET: http://localhost:3000/de
+2026-10-17T23:58:12.204Z pw:webserver Error while checking if http://localhost:3000/de is available: connect ECONNREFUSED ::1:3000
+connect ECONNREFUSED 127.0.0.1:3000
+2026-10-17T23:58:12.205Z pw:webserver Starting WebServer process node e2e/support/browser-test-server.mjs...
+2026-10-17T23:58:12.206Z pw:webserver Process started
+2026-10-17T23:58:12.206Z pw:webserver Waiting for availability...
+2026-10-17T23:58:12.206Z pw:webserver HTTP GET: http://localhost:3000/de
+2026-10-17T23:58:12.208Z pw:webserver Error while checking if http://localhost:3000/de is available: connect ECONNREFUSED ::1:3000
+connect ECONNREFUSED 127.0.0.1:3000
+2026-10-17T23:58:12.208Z pw:webserver Waiting 100ms
+2026-10-17T23:58:12.309Z pw:webserver HTTP GET: http://localhost:3000/de
+2026-10-17T23:58:12.310Z pw:webserver Error while checking if http://localhost:3000/de is available: connect ECONNREFUSED ::1:3000
+connect ECONNREFUSED 127.0.0.1:3000
+2026-10-17T23:58:12.310Z pw:webserver Waiting 250ms
+[WebServer] (node:67444) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] ▲ Next.js 16.3.5
+[WebServer] - Local:         http://localhost:3000
+[WebServer] - Network:       http://localhost:3000
+[WebServer] ✓ Ready in 0ms
+[WebServer] ✓ Running next.config took 4ms
+2026-10-17T23:58:12.563Z pw:webserver HTTP GET: http://localhost:3000/de
+2026-10-17T23:58:12.659Z pw:webserver HTTP Status: 200
+2026-10-17T23:58:12.660Z pw:webserver WebServer available
+
+Running 20 tests using 1 worker
+
+(node:67445) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [auth] › e2e/auth.spec.ts:106:3 › password authentication API › registers, verifies, signs in, and lists the authenticated session (319ms)
+[WebServer] 2026-10-17T23:58:14.639Z ERROR [Better Auth]: Error Error: aborted
+[WebServer]     at ignore-listed frames {
+[WebServer]   code: 'ECONNRESET'
+[WebServer] }
+[WebServer] # SERVER_ERROR:  Error: aborted
+[WebServer]     at ignore-listed frames {
+[WebServer]   code: 'ECONNRESET'
+[WebServer] }
+  ✓   2 [auth] › e2e/auth.spec.ts:172:3 › localized authentication and account UI › offers localized password and social authentication (543ms)
+[WebServer] 2026-10-17T23:58:14.714Z ERROR [Better Auth]: Error Error: aborted
+[WebServer]     at ignore-listed frames {
+[WebServer]   code: 'ECONNRESET'
+[WebServer] }
+[WebServer] # SERVER_ERROR:  Error: aborted
+[WebServer]     at ignore-listed frames {
+[WebServer]   code: 'ECONNRESET'
+[WebServer] }
+  ✓   3 [auth] › e2e/auth.spec.ts:197:3 › localized authentication and account UI › user can reset a password through the emailed recovery link (1.2s)
+  ✓   4 [auth] › e2e/auth.spec.ts:220:3 › localized authentication and account UI › user can register, verify, sign in, edit profile, add and use a passkey, and revoke another session (3.2s)
+(node:67467) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   5 [desktop] › e2e/collections-items.spec.ts:236:3 › localized collection and item management › collector creates a nested collection and item with custom field and location (2.0s)
+  ✓   6 [desktop] › e2e/collections-items.spec.ts:388:3 › localized collection and item management › unrelated edits preserve nested placement, currencies, and canonical tags (1.5s)
+  ✓   7 [desktop] › e2e/collections-items.spec.ts:485:3 › localized collection and item management › a rejected core request releases the form for retry (538ms)
+  ✓   8 [desktop] › e2e/collections-items.spec.ts:510:3 › localized collection and item management › failed collection options can retry without losing the item draft (563ms)
+  ✓   9 [desktop] › e2e/collections-items.spec.ts:544:3 › localized collection and item management › failed collection detail load shows a retry instead of endless loading (505ms)
+  ✓  10 [desktop] › e2e/collections-items.spec.ts:577:3 › localized collection and item management › metadata retry reuses the item and does not repeat a successful location (734ms)
+  ✓  11 [desktop] › e2e/collections-items.spec.ts:650:3 › localized collection and item management › invalid later custom fields cause zero writes before correction (874ms)
+  ✓  12 [desktop] › e2e/collections-items.spec.ts:718:3 › localized collection and item management › concurrent scanner starts acquire at most one fully disposable stream (627ms)
+(node:67506) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  13 [mobile] › e2e/collections-items.spec.ts:236:3 › localized collection and item management › collector creates a nested collection and item with custom field and location (1.8s)
+  ✓  14 [mobile] › e2e/collections-items.spec.ts:388:3 › localized collection and item management › unrelated edits preserve nested placement, currencies, and canonical tags (1.5s)
+  ✓  15 [mobile] › e2e/collections-items.spec.ts:485:3 › localized collection and item management › a rejected core request releases the form for retry (489ms)
+  ✓  16 [mobile] › e2e/collections-items.spec.ts:510:3 › localized collection and item management › failed collection options can retry without losing the item draft (542ms)
+  ✓  17 [mobile] › e2e/collections-items.spec.ts:544:3 › localized collection and item management › failed collection detail load shows a retry instead of endless loading (484ms)
+  ✓  18 [mobile] › e2e/collections-items.spec.ts:577:3 › localized collection and item management › metadata retry reuses the item and does not repeat a successful location (646ms)
+  ✓  19 [mobile] › e2e/collections-items.spec.ts:650:3 › localized collection and item management › invalid later custom fields cause zero writes before correction (848ms)
+  ✓  20 [mobile] › e2e/collections-items.spec.ts:718:3 › localized collection and item management › concurrent scanner starts acquire at most one fully disposable stream (576ms)
+2026-10-17T23:58:34.409Z pw:webserver Terminating the WebServer
+2026-10-17T23:58:34.419Z pw:webserver Terminated the WebServer
+
+  20 passed (22.2s)

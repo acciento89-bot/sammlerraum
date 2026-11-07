@@ -1,0 +1,2 @@
+Identical TypeScript transpilation before/after formatter correction.
+{"changedFiles":["packages/domain/src/dashboard/dashboard-result.ts"]}

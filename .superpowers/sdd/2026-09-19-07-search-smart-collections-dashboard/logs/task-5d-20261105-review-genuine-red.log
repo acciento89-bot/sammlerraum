@@ -1,0 +1,130 @@
+[WebServer] (node:17830) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 3 tests using 1 worker
+
+(node:17831) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [desktop] › e2e/search-dashboard.spec.ts:1480:3 › de: refreshed saved membership is bound to displayed definition across concurrent tabs (6.5s)
+(node:17843) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  2 [desktop] › e2e/search-dashboard.spec.ts:1520:3 › de: confirmed ordinary and locale navigation leave no phantom Back steps (5.9s)
+(node:17877) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  3 [desktop] › e2e/search-dashboard.spec.ts:1557:3 › de: unknown save-as-new recovery suspends its dialog and preserves input on cancellation (5.8s)
+
+
+  1) [desktop] › e2e/search-dashboard.spec.ts:1480:3 › de: refreshed saved membership is bound to displayed definition across concurrent tabs 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByText('Die gespeicherte Definition hat sich geändert. Prüfe den neuesten Stand, bevor du weitere Treffer liest.', { exact: true })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByText('Die gespeicherte Definition hat sich geändert. Prüfe den neuesten Stand, bevor du weitere Treffer liest.', { exact: true }) with timeout 5000ms
+      - waiting for getByText('Die gespeicherte Definition hat sich geändert. Prüfe den neuesten Stand, bevor du weitere Treffer liest.', { exact: true })
+
+
+      1504 |           { exact: true },
+      1505 |         ),
+    > 1506 |       ).toBeVisible();
+           |         ^
+      1507 |       await expect(page.getByTestId("search-total")).toHaveCount(0);
+      1508 |       await expect(page.getByLabel(s.text, { exact: true })).toHaveValue("");
+      1509 |       await page.getByRole("button", { name: c.reopenLatest, exact: true }).click();
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/search-dashboard.spec.ts:1506:9
+
+    Error Context: test-results/search-dashboard-de-refres-a02aa-tion-across-concurrent-tabs-desktop/error-context.md
+
+    Error Context: test-results/search-dashboard-de-refres-a02aa-tion-across-concurrent-tabs-desktop/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/search-dashboard-de-refres-a02aa-tion-across-concurrent-tabs-desktop/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/search-dashboard-de-refres-a02aa-tion-across-concurrent-tabs-desktop/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [desktop] › e2e/search-dashboard.spec.ts:1520:3 › de: confirmed ordinary and locale navigation leave no phantom Back steps 
+
+    Error: expect(page).toHaveURL(expected) failed
+
+    Expected pattern: /\/de\/smart-collections$/
+    Received string:  "http://localhost:3000/de/smart-collections/b38031c7-cf13-44f7-8eee-738bbfe4c9d6"
+    Timeout: 5000ms
+
+    Call log:
+      - Expect "toHaveURL" with timeout 5000ms
+        14 × locator resolved to <html lang="de">…</html>
+           - unexpected value "http://localhost:3000/de/smart-collections/b38031c7-cf13-44f7-8eee-738bbfe4c9d6"
+
+
+      1549 |         );
+      1550 |         await page.goBack();
+    > 1551 |         await expect(page).toHaveURL(new RegExp(`/${locale}/smart-collections$`));
+           |                            ^
+      1552 |       }
+      1553 |     } finally {
+      1554 |       await cleanupSearchFixture(f);
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/search-dashboard.spec.ts:1551:28
+
+    Error Context: test-results/search-dashboard-de-confir-94145-leave-no-phantom-Back-steps-desktop/error-context.md
+
+    Error Context: test-results/search-dashboard-de-confir-94145-leave-no-phantom-Back-steps-desktop/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/search-dashboard-de-confir-94145-leave-no-phantom-Back-steps-desktop/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/search-dashboard-de-confir-94145-leave-no-phantom-Back-steps-desktop/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [desktop] › e2e/search-dashboard.spec.ts:1557:3 › de: unknown save-as-new recovery suspends its dialog and preserves input on cancellation 
+
+    Error: expect(locator).toHaveCount(expected) failed
+
+    Locator:  locator('dialog[open]')
+    Expected: 1
+    Received: 2
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveCount" locator('dialog[open]') with timeout 5000ms
+      - waiting for locator('dialog[open]')
+        14 × locator resolved to 2 elements
+           - unexpected value "2"
+
+
+      1586 |       await page.getByRole("link", { name: c.inspectList, exact: true }).click();
+      1587 |       await expect(page.getByRole("dialog", { name: c.discardTitle, exact: true })).toBeVisible();
+    > 1588 |       await expect(page.locator("dialog[open]")).toHaveCount(1);
+           |                                                  ^
+      1589 |       await page.getByRole("dialog").getByRole("button", { name: c.cancel, exact: true }).click();
+      1590 |       await expect(page.getByRole("dialog", { name: c.create, exact: true })).toBeVisible();
+      1591 |       await expect(page.locator("dialog[open]")).toHaveCount(1);
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/search-dashboard.spec.ts:1588:50
+
+    Error Context: test-results/search-dashboard-de-unknow-a3f93-erves-input-on-cancellation-desktop/error-context.md
+
+    Error Context: test-results/search-dashboard-de-unknow-a3f93-erves-input-on-cancellation-desktop/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/search-dashboard-de-unknow-a3f93-erves-input-on-cancellation-desktop/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/search-dashboard-de-unknow-a3f93-erves-input-on-cancellation-desktop/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3 failed
+    [desktop] › e2e/search-dashboard.spec.ts:1480:3 › de: refreshed saved membership is bound to displayed definition across concurrent tabs 
+    [desktop] › e2e/search-dashboard.spec.ts:1520:3 › de: confirmed ordinary and locale navigation leave no phantom Back steps 
+    [desktop] › e2e/search-dashboard.spec.ts:1557:3 › de: unknown save-as-new recovery suspends its dialog and preserves input on cancellation 
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/search-dashboard.spec.ts --grep de: refreshed saved membership|de: confirmed ordinary|de: unknown save-as-new --project desktop --workers=1 --trace=retain-on-failure

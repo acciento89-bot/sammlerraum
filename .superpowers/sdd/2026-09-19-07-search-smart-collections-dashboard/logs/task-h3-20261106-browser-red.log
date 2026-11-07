@@ -1,0 +1,50 @@
+[WebServer] (node:34117) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:34118) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [desktop] › e2e/personal-milestones.spec.ts:6:2 › de: actual authored milestones are discoverable independently in the collector dashboard (6.7s)
+
+
+  1) [desktop] › e2e/personal-milestones.spec.ts:6:2 › de: actual authored milestones are discoverable independently in the collector dashboard 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('heading', { name: 'Deine Meilensteine', exact: true })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('heading', { name: 'Deine Meilensteine', exact: true }) with timeout 5000ms
+      - waiting for getByRole('heading', { name: 'Deine Meilensteine', exact: true })
+
+
+       9 |    await page.goto(`/${locale}/dashboard`);
+      10 |    await expect(page.getByTestId("dashboard-selection-rows")).toHaveText("1");
+    > 11 |    await expect(page.getByRole("heading",{name:locale === "de"?"Deine Meilensteine":"Your milestones",exact:true})).toBeVisible();
+         |                                                                                                                     ^
+      12 |    await expect(page.getByText("A real private milestone",{exact:true})).toBeVisible();
+      13 |    await expect(page.getByText("0001-01-01",{exact:true})).toBeVisible();
+      14 |   }finally{await cleanupPersonalMilestoneFixture(f);}
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/personal-milestones.spec.ts:11:117
+
+    Error Context: test-results/personal-milestones-de-act-23665--in-the-collector-dashboard-desktop/error-context.md
+
+    Error Context: test-results/personal-milestones-de-act-23665--in-the-collector-dashboard-desktop/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/personal-milestones-de-act-23665--in-the-collector-dashboard-desktop/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/personal-milestones-de-act-23665--in-the-collector-dashboard-desktop/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [desktop] › e2e/personal-milestones.spec.ts:6:2 › de: actual authored milestones are discoverable independently in the collector dashboard 
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/personal-milestones.spec.ts --project=desktop --grep de: actual authored --workers=1 --trace=retain-on-failure

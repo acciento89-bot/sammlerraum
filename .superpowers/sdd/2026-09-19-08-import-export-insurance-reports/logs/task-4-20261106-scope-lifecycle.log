@@ -1,0 +1,81 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| apps/worker/src/jobs/tabular-export.integration.test.ts (8 tests | 2 failed) 5645ms
+   ✓ real tabular export source, assets and bytes > publishes one complete owned CSV artifact and reuses successful delivery 167ms
+   ✓ real tabular export source, assets and bytes > publishes one complete owned XLSX artifact and reuses successful delivery 45ms
+   ✓ real tabular export source, assets and bytes > retains every attempt manifest and retries storage failure using the immutable source 40ms
+   ✓ real tabular export source, assets and bytes > refuses stale data instead of silently replacing the saved export source 47ms
+   ✓ real tabular export source, assets and bytes > fences expired claims, tracks abandoned outputs and closes exhausted attempts 12ms
+   ✓ real tabular export source, assets and bytes > does not publish after owner access disappears while file storage is in flight 28ms
+   × real tabular export source, assets and bytes > keeps the actual asset lock until ignored cancellation settles and never marks its bytes ready 5014ms
+     → Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+   × real tabular export source, assets and bytes > does not retain a job permission or source after its owned artifact is deleted 68ms
+     → Cannot read properties of undefined (reading 'findUnique')
+ ❯ |workspace| packages/domain/src/exports/export-service.integration.test.ts (7 tests | 2 failed) 388ms
+   ✓ actual owned export source capture > captures only owned rows and excludes private note/document data by default 93ms
+   ✓ actual owned export source capture > refuses a foreign collection instead of creating a misleading export 6ms
+   ✓ actual owned export source capture > creates an owned pending job and limits concurrent pending exports 15ms
+   × actual owned export source capture > exports a real subtree including descendants but neither siblings nor unassigned items 28ms
+     → EXPORT_INTEGRITY
+   × actual owned export source capture > exports every filtered match beyond the first search page and enforces the full-set ceiling 26ms
+     → EXPORT_INTEGRITY
+   ✓ actual owned export source capture > does not fetch physical locations until explicitly opted in and excludes deleted parents 19ms
+   ✓ actual owned export source capture > includes private notes only after an explicit owned metadata opt-in 7ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/worker/src/jobs/tabular-export.integration.test.ts > real tabular export source, assets and bytes > keeps the actual asset lock until ignored cancellation settles and never marks its bytes ready
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ apps/worker/src/jobs/tabular-export.integration.test.ts:55:2
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  |workspace| apps/worker/src/jobs/tabular-export.integration.test.ts > real tabular export source, assets and bytes > does not retain a job permission or source after its owned artifact is deleted
+TypeError: Cannot read properties of undefined (reading 'findUnique')
+ ❯ apps/worker/src/jobs/tabular-export.integration.test.ts:62:219
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  |workspace| packages/domain/src/exports/export-service.integration.test.ts > actual owned export source capture > exports a real subtree including descendants but neither siblings nor unassigned items
+ExportError: EXPORT_INTEGRITY
+ ❯ captureExportSourceInTransaction packages/domain/src/exports/export-service.ts:157:36
+    155|         metadata,
+    156|       });
+    157|       if (!snapshot.success) throw new ExportError("EXPORT_INTEGRITY");
+       |                                    ^
+    158|       tx.checkBudget();
+    159|       return snapshot.data;
+ ❯ database.$transaction.isolationLevel packages/domain/src/search/search-read.ts:57:26
+ ❯ Proxy._transactionWithCallback node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:861:18
+ ❯ runSearchTransaction packages/domain/src/search/search-read.ts:29:22
+ ❯ packages/domain/src/exports/export-service.integration.test.ts:78:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  |workspace| packages/domain/src/exports/export-service.integration.test.ts > actual owned export source capture > exports every filtered match beyond the first search page and enforces the full-set ceiling
+ExportError: EXPORT_INTEGRITY
+ ❯ captureExportSourceInTransaction packages/domain/src/exports/export-service.ts:157:36
+    155|         metadata,
+    156|       });
+    157|       if (!snapshot.success) throw new ExportError("EXPORT_INTEGRITY");
+       |                                    ^
+    158|       tx.checkBudget();
+    159|       return snapshot.data;
+ ❯ database.$transaction.isolationLevel packages/domain/src/search/search-read.ts:57:26
+ ❯ Proxy._transactionWithCallback node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:861:18
+ ❯ runSearchTransaction packages/domain/src/search/search-read.ts:29:22
+ ❯ packages/domain/src/exports/export-service.integration.test.ts:85:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  4 failed | 11 passed (15)
+   Start at  23:31:48
+   Duration  6.79s (transform 195ms, setup 7ms, collect 482ms, tests 6.03s, environment 0ms, prepare 67ms)
+

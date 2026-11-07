@@ -1,0 +1,63 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ✓ |workspace| apps/worker/src/jobs/parse-import.test.ts (18 tests) 48ms
+ ❯ |workspace| apps/worker/src/jobs/import-parser.integration.test.ts (6 tests | 2 failed) 495ms
+   ✓ actual source-to-PostgreSQL import parser > verifies actual bytes and persists over100 rows without touching inventory 143ms
+   ✓ actual source-to-PostgreSQL import parser > rejects mismatched source checksums and late row-limit failures 55ms
+   ✓ actual source-to-PostgreSQL import parser > fences expired claims and verifies rather than replacing a persisted retry prefix 19ms
+   ✓ actual source-to-PostgreSQL import parser > refuses jobs whose target is deleted and pins claimed parser options 29ms
+   × rejects divergent retry rows and missing membership before finishing 11ms
+     → 
+Invalid `prisma.$executeRaw()` invocation:
+
+
+Raw query failed. Code: `42P01`. Message: `relation "user" does not exist`
+   × persists exact cached workbook cells through actual storage and database 5ms
+     → 
+Invalid `prisma.$executeRaw()` invocation:
+
+
+Raw query failed. Code: `42P01`. Message: `relation "user" does not exist`
+ ✓ |workspace| apps/worker/src/jobs/import-parser-runtime.test.ts (3 tests) 8ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/worker/src/jobs/import-parser.integration.test.ts > rejects divergent retry rows and missing membership before finishing
+PrismaClientKnownRequestError: 
+Invalid `prisma.$executeRaw()` invocation:
+
+
+Raw query failed. Code: `42P01`. Message: `relation "user" does not exist`
+ ❯ vn.handleRequestError node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:238:13
+ ❯ vn.handleAndLogRequestError node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:184:12
+ ❯ vn.request node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:153:12
+ ❯ a node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:1014:24
+ ❯ fixture apps/worker/src/jobs/import-parser.integration.test.ts:20:3
+
+ ❯ apps/worker/src/jobs/import-parser.integration.test.ts:130:13
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |workspace| apps/worker/src/jobs/import-parser.integration.test.ts > persists exact cached workbook cells through actual storage and database
+PrismaClientKnownRequestError: 
+Invalid `prisma.$executeRaw()` invocation:
+
+
+Raw query failed. Code: `42P01`. Message: `relation "user" does not exist`
+ ❯ vn.handleRequestError node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:238:13
+ ❯ vn.handleAndLogRequestError node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:184:12
+ ❯ vn.request node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:153:12
+ ❯ a node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:1014:24
+ ❯ fixture apps/worker/src/jobs/import-parser.integration.test.ts:20:3
+
+ ❯ apps/worker/src/jobs/import-parser.integration.test.ts:141:13
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed | 2 passed (3)
+      Tests  2 failed | 25 passed (27)
+   Start at  21:51:44
+   Duration  1.25s (transform 98ms, setup 6ms, collect 309ms, tests 551ms, environment 0ms, prepare 97ms)
+

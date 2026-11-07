@@ -1,0 +1,15 @@
+                        conname                         |                                                                            definition                                                                             
+--------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ CollectibleItem_catalogEntryId_categoryTemplateId_fkey | FOREIGN KEY ("catalogEntryId", "categoryTemplateId") REFERENCES "CatalogEntry"(id, "categoryTemplateId") ON UPDATE RESTRICT ON DELETE SET NULL ("catalogEntryId")
+ CollectibleItem_catalogVariantId_catalogEntryId_fkey   | FOREIGN KEY ("catalogVariantId", "catalogEntryId") REFERENCES "CatalogVariant"(id, "entryId") ON UPDATE RESTRICT ON DELETE SET NULL ("catalogVariantId")
+ item_catalog_entry_requires_category                   | CHECK ((("catalogEntryId" IS NULL) OR ("categoryTemplateId" IS NOT NULL)))
+ item_catalog_variant_requires_entry                    | CHECK ((("catalogVariantId" IS NULL) OR ("catalogEntryId" IS NOT NULL)))
+(4 rows)
+
+                       indexname                       |                                                                       indexdef                                                                        
+-------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------
+ CatalogExternalIdentifier_value_active_entryId_idx    | CREATE INDEX "CatalogExternalIdentifier_value_active_entryId_idx" ON public."CatalogExternalIdentifier" USING btree (value, active, "entryId")
+ CollectibleItem_catalogEntryId_categoryTemplateId_idx | CREATE INDEX "CollectibleItem_catalogEntryId_categoryTemplateId_idx" ON public."CollectibleItem" USING btree ("catalogEntryId", "categoryTemplateId")
+ CollectibleItem_catalogVariantId_catalogEntryId_idx   | CREATE INDEX "CollectibleItem_catalogVariantId_catalogEntryId_idx" ON public."CollectibleItem" USING btree ("catalogVariantId", "catalogEntryId")
+(3 rows)
+

@@ -1,0 +1,31 @@
+.superpowers/sdd/2026-09-19-06-valuations-market-data/logs/task-1-build.log:51: trailing whitespace.
++apps/web build:   Generating static pages using 7 workers (6/24)
+.superpowers/sdd/2026-09-19-06-valuations-market-data/logs/task-1-build.log:52: trailing whitespace.
++apps/web build:   Generating static pages using 7 workers (12/24)
+.superpowers/sdd/2026-09-19-06-valuations-market-data/logs/task-1-build.log:53: trailing whitespace.
++apps/web build:   Generating static pages using 7 workers (18/24)
+.superpowers/sdd/2026-09-19-06-valuations-market-data/logs/task-1-existing-db-regression.log:12: new blank line at EOF.
+.superpowers/sdd/2026-09-19-06-valuations-market-data/logs/task-1-focused-green.log:11: new blank line at EOF.
+.superpowers/sdd/2026-09-19-06-valuations-market-data/logs/task-1-locks-attempt.log:43: new blank line at EOF.
+.superpowers/sdd/2026-09-19-06-valuations-market-data/logs/task-1-migration-diff.log:6: new blank line at EOF.
+.superpowers/sdd/2026-09-19-06-valuations-market-data/logs/task-1-migration-final-diff.log:8: new blank line at EOF.
+.superpowers/sdd/2026-09-19-06-valuations-market-data/logs/task-1-money-green.log:78: new blank line at EOF.
+.superpowers/sdd/2026-09-19-06-valuations-market-data/logs/task-1-money-red.log:96: trailing whitespace.
++      6|
+.superpowers/sdd/2026-09-19-06-valuations-market-data/logs/task-1-money-red.log:106: new blank line at EOF.
+.superpowers/sdd/2026-09-19-06-valuations-market-data/logs/task-1-prisma-generate.log:12: new blank line at EOF.
+.superpowers/sdd/2026-09-19-06-valuations-market-data/logs/task-1-service-green-attempt.log:8: trailing whitespace.
++     →
+.superpowers/sdd/2026-09-19-06-valuations-market-data/logs/task-1-service-green-attempt.log:22: trailing whitespace.
++PrismaClientKnownRequestError:
+.superpowers/sdd/2026-09-19-06-valuations-market-data/logs/task-1-service-green-attempt.log:43: new blank line at EOF.
+.superpowers/sdd/2026-09-19-06-valuations-market-data/logs/task-1-service-green-final.log:11: new blank line at EOF.
+.superpowers/sdd/2026-09-19-06-valuations-market-data/logs/task-1-service-green-utc.log:38: new blank line at EOF.
+.superpowers/sdd/2026-09-19-06-valuations-market-data/logs/task-1-service-green.log:56: new blank line at EOF.
+.superpowers/sdd/2026-09-19-06-valuations-market-data/logs/task-1-service-red.log:28: new blank line at EOF.
+.superpowers/sdd/2026-09-19-06-valuations-market-data/logs/task-1-service-schema-red.log:18: trailing whitespace.
++     →
+.superpowers/sdd/2026-09-19-06-valuations-market-data/logs/task-1-service-schema-red.log:100: trailing whitespace.
++PrismaClientKnownRequestError:
+.superpowers/sdd/2026-09-19-06-valuations-market-data/logs/task-1-service-schema-red.log:119: new blank line at EOF.
+.superpowers/sdd/2026-09-19-06-valuations-market-data/logs/task-1-workspace-test.log:90: new blank line at EOF.

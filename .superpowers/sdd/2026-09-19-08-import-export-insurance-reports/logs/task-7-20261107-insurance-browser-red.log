@@ -1,0 +1,44 @@
+[WebServer] (node:86293) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:86294) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:86306) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [desktop] › e2e/import-report.spec.ts:109:3 › real import, export and private report flow › insurance and explicit-field PDF stay private and real CSV/XLSX downloads work (6.6s)
+
+
+  1) [desktop] › e2e/import-report.spec.ts:109:3 › real import, export and private report flow › insurance and explicit-field PDF stay private and real CSV/XLSX downloads work 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('heading', { name: 'Versicherung und Berichte', exact: true })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('heading', { name: 'Versicherung und Berichte', exact: true }) with timeout 5000ms
+      - waiting for getByRole('heading', { name: 'Versicherung und Berichte', exact: true })
+
+
+      116 |       const collection=await db.collection.create({data:{ownerId:userId,name:'Report Browser Collection'}});
+      117 |       await db.collectibleItem.create({data:{ownerId:userId,collectionId:collection.id,title:'Browser report item',privateNotes:'Private note must stay out'}});
+    > 118 |       await page.goto('/de/insurance');await expect(page.getByRole('heading',{name:'Versicherung und Berichte',exact:true})).toBeVisible();
+          |                                                                                                                              ^
+      119 |       await page.getByLabel('Sammlung',{exact:true}).selectOption(collection.id);await page.getByRole('button',{name:'Versicherungsdaten laden',exact:true}).click();
+      120 |       await page.getByLabel('Versicherungswert',{exact:true}).fill('1.234,56');await page.getByLabel('Bewertungsdatum',{exact:true}).fill('2026-01-01');await page.getByLabel('Police / Vertragsnummer',{exact:true}).fill('Browser private policy');
+      121 |       await page.getByRole('button',{name:'Versicherungsdaten speichern',exact:true}).click();await expect(page.getByText('Versicherung gespeichert',{exact:true})).toBeVisible();
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/import-report.spec.ts:118:126
+
+    Error Context: test-results/import-report-real-import--aa9ae-eal-CSV-XLSX-downloads-work-desktop/error-context.md
+
+    Error Context: test-results/import-report-real-import--aa9ae-eal-CSV-XLSX-downloads-work-desktop/error-context.md
+
+  1 failed
+    [desktop] › e2e/import-report.spec.ts:109:3 › real import, export and private report flow › insurance and explicit-field PDF stay private and real CSV/XLSX downloads work 
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/import-report.spec.ts --project=desktop --workers=1 --grep insurance and explicit-field

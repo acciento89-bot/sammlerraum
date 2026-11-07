@@ -1,0 +1,63 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/catalog/catalog-money-map.test.ts (5 tests | 1 failed) 582ms
+   ✓ native coherent catalog money map > matches exact single-fact reads and observes revocation without leaking evidence 37ms
+   ✓ native coherent catalog money map > keeps all 10100 supported snapshot paths with bounded database round trips 236ms
+   ✓ native coherent catalog money map > distinguishes an empty existing map from a nonexistent revision 5ms
+   × native coherent catalog money map > rejects ambiguous variant identities even if their money definitions do not overlap 6ms
+     → promise resolved "[ { schemaVersion: 1, …(4) } ]" instead of rejecting
+   ✓ native coherent catalog money map > fails closed on malformed stored arrays instead of exposing a database exception 5ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/catalog/catalog-money-map.test.ts > native coherent catalog money map > rejects ambiguous variant identities even if their money definitions do not overlap
+AssertionError: promise resolved "[ { schemaVersion: 1, …(4) } ]" instead of rejecting
+
+- Expected: 
+Error {
+  "message": "rejected promise",
+}
+
++ Received: 
+[
+  {
+    "factToken": "eyJ2IjoxLCJzdWJqZWN0Ijp7ImZhbWlseSI6IkNBVEFMT0ciLCJlbnRyeUlkIjoiYTQ3MTMxMTAtZjE2Yy00Yzk2LWI4ZmItY2I0MGFjMGYyZWJjIiwicmV2aXNpb24iOjEsInRhcmdldCI6eyJraW5kIjoiVkFSSUFOVCIsInZhcmlhbnRJZCI6IjcxYmFkMDE5LTg1YWYtNDgzYS04NTE3LTllZWJjNTYzMTY4OSJ9LCJkZWZpbml0aW9uSWQiOiI1NTU3YmUwMi0zZjI1LTQ0NzAtYTJjYi1iMDZiZjBkOWU2MDYifSwiZ2VuZXJhdGlvbiI6bnVsbCwic2VxdWVuY2UiOiIwIiwicmF3Ijp7ImFtb3VudE1pbm9yIjoiMTAwIiwiY3VycmVuY3kiOiJBRk4ifSwiZWZmZWN0aXZlRXZlbnRJZCI6bnVsbCwib3JpZ2luSWQiOm51bGwsIm9yaWdpbkV2aWRlbmNlRXJhc2VkQXQiOm51bGwsInJldm9jYXRpb25JZCI6bnVsbH0",
+    "interpretation": {
+      "kind": "UNKNOWN",
+      "reason": "NO_EVIDENCE",
+    },
+    "raw": {
+      "amountMinor": "100",
+      "currency": "AFN",
+    },
+    "schemaVersion": 1,
+    "subject": {
+      "definitionId": "5557be02-3f25-4470-a2cb-b06bf0d9e606",
+      "entryId": "a4713110-f16c-4c96-b8fb-cb40ac0f2ebc",
+      "family": "CATALOG",
+      "revision": 1,
+      "target": {
+        "kind": "VARIANT",
+        "variantId": "71bad019-85af-483a-8517-9eebc5631689",
+      },
+    },
+  },
+]
+
+ ❯ packages/domain/src/catalog/catalog-money-map.test.ts:207:108
+    205|       { id: variantId, text, attributes: [] },
+    206|     ]);
+    207|     await expect(db.$transaction(tx => readCatalogMoneyMap(moneyTransa…
+       |                                                                                                            ^
+    208|   });
+    209|   it("fails closed on malformed stored arrays instead of exposing a da…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 4 passed (5)
+   Start at  05:20:15
+   Duration  941ms (transform 88ms, setup 6ms, collect 188ms, tests 582ms, environment 0ms, prepare 37ms)
+

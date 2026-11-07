@@ -1,0 +1,76 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/imports/import-workflow.integration.test.ts (7 tests | 1 failed) 996ms
+   ✓ actual owned source upload lifecycle > stores actual bytes and an owned uploaded manifest without claiming parsed or writing inventory 125ms
+   ✓ actual owned source upload lifecycle > reuses an owner-scoped upload key on exact retry and rejects changed data under that key 38ms
+   ✓ actual owned source upload lifecycle > retains a failed write manifest and allows the same upload to recover without duplicate jobs 29ms
+   ✓ actual owned source upload lifecycle > hides foreign targets before source I/O and rejects caller storage or byte-count claims 4ms
+   ✓ actual owned source upload lifecycle > dispatches uploaded sources through the actual parser without writing inventory 44ms
+   ✓ actual owned source upload lifecycle > limits active source jobs but allows an exact retry at the quota 59ms
+   × actual owned source upload lifecycle > does not expose an expired source job or let the parser claim it 7ms
+     → promise resolved "{ job: { …(13) }, header: null, …(6) }" instead of rejecting
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/imports/import-workflow.integration.test.ts > actual owned source upload lifecycle > does not expose an expired source job or let the parser claim it
+AssertionError: promise resolved "{ job: { …(13) }, header: null, …(6) }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "columnCount": 0,
++   "errorCode": null,
++   "expiresAt": "2026-11-07T01:59:01.429Z",
++   "header": null,
++   "job": {
++     "collectionId": "2c21a1cc-3101-41b8-8544-bed608759476",
++     "createdAt": "2026-11-07T01:59:02.429Z",
++     "id": "90ca9217-aefd-4940-813f-3e7e031f28bc",
++     "locale": "de",
++     "mapping": null,
++     "mappingHash": null,
++     "mappingProfile": null,
++     "previewGeneration": 0,
++     "progress": {
++       "committedRows": 0,
++       "parsedRows": 0,
++       "previewedRows": 0,
++       "totalRows": null,
++     },
++     "revision": 1,
++     "source": {
++       "byteSize": "1",
++       "checksumSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
++       "fileName": "expired.csv",
++       "format": "CSV",
++       "verified": false,
++     },
++     "status": "AWAITING_UPLOAD",
++     "updatedAt": "2026-11-07T01:59:02.429Z",
++   },
++   "parserOptions": {
++     "delimiter": ",",
++     "format": "CSV",
++     "hasHeader": true,
++     "schemaVersion": 1,
++     "sourceProfile": "GENERIC",
++   },
++   "savedRows": 0,
++   "uploadReady": false,
+  }
+
+ ❯ packages/domain/src/imports/import-workflow.integration.test.ts:167:68
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 6 passed (7)
+   Start at  01:59:01
+   Duration  1.56s (transform 209ms, setup 5ms, collect 406ms, tests 996ms, environment 0ms, prepare 49ms)
+

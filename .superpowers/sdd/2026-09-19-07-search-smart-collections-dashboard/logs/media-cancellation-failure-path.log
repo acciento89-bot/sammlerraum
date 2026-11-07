@@ -1,0 +1,36 @@
+[WebServer] (node:58222) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:58223) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:58234) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+MEDIA_CANCELLATION {"cancelStage":"link","events":["target link response fetched","cancel clicked","target link response fulfilled","compensating DELETE response","canceled visible","callbacks drained before unroute completed","upload finished including catch refresh"]}
+MEDIA_CANCELLATION {"cancelStage":"reload","events":["target link response fetched","target link response fulfilled","actual onChange GET held","actual onChange GET fulfilled","callbacks drained before unroute completed","upload finished including catch refresh"]}
+  ✘  1 [desktop] › e2e/media-documents.spec.ts:164:5 › item media and private documents › public item can have a purchase receipt that remains private (de) (36.4s)
+
+
+  1) [desktop] › e2e/media-documents.spec.ts:164:5 › item media and private documents › public item can have a purchase receipt that remains private (de) 
+
+    Error: INTENTIONAL_MEDIA_STAGE_FAILURE
+
+      367 |             ]);
+      368 |             await atStage.wait();
+    > 369 |             if (cancelStage === "reload") throw new Error("INTENTIONAL_MEDIA_STAGE_FAILURE");
+          |                                                 ^
+      370 |             await page.getByRole("button", { name: t.cancel, exact: true }).click();
+      371 |             events.push("cancel clicked");
+      372 |             releaseStage.release();
+        at /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/media-documents.spec.ts:369:49
+
+    Error Context: test-results/media-documents-item-media-7f0c3-pt-that-remains-private-de--desktop/error-context.md
+
+    Error Context: test-results/media-documents-item-media-7f0c3-pt-that-remains-private-de--desktop/error-context.md
+
+  1 failed
+    [desktop] › e2e/media-documents.spec.ts:164:5 › item media and private documents › public item can have a purchase receipt that remains private (de) 
+undefined
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/media-documents.spec.ts --project=desktop --grep remains private \(de\) --workers=1

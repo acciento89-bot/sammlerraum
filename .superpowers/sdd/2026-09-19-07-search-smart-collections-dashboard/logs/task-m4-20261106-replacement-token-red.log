@@ -1,0 +1,49 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/catalog/catalog-money-submission.test.ts (8 tests | 1 failed) 418ms
+   ✓ catalog money submission selected from actual definitions and revisions > freezes the server's exact pinned authoring receipt 9ms
+   ✓ catalog money submission selected from actual definitions and revisions > rejects missing, extraneous, foreign and unknown-definition intents 7ms
+   ✓ catalog money submission selected from actual definitions and revisions > rejects authoring whose exact raw patch amount or currency differs 3ms
+   ✓ catalog money submission selected from actual definitions and revisions > preserves a historical raw path only with its exact current fact token 23ms
+   ✓ catalog money submission selected from actual definitions and revisions > does not demand intents for untouched fields or removed fields 16ms
+   × catalog money submission selected from actual definitions and revisions > distinguishes new paths from deliberate same-raw replacements 22ms
+     → expected { target: 'ENTRY', …(3) } to match object { kind: 'AUTHORED', …(2) }
+(2 matching properties omitted from actual)
+   ✓ catalog money submission selected from actual definitions and revisions > binds variant retention to that exact variant rather than its entry 22ms
+   ✓ catalog money submission selected from actual definitions and revisions > rejects a snapshot whose category differs from its actual parent 2ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/catalog/catalog-money-submission.test.ts > catalog money submission selected from actual definitions and revisions > distinguishes new paths from deliberate same-raw replacements
+AssertionError: expected { target: 'ENTRY', …(3) } to match object { kind: 'AUTHORED', …(2) }
+(2 matching properties omitted from actual)
+
+- Expected
++ Received
+
+@@ -3,7 +3,6 @@
+    "receipt": {
+      "raw": {
+        "amountMinor": "100",
+      },
+    },
+-   "replacesFactToken": "eyJ2IjoxLCJzdWJqZWN0Ijp7ImZhbWlseSI6IkNBVEFMT0ciLCJlbnRyeUlkIjoiNDc5ZmJjM2ItZmM1My00MDJmLWE0YTAtMTI4ZTM0YmY5MGFmIiwicmV2aXNpb24iOjIsInRhcmdldCI6eyJraW5kIjoiRU5UUlkifSwiZGVmaW5pdGlvbklkIjoiMWYwYTk1NjQtODRjYi00MjMxLThlMWYtMzMxNjg2Yzk5YzdiIn0sImdlbmVyYXRpb24iOm51bGwsInNlcXVlbmNlIjoiMCIsInJhdyI6eyJhbW91bnRNaW5vciI6IjEwMCIsImN1cnJlbmN5IjoiQUZOIn0sImVmZmVjdGl2ZUV2ZW50SWQiOm51bGwsIm9yaWdpbklkIjpudWxsLCJvcmlnaW5FdmlkZW5jZUVyYXNlZEF0IjpudWxsLCJyZXZvY2F0aW9uSWQiOm51bGx9",
+  }
+
+ ❯ packages/domain/src/catalog/catalog-money-submission.test.ts:246:9
+    244|           )
+    245|         ).paths[0],
+    246|       ).toMatchObject({ kind: "AUTHORED", replacesFactToken: fact.fact…
+       |         ^
+    247|       const changed = {
+    248|         ...patch,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 7 passed (8)
+   Start at  06:00:26
+   Duration  819ms (transform 116ms, setup 5ms, collect 232ms, tests 418ms, environment 0ms, prepare 50ms)
+

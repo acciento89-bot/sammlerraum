@@ -1,0 +1,44 @@
+[WebServer] (node:84999) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:85000) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:85011) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [desktop] › e2e/import-report.spec.ts:19:3 › real import, export and private report flow › import conflict requires an explicit row decision before commit (44.6s)
+
+
+  1) [desktop] › e2e/import-report.spec.ts:19:3 › real import, export and private report flow › import conflict requires an explicit row decision before commit 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByText('Import abgeschlossen', { exact: true })
+    Expected: visible
+    Timeout: 30000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByText('Import abgeschlossen', { exact: true }) with timeout 30000ms
+      - waiting for getByText('Import abgeschlossen', { exact: true })
+
+
+      87 |       await expect(page.getByRole("button", { name: "Import starten", exact: true })).toBeEnabled();
+      88 |       await page.getByRole("button", { name: "Import starten", exact: true }).click();
+    > 89 |       await expect(page.getByText("Import abgeschlossen", { exact: true })).toBeVisible({timeout:30000});
+         |                                                                             ^
+      90 |       expect(await db.collectibleItem.count({ where: { ownerId: userId } })).toBe(3);
+      91 |     } finally {
+      92 |       const sources=await db.$queryRaw<{id:string;sourceStorageKey:string}[]>`SELECT id,"sourceStorageKey" FROM "ImportJob" WHERE "ownerId"=${userId}`;
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/import-report.spec.ts:89:77
+
+    Error Context: test-results/import-report-real-import--554ff--row-decision-before-commit-desktop/error-context.md
+
+    Error Context: test-results/import-report-real-import--554ff--row-decision-before-commit-desktop/error-context.md
+
+  1 failed
+    [desktop] › e2e/import-report.spec.ts:19:3 › real import, export and private report flow › import conflict requires an explicit row decision before commit 
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/import-report.spec.ts --project=desktop --workers=1

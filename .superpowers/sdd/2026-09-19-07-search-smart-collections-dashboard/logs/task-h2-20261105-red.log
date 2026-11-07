@@ -1,0 +1,89 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| apps/web/src/lib/api/read-milestone-body.test.ts (24 tests | 2 failed) 9ms
+   × milestone private fixed scalar body boundary > reads the actual authored title/date body while treating quoted punctuation as opaque 4ms
+     → MILESTONE_INVALID
+   ✓ milestone private fixed scalar body boundary > closes duplicate/unknown/nested/syntax input in create 1ms
+   ✓ milestone private fixed scalar body boundary > closes duplicate/unknown/nested/syntax input in update 0ms
+   ✓ milestone private fixed scalar body boundary > closes duplicate/unknown/nested/syntax input in delete 0ms
+   ✓ milestone private fixed scalar body boundary > closes duplicate/unknown/nested/syntax input in query 0ms
+   ✓ milestone private fixed scalar body boundary > closes duplicate/unknown/nested/syntax input in create 0ms
+   ✓ milestone private fixed scalar body boundary > closes duplicate/unknown/nested/syntax input in create 0ms
+   ✓ milestone private fixed scalar body boundary > closes duplicate/unknown/nested/syntax input in query 0ms
+   ✓ milestone private fixed scalar body boundary > closes duplicate/unknown/nested/syntax input in create 0ms
+   ✓ milestone private fixed scalar body boundary > closes duplicate/unknown/nested/syntax input in create 0ms
+   ✓ milestone private fixed scalar body boundary > closes duplicate/unknown/nested/syntax input in create 0ms
+   ✓ milestone private fixed scalar body boundary > closes duplicate/unknown/nested/syntax input in create 0ms
+   ✓ milestone private fixed scalar body boundary > closes duplicate/unknown/nested/syntax input in create 0ms
+   ✓ milestone private fixed scalar body boundary > closes duplicate/unknown/nested/syntax input in create 0ms
+   ✓ milestone private fixed scalar body boundary > closes duplicate/unknown/nested/syntax input in create 0ms
+   ✓ milestone private fixed scalar body boundary > closes duplicate/unknown/nested/syntax input in create 0ms
+   ✓ milestone private fixed scalar body boundary > closes duplicate/unknown/nested/syntax input in query 0ms
+   ✓ milestone private fixed scalar body boundary > closes duplicate/unknown/nested/syntax input in delete 0ms
+   ✓ milestone private fixed scalar body boundary > closes duplicate/unknown/nested/syntax input in create 0ms
+   ✓ milestone private fixed scalar body boundary > shares fatalUTF8 and BOM/media guards for create 0ms
+   ✓ milestone private fixed scalar body boundary > shares fatalUTF8 and BOM/media guards for update 0ms
+   ✓ milestone private fixed scalar body boundary > shares fatalUTF8 and BOM/media guards for delete 0ms
+   ✓ milestone private fixed scalar body boundary > shares fatalUTF8 and BOM/media guards for query 0ms
+   × milestone private fixed scalar body boundary > keeps the exact16KiB streamed boundary even when declared size is absent or false 0ms
+     → MILESTONE_INVALID
+ ❯ |workspace| apps/web/src/lib/personal-milestone-routes.integration.test.ts (1 test | 1 failed) 103ms
+   × native private milestone wire handlers (synthetic fresh-auth adapter) > creates a real authored record without replacing unrelated existing private records 18ms
+     → expected 503 to be 201 // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/web/src/lib/personal-milestone-routes.integration.test.ts > native private milestone wire handlers (synthetic fresh-auth adapter) > creates a real authored record without replacing unrelated existing private records
+AssertionError: expected 503 to be 201 // Object.is equality
+
+- Expected
++ Received
+
+- 201
++ 503
+
+ ❯ apps/web/src/lib/personal-milestone-routes.integration.test.ts:16:75
+     14|   const getSession=vi.fn(async()=>({user:{id:owner}}));
+     15|   const handlers=createPersonalMilestoneRouteHandlers(createPersonalMi…
+     16|   const created=await handlers.POST(request(body));expect(created.stat…
+       |                                                                           ^
+     17|   expect(await created.json()).toMatchObject({...body,revision:1,dateB…
+     18|   const listed=await handlers.QUERY(request({}));expect(listed.status)…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  |workspace| apps/web/src/lib/api/read-milestone-body.test.ts > milestone private fixed scalar body boundary > reads the actual authored title/date body while treating quoted punctuation as opaque
+PersonalMilestoneError: MILESTONE_INVALID
+ ❯ milestoneFail packages/contracts/src/personal-milestones.ts:14:9
+     12| }
+     13| export function milestoneFail(code: PersonalMilestoneError["code"]): n…
+     14|   throw new PersonalMilestoneError(code);
+       |         ^
+     15| }
+     16| const rawTitle = (value: string) => validUnicode(value) && !/\p{Cc}/u.…
+ ❯ readMilestoneBody apps/web/src/lib/api/read-milestone-body.ts:2:129
+ ❯ apps/web/src/lib/api/read-milestone-body.test.ts:6:115
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  |workspace| apps/web/src/lib/api/read-milestone-body.test.ts > milestone private fixed scalar body boundary > keeps the exact16KiB streamed boundary even when declared size is absent or false
+PersonalMilestoneError: MILESTONE_INVALID
+ ❯ milestoneFail packages/contracts/src/personal-milestones.ts:14:9
+     12| }
+     13| export function milestoneFail(code: PersonalMilestoneError["code"]): n…
+     14|   throw new PersonalMilestoneError(code);
+       |         ^
+     15| }
+     16| const rawTitle = (value: string) => validUnicode(value) && !/\p{Cc}/u.…
+ ❯ readMilestoneBody apps/web/src/lib/api/read-milestone-body.ts:2:129
+ ❯ apps/web/src/lib/api/read-milestone-body.test.ts:20:50
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  3 failed | 22 passed (25)
+   Start at  23:53:09
+   Duration  701ms (transform 128ms, setup 7ms, collect 307ms, tests 112ms, environment 0ms, prepare 68ms)
+

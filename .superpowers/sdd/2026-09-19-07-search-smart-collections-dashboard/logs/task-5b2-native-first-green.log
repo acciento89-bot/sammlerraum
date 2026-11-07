@@ -1,0 +1,25 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/search/search-reference-service.integration.test.ts [ packages/domain/src/search/search-reference-service.integration.test.ts ]
+Error: Cannot find package 'zod' imported from '/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/search/search-reference-service.ts'
+ ❯ packages/domain/src/search/search-reference-service.ts:1:1
+      1| import { z } from "zod";
+       | ^
+      2| import { searchFail } from "@sammlerraum/contracts/item-search";
+      3| import * as contract from "@sammlerraum/contracts/search-references";
+
+Caused by: Error: Failed to load url zod (resolved id: zod). Does the file exist?
+ ❯ loadAndTransform node_modules/.pnpm/vite@7.3.6_@types+node@24.5.2_jiti@2.7.0/node_modules/vite/dist/node/chunks/config.js:22739:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  no tests
+   Start at  12:23:01
+   Duration  345ms (transform 83ms, setup 6ms, collect 0ms, tests 0ms, environment 0ms, prepare 48ms)
+

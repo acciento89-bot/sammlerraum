@@ -1,0 +1,118 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| packages/domain/src/valuations/valuation-service.test.ts (7 tests | 7 failed) 147ms
+   × private manual valuation PostgreSQL > appends exact per-unit amounts without overwriting and preserves case-sensitive authors 11ms
+     → Manual valuations not implemented
+   × private manual valuation PostgreSQL > orders latest by observed time and resolves equal-millisecond ties with createdAt then UUID 3ms
+     → Manual valuations not implemented
+   × private manual valuation PostgreSQL > bounds pages and validates strict cursor/time/input without caller-authored identity 6ms
+     → expected Error: Manual valuations not implemented to match object { code: 'VALUATION_INVALID' }
+   × private manual valuation PostgreSQL > hides foreign/deleted rows but permits inactive reads and retains soft-deleted history 2ms
+     → Manual valuations not implemented
+   × private manual valuation PostgreSQL > keeps per-unit history through actual quantity changes and leaves a split unauthored 2ms
+     → Manual valuations not implemented
+   × private manual valuation PostgreSQL > enforces native ownership, actor, basis, amount, scale, note and finite timestamp guards 2ms
+     → Cannot read properties of undefined (reading 'create')
+   × private manual valuation PostgreSQL > serializes the append quota and rejects the 10001st estimate without pruning 13ms
+     →
+Invalid `prisma.$executeRaw()` invocation:
+
+
+Raw query failed. Code: `42P01`. Message: `relation "Valuation" does not exist`
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 7 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/valuations/valuation-service.test.ts > private manual valuation PostgreSQL > appends exact per-unit amounts without overwriting and preserves case-sensitive authors
+Error: Manual valuations not implemented
+ ❯ Object.latestManualValuation packages/domain/src/valuations/valuation-service.ts:8:13
+      6|     },
+      7|     async latestManualValuation(_itemId: string): Promise<any> {
+      8|       throw new Error("Manual valuations not implemented");
+       |             ^
+      9|     },
+     10|     async listManualValuations(_itemId: string, _options?: unknown): P…
+ ❯ packages/domain/src/valuations/valuation-service.test.ts:26:28
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/7]⎯
+
+ FAIL  |workspace| packages/domain/src/valuations/valuation-service.test.ts > private manual valuation PostgreSQL > orders latest by observed time and resolves equal-millisecond ties with createdAt then UUID
+Error: Manual valuations not implemented
+ ❯ Object.addManualValuation packages/domain/src/valuations/valuation-service.ts:5:13
+      3|   return {
+      4|     async addManualValuation(_itemId: string, _input: unknown): Promis…
+      5|       throw new Error("Manual valuations not implemented");
+       |             ^
+      6|     },
+      7|     async latestManualValuation(_itemId: string): Promise<any> {
+ ❯ packages/domain/src/valuations/valuation-service.test.ts:40:35
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/7]⎯
+
+ FAIL  |workspace| packages/domain/src/valuations/valuation-service.test.ts > private manual valuation PostgreSQL > bounds pages and validates strict cursor/time/input without caller-authored identity
+AssertionError: expected Error: Manual valuations not implemented to match object { code: 'VALUATION_INVALID' }
+
+- Expected
++ Received
+
+- {
+-   "code": "VALUATION_INVALID",
++ Error {
++   "message": "Manual valuations not implemented",
+  }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/7]⎯
+
+ FAIL  |workspace| packages/domain/src/valuations/valuation-service.test.ts > private manual valuation PostgreSQL > hides foreign/deleted rows but permits inactive reads and retains soft-deleted history
+Error: Manual valuations not implemented
+ ❯ Object.addManualValuation packages/domain/src/valuations/valuation-service.ts:5:13
+      3|   return {
+      4|     async addManualValuation(_itemId: string, _input: unknown): Promis…
+      5|       throw new Error("Manual valuations not implemented");
+       |             ^
+      6|     },
+      7|     async latestManualValuation(_itemId: string): Promise<any> {
+ ❯ packages/domain/src/valuations/valuation-service.test.ts:82:35
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/7]⎯
+
+ FAIL  |workspace| packages/domain/src/valuations/valuation-service.test.ts > private manual valuation PostgreSQL > keeps per-unit history through actual quantity changes and leaves a split unauthored
+Error: Manual valuations not implemented
+ ❯ Object.addManualValuation packages/domain/src/valuations/valuation-service.ts:5:13
+      3|   return {
+      4|     async addManualValuation(_itemId: string, _input: unknown): Promis…
+      5|       throw new Error("Manual valuations not implemented");
+       |             ^
+      6|     },
+      7|     async latestManualValuation(_itemId: string): Promise<any> {
+ ❯ packages/domain/src/valuations/valuation-service.test.ts:105:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/7]⎯
+
+ FAIL  |workspace| packages/domain/src/valuations/valuation-service.test.ts > private manual valuation PostgreSQL > enforces native ownership, actor, basis, amount, scale, note and finite timestamp guards
+TypeError: Cannot read properties of undefined (reading 'create')
+ ❯ packages/domain/src/valuations/valuation-service.test.ts:117:34
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/7]⎯
+
+ FAIL  |workspace| packages/domain/src/valuations/valuation-service.test.ts > private manual valuation PostgreSQL > serializes the append quota and rejects the 10001st estimate without pruning
+PrismaClientKnownRequestError:
+Invalid `prisma.$executeRaw()` invocation:
+
+
+Raw query failed. Code: `42P01`. Message: `relation "Valuation" does not exist`
+ ❯ vn.handleRequestError node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:238:13
+ ❯ vn.handleAndLogRequestError node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:184:12
+ ❯ vn.request node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:153:12
+ ❯ a node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:1014:24
+ ❯ packages/domain/src/valuations/valuation-service.test.ts:128:5
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/7]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  7 failed (7)
+   Start at  03:52:47
+   Duration  470ms (transform 77ms, setup 5ms, collect 159ms, tests 147ms, environment 0ms, prepare 43ms)

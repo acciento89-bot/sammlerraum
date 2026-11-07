@@ -1,0 +1,39 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| apps/web/src/components/catalog/catalog-money-client.test.ts (2 tests | 2 failed) 25ms
+   × exact immutable-revision money map browser read > rejects missing, duplicate, foreign revision/target and raw-mismatched fields as a whole read 4ms
+     → expected Error: stub to match object { code: 'READ_FAILED' }
+   × exact immutable-revision money map browser read > reads the full supported 10100-field snapshot rather than silently truncating or applying a personal-response size cap 21ms
+     → stub
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/web/src/components/catalog/catalog-money-client.test.ts > exact immutable-revision money map browser read > rejects missing, duplicate, foreign revision/target and raw-mismatched fields as a whole read
+AssertionError: expected Error: stub to match object { code: 'READ_FAILED' }
+
+- Expected
++ Received
+
+- {
+-   "code": "READ_FAILED",
++ Error {
++   "message": "stub",
+  }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |workspace| apps/web/src/components/catalog/catalog-money-client.test.ts > exact immutable-revision money map browser read > reads the full supported 10100-field snapshot rather than silently truncating or applying a personal-response size cap
+Error: stub
+ ❯ readCanonicalMoney apps/web/src/components/catalog/catalog-money-client.ts:5:149
+
+ ❯ apps/web/src/components/catalog/catalog-money-client.test.ts:19:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed (2)
+   Start at  11:10:05
+   Duration  326ms (transform 49ms, setup 6ms, collect 85ms, tests 25ms, environment 0ms, prepare 61ms)
+

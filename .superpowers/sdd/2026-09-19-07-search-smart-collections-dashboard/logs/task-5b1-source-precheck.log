@@ -1,0 +1,16 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ✓ |workspace| apps/web/src/lib/private-search-routes.integration.test.ts (15 tests) 5047ms
+   ✓ native private query POST transport > accepts valid raw f beyond 10000 characters through the real service  437ms
+   ✓ native private query POST transport > preserves native dependency and output invariant failures for items  2057ms
+   ✓ native private query POST transport > preserves native dependency and output invariant failures for dashboard  2030ms
+ ✓ |workspace| apps/web/src/lib/api/read-search-body.test.ts (43 tests) 438ms
+   ✓ private scalar search body boundary > retains raw f above 10000 chars instead of applying filter guards to its envelope  421ms
+ ✓ |workspace| packages/contracts/src/private-search-query.test.ts (33 tests) 14ms
+
+ Test Files  3 passed (3)
+      Tests  91 passed (91)
+   Start at  12:06:10
+   Duration  6.38s (transform 173ms, setup 7ms, collect 460ms, tests 5.50s, environment 0ms, prepare 99ms)
+

@@ -1,0 +1,450 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| packages/domain/src/search/search-retained-integrity.integration.test.ts (12 tests | 9 failed) 3260ms
+   × retained search integrity producer parity > rejects non-NFKC native SHORT_TEXT under broad-only and independently nonmatching predicates 34ms
+     → promise resolved "{ items: [ { …(12) } ], total: 1, …(4) }" instead of rejecting
+   × retained search integrity producer parity > rejects non-NFKC native LONG_TEXT under broad-only and independently nonmatching predicates 9ms
+     → promise resolved "{ items: [ { …(12) } ], total: 1, …(4) }" instead of rejecting
+   × retained search integrity producer parity > rejects every ECMAScript boundary whitespace in retained customField text 12ms
+     → promise resolved "{ items: [], total: +0, …(4) }" instead of rejecting
+   × retained search integrity producer parity > rejects every ECMAScript boundary whitespace in retained catalogAttribute text 9ms
+     → promise resolved "{ items: [], total: +0, …(4) }" instead of rejecting
+   × retained search integrity producer parity > uses producer UTF16 bounds and accepts legitimate Unicode for customField 12ms
+     → promise resolved "{ items: [], total: +0, …(4) }" instead of rejecting
+   × retained search integrity producer parity > uses producer UTF16 bounds and accepts legitimate Unicode for catalogAttribute 13ms
+     → promise resolved "{ items: [], total: +0, …(4) }" instead of rejecting
+   × retained search integrity producer parity > rejects invalid/noncanonical customField URLs under presence/NOT and no-match text 9ms
+     → promise resolved "{ items: [], total: +0, …(4) }" instead of rejecting
+   × retained search integrity producer parity > rejects invalid/noncanonical catalogAttribute URLs under presence/NOT and no-match text 9ms
+     → promise resolved "{ items: [], total: +0, …(4) }" instead of rejecting
+   ✓ retained search integrity producer parity > accepts producer-canonical customField URLs with IPv6, path/query/fragment @ and percent escapes 15ms
+   ✓ retained search integrity producer parity > accepts producer-canonical catalogAttribute URLs with IPv6, path/query/fragment @ and percent escapes 16ms
+   ✓ retained search integrity producer parity > ignores foreign, unselected definition/variant URL corruption and does no URL work without a URL leaf 19ms
+   × retained search integrity producer parity > bounds distinct URL count and UTF8 bytes before transfer, without partial count/page or value disclosure 2968ms
+     → promise resolved "{ items: [ { …(12) }, …(19) ], …(5) }" instead of rejecting
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 9 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/search/search-retained-integrity.integration.test.ts > retained search integrity producer parity > rejects non-NFKC native SHORT_TEXT under broad-only and independently nonmatching predicates
+ FAIL  |workspace| packages/domain/src/search/search-retained-integrity.integration.test.ts > retained search integrity producer parity > rejects non-NFKC native LONG_TEXT under broad-only and independently nonmatching predicates
+AssertionError: promise resolved "{ items: [ { …(12) } ], total: 1, …(4) }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "items": [
++     {
++       "archivedAt": null,
++       "categoryTemplateId": "c6da91a9-6b99-464f-9598-75b0d8196ef1",
++       "collectionId": "e767d75a-1397-4f60-b087-f1f42f4e3f43",
++       "conditionOptionId": null,
++       "createdAt": "2026-10-18T07:42:24.262Z",
++       "disposedAt": null,
++       "id": "75ea9087-59de-4e7e-a3da-01759370d04a",
++       "quantity": 1,
++       "title": "Neutral",
++       "tradeStatus": "NOT_FOR_TRADE",
++       "updatedAt": "2026-10-18T07:42:24.262Z",
++       "visibility": "PRIVATE",
++     },
++   ],
++   "lifecycle": "ACTIVE",
++   "nextCursor": null,
++   "readAt": "2026-10-18T07:42:24.293Z",
++   "scope": "OWNED",
++   "total": 1,
+  }
+
+ ❯ packages/domain/src/search/search-retained-integrity.integration.test.ts:52:163
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/9]⎯
+
+ FAIL  |workspace| packages/domain/src/search/search-retained-integrity.integration.test.ts > retained search integrity producer parity > rejects every ECMAScript boundary whitespace in retained customField text
+ FAIL  |workspace| packages/domain/src/search/search-retained-integrity.integration.test.ts > retained search integrity producer parity > rejects every ECMAScript boundary whitespace in retained catalogAttribute text
+AssertionError: promise resolved "{ items: [], total: +0, …(4) }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "items": [],
++   "lifecycle": "ACTIVE",
++   "nextCursor": null,
++   "readAt": "2026-10-18T07:42:24.330Z",
++   "scope": "OWNED",
++   "total": 0,
+  }
+
+ ❯ packages/domain/src/search/search-retained-integrity.integration.test.ts:58:135
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/9]⎯
+
+ FAIL  |workspace| packages/domain/src/search/search-retained-integrity.integration.test.ts > retained search integrity producer parity > uses producer UTF16 bounds and accepts legitimate Unicode for customField
+ FAIL  |workspace| packages/domain/src/search/search-retained-integrity.integration.test.ts > retained search integrity producer parity > uses producer UTF16 bounds and accepts legitimate Unicode for catalogAttribute
+AssertionError: promise resolved "{ items: [], total: +0, …(4) }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "items": [],
++   "lifecycle": "ACTIVE",
++   "nextCursor": null,
++   "readAt": "2026-10-18T07:42:24.353Z",
++   "scope": "OWNED",
++   "total": 0,
+  }
+
+ ❯ packages/domain/src/search/search-retained-integrity.integration.test.ts:65:84
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/9]⎯
+
+ FAIL  |workspace| packages/domain/src/search/search-retained-integrity.integration.test.ts > retained search integrity producer parity > rejects invalid/noncanonical customField URLs under presence/NOT and no-match text
+ FAIL  |workspace| packages/domain/src/search/search-retained-integrity.integration.test.ts > retained search integrity producer parity > rejects invalid/noncanonical catalogAttribute URLs under presence/NOT and no-match text
+AssertionError: promise resolved "{ items: [], total: +0, …(4) }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "items": [],
++   "lifecycle": "ACTIVE",
++   "nextCursor": null,
++   "readAt": "2026-10-18T07:42:24.375Z",
++   "scope": "OWNED",
++   "total": 0,
+  }
+
+ ❯ packages/domain/src/search/search-retained-integrity.integration.test.ts:72:218
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/9]⎯
+
+ FAIL  |workspace| packages/domain/src/search/search-retained-integrity.integration.test.ts > retained search integrity producer parity > bounds distinct URL count and UTF8 bytes before transfer, without partial count/page or value disclosure
+AssertionError: promise resolved "{ items: [ { …(12) }, …(19) ], …(5) }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "items": [
++     {
++       "archivedAt": null,
++       "categoryTemplateId": null,
++       "collectionId": "e767d75a-1397-4f60-b087-f1f42f4e3f43",
++       "conditionOptionId": null,
++       "createdAt": "2026-10-18T07:42:24.768Z",
++       "disposedAt": null,
++       "id": "fff94c18-7449-446c-a637-d7732fe1b3c9",
++       "quantity": 1,
++       "title": "URL cap",
++       "tradeStatus": "NOT_FOR_TRADE",
++       "updatedAt": "2026-10-18T07:42:24.768Z",
++       "visibility": "PRIVATE",
++     },
++     {
++       "archivedAt": null,
++       "categoryTemplateId": null,
++       "collectionId": "e767d75a-1397-4f60-b087-f1f42f4e3f43",
++       "conditionOptionId": null,
++       "createdAt": "2026-10-18T07:42:24.768Z",
++       "disposedAt": null,
++       "id": "ffdb6046-e223-462b-a6c9-26160db1dcfd",
++       "quantity": 1,
++       "title": "URL cap",
++       "tradeStatus": "NOT_FOR_TRADE",
++       "updatedAt": "2026-10-18T07:42:24.768Z",
++       "visibility": "PRIVATE",
++     },
++     {
++       "archivedAt": null,
++       "categoryTemplateId": null,
++       "collectionId": "e767d75a-1397-4f60-b087-f1f42f4e3f43",
++       "conditionOptionId": null,
++       "createdAt": "2026-10-18T07:42:24.768Z",
++       "disposedAt": null,
++       "id": "ffce7bc1-ba8c-44f9-b944-8af56b7efce6",
++       "quantity": 1,
++       "title": "URL cap",
++       "tradeStatus": "NOT_FOR_TRADE",
++       "updatedAt": "2026-10-18T07:42:24.768Z",
++       "visibility": "PRIVATE",
++     },
++     {
++       "archivedAt": null,
++       "categoryTemplateId": null,
++       "collectionId": "e767d75a-1397-4f60-b087-f1f42f4e3f43",
++       "conditionOptionId": null,
++       "createdAt": "2026-10-18T07:42:24.768Z",
++       "disposedAt": null,
++       "id": "ffc2d8aa-d4ee-42b6-bca6-5cca01f7e250",
++       "quantity": 1,
++       "title": "URL cap",
++       "tradeStatus": "NOT_FOR_TRADE",
++       "updatedAt": "2026-10-18T07:42:24.768Z",
++       "visibility": "PRIVATE",
++     },
++     {
++       "archivedAt": null,
++       "categoryTemplateId": null,
++       "collectionId": "e767d75a-1397-4f60-b087-f1f42f4e3f43",
++       "conditionOptionId": null,
++       "createdAt": "2026-10-18T07:42:24.768Z",
++       "disposedAt": null,
++       "id": "ffbf7097-4650-48c3-8f69-e4c5cd3a1977",
++       "quantity": 1,
++       "title": "URL cap",
++       "tradeStatus": "NOT_FOR_TRADE",
++       "updatedAt": "2026-10-18T07:42:24.768Z",
++       "visibility": "PRIVATE",
++     },
++     {
++       "archivedAt": null,
++       "categoryTemplateId": null,
++       "collectionId": "e767d75a-1397-4f60-b087-f1f42f4e3f43",
++       "conditionOptionId": null,
++       "createdAt": "2026-10-18T07:42:24.768Z",
++       "disposedAt": null,
++       "id": "ffaedb75-880f-41db-b6cc-139e77451a0d",
++       "quantity": 1,
++       "title": "URL cap",
++       "tradeStatus": "NOT_FOR_TRADE",
++       "updatedAt": "2026-10-18T07:42:24.768Z",
++       "visibility": "PRIVATE",
++     },
++     {
++       "archivedAt": null,
++       "categoryTemplateId": null,
++       "collectionId": "e767d75a-1397-4f60-b087-f1f42f4e3f43",
++       "conditionOptionId": null,
++       "createdAt": "2026-10-18T07:42:24.768Z",
++       "disposedAt": null,
++       "id": "ff9e73a2-8994-4bf6-a5e5-e45a8f617e56",
++       "quantity": 1,
++       "title": "URL cap",
++       "tradeStatus": "NOT_FOR_TRADE",
++       "updatedAt": "2026-10-18T07:42:24.768Z",
++       "visibility": "PRIVATE",
++     },
++     {
++       "archivedAt": null,
++       "categoryTemplateId": null,
++       "collectionId": "e767d75a-1397-4f60-b087-f1f42f4e3f43",
++       "conditionOptionId": null,
++       "createdAt": "2026-10-18T07:42:24.768Z",
++       "disposedAt": null,
++       "id": "ff8847b9-711e-4feb-b06a-e14d714e8543",
++       "quantity": 1,
++       "title": "URL cap",
++       "tradeStatus": "NOT_FOR_TRADE",
++       "updatedAt": "2026-10-18T07:42:24.768Z",
++       "visibility": "PRIVATE",
++     },
++     {
++       "archivedAt": null,
++       "categoryTemplateId": null,
++       "collectionId": "e767d75a-1397-4f60-b087-f1f42f4e3f43",
++       "conditionOptionId": null,
++       "createdAt": "2026-10-18T07:42:24.768Z",
++       "disposedAt": null,
++       "id": "ff815869-fe89-4a37-b1c6-76bb17f72b44",
++       "quantity": 1,
++       "title": "URL cap",
++       "tradeStatus": "NOT_FOR_TRADE",
++       "updatedAt": "2026-10-18T07:42:24.768Z",
++       "visibility": "PRIVATE",
++     },
++     {
++       "archivedAt": null,
++       "categoryTemplateId": null,
++       "collectionId": "e767d75a-1397-4f60-b087-f1f42f4e3f43",
++       "conditionOptionId": null,
++       "createdAt": "2026-10-18T07:42:24.768Z",
++       "disposedAt": null,
++       "id": "ff7c3cdb-a950-4487-affa-444f44737e91",
++       "quantity": 1,
++       "title": "URL cap",
++       "tradeStatus": "NOT_FOR_TRADE",
++       "updatedAt": "2026-10-18T07:42:24.768Z",
++       "visibility": "PRIVATE",
++     },
++     {
++       "archivedAt": null,
++       "categoryTemplateId": null,
++       "collectionId": "e767d75a-1397-4f60-b087-f1f42f4e3f43",
++       "conditionOptionId": null,
++       "createdAt": "2026-10-18T07:42:24.768Z",
++       "disposedAt": null,
++       "id": "ff6a2907-ef43-4dad-9455-81555f85f624",
++       "quantity": 1,
++       "title": "URL cap",
++       "tradeStatus": "NOT_FOR_TRADE",
++       "updatedAt": "2026-10-18T07:42:24.768Z",
++       "visibility": "PRIVATE",
++     },
++     {
++       "archivedAt": null,
++       "categoryTemplateId": null,
++       "collectionId": "e767d75a-1397-4f60-b087-f1f42f4e3f43",
++       "conditionOptionId": null,
++       "createdAt": "2026-10-18T07:42:24.768Z",
++       "disposedAt": null,
++       "id": "ff460fec-318b-4d1b-b573-b61bf413bb48",
++       "quantity": 1,
++       "title": "URL cap",
++       "tradeStatus": "NOT_FOR_TRADE",
++       "updatedAt": "2026-10-18T07:42:24.768Z",
++       "visibility": "PRIVATE",
++     },
++     {
++       "archivedAt": null,
++       "categoryTemplateId": null,
++       "collectionId": "e767d75a-1397-4f60-b087-f1f42f4e3f43",
++       "conditionOptionId": null,
++       "createdAt": "2026-10-18T07:42:24.768Z",
++       "disposedAt": null,
++       "id": "ff32a0dd-a12c-4dcf-b457-f6c1868373ff",
++       "quantity": 1,
++       "title": "URL cap",
++       "tradeStatus": "NOT_FOR_TRADE",
++       "updatedAt": "2026-10-18T07:42:24.768Z",
++       "visibility": "PRIVATE",
++     },
++     {
++       "archivedAt": null,
++       "categoryTemplateId": null,
++       "collectionId": "e767d75a-1397-4f60-b087-f1f42f4e3f43",
++       "conditionOptionId": null,
++       "createdAt": "2026-10-18T07:42:24.768Z",
++       "disposedAt": null,
++       "id": "ff2d9ab0-ad33-4b89-add2-2ebd963db10b",
++       "quantity": 1,
++       "title": "URL cap",
++       "tradeStatus": "NOT_FOR_TRADE",
++       "updatedAt": "2026-10-18T07:42:24.768Z",
++       "visibility": "PRIVATE",
++     },
++     {
++       "archivedAt": null,
++       "categoryTemplateId": null,
++       "collectionId": "e767d75a-1397-4f60-b087-f1f42f4e3f43",
++       "conditionOptionId": null,
++       "createdAt": "2026-10-18T07:42:24.768Z",
++       "disposedAt": null,
++       "id": "ff2b8731-12f9-4560-8157-4d2588ec0a93",
++       "quantity": 1,
++       "title": "URL cap",
++       "tradeStatus": "NOT_FOR_TRADE",
++       "updatedAt": "2026-10-18T07:42:24.768Z",
++       "visibility": "PRIVATE",
++     },
++     {
++       "archivedAt": null,
++       "categoryTemplateId": null,
++       "collectionId": "e767d75a-1397-4f60-b087-f1f42f4e3f43",
++       "conditionOptionId": null,
++       "createdAt": "2026-10-18T07:42:24.768Z",
++       "disposedAt": null,
++       "id": "ff296e5a-8ecb-416e-a871-14285bc6444f",
++       "quantity": 1,
++       "title": "URL cap",
++       "tradeStatus": "NOT_FOR_TRADE",
++       "updatedAt": "2026-10-18T07:42:24.768Z",
++       "visibility": "PRIVATE",
++     },
++     {
++       "archivedAt": null,
++       "categoryTemplateId": null,
++       "collectionId": "e767d75a-1397-4f60-b087-f1f42f4e3f43",
++       "conditionOptionId": null,
++       "createdAt": "2026-10-18T07:42:24.768Z",
++       "disposedAt": null,
++       "id": "ff26fd66-fc62-440f-b449-de60471002ab",
++       "quantity": 1,
++       "title": "URL cap",
++       "tradeStatus": "NOT_FOR_TRADE",
++       "updatedAt": "2026-10-18T07:42:24.768Z",
++       "visibility": "PRIVATE",
++     },
++     {
++       "archivedAt": null,
++       "categoryTemplateId": null,
++       "collectionId": "e767d75a-1397-4f60-b087-f1f42f4e3f43",
++       "conditionOptionId": null,
++       "createdAt": "2026-10-18T07:42:24.768Z",
++       "disposedAt": null,
++       "id": "ff208356-2a02-4f6d-9300-1e8f43943bf2",
++       "quantity": 1,
++       "title": "URL cap",
++       "tradeStatus": "NOT_FOR_TRADE",
++       "updatedAt": "2026-10-18T07:42:24.768Z",
++       "visibility": "PRIVATE",
++     },
++     {
++       "archivedAt": null,
++       "categoryTemplateId": null,
++       "collectionId": "e767d75a-1397-4f60-b087-f1f42f4e3f43",
++       "conditionOptionId": null,
++       "createdAt": "2026-10-18T07:42:24.768Z",
++       "disposedAt": null,
++       "id": "ff16b417-ed10-4ff5-b4d2-86a263719969",
++       "quantity": 1,
++       "title": "URL cap",
++       "tradeStatus": "NOT_FOR_TRADE",
++       "updatedAt": "2026-10-18T07:42:24.768Z",
++       "visibility": "PRIVATE",
++     },
++     {
++       "archivedAt": null,
++       "categoryTemplateId": null,
++       "collectionId": "e767d75a-1397-4f60-b087-f1f42f4e3f43",
++       "conditionOptionId": null,
++       "createdAt": "2026-10-18T07:42:24.768Z",
++       "disposedAt": null,
++       "id": "fee7d22f-ad0d-45c5-b029-8cea0b210e21",
++       "quantity": 1,
++       "title": "URL cap",
++       "tradeStatus": "NOT_FOR_TRADE",
++       "updatedAt": "2026-10-18T07:42:24.768Z",
++       "visibility": "PRIVATE",
++     },
++   ],
++   "lifecycle": "ACTIVE",
++   "nextCursor": "eyJ2IjoxLCJjb250ZXh0SGFzaCI6ImQwNjY2MGQ5MzBmNTUxZTljMzUwOTU2YzAxYTI3NDBjNzlkMTkzMzUwZjVkMjcyNTFhYWMxMGMxN2U2MTRhZjYiLCJhZnRlciI6eyJjcmVhdGVkQXQiOiIyMDI2LTEwLTE4VDA3OjQyOjI0Ljc2OFoiLCJpZCI6ImZlZTdkMjJmLWFkMGQtNDVjNS1iMDI5LThjZWEwYjIxMGUyMSJ9fQ",
++   "readAt": "2026-10-18T07:42:25.416Z",
++   "scope": "OWNED",
++   "total": 4098,
+  }
+
+ ❯ rejectWithoutValues packages/domain/src/search/search-retained-integrity.integration.test.ts:102:70
+    100|    const rejectWithoutValues=async(expectedCount:bigint,expectedBytes:…
+    101|     manifest.length=0;countOrPage=0;
+    102|     await expect(search(leaf("customField","URL"),undefined,observed))…
+       |                                                                      ^
+    103|     expect(manifest).toEqual([{count:expectedCount,bytes:expectedBytes…
+    104|    };
+ ❯ packages/domain/src/search/search-retained-integrity.integration.test.ts:105:10
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/9]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  9 failed | 3 passed (12)
+   Start at  09:42:23
+   Duration  3.76s (transform 111ms, setup 6ms, collect 235ms, tests 3.26s, environment 0ms, prepare 49ms)
+

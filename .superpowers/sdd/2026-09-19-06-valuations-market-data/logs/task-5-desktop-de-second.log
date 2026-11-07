@@ -1,0 +1,71 @@
+[WebServer] (node:12720) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 1 worker
+
+(node:12721) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [desktop] › e2e/valuations.spec.ts:20:5 › private valuation history › production manual journey (de) (12.4s)
+(node:12756) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  2 [desktop] › e2e/valuations.spec.ts:70:5 › private valuation history › external UI transport rendering from real ingestion and query (de) (930ms)
+
+
+  1) [desktop] › e2e/valuations.spec.ts:20:5 › private valuation history › production manual journey (de) 
+
+    TimeoutError: locator.selectOption: Timeout 10000ms exceeded.
+    Call log:
+      - waiting for getByRole('form', { name: 'Eigene Schätzung hinzufügen', exact: true }).getByLabel('Beobachtungszeit', { exact: true })
+
+
+      11 | const labels={de:{title:"Wertverlauf",amount:"Betrag pro Stück",currency:"Währung",note:"Private Notiz",when:"Beobachtungszeit",date:"Datum (UTC)",time:"Uhrzeit (UTC)",save:"Schätzung speichern",latest:"Neueste eigene Schätzung",history:"Eigener Wertverlauf",external:"Externe Quellen",refresh:"Verlauf aktualisieren",older:"Ältere Einträge",newest:"Zum Anfang",next:"Weitere Quellen",first:"Erste Quellen",scope:"Zuordnungsbereich",form:"Eigene Schätzung hinzufügen",saved:"Schätzung gespeichert.",disabled:"Externe Werte sind nicht zur Anzeige freigegeben.",unknown:"Das Speichern konnte nicht bestätigt werden",discard:"Entwurf verwerfen",empty:"Noch keine eigene Schätzung.",kinds:["Angebotspreis","Katalogwert","Händlerpreis","Letzter Verkaufspreis","Preisspanne","Durchschnitt verkaufter Artikel","Median verkaufter Artikel"]},en:{title:"Valuation history",amount:"Amount per unit",currency:"Currency",note:"Private note",when:"Observation time",date:"Date (UTC)",time:"Time (UTC)",save:"Save estimate",latest:"Latest personal estimate",history:"Personal history",external:"External sources",refresh:"Refresh history",older:"Older entries",newest:"Back to newest",next:"Next sources",first:"First sources",scope:"Mapping scope",form:"Add personal estimate",saved:"Estimate saved.",disabled:"External values are not enabled for display.",unknown:"Saving could not be confirmed",discard:"Discard draft",empty:"No personal estimate yet.",kinds:["Asking price","Catalog value","Dealer price","Last sold price","Price range","Sold average","Sold median"]}};
+      12 | async function signIn(page:Page,f:Awaited<ReturnType<typeof valuationFixture>>) {expect((await page.request.post("/api/auth/sign-in/email",{data:{email:f.email,password:f.password},headers:{origin}})).status()).toBe(200)}
+    > 13 | async function append(page:Page,locale:"de"|"en",amount:string,note:string,date?:string){const c=labels[locale];const form=page.getByRole("form",{name:c.form,exact:true});await form.getByLabel(c.amount,{exact:true}).fill(amount);await form.getByLabel(c.note,{exact:true}).fill(note);if(date){await form.getByLabel(c.when,{exact:true}).selectOption("earlier");await form.getByLabel(c.date,{exact:true}).fill(date);await form.getByLabel(c.time,{exact:true}).fill("03:04:05.006")}
+         |                                                                                                                                                                                                                                                                                                                                                ^
+      14 |   const response=page.waitForResponse(r=>r.url().endsWith("/valuations")&&r.request().method()==="POST",{timeout:10000});await form.getByRole("button",{name:c.save,exact:true}).click();const ack=await response;expect(ack.status()).toBe(201);return (await ack.json()).valuation as {id:string;amountMinor:string;observedAt:string};}
+      15 | function gate(){let release!:()=>void;const promise=new Promise<void>(r=>release=r);return{promise,release}}
+      16 |
+        at append (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/valuations.spec.ts:13:336)
+        at /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/valuations.spec.ts:42:25
+
+    Error Context: test-results/valuations-private-valuati-164a5-oduction-manual-journey-de--desktop/error-context.md
+
+    Error Context: test-results/valuations-private-valuati-164a5-oduction-manual-journey-de--desktop/error-context.md
+
+  2) [desktop] › e2e/valuations.spec.ts:70:5 › private valuation history › external UI transport rendering from real ingestion and query (de) 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('region', { name: 'Externe Quellen', exact: true }).getByRole('region').filter({ has: getByRole('heading', { name: /^Angebotspreis ·/ }) }).getByText('0', { exact: true })
+    Expected: visible
+    Error: strict mode violation: getByRole('region', { name: 'Externe Quellen', exact: true }).getByRole('region').filter({ has: getByRole('heading', { name: /^Angebotspreis ·/ }) }).getByText('0', { exact: true }) resolved to 5 elements:
+        1) <dd>0</dd> aka getByRole('definition').filter({ hasText: /^0$/ })
+        2) <dd>0</dd> aka locator('section:nth-child(4) > .value-list > li:nth-child(2) > .value-record > details > dl > div:nth-child(5) > dd')
+        3) <dd>0</dd> aka locator('section:nth-child(4) > .value-list > li:nth-child(3) > .value-record > details > dl > div:nth-child(5) > dd')
+        4) <dd>0</dd> aka locator('section:nth-child(4) > .value-list > li:nth-child(4) > .value-record > details > dl > div:nth-child(5) > dd')
+        5) <dd>0</dd> aka locator('section:nth-child(4) > .value-list > li:nth-child(5) > .value-record > details > dl > div:nth-child(5) > dd')
+
+    Call log:
+      - Expect "toBeVisible" getByRole('region', { name: 'Externe Quellen', exact: true }).getByRole('region').filter({ has: getByRole('heading', { name: /^Angebotspreis ·/ }) }).getByText('0', { exact: true }) with timeout 5000ms
+      - waiting for getByRole('region', { name: 'Externe Quellen', exact: true }).getByRole('region').filter({ has: getByRole('heading', { name: /^Angebotspreis ·/ }) }).getByText('0', { exact: true })
+
+
+      84 |         const asking=external.getByRole("region").filter({has:page.getByRole("heading",{name:new RegExp(`^${c.kinds[0]} ·`)})});
+      85 |         await expect(asking.locator("[data-observation-id]")).toHaveCount(5);await expect(asking.locator("[data-observation-id]").first()).toContainText(locale==="de"?"90.071.992.547.409,93":"90,071,992,547,409.93");
+    > 86 |         await asking.locator("article details summary").first().click();await expect(asking.getByText("0",{exact:true})).toBeVisible();await expect(asking.getByText(locale==="de"?"Nein":"No",{exact:true})).toBeVisible();
+         |                                                                                                                          ^
+      87 |         const link=asking.getByRole("link",{name:/example.org/}).first();await expect(link).toHaveAttribute("rel","noopener noreferrer");await expect(link).toHaveAttribute("target","_blank");await expect(link).toHaveAttribute("href","https://example.org/card/001");
+      88 |         await asking.getByRole("button",{name:locale==="de"?"Quellverlauf anzeigen":"View source history",exact:true}).click();await expect(asking.locator("[data-observation-id]")).toHaveCount(20);await asking.getByRole("button",{name:c.older,exact:true}).click();await expect(asking.locator("[data-observation-id]")).toHaveCount(3);
+      89 |         await external.getByRole("button",{name:c.next,exact:true}).click();for(const kind of [c.kinds[4],c.kinds[1],c.kinds[2]])await expect(external.getByRole("heading",{name:new RegExp(`^${kind} ·`)})).toBeVisible();
+        at /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/valuations.spec.ts:86:122
+
+    Error Context: test-results/valuations-private-valuati-100ba-eal-ingestion-and-query-de--desktop/error-context.md
+
+    Error Context: test-results/valuations-private-valuati-100ba-eal-ingestion-and-query-de--desktop/error-context.md
+
+  2 failed
+    [desktop] › e2e/valuations.spec.ts:20:5 › private valuation history › production manual journey (de) 
+    [desktop] › e2e/valuations.spec.ts:70:5 › private valuation history › external UI transport rendering from real ingestion and query (de) 
+undefined
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/valuations.spec.ts --project=desktop --grep production manual journey \(de\)|external UI transport.*\(de\) --workers=1

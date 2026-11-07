@@ -1,0 +1,41 @@
+[WebServer] (node:10315) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:10317) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [desktop] › e2e/valuations.spec.ts:7:5 › private valuation history › production manual journey (en) (505ms)
+
+
+  1) [desktop] › e2e/valuations.spec.ts:7:5 › private valuation history › production manual journey (en) 
+
+    MarketDataError: MARKET_INPUT_INVALID
+
+       at ../../../packages/domain/src/market-data/validation.ts:23
+
+      21 | }
+      22 | export const invalid = (): never => {
+    > 23 |   throw new MarketDataError("MARKET_INPUT_INVALID");
+         |         ^
+      24 | };
+      25 | export function object(input: unknown, keys?: readonly string[]): Record<string, unknown> {
+      26 |   if (
+        at invalid (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/validation.ts:23:9)
+        at instant (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/validation.ts:68:12)
+        at map (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/validation.ts:218:22)
+        at parseBatch (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/validation.ts:159:29)
+        at prepareRecord (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/market-data-service.ts:131:20)
+        at Object.recordObservations (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/market-data-service.ts:190:22)
+        at valuationFixture (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/support/valuation-fixture.ts:34:20)
+        at /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/valuations.spec.ts:8:15
+
+    Error Context: test-results/valuations-private-valuati-7d031-oduction-manual-journey-en--desktop/error-context.md
+
+    Error Context: test-results/valuations-private-valuati-7d031-oduction-manual-journey-en--desktop/error-context.md
+
+  1 failed
+    [desktop] › e2e/valuations.spec.ts:7:5 › private valuation history › production manual journey (en) 
+undefined
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/valuations.spec.ts --project=desktop --grep production manual journey \(en\) --workers=1

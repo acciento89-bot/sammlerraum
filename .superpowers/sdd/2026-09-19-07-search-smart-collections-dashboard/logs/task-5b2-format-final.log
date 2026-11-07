@@ -1,0 +1,4 @@
+packages/contracts/src/search-references.ts 52ms
+packages/contracts/src/search-references.test.ts 11ms
+packages/domain/src/search/search-reference-service.ts 26ms
+packages/domain/src/search/search-reference-service.integration.test.ts 46ms

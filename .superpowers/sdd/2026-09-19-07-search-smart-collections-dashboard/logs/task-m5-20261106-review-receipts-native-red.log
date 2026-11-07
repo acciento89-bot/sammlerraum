@@ -1,0 +1,87 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/money/personal-money-service.test.ts (13 tests | 1 failed) 678ms
+   ✓ personal money authoring real transactions > authors AFN decimal units explicitly and never infers them from an old raw write 165ms
+   ✓ personal money authoring real transactions > preserves nonmoney updates but invalidates equal-value explicit replacement tokens 34ms
+   ✓ personal money authoring real transactions > splits known per-unit purchase meaning without changing the exact total 44ms
+   ✓ personal money authoring real transactions > rolls back split quantity and child when a provenance copy insert fails 51ms
+   ✓ personal money authoring real transactions > clear and readd cannot revive a previous fact token or meaning 24ms
+   × personal money authoring real transactions > authors custom money and copies its original assertion once per field during split 64ms
+     → expected { …(20) } to match object { originSubject: { …(3) }, …(1) }
+(21 matching properties omitted from actual)
+   ✓ personal money authoring real transactions > hides foreign facts and rejects legacy raw fields in the explicit authoring envelope 9ms
+   ✓ personal money authoring real transactions > pages private assertion history and supplies a fresh historical revocation precondition 107ms
+   ✓ personal money authoring real transactions > the legacy custom writer checks both actual item owner and collection owner 14ms
+   ✓ personal money authoring real transactions > serializes competing classify/replace and clear/replace with one exact token winner 50ms
+   ✓ personal money authoring real transactions > concurrent split and replacement never pair copied raw with a different receipt 31ms
+   ✓ personal money authoring real transactions > an authoring insert failure rolls back both a new raw item and its native generation 10ms
+   ✓ personal money authoring real transactions > retains purchase/custom correction reasons privately and erases them without invalidating receipts 48ms
+ ❯ |workspace| apps/web/src/lib/legacy-money-routes.integration.test.ts (5 tests | 1 failed) 183ms
+   ✓ personal money HTTP real database boundary > keeps explicit monetary writers closed when server authoring is disabled 90ms
+   ✓ personal money HTTP real database boundary > creates and reads explicit money only after fresh authentication, with no-store and request IDs 35ms
+   ✓ personal money HTTP real database boundary > rejects cross-origin before session access and duplicate nested keys/invalid bytes before mutation 3ms
+   × personal money HTTP real database boundary > hides foreign reads and exposes owned history/revocation as closed request states 27ms
+     → expected { schemaVersion: 1, revoked: true } to deeply equal { schemaVersion: 1, …(3) }
+   ✓ personal money HTTP real database boundary > bounds history/field queries and streamed authoring bodies without weakening authentication 15ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/web/src/lib/legacy-money-routes.integration.test.ts > personal money HTTP real database boundary > hides foreign reads and exposes owned history/revocation as closed request states
+AssertionError: expected { schemaVersion: 1, revoked: true } to deeply equal { schemaVersion: 1, …(3) }
+
+- Expected
++ Received
+
+  {
+-   "assertionId": "a78ad8a9-6fea-4541-92a2-4f84489162a3",
+    "revoked": true,
+    "schemaVersion": 1,
+-   "subject": {
+-     "family": "PURCHASE",
+-     "itemId": "58f2564a-8661-4324-939b-c6eee48529cc",
+-   },
+  }
+
+ ❯ apps/web/src/lib/legacy-money-routes.integration.test.ts:165:34
+    163|     );
+    164|     expect(revoked.status).toBe(200);
+    165|     expect(await revoked.json()).toEqual({ schemaVersion: 1, revoked: …
+       |                                  ^
+    166|       subject: { family: "PURCHASE", itemId: body.item.id }, assertion…
+    167|     const stale = await f.api.UPDATE(
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |workspace| packages/domain/src/money/personal-money-service.test.ts > personal money authoring real transactions > authors custom money and copies its original assertion once per field during split
+AssertionError: expected { …(20) } to match object { originSubject: { …(3) }, …(1) }
+(21 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "expectedAssertionToken": null,
+-   "originSubject": {
+-     "family": "CUSTOM",
+-     "fieldDefinitionId": "0f407066-d548-4ec5-bf96-f3d16419e78b",
+-     "itemId": "0ffa3fb5-d960-42f5-88bc-715c76c4609a",
+-   },
+  }
+
+ ❯ packages/domain/src/money/personal-money-service.test.ts:209:20
+    207|     const history = await f.service.listHistory({ ...subject, itemId: …
+    208|     const copied = history.events.find(event => event.operation === "C…
+    209|     expect(copied).toMatchObject({ originSubject: subject, expectedAss…
+       |                    ^
+    210|     await createItemService(db!, f.actor).deleteItem(created.item.id);
+    211|     const removedOrigin = await f.service.listHistory({ ...subject, it…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  2 failed | 16 passed (18)
+   Start at  10:19:54
+   Duration  1.74s (transform 215ms, setup 6ms, collect 569ms, tests 860ms, environment 0ms, prepare 80ms)
+

@@ -1,0 +1,45 @@
+[WebServer] (node:6456) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 1 worker
+
+(node:6457) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [money-ui-desktop] › e2e/legacy-money.spec.ts:936:3 › de: failed custom monetary reads have an explicit read-only retry without raw writes (6.3s)
+Testing stopped early after 1 maximum allowed failures.
+
+
+  1) [money-ui-desktop] › e2e/legacy-money.spec.ts:936:3 › de: failed custom monetary reads have an explicit read-only retry without raw writes 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('button', { name: 'Geld-Zusatzfelder erneut laden', exact: true })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('button', { name: 'Geld-Zusatzfelder erneut laden', exact: true }) with timeout 5000ms
+      - waiting for getByRole('button', { name: 'Geld-Zusatzfelder erneut laden', exact: true })
+
+
+      941 |       await page.reload();
+      942 |       const retry = page.getByRole("button", { name: locale === "de" ? "Geld-Zusatzfelder erneut laden" : "Reload monetary custom fields", exact: true });
+    > 943 |       await expect(retry).toBeVisible();
+          |                           ^
+      944 |       await expect(page.getByRole("button", { name: h.t.save, exact: true })).toBeDisabled();
+      945 |       await page.unroute(`**/api/v1/items/${h.f.itemId}/money?*`);
+      946 |       await retry.click();
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/legacy-money.spec.ts:943:27
+
+    Error Context: test-results/legacy-money-de-failed-cus-198ef-ly-retry-without-raw-writes-money-ui-desktop/error-context.md
+
+    Error Context: test-results/legacy-money-de-failed-cus-198ef-ly-retry-without-raw-writes-money-ui-desktop/error-context.md
+
+  1 failed
+    [money-ui-desktop] › e2e/legacy-money.spec.ts:936:3 › de: failed custom monetary reads have an explicit read-only retry without raw writes 
+  1 did not run
+  1 error was not a part of any test, see above for details
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/legacy-money.spec.ts --workers=1 --grep failed custom monetary --project=money-ui-desktop --max-failures=1

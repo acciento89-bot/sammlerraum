@@ -1,0 +1,40 @@
+[WebServer] (node:2536) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 4 tests using 1 worker
+
+(node:2537) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [money-ui-desktop] › e2e/legacy-money.spec.ts:780:3 › de: an unknown new-item commit requires explicit collection reconciliation before a separate new entry (1.0m)
+Testing stopped early after 1 maximum allowed failures.
+
+
+  1) [money-ui-desktop] › e2e/legacy-money.spec.ts:780:3 › de: an unknown new-item commit requires explicit collection reconciliation before a separate new entry 
+
+    Test timeout of 60000ms exceeded.
+
+    Error: locator.check: Test timeout of 60000ms exceeded.
+    Call log:
+      - waiting for getByRole('checkbox', { name: 'I checked the collection and want to start a separate new entry.', exact: true })
+
+
+      814 |           exact: true,
+      815 |         })
+    > 816 |         .check();
+          |          ^
+      817 |       await page
+      818 |         .getByRole("button", {
+      819 |           name:
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/legacy-money.spec.ts:816:10
+
+    Error Context: test-results/legacy-money-de-an-unknown-b46e2-before-a-separate-new-entry-money-ui-desktop/error-context.md
+
+    Error Context: test-results/legacy-money-de-an-unknown-b46e2-before-a-separate-new-entry-money-ui-desktop/error-context.md
+
+  1 failed
+    [money-ui-desktop] › e2e/legacy-money.spec.ts:780:3 › de: an unknown new-item commit requires explicit collection reconciliation before a separate new entry 
+  3 did not run
+  1 error was not a part of any test, see above for details
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/legacy-money.spec.ts --workers=1 --grep unknown new-item commit --max-failures=1

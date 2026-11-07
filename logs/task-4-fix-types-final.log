@@ -1,0 +1,7 @@
+Scope: 2 of 11 workspace projects
+packages/domain typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+packages/domain typecheck: src/valuations/valuation-query.test.ts(788,76): error TS2339: Property 'createdAt' does not exist on type '{ id: string; source: { providerId: string; identifierNamespace: string; identifierType: string; externalId: string; kind: "LAST_SOLD" | "SOLD_AVERAGE" | "SOLD_MEDIAN" | "ASKING_PRICE" | "PRICE_RANGE" | "CATALOG_VALUE" | "DEALER_PRICE"; currency: string; }; ... 12 more ...; catalogMatch: { ...; }; }'.
+packages/domain typecheck: Failed
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @sammlerraum/domain@ typecheck: `tsc --noEmit --project ../../tsconfig.base.json`
+Exit status 2

@@ -1,0 +1,52 @@
+[WebServer] (node:8343) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:8344) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [desktop] › e2e/search-dashboard.spec.ts:295:3 › de: actual delayed response, failure/stale states and 401 clearing (8.4s)
+
+
+  1) [desktop] › e2e/search-dashboard.spec.ts:295:3 › de: actual delayed response, failure/stale states and 401 clearing 
+
+    Error: expect(locator).toHaveCount(expected) failed
+
+    Locator:  getByRole('button', { name: 'Entfernen rückgängig machen', exact: true })
+    Expected: 0
+    Received: 1
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveCount" getByRole('button', { name: 'Entfernen rückgängig machen', exact: true }) with timeout 5000ms
+      - waiting for getByRole('button', { name: 'Entfernen rückgängig machen', exact: true })
+        14 × locator resolved to 1 element
+           - unexpected value "1"
+
+
+      371 |       await expect(page.getByText(c.errors.session, { exact: true })).toBeVisible();
+      372 |       await panel(page, locale);
+    > 373 |       await expect(page.getByRole("button", { name: c.undo, exact: true })).toHaveCount(0);
+          |                                                                             ^
+      374 |       await page.getByRole("button", { name: c.reset, exact: true }).click();
+      375 |       await expect(page.getByText(c.errors.session, { exact: true })).toBeVisible();
+      376 |       await expect(page.getByRole("button", { name: c.apply, exact: true })).toBeDisabled();
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/search-dashboard.spec.ts:373:77
+
+    Error Context: test-results/search-dashboard-de-actual-3a2a4-ale-states-and-401-clearing-desktop/error-context.md
+
+    Error Context: test-results/search-dashboard-de-actual-3a2a4-ale-states-and-401-clearing-desktop/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/search-dashboard-de-actual-3a2a4-ale-states-and-401-clearing-desktop/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/search-dashboard-de-actual-3a2a4-ale-states-and-401-clearing-desktop/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [desktop] › e2e/search-dashboard.spec.ts:295:3 › de: actual delayed response, failure/stale states and 401 clearing 
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/search-dashboard.spec.ts --project=desktop --grep de: actual delayed --workers=1 --trace=retain-on-failure

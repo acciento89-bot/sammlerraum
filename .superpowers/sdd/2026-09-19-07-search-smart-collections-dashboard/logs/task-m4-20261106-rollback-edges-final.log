@@ -1,0 +1,57 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/catalog/catalog-money-mutation.test.ts (14 tests | 1 failed | 10 skipped) 548ms
+   ↓ actual canonical catalog money mutation integration > authors exact money and carries it through a text-only revision without rewriting old snapshots
+   ↓ actual canonical catalog money mutation integration > invalidates an explicit legacy same-pair write even if the snapshot revision does not advance
+   ↓ actual canonical catalog money mutation integration > applies a deliberate same-pair replacement and preserves its captured precondition
+   ↓ actual canonical catalog money mutation integration > rejects mismatched frozen patch digests without creating a partial entry
+   ↓ actual canonical catalog money mutation integration > authors and retains exact variant money independently of entry money
+   ↓ actual canonical catalog money mutation integration > carries direct evidence through identifier add, correction and removal
+   ↓ actual canonical catalog money mutation integration > does not invent an operator for actorless maintenance of known interpretation
+   ↓ actual canonical catalog money mutation integration > rolls back target meaning and saves selected evidence even when the complete raw snapshot is identical
+   ↓ actual canonical catalog money mutation integration > retains historical raw codes without current-list reinterpretation and permits explicit replacement
+   ✓ actual canonical catalog money mutation integration > restores a historical unsupported raw code without borrowing the current authored unit 78ms
+   × actual canonical catalog money mutation integration > reactivates the same retired variant UUID and restores its exact direct evidence 80ms
+     → expected { kind: 'INTERPRETED', …(8) } to deeply equal { kind: 'INTERPRETED', …(8) }
+   ✓ actual canonical catalog money mutation integration > records revoked target evidence and never revives its copied interpretation 52ms
+   ✓ actual canonical catalog money mutation integration > rolls back equal-snapshot financial changes if the immutable rollback audit fails 56ms
+   ↓ actual canonical catalog money mutation integration > carries all 10100 interpreted paths through the actual bounded canonical maintenance wrapper
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/catalog/catalog-money-mutation.test.ts > actual canonical catalog money mutation integration > reactivates the same retired variant UUID and restores its exact direct evidence
+AssertionError: expected { kind: 'INTERPRETED', …(8) } to deeply equal { kind: 'INTERPRETED', …(8) }
+
+- Expected
++ Received
+
+  {
+    "assertionId": "6ea6b4b1-2cc8-4141-b1de-aa7d866e5073",
+    "basisId": "legacy-money-iso-2026-09-17-v1",
+    "decimal": "1.00",
+    "eligibility": "ELIGIBLE",
+-   "eventId": "6ea6b4b1-2cc8-4141-b1de-aa7d866e5073",
++   "eventId": "6e4f11d7-8050-44ca-8454-da6d19bafc4b",
+    "evidenceCategory": null,
+    "exponent": 2,
+    "kind": "INTERPRETED",
+    "unitKey": "iso4217-2026-09-17:AFN",
+  }
+
+ ❯ packages/domain/src/catalog/catalog-money-mutation.test.ts:450:158
+    448|     expect(restored.state.variants[0]!.id).toBe(variant.id);
+    449|     expect((await db.catalogVariant.findUniqueOrThrow({ where: { id: v…
+    450|     expect((await read(entry.state.id, restored.revision)).find(v => v…
+       |                                                                                                                                                              ^
+    451|   });
+    452|   it("records revoked target evidence and never revives its copied int…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 3 passed | 10 skipped (14)
+   Start at  07:32:15
+   Duration  938ms (transform 135ms, setup 6ms, collect 235ms, tests 548ms, environment 0ms, prepare 36ms)
+

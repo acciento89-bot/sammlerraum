@@ -1,0 +1,27 @@
+
+> sammlerraum@ typecheck /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+> pnpm -r typecheck
+
+Scope: 9 of 10 workspace projects
+packages/contracts typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+packages/config typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+packages/queue typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+packages/storage typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+packages/storage typecheck: ../../apps/web/src/lib/catalog-history-routes.integration.test.ts(14,256): error TS2571: Object is of type 'unknown'.
+packages/storage typecheck: ../../apps/web/src/lib/catalog-link-routes.ts(39,106): error TS2345: Argument of type 'ItemTransaction' is not assignable to parameter of type 'Pick<CatalogProposalTransaction, "$queryRaw">'.
+packages/storage typecheck:   The types of '$queryRaw(...)[Symbol.toStringTag]' are incompatible between these types.
+packages/storage typecheck:     Type 'string' is not assignable to type '"PrismaPromise"'.
+packages/config typecheck: ../../apps/web/src/lib/catalog-history-routes.integration.test.ts(14,256): error TS2571: Object is of type 'unknown'.
+packages/config typecheck: ../../apps/web/src/lib/catalog-link-routes.ts(39,106): error TS2345: Argument of type 'ItemTransaction' is not assignable to parameter of type 'Pick<CatalogProposalTransaction, "$queryRaw">'.
+packages/config typecheck:   The types of '$queryRaw(...)[Symbol.toStringTag]' are incompatible between these types.
+packages/config typecheck:     Type 'string' is not assignable to type '"PrismaPromise"'.
+packages/storage typecheck: Failed
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/storage:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @sammlerraum/storage@ typecheck: `tsc --noEmit --project ../../tsconfig.base.json`
+Exit status 2
+packages/testing typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+packages/contracts typecheck: ../../apps/web/src/lib/catalog-history-routes.integration.test.ts(14,256): error TS2571: Object is of type 'unknown'.
+packages/contracts typecheck: ../../apps/web/src/lib/catalog-link-routes.ts(39,106): error TS2345: Argument of type 'ItemTransaction' is not assignable to parameter of type 'Pick<CatalogProposalTransaction, "$queryRaw">'.
+packages/contracts typecheck:   The types of '$queryRaw(...)[Symbol.toStringTag]' are incompatible between these types.
+packages/contracts typecheck:     Type 'string' is not assignable to type '"PrismaPromise"'.
+ ELIFECYCLE  Command failed with exit code 2.

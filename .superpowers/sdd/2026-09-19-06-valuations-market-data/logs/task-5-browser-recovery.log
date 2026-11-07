@@ -1,0 +1,23 @@
+[WebServer] (node:15550) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 12 tests using 1 worker
+
+(node:15551) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [desktop] › e2e/valuations.spec.ts:137:5 › private valuation history › production manual journey (de) (4.0s)
+  ✓   2 [desktop] › e2e/valuations.spec.ts:358:5 › private valuation history › external UI transport rendering from real ingestion and query (de) (2.0s)
+  ✓   3 [desktop] › e2e/valuations.spec.ts:137:5 › private valuation history › production manual journey (en) (2.1s)
+  ✓   4 [desktop] › e2e/valuations.spec.ts:358:5 › private valuation history › external UI transport rendering from real ingestion and query (en) (1.5s)
+  ✓   5 [desktop] › e2e/valuations.spec.ts:651:3 › private valuation history › production confirmed save, failed refresh, invalid read and session expiry (753ms)
+  ✓   6 [desktop] › e2e/valuations.spec.ts:730:3 › private valuation history › production response races and unknown save outcome never replay writes (861ms)
+(node:15582) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   7 [mobile] › e2e/valuations.spec.ts:137:5 › private valuation history › production manual journey (de) (2.5s)
+  ✓   8 [mobile] › e2e/valuations.spec.ts:358:5 › private valuation history › external UI transport rendering from real ingestion and query (de) (1.5s)
+  ✓   9 [mobile] › e2e/valuations.spec.ts:137:5 › private valuation history › production manual journey (en) (2.6s)
+  ✓  10 [mobile] › e2e/valuations.spec.ts:358:5 › private valuation history › external UI transport rendering from real ingestion and query (en) (2.3s)
+  ✓  11 [mobile] › e2e/valuations.spec.ts:651:3 › private valuation history › production confirmed save, failed refresh, invalid read and session expiry (755ms)
+  ✓  12 [mobile] › e2e/valuations.spec.ts:730:3 › private valuation history › production response races and unknown save outcome never replay writes (780ms)
+
+  12 passed (23.9s)

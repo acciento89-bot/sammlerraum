@@ -1,0 +1,4 @@
+
+> @sammlerraum/web@ typecheck /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web
+> tsc --noEmit --project tsconfig.json
+

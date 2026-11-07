@@ -1,0 +1,15 @@
+[WebServer] (node:18147) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 4 tests using 1 worker
+
+(node:18148) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [desktop] › e2e/search-dashboard.spec.ts:1480:3 › de: refreshed saved membership is bound to displayed definition across concurrent tabs (1.7s)
+  ✓  2 [desktop] › e2e/search-dashboard.spec.ts:1480:3 › en: refreshed saved membership is bound to displayed definition across concurrent tabs (915ms)
+(node:18161) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  3 [mobile] › e2e/search-dashboard.spec.ts:1480:3 › de: refreshed saved membership is bound to displayed definition across concurrent tabs (1.0s)
+  ✓  4 [mobile] › e2e/search-dashboard.spec.ts:1480:3 › en: refreshed saved membership is bound to displayed definition across concurrent tabs (854ms)
+
+  4 passed (6.4s)

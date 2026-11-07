@@ -1,0 +1,15 @@
+[WebServer] (node:34950) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 4 tests using 1 worker
+
+(node:34951) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [desktop] › e2e/personal-milestones.spec.ts:11:3 › de: actual authored milestones are discoverable independently in the collector dashboard (1.4s)
+  ✓  2 [desktop] › e2e/personal-milestones.spec.ts:11:3 › en: actual authored milestones are discoverable independently in the collector dashboard (441ms)
+(node:34963) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  3 [mobile] › e2e/personal-milestones.spec.ts:11:3 › de: actual authored milestones are discoverable independently in the collector dashboard (534ms)
+  ✓  4 [mobile] › e2e/personal-milestones.spec.ts:11:3 › en: actual authored milestones are discoverable independently in the collector dashboard (418ms)
+
+  4 passed (4.7s)

@@ -1,0 +1,77 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| packages/domain/src/money/money.test.ts (50 tests | 1 failed) 6ms
+   ✓ canonical localized money > parses de 1.234,56 EUR exactly 1ms
+   ✓ canonical localized money > parses en 1,234.56 EUR exactly 0ms
+   ✓ canonical localized money > parses de 00,50 EUR exactly 0ms
+   ✓ canonical localized money > parses en 001.00 EUR exactly 0ms
+   ✓ canonical localized money > parses de   0   EUR exactly 0ms
+   ✓ canonical localized money > parses en 12.3 EUR exactly 0ms
+   ✓ canonical localized money > parses de 1.234 JPY exactly 0ms
+   ✓ canonical localized money > parses en 1,234 UYI exactly 0ms
+   ✓ canonical localized money > parses de 1.234,567 KWD exactly 0ms
+   ✓ canonical localized money > parses en 1,234.5678 CLF exactly 0ms
+   ✓ canonical localized money > parses de 0,0001 UYW exactly 0ms
+   × canonical localized money > parses en 1.00 ISK exactly 2ms
+     → Invalid localized money
+   ✓ canonical localized money > parses en 90,071,992,547,409.93 EUR exactly 0ms
+   ✓ canonical localized money > parses en 92,233,720,368,547,758.07 EUR exactly 0ms
+   ✓ canonical localized money > parses de 9223372036854775807 JPY exactly 0ms
+   ✓ canonical localized money > rejects malformed/range/scale input  en EUR 0ms
+   ✓ canonical localized money > rejects malformed/range/scale input 1.234,56 en EUR 0ms
+   ✓ canonical localized money > rejects malformed/range/scale input 1,234.56 de EUR 0ms
+   ✓ canonical localized money > rejects malformed/range/scale input 12,34.56 en EUR 0ms
+   ✓ canonical localized money > rejects malformed/range/scale input 01,234.56 en EUR 0ms
+   ✓ canonical localized money > rejects malformed/range/scale input 0,000 en EUR 0ms
+   ✓ canonical localized money > rejects malformed/range/scale input 1,234, en EUR 0ms
+   ✓ canonical localized money > rejects malformed/range/scale input 1234,567.89 en EUR 0ms
+   ✓ canonical localized money > rejects malformed/range/scale input 1..234 de EUR 0ms
+   ✓ canonical localized money > rejects malformed/range/scale input 1 234,56 de EUR 0ms
+   ✓ canonical localized money > rejects malformed/range/scale input 1 234,56 de EUR 0ms
+   ✓ canonical localized money > rejects malformed/range/scale input 1 234,56 de EUR 0ms
+   ✓ canonical localized money > rejects malformed/range/scale input €1 en EUR 0ms
+   ✓ canonical localized money > rejects malformed/range/scale input +1 en EUR 0ms
+   ✓ canonical localized money > rejects malformed/range/scale input -0 en EUR 0ms
+   ✓ canonical localized money > rejects malformed/range/scale input 1e2 en EUR 0ms
+   ✓ canonical localized money > rejects malformed/range/scale input NaN en EUR 0ms
+   ✓ canonical localized money > rejects malformed/range/scale input Infinity en EUR 0ms
+   ✓ canonical localized money > rejects malformed/range/scale input .5 en EUR 0ms
+   ✓ canonical localized money > rejects malformed/range/scale input 1. en EUR 0ms
+   ✓ canonical localized money > rejects malformed/range/scale input 1.000 en EUR 0ms
+   ✓ canonical localized money > rejects malformed/range/scale input 1.0 en JPY 0ms
+   ✓ canonical localized money > rejects malformed/range/scale input 1.0000 en KWD 0ms
+   ✓ canonical localized money > rejects malformed/range/scale input 1.00000 en CLF 0ms
+   ✓ canonical localized money > rejects malformed/range/scale input 92233720368547758.08 en EUR 0ms
+   ✓ canonical localized money > rejects malformed/range/scale input 9223372036854775808 en JPY 0ms
+   ✓ canonical localized money > rejects malformed/range/scale input 1 en eur 0ms
+   ✓ canonical localized money > rejects malformed/range/scale input 1 en XXX 0ms
+   ✓ canonical localized money > rejects malformed/range/scale input 1 en XAU 0ms
+   ✓ canonical localized money > rejects malformed/range/scale input 1 en ZZZ 0ms
+   ✓ canonical localized money > rejects malformed/range/scale input 1 en HRK 0ms
+   ✓ canonical localized money > rejects malformed/range/scale input 1 fr EUR 0ms
+   ✓ canonical localized money > rejects malformed/range/scale input １ en EUR 0ms
+   ✓ canonical localized money > rejects malformed/range/scale input 1
+2 en EUR 0ms
+   ✓ canonical localized money > rejects malformed/range/scale input                                                                                 1 en EUR 0ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/money/money.test.ts > canonical localized money > parses en 1.00 ISK exactly
+Error: Invalid localized money
+ ❯ parseLocalizedMoney packages/domain/src/money/money.ts:19:11
+     17|   if (parts.length > 2 || (!/^[0-9]+$/u.test(integer) && !grouped.test…
+     18|     (fraction !== undefined && (exponent === 0 || !/^[0-9]+$/u.test(fr…
+     19|     throw new Error("Invalid localized money");
+       |           ^
+     20|   const amountMinor = BigInt(integer.replaceAll(group, "") + (fraction…
+     21|   if (amountMinor > MAX_AMOUNT_MINOR) throw new Error("Money exceeds P…
+ ❯ packages/domain/src/money/money.test.ts:22:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 49 passed (50)
+   Start at  03:51:36
+   Duration  273ms (transform 27ms, setup 6ms, collect 24ms, tests 6ms, environment 0ms, prepare 46ms)

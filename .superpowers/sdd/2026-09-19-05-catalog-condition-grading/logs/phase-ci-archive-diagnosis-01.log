@@ -1,0 +1,104 @@
+[WebServer] (node:80573) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 4 tests using 1 worker
+
+(node:80580) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ARCHIVE_DIAGNOSTIC {"event":"held actual item GET","data":{"title":"Archive diagnostic edited","archivedAt":null}}
+ARCHIVE_DIAGNOSTIC {"event":"before archive","data":{"saveDisabled":false,"saveText":"Stück speichern","archiveDisabled":false}}
+ARCHIVE_DIAGNOSTIC {"event":"archive acknowledged and persisted","data":{"responseArchivedAt":"2026-10-18T01:16:04.807Z","persistedArchivedAt":"2026-10-18T01:16:04.807Z","saveDisabled":true}}
+ARCHIVE_DIAGNOSTIC {"event":"after stale read delivery","data":{"persistedArchivedAt":"2026-10-18T01:16:04.807Z","saveDisabled":false,"archivedStatusVisible":true}}
+ARCHIVE_DIAGNOSTIC_COMPLETE {"scenario":"late active item read","locale":"de","events":[{"event":"held actual item GET","data":{"title":"Archive diagnostic edited","archivedAt":null}},{"event":"before archive","data":{"saveDisabled":false,"saveText":"Stück speichern","archiveDisabled":false}},{"event":"archive acknowledged and persisted","data":{"responseArchivedAt":"2026-10-18T01:16:04.807Z","persistedArchivedAt":"2026-10-18T01:16:04.807Z","saveDisabled":true}},{"event":"after stale read delivery","data":{"persistedArchivedAt":"2026-10-18T01:16:04.807Z","saveDisabled":false,"archivedStatusVisible":true}}]}
+  ✘  1 [desktop] › e2e/collections-items.spec.ts:828:5 › localized collection and item management › CI archive diagnosis: late active item read (7.4s)
+(node:80599) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ARCHIVE_DIAGNOSTIC {"event":"held actual tags PUT acknowledgement","data":{"status":200}}
+ARCHIVE_DIAGNOSTIC {"event":"before archive","data":{"saveDisabled":true,"saveText":"Wird gespeichert …","archiveDisabled":false}}
+ARCHIVE_DIAGNOSTIC {"event":"archive acknowledged and persisted","data":{"responseArchivedAt":"2026-10-18T01:16:11.116Z","persistedArchivedAt":"2026-10-18T01:16:11.116Z","saveDisabled":true}}
+ARCHIVE_DIAGNOSTIC {"event":"after metadata acknowledgement","data":{"saveDisabled":true,"archivedStatusVisible":true}}
+ARCHIVE_DIAGNOSTIC_COMPLETE {"scenario":"pending metadata acknowledgement","locale":"de","events":[{"event":"held actual tags PUT acknowledgement","data":{"status":200}},{"event":"before archive","data":{"saveDisabled":true,"saveText":"Wird gespeichert …","archiveDisabled":false}},{"event":"archive acknowledged and persisted","data":{"responseArchivedAt":"2026-10-18T01:16:11.116Z","persistedArchivedAt":"2026-10-18T01:16:11.116Z","saveDisabled":true}},{"event":"after metadata acknowledgement","data":{"saveDisabled":true,"archivedStatusVisible":true}}]}
+  ✓  2 [desktop] › e2e/collections-items.spec.ts:828:5 › localized collection and item management › CI archive diagnosis: pending metadata acknowledgement (774ms)
+(node:80619) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ARCHIVE_DIAGNOSTIC {"event":"held actual item GET","data":{"title":"Archive diagnostic edited","archivedAt":null}}
+ARCHIVE_DIAGNOSTIC {"event":"before archive","data":{"saveDisabled":false,"saveText":"Save item","archiveDisabled":false}}
+ARCHIVE_DIAGNOSTIC {"event":"archive acknowledged and persisted","data":{"responseArchivedAt":"2026-10-18T01:16:12.370Z","persistedArchivedAt":"2026-10-18T01:16:12.370Z","saveDisabled":true}}
+ARCHIVE_DIAGNOSTIC {"event":"after stale read delivery","data":{"persistedArchivedAt":"2026-10-18T01:16:12.370Z","saveDisabled":false,"archivedStatusVisible":true}}
+ARCHIVE_DIAGNOSTIC_COMPLETE {"scenario":"late active item read","locale":"en","events":[{"event":"held actual item GET","data":{"title":"Archive diagnostic edited","archivedAt":null}},{"event":"before archive","data":{"saveDisabled":false,"saveText":"Save item","archiveDisabled":false}},{"event":"archive acknowledged and persisted","data":{"responseArchivedAt":"2026-10-18T01:16:12.370Z","persistedArchivedAt":"2026-10-18T01:16:12.370Z","saveDisabled":true}},{"event":"after stale read delivery","data":{"persistedArchivedAt":"2026-10-18T01:16:12.370Z","saveDisabled":false,"archivedStatusVisible":true}}]}
+  ✘  3 [mobile] › e2e/collections-items.spec.ts:828:5 › localized collection and item management › CI archive diagnosis: late active item read (5.8s)
+(node:80628) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ARCHIVE_DIAGNOSTIC {"event":"held actual tags PUT acknowledgement","data":{"status":200}}
+ARCHIVE_DIAGNOSTIC {"event":"before archive","data":{"saveDisabled":true,"saveText":"Saving…","archiveDisabled":false}}
+ARCHIVE_DIAGNOSTIC {"event":"archive acknowledged and persisted","data":{"responseArchivedAt":"2026-10-18T01:16:18.596Z","persistedArchivedAt":"2026-10-18T01:16:18.596Z","saveDisabled":true}}
+ARCHIVE_DIAGNOSTIC {"event":"after metadata acknowledgement","data":{"saveDisabled":true,"archivedStatusVisible":true}}
+ARCHIVE_DIAGNOSTIC_COMPLETE {"scenario":"pending metadata acknowledgement","locale":"en","events":[{"event":"held actual tags PUT acknowledgement","data":{"status":200}},{"event":"before archive","data":{"saveDisabled":true,"saveText":"Saving…","archiveDisabled":false}},{"event":"archive acknowledged and persisted","data":{"responseArchivedAt":"2026-10-18T01:16:18.596Z","persistedArchivedAt":"2026-10-18T01:16:18.596Z","saveDisabled":true}},{"event":"after metadata acknowledgement","data":{"saveDisabled":true,"archivedStatusVisible":true}}]}
+  ✓  4 [mobile] › e2e/collections-items.spec.ts:828:5 › localized collection and item management › CI archive diagnosis: pending metadata acknowledgement (715ms)
+
+
+  1) [desktop] › e2e/collections-items.spec.ts:828:5 › localized collection and item management › CI archive diagnosis: late active item read 
+
+    Error: expect(locator).toBeDisabled() failed
+
+    Locator:  locator('.item-form button[type=submit]')
+    Expected: disabled
+    Received: enabled
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toBeDisabled" locator('.item-form button[type=submit]') with timeout 5000ms
+      - waiting for locator('.item-form button[type=submit]')
+        14 × locator resolved to <button type="submit">Stück speichern</button>
+           - unexpected value "enabled"
+
+
+      946 |         }
+      947 |         // Desired invariant. A stale active response must not make acknowledged archive editable.
+    > 948 |         await expect(save).toBeDisabled();
+          |                            ^
+      949 |       } finally {
+      950 |         release();
+      951 |         await page.unrouteAll({ behavior: "wait" });
+        at /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/collections-items.spec.ts:948:28
+
+    Error Context: test-results/collections-items-localize-327d4-nosis-late-active-item-read-desktop/error-context.md
+
+    Error Context: test-results/collections-items-localize-327d4-nosis-late-active-item-read-desktop/error-context.md
+
+  2) [mobile] › e2e/collections-items.spec.ts:828:5 › localized collection and item management › CI archive diagnosis: late active item read 
+
+    Error: expect(locator).toBeDisabled() failed
+
+    Locator:  locator('.item-form button[type=submit]')
+    Expected: disabled
+    Received: enabled
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toBeDisabled" locator('.item-form button[type=submit]') with timeout 5000ms
+      - waiting for locator('.item-form button[type=submit]')
+        14 × locator resolved to <button type="submit">Save item</button>
+           - unexpected value "enabled"
+
+
+      946 |         }
+      947 |         // Desired invariant. A stale active response must not make acknowledged archive editable.
+    > 948 |         await expect(save).toBeDisabled();
+          |                            ^
+      949 |       } finally {
+      950 |         release();
+      951 |         await page.unrouteAll({ behavior: "wait" });
+        at /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/collections-items.spec.ts:948:28
+
+    Error Context: test-results/collections-items-localize-327d4-nosis-late-active-item-read-mobile/error-context.md
+
+    Error Context: test-results/collections-items-localize-327d4-nosis-late-active-item-read-mobile/error-context.md
+
+  2 failed
+    [desktop] › e2e/collections-items.spec.ts:828:5 › localized collection and item management › CI archive diagnosis: late active item read 
+    [mobile] › e2e/collections-items.spec.ts:828:5 › localized collection and item management › CI archive diagnosis: late active item read 
+  2 passed (22.5s)
+undefined
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test collections-items.spec.ts --project=desktop --project=mobile --grep CI archive diagnosis --workers=1

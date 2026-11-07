@@ -1,0 +1,55 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| packages/domain/src/media/media-service.test.ts (19 tests | 1 failed | 1 skipped) 32ms
+   × media service > rejects cleanup-claimed retained upload references with a domain conflict 13ms
+     → promise resolved "{ …(6) }" instead of rejecting
+   ✓ media service > rejects a PDF renamed to .jpg 1ms
+   ✓ media service > rejects a source over the configured byte limit 2ms
+   ✓ media service > rejects a compressed image exceeding the decoded pixel limit 2ms
+   ✓ media service > rejects a truncated image despite a valid magic header 1ms
+   ✓ media service > records the storage key before put and leaves a recoverable intent on failure 2ms
+   ✓ media service > keeps processing intent durable even when the upload status update fails 2ms
+   ✓ media service > rejects a late upload completion after cleanup claimed its unlinked intent 1ms
+   ✓ media service > validates and saves an image with a persistent pending processing status 2ms
+   ✓ media service > stores a PDF as a private document with no image decoding 0ms
+   ✓ media service > keeps image-backed documents pending sanitized processing 1ms
+   ✓ media service > rejects a claimed MIME that disagrees with detected content 0ms
+   ✓ media service > retains a tracked upload if a link transaction fails 1ms
+   ✓ media service > does not link to a foreign or deleted item 0ms
+   ✓ media service > persists a private categorized document link without exposing storage keys 1ms
+   ✓ media service > rejects a document as a gallery image and an unready asset 0ms
+   ✓ media service > rejects embedded NUL in a link title before database persistence 1ms
+   ✓ media service > hides foreign assets and rejects unsupported future targets before linking 0ms
+   ↓ media PostgreSQL integration > enforces owned item and avatar references on real rows
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/media/media-service.test.ts > media service > rejects cleanup-claimed retained upload references with a domain conflict
+AssertionError: promise resolved "{ …(6) }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "assetId": "4aa78591-420f-4ed0-a0b2-8fc1e1d43571",
++   "id": "361ea34d-4775-4497-bb44-0c6936543011",
++   "itemId": "00000000-0000-4000-8000-000000000001",
++   "position": 0,
++   "purpose": "GALLERY",
++   "title": null,
+  }
+
+ ❯ packages/domain/src/media/media-service.test.ts:98:149
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 17 passed | 1 skipped (19)
+   Start at  21:28:42
+   Duration  468ms (transform 59ms, setup 5ms, collect 219ms, tests 32ms, environment 0ms, prepare 59ms)
+

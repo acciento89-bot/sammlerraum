@@ -1,0 +1,37 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/db/src/legacy-money.integration.test.ts (14 tests | 1 failed) 1935ms
+   ✓ legacy money native upgrade > migration_preserves_untracked_raw 151ms
+   ✓ legacy money native behavior > same_pair_sql_invalidates 131ms
+   ✓ legacy money native behavior > aba_and_custom_absence_stale_tokens 134ms
+   ✓ legacy money native behavior > classification_never_changes_raw and rejects mismatched raw facts 131ms
+   ✓ legacy money native behavior > event_failure_rolls_back_raw 130ms
+   ✓ legacy money native behavior > event_and_proposal_immutability 141ms
+   ✓ legacy money native behavior > copy_origin_rejects_cross_owner 133ms
+   ✓ legacy money native erasure and history > native_redaction_content_transitions 137ms
+   × legacy money native erasure and history > native_actor_and_origin_fk_erasure 141ms
+     → insert or update on table "PurchaseMoneyInterpretationEvent" violates foreign key constraint "PurchaseMoneyInterpretationEvent_itemId_fkey"
+   ✓ legacy money native erasure and history > definition cascade removes personal events without absence resurrection 134ms
+   ✓ legacy money native erasure and history > a classified logical baseline is not hidden by a later raw write 139ms
+   ✓ legacy money native erasure and history > snapshot_target_guard 142ms
+   ✓ legacy money native erasure and history > actual catalog actor FK erasure distinguishes CLASSIFY origin 147ms
+   ✓ legacy money native erasure and history > actual catalog actor FK erasure distinguishes AUTHOR origin 143ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/db/src/legacy-money.integration.test.ts > legacy money native erasure and history > native_actor_and_origin_fk_erasure
+error: insert or update on table "PurchaseMoneyInterpretationEvent" violates foreign key constraint "PurchaseMoneyInterpretationEvent_itemId_fkey"
+ ❯ node_modules/.pnpm/pg@8.23.0/node_modules/pg/lib/client.js:694:17
+ ❯ packages/db/src/legacy-money.integration.test.ts:153:5
+
+ ❯ upgrade packages/db/src/legacy-money.integration.test.ts:21:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 13 passed (14)
+   Start at  02:00:22
+   Duration  2.16s (transform 42ms, setup 6ms, collect 47ms, tests 1.93s, environment 0ms, prepare 55ms)
+

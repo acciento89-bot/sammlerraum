@@ -1,0 +1,2689 @@
+# Review package: fbc0b9fbee421f13622298f8ccacfc1d952bb28b..f17393415262ad2074f1434957a6aa01236927e0
+
+## Commits
+f173934 feat(search): add bounded reference reads and catalog picker modes
+
+## Files changed
+ .github/workflows/ci.yml                           |   2 +
+ .../api/v1/search/references/collections/route.ts  |   7 +
+ .../api/v1/search/references/conditions/route.ts   |   7 +
+ .../v1/search/references/custom-fields/route.ts    |   7 +
+ apps/web/src/lib/api/read-search-body.test.ts      |  41 ++
+ apps/web/src/lib/api/read-search-body.ts           |  29 +-
+ apps/web/src/lib/catalog-link-routes.ts            |  28 +-
+ apps/web/src/lib/item-search-routes.ts             |  12 +-
+ .../src/lib/search-reference-route-dependencies.ts |  16 +
+ .../search-reference-routes.integration.test.ts    | 355 ++++++++++
+ apps/web/src/lib/search-reference-routes.ts        |  92 +++
+ packages/contracts/package.json                    |   3 +-
+ .../contracts/src/search-references.fixture.ts     |  17 +
+ packages/contracts/src/search-references.test.ts   | 100 +++
+ packages/contracts/src/search-references.ts        | 261 ++++++++
+ packages/domain/package.json                       |   3 +-
+ packages/domain/src/search/cursor-json.ts          |   7 +
+ packages/domain/src/search/search-cursor.ts        |   8 +-
+ .../src/search/search-reference-cursor.test.ts     |  40 ++
+ .../domain/src/search/search-reference-cursor.ts   |  31 +
+ .../search-reference-service.integration.test.ts   | 728 +++++++++++++++++++++
+ .../src/search/search-reference-service.test.ts    |  95 +++
+ .../domain/src/search/search-reference-service.ts  | 332 ++++++++++
+ packages/domain/src/search/search-reference-sql.ts |  56 ++
+ 24 files changed, 2258 insertions(+), 19 deletions(-)
+
+## Diff
+diff --git a/.github/workflows/ci.yml b/.github/workflows/ci.yml
+index a4399f7..17e0bc7 100644
+--- a/.github/workflows/ci.yml
++++ b/.github/workflows/ci.yml
+@@ -148,20 +148,22 @@ jobs:
+           packages/domain/src/catalog/proposal-service.test.ts
+           packages/domain/src/condition/condition-service.test.ts
+           packages/domain/src/grading/grading-service.test.ts
+           packages/domain/src/valuations/valuation-service.test.ts
+           packages/domain/src/valuations/valuation-query.test.ts
+           packages/domain/src/dashboard/dashboard-service.test.ts
+           apps/web/src/lib/dashboard-routes.integration.test.ts
+           packages/domain/src/search/smart-collection-service.test.ts
+           apps/web/src/lib/smart-collection-routes.integration.test.ts
+           packages/domain/src/search/item-search-service.test.ts
++          packages/domain/src/search/search-reference-service.integration.test.ts
++          apps/web/src/lib/search-reference-routes.integration.test.ts
+           packages/domain/src/search/search-read.integration.test.ts
+           packages/domain/src/search/search-retained-integrity.integration.test.ts
+           apps/web/src/lib/item-search-routes.integration.test.ts
+           apps/web/src/lib/private-search-routes.integration.test.ts
+           apps/web/src/lib/valuation-routes.integration.test.ts
+           packages/domain/src/market-data/market-data-service.test.ts apps/worker/src/jobs/market-sync.integration.test.ts
+           apps/worker/src/jobs/market-request-permit.integration.test.ts
+           apps/worker/src/jobs/production-market.integration.test.ts
+           apps/web/src/lib/grading-routes.integration.test.ts
+           apps/web/src/lib/condition-routes.integration.test.ts
+diff --git a/apps/web/src/app/api/v1/search/references/collections/route.ts b/apps/web/src/app/api/v1/search/references/collections/route.ts
+new file mode 100644
+index 0000000..dfd95bc
+--- /dev/null
++++ b/apps/web/src/app/api/v1/search/references/collections/route.ts
+@@ -0,0 +1,7 @@
++import { searchReferenceRouteHandlers } from "../../../../../../lib/search-reference-route-dependencies";
++export async function GET(request: Request) {
++  return (await searchReferenceRouteHandlers("COLLECTIONS")).GET(request);
++}
++export async function POST(request: Request) {
++  return (await searchReferenceRouteHandlers("COLLECTIONS")).POST(request);
++}
+diff --git a/apps/web/src/app/api/v1/search/references/conditions/route.ts b/apps/web/src/app/api/v1/search/references/conditions/route.ts
+new file mode 100644
+index 0000000..e5143b9
+--- /dev/null
++++ b/apps/web/src/app/api/v1/search/references/conditions/route.ts
+@@ -0,0 +1,7 @@
++import { searchReferenceRouteHandlers } from "../../../../../../lib/search-reference-route-dependencies";
++export async function GET(request: Request) {
++  return (await searchReferenceRouteHandlers("CONDITIONS")).GET(request);
++}
++export async function POST(request: Request) {
++  return (await searchReferenceRouteHandlers("CONDITIONS")).POST(request);
++}
+diff --git a/apps/web/src/app/api/v1/search/references/custom-fields/route.ts b/apps/web/src/app/api/v1/search/references/custom-fields/route.ts
+new file mode 100644
+index 0000000..3f8c6c8
+--- /dev/null
++++ b/apps/web/src/app/api/v1/search/references/custom-fields/route.ts
+@@ -0,0 +1,7 @@
++import { searchReferenceRouteHandlers } from "../../../../../../lib/search-reference-route-dependencies";
++export async function GET(request: Request) {
++  return (await searchReferenceRouteHandlers("CUSTOM_FIELDS")).GET(request);
++}
++export async function POST(request: Request) {
++  return (await searchReferenceRouteHandlers("CUSTOM_FIELDS")).POST(request);
++}
+diff --git a/apps/web/src/lib/api/read-search-body.test.ts b/apps/web/src/lib/api/read-search-body.test.ts
+index aae29bf..7069870 100644
+--- a/apps/web/src/lib/api/read-search-body.test.ts
++++ b/apps/web/src/lib/api/read-search-body.test.ts
+@@ -129,10 +129,51 @@ describe("private scalar search body boundary", () => {
+     const raw = '{"version":1,"root":{"kind":"duplicate","value":true}}'.padEnd(16384, "\t");
+     expect(parsePrivateItemSearchWire({ f: raw }).filter).toBeTruthy();
+     const body = JSON.stringify({ f: raw, text: "x".repeat(200) });
+     expect(new TextEncoder().encode(body).length).toBeGreaterThan(32768);
+     await expect(readSearchBody(request(body), "ITEM_QUERY")).rejects.toMatchObject({
+       code: "UPLOAD_TOO_LARGE",
+       status: 413,
+     });
+   });
+ });
++
++describe("three fixed reference envelopes", () => {
++  it("retains collection IDs and custom/condition tuples including null", async () => {
++    for (const [shape, value] of [
++      ["COLLECTION_REFERENCES", { ids: ["a", "b"] }],
++      [
++        "CUSTOM_FIELD_REFERENCES",
++        {
++          references: [
++            ["a", "b"],
++            ["c", "d"],
++          ],
++          detail: "OPTIONS",
++        },
++      ],
++      [
++        "CONDITION_REFERENCES",
++        {
++          references: [
++            ["a", null],
++            ["b", "c"],
++          ],
++        },
++      ],
++    ] as const)
++      expect(await readSearchBody(request(JSON.stringify(value)), shape)).toEqual(value);
++  });
++  it.each([
++    ['{"ids":[],"i\\u0064s":[]}', "COLLECTION_REFERENCES"],
++    ['{"references":[],"r\\u0065ferences":[]}', "CUSTOM_FIELD_REFERENCES"],
++    ['{"ids":[["a"]]}', "COLLECTION_REFERENCES"],
++    ['{"references":[[["a"]]]}', "CONDITION_REFERENCES"],
++    ['{"references":[{"id":"secret"}]}', "CUSTOM_FIELD_REFERENCES"],
++    ['{"references":[["a","b"]],"detail":"OPTIONS","detail":"SUMMARY"}', "CUSTOM_FIELD_REFERENCES"],
++    ['{"references":[["a","b"],]}', "CONDITION_REFERENCES"],
++  ] as const)("rejects malformed or duplicate reference envelope", async (raw, shape) => {
++    await expect(readSearchBody(request(raw), shape)).rejects.toMatchObject({
++      code: "SEARCH_INVALID",
++    });
++  });
++});
+diff --git a/apps/web/src/lib/api/read-search-body.ts b/apps/web/src/lib/api/read-search-body.ts
+index fe07f7c..38bf555 100644
+--- a/apps/web/src/lib/api/read-search-body.ts
++++ b/apps/web/src/lib/api/read-search-body.ts
+@@ -1,45 +1,64 @@
+ import { ApiError } from "@sammlerraum/contracts/errors";
+ import { searchFail } from "@sammlerraum/contracts/item-search";
+ import { PRIVATE_SEARCH_MAX_BODY_BYTES } from "@sammlerraum/contracts/private-search-query";
+ import { readBoundedBody } from "./read-bounded-body";
+ 
+-type Shape = "ITEM_QUERY" | "DASHBOARD_QUERY";
++type Shape =
++  | "ITEM_QUERY"
++  | "DASHBOARD_QUERY"
++  | "COLLECTION_REFERENCES"
++  | "CUSTOM_FIELD_REFERENCES"
++  | "CONDITION_REFERENCES";
+ const keys: Record<Shape, readonly string[]> = {
+   ITEM_QUERY: ["text", "f", "lifecycle", "limit", "cursor"],
+   DASHBOARD_QUERY: ["text", "f", "lifecycle"],
++  COLLECTION_REFERENCES: ["ids"],
++  CUSTOM_FIELD_REFERENCES: ["references", "detail"],
++  CONDITION_REFERENCES: ["references"],
+ };
+-/** Fixed scalar envelope only. JSON.parse owns syntax; quoted values stay opaque. */
++/** Five fixed envelopes. JSON.parse owns syntax; quoted values stay opaque. */
+ function precheck(raw: string, shape: Shape): void {
+   const text = raw.replace(/^[\t\n\r ]+|[\t\n\r ]+$/gu, "");
+   if (!text.startsWith("{") || !text.endsWith("}")) searchFail("SEARCH_INVALID");
+   const seen = new Set<string>();
+   let keyExpected = true;
++  let arrayDepth = 0;
++  const maxDepth =
++    shape === "COLLECTION_REFERENCES"
++      ? 1
++      : shape === "CUSTOM_FIELD_REFERENCES" || shape === "CONDITION_REFERENCES"
++        ? 2
++        : 0;
+   for (let i = 1; i < text.length - 1; i++) {
+     const char = text[i];
+     if (char === '"') {
+       const start = i++;
+       while (i < text.length && text[i] !== '"') {
+         if (text[i] === "\\") i++;
+         i++;
+       }
+       if (i >= text.length - 1) searchFail("SEARCH_INVALID");
+-      if (keyExpected) {
++      if (keyExpected && arrayDepth === 0) {
+         const key: unknown = JSON.parse(text.slice(start, i + 1));
+         if (typeof key !== "string" || !keys[shape].includes(key) || seen.has(key))
+           searchFail("SEARCH_INVALID");
+         seen.add(key);
+         keyExpected = false;
+       }
+-    } else if (char === "{" || char === "}" || char === "[" || char === "]") {
++    } else if (char === "{" || char === "}") {
+       searchFail("SEARCH_INVALID");
+-    } else if (char === ",") keyExpected = true;
++    } else if (char === "[") {
++      if (++arrayDepth > maxDepth) searchFail("SEARCH_INVALID");
++    } else if (char === "]") {
++      if (--arrayDepth < 0) searchFail("SEARCH_INVALID");
++    } else if (char === "," && arrayDepth === 0) keyExpected = true;
+   }
+ }
+ export async function readSearchBody(request: Request, shape: Shape): Promise<unknown> {
+   if (!/^application\/json(?:\s*;|$)/iu.test(request.headers.get("content-type") ?? ""))
+     return searchFail("SEARCH_INVALID");
+   try {
+     const bytes = await readBoundedBody(request, PRIVATE_SEARCH_MAX_BODY_BYTES);
+     // TextDecoder normally consumes this BOM silently; reject it before decoding.
+     if (bytes[0] === 0xef && bytes[1] === 0xbb && bytes[2] === 0xbf) searchFail("SEARCH_INVALID");
+     const raw = new TextDecoder("utf-8", { fatal: true }).decode(bytes);
+diff --git a/apps/web/src/lib/catalog-link-routes.ts b/apps/web/src/lib/catalog-link-routes.ts
+index b041050..295e50e 100644
+--- a/apps/web/src/lib/catalog-link-routes.ts
++++ b/apps/web/src/lib/catalog-link-routes.ts
+@@ -1,10 +1,14 @@
++import { createSearchReferenceService } from "@sammlerraum/domain/search/search-reference-service";
++import type { SearchDatabase } from "@sammlerraum/domain/search/item-search-service";
++import { readSearchQueryMap, mapItemSearchError } from "./item-search-routes";
++import { searchFail } from "@sammlerraum/contracts/item-search";
+ import {
+   CATALOG_LINK_MAX_BODY_BYTES,
+   CatalogLinkInputSchema,
+   CatalogReadIdSchema,
+ } from "@sammlerraum/contracts/catalog-reads";
+ import {
+   ApplicationRoleError,
+   requireApplicationModerator,
+ } from "@sammlerraum/domain/authz/application-role";
+ import { ApiError } from "@sammlerraum/contracts/errors";
+@@ -22,30 +26,31 @@ import { readBoundedBody } from "./api/read-bounded-body";
+ 
+ type Authentication = {
+   api: {
+     getSession(input: {
+       headers: Headers;
+       query: { disableCookieCache: true; disableRefresh: true };
+     }): Promise<{ user: { id: string } } | null>;
+   };
+ };
+ export function createCatalogLinkRouteDependencies(
+-  database: ItemDatabase & Parameters<typeof createCatalogReadService>[0],
++  database: ItemDatabase & Parameters<typeof createCatalogReadService>[0] & SearchDatabase,
+   auth: Authentication,
+   appOrigin: string,
+ ) {
+   return {
+     appOrigin,
+     getSession: (headers: Headers) =>
+       auth.api.getSession({ headers, query: { disableCookieCache: true, disableRefresh: true } }),
+     createItemService: (actorId: string) => createItemService(database, actorId),
+     reads: createCatalogReadService(database),
++    references: createSearchReferenceService(database),
+     canModerate: (userId: string) =>
+       database.$transaction(
+         async (tx) => {
+           try {
+             await requireApplicationModerator(tx, userId);
+             return true;
+           } catch (error) {
+             if (error instanceof ApplicationRoleError) return false;
+             throw error;
+           }
+@@ -174,21 +179,40 @@ export function createCatalogLinkRouteHandlers(
+         "cursor",
+       ]);
+       return run(() => dependencies.reads.searchCatalog(input));
+     }),
+     CATEGORIES: apiRoute(async (request) => {
+       await actor(request);
+       const input = query(request, ["limit", "cursor"]);
+       return run(() => dependencies.reads.listCategories(input));
+     }),
+     CATEGORY: apiRoute(async (request, categoryId: string) => {
+-      await actor(request);
++      const userId = await actor(request);
++      // Omitted view deliberately preserves the legacy query and error boundary.
++      if (new URL(request.url).searchParams.has("view")) {
++        try {
++          const input = readSearchQueryMap(request, ["view", "definitionId"]);
++          const result =
++            input.view === "definitions" && input.definitionId === undefined
++              ? await dependencies.references.getCatalogDefinitionChoices({ userId }, categoryId)
++              : input.view === "definition" && input.definitionId !== undefined
++                ? await dependencies.references.getCatalogDefinition(
++                    { userId },
++                    categoryId,
++                    input.definitionId,
++                  )
++                : searchFail("SEARCH_INVALID");
++          return Response.json(result, { headers: { "cache-control": "no-store" } });
++        } catch (error) {
++          return mapItemSearchError(error);
++        }
++      }
+       query(request, []);
+       return run(() => dependencies.reads.getCategoryTemplate(routeId(categoryId)), "category");
+     }),
+     ENTRY: apiRoute(async (request, entryId: string) => {
+       await actor(request);
+       query(request, []);
+       return run(() => dependencies.reads.getCurrentCatalogEntry(routeId(entryId)), "entry");
+     }),
+   };
+ }
+diff --git a/apps/web/src/lib/item-search-routes.ts b/apps/web/src/lib/item-search-routes.ts
+index 37a393b..b8f59ed 100644
+--- a/apps/web/src/lib/item-search-routes.ts
++++ b/apps/web/src/lib/item-search-routes.ts
+@@ -21,24 +21,21 @@ export function createItemSearchRouteDependencies(
+   auth: Authentication,
+   appOrigin: string,
+ ) {
+   return {
+     appOrigin,
+     getSession: (headers: Headers) =>
+       auth.api.getSession({ headers, query: { disableCookieCache: true, disableRefresh: true } }),
+     service: createItemSearchService(database),
+   };
+ }
+-export function readItemSearchQuery(
+-  request: Request,
+-  allowedKeys: readonly string[] = ["text", "f", "lifecycle", "limit", "cursor"],
+-) {
++export function readSearchQueryMap(request: Request, allowedKeys: readonly string[]) {
+   const marker = request.url.indexOf("?");
+   const encoded = marker < 0 ? "" : request.url.slice(marker).split("#", 1)[0]!;
+   if (Buffer.byteLength(encoded) > SEARCH_MAX_QUERY_BYTES)
+     throw new ApiError("SEARCH_QUERY_TOO_LARGE", 414, "Search query is too large");
+   const raw = encoded.slice(1);
+   const values: Record<string, string> = Object.create(null);
+   try {
+     for (const segment of raw ? raw.split("&") : []) {
+       if (!segment) throw Error();
+       const separator = segment.indexOf("=");
+@@ -47,20 +44,27 @@ export function readItemSearchQuery(
+       );
+       const value = decodeURIComponent(
+         (separator < 0 ? "" : segment.slice(separator + 1)).replaceAll("+", " "),
+       );
+       if (!allowedKeys.includes(key) || Object.hasOwn(values, key)) throw Error();
+       values[key] = value;
+     }
+   } catch {
+     throw new ItemSearchError("SEARCH_INVALID");
+   }
++  return values;
++}
++export function readItemSearchQuery(
++  request: Request,
++  allowedKeys: readonly string[] = ["text", "f", "lifecycle", "limit", "cursor"],
++) {
++  const values = readSearchQueryMap(request, allowedKeys);
+   if (values.limit !== undefined && !/^[1-9][0-9]*$/u.test(values.limit))
+     throw new ItemSearchError("SEARCH_INVALID");
+   return {
+     ...(values.text !== undefined ? { text: values.text } : {}),
+     ...(values.f !== undefined ? { filter: parseItemFilterJson(values.f) } : {}),
+     ...(values.lifecycle !== undefined ? { lifecycle: values.lifecycle } : {}),
+     ...(values.limit !== undefined ? { limit: Number(values.limit) } : {}),
+     ...(values.cursor !== undefined ? { cursor: values.cursor } : {}),
+   };
+ }
+diff --git a/apps/web/src/lib/search-reference-route-dependencies.ts b/apps/web/src/lib/search-reference-route-dependencies.ts
+new file mode 100644
+index 0000000..f4debf3
+--- /dev/null
++++ b/apps/web/src/lib/search-reference-route-dependencies.ts
+@@ -0,0 +1,16 @@
++import type { ReferenceFamily } from "@sammlerraum/contracts/search-references";
++import {
++  createSearchReferenceRouteDependencies,
++  createSearchReferenceRouteHandlers,
++} from "./search-reference-routes";
++export async function searchReferenceRouteHandlers(family: ReferenceFamily) {
++  const [{ auth }, { prisma }, { serverEnv }] = await Promise.all([
++    import("./auth"),
++    import("@sammlerraum/db/client"),
++    import("@sammlerraum/config/server"),
++  ]);
++  return createSearchReferenceRouteHandlers(
++    createSearchReferenceRouteDependencies(prisma, auth, serverEnv.APP_ORIGIN),
++    family,
++  );
++}
+diff --git a/apps/web/src/lib/search-reference-routes.integration.test.ts b/apps/web/src/lib/search-reference-routes.integration.test.ts
+new file mode 100644
+index 0000000..2adbca7
+--- /dev/null
++++ b/apps/web/src/lib/search-reference-routes.integration.test.ts
+@@ -0,0 +1,355 @@
++import {
++  CollectionReferencesSchema,
++  CollectionReferencePageSchema,
++  CustomReferencePageSchema,
++  CustomReferencesSchema,
++  ConditionReferencePageSchema,
++  ConditionReferencesSchema,
++  CatalogDefinitionChoicesSchema,
++  CatalogDefinitionReferenceSchema,
++} from "@sammlerraum/contracts/search-references";
++import { randomUUID } from "node:crypto";
++import { beforeAll, afterAll, beforeEach, describe, expect, it, vi } from "vitest";
++import { createTestDatabaseClient } from "@sammlerraum/db/test-database";
++import { createCollectionService } from "@sammlerraum/domain/collections/collection-service";
++import { createCustomFieldService } from "@sammlerraum/domain/custom-fields/custom-field-service";
++import { createCategoryTemplateMaintenanceService } from "@sammlerraum/domain/catalog/category-template-service";
++import {
++  createSearchReferenceRouteDependencies,
++  createSearchReferenceRouteHandlers,
++} from "./search-reference-routes";
++import {
++  createCatalogLinkRouteDependencies,
++  createCatalogLinkRouteHandlers,
++} from "./catalog-link-routes";
++const enabled = process.env.RUN_DATABASE_INTEGRATION === "1",
++  db = enabled ? createTestDatabaseClient() : undefined;
++const owner = `ref_route_${randomUUID()}`,
++  foreign = `ref_route_${randomUUID()}`,
++  prefix = `ref_route_${randomUUID().replaceAll("-", "")}`,
++  origin = "https://example.invalid";
++let collection: string,
++  other: string,
++  definition: string,
++  category: string,
++  catalogDefinition: string;
++const session = vi.fn(
++  async (_input: unknown): Promise<{ user: { id: string } } | null> => ({ user: { id: owner } }),
++);
++const handlers = (family: "COLLECTIONS" | "CUSTOM_FIELDS" | "CONDITIONS" = "COLLECTIONS") =>
++  createSearchReferenceRouteHandlers(
++    createSearchReferenceRouteDependencies(db!, { api: { getSession: session } }, origin),
++    family,
++  );
++function request(
++  query = "",
++  body?: string,
++  requestOrigin: string | null = origin,
++  headers: Record<string, string> = {},
++) {
++  return new Request(`${origin}/api/v1/search/references/collections${query}`, {
++    method: body === undefined ? "GET" : "POST",
++    headers: {
++      ...(requestOrigin === null ? {} : { origin: requestOrigin }),
++      "content-type": "application/json",
++      ...headers,
++    },
++    ...(body === undefined ? {} : { body }),
++  });
++}
++async function check(response: Response, status: number, code?: string) {
++  expect(response.status).toBe(status);
++  expect(response.headers.get("cache-control")).toBe("no-store");
++  expect(response.headers.get("x-request-id")).toBeTruthy();
++  const body = await response.json();
++  if (code) expect(body).toMatchObject({ error: { code } });
++  return body;
++}
++describe.runIf(enabled)("native bounded reference routes", () => {
++  beforeAll(async () => {
++    for (const id of [owner, foreign])
++      await db!.user.create({
++        data: { id, name: "Reference routes", email: `${id}@example.invalid`, emailVerified: true },
++      });
++    collection = (
++      await createCollectionService(db!, owner).createCollection({ name: "Owned route label" })
++    ).id;
++    other = (
++      await createCollectionService(db!, foreign).createCollection({
++        name: "Hidden private label",
++        visibility: "PUBLIC",
++      })
++    ).id;
++    definition = (
++      await createCustomFieldService(db!, owner).createFieldDefinition({
++        collectionId: collection,
++        name: "Route field",
++        type: "SINGLE_SELECT",
++        options: ["Authored"],
++      })
++    ).id;
++    const c = await createCategoryTemplateMaintenanceService(db!).createCategoryTemplate({
++      key: prefix,
++      labels: { de: "Kategorie", en: "Category" },
++      definitions: [
++        {
++          key: "finish",
++          labels: { de: "Oberfläche", en: "Finish" },
++          type: "SINGLE_SELECT",
++          options: [{ key: "matte", labels: { de: "Matt", en: "Matte" } }],
++        },
++      ],
++    });
++    category = c.id;
++    catalogDefinition = c.definitions[0]!.id;
++  });
++  beforeEach(() => {
++    session.mockReset();
++    session.mockResolvedValue({ user: { id: owner } });
++  });
++  afterAll(async () => {
++    if (!db) return;
++    await db.user.deleteMany({ where: { id: { in: [owner, foreign] } } });
++    await db.categoryTemplate.deleteMany({ where: { key: prefix } });
++    await db.$disconnect();
++  });
++  it("authenticates fresh and returns closed available/unavailable input order", async () => {
++    const result = CollectionReferencesSchema.parse(
++      await check(
++        await handlers().POST(request("", JSON.stringify({ ids: [other, collection] }))),
++        200,
++      ),
++    );
++    expect(result.references).toEqual([
++      { id: other, state: "UNAVAILABLE", collection: null },
++      {
++        id: collection,
++        state: "AVAILABLE",
++        collection: { id: collection, name: "Owned route label" },
++      },
++    ]);
++    expect(session).toHaveBeenCalledWith(
++      expect.objectContaining({ query: { disableCookieCache: true, disableRefresh: true } }),
++    );
++    expect(JSON.stringify(result)).not.toContain("Hidden private label");
++    const list = CollectionReferencePageSchema.parse(
++      await check(await handlers().GET(request()), 200),
++    );
++    expect(list.collections).toEqual([{ id: collection, name: "Owned route label" }]);
++  });
++  it("serves all six bounded family methods", async () => {
++    const fields = CustomReferencePageSchema.parse(
++      await check(await handlers("CUSTOM_FIELDS").GET(request(`?collectionId=${collection}`)), 200),
++    );
++    expect(fields.definitions).toHaveLength(1);
++    const custom = CustomReferencesSchema.parse(
++      await check(
++        await handlers("CUSTOM_FIELDS").POST(
++          request(
++            "",
++            JSON.stringify({ references: [[collection, definition]], detail: "OPTIONS" }),
++          ),
++        ),
++        200,
++      ),
++    );
++    expect(custom.references[0]).toMatchObject({ definition: { options: ["Authored"] } });
++    const conditions = ConditionReferencePageSchema.parse(
++      await check(await handlers("CONDITIONS").GET(request(`?categoryId=${category}`)), 200),
++    );
++    expect(conditions.scheme).toBeNull();
++    const resolved = ConditionReferencesSchema.parse(
++      await check(
++        await handlers("CONDITIONS").POST(
++          request("", JSON.stringify({ references: [[category, null]] })),
++        ),
++        200,
++      ),
++    );
++    expect(resolved.references[0]).toMatchObject({
++      state: "AVAILABLE",
++      category: { id: category },
++      scheme: null,
++      option: null,
++    });
++  });
++  it("checks exact Origin before session and authentication before schema", async () => {
++    for (const bad of [null, "https://other.invalid", `${origin}/`])
++      await check(await handlers().POST(request("", '{"ids":[]}', bad)), 403, "FORBIDDEN");
++    expect(session).not.toHaveBeenCalled();
++    session.mockResolvedValue(null);
++    await check(
++      await handlers().POST(request("?unknown=secret", '{"ids":[]}')),
++      401,
++      "UNAUTHORIZED",
++    );
++    await check(await handlers().GET(request("?limit=bad")), 401, "UNAUTHORIZED");
++  });
++  it.each([
++    "?limit=0",
++    "?limit=51",
++    "?limit=1.5",
++    "?limit=01",
++    "?limit=1&limit=2",
++    "?limit=1&l%69mit=2",
++    "?owner=secret",
++    "?collectionId=secret",
++    "?cursor=%FF",
++    "?cursor=%",
++    "?cursor=%C0%AF",
++    "?limit=1&&cursor=a",
++  ])("strict raw GET rejects %s", async (query) => {
++    await check(await handlers().GET(request(query)), 400, "SEARCH_INVALID");
++  });
++  it("rejects query byte overflow and closed scoped-parent errors", async () => {
++    await check(
++      await handlers().GET(request(`?cursor=${"a".repeat(32768)}`)),
++      414,
++      "SEARCH_QUERY_TOO_LARGE",
++    );
++    await check(
++      await handlers("CUSTOM_FIELDS").GET(request(`?collectionId=${other}`)),
++      422,
++      "FILTER_REFERENCE_INVALID",
++    );
++    await check(
++      await handlers("CUSTOM_FIELDS").GET(request("?collectionId=bad")),
++      400,
++      "SEARCH_INVALID",
++    );
++    await check(
++      await handlers("CONDITIONS").GET(request(`?categoryId=${randomUUID()}`)),
++      422,
++      "FILTER_REFERENCE_INVALID",
++    );
++  });
++  it.each([
++    '{"ids":[],"i\\u0064s":[]}',
++    '{"ids":[{}]}',
++    '{"ids":[[["x"]]]}',
++    '{"ids":null}',
++    '{"ids":[]}',
++    '{"owner":"secret"}',
++    "null",
++    "[]",
++    "{}{}",
++    '{"ids":[],}',
++  ])("rejects strict POST body %s", async (body) => {
++    await check(await handlers().POST(request("", body)), 400, "SEARCH_INVALID");
++  });
++  it("rejects query-bearing POST, duplicate normalized IDs, 51 IDs and OPTIONS3", async () => {
++    await check(
++      await handlers().POST(request("?limit=1", JSON.stringify({ ids: [collection] }))),
++      400,
++      "SEARCH_INVALID",
++    );
++    for (const ids of [
++      [collection, collection.toUpperCase()],
++      Array.from({ length: 51 }, () => randomUUID()),
++    ])
++      await check(
++        await handlers().POST(request("", JSON.stringify({ ids }))),
++        400,
++        "SEARCH_INVALID",
++      );
++    await check(
++      await handlers("CUSTOM_FIELDS").POST(
++        request(
++          "",
++          JSON.stringify({
++            references: Array.from({ length: 3 }, () => [collection, randomUUID()]),
++            detail: "OPTIONS",
++          }),
++        ),
++      ),
++      400,
++      "SEARCH_INVALID",
++    );
++    await check(
++      await handlers().POST(
++        request("", JSON.stringify({ ids: [collection] }), origin, {
++          "content-type": "text/plain",
++        }),
++      ),
++      400,
++      "SEARCH_INVALID",
++    );
++    await check(
++      await handlers().POST(request("", " ".repeat(32769), origin, { "content-length": "2" })),
++      413,
++      "UPLOAD_TOO_LARGE",
++    );
++  });
++  it("maps native corruption and explicit capacity failure without leaking labels or SQL", async () => {
++    const secret = "sensitive fixture label";
++    await db!.collection.update({ where: { id: collection }, data: { name: secret.repeat(100) } });
++    const corrupt = await check(
++      await handlers().POST(request("", JSON.stringify({ ids: [collection] }))),
++      500,
++      "SEARCH_INVARIANT",
++    );
++    expect(JSON.stringify(corrupt)).not.toContain(secret);
++    expect(JSON.stringify(corrupt)).not.toContain("SELECT");
++    await db!.collection.update({ where: { id: collection }, data: { name: "Owned route label" } });
++    await db!.customFieldOption.createMany({
++      data: Array.from({ length: 100 }, (_, n) => ({
++        fieldDefinitionId: definition,
++        value: `Extra ${n}`,
++        normalizedValue: `extra ${n}`,
++        position: n + 1,
++      })),
++    });
++    await check(
++      await handlers("CUSTOM_FIELDS").POST(
++        request("", JSON.stringify({ references: [[collection, definition]], detail: "OPTIONS" })),
++      ),
++      503,
++      "SEARCH_UNAVAILABLE",
++    );
++  });
++  it("exposes two exact catalog picker modes with unchanged omitted-view/error behavior", async () => {
++    const api = createCatalogLinkRouteHandlers(
++      createCatalogLinkRouteDependencies(db!, { api: { getSession: session } }, origin),
++    );
++    const choices = CatalogDefinitionChoicesSchema.parse(
++      await check(await api.CATEGORY(request("?view=definitions"), category), 200),
++    );
++    expect(choices.definitions).toHaveLength(1);
++    expect(choices.definitions[0]).not.toHaveProperty("options");
++    const selected = CatalogDefinitionReferenceSchema.parse(
++      await check(
++        await api.CATEGORY(request(`?view=definition&definitionId=${catalogDefinition}`), category),
++        200,
++      ),
++    );
++    expect(selected.definition).toMatchObject({
++      key: "finish",
++      labels: { de: "Oberfläche", en: "Finish" },
++      options: [{ key: "matte", labels: { de: "Matt", en: "Matte" } }],
++    });
++    const legacy = await check(await api.CATEGORY(request(), category), 200);
++    expect(legacy).toMatchObject({ category: { definitions: [{ options: [{ key: "matte" }] }] } });
++    await check(await api.CATEGORY(request(), randomUUID()), 404, "NOT_FOUND");
++    await check(
++      await api.CATEGORY(request("?view=definitions"), randomUUID()),
++      422,
++      "FILTER_REFERENCE_INVALID",
++    );
++    await check(
++      await api.CATEGORY(request(`?view=definition&definitionId=${randomUUID()}`), category),
++      422,
++      "FILTER_REFERENCE_INVALID",
++    );
++    for (const query of [
++      "?view=definitions&definitionId=bad",
++      "?view=definition",
++      "?view=bogus",
++      "?view=definitions&view=definition",
++      "?view=definitions&%FF=x",
++      "?view=definitions&owner=x",
++    ])
++      await check(await api.CATEGORY(request(query), category), 400, "SEARCH_INVALID");
++    await check(await api.CATEGORY(request("?view=definitions"), "bad"), 400, "SEARCH_INVALID");
++    await check(await api.CATEGORY(request(), "bad"), 404, "NOT_FOUND");
++  });
++});
+diff --git a/apps/web/src/lib/search-reference-routes.ts b/apps/web/src/lib/search-reference-routes.ts
+new file mode 100644
+index 0000000..2d5b86c
+--- /dev/null
++++ b/apps/web/src/lib/search-reference-routes.ts
+@@ -0,0 +1,92 @@
++import { ApiError } from "@sammlerraum/contracts/errors";
++import { searchFail } from "@sammlerraum/contracts/item-search";
++import type { ReferenceFamily } from "@sammlerraum/contracts/search-references";
++import { createSearchReferenceService } from "@sammlerraum/domain/search/search-reference-service";
++import type { SearchDatabase } from "@sammlerraum/domain/search/item-search-service";
++import { apiRoute } from "./api/route-handler";
++import { readSearchBody } from "./api/read-search-body";
++import { readSearchQueryMap, mapItemSearchError } from "./item-search-routes";
++type Authentication = {
++  api: {
++    getSession(input: {
++      headers: Headers;
++      query: { disableCookieCache: true; disableRefresh: true };
++    }): Promise<{ user: { id: string } } | null>;
++  };
++};
++export function createSearchReferenceRouteDependencies(
++  database: SearchDatabase,
++  auth: Authentication,
++  appOrigin: string,
++) {
++  return {
++    appOrigin,
++    service: createSearchReferenceService(database),
++    getSession: (headers: Headers) =>
++      auth.api.getSession({ headers, query: { disableCookieCache: true, disableRefresh: true } }),
++  };
++}
++export function createSearchReferenceRouteHandlers(
++  dependencies: ReturnType<typeof createSearchReferenceRouteDependencies>,
++  family: ReferenceFamily,
++) {
++  async function actor(request: Request, post = false) {
++    if (post && request.headers.get("origin") !== new URL(dependencies.appOrigin).origin)
++      throw new ApiError("FORBIDDEN", 403, "Cross-origin request rejected");
++    const session = await dependencies.getSession(request.headers);
++    if (!session) throw new ApiError("UNAUTHORIZED", 401, "Authentication required");
++    return { userId: session.user.id };
++  }
++  return {
++    GET: apiRoute(async (request) => {
++      try {
++        const user = await actor(request);
++        const input: Record<string, string | number> = readSearchQueryMap(
++          request,
++          family === "COLLECTIONS"
++            ? ["limit", "cursor"]
++            : family === "CUSTOM_FIELDS"
++              ? ["collectionId", "limit", "cursor"]
++              : ["categoryId", "limit", "cursor"],
++        );
++        if (input.limit !== undefined) {
++          if (typeof input.limit !== "string" || !/^[1-9][0-9]*$/u.test(input.limit))
++            searchFail("SEARCH_INVALID");
++          input.limit = Number(input.limit);
++        }
++        const result =
++          family === "COLLECTIONS"
++            ? await dependencies.service.listCollections(user, input)
++            : family === "CUSTOM_FIELDS"
++              ? await dependencies.service.listCustomFields(user, input)
++              : await dependencies.service.listConditions(user, input);
++        return Response.json(result, { headers: { "cache-control": "no-store" } });
++      } catch (error) {
++        return mapItemSearchError(error);
++      }
++    }),
++    POST: apiRoute(async (request) => {
++      try {
++        const user = await actor(request, true);
++        readSearchQueryMap(request, []);
++        const input = await readSearchBody(
++          request,
++          family === "COLLECTIONS"
++            ? "COLLECTION_REFERENCES"
++            : family === "CUSTOM_FIELDS"
++              ? "CUSTOM_FIELD_REFERENCES"
++              : "CONDITION_REFERENCES",
++        );
++        const result =
++          family === "COLLECTIONS"
++            ? await dependencies.service.resolveCollections(user, input)
++            : family === "CUSTOM_FIELDS"
++              ? await dependencies.service.resolveCustomFields(user, input)
++              : await dependencies.service.resolveConditions(user, input);
++        return Response.json(result, { headers: { "cache-control": "no-store" } });
++      } catch (error) {
++        return mapItemSearchError(error);
++      }
++    }),
++  };
++}
+diff --git a/packages/contracts/package.json b/packages/contracts/package.json
+index dcbb39b..5e5d15b 100644
+--- a/packages/contracts/package.json
++++ b/packages/contracts/package.json
+@@ -14,21 +14,22 @@
+     "./catalog": "./src/catalog.ts",
+     "./catalog-proposals": "./src/catalog-proposals.ts",
+     "./condition": "./src/condition.ts",
+     "./grading": "./src/grading.ts",
+     "./catalog-reads": "./src/catalog-reads.ts",
+     "./valuations": "./src/valuations.ts",
+     "./search": "./src/search.ts",
+     "./item-search": "./src/item-search.ts",
+     "./smart-collections": "./src/smart-collections.ts",
+     "./dashboard": "./src/dashboard.ts",
+-    "./private-search-query": "./src/private-search-query.ts"
++    "./private-search-query": "./src/private-search-query.ts",
++    "./search-references": "./src/search-references.ts"
+   },
+   "scripts": {
+     "build": "pnpm typecheck",
+     "lint": "prettier --check .",
+     "typecheck": "tsc --noEmit --project ../../tsconfig.base.json"
+   },
+   "dependencies": {
+     "zod": "4.1.11"
+   }
+ }
+diff --git a/packages/contracts/src/search-references.fixture.ts b/packages/contracts/src/search-references.fixture.ts
+new file mode 100644
+index 0000000..40be3c0
+--- /dev/null
++++ b/packages/contracts/src/search-references.fixture.ts
+@@ -0,0 +1,17 @@
++/** Task 5C fixture: label-cache capacity must never truncate this complete draft. */
++export const multiLeafReferenceDraft = {
++  version: 1,
++  root: {
++    kind: "and",
++    children: ["collection", "category"].map((kind, leaf) => ({
++      kind,
++      test: {
++        op: "in",
++        values: Array.from(
++          { length: 50 },
++          (_, n) => `00000000-0000-4000-8000-${String(leaf * 50 + n + 1).padStart(12, "0")}`,
++        ),
++      },
++    })),
++  },
++} as const;
+diff --git a/packages/contracts/src/search-references.test.ts b/packages/contracts/src/search-references.test.ts
+new file mode 100644
+index 0000000..88c82ba
+--- /dev/null
++++ b/packages/contracts/src/search-references.test.ts
+@@ -0,0 +1,100 @@
++import { describe, expect, it } from "vitest";
++import * as c from "./search-references";
++import { parseItemFilterJson } from "./search";
++import { multiLeafReferenceDraft } from "./search-references.fixture";
++const ids = Array.from(
++  { length: 51 },
++  (_, n) => `00000000-0000-4000-a000-${String(n + 1).padStart(12, "0")}`,
++);
++describe("bounded search reference contracts", () => {
++  it("keeps a valid 100-reference draft separate from 50-entry hydration", () => {
++    const raw = JSON.stringify(multiLeafReferenceDraft);
++    expect(new TextEncoder().encode(raw).length).toBeLessThan(16384);
++    expect(parseItemFilterJson(raw)).toEqual(multiLeafReferenceDraft);
++    for (const leaf of multiLeafReferenceDraft.root.children)
++      expect(c.CollectionReferencesInputSchema.parse({ ids: leaf.test.values }).ids).toHaveLength(
++        50,
++      );
++    expect(() =>
++      c.parseReferenceInput(c.CollectionReferencesInputSchema, {
++        ids: multiLeafReferenceDraft.root.children.flatMap((leaf) => leaf.test.values),
++      }),
++    ).toThrow("SEARCH_INVALID");
++  });
++  it("normalizes input and rejects uppercase aliases, malformed/empty/51 batches and unknown keys", () => {
++    expect(c.CollectionReferencesInputSchema.parse({ ids: [ids[0]!.toUpperCase()] }).ids).toEqual([
++      ids[0],
++    ]);
++    for (const input of [
++      { ids: [] },
++      { ids },
++      { ids: [ids[0], ids[0]!.toUpperCase()] },
++      { ids: ["bad"] },
++      { ids: [ids[0]], owner: "secret" },
++      null,
++      [],
++    ])
++      expect(() => c.parseReferenceInput(c.CollectionReferencesInputSchema, input)).toThrow(
++        "SEARCH_INVALID",
++      );
++  });
++  it("enforces SUMMARY50 and OPTIONS2 without dropping identities", () => {
++    const references = ids.slice(0, 50).map((id) => [ids[0], id]);
++    expect(c.CustomReferencesInputSchema.parse({ references }).detail).toBe("SUMMARY");
++    expect(
++      c.CustomReferencesInputSchema.parse({ references: references.slice(0, 2), detail: "OPTIONS" })
++        .references,
++    ).toHaveLength(2);
++    for (const input of [
++      { references: references.slice(0, 3), detail: "OPTIONS" },
++      { references: [references[0], references[0]] },
++      {
++        references: [
++          [ids[0], ids[0]],
++          [ids[0]!.toUpperCase(), ids[0]!.toUpperCase()],
++        ],
++      },
++      { references: [[ids[0], null]] },
++      { references: [references[0]], detail: "FULL" },
++    ])
++      expect(() => c.parseReferenceInput(c.CustomReferencesInputSchema, input)).toThrow(
++        "SEARCH_INVALID",
++      );
++    expect(
++      c.ConditionReferencesInputSchema.parse({ references: [[ids[0], null]] }).references,
++    ).toEqual([[ids[0], null]]);
++  });
++  it("requires real persisted condition flags instead of producer defaults", () => {
++    const option = {
++      id: ids[0],
++      schemeId: ids[1],
++      categoryTemplateId: ids[2],
++      labelKey: "condition.good",
++      labels: { de: "Gut", en: "Good" },
++      position: 0,
++    };
++    expect(c.ConditionReferenceOptionSchema.safeParse(option).success).toBe(false);
++    expect(
++      c.ConditionReferenceOptionSchema.safeParse({ ...option, active: false, normalizedBand: null })
++        .success,
++    ).toBe(true);
++  });
++  it("rejects dishonest available states and enforces option shape", () => {
++    const definition = { id: ids[0], collectionId: ids[1], name: "Finish", type: "SINGLE_SELECT" };
++    expect(c.CustomReferenceOptionsSchema.safeParse({ ...definition, options: [] }).success).toBe(
++      false,
++    );
++    expect(
++      c.CustomReferenceOptionsSchema.safeParse({ ...definition, type: "INTEGER", options: ["a"] })
++        .success,
++    ).toBe(false);
++    expect(
++      c.CustomReferenceOptionsSchema.safeParse({ ...definition, type: "INTEGER", options: [] })
++        .success,
++    ).toBe(true);
++    expect(
++      c.CustomReferenceOptionsSchema.safeParse({ ...definition, options: Array(101).fill("a") })
++        .success,
++    ).toBe(false);
++  });
++});
+diff --git a/packages/contracts/src/search-references.ts b/packages/contracts/src/search-references.ts
+new file mode 100644
+index 0000000..1507d9e
+--- /dev/null
++++ b/packages/contracts/src/search-references.ts
+@@ -0,0 +1,261 @@
++import { z } from "zod";
++import { CollectionSchema } from "./collections";
++import { CustomFieldDefinitionSchema, CustomFieldOptionInputSchema } from "./custom-fields";
++import { CatalogAttributeDefinitionSchema } from "./catalog";
++import { CategorySummarySchema } from "./catalog-reads";
++import {
++  ConditionIdSchema,
++  ConditionOptionSchema,
++  ConditionSchemeSchema,
++  NormalizedConditionBandSchema,
++} from "./condition";
++import { searchFail } from "./item-search";
++export const REFERENCE_MAX_RESPONSE_BYTES = 1_048_576;
++export const ReferenceIdSchema = ConditionIdSchema;
++export const ReferencePageInputSchema = z
++  .object({
++    limit: z.number().int().min(1).max(50).default(20),
++    cursor: z
++      .string()
++      .regex(/^[A-Za-z0-9_-]{1,2048}$/u)
++      .optional(),
++  })
++  .strict();
++export const CustomReferencePageInputSchema = ReferencePageInputSchema.extend({
++  collectionId: ReferenceIdSchema,
++});
++export const ConditionReferencePageInputSchema = ReferencePageInputSchema.extend({
++  categoryId: ReferenceIdSchema,
++});
++const pair = z.tuple([ReferenceIdSchema, ReferenceIdSchema]);
++const conditionPair = z.tuple([ReferenceIdSchema, ReferenceIdSchema.nullable()]);
++function unique<T extends z.ZodType>(schema: T) {
++  return z
++    .array(schema)
++    .min(1)
++    .max(50)
++    .refine(
++      (values) => new Set(values.map((value) => JSON.stringify(value))).size === values.length,
++    );
++}
++export const CollectionReferencesInputSchema = z
++  .object({ ids: unique(ReferenceIdSchema) })
++  .strict();
++export const CustomReferencesInputSchema = z
++  .object({ references: unique(pair), detail: z.enum(["SUMMARY", "OPTIONS"]).default("SUMMARY") })
++  .strict()
++  .refine((input) => input.detail !== "OPTIONS" || input.references.length <= 2);
++export const ConditionReferencesInputSchema = z
++  .object({ references: unique(conditionPair) })
++  .strict();
++export const CollectionReferenceSchema = CollectionSchema.pick({ id: true, name: true }).strict();
++export const CustomReferenceSchema = CustomFieldDefinitionSchema.omit({ options: true }).strict();
++export const CustomReferenceOptionsSchema = CustomReferenceSchema.extend({
++  options: z.array(CustomFieldOptionInputSchema).max(100),
++}).refine(
++  (value) =>
++    (value.type === "SINGLE_SELECT" || value.type === "MULTI_SELECT") === value.options.length > 0,
++);
++export const ConditionReferenceOptionSchema = ConditionOptionSchema.extend({
++  active: z.boolean(),
++  normalizedBand: NormalizedConditionBandSchema,
++});
++export const ConditionSchemeSummarySchema = ConditionSchemeSchema.omit({ options: true });
++export const CatalogDefinitionChoiceSchema = CatalogAttributeDefinitionSchema.omit({
++  options: true,
++});
++const envelope = { version: z.literal(1), readAt: z.string().datetime() };
++const page = {
++  ...envelope,
++  nextCursor: z
++    .string()
++    .regex(/^[A-Za-z0-9_-]{1,2048}$/u)
++    .nullable(),
++};
++export const CollectionReferencePageSchema = z
++  .object({ ...page, collections: z.array(CollectionReferenceSchema).max(50) })
++  .strict();
++export const CustomReferencePageSchema = z
++  .object({
++    ...page,
++    collection: CollectionReferenceSchema,
++    definitions: z.array(CustomReferenceSchema).max(50),
++  })
++  .strict();
++export const ConditionReferencePageSchema = z
++  .object({
++    ...page,
++    category: CategorySummarySchema,
++    scheme: ConditionSchemeSummarySchema.nullable(),
++    options: z.array(ConditionReferenceOptionSchema).max(50),
++  })
++  .strict();
++export const CollectionReferencesSchema = z
++  .object({
++    ...envelope,
++    references: z
++      .array(
++        z.discriminatedUnion("state", [
++          z
++            .object({
++              id: ReferenceIdSchema,
++              state: z.literal("AVAILABLE"),
++              collection: CollectionReferenceSchema,
++            })
++            .strict(),
++          z
++            .object({
++              id: ReferenceIdSchema,
++              state: z.literal("UNAVAILABLE"),
++              collection: z.null(),
++            })
++            .strict(),
++        ]),
++      )
++      .min(1)
++      .max(50),
++  })
++  .strict();
++const customEntries = <T extends z.ZodType>(definition: T, max: number) =>
++  z
++    .array(
++      z.discriminatedUnion("state", [
++        z.object({ reference: pair, state: z.literal("AVAILABLE"), definition }).strict(),
++        z
++          .object({ reference: pair, state: z.literal("UNAVAILABLE"), definition: z.null() })
++          .strict(),
++      ]),
++    )
++    .min(1)
++    .max(max);
++export const CustomReferencesSchema = z.discriminatedUnion("detail", [
++  z
++    .object({
++      ...envelope,
++      detail: z.literal("SUMMARY"),
++      references: customEntries(CustomReferenceSchema, 50),
++    })
++    .strict(),
++  z
++    .object({
++      ...envelope,
++      detail: z.literal("OPTIONS"),
++      references: customEntries(CustomReferenceOptionsSchema, 2),
++    })
++    .strict(),
++]);
++export const ConditionReferencesSchema = z
++  .object({
++    ...envelope,
++    references: z
++      .array(
++        z.discriminatedUnion("state", [
++          z
++            .object({
++              reference: conditionPair,
++              state: z.literal("AVAILABLE"),
++              category: CategorySummarySchema,
++              scheme: ConditionSchemeSummarySchema.nullable(),
++              option: ConditionReferenceOptionSchema.nullable(),
++            })
++            .strict(),
++          z
++            .object({
++              reference: conditionPair,
++              state: z.literal("UNAVAILABLE"),
++              category: z.null(),
++              scheme: z.null(),
++              option: z.null(),
++            })
++            .strict(),
++        ]),
++      )
++      .min(1)
++      .max(50),
++  })
++  .strict();
++export const CatalogDefinitionChoicesSchema = z
++  .object({
++    ...envelope,
++    category: CategorySummarySchema,
++    definitions: z.array(CatalogDefinitionChoiceSchema).max(100),
++  })
++  .strict();
++export const CatalogDefinitionReferenceSchema = z
++  .object({
++    ...envelope,
++    category: CategorySummarySchema,
++    definition: CatalogAttributeDefinitionSchema,
++  })
++  .strict();
++export function parseReferenceInput<T extends z.ZodType>(schema: T, input: unknown): z.output<T> {
++  const result = schema.safeParse(input);
++  if (!result.success) return searchFail("SEARCH_INVALID");
++  return result.data;
++}
++export type ReferenceFamily = "COLLECTIONS" | "CUSTOM_FIELDS" | "CONDITIONS";
++
++// Bounded SQL projection envelopes, validated before public DTO assembly.
++export const ReferenceCursorSchema = z
++  .object({
++    v: z.literal(1),
++    contextHash: z.string().regex(/^[a-f0-9]{64}$/u),
++    after: z
++      .string()
++      .uuid()
++      .refine((id) => id === id.toLowerCase()),
++  })
++  .strict();
++export const ReferenceCollectionRowsSchema = z
++  .array(z.object({ id: ReferenceIdSchema, collection: z.unknown() }).strict())
++  .max(50);
++export const ReferenceCustomRowsSchema = z
++  .array(z.object({ reference: pair, definition: z.unknown() }).strict())
++  .max(50);
++export const ReferenceConditionRowsSchema = z
++  .array(
++    z
++      .object({
++        reference: conditionPair,
++        category: z.unknown(),
++        scheme: z.unknown(),
++        option: z.unknown(),
++      })
++      .strict(),
++  )
++  .max(50);
++export const ReferenceCustomPageRowSchema = z
++  .object({ collection: z.unknown(), definitions: z.array(z.unknown()).max(51) })
++  .strict();
++export const ReferenceCustomOptionRowsSchema = z
++  .array(
++    z
++      .object({
++        ordinal: z.number().int().min(0).max(1),
++        id: ReferenceIdSchema.nullable(),
++        options: z.array(z.unknown()).max(101),
++      })
++      .strict(),
++  )
++  .max(2);
++export const ReferenceConditionPageRowSchema = z
++  .object({ category: z.unknown(), scheme: z.unknown(), options: z.array(z.unknown()).max(101) })
++  .strict();
++export const ReferenceCatalogChoicesRowSchema = z
++  .object({ category: z.unknown(), definitions: z.array(z.unknown()).max(101) })
++  .strict();
++export const ReferenceCatalogDefinitionRowSchema = z
++  .object({ category: z.unknown(), definition: z.unknown() })
++  .strict();
++export const ReferenceOptionsRowSchema = z
++  .object({ options: z.array(z.unknown()).max(101) })
++  .passthrough();
++
++export type CollectionReferencePage = z.infer<typeof CollectionReferencePageSchema>;
++export type CollectionReferences = z.infer<typeof CollectionReferencesSchema>;
++export type CustomReferencePage = z.infer<typeof CustomReferencePageSchema>;
++export type CustomReferences = z.infer<typeof CustomReferencesSchema>;
++export type ConditionReferencePage = z.infer<typeof ConditionReferencePageSchema>;
++export type ConditionReferences = z.infer<typeof ConditionReferencesSchema>;
++export type CatalogDefinitionChoices = z.infer<typeof CatalogDefinitionChoicesSchema>;
++export type CatalogDefinitionReference = z.infer<typeof CatalogDefinitionReferenceSchema>;
+diff --git a/packages/domain/package.json b/packages/domain/package.json
+index 927f3ae..2f26f73 100644
+--- a/packages/domain/package.json
++++ b/packages/domain/package.json
+@@ -29,21 +29,22 @@
+     "./catalog/initialize-catalog": "./src/catalog/initialize-catalog.ts",
+     "./money/money": "./src/money/money.ts",
+     "./valuations/valuation-service": "./src/valuations/valuation-service.ts",
+     "./market-data/market-data-service": "./src/market-data/market-data-service.ts",
+     "./valuations/valuation-query": "./src/valuations/valuation-query.ts",
+     "./valuations/market-display-policy": "./src/valuations/market-display-policy.ts",
+     "./money/currencies": "./src/money/currencies.ts",
+     "./search/filter-ast": "./src/search/filter-ast.ts",
+     "./search/item-search-service": "./src/search/item-search-service.ts",
+     "./search/smart-collection-service": "./src/search/smart-collection-service.ts",
+-    "./dashboard/dashboard-service": "./src/dashboard/dashboard-service.ts"
++    "./dashboard/dashboard-service": "./src/dashboard/dashboard-service.ts",
++    "./search/search-reference-service": "./src/search/search-reference-service.ts"
+   },
+   "scripts": {
+     "build": "pnpm typecheck",
+     "lint": "prettier --check .",
+     "typecheck": "tsc --noEmit --project ../../tsconfig.base.json"
+   },
+   "dependencies": {
+     "@sammlerraum/contracts": "workspace:*",
+     "@sammlerraum/storage": "workspace:*",
+     "file-type": "21.3.4",
+diff --git a/packages/domain/src/search/cursor-json.ts b/packages/domain/src/search/cursor-json.ts
+new file mode 100644
+index 0000000..d0a34ae
+--- /dev/null
++++ b/packages/domain/src/search/cursor-json.ts
+@@ -0,0 +1,7 @@
++/** Shared byte-level cursor boundary; each operation owns its schema and canonical field order. */
++export function readCursorJson(token: string): unknown {
++  if (!/^[A-Za-z0-9_-]{1,2048}$/u.test(token)) throw Error();
++  const bytes = Buffer.from(token, "base64url");
++  if (bytes.length > 1536 || bytes.toString("base64url") !== token) throw Error();
++  return JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(bytes)) as unknown;
++}
+diff --git a/packages/domain/src/search/search-cursor.ts b/packages/domain/src/search/search-cursor.ts
+index 0aaef3a..c9b4952 100644
+--- a/packages/domain/src/search/search-cursor.ts
++++ b/packages/domain/src/search/search-cursor.ts
+@@ -1,10 +1,11 @@
++import { readCursorJson } from "./cursor-json";
+ import { createHash } from "node:crypto";
+ import { searchFail, type NormalizedItemSearchQuery } from "@sammlerraum/contracts/item-search";
+ export type SearchResolutionContext = { smartCollectionId: string; revision: number } | null;
+ import {
+   SearchCursorSchema as schema,
+   type SearchCursor,
+ } from "@sammlerraum/contracts/item-search";
+ export type { SearchCursor } from "@sammlerraum/contracts/item-search";
+ function stable(value: unknown): unknown {
+   if (Array.isArray(value)) return value.map(stable);
+@@ -38,26 +39,21 @@ export function searchContextHash(
+           context,
+         ]),
+       ),
+     )
+     .digest("hex");
+ }
+ export const encodeSearchCursor = (value: SearchCursor) =>
+   Buffer.from(JSON.stringify(value)).toString("base64url");
+ export function decodeSearchCursor(token: string, contextHash: string): SearchCursor {
+   try {
+-    if (!/^[A-Za-z0-9_-]{1,2048}$/u.test(token)) throw Error();
+-    const bytes = Buffer.from(token, "base64url");
+-    if (bytes.length > 1536 || bytes.toString("base64url") !== token) throw Error();
+-    const parsed = schema.safeParse(
+-      JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(bytes)),
+-    );
++    const parsed = schema.safeParse(readCursorJson(token));
+     if (
+       !parsed.success ||
+       parsed.data.contextHash !== contextHash ||
+       encodeSearchCursor(parsed.data) !== token
+     )
+       throw Error();
+     return parsed.data;
+   } catch {
+     return searchFail("SEARCH_INVALID");
+   }
+diff --git a/packages/domain/src/search/search-reference-cursor.test.ts b/packages/domain/src/search/search-reference-cursor.test.ts
+new file mode 100644
+index 0000000..2b01235
+--- /dev/null
++++ b/packages/domain/src/search/search-reference-cursor.test.ts
+@@ -0,0 +1,40 @@
++import { describe, expect, it } from "vitest";
++import {
++  decodeReferenceCursor,
++  encodeReferenceCursor,
++  referenceContextHash,
++} from "./search-reference-cursor";
++const after = "abcd0000-0000-4000-8000-000000000001",
++  actor = "owner";
++const hash = referenceContextHash(actor, "COLLECTIONS", null, 20),
++  value = { v: 1 as const, contextHash: hash, after };
++const encode = (value: unknown) => Buffer.from(JSON.stringify(value)).toString("base64url");
++describe("canonical reference cursor", () => {
++  it("binds actor family parent limit", () => {
++    const token = encodeReferenceCursor(value);
++    expect(decodeReferenceCursor(token, hash)).toBe(after);
++    for (const other of [
++      referenceContextHash("foreign", "COLLECTIONS", null, 20),
++      referenceContextHash(actor, "CUSTOM_FIELDS", null, 20),
++      referenceContextHash(actor, "COLLECTIONS", after, 20),
++      referenceContextHash(actor, "COLLECTIONS", null, 50),
++    ])
++      expect(() => decodeReferenceCursor(token, other)).toThrow("SEARCH_INVALID");
++  });
++  it.each([
++    "",
++    "a".repeat(2049),
++    "a=",
++    Buffer.from([0xff]).toString("base64url"),
++    encode({ ...value, after: after.toUpperCase() }),
++    encode({ ...value, extra: true }),
++    encode({ ...value, v: 2 }),
++    encode({ after, contextHash: hash, v: 1 }),
++    encode({ ...value, after: { createdAt: "2026-01-01T00:00:00.000Z", id: after } }),
++    Buffer.from(JSON.stringify(value) + " ").toString("base64url"),
++    Buffer.from(`{"v":1,"v":1,"contextHash":"${hash}","after":"${after}"}`).toString("base64url"),
++    encode({ ...value, after: "x".repeat(1600) }),
++  ])("rejects malformed/noncanonical token", (token) => {
++    expect(() => decodeReferenceCursor(token, hash)).toThrow("SEARCH_INVALID");
++  });
++});
+diff --git a/packages/domain/src/search/search-reference-cursor.ts b/packages/domain/src/search/search-reference-cursor.ts
+new file mode 100644
+index 0000000..2ca7a51
+--- /dev/null
++++ b/packages/domain/src/search/search-reference-cursor.ts
+@@ -0,0 +1,31 @@
++import { createHash } from "node:crypto";
++import { ReferenceCursorSchema as schema } from "@sammlerraum/contracts/search-references";
++import { searchFail } from "@sammlerraum/contracts/item-search";
++import type { ReferenceFamily } from "@sammlerraum/contracts/search-references";
++import { readCursorJson } from "./cursor-json";
++type ReferenceCursor = { v: 1; contextHash: string; after: string };
++export function referenceContextHash(
++  actorId: string,
++  family: ReferenceFamily,
++  parentId: string | null,
++  limit: number,
++) {
++  return createHash("sha256")
++    .update(JSON.stringify(["search-references", 1, actorId, family, parentId, "ID_ASC", limit]))
++    .digest("hex");
++}
++export function encodeReferenceCursor(value: ReferenceCursor) {
++  return Buffer.from(
++    JSON.stringify({ v: 1, contextHash: value.contextHash, after: value.after }),
++  ).toString("base64url");
++}
++export function decodeReferenceCursor(token: string, contextHash: string): string {
++  try {
++    const parsed = schema.parse(readCursorJson(token));
++    if (parsed.contextHash !== contextHash || encodeReferenceCursor(parsed) !== token)
++      throw Error();
++    return parsed.after;
++  } catch {
++    return searchFail("SEARCH_INVALID");
++  }
++}
+diff --git a/packages/domain/src/search/search-reference-service.integration.test.ts b/packages/domain/src/search/search-reference-service.integration.test.ts
+new file mode 100644
+index 0000000..0feb5d5
+--- /dev/null
++++ b/packages/domain/src/search/search-reference-service.integration.test.ts
+@@ -0,0 +1,728 @@
++import { Prisma } from "@sammlerraum/db/search-sql";
++import type { SearchDatabase } from "./search-read";
++import {
++  collectionsPageSql,
++  collectionsResolveSql,
++  customResolveSql,
++  customOptionsSql,
++} from "./search-reference-sql";
++import { encodeReferenceCursor, referenceContextHash } from "./search-reference-cursor";
++import { createCatalogReadService } from "../catalog/catalog-read-service";
++import { parseItemFilter } from "@sammlerraum/contracts/search";
++import { randomUUID } from "node:crypto";
++import { afterAll, beforeAll, describe, expect, it } from "vitest";
++import { createTestDatabaseClient } from "@sammlerraum/db/test-database";
++import { createCollectionService } from "../collections/collection-service";
++import { createCustomFieldService } from "../custom-fields/custom-field-service";
++import { createCategoryTemplateMaintenanceService } from "../catalog/category-template-service";
++import { createConditionMaintenanceService } from "../condition/condition-service";
++import { createSearchReferenceService } from "./search-reference-service";
++const enabled = process.env.RUN_DATABASE_INTEGRATION === "1";
++const db = enabled ? createTestDatabaseClient() : undefined;
++const owner = `reference_${randomUUID()}`,
++  foreign = `reference_${randomUUID()}`;
++const pagingOwner = `reference_${randomUUID()}`;
++const prefix = `ref_${randomUUID().replaceAll("-", "")}`;
++let foreignDefinition: string, deletedDefinition: string;
++let owned: string,
++  publicForeign: string,
++  privateForeign: string,
++  deleted: string,
++  definition: string,
++  category: string,
++  option: string;
++const missing = randomUUID();
++describe.runIf(enabled)("bounded search reference native behavior", () => {
++  beforeAll(async () => {
++    for (const id of [owner, foreign, pagingOwner])
++      await db!.user.create({
++        data: {
++          id,
++          name: "Reference fixture",
++          email: `${id}@example.invalid`,
++          emailVerified: true,
++        },
++      });
++    owned = (await createCollectionService(db!, owner).createCollection({ name: "Owned label" }))
++      .id;
++    publicForeign = (
++      await createCollectionService(db!, foreign).createCollection({
++        name: "Foreign public label",
++        visibility: "PUBLIC",
++      })
++    ).id;
++    privateForeign = (
++      await createCollectionService(db!, foreign).createCollection({
++        name: "Foreign private label",
++      })
++    ).id;
++    deleted = (
++      await createCollectionService(db!, owner).createCollection({ name: "Deleted label" })
++    ).id;
++    foreignDefinition = (
++      await createCustomFieldService(db!, foreign).createFieldDefinition({
++        collectionId: publicForeign,
++        name: "Hidden foreign field",
++        type: "INTEGER",
++      })
++    ).id;
++    deletedDefinition = (
++      await createCustomFieldService(db!, owner).createFieldDefinition({
++        collectionId: deleted,
++        name: "Hidden deleted field",
++        type: "INTEGER",
++      })
++    ).id;
++    await createCollectionService(db!, owner).deleteCollection(deleted);
++    definition = (
++      await createCustomFieldService(db!, owner).createFieldDefinition({
++        collectionId: owned,
++        name: "Finish",
++        type: "SINGLE_SELECT",
++        options: ["Brünniert", "Polished"],
++      })
++    ).id;
++    category = (
++      await createCategoryTemplateMaintenanceService(db!).createCategoryTemplate({
++        key: prefix,
++        labels: { de: "Münzen", en: "Coins" },
++      })
++    ).id;
++    const scheme = await createConditionMaintenanceService(db!).createConditionScheme({
++      categoryTemplateId: category,
++      key: prefix,
++      labels: { de: "Zustand", en: "Condition" },
++      active: false,
++      options: [{ labelKey: "retained.good", labels: { de: "Gut", en: "Good" }, active: false }],
++    });
++    option = scheme.options[0]!.id;
++  });
++  afterAll(async () => {
++    if (!db) return;
++    await db.user.deleteMany({ where: { id: { in: [owner, foreign, pagingOwner] } } });
++    await db.conditionOption.deleteMany({
++      where: { scheme: { categoryTemplate: { key: { startsWith: prefix } } } },
++    });
++    await db.conditionScheme.deleteMany({
++      where: { categoryTemplate: { key: { startsWith: prefix } } },
++    });
++    await db.catalogAttributeOptionLabel.deleteMany({
++      where: { option: { definition: { categoryTemplate: { key: { startsWith: prefix } } } } },
++    });
++    await db.catalogAttributeOption.deleteMany({
++      where: { definition: { categoryTemplate: { key: { startsWith: prefix } } } },
++    });
++    await db.catalogAttributeLabel.deleteMany({
++      where: { definition: { categoryTemplate: { key: { startsWith: prefix } } } },
++    });
++    await db.catalogAttributeDefinition.deleteMany({
++      where: { categoryTemplate: { key: { startsWith: prefix } } },
++    });
++    await db.categoryTemplateLabel.deleteMany({
++      where: { categoryTemplate: { key: { startsWith: prefix } } },
++    });
++    await db.categoryTemplate.deleteMany({ where: { key: { startsWith: prefix } } });
++    await db.$disconnect();
++  });
++  it("returns closed input-ordered owned and unavailable references ", async () => {
++    const ids = [missing, publicForeign, owned, deleted, privateForeign];
++    const { references: rows } = await createSearchReferenceService(db!).resolveCollections(
++      { userId: owner },
++      { ids },
++    );
++    expect(rows).toEqual(
++      ids.map((id) =>
++        id === owned
++          ? { id, state: "AVAILABLE", collection: { id, name: "Owned label" } }
++          : { id, state: "UNAVAILABLE", collection: null },
++      ),
++    );
++    expect(definition).toBeTruthy();
++  });
++  it("returns retained inactive condition metadata ", async () => {
++    const result = await createSearchReferenceService(db!).listConditions(
++      { userId: owner },
++      { categoryId: category },
++    );
++    expect(result).toMatchObject({
++      scheme: { active: false },
++      options: [{ id: option, active: false }],
++    });
++  });
++
++  it("pages 0,1,20,50,51 IDs with stable order, exhausted cursors and changed labels", async () => {
++    const actor = { userId: pagingOwner },
++      service = createSearchReferenceService(db!);
++    expect((await service.listCollections(actor, {})).collections).toEqual([]);
++    const producer = createCollectionService(db!, pagingOwner);
++    const first = await producer.createCollection({ name: "Same label" });
++    expect((await service.listCollections(actor, {})).collections.map((c) => c.id)).toEqual([
++      first.id,
++    ]);
++    for (let n = 1; n < 51; n++) await producer.createCollection({ name: "Same label" });
++    const defaultPage = await service.listCollections(actor, {});
++    expect(defaultPage.collections).toHaveLength(20);
++    const large = await service.listCollections(actor, { limit: 50 });
++    expect(large.collections).toHaveLength(50);
++    expect(large.nextCursor).toBeTruthy();
++    const last = await service.listCollections(actor, { limit: 50, cursor: large.nextCursor });
++    expect(last.collections).toHaveLength(1);
++    expect(last.nextCursor).toBeNull();
++    const all = [...large.collections, ...last.collections].map((c) => c.id);
++    expect(all).toEqual([...all].sort());
++    expect(new Set(all).size).toBe(51);
++    await producer.updateCollection(all[0]!, { name: "Changed label" });
++    expect((await service.listCollections(actor, { limit: 1 })).collections[0]).toEqual({
++      id: all[0],
++      name: "Changed label",
++    });
++    const exhausted = encodeReferenceCursor({
++      v: 1,
++      contextHash: referenceContextHash(pagingOwner, "COLLECTIONS", null, 50),
++      after: all.at(-1)!,
++    });
++    expect(
++      (await service.listCollections(actor, { limit: 50, cursor: exhausted })).collections,
++    ).toEqual([]);
++    for (const [other, input] of [
++      [{ userId: owner }, { limit: 50, cursor: large.nextCursor }],
++      [actor, { limit: 20, cursor: large.nextCursor }],
++    ] as const)
++      await expect(service.listCollections(other, input)).rejects.toMatchObject({
++        code: "SEARCH_INVALID",
++      });
++    await expect(
++      service.listCustomFields(actor, {
++        collectionId: first.id,
++        limit: 50,
++        cursor: large.nextCursor,
++      }),
++    ).rejects.toMatchObject({ code: "SEARCH_INVALID" });
++  });
++  it("uses one set read for 1/50 metadata and two for OPTIONS with installed budgets", async () => {
++    let calls = 0;
++    const statements: Prisma.Sql[] = [];
++    const wrapped: SearchDatabase = {
++      $transaction: (work, settings) =>
++        db!.$transaction(
++          (tx) =>
++            work({
++              $queryRaw: async <T>(query: Prisma.Sql) => {
++                calls++;
++                statements.push(query);
++                return tx.$queryRaw<T>(query);
++              },
++            }),
++          settings,
++        ),
++    };
++    const service = createSearchReferenceService(wrapped),
++      actor = { userId: owner };
++    await service.resolveCollections(actor, { ids: [owned] });
++    expect(calls).toBe(3);
++    calls = 0;
++    await service.resolveCollections(actor, {
++      ids: [owned, ...Array.from({ length: 49 }, () => randomUUID())],
++    });
++    expect(calls).toBe(3);
++    calls = 0;
++    await service.resolveCustomFields(actor, {
++      references: [[owned, definition], ...Array.from({ length: 49 }, () => [owned, randomUUID()])],
++    });
++    expect(calls).toBe(3);
++    calls = 0;
++    await service.resolveCustomFields(actor, {
++      references: [[owned, definition]],
++      detail: "OPTIONS",
++    });
++    expect(calls).toBe(5);
++    calls = 0;
++    await service.resolveConditions(actor, {
++      references: [
++        [category, option],
++        ...Array.from({ length: 49 }, () => [category, randomUUID()]),
++      ],
++    });
++    expect(calls).toBe(3);
++    calls = 0;
++    await service.resolveCustomFields(actor, {
++      references: [
++        [owned, definition],
++        [owned, missing],
++      ],
++      detail: "OPTIONS",
++    });
++    expect(calls).toBe(5);
++    expect(statements.filter((q) => q.text.includes("transaction_timeout"))).toHaveLength(6);
++    expect(
++      statements.every((q) => !q.text.includes('"CollectibleItem"') && !q.text.includes("COUNT(")),
++    ).toBe(true);
++    console.info(
++      "reference native calls",
++      JSON.stringify({
++        one: 3,
++        fifty: 3,
++        customSummaryFifty: 3,
++        customOptions: 5,
++        driverAndAuthExcluded: true,
++      }),
++    );
++  });
++  it("resolves custom pairs in input order with exact owned parent and no foreign disclosure", async () => {
++    const service = createSearchReferenceService(db!),
++      actor = { userId: owner };
++    const references = [
++      [owned, definition],
++      [publicForeign, definition],
++      [privateForeign, definition],
++      [deleted, definition],
++      [missing, definition],
++      [owned, missing],
++      [publicForeign, foreignDefinition],
++      [deleted, deletedDefinition],
++    ];
++    const result = await service.resolveCustomFields(actor, { references });
++    expect(result.references.map((r) => r.reference)).toEqual(references);
++    expect(result.references[0]).toMatchObject({
++      state: "AVAILABLE",
++      definition: { id: definition, collectionId: owned, name: "Finish", type: "SINGLE_SELECT" },
++    });
++    for (const row of result.references.slice(1))
++      expect(row).toEqual({ reference: row.reference, state: "UNAVAILABLE", definition: null });
++    const upper = await service.resolveCollections(actor, { ids: [owned.toUpperCase()] });
++    expect(upper.references[0]!.id).toBe(owned);
++    const detail = await service.resolveCustomFields(actor, {
++      references: [[owned, definition]],
++      detail: "OPTIONS",
++    });
++    expect(detail.references[0]).toMatchObject({
++      definition: { options: ["Brünniert", "Polished"] },
++    });
++    const ast = parseItemFilter({
++      version: 1,
++      root: {
++        kind: "customField",
++        selector: { source: "CUSTOM", collectionId: owned, definitionId: definition },
++        predicate: { valueType: "SINGLE_SELECT", test: { op: "eq", value: "No longer suggested" } },
++      },
++    });
++    expect(JSON.stringify(ast)).toContain("no longer suggested");
++    for (const id of [publicForeign, privateForeign, deleted, missing])
++      await expect(service.listCustomFields(actor, { collectionId: id })).rejects.toMatchObject({
++        code: "FILTER_REFERENCE_INVALID",
++      });
++    const empty = (await createCollectionService(db!, owner).createCollection({ name: "Empty" }))
++      .id;
++    expect(await service.listCustomFields(actor, { collectionId: empty })).toMatchObject({
++      collection: { id: empty, name: "Empty" },
++      definitions: [],
++      nextCursor: null,
++    });
++  });
++  it("pages 51 custom definitions and binds parent cursors", async () => {
++    const parent = (
++      await createCollectionService(db!, owner).createCollection({ name: "Definitions" })
++    ).id;
++    const producer = createCustomFieldService(db!, owner);
++    for (let n = 0; n < 51; n++)
++      await producer.createFieldDefinition({
++        collectionId: parent,
++        name: `Field ${n}`,
++        type: "INTEGER",
++      });
++    const service = createSearchReferenceService(db!),
++      actor = { userId: owner };
++    const page = await service.listCustomFields(actor, { collectionId: parent, limit: 50 });
++    expect(page.definitions).toHaveLength(50);
++    const next = await service.listCustomFields(actor, {
++      collectionId: parent,
++      limit: 50,
++      cursor: page.nextCursor,
++    });
++    expect(next.definitions).toHaveLength(1);
++    expect(next.nextCursor).toBeNull();
++    await expect(
++      service.listCustomFields(actor, { collectionId: owned, limit: 50, cursor: page.nextCursor }),
++    ).rejects.toMatchObject({ code: "SEARCH_INVALID" });
++    await createCollectionService(db!, owner).deleteCollection(parent);
++    await expect(service.listCustomFields(actor, { collectionId: parent })).rejects.toMatchObject({
++      code: "FILTER_REFERENCE_INVALID",
++    });
++  });
++  it("distinguishes category-only, mismatch, missing and no scheme while retaining inactive metadata", async () => {
++    const empty = await createCategoryTemplateMaintenanceService(db!).createCategoryTemplate({
++      key: `${prefix}_empty`,
++      labels: { de: "Leer", en: "Empty" },
++    });
++    const service = createSearchReferenceService(db!),
++      actor = { userId: owner };
++    expect(await service.listConditions(actor, { categoryId: empty.id })).toMatchObject({
++      category: { id: empty.id },
++      scheme: null,
++      options: [],
++      nextCursor: null,
++    });
++    const references = [
++      [category, null],
++      [category, option],
++      [empty.id, null],
++      [empty.id, option],
++      [missing, null],
++      [category, missing],
++    ];
++    const result = await service.resolveConditions(actor, { references });
++    expect(result.references.slice(0, 3)).toMatchObject([
++      { state: "AVAILABLE", option: null, scheme: { active: false } },
++      { state: "AVAILABLE", option: { id: option, active: false }, scheme: { active: false } },
++      { state: "AVAILABLE", scheme: null, option: null },
++    ]);
++    for (const row of result.references.slice(3))
++      expect(row).toEqual({
++        reference: row.reference,
++        state: "UNAVAILABLE",
++        category: null,
++        scheme: null,
++        option: null,
++      });
++    await expect(service.listConditions(actor, { categoryId: missing })).rejects.toMatchObject({
++      code: "FILTER_REFERENCE_INVALID",
++    });
++  });
++  it("pages all 100 retained conditions by ID and rejects impossible native position 100", async () => {
++    const c = await createCategoryTemplateMaintenanceService(db!).createCategoryTemplate({
++      key: `${prefix}_hundred`,
++      labels: { de: "Hundert", en: "Hundred" },
++    });
++    const s = await createConditionMaintenanceService(db!).createConditionScheme({
++      categoryTemplateId: c.id,
++      key: `${prefix}_hundred`,
++      labels: { de: "Zustand", en: "Condition" },
++      options: Array.from({ length: 100 }, (_, n) => ({
++        labelKey: `condition.v${n}`,
++        labels: { de: `Wert ${n}`, en: `Value ${n}` },
++        active: n % 2 === 0,
++      })),
++    });
++    const service = createSearchReferenceService(db!),
++      actor = { userId: owner };
++    const first = await service.listConditions(actor, { categoryId: c.id, limit: 50 });
++    const second = await service.listConditions(actor, {
++      categoryId: c.id,
++      limit: 50,
++      cursor: first.nextCursor,
++    });
++    expect(first.options).toHaveLength(50);
++    expect(second.options).toHaveLength(50);
++    expect(second.nextCursor).toBeNull();
++    expect([...first.options, ...second.options].map((o) => o.id)).toEqual(
++      s.options.map((o) => o.id).sort(),
++    );
++    await expect(
++      db!.conditionOption.create({
++        data: {
++          schemeId: s.id,
++          categoryTemplateId: c.id,
++          labelKey: "condition.overflow",
++          labelDe: "Extra",
++          labelEn: "Extra",
++          position: 100,
++        },
++      }),
++    ).rejects.toBeTruthy();
++  });
++  it("enforces authored 100/101 option cap and nonselect/select invariants", async () => {
++    const producer = createCustomFieldService(db!, owner),
++      service = createSearchReferenceService(db!),
++      actor = { userId: owner };
++    const selected = await producer.createFieldDefinition({
++      collectionId: owned,
++      name: "Hundred options",
++      type: "MULTI_SELECT",
++      options: Array.from({ length: 100 }, (_, n) => `Option ${n}`),
++    });
++    expect(
++      (
++        await service.resolveCustomFields(actor, {
++          references: [[owned, selected.id]],
++          detail: "OPTIONS",
++        })
++      ).references[0],
++    ).toMatchObject({ definition: { options: selected.options } });
++    const adjacent = await producer.createFieldDefinition({
++      collectionId: owned,
++      name: "Adjacent hundred",
++      type: "SINGLE_SELECT",
++      options: Array.from({ length: 100 }, (_, n) => `Adjacent ${n}`),
++    });
++    const both = await service.resolveCustomFields(actor, {
++      references: [
++        [owned, selected.id],
++        [owned, adjacent.id],
++      ],
++      detail: "OPTIONS",
++    });
++    expect(both.references).toMatchObject([
++      { definition: { options: selected.options } },
++      { definition: { options: adjacent.options } },
++    ]);
++    await db!.customFieldOption.create({
++      data: {
++        fieldDefinitionId: selected.id,
++        value: "Overflow",
++        normalizedValue: "overflow",
++        position: 100,
++      },
++    });
++    await expect(
++      service.resolveCustomFields(actor, { references: [[owned, selected.id]], detail: "OPTIONS" }),
++    ).rejects.toMatchObject({ code: "SEARCH_UNAVAILABLE" });
++    const numeric = await producer.createFieldDefinition({
++      collectionId: owned,
++      name: "Number",
++      type: "INTEGER",
++    });
++    expect(
++      (
++        await service.resolveCustomFields(actor, {
++          references: [[owned, numeric.id]],
++          detail: "OPTIONS",
++        })
++      ).references[0],
++    ).toMatchObject({ definition: { options: [] } });
++    await db!.customFieldOption.create({
++      data: {
++        fieldDefinitionId: numeric.id,
++        value: "Unexpected",
++        normalizedValue: "unexpected",
++        position: 0,
++      },
++    });
++    await expect(
++      service.resolveCustomFields(actor, { references: [[owned, numeric.id]], detail: "OPTIONS" }),
++    ).rejects.toMatchObject({ code: "SEARCH_INVARIANT" });
++    const noOptions = await producer.createFieldDefinition({
++      collectionId: owned,
++      name: "Missing options",
++      type: "SINGLE_SELECT",
++      options: ["One"],
++    });
++    await db!.customFieldOption.deleteMany({ where: { fieldDefinitionId: noOptions.id } });
++    await expect(
++      service.resolveCustomFields(actor, {
++        references: [[owned, noOptions.id]],
++        detail: "OPTIONS",
++      }),
++    ).rejects.toMatchObject({ code: "SEARCH_INVARIANT" });
++  });
++  it("does not transfer oversized native TEXT or rescue malformed labels", async () => {
++    const service = createSearchReferenceService(db!),
++      actor = { userId: owner };
++    const corrupt = (
++      await createCollectionService(db!, owner).createCollection({ name: "Temporary" })
++    ).id;
++    await db!.collection.update({ where: { id: corrupt }, data: { name: "x".repeat(2_000_000) } });
++    const raw = await db!.$queryRaw<{ payload: { collection: { name: null } }[] }>(
++      collectionsResolveSql(owner, [corrupt]),
++    );
++    expect(JSON.stringify(raw).length).toBeLessThan(500);
++    await expect(service.resolveCollections(actor, { ids: [corrupt] })).rejects.toMatchObject({
++      code: "SEARCH_INVARIANT",
++    });
++    await db!.collection.update({ where: { id: corrupt }, data: { name: " " } });
++    await expect(service.resolveCollections(actor, { ids: [corrupt] })).rejects.toMatchObject({
++      code: "SEARCH_INVARIANT",
++    });
++    const field = await createCustomFieldService(db!, owner).createFieldDefinition({
++      collectionId: owned,
++      name: "Unicode invalid",
++      type: "SINGLE_SELECT",
++      options: ["Valid"],
++    });
++    await db!.customFieldOption.updateMany({
++      where: { fieldDefinitionId: field.id },
++      data: { value: "😀".repeat(101) },
++    });
++    await expect(
++      service.resolveCustomFields(actor, { references: [[owned, field.id]], detail: "OPTIONS" }),
++    ).rejects.toMatchObject({ code: "SEARCH_INVARIANT" });
++  });
++  it("uses one repeatable snapshot across metadata/options despite concurrent rename, delete and option change", async () => {
++    const collection = await createCollectionService(db!, owner).createCollection({
++      name: "Snapshot",
++    });
++    const field = await createCustomFieldService(db!, owner).createFieldDefinition({
++      collectionId: collection.id,
++      name: "Before",
++      type: "SINGLE_SELECT",
++      options: ["Before"],
++    });
++    let statements = 0;
++    const wrapped: SearchDatabase = {
++      $transaction: (work, settings) =>
++        db!.$transaction(
++          (tx) =>
++            work({
++              $queryRaw: async <T>(query: Prisma.Sql) => {
++                const result = await tx.$queryRaw<T>(query);
++                if (++statements === 3) {
++                  await db!.customFieldDefinition.update({
++                    where: { id: field.id },
++                    data: { name: "After", normalizedName: "after" },
++                  });
++                  await db!.customFieldOption.updateMany({
++                    where: { fieldDefinitionId: field.id },
++                    data: { value: "After", normalizedValue: "after" },
++                  });
++                  await db!.collection.update({
++                    where: { id: collection.id },
++                    data: { deletedAt: new Date() },
++                  });
++                }
++                return result;
++              },
++            }),
++          settings,
++        ),
++    };
++    const input = { references: [[collection.id, field.id]], detail: "OPTIONS" };
++    expect(
++      (await createSearchReferenceService(wrapped).resolveCustomFields({ userId: owner }, input))
++        .references[0],
++    ).toMatchObject({ state: "AVAILABLE", definition: { name: "Before", options: ["Before"] } });
++    expect(
++      (await createSearchReferenceService(db!).resolveCustomFields({ userId: owner }, input))
++        .references[0],
++    ).toMatchObject({ state: "UNAVAILABLE", definition: null });
++  });
++  it("bounds valid 100 by 100 catalog picker reads while preserving default template behavior", async () => {
++    const labels = { de: "D".repeat(200), en: "E".repeat(200) };
++    const c = await createCategoryTemplateMaintenanceService(db!).createCategoryTemplate({
++      key: `${prefix}_large`,
++      labels,
++      definitions: Array.from({ length: 100 }, (_, n) => ({
++        key: `field_${n}`,
++        labels,
++        type: "SINGLE_SELECT",
++        options: Array.from({ length: 100 }, (_, j) => ({ key: `option_${j}`, labels })),
++      })),
++    });
++    let calls = 0;
++    const wrapped: SearchDatabase = {
++      $transaction: (work, settings) =>
++        db!.$transaction(
++          (tx) =>
++            work({
++              $queryRaw: async <T>(query: Prisma.Sql) => {
++                calls++;
++                return tx.$queryRaw<T>(query);
++              },
++            }),
++          settings,
++        ),
++    };
++    const service = createSearchReferenceService(wrapped),
++      actor = { userId: owner };
++    const choices = await service.getCatalogDefinitionChoices(actor, c.id);
++    expect(calls).toBe(3);
++    expect(choices.definitions).toHaveLength(100);
++    expect(choices.definitions.every((d) => !Object.hasOwn(d, "options"))).toBe(true);
++    calls = 0;
++    const selected = await service.getCatalogDefinition(actor, c.id, c.definitions[99]!.id);
++    expect(calls).toBe(3);
++    expect(selected.definition).toEqual(c.definitions[99]);
++    expect(selected.definition.options).toHaveLength(100);
++    const legacy = await createCatalogReadService(db!).getCategoryTemplate(c.id);
++    expect(legacy.definitions).toHaveLength(100);
++    expect(legacy.definitions.every((d) => d.options.length === 100)).toBe(true);
++    expect(Buffer.byteLength(JSON.stringify(legacy))).toBeGreaterThan(1048576);
++    expect(Buffer.byteLength(JSON.stringify(choices))).toBeLessThan(1048576);
++    expect(Buffer.byteLength(JSON.stringify(selected))).toBeLessThan(1048576);
++    console.info(
++      "catalog bounded transfer",
++      JSON.stringify({
++        definitions: 100,
++        optionsEach: 100,
++        choicesBytes: Buffer.byteLength(JSON.stringify(choices)),
++        selectedBytes: Buffer.byteLength(JSON.stringify(selected)),
++        legacyBytes: Buffer.byteLength(JSON.stringify(legacy)),
++      }),
++    );
++    await expect(
++      service.getCatalogDefinition(actor, category, c.definitions[0]!.id),
++    ).rejects.toMatchObject({ code: "FILTER_REFERENCE_INVALID" });
++    await db!.catalogAttributeOption.create({
++      data: {
++        definitionId: c.definitions[99]!.id,
++        key: "overflow",
++        position: 100,
++        labels: {
++          create: [
++            { locale: "de", label: "Mehr" },
++            { locale: "en", label: "More" },
++          ],
++        },
++      },
++    });
++    await expect(
++      service.getCatalogDefinition(actor, c.id, c.definitions[99]!.id),
++    ).rejects.toMatchObject({ code: "SEARCH_UNAVAILABLE" });
++    await db!.catalogAttributeDefinition.create({
++      data: {
++        categoryTemplateId: c.id,
++        key: "overflow",
++        type: "INTEGER",
++        position: 100,
++        labels: {
++          create: [
++            { locale: "de", label: "Mehr" },
++            { locale: "en", label: "More" },
++          ],
++        },
++      },
++    });
++    await expect(service.getCatalogDefinitionChoices(actor, c.id)).rejects.toMatchObject({
++      code: "SEARCH_UNAVAILABLE",
++    });
++  }, 30000);
++  it("keeps the same one-statement page cost on a larger 1000-collection inventory", async () => {
++    const producer = createCollectionService(db!, pagingOwner);
++    for (let n = 51; n < 1000; n++) await producer.createCollection({ name: `Large fixture ${n}` });
++    let calls = 0;
++    const wrapped: SearchDatabase = {
++      $transaction: (work, settings) =>
++        db!.$transaction(
++          (tx) =>
++            work({
++              $queryRaw: async <T>(query: Prisma.Sql) => {
++                calls++;
++                return tx.$queryRaw<T>(query);
++              },
++            }),
++          settings,
++        ),
++    };
++    const page = await createSearchReferenceService(wrapped).listCollections(
++      { userId: pagingOwner },
++      { limit: 50 },
++    );
++    expect(page.collections).toHaveLength(50);
++    expect(calls).toBe(3);
++  });
++  it("captures actual EXPLAIN ANALYZE BUFFERS for bounded owner list/hydration/options", async () => {
++    for (const [name, query] of [
++      ["collection-list", collectionsPageSql(pagingOwner, 50, null)],
++      [
++        "collection-hydration-50",
++        collectionsResolveSql(
++          pagingOwner,
++          Array.from({ length: 50 }, () => randomUUID()),
++        ),
++      ],
++      ["custom-summary", customResolveSql(owner, [[owned, definition]])],
++      ["custom-options", customOptionsSql(owner, [[owned, definition]])],
++    ] as const) {
++      const plan = await db!.$queryRaw(Prisma.sql`EXPLAIN (ANALYZE,BUFFERS,FORMAT JSON) ${query}`);
++      console.info("reference native plan", name, JSON.stringify(plan));
++    }
++  });
++});
+diff --git a/packages/domain/src/search/search-reference-service.test.ts b/packages/domain/src/search/search-reference-service.test.ts
+new file mode 100644
+index 0000000..49162df
+--- /dev/null
++++ b/packages/domain/src/search/search-reference-service.test.ts
+@@ -0,0 +1,95 @@
++import { afterEach, describe, expect, it, vi } from "vitest";
++import { CollectionReferencesSchema } from "@sammlerraum/contracts/search-references";
++import { finishReference, createSearchReferenceService } from "./search-reference-service";
++import type { SearchDatabase } from "./search-read";
++afterEach(() => vi.restoreAllMocks());
++describe("reference output and processing bounds", () => {
++  it("checks serialization and validation budget without partial success", () => {
++    let checks = 0;
++    expect(() =>
++      finishReference(
++        {
++          checkBudget() {
++            if (++checks === 3) throw Error("expired");
++          },
++        },
++        { safeParse: () => ({ success: true as const, data: { safe: true } }) },
++        {},
++      ),
++    ).toThrow("expired");
++    expect(() =>
++      finishReference(
++        { checkBudget() {} },
++        { safeParse: () => ({ success: true as const, data: "x".repeat(1048577) }) },
++        {},
++      ),
++    ).toThrow("SEARCH_UNAVAILABLE");
++    expect(() =>
++      finishReference({ checkBudget() {} }, CollectionReferencesSchema, {
++        version: 1,
++        readAt: "bad",
++        references: [],
++      }),
++    ).toThrow("SEARCH_INVARIANT");
++  });
++  it("rejects invalid actor and request before acquiring a connection", async () => {
++    const database: SearchDatabase = { $transaction: vi.fn() };
++    const service = createSearchReferenceService(database);
++    await expect(service.listCollections({ userId: "" }, {})).rejects.toMatchObject({
++      code: "SEARCH_INVALID",
++    });
++    await expect(service.resolveCollections({ userId: "a" }, { ids: [] })).rejects.toMatchObject({
++      code: "SEARCH_INVALID",
++    });
++    expect(database.$transaction).not.toHaveBeenCalled();
++  });
++  it("rejects impossible condition 101 sentinel at projection boundary with native constraints intact", async () => {
++    let n = 0;
++    const database: SearchDatabase = {
++      $transaction: async (work) =>
++        work({
++          $queryRaw: async <T>() =>
++            (++n === 3
++              ? [
++                  {
++                    readAt: new Date(),
++                    payload: {
++                      category: {
++                        id: "00000000-0000-4000-8000-000000000001",
++                        key: "fixture",
++                        labels: { de: "Kategorie", en: "Category" },
++                      },
++                      scheme: null,
++                      options: Array(101).fill({}),
++                    },
++                  },
++                ]
++              : []) as T,
++        }),
++    };
++    await expect(
++      createSearchReferenceService(database).listConditions(
++        { userId: "a" },
++        { categoryId: "00000000-0000-4000-8000-000000000001" },
++      ),
++    ).rejects.toMatchObject({ code: "SEARCH_UNAVAILABLE" });
++  });
++  it("does not return a completed DTO after transaction settlement exceeds overall budget", async () => {
++    let now = 0,
++      calls = 0;
++    vi.spyOn(performance, "now").mockImplementation(() => now);
++    const database: SearchDatabase = {
++      $transaction: async (work) => {
++        const result = await work({
++          $queryRaw: async <T>() =>
++            (++calls === 3 ? [{ readAt: new Date(), payload: [] }] : []) as T,
++        });
++        now = 12001;
++        return result;
++      },
++    };
++    await expect(
++      createSearchReferenceService(database).listCollections({ userId: "a" }, {}),
++    ).rejects.toMatchObject({ code: "SEARCH_UNAVAILABLE" });
++  });
++});
+diff --git a/packages/domain/src/search/search-reference-service.ts b/packages/domain/src/search/search-reference-service.ts
+new file mode 100644
+index 0000000..14769fa
+--- /dev/null
++++ b/packages/domain/src/search/search-reference-service.ts
+@@ -0,0 +1,332 @@
++type Schema<T> = { safeParse(value: unknown): { success: true; data: T } | { success: false } };
++import { searchFail } from "@sammlerraum/contracts/item-search";
++import * as contract from "@sammlerraum/contracts/search-references";
++import { CategorySummarySchema } from "@sammlerraum/contracts/catalog-reads";
++import type { SearchActor } from "./item-search-service";
++import {
++  runSearchRead,
++  type SearchDatabase,
++  type BoundedSearchReadTransaction,
++} from "./search-read";
++import {
++  decodeReferenceCursor,
++  encodeReferenceCursor,
++  referenceContextHash,
++} from "./search-reference-cursor";
++import * as sql from "./search-reference-sql";
++import type { Prisma } from "@sammlerraum/db/search-sql";
++function actorId(actor: SearchActor) {
++  if (!actor || typeof actor.userId !== "string" || !actor.userId || actor.userId.includes("\0"))
++    return searchFail("SEARCH_INVALID");
++  return actor.userId;
++}
++function checked<T>(schema: Schema<T>, value: unknown): T {
++  const result = schema.safeParse(value);
++  if (!result.success) return searchFail("SEARCH_INVARIANT");
++  return result.data;
++}
++/** A bounded producer DTO and serialization remain inside the snapshot/time budget. */
++export function finishReference<T>(
++  tx: Pick<BoundedSearchReadTransaction, "checkBudget">,
++  schema: Schema<T>,
++  value: unknown,
++): T {
++  tx.checkBudget();
++  const result = checked(schema, value);
++  tx.checkBudget();
++  const bytes = Buffer.byteLength(JSON.stringify(result));
++  tx.checkBudget();
++  if (bytes > contract.REFERENCE_MAX_RESPONSE_BYTES) return searchFail("SEARCH_UNAVAILABLE");
++  return result;
++}
++async function read(tx: BoundedSearchReadTransaction, query: Prisma.Sql) {
++  const rows = await tx.$queryRaw<{ readAt: Date; payload: unknown }[]>(query);
++  if (
++    rows.length !== 1 ||
++    !(rows[0]!.readAt instanceof Date) ||
++    !Number.isFinite(rows[0]!.readAt.getTime())
++  )
++    return searchFail("SEARCH_INVARIANT");
++  return { readAt: rows[0]!.readAt.toISOString(), payload: rows[0]!.payload };
++}
++function cap(values: unknown[], max: number) {
++  if (values.length > max) searchFail("SEARCH_UNAVAILABLE");
++}
++function pagination(
++  actor: string,
++  family: contract.ReferenceFamily,
++  parent: string | null,
++  input: { limit: number; cursor?: string | undefined },
++) {
++  const hash = referenceContextHash(actor, family, parent, input.limit);
++  return {
++    after: input.cursor ? decodeReferenceCursor(input.cursor, hash) : null,
++    next: (rows: { id: string }[]) =>
++      rows.length > input.limit
++        ? encodeReferenceCursor({ v: 1, contextHash: hash, after: rows[input.limit - 1]!.id })
++        : null,
++  };
++}
++export function createSearchReferenceService(database: SearchDatabase) {
++  return {
++    async listCollections(actor: SearchActor, input: unknown) {
++      const owner = actorId(actor),
++        query = contract.parseReferenceInput(contract.ReferencePageInputSchema, input),
++        page = pagination(owner, "COLLECTIONS", null, query);
++      return runSearchRead(database, async (tx) => {
++        const { readAt, payload } = await read(
++          tx,
++          sql.collectionsPageSql(owner, query.limit, page.after),
++        );
++        const rows = checked(
++          contract.CollectionReferenceSchema.array().max(query.limit + 1),
++          payload,
++        );
++        return finishReference(tx, contract.CollectionReferencePageSchema, {
++          version: 1,
++          readAt,
++          collections: rows.slice(0, query.limit),
++          nextCursor: page.next(rows),
++        });
++      });
++    },
++    async resolveCollections(actor: SearchActor, input: unknown) {
++      const owner = actorId(actor),
++        query = contract.parseReferenceInput(contract.CollectionReferencesInputSchema, input);
++      return runSearchRead(database, async (tx) => {
++        const { readAt, payload } = await read(tx, sql.collectionsResolveSql(owner, query.ids));
++        const rows = checked(contract.ReferenceCollectionRowsSchema, payload);
++        if (rows.length !== query.ids.length || rows.some((row, n) => row.id !== query.ids[n]))
++          searchFail("SEARCH_INVARIANT");
++        return finishReference(tx, contract.CollectionReferencesSchema, {
++          version: 1,
++          readAt,
++          references: rows.map((row) => {
++            const collection =
++              row.collection === null
++                ? null
++                : checked(contract.CollectionReferenceSchema, row.collection);
++            if (collection && collection.id !== row.id) searchFail("SEARCH_INVARIANT");
++            return { ...row, collection, state: collection === null ? "UNAVAILABLE" : "AVAILABLE" };
++          }),
++        });
++      });
++    },
++    async listCustomFields(actor: SearchActor, input: unknown) {
++      const owner = actorId(actor),
++        query = contract.parseReferenceInput(contract.CustomReferencePageInputSchema, input),
++        page = pagination(owner, "CUSTOM_FIELDS", query.collectionId, query);
++      return runSearchRead(database, async (tx) => {
++        const { readAt, payload } = await read(
++          tx,
++          sql.customPageSql(owner, query.collectionId, query.limit, page.after),
++        );
++        const raw = checked(contract.ReferenceCustomPageRowSchema, payload);
++        if (raw.collection === null) searchFail("FILTER_REFERENCE_INVALID");
++        if (checked(contract.CollectionReferenceSchema, raw.collection).id !== query.collectionId)
++          searchFail("SEARCH_INVARIANT");
++        const rows = checked(
++          contract.CustomReferenceSchema.array().max(query.limit + 1),
++          raw.definitions,
++        );
++        if (rows.some((row) => row.collectionId !== query.collectionId))
++          searchFail("SEARCH_INVARIANT");
++        return finishReference(tx, contract.CustomReferencePageSchema, {
++          version: 1,
++          readAt,
++          collection: raw.collection,
++          definitions: rows.slice(0, query.limit),
++          nextCursor: page.next(rows),
++        });
++      });
++    },
++    async resolveCustomFields(actor: SearchActor, input: unknown) {
++      const owner = actorId(actor),
++        query = contract.parseReferenceInput(contract.CustomReferencesInputSchema, input);
++      return runSearchRead(database, async (tx) => {
++        const { readAt, payload } = await read(tx, sql.customResolveSql(owner, query.references));
++        const rows = checked(contract.ReferenceCustomRowsSchema, payload);
++        if (
++          rows.length !== query.references.length ||
++          rows.some(
++            (row, n) => JSON.stringify(row.reference) !== JSON.stringify(query.references[n]),
++          )
++        )
++          searchFail("SEARCH_INVARIANT");
++        const entries = rows.map((row) => ({
++          ...row,
++          definition:
++            row.definition === null
++              ? null
++              : checked(contract.CustomReferenceSchema, row.definition),
++        }));
++        if (
++          entries.some(
++            (row) =>
++              row.definition &&
++              (row.definition.id !== row.reference[1] ||
++                row.definition.collectionId !== row.reference[0]),
++          )
++        )
++          searchFail("SEARCH_INVARIANT");
++        if (query.detail === "OPTIONS") {
++          const options = checked(
++            contract.ReferenceCustomOptionRowsSchema,
++            await tx.$queryRaw(sql.customOptionsSql(owner, query.references)),
++          );
++          if (options.length !== entries.length) searchFail("SEARCH_INVARIANT");
++          return finishReference(tx, contract.CustomReferencesSchema, {
++            version: 1,
++            readAt,
++            detail: query.detail,
++            references: entries.map((row, n) => {
++              const value = options[n]!;
++              if (value.ordinal !== n || value.id !== (row.definition?.id ?? null))
++                searchFail("SEARCH_INVARIANT");
++              cap(value.options, 100);
++              if (!row.definition && value.options.length) searchFail("SEARCH_INVARIANT");
++              return {
++                ...row,
++                state: row.definition ? "AVAILABLE" : "UNAVAILABLE",
++                definition: row.definition ? { ...row.definition, options: value.options } : null,
++              };
++            }),
++          });
++        }
++        return finishReference(tx, contract.CustomReferencesSchema, {
++          version: 1,
++          readAt,
++          detail: query.detail,
++          references: entries.map((row) => ({
++            ...row,
++            state: row.definition ? "AVAILABLE" : "UNAVAILABLE",
++          })),
++        });
++      });
++    },
++    async listConditions(actor: SearchActor, input: unknown) {
++      const owner = actorId(actor),
++        query = contract.parseReferenceInput(contract.ConditionReferencePageInputSchema, input),
++        page = pagination(owner, "CONDITIONS", query.categoryId, query);
++      return runSearchRead(database, async (tx) => {
++        const { readAt, payload } = await read(tx, sql.conditionsPageSql(query.categoryId));
++        const raw = checked(contract.ReferenceConditionPageRowSchema, payload);
++        if (raw.category === null) searchFail("FILTER_REFERENCE_INVALID");
++        if (checked(CategorySummarySchema, raw.category).id !== query.categoryId)
++          searchFail("SEARCH_INVARIANT");
++        cap(raw.options, 100);
++        const all = checked(contract.ConditionReferenceOptionSchema.array(), raw.options);
++        const scheme =
++          raw.scheme === null ? null : checked(contract.ConditionSchemeSummarySchema, raw.scheme);
++        if (
++          (scheme && scheme.categoryTemplateId !== query.categoryId) ||
++          all.some((o) => o.categoryTemplateId !== query.categoryId || o.schemeId !== scheme?.id)
++        )
++          searchFail("SEARCH_INVARIANT");
++        const rows = all.filter((row) => !page.after || row.id > page.after);
++        return finishReference(tx, contract.ConditionReferencePageSchema, {
++          version: 1,
++          readAt,
++          category: raw.category,
++          scheme,
++          options: rows.slice(0, query.limit),
++          nextCursor: page.next(rows),
++        });
++      });
++    },
++    async resolveConditions(actor: SearchActor, input: unknown) {
++      actorId(actor);
++      const query = contract.parseReferenceInput(contract.ConditionReferencesInputSchema, input);
++      return runSearchRead(database, async (tx) => {
++        const { readAt, payload } = await read(tx, sql.conditionsResolveSql(query.references));
++        const rows = checked(contract.ReferenceConditionRowsSchema, payload);
++        if (
++          rows.length !== query.references.length ||
++          rows.some(
++            (row, n) => JSON.stringify(row.reference) !== JSON.stringify(query.references[n]),
++          )
++        )
++          searchFail("SEARCH_INVARIANT");
++        return finishReference(tx, contract.ConditionReferencesSchema, {
++          version: 1,
++          readAt,
++          references: rows.map((row) => {
++            if (row.category === null || (row.reference[1] !== null && row.option === null))
++              return {
++                reference: row.reference,
++                state: "UNAVAILABLE",
++                category: null,
++                scheme: null,
++                option: null,
++              };
++            if (checked(CategorySummarySchema, row.category).id !== row.reference[0])
++              searchFail("SEARCH_INVARIANT");
++            const scheme =
++                row.scheme === null
++                  ? null
++                  : checked(contract.ConditionSchemeSummarySchema, row.scheme),
++              option =
++                row.option === null
++                  ? null
++                  : checked(contract.ConditionReferenceOptionSchema, row.option);
++            if (
++              (scheme && scheme.categoryTemplateId !== row.reference[0]) ||
++              (option &&
++                (option.id !== row.reference[1] ||
++                  option.categoryTemplateId !== row.reference[0] ||
++                  option.schemeId !== scheme?.id))
++            )
++              searchFail("SEARCH_INVARIANT");
++            return { ...row, state: "AVAILABLE" };
++          }),
++        });
++      });
++    },
++    async getCatalogDefinitionChoices(actor: SearchActor, categoryId: string) {
++      actorId(actor);
++      const parent = contract.parseReferenceInput(contract.ReferenceIdSchema, categoryId);
++      return runSearchRead(database, async (tx) => {
++        const { readAt, payload } = await read(tx, sql.catalogChoicesSql(parent));
++        const raw = checked(contract.ReferenceCatalogChoicesRowSchema, payload);
++        if (raw.category === null) searchFail("FILTER_REFERENCE_INVALID");
++        cap(raw.definitions, 100);
++        const result = finishReference(tx, contract.CatalogDefinitionChoicesSchema, {
++          version: 1,
++          readAt,
++          ...raw,
++        });
++        if (
++          result.category.id !== parent ||
++          result.definitions.some((d) => d.categoryTemplateId !== parent)
++        )
++          searchFail("SEARCH_INVARIANT");
++        return result;
++      });
++    },
++    async getCatalogDefinition(actor: SearchActor, categoryId: string, definitionId: string) {
++      actorId(actor);
++      const parent = contract.parseReferenceInput(contract.ReferenceIdSchema, categoryId),
++        id = contract.parseReferenceInput(contract.ReferenceIdSchema, definitionId);
++      return runSearchRead(database, async (tx) => {
++        const { readAt, payload } = await read(tx, sql.catalogDefinitionSql(parent, id));
++        const raw = checked(contract.ReferenceCatalogDefinitionRowSchema, payload);
++        if (raw.category === null || raw.definition === null)
++          searchFail("FILTER_REFERENCE_INVALID");
++        const data = checked(contract.ReferenceOptionsRowSchema, raw.definition);
++        cap(data.options, 100);
++        const result = finishReference(tx, contract.CatalogDefinitionReferenceSchema, {
++          version: 1,
++          readAt,
++          ...raw,
++        });
++        if (
++          result.category.id !== parent ||
++          result.definition.id !== id ||
++          result.definition.categoryTemplateId !== parent
++        )
++          searchFail("SEARCH_INVARIANT");
++        return result;
++      });
++    },
++  };
++}
+diff --git a/packages/domain/src/search/search-reference-sql.ts b/packages/domain/src/search/search-reference-sql.ts
+new file mode 100644
+index 0000000..b786150
+--- /dev/null
++++ b/packages/domain/src/search/search-reference-sql.ts
+@@ -0,0 +1,56 @@
++import { Prisma } from "@sammlerraum/db/search-sql";
++// All identifiers below are static implementation constants, never request input.
++const clock = Prisma.sql`date_trunc('milliseconds',transaction_timestamp()) AS "readAt"`;
++function text(column: string, maxBytes: number) {
++  return Prisma.sql`CASE WHEN octet_length(${Prisma.raw(column)}) <= ${maxBytes} THEN ${Prisma.raw(column)} ELSE NULL END`;
++}
++const collection = Prisma.sql`CASE WHEN c.id IS NULL THEN NULL ELSE jsonb_build_object('id',c.id,'name',${text("c.name", 480)}) END`;
++const custom = Prisma.sql`CASE WHEN d.id IS NULL THEN NULL ELSE jsonb_build_object('id',d.id,'collectionId',d."collectionId",'name',${text("d.name", 480)},'type',d.type) END`;
++function labels(
++  table: "CategoryTemplateLabel" | "CatalogAttributeLabel" | "CatalogAttributeOptionLabel",
++  column: "categoryTemplateId" | "definitionId" | "optionId",
++  alias: "c" | "d" | "o",
++) {
++  const label = (locale: string) =>
++    Prisma.sql`(SELECT ${text("l.label", 800)} FROM ${Prisma.raw(`"${table}"`)} l WHERE l.${Prisma.raw(`"${column}"`)}=${Prisma.raw(alias)}.id AND l.locale=${locale})`;
++  return Prisma.sql`jsonb_build_object('de',${label("de")},'en',${label("en")})`;
++}
++const category = Prisma.sql`CASE WHEN c.id IS NULL THEN NULL ELSE jsonb_build_object('id',c.id,'key',c.key,'labels',${labels("CategoryTemplateLabel", "categoryTemplateId", "c")}) END`;
++const scheme = Prisma.sql`CASE WHEN s.id IS NULL THEN NULL ELSE jsonb_build_object('id',s.id,'categoryTemplateId',s."categoryTemplateId",'key',s.key,'labels',jsonb_build_object('de',${text('s."labelDe"', 800)},'en',${text('s."labelEn"', 800)}),'active',s.active) END`;
++const condition = Prisma.sql`CASE WHEN o.id IS NULL THEN NULL ELSE jsonb_build_object('id',o.id,'schemeId',o."schemeId",'categoryTemplateId',o."categoryTemplateId",'labelKey',o."labelKey",'labels',jsonb_build_object('de',${text('o."labelDe"', 800)},'en',${text('o."labelEn"', 800)}),'active',o.active,'position',o.position,'normalizedBand',o."normalizedBand") END`;
++const definition = Prisma.sql`jsonb_build_object('id',d.id,'categoryTemplateId',d."categoryTemplateId",'key',d.key,'type',d.type,'position',d.position,'labels',${labels("CatalogAttributeLabel", "definitionId", "d")})`;
++const catalogOption = Prisma.sql`jsonb_build_object('id',o.id,'key',o.key,'position',o.position,'labels',${labels("CatalogAttributeOptionLabel", "optionId", "o")})`;
++function pairs(references: readonly (readonly [string, string | null])[]) {
++  return Prisma.join(
++    references.map(
++      ([parent, id], ordinal) => Prisma.sql`(${ordinal}::integer,${parent}::uuid,${id}::uuid)`,
++    ),
++  );
++}
++export function collectionsPageSql(actor: string, limit: number, after: string | null) {
++  return Prisma.sql`SELECT ${clock}, COALESCE((SELECT jsonb_agg(value ORDER BY id) FROM (SELECT c.id,${collection} AS value FROM "Collection" c WHERE c."ownerId"=${actor} AND c."deletedAt" IS NULL AND (${after}::uuid IS NULL OR c.id>${after}::uuid) ORDER BY c.id LIMIT ${limit + 1}) page),'[]'::jsonb) AS payload`;
++}
++export function collectionsResolveSql(actor: string, ids: string[]) {
++  return Prisma.sql`SELECT ${clock},(SELECT jsonb_agg(jsonb_build_object('id',i.id,'collection',${collection}) ORDER BY i.ordinal) FROM (VALUES ${Prisma.join(ids.map((id, n) => Prisma.sql`(${n}::integer,${id}::uuid)`))}) i(ordinal,id) LEFT JOIN "Collection" c ON c.id=i.id AND c."ownerId"=${actor} AND c."deletedAt" IS NULL) AS payload`;
++}
++export function customPageSql(actor: string, parent: string, limit: number, after: string | null) {
++  return Prisma.sql`SELECT ${clock},jsonb_build_object('collection',${collection},'definitions',COALESCE((SELECT jsonb_agg(value ORDER BY id) FROM (SELECT d.id,${custom} AS value FROM "CustomFieldDefinition" d WHERE d."collectionId"=c.id AND (${after}::uuid IS NULL OR d.id>${after}::uuid) ORDER BY d.id LIMIT ${limit + 1}) page),'[]'::jsonb)) AS payload FROM (VALUES(1)) marker LEFT JOIN "Collection" c ON c.id=${parent}::uuid AND c."ownerId"=${actor} AND c."deletedAt" IS NULL`;
++}
++export function customResolveSql(actor: string, references: [string, string][]) {
++  return Prisma.sql`SELECT ${clock},(SELECT jsonb_agg(jsonb_build_object('reference',jsonb_build_array(i.parent,i.id),'definition',${custom}) ORDER BY i.ordinal) FROM (VALUES ${pairs(references)}) i(ordinal,parent,id) LEFT JOIN "Collection" c ON c.id=i.parent AND c."ownerId"=${actor} AND c."deletedAt" IS NULL LEFT JOIN "CustomFieldDefinition" d ON d.id=i.id AND d."collectionId"=c.id) AS payload`;
++}
++export function customOptionsSql(actor: string, references: [string, string][]) {
++  return Prisma.sql`SELECT i.ordinal,d.id,COALESCE((SELECT jsonb_agg(value ORDER BY position,id) FROM (SELECT o.id,o.position,CASE WHEN o.position BETWEEN 0 AND 99 THEN ${text("o.value", 800)} ELSE NULL END AS value FROM "CustomFieldOption" o WHERE o."fieldDefinitionId"=d.id ORDER BY o.position,o.id LIMIT 101) options),'[]'::jsonb) AS options FROM (VALUES ${pairs(references)}) i(ordinal,parent,id) LEFT JOIN "Collection" c ON c.id=i.parent AND c."ownerId"=${actor} AND c."deletedAt" IS NULL LEFT JOIN "CustomFieldDefinition" d ON d.id=i.id AND d."collectionId"=c.id ORDER BY i.ordinal`;
++}
++export function conditionsPageSql(parent: string) {
++  return Prisma.sql`SELECT ${clock},jsonb_build_object('category',${category},'scheme',${scheme},'options',COALESCE((SELECT jsonb_agg(value ORDER BY id) FROM (SELECT o.id,${condition} AS value FROM "ConditionOption" o WHERE o."schemeId"=s.id AND o."categoryTemplateId"=c.id ORDER BY o.id LIMIT 101) options),'[]'::jsonb)) AS payload FROM (VALUES(1)) marker LEFT JOIN "CategoryTemplate" c ON c.id=${parent}::uuid LEFT JOIN "ConditionScheme" s ON s."categoryTemplateId"=c.id`;
++}
++export function conditionsResolveSql(references: [string, string | null][]) {
++  return Prisma.sql`SELECT ${clock},(SELECT jsonb_agg(jsonb_build_object('reference',jsonb_build_array(i.parent,i.id),'category',${category},'scheme',${scheme},'option',${condition}) ORDER BY i.ordinal) FROM (VALUES ${pairs(references)}) i(ordinal,parent,id) LEFT JOIN "CategoryTemplate" c ON c.id=i.parent LEFT JOIN "ConditionScheme" s ON s."categoryTemplateId"=c.id LEFT JOIN "ConditionOption" o ON o.id=i.id AND o."schemeId"=s.id AND o."categoryTemplateId"=c.id) AS payload`;
++}
++export function catalogChoicesSql(parent: string) {
++  return Prisma.sql`SELECT ${clock},jsonb_build_object('category',${category},'definitions',COALESCE((SELECT jsonb_agg(value ORDER BY position,id) FROM (SELECT d.id,d.position,${definition} AS value FROM "CatalogAttributeDefinition" d WHERE d."categoryTemplateId"=c.id ORDER BY d.position,d.id LIMIT 101) definitions),'[]'::jsonb)) AS payload FROM (VALUES(1)) marker LEFT JOIN "CategoryTemplate" c ON c.id=${parent}::uuid`;
++}
++export function catalogDefinitionSql(parent: string, id: string) {
++  return Prisma.sql`SELECT ${clock},jsonb_build_object('category',${category},'definition',CASE WHEN d.id IS NULL THEN NULL ELSE ${definition} || jsonb_build_object('options',COALESCE((SELECT jsonb_agg(value ORDER BY position,id) FROM (SELECT o.id,o.position,${catalogOption} AS value FROM "CatalogAttributeOption" o WHERE o."definitionId"=d.id ORDER BY o.position,o.id LIMIT 101) options),'[]'::jsonb)) END) AS payload FROM (VALUES(1)) marker LEFT JOIN "CategoryTemplate" c ON c.id=${parent}::uuid LEFT JOIN "CatalogAttributeDefinition" d ON d.id=${id}::uuid AND d."categoryTemplateId"=c.id`;
++}

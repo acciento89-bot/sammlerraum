@@ -1,0 +1,10 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ✓ |workspace| packages/db/src/test-database.test.ts (7 tests) 318ms
+
+ Test Files  1 passed (1)
+      Tests  7 passed (7)
+   Start at  05:56:29
+   Duration  485ms (transform 32ms, setup 6ms, collect 13ms, tests 318ms, environment 0ms, prepare 35ms)
+

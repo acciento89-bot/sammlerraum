@@ -1,0 +1,27 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/imports/import-service.test.ts [ packages/domain/src/imports/import-service.test.ts ]
+Error: Cannot find module './import-service' imported from '/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/domain/src/imports/import-service.test.ts'
+ ❯ packages/domain/src/imports/import-service.test.ts:3:1
+      1| import { expect,it } from "vitest";
+      2| import { LEGACY_MONEY_PROFILE_ID } from "@sammlerraum/contracts/legacy…
+      3| import { previewImportRow } from "./import-service";
+       | ^
+      4| const existing="00000000-0000-4000-8000-000000000001";
+      5| const context={rowKey:"job:1",matchingItemIds:[] as string[],duplicate…
+
+Caused by: Error: Failed to load url ./import-service (resolved id: ./import-service) in /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/domain/src/imports/import-service.test.ts. Does the file exist?
+ ❯ loadAndTransform ../../../../SSK%20SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/node_modules/.pnpm/vite@7.3.6_@types+node@24.5.2_jiti@2.7.0/node_modules/vite/dist/node/chunks/config.js:22739:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  no tests
+   Start at  20:02:53
+   Duration  325ms (transform 40ms, setup 6ms, collect 0ms, tests 0ms, environment 0ms, prepare 53ms)
+

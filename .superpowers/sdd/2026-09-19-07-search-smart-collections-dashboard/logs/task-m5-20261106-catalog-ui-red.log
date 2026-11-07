@@ -1,0 +1,29 @@
+[WebServer] (node:96225) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+SyntaxError: /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/catalog-money-ui.spec.ts: Unexpected token, expected "," (22:390)
+
+  20 |   if (known) {
+  21 |     const original = CatalogMoneyRevisionResultSchema.parse(await (await page.request.get(base)).json());
+> 22 |     expect((await page.request.post(`${base}/classifications`,{headers:{origin},data:{schemaVersion:1,target:{kind:"ENTRY"},definitionId,input:{expectedFactToken:original.money[0]!.factToken,exponent:0,unit:{kind:"SUPPORTED",unitKey:"iso4217-2026-09-17:AFN"},evidence:{category:"OPERATOR_VERIFIED_RECORD",reason:"Synthetic private historical catalog record",reference:"PRIVATE-UI-RECORD"}}})).status()).toBe(201);
+     |                                                                                                                                                                                                                                                                                                                                                                                                       ^
+  23 |   }
+  24 |   const before = CatalogMoneyRevisionResultSchema.parse(await (await page.request.get(base)).json());
+  25 |   return {f,category,definitionId,entry,base,before};
+
+   at catalog-money-ui.spec.ts:22
+
+  20 |   if (known) {
+  21 |     const original = CatalogMoneyRevisionResultSchema.parse(await (await page.request.get(base)).json());
+> 22 |     expect((await page.request.post(`${base}/classifications`,{headers:{origin},data:{schemaVersion:1,target:{kind:"ENTRY"},definitionId,input:{expectedFactToken:original.money[0]!.factToken,exponent:0,unit:{kind:"SUPPORTED",unitKey:"iso4217-2026-09-17:AFN"},evidence:{category:"OPERATOR_VERIFIED_RECORD",reason:"Synthetic private historical catalog record",reference:"PRIVATE-UI-RECORD"}}})).status()).toBe(201);
+     |                                                                                                                                                                                                                                                                                                                                                                                                      ^
+  23 |   }
+  24 |   const before = CatalogMoneyRevisionResultSchema.parse(await (await page.request.get(base)).json());
+  25 |   return {f,category,definitionId,entry,base,before};
+    at eval (<anonymous>:1:1)
+Error: No tests found.
+Make sure that arguments are regular expressions matching test files.
+You may need to escape symbols like "$" or "*" and quote the arguments.
+
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/catalog-money-ui.spec.ts --workers=1 --max-failures=1

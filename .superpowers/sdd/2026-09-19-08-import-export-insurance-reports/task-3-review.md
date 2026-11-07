@@ -1,0 +1,27 @@
+# Task 3 whole-candidate review
+
+Candidate: `de2c264d10784e81b0a4a536a42d4302ef5ea11c..dc8d735e53145bbccbe8a49ba37f3b9acd0825df` (14 files).
+
+SPEC: **FAIL — fix finding 1 before acceptance.**
+
+QUALITY: **FAIL — fix findings 1 and 2 before acceptance.**
+
+Read-only review of the candidate diff and surrounding authorities, parent AGENTS instructions, Task 3 plan, design specification §17, and task-3-execution-context.md including root GO and rulings T3.1–T3.4. No source or git changes, tests, database/browser operations, or services were performed by this reviewer. Reported test results were supplied by the implementer and were not independently rerun.
+
+## Findings
+
+1. **[P2] Recheck newly introduced identifiers on items created by earlier chunks.** `packages/domain/src/imports/import-commit-service.ts:249–255`, specifically the unconditional own-create receipt exclusion at line 251. That predicate excludes a previously created item for every current identifier match, even when the owner added or changed its identifiers after that row committed. Deterministic sequential example: an approved 11-row job has row 1 CREATE ISBN A and row 11 CREATE ISBN B, both with no frozen inventory matches. After the first ten rows commit, the owner uses the ordinary identifier service to change the item created for row 1 from A to B. The next chunk's recheck for B excludes that item solely because it has an earlier CREATE receipt, and creates another B instead of rejecting the newly introduced conflict. This bypasses the stated current-conflict recheck across interruption/retry boundaries; it does not require a concurrent database race or tampering. Limit the exemption to the receipt/source row's originally approved exact normalized identifier, or otherwise verify that an exempt item's current matching identity is the original intended source duplicate. Preserve the legitimate repeated-source CREATE_SEPARATE case. Add the above between-chunk mutation case to the native coverage under the implementer's runtime ownership.
+
+2. **[P2] Normalize dependency failures from the failure-recording transaction too.** `apps/worker/src/jobs/commit-import.ts:20–24`, specifically the unguarded `await service.failCommit(...)` at line 22. When a permanent row conflict is followed by a transient lock timeout or database failure while persisting FAILED, that second rejection occurs inside the catch body and escapes unchanged; it never reaches the controlled `Import commit temporarily unavailable` error at line 24. `packages/queue/src/runtime.ts:95–101` passes this rejection directly to the queue backend. Keep the revision CAS and retry rejection, but wrap the failure-recording call so its transient errors also yield the controlled queue error. The existing runtime test only covers `commitNextBatch` rejecting with a raw dependency error and `failCommit` returning true/false; a rejecting `failCommit` is the missing branch.
+
+## Reviewed behavior and scope
+
+The implementation otherwise follows the approved Task 3 shape: strict job-only worker authority, explicit owner/revision-bound decisions, per-job and collection locks, bounded ten-row item/identifier/money/receipt/progress transactions, immutable approved decisions, source/generation/membership checks, and receipt validation on completed retries. Target snapshots lock the actual owned item and bind the money fact token. Optional unmapped fields are preserved; mapped blank optional values are not permitted as merge replacements. Invalid rows only permit SKIP. UNKNOWN raw replacements use the current writer's money-generation triggers, including equal-raw replacements, while canonical money assertions reuse M7 validation and authority.
+
+The repeated-target MERGE refusal in T3.2 is explicit and deterministic and does not invent a quantity-combination policy. The other documented rulings do not independently contradict §17. Formula/macro nonexecution and configured source limits remain unchanged Task 2 prerequisites. Export/PDF default privacy is future-task scope and is not an implementation demand in this review. No uploader/API/UI, production action, or completed final gates are inferred.
+
+The plain ReadCommitted match query does not itself fence all identifier writers, which lock the item rather than the collection. This review does not promote that observation alone to a finding because overlapping identifier edits can admit a valid ordering; finding 1 establishes a sequential, observable violation without relying on that ambiguity.
+
+## Root fix-pass closure
+
+Original independentFAIL remains above. BothP2s were reproduced with two genuine failures in logs/task-3-20261106-review-red.log.4da56a0 limits the own-created-item exemption to the exact original approved identifier and normalizes errors from failure persistence as well as the write transaction. The legitimate source duplicate case remains green. Final focused24PASS/0skip (19native,4runtime,1registry); final complete854native/74files/0skip and1505regular/725explicitnative-off, types/lint/build and22actual-built inventorybrowser cases pass. Root accepts the one fix pass with no remaining actionable review finding; no second independentPASS is fabricated. Subsequent mechanical9d9f207 copies the already verified notice file into the final worker image. Its binary/license cmp check passes; actual final-image verification remains in the upcoming exact-head CI, not a fabricated local Docker run.

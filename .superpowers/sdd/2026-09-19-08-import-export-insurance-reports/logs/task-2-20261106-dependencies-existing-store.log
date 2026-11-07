@@ -1,0 +1,24 @@
+.                                        |  WARN  `node_modules` is present. Lockfile only installation will make it out-of-date
+Progress: resolved 1, reused 0, downloaded 0, added 0
+
+   ╭──────────────────────────────────────────╮
+   │                                          │
+   │   Update available! 10.17.1 → 12.18.0.   │
+   │   Changelog: https://pnpm.io/v/12.18.0   │
+   │     To update, run: pnpm add -g pnpm     │
+   │                                          │
+   ╰──────────────────────────────────────────╯
+
+Progress: resolved 30, reused 0, downloaded 0, added 0
+Progress: resolved 144, reused 0, downloaded 0, added 0
+Progress: resolved 246, reused 0, downloaded 0, added 0
+Progress: resolved 374, reused 0, downloaded 0, added 0
+Progress: resolved 431, reused 0, downloaded 0, added 0, done
+.                                        |   +5 +
+Done in 5.4s using pnpm v10.17.1
+.                                        |  WARN  `node_modules` is present. Lockfile only installation will make it out-of-date
+Progress: resolved 1, reused 0, downloaded 0, added 0
+Progress: resolved 366, reused 0, downloaded 0, added 0
+Progress: resolved 432, reused 0, downloaded 0, added 0, done
+.                                        |   +1 +
+Done in 2.5s using pnpm v10.17.1

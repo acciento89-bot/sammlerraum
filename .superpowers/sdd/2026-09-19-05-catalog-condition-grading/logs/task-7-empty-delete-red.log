@@ -1,0 +1,69 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| apps/web/src/lib/catalog-link-routes.integration.test.ts (6 tests | 1 failed | 5 skipped) 188ms
+   ↓ catalog link and canonical read routes PostgreSQL > persists owner links, fresh sessions and actual item reads/splits; unlink retains category
+   ↓ catalog link and canonical read routes PostgreSQL > authenticates all canonical reads while returning only canonical bounded projections
+   ↓ catalog link and canonical read routes PostgreSQL > rejects foreign/deleted/inactive mutations and forged Origin without consuming input
+   × catalog link and canonical read routes PostgreSQL > accepts an empty DELETE stream emitted by a browser adapter 24ms
+     → expected 400 to be 200 // Object.is equality
+   ↓ catalog link and canonical read routes PostgreSQL > strictly bounds streamed JSON, rejects malformed IDs, unexpected DELETE bodies and query ambiguity
+   ↓ catalog link and canonical read routes PostgreSQL > maps split retry exhaustion to a stable actionable 409 code
+ ❯ |workspace| apps/web/src/lib/grading-routes.integration.test.ts (9 tests | 1 failed | 8 skipped) 134ms
+   ↓ grading routes PostgreSQL > persists owner CRUD through the adapter with full replacement and private no-store DTOs
+   ↓ grading routes PostgreSQL > requires fresh authentication and hides foreign, mismatched and invalid resource IDs
+   ↓ grading routes PostgreSQL > enforces exact Origin on every mutation
+   ↓ grading routes PostgreSQL > rejects strict malformed facts and never accepts trusted verification or cross-scale numbers
+   ↓ grading routes PostgreSQL > bounds actual UTF-8 streams independently of absent or false Content-Length
+   ↓ grading routes PostgreSQL > returns stable conflicts for duplicate certificates, lifecycle and shared item quantity writes
+   ↓ grading routes PostgreSQL > does not leak grading or private provenance through anonymous or other-user public item reads
+   × grading routes PostgreSQL > accepts a zero-byte DELETE stream while removing only the requested grading 31ms
+     → expected 400 to be 204 // Object.is equality
+   ↓ grading routes PostgreSQL > rejects DELETE payloads within the same independent body bound
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/web/src/lib/catalog-link-routes.integration.test.ts > catalog link and canonical read routes PostgreSQL > accepts an empty DELETE stream emitted by a browser adapter
+AssertionError: expected 400 to be 200 // Object.is equality
+
+- Expected
++ Received
+
+- 200
++ 400
+
+ ❯ apps/web/src/lib/catalog-link-routes.integration.test.ts:218:29
+    216|     await createItemService(db!,ownerId).linkItemToCatalog(itemId,entr…
+    217|     const response=await handlers().DELETE_LINK(new Request(origin,{me…
+    218|     expect(response.status).toBe(200);
+       |                             ^
+    219|     expect((await createItemService(db!,ownerId).getItemCatalogLink(it…
+    220|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |workspace| apps/web/src/lib/grading-routes.integration.test.ts > grading routes PostgreSQL > accepts a zero-byte DELETE stream while removing only the requested grading
+AssertionError: expected 400 to be 204 // Object.is equality
+
+- Expected
++ Received
+
+- 204
++ 400
+
+ ❯ apps/web/src/lib/grading-routes.integration.test.ts:329:29
+    327|     const row=await service().addGrading(itemId,{provider:"Empty strea…
+    328|     const response=await handlers().DELETE_GRADING(new Request(origin,…
+    329|     expect(response.status).toBe(204);
+       |                             ^
+    330|     expect(await db!.grading.findUnique({where:{id:row.id}})).toBeNull…
+    331|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  2 failed | 13 skipped (15)
+   Start at  01:09:24
+   Duration  1.09s (transform 180ms, setup 6ms, collect 450ms, tests 321ms, environment 0ms, prepare 75ms)
+

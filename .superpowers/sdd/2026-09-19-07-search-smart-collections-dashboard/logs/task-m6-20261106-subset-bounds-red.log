@@ -1,0 +1,71 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/contracts/src/money-coverage.test.ts (18 tests | 2 failed) 10ms
+   ✓ preserves exact separately weighted unit coverage and counts 2ms
+   ✓ refuses contradictory or unbounded coverage 0 0ms
+   ✓ refuses contradictory or unbounded coverage 1 0ms
+   ✓ refuses contradictory or unbounded coverage 2 0ms
+   ✓ refuses contradictory or unbounded coverage 3 0ms
+   ✓ refuses contradictory or unbounded coverage 4 0ms
+   ✓ refuses contradictory or unbounded coverage 5 0ms
+   ✓ refuses contradictory or unbounded coverage 6 0ms
+   ✓ refuses contradictory or unbounded coverage 7 0ms
+   ✓ refuses contradictory or unbounded coverage 8 0ms
+   ✓ never represents a known zero price as missing or an incomplete subtotal as COMPLETE 1ms
+   ✓ distinguishes no inventory, no prices, and unavailable interpretation 0ms
+   ✓ closed result decoding rejects invalid nested numeric strings without throwing 0 0ms
+   ✓ closed result decoding rejects invalid nested numeric strings without throwing 1 0ms
+   ✓ closed result decoding rejects invalid nested numeric strings without throwing 2 0ms
+   ✓ closed result decoding rejects invalid nested numeric strings without throwing 3 0ms
+   × rejects subtotals that reuse all quantities while excluding an owned item 3ms
+     → expected true to be false // Object.is equality
+   × rejects separately plausible groups whose combined raw totals exceed all priced quantities 0ms
+     → expected true to be false // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/contracts/src/money-coverage.test.ts > rejects subtotals that reuse all quantities while excluding an owned item
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ packages/contracts/src/money-coverage.test.ts:135:70
+    133|   expect(PurchaseMoneyCoverageSchema.safeParse(impossibleSubset).succe…
+    134|   expect(PurchaseCostResultSchema.safeParse({ state: "COMPLETE", cover…
+    135|     selectionCoverage: impossibleSubset, groups: [group] }).success).t…
+       |                                                                      ^
+    136| });
+    137| it("rejects separately plausible groups whose combined raw totals exce…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |workspace| packages/contracts/src/money-coverage.test.ts > rejects separately plausible groups whose combined raw totals exceed all priced quantities
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ packages/contracts/src/money-coverage.test.ts:143:58
+    141|   expect(PurchaseCostResultSchema.safeParse({ state: "COMPLETE", cover…
+    142|     selectionCoverage: outer, groups: [{ ...group, totalMinor },
+    143|       { ...group, exponent: 2, totalMinor }] }).success).toBe(false);
+       |                                                          ^
+    144| });
+    145| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 16 passed (18)
+   Start at  14:35:57
+   Duration  342ms (transform 41ms, setup 5ms, collect 82ms, tests 10ms, environment 0ms, prepare 49ms)
+

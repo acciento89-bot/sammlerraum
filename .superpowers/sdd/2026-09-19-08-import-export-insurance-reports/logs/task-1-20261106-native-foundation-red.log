@@ -1,0 +1,36 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/imports/import-service.integration.test.ts (2 tests | 2 failed) 300ms
+   × persisted owned import preview > creates only an owned pending source intent and conceals foreign jobs/collections 75ms
+     → (0 , createImportService) is not a function
+   × persisted owned import preview > persists duplicate decisions while leaving real existing inventory unchanged 2ms
+     → (0 , createImportService) is not a function
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/imports/import-service.integration.test.ts > persisted owned import preview > creates only an owned pending source intent and conceals foreign jobs/collections
+TypeError: (0 , createImportService) is not a function
+ ❯ packages/domain/src/imports/import-service.integration.test.ts:21:61
+     19|  afterAll(async()=>{await db?.$disconnect();await isolated?.cleanup();…
+     20|  it("creates only an owned pending source intent and conceals foreign …
+     21|   const own=await fixture(),foreign=await fixture(),service=createImpo…
+       |                                                             ^
+     22|   const job=await service.createImportJob(own.actor,input(own.collecti…
+     23|   expect(job).toMatchObject({status:"AWAITING_UPLOAD",source:{verified…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |workspace| packages/domain/src/imports/import-service.integration.test.ts > persisted owned import preview > persists duplicate decisions while leaving real existing inventory unchanged
+TypeError: (0 , createImportService) is not a function
+ ❯ packages/domain/src/imports/import-service.integration.test.ts:29:35
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed (2)
+   Start at  20:09:05
+   Duration  835ms (transform 168ms, setup 7ms, collect 329ms, tests 300ms, environment 0ms, prepare 58ms)
+

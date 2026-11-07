@@ -1,0 +1,285 @@
+# Review package: a6e73099647af92a8a487a03930be5f215c0b3a5..e73d4e91a59637bbd2f4645dd21b778a5a7c1ca5
+
+## Commits
+e73d4e9 test: drain media cancellation routes before removal
+
+## Files changed
+ apps/web/e2e/media-documents.spec.ts | 211 ++++++++++++++++++++++++++++-------
+ 1 file changed, 173 insertions(+), 38 deletions(-)
+
+## Diff
+diff --git a/apps/web/e2e/media-documents.spec.ts b/apps/web/e2e/media-documents.spec.ts
+index 053b10f..cd3a82d 100644
+--- a/apps/web/e2e/media-documents.spec.ts
++++ b/apps/web/e2e/media-documents.spec.ts
+@@ -1,12 +1,12 @@
+ import { randomUUID } from "node:crypto";
+-import { expect, test } from "@playwright/test";
++import { expect, test, type Response, type Route } from "@playwright/test";
+ import { createPrismaClient } from "@sammlerraum/db/create-client";
+ import { LocalPersistentStorage } from "@sammlerraum/storage";
+ import { hashPassword } from "better-auth/crypto";
+ 
+ const enabled = process.env.RUN_AUTH_E2E === "1";
+ const url = process.env.DATABASE_URL ?? "";
+ if (enabled && !new URL(url).pathname.endsWith("_test"))
+   throw new Error("Media fixtures require _test database");
+ const db = createPrismaClient(url);
+ const origin = "http://localhost:3000";
+@@ -44,20 +44,41 @@ const copy = {
+     cancel: "Cancel upload",
+     canceled: "Upload canceled.",
+     uploaded: "Upload linked to this item.",
+     typeError: "Unsupported or invalid file.",
+     tooLarge: "This file is too large.",
+     error: "The action failed.",
+     failed: "Processing failed",
+     pending: "Waiting for processing",
+   },
+ };
++// Bound deliberate test suspensions without changing the journey's test timeout.
++async function bounded<T>(promise: Promise<T>, description: string): Promise<T> {
++  let timer: ReturnType<typeof setTimeout> | undefined;
++  try {
++    return await Promise.race([
++      promise,
++      new Promise<never>((_, reject) => {
++        timer = setTimeout(() => reject(new Error(`Media cancellation: ${description}`)), 10_000);
++      }),
++    ]);
++  } finally {
++    clearTimeout(timer);
++  }
++}
++function gate(description: string) {
++  let release = () => {};
++  const promise = new Promise<void>((resolve) => {
++    release = resolve;
++  });
++  return { release, wait: () => bounded(promise, description) };
++}
+ async function collector() {
+   const id = randomUUID();
+   const email = `${id}@example.test`;
+   const password = "correct-horse-battery-staple";
+   await db.user.create({
+     data: {
+       id,
+       name: "Media Collector",
+       email,
+       emailVerified: true,
+@@ -221,63 +242,177 @@ test.describe("item media and private documents", () => {
+           await page.keyboard.press("Enter");
+         }
+         await expect(gallery.locator("li").first()).toContainText("first.png");
+         await page.getByRole("button", { name: `${t.up}: second.png`, exact: true }).click();
+         await expect(gallery.locator("li").first()).toContainText("second.png");
+         await page.reload();
+         await expect(gallery.locator("li").first()).toContainText("second.png");
+         listed = await (await page.request.get(`${base}/media`)).json();
+         expect(listed.images.map((link: { id: string }) => link.id)).toEqual([secondId, firstId]);
+         expect(JSON.stringify(listed)).not.toMatch(/storageKey|originals\/|ownerId|checksumSha256/);
+-        // Exercise cancellation while the link response and while the subsequent refresh are in flight.
+-        for (const cancelStage of ["link", "reload"]) {
+-          let releaseRequest = () => {};
+-          let reachedStage = () => {};
+-          let didLink = false;
+-          const atStage = new Promise<void>((resolve) => {
+-            reachedStage = resolve;
+-          });
+-          const release = new Promise<void>((resolve) => {
+-            releaseRequest = resolve;
+-          });
+-          await page.route(`**${base}/media`, async (route) => {
++        // A fresh READY listing has no pending-media poll. Thus the first GET after this
++        // exact link response is MediaUpload's onChange, not an older poll or cleanup GET.
++        for (const cancelStage of ["link", "reload"] as const) {
++          const [initialListing] = await Promise.all([
++            page.waitForResponse(
++              (response) =>
++                response.url() === origin + `${base}/media` &&
++                response.request().method() === "GET",
++            ),
++            page.reload(),
++          ]);
++          const baseline = await initialListing.json();
++          expect(baseline.images).toHaveLength(2);
++          expect(
++            baseline.images.every(
++              (link: { asset: { status: string } }) => link.asset.status === "READY",
++            ),
++          ).toBe(true);
++          await expect(gallery.getByRole("img")).toHaveCount(2);
++          await expect(upload).toBeEnabled();
++
++          const atStage = gate(`${cancelStage} stage was not reached`);
++          const releaseStage = gate(`${cancelStage} stage was not released`);
++          const atCleanup = gate("post-delete cleanup GET was not reached");
++          const releaseCleanup = gate("post-delete cleanup GET was not released");
++          const failures: unknown[] = [];
++          const events: string[] = [];
++          let linkId: string | undefined;
++          let linkReleased = false;
++          let stageCaptured = false;
++          let cleanupCaptured = false;
++          let compensated = false;
++          const name = `cancel-${cancelStage}.png`;
++          const targetAsset = page
++            .waitForResponse(
++              (response) =>
++                response.url() === origin + "/api/v1/media/images" &&
++                response.request().method() === "POST",
++              { timeout: 10_000 },
++            )
++            .then(async (response) => {
++              expect(response.status()).toBe(201);
++              return (await response.json()).asset as { id: string };
++            });
++          const onResponse = (response: Response) => {
++            if (
++              linkId &&
++              response.url() === origin + `${base}/media/${linkId}` &&
++              response.request().method() === "DELETE"
++            ) {
++              expect(response.ok()).toBe(true);
++              compensated = true;
++              events.push("compensating DELETE response");
++            }
++          };
++          const handle = async (route: Route) => {
+             const method = route.request().method();
+-            if (method === "POST") {
+-              const response = await route.fetch();
+-              didLink = true;
++            if (
++              method === "POST" &&
++              route.request().postDataJSON().assetId === (await targetAsset).id
++            ) {
++              const response = await route.fetch({ timeout: 10_000 });
++              expect(response.status()).toBe(201);
++              linkId = (await response.json()).link.id;
++              events.push("target link response fetched");
+               if (cancelStage === "link") {
+-                reachedStage();
+-                await release;
++                stageCaptured = true;
++                atStage.release();
++                await releaseStage.wait();
+               }
++              linkReleased = true;
++              await route.fulfill({ response });
++              events.push("target link response fulfilled");
++            } else if (
++              method === "GET" &&
++              linkReleased &&
++              cancelStage === "reload" &&
++              !stageCaptured
++            ) {
++              // Reserve exactly one request before any await; later GETs cannot satisfy atStage.
++              stageCaptured = true;
++              const response = await route.fetch({ timeout: 10_000 });
++              const listing = await response.json();
++              expect(listing.images.some((link: { id: string }) => link.id === linkId)).toBe(true);
++              events.push("actual onChange GET held");
++              atStage.release();
++              await releaseStage.wait();
+               await route.fulfill({ response });
+-            } else if (method === "GET" && didLink && cancelStage === "reload") {
+-              const response = await route.fetch();
+-              reachedStage();
+-              await release;
++              events.push("actual onChange GET fulfilled");
++            } else if (
++              method === "GET" &&
++              compensated &&
++              cancelStage === "reload" &&
++              !cleanupCaptured
++            ) {
++              // Keep the demonstrated late-cleanup schedule in the regression: canceled UI
++              // appears while this real refresh is held, and removal must wait for its fulfill.
++              cleanupCaptured = true;
++              const response = await route.fetch({ timeout: 10_000 });
++              const listing = await response.json();
++              expect(listing.images).toHaveLength(2);
++              expect(listing.images.some((link: { id: string }) => link.id === linkId)).toBe(false);
++              events.push("post-delete cleanup GET held");
++              atCleanup.release();
++              await releaseCleanup.wait();
+               await route.fulfill({ response });
++              events.push("post-delete cleanup GET fulfilled");
+             } else await route.continue();
+-          });
+-          await expect(upload).toBeEnabled();
+-          const name = `cancel-${cancelStage}.png`;
+-          await upload.setInputFiles({ name, mimeType: "image/png", buffer: png });
+-          await atStage;
+-          await page.getByRole("button", { name: t.cancel, exact: true }).click();
+-          releaseRequest();
+-          await expect(page.getByText(t.canceled, { exact: true })).toBeVisible();
+-          await expect(page.getByText(t.uploaded, { exact: true })).toHaveCount(0);
+-          await expect.poll(() => db.mediaLink.count({ where: { itemId: item.id } })).toBe(2);
+-          await page.unroute(`**${base}/media`);
+-          const canceledAsset = await db.mediaAsset.findFirst({
+-            where: { ownerId: owner.id, originalFileName: name },
+-          });
+-          expect(canceledAsset).not.toBeNull();
+-          expect(canceledAsset?.orphanedAt).not.toBeNull();
++          };
++          page.on("response", onResponse);
++          await page.route(`**${base}/media`, handle);
++          try {
++            await Promise.all([
++              targetAsset,
++              upload.setInputFiles({ name, mimeType: "image/png", buffer: png }),
++            ]);
++            await atStage.wait();
++            await page.getByRole("button", { name: t.cancel, exact: true }).click();
++            events.push("cancel clicked");
++            releaseStage.release();
++            await expect(page.getByText(t.canceled, { exact: true })).toBeVisible();
++            events.push("canceled visible");
++            await expect(page.getByText(t.uploaded, { exact: true })).toHaveCount(0);
++            await expect.poll(() => db.mediaLink.count({ where: { itemId: item.id } })).toBe(2);
++            if (cancelStage === "reload") {
++              await atCleanup.wait();
++              // A polling GET cannot stand in for the awaited catch refresh: holding it
++              // would let the upload finish and this assertion would fail.
++              await expect(upload).toBeDisabled();
++              events.push("cleanup held while upload remains busy");
++            }
++            const canceledAsset = await db.mediaAsset.findUnique({
++              where: { id: (await targetAsset).id },
++            });
++            expect(canceledAsset?.originalFileName).toBe(name);
++            expect(canceledAsset?.orphanedAt).not.toBeNull();
++          } catch (error) {
++            failures.push(error);
++          } finally {
++            releaseStage.release();
++            releaseCleanup.release();
++            // All page routes here belong to this stage (the network-error route was removed).
++            // wait drains callbacks before Playwright removes/auto-continues server interceptors.
++            try {
++              await bounded(page.unrouteAll({ behavior: "wait" }), "route callbacks did not drain");
++              events.push("callbacks drained before unroute completed");
++              await expect(upload).toBeEnabled({ timeout: 10_000 });
++              events.push("upload finished including catch refresh");
++            } catch (error) {
++              failures.push(error);
++            }
++            page.off("response", onResponse);
++            console.log("MEDIA_CANCELLATION", JSON.stringify({ cancelStage, events }));
++          }
++          if (failures.length === 1) throw failures[0];
++          if (failures.length > 1)
++            throw new AggregateError(failures, "Cancellation and route cleanup failed");
+         }
+         const receiptInput = page.getByLabel(t.doc, { exact: true });
+         await expect(page.getByLabel(t.visibility, { exact: true })).toHaveValue("PRIVATE");
+         await receiptInput.setInputFiles({
+           name: "receipt.pdf",
+           mimeType: "application/pdf",
+           buffer: pdf,
+         });
+         await expect(
+           page.getByRole("link", {

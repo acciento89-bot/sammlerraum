@@ -1,0 +1,97 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/config/src/server.test.ts (34 tests | 1 failed) 11ms
+   ✓ parseServerEnv > rejects missing database configuration 1ms
+   ✓ parseServerEnv > accepts the required foundation environment 0ms
+   ✓ parseServerEnv > rejects invalid WORKER_HEALTH_PORT 0 0ms
+   ✓ parseServerEnv > rejects invalid WORKER_HEALTH_PORT 65536 0ms
+   ✓ parseServerEnv > rejects invalid WORKER_HEALTH_PORT 3.5 0ms
+   ✓ parseServerEnv > rejects invalid WORKER_HEALTH_PORT not-a-port 0ms
+   ✓ parseServerEnv > rejects an invalid NODE_ENV value 0ms
+   ✓ parseServerEnv > rejects an invalid DATABASE_URL value 0ms
+   ✓ parseServerEnv > rejects an invalid DATABASE_URL value 0ms
+   ✓ parseServerEnv > rejects an invalid APP_ORIGIN value 0ms
+   ✓ parseServerEnv > rejects an invalid APP_ORIGIN value 0ms
+   ✓ parseServerEnv > rejects an invalid APP_ORIGIN value 0ms
+   ✓ parseServerEnv > rejects an invalid APP_ORIGIN value 0ms
+   ✓ parseServerEnv > rejects an invalid APP_ORIGIN value 0ms
+   ✓ parseServerEnv > rejects an invalid UPLOADS_DIR value 0ms
+   ✓ parseServerEnv > rejects an invalid LOG_LEVEL value 0ms
+   ✓ parseServerEnv > normalizes APP_ORIGIN to its origin 0ms
+   ✓ parseServerEnv > reports invalid variable names without exposing values 1ms
+   ✓ parseAuthEnv > requires provider, auth-secret, and SMTP delivery configuration 1ms
+   ✓ parseAuthEnv > never exposes auth or SMTP secret values in validation errors 0ms
+   ✓ media configuration > uses explicit bounded upload defaults 0ms
+   ✓ media configuration > rejects unsafe byte limit 0 0ms
+   ✓ media configuration > rejects unsafe byte limit -1 0ms
+   ✓ media configuration > rejects unsafe byte limit 1.5 0ms
+   ✓ media configuration > rejects unsafe byte limit 9007199254740992 0ms
+   ✓ media configuration > rejects unsafe byte limit NaN 0ms
+   ✓ rejects unsafe market configuration MARKET_SYNC_ENABLED 0ms
+   ✓ rejects unsafe market configuration MARKET_SYNC_INTERVAL_MS 0ms
+   ✓ rejects unsafe market configuration MARKET_SYNC_BATCH_SIZE 0ms
+   ✓ rejects unsafe market configuration MARKET_SYNC_MAX_PENDING 0ms
+   ✓ parses explicit monetary authoring capability true 0ms
+   ✓ parses explicit monetary authoring capability false 0ms
+   ✓ refuses an ambiguous monetary authoring switch 1ms
+   × requires an explicit server opt-in before canonical monetary consumers are enabled 3ms
+     → expected undefined to be false // Object.is equality
+ ❯ |workspace| apps/web/src/lib/money-capabilities-routes.test.ts (4 tests | 1 failed) 12ms
+   ✓ private monetary capability response > never caches compatibility and keeps canonical consumers disabled independently of authoring 6ms
+   ✓ private monetary capability response > denies foreign origin before session access and requires a live session 1ms
+   ✓ private monetary capability response > does not accept client selection of supported profile or activation 0ms
+   × reports the same explicit server consumer rollout used by search and dashboard 5ms
+     → expected { actorId: 'synthetic-owner', …(5) } to match object { canonicalConsumers: true, …(1) }
+(4 matching properties omitted from actual)
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/config/src/server.test.ts > requires an explicit server opt-in before canonical monetary consumers are enabled
+AssertionError: expected undefined to be false // Object.is equality
+
+- Expected: 
+false
+
++ Received: 
+undefined
+
+ ❯ packages/config/src/server.test.ts:176:78
+    174| 
+    175| it("requires an explicit server opt-in before canonical monetary consu…
+    176|   expect(parseServerEnv(validEnvironment).MONEY_CANONICAL_CONSUMERS_EN…
+       |                                                                              ^
+    177|   expect(parseServerEnv({...validEnvironment,MONEY_CANONICAL_CONSUMERS…
+    178|   expect(()=>parseServerEnv({...validEnvironment,MONEY_CANONICAL_CONSU…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |workspace| apps/web/src/lib/money-capabilities-routes.test.ts > reports the same explicit server consumer rollout used by search and dashboard
+AssertionError: expected { actorId: 'synthetic-owner', …(5) } to match object { canonicalConsumers: true, …(1) }
+(4 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "authoringProfiles": [],
+-   "canonicalConsumers": true,
++   "canonicalConsumers": false,
+  }
+
+ ❯ apps/web/src/lib/money-capabilities-routes.test.ts:68:32
+     66|  const response=await handler(new Request("https://example.invalid/api…
+     67|  expect(response.status).toBe(200);
+     68|  expect(await response.json()).toMatchObject({canonicalConsumers:true,…
+       |                                ^
+     69| });
+     70| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  2 failed | 36 passed (38)
+   Start at  18:26:15
+   Duration  472ms (transform 91ms, setup 12ms, collect 246ms, tests 23ms, environment 0ms, prepare 132ms)
+

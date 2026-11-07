@@ -1,0 +1,10 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ✓ |workspace| apps/web/src/components/search/saved-acknowledgements.test.ts (3 tests) 5ms
+
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+   Start at  21:45:33
+   Duration  362ms (transform 65ms, setup 6ms, collect 126ms, tests 5ms, environment 0ms, prepare 43ms)
+

@@ -1,0 +1,11 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ✓ |workspace| packages/domain/src/exports/artifact-access.integration.test.ts (8 tests) 603ms
+ ✓ |workspace| apps/web/src/lib/transfer-routes.integration.test.ts (4 tests) 384ms
+
+ Test Files  2 passed (2)
+      Tests  12 passed (12)
+   Start at  02:53:03
+   Duration  1.93s (transform 246ms, setup 6ms, collect 633ms, tests 987ms, environment 0ms, prepare 74ms)
+

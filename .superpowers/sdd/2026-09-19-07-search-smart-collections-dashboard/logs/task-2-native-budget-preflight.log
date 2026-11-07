@@ -1,0 +1,13 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+stdout | packages/domain/src/search/search-native-budget-preflight.test.ts
+BUDGET_DATABASE_IDENTITY {"file":"/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/search/search-native-budget-preflight.test.ts","database":"sammlerraum_budget_20261018_test","role":"test"}
+
+ ✓ |workspace| packages/domain/src/search/search-native-budget-preflight.test.ts (1 test) 18ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  10:59:30
+   Duration  345ms (transform 37ms, setup 152ms, collect 7ms, tests 18ms, environment 0ms, prepare 48ms)
+

@@ -1,0 +1,239 @@
+{
+  "configuration": "default vitest.config.ts and vitest.setup.ts, serialized native allowlist; no custom sequencer",
+  "actualOrder": [
+    {
+      "file": "packages/domain/src/search/search-retained-integrity.integration.test.ts",
+      "tests": 17,
+      "durationMs": 2925
+    },
+    {
+      "file": "apps/worker/src/jobs/production-market.integration.test.ts",
+      "tests": 4,
+      "durationMs": 14403
+    },
+    {
+      "file": "apps/worker/src/jobs/market-request-permit.integration.test.ts",
+      "tests": 15,
+      "durationMs": 13516
+    },
+    {
+      "file": "apps/worker/src/jobs/market-sync.integration.test.ts",
+      "tests": 16,
+      "durationMs": 8694
+    },
+    {
+      "file": "packages/domain/src/search/search-read.integration.test.ts",
+      "tests": 5,
+      "durationMs": 4686
+    },
+    {
+      "file": "packages/domain/src/search/smart-collection-service.test.ts",
+      "tests": 18,
+      "durationMs": 2498
+    },
+    {
+      "file": "packages/domain/src/valuations/valuation-query.test.ts",
+      "tests": 27,
+      "durationMs": 2132
+    },
+    {
+      "file": "packages/domain/src/catalog/proposal-service.test.ts",
+      "tests": 16,
+      "durationMs": 1434
+    },
+    {
+      "file": "packages/domain/src/search/item-search-service.test.ts",
+      "tests": 78,
+      "durationMs": 1320
+    },
+    {
+      "file": "packages/domain/src/media/cleanup-service.test.ts",
+      "tests": 11,
+      "durationMs": 744
+    },
+    {
+      "file": "packages/domain/src/valuations/valuation-service.test.ts",
+      "tests": 17,
+      "durationMs": 781
+    },
+    {
+      "file": "packages/domain/src/market-data/market-data-service.test.ts",
+      "tests": 13,
+      "durationMs": 648
+    },
+    {
+      "file": "packages/domain/src/grading/grading-service.test.ts",
+      "tests": 15,
+      "durationMs": 463
+    },
+    {
+      "file": "apps/web/src/lib/valuation-routes.integration.test.ts",
+      "tests": 10,
+      "durationMs": 441
+    },
+    {
+      "file": "packages/domain/src/catalog/catalog-service.integration.test.ts",
+      "tests": 11,
+      "durationMs": 428
+    },
+    {
+      "file": "packages/domain/src/catalog/item-catalog-link.test.ts",
+      "tests": 14,
+      "durationMs": 414
+    },
+    {
+      "file": "packages/domain/src/condition/condition-service.test.ts",
+      "tests": 10,
+      "durationMs": 414
+    },
+    {
+      "file": "packages/domain/src/catalog/catalog-read-service.test.ts",
+      "tests": 6,
+      "durationMs": 400
+    },
+    {
+      "file": "apps/web/src/lib/smart-collection-routes.integration.test.ts",
+      "tests": 4,
+      "durationMs": 283
+    },
+    {
+      "file": "apps/web/src/lib/item-search-routes.integration.test.ts",
+      "tests": 12,
+      "durationMs": 215
+    },
+    {
+      "file": "packages/domain/src/custom-fields/custom-field-service.test.ts",
+      "tests": 36,
+      "durationMs": 245
+    },
+    {
+      "file": "apps/web/src/lib/security-service.integration.test.ts",
+      "tests": 1,
+      "durationMs": 246
+    },
+    {
+      "file": "packages/domain/src/items/item-service.test.ts",
+      "tests": 15,
+      "durationMs": 245
+    },
+    {
+      "file": "apps/web/src/app/api/v1/items/resource-route.integration.test.ts",
+      "tests": 2,
+      "durationMs": 246
+    },
+    {
+      "file": "packages/domain/src/media/media-service.test.ts",
+      "tests": 20,
+      "durationMs": 206
+    },
+    {
+      "file": "apps/web/src/lib/catalog-proposal-routes.integration.test.ts",
+      "tests": 4,
+      "durationMs": 229
+    },
+    {
+      "file": "apps/web/src/lib/catalog-link-routes.integration.test.ts",
+      "tests": 6,
+      "durationMs": 225
+    },
+    {
+      "file": "apps/web/src/lib/grading-routes.integration.test.ts",
+      "tests": 10,
+      "durationMs": 216
+    },
+    {
+      "file": "apps/worker/src/jobs/image-repository.integration.test.ts",
+      "tests": 2,
+      "durationMs": 219
+    },
+    {
+      "file": "packages/domain/src/catalog/initialize-catalog.test.ts",
+      "tests": 4,
+      "durationMs": 194
+    },
+    {
+      "file": "packages/domain/src/locations/location-service.test.ts",
+      "tests": 17,
+      "durationMs": 194
+    },
+    {
+      "file": "packages/domain/src/catalog/category-template-service.integration.test.ts",
+      "tests": 4,
+      "durationMs": 181
+    },
+    {
+      "file": "packages/domain/src/collections/collection-service.test.ts",
+      "tests": 14,
+      "durationMs": 171
+    },
+    {
+      "file": "packages/domain/src/media/media-read.integration.test.ts",
+      "tests": 1,
+      "durationMs": 174
+    },
+    {
+      "file": "packages/domain/src/items/identifier-service.test.ts",
+      "tests": 11,
+      "durationMs": 166
+    },
+    {
+      "file": "apps/web/src/lib/condition-routes.integration.test.ts",
+      "tests": 5,
+      "durationMs": 167
+    },
+    {
+      "file": "packages/storage/src/staging-lock.integration.test.ts",
+      "tests": 3,
+      "durationMs": 160
+    },
+    {
+      "file": "packages/domain/src/media/media-management.integration.test.ts",
+      "tests": 1,
+      "durationMs": 158
+    },
+    {
+      "file": "apps/web/src/lib/catalog-history-routes.integration.test.ts",
+      "tests": 2,
+      "durationMs": 139
+    },
+    {
+      "file": "packages/db/src/media-migration.integration.test.ts",
+      "tests": 1,
+      "durationMs": 83
+    },
+    {
+      "file": "packages/domain/src/catalog/catalog-history-service.test.ts",
+      "tests": 2,
+      "durationMs": 151
+    },
+    {
+      "file": "packages/domain/src/identity/security-service.test.ts",
+      "tests": 7,
+      "durationMs": 119
+    },
+    {
+      "file": "packages/queue/src/postgres.integration.test.ts",
+      "tests": 1,
+      "durationMs": 41
+    },
+    {
+      "file": "packages/domain/src/identity/profile-service.test.ts",
+      "tests": 6,
+      "durationMs": 107
+    },
+    {
+      "file": "packages/db/src/postgres.integration.test.ts",
+      "tests": 1,
+      "durationMs": 73
+    },
+    {
+      "file": "packages/db/src/media-lock.integration.test.ts",
+      "tests": 1,
+      "durationMs": 18
+    }
+  ],
+  "allowlistExact": true,
+  "files": 46,
+  "tests": 496,
+  "skips": 0
+}

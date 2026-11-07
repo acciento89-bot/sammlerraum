@@ -1,0 +1,49 @@
+# Task5E — owned dashboard collector interface
+
+Candidate source **1dcabdc7e163c0ad33f2cf52a3a16f97af089b5e**, root fix **03694605aa08716c37977c7b7839da0accb54b23**, BASE **b4e8e8ca2de02996e0ba321e22f31031842f6450** (38b1a1d docs-only intervening commit). Independent review findings are root-closed and frozen local156browserPASS; exact new remoteCI remains pending. No merge/deploy or fullTask5/Phase07 claim. Canonical taskcount41/91 unchanged.
+
+## Implemented scope
+
+DE/EN fresh-authenticated /dashboard with shared query/builder/lifecycle/private token/history/editor/navigation mechanisms and one real privatePOST dashboard read. Search↔dashboard explicit transfer creates a fresh opaque token, clears the item-page cursor and never leaks text/AST in href/query. Collections/catalog/account discovery links, locale continuity and existing warm responsive system remain integrated.
+
+Complete actual owned dashboard DTO render: separate selected entries/physical units/matching versus all live owned collections, exact per-currency/stored-exponent manual subtotals and topitems, contributor/missing/othergroup coverage, actual observation spans, comparable current-quantity latest/prior changes and explicit exclusion buckets; actual trade/missing/retainedcondition/grading/collection/recent sections. Purchase-cost totals/market/duplicates/wishlist/shared explicitly unavailable; no fake0, FXsum, chart or inferred historical holdings. Real observed zero is numeric0; absent estimates and empty selections differ.
+
+Small approved read projection adds canonical optionActive/schemeActive flags to existing bounded distributions snapshot using one real ConditionScheme join; no new query, migration, source authority or per-item lookup. Retired retained records stay included; labels come from bounded canonical batch hydration with generation protection. Formatter uses canonical78digit integer strings, BigInt and stored exponent with actualDE/ENsymbols; never float/Number amount conversion. Exponent4 is pure formatter capacity only, actual fixture producers emit0/2/3.
+
+Shared confirmation narrowly generalized from reviewed5D: view-specific query history paths, dirty guard cleanup, internal traversal detection, one-modal suspension, and protection for pending/unknown savedcreation even when parent editor clean. Known creation navigation disposes syntheticguard; uncertain writes preserve their submittedquery and never automatically retry. Explicit list inspection with clean parent remains permitted; dirty parent retains deliberate discard/suspend/resume.
+
+## Evidence and failures retained
+
+All commands use existing synthetic test env, external task-local npm cache and pinned Node24.19.0/pnpm10.17.1, PostgreSQL17.11 sammlerraum_test. One production browser/server/DB owner; no simulator/emulator/physicalbrowser claim.
+
+- Actual browserRED: real API per-unitMAXint64/currentquantity3 and exact27670116110564327421minor precede missingDashboardCTA assertion (browser-red.log). Formatter RED→25pureGREEN; dashboard history path RED→18pureGREEN; native canonical retirement flag RED→GREEN. A patch-script assertion mistakenly continued into a RED attempt; history-green-attempt1.log retained, actual history-green.log passes18.
+- ui-build1/types/suite1: original local1,198purePASS/482explicitDBskips and build/typesPASS. First combined browser1 had120PASS/4FAIL: newly generalizedguard unnecessarily confirmed explicit lost-create inspection on cleanSearchparent. Root recovery change fixes exact approved explicitrecovery, with actual12focused productioncasesGREEN; original failure retained.
+- rich-browser1/2 fixture failures are not product failures: grading onquantity3 correctly rejects GRADING_REQUIRES_SINGLE_ITEM; fixture moved grading to realquantity1JPYitem. Attemptinglink after cleanupStartedAt correctly rejects; fixture nowlinks first thenmarks cleanup, matching retained-state simulation. No service/schema guard weakened. rich-browser3:4/4 actual mixed-denomination casesGREEN. Media states are synthetic persisted metadata, not an upload-workerE2E claim.
+- Native focused dashboard/route gate:37PASS/0skip (25service+12route), task-5e-20261105-native-dashboard1.log. Existing fixedquery/budget/plan tests run with actual canonicalflags; historical productionburst/stalestatistics gate remainsopen.
+- Frozen pure:86filesPASS/41explicitDB-gatedfilesSKIP;1,198PASS/482SKIP. No additional native totals inferred from skippedfiles.
+- Wholeworkspace final-types and final-lint PASS; frozen-build PASS. Earlier frozen-lint caught a concurrent test-file edit before formatting; failure retained and final sourcefrozen before correctedlint/build. No product source changed between1198pure and candidatecommit.
+- Focused richhistory/stale/session8PASS, richaggregate4PASS, delayed/narrowkeyboard8PASS before final fullsuite. Original candidate148browser ended146PASS/2FAIL; corrected final156browserPASS/0skip as detailed below.
+
+## Limitations / remaining gates
+
+Own actual responsiveChromium desktop/mobile,320px and CSS200percentlayout tests do not establish Safari/Firefox/physicaliPhone/Duo/OSzoom readiness; Phase13retained. No deployment/publicTLSrepair claimed. Full moneyprovenanceM1–M7, canonicalmarketeligibility/rights, Phase09sharing, Phase10relations and personalmilestoneH1/H2/H3 remain separate. P7.35 supersedes an invented mandatoryportfoliotimeline; actual per-itemmanualhistory/latest-priorchange remains required. H1preparedonly until independent5Erelease. No main merge/deploy/provider/purchases or old automation restart.
+
+Independent findings/rootclosure/sourcehashmanifest are retained under Artifacts/SammlerraumStatus-20261105; exact new remoteCI is pending.
+
+## Independent review and root closure
+
+Independent read-only review of b4..1dc returned0Critical/1Important/1Minor (receipt Artifacts/SammlerraumStatus-20261105/dashboard-independent-review.json). Root accepts both findings. P2: changeLocation protected only dirty, so Cancel after an actual lost create response then Reset removed its combined uncertainty guard. Root passes dirty OR saveProtected, covering Reset/pagination while preserving actual submitted-query snapshot. P3: mediumtime formatting omitted milliseconds; root now reuses existing observationTime with MILLISECOND and explicitUTC labels, without narrowing the aggregate moneyformatter.
+
+Actual pre-fix review-red:6failures, of which2dashboardcases genuinely reach missing discard guard,2richcases genuinely fail lost millisecond precision,2searchcases stop early at an overly exact count assertion and are not claimed as productRED. Corrected count assertion is contains1 because Searchcount includes localizedwords. First review-green ran a Playwright-cached prior test module:16PASS/4searchsetupFAIL; preserved, not claimed successful. Final review-green-final:20PASS0skip, including bothviews/alllocales/profiles and actual two-observation milliseconddisplay, unknown Cancel→Reset→Back, actual singlecommittedwrite and retainedname.
+
+The first full candidate148browser suite ended146PASS/2FAIL. One was testhelper's immediate resize probe before React's narrowlayout committed; panel helper now awaits actual mobileOpenbutton/dialog before interaction. One was a genuine fastBack race from clean parent during busywrite: effect-based protection could lag serverarrival. Child busy/unknown report and shared guard insertion now use layout effects so guard is established before the user can act on the committed busy view. Actual pendingcreation cases within the20focused cases and12separate repeated cases pass. Failures/traces are retained; no merely waiting on a synthetic historyproperty to hide the race.
+
+Reviewer declined lines individually adjudicated: portfolio development/milestones correctly outside5E perP7.35/H1–H3; money/market/shared/relations correctly separatelygated; native exponent4 correctlypureformatteronly; categoryhydration correctlybounded andnotvaluationN+1; canonicalretirementjoin explicitlyapproved; correctedfixtureconstraints correctlyretained; session/late-response inspection correctly reusesclosedchannel/generation withactualtests. No line silently broadens acceptance. Original independent verdict is unchanged; root closes fixes through evidence and does not claim a second reviewer approval.
+
+Root-final-pure1198PASS/482explicitintegrationSKIP, root-final-webtypesPASS/workspacelintPASS, root-fixproductionbuildPASS. Canonical SQL projection unchanged since actual37nativegate, so no redundant native rerun claimed. Final156browserPASS/0skip in3.2min against immutable0369460 product source, no source edits during that final run.
+
+## Root local acceptance / exact remote proof pending
+
+5November2026: frozen03694605aa08716c37977c7b7839da0accb54b23 local available-family5E is accepted after all156production-browser casesPASS0skip. Source fingerprint/build ID, all actual screenshotSHA256s, originalreviewcounts and rootclosure are under Artifacts/SammlerraumStatus-20261105/dashboard-source-manifest.json and dashboard-independent-review.json. The20actual task-5e screenshots were relocated unchanged after final suite into immutable dashboard-0369460-screenshots; sourcepaths may be recreated by later regression tests. Do not misattribute later regenerated images to this immutable source. No other screenshots were deleted.
+
+Root independently verified no source/config drift from036 after full checks. Existingb4dependency CI42112906928+42112896953 bothSUCCESS. Next featurebranch push includes separate source/evidence commits; exactnewheadCI must be observed. H1 may start only under its explicit fresh rootGO/P7.14 pipeline, holding dependent push/completion and stopping affected work if new5ECIfails. No original fullTask5/Phase07/countincrease/mainmerge/deployment.

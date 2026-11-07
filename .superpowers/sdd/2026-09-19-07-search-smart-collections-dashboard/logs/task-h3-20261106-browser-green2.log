@@ -1,0 +1,126 @@
+[WebServer] (node:36119) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 48 tests using 1 worker
+
+(node:36120) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [desktop] › e2e/personal-milestones.spec.ts:11:3 › de: actual authored milestones are discoverable independently in the collector dashboard (1.3s)
+  ✓   2 [desktop] › e2e/personal-milestones.spec.ts:11:3 › en: actual authored milestones are discoverable independently in the collector dashboard (405ms)
+  ✓   3 [desktop] › e2e/personal-milestones.spec.ts:82:3 › de: preview is bounded and inventory filters do not filter personal milestones (606ms)
+  ✓   4 [desktop] › e2e/personal-milestones.spec.ts:118:3 › de: real create, same-value edit, date replacement and confirmed deletion keep plain text (1.1s)
+  ✓   5 [desktop] › e2e/personal-milestones.spec.ts:171:3 › de: real pagination, locale and browser Back keep the independent manager reachable (867ms)
+  ✓   6 [desktop] › e2e/personal-milestones.spec.ts:211:3 › de: two actual writers preserve a conflicted draft until explicit fresh-state adoption (982ms)
+  ✓   7 [desktop] › e2e/personal-milestones.spec.ts:265:5 › de: committed create response loss is retained without automatic replay (720ms)
+  ✓   8 [desktop] › e2e/personal-milestones.spec.ts:265:5 › de: committed update response loss is retained without automatic replay (756ms)
+  ✓   9 [desktop] › e2e/personal-milestones.spec.ts:265:5 › de: committed delete response loss is retained without automatic replay (617ms)
+  ✓  10 [desktop] › e2e/personal-milestones.spec.ts:346:3 › de: known acknowledgement survives subsequent list failure and real retry (612ms)
+  ✓  11 [desktop] › e2e/personal-milestones.spec.ts:389:3 › de: actual revoked session clears private input and rejects a late buffered list (504ms)
+  ✘  12 [desktop] › e2e/personal-milestones.spec.ts:452:3 › de: keyboard, dirty locale navigation, 320px and zoom keep one protected editor (802ms)
+(node:36162) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  13 [desktop] › e2e/personal-milestones.spec.ts:531:3 › de: pending unchanged edit resists fast Back and removes its guard after acknowledgement (888ms)
+  ✓  14 [desktop] › e2e/personal-milestones.spec.ts:82:3 › en: preview is bounded and inventory filters do not filter personal milestones (500ms)
+  ✓  15 [desktop] › e2e/personal-milestones.spec.ts:118:3 › en: real create, same-value edit, date replacement and confirmed deletion keep plain text (1.0s)
+  ✓  16 [desktop] › e2e/personal-milestones.spec.ts:171:3 › en: real pagination, locale and browser Back keep the independent manager reachable (830ms)
+  ✓  17 [desktop] › e2e/personal-milestones.spec.ts:211:3 › en: two actual writers preserve a conflicted draft until explicit fresh-state adoption (1.0s)
+  ✓  18 [desktop] › e2e/personal-milestones.spec.ts:265:5 › en: committed create response loss is retained without automatic replay (698ms)
+  ✓  19 [desktop] › e2e/personal-milestones.spec.ts:265:5 › en: committed update response loss is retained without automatic replay (752ms)
+  ✓  20 [desktop] › e2e/personal-milestones.spec.ts:265:5 › en: committed delete response loss is retained without automatic replay (616ms)
+  ✓  21 [desktop] › e2e/personal-milestones.spec.ts:346:3 › en: known acknowledgement survives subsequent list failure and real retry (579ms)
+  ✓  22 [desktop] › e2e/personal-milestones.spec.ts:389:3 › en: actual revoked session clears private input and rejects a late buffered list (494ms)
+  ✘  23 [desktop] › e2e/personal-milestones.spec.ts:452:3 › en: keyboard, dirty locale navigation, 320px and zoom keep one protected editor (798ms)
+(node:36194) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  24 [desktop] › e2e/personal-milestones.spec.ts:531:3 › en: pending unchanged edit resists fast Back and removes its guard after acknowledgement (975ms)
+(node:36200) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  25 [mobile] › e2e/personal-milestones.spec.ts:11:3 › de: actual authored milestones are discoverable independently in the collector dashboard (507ms)
+  ✓  26 [mobile] › e2e/personal-milestones.spec.ts:11:3 › en: actual authored milestones are discoverable independently in the collector dashboard (376ms)
+  ✓  27 [mobile] › e2e/personal-milestones.spec.ts:82:3 › de: preview is bounded and inventory filters do not filter personal milestones (559ms)
+  ✓  28 [mobile] › e2e/personal-milestones.spec.ts:118:3 › de: real create, same-value edit, date replacement and confirmed deletion keep plain text (1.3s)
+  ✓  29 [mobile] › e2e/personal-milestones.spec.ts:171:3 › de: real pagination, locale and browser Back keep the independent manager reachable (803ms)
+  ✓  30 [mobile] › e2e/personal-milestones.spec.ts:211:3 › de: two actual writers preserve a conflicted draft until explicit fresh-state adoption (997ms)
+  ✓  31 [mobile] › e2e/personal-milestones.spec.ts:265:5 › de: committed create response loss is retained without automatic replay (889ms)
+  ✓  32 [mobile] › e2e/personal-milestones.spec.ts:265:5 › de: committed update response loss is retained without automatic replay (1.2s)
+  ✓  33 [mobile] › e2e/personal-milestones.spec.ts:265:5 › de: committed delete response loss is retained without automatic replay (787ms)
+  ✓  34 [mobile] › e2e/personal-milestones.spec.ts:346:3 › de: known acknowledgement survives subsequent list failure and real retry (783ms)
+  ✓  35 [mobile] › e2e/personal-milestones.spec.ts:389:3 › de: actual revoked session clears private input and rejects a late buffered list (563ms)
+  ✓  36 [mobile] › e2e/personal-milestones.spec.ts:452:3 › de: keyboard, dirty locale navigation, 320px and zoom keep one protected editor (2.1s)
+  ✓  37 [mobile] › e2e/personal-milestones.spec.ts:531:3 › de: pending unchanged edit resists fast Back and removes its guard after acknowledgement (1.0s)
+  ✓  38 [mobile] › e2e/personal-milestones.spec.ts:82:3 › en: preview is bounded and inventory filters do not filter personal milestones (621ms)
+  ✓  39 [mobile] › e2e/personal-milestones.spec.ts:118:3 › en: real create, same-value edit, date replacement and confirmed deletion keep plain text (1.3s)
+  ✓  40 [mobile] › e2e/personal-milestones.spec.ts:171:3 › en: real pagination, locale and browser Back keep the independent manager reachable (937ms)
+  ✓  41 [mobile] › e2e/personal-milestones.spec.ts:211:3 › en: two actual writers preserve a conflicted draft until explicit fresh-state adoption (953ms)
+  ✓  42 [mobile] › e2e/personal-milestones.spec.ts:265:5 › en: committed create response loss is retained without automatic replay (992ms)
+  ✓  43 [mobile] › e2e/personal-milestones.spec.ts:265:5 › en: committed update response loss is retained without automatic replay (986ms)
+  ✓  44 [mobile] › e2e/personal-milestones.spec.ts:265:5 › en: committed delete response loss is retained without automatic replay (839ms)
+  ✓  45 [mobile] › e2e/personal-milestones.spec.ts:346:3 › en: known acknowledgement survives subsequent list failure and real retry (734ms)
+  ✓  46 [mobile] › e2e/personal-milestones.spec.ts:389:3 › en: actual revoked session clears private input and rejects a late buffered list (570ms)
+  ✓  47 [mobile] › e2e/personal-milestones.spec.ts:452:3 › en: keyboard, dirty locale navigation, 320px and zoom keep one protected editor (2.2s)
+  ✓  48 [mobile] › e2e/personal-milestones.spec.ts:531:3 › en: pending unchanged edit resists fast Back and removes its guard after acknowledgement (1.0s)
+
+
+  1) [desktop] › e2e/personal-milestones.spec.ts:452:3 › de: keyboard, dirty locale navigation, 320px and zoom keep one protected editor 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      508 |         document.documentElement.style.zoom = "2";
+      509 |       });
+    > 510 |       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
+          |                                                                                             ^
+      511 |         true,
+      512 |       );
+      513 |       await shot(page, locale, info.project.name, "zoom");
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/personal-milestones.spec.ts:510:93
+
+    Error Context: test-results/personal-milestones-de-key-fce7e-m-keep-one-protected-editor-desktop/error-context.md
+
+    Error Context: test-results/personal-milestones-de-key-fce7e-m-keep-one-protected-editor-desktop/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/personal-milestones-de-key-fce7e-m-keep-one-protected-editor-desktop/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/personal-milestones-de-key-fce7e-m-keep-one-protected-editor-desktop/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [desktop] › e2e/personal-milestones.spec.ts:452:3 › en: keyboard, dirty locale navigation, 320px and zoom keep one protected editor 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      508 |         document.documentElement.style.zoom = "2";
+      509 |       });
+    > 510 |       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
+          |                                                                                             ^
+      511 |         true,
+      512 |       );
+      513 |       await shot(page, locale, info.project.name, "zoom");
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/personal-milestones.spec.ts:510:93
+
+    Error Context: test-results/personal-milestones-en-key-f293a-m-keep-one-protected-editor-desktop/error-context.md
+
+    Error Context: test-results/personal-milestones-en-key-f293a-m-keep-one-protected-editor-desktop/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/personal-milestones-en-key-f293a-m-keep-one-protected-editor-desktop/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/personal-milestones-en-key-f293a-m-keep-one-protected-editor-desktop/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2 failed
+    [desktop] › e2e/personal-milestones.spec.ts:452:3 › de: keyboard, dirty locale navigation, 320px and zoom keep one protected editor 
+    [desktop] › e2e/personal-milestones.spec.ts:452:3 › en: keyboard, dirty locale navigation, 320px and zoom keep one protected editor 
+  46 passed (44.8s)
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/personal-milestones.spec.ts --workers=1 --trace=retain-on-failure

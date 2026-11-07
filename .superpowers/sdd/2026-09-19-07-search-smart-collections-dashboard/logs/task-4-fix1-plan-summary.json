@@ -1,0 +1,123 @@
+{
+  "requests": [
+    {
+      "ownedRows": 1,
+      "historyRows": 1,
+      "selectedRows": 1,
+      "queryCallsIncludingConfiguration": 15,
+      "elapsedMs": 22.385333000000173
+    },
+    {
+      "ownedRows": 50,
+      "historyRows": 50,
+      "selectedRows": 5,
+      "queryCallsIncludingConfiguration": 15,
+      "elapsedMs": 14.314417000000049
+    },
+    {
+      "ownedRows": 500,
+      "historyRows": 1500,
+      "selectedRows": 50,
+      "queryCallsIncludingConfiguration": 15,
+      "elapsedMs": 18.89233299999978
+    }
+  ],
+  "plans": [
+    {
+      "ownedRows": 1,
+      "query": "dashboard:summary",
+      "planningMs": 1.76,
+      "executionMs": 0.245,
+      "sharedHitBlocks": 12,
+      "sharedReadBlocks": 0
+    },
+    {
+      "ownedRows": 1,
+      "query": "dashboard:manual",
+      "planningMs": 1.604,
+      "executionMs": 0.388,
+      "sharedHitBlocks": 6,
+      "sharedReadBlocks": 0
+    },
+    {
+      "ownedRows": 1,
+      "query": "dashboard:distributions",
+      "planningMs": 1.19,
+      "executionMs": 0.141,
+      "sharedHitBlocks": 9,
+      "sharedReadBlocks": 0
+    },
+    {
+      "ownedRows": 1,
+      "query": "dashboard:rankings",
+      "planningMs": 1.088,
+      "executionMs": 0.161,
+      "sharedHitBlocks": 5,
+      "sharedReadBlocks": 0
+    },
+    {
+      "ownedRows": 50,
+      "query": "dashboard:summary",
+      "planningMs": 1.267,
+      "executionMs": 0.366,
+      "sharedHitBlocks": 211,
+      "sharedReadBlocks": 0
+    },
+    {
+      "ownedRows": 50,
+      "query": "dashboard:manual",
+      "planningMs": 1.271,
+      "executionMs": 0.574,
+      "sharedHitBlocks": 231,
+      "sharedReadBlocks": 0
+    },
+    {
+      "ownedRows": 50,
+      "query": "dashboard:distributions",
+      "planningMs": 1.113,
+      "executionMs": 0.392,
+      "sharedHitBlocks": 206,
+      "sharedReadBlocks": 0
+    },
+    {
+      "ownedRows": 50,
+      "query": "dashboard:rankings",
+      "planningMs": 0.962,
+      "executionMs": 0.345,
+      "sharedHitBlocks": 202,
+      "sharedReadBlocks": 0
+    },
+    {
+      "ownedRows": 500,
+      "query": "dashboard:summary",
+      "planningMs": 1.174,
+      "executionMs": 1.481,
+      "sharedHitBlocks": 1065,
+      "sharedReadBlocks": 0
+    },
+    {
+      "ownedRows": 500,
+      "query": "dashboard:manual",
+      "planningMs": 1.315,
+      "executionMs": 1.705,
+      "sharedHitBlocks": 1267,
+      "sharedReadBlocks": 0
+    },
+    {
+      "ownedRows": 500,
+      "query": "dashboard:distributions",
+      "planningMs": 1.103,
+      "executionMs": 1.238,
+      "sharedHitBlocks": 1021,
+      "sharedReadBlocks": 0
+    },
+    {
+      "ownedRows": 500,
+      "query": "dashboard:rankings",
+      "planningMs": 0.948,
+      "executionMs": 1.217,
+      "sharedHitBlocks": 1017,
+      "sharedReadBlocks": 0
+    }
+  ]
+}

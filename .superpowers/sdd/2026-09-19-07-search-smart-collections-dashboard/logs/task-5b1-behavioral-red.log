@@ -1,0 +1,100 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| apps/web/src/lib/private-search-routes.integration.test.ts (5 tests | 5 failed) 214ms
+   × native private query POST transport > serves the same owned rows/count/cursor through POST and GET 37ms
+     → expected 405 to be 200 // Object.is equality
+   × native private query POST transport > accepts valid raw f beyond 10000 characters through the real service 1ms
+     → expected 405 to be 200 // Object.is equality
+   × native private query POST transport > rejects duplicate root keys before losing them 0ms
+     → expected 405 to be 400 // Object.is equality
+   × native private query POST transport > rejects duplicate root keys before losing them 0ms
+     → expected 405 to be 400 // Object.is equality
+   × native private query POST transport > uses the actual dashboard aggregate service and currency groups 27ms
+     → expected 405 to be 200 // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/web/src/lib/private-search-routes.integration.test.ts > native private query POST transport > serves the same owned rows/count/cursor through POST and GET
+AssertionError: expected 405 to be 200 // Object.is equality
+
+- Expected
++ Received
+
+- 200
++ 405
+
+ ❯ apps/web/src/lib/private-search-routes.integration.test.ts:60:29
+     58|     const get = await items.GET(new Request(`${origin}/api/v1/search/i…
+     59|     const response = await post(items, request(JSON.stringify({ text: …
+     60|     expect(response.status).toBe(200);
+       |                             ^
+     61|     const a = await get.json(), b = await response.json();
+     62|     expect(sameData(b)).toEqual(sameData(a));
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ FAIL  |workspace| apps/web/src/lib/private-search-routes.integration.test.ts > native private query POST transport > accepts valid raw f beyond 10000 characters through the real service
+AssertionError: expected 405 to be 200 // Object.is equality
+
+- Expected
++ Received
+
+- 200
++ 405
+
+ ❯ apps/web/src/lib/private-search-routes.integration.test.ts:71:29
+     69|     const f = filter({ kind: "collection", test: { op: "eq", value: co…
+     70|     const response = await post(routes().items, request(JSON.stringify…
+     71|     expect(response.status).toBe(200);
+       |                             ^
+     72|     expect((await response.json()).total).toBe(3);
+     73|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+ FAIL  |workspace| apps/web/src/lib/private-search-routes.integration.test.ts > native private query POST transport > rejects duplicate root keys before losing them
+ FAIL  |workspace| apps/web/src/lib/private-search-routes.integration.test.ts > native private query POST transport > rejects duplicate root keys before losing them
+AssertionError: expected 405 to be 400 // Object.is equality
+
+- Expected
++ Received
+
+- 400
++ 405
+
+ ❯ apps/web/src/lib/private-search-routes.integration.test.ts:76:29
+     74|   it.each(['{"text":"secret","text":"other"}', '{"text":"secret","t\\u…
+     75|     const response = await post(routes().items, request(body));
+     76|     expect(response.status).toBe(400);
+       |                             ^
+     77|     expect((await response.json()).error.code).toBe("SEARCH_INVALID");
+     78|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+
+ FAIL  |workspace| apps/web/src/lib/private-search-routes.integration.test.ts > native private query POST transport > uses the actual dashboard aggregate service and currency groups
+AssertionError: expected 405 to be 200 // Object.is equality
+
+- Expected
++ Received
+
+- 200
++ 405
+
+ ❯ apps/web/src/lib/private-search-routes.integration.test.ts:83:22
+     81|     const a = await dashboard.GET(new Request(`${origin}/api/v1/dashbo…
+     82|     const b = await post(dashboard, request('{"text":"Match"}', "dashb…
+     83|     expect(b.status).toBe(200);
+       |                      ^
+     84|     const body = await b.json();
+     85|     expect(sameData(body)).toEqual(sameData(await a.json()));
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  5 failed (5)
+   Start at  12:00:36
+   Duration  764ms (transform 175ms, setup 7ms, collect 372ms, tests 214ms, environment 0ms, prepare 48ms)
+

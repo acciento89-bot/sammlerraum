@@ -1,0 +1,42 @@
+[WebServer] (node:3406) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 12 tests using 1 worker
+
+(node:3407) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [money-ui-desktop] › e2e/catalog-money-ui.spec.ts:284:3 › de: a persisted moderator documents and withdraws one canonical assertion through the private UI (3.0s)
+  ✓   2 [money-ui-desktop] › e2e/catalog-money-ui.spec.ts:284:3 › en: a persisted moderator documents and withdraws one canonical assertion through the private UI (1.7s)
+  ✓   3 [money-ui-desktop] › e2e/catalog-money-ui.spec.ts:358:3 › de: a copied canonical assertion opens its actual origin scope and is withdrawn there (1.4s)
+  ✓   4 [money-ui-desktop] › e2e/catalog-money-ui.spec.ts:358:3 › en: a copied canonical assertion opens its actual origin scope and is withdrawn there (1.3s)
+  ✘   5 [money-ui-desktop] › e2e/legacy-money.spec.ts:780:3 › de: an unknown new-item commit requires explicit collection reconciliation before a separate new entry (1.0m)
+Testing stopped early after 1 maximum allowed failures.
+
+
+  1) [money-ui-desktop] › e2e/legacy-money.spec.ts:780:3 › de: an unknown new-item commit requires explicit collection reconciliation before a separate new entry 
+
+    Test timeout of 60000ms exceeded.
+
+    Error: page.waitForResponse: Test timeout of 60000ms exceeded.
+
+      828 |         .getByRole("textbox", { name: t.title, exact: true })
+      829 |         .fill("A separate explicitly started item");
+    > 830 |       const response = page.waitForResponse(
+          |                             ^
+      831 |         (r) =>
+      832 |           r.request().method() === "POST" && new URL(r.url()).pathname === "/api/v1/money/items",
+      833 |       );
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/legacy-money.spec.ts:830:29
+
+    Error Context: test-results/legacy-money-de-an-unknown-b46e2-before-a-separate-new-entry-money-ui-desktop/error-context.md
+
+    Error Context: test-results/legacy-money-de-an-unknown-b46e2-before-a-separate-new-entry-money-ui-desktop/error-context.md
+
+  1 failed
+    [money-ui-desktop] › e2e/legacy-money.spec.ts:780:3 › de: an unknown new-item commit requires explicit collection reconciliation before a separate new entry 
+  7 did not run
+  4 passed (1.2m)
+  1 error was not a part of any test, see above for details
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/catalog-money-ui.spec.ts e2e/legacy-money.spec.ts --workers=1 --grep unknown new-item commit|actual origin scope|persisted moderator --max-failures=1

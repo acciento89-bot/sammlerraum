@@ -1,0 +1,70 @@
+[
+  {
+    "name": "unchanged-desktop-de",
+    "shellPrefix": "source ../sammlerraum-test-env.sh",
+    "command": "RUN_MEDIA_E2E=1 RUN_AUTH_E2E=1 RUN_PRODUCTION_E2E=1 npm exec --yes --package=node@24.19.0 --package=pnpm@10.17.1 -- pnpm --filter @sammlerraum/web exec playwright test e2e/media-documents.spec.ts --project=desktop --grep 'remains private \\(de\\)' --workers=1",
+    "exitCode": 1,
+    "note": "Unchanged exact original spec; natural line256 already-handled failure,26.8s",
+    "log": "media-cancellation-unchanged-desktop-de.log"
+  },
+  {
+    "name": "controlled-red",
+    "shellPrefix": "source ../sammlerraum-test-env.sh",
+    "command": "RUN_MEDIA_E2E=1 RUN_AUTH_E2E=1 RUN_PRODUCTION_E2E=1 npm exec --yes --package=node@24.19.0 --package=pnpm@10.17.1 -- pnpm --filter @sammlerraum/web exec playwright test e2e/media-documents.spec.ts --project=desktop --grep 'remains private \\(de\\)' --workers=1",
+    "exitCode": 1,
+    "note": "Temporary real cleanup GET barrier; exact already-handled failure,24.7s",
+    "log": "media-cancellation-controlled-red.log"
+  },
+  {
+    "name": "controlled-green",
+    "shellPrefix": "source ../sammlerraum-test-env.sh",
+    "command": "RUN_MEDIA_E2E=1 RUN_AUTH_E2E=1 RUN_PRODUCTION_E2E=1 npm exec --yes --package=node@24.19.0 --package=pnpm@10.17.1 -- pnpm --filter @sammlerraum/web exec playwright test e2e/media-documents.spec.ts --project=desktop --grep 'remains private \\(de\\)' --workers=1",
+    "exitCode": 0,
+    "note": "Same barrier with release/drain before unroute;1passed,41.6s total",
+    "log": "media-cancellation-controlled-green.log"
+  },
+  {
+    "name": "final-focused",
+    "shellPrefix": "source ../sammlerraum-test-env.sh",
+    "command": "RUN_MEDIA_E2E=1 RUN_AUTH_E2E=1 RUN_PRODUCTION_E2E=1 npm exec --yes --package=node@24.19.0 --package=pnpm@10.17.1 -- pnpm --filter @sammlerraum/web exec playwright test e2e/media-documents.spec.ts --project=desktop --grep 'remains private \\(de\\)' --workers=1",
+    "exitCode": 0,
+    "note": "Final repaired spec including controlled late cleanup;1passed,45.1s total",
+    "log": "media-cancellation-final-focused.log"
+  },
+  {
+    "name": "failure-path",
+    "shellPrefix": "source ../sammlerraum-test-env.sh",
+    "command": "RUN_MEDIA_E2E=1 RUN_AUTH_E2E=1 RUN_PRODUCTION_E2E=1 npm exec --yes --package=node@24.19.0 --package=pnpm@10.17.1 -- pnpm --filter @sammlerraum/web exec playwright test e2e/media-documents.spec.ts --project=desktop --grep 'remains private \\(de\\)' --workers=1",
+    "exitCode": 1,
+    "note": "Temporary intentional stage failure; primary preserved,36.4s test",
+    "log": "media-cancellation-failure-path.log"
+  },
+  {
+    "name": "typecheck",
+    "shellPrefix": "source ../sammlerraum-test-env.sh",
+    "command": "npm exec --yes --package=node@24.19.0 --package=pnpm@10.17.1 -- pnpm --filter @sammlerraum/web typecheck",
+    "exitCode": 0,
+    "log": "media-cancellation-typecheck.log"
+  },
+  {
+    "name": "lint",
+    "command": "npm exec --yes --package=node@24.19.0 --package=pnpm@10.17.1 -- pnpm --filter @sammlerraum/web lint",
+    "exitCode": 0,
+    "log": "media-cancellation-lint.log"
+  },
+  {
+    "name": "protected-production",
+    "shellPrefix": "source ../sammlerraum-test-env.sh",
+    "command": "RUN_MEDIA_E2E=1 RUN_AUTH_E2E=1 RUN_PRODUCTION_E2E=1 npm exec --yes --package=node@24.19.0 --package=pnpm@10.17.1 -- pnpm --filter @sammlerraum/web exec playwright test e2e/media-read.spec.ts e2e/media-documents.spec.ts --workers=1",
+    "exitCode": 0,
+    "log": "media-cancellation-protected-production.log",
+    "note": "7 original cases passed,2.9m total; desktop/mobile DE/EN; controlled late cleanup retained"
+  },
+  {
+    "name": "raw-evidence-whitespace-audit",
+    "command": "git diff --cached --check",
+    "exitCode": 2,
+    "note": "Raw runner logs/context trailing whitespace retained exactly; source and report check separately pass",
+    "log": "media-cancellation-evidence-whitespace.log"
+  }
+]

@@ -1,0 +1,27 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/imports/import-workflow.integration.test.ts [ packages/domain/src/imports/import-workflow.integration.test.ts ]
+Error: Cannot find module '../../../../apps/worker/src/jobs/import-dispatcher' imported from '/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/domain/src/imports/import-workflow.integration.test.ts'
+ ❯ packages/domain/src/imports/import-workflow.integration.test.ts:11:1
+      9| import { LocalPersistentStorage } from "@sammlerraum/storage";
+     10| import { createImportWorkflowService } from "./import-workflow-service…
+     11| import { createImportDispatcher } from "../../../../apps/worker/src/jo…
+       | ^
+     12| import { createPrismaImportParserRepository } from "../../../../apps/w…
+     13| import { createImportParser } from "../../../../apps/worker/src/jobs/i…
+
+Caused by: Error: Failed to load url ../../../../apps/worker/src/jobs/import-dispatcher (resolved id: ../../../../apps/worker/src/jobs/import-dispatcher) in /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/domain/src/imports/import-workflow.integration.test.ts. Does the file exist?
+ ❯ loadAndTransform ../../../../SSK%20SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/node_modules/.pnpm/vite@7.3.6_@types+node@24.5.2_jiti@2.7.0/node_modules/vite/dist/node/chunks/config.js:22739:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  no tests
+   Start at  01:43:49
+   Duration  476ms (transform 177ms, setup 6ms, collect 0ms, tests 0ms, environment 0ms, prepare 37ms)
+

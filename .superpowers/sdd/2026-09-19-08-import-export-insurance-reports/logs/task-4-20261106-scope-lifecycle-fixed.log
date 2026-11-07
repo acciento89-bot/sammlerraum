@@ -1,0 +1,11 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ✓ |workspace| apps/worker/src/jobs/tabular-export.integration.test.ts (8 tests) 610ms
+ ✓ |workspace| packages/domain/src/exports/export-service.integration.test.ts (7 tests) 389ms
+
+ Test Files  2 passed (2)
+      Tests  15 passed (15)
+   Start at  23:32:35
+   Duration  1.76s (transform 197ms, setup 7ms, collect 467ms, tests 998ms, environment 0ms, prepare 66ms)
+

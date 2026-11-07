@@ -1,0 +1,10 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ✓ |workspace| packages/domain/src/search/filter-ast.test.ts (117 tests) 44ms
+
+ Test Files  1 passed (1)
+      Tests  117 passed (117)
+   Start at  08:24:06
+   Duration  451ms (transform 75ms, setup 6ms, collect 134ms, tests 44ms, environment 0ms, prepare 45ms)
+

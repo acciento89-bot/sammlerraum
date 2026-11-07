@@ -1,0 +1,29 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| packages/domain/src/search/smart-collection-service.test.ts (1 test | 1 failed) 182ms
+   × owned dynamic saved queries PostgreSQL > reflects actual tag-service edits without storing membership rows 15ms
+     → Cannot find package 'zod' imported from '/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/search/smart-collection-service.ts'
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/search/smart-collection-service.test.ts > owned dynamic saved queries PostgreSQL > reflects actual tag-service edits without storing membership rows
+Error: Cannot find package 'zod' imported from '/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/search/smart-collection-service.ts'
+ ❯ packages/domain/src/search/smart-collection-service.ts:2:1
+      1| import { randomUUID, createHash } from "node:crypto";
+      2| import { z } from "zod";
+       | ^
+      3| import { Prisma } from "@sammlerraum/db/search-sql";
+      4| import { FilterValidationError } from "@sammlerraum/contracts/search";
+
+Caused by: Error: Failed to load url zod (resolved id: zod). Does the file exist?
+ ❯ loadAndTransform node_modules/.pnpm/vite@7.3.6_@types+node@24.5.2_jiti@2.7.0/node_modules/vite/dist/node/chunks/config.js:22739:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+   Start at  10:04:17
+   Duration  646ms (transform 62ms, setup 6ms, collect 149ms, tests 182ms, environment 0ms, prepare 76ms)
+

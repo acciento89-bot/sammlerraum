@@ -1,0 +1,11 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ✓ |workspace| packages/contracts/src/catalog-proposals.test.ts (2 tests) 5ms
+ ✓ |workspace| apps/web/src/lib/catalog-proposal-routes.test.ts (5 tests) 16ms
+
+ Test Files  2 passed (2)
+      Tests  7 passed (7)
+   Start at  23:13:59
+   Duration  403ms (transform 85ms, setup 10ms, collect 240ms, tests 21ms, environment 0ms, prepare 73ms)
+

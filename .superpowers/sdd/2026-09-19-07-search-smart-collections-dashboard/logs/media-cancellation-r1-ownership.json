@@ -1,0 +1,21 @@
+{
+  "time": "2026-10-18T08:44:41.563486+00:00",
+  "phase": "I1-full-production-owned-server",
+  "listeners": [
+    {
+      "port": "3000",
+      "process": "60007 59992 next-server (v16.3.5)",
+      "cwd": "p60007\nfcwd\nn/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/.next/standalone/apps/web"
+    },
+    {
+      "port": "3001",
+      "process": "60008 59992 /Users/piotrkaminski/.npm/_npx/68c89b22c3bbefa4/node_modules/node/bin/node /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/worker/dist/worker.cjs",
+      "cwd": "p60008\nfcwd\nn/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web"
+    },
+    {
+      "port": "3465",
+      "process": "59992 59986 node e2e/support/browser-test-server.mjs",
+      "cwd": "p59992\nfcwd\nn/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web"
+    }
+  ]
+}

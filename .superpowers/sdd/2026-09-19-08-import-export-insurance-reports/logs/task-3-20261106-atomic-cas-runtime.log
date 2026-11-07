@@ -1,0 +1,12 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ✓ |workspace| apps/worker/src/jobs/commit-import.test.ts (14 tests) 745ms
+ ✓ |workspace| apps/worker/src/run-wiring.test.ts (1 test) 293ms
+ ✓ |workspace| apps/worker/src/jobs/commit-import-runtime.test.ts (3 tests) 4ms
+
+ Test Files  3 passed (3)
+      Tests  18 passed (18)
+   Start at  22:22:34
+   Duration  1.90s (transform 277ms, setup 7ms, collect 468ms, tests 1.04s, environment 0ms, prepare 93ms)
+

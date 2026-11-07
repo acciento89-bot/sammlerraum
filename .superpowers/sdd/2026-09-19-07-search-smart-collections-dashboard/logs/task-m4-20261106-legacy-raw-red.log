@@ -1,0 +1,41 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/catalog/catalog-money-map.test.ts (10 tests | 1 failed | 9 skipped) 282ms
+   ↓ native coherent catalog money map > matches exact single-fact reads and observes revocation without leaking evidence
+   ↓ native coherent catalog money map > keeps all 10100 supported snapshot paths with bounded database round trips
+   ↓ native coherent catalog money map > distinguishes an empty existing map from a nonexistent revision
+   ↓ native coherent catalog money map > rejects ambiguous variant identities even if their money definitions do not overlap
+   ↓ native coherent catalog money map > fails closed on malformed stored arrays instead of exposing a database exception
+   ↓ native coherent catalog money map > authors, carries a direct origin, and invalidates equal raw money without changing snapshots
+   ↓ native coherent catalog money map > rejects stale same-raw interpretation tokens and non-moderator writes before any event is inserted
+   × native coherent catalog money map > allows actorless legacy invalidation only, never authoring or interpretation carry 20ms
+     → MONEY_FORBIDDEN
+   ↓ native coherent catalog money map > rolls back all earlier chunks when a later native batch fails
+   ↓ native coherent catalog money map > writes all 10100 supported money paths in native batches of at most 500
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/catalog/catalog-money-map.test.ts > native coherent catalog money map > allows actorless legacy invalidation only, never authoring or interpretation carry
+LegacyMoneyError: MONEY_FORBIDDEN
+ ❯ legacyMoneyFail packages/contracts/src/legacy-money.ts:27:9
+     25| }
+     26| export function legacyMoneyFail(code: LegacyMoneyError["code"]): never…
+     27|   throw new LegacyMoneyError(code);
+       |         ^
+     28| }
+     29| export const LegacyMoneyIdSchema = z
+ ❯ actor packages/domain/src/money/legacy-money-store.ts:83:12
+ ❯ applyCatalogMoneyRevision packages/domain/src/money/legacy-money-store.ts:496:12
+ ❯ callback packages/domain/src/catalog/catalog-money-map.test.ts:338:33
+ ❯ Proxy._transactionWithCallback node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:861:24
+ ❯ packages/domain/src/catalog/catalog-money-map.test.ts:338:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 9 skipped (10)
+   Start at  05:41:36
+   Duration  597ms (transform 86ms, setup 6ms, collect 164ms, tests 282ms, environment 0ms, prepare 35ms)
+

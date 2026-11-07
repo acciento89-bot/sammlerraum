@@ -1,0 +1,40 @@
+[WebServer] (node:4996) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 24 tests using 1 worker
+
+(node:4997) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [money-ui-desktop] › e2e/catalog-money-ui.spec.ts:358:3 › de: a copied canonical assertion opens its actual origin scope and is withdrawn there (2.7s)
+  ✓   2 [money-ui-desktop] › e2e/catalog-money-ui.spec.ts:358:3 › en: a copied canonical assertion opens its actual origin scope and is withdrawn there (1.4s)
+  ✓   3 [money-ui-desktop] › e2e/catalog-money-ui.spec.ts:456:5 › de: deliberate canonical REPLACE is separate from retained raw and uses the required proposal summary (1.3s)
+  ✘   4 [money-ui-desktop] › e2e/catalog-money-ui.spec.ts:456:5 › de: deliberate canonical CLEAR is separate from retained raw and uses the required proposal summary (726ms)
+Testing stopped early after 1 maximum allowed failures.
+
+
+  1) [money-ui-desktop] › e2e/catalog-money-ui.spec.ts:456:5 › de: deliberate canonical CLEAR is separate from retained raw and uses the required proposal summary 
+
+    Error: response.json: Protocol error (Network.getResponseBody): No data found for resource with given identifier
+    Response body is not available for a response that was navigated away from. Read response.body() before triggering any navigation.
+
+      478 |       const submitted = await response;
+      479 |       expect(submitted.status()).toBe(201);
+    > 480 |       const body = await submitted.json();
+          |                                    ^
+      481 |       expect(body.proposal.summary).toBe("Explicit canonical correction audit");
+      482 |       if (mode === "CLEAR") {
+      483 |         expect(body.proposal.moneyInterpretation.paths).toEqual([]);
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/catalog-money-ui.spec.ts:480:36
+
+    Error Context: test-results/catalog-money-ui-de-delibe-89ee8-e-required-proposal-summary-money-ui-desktop/error-context.md
+
+    Error Context: test-results/catalog-money-ui-de-delibe-89ee8-e-required-proposal-summary-money-ui-desktop/error-context.md
+
+  1 failed
+    [money-ui-desktop] › e2e/catalog-money-ui.spec.ts:456:5 › de: deliberate canonical CLEAR is separate from retained raw and uses the required proposal summary 
+  20 did not run
+  3 passed (8.1s)
+  1 error was not a part of any test, see above for details
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/catalog-money-ui.spec.ts e2e/legacy-money.spec.ts --workers=1 --grep deliberate canonical|new variant money|canonical monetary draft|unknown new-item commit|actual origin scope --max-failures=1

@@ -1,0 +1,98 @@
+[
+  {
+    "ownedRows": 1,
+    "query": "dashboard:summary",
+    "planningMs": 1.777,
+    "executionMs": 0.25,
+    "sharedHitBlocks": 15,
+    "sharedReadBlocks": 0
+  },
+  {
+    "ownedRows": 1,
+    "query": "dashboard:manual",
+    "planningMs": 1.441,
+    "executionMs": 0.288,
+    "sharedHitBlocks": 11,
+    "sharedReadBlocks": 0
+  },
+  {
+    "ownedRows": 1,
+    "query": "dashboard:distributions",
+    "planningMs": 1.27,
+    "executionMs": 0.167,
+    "sharedHitBlocks": 9,
+    "sharedReadBlocks": 0
+  },
+  {
+    "ownedRows": 1,
+    "query": "dashboard:rankings",
+    "planningMs": 1.104,
+    "executionMs": 0.161,
+    "sharedHitBlocks": 5,
+    "sharedReadBlocks": 0
+  },
+  {
+    "ownedRows": 50,
+    "query": "dashboard:summary",
+    "planningMs": 1.333,
+    "executionMs": 0.512,
+    "sharedHitBlocks": 710,
+    "sharedReadBlocks": 0
+  },
+  {
+    "ownedRows": 50,
+    "query": "dashboard:manual",
+    "planningMs": 1.184,
+    "executionMs": 0.451,
+    "sharedHitBlocks": 191,
+    "sharedReadBlocks": 0
+  },
+  {
+    "ownedRows": 50,
+    "query": "dashboard:distributions",
+    "planningMs": 1.014,
+    "executionMs": 0.286,
+    "sharedHitBlocks": 161,
+    "sharedReadBlocks": 0
+  },
+  {
+    "ownedRows": 50,
+    "query": "dashboard:rankings",
+    "planningMs": 0.9,
+    "executionMs": 0.304,
+    "sharedHitBlocks": 157,
+    "sharedReadBlocks": 0
+  },
+  {
+    "ownedRows": 500,
+    "query": "dashboard:summary",
+    "planningMs": 1.197,
+    "executionMs": 1.54,
+    "sharedHitBlocks": 1159,
+    "sharedReadBlocks": 0
+  },
+  {
+    "ownedRows": 500,
+    "query": "dashboard:manual",
+    "planningMs": 1.196,
+    "executionMs": 1.541,
+    "sharedHitBlocks": 917,
+    "sharedReadBlocks": 0
+  },
+  {
+    "ownedRows": 500,
+    "query": "dashboard:distributions",
+    "planningMs": 1.065,
+    "executionMs": 1.009,
+    "sharedHitBlocks": 571,
+    "sharedReadBlocks": 0
+  },
+  {
+    "ownedRows": 500,
+    "query": "dashboard:rankings",
+    "planningMs": 0.959,
+    "executionMs": 1.08,
+    "sharedHitBlocks": 567,
+    "sharedReadBlocks": 0
+  }
+]

@@ -1,0 +1,16 @@
+
+> @sammlerraum/worker@ build /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/worker
+> esbuild src/run.ts --bundle --platform=node --format=cjs --external:sharp --outfile=dist/worker.cjs && esbuild src/main.ts --bundle --platform=node --format=cjs --outfile=dist/main.cjs && esbuild src/maintenance/initialize-catalog.ts --bundle --platform=node --format=cjs --outfile=dist/initialize-catalog.cjs
+
+
+  dist/worker.cjs  7.0mb ⚠️
+
+⚡ Done in 91ms
+
+  dist/main.cjs  4.8kb
+
+⚡ Done in 2ms
+
+  dist/initialize-catalog.cjs  5.7mb ⚠️
+
+⚡ Done in 78ms

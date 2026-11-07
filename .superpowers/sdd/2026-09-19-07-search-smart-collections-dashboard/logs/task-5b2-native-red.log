@@ -1,0 +1,91 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| packages/domain/src/search/search-reference-service.integration.test.ts (2 tests | 2 failed) 196ms
+   × bounded search reference native behavior > returns closed input-ordered owned and unavailable references (baseline raw metadata cannot) 9ms
+     → expected [ { …(2) } ] to deeply equal [ { …(3) }, { …(3) }, { …(3) }, …(2) ]
+   × bounded search reference native behavior > returns retained inactive condition metadata (legacy active-only reader cannot) 2ms
+     → expected null to match object { Object (active, options) }
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/search/search-reference-service.integration.test.ts > bounded search reference native behavior > returns closed input-ordered owned and unavailable references (baseline raw metadata cannot)
+AssertionError: expected [ { …(2) } ] to deeply equal [ { …(3) }, { …(3) }, { …(3) }, …(2) ]
+
+- Expected
++ Received
+
+  [
+    {
+-     "collection": null,
+-     "id": "2fadbbd2-c7c0-4f01-8899-59413d5da543",
+-     "state": "UNAVAILABLE",
+-   },
+-   {
+-     "collection": null,
+-     "id": "0bc99f35-3247-4bcb-86ea-63b5e9b6086e",
+-     "state": "UNAVAILABLE",
+-   },
+-   {
+-     "collection": {
+      "id": "39715f78-918a-441c-96f6-4283da480bcd",
+      "name": "Owned label",
+-     },
+-     "id": "39715f78-918a-441c-96f6-4283da480bcd",
+-     "state": "AVAILABLE",
+-   },
+-   {
+-     "collection": null,
+-     "id": "8b853fb8-07f3-42c2-bdca-b4ff6bc8bbdb",
+-     "state": "UNAVAILABLE",
+-   },
+-   {
+-     "collection": null,
+-     "id": "532af13d-6e5a-460e-87a0-a6c58cb83189",
+-     "state": "UNAVAILABLE",
+    },
+  ]
+
+ ❯ packages/domain/src/search/search-reference-service.integration.test.ts:39:18
+     37|     const ids = [missing,publicForeign,owned,deleted,privateForeign];
+     38|     const rows = await db!.collection.findMany({where:{id:{in:ids},own…
+     39|     expect(rows).toEqual(ids.map(id=> id === owned ? {id,state:"AVAILA…
+       |                  ^
+     40|     expect(definition).toBeTruthy();
+     41|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |workspace| packages/domain/src/search/search-reference-service.integration.test.ts > bounded search reference native behavior > returns retained inactive condition metadata (legacy active-only reader cannot)
+AssertionError: expected null to match object { Object (active, options) }
+
+- Expected: 
+{
+  "active": false,
+  "options": [
+    {
+      "active": false,
+      "id": "84ac7126-03c6-4a8e-a28e-0082d7e49554",
+    },
+  ],
+}
+
++ Received: 
+null
+
+ ❯ packages/domain/src/search/search-reference-service.integration.test.ts:44:20
+     42|   it("returns retained inactive condition metadata (legacy active-only…
+     43|     const result = await createConditionService(db!,owner).getConditio…
+     44|     expect(result).toMatchObject({active:false,options:[{id:option,act…
+       |                    ^
+     45|   });
+     46| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed (2)
+   Start at  12:20:01
+   Duration  557ms (transform 83ms, setup 6ms, collect 178ms, tests 196ms, environment 0ms, prepare 47ms)
+

@@ -1,0 +1,37 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| packages/domain/src/valuations/valuation-service.test.ts (7 tests | 1 failed) 640ms
+   ✓ private manual valuation PostgreSQL > appends exact per-unit amounts without overwriting and preserves case-sensitive authors 26ms
+   × private manual valuation PostgreSQL > orders latest by observed time and resolves equal-millisecond ties with createdAt then UUID 17ms
+     → expected '2025-01-31T23:00:00.000Z' to be '2025-02-01T00:00:00.000Z' // Object.is equality
+   ✓ private manual valuation PostgreSQL > bounds pages and validates strict cursor/time/input without caller-authored identity 184ms
+   ✓ private manual valuation PostgreSQL > hides foreign/deleted rows but permits inactive reads and retains soft-deleted history 47ms
+   ✓ private manual valuation PostgreSQL > keeps per-unit history through actual quantity changes and leaves a split unauthored 20ms
+   ✓ private manual valuation PostgreSQL > enforces native ownership, actor, basis, amount, scale, note and finite timestamp guards 90ms
+   ✓ private manual valuation PostgreSQL > serializes the append quota and rejects the 10001st estimate without pruning 158ms
+ ✓ |workspace| packages/domain/src/money/money.test.ts (50 tests) 4ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/valuations/valuation-service.test.ts > private manual valuation PostgreSQL > orders latest by observed time and resolves equal-millisecond ties with createdAt then UUID
+AssertionError: expected '2025-01-31T23:00:00.000Z' to be '2025-02-01T00:00:00.000Z' // Object.is equality
+
+Expected: "2025-02-01T00:00:00.000Z"
+Received: "2025-01-31T23:00:00.000Z"
+
+ ❯ packages/domain/src/valuations/valuation-service.test.ts:48:46
+     46|     const latest = await service().latestManualValuation(target.id);
+     47|     expect(latest!.id).toBe(ids[1]);
+     48|     expect(latest!.observedAt.toISOString()).toBe("2025-02-01T00:00:00…
+       |                                              ^
+     49|     const first = await service().listManualValuations(target.id, { li…
+     50|     expect(first.records.map((r: {id: string}) => r.id)).toEqual([ids[…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  1 failed | 56 passed (57)
+   Start at  03:54:34
+   Duration  1.09s (transform 80ms, setup 7ms, collect 169ms, tests 644ms, environment 0ms, prepare 66ms)

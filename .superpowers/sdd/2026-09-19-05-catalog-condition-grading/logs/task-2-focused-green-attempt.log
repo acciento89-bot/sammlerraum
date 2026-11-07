@@ -1,0 +1,44 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ✓ |workspace| packages/domain/src/catalog/catalog-service.test.ts (2 tests) 9ms
+(node:26505) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+ ❯ |workspace| packages/domain/src/catalog/catalog-service.integration.test.ts (8 tests | 1 failed) 366ms
+   ✓ revisioned global catalog PostgreSQL > guards persisted revision snapshots against database UPDATE 50ms
+   ✓ revisioned global catalog PostgreSQL > keeps same-title language and edition variants separate and preserves authored text 34ms
+   ✓ revisioned global catalog PostgreSQL > stores typed entry and variant attributes canonically and rejects foreign definitions atomically 35ms
+   ✓ revisioned global catalog PostgreSQL > retains original identifier values, namespaces, target and provenance in past snapshots 30ms
+   × revisioned global catalog PostgreSQL > serializes concurrent writes with expected-revision conflicts and checks stale no-ops 16ms
+     → expected 3 to be 2 // Object.is equality
+   ✓ revisioned global catalog PostgreSQL > shares the caller transaction so failed approval work rolls back state and snapshots 13ms
+   ✓ revisioned global catalog PostgreSQL > records rollback as a new revision while retaining inactive UUID identities and old snapshots 37ms
+   ✓ revisioned global catalog PostgreSQL > strictly bounds maintenance inputs and does not write personal data or unsafe provenance 8ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/catalog/catalog-service.integration.test.ts > revisioned global catalog PostgreSQL > serializes concurrent writes with expected-revision conflicts and checks stale no-ops
+AssertionError: expected 3 to be 2 // Object.is equality
+
+- Expected
++ Received
+
+- 2
++ 3
+
+ ❯ packages/domain/src/catalog/catalog-service.integration.test.ts:137:82
+    135|     expect((await prisma!.catalogRevision.findMany({ where: { entryId:…
+    136|     await expect(service().updateCatalogEntry(entry.state.id, 1, {})).…
+    137|     expect((await service().updateCatalogEntry(entry.state.id, 2, {}))…
+       |                                                                                  ^
+    138|   });
+    139| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  1 failed | 9 passed (10)
+   Start at  22:39:50
+   Duration  721ms (transform 74ms, setup 12ms, collect 213ms, tests 375ms, environment 0ms, prepare 89ms)
+

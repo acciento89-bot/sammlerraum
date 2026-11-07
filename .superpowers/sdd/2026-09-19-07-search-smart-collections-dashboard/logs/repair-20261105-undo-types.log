@@ -1,0 +1,4 @@
+
+> @sammlerraum/web@ typecheck /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web
+> tsc --noEmit --project tsconfig.json
+

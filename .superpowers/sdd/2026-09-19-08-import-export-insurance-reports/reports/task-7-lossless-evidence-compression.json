@@ -1,0 +1,18 @@
+[
+  {
+    "original": ".superpowers/sdd/2026-09-19-08-import-export-insurance-reports/logs/task-7-20261107-review-delivery-red.log",
+    "retainedCompressed": ".superpowers/sdd/2026-09-19-08-import-export-insurance-reports/logs/task-7-20261107-review-delivery-red.log.gz",
+    "originalSha256": "8b9dd5cda5d42dc58d7dfa0aec1a82bf7103dc61cb6cae1d40674eeb9bcad741",
+    "originalBytes": 26006861,
+    "compressedBytes": 3659572,
+    "exactDecompressionVerified": true
+  },
+  {
+    "original": ".superpowers/sdd/2026-09-19-08-import-export-insurance-reports/review-08fa12e..b2d7faa.diff",
+    "retainedCompressed": ".superpowers/sdd/2026-09-19-08-import-export-insurance-reports/review-08fa12e..b2d7faa.diff.gz",
+    "originalSha256": "976faffaaaf0b85f71b4b875d69f204745185755d5f8e8e93013d19ac7f01568",
+    "originalBytes": 5880306,
+    "compressedBytes": 565360,
+    "exactDecompressionVerified": true
+  }
+]

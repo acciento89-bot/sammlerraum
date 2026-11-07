@@ -1,0 +1,383 @@
+[WebServer] (node:14569) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 12 tests using 1 worker
+
+(node:14572) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘   1 [desktop] › e2e/valuations.spec.ts:137:5 › private valuation history › production manual journey (de) (409ms)
+(node:14580) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘   2 [desktop] › e2e/valuations.spec.ts:358:5 › private valuation history › external UI transport rendering from real ingestion and query (de) (288ms)
+(node:14586) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘   3 [desktop] › e2e/valuations.spec.ts:137:5 › private valuation history › production manual journey (en) (286ms)
+(node:14593) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘   4 [desktop] › e2e/valuations.spec.ts:358:5 › private valuation history › external UI transport rendering from real ingestion and query (en) (280ms)
+(node:14600) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘   5 [desktop] › e2e/valuations.spec.ts:632:3 › private valuation history › production confirmed save, failed refresh, invalid read and session expiry (278ms)
+(node:14606) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘   6 [desktop] › e2e/valuations.spec.ts:711:3 › private valuation history › production response races and unknown save outcome never replay writes (283ms)
+(node:14612) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘   7 [mobile] › e2e/valuations.spec.ts:137:5 › private valuation history › production manual journey (de) (284ms)
+(node:14618) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘   8 [mobile] › e2e/valuations.spec.ts:358:5 › private valuation history › external UI transport rendering from real ingestion and query (de) (285ms)
+(node:14624) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘   9 [mobile] › e2e/valuations.spec.ts:137:5 › private valuation history › production manual journey (en) (279ms)
+(node:14630) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  10 [mobile] › e2e/valuations.spec.ts:358:5 › private valuation history › external UI transport rendering from real ingestion and query (en) (282ms)
+(node:14636) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  11 [mobile] › e2e/valuations.spec.ts:632:3 › private valuation history › production confirmed save, failed refresh, invalid read and session expiry (282ms)
+(node:14642) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  12 [mobile] › e2e/valuations.spec.ts:711:3 › private valuation history › production response races and unknown save outcome never replay writes (300ms)
+
+
+  1) [desktop] › e2e/valuations.spec.ts:137:5 › private valuation history › production manual journey (de) 
+
+    MarketDataError: MARKET_INPUT_INVALID
+
+       at ../../../packages/domain/src/market-data/validation.ts:23
+
+      21 | }
+      22 | export const invalid = (): never => {
+    > 23 |   throw new MarketDataError("MARKET_INPUT_INVALID");
+         |         ^
+      24 | };
+      25 | export function object(input: unknown, keys?: readonly string[]): Record<string, unknown> {
+      26 |   if (
+        at invalid (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/validation.ts:23:9)
+        at text (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/validation.ts:50:12)
+        at qualifiers (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/validation.ts:133:37)
+        at map (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/validation.ts:205:15)
+        at parseBatch (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/validation.ts:159:29)
+        at prepareRecord (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/market-data-service.ts:131:20)
+        at Object.recordObservations (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/market-data-service.ts:190:22)
+        at valuationFixture (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/support/valuation-fixture.ts:116:20)
+        at /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/valuations.spec.ts:138:17
+
+    Error Context: test-results/valuations-private-valuati-164a5-oduction-manual-journey-de--desktop/error-context.md
+
+    Error Context: test-results/valuations-private-valuati-164a5-oduction-manual-journey-de--desktop/error-context.md
+
+  2) [desktop] › e2e/valuations.spec.ts:358:5 › private valuation history › external UI transport rendering from real ingestion and query (de) 
+
+    MarketDataError: MARKET_INPUT_INVALID
+
+       at ../../../packages/domain/src/market-data/validation.ts:23
+
+      21 | }
+      22 | export const invalid = (): never => {
+    > 23 |   throw new MarketDataError("MARKET_INPUT_INVALID");
+         |         ^
+      24 | };
+      25 | export function object(input: unknown, keys?: readonly string[]): Record<string, unknown> {
+      26 |   if (
+        at invalid (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/validation.ts:23:9)
+        at text (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/validation.ts:50:12)
+        at qualifiers (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/validation.ts:133:37)
+        at map (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/validation.ts:205:15)
+        at parseBatch (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/validation.ts:159:29)
+        at prepareRecord (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/market-data-service.ts:131:20)
+        at Object.recordObservations (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/market-data-service.ts:190:22)
+        at valuationFixture (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/support/valuation-fixture.ts:116:20)
+        at /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/valuations.spec.ts:361:17
+
+    Error Context: test-results/valuations-private-valuati-100ba-eal-ingestion-and-query-de--desktop/error-context.md
+
+    Error Context: test-results/valuations-private-valuati-100ba-eal-ingestion-and-query-de--desktop/error-context.md
+
+  3) [desktop] › e2e/valuations.spec.ts:137:5 › private valuation history › production manual journey (en) 
+
+    MarketDataError: MARKET_INPUT_INVALID
+
+       at ../../../packages/domain/src/market-data/validation.ts:23
+
+      21 | }
+      22 | export const invalid = (): never => {
+    > 23 |   throw new MarketDataError("MARKET_INPUT_INVALID");
+         |         ^
+      24 | };
+      25 | export function object(input: unknown, keys?: readonly string[]): Record<string, unknown> {
+      26 |   if (
+        at invalid (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/validation.ts:23:9)
+        at text (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/validation.ts:50:12)
+        at qualifiers (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/validation.ts:133:37)
+        at map (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/validation.ts:205:15)
+        at parseBatch (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/validation.ts:159:29)
+        at prepareRecord (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/market-data-service.ts:131:20)
+        at Object.recordObservations (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/market-data-service.ts:190:22)
+        at valuationFixture (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/support/valuation-fixture.ts:116:20)
+        at /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/valuations.spec.ts:138:17
+
+    Error Context: test-results/valuations-private-valuati-7d031-oduction-manual-journey-en--desktop/error-context.md
+
+    Error Context: test-results/valuations-private-valuati-7d031-oduction-manual-journey-en--desktop/error-context.md
+
+  4) [desktop] › e2e/valuations.spec.ts:358:5 › private valuation history › external UI transport rendering from real ingestion and query (en) 
+
+    MarketDataError: MARKET_INPUT_INVALID
+
+       at ../../../packages/domain/src/market-data/validation.ts:23
+
+      21 | }
+      22 | export const invalid = (): never => {
+    > 23 |   throw new MarketDataError("MARKET_INPUT_INVALID");
+         |         ^
+      24 | };
+      25 | export function object(input: unknown, keys?: readonly string[]): Record<string, unknown> {
+      26 |   if (
+        at invalid (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/validation.ts:23:9)
+        at text (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/validation.ts:50:12)
+        at qualifiers (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/validation.ts:133:37)
+        at map (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/validation.ts:205:15)
+        at parseBatch (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/validation.ts:159:29)
+        at prepareRecord (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/market-data-service.ts:131:20)
+        at Object.recordObservations (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/market-data-service.ts:190:22)
+        at valuationFixture (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/support/valuation-fixture.ts:116:20)
+        at /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/valuations.spec.ts:361:17
+
+    Error Context: test-results/valuations-private-valuati-7c7b2-eal-ingestion-and-query-en--desktop/error-context.md
+
+    Error Context: test-results/valuations-private-valuati-7c7b2-eal-ingestion-and-query-en--desktop/error-context.md
+
+  5) [desktop] › e2e/valuations.spec.ts:632:3 › private valuation history › production confirmed save, failed refresh, invalid read and session expiry 
+
+    MarketDataError: MARKET_INPUT_INVALID
+
+       at ../../../packages/domain/src/market-data/validation.ts:23
+
+      21 | }
+      22 | export const invalid = (): never => {
+    > 23 |   throw new MarketDataError("MARKET_INPUT_INVALID");
+         |         ^
+      24 | };
+      25 | export function object(input: unknown, keys?: readonly string[]): Record<string, unknown> {
+      26 |   if (
+        at invalid (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/validation.ts:23:9)
+        at text (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/validation.ts:50:12)
+        at qualifiers (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/validation.ts:133:37)
+        at map (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/validation.ts:205:15)
+        at parseBatch (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/validation.ts:159:29)
+        at prepareRecord (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/market-data-service.ts:131:20)
+        at Object.recordObservations (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/market-data-service.ts:190:22)
+        at valuationFixture (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/support/valuation-fixture.ts:116:20)
+        at /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/valuations.spec.ts:635:15
+
+    Error Context: test-results/valuations-private-valuati-e8dc5-lid-read-and-session-expiry-desktop/error-context.md
+
+    Error Context: test-results/valuations-private-valuati-e8dc5-lid-read-and-session-expiry-desktop/error-context.md
+
+  6) [desktop] › e2e/valuations.spec.ts:711:3 › private valuation history › production response races and unknown save outcome never replay writes 
+
+    MarketDataError: MARKET_INPUT_INVALID
+
+       at ../../../packages/domain/src/market-data/validation.ts:23
+
+      21 | }
+      22 | export const invalid = (): never => {
+    > 23 |   throw new MarketDataError("MARKET_INPUT_INVALID");
+         |         ^
+      24 | };
+      25 | export function object(input: unknown, keys?: readonly string[]): Record<string, unknown> {
+      26 |   if (
+        at invalid (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/validation.ts:23:9)
+        at text (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/validation.ts:50:12)
+        at qualifiers (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/validation.ts:133:37)
+        at map (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/validation.ts:205:15)
+        at parseBatch (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/validation.ts:159:29)
+        at prepareRecord (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/market-data-service.ts:131:20)
+        at Object.recordObservations (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/market-data-service.ts:190:22)
+        at valuationFixture (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/support/valuation-fixture.ts:116:20)
+        at /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/valuations.spec.ts:714:15
+
+    Error Context: test-results/valuations-private-valuati-8a5c1-outcome-never-replay-writes-desktop/error-context.md
+
+    Error Context: test-results/valuations-private-valuati-8a5c1-outcome-never-replay-writes-desktop/error-context.md
+
+  7) [mobile] › e2e/valuations.spec.ts:137:5 › private valuation history › production manual journey (de) 
+
+    MarketDataError: MARKET_INPUT_INVALID
+
+       at ../../../packages/domain/src/market-data/validation.ts:23
+
+      21 | }
+      22 | export const invalid = (): never => {
+    > 23 |   throw new MarketDataError("MARKET_INPUT_INVALID");
+         |         ^
+      24 | };
+      25 | export function object(input: unknown, keys?: readonly string[]): Record<string, unknown> {
+      26 |   if (
+        at invalid (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/validation.ts:23:9)
+        at text (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/validation.ts:50:12)
+        at qualifiers (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/validation.ts:133:37)
+        at map (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/validation.ts:205:15)
+        at parseBatch (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/validation.ts:159:29)
+        at prepareRecord (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/market-data-service.ts:131:20)
+        at Object.recordObservations (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/market-data-service.ts:190:22)
+        at valuationFixture (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/support/valuation-fixture.ts:116:20)
+        at /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/valuations.spec.ts:138:17
+
+    Error Context: test-results/valuations-private-valuati-164a5-oduction-manual-journey-de--mobile/error-context.md
+
+    Error Context: test-results/valuations-private-valuati-164a5-oduction-manual-journey-de--mobile/error-context.md
+
+  8) [mobile] › e2e/valuations.spec.ts:358:5 › private valuation history › external UI transport rendering from real ingestion and query (de) 
+
+    MarketDataError: MARKET_INPUT_INVALID
+
+       at ../../../packages/domain/src/market-data/validation.ts:23
+
+      21 | }
+      22 | export const invalid = (): never => {
+    > 23 |   throw new MarketDataError("MARKET_INPUT_INVALID");
+         |         ^
+      24 | };
+      25 | export function object(input: unknown, keys?: readonly string[]): Record<string, unknown> {
+      26 |   if (
+        at invalid (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/validation.ts:23:9)
+        at text (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/validation.ts:50:12)
+        at qualifiers (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/validation.ts:133:37)
+        at map (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/validation.ts:205:15)
+        at parseBatch (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/validation.ts:159:29)
+        at prepareRecord (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/market-data-service.ts:131:20)
+        at Object.recordObservations (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/market-data-service.ts:190:22)
+        at valuationFixture (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/support/valuation-fixture.ts:116:20)
+        at /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/valuations.spec.ts:361:17
+
+    Error Context: test-results/valuations-private-valuati-100ba-eal-ingestion-and-query-de--mobile/error-context.md
+
+    Error Context: test-results/valuations-private-valuati-100ba-eal-ingestion-and-query-de--mobile/error-context.md
+
+  9) [mobile] › e2e/valuations.spec.ts:137:5 › private valuation history › production manual journey (en) 
+
+    MarketDataError: MARKET_INPUT_INVALID
+
+       at ../../../packages/domain/src/market-data/validation.ts:23
+
+      21 | }
+      22 | export const invalid = (): never => {
+    > 23 |   throw new MarketDataError("MARKET_INPUT_INVALID");
+         |         ^
+      24 | };
+      25 | export function object(input: unknown, keys?: readonly string[]): Record<string, unknown> {
+      26 |   if (
+        at invalid (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/validation.ts:23:9)
+        at text (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/validation.ts:50:12)
+        at qualifiers (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/validation.ts:133:37)
+        at map (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/validation.ts:205:15)
+        at parseBatch (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/validation.ts:159:29)
+        at prepareRecord (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/market-data-service.ts:131:20)
+        at Object.recordObservations (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/market-data-service.ts:190:22)
+        at valuationFixture (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/support/valuation-fixture.ts:116:20)
+        at /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/valuations.spec.ts:138:17
+
+    Error Context: test-results/valuations-private-valuati-7d031-oduction-manual-journey-en--mobile/error-context.md
+
+    Error Context: test-results/valuations-private-valuati-7d031-oduction-manual-journey-en--mobile/error-context.md
+
+  10) [mobile] › e2e/valuations.spec.ts:358:5 › private valuation history › external UI transport rendering from real ingestion and query (en) 
+
+    MarketDataError: MARKET_INPUT_INVALID
+
+       at ../../../packages/domain/src/market-data/validation.ts:23
+
+      21 | }
+      22 | export const invalid = (): never => {
+    > 23 |   throw new MarketDataError("MARKET_INPUT_INVALID");
+         |         ^
+      24 | };
+      25 | export function object(input: unknown, keys?: readonly string[]): Record<string, unknown> {
+      26 |   if (
+        at invalid (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/validation.ts:23:9)
+        at text (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/validation.ts:50:12)
+        at qualifiers (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/validation.ts:133:37)
+        at map (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/validation.ts:205:15)
+        at parseBatch (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/validation.ts:159:29)
+        at prepareRecord (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/market-data-service.ts:131:20)
+        at Object.recordObservations (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/market-data-service.ts:190:22)
+        at valuationFixture (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/support/valuation-fixture.ts:116:20)
+        at /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/valuations.spec.ts:361:17
+
+    Error Context: test-results/valuations-private-valuati-7c7b2-eal-ingestion-and-query-en--mobile/error-context.md
+
+    Error Context: test-results/valuations-private-valuati-7c7b2-eal-ingestion-and-query-en--mobile/error-context.md
+
+  11) [mobile] › e2e/valuations.spec.ts:632:3 › private valuation history › production confirmed save, failed refresh, invalid read and session expiry 
+
+    MarketDataError: MARKET_INPUT_INVALID
+
+       at ../../../packages/domain/src/market-data/validation.ts:23
+
+      21 | }
+      22 | export const invalid = (): never => {
+    > 23 |   throw new MarketDataError("MARKET_INPUT_INVALID");
+         |         ^
+      24 | };
+      25 | export function object(input: unknown, keys?: readonly string[]): Record<string, unknown> {
+      26 |   if (
+        at invalid (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/validation.ts:23:9)
+        at text (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/validation.ts:50:12)
+        at qualifiers (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/validation.ts:133:37)
+        at map (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/validation.ts:205:15)
+        at parseBatch (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/validation.ts:159:29)
+        at prepareRecord (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/market-data-service.ts:131:20)
+        at Object.recordObservations (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/market-data-service.ts:190:22)
+        at valuationFixture (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/support/valuation-fixture.ts:116:20)
+        at /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/valuations.spec.ts:635:15
+
+    Error Context: test-results/valuations-private-valuati-e8dc5-lid-read-and-session-expiry-mobile/error-context.md
+
+    Error Context: test-results/valuations-private-valuati-e8dc5-lid-read-and-session-expiry-mobile/error-context.md
+
+  12) [mobile] › e2e/valuations.spec.ts:711:3 › private valuation history › production response races and unknown save outcome never replay writes 
+
+    MarketDataError: MARKET_INPUT_INVALID
+
+       at ../../../packages/domain/src/market-data/validation.ts:23
+
+      21 | }
+      22 | export const invalid = (): never => {
+    > 23 |   throw new MarketDataError("MARKET_INPUT_INVALID");
+         |         ^
+      24 | };
+      25 | export function object(input: unknown, keys?: readonly string[]): Record<string, unknown> {
+      26 |   if (
+        at invalid (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/validation.ts:23:9)
+        at text (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/validation.ts:50:12)
+        at qualifiers (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/validation.ts:133:37)
+        at map (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/validation.ts:205:15)
+        at parseBatch (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/validation.ts:159:29)
+        at prepareRecord (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/market-data-service.ts:131:20)
+        at Object.recordObservations (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/market-data/market-data-service.ts:190:22)
+        at valuationFixture (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/support/valuation-fixture.ts:116:20)
+        at /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/valuations.spec.ts:714:15
+
+    Error Context: test-results/valuations-private-valuati-8a5c1-outcome-never-replay-writes-mobile/error-context.md
+
+    Error Context: test-results/valuations-private-valuati-8a5c1-outcome-never-replay-writes-mobile/error-context.md
+
+  12 failed
+    [desktop] › e2e/valuations.spec.ts:137:5 › private valuation history › production manual journey (de) 
+    [desktop] › e2e/valuations.spec.ts:358:5 › private valuation history › external UI transport rendering from real ingestion and query (de) 
+    [desktop] › e2e/valuations.spec.ts:137:5 › private valuation history › production manual journey (en) 
+    [desktop] › e2e/valuations.spec.ts:358:5 › private valuation history › external UI transport rendering from real ingestion and query (en) 
+    [desktop] › e2e/valuations.spec.ts:632:3 › private valuation history › production confirmed save, failed refresh, invalid read and session expiry 
+    [desktop] › e2e/valuations.spec.ts:711:3 › private valuation history › production response races and unknown save outcome never replay writes 
+    [mobile] › e2e/valuations.spec.ts:137:5 › private valuation history › production manual journey (de) 
+    [mobile] › e2e/valuations.spec.ts:358:5 › private valuation history › external UI transport rendering from real ingestion and query (de) 
+    [mobile] › e2e/valuations.spec.ts:137:5 › private valuation history › production manual journey (en) 
+    [mobile] › e2e/valuations.spec.ts:358:5 › private valuation history › external UI transport rendering from real ingestion and query (en) 
+    [mobile] › e2e/valuations.spec.ts:632:3 › private valuation history › production confirmed save, failed refresh, invalid read and session expiry 
+    [mobile] › e2e/valuations.spec.ts:711:3 › private valuation history › production response races and unknown save outcome never replay writes 
+undefined
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/valuations.spec.ts --workers=1

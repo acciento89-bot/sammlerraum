@@ -1,0 +1,13 @@
+{
+  "time": "2026-10-18T08:48:17.935420+00:00",
+  "noTestPortListeners": true,
+  "finalSourceHashMatches": true,
+  "productDiffEmpty": true,
+  "unchangedProductAndBuildHashes": {
+    "apps/web/src/components/media/media-upload.tsx": true,
+    "apps/web/src/components/media/item-gallery-editor.tsx": true,
+    "apps/web/.next/BUILD_ID": true,
+    "apps/web/.next/standalone/apps/web/server.js": true,
+    "apps/worker/dist/worker.cjs": true
+  }
+}

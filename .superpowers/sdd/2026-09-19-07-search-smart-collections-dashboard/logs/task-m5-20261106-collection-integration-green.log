@@ -1,0 +1,52 @@
+[WebServer] (node:19324) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 22 tests using 1 worker
+
+(node:19325) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [desktop] › e2e/collections-items.spec.ts:239:3 › localized collection and item management › collector creates a nested collection and item with custom field and location (3.0s)
+  ✓   2 [desktop] › e2e/collections-items.spec.ts:394:3 › localized collection and item management › unrelated edits preserve nested placement, currencies, and canonical tags (2.3s)
+  ✓   3 [desktop] › e2e/collections-items.spec.ts:507:3 › localized collection and item management › a rejected core request releases the form for retry (565ms)
+  ✓   4 [desktop] › e2e/collections-items.spec.ts:533:3 › localized collection and item management › failed collection options can retry without losing the item draft (602ms)
+  ✓   5 [desktop] › e2e/collections-items.spec.ts:567:3 › localized collection and item management › failed collection detail load shows a retry instead of endless loading (553ms)
+  ✓   6 [desktop] › e2e/collections-items.spec.ts:600:3 › localized collection and item management › metadata retry reuses the item and does not repeat a successful location (753ms)
+  ✘   7 [desktop] › e2e/collections-items.spec.ts:674:3 › localized collection and item management › invalid later custom fields cause zero writes before correction (5.6s)
+Testing stopped early after 1 maximum allowed failures.
+
+
+  1) [desktop] › e2e/collections-items.spec.ts:674:3 › localized collection and item management › invalid later custom fields cause zero writes before correction 
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: locator('.management-shell p[role=\'alert\']')
+    Expected substring: "Bitte prüfe die benutzerdefinierten Felder."
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toContainText" locator('.management-shell p[role=\'alert\']') with timeout 5000ms
+      - waiting for locator('.management-shell p[role=\'alert\']')
+
+
+      725 |       });
+      726 |       await page.getByRole("button", { name: labels.saveItem }).click();
+    > 727 |       await expect(page.locator(".management-shell p[role='alert']")).toContainText(
+          |                                                                       ^
+      728 |         labels.fieldInvalid,
+      729 |       );
+      730 |       await page.waitForTimeout(250);
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/collections-items.spec.ts:727:71
+
+    Error Context: test-results/collections-items-localize-fe794-ro-writes-before-correction-desktop/error-context.md
+
+    Error Context: test-results/collections-items-localize-fe794-ro-writes-before-correction-desktop/error-context.md
+
+  1 failed
+    [desktop] › e2e/collections-items.spec.ts:674:3 › localized collection and item management › invalid later custom fields cause zero writes before correction 
+  15 did not run
+  6 passed (15.7s)
+  1 error was not a part of any test, see above for details
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/collections-items.spec.ts --workers=1 --max-failures=1

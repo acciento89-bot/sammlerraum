@@ -1,0 +1,26 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/web/src/components/search/deferred-focus.test.ts [ apps/web/src/components/search/deferred-focus.test.ts ]
+Error: Cannot find module './deferred-focus' imported from '/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/src/components/search/deferred-focus.test.ts'
+ ❯ apps/web/src/components/search/deferred-focus.test.ts:2:1
+      1| import { afterEach, expect, it, vi } from "vitest";
+      2| import { DeferredFocus } from "./deferred-focus";
+       | ^
+      3| afterEach(()=>vi.unstubAllGlobals());
+      4| function fixture(){
+
+Caused by: Error: Failed to load url ./deferred-focus (resolved id: ./deferred-focus) in /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/src/components/search/deferred-focus.test.ts. Does the file exist?
+ ❯ loadAndTransform ../../../../SSK%20SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/node_modules/.pnpm/vite@7.3.6_@types+node@24.5.2_jiti@2.7.0/node_modules/vite/dist/node/chunks/config.js:22739:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  no tests
+   Start at  22:02:47
+   Duration  264ms (transform 24ms, setup 5ms, collect 0ms, tests 0ms, environment 0ms, prepare 59ms)
+

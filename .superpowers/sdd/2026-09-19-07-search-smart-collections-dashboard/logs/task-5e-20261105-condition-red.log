@@ -1,0 +1,72 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/dashboard/dashboard-service.test.ts (25 tests | 1 failed | 24 skipped) 193ms
+   ↓ owned dashboard PostgreSQL > weights latest own estimates without leaking foreign money and includes empty owned collections
+   ↓ dashboard actual observations and filters > rejects unsupported latest currency before returning monetary groups or noncomparable history
+   ↓ dashboard actual observations and filters > rejects mismatched latest exponent before returning monetary groups or noncomparable history
+   ↓ dashboard actual observations and filters > rejects unsupported immediate prior currency before returning monetary groups or noncomparable history
+   ↓ dashboard actual observations and filters > rejects mismatched immediate prior exponent before returning monetary groups or noncomparable history
+   ↓ dashboard actual observations and filters > selects latest before denomination and never turns absent or incomparable history into zero
+   ↓ dashboard actual observations and filters > requires distinct observation times and uses exact large current-quantity sums
+   ↓ dashboard actual observations and filters > uses disjoint lifecycles and excludes deleted parents while keeping collection counts independent
+   × dashboard actual observations and filters > counts grading records separately, retains retired conditions and distinguishes usable media 192ms
+     → expected { …(19) } to match object { grading: { …(3) }, …(3) }
+(57 matching properties omitted from actual)
+   ↓ dashboard actual observations and filters > keeps unavailable producer metrics explicit and rejects unsupported leaves even for empty matches
+   ↓ dashboard bounded sets and consistency > matches actual search selection and does not use a limited page as inventory
+   ↓ dashboard bounded sets and consistency > caps per-denomination value rankings and recency with stable ties
+   ↓ dashboard bounded sets and consistency > uses createdAt then id to resolve equal observed times and does not copy history on a real split
+   ↓ dashboard bounded sets and consistency > holds one snapshot through summary, values and rankings and next read sees changes
+   ↓ dashboard bounded sets and consistency > returns all 128 grading groups and rejects 129 instead of truncating
+   ↓ dashboard bounded sets and consistency > returns all 128 condition groups and rejects 129 before group transfer
+   ↓ dashboard bounded sets and consistency > settles a real dashboard SQL timeout with closed installed-driver mapping
+   ↓ dashboard actual cost evidence > keeps fixed query count and records real plans for 1 owned rows
+   ↓ dashboard actual cost evidence > keeps fixed query count and records real plans for 50 owned rows
+   ↓ dashboard actual cost evidence > keeps fixed query count and records real plans for 500 owned rows
+   ↓ dashboard actual cost evidence > uses the same bounded URL manifest and independent retained-fact guard
+   ↓ dashboard complete selected facts > requires usable IMAGE assets instead of a link or pending/failed asset
+   ↓ dashboard complete selected facts > requires usable DOCUMENT assets instead of a link or pending/failed asset
+   ↓ dashboard complete selected facts > ranks largest selected collections by units then rows, retaining all live collection count
+   ↓ dashboard complete selected facts > retains native currency scales and separates all authored trade statuses
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/dashboard/dashboard-service.test.ts > dashboard actual observations and filters > counts grading records separately, retains retired conditions and distinguishes usable media
+AssertionError: expected { …(19) } to match object { grading: { …(3) }, …(3) }
+(57 matching properties omitted from actual)
+
+- Expected
++ Received
+
+@@ -2,12 +2,10 @@
+    "condition": {
+      "groups": [
+        {
+          "conditionOptionId": "35277865-ed43-43d3-9b02-8e3a94ad8ca9",
+          "itemCount": 1,
+-         "optionActive": false,
+-         "schemeActive": false,
+          "unitCount": "1",
+        },
+      ],
+      "missing": {
+        "itemCount": 1,
+
+ ❯ packages/domain/src/dashboard/dashboard-service.test.ts:365:32
+    363|           data: { itemId: a.id, ownerId: f.owner, assetId: asset.id, p…
+    364|         });
+    365|         expect(await f.read()).toMatchObject({
+       |                                ^
+    366|           grading: {
+    367|             gradedItemCount: 1,
+ ❯ fixture packages/domain/src/dashboard/dashboard-service.test.ts:89:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 24 skipped (25)
+   Start at  22:31:56
+   Duration  890ms (transform 193ms, setup 6ms, collect 456ms, tests 193ms, environment 0ms, prepare 49ms)
+

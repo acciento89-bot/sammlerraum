@@ -1,0 +1,54 @@
+[WebServer] (node:14044) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 10 tests using 1 worker
+
+(node:14045) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [desktop] › e2e/valuations.spec.ts:137:5 › private valuation history › production manual journey (de) (4.0s)
+  ✓   2 [desktop] › e2e/valuations.spec.ts:339:5 › private valuation history › external UI transport rendering from real ingestion and query (de) (1.9s)
+  ✓   3 [desktop] › e2e/valuations.spec.ts:137:5 › private valuation history › production manual journey (en) (2.1s)
+  ✓   4 [desktop] › e2e/valuations.spec.ts:339:5 › private valuation history › external UI transport rendering from real ingestion and query (en) (1.4s)
+  ✘   5 [desktop] › e2e/valuations.spec.ts:516:3 › private valuation history › production response races and unknown save outcome never replay writes (5.8s)
+(node:14075) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   6 [mobile] › e2e/valuations.spec.ts:137:5 › private valuation history › production manual journey (de) (2.1s)
+  ✓   7 [mobile] › e2e/valuations.spec.ts:339:5 › private valuation history › external UI transport rendering from real ingestion and query (de) (1.4s)
+  ✓   8 [mobile] › e2e/valuations.spec.ts:137:5 › private valuation history › production manual journey (en) (2.5s)
+  ✓   9 [mobile] › e2e/valuations.spec.ts:339:5 › private valuation history › external UI transport rendering from real ingestion and query (en) (2.3s)
+  ✓  10 [mobile] › e2e/valuations.spec.ts:516:3 › private valuation history › production response races and unknown save outcome never replay writes (773ms)
+
+
+  1) [desktop] › e2e/valuations.spec.ts:516:3 › private valuation history › production response races and unknown save outcome never replay writes 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByText(/Saving could not be confirmed/)
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByText(/Saving could not be confirmed/) with timeout 5000ms
+      - waiting for getByText(/Saving could not be confirmed/)
+
+
+      560 |       await page.getByLabel(labels.en.note, { exact: true }).fill("Synthetic lost ACK");
+      561 |       await page.getByRole("button", { name: labels.en.save, exact: true }).click();
+    > 562 |       await expect(page.getByText(new RegExp(labels.en.unknown))).toBeVisible();
+          |                                                                   ^
+      563 |       await expect(page.getByRole("button", { name: labels.en.save, exact: true })).toBeDisabled();
+      564 |       await page.getByRole("button", { name: labels.en.refresh, exact: true }).click();
+      565 |       await expect(
+        at /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/valuations.spec.ts:562:67
+
+    Error Context: test-results/valuations-private-valuati-8a5c1-outcome-never-replay-writes-desktop/error-context.md
+
+    Error Context: test-results/valuations-private-valuati-8a5c1-outcome-never-replay-writes-desktop/error-context.md
+
+  1 failed
+    [desktop] › e2e/valuations.spec.ts:516:3 › private valuation history › production response races and unknown save outcome never replay writes 
+  9 passed (26.7s)
+undefined
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/valuations.spec.ts --workers=1

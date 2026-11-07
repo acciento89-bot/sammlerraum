@@ -1,0 +1,253 @@
+[WebServer] (node:26108) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 6 tests using 1 worker
+
+(node:26109) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [desktop] › e2e/search-dashboard.spec.ts:1816:3 › de: dashboard renders real mixed denominations, exclusions and retained metadata (6.3s)
+(node:26119) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  2 [desktop] › e2e/search-dashboard.spec.ts:1816:3 › en: dashboard renders real mixed denominations, exclusions and retained metadata (5.7s)
+(node:26126) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  3 [desktop] › e2e/search-dashboard.spec.ts:2215:5 › de: unresolved creation remains guarded after Cancel and search Reset (5.5s)
+(node:26133) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  4 [desktop] › e2e/search-dashboard.spec.ts:2215:5 › de: unresolved creation remains guarded after Cancel and dashboard Reset (5.8s)
+(node:26153) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  5 [desktop] › e2e/search-dashboard.spec.ts:2215:5 › en: unresolved creation remains guarded after Cancel and search Reset (5.5s)
+(node:26162) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  6 [desktop] › e2e/search-dashboard.spec.ts:2215:5 › en: unresolved creation remains guarded after Cancel and dashboard Reset (5.8s)
+
+
+  1) [desktop] › e2e/search-dashboard.spec.ts:1816:3 › de: dashboard renders real mixed denominations, exclusions and retained metadata 
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: getByTestId('dashboard-change-EUR-2')
+    Expected substring: ",001"
+    Received string:    "EUR · Eigene Schätzung-0,03 EURGespeicherte Nachkommastellen: 2.Vergleichbare Teilmenge: 1 Einträge · 3 Einheiten.Frühere Beobachtungen: 01.01.2026, 00:00:00 UTC.Neueste Beobachtungen: 01.01.2026, 00:00:00 UTC."
+    Timeout: 5000ms
+
+    Call log:
+      - Expect "toContainText" getByTestId('dashboard-change-EUR-2') with timeout 5000ms
+      - waiting for getByTestId('dashboard-change-EUR-2')
+        14 × locator resolved to <article class="management-card" data-testid="dashboard-change-EUR-2">…</article>
+           - unexpected value "EUR · Eigene Schätzung-0,03 EURGespeicherte Nachkommastellen: 2.Vergleichbare Teilmenge: 1 Einträge · 3 Einheiten.Frühere Beobachtungen: 01.01.2026, 00:00:00 UTC.Neueste Beobachtungen: 01.01.2026, 00:00:00 UTC."
+
+
+      1879 |       );
+      1880 |       await expect(page.getByTestId("dashboard-change-JPY-0")).toContainText("0 JPY");
+    > 1881 |       await expect(page.getByTestId("dashboard-change-EUR-2")).toContainText(
+           |                                                                ^
+      1882 |         locale === "de" ? ",001" : ".001",
+      1883 |       );
+      1884 |       await expect(page.getByTestId("dashboard-change-EUR-2")).toContainText(
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/search-dashboard.spec.ts:1881:64
+
+    Error Context: test-results/search-dashboard-de-dashbo-83070-sions-and-retained-metadata-desktop/error-context.md
+
+    Error Context: test-results/search-dashboard-de-dashbo-83070-sions-and-retained-metadata-desktop/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/search-dashboard-de-dashbo-83070-sions-and-retained-metadata-desktop/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/search-dashboard-de-dashbo-83070-sions-and-retained-metadata-desktop/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [desktop] › e2e/search-dashboard.spec.ts:1816:3 › en: dashboard renders real mixed denominations, exclusions and retained metadata 
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: getByTestId('dashboard-change-EUR-2')
+    Expected substring: ".001"
+    Received string:    "EUR · Your own estimate-0.03 EURStored decimal places: 2.Comparable subset: 1 entries · 3 units.Earlier observations: Jan 1, 2026, 12:00:00 AM UTC.Latest observations: Jan 1, 2026, 12:00:00 AM UTC."
+    Timeout: 5000ms
+
+    Call log:
+      - Expect "toContainText" getByTestId('dashboard-change-EUR-2') with timeout 5000ms
+      - waiting for getByTestId('dashboard-change-EUR-2')
+        14 × locator resolved to <article class="management-card" data-testid="dashboard-change-EUR-2">…</article>
+           - unexpected value "EUR · Your own estimate-0.03 EURStored decimal places: 2.Comparable subset: 1 entries · 3 units.Earlier observations: Jan 1, 2026, 12:00:00 AM UTC.Latest observations: Jan 1, 2026, 12:00:00 AM UTC."
+
+
+      1879 |       );
+      1880 |       await expect(page.getByTestId("dashboard-change-JPY-0")).toContainText("0 JPY");
+    > 1881 |       await expect(page.getByTestId("dashboard-change-EUR-2")).toContainText(
+           |                                                                ^
+      1882 |         locale === "de" ? ",001" : ".001",
+      1883 |       );
+      1884 |       await expect(page.getByTestId("dashboard-change-EUR-2")).toContainText(
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/search-dashboard.spec.ts:1881:64
+
+    Error Context: test-results/search-dashboard-en-dashbo-bf97e-sions-and-retained-metadata-desktop/error-context.md
+
+    Error Context: test-results/search-dashboard-en-dashbo-bf97e-sions-and-retained-metadata-desktop/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/search-dashboard-en-dashbo-bf97e-sions-and-retained-metadata-desktop/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/search-dashboard-en-dashbo-bf97e-sions-and-retained-metadata-desktop/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [desktop] › e2e/search-dashboard.spec.ts:2215:5 › de: unresolved creation remains guarded after Cancel and search Reset 
+
+    Error: expect(locator).toHaveText(expected) failed
+
+    Locator:  getByTestId('search-total')
+    Expected: "1"
+    Received: "1 passendes Objekt"
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveText" getByTestId('search-total') with timeout 5000ms
+      - waiting for getByTestId('search-total')
+        13 × locator resolved to <p class="search-count" data-testid="search-total">1 passendes Objekt</p>
+           - unexpected value "1 passendes Objekt"
+
+
+      2226 |         await expect(
+      2227 |           page.getByTestId(view === "search" ? "search-total" : "dashboard-selection-rows"),
+    > 2228 |         ).toHaveText("1");
+           |           ^
+      2229 |         await page.route("**/api/v1/smart-collections", async (route) => {
+      2230 |           if (route.request().method() !== "POST") {
+      2231 |             await route.continue();
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/search-dashboard.spec.ts:2228:11
+
+    Error Context: test-results/search-dashboard-de-unreso-eeb2d-ter-Cancel-and-search-Reset-desktop/error-context.md
+
+    Error Context: test-results/search-dashboard-de-unreso-eeb2d-ter-Cancel-and-search-Reset-desktop/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/search-dashboard-de-unreso-eeb2d-ter-Cancel-and-search-Reset-desktop/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/search-dashboard-de-unreso-eeb2d-ter-Cancel-and-search-Reset-desktop/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4) [desktop] › e2e/search-dashboard.spec.ts:2215:5 › de: unresolved creation remains guarded after Cancel and dashboard Reset 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('dialog', { name: 'Entwurf verwerfen?', exact: true })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('dialog', { name: 'Entwurf verwerfen?', exact: true }) with timeout 5000ms
+      - waiting for getByRole('dialog', { name: 'Entwurf verwerfen?', exact: true })
+
+
+      2253 |         await page.keyboard.press("Escape");
+      2254 |         await page.goBack();
+    > 2255 |         await expect(page.getByRole("dialog", { name: c.discardTitle, exact: true })).toBeVisible();
+           |                                                                                       ^
+      2256 |         await page.getByRole("button", { name: c.cancel, exact: true }).click();
+      2257 |         await page.getByRole("button", { name: c.saveSearch, exact: true }).click();
+      2258 |         await expect(page.getByText(s.unknownCreate, { exact: true })).toBeVisible();
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/search-dashboard.spec.ts:2255:87
+
+    Error Context: test-results/search-dashboard-de-unreso-cc1d0--Cancel-and-dashboard-Reset-desktop/error-context.md
+
+    Error Context: test-results/search-dashboard-de-unreso-cc1d0--Cancel-and-dashboard-Reset-desktop/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/search-dashboard-de-unreso-cc1d0--Cancel-and-dashboard-Reset-desktop/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/search-dashboard-de-unreso-cc1d0--Cancel-and-dashboard-Reset-desktop/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  5) [desktop] › e2e/search-dashboard.spec.ts:2215:5 › en: unresolved creation remains guarded after Cancel and search Reset 
+
+    Error: expect(locator).toHaveText(expected) failed
+
+    Locator:  getByTestId('search-total')
+    Expected: "1"
+    Received: "1 matching item"
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveText" getByTestId('search-total') with timeout 5000ms
+      - waiting for getByTestId('search-total')
+        13 × locator resolved to <p class="search-count" data-testid="search-total">1 matching item</p>
+           - unexpected value "1 matching item"
+
+
+      2226 |         await expect(
+      2227 |           page.getByTestId(view === "search" ? "search-total" : "dashboard-selection-rows"),
+    > 2228 |         ).toHaveText("1");
+           |           ^
+      2229 |         await page.route("**/api/v1/smart-collections", async (route) => {
+      2230 |           if (route.request().method() !== "POST") {
+      2231 |             await route.continue();
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/search-dashboard.spec.ts:2228:11
+
+    Error Context: test-results/search-dashboard-en-unreso-b457b-ter-Cancel-and-search-Reset-desktop/error-context.md
+
+    Error Context: test-results/search-dashboard-en-unreso-b457b-ter-Cancel-and-search-Reset-desktop/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/search-dashboard-en-unreso-b457b-ter-Cancel-and-search-Reset-desktop/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/search-dashboard-en-unreso-b457b-ter-Cancel-and-search-Reset-desktop/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  6) [desktop] › e2e/search-dashboard.spec.ts:2215:5 › en: unresolved creation remains guarded after Cancel and dashboard Reset 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('dialog', { name: 'Discard draft?', exact: true })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('dialog', { name: 'Discard draft?', exact: true }) with timeout 5000ms
+      - waiting for getByRole('dialog', { name: 'Discard draft?', exact: true })
+
+
+      2253 |         await page.keyboard.press("Escape");
+      2254 |         await page.goBack();
+    > 2255 |         await expect(page.getByRole("dialog", { name: c.discardTitle, exact: true })).toBeVisible();
+           |                                                                                       ^
+      2256 |         await page.getByRole("button", { name: c.cancel, exact: true }).click();
+      2257 |         await page.getByRole("button", { name: c.saveSearch, exact: true }).click();
+      2258 |         await expect(page.getByText(s.unknownCreate, { exact: true })).toBeVisible();
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/search-dashboard.spec.ts:2255:87
+
+    Error Context: test-results/search-dashboard-en-unreso-8a64f--Cancel-and-dashboard-Reset-desktop/error-context.md
+
+    Error Context: test-results/search-dashboard-en-unreso-8a64f--Cancel-and-dashboard-Reset-desktop/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/search-dashboard-en-unreso-8a64f--Cancel-and-dashboard-Reset-desktop/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/search-dashboard-en-unreso-8a64f--Cancel-and-dashboard-Reset-desktop/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  6 failed
+    [desktop] › e2e/search-dashboard.spec.ts:1816:3 › de: dashboard renders real mixed denominations, exclusions and retained metadata 
+    [desktop] › e2e/search-dashboard.spec.ts:1816:3 › en: dashboard renders real mixed denominations, exclusions and retained metadata 
+    [desktop] › e2e/search-dashboard.spec.ts:2215:5 › de: unresolved creation remains guarded after Cancel and search Reset 
+    [desktop] › e2e/search-dashboard.spec.ts:2215:5 › de: unresolved creation remains guarded after Cancel and dashboard Reset 
+    [desktop] › e2e/search-dashboard.spec.ts:2215:5 › en: unresolved creation remains guarded after Cancel and search Reset 
+    [desktop] › e2e/search-dashboard.spec.ts:2215:5 › en: unresolved creation remains guarded after Cancel and dashboard Reset 
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/search-dashboard.spec.ts --grep unresolved creation remains guarded|dashboard renders real mixed --project=desktop --workers=1 --trace=retain-on-failure

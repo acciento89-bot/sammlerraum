@@ -1,0 +1,5 @@
+
+> @sammlerraum/db@ prisma /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/db
+> prisma migrate diff --from-config-datasource --to-schema prisma/schema.prisma --script --output /tmp/sammlerraum-valuation-migration.sql
+
+Loaded Prisma config from prisma.config.ts.

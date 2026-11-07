@@ -1,0 +1,9 @@
+# Task5 root local acceptance
+
+Baseec746ed06cca470c5d4d4f9243623d47a769de90; source44cea43. Root sole implementer/runtime owner. Private revisioned insurance on actual owned collections/items, exact canonical amount strings/pinned exponent, date/insurer/policy/notes; explicit independent COLLECTION_TOTAL and PER_UNIT meanings. No guessing of historical purchase units, automatic aggregation or copied policy on split.
+
+Actual ownership/lifecycle/parent-before-item locks, CAS revision plus empty tombstones, target/owned FKs, unique records, canonical currency constraints and immutable identity/revision trigger. Public projections/default tabular source exclude private insurance. Foreign/public callers cannot get or edit records. Real collaboration is futurePhase09; no untrusted role overrides.
+
+19focused actual nativePASS, genuine missing-serviceRED retained;26focused with export privacy regressionsPASS. Full890native/77files/0skip148.29s,1523regular/761explicitnative-disabled12.00s, shared-base TS, whole formatting, actual worker/web buildsPASS. Both owned retained DBs migrated.22actual-built DE/EN desktop/mobile inventory browser casesPASS0skip26.0s. Final task-done19PASS. Root self-reviewed full change; no separate independent Task5 review claimed under the current inline-plan one-final-whole-review workflow. Schema format initially exposed Prisma one-to-one compound uniqueness requirement, resolved through correct array reverse relation while actual unique target still guarantees one record; no failed migration was applied or rewritten.
+
+Root locally accepts Task5:46/91, Phase08fiveofseven. No public insurance API/UI, PDF or production deployment claimed. Task4 exact parentCI42306854709/42306847581 still gates publication; no push of Task5 until both actual successes. See task-5-execution-context.md/progress.md for rulings and costs.

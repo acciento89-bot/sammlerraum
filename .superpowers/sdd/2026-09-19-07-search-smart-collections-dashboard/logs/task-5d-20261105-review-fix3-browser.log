@@ -1,0 +1,15 @@
+[WebServer] (node:18521) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 4 tests using 1 worker
+
+(node:18522) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [desktop] › e2e/search-dashboard.spec.ts:1557:3 › de: unknown save-as-new recovery suspends its dialog and preserves input on cancellation (1.7s)
+  ✓  2 [desktop] › e2e/search-dashboard.spec.ts:1557:3 › en: unknown save-as-new recovery suspends its dialog and preserves input on cancellation (756ms)
+(node:18533) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  3 [mobile] › e2e/search-dashboard.spec.ts:1557:3 › de: unknown save-as-new recovery suspends its dialog and preserves input on cancellation (878ms)
+  ✓  4 [mobile] › e2e/search-dashboard.spec.ts:1557:3 › en: unknown save-as-new recovery suspends its dialog and preserves input on cancellation (751ms)
+
+  4 passed (5.9s)

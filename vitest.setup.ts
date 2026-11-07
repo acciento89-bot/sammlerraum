@@ -1,0 +1,17 @@
+Object.assign(process.env, { NODE_ENV: "test" });
+process.env.DATABASE_URL = "postgresql://test:test@localhost:5432/sammlerraum_test";
+process.env.APP_ORIGIN = "http://localhost:3000";
+process.env.UPLOADS_DIR = "/tmp/sammlerraum-test-uploads";
+process.env.LOG_LEVEL = "error";
+process.env.NEXT_PUBLIC_APP_ORIGIN = "http://localhost:3000";
+process.env.BETTER_AUTH_SECRET = "test-only-secret-that-is-at-least-thirty-two-characters";
+process.env.GOOGLE_CLIENT_ID = "test-google-client-id";
+process.env.GOOGLE_CLIENT_SECRET = "test-google-client-secret";
+process.env.APPLE_CLIENT_ID = "test-apple-client-id";
+process.env.APPLE_CLIENT_SECRET = "test-apple-client-secret";
+process.env.SMTP_HOST = "smtp.example.test";
+process.env.SMTP_PORT = "587";
+process.env.SMTP_SECURE = "false";
+process.env.SMTP_USER = "test-smtp-user";
+process.env.SMTP_PASSWORD = "test-smtp-password";
+process.env.SMTP_FROM = "Sammlerraum <noreply@example.test>";

@@ -1,0 +1,11 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ✓ |workspace| packages/domain/src/market-data/market-data-service.test.ts (10 tests) 546ms
+ ✓ |workspace| packages/market-data/src/provider-registry.test.ts (2 tests) 2ms
+
+ Test Files  2 passed (2)
+      Tests  12 passed (12)
+   Start at  04:22:27
+   Duration  1.01s (transform 90ms, setup 6ms, collect 184ms, tests 548ms, environment 0ms, prepare 74ms)
+

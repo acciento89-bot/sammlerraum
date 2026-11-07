@@ -1,0 +1,7 @@
+# M6 browser response navigation closure
+
+Original exact head11120c96c00010229d1e865639a2d766394ea2c4: pushCI42268243443 FAILED after803nativePASS and153/154monetary-browserPASS. Primaryerror is Chromium Network.getResponseBody: successful itemcreation already navigated before test called pageResponse.json. Originalwholelocal400/400hadpassed; keepremoteREDunmodified. PRCI42268254760stillrunningatdiagnosis. M7localworkissafelypreserved instash`M7 local source preserved while resolving M6 remote browser failure`; noM7publication.
+
+FixscopeONLYapps/web/e2e/legacy-money.spec.ts oneexistingDE/ENdesktop/mobilecase. ReadrealserverAPIResponse viaexistingroute.fetchpattern before releasing unchangedresponse tobrowser; keepactualPOST201,destinationitemID,stored125EURraw/receiptandDBexactly-onecreationassertions. No mocks,statusfabrication,retries,timing-sleeps,product/source/budgetchanges. Samepatternalreadyusedbyacknowledgedcreationtestinthisfile. Rootinspectedfull26linediff; applicationM6freeze093b714unchanged.
+
+Actualaffected4casesrepeated5times:20PASS/0skip23.7s. Thisisrepeated4casecoverage, not20newcases. Full154monetarybrowsergatePASS/0skip2.8min. Rootlocallyacceptstest-onlyclosure; M7localpipeline mayresumeunderP7.14, dependentpublicationhelduntilbothfreshremoteCIpass. No needrepeatnative/pure/buildunchangedapplicationgatesforthisoneharnesschange; freshfullremoteCIremainsrequired.

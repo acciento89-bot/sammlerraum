@@ -1,0 +1,41 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| apps/web/src/lib/grading-routes.integration.test.ts (8 tests | 1 failed) 204ms
+   ✓ grading routes PostgreSQL > persists owner CRUD through the adapter with full replacement and private no-store DTOs 31ms
+   ✓ grading routes PostgreSQL > requires fresh authentication and hides foreign, mismatched and invalid resource IDs 15ms
+   ✓ grading routes PostgreSQL > enforces exact Origin on every mutation 5ms
+   ✓ grading routes PostgreSQL > rejects strict malformed facts and never accepts trusted verification or cross-scale numbers 7ms
+   ✓ grading routes PostgreSQL > bounds actual UTF-8 streams independently of absent or false Content-Length 5ms
+   ✓ grading routes PostgreSQL > returns stable conflicts for duplicate certificates, lifecycle and shared item quantity writes 35ms
+   ✓ grading routes PostgreSQL > does not leak grading or private provenance through anonymous or other-user public item reads 6ms
+   × grading routes PostgreSQL > rejects DELETE payloads within the same independent body bound 6ms
+     → expected 204 to be 400 // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/web/src/lib/grading-routes.integration.test.ts > grading routes PostgreSQL > rejects DELETE payloads within the same independent body bound
+AssertionError: expected 204 to be 400 // Object.is equality
+
+- Expected
++ Received
+
+- 400
++ 204
+
+ ❯ apps/web/src/lib/grading-routes.integration.test.ts:133:83
+    131|     const row=await service().addGrading(itemId,{provider:"Delete body…
+    132|     const api=handlers();
+    133|     expect((await api.DELETE_GRADING(request("DELETE",{}),itemId,row.i…
+       |                                                                                   ^
+    134|     expect((await api.DELETE_GRADING(request("DELETE",{padding:"x".rep…
+    135|     expect((await service().getGrading(itemId,row.id)).grade).toBe("A"…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 7 passed (8)
+   Start at  00:02:50
+   Duration  575ms (transform 107ms, setup 5ms, collect 224ms, tests 204ms, environment 0ms, prepare 34ms)
+

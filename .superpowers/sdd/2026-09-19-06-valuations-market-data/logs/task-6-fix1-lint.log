@@ -1,0 +1,11 @@
+Scope: 2 of 11 workspace projects
+packages/market-data lint$ prettier --check .
+packages/market-data lint: Checking formatting...
+packages/market-data lint: All matched files use Prettier code style!
+packages/market-data lint: Done
+apps/worker lint$ prettier --check src package.json
+apps/worker lint: Checking formatting...
+apps/worker lint: All matched files use Prettier code style!
+apps/worker lint: Done
+
+EXIT=0

@@ -1,0 +1,10 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ✓ |workspace| apps/web/src/components/money/legacy-money-acknowledgement.test.ts (4 tests) 4ms
+
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+   Start at  08:33:25
+   Duration  296ms (transform 42ms, setup 6ms, collect 64ms, tests 4ms, environment 0ms, prepare 39ms)
+

@@ -1,0 +1,10 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ✓ |workspace| packages/domain/src/valuations/valuation-query.test.ts (23 tests | 20 skipped) 209ms
+
+ Test Files  1 passed (1)
+      Tests  3 passed | 20 skipped (23)
+   Start at  05:41:49
+   Duration  573ms (transform 118ms, setup 6ms, collect 215ms, tests 209ms, environment 0ms, prepare 34ms)
+

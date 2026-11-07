@@ -1,0 +1,11 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ✓ |workspace| packages/storage/src/local-storage.test.ts (24 tests) 58ms
+ ✓ |workspace| apps/worker/src/jobs/parse-import.test.ts (5 tests) 21ms
+
+ Test Files  2 passed (2)
+      Tests  29 passed (29)
+   Start at  21:45:17
+   Duration  377ms (transform 87ms, setup 12ms, collect 174ms, tests 78ms, environment 0ms, prepare 87ms)
+

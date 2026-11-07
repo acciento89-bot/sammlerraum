@@ -1,0 +1,93 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| apps/web/src/components/money/legacy-money-client.test.ts (5 tests | 5 failed) 8ms
+   × monetary request acknowledgment > accepts only affirmative pinned capability and never falls back from a missing route 4ms
+     → expected +0 to be 1 // Object.is equality
+   × monetary request acknowledgment > blocks a disabled profile before attempting a write 2ms
+     → expected Error: REFUSED { code: 'REFUSED', …(1) } to match object { code: 'CAPABILITY_UNAVAILABLE' }
+(1 matching property omitted from actual)
+   × monetary request acknowledgment > treats a lost response or server error as unknown and never retries 0ms
+     → expected Error: REFUSED { code: 'REFUSED', …(1) } to match object { code: 'OUTCOME_UNKNOWN' }
+(1 matching property omitted from actual)
+   × monetary request acknowledgment > distinguishes an acknowledged but unreadable response from a rejected mutation 0ms
+     → expected Error: REFUSED { code: 'REFUSED', …(1) } to match object { …(2) }
+   × monetary request acknowledgment > returns the validated acknowledgment and uses only the explicit requested route 0ms
+     → REFUSED
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/web/src/components/money/legacy-money-client.test.ts > monetary request acknowledgment > accepts only affirmative pinned capability and never falls back from a missing route
+AssertionError: expected +0 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ apps/web/src/components/money/legacy-money-client.test.ts:11:238
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ FAIL  |workspace| apps/web/src/components/money/legacy-money-client.test.ts > monetary request acknowledgment > blocks a disabled profile before attempting a write
+AssertionError: expected Error: REFUSED { code: 'REFUSED', …(1) } to match object { code: 'CAPABILITY_UNAVAILABLE' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+- {
+-   "code": "CAPABILITY_UNAVAILABLE",
++ MoneyClientError {
++   "code": "REFUSED",
+  }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+ FAIL  |workspace| apps/web/src/components/money/legacy-money-client.test.ts > monetary request acknowledgment > treats a lost response or server error as unknown and never retries
+AssertionError: expected Error: REFUSED { code: 'REFUSED', …(1) } to match object { code: 'OUTCOME_UNKNOWN' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+- {
+-   "code": "OUTCOME_UNKNOWN",
++ MoneyClientError {
++   "code": "REFUSED",
+  }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+
+ FAIL  |workspace| apps/web/src/components/money/legacy-money-client.test.ts > monetary request acknowledgment > distinguishes an acknowledged but unreadable response from a rejected mutation
+AssertionError: expected Error: REFUSED { code: 'REFUSED', …(1) } to match object { …(2) }
+
+- Expected
++ Received
+
+- {
+-   "code": "ACKNOWLEDGED_UNREADABLE",
+-   "status": 200,
++ MoneyClientError {
++   "code": "REFUSED",
++   "status": undefined,
+  }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯
+
+ FAIL  |workspace| apps/web/src/components/money/legacy-money-client.test.ts > monetary request acknowledgment > returns the validated acknowledgment and uses only the explicit requested route
+Error: REFUSED
+ ❯ writeMoney apps/web/src/components/money/legacy-money-client.ts:6:190
+
+ ❯ apps/web/src/components/money/legacy-money-client.test.ts:30:24
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/5]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  5 failed (5)
+   Start at  07:59:29
+   Duration  385ms (transform 41ms, setup 6ms, collect 130ms, tests 8ms, environment 0ms, prepare 56ms)
+

@@ -1,0 +1,13 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ✓ |workspace| packages/domain/src/search/search-retained-integrity.integration.test.ts (12 tests) 9812ms
+   ✓ retained search integrity producer parity > rejects every ECMAScript boundary whitespace in retained customField text  396ms
+   ✓ retained search integrity producer parity > rejects every ECMAScript boundary whitespace in retained catalogAttribute text  374ms
+   ✓ retained search integrity producer parity > bounds distinct URL count and UTF8 bytes before transfer, without partial count/page or value disclosure  8543ms
+
+ Test Files  1 passed (1)
+      Tests  12 passed (12)
+   Start at  09:43:23
+   Duration  10.25s (transform 97ms, setup 6ms, collect 202ms, tests 9.81s, environment 0ms, prepare 36ms)
+

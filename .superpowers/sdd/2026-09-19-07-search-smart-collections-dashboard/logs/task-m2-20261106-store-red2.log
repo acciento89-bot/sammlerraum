@@ -1,0 +1,37 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/money/legacy-money-store.test.ts (1 test | 1 failed) 278ms
+   × legacy money real Prisma transaction store > reads actual present raw money as unknown rather than inventing absence 22ms
+     → expected null to deeply equal { amountMinor: '1', currency: 'AFN' }
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/money/legacy-money-store.test.ts > legacy money real Prisma transaction store > reads actual present raw money as unknown rather than inventing absence
+AssertionError: expected null to deeply equal { amountMinor: '1', currency: 'AFN' }
+
+- Expected: 
+{
+  "amountMinor": "1",
+  "currency": "AFN",
+}
+
++ Received: 
+null
+
+ ❯ packages/domain/src/money/legacy-money-store.test.ts:31:22
+     29|     expect(producer).toEqual({operation:"RAW_WRITE",raw:"1"});
+     30|     const view=await runSearchTransaction(db,tx=>readMoneyFact(tx,f.su…
+     31|     expect(view.raw).toEqual({amountMinor:"1",currency:"AFN"});
+       |                      ^
+     32|     expect(view.interpretation).toEqual({kind:"UNKNOWN",reason:"RAW_WR…
+     33|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+   Start at  02:10:19
+   Duration  707ms (transform 101ms, setup 6ms, collect 242ms, tests 278ms, environment 0ms, prepare 52ms)
+

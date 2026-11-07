@@ -1,0 +1,44 @@
+[WebServer] (node:88772) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:88773) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:88784) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [desktop] › e2e/import-report.spec.ts:20:3 › real import, export and private report flow › import conflict requires an explicit row decision before commit (17.9s)
+
+
+  1) [desktop] › e2e/import-report.spec.ts:20:3 › real import, export and private report flow › import conflict requires an explicit row decision before commit 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByLabel('Kaufpreisspalte', { exact: true })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByLabel('Kaufpreisspalte', { exact: true }) with timeout 5000ms
+      - waiting for getByLabel('Kaufpreisspalte', { exact: true })
+
+
+      77 |       await page.getByLabel("Kennungsspalte", { exact: true }).selectOption("2");
+      78 |       await page.getByLabel("Kennungstyp", { exact: true }).fill("SKU");
+    > 79 |       await expect(page.getByLabel("Kaufpreisspalte",{exact:true})).toBeVisible();
+         |                                                                     ^
+      80 |       await page.getByLabel("Kaufpreisspalte",{exact:true}).selectOption("3");
+      81 |       await page.getByLabel("Währungsquelle",{exact:true}).selectOption("COLUMN");
+      82 |       await page.getByLabel("Währungsspalte",{exact:true}).selectOption("4");
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/import-report.spec.ts:79:69
+
+    Error Context: test-results/import-report-real-import--554ff--row-decision-before-commit-desktop/error-context.md
+
+    Error Context: test-results/import-report-real-import--554ff--row-decision-before-commit-desktop/error-context.md
+
+  1 failed
+    [desktop] › e2e/import-report.spec.ts:20:3 › real import, export and private report flow › import conflict requires an explicit row decision before commit 
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/import-report.spec.ts --project=desktop --workers=1 --grep import conflict

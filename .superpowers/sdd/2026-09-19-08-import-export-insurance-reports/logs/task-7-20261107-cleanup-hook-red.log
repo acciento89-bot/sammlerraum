@@ -1,0 +1,33 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| apps/worker/src/jobs/cleanup-media.test.ts (5 tests | 1 failed) 32ms
+   ✓ reconciles a delayed original and derivative after asset rows have been removed 19ms
+   ✓ keeps failed byte deletion retryable and processes the rest of a batch 1ms
+   ✓ skips storage while a processor holds the shared asset lock 0ms
+   ✓ drains an in-flight scan on stop and starts polling immediately 2ms
+   × expires transfer intents before selecting actual files for the same cleanup pass 9ms
+     → expected true to be false // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/worker/src/jobs/cleanup-media.test.ts > expires transfer intents before selecting actual files for the same cleanup pass
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ apps/worker/src/jobs/cleanup-media.test.ts:171:111
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 4 passed (5)
+   Start at  02:47:13
+   Duration  327ms (transform 39ms, setup 7ms, collect 39ms, tests 32ms, environment 0ms, prepare 47ms)
+

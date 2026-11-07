@@ -1,0 +1,70 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/money/personal-money-service.test.ts (9 tests | 2 failed) 468ms
+   ✓ personal money authoring real transactions > authors AFN decimal units explicitly and never infers them from an old raw write 133ms
+   ✓ personal money authoring real transactions > preserves nonmoney updates but invalidates equal-value explicit replacement tokens 46ms
+   ✓ personal money authoring real transactions > splits known per-unit purchase meaning without changing the exact total 38ms
+   ✓ personal money authoring real transactions > rolls back split quantity and child when a provenance copy insert fails 43ms
+   ✓ personal money authoring real transactions > clear and readd cannot revive a previous fact token or meaning 24ms
+   ✓ personal money authoring real transactions > authors custom money and copies its original assertion once per field during split 48ms
+   ✓ personal money authoring real transactions > hides foreign facts and rejects legacy raw fields in the explicit authoring envelope 8ms
+   × personal money authoring real transactions > pages private assertion history and supplies a fresh historical revocation precondition 95ms
+     → LEGACY_MONEY_INVALID
+   × personal money authoring real transactions > the legacy custom writer checks both actual item owner and collection owner 7ms
+     → 
+Invalid `db!.collectibleItem.create()` invocation in
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/domain/src/money/personal-money-service.test.ts:253:40
+
+  250 it("the legacy custom writer checks both actual item owner and collection owner",async()=>{
+  251  const owner=await fixture(),other=await fixture();
+  252  const definition=await createCustomFieldService(db!,owner.actor).createFieldDefinition({collectionId:owner.collection,name:"Owned money",type:"MONEY"});
+→ 253  const item=await db!.collectibleItem.create(
+Foreign key constraint violated on the constraint: `CollectibleItem_collectionId_ownerId_fkey`
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/money/personal-money-service.test.ts > personal money authoring real transactions > pages private assertion history and supplies a fresh historical revocation precondition
+LegacyMoneyError: LEGACY_MONEY_INVALID
+ ❯ legacyMoneyFail packages/contracts/src/legacy-money.ts:27:9
+     25| }
+     26| export function legacyMoneyFail(code: LegacyMoneyError["code"]): never…
+     27|   throw new LegacyMoneyError(code);
+       |         ^
+     28| }
+     29| export const LegacyMoneyIdSchema = z
+ ❯ Object.listHistory packages/domain/src/money/personal-money-service.ts:198:77
+ ❯ packages/domain/src/money/personal-money-service.test.ts:241:31
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |workspace| packages/domain/src/money/personal-money-service.test.ts > personal money authoring real transactions > the legacy custom writer checks both actual item owner and collection owner
+PrismaClientKnownRequestError: 
+Invalid `db!.collectibleItem.create()` invocation in
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/domain/src/money/personal-money-service.test.ts:253:40
+
+  250 it("the legacy custom writer checks both actual item owner and collection owner",async()=>{
+  251  const owner=await fixture(),other=await fixture();
+  252  const definition=await createCustomFieldService(db!,owner.actor).createFieldDefinition({collectionId:owner.collection,name:"Owned money",type:"MONEY"});
+→ 253  const item=await db!.collectibleItem.create(
+Foreign key constraint violated on the constraint: `CollectibleItem_collectionId_ownerId_fkey`
+ ❯ vn.handleRequestError node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:238:13
+ ❯ vn.handleAndLogRequestError node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:184:12
+ ❯ vn.request node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:153:12
+ ❯ a node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:1014:24
+ ❯ packages/domain/src/money/personal-money-service.test.ts:253:14
+    251|   const owner=await fixture(),other=await fixture();
+    252|   const definition=await createCustomFieldService(db!,owner.actor).cre…
+    253|   const item=await db!.collectibleItem.create({data:{ownerId:other.act…
+       |              ^
+    254|   await expect(createCustomFieldService(db!,owner.actor).setFieldValue…
+    255|  });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 7 passed (9)
+   Start at  04:15:06
+   Duration  963ms (transform 159ms, setup 6ms, collect 309ms, tests 468ms, environment 0ms, prepare 56ms)
+

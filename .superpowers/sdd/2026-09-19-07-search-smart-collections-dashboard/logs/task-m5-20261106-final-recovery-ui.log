@@ -1,0 +1,51 @@
+[WebServer] (node:6302) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 24 tests using 1 worker
+
+(node:6303) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [money-ui-desktop] › e2e/catalog-money-ui.spec.ts:617:3 › de: a committed proposal with lost acknowledgment cannot replay until explicit proposal reconciliation (2.3s)
+  ✓   2 [money-ui-desktop] › e2e/catalog-money-ui.spec.ts:617:3 › en: a committed proposal with lost acknowledgment cannot replay until explicit proposal reconciliation (1.3s)
+  ✓   3 [money-ui-desktop] › e2e/legacy-money.spec.ts:863:5 › de: committed purchase LOST recovery never reauthors an acknowledged correction (2.0s)
+  ✓   4 [money-ui-desktop] › e2e/legacy-money.spec.ts:863:5 › de: committed purchase UNREADABLE recovery never reauthors an acknowledged correction (1.4s)
+  ✓   5 [money-ui-desktop] › e2e/legacy-money.spec.ts:863:5 › de: committed purchase REFRESH recovery never reauthors an acknowledged correction (1.4s)
+  ✘   6 [money-ui-desktop] › e2e/legacy-money.spec.ts:904:3 › de: a capability failure never falls back to raw item writes (5.6s)
+Testing stopped early after 1 maximum allowed failures.
+
+
+  1) [money-ui-desktop] › e2e/legacy-money.spec.ts:904:3 › de: a capability failure never falls back to raw item writes 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: locator('p.error[role="alert"]')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" locator('p.error[role="alert"]') with timeout 5000ms
+      - waiting for locator('p.error[role="alert"]')
+
+
+      911 |       await page.reload();
+      912 |       await expect(page.getByRole("button", { name: h.t.save, exact: true })).toBeDisabled();
+    > 913 |       await expect(page.locator('p.error[role="alert"]')).toBeVisible();
+          |                                                           ^
+      914 |       expect(mutations).toBe(0);
+      915 |       expect((await h.money.getMoney(h.subject)).factToken).toBe(h.before.factToken);
+      916 |     } finally { await cleanupSearchFixture(h.f); }
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/legacy-money.spec.ts:913:59
+
+    Error Context: test-results/legacy-money-de-a-capabili-e901b-lls-back-to-raw-item-writes-money-ui-desktop/error-context.md
+
+    Error Context: test-results/legacy-money-de-a-capabili-e901b-lls-back-to-raw-item-writes-money-ui-desktop/error-context.md
+
+  1 failed
+    [money-ui-desktop] › e2e/legacy-money.spec.ts:904:3 › de: a capability failure never falls back to raw item writes 
+  18 did not run
+  5 passed (15.6s)
+  1 error was not a part of any test, see above for details
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/catalog-money-ui.spec.ts e2e/legacy-money.spec.ts --workers=1 --grep explicit proposal reconciliation|committed purchase|capability failure|changing the authenticated --max-failures=1

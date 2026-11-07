@@ -1,0 +1,35 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| packages/contracts/src/valuations.test.ts (6 tests | 1 failed) 10ms
+   ✓ valuation wire contracts > accepts exact decimal-string money including zero and PostgreSQL bigint maximum 2ms
+   ✓ valuation wire contracts > rejects lossy numbers, noncanonical decimals, overflow and authored private fields 1ms
+   ✓ valuation wire contracts > counts trimmed Unicode codepoints and rejects NUL and lone surrogates without normalizing text 0ms
+   ✓ valuation wire contracts > keeps historical scale and currency and excludes owner/actor identifiers from DTOs 2ms
+   ✓ valuation wire contracts > discriminates bounded summary and source-history queries strictly 1ms
+   × valuation wire contracts > rejects malformed/reversed range money without throwing outside validation 4ms
+     → Cannot convert bogus to a BigInt
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/contracts/src/valuations.test.ts > valuation wire contracts > rejects malformed/reversed range money without throwing outside validation
+SyntaxError: Cannot convert bogus to a BigInt
+ ❯ Object.fn packages/contracts/src/valuations.ts:45:241
+
+ ❯ Object.inst._zod.check node_modules/.pnpm/zod@4.1.11/node_modules/zod/v4/core/schemas.js:1933:23
+ ❯ runChecks node_modules/.pnpm/zod@4.1.11/node_modules/zod/v4/core/schemas.js:46:35
+ ❯ Object.inst._zod.run node_modules/.pnpm/zod@4.1.11/node_modules/zod/v4/core/schemas.js:122:20
+ ❯ Object.inst._zod.parse node_modules/.pnpm/zod@4.1.11/node_modules/zod/v4/core/schemas.js:1030:29
+ ❯ eval node_modules/.pnpm/zod@4.1.11/node_modules/zod/v4/core/doc.js:33:16
+ ❯ node_modules/.pnpm/zod@4.1.11/node_modules/zod/v4/core/schemas.js:880:34
+ ❯ Object.inst._zod.parse node_modules/.pnpm/zod@4.1.11/node_modules/zod/v4/core/schemas.js:905:23
+ ❯ Object.inst._zod.run node_modules/.pnpm/zod@4.1.11/node_modules/zod/v4/core/schemas.js:116:38
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 5 passed (6)
+   Start at  05:36:57
+   Duration  282ms (transform 27ms, setup 6ms, collect 45ms, tests 10ms, environment 0ms, prepare 35ms)
+

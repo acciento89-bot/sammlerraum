@@ -1,0 +1,7 @@
+
+> @sammlerraum/worker@ catalog:init /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/worker
+> node dist/initialize-catalog.cjs
+
+Dry-run: no definitions written
+trading_cards: CREATE_CATEGORY_AND_SCHEME
+vinyl: CREATE_CATEGORY_AND_SCHEME

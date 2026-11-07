@@ -1,0 +1,3 @@
+packages/market-data/src/provider-http.ts(41,17): error TS2304: Cannot find name 'ReadableStreamReadResult'.
+
+EXIT=2

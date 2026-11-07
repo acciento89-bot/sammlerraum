@@ -1,0 +1,42 @@
+[WebServer] (node:89247) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:89248) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:89260) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [desktop] › e2e/import-report.spec.ts:20:3 › real import, export and private report flow › import conflict requires an explicit row decision before commit (25.4s)
+
+
+  1) [desktop] › e2e/import-report.spec.ts:20:3 › real import, export and private report flow › import conflict requires an explicit row decision before commit 
+
+    PrismaClientKnownRequestError: 
+    Invalid `prisma.$queryRaw()` invocation:
+
+
+    Raw query failed. Code: `42703`. Message: `column "acquiredOn" does not exist`
+
+      100 |       });
+      101 |       expect(await db.collectibleItem.count({ where: { ownerId: userId } })).toBe(3);
+    > 102 |       expect(await db.$queryRaw`SELECT title,"purchaseAmountMinor"::text AS amount,"purchaseCurrency" AS currency,"acquiredOn"::text AS acquired FROM "CollectibleItem" WHERE "ownerId"=${userId} AND title IN ('Existing copy','New item') ORDER BY title`).toEqual([{title:'Existing copy',amount:'1234',currency:'EUR',acquired:'2026-01-02'},{title:'New item',amount:'5678',currency:'EUR',acquired:'2026-01-03'}]);
+          |              ^
+      103 |
+      104 |     } finally {
+      105 |       const sources = await db.$queryRaw<
+        at vn.handleRequestError (/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:238:13)
+        at vn.handleAndLogRequestError (/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:184:12)
+        at vn.request (/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:153:12)
+        at a (/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:1014:24)
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/import-report.spec.ts:102:14
+
+    Error Context: test-results/import-report-real-import--554ff--row-decision-before-commit-desktop/error-context.md
+
+    Error Context: test-results/import-report-real-import--554ff--row-decision-before-commit-desktop/error-context.md
+
+  1 failed
+    [desktop] › e2e/import-report.spec.ts:20:3 › real import, export and private report flow › import conflict requires an explicit row decision before commit 
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/import-report.spec.ts --project=desktop --workers=1 --grep import conflict

@@ -1,0 +1,41 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| apps/web/src/components/valuations/valuation-state.test.ts (13 tests | 1 failed) 7ms
+   ✓ valuation request authority > ignores an old GET after append acknowledgement and sends a double click only once 1ms
+   ✓ valuation request authority > retains a confirmed row when refresh fails, and retries only GET 0ms
+   ✓ valuation request authority > holds an unknown POST outcome across refresh and requires explicit new-entry action 0ms
+   ✓ valuation request authority > makes an inactive rejection authoritative over an earlier ACTIVE read 0ms
+   ✓ valuation request authority > bounds stale-cursor recovery to one fresh summary 0ms
+   ✓ valuation request authority > clears private facts on summary 404, but checks source 404 with a fresh owner summary 0ms
+   ✓ valuation request authority > does not let a previous scope or source overwrite a newer selection 0ms
+   ✓ allows manual estimates on ACTIVE items despite an inactive catalog variant 0ms
+   ✓ a superseded stale-cursor recovery cannot attach its error to a newer successful read 0ms
+   ✓ rejects a source response belonging to a different source key 0ms
+   ✓ retains the mounted manual context while a new external scope loads 0ms
+   ✓ reports a later read failure as a read error once a save has been reconciled 0ms
+   × invalidates populated external facts throughout a deferred failed source-404 recheck, then restores only on fresh success 4ms
+     → expected undefined to be true // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/web/src/components/valuations/valuation-state.test.ts > invalidates populated external facts throughout a deferred failed source-404 recheck, then restores only on fresh success
+AssertionError: expected undefined to be true // Object.is equality
+
+- Expected: 
+true
+
++ Received: 
+undefined
+
+ ❯ apps/web/src/components/valuations/valuation-state.test.ts:294:39
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 12 passed (13)
+   Start at  06:52:22
+   Duration  293ms (transform 41ms, setup 6ms, collect 32ms, tests 7ms, environment 0ms, prepare 50ms)
+

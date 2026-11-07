@@ -1,0 +1,9 @@
+Scope: 2 of 11 workspace projects
+packages/domain lint$ prettier --check .
+packages/domain lint: Checking formatting...
+packages/domain lint: All matched files use Prettier code style!
+packages/domain lint: Done
+apps/worker lint$ prettier --check src package.json
+apps/worker lint: Checking formatting...
+apps/worker lint: All matched files use Prettier code style!
+apps/worker lint: Done

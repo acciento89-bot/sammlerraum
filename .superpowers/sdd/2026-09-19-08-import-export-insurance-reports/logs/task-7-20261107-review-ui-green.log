@@ -1,0 +1,19 @@
+[WebServer] (node:95466) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:95467) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 6 tests using 1 worker
+
+(node:95478) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [desktop] › e2e/import-report.spec.ts:553:3 › real import, export and private report flow › review: a named worksheet imports the intended sheet from a real multi-sheet XLSX (26.6s)
+  ✓  2 [desktop] › e2e/import-report.spec.ts:600:3 › real import, export and private report flow › review: actual filtered search exports all matching rows without unrelated inventory (11.3s)
+  ✓  3 [desktop] › e2e/import-report.spec.ts:638:3 › real import, export and private report flow › review: an actual collection subtree export includes descendants and excludes siblings (11.1s)
+(node:95561) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  4 [mobile] › e2e/import-report.spec.ts:553:3 › real import, export and private report flow › review: a named worksheet imports the intended sheet from a real multi-sheet XLSX (21.7s)
+  ✓  5 [mobile] › e2e/import-report.spec.ts:600:3 › real import, export and private report flow › review: actual filtered search exports all matching rows without unrelated inventory (13.7s)
+  ✓  6 [mobile] › e2e/import-report.spec.ts:638:3 › real import, export and private report flow › review: an actual collection subtree export includes descendants and excludes siblings (11.1s)
+
+  6 passed (1.6m)

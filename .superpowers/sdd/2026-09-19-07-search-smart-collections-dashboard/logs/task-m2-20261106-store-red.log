@@ -1,0 +1,27 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/money/legacy-money-store.test.ts [ packages/domain/src/money/legacy-money-store.test.ts ]
+Error: Cannot find package 'pg' imported from '/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/domain/src/money/legacy-money-store.test.ts'
+ ❯ packages/domain/src/money/legacy-money-store.test.ts:3:1
+      1| import { randomUUID } from "node:crypto";
+      2| import { readFile,readdir } from "node:fs/promises";
+      3| import { Client } from "pg";
+       | ^
+      4| import { beforeAll,afterAll,describe,expect,it } from "vitest";
+      5| import { createTestDatabaseClient } from "@sammlerraum/db/test-databas…
+
+Caused by: Error: Failed to load url pg (resolved id: pg) in /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/domain/src/money/legacy-money-store.test.ts. Does the file exist?
+ ❯ loadAndTransform ../../../../SSK%20SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/node_modules/.pnpm/vite@7.3.6_@types+node@24.5.2_jiti@2.7.0/node_modules/vite/dist/node/chunks/config.js:22739:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  no tests
+   Start at  02:09:22
+   Duration  195ms (transform 32ms, setup 6ms, collect 0ms, tests 0ms, environment 0ms, prepare 52ms)
+

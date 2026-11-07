@@ -1,0 +1,10 @@
+apps/worker/src/jobs/insurance-report.integration.test.ts(163,34): error TS2769: No overload matches this call.
+  The last overload gave the following error.
+    Argument of type 'typeof PDFRawStream' is not assignable to parameter of type 'typeof PDFString'.
+      Property 'fromDate' is missing in type 'typeof PDFRawStream' but required in type 'typeof PDFString'.
+apps/worker/src/jobs/insurance-report.integration.test.ts(165,16): error TS2339: Property 'dict' does not exist on type 'never'.
+  The intersection 'PDFObject & PDFArray & PDFBool & PDFDict & PDFHexString & PDFName & PDFNull & PDFNumber & PDFStream & PDFRef & PDFString' was reduced to 'never' because property 'context' exists in multiple constituents and is private in some.
+apps/worker/src/jobs/insurance-report.integration.test.ts(166,32): error TS2339: Property 'getContents' does not exist on type 'never'.
+  The intersection 'PDFObject & PDFArray & PDFBool & PDFDict & PDFHexString & PDFName & PDFNull & PDFNumber & PDFStream & PDFRef & PDFString' was reduced to 'never' because property 'context' exists in multiple constituents and is private in some.
+apps/worker/src/jobs/insurance-report.integration.test.ts(167,20): error TS2339: Property 'getContents' does not exist on type 'never'.
+  The intersection 'PDFObject & PDFArray & PDFBool & PDFDict & PDFHexString & PDFName & PDFNull & PDFNumber & PDFStream & PDFRef & PDFString' was reduced to 'never' because property 'context' exists in multiple constituents and is private in some.

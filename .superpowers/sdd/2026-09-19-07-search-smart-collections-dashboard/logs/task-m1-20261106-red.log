@@ -1,0 +1,115 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/money/legacy-money-policy.test.ts (4 tests | 4 failed) 4ms
+   × explicit prospective legacy money policy > prospective_afn_is_explicit_iso 3ms
+     → Legacy money authoring not implemented
+   × explicit prospective legacy money policy > legacy_comma_dot_without_grouping 0ms
+     → Legacy money authoring not implemented
+   × explicit prospective legacy money policy > raw_profile_mismatch_rejects 0ms
+     → Legacy money authoring not implemented
+   × explicit prospective legacy money policy > max_safe_boundary_exact 0ms
+     → Legacy money authoring not implemented
+ ❯ |workspace| packages/contracts/src/legacy-money.test.ts (2 tests | 2 failed) 7ms
+   × legacy money bounded contracts > historical_codes_survive_current_list 5ms
+     → [
+  {
+    "code": "custom",
+    "path": [
+      "purchaseCurrency"
+    ],
+    "message": "Expected a supported ISO 4217 currency"
+  }
+]
+   × legacy money bounded contracts > strict_envelopes_bound_tokens_and_evidence 2ms
+     → expected true to be false // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/contracts/src/legacy-money.test.ts > legacy money bounded contracts > historical_codes_survive_current_list
+ZodError: [
+  {
+    "code": "custom",
+    "path": [
+      "purchaseCurrency"
+    ],
+    "message": "Expected a supported ISO 4217 currency"
+  }
+]
+ ❯ packages/contracts/src/legacy-money.test.ts:15:34
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  |workspace| packages/contracts/src/legacy-money.test.ts > legacy money bounded contracts > strict_envelopes_bound_tokens_and_evidence
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ packages/contracts/src/legacy-money.test.ts:24:65
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  |workspace| packages/domain/src/money/legacy-money-policy.test.ts > explicit prospective legacy money policy > prospective_afn_is_explicit_iso
+Error: Legacy money authoring not implemented
+ ❯ parseLegacyMoneyAuthoring packages/domain/src/money/legacy-money-policy.ts:3:9
+      1| // Loadable RED scaffolding; no historical amounts receive an interpre…
+      2| export function parseLegacyMoneyAuthoring(_input: unknown): unknown {
+      3|   throw new Error("Legacy money authoring not implemented");
+       |         ^
+      4| }
+      5| export function formatStoredMoney(_raw: unknown, _exponent: number): s…
+ ❯ packages/domain/src/money/legacy-money-policy.test.ts:7:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+ FAIL  |workspace| packages/domain/src/money/legacy-money-policy.test.ts > explicit prospective legacy money policy > legacy_comma_dot_without_grouping
+Error: Legacy money authoring not implemented
+ ❯ parseLegacyMoneyAuthoring packages/domain/src/money/legacy-money-policy.ts:3:9
+      1| // Loadable RED scaffolding; no historical amounts receive an interpre…
+      2| export function parseLegacyMoneyAuthoring(_input: unknown): unknown {
+      3|   throw new Error("Legacy money authoring not implemented");
+       |         ^
+      4| }
+      5| export function formatStoredMoney(_raw: unknown, _exponent: number): s…
+ ❯ packages/domain/src/money/legacy-money-policy.test.ts:12:14
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯
+
+ FAIL  |workspace| packages/domain/src/money/legacy-money-policy.test.ts > explicit prospective legacy money policy > raw_profile_mismatch_rejects
+Error: Legacy money authoring not implemented
+ ❯ parseLegacyMoneyAuthoring packages/domain/src/money/legacy-money-policy.ts:3:9
+      1| // Loadable RED scaffolding; no historical amounts receive an interpre…
+      2| export function parseLegacyMoneyAuthoring(_input: unknown): unknown {
+      3|   throw new Error("Legacy money authoring not implemented");
+       |         ^
+      4| }
+      5| export function formatStoredMoney(_raw: unknown, _exponent: number): s…
+ ❯ packages/domain/src/money/legacy-money-policy.test.ts:18:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/6]⎯
+
+ FAIL  |workspace| packages/domain/src/money/legacy-money-policy.test.ts > explicit prospective legacy money policy > max_safe_boundary_exact
+Error: Legacy money authoring not implemented
+ ❯ parseLegacyMoneyAuthoring packages/domain/src/money/legacy-money-policy.ts:3:9
+      1| // Loadable RED scaffolding; no historical amounts receive an interpre…
+      2| export function parseLegacyMoneyAuthoring(_input: unknown): unknown {
+      3|   throw new Error("Legacy money authoring not implemented");
+       |         ^
+      4| }
+      5| export function formatStoredMoney(_raw: unknown, _exponent: number): s…
+ ❯ packages/domain/src/money/legacy-money-policy.test.ts:23:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/6]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  6 failed (6)
+   Start at  01:16:38
+   Duration  355ms (transform 56ms, setup 11ms, collect 122ms, tests 11ms, environment 0ms, prepare 99ms)
+

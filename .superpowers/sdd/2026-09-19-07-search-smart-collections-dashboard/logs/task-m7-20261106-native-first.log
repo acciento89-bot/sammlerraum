@@ -1,0 +1,41 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/money/money-transfer.integration.test.ts (7 tests | 1 failed) 3128ms
+   ✓ bounded same-snapshot money transfer > reauthorizes owner, live parent and item even with a broad supplied predicate 114ms
+   ✓ bounded same-snapshot money transfer > rejects unknown outer facts before a narrower matched interpreted export 31ms
+   × bounded same-snapshot money transfer > pins exact quantity totals, tokens and meaning across later quantity changes and revocation 53ms
+     → MONEY_FORBIDDEN
+   ✓ bounded same-snapshot money transfer > counts before metadata/facts: 1000 owned rows succeed, 1001 closes the export  471ms
+   ✓ bounded same-snapshot money transfer > validates empty custom references and preserves all custom paths without evidence leakage 46ms
+   ✓ bounded same-snapshot money transfer > captures current entry and selected variant as distinct catalogue paths 45ms
+   ✓ bounded same-snapshot money transfer > honors the actual statement timeout without producing a snapshot  2015ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/money/money-transfer.integration.test.ts > bounded same-snapshot money transfer > pins exact quantity totals, tokens and meaning across later quantity changes and revocation
+LegacyMoneyError: MONEY_FORBIDDEN
+ ❯ legacyMoneyFail packages/contracts/src/legacy-money.ts:27:9
+     25| }
+     26| export function legacyMoneyFail(code: LegacyMoneyError["code"]): never…
+     27|   throw new LegacyMoneyError(code);
+       |         ^
+     28| }
+     29| export const LegacyMoneyIdSchema = z
+ ❯ actor packages/domain/src/money/legacy-money-store.ts:84:12
+ ❯ lockSubject packages/domain/src/money/legacy-money-store.ts:856:12
+ ❯ readMoneyAssertion packages/domain/src/money/legacy-money-store.ts:1096:19
+ ❯ packages/domain/src/money/money-transfer.integration.test.ts:197:122
+ ❯ database.$transaction.isolationLevel packages/domain/src/search/search-read.ts:55:26
+ ❯ Proxy._transactionWithCallback node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:861:18
+ ❯ runSearchTransaction packages/domain/src/search/search-read.ts:27:22
+ ❯ packages/domain/src/money/money-transfer.integration.test.ts:197:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 6 passed (7)
+   Start at  19:28:47
+   Duration  3.64s (transform 167ms, setup 6ms, collect 327ms, tests 3.13s, environment 0ms, prepare 54ms)
+

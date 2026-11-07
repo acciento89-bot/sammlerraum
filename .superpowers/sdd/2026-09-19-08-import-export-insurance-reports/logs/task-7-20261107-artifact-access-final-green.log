@@ -1,0 +1,17 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ✓ |workspace| packages/domain/src/exports/artifact-access.integration.test.ts (6 tests) 529ms
+ ✓ |workspace| apps/worker/src/jobs/insurance-report.integration.test.ts (5 tests) 2622ms
+   ✓ actual durable protected PDF artifacts > publishes one complete owned PDF asset and does not recreate duplicate successful delivery  559ms
+   ✓ actual durable protected PDF artifacts > retries storage failure with the same frozen source and known attempt manifests  729ms
+   ✓ actual durable protected PDF artifacts > refuses source access revoked while complete PDF bytes are being stored  371ms
+   ✓ actual durable protected PDF artifacts > embeds exactly the selected private proof bytes in an actual protected PDF  402ms
+   ✓ actual durable protected PDF artifacts > retains real output ownership until cancelled storage actually settles  359ms
+ ✓ |workspace| apps/worker/src/jobs/tabular-export.integration.test.ts (10 tests) 676ms
+
+ Test Files  3 passed (3)
+      Tests  21 passed (21)
+   Start at  02:26:40
+   Duration  5.23s (transform 239ms, setup 7ms, collect 976ms, tests 3.83s, environment 0ms, prepare 96ms)
+

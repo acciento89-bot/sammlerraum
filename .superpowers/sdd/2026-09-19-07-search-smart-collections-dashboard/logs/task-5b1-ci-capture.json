@@ -1,0 +1,51 @@
+{
+  "headRevision": "fbc0b9fbee421f13622298f8ccacfc1d952bb28b",
+  "sourceApplication": "c5fc3f2236c6ac4f93a09f982c8e5fe5a41bdadb",
+  "observedAt": "2026-10-18 10:34:34 UTC",
+  "runs": [
+    {
+      "runId": 39118709552,
+      "jobId": 117649705723,
+      "conclusion": "success",
+      "steps": {
+        "success": 29,
+        "skipped": 1
+      },
+      "primaryLogChars": 120000,
+      "primaryLogTruncated": true
+    },
+    {
+      "runId": 39118705905,
+      "jobId": 117649695128,
+      "conclusion": "success",
+      "steps": {
+        "success": 29,
+        "skipped": 1
+      },
+      "primaryLogChars": 120000,
+      "primaryLogTruncated": true
+    }
+  ],
+  "checks": [
+    {
+      "id": 117649705723,
+      "name": "verify",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 117649699540,
+      "name": "GitGuardian Security Checks",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 117649695128,
+      "name": "verify",
+      "status": "completed",
+      "conclusion": "success"
+    }
+  ],
+  "remoteNumericTestTotalsInferred": false,
+  "scope": "Owned B1 transport exact candidate; B2/UI/original full Task5/Phase07/Phase13 remain open"
+}

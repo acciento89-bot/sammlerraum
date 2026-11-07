@@ -1,0 +1,73 @@
+2026-10-17T23:54:30.374Z pw:webserver HTTP GET: http://localhost:3000/de
+2026-10-17T23:54:30.385Z pw:webserver Error while checking if http://localhost:3000/de is available: connect ECONNREFUSED ::1:3000
+connect ECONNREFUSED 127.0.0.1:3000
+2026-10-17T23:54:30.386Z pw:webserver Starting WebServer process node e2e/support/browser-test-server.mjs...
+2026-10-17T23:54:30.387Z pw:webserver Process started
+2026-10-17T23:54:30.387Z pw:webserver Waiting for availability...
+2026-10-17T23:54:30.388Z pw:webserver HTTP GET: http://localhost:3000/de
+2026-10-17T23:54:30.389Z pw:webserver Error while checking if http://localhost:3000/de is available: connect ECONNREFUSED ::1:3000
+connect ECONNREFUSED 127.0.0.1:3000
+2026-10-17T23:54:30.389Z pw:webserver Waiting 100ms
+2026-10-17T23:54:30.490Z pw:webserver HTTP GET: http://localhost:3000/de
+2026-10-17T23:54:30.491Z pw:webserver Error while checking if http://localhost:3000/de is available: connect ECONNREFUSED ::1:3000
+connect ECONNREFUSED 127.0.0.1:3000
+2026-10-17T23:54:30.491Z pw:webserver Waiting 250ms
+[WebServer] (node:65563) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] ▲ Next.js 16.3.5
+[WebServer] - Local:         http://localhost:3000
+[WebServer] - Network:       http://localhost:3000
+[WebServer] ✓ Ready in 0ms
+[WebServer] ✓ Running next.config took 4ms
+2026-10-17T23:54:30.744Z pw:webserver HTTP GET: http://localhost:3000/de
+2026-10-17T23:54:30.848Z pw:webserver HTTP Status: 200
+2026-10-17T23:54:30.849Z pw:webserver WebServer available
+
+Running 1 test using 1 worker
+
+(node:65565) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [auth] › e2e/auth.spec.ts:197:3 › localized authentication and account UI › user can reset a password through the emailed recovery link (5.4s)
+2026-10-17T23:54:37.062Z pw:webserver Terminating the WebServer
+2026-10-17T23:54:37.069Z pw:webserver Terminated the WebServer
+
+
+  1) [auth] › e2e/auth.spec.ts:197:3 › localized authentication and account UI › user can reset a password through the emailed recovery link 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByText('Prüfe jetzt dein E-Mail-Postfach.')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByText('Prüfe jetzt dein E-Mail-Postfach.') with timeout 5000ms
+      - waiting for getByText('Prüfe jetzt dein E-Mail-Postfach.')
+
+
+      43 |       locale === "de" ? "Prüfe jetzt dein E-Mail-Postfach." : "Check your email inbox now.",
+      44 |     ),
+    > 45 |   ).toBeVisible();
+         |     ^
+      46 |
+      47 |   await rm(mailboxPath, { force: true });
+      48 |   await page
+        at registerWithPassword (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/auth.spec.ts:45:5)
+        at /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/auth.spec.ts:198:25
+
+    Error Context: test-results/auth-localized-authenticat-9f856-h-the-emailed-recovery-link-auth/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/auth-localized-authenticat-9f856-h-the-emailed-recovery-link-auth/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/auth-localized-authenticat-9f856-h-the-emailed-recovery-link-auth/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [auth] › e2e/auth.spec.ts:197:3 › localized authentication and account UI › user can reset a password through the emailed recovery link 
+undefined
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/auth.spec.ts --grep reset a password --workers=1 --trace on

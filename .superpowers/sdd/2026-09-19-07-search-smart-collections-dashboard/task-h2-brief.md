@@ -1,0 +1,21 @@
+# H2 — private authored milestone wire routes
+
+Root sourceGO after reviewedH1: immutable BASE **d57a56794283af1c0238248f1661b7186d01ecf6**, or next evidence-only product-equivalent HEAD. H1 independent0C/0I/0M,63focusedPASS(13native+50pure),357affectedDB-enabledPASS0skip,1242purePASS/495explicitDBskips/types/lint/buildPASS. Prior5E exactCI42122025511+42122015887bothSUCCESS. Under existingP7.14 H2mayexecute while exactH1featureheadCI runs; holddependentpush/completion andstopaffectedworkonfailure. No newuserapproval/designloop, sourceparallelism or countincrease.
+
+## Scope and actual reusable boundaries
+
+Read task-4-milestone-context.md P7.39–40, task-4-history-preparation.md §4/H2 and acceptedH1source/docs. Build four privateoperations atthree APIv1locations: POST dashboard/milestones create201; POST dashboard/milestones/query list200; PATCH/DELETE dashboard/milestones/[id]200. No GET/contentquerystrings/filter/lifecycle/ownerparameter. Actorfromfreshsession only.
+
+Actual private body primitive is apps/web/src/lib/api/read-search-body.ts: one bounded lexical precheck, fatalUTF8, BOMreject, decodedduplicatekey/closedshape guard, quotedvalueopacity, JSON.parse syntax. Reuse it narrowly with four closedscalar milestone shapes; derive16KiB limit for those shapes while retaining all existing privatequery/reference limits/arrays. A small milestone wrapper may map SEARCH_INVALID to MILESTONE_INVALID; preserve413. Do not copy SmartCollection's older permissiveJSON helper, introduce a new parser/dependency or unusedfuture shape. Existing readBoundedBody independently counts chunks even with absent/falseContentLength.
+
+Follow current dashboard-routes/item-search-routes/apiRoute/dependency factory conventions rather than a secondauth/errorframework. Everyoperation checks exactOrigin FIRST, then freshsession with disableCookieCache:true/disableRefresh:true, then rejectsallURLquery/hashes/overboundencoding via existing queryboundary, then reads strictbody/contract/service. Dependencyloader uses bounded:true Prisma and cachedhandlers like existing dashboard dependencyloader. Routeparams normalNextasync context; do not expose a write/getone convenience route.
+
+Map branded MILESTONE_INVALID400/NOT_FOUND404/CONFLICT409; inherited SEARCH_UNAVAILABLE503/SEARCH_INVARIANT500 remaingeneric. Preserve no-store and success/error requestID; no input/title/SQL/owner/cursor/causes in publicerrors/logs. Unexpectedlookalikeerror500. InvalidUTF8/BOM/duplicateescapedkeys/nestedvalues/wrongmedia/shape/keys areclosed400; actualstreamover16384bytes413 independentdeclaredlength. No operation implies false rollback/exactlyonce assurance after lostresponse/settlement failure.
+
+## Proof and freeze
+
+- Meaningful routeRED with real guarded service and ownershiprows, not only an import failure; actual valid POST before source should not report success or existing unrelated data. Reuse minimalinterface stub only as needed to reach behavioral assertions.
+- Pure fixedbody regressions: allfourrealclosedshapes, escapeddecodedduplicatekeys, stringscontainingbraces/punctuation, nested/scalartype/syntax/unknownfields, UTF8/BOM,16KiB exact/overcap with false/absentlength/chunks. Existing fivequery/reference shapes remainprovedunchanged.
+- Native-backedhandlers actualH1storage: create/list/fullupdate/delete, canonicaldates/names, realforeign/missing404, max/staleCAS409, actor/limit/contextcursor binding and pagination, concurrentedit and realcommitresults. Fakeauthadapter is labelled synthetic while asserting freshflags; actualBrowserBetterAuth is H3.
+- Authenticate/order failure tests count session/body/service calls so invalidOrigin cannot readprivatebody/session and unauthorized cannot parsebody. Everyvalidop privatePOSTsameOrigin. Reject extraneous/overbound/malformedURL afterauth, preserve no-store/requestID forsuccess/errors. Inject only faults to prove closeddependency/corrupt/unknownoutcome; actualsuccesspayload comesfrom realservice.
+- Freeze relevant pure/native + existingprivatequery/reference/savedroute regressions, workspace types/lint/productionbuild, manifests/report. One readonlyindependentreview, rootproofclosure, exactCI. H3requires reviewed freshBASE. No mainmerge/deploy/providers/realusers/oldautomations;41/91/fullPhase07remainopen.

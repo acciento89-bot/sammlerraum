@@ -1,0 +1,13 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ✓ |workspace| apps/web/src/lib/personal-milestone-routes.integration.test.ts (1 test) 138ms
+ ✓ |workspace| apps/web/src/lib/api/read-milestone-body.test.ts (24 tests) 11ms
+ ✓ |workspace| apps/web/src/lib/api/read-search-body.test.ts (51 tests) 438ms
+   ✓ private scalar search body boundary > retains raw f above 10000 chars instead of applying filter guards to its envelope  421ms
+
+ Test Files  3 passed (3)
+      Tests  76 passed (76)
+   Start at  23:55:07
+   Duration  1.48s (transform 155ms, setup 7ms, collect 494ms, tests 587ms, environment 0ms, prepare 106ms)
+

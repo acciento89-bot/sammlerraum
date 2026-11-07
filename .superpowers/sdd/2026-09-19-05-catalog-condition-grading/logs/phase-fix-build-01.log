@@ -1,0 +1,30 @@
+
+> sammlerraum@ build /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+> pnpm -r build
+
+Scope: 9 of 10 workspace projects
+packages/config build$ pnpm typecheck
+packages/contracts build$ pnpm typecheck
+packages/queue build$ pnpm typecheck
+packages/storage build$ pnpm typecheck
+packages/config build: > @sammlerraum/config@ typecheck /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/config
+packages/config build: > tsc --noEmit --project ../../tsconfig.base.json
+packages/storage build: > @sammlerraum/storage@ typecheck /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/storage
+packages/storage build: > tsc --noEmit --project ../../tsconfig.base.json
+packages/contracts build: > @sammlerraum/contracts@ typecheck /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/contracts
+packages/contracts build: > tsc --noEmit --project ../../tsconfig.base.json
+packages/queue build: > @sammlerraum/queue@ typecheck /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/queue
+packages/queue build: > tsc --noEmit --project ../../tsconfig.base.json
+packages/storage build: ../../apps/web/e2e/catalog-grading.spec.ts(1465,42): error TS2812: Property 'open' does not exist on type 'HTMLDetailsElement'. Try changing the 'lib' compiler option to include 'dom'.
+packages/storage build: ../../apps/web/e2e/catalog-grading.spec.ts(1491,40): error TS2812: Property 'open' does not exist on type 'HTMLDetailsElement'. Try changing the 'lib' compiler option to include 'dom'.
+packages/storage build: ../../apps/web/src/lib/grading-routes.integration.test.ts(136,13): error TS2339: Property 'grading' does not exist on type 'unknown'.
+packages/storage build:  ELIFECYCLE  Command failed with exit code 2.
+packages/storage build: Failed
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/storage:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @sammlerraum/storage@ build: `pnpm typecheck`
+Exit status 2
+packages/testing build$ pnpm typecheck
+packages/queue build: ../../apps/web/e2e/catalog-grading.spec.ts(1465,42): error TS2812: Property 'open' does not exist on type 'HTMLDetailsElement'. Try changing the 'lib' compiler option to include 'dom'.
+packages/queue build: ../../apps/web/e2e/catalog-grading.spec.ts(1491,40): error TS2812: Property 'open' does not exist on type 'HTMLDetailsElement'. Try changing the 'lib' compiler option to include 'dom'.
+packages/queue build: ../../apps/web/src/lib/grading-routes.integration.test.ts(136,13): error TS2339: Property 'grading' does not exist on type 'unknown'.
+ ELIFECYCLE  Command failed with exit code 2.

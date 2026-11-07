@@ -1,0 +1,85 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| apps/web/src/lib/catalog-money-routes.integration.test.ts (5 tests | 1 failed) 495ms
+   × catalog money HTTP native boundary > does not create a global proposal after the browser account changed 27ms
+     → expected 201 to be 409 // Object.is equality
+   ✓ catalog money HTTP native boundary > keeps reads available but declines explicit mutations while server authoring is disabled 47ms
+   ✓ catalog money HTTP native boundary > reads public-safe revision money, classifies, privately audits and revokes with fresh sessions 36ms
+   ✓ catalog money HTTP native boundary > queues explicit authoring without applying it and keeps legacy quota/shared audit 7ms
+   ✓ catalog money HTTP native boundary > rejects foreign origins, ambiguous query/body keys, BOM and oversized streamed bytes 12ms
+ ❯ |workspace| apps/web/src/lib/legacy-money-routes.integration.test.ts (6 tests | 1 failed) 213ms
+   × personal money HTTP real database boundary > rejects a stale browser actor precondition before creating under the freshly authenticated account 114ms
+     → expected 201 to be 409 // Object.is equality
+   ✓ personal money HTTP real database boundary > keeps explicit monetary writers closed when server authoring is disabled 16ms
+   ✓ personal money HTTP real database boundary > creates and reads explicit money only after fresh authentication, with no-store and request IDs 23ms
+   ✓ personal money HTTP real database boundary > rejects cross-origin before session access and duplicate nested keys/invalid bytes before mutation 3ms
+   ✓ personal money HTTP real database boundary > hides foreign reads and exposes owned history/revocation as closed request states 27ms
+   ✓ personal money HTTP real database boundary > bounds history/field queries and streamed authoring bodies without weakening authentication 12ms
+ ❯ |workspace| apps/web/src/components/money/legacy-money-client.test.ts (5 tests | 1 failed) 9ms
+   ✓ monetary request acknowledgment > accepts only affirmative pinned capability and never falls back from a missing route 5ms
+   ✓ monetary request acknowledgment > blocks a disabled profile before attempting a write 0ms
+   ✓ monetary request acknowledgment > treats a lost response or server error as unknown and never retries 0ms
+   ✓ monetary request acknowledgment > distinguishes an acknowledged but unreadable response from a rejected mutation 1ms
+   × monetary request acknowledgment > returns the validated acknowledgment and uses only the explicit requested route 1ms
+     → OUTCOME_UNKNOWN
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/web/src/lib/catalog-money-routes.integration.test.ts > catalog money HTTP native boundary > does not create a global proposal after the browser account changed
+AssertionError: expected 201 to be 409 // Object.is equality
+
+- Expected
++ Received
+
+- 409
++ 201
+
+ ❯ apps/web/src/lib/catalog-money-routes.integration.test.ts:55:48
+     53|     const before=await db.catalogProposal.count();
+     54|     const stale=req("POST",input);stale.headers.set("x-money-actor",ow…
+     55|     expect((await api().SUBMIT(stale)).status).toBe(409);
+       |                                                ^
+     56|     expect(await db.catalogProposal.count()).toBe(before);
+     57|     const current=req("POST",input);current.headers.set("x-money-actor…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  |workspace| apps/web/src/lib/legacy-money-routes.integration.test.ts > personal money HTTP real database boundary > rejects a stale browser actor precondition before creating under the freshly authenticated account
+AssertionError: expected 201 to be 409 // Object.is equality
+
+- Expected
++ Received
+
+- 409
++ 201
+
+ ❯ apps/web/src/lib/legacy-money-routes.integration.test.ts:61:28
+     59|     const f=await fixture(), input={schemaVersion:1,item:{collectionId…
+     60|     const refused=await f.api.CREATE(request("POST",input,{"x-money-ac…
+     61|     expect(refused.status).toBe(409);
+       |                            ^
+     62|     expect(await db!.collectibleItem.count({where:{ownerId:f.actor}}))…
+     63|     expect((await f.api.CREATE(request("POST",input,{"x-money-actor":f…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  |workspace| apps/web/src/components/money/legacy-money-client.test.ts > monetary request acknowledgment > returns the validated acknowledgment and uses only the explicit requested route
+Error: OUTCOME_UNKNOWN
+ ❯ writeMoney apps/web/src/components/money/legacy-money-client.ts:131:11
+    129|     });
+    130|   } catch {
+    131|     throw new MoneyClientError("OUTCOME_UNKNOWN");
+       |           ^
+    132|   }
+    133|   if (!response.ok) {
+ ❯ apps/web/src/components/money/legacy-money-client.test.ts:95:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  3 failed (3)
+      Tests  3 failed | 13 passed (16)
+   Start at  11:14:29
+   Duration  1.79s (transform 250ms, setup 8ms, collect 653ms, tests 717ms, environment 0ms, prepare 99ms)
+
