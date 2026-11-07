@@ -429,7 +429,8 @@ describe.runIf(enabled)("personal grading PostgreSQL", () => {
         (error) => ({ error }),
       );
     try {
-      await expectDatabaseWait("CollectibleItem");
+      // Both actual audited mutations serialize at the earlier actor identity fence.
+      await expectDatabaseWait('"user"');
     } finally {
       release();
     }

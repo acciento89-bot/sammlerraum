@@ -1,0 +1,7 @@
+# Phase09 Task5 execution context
+
+BASEca604a2025db87bc6064f4de7f46a457eb5a1567 verified equal remote feature. SourceTask49ed6da7, closing12PASS; whole1042native/92files/0skip168.98s,1542regular/912native-disabled,types/lint/full build and7actual compiled browser regression casesPASS7.7s. PriorTask3 exact40f771f CI42346201723 SUCCESS. Currentca604a2 CI pending; DraftPR1 updated/open/draft. Four local implementations pending one whole-phase review afterTask7; master reviewed48 unchanged.
+
+All ten prior SQL migrations are frozen/applied both guarded local test DBs; new Task5 schema requirements must be forward-only. Never alter050000 to add subject references. Read task-5-preflight.md. Root only implementer/runtime owner; native/build/browser strictly serial. No main application merge/deploy, live providers/customers, other apps/stores or automations.
+
+Task5 spec26 coverage: actual collection/item/node fields/visibility, condition/category, grading/value/location, tags/custom fields, media/document links/metadata, roles/invitation acceptance, import and lifecycle changes in their real transactions. Task4 only provides the generic appender and three initial definitions, not producer coverage. Start actual condition/location native RED plus genuine default-audit SQL failure rollback. Work incrementally; no fake Owner actor to write financial/valuation/move facts. Preserve byte/lease/provenance fences from earlier work. Actor-first locking, meaningful strict snapshot fields, actual import context, no silent logger skip or best-effort detached transaction.

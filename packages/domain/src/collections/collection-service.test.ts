@@ -1,3 +1,5 @@
+import { createTrustedAuditContext } from "../audit/audit-context";
+import type { MutationAuditPort } from "../audit/mutation-audit";
 import { randomUUID } from "node:crypto";
 
 import { createPrismaClient } from "@sammlerraum/db/create-client";
@@ -5,29 +7,35 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 import { createCollectionService, type CollectionDatabase } from "./collection-service";
 
+const unitAuditPort = (): MutationAuditPort => ({
+  begin: async (_tx, actorId) => createTrustedAuditContext({ source: "USER", actorId }),
+  append: async () => {},
+});
 describe("collection service", () => {
   it("creates a private collection for the trusted actor by default", async () => {
     const created: Array<Record<string, unknown>> = [];
     const database = {
-      collection: {
-        create: async ({ data }: { data: Record<string, unknown> }) => {
-          created.push(data);
-          return {
-            id: "00000000-0000-4000-8000-000000000010",
-            name: data.name,
-            visibility: data.visibility,
-          };
-        },
-      },
-      $transaction: async () => undefined as never,
+      $transaction: async <T>(
+        operation: (tx: {
+          $queryRaw: (query: TemplateStringsArray, ...values: unknown[]) => Promise<unknown>;
+        }) => Promise<T>,
+      ) =>
+        operation({
+          $queryRaw: async (_query, ...values) => {
+            const [id, ownerId, name, visibility] = values;
+            created.push({ ownerId, name, visibility });
+            return [{ id, name, visibility }];
+          },
+        }),
     };
     const service = createCollectionService(
       database as unknown as CollectionDatabase,
       "trusted-user-id",
+      unitAuditPort(),
     );
 
     await expect(service.createCollection({ name: "  Münzen  " })).resolves.toEqual({
-      id: "00000000-0000-4000-8000-000000000010",
+      id: expect.any(String),
       name: "Münzen",
       visibility: "PRIVATE",
     });
@@ -62,6 +70,7 @@ describe("collection service", () => {
     const service = createCollectionService(
       database as unknown as CollectionDatabase,
       "owner-user-id",
+      unitAuditPort(),
     );
 
     await expect(service.moveNode(parentId, { parentId: childId })).rejects.toMatchObject({
@@ -97,6 +106,7 @@ describe("collection service", () => {
     const service = createCollectionService(
       database as unknown as CollectionDatabase,
       "owner-user-id",
+      unitAuditPort(),
     );
 
     await expect(service.moveCollectionNode(nodeId, { parentId: null })).rejects.toMatchObject({
@@ -129,6 +139,7 @@ describe("collection service", () => {
     const service = createCollectionService(
       database as unknown as CollectionDatabase,
       "trusted-user-id",
+      unitAuditPort(),
     );
 
     await expect(
@@ -165,6 +176,7 @@ describe("collection service", () => {
     const service = createCollectionService(
       database as unknown as CollectionDatabase,
       "trusted-user-id",
+      unitAuditPort(),
     );
 
     await expect(
@@ -203,6 +215,7 @@ describe("collection service", () => {
     const service = createCollectionService(
       database as unknown as CollectionDatabase,
       "trusted-user-id",
+      unitAuditPort(),
     );
 
     await expect(service.createCollection({ name: "   " })).rejects.toMatchObject({
@@ -260,6 +273,7 @@ describe("collection service", () => {
     const service = createCollectionService(
       database as unknown as CollectionDatabase,
       "trusted-user-id",
+      unitAuditPort(),
     );
 
     await expect(service.getAncestorVisibility(collectionId, nodeId)).resolves.toEqual({
@@ -289,6 +303,7 @@ describe("collection service", () => {
     const service = createCollectionService(
       database as unknown as CollectionDatabase,
       "trusted-user-id",
+      unitAuditPort(),
     );
 
     await expect(service.getAncestorVisibility(collectionId, nodeId)).resolves.toEqual({
@@ -317,6 +332,7 @@ describe("collection service", () => {
     const service = createCollectionService(
       database as unknown as CollectionDatabase,
       "trusted-user-id",
+      unitAuditPort(),
     );
 
     await expect(service.getAncestorVisibility(collectionId, null)).resolves.toEqual({
@@ -391,6 +407,7 @@ describe("collection service", () => {
       const service = createCollectionService(
         database as unknown as CollectionDatabase,
         "trusted-user-id",
+        unitAuditPort(),
       );
       await expect(service.getAncestorVisibility(collectionId, nodeId)).rejects.toMatchObject({
         code: fixture.code,

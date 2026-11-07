@@ -1,3 +1,4 @@
+import { beginMutationAudit, appendMutationAudit } from "../audit/mutation-audit";
 import { randomUUID } from "node:crypto";
 import { currencyMinorUnitExponent } from "../money/currencies";
 import { MAX_AMOUNT_MINOR, type Money } from "../money/money";
@@ -156,6 +157,11 @@ export function createValuationService(database: ValuationDatabase, actorUserId:
     const itemId = uuid(itemIdInput);
     const value = inputValue(input);
     return within(async (tx) => {
+      const audit = await beginMutationAudit(
+        tx,
+        actorUserId,
+        () => new ValuationServiceError("ITEM_NOT_FOUND"),
+      );
       await lockItem(tx, itemId, actorUserId, true);
       const [count] = await tx.$queryRaw<
         Array<{ count: number }>
@@ -172,6 +178,20 @@ export function createValuationService(database: ValuationDatabase, actorUserId:
         INSERT INTO "Valuation" (id,"itemId","ownerId","actorUserId",type,basis,"amountMinor",currency,"minorUnitExponent",note,"observedAt","createdAt")
         VALUES (${randomUUID()}::uuid,${itemId}::uuid,${actorUserId},${actorUserId},'MANUAL','PER_UNIT',${value.amountMinor},${value.currency},${value.minorUnitExponent},${value.note},${observedAt.toISOString()}::timestamptz,${createdAt.toISOString()}::timestamptz) RETURNING *
       `;
+      await appendMutationAudit(tx, audit, {
+        resourceType: "ITEM",
+        resourceId: itemId,
+        action: "ITEM_VALUATION_ADDED",
+        before: null,
+        after: {
+          id: row!.id,
+          basis: row!.basis,
+          amountMinor: row!.amountMinor.toString(),
+          currency: row!.currency,
+          minorUnitExponent: row!.minorUnitExponent,
+          observedAt: row!.observedAt.toISOString(),
+        },
+      });
       return row!;
     });
   }

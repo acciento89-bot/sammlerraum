@@ -1,3 +1,5 @@
+import { createHash } from "node:crypto";
+import { defaultMutationAudit, type MutationAuditPort } from "../audit/mutation-audit";
 import { moneyTransaction } from "../money/legacy-money-transaction";
 import {
   readMoneyFact,
@@ -528,17 +530,48 @@ export async function updateItemInTransaction(
   );
 }
 
+function itemAuditSnapshot(item: StoredItem | CollectibleItem) {
+  const hash = (text: string | null) =>
+    text === null ? null : createHash("sha256").update(text).digest("hex");
+  return {
+    collectionId: item.collectionId,
+    nodeId: item.nodeId,
+    title: item.title,
+    quantity: item.quantity,
+    acquisitionType: item.acquisitionType,
+    acquisitionDate: item.acquisitionDate === null ? null : toDateOnly(item.acquisitionDate),
+    tradeStatus: item.tradeStatus,
+    publicDescriptionHash: hash(item.publicDescription),
+    privateNotesHash: hash(item.privateNotes),
+  };
+}
 export function createItemService(
   database: ItemDatabase,
   actorUserId: string,
-  options: { now?: () => Date } = {},
+  options: { now?: () => Date; auditPort?: MutationAuditPort } = {},
 ) {
   const now = options.now ?? (() => new Date());
+  const auditPort = options.auditPort ?? defaultMutationAudit;
 
   async function createItem(input: CreateItemInput): Promise<CollectibleItem> {
     const data = CreateItemInputSchema.parse(input);
     return database.$transaction(
-      (transaction) => createItemInTransaction(transaction, actorUserId, data),
+      async (transaction) => {
+        const audit = await auditPort.begin(
+          transaction,
+          actorUserId,
+          () => new ItemServiceError("COLLECTION_NOT_FOUND"),
+        );
+        const created = await createItemInTransaction(transaction, actorUserId, data);
+        await auditPort.append(transaction, audit, {
+          resourceType: "ITEM",
+          resourceId: created.id,
+          action: "ITEM_CREATED",
+          before: null,
+          after: { ...itemAuditSnapshot(created), visibility: created.visibility },
+        });
+        return created;
+      },
       { isolationLevel: "ReadCommitted" },
     );
   }
@@ -547,7 +580,34 @@ export function createItemService(
     const itemId = CollectibleItemSchema.shape.id.parse(itemIdInput);
     const data = UpdateItemInputSchema.parse(input);
     return database.$transaction(
-      (transaction) => updateItemInTransaction(transaction, actorUserId, itemId, data),
+      async (transaction) => {
+        const audit = await auditPort.begin(
+          transaction,
+          actorUserId,
+          () => new ItemServiceError("ITEM_NOT_FOUND"),
+        );
+        const existing = await lockOwnedItem(transaction, itemId, actorUserId),
+          before = itemAuditSnapshot(existing);
+        const updated = await updateItemInTransaction(transaction, actorUserId, itemId, data),
+          after = itemAuditSnapshot(updated);
+        if (JSON.stringify(before) !== JSON.stringify(after))
+          await auditPort.append(transaction, audit, {
+            resourceType: "ITEM",
+            resourceId: itemId,
+            action: "ITEM_DETAILS_CHANGED",
+            before,
+            after,
+          });
+        if (existing.visibility !== updated.visibility)
+          await auditPort.append(transaction, audit, {
+            resourceType: "ITEM",
+            resourceId: itemId,
+            action: "ITEM_VISIBILITY_CHANGED",
+            before: { visibility: existing.visibility },
+            after: { visibility: updated.visibility },
+          });
+        return updated;
+      },
       { isolationLevel: "ReadCommitted" },
     );
   }
@@ -556,15 +616,28 @@ export function createItemService(
     const itemId = CollectibleItemSchema.shape.id.parse(itemIdInput);
     return database.$transaction(
       async (transaction) => {
+        const audit = await auditPort.begin(
+          transaction,
+          actorUserId,
+          () => new ItemServiceError("ITEM_NOT_FOUND"),
+        );
         const existing = await lockOwnedItem(transaction, itemId, actorUserId);
         if (existing.archivedAt !== null) throw new ItemServiceError("ITEM_INACTIVE");
-        return toItem(
+        const archived = toItem(
           await transaction.collectibleItem.update({
             where: { id: existing.id },
             data: { archivedAt: now(), tradeStatus: "NOT_FOR_TRADE" },
             select: itemSelect,
           }),
         );
+        await auditPort.append(transaction, audit, {
+          resourceType: "ITEM",
+          resourceId: itemId,
+          action: "ITEM_ARCHIVED",
+          before: { archivedAt: null, tradeStatus: existing.tradeStatus },
+          after: { archivedAt: archived.archivedAt, tradeStatus: archived.tradeStatus },
+        });
+        return archived;
       },
       { isolationLevel: "ReadCommitted" },
     );
@@ -574,11 +647,23 @@ export function createItemService(
     const itemId = CollectibleItemSchema.shape.id.parse(itemIdInput);
     await database.$transaction(
       async (transaction) => {
+        const audit = await auditPort.begin(
+          transaction,
+          actorUserId,
+          () => new ItemServiceError("ITEM_NOT_FOUND"),
+        );
         const existing = await lockOwnedItem(transaction, itemId, actorUserId);
         await transaction.collectibleItem.update({
           where: { id: existing.id },
           data: { deletedAt: now(), tradeStatus: "NOT_FOR_TRADE" },
           select: itemSelect,
+        });
+        await auditPort.append(transaction, audit, {
+          resourceType: "ITEM",
+          resourceId: itemId,
+          action: "ITEM_DELETED",
+          before: { deleted: false },
+          after: { deleted: true },
         });
       },
       { isolationLevel: "ReadCommitted" },
@@ -597,6 +682,11 @@ export function createItemService(
       try {
         return await database.$transaction(
           async (transaction) => {
+            const audit = await auditPort.begin(
+              transaction,
+              actorUserId,
+              () => new ItemServiceError("ITEM_NOT_FOUND"),
+            );
             const [discovered] = await transaction.$queryRaw<CatalogReferences[]>`
           SELECT item."catalogEntryId",item."catalogVariantId"
           FROM "CollectibleItem" item JOIN "Collection" collection ON collection.id=item."collectionId"
@@ -778,6 +868,20 @@ export function createItemService(
                 },
               });
             }
+            await auditPort.append(transaction, audit, {
+              resourceType: "ITEM",
+              resourceId: itemId,
+              action: "ITEM_SPLIT",
+              before: { quantity: item.quantity, createdItemId: null },
+              after: { quantity: source.quantity, createdItemId: created.id },
+            });
+            await auditPort.append(transaction, audit, {
+              resourceType: "ITEM",
+              resourceId: created.id,
+              action: "ITEM_CREATED",
+              before: null,
+              after: { ...itemAuditSnapshot(created), visibility: created.visibility },
+            });
             return SplitQuantityResultSchema.parse({
               source: toItem(source),
               created: toItem(created),

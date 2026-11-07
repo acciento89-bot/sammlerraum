@@ -1,0 +1,64 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/audit/core-audit-integration.test.ts (9 tests | 1 failed) 1171ms
+   ✓ actual core mutations append their real audit in the same transaction > records actual condition and location changes with the real user and before/after values 171ms
+   ✓ actual core mutations append their real audit in the same transaction > a genuine default audit INSERT failure rolls the actual condition write back 52ms
+   ✓ actual core mutations append their real audit in the same transaction > records category changes and condition clearing without inventing a second unchanged event 24ms
+   ✓ actual core mutations append their real audit in the same transaction > audits grading create/update/delete with selected authored facts and excludes verification URLs/source text 22ms
+   ✓ actual core mutations append their real audit in the same transaction > keeps a manual valuation's exact bigint, stored scale, basis and true author in audit 18ms
+   ✓ actual core mutations append their real audit in the same transaction > records private location creation and hierarchy moves without duplicating QR access tokens 26ms
+   ✓ actual core mutations append their real audit in the same transaction > rolls back grading, valuations and location history together when their audit append fails 27ms
+   ✓ actual core mutations append their real audit in the same transaction > tracks collection and node creation, rename, visibility, move and soft deletion 125ms
+   × actual core mutations append their real audit in the same transaction > audits real item create, meaningful edits, split, archive and soft delete without storing private note text 14ms
+     → [
+  {
+    "code": "invalid_value",
+    "values": [
+      "NOT_FOR_TRADE",
+      "OPEN_TO_TRADE",
+      "FOR_SALE",
+      "RESERVED"
+    ],
+    "path": [
+      "tradeStatus"
+    ],
+    "message": "Invalid option: expected one of \"NOT_FOR_TRADE\"|\"OPEN_TO_TRADE\"|\"FOR_SALE\"|\"RESERVED\""
+  }
+]
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/audit/core-audit-integration.test.ts > actual core mutations append their real audit in the same transaction > audits real item create, meaningful edits, split, archive and soft delete without storing private note text
+ZodError: [
+  {
+    "code": "invalid_value",
+    "values": [
+      "NOT_FOR_TRADE",
+      "OPEN_TO_TRADE",
+      "FOR_SALE",
+      "RESERVED"
+    ],
+    "path": [
+      "tradeStatus"
+    ],
+    "message": "Invalid option: expected one of \"NOT_FOR_TRADE\"|\"OPEN_TO_TRADE\"|\"FOR_SALE\"|\"RESERVED\""
+  }
+]
+ ❯ Object.updateItem packages/domain/src/items/item-service.ts:548:40
+    546|   async function updateItem(itemIdInput: string, input: UpdateItemInpu…
+    547|     const itemId = CollectibleItemSchema.shape.id.parse(itemIdInput);
+    548|     const data = UpdateItemInputSchema.parse(input);
+       |                                        ^
+    549|     return database.$transaction(
+    550|       (transaction) => updateItemInTransaction(transaction, actorUserI…
+ ❯ packages/domain/src/audit/core-audit-integration.test.ts:91:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 8 passed (9)
+   Start at  08:20:38
+   Duration  1.70s (transform 175ms, setup 7ms, collect 326ms, tests 1.17s, environment 0ms, prepare 57ms)
+

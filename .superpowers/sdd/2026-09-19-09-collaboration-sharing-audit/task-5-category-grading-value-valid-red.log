@@ -1,0 +1,130 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/audit/core-audit-integration.test.ts (5 tests | 3 failed) 568ms
+   ✓ actual core mutations append their real audit in the same transaction > records actual condition and location changes with the real user and before/after values 164ms
+   ✓ actual core mutations append their real audit in the same transaction > a genuine default audit INSERT failure rolls the actual condition write back 51ms
+   × actual core mutations append their real audit in the same transaction > records category changes and condition clearing without inventing a second unchanged event 17ms
+     → expected [ { …(10) } ] to deep equally contain ObjectContaining{…}
+   × actual core mutations append their real audit in the same transaction > audits grading create/update/delete with selected authored facts and excludes verification URLs/source text 18ms
+     → expected [] to deeply equal ArrayContaining{…}
+   × actual core mutations append their real audit in the same transaction > keeps a manual valuation's exact bigint, stored scale, basis and true author in audit 12ms
+     → expected [] to deep equally contain ObjectContaining{…}
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/audit/core-audit-integration.test.ts > actual core mutations append their real audit in the same transaction > records category changes and condition clearing without inventing a second unchanged event
+AssertionError: expected [ { …(10) } ] to deep equally contain ObjectContaining{…}
+
+- Expected: 
+ObjectContaining {
+  "action": "ITEM_CATEGORY_CHANGED",
+  "actorId": "8c1efc33-180a-476c-85e0-37121af1b2a5",
+  "after": {
+    "categoryTemplateId": null,
+    "conditionOptionId": null,
+  },
+  "before": ObjectContaining {
+    "conditionOptionId": "8001cca0-f967-45a9-86be-edf4f9d115d6",
+  },
+}
+
++ Received: 
+[
+  {
+    "action": "ITEM_CONDITION_CHANGED",
+    "actorId": "8c1efc33-180a-476c-85e0-37121af1b2a5",
+    "after": {
+      "categoryTemplateId": "0d437788-f332-4934-b1b9-122c85c0bbd9",
+      "conditionOptionId": "8001cca0-f967-45a9-86be-edf4f9d115d6",
+    },
+    "before": {
+      "categoryTemplateId": "0d437788-f332-4934-b1b9-122c85c0bbd9",
+      "conditionOptionId": null,
+    },
+    "createdAt": "2026-11-07T07:14:24.813Z",
+    "id": "3cee3bb0-e405-43d6-8d9f-aa880dde7dd6",
+    "resourceId": "cbbc9f1e-79a3-4b4f-8fbe-4b36decd79be",
+    "resourceType": "ITEM",
+    "sequence": "5",
+    "source": "USER",
+  },
+]
+
+ ❯ packages/domain/src/audit/core-audit-integration.test.ts:41:18
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  |workspace| packages/domain/src/audit/core-audit-integration.test.ts > actual core mutations append their real audit in the same transaction > audits grading create/update/delete with selected authored facts and excludes verification URLs/source text
+AssertionError: expected [] to deeply equal ArrayContaining{…}
+
+- Expected
++ Received
+
+- ArrayContaining [
+-   ObjectContaining {
+-     "action": "ITEM_GRADING_CREATED",
+-     "after": ObjectContaining {
+-       "certificateNo": "audit-d22433f7-ef8c-40cd-8325-7605018e5d3e",
+-       "grade": "A",
+-       "id": "bdd41f4c-d6ce-47e6-a7e2-83924be36fe7",
+-     },
+-     "before": null,
+-   },
+-   ObjectContaining {
+-     "action": "ITEM_GRADING_UPDATED",
+-     "after": ObjectContaining {
+-       "grade": "B",
+-     },
+-     "before": ObjectContaining {
+-       "grade": "A",
+-     },
+-   },
+-   ObjectContaining {
+-     "action": "ITEM_GRADING_REMOVED",
+-     "after": null,
+-     "before": ObjectContaining {
+-       "grade": "B",
+-     },
+-   },
+- ]
++ []
+
+ ❯ packages/domain/src/audit/core-audit-integration.test.ts:49:18
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  |workspace| packages/domain/src/audit/core-audit-integration.test.ts > actual core mutations append their real audit in the same transaction > keeps a manual valuation's exact bigint, stored scale, basis and true author in audit
+AssertionError: expected [] to deep equally contain ObjectContaining{…}
+
+- Expected: 
+ObjectContaining {
+  "action": "ITEM_VALUATION_ADDED",
+  "actorId": "fc6372d3-7f40-4a4b-837e-ab75fecb7f32",
+  "after": ObjectContaining {
+    "amountMinor": 9007199254740993n,
+    "basis": "PER_UNIT",
+    "currency": "JPY",
+    "id": "93a4957c-902b-4282-9a9e-bf66247317e2",
+    "minorUnitExponent": 0,
+  },
+  "before": null,
+  "source": "USER",
+}
+
++ Received: 
+[]
+
+ ❯ packages/domain/src/audit/core-audit-integration.test.ts:54:18
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 2 passed (5)
+   Start at  08:14:23
+   Duration  1.10s (transform 178ms, setup 7ms, collect 330ms, tests 568ms, environment 0ms, prepare 58ms)
+

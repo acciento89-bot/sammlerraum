@@ -1,0 +1,136 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ✓ |workspace| packages/domain/src/audit/core-audit-integration.test.ts (9 tests) 688ms
+ ❯ |workspace| packages/domain/src/items/item-service.test.ts (15 tests | 6 failed) 342ms
+   × item service > splits a quantity item without changing total quantity 6ms
+     → AUDIT_NOT_FOUND
+   × item service > copies populated metadata in the locked split transaction 1ms
+     → AUDIT_INTEGRITY
+   × item service > creates a private item for the trusted owner in a node from the same collection 3ms
+     → promise rejected "AuditError: AUDIT_NOT_FOUND { …(1) }" instead of resolving
+   ✓ item service > rejects non-canonical dates and invalid or incomplete money before persistence 2ms
+   ✓ item service > does not create for another owner's collection or a node from another collection 0ms
+   ✓ item service > rejects moving an item to a node in another collection before mutation 1ms
+   × item service > archives an active item at the service clock and rejects later mutations 1ms
+     → promise rejected "AuditError: AUDIT_NOT_FOUND { …(1) }" instead of resolving
+   × item service > allows a disposed item to be archived while retaining both lifecycle timestamps 0ms
+     → promise rejected "AuditError: AUDIT_NOT_FOUND { …(1) }" instead of resolving
+   ✓ item service > rejects invalid split counts against the freshly locked quantity 0ms
+   × item service > preserves total acquisition value by copying a per-unit purchase amount 2ms
+     → AUDIT_NOT_FOUND
+   ✓ item service PostgreSQL integration > enforces same-collection nodes and owner-only item mutations 160ms
+   ✓ item service PostgreSQL integration > serializes simultaneous splits against the fresh row quantity 51ms
+   ✓ item service PostgreSQL integration > keeps image and document links on both portions with shared asset IDs 39ms
+   ✓ item service PostgreSQL integration > rolls back the source decrement when creating the split row fails 12ms
+   ✓ item service PostgreSQL integration > rolls back the source and new row when copying metadata fails 13ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/items/item-service.test.ts > item service > splits a quantity item without changing total quantity
+AuditError: AUDIT_NOT_FOUND
+ ❯ recordAuditEventInTransaction packages/domain/src/audit/audit-service.ts:61:34
+
+ ❯ Object.appendMutationAudit [as append] packages/domain/src/audit/mutation-audit.ts:15:105
+ ❯ database.$transaction.isolationLevel packages/domain/src/items/item-service.ts:806:13
+ ❯ Object.splitQuantityItem packages/domain/src/items/item-service.ts:622:16
+ ❯ packages/domain/src/items/item-service.test.ts:62:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  |workspace| packages/domain/src/items/item-service.test.ts > item service > copies populated metadata in the locked split transaction
+AuditError: AUDIT_INTEGRITY
+ ❯ checkedRow packages/domain/src/audit/audit-service.ts:25:30
+     23| function checkedRow(input: unknown) {
+     24|   const parsed = AuditEventSchema.safeParse(input);
+     25|   if (!parsed.success) throw new AuditError("AUDIT_INTEGRITY");
+       |                              ^
+     26|   const value = parsed.data;
+     27|   try {
+ ❯ recordAuditEventInTransaction packages/domain/src/audit/audit-service.ts:67:10
+ ❯ Object.appendMutationAudit [as append] packages/domain/src/audit/mutation-audit.ts:15:105
+ ❯ database.$transaction.isolationLevel packages/domain/src/items/item-service.ts:806:13
+ ❯ Object.splitQuantityItem packages/domain/src/items/item-service.ts:622:16
+ ❯ packages/domain/src/items/item-service.test.ts:144:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  |workspace| packages/domain/src/items/item-service.test.ts > item service > creates a private item for the trusted owner in a node from the same collection
+AssertionError: promise rejected "AuditError: AUDIT_NOT_FOUND { …(1) }" instead of resolving
+ ❯ packages/domain/src/items/item-service.test.ts:226:5
+    224|         tradeStatus: "FOR_SALE",
+    225|       }),
+    226|     ).resolves.toMatchObject({
+       |     ^
+    227|       id: createdItemId,
+    228|       title: "Penny Black",
+
+Caused by: AuditError: AUDIT_NOT_FOUND
+ ❯ missing packages/domain/src/audit/audit-scope.ts:11:9
+ ❯ resolveAuditScope packages/domain/src/audit/audit-scope.ts:74:29
+ ❯ recordAuditEventInTransaction packages/domain/src/audit/audit-service.ts:55:17
+ ❯ Object.appendMutationAudit [as append] packages/domain/src/audit/mutation-audit.ts:15:105
+ ❯ database.$transaction.isolationLevel packages/domain/src/items/item-service.ts:551:9
+ ❯ packages/domain/src/items/item-service.test.ts:212:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { code: 'AUDIT_NOT_FOUND' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+ FAIL  |workspace| packages/domain/src/items/item-service.test.ts > item service > archives an active item at the service clock and rejects later mutations
+AssertionError: promise rejected "AuditError: AUDIT_NOT_FOUND { …(1) }" instead of resolving
+ ❯ packages/domain/src/items/item-service.test.ts:388:45
+    386|     );
+    387| 
+    388|     await expect(service.archiveItem(itemId)).resolves.toMatchObject({
+       |                                             ^
+    389|       id: itemId,
+    390|       archivedAt: "2026-09-20T12:34:56.000Z",
+
+Caused by: AuditError: AUDIT_NOT_FOUND
+ ❯ recordAuditEventInTransaction packages/domain/src/audit/audit-service.ts:61:34
+ ❯ Object.appendMutationAudit [as append] packages/domain/src/audit/mutation-audit.ts:15:105
+ ❯ database.$transaction.isolationLevel packages/domain/src/items/item-service.ts:588:9
+ ❯ packages/domain/src/items/item-service.test.ts:388:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { code: 'AUDIT_NOT_FOUND' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯
+
+ FAIL  |workspace| packages/domain/src/items/item-service.test.ts > item service > allows a disposed item to be archived while retaining both lifecycle timestamps
+AssertionError: promise rejected "AuditError: AUDIT_NOT_FOUND { …(1) }" instead of resolving
+ ❯ packages/domain/src/items/item-service.test.ts:421:45
+    419|     );
+    420| 
+    421|     await expect(service.archiveItem(itemId)).resolves.toMatchObject({
+       |                                             ^
+    422|       archivedAt: "2026-09-20T12:34:56.000Z",
+    423|       disposedAt: "2026-09-19T08:00:00.000Z",
+
+Caused by: AuditError: AUDIT_NOT_FOUND
+ ❯ recordAuditEventInTransaction packages/domain/src/audit/audit-service.ts:61:34
+ ❯ Object.appendMutationAudit [as append] packages/domain/src/audit/mutation-audit.ts:15:105
+ ❯ database.$transaction.isolationLevel packages/domain/src/items/item-service.ts:588:9
+ ❯ packages/domain/src/items/item-service.test.ts:421:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { code: 'AUDIT_NOT_FOUND' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/6]⎯
+
+ FAIL  |workspace| packages/domain/src/items/item-service.test.ts > item service > preserves total acquisition value by copying a per-unit purchase amount
+AuditError: AUDIT_NOT_FOUND
+ ❯ recordAuditEventInTransaction packages/domain/src/audit/audit-service.ts:61:34
+
+ ❯ Object.appendMutationAudit [as append] packages/domain/src/audit/mutation-audit.ts:15:105
+ ❯ database.$transaction.isolationLevel packages/domain/src/items/item-service.ts:806:13
+ ❯ Object.splitQuantityItem packages/domain/src/items/item-service.ts:622:16
+ ❯ packages/domain/src/items/item-service.test.ts:509:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/6]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  6 failed | 18 passed (24)
+   Start at  08:22:21
+   Duration  1.77s (transform 182ms, setup 7ms, collect 424ms, tests 1.03s, environment 0ms, prepare 83ms)
+

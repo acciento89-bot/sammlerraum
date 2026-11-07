@@ -1,3 +1,4 @@
+import { beginMutationAudit, appendMutationAudit } from "../audit/mutation-audit";
 import { randomUUID } from "node:crypto";
 import {
   ConditionIdSchema,
@@ -145,6 +146,11 @@ export function createConditionService(database: ConditionDatabase, actorUserId:
     optionId = optionId === null ? null : id(optionId);
     return database.$transaction(
       async (tx) => {
+        const audit = await beginMutationAudit(
+          tx,
+          actorUserId,
+          () => new ConditionServiceError("ITEM_NOT_FOUND"),
+        );
         const item = await lockItem(tx, itemId, actorUserId);
         if (optionId !== null) {
           if (!item.categoryTemplateId)
@@ -167,6 +173,17 @@ export function createConditionService(database: ConditionDatabase, actorUserId:
             throw new ConditionServiceError("CONDITION_INACTIVE");
         }
         await tx.$queryRaw`UPDATE "CollectibleItem" SET "conditionOptionId" = ${optionId}::uuid, "updatedAt" = now() WHERE id = ${itemId}::uuid RETURNING id`;
+        if (item.conditionOptionId !== optionId)
+          await appendMutationAudit(tx, audit, {
+            resourceType: "ITEM",
+            resourceId: itemId,
+            action: "ITEM_CONDITION_CHANGED",
+            before: {
+              categoryTemplateId: item.categoryTemplateId,
+              conditionOptionId: item.conditionOptionId,
+            },
+            after: { categoryTemplateId: item.categoryTemplateId, conditionOptionId: optionId },
+          });
         return state(tx, itemId, actorUserId);
       },
       { isolationLevel: "ReadCommitted" },
@@ -179,6 +196,11 @@ export function createConditionService(database: ConditionDatabase, actorUserId:
     const { categoryTemplateId, clearCondition } = parsed.data;
     return database.$transaction(
       async (tx) => {
+        const audit = await beginMutationAudit(
+          tx,
+          actorUserId,
+          () => new ConditionServiceError("ITEM_NOT_FOUND"),
+        );
         const item = await lockItem(tx, itemId, actorUserId);
         // No catalog parent lock after the item lock. Native scope FKs guarantee
         // the current linked category; changing it requires explicit unlink first.
@@ -198,6 +220,17 @@ export function createConditionService(database: ConditionDatabase, actorUserId:
           throw new ConditionServiceError("CONDITION_CLEAR_REQUIRED");
         const optionId = clearCondition ? null : item.conditionOptionId;
         await tx.$queryRaw`UPDATE "CollectibleItem" SET "categoryTemplateId" = ${categoryTemplateId}::uuid, "conditionOptionId" = ${optionId}::uuid, "updatedAt" = now() WHERE id = ${itemId}::uuid RETURNING id`;
+        if (item.categoryTemplateId !== categoryTemplateId || item.conditionOptionId !== optionId)
+          await appendMutationAudit(tx, audit, {
+            resourceType: "ITEM",
+            resourceId: itemId,
+            action: "ITEM_CATEGORY_CHANGED",
+            before: {
+              categoryTemplateId: item.categoryTemplateId,
+              conditionOptionId: item.conditionOptionId,
+            },
+            after: { categoryTemplateId, conditionOptionId: optionId },
+          });
         return state(tx, itemId, actorUserId);
       },
       { isolationLevel: "ReadCommitted" },

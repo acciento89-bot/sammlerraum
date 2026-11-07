@@ -1,0 +1,87 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/audit/core-audit-integration.test.ts (2 tests | 2 failed) 442ms
+   × actual core mutations append their real audit in the same transaction > records actual condition and location changes with the real user and before/after values 150ms
+     → expected [] to deeply equal ArrayContaining{…}
+   × actual core mutations append their real audit in the same transaction > a genuine default audit INSERT failure rolls the actual condition write back 21ms
+     → promise resolved "{ …(5) }" instead of rejecting
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/audit/core-audit-integration.test.ts > actual core mutations append their real audit in the same transaction > records actual condition and location changes with the real user and before/after values
+AssertionError: expected [] to deeply equal ArrayContaining{…}
+
+- Expected
++ Received
+
+- ArrayContaining [
+-   ObjectContaining {
+-     "action": "ITEM_CONDITION_CHANGED",
+-     "actorId": "13bf9f3f-e4fa-47d3-be8a-82c8eda810cd",
+-     "after": ObjectContaining {
+-       "conditionOptionId": "1cef5d78-c9fe-4223-9188-62c03dce0d27",
+-     },
+-     "before": ObjectContaining {
+-       "conditionOptionId": null,
+-     },
+-     "source": "USER",
+-   },
+-   ObjectContaining {
+-     "action": "ITEM_LOCATION_CHANGED",
+-     "actorId": "13bf9f3f-e4fa-47d3-be8a-82c8eda810cd",
+-     "after": ObjectContaining {
+-       "storageLocationId": "31984f1c-a945-4e52-9e77-efa5d06c323a",
+-     },
+-     "before": ObjectContaining {
+-       "storageLocationId": null,
+-     },
+-     "source": "USER",
+-   },
+- ]
++ []
+
+ ❯ packages/domain/src/audit/core-audit-integration.test.ts:25:18
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |workspace| packages/domain/src/audit/core-audit-integration.test.ts > actual core mutations append their real audit in the same transaction > a genuine default audit INSERT failure rolls the actual condition write back
+AssertionError: promise resolved "{ …(5) }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "categoryTemplateId": "d4365f05-d9d0-440a-bafd-30a64a88359d",
++   "conditionOption": {
++     "active": true,
++     "categoryTemplateId": "d4365f05-d9d0-440a-bafd-30a64a88359d",
++     "id": "cfeb171d-e50e-4e4e-bd01-fd93fd91a169",
++     "labelKey": "audit.mint",
++     "labels": {
++       "de": "Sehr gut",
++       "en": "Very good",
++     },
++     "normalizedBand": 4,
++     "position": 0,
++     "schemeId": "7e013871-f4c6-409e-ae9c-b8403bceab2c",
++   },
++   "itemId": "b20326b2-9c0d-4620-bcd7-879667a198c3",
++   "normalizedBand": 4,
++   "schemeActive": true,
+  }
+
+ ❯ packages/domain/src/audit/core-audit-integration.test.ts:32:65
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed (2)
+   Start at  07:59:05
+   Duration  844ms (transform 134ms, setup 6ms, collect 245ms, tests 442ms, environment 0ms, prepare 36ms)
+

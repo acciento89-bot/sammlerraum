@@ -1,0 +1,45 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/audit/core-audit-integration.test.ts (2 tests | 2 failed) 444ms
+   × actual core mutations append their real audit in the same transaction > records actual condition and location changes with the real user and before/after values 136ms
+     → CONDITION_CATEGORY_MISMATCH
+   × actual core mutations append their real audit in the same transaction > a genuine default audit INSERT failure rolls the actual condition write back 33ms
+     → CONDITION_CATEGORY_MISMATCH
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/audit/core-audit-integration.test.ts > actual core mutations append their real audit in the same transaction > records actual condition and location changes with the real user and before/after values
+ConditionServiceError: CONDITION_CATEGORY_MISMATCH
+ ❯ database.$transaction.isolationLevel packages/domain/src/condition/condition-service.ts:151:19
+    149|         if (optionId !== null) {
+    150|           if (!item.categoryTemplateId)
+    151|             throw new ConditionServiceError("CONDITION_CATEGORY_MISMAT…
+       |                   ^
+    152|           // Stable item -> scheme -> option ordering. SHARE blocks ac…
+    153|           const [scheme] = await tx.$queryRaw<
+ ❯ Proxy._transactionWithCallback node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:861:18
+ ❯ packages/domain/src/audit/core-audit-integration.test.ts:22:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |workspace| packages/domain/src/audit/core-audit-integration.test.ts > actual core mutations append their real audit in the same transaction > a genuine default audit INSERT failure rolls the actual condition write back
+ConditionServiceError: CONDITION_CATEGORY_MISMATCH
+ ❯ database.$transaction.isolationLevel packages/domain/src/condition/condition-service.ts:151:19
+    149|         if (optionId !== null) {
+    150|           if (!item.categoryTemplateId)
+    151|             throw new ConditionServiceError("CONDITION_CATEGORY_MISMAT…
+       |                   ^
+    152|           // Stable item -> scheme -> option ordering. SHARE blocks ac…
+    153|           const [scheme] = await tx.$queryRaw<
+ ❯ Proxy._transactionWithCallback node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:861:18
+ ❯ packages/domain/src/audit/core-audit-integration.test.ts:33:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed (2)
+   Start at  07:58:14
+   Duration  918ms (transform 161ms, setup 7ms, collect 292ms, tests 444ms, environment 0ms, prepare 55ms)
+

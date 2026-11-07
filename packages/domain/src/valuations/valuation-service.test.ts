@@ -371,9 +371,8 @@ describe.runIf(enabled)("private manual valuation PostgreSQL", () => {
       );
       let earliest: number;
       try {
-        await expectDatabaseWait(
-          mutation === "collection-delete" ? "Collection" : "CollectibleItem",
-        );
+        // The audited writers now serialize at the real actor before parent/item locks.
+        await expectDatabaseWait('"user"');
         earliest = Date.now();
       } finally {
         gate.release();
@@ -436,7 +435,8 @@ describe.runIf(enabled)("private manual valuation PostgreSQL", () => {
         (error) => ({ error }),
       );
     try {
-      await expectDatabaseWait("Collection");
+      // The collection deletion retains the earlier actor lock until commit.
+      await expectDatabaseWait('"user"');
     } finally {
       release();
     }

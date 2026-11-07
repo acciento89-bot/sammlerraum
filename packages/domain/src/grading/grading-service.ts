@@ -1,3 +1,4 @@
+import { beginMutationAudit, appendMutationAudit } from "../audit/mutation-audit";
 import { randomUUID } from "node:crypto";
 import {
   GRADING_MAX_RECORDS,
@@ -46,6 +47,10 @@ const dto = (row: Row): Grading =>
     createdAt: row.createdAt.toISOString(),
     updatedAt: row.updatedAt.toISOString(),
   });
+function auditSnapshot(value: Grading) {
+  const { id, provider, grade, comparableValue, comparableScale, certificateNo, gradedAt } = value;
+  return { id, provider, grade, comparableValue, comparableScale, certificateNo, gradedAt };
+}
 const providerKey = (value: string) => value.replace(/[A-Z]/gu, (letter) => letter.toLowerCase());
 async function lockItem(tx: Query, itemId: string, actorUserId: string, mutation: boolean) {
   const [item] = await tx.$queryRaw<ItemRow[]>`
@@ -92,7 +97,7 @@ function mapped(error: unknown): never {
 }
 /** Private authored facts only. The item lock serializes CRUD with quantity/lifecycle changes.
  * Mutations are one transaction so Phase09 can append the shared audit event atomically.
- * Current edits/removal have no immutable history guarantee; URLs are never fetched here.
+ * Selected authored changes are audited atomically; verification URLs are never copied or fetched.
  */
 export function createGradingService(database: GradingDatabase, actorUserId: string) {
   const within = async <T>(work: (tx: Query) => Promise<T>) => {
@@ -124,9 +129,15 @@ export function createGradingService(database: GradingDatabase, actorUserId: str
     if (!parsed.success) throw new GradingServiceError("GRADING_INVALID");
     const value = parsed.data;
     return within(async (tx) => {
+      const audit = await beginMutationAudit(
+        tx,
+        actorUserId,
+        () => new GradingServiceError("ITEM_NOT_FOUND"),
+      );
       const item = await lockItem(tx, itemId, actorUserId, true);
       if (item.quantity !== 1) throw new GradingServiceError("GRADING_REQUIRES_SINGLE_ITEM");
       const date = value.gradedAt === null ? null : new Date(`${value.gradedAt}T00:00:00.000Z`);
+      let before: ReturnType<typeof auditSnapshot> | null = null;
       let savedId = gradingId;
       if (gradingId === null) {
         const [count] = await tx.$queryRaw<
@@ -140,7 +151,7 @@ export function createGradingService(database: GradingDatabase, actorUserId: str
           VALUES (${savedId}::uuid,${itemId}::uuid,${actorUserId},${value.provider},${providerKey(value.provider)},${value.grade},${value.comparableValue}::numeric,${value.comparableScale},${value.certificateNo},${value.certificateNo},${date}::date,${value.verificationUrl},${value.source},now()) RETURNING id
         `;
       } else {
-        await record(tx, itemId, gradingId, actorUserId);
+        before = auditSnapshot(await record(tx, itemId, gradingId, actorUserId));
         await tx.$queryRaw`
           UPDATE "Grading" SET provider=${value.provider},"providerKey"=${providerKey(value.provider)},grade=${value.grade},
             "comparableValue"=${value.comparableValue}::numeric,"comparableScale"=${value.comparableScale},"certificateNo"=${value.certificateNo},"certificateKey"=${value.certificateNo},
@@ -148,16 +159,38 @@ export function createGradingService(database: GradingDatabase, actorUserId: str
           WHERE id=${gradingId}::uuid AND "itemId"=${itemId}::uuid AND "ownerId"=${actorUserId} RETURNING id
         `;
       }
-      return record(tx, itemId, savedId!, actorUserId);
+      const saved = await record(tx, itemId, savedId!, actorUserId),
+        after = auditSnapshot(saved);
+      if (JSON.stringify(before) !== JSON.stringify(after))
+        await appendMutationAudit(tx, audit, {
+          resourceType: "ITEM",
+          resourceId: itemId,
+          action: before === null ? "ITEM_GRADING_CREATED" : "ITEM_GRADING_UPDATED",
+          before,
+          after,
+        });
+      return saved;
     });
   }
   async function removeGrading(itemIdInput: string, gradingIdInput: string): Promise<void> {
     const itemId = id(itemIdInput);
     const gradingId = id(gradingIdInput);
     await within(async (tx) => {
+      const audit = await beginMutationAudit(
+        tx,
+        actorUserId,
+        () => new GradingServiceError("ITEM_NOT_FOUND"),
+      );
       await lockItem(tx, itemId, actorUserId, true);
-      await record(tx, itemId, gradingId, actorUserId);
+      const before = auditSnapshot(await record(tx, itemId, gradingId, actorUserId));
       await tx.$queryRaw`DELETE FROM "Grading" WHERE id=${gradingId}::uuid AND "itemId"=${itemId}::uuid AND "ownerId"=${actorUserId} RETURNING id`;
+      await appendMutationAudit(tx, audit, {
+        resourceType: "ITEM",
+        resourceId: itemId,
+        action: "ITEM_GRADING_REMOVED",
+        before,
+        after: null,
+      });
     });
   }
   return {

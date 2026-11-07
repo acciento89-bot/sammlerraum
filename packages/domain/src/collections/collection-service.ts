@@ -1,3 +1,5 @@
+import { randomUUID } from "node:crypto";
+import { defaultMutationAudit, type MutationAuditPort } from "../audit/mutation-audit";
 import {
   AncestorVisibilitySchema,
   CollectionNodeSchema,
@@ -101,9 +103,9 @@ async function lockOwnedCollection(
   transaction: CollectionTransaction,
   collectionId: string,
   actorUserId: string,
-): Promise<void> {
-  const locked = await transaction.$queryRaw<Array<{ id: string }>>`
-    SELECT "id"
+): Promise<Collection> {
+  const locked = await transaction.$queryRaw<Collection[]>`
+    SELECT "id","name","visibility"
     FROM "Collection"
     WHERE "id" = ${collectionId}::uuid AND "ownerId" = ${actorUserId} AND "deletedAt" IS NULL
     FOR UPDATE
@@ -111,22 +113,65 @@ async function lockOwnedCollection(
   if (locked.length !== 1) {
     throw new CollectionServiceError("COLLECTION_NOT_FOUND");
   }
+  return locked[0]!;
 }
 
-export function createCollectionService(database: CollectionDatabase, actorUserId: string) {
+function nodeSnapshot(node: CollectionNode) {
+  return {
+    collectionId: node.collectionId,
+    parentId: node.parentId,
+    name: node.name,
+    visibility: node.visibility,
+  };
+}
+async function nodeAuditSnapshot(tx: CollectionTransaction, nodeId: string, collectionId: string) {
+  const [row] = await tx.$queryRaw<
+    CollectionNode[]
+  >`SELECT id,"collectionId","parentId",name,visibility FROM "CollectionNode" WHERE id=${nodeId}::uuid AND "collectionId"=${collectionId}::uuid`;
+  if (!row) throw new CollectionServiceError("COLLECTION_NODE_NOT_FOUND");
+  return nodeSnapshot(row);
+}
+
+export function createCollectionService(
+  database: CollectionDatabase,
+  actorUserId: string,
+  auditPort: MutationAuditPort = defaultMutationAudit,
+) {
   async function createCollection(input: CreateCollectionInput): Promise<Collection> {
     const data = CreateCollectionInputSchema.parse(input);
-    const collection = await database.collection.create({
-      data: { ownerId: actorUserId, name: data.name, visibility: data.visibility },
-      select: collectionSelect,
-    });
-    return CollectionSchema.parse(collection);
+    return database.$transaction(
+      async (transaction) => {
+        const audit = await auditPort.begin(
+          transaction,
+          actorUserId,
+          () => new CollectionServiceError("COLLECTION_NOT_FOUND"),
+        );
+        const [collection] = await transaction.$queryRaw<
+          Collection[]
+        >`INSERT INTO "Collection" (id,"ownerId",name,visibility,"updatedAt") VALUES (${randomUUID()}::uuid,${actorUserId},${data.name},${data.visibility}::"Visibility",CURRENT_TIMESTAMP) RETURNING id,name,visibility`;
+        if (!collection) throw new CollectionServiceError("COLLECTION_NOT_FOUND");
+        await auditPort.append(transaction, audit, {
+          resourceType: "COLLECTION",
+          resourceId: collection.id,
+          action: "COLLECTION_CREATED",
+          before: null,
+          after: { name: collection.name, visibility: collection.visibility },
+        });
+        return CollectionSchema.parse(collection);
+      },
+      { isolationLevel: "ReadCommitted" },
+    );
   }
 
   async function createCollectionNode(input: CreateCollectionNodeInput): Promise<CollectionNode> {
     const data = CreateCollectionNodeInputSchema.parse(input);
     return database.$transaction(
       async (transaction) => {
+        const audit = await auditPort.begin(
+          transaction,
+          actorUserId,
+          () => new CollectionServiceError("COLLECTION_NOT_FOUND"),
+        );
         await lockOwnedCollection(transaction, data.collectionId, actorUserId);
         if (data.parentId !== null) {
           const parent = await transaction.collectionNode.findUnique({
@@ -146,6 +191,13 @@ export function createCollectionService(database: CollectionDatabase, actorUserI
           },
           select: collectionNodeSelect,
         });
+        await auditPort.append(transaction, audit, {
+          resourceType: "NODE",
+          resourceId: node.id,
+          action: "NODE_CREATED",
+          before: null,
+          after: nodeSnapshot(node),
+        });
         return CollectionNodeSchema.parse(node);
       },
       { isolationLevel: "ReadCommitted" },
@@ -160,7 +212,12 @@ export function createCollectionService(database: CollectionDatabase, actorUserI
     const data = UpdateCollectionInputSchema.parse(input);
     return database.$transaction(
       async (transaction) => {
-        await lockOwnedCollection(transaction, collectionId, actorUserId);
+        const audit = await auditPort.begin(
+          transaction,
+          actorUserId,
+          () => new CollectionServiceError("COLLECTION_NOT_FOUND"),
+        );
+        const before = await lockOwnedCollection(transaction, collectionId, actorUserId);
         const rows = await transaction.$queryRaw<Collection[]>`
           UPDATE "Collection"
           SET
@@ -172,6 +229,22 @@ export function createCollectionService(database: CollectionDatabase, actorUserI
         `;
         const updated = rows[0];
         if (!updated) throw new CollectionServiceError("COLLECTION_NOT_FOUND");
+        if (before.name !== updated.name)
+          await auditPort.append(transaction, audit, {
+            resourceType: "COLLECTION",
+            resourceId: collectionId,
+            action: "COLLECTION_DETAILS_CHANGED",
+            before: { name: before.name },
+            after: { name: updated.name },
+          });
+        if (before.visibility !== updated.visibility)
+          await auditPort.append(transaction, audit, {
+            resourceType: "COLLECTION",
+            resourceId: collectionId,
+            action: "COLLECTION_VISIBILITY_CHANGED",
+            before: { visibility: before.visibility },
+            after: { visibility: updated.visibility },
+          });
         return CollectionSchema.parse(updated);
       },
       { isolationLevel: "ReadCommitted" },
@@ -182,6 +255,11 @@ export function createCollectionService(database: CollectionDatabase, actorUserI
     const collectionId = CollectionSchema.shape.id.parse(collectionIdInput);
     await database.$transaction(
       async (transaction) => {
+        const audit = await auditPort.begin(
+          transaction,
+          actorUserId,
+          () => new CollectionServiceError("COLLECTION_NOT_FOUND"),
+        );
         await lockOwnedCollection(transaction, collectionId, actorUserId);
         const rows = await transaction.$queryRaw<Array<{ id: string }>>`
           UPDATE "Collection"
@@ -190,6 +268,13 @@ export function createCollectionService(database: CollectionDatabase, actorUserI
           RETURNING "id"
         `;
         if (rows.length !== 1) throw new CollectionServiceError("COLLECTION_NOT_FOUND");
+        await auditPort.append(transaction, audit, {
+          resourceType: "COLLECTION",
+          resourceId: collectionId,
+          action: "COLLECTION_DELETED",
+          before: { deleted: false },
+          after: { deleted: true },
+        });
       },
       { isolationLevel: "ReadCommitted" },
     );
@@ -203,6 +288,11 @@ export function createCollectionService(database: CollectionDatabase, actorUserI
     const data = UpdateCollectionNodeInputSchema.parse(input);
     return database.$transaction(
       async (transaction) => {
+        const audit = await auditPort.begin(
+          transaction,
+          actorUserId,
+          () => new CollectionServiceError("COLLECTION_NOT_FOUND"),
+        );
         const staleSource = await transaction.collectionNode.findUnique({
           where: { id: nodeId },
           select: { id: true, collectionId: true },
@@ -249,6 +339,7 @@ export function createCollectionService(database: CollectionDatabase, actorUserI
             throw new CollectionServiceError("COLLECTION_HIERARCHY_CYCLE");
           }
         }
+        const before = await nodeAuditSnapshot(transaction, nodeId, source.collectionId);
         const rows = await transaction.$queryRaw<CollectionNode[]>`
           UPDATE "CollectionNode"
           SET
@@ -261,6 +352,15 @@ export function createCollectionService(database: CollectionDatabase, actorUserI
         `;
         const updated = rows[0];
         if (!updated) throw new CollectionServiceError("COLLECTION_NODE_NOT_FOUND");
+        const after = nodeSnapshot(updated);
+        if (JSON.stringify(before) !== JSON.stringify(after))
+          await auditPort.append(transaction, audit, {
+            resourceType: "NODE",
+            resourceId: nodeId,
+            action: "NODE_DETAILS_CHANGED",
+            before,
+            after,
+          });
         return CollectionNodeSchema.parse(updated);
       },
       { isolationLevel: "ReadCommitted" },
@@ -275,6 +375,11 @@ export function createCollectionService(database: CollectionDatabase, actorUserI
     const data = MoveCollectionNodeInputSchema.parse(input);
     await database.$transaction(
       async (transaction) => {
+        const audit = await auditPort.begin(
+          transaction,
+          actorUserId,
+          () => new CollectionServiceError("COLLECTION_NOT_FOUND"),
+        );
         const staleSource = await transaction.collectionNode.findUnique({
           where: { id: nodeId },
           select: { id: true, collectionId: true },
@@ -339,6 +444,7 @@ export function createCollectionService(database: CollectionDatabase, actorUserI
           throw new CollectionServiceError("COLLECTION_HIERARCHY_CYCLE");
         }
 
+        const before = await nodeAuditSnapshot(transaction, nodeId, source.collectionId);
         const result = await transaction.collectionNode.updateMany({
           where: { id: nodeId, collectionId: source.collectionId },
           data: { parentId: data.parentId },
@@ -346,6 +452,14 @@ export function createCollectionService(database: CollectionDatabase, actorUserI
         if (result.count !== 1) {
           throw new CollectionServiceError("COLLECTION_NODE_NOT_FOUND");
         }
+        if (before.parentId !== data.parentId)
+          await auditPort.append(transaction, audit, {
+            resourceType: "NODE",
+            resourceId: nodeId,
+            action: "NODE_MOVED",
+            before,
+            after: { ...before, parentId: data.parentId },
+          });
       },
       { isolationLevel: "ReadCommitted" },
     );

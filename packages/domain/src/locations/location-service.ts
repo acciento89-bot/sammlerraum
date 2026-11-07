@@ -1,3 +1,4 @@
+import { defaultMutationAudit, type MutationAuditPort } from "../audit/mutation-audit";
 import { randomBytes } from "node:crypto";
 
 import {
@@ -162,12 +163,21 @@ function toHistory(row: StoredHistory): ItemLocationHistory {
   });
 }
 
-export function createLocationService(database: LocationDatabase, actorUserId: string) {
+export function createLocationService(
+  database: LocationDatabase,
+  actorUserId: string,
+  auditPort: MutationAuditPort = defaultMutationAudit,
+) {
   async function createLocation(input: CreateLocationInput): Promise<StorageLocation> {
     const data = CreateLocationInputSchema.parse(input);
     return database.$transaction(
       async (transaction) => {
         await lockOwner(transaction, actorUserId);
+        const audit = await auditPort.begin(
+          transaction,
+          actorUserId,
+          () => new LocationServiceError("LOCATION_NOT_FOUND"),
+        );
         if (data.parentId !== null) {
           await findOwnedLocation(transaction, data.parentId, actorUserId);
         }
@@ -181,6 +191,13 @@ export function createLocationService(database: LocationDatabase, actorUserId: s
             qrToken: randomBytes(32).toString("base64url"),
           },
           select: locationSelect,
+        });
+        await auditPort.append(transaction, audit, {
+          resourceType: "LOCATION",
+          resourceId: created.id,
+          action: "LOCATION_CREATED",
+          before: null,
+          after: { name: created.name, type: created.type, parentId: created.parentId },
         });
         return StorageLocationSchema.parse(created);
       },
@@ -234,11 +251,28 @@ export function createLocationService(database: LocationDatabase, actorUserId: s
         if (parentId !== null && descendants.some((row) => row.id === parentId)) {
           throw new LocationServiceError("LOCATION_HIERARCHY_CYCLE");
         }
+        const audit = await auditPort.begin(
+          transaction,
+          actorUserId,
+          () => new LocationServiceError("LOCATION_NOT_FOUND"),
+        );
+        const [before] = await transaction.$queryRaw<
+          Array<{ name: string; type: LocationType; parentId: string | null }>
+        >`SELECT name,type,"parentId" FROM "StorageLocation" WHERE id=${locationId}::uuid AND "ownerId"=${actorUserId}`;
+        if (!before) throw new LocationServiceError("LOCATION_NOT_FOUND");
         const result = await transaction.storageLocation.updateMany({
           where: { id: locationId, ownerId: actorUserId },
           data: { parentId },
         });
         if (result.count !== 1) throw new LocationServiceError("LOCATION_NOT_FOUND");
+        if (before.parentId !== parentId)
+          await auditPort.append(transaction, audit, {
+            resourceType: "LOCATION",
+            resourceId: locationId,
+            action: "LOCATION_DETAILS_CHANGED",
+            before,
+            after: { ...before, parentId },
+          });
       },
       { isolationLevel: "ReadCommitted" },
     );
@@ -253,6 +287,11 @@ export function createLocationService(database: LocationDatabase, actorUserId: s
       locationIdInput === null ? null : StorageLocationSchema.shape.id.parse(locationIdInput);
     return database.$transaction(
       async (transaction) => {
+        const audit = await auditPort.begin(
+          transaction,
+          actorUserId,
+          () => new LocationServiceError("ITEM_NOT_FOUND"),
+        );
         const rows = await transaction.$queryRaw<OwnedItem[]>`
           SELECT item."id", item."ownerId", item."storageLocationId"
           FROM "CollectibleItem" item
@@ -284,6 +323,13 @@ export function createLocationService(database: LocationDatabase, actorUserId: s
             assignedById: actorUserId,
           },
           select: historySelect,
+        });
+        await auditPort.append(transaction, audit, {
+          resourceType: "ITEM",
+          resourceId: item.id,
+          action: "ITEM_LOCATION_CHANGED",
+          before: { storageLocationId: item.storageLocationId },
+          after: { storageLocationId: locationId },
         });
         return toHistory(history);
       },

@@ -1,0 +1,100 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ✓ |workspace| packages/domain/src/audit/core-audit-integration.test.ts (8 tests) 1075ms
+ ❯ |workspace| packages/domain/src/collections/collection-service.test.ts (14 tests | 3 failed) 242ms
+   × collection service > creates a private collection for the trusted actor by default 5ms
+     → expected undefined to deeply equal { …(3) }
+   ✓ collection service > rejects moving a node below its own descendant 1ms
+   × collection service > fails closed when the descendant query finds an existing hierarchy cycle 1ms
+     → expected CollectionServiceError: Collection not fo… { code: '…' } to match object { Object (code) }
+(1 matching property omitted from actual)
+   × collection service > creates a private node only below a parent in the actor's collection 2ms
+     → promise rejected "AuditError: AUDIT_NOT_FOUND { …(1) }" instead of resolving
+   ✓ collection service > rejects a parent from another collection without exposing it 0ms
+   ✓ collection service > rejects malformed input before persistence and unauthorized collections before node writes 1ms
+   ✓ collection service > returns the collection root and full node path with the strictest visibility 0ms
+   ✓ collection service > does not claim public visibility when an ancestor is unlisted 0ms
+   ✓ collection service > returns root visibility when no collection node applies 0ms
+   ✓ collection service > fails closed for missing, cyclic, cross-collection, or broken ancestry 0ms
+   ✓ collection service PostgreSQL integration > executes the recursive descendant CTE and rejects a real hierarchy cycle 98ms
+   ✓ collection service PostgreSQL integration > rejects a foreign parent before the composite same-collection constraint is reached 40ms
+   ✓ collection service PostgreSQL integration > reads root and full ancestry without treating unlisted as public 16ms
+   ✓ collection service PostgreSQL integration > serializes concurrent inverse moves on the collection row 27ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/collections/collection-service.test.ts > collection service > creates a private collection for the trusted actor by default
+AssertionError: expected undefined to deeply equal { …(3) }
+
+- Expected: 
+{
+  "id": "00000000-0000-4000-8000-000000000010",
+  "name": "Münzen",
+  "visibility": "PRIVATE",
+}
+
++ Received: 
+undefined
+
+ ❯ packages/domain/src/collections/collection-service.test.ts:29:5
+     27|     );
+     28| 
+     29|     await expect(service.createCollection({ name: "  Münzen  " })).res…
+       |     ^
+     30|       id: "00000000-0000-4000-8000-000000000010",
+     31|       name: "Münzen",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  |workspace| packages/domain/src/collections/collection-service.test.ts > collection service > fails closed when the descendant query finds an existing hierarchy cycle
+AssertionError: expected CollectionServiceError: Collection not fo… { code: '…' } to match object { Object (code) }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+- {
+-   "code": "COLLECTION_HIERARCHY_INVALID",
++ CollectionServiceError {
++   "code": "COLLECTION_NOT_FOUND",
+  }
+
+ ❯ packages/domain/src/collections/collection-service.test.ts:102:5
+    100|     );
+    101| 
+    102|     await expect(service.moveCollectionNode(nodeId, { parentId: null }…
+       |     ^
+    103|       code: "COLLECTION_HIERARCHY_INVALID",
+    104|     });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  |workspace| packages/domain/src/collections/collection-service.test.ts > collection service > creates a private node only below a parent in the actor's collection
+AssertionError: promise rejected "AuditError: AUDIT_NOT_FOUND { …(1) }" instead of resolving
+ ❯ packages/domain/src/collections/collection-service.test.ts:136:5
+    134|     await expect(
+    135|       service.createCollectionNode({ collectionId, parentId, name: "  …
+    136|     ).resolves.toEqual({
+       |     ^
+    137|       id: "00000000-0000-4000-8000-000000000002",
+    138|       collectionId,
+
+Caused by: AuditError: AUDIT_NOT_FOUND
+ ❯ missing packages/domain/src/audit/audit-scope.ts:11:9
+ ❯ resolveAuditScope packages/domain/src/audit/audit-scope.ts:74:29
+ ❯ recordAuditEventInTransaction packages/domain/src/audit/audit-service.ts:55:17
+ ❯ Object.appendMutationAudit [as append] packages/domain/src/audit/mutation-audit.ts:15:105
+ ❯ database.$transaction.isolationLevel packages/domain/src/collections/collection-service.ts:158:9
+ ❯ packages/domain/src/collections/collection-service.test.ts:134:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { code: 'AUDIT_NOT_FOUND' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  3 failed | 19 passed (22)
+   Start at  08:18:44
+   Duration  2.07s (transform 184ms, setup 7ms, collect 423ms, tests 1.32s, environment 0ms, prepare 86ms)
+

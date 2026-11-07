@@ -1,3 +1,5 @@
+import { createTrustedAuditContext } from "../audit/audit-context";
+import type { MutationAuditPort } from "../audit/mutation-audit";
 import { randomUUID } from "node:crypto";
 
 import { createTestDatabaseClient } from "@sammlerraum/db/test-database";
@@ -24,6 +26,11 @@ function location(overrides: Record<string, unknown> = {}) {
   };
 }
 
+// Unit fixtures cover location persistence; the native default-writer tests cover real audit SQL.
+const testMutationAudit = (): MutationAuditPort => ({
+  begin: async (_tx, actorId) => createTrustedAuditContext({ source: "USER", actorId }),
+  append: async () => {},
+});
 describe("location service", () => {
   it("creates a private owner-scoped location with a stable cryptographic token", async () => {
     const writes: Array<Record<string, unknown>> = [];
@@ -43,6 +50,7 @@ describe("location service", () => {
           operation(transaction),
       } as unknown as LocationDatabase,
       ownerId,
+      testMutationAudit(),
     );
 
     const created = await service.createLocation({ name: "  Living room  ", type: "ROOM" });
@@ -76,6 +84,7 @@ describe("location service", () => {
           operation(transaction),
       } as unknown as LocationDatabase,
       ownerId,
+      testMutationAudit(),
     );
 
     await expect(service.moveLocation(locationId, childId)).rejects.toMatchObject({
@@ -116,6 +125,7 @@ describe("location service", () => {
           operation(transaction),
       } as unknown as LocationDatabase,
       ownerId,
+      testMutationAudit(),
     );
 
     await expect(service.assignItemLocation(itemId, locationId)).resolves.toMatchObject({
@@ -146,6 +156,7 @@ describe("location service", () => {
           operation(transaction),
       } as unknown as LocationDatabase,
       ownerId,
+      testMutationAudit(),
     );
 
     await expect(service.assignItemLocation(itemId, locationId)).rejects.toMatchObject({
@@ -189,6 +200,7 @@ describe("location service", () => {
           operation(transaction),
       } as unknown as LocationDatabase,
       ownerId,
+      testMutationAudit(),
     );
 
     await expect(service.assignItemLocation(itemId, childId)).resolves.toMatchObject({

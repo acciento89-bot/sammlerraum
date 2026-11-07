@@ -1,3 +1,5 @@
+import { createTrustedAuditContext } from "../audit/audit-context";
+import type { MutationAuditPort } from "../audit/mutation-audit";
 import { randomUUID } from "node:crypto";
 
 import { createPrismaClient } from "@sammlerraum/db/create-client";
@@ -33,6 +35,10 @@ function itemFixture(overrides: Record<string, unknown> = {}) {
   };
 }
 
+const unitAuditPort = (): MutationAuditPort => ({
+  begin: async (_tx, actorId) => createTrustedAuditContext({ source: "USER", actorId }),
+  append: async () => {},
+});
 describe("item service", () => {
   it("splits a quantity item without changing total quantity", async () => {
     const transaction = {
@@ -57,7 +63,9 @@ describe("item service", () => {
       $transaction: async <T>(operation: (tx: typeof transaction) => Promise<T>) =>
         operation(transaction),
     };
-    const service = createItemService(database as unknown as ItemDatabase, "owner-user-id");
+    const service = createItemService(database as unknown as ItemDatabase, "owner-user-id", {
+      auditPort: unitAuditPort(),
+    });
 
     const result = await service.splitQuantityItem(itemId, 3);
 
@@ -139,6 +147,7 @@ describe("item service", () => {
           operation(transaction),
       } as unknown as ItemDatabase,
       "owner-user-id",
+      { auditPort: unitAuditPort() },
     );
 
     await service.splitQuantityItem(itemId, 3);
@@ -207,7 +216,9 @@ describe("item service", () => {
       $transaction: async <T>(operation: (tx: typeof transaction) => Promise<T>) =>
         operation(transaction),
     };
-    const service = createItemService(database as unknown as ItemDatabase, "owner-user-id");
+    const service = createItemService(database as unknown as ItemDatabase, "owner-user-id", {
+      auditPort: unitAuditPort(),
+    });
 
     await expect(
       service.createItem({
@@ -258,7 +269,9 @@ describe("item service", () => {
         return undefined as never;
       },
     };
-    const service = createItemService(database as unknown as ItemDatabase, "owner-user-id");
+    const service = createItemService(database as unknown as ItemDatabase, "owner-user-id", {
+      auditPort: unitAuditPort(),
+    });
     const invalidInputs = [
       { acquisitionDate: "02/28/2026" },
       { acquisitionDate: "2026-02-30" },
@@ -306,6 +319,7 @@ describe("item service", () => {
           operation(unauthorizedTransaction),
       } as unknown as ItemDatabase,
       "owner-user-id",
+      { auditPort: unitAuditPort() },
     );
     const foreignNode = createItemService(
       {
@@ -313,6 +327,7 @@ describe("item service", () => {
           operation(foreignNodeTransaction),
       } as unknown as ItemDatabase,
       "owner-user-id",
+      { auditPort: unitAuditPort() },
     );
 
     await expect(unauthorized.createItem({ collectionId, title: "Secret" })).rejects.toMatchObject({
@@ -351,6 +366,7 @@ describe("item service", () => {
           operation(transaction),
       } as unknown as ItemDatabase,
       "owner-user-id",
+      { auditPort: unitAuditPort() },
     );
 
     await expect(service.updateItem(itemId, { nodeId })).rejects.toMatchObject({
@@ -382,7 +398,7 @@ describe("item service", () => {
           operation(transaction),
       } as unknown as ItemDatabase,
       "owner-user-id",
-      { now: () => archivedAt },
+      { now: () => archivedAt, auditPort: unitAuditPort() },
     );
 
     await expect(service.archiveItem(itemId)).resolves.toMatchObject({
@@ -415,7 +431,7 @@ describe("item service", () => {
           operation(transaction),
       } as unknown as ItemDatabase,
       "owner-user-id",
-      { now: () => archivedAt },
+      { now: () => archivedAt, auditPort: unitAuditPort() },
     );
 
     await expect(service.archiveItem(itemId)).resolves.toMatchObject({
@@ -445,6 +461,7 @@ describe("item service", () => {
           operation(transaction),
       } as unknown as ItemDatabase,
       "owner-user-id",
+      { auditPort: unitAuditPort() },
     );
 
     for (const count of [0, -1, 1.5, 5, 6]) {
@@ -504,6 +521,7 @@ describe("item service", () => {
           operation(transaction),
       } as unknown as ItemDatabase,
       "owner-user-id",
+      { auditPort: unitAuditPort() },
     );
 
     const result = await service.splitQuantityItem(itemId, 3);
