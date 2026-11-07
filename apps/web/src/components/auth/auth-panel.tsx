@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useState, type FormEvent } from "react";
 
+import { invitationReturnPath } from "./invitation-return-path";
 import { authClient } from "../../lib/auth-client";
 import { authView } from "./account-ui-state";
 
@@ -15,6 +16,10 @@ export function AuthPanel({ locale, mode }: Props) {
   const router = useRouter();
   const params = useSearchParams();
   const token = params.get("token");
+  const returnPath = invitationReturnPath(params.get("returnTo"), locale);
+  const invitationQuery = returnPath.includes("/invite/")
+    ? `?returnTo=${encodeURIComponent(returnPath)}`
+    : "";
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
@@ -33,26 +38,26 @@ export function AuthPanel({ locale, mode }: Props) {
             name: String(data.get("name") ?? ""),
             email,
             password,
-            callbackURL: `/${locale}/login`,
+            callbackURL: `/${locale}/login${invitationQuery}`,
           })
         : await authClient.signIn.email({
             email,
             password,
-            callbackURL: `/${locale}/account/profile`,
+            callbackURL: returnPath,
           });
     if (result.error) return setError(t("genericError"));
     if (mode === "register") setMessage(t("checkEmail"));
-    else router.push(`/${locale}/account/profile`);
+    else router.push(returnPath);
   }
 
   async function social(provider: "google" | "apple") {
-    await authClient.signIn.social({ provider, callbackURL: `/${locale}/account/profile` });
+    await authClient.signIn.social({ provider, callbackURL: returnPath });
   }
 
   async function resend() {
     const result = await authClient.sendVerificationEmail({
       email,
-      callbackURL: `/${locale}/login`,
+      callbackURL: `/${locale}/login${invitationQuery}`,
     });
     setMessage(result.error ? t("genericError") : t("verificationResent"));
   }
@@ -77,7 +82,7 @@ export function AuthPanel({ locale, mode }: Props) {
   async function passkeySignIn() {
     const result = await authClient.signIn.passkey();
     if (result.error) setError(t("genericError"));
-    else router.push(`/${locale}/account/profile`);
+    else router.push(returnPath);
   }
 
   return (
@@ -174,7 +179,7 @@ export function AuthPanel({ locale, mode }: Props) {
           </>
         )}
         <p className="auth-switch">
-          <Link href={`/${locale}/${mode === "login" ? "register" : "login"}`}>
+          <Link href={`/${locale}/${mode === "login" ? "register" : "login"}${invitationQuery}`}>
             {t(mode === "login" ? "toRegister" : "toLogin")}
           </Link>
         </p>

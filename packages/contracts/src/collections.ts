@@ -68,3 +68,37 @@ export const AncestorVisibilitySchema = z.object({
   effectiveVisibility: VisibilitySchema,
 });
 export type AncestorVisibility = z.infer<typeof AncestorVisibilitySchema>;
+
+export const CollaborativeCollectionPreconditionsSchema = z
+  .object({
+    expectedUpdatedAt: z.iso.datetime(),
+    expectedLatestSequence: z
+      .string()
+      .regex(/^[1-9][0-9]{0,18}$/)
+      .refine((value) => BigInt(value) <= 9223372036854775807n)
+      .nullable(),
+  })
+  .strict();
+export const CollaborativeCollectionChangesSchema = z
+  .object({
+    name: UpdateCollectionInputSchema.shape.name,
+    visibility: UpdateCollectionInputSchema.shape.visibility,
+  })
+  .strict()
+  .refine((value) => Object.keys(value).length > 0);
+export const CollaborativeCollectionUpdateRequestSchema =
+  CollaborativeCollectionPreconditionsSchema.extend({
+    changes: CollaborativeCollectionChangesSchema,
+  }).strict();
+export const CollaborativeNodeCreateSchema = CreateCollectionNodeInputSchema.omit({
+  collectionId: true,
+}).strict();
+export const CollaborativeNodeCreateRequestSchema =
+  CollaborativeCollectionPreconditionsSchema.extend({
+    node: CollaborativeNodeCreateSchema,
+  }).strict();
+export const CollaborativeNodeUpdateSchema = UpdateCollectionNodeInputSchema.strict();
+export const CollaborativeNodeUpdateRequestSchema =
+  CollaborativeCollectionPreconditionsSchema.extend({
+    changes: CollaborativeNodeUpdateSchema,
+  }).strict();

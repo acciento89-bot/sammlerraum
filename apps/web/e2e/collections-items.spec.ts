@@ -1,3 +1,4 @@
+import { credentialRateLimitFixture } from "./support/credential-rate-limit-fixture";
 import de from "../messages/de.json" with { type: "json" };
 import en from "../messages/en.json" with { type: "json" };
 import { randomUUID } from "node:crypto";
@@ -143,12 +144,18 @@ if (runManagementE2E && process.env.NODE_ENV === "production") {
   throw new Error("Collection browser fixtures are disabled in production mode");
 }
 const prisma = createPrismaClient(databaseUrl);
+const credentialAddresses = new Map<
+  string,
+  Awaited<ReturnType<typeof credentialRateLimitFixture>>
+>();
 
 async function seedTestCollector() {
   const email = `collections-browser-${randomUUID()}@example.test`;
   const password = "correct-horse-battery-staple";
   const userId = randomUUID();
 
+  const address = await credentialRateLimitFixture(prisma);
+  credentialAddresses.set(userId, address);
   await prisma.user.create({
     data: {
       id: userId,
@@ -166,16 +173,21 @@ async function seedTestCollector() {
     },
   });
 
-  return { email, password, userId };
+  return { email, password, userId, signInIp: address.ip };
 }
 
 async function loginTestCollector(
   page: Page,
   locale: Locale,
-  credentials: { email: string; password: string },
+  credentials: { email: string; password: string; signInIp: string },
 ) {
   const labels = copy[locale];
 
+  await page.route("**/api/auth/sign-in/email", (route) =>
+    route.continue({
+      headers: { ...route.request().headers(), "x-forwarded-for": credentials.signInIp },
+    }),
+  );
   await page.goto(`/${locale}/login`);
   await page.getByLabel(labels.email).fill(credentials.email);
   await page.getByLabel(labels.password).fill(credentials.password);
@@ -216,8 +228,13 @@ async function createCollectionApi(page: Page, name: string) {
 }
 
 async function cleanupCollector(userId: string) {
-  await prisma.itemLocationHistory.deleteMany({ where: { assignedById: userId } });
-  await prisma.user.deleteMany({ where: { id: userId } });
+  try {
+    await prisma.itemLocationHistory.deleteMany({ where: { assignedById: userId } });
+    await prisma.user.deleteMany({ where: { id: userId } });
+  } finally {
+    await credentialAddresses.get(userId)?.cleanup();
+    credentialAddresses.delete(userId);
+  }
 }
 
 test.describe("localized collection and item management", () => {
@@ -225,11 +242,6 @@ test.describe("localized collection and item management", () => {
 
   test.beforeAll(async () => {
     await prisma.$connect();
-  });
-
-  test.beforeEach(async () => {
-    // Each focused browser regression uses a fresh verified collector.
-    await prisma.rateLimit.deleteMany();
   });
 
   test.afterAll(async () => {
@@ -391,8 +403,7 @@ test.describe("localized collection and item management", () => {
       await expect(page.getByText(labels.archivedMessage)).toBeVisible();
       await expect(page.getByRole("button", { name: labels.saveItem })).toBeDisabled();
     } finally {
-      await prisma.itemLocationHistory.deleteMany({ where: { assignedById: collector.userId } });
-      await prisma.user.deleteMany({ where: { id: collector.userId } });
+      await cleanupCollector(collector.userId);
     }
   });
 
@@ -1041,6 +1052,14 @@ test.describe("localized collection and item management", () => {
       });
       await page.getByLabel(labels.title, { exact: true }).fill("Acknowledged original");
       await page.getByLabel(labels.tags).fill("retained tag");
+      let createdItemId: string | null = null;
+      await page.route("**/api/v1/money/items", async (route) => {
+        if (route.request().method() !== "POST") return route.continue();
+        const response = await route.fetch({ maxRedirects: 0 }),
+          body = (await response.json()) as { item: { id: string } };
+        createdItemId = body.item.id;
+        await route.fulfill({ response });
+      });
       const created = page.waitForResponse(
         (response) =>
           response.url().endsWith("/api/v1/money/items") && response.request().method() === "POST",
@@ -1048,7 +1067,8 @@ test.describe("localized collection and item management", () => {
       await save.click();
       const createdResponse = await created;
       expect(createdResponse.status()).toBe(201);
-      const { item } = await createdResponse.json();
+      await expect.poll(() => createdItemId).not.toBeNull();
+      const item = { id: createdItemId! };
       const path = `/api/v1/items/${item.id}`;
       await expect(page.getByRole("alert").filter({ hasText: refreshError })).toHaveText(
         refreshError,

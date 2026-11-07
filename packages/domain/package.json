@@ -57,7 +57,10 @@
     "./sharing/share-service": "./src/sharing/share-service.ts",
     "./audit/audit-service": "./src/audit/audit-service.ts",
     "./audit/audit-context": "./src/audit/audit-context.ts",
-    "./audit/restore-service": "./src/audit/restore-service.ts"
+    "./audit/restore-service": "./src/audit/restore-service.ts",
+    "./collaboration/management-service": "./src/collaboration/management-service.ts",
+    "./collaboration/item-authoring-service": "./src/collaboration/item-authoring-service.ts",
+    "./collaboration/collection-authoring-service": "./src/collaboration/collection-authoring-service.ts"
   },
   "scripts": {
     "build": "pnpm typecheck",

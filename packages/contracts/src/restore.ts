@@ -44,3 +44,35 @@ export const RestoreItemInputSchema = RestorePreconditionsSchema.extend({
   itemId: z.uuid(),
 }).strict();
 export const SoftDeleteItemInputSchema = z.object({ itemId: z.uuid() }).strict();
+
+export const RestorableAuditActionFields: Readonly<Record<string, readonly RestoreField[]>> = {
+  ITEM_VISIBILITY_CHANGED: ["visibility"],
+  COLLECTION_VISIBILITY_CHANGED: ["visibility"],
+  COLLECTION_DETAILS_CHANGED: ["name"],
+  ITEM_DETAILS_CHANGED: [
+    "title",
+    "quantity",
+    "nodeId",
+    "tradeStatus",
+    "acquisitionType",
+    "acquisitionDate",
+  ],
+  ITEM_CONDITION_CHANGED: ["conditionOptionId"],
+  ITEM_LOCATION_CHANGED: ["storageLocationId"],
+  ITEM_ARCHIVED: ["archivedAt"],
+  ITEM_DELETED: ["deletedAt"],
+  COLLECTION_DELETED: ["deletedAt"],
+  ITEM_VISIBILITY_RESTORED: ["visibility"],
+  COLLECTION_VISIBILITY_RESTORED: ["visibility"],
+  ITEM_DETAILS_RESTORED: [
+    "title",
+    "quantity",
+    "nodeId",
+    "tradeStatus",
+    "acquisitionType",
+    "acquisitionDate",
+  ],
+  COLLECTION_DETAILS_RESTORED: ["name"],
+  ITEM_CONDITION_RESTORED: ["conditionOptionId"],
+  ITEM_LOCATION_RESTORED: ["storageLocationId"],
+};

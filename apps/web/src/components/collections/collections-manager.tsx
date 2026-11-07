@@ -1,4 +1,5 @@
 "use client";
+import { SharedCollections } from "../sharing/shared-collections";
 
 import type { Collection, Visibility } from "@sammlerraum/contracts/collections";
 import Link from "next/link";
@@ -121,6 +122,7 @@ export function CollectionsManager({ locale }: { locale: "de" | "en" }) {
             </ul>
           )}
         </section>
+        <SharedCollections locale={locale} />
       </div>
       {error && (
         <p className="error" role="alert">

@@ -35,6 +35,17 @@ export const MemberRemovalSchema = mutation.extend({ userId }).strict();
 export const OwnershipTransferSchema = mutation
   .extend({ newOwnerId: userId, confirmPrivateTransfer: z.literal(true) })
   .strict();
+export const MembershipManagementMutationSchema = z.discriminatedUnion("action", [
+  MemberMutationSchema.omit({ collectionId: true })
+    .extend({ action: z.literal("CHANGE_ROLE") })
+    .strict(),
+  MemberRemovalSchema.omit({ collectionId: true })
+    .extend({ action: z.literal("REMOVE") })
+    .strict(),
+  OwnershipTransferSchema.omit({ collectionId: true })
+    .extend({ action: z.literal("TRANSFER") })
+    .strict(),
+]);
 export const MembershipCollectionIdSchema = id;
 export const MembershipActorIdSchema = userId;
 export const MEMBERSHIP_MAX_MEMBERS = 200;

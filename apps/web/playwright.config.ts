@@ -9,6 +9,16 @@ export default defineConfig({
   },
   projects: [
     {
+      name: "collaboration-ui-desktop",
+      testMatch: ["**/collaboration-sharing.spec.ts", "**/collaboration-management.spec.ts"],
+      use: { viewport: { width: 1440, height: 1000 } },
+    },
+    {
+      name: "collaboration-ui-mobile",
+      testMatch: ["**/collaboration-sharing.spec.ts", "**/collaboration-management.spec.ts"],
+      use: { ...devices["Pixel 7"] },
+    },
+    {
       name: "sharing-desktop",
       testMatch: "**/sharing.spec.ts",
       use: { viewport: { width: 1440, height: 1000 } },

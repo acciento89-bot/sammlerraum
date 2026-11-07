@@ -204,3 +204,62 @@ export const SetItemTagsInputSchema = z.object({
     .max(100),
 });
 export const SplitItemInputSchema = z.object({ quantity: SplitQuantityInputSchema });
+
+/** Collaborative inventory editing never grants access to private notes or financial provenance. */
+export const CollaborativeItemCreateSchema = z
+  .object({
+    collectionId: CreateItemInputSchema.shape.collectionId,
+    nodeId: CreateItemInputSchema.shape.nodeId,
+    title: CreateItemInputSchema.shape.title,
+    publicDescription: CreateItemInputSchema.shape.publicDescription,
+    quantity: CreateItemInputSchema.shape.quantity,
+    acquisitionType: CreateItemInputSchema.shape.acquisitionType,
+    acquisitionDate: CreateItemInputSchema.shape.acquisitionDate,
+    visibility: CreateItemInputSchema.shape.visibility,
+    tradeStatus: CreateItemInputSchema.shape.tradeStatus,
+  })
+  .strict();
+export const CollaborativeItemUpdateSchema = z
+  .object({
+    nodeId: UpdateItemInputSchema.shape.nodeId,
+    title: UpdateItemInputSchema.shape.title,
+    publicDescription: UpdateItemInputSchema.shape.publicDescription,
+    quantity: UpdateItemInputSchema.shape.quantity,
+    acquisitionType: UpdateItemInputSchema.shape.acquisitionType,
+    acquisitionDate: UpdateItemInputSchema.shape.acquisitionDate,
+    visibility: UpdateItemInputSchema.shape.visibility,
+    tradeStatus: UpdateItemInputSchema.shape.tradeStatus,
+  })
+  .strict()
+  .refine((value) => Object.keys(value).length > 0);
+export const CollaborativeItemSchema = CollectibleItemSchema.pick({
+  id: true,
+  collectionId: true,
+  nodeId: true,
+  title: true,
+  publicDescription: true,
+  quantity: true,
+  acquisitionType: true,
+  acquisitionDate: true,
+  visibility: true,
+  tradeStatus: true,
+  archivedAt: true,
+  disposedAt: true,
+});
+export const CollaborativeItemPreconditionsSchema = z
+  .object({
+    expectedUpdatedAt: z.iso.datetime(),
+    expectedLatestSequence: z
+      .string()
+      .regex(/^[1-9][0-9]{0,18}$/)
+      .refine((value) => BigInt(value) <= 9223372036854775807n)
+      .nullable(),
+  })
+  .strict();
+export const CollaborativeItemUpdateRequestSchema = CollaborativeItemPreconditionsSchema.extend({
+  changes: CollaborativeItemUpdateSchema,
+}).strict();
+export const CollaborativeWorkspaceItemSchema = CollaborativeItemSchema.extend({
+  updatedAt: z.iso.datetime(),
+  latestSequence: CollaborativeItemPreconditionsSchema.shape.expectedLatestSequence,
+});

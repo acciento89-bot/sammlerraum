@@ -301,6 +301,7 @@ export type ItemServiceErrorCode =
   | "COLLECTION_NOT_FOUND"
   | "COLLECTION_NODE_NOT_FOUND"
   | "ITEM_NOT_FOUND"
+  | "ITEM_EDIT_CONFLICT"
   | "ITEM_INACTIVE"
   | "ITEM_SPLIT_INVALID"
   | "ITEM_GRADING_QUANTITY_INVALID"
@@ -320,6 +321,7 @@ const errorMessages: Record<ItemServiceErrorCode, string> = {
   COLLECTION_NOT_FOUND: "Collection not found",
   COLLECTION_NODE_NOT_FOUND: "Collection node not found",
   ITEM_NOT_FOUND: "Item not found",
+  ITEM_EDIT_CONFLICT: "The item changed after the editing view was loaded",
   ITEM_INACTIVE: "Item is archived or disposed",
   ITEM_SPLIT_INVALID: "Split quantity must be positive and less than the current quantity",
   ITEM_GRADING_QUANTITY_INVALID:
@@ -373,6 +375,29 @@ async function lockOwnedCollection(
     FOR UPDATE
   `;
   if (rows.length !== 1) throw new ItemServiceError("COLLECTION_NOT_FOUND");
+}
+
+/** Shared metadata writers retain their own actor; ownership is a separate current DB fact. */
+async function lockEditableCollection(
+  transaction: ItemTransaction,
+  collectionId: string,
+  actorUserId: string,
+): Promise<string> {
+  const visible = await transaction.$queryRaw<
+    { id: string }[]
+  >`SELECT c.id FROM "Collection" c WHERE c.id=${collectionId}::uuid AND c."deletedAt" IS NULL AND (c."ownerId"=${actorUserId} OR EXISTS(SELECT 1 FROM "CollectionMember" m WHERE m."collectionId"=c.id AND m."userId"=${actorUserId} AND m.role IN ('ADMIN','EDITOR')))`;
+  if (!visible.length) throw new ItemServiceError("COLLECTION_NOT_FOUND");
+  const [parent] = await transaction.$queryRaw<
+    { ownerId: string }[]
+  >`SELECT "ownerId" FROM "Collection" WHERE id=${collectionId}::uuid AND "deletedAt" IS NULL FOR UPDATE`;
+  if (!parent) throw new ItemServiceError("COLLECTION_NOT_FOUND");
+  if (parent.ownerId !== actorUserId) {
+    const [role] = await transaction.$queryRaw<
+      { allowed: boolean }[]
+    >`SELECT EXISTS(SELECT 1 FROM "CollectionMember" WHERE "collectionId"=${collectionId}::uuid AND "userId"=${actorUserId} AND role IN ('ADMIN','EDITOR')) AS allowed`;
+    if (!role?.allowed) throw new ItemServiceError("COLLECTION_NOT_FOUND");
+  }
+  return parent.ownerId;
 }
 
 async function lockOwnedItem(
@@ -455,13 +480,25 @@ export async function readOwnedItemInTransaction(
   return toItem(await lockOwnedItem(transaction, id, actorUserId));
 }
 
-type ItemMutationAuditOptions = { auditPort?: MutationAuditPort; auditContext?: AuditContext };
+type ItemMutationAuditOptions = {
+  auditPort?: MutationAuditPort;
+  auditContext?: AuditContext;
+  collaborativeCollectionId?: string;
+  collaborativePreconditions?: { expectedUpdatedAt: string; expectedLatestSequence: string | null };
+};
 export async function createItemInTransaction(
   transaction: ItemTransaction,
   actorUserId: string,
   data: ReturnType<typeof CreateItemInputSchema.parse>,
   auditOptions: ItemMutationAuditOptions = {},
 ): Promise<CollectibleItem> {
+  if (
+    auditOptions.collaborativeCollectionId !== undefined &&
+    (data.privateNotes !== null ||
+      data.purchaseAmountMinor !== null ||
+      data.purchaseCurrency !== null)
+  )
+    throw new ItemServiceError("ITEM_NOT_FOUND");
   const auditPort = auditOptions.auditPort ?? defaultMutationAudit,
     audit = await auditPort.begin(
       transaction,
@@ -469,12 +506,17 @@ export async function createItemInTransaction(
       () => new ItemServiceError("COLLECTION_NOT_FOUND"),
       auditOptions.auditContext,
     );
-  await lockOwnedCollection(transaction, data.collectionId, actorUserId);
+  let ownerId = actorUserId;
+  if (auditOptions.collaborativeCollectionId !== undefined) {
+    if (auditOptions.collaborativeCollectionId !== data.collectionId)
+      throw new ItemServiceError("COLLECTION_NOT_FOUND");
+    ownerId = await lockEditableCollection(transaction, data.collectionId, actorUserId);
+  } else await lockOwnedCollection(transaction, data.collectionId, actorUserId);
   await ensureNodeInCollection(transaction, data.nodeId, data.collectionId);
   const item = await transaction.collectibleItem.create({
     data: {
       collectionId: data.collectionId,
-      ownerId: actorUserId,
+      ownerId,
       nodeId: data.nodeId,
       title: data.title,
       publicDescription: data.publicDescription,
@@ -511,6 +553,13 @@ export async function updateItemInTransaction(
 ): Promise<CollectibleItem> {
   const itemId = CollectibleItemSchema.shape.id.parse(itemIdInput);
   const data = input; // Validated by the legacy or explicit-money service before entering this body.
+  if (
+    auditOptions.collaborativeCollectionId !== undefined &&
+    ["privateNotes", "purchaseAmountMinor", "purchaseCurrency", "disposedAt"].some((field) =>
+      Object.hasOwn(data, field),
+    )
+  )
+    throw new ItemServiceError("ITEM_NOT_FOUND");
   const auditPort = auditOptions.auditPort ?? defaultMutationAudit,
     audit = await auditPort.begin(
       transaction,
@@ -518,7 +567,31 @@ export async function updateItemInTransaction(
       () => new ItemServiceError("ITEM_NOT_FOUND"),
       auditOptions.auditContext,
     );
-  const existing = await lockOwnedItem(transaction, itemId, actorUserId);
+  const ownerId =
+    auditOptions.collaborativeCollectionId === undefined
+      ? actorUserId
+      : await lockEditableCollection(
+          transaction,
+          auditOptions.collaborativeCollectionId,
+          actorUserId,
+        );
+  const existing = await lockOwnedItem(transaction, itemId, ownerId);
+  if (
+    auditOptions.collaborativeCollectionId !== undefined &&
+    existing.collectionId !== auditOptions.collaborativeCollectionId
+  )
+    throw new ItemServiceError("ITEM_NOT_FOUND");
+  if (auditOptions.collaborativePreconditions) {
+    const [state] = await transaction.$queryRaw<
+      { updatedAt: string; latestSequence: string | null }[]
+    >`SELECT to_char(i."updatedAt",'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') AS "updatedAt",(SELECT max(e.sequence)::text FROM "AuditEvent" e WHERE e."resourceType"='ITEM' AND e."resourceId"=i.id) AS "latestSequence" FROM "CollectibleItem" i WHERE i.id=${itemId}::uuid`;
+    if (
+      !state ||
+      state.updatedAt !== auditOptions.collaborativePreconditions.expectedUpdatedAt ||
+      state.latestSequence !== auditOptions.collaborativePreconditions.expectedLatestSequence
+    )
+      throw new ItemServiceError("ITEM_EDIT_CONFLICT");
+  }
   ensureActive(existing);
   if (data.nodeId !== undefined) {
     await ensureNodeInCollection(transaction, data.nodeId, existing.collectionId);

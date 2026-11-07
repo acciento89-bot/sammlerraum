@@ -49,6 +49,7 @@ export function CollectionDetail({
 }) {
   const t = useTranslations("CollectionDetail");
   const common = useTranslations("Management");
+  const collaboration = useTranslations("Collaboration");
   const router = useRouter();
   const [data, setData] = useState<DetailData>();
   const [loading, setLoading] = useState(true);
@@ -206,6 +207,15 @@ export function CollectionDetail({
       <nav className="management-nav" aria-label={common("navigation")}>
         <Link href={`/${locale}/collections`}>{t("back")}</Link>
         <Link href={`/${locale}/account/profile`}>{common("account")}</Link>
+        <Link href={`/${locale}/collections/${collectionId}/members`}>
+          {collaboration("members")}
+        </Link>
+        <Link href={`/${locale}/collections/${collectionId}/sharing`}>
+          {collaboration("sharing")}
+        </Link>
+        <Link href={`/${locale}/audit?resourceType=COLLECTION&resourceId=${collectionId}`}>
+          {collaboration("audit")}
+        </Link>
       </nav>
       <header className="management-heading management-heading-row">
         <div>

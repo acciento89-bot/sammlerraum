@@ -350,7 +350,7 @@ git commit -m "feat: add soft delete and audited restoration"
 - Consumes: invitation/membership/share/audit APIs.
 - Produces: role management, invite acceptance, granular link sharing, revocation, audit history, supported restore UI.
 
-- [ ] **Step 1: Write failing revoked-share E2E**
+- [x] **Step 1: Write failing revoked-share E2E**
 
 ```ts
 test("revoking a share invalidates the existing public link immediately", async ({ page, context }) => {
@@ -364,16 +364,16 @@ test("revoking a share invalidates the existing public link immediately", async 
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm --filter @sammlerraum/web exec playwright test e2e/collaboration-sharing.spec.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement UI**
+- [x] **Step 3: Implement UI**
 
 Role controls hide impossible transitions but still rely on server policy. Sharing editor starts with safe defaults, supports expiry/PIN/selected documents/export scope, and visibly distinguishes member access from share access. Audit restore shows conflict errors rather than overwriting newer data.
 
-- [ ] **Step 4: Run E2E/build**
+- [x] **Step 4: Run E2E/build**
 
 Run:
 ```bash
@@ -383,7 +383,7 @@ pnpm --filter @sammlerraum/web build
 
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add apps/web

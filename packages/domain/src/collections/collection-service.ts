@@ -65,7 +65,7 @@ type CollectionTransaction = {
 };
 
 export type CollectionDatabase = {
-  collection: {
+  collection?: {
     create(args: {
       data: { ownerId: string; name: string; visibility: Visibility };
       select: typeof collectionSelect;
@@ -79,6 +79,7 @@ export type CollectionDatabase = {
 };
 
 export type CollectionServiceErrorCode =
+  | "COLLECTION_EDIT_CONFLICT"
   | "COLLECTION_NOT_FOUND"
   | "COLLECTION_NODE_NOT_FOUND"
   | "COLLECTION_HIERARCHY_CYCLE"
@@ -87,13 +88,15 @@ export type CollectionServiceErrorCode =
 export class CollectionServiceError extends Error {
   constructor(readonly code: CollectionServiceErrorCode) {
     super(
-      code === "COLLECTION_HIERARCHY_CYCLE"
-        ? "Collection hierarchy cycle"
-        : code === "COLLECTION_HIERARCHY_INVALID"
-          ? "Collection hierarchy is invalid"
-          : code === "COLLECTION_NODE_NOT_FOUND"
-            ? "Collection node not found"
-            : "Collection not found",
+      code === "COLLECTION_EDIT_CONFLICT"
+        ? "Collection changed after the editor was opened"
+        : code === "COLLECTION_HIERARCHY_CYCLE"
+          ? "Collection hierarchy cycle"
+          : code === "COLLECTION_HIERARCHY_INVALID"
+            ? "Collection hierarchy is invalid"
+            : code === "COLLECTION_NODE_NOT_FOUND"
+              ? "Collection node not found"
+              : "Collection not found",
     );
     this.name = "CollectionServiceError";
   }
@@ -136,7 +139,44 @@ export function createCollectionService(
   database: CollectionDatabase,
   actorUserId: string,
   auditPort: MutationAuditPort = defaultMutationAudit,
+  options: {
+    collaborativeCollectionId?: string;
+    preconditions?: { expectedUpdatedAt: string; expectedLatestSequence: string | null };
+  } = {},
 ) {
+  async function writableCollection(tx: CollectionTransaction, id: string) {
+    if (options.collaborativeCollectionId === undefined)
+      return { ...(await lockOwnedCollection(tx, id, actorUserId)), ownerId: actorUserId };
+    if (options.collaborativeCollectionId !== id)
+      throw new CollectionServiceError("COLLECTION_NOT_FOUND");
+    await tx.$queryRaw`SELECT set_config('TimeZone','UTC',true),set_config('statement_timeout','2000ms',true),set_config('lock_timeout','500ms',true)`;
+    const visible = await tx.$queryRaw<
+      { id: string }[]
+    >`SELECT c.id FROM "Collection" c WHERE c.id=${id}::uuid AND c."deletedAt" IS NULL AND (c."ownerId"=${actorUserId} OR EXISTS(SELECT 1 FROM "CollectionMember" m WHERE m."collectionId"=c.id AND m."userId"=${actorUserId} AND m.role='ADMIN'))`;
+    if (!visible.length) throw new CollectionServiceError("COLLECTION_NOT_FOUND");
+    const [parent] = await tx.$queryRaw<
+      (Collection & { ownerId: string; updatedAt: string })[]
+    >`SELECT id,name,visibility,"ownerId",to_char("updatedAt",'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') AS "updatedAt" FROM "Collection" WHERE id=${id}::uuid AND "deletedAt" IS NULL FOR UPDATE`;
+    if (!parent) throw new CollectionServiceError("COLLECTION_NOT_FOUND");
+    if (parent.ownerId !== actorUserId) {
+      const [role] = await tx.$queryRaw<
+        { allowed: boolean }[]
+      >`SELECT EXISTS(SELECT 1 FROM "CollectionMember" WHERE "collectionId"=${id}::uuid AND "userId"=${actorUserId} AND role='ADMIN') AS allowed`;
+      if (!role?.allowed) throw new CollectionServiceError("COLLECTION_NOT_FOUND");
+    }
+    if (options.preconditions) {
+      const [version] = await tx.$queryRaw<
+        { sequence: string | null }[]
+      >`SELECT max(sequence)::text AS sequence FROM "AuditEvent" WHERE "collectionId"=${id}::uuid`;
+      if (
+        parent.updatedAt !== options.preconditions.expectedUpdatedAt ||
+        version?.sequence !== options.preconditions.expectedLatestSequence
+      )
+        throw new CollectionServiceError("COLLECTION_EDIT_CONFLICT");
+    }
+    return parent;
+  }
+
   async function createCollection(input: CreateCollectionInput): Promise<Collection> {
     const data = CreateCollectionInputSchema.parse(input);
     return database.$transaction(
@@ -172,7 +212,7 @@ export function createCollectionService(
           actorUserId,
           () => new CollectionServiceError("COLLECTION_NOT_FOUND"),
         );
-        await lockOwnedCollection(transaction, data.collectionId, actorUserId);
+        await writableCollection(transaction, data.collectionId);
         if (data.parentId !== null) {
           const parent = await transaction.collectionNode.findUnique({
             where: { id: data.parentId },
@@ -217,14 +257,14 @@ export function createCollectionService(
           actorUserId,
           () => new CollectionServiceError("COLLECTION_NOT_FOUND"),
         );
-        const before = await lockOwnedCollection(transaction, collectionId, actorUserId);
+        const before = await writableCollection(transaction, collectionId);
         const rows = await transaction.$queryRaw<Collection[]>`
           UPDATE "Collection"
           SET
             "name" = COALESCE(${data.name ?? null}, "name"),
             "visibility" = COALESCE(${data.visibility ?? null}::"Visibility", "visibility"),
             "updatedAt" = CURRENT_TIMESTAMP
-          WHERE "id" = ${collectionId}::uuid AND "ownerId" = ${actorUserId} AND "deletedAt" IS NULL
+          WHERE "id" = ${collectionId}::uuid AND "ownerId" = ${before.ownerId} AND "deletedAt" IS NULL
           RETURNING "id", "name", "visibility"
         `;
         const updated = rows[0];
@@ -298,7 +338,7 @@ export function createCollectionService(
           select: { id: true, collectionId: true },
         });
         if (!staleSource) throw new CollectionServiceError("COLLECTION_NODE_NOT_FOUND");
-        await lockOwnedCollection(transaction, staleSource.collectionId, actorUserId);
+        await writableCollection(transaction, staleSource.collectionId);
         const source = await transaction.collectionNode.findUnique({
           where: { id: nodeId },
           select: { id: true, collectionId: true },
@@ -387,7 +427,7 @@ export function createCollectionService(
         if (!staleSource) {
           throw new CollectionServiceError("COLLECTION_NODE_NOT_FOUND");
         }
-        await lockOwnedCollection(transaction, staleSource.collectionId, actorUserId);
+        await writableCollection(transaction, staleSource.collectionId);
 
         const source = await transaction.collectionNode.findUnique({
           where: { id: nodeId },
