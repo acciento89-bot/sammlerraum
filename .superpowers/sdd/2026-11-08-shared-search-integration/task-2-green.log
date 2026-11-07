@@ -1,0 +1,67 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/search/scoped-search-service.test.ts (12 tests | 6 failed) 603ms
+   ✓ actual scoped search and whole-tree inference > executes allowed literal text over only the shared projection and returns a closed DTO 146ms
+   × actual scoped search and whole-tree inference > denies undisclosed fields before NOT/OR and empty matching: 'duplicate' 14ms
+     → FILTER_INVALID
+   × actual scoped search and whole-tree inference > denies undisclosed fields before NOT/OR and empty matching: 'purchaseMoney' 12ms
+     → FILTER_INVALID
+   × actual scoped search and whole-tree inference > denies undisclosed fields before NOT/OR and empty matching: 'media' 9ms
+     → FILTER_INVALID
+   × actual scoped search and whole-tree inference > denies undisclosed fields before NOT/OR and empty matching: 'createdAt' 8ms
+     → FILTER_INVALID
+   × actual scoped search and whole-tree inference > denies undisclosed fields before NOT/OR and empty matching: 'collection' 8ms
+     → FILTER_INVALID
+   ✓ actual scoped search and whole-tree inference > rejects hidden lifecycle inference while defaulting basic shares to ALL 23ms
+   ✓ actual scoped search and whole-tree inference > binds ID-only pagination to actor, target, query and page size 29ms
+   ✓ actual scoped search and whole-tree inference > allows current member workspace fields without granting private money or unknown references 20ms
+   ✓ actual scoped search and whole-tree inference > executes explicitly granted money presence while preserving missing versus zero 21ms
+   ✓ actual scoped search and whole-tree inference > executes granted image absence without returning any private asset identifiers 12ms
+   × actual scoped search and whole-tree inference > rejects raw oversized queries and unknown owner/role keys 6ms
+     → SEARCH_INVALID
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/search/scoped-search-service.test.ts > actual scoped search and whole-tree inference > denies undisclosed fields before NOT/OR and empty matching: 'duplicate'
+ FAIL  |workspace| packages/domain/src/search/scoped-search-service.test.ts > actual scoped search and whole-tree inference > denies undisclosed fields before NOT/OR and empty matching: 'purchaseMoney'
+ FAIL  |workspace| packages/domain/src/search/scoped-search-service.test.ts > actual scoped search and whole-tree inference > denies undisclosed fields before NOT/OR and empty matching: 'media'
+ FAIL  |workspace| packages/domain/src/search/scoped-search-service.test.ts > actual scoped search and whole-tree inference > denies undisclosed fields before NOT/OR and empty matching: 'createdAt'
+ FAIL  |workspace| packages/domain/src/search/scoped-search-service.test.ts > actual scoped search and whole-tree inference > denies undisclosed fields before NOT/OR and empty matching: 'collection'
+FilterValidationError: FILTER_INVALID
+ ❯ parseItemFilter packages/contracts/src/search.ts:358:11
+    356|   if (!result.success) {
+    357|     const code = result.error.issues[0]?.message;
+    358|     throw new FilterValidationError(
+       |           ^
+    359|       code === "FILTER_TOO_COMPLEX" || code === "FILTER_VERSION_UNSUPP…
+    360|         ? code
+ ❯ parseItemSearchQuery packages/contracts/src/item-search.ts:67:62
+ ❯ parseScopedSearchQuery packages/contracts/src/scoped-search.ts:16:10
+ ❯ Object.search packages/domain/src/search/scoped-search-service.ts:29:21
+ ❯ packages/domain/src/search/scoped-search-service.test.ts:44:28
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  |workspace| packages/domain/src/search/scoped-search-service.test.ts > actual scoped search and whole-tree inference > rejects raw oversized queries and unknown owner/role keys
+ItemSearchError: SEARCH_INVALID
+ ❯ searchFail packages/contracts/src/item-search.ts:24:9
+     22| }
+     23| export function searchFail(code: ItemSearchError["code"]): never {
+     24|   throw new ItemSearchError(code);
+       |         ^
+     25| }
+     26| const textValid = (v: string) =>
+ ❯ parseItemSearchQuery packages/contracts/src/item-search.ts:63:31
+ ❯ parseScopedSearchQuery packages/contracts/src/scoped-search.ts:16:10
+ ❯ Object.search packages/domain/src/search/scoped-search-service.ts:29:21
+ ❯ packages/domain/src/search/scoped-search-service.test.ts:87:149
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  6 failed | 6 passed (12)
+   Start at  00:26:27
+   Duration  1.22s (transform 252ms, setup 5ms, collect 458ms, tests 603ms, environment 0ms, prepare 36ms)
+

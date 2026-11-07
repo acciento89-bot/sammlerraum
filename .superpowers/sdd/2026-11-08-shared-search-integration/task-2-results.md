@@ -1,0 +1,7 @@
+# Field-aware scoped query task2
+
+Actual native17scoped cases pass, including basic projection-only text, closed DTO, whole-tree NOT/OR/empty-scope denials, hidden lifecycle, actor/target/query/page-bound ID-only cursor, actual member workspace fields, zero versus missing, selected document-link-only presence/absence and receipt denial, complete monetary provenance over exactly the granted collection/subtree, and concurrent insert count/page snapshot parity. Actual guarded native fixtures, no network/provider fetch or auth mocks.
+
+Task-done138tests/5files pass10.43s: new scoped service/context plus original owned search, monetary provenance and explicit duplicate predicates. Root TypeScript complete check passes. Intermediate parser/test-shape and type failures retained and corrected without weakening source guards: AST object aliases are intentionally invalid, query parse failures now consistently reject the async service; reference narrowing captured before callback. New contract remains browser-safe.
+
+One strict symbolic reference contract and separate query/page projection preserve original OWNED transport. Scope defaultsALL; non-owner member leaves limited to actual workspace fields; share money/media require actual immutable grants; no private-pair/category/tag/custom inference. Shared external market leaves remain unavailable without redistribution rights. Original owner collection queries reuse existing trusted outer-restriction selection and full native owned checks. No originalV1 count increment or deployment.

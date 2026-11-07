@@ -1,0 +1,2 @@
+packages/domain/src/search/scoped-selection.ts(23,55): error TS2339: Property 'collectionId' does not exist on type 'Readonly<{ kind: "MEMBER_COLLECTION"; collectionId: string; } | { kind: "SHARE"; shareId: string; }>'.
+  Property 'collectionId' does not exist on type 'Readonly<{ kind: "SHARE"; shareId: string; }>'.
