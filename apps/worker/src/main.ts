@@ -26,6 +26,7 @@ type StartWorkerOptions = {
   mediaCleanup?: { start(): void; stop(): Promise<void> };
   imageDispatcher?: { start(): void; stop(): Promise<void> };
   exportDispatcher?: { start(): void; stop(): Promise<void> };
+  importDispatcher?: { start(): void; stop(): Promise<void> };
   reportDispatcher?: { start(): void; stop(): Promise<void> };
 };
 
@@ -90,6 +91,7 @@ export async function startWorker(options: StartWorkerOptions): Promise<RunningW
       await attempt(() => options.imageDispatcher?.stop());
       await attempt(() => options.exportDispatcher?.stop());
       await attempt(() => options.reportDispatcher?.stop());
+      await attempt(() => options.importDispatcher?.stop());
       await marketResult;
       await attempt(() => options.queue.stop());
       options.queue.off("error", handleQueueError);
@@ -110,6 +112,7 @@ export async function startWorker(options: StartWorkerOptions): Promise<RunningW
     options.imageDispatcher?.start();
     options.exportDispatcher?.start();
     options.reportDispatcher?.start();
+    options.importDispatcher?.start();
     options.mediaCleanup?.start();
     options.marketSync?.start();
     endpoint = await (options.startHealth ?? startHealthServer)({

@@ -175,9 +175,10 @@ const next = spawn(
 );
 
 const mediaWorker =
-  process.env.RUN_MEDIA_E2E === "1"
+  process.env.RUN_MEDIA_E2E === "1" || process.env.RUN_IMPORT_E2E === "1"
     ? spawn(process.execPath, [join(webRoot, "../worker/dist/worker.cjs")], {
-        env: { ...process.env, NODE_ENV: "test" },
+        cwd: join(webRoot, "../worker"),
+        env: { ...process.env, NODE_ENV: "test", APP_ORIGIN: "http://localhost:3000" },
         stdio: "inherit",
       })
     : undefined;

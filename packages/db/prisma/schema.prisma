@@ -1156,6 +1156,11 @@ model ImportJob {
   sourceChecksumSha256   String             @db.Char(64)
   sourceStorageKey       String             @unique
   sourceVerifiedAt       DateTime?
+  uploadRequestId        String?            @db.Uuid
+  uploadOptions          Json?
+  uploadCompletedAt      DateTime?
+  sourceExpiresAt        DateTime           @default(dbgenerated("(timezone('UTC'::text, CURRENT_TIMESTAMP) + '24 hours'::interval)"))
+  lastDispatchedAt       DateTime?
   parserOptions          Json?
   parsedHeader           Json?
   parsingToken           String?            @db.Uuid
@@ -1179,6 +1184,8 @@ model ImportJob {
   collection             Collection         @relation(fields: [collectionId, ownerId], references: [id, ownerId], onDelete: Cascade)
   rows                   ImportRow[]
 
+  @@unique([ownerId, uploadRequestId])
+  @@index([sourceExpiresAt, id])
   @@index([ownerId, createdAt(sort: Desc), id])
   @@index([status, updatedAt, id])
 }

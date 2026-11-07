@@ -9,6 +9,7 @@ import { createTabularExportDispatcher } from "./jobs/tabular-export-dispatcher"
 import { createImportCommitService } from "@sammlerraum/domain/imports/import-commit-service";
 import { createImportCommitter, IMPORT_COMMIT_JOB } from "./jobs/commit-import";
 import { createPrismaImportParserRepository } from "./jobs/import-parser-repository";
+import { createImportDispatcher } from "./jobs/import-dispatcher";
 import { createImportParser, IMPORT_PARSE_JOB } from "./jobs/import-parser-runtime";
 import { createProductionMarketProviders } from "./jobs/market-provider-composition";
 import { composeMarketSync } from "./jobs/market-sync-runtime";
@@ -86,10 +87,15 @@ async function startProductionWorker(): Promise<void> {
     maxDocumentBytes: serverEnv.MEDIA_MAX_DOCUMENT_BYTES,
     maxPixels: serverEnv.MEDIA_MAX_IMAGE_PIXELS,
   });
-  const parseImport = createImportParser(createPrismaImportParserRepository(prisma), storage, {
-    maxBytes: serverEnv.IMPORT_MAX_BYTES,
-    maxRows: serverEnv.IMPORT_MAX_ROWS,
-  });
+  const parseImport = createImportParser(
+    createPrismaImportParserRepository(prisma),
+    storage,
+    {
+      maxBytes: serverEnv.IMPORT_MAX_BYTES,
+      maxRows: serverEnv.IMPORT_MAX_ROWS,
+    },
+    withAssetLock,
+  );
   const reportRepository = createPrismaReportRepository(prisma);
   registry.registerCancellable(
     INSURANCE_REPORT_JOB,
@@ -127,11 +133,13 @@ async function startProductionWorker(): Promise<void> {
     await withAssetLock(assetId, () => processImage({ assetId }));
   });
   const imageDispatcher = createImageDispatcher(repository, client, console);
+  const importDispatcher = createImportDispatcher(prisma, client, console);
   await worker.startWorker({
     queue: runtime,
     imageDispatcher,
     exportDispatcher,
     reportDispatcher,
+    importDispatcher,
     mediaCleanup,
     marketSync,
     databaseHealth: () => checkDatabaseHealth(prisma),

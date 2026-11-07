@@ -40,11 +40,17 @@ function fail(code: "IMPORT_CLAIM_LOST" | "IMPORT_PARSE_INTEGRITY"): never {
 }
 export function createPrismaImportParserRepository(database: PrismaClient): ImportParserRepository {
   const transact = <T>(work: (tx: PrismaTypes.TransactionClient) => Promise<T>) =>
-    database.$transaction(work, { maxWait: 5000, timeout: 10000 });
+    database.$transaction(
+      async (tx) => {
+        await tx.$executeRaw`SET LOCAL TIME ZONE 'UTC'`;
+        return work(tx);
+      },
+      { maxWait: 5000, timeout: 10000 },
+    );
   const lock = async (tx: PrismaTypes.TransactionClient, id: string): Promise<Job | undefined> =>
     (
       await tx.$queryRaw<Job[]>(
-        Prisma.sql`SELECT j.*, (j."parsingLeaseUntil">CURRENT_TIMESTAMP) AS active FROM "ImportJob" j JOIN "Collection" c ON c.id=j."collectionId" AND c."ownerId"=j."ownerId" WHERE j.id=${id}::uuid AND c."deletedAt" IS NULL FOR UPDATE OF j,c`,
+        Prisma.sql`SELECT j.*, (j."parsingLeaseUntil">CURRENT_TIMESTAMP) AS active FROM "ImportJob" j JOIN "Collection" c ON c.id=j."collectionId" AND c."ownerId"=j."ownerId" WHERE j.id=${id}::uuid AND c."deletedAt" IS NULL AND j."sourceExpiresAt">timezone('UTC',CURRENT_TIMESTAMP) AND (j."uploadRequestId" IS NULL OR j."uploadCompletedAt" IS NOT NULL) FOR UPDATE OF j,c`,
       )
     )[0];
   const owned = async (tx: PrismaTypes.TransactionClient, claim: ImportParserClaim) => {

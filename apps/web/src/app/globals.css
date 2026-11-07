@@ -1267,3 +1267,23 @@ body:has(.search-shell) .skip-link:not(:focus) {
 .money-history-event p {
   overflow-wrap: anywhere;
 }
+
+.transfer-shell {
+  overflow-wrap: anywhere;
+}
+.transfer-shell fieldset {
+  min-width: 0;
+}
+.transfer-shell input,
+.transfer-shell select {
+  max-width: 100%;
+}
+.transfer-shell article + article {
+  margin-top: 1rem;
+}
+.transfer-shell .management-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-block: 1rem;
+}

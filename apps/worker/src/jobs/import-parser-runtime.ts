@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 import { z } from "zod";
-import type { StorageProvider } from "@sammlerraum/storage";
+import type { StorageProvider, StorageStagingLocker } from "@sammlerraum/storage";
 import { IMPORT_MAX_SOURCE_BYTES, IMPORT_MAX_SOURCE_ROWS } from "@sammlerraum/contracts/imports";
 import {
   ImportParseError,
@@ -18,6 +18,7 @@ export function createImportParser(
   repository: ImportParserRepository,
   storage: StorageProvider,
   limits: { maxBytes?: number; maxRows?: number } = {},
+  sourceLock?: StorageStagingLocker,
 ) {
   const maxBytes = limits.maxBytes ?? IMPORT_MAX_SOURCE_BYTES,
     maxRows = limits.maxRows ?? IMPORT_MAX_SOURCE_ROWS;
@@ -30,7 +31,7 @@ export function createImportParser(
     maxRows > IMPORT_MAX_SOURCE_ROWS
   )
     throw new Error("Invalid import limits");
-  return async (payload: unknown, context?: { signal: AbortSignal }): Promise<void> => {
+  const execute = async (payload: unknown, context?: { signal: AbortSignal }): Promise<void> => {
     const parsed = payloadSchema.safeParse(payload);
     if (!parsed.success) return;
     const claim = await repository.claim(parsed.data.jobId);
@@ -129,5 +130,15 @@ export function createImportParser(
       context?.signal.removeEventListener("abort", abort);
       await renewal;
     }
+  };
+  return async (payload: unknown, context?: { signal: AbortSignal }) => {
+    const parsed = payloadSchema.safeParse(payload);
+    if (!parsed.success) return;
+    if (!sourceLock) return execute(payload, context);
+    const result = await sourceLock(`import-source:${parsed.data.jobId}`, async () => {
+      await execute(payload, context);
+      return true;
+    });
+    if (result === false) throw new ImportParseError("IMPORT_PROCESSING_ERROR");
   };
 }

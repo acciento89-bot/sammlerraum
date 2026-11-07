@@ -124,7 +124,7 @@ function actor(input: { userId: string }) {
 async function lockJob(tx: Tx, id: string, owner?: string): Promise<Job> {
   const [job] = await q<Job[]>(
     tx,
-    Prisma.sql`SELECT j.* FROM "ImportJob" j JOIN "Collection" c ON c.id=j."collectionId" AND c."ownerId"=j."ownerId" WHERE j.id=${id}::uuid AND c."deletedAt" IS NULL ${owner === undefined ? Prisma.empty : Prisma.sql`AND j."ownerId"=${owner}`} FOR UPDATE OF j,c`,
+    Prisma.sql`SELECT j.* FROM "ImportJob" j JOIN "Collection" c ON c.id=j."collectionId" AND c."ownerId"=j."ownerId" WHERE j.id=${id}::uuid AND c."deletedAt" IS NULL ${owner === undefined ? Prisma.empty : Prisma.sql`AND j."ownerId"=${owner} AND j."sourceExpiresAt">timezone('UTC',CURRENT_TIMESTAMP)`} FOR UPDATE OF j,c`,
   );
   if (!job) return importFail("IMPORT_NOT_FOUND");
   return job;
@@ -422,7 +422,7 @@ export function createImportCommitService(database: ImportCommitDatabase) {
       if (duplicates.length) return importFail("IMPORT_CONFLICT");
       const [result] = await q<{ revision: number; status: string }[]>(
         tx,
-        Prisma.sql`UPDATE "ImportJob" SET status='COMMITTING',"commitApprovedAt"=date_trunc('milliseconds',clock_timestamp()),"commitApprovalRevision"=revision,revision=revision+1,"updatedAt"=date_trunc('milliseconds',clock_timestamp()) WHERE id=${job.id}::uuid RETURNING revision,status`,
+        Prisma.sql`UPDATE "ImportJob" SET status='COMMITTING',"lastDispatchedAt"=NULL,"commitApprovedAt"=date_trunc('milliseconds',clock_timestamp()),"commitApprovalRevision"=revision,revision=revision+1,"updatedAt"=date_trunc('milliseconds',clock_timestamp()) WHERE id=${job.id}::uuid RETURNING revision,status`,
       );
       return result!;
     });

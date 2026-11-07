@@ -1,0 +1,31 @@
+- navigation:
+  - link "Sammlungen":
+    - /url: /de/collections
+  - link "Exporte":
+    - /url: /de/exports
+  - link "Versicherung":
+    - /url: /de/insurance
+- heading "Bestand importieren" [level=1]
+- paragraph: Datei hochladen → Spalten prüfen → Zeilen entscheiden → Import freigeben. Der Bestand ändert sich erst nach deiner Freigabe.
+- group "Quelldatei":
+  - text: Quelldatei Zielsammlung
+  - combobox "Zielsammlung":
+    - option "Bitte auswählen" [selected]
+  - text: Datei auswählen
+  - button "Datei auswählen"
+  - text: Dateiformat
+  - combobox "Dateiformat":
+    - option "CSV" [selected]
+    - option "XLSX"
+  - checkbox "Erste Zeile enthält Spaltenüberschriften" [checked]
+  - text: Erste Zeile enthält SpaltenüberschriftenTrennzeichen (CSV)
+  - combobox "Trennzeichen (CSV)":
+    - option "Komma" [selected]
+    - option "Semikolon"
+    - option "Tab"
+  - text: Quellprofil
+  - combobox "Quellprofil":
+    - option "Allgemeine Datei" [selected]
+    - option "Sammlerraum V1"
+  - paragraph: Quellen werden 24 Stunden aufbewahrt. Maximal drei aktive Importe und 20 Quellen gleichzeitig.
+  - button "Datei hochladen"

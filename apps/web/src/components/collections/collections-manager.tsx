@@ -77,6 +77,9 @@ export function CollectionsManager({ locale }: { locale: "de" | "en" }) {
         <Link href={`/${locale}/dashboard`} prefetch={false}>
           {search("navDashboard")}
         </Link>
+        <Link href={`/${locale}/imports`}>{common("imports")}</Link>
+        <Link href={`/${locale}/exports`}>{common("exports")}</Link>
+        <Link href={`/${locale}/insurance`}>{common("insurance")}</Link>
         <Link href={`/${locale}/catalog`}>{common("catalog")}</Link>
         <Link href={`/${locale}/account/profile`}>{common("account")}</Link>
       </nav>

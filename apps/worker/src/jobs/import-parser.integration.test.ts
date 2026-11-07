@@ -105,7 +105,7 @@ describe.runIf(process.env.RUN_DATABASE_INTEGRATION === "1")(
       expect(await repo.claim(f.id)).toBeNull();
       expect(await repo.verified(first!)).toBe(true);
       await repo.append(first!, [{ rowNumber: 1, sourceRowNumber: 2, cells: ["One"] }]);
-      await db.$executeRaw`UPDATE "ImportJob" SET "parsingLeaseUntil"=now()-interval '1 second' WHERE id=${f.id}::uuid`;
+      await db.$executeRaw`UPDATE "ImportJob" SET "parsingLeaseUntil"=timezone('UTC',now())-interval '1 second' WHERE id=${f.id}::uuid`;
       const second = await repo.claim(f.id);
       expect(second?.token).not.toBe(first?.token);
       expect(await repo.renew(first!)).toBe(false);
@@ -114,7 +114,7 @@ describe.runIf(process.env.RUN_DATABASE_INTEGRATION === "1")(
       ).rejects.toMatchObject({ code: "IMPORT_CLAIM_LOST" });
       await createImportParser(repo, storage)({ jobId: f.id }); // already claimed: no second owner
       expect((await job(f.id)).status).toBe("PARSING");
-      await db.$executeRaw`UPDATE "ImportJob" SET "parsingLeaseUntil"=now()-interval '1 second' WHERE id=${f.id}::uuid`;
+      await db.$executeRaw`UPDATE "ImportJob" SET "parsingLeaseUntil"=timezone('UTC',now())-interval '1 second' WHERE id=${f.id}::uuid`;
       await createImportParser(repo, storage)({ jobId: f.id });
       expect(await job(f.id)).toMatchObject({ status: "PARSED", parsedRows: 2 });
     });
@@ -126,7 +126,7 @@ describe.runIf(process.env.RUN_DATABASE_INTEGRATION === "1")(
         db.$executeRaw`UPDATE "ImportJob" SET "parserOptions"='{}'::jsonb WHERE id=${f.id}::uuid`,
       ).rejects.toThrow();
       await db.$executeRaw`UPDATE "Collection" SET "deletedAt"=now() WHERE id=${f.collection}::uuid`;
-      await db.$executeRaw`UPDATE "ImportJob" SET "parsingLeaseUntil"=now()-interval '1 second' WHERE id=${f.id}::uuid`;
+      await db.$executeRaw`UPDATE "ImportJob" SET "parsingLeaseUntil"=timezone('UTC',now())-interval '1 second' WHERE id=${f.id}::uuid`;
       expect(await repo.claim(f.id)).toBeNull();
     });
     it("rejects divergent retry rows and missing membership before finishing", async () => {

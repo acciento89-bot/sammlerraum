@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { validUnicode, utf8Length } from "./search-parser";
+import { validUnicode, utf8Length, scanFilterJson } from "./search-parser";
 import { LEGACY_MONEY_PROFILE_ID, HistoricalCurrencySchema } from "./legacy-money";
 import { ValidatedMoneyImportRowSchema } from "./money-transfer";
 import { CanonicalTimestampSchema } from "./items";
@@ -376,3 +376,37 @@ export const ImportMergeTargetInputSchema = z
   .object({ jobId: id, previewGeneration: revision, rowNumber: importRowNumber, targetItemId: id })
   .strict();
 export type ImportDecisionInput = z.infer<typeof ImportDecisionInputSchema>;
+
+/** Shared by the upload boundary and the bounded worker parser. */
+export const ImportParserOptionsSchema = z
+  .object({
+    schemaVersion: z.literal(1).default(1),
+    format: z.enum(["CSV", "XLSX"]),
+    hasHeader: z.boolean(),
+    sourceProfile: z.enum(["GENERIC", "SAMMLERRAUM_TABULAR_V1"]).default("GENERIC"),
+    delimiter: z.enum([",", ";", "\t"]).default(","),
+    sheetName: z.string().min(1).max(31).optional(),
+  })
+  .strict()
+  .refine((v) => v.format !== "CSV" || v.sheetName === undefined)
+  .refine((v) => v.sourceProfile === "GENERIC" || v.hasHeader);
+export const ImportUploadInputSchema = z
+  .object({
+    collectionId: id,
+    locale: z.enum(["de", "en"]),
+    fileName,
+    format: z.enum(["CSV", "XLSX"]),
+    uploadRequestId: id,
+    parserOptions: ImportParserOptionsSchema,
+  })
+  .strict()
+  .refine((v) => v.format === v.parserOptions.format);
+
+export function parseImportRequestJson(raw: string): unknown {
+  try {
+    scanFilterJson(raw);
+    return JSON.parse(raw);
+  } catch {
+    return importFail("IMPORT_INVALID");
+  }
+}

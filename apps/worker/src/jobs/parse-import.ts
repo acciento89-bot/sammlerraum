@@ -3,6 +3,7 @@ import { parse as csvParse } from "csv-parse";
 import { z } from "zod";
 import { readXlsx } from "./parse-xlsx";
 import {
+  ImportParserOptionsSchema,
   IMPORT_MAX_SOURCE_BYTES,
   IMPORT_MAX_SOURCE_ROWS,
   IMPORT_MAX_ROW_BYTES,
@@ -32,18 +33,7 @@ export class ImportParseError extends Error {
 function fail(code: ImportParseCode): never {
   throw new ImportParseError(code);
 }
-const optionsSchema = z
-  .object({
-    schemaVersion: z.literal(1).default(1),
-    format: z.enum(["CSV", "XLSX"]),
-    hasHeader: z.boolean(),
-    sourceProfile: z.enum(["GENERIC", "SAMMLERRAUM_TABULAR_V1"]).default("GENERIC"),
-    delimiter: z.enum([",", ";", "\t"]).default(","),
-    sheetName: z.string().min(1).max(31).optional(),
-  })
-  .strict()
-  .refine((v) => v.format !== "CSV" || v.sheetName === undefined)
-  .refine((v) => v.sourceProfile === "GENERIC" || v.hasHeader);
+const optionsSchema = ImportParserOptionsSchema;
 function profileCells(
   input: unknown,
   profile: "GENERIC" | "SAMMLERRAUM_TABULAR_V1",

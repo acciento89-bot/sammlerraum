@@ -83,7 +83,13 @@ export function createPrismaPrivateArtifactRepository(
   const integrity = () =>
     kind === "TABULAR" ? new ExportError("EXPORT_INTEGRITY") : new ReportError("REPORT_INTEGRITY");
   const run = <T>(work: (tx: PrismaTypes.TransactionClient) => Promise<T>) =>
-    database.$transaction(work, { maxWait: 5000, timeout: 10000 });
+    database.$transaction(
+      async (tx) => {
+        await tx.$executeRaw`SET LOCAL TIME ZONE 'UTC'`;
+        return work(tx);
+      },
+      { maxWait: 5000, timeout: 10000 },
+    );
   return {
     async claim(id) {
       return run(async (tx) => {
@@ -192,11 +198,11 @@ export function createPrismaPrivateArtifactRepository(
       const count = Math.min(Math.max(Number.isInteger(limit) ? limit : 1, 1), 32);
       const rows = await database.$queryRaw<
         { id: string }[]
-      >`SELECT id FROM ${table} WHERE "expiresAt">clock_timestamp() AND (status='PENDING' OR (status='BUILDING' AND "processingLeaseUntil"<clock_timestamp())) AND ("lastDispatchedAt" IS NULL OR "lastDispatchedAt"<clock_timestamp()-interval '30 seconds') ORDER BY "createdAt",id LIMIT ${count}`;
+      >`SELECT id FROM ${table} WHERE "expiresAt">timezone('UTC',clock_timestamp()) AND (status='PENDING' OR (status='BUILDING' AND "processingLeaseUntil"<timezone('UTC',clock_timestamp()))) AND ("lastDispatchedAt" IS NULL OR "lastDispatchedAt"<timezone('UTC',clock_timestamp())-interval '30 seconds') ORDER BY "createdAt",id LIMIT ${count}`;
       return rows.map((r) => r.id);
     },
     async noteDispatched(id) {
-      await database.$queryRaw`UPDATE ${table} SET "lastDispatchedAt"=now() WHERE id=${id}::uuid AND status IN ('PENDING','BUILDING') RETURNING id`;
+      await database.$queryRaw`UPDATE ${table} SET "lastDispatchedAt"=timezone('UTC',now()) WHERE id=${id}::uuid AND status IN ('PENDING','BUILDING') RETURNING id`;
     },
   };
 }

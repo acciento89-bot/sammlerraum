@@ -102,7 +102,10 @@
     "visibilityUNLISTED": "Unlisted",
     "visibilityPUBLIC": "Public",
     "save": "Save",
-    "catalog": "Catalog"
+    "catalog": "Catalog",
+    "imports": "Imports",
+    "exports": "Exports",
+    "insurance": "Insurance"
   },
   "Collections": {
     "eyebrow": "Your archive",

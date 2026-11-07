@@ -157,7 +157,7 @@ describe.runIf(process.env.RUN_DATABASE_INTEGRATION === "1")(
         first = await f.repo.claim(f.job.id);
       expect(first).not.toBeNull();
       expect(await f.repo.claim(f.job.id)).toBeNull();
-      await db.$executeRaw`UPDATE "ExportJob" SET "processingLeaseUntil"=now()-interval '1 second' WHERE id=${f.job.id}::uuid`;
+      await db.$executeRaw`UPDATE "ExportJob" SET "processingLeaseUntil"=timezone('UTC',now())-interval '1 second' WHERE id=${f.job.id}::uuid`;
       const second = await f.repo.claim(f.job.id);
       expect(second?.assetId).not.toBe(first!.assetId);
       expect(await f.repo.active(first!)).toBe(false);
@@ -167,7 +167,7 @@ describe.runIf(process.env.RUN_DATABASE_INTEGRATION === "1")(
         status: "BUILDING",
         artifactId: second!.assetId,
       });
-      await db.$executeRaw`UPDATE "ExportJob" SET "processingLeaseUntil"=now()-interval '1 second',"processingAttempts"=5 WHERE id=${f.job.id}::uuid`;
+      await db.$executeRaw`UPDATE "ExportJob" SET "processingLeaseUntil"=timezone('UTC',now())-interval '1 second',"processingAttempts"=5 WHERE id=${f.job.id}::uuid`;
       expect(await f.repo.claim(f.job.id)).toBeNull();
       expect(await state(f.job.id)).toMatchObject({
         status: "FAILED",

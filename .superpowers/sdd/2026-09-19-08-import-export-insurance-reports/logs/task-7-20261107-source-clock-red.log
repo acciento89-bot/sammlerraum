@@ -1,0 +1,29 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/imports/import-workflow.integration.test.ts (8 tests | 1 failed) 524ms
+   ✓ actual owned source upload lifecycle > stores actual bytes and an owned uploaded manifest without claiming parsed or writing inventory 117ms
+   ✓ actual owned source upload lifecycle > reuses an owner-scoped upload key on exact retry and rejects changed data under that key 39ms
+   ✓ actual owned source upload lifecycle > retains a failed write manifest and allows the same upload to recover without duplicate jobs 32ms
+   ✓ actual owned source upload lifecycle > hides foreign targets before source I/O and rejects caller storage or byte-count claims 4ms
+   ✓ actual owned source upload lifecycle > dispatches uploaded sources through the actual parser without writing inventory 44ms
+   ✓ actual owned source upload lifecycle > limits active source jobs but allows an exact retry at the quota 68ms
+   ✓ actual owned source upload lifecycle > does not expose an expired source job or let the parser claim it 4ms
+   × actual owned source upload lifecycle > gives source manifests exactly24hours even when the database session uses Berlin time 4ms
+     → expected 90000.000043 to be close to 86400, received difference is 3600.0000429999927, but expected 0.5
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/imports/import-workflow.integration.test.ts > actual owned source upload lifecycle > gives source manifests exactly24hours even when the database session uses Berlin time
+AssertionError: expected 90000.000043 to be close to 86400, received difference is 3600.0000429999927, but expected 0.5
+ ❯ packages/domain/src/imports/import-workflow.integration.test.ts:173:30
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 7 passed (8)
+   Start at  02:03:44
+   Duration  1.06s (transform 210ms, setup 6ms, collect 383ms, tests 524ms, environment 0ms, prepare 36ms)
+

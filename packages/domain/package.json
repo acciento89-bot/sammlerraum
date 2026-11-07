@@ -48,7 +48,10 @@
     "./imports/import-commit-service": "./src/imports/import-commit-service.ts",
     "./exports/export-service": "./src/exports/export-service.ts",
     "./insurance/insurance-service": "./src/insurance/insurance-service.ts",
-    "./reports/report-service": "./src/reports/report-service.ts"
+    "./reports/report-service": "./src/reports/report-service.ts",
+    "./imports/import-workflow-service": "./src/imports/import-workflow-service.ts",
+    "./search/search-read": "./src/search/search-read.ts",
+    "./exports/artifact-access-service": "./src/exports/artifact-access-service.ts"
   },
   "scripts": {
     "build": "pnpm typecheck",

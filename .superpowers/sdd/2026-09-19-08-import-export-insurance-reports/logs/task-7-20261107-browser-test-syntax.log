@@ -1,0 +1,29 @@
+[WebServer] (node:81485) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+SyntaxError: /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/import-report.spec.ts: Unexpected token, expected "," (18:54)
+
+  16 |  const collection=await db.collection.create({data:{ownerId:userId,name:'CSV Browser Collection'}}),item=await db.collectibleItem.create({data:{ownerId:userId,collectionId:collection.id,title:'Existing owned item'}});await createIdentifierService(db,userId).setItemIdentifiers(item.id,[{type:'SKU',value:'SKU-1'}]);
+  17 |  await page.goto('/de/imports');await expect(page.getByRole('heading',{name:'Bestand importieren'})).toBeVisible();await page.getByLabel('Zielsammlung',{exact:true}).selectOption(collection.id);await page.getByLabel('Datei auswählen',{exact:true}).setInputFiles({name:'inventory.csv',mimeType:'text/csv',buffer:Buffer.from('Title,Quantity,Code\nExisting copy,1,SKU-1\nNew item,2,SKU-2\n')});await page.getByRole('button',{name:'Datei hochladen',exact:true}).click();await expect(page.getByLabel('Titelspalte',{exact:true})).toBeVisible();await page.getByLabel('Titelspalte',{exact:true}).selectOption('0');await page.getByLabel('Mengenspalte',{exact:true}).selectOption('1');await page.getByLabel('Kennungsspalte',{exact:true}).selectOption('2');await page.getByLabel('Kennungstyp',{exact:true}).fill('SKU');await page.getByRole('button',{name:'Vorschau erstellen',exact:true}).click();await expect(page.getByText('Konflikt',{exact:true}).first()).toBeVisible();await expect(page.getByRole('button',{name:'Import starten',exact:true})).toBeDisabled();await page.getByLabel('Entscheidung für Zeile 1',{exact:true}).selectOption('CREATE_SEPARATE');await page.getByLabel('Entscheidung für Zeile 2',{exact:true}).selectOption('CREATE');await page.getByRole('button',{name:'Entscheidungen speichern',exact:true}).click();await expect(page.getByRole('button',{name:'Import starten',exact:true})).toBeEnabled();await page.getByRole('button',{name:'Import starten',exact:true}).click();await expect(page.getByText('Import abgeschlossen',{exact:true})).toBeVisible();expect(await db.collectibleItem.count({where:{ownerId:userId}})).toBe(3);
+> 18 |  }finally{await db.user.deleteMany({where:{id:userId}}});}
+     |                                                       ^
+  19 |  });
+  20 | });
+  21 |
+
+   at import-report.spec.ts:18
+
+  16 |  const collection=await db.collection.create({data:{ownerId:userId,name:'CSV Browser Collection'}}),item=await db.collectibleItem.create({data:{ownerId:userId,collectionId:collection.id,title:'Existing owned item'}});await createIdentifierService(db,userId).setItemIdentifiers(item.id,[{type:'SKU',value:'SKU-1'}]);
+  17 |  await page.goto('/de/imports');await expect(page.getByRole('heading',{name:'Bestand importieren'})).toBeVisible();await page.getByLabel('Zielsammlung',{exact:true}).selectOption(collection.id);await page.getByLabel('Datei auswählen',{exact:true}).setInputFiles({name:'inventory.csv',mimeType:'text/csv',buffer:Buffer.from('Title,Quantity,Code\nExisting copy,1,SKU-1\nNew item,2,SKU-2\n')});await page.getByRole('button',{name:'Datei hochladen',exact:true}).click();await expect(page.getByLabel('Titelspalte',{exact:true})).toBeVisible();await page.getByLabel('Titelspalte',{exact:true}).selectOption('0');await page.getByLabel('Mengenspalte',{exact:true}).selectOption('1');await page.getByLabel('Kennungsspalte',{exact:true}).selectOption('2');await page.getByLabel('Kennungstyp',{exact:true}).fill('SKU');await page.getByRole('button',{name:'Vorschau erstellen',exact:true}).click();await expect(page.getByText('Konflikt',{exact:true}).first()).toBeVisible();await expect(page.getByRole('button',{name:'Import starten',exact:true})).toBeDisabled();await page.getByLabel('Entscheidung für Zeile 1',{exact:true}).selectOption('CREATE_SEPARATE');await page.getByLabel('Entscheidung für Zeile 2',{exact:true}).selectOption('CREATE');await page.getByRole('button',{name:'Entscheidungen speichern',exact:true}).click();await expect(page.getByRole('button',{name:'Import starten',exact:true})).toBeEnabled();await page.getByRole('button',{name:'Import starten',exact:true}).click();await expect(page.getByText('Import abgeschlossen',{exact:true})).toBeVisible();expect(await db.collectibleItem.count({where:{ownerId:userId}})).toBe(3);
+> 18 |  }finally{await db.user.deleteMany({where:{id:userId}}});}
+     |                                                      ^
+  19 |  });
+  20 | });
+  21 |
+    at eval (<anonymous>:1:1)
+Error: No tests found.
+Make sure that arguments are regular expressions matching test files.
+You may need to escape symbols like "$" or "*" and quote the arguments.
+
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/import-report.spec.ts --project=desktop --workers=1
