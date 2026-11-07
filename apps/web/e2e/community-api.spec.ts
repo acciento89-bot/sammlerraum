@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { test, expect, type APIRequestContext } from "@playwright/test";
 import { createPrismaClient } from "@sammlerraum/db/create-client";
+import { createNotificationService } from "@sammlerraum/domain/notifications/notification-service";
 import { createItemService } from "@sammlerraum/domain/items/item-service";
 import { hashPassword } from "better-auth/crypto";
 import { credentialRateLimitFixture } from "./support/credential-rate-limit-fixture";
@@ -98,6 +99,45 @@ test("compiled community endpoints bind real cookies, enforce current public vis
     );
     expect((await owner.get("/api/v1/community/favorites")).status()).toBe(200);
     expect((await (await owner.get("/api/v1/community/favorites")).json()).favorites).toEqual([]);
+    const notice = await createNotificationService(db).createNotificationOnce({
+      recipientId: ids[1]!,
+      eventKey: randomUUID(),
+      type: "SECURITY_ALERT",
+      target: { type: "ACCOUNT", id: ids[1]! },
+    });
+    expect(notice.id).toBeTruthy();
+    const noticeListing = await owner.get("/api/v1/notifications");
+    expect(noticeListing.status()).toBe(200);
+    expect(noticeListing.headers()["cache-control"]).toBe("no-store");
+    expect((await noticeListing.json()).notifications).toEqual(
+      expect.arrayContaining([expect.objectContaining({ id: notice.id })]),
+    );
+    expect(
+      (await actor.post(`/api/v1/notifications/${notice.id}/read`, { data: {} })).status(),
+    ).toBe(404);
+    expect(
+      (await owner.post(`/api/v1/notifications/${notice.id}/read`, { data: {} })).status(),
+    ).toBe(200);
+    const preferences = await owner.patch("/api/v1/notifications/preferences", {
+      data: {
+        locale: "en",
+        preferences: [{ category: "SECURITY", channel: "EMAIL", enabled: false }],
+      },
+    });
+    expect(preferences.status()).toBe(200);
+    expect((await preferences.json()).preferences).toContainEqual({
+      category: "SECURITY",
+      channel: "EMAIL",
+      enabled: true,
+    });
+    expect(
+      (
+        await actor.patch("/api/v1/notifications/preferences", {
+          data: { userId: ids[1], preferences: [] },
+        })
+      ).status(),
+    ).toBe(400);
+    expect((await (await owner.get("/api/v1/notifications")).json()).unreadCount).toBe(0);
     const commentTarget = { type: "ITEM", id: item.id };
     const createdComment = await actor.post("/api/v1/community/comments", {
       data: { target: commentTarget, body: "Own compiled cookie comment" },

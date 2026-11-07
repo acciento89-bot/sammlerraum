@@ -230,7 +230,7 @@ git commit -m "feat: add community moderation workflow"
 **Interfaces:**
 - Produces: `createNotificationOnce`, `markRead`, `markAllRead`, `updatePreferences`.
 
-- [ ] **Step 1: Write failing dedupe test**
+- [x] **Step 1: Write failing dedupe test**
 
 ```ts
 it("creates one in-app notification for the same event key", async () => {
@@ -240,16 +240,16 @@ it("creates one in-app notification for the same event key", async () => {
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run packages/domain/src/notifications/notification-service.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement notification models**
+- [x] **Step 3: Implement notification models**
 
 Notification includes recipient, event key, type, safe target reference, readAt, createdAt. Preferences are per category/channel. Security categories ignore disable requests for required email delivery.
 
-- [ ] **Step 4: Migrate and test**
+- [x] **Step 4: Migrate and test**
 
 Run:
 ```bash
@@ -259,7 +259,7 @@ pnpm vitest run packages/domain/src/notifications
 
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/db packages/domain/src/notifications packages/contracts/src/notifications.ts

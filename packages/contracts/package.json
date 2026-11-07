@@ -41,7 +41,8 @@
     "./wishlist": "./src/wishlist.ts",
     "./community": "./src/community.ts",
     "./comments": "./src/comments.ts",
-    "./moderation": "./src/moderation.ts"
+    "./moderation": "./src/moderation.ts",
+    "./notifications": "./src/notifications.ts"
   },
   "scripts": {
     "build": "pnpm typecheck",

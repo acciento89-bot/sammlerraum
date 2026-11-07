@@ -109,6 +109,10 @@ model User {
   sessions                   Session[]
   accounts                   Account[]
   passkeys                   Passkey[]
+  notificationsReceived      Notification[]                     @relation("NotificationRecipient")
+  notificationsActed         Notification[]                     @relation("NotificationActor")
+  notificationPreferences    NotificationPreference[]
+  notificationSettings       NotificationSettings?
   communityModerationEvents  CommunityModerationEvent[]
   communityPreference        CommunityPreference?
   communityComments          CommunityComment[]                 @relation("CommentAuthor")
@@ -1731,4 +1735,42 @@ model CommunityModerationEvent {
   @@index([reportId, createdAt])
   @@index([commentId, createdAt])
   @@index([actorId])
+}
+
+model Notification {
+  id           String    @id @default(uuid()) @db.Uuid
+  recipientId  String
+  actorId      String?
+  eventKey     String    @db.VarChar(200)
+  type         String    @db.VarChar(40)
+  category     String    @db.VarChar(24)
+  targetType   String    @db.VarChar(24)
+  targetId     String    @db.VarChar(128)
+  locale       String    @default("de") @db.VarChar(2)
+  inAppEnabled Boolean   @default(true)
+  emailWanted  Boolean   @default(false)
+  readAt       DateTime?
+  createdAt    DateTime  @default(now())
+  recipient    User      @relation("NotificationRecipient", fields: [recipientId], references: [id], onDelete: Cascade, onUpdate: Restrict)
+  actor        User?     @relation("NotificationActor", fields: [actorId], references: [id], onDelete: SetNull, onUpdate: Restrict)
+
+  @@unique([recipientId, eventKey])
+  @@index([recipientId, inAppEnabled, createdAt(sort: Desc), id(sort: Desc)])
+  @@index([actorId])
+}
+
+model NotificationPreference {
+  userId   String
+  category String  @db.VarChar(24)
+  channel  String  @db.VarChar(16)
+  enabled  Boolean
+  user     User    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Restrict)
+
+  @@id([userId, category, channel])
+}
+
+model NotificationSettings {
+  userId String @id
+  locale String @default("de") @db.VarChar(2)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Restrict)
 }
