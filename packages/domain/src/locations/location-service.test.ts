@@ -524,8 +524,8 @@ describe.runIf(runIntegration)("location PostgreSQL integration", () => {
         toLocationId: null,
       });
     } finally {
-      // History deliberately restricts assignee deletion so attribution is not erased implicitly.
-      // This fixture therefore removes its own history rows before its users.
+      // Remove this fixture's history explicitly; real account erasure now redacts the assignee
+      // while transferred historical timestamps and location endpoints remain intact.
       await prisma!.itemLocationHistory.deleteMany({
         where: { assignedById: { in: cleanup } },
       });

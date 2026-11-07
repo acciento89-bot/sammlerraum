@@ -1,0 +1,92 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/collaboration/membership-service.test.ts (31 tests | 2 failed) 1529ms
+   ✓ strict membership inputs > rejects malformed Unicode user IDs instead of normalizing into another identity 2ms
+   ✓ actual collection membership and atomic ownership > transfers ownership atomically and leaves exactly one derived owner 152ms
+   ✓ actual collection membership and atomic ownership > never accepts a second OWNER through membership creation or role editing 12ms
+   ✓ actual collection membership and atomic ownership > checks real membership and limits an Admin below Owner authority 17ms
+   ✓ actual collection membership and atomic ownership > rejects stale role decisions and a transfer without explicit private-data confirmation 9ms
+   ✓ actual collection membership and atomic ownership > allows member self-removal but never removes the sole owner 11ms
+   ✓ actual collection membership and atomic ownership > serializes simultaneous transfers so only one current owner decision wins 22ms
+   ✓ actual collection membership and atomic ownership > transfers a populated collection without changing item IDs, quantities or raw price digits 28ms
+   ✓ actual collection membership and atomic ownership > preserves private collection and item insurance through an explicitly confirmed transfer 33ms
+   ✓ actual collection membership and atomic ownership > retains a completed transfer and collection when the previous owner erases their account 22ms
+   ✓ actual collection membership and atomic ownership > prevents arbitrary database owner changes and a duplicate owner membership 26ms
+   ✓ actual collection membership and atomic ownership > cannot persist a claimed completed ownership transition without actually changing the owner 14ms
+   ✓ actual collection membership and atomic ownership > feeds current database roles into the policy and withdraws access after member removal 11ms
+   ✓ actual collection membership and atomic ownership > preserves immutable manual valuation amounts and their real author through ownership transfer and author erasure 40ms
+   ✓ actual collection membership and atomic ownership > does not leave a concurrent real tag writer's private tag attached under the wrong owner 71ms
+   ✓ actual collection membership and atomic ownership > rejects a former owner's tag write that waited behind the actual ownership transfer 39ms
+   ✓ actual collection membership and atomic ownership > rejects a former owner's identifier write that waited behind the actual ownership transfer 35ms
+   ✓ actual collection membership and atomic ownership > copies private tags to the recipient without changing either owner's other collections 43ms
+   ✓ actual collection membership and atomic ownership > preserves exact grading certificates, quantity and timestamps during ownership transfer 39ms
+   ✓ actual collection membership and atomic ownership > rolls back the entire transfer on a recipient certificate conflict 19ms
+   ✓ actual collection membership and atomic ownership > transfers an actual private PDF upload without changing its bytes, identity, links or access boundary 175ms
+   ✓ actual collection membership and atomic ownership > does not transfer an asset also referenced by another collection 14ms
+   ✓ actual collection membership and atomic ownership > preserves real image originals and variants shared only inside the transferred collection 75ms
+   ✓ actual collection membership and atomic ownership > blocks the transfer while the actual shared media advisory lock is held 33ms
+   ✓ actual collection membership and atomic ownership > copies only the needed location hierarchy with fresh QR identities and preserves real move history 48ms
+   ✓ actual collection membership and atomic ownership > rejects cyclic source locations atomically rather than losing their path 17ms
+   ✓ actual collection membership and atomic ownership > does not invent a move author or mutate historical timestamps 8ms
+   ✓ actual collection membership and atomic ownership > retains the known source manifest and safely erases cancelled private imports across transfer 79ms
+   × actual collection membership and atomic ownership > preserves exact purchase and custom-money COPY meaning and real authors within a whole transferred scope 83ms
+     → MEMBERSHIP_TRANSFER_BLOCKED
+   × actual collection membership and atomic ownership > blocks a cross-collection money lineage when transferring its origin 38ms
+     → promise resolved "{ …(4) }" instead of rejecting
+   ✓ actual collection membership and atomic ownership > blocks a cross-collection money lineage when transferring its copy 29ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/collaboration/membership-service.test.ts > actual collection membership and atomic ownership > preserves exact purchase and custom-money COPY meaning and real authors within a whole transferred scope
+MembershipError: MEMBERSHIP_TRANSFER_BLOCKED
+ ❯ fail packages/domain/src/collaboration/membership-service.ts:30:9
+     28| type Member = { userId: string; role: Role };
+     29| function fail(code: MembershipError["code"]): never {
+     30|   throw new MembershipError(code);
+       |         ^
+     31| }
+     32| function parse<T>(schema: z.ZodType<T>, input: unknown): T {
+ ❯ packages/domain/src/collaboration/membership-service.ts:207:43
+ ❯ database.$transaction.isolationLevel packages/domain/src/collaboration/transfer-transaction.ts:52:26
+ ❯ Proxy._transactionWithCallback node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:861:18
+ ❯ runTransferTransaction packages/domain/src/collaboration/transfer-transaction.ts:25:14
+ ❯ packages/domain/src/collaboration/membership-service.test.ts:1210:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |workspace| packages/domain/src/collaboration/membership-service.test.ts > actual collection membership and atomic ownership > blocks a cross-collection money lineage when transferring its origin
+AssertionError: promise resolved "{ …(4) }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "collectionId": "dfd5bfc5-7a76-4647-b687-efda0baf4e38",
++   "members": [
++     {
++       "role": "OWNER",
++       "userId": "fd20d249-b095-43de-8533-b93f81fbcaee",
++     },
++     {
++       "role": "ADMIN",
++       "userId": "bf4631ed-b2fd-4e8c-8688-bfec1016442d",
++     },
++   ],
++   "ownerId": "fd20d249-b095-43de-8533-b93f81fbcaee",
++   "revision": 2,
+  }
+
+ ❯ packages/domain/src/collaboration/membership-service.test.ts:1235:147
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 29 passed (31)
+   Start at  05:17:46
+   Duration  2.39s (transform 312ms, setup 7ms, collect 645ms, tests 1.53s, environment 0ms, prepare 57ms)
+

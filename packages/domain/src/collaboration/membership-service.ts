@@ -1,5 +1,8 @@
 import { runTransferTransaction, type MembershipDatabase } from "./transfer-transaction";
 import { transferPrivateTags } from "./transfer-tags";
+import { transferPrivateLocations } from "./transfer-locations";
+import { retirePrivateImports } from "./transfer-imports";
+import { requireClosedMoneyTransferScope } from "./transfer-money";
 import { lockPrivateTransferMedia, transferPrivateMedia } from "./transfer-media";
 import { createTrustedResourceFacts } from "../authz/types";
 import { randomUUID } from "node:crypto";
@@ -182,6 +185,12 @@ export function createMembershipService(database: MembershipDatabase) {
       const userId = actor(who),
         value = parse(OwnershipTransferSchema, input);
       return runTransferTransaction(database, async (tx) => {
+        if (value.newOwnerId === userId) return fail("MEMBERSHIP_INVALID");
+        // Stable user locks precede parent/items, matching account erasure and hierarchy edits.
+        const users = await tx.$queryRaw<{ id: string }[]>(
+          Prisma.sql`SELECT id FROM "user" WHERE id IN (${userId},${value.newOwnerId}) ORDER BY id COLLATE "C" FOR NO KEY UPDATE`,
+        );
+        if (users.length !== 2) return fail("MEMBERSHIP_NOT_FOUND");
         const { parent, role } = await load(tx, value.collectionId, userId, true);
         if (role !== "OWNER") return fail("MEMBERSHIP_FORBIDDEN");
         revision(parent, value.expectedRevision);
@@ -193,25 +202,21 @@ export function createMembershipService(database: MembershipDatabase) {
           Prisma.sql`SELECT id FROM "CollectibleItem" WHERE "collectionId"=${parent.id}::uuid AND "ownerId"=${parent.ownerId} ORDER BY id LIMIT 1001 FOR UPDATE`,
         );
         if (lockedItems.length > 1000) return fail("MEMBERSHIP_LIMIT_EXCEEDED");
-        // Initial conservative gate: no sensitive dependency may be silently rekeyed or dropped.
-        // Rich transfer handling must replace these gates only with explicit native witnesses.
-        const [dependencies] = await tx.$queryRaw<{ blocked: boolean; items: bigint }[]>(
-          Prisma.sql`SELECT (EXISTS(SELECT 1 FROM "CollectibleItem" WHERE "collectionId"=${parent.id}::uuid AND "storageLocationId" IS NOT NULL) OR EXISTS(SELECT 1 FROM "ItemLocationHistory" h JOIN "CollectibleItem" i ON i.id=h."itemId" WHERE i."collectionId"=${parent.id}::uuid) OR EXISTS(SELECT 1 FROM "ImportJob" WHERE "collectionId"=${parent.id}::uuid) OR EXISTS(SELECT 1 FROM "PurchaseMoneyInterpretationEvent" e JOIN "CollectibleItem" i ON i.id=e."itemId" WHERE i."collectionId"=${parent.id}::uuid AND e.operation='COPY') OR EXISTS(SELECT 1 FROM "CustomMoneyInterpretationEvent" e JOIN "CollectibleItem" i ON i.id=e."itemId" WHERE i."collectionId"=${parent.id}::uuid AND e.operation='COPY')) AS blocked,(SELECT count(*) FROM "CollectibleItem" WHERE "collectionId"=${parent.id}::uuid) AS items`,
-        );
-        if (dependencies?.blocked) return fail("MEMBERSHIP_TRANSFER_BLOCKED");
+        await requireClosedMoneyTransferScope(tx, parent.id);
         const [certificateConflict] = await tx.$queryRaw<{ conflict: boolean }[]>(
           Prisma.sql`SELECT EXISTS(SELECT 1 FROM "Grading" source JOIN "CollectibleItem" item ON item.id=source."itemId" JOIN "Grading" target ON target."ownerId"=${value.newOwnerId} AND target."providerKey"=source."providerKey" AND target."certificateKey"=source."certificateKey" WHERE item."collectionId"=${parent.id}::uuid) AS conflict`,
         );
         if (certificateConflict?.conflict) return fail("MEMBERSHIP_CONFLICT");
         const assetIds = await lockPrivateTransferMedia(tx, parent.id, parent.ownerId);
+        await retirePrivateImports(tx, parent.id, parent.ownerId);
         await transferPrivateTags(tx, parent.id, parent.ownerId, value.newOwnerId);
         await tx.$queryRaw(
           Prisma.sql`SET CONSTRAINTS "InsuranceRecord_collectionId_ownerId_fkey", "InsuranceRecord_itemId_ownerId_fkey", "Valuation_itemId_ownerId_fkey", "Grading_itemId_ownerId_itemQuantity_fkey", "MediaLink_itemId_ownerId_fkey", "DocumentLink_itemId_ownerId_fkey" DEFERRED`,
         );
-        if (!dependencies || dependencies.items > 1000n) return fail("MEMBERSHIP_LIMIT_EXCEEDED");
         await tx.$queryRaw(
           Prisma.sql`INSERT INTO "CollectionOwnershipTransfer" (id,"collectionId","fromOwnerId","toOwnerId","actorId","fromRevision","toRevision","transactionId") VALUES (${randomUUID()}::uuid,${parent.id}::uuid,${parent.ownerId},${value.newOwnerId},${userId},${parent.collaborationRevision},${parent.collaborationRevision + 1},pg_current_xact_id()::text) RETURNING id`,
         );
+        await transferPrivateLocations(tx, parent.id, parent.ownerId, value.newOwnerId);
         await transferPrivateMedia(tx, assetIds, value.newOwnerId);
         await tx.$queryRaw(
           Prisma.sql`UPDATE "Grading" SET "ownerId"=${value.newOwnerId} WHERE "ownerId"=${parent.ownerId} AND "itemId" IN(SELECT id FROM "CollectibleItem" WHERE "collectionId"=${parent.id}::uuid) RETURNING id`,

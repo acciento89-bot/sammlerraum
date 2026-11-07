@@ -1,0 +1,48 @@
+{
+  "capturedAt": "2026-11-07T04:33:56.263693+00:00",
+  "checks": {
+    "native": {
+      "log": "task-1-full-native.log",
+      "sha256": "a6f74762c1bdd6cdb5c2275373ce548ca1b78f363635075dc4fb8be9920bf572",
+      "result": "PASS"
+    },
+    "regular": {
+      "log": "task-1-full-regular.log",
+      "sha256": "cdbfae87284fe1fc1dc6ac80b4e7f6750f0a2a99553c486929b6d677411d22db",
+      "result": "PASS"
+    },
+    "builtBrowser": {
+      "log": "task-1-built-browser-regressions.log",
+      "sha256": "85b1db4a8362d80dec7e0a7340e301be901c1c88f007462a879b7079dc6f62bb",
+      "result": "PASS"
+    },
+    "build": {
+      "log": "task-1-full-build.log",
+      "sha256": "a635ccaed2b77424132de4e5cf7b6b89a2cc143e3882e938fc20cbbdd11f2dc9",
+      "result": "PASS"
+    },
+    "lint": {
+      "log": "task-1-rich-transfer-lint.log",
+      "sha256": "3821b4aec08587025c815b9772542a0ac22eeb6bccd111f8a329b791d235f850",
+      "result": "PASS"
+    },
+    "schemaDiff": {
+      "log": "task-1-rich-transfer-schema-diff.log",
+      "sha256": "30247e337f470a92f09fd54433fbc19d8c115630797ce6bd4a61ba729d8a671a",
+      "result": "PASS"
+    },
+    "typecheck": {
+      "log": "task-1-rich-transfer-typecheck.log",
+      "exitCode": 0,
+      "result": "PASS"
+    }
+  },
+  "nativePass": 982,
+  "nativeSkip": 0,
+  "regularPass": 1532,
+  "regularNativeDisabledSkip": 852,
+  "builtBrowserPass": 24,
+  "physicalDeviceClaim": false,
+  "deployment": false,
+  "wholePhaseIndependentReview": "pending at plan end"
+}

@@ -37,7 +37,7 @@ export const ItemLocationHistorySchema = z.object({
   itemId: LocationIdSchema,
   fromLocationId: LocationIdSchema.nullable(),
   toLocationId: LocationIdSchema.nullable(),
-  assignedById: z.string().min(1),
+  assignedById: z.string().min(1).nullable(),
   movedAt: CanonicalTimestampSchema,
 });
 export type ItemLocationHistory = z.infer<typeof ItemLocationHistorySchema>;

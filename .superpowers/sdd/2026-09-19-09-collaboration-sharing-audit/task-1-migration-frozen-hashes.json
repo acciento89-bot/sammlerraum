@@ -23,5 +23,15 @@
     "path": "packages/db/prisma/migrations/20261107034000_transferred_private_media/migration.sql",
     "sha256": "ebaccd668e64c74e65cabea92d65229c7e1af628373b7a89d887ef6039a5bb6f",
     "bytes": 2848
+  },
+  {
+    "path": "packages/db/prisma/migrations/20261107035000_transferred_location_history/migration.sql",
+    "sha256": "1a779b8989073c18395298c9653410e4a1b17715077f7c5c397b103b1b46326d",
+    "bytes": 3154
+  },
+  {
+    "path": "packages/db/prisma/migrations/20261107036000_money_copy_ownership_fence/migration.sql",
+    "sha256": "b8d60a06b443ead82ea49b38abaefed8c0fe36616026bc85fcd40f0dd4981324",
+    "bytes": 3980
   }
 ]

@@ -12,6 +12,15 @@ export type MembershipDatabase = {
     },
   ): Promise<T>;
 };
+function isUniqueConflict(error: unknown, depth = 0): boolean {
+  if (!error || typeof error !== "object" || depth > 5) return false;
+  const value = error as Record<string, unknown>;
+  if ([value.code, value.originalCode].some((code) => code === "23505" || code === "P2002"))
+    return true;
+  return ["meta", "cause", "driverAdapterError"].some((key) =>
+    isUniqueConflict(value[key], depth + 1),
+  );
+}
 /** Locks precede dependency reads. READ COMMITTED sees child writes that settled while waiting. */
 export async function runTransferTransaction<T>(
   database: MembershipDatabase,
@@ -61,6 +70,7 @@ export async function runTransferTransaction<T>(
       );
     } catch (error) {
       if (error instanceof MembershipError) throw error;
+      if (isUniqueConflict(error)) throw new MembershipError("MEMBERSHIP_CONFLICT");
       if (isReadSerializationFailure(error) && attempt < 2 && performance.now() < stop) continue;
       if (isReadDependencyFailure(error)) throw new MembershipError("MEMBERSHIP_UNAVAILABLE");
       throw new MembershipError("MEMBERSHIP_INTEGRITY");

@@ -19,6 +19,14 @@ import { createIdentifierService } from "../items/identifier-service";
 import { createValuationService } from "../valuations/valuation-service";
 import { createInsuranceService } from "../insurance/insurance-service";
 import { createGradingService } from "../grading/grading-service";
+import { createLocationService } from "../locations/location-service";
+import { createImportService } from "../imports/import-service";
+import { createPersonalMoneyService } from "../money/personal-money-service";
+import { createItemService } from "../items/item-service";
+import { createCustomFieldService } from "../custom-fields/custom-field-service";
+import { createImportWorkflowService } from "../imports/import-workflow-service";
+import { createMediaAssetLocker } from "@sammlerraum/db/media-lock";
+import { createImportSourceCleanup } from "../../../../apps/worker/src/jobs/import-source-cleanup";
 import { createMembershipService } from "./membership-service";
 import type { MembershipDatabase } from "./transfer-transaction";
 import type { Prisma } from "@sammlerraum/db/search-sql";
@@ -1092,6 +1100,636 @@ describe.runIf(process.env.RUN_DATABASE_INTEGRATION === "1")(
           confirmPrivateTransfer: true,
         }),
       ).resolves.toMatchObject({ ownerId: f.second });
+    });
+    it("copies only the needed location hierarchy with fresh QR identities and preserves real move history", async () => {
+      const f = await fixture(),
+        locations = createLocationService(db, f.owner);
+      const room = await locations.createLocation({ name: "Private room", type: "ROOM" });
+      const shelf = await locations.createLocation({
+        parentId: room.id,
+        name: "Shelf",
+        type: "SHELF",
+      });
+      const first = await locations.createLocation({
+        parentId: shelf.id,
+        name: "Box A",
+        type: "BOX",
+      });
+      const second = await locations.createLocation({
+        parentId: shelf.id,
+        name: "Box B",
+        type: "BOX",
+      });
+      await locations.createLocation({
+        parentId: room.id,
+        name: "Unrelated private drawer",
+        type: "DRAWER",
+      });
+      const outside = await db.collection.create({
+        data: { ownerId: f.owner, name: "Retained locations" },
+      });
+      const retained = await db.collectibleItem.create({
+        data: {
+          ownerId: f.owner,
+          collectionId: outside.id,
+          title: "Retained private location",
+          storageLocationId: first.id,
+        },
+      });
+      const item = await db.collectibleItem.create({
+        data: { ownerId: f.owner, collectionId: f.collection, title: "Moving physical item" },
+      });
+      await locations.assignItemLocation(item.id, first.id);
+      await locations.assignItemLocation(item.id, second.id);
+      const oldLocations = await db.storageLocation.findMany({
+        where: { ownerId: f.owner },
+        orderBy: { id: "asc" },
+      });
+      const history = await db.itemLocationHistory.findMany({
+        where: { itemId: item.id },
+        orderBy: { id: "asc" },
+      });
+      await f.service.addMember(f.actor, {
+        collectionId: f.collection,
+        userId: f.second,
+        role: "EDITOR",
+        expectedRevision: 0,
+      });
+      await f.service.transferOwnership(f.actor, {
+        collectionId: f.collection,
+        newOwnerId: f.second,
+        expectedRevision: 1,
+        confirmPrivateTransfer: true,
+      });
+      const copied = await db.storageLocation.findMany({ where: { ownerId: f.second } });
+      expect(copied).toHaveLength(4);
+      const byName = new Map(copied.map((location) => [location.name, location]));
+      expect(byName.get("Shelf")!.parentId).toBe(byName.get("Private room")!.id);
+      for (const name of ["Box A", "Box B"])
+        expect(byName.get(name)!.parentId).toBe(byName.get("Shelf")!.id);
+      const sourceMap = new Map(oldLocations.map((location) => [location.name, location]));
+      for (const row of copied) {
+        expect(row.id).not.toBe(sourceMap.get(row.name)!.id);
+        expect(row.qrToken).toMatch(/^[A-Za-z0-9_-]{43}$/);
+        expect(row.qrToken).not.toBe(sourceMap.get(row.name)!.qrToken);
+        expect(row.type).toBe(sourceMap.get(row.name)!.type);
+        expect(row.visibility).toBe(sourceMap.get(row.name)!.visibility);
+      }
+      expect(
+        (await db.collectibleItem.findUniqueOrThrow({ where: { id: item.id } })).storageLocationId,
+      ).toBe(byName.get("Box B")!.id);
+      expect(
+        (await db.collectibleItem.findUniqueOrThrow({ where: { id: retained.id } }))
+          .storageLocationId,
+      ).toBe(first.id);
+      expect(
+        await db.storageLocation.findMany({ where: { ownerId: f.owner }, orderBy: { id: "asc" } }),
+      ).toEqual(oldLocations);
+      const mapping = new Map(
+        copied.map((location) => [sourceMap.get(location.name)!.id, location.id]),
+      );
+      expect(
+        await db.itemLocationHistory.findMany({
+          where: { itemId: item.id },
+          orderBy: { id: "asc" },
+        }),
+      ).toEqual(
+        history.map((row) => ({
+          ...row,
+          ownerId: f.second,
+          fromLocationId: row.fromLocationId ? mapping.get(row.fromLocationId)! : null,
+          toLocationId: row.toLocationId ? mapping.get(row.toLocationId)! : null,
+        })),
+      );
+      await db.user.delete({ where: { id: f.owner } });
+      const redacted = await db.itemLocationHistory.findMany({ where: { itemId: item.id } });
+      expect(redacted).toHaveLength(2);
+      expect(redacted.every((row) => row.assignedById === null)).toBe(true);
+      expect(await db.storageLocation.count({ where: { ownerId: f.second } })).toBe(4);
+    });
+
+    it("rejects cyclic source locations atomically rather than losing their path", async () => {
+      const f = await fixture(),
+        service = createLocationService(db, f.owner);
+      const first = await service.createLocation({ name: "Cycle A" });
+      const second = await service.createLocation({ parentId: first.id, name: "Cycle B" });
+      await db.storageLocation.update({ where: { id: first.id }, data: { parentId: second.id } });
+      const item = await db.collectibleItem.create({
+        data: {
+          ownerId: f.owner,
+          collectionId: f.collection,
+          title: "Corrupt legacy hierarchy",
+          storageLocationId: first.id,
+        },
+      });
+      await f.service.addMember(f.actor, {
+        collectionId: f.collection,
+        userId: f.second,
+        role: "EDITOR",
+        expectedRevision: 0,
+      });
+      await expect(
+        f.service.transferOwnership(f.actor, {
+          collectionId: f.collection,
+          newOwnerId: f.second,
+          expectedRevision: 1,
+          confirmPrivateTransfer: true,
+        }),
+      ).rejects.toMatchObject({ code: "MEMBERSHIP_INTEGRITY" });
+      expect(await db.storageLocation.count({ where: { ownerId: f.second } })).toBe(0);
+      expect(
+        (await db.collectibleItem.findUniqueOrThrow({ where: { id: item.id } })).storageLocationId,
+      ).toBe(first.id);
+      expect(
+        await db.collectionOwnershipTransfer.count({ where: { collectionId: f.collection } }),
+      ).toBe(0);
+    });
+    it("does not invent a move author or mutate historical timestamps", async () => {
+      const f = await fixture(),
+        service = createLocationService(db, f.owner);
+      const location = await service.createLocation({ name: "Guarded history" });
+      const item = await db.collectibleItem.create({
+        data: { ownerId: f.owner, collectionId: f.collection, title: "History author guard" },
+      });
+      const history = await service.assignItemLocation(item.id, location.id);
+      for (const data of [
+        { assignedById: null },
+        { assignedById: f.second },
+        { movedAt: new Date("2000-01-01") },
+      ]) {
+        await expect(
+          db.itemLocationHistory.update({ where: { id: history.id }, data }),
+        ).rejects.toMatchObject({ meta: { driverAdapterError: { cause: { code: "23514" } } } });
+      }
+    });
+    it("retains the known source manifest and safely erases cancelled private imports across transfer", async () => {
+      const f = await fixture();
+      const root = await mkdtemp(join(tmpdir(), "sammlerraum-transfer-import-"));
+      try {
+        const lock = createMediaAssetLocker(isolated.databaseUrl);
+        const storage = new LocalPersistentStorage(root, lock);
+        const workflow = createImportWorkflowService(db, storage, lock),
+          imports = createImportService(db);
+        const uploaded = await workflow.uploadImport(
+          f.actor,
+          {
+            collectionId: f.collection,
+            locale: "de",
+            fileName: "own.csv",
+            format: "CSV",
+            uploadRequestId: randomUUID(),
+            parserOptions: { format: "CSV", hasHeader: true },
+          },
+          Buffer.from("Title\nOwn pending record\n"),
+        );
+        const key = `imports/${uploaded.job.id}/source`;
+        await storage.put("unrelated/keep", Buffer.from("Keep outside transfer"));
+        await f.service.addMember(f.actor, {
+          collectionId: f.collection,
+          userId: f.second,
+          role: "EDITOR",
+          expectedRevision: 0,
+        });
+        const transfer = {
+          collectionId: f.collection,
+          newOwnerId: f.second,
+          expectedRevision: 1,
+          confirmPrivateTransfer: true,
+        };
+        await expect(f.service.transferOwnership(f.actor, transfer)).rejects.toMatchObject({
+          code: "MEMBERSHIP_TRANSFER_BLOCKED",
+        });
+        await imports.cancelImport(f.actor, {
+          jobId: uploaded.job.id,
+          expectedRevision: uploaded.job.revision,
+        });
+        const before = await db.importSourceObject.findUniqueOrThrow({
+          where: { id: uploaded.job.id },
+        });
+        await f.service.transferOwnership(f.actor, transfer);
+        expect(await db.importJob.count({ where: { id: uploaded.job.id } })).toBe(0);
+        expect(
+          await db.importSourceObject.findUniqueOrThrow({ where: { id: uploaded.job.id } }),
+        ).toEqual({ ...before, jobId: null });
+        for (const actor of [f.actor, { userId: f.second }])
+          await expect(imports.getImportJob(actor, uploaded.job.id)).rejects.toMatchObject({
+            code: "IMPORT_NOT_FOUND",
+          });
+        expect(await storage.exists(key)).toBe(true);
+        const logger = { error: vi.fn() };
+        await createImportSourceCleanup(db, storage, lock, logger).run();
+        expect(logger.error).not.toHaveBeenCalled();
+        expect(await storage.exists(key)).toBe(false);
+        expect(await storage.exists("unrelated/keep")).toBe(true);
+        expect(
+          (await db.importSourceObject.findUniqueOrThrow({ where: { id: uploaded.job.id } }))
+            .deletedAt,
+        ).not.toBeNull();
+      } finally {
+        await rm(root, { recursive: true, force: true });
+      }
+    });
+
+    it("preserves exact purchase and custom-money COPY meaning and real authors within a whole transferred scope", async () => {
+      const f = await fixture(),
+        money = createPersonalMoneyService(db, f.owner);
+      const authored = (decimal: string) => ({
+        kind: "DECIMAL",
+        profileId: "legacy-money-iso-2026-09-17-v1",
+        currency: "EUR",
+        decimal,
+      });
+      const created = await money.createItemV2({
+        schemaVersion: 1,
+        item: { collectionId: f.collection, title: "Ten physical copies", quantity: 10 },
+        purchase: { op: "NEW", authoring: authored("4.25") },
+      });
+      const definition = await createCustomFieldService(db, f.owner).createFieldDefinition({
+        collectionId: f.collection,
+        name: "Insured per-unit cost",
+        type: "MONEY",
+      });
+      const subject = {
+        family: "CUSTOM" as const,
+        itemId: created.item.id,
+        fieldDefinitionId: definition.id,
+      };
+      const missing = await money.getMoney(subject);
+      await money.setCustomMoneyV2(created.item.id, definition.id, {
+        schemaVersion: 1,
+        intent: {
+          op: "REPLACE",
+          expectedFactToken: missing.factToken,
+          authoring: authored("1.25"),
+        },
+      });
+      const split = await createItemService(db, f.owner).splitQuantityItem(created.item.id, 3);
+      const ids = [split.source.id, split.created.id];
+      const purchaseEvents = await db.purchaseMoneyInterpretationEvent.findMany({
+        where: { itemId: { in: ids } },
+        orderBy: { id: "asc" },
+      });
+      const customEvents = await db.customMoneyInterpretationEvent.findMany({
+        where: { itemId: { in: ids } },
+        orderBy: { id: "asc" },
+      });
+      expect(purchaseEvents.some((event) => event.operation === "COPY")).toBe(true);
+      expect(customEvents.some((event) => event.operation === "COPY")).toBe(true);
+      await f.service.addMember(f.actor, {
+        collectionId: f.collection,
+        userId: f.second,
+        role: "EDITOR",
+        expectedRevision: 0,
+      });
+      await f.service.transferOwnership(f.actor, {
+        collectionId: f.collection,
+        newOwnerId: f.second,
+        expectedRevision: 1,
+        confirmPrivateTransfer: true,
+      });
+      expect(
+        await db.purchaseMoneyInterpretationEvent.findMany({
+          where: { itemId: { in: ids } },
+          orderBy: { id: "asc" },
+        }),
+      ).toEqual(purchaseEvents);
+      expect(
+        await db.customMoneyInterpretationEvent.findMany({
+          where: { itemId: { in: ids } },
+          orderBy: { id: "asc" },
+        }),
+      ).toEqual(customEvents);
+      const recipient = createPersonalMoneyService(db, f.second);
+      for (const itemId of ids) {
+        expect(
+          (await recipient.getMoney({ family: "PURCHASE", itemId })).interpretation,
+        ).toMatchObject({ kind: "INTERPRETED", decimal: "4.25" });
+        expect((await recipient.getMoney({ ...subject, itemId })).interpretation).toMatchObject({
+          kind: "INTERPRETED",
+          decimal: "1.25",
+        });
+        await expect(money.getMoney({ family: "PURCHASE", itemId })).rejects.toMatchObject({
+          code: "MONEY_NOT_FOUND",
+        });
+      }
+      expect(
+        (await db.collectibleItem.findMany({ where: { id: { in: ids } } })).reduce(
+          (sum, item) => sum + item.purchaseAmountMinor! * BigInt(item.quantity),
+          0n,
+        ),
+      ).toBe(4250n);
+      await db.user.delete({ where: { id: f.owner } });
+      for (const itemId of ids) {
+        expect(
+          (await recipient.getMoney({ family: "PURCHASE", itemId })).interpretation,
+        ).toMatchObject({ kind: "INTERPRETED", decimal: "4.25" });
+        expect((await recipient.getMoney({ ...subject, itemId })).interpretation).toMatchObject({
+          kind: "INTERPRETED",
+          decimal: "1.25",
+        });
+      }
+    });
+    it.each(["origin", "copy"] as const)(
+      "blocks a cross-collection money lineage when transferring its %s",
+      async (kind) => {
+        const f = await fixture(),
+          money = createPersonalMoneyService(db, f.owner);
+        const created = await money.createItemV2({
+          schemaVersion: 1,
+          item: { collectionId: f.collection, title: "Cross-collection origin", quantity: 10 },
+          purchase: {
+            op: "NEW",
+            authoring: {
+              kind: "DECIMAL",
+              profileId: "legacy-money-iso-2026-09-17-v1",
+              currency: "EUR",
+              decimal: "4.25",
+            },
+          },
+        });
+        const split = await createItemService(db, f.owner).splitQuantityItem(created.item.id, 3);
+        const outside = await db.collection.create({
+          data: { ownerId: f.owner, name: "Outside money copy" },
+        });
+        await db.collectibleItem.update({
+          where: { id: split.created.id },
+          data: { collectionId: outside.id },
+        });
+        const collectionId = kind === "origin" ? f.collection : outside.id;
+        expect(
+          (await money.getMoney({ family: "PURCHASE", itemId: split.created.id })).interpretation,
+        ).toMatchObject({ kind: "INTERPRETED" });
+        await f.service.addMember(f.actor, {
+          collectionId,
+          userId: f.second,
+          role: "EDITOR",
+          expectedRevision: 0,
+        });
+        await expect(
+          f.service.transferOwnership(f.actor, {
+            collectionId,
+            newOwnerId: f.second,
+            expectedRevision: 1,
+            confirmPrivateTransfer: true,
+          }),
+        ).rejects.toMatchObject({ code: "MEMBERSHIP_TRANSFER_BLOCKED" });
+        expect(
+          (await db.collection.findUniqueOrThrow({ where: { id: collectionId } })).ownerId,
+        ).toBe(f.owner);
+        expect(
+          (await money.getMoney({ family: "PURCHASE", itemId: split.created.id })).interpretation,
+        ).toMatchObject({ kind: "INTERPRETED", decimal: "4.25" });
+      },
+    );
+
+    it("fences a real raw COPY insert racing after the transfer's closed-scope check", async () => {
+      const f = await fixture(),
+        money = createPersonalMoneyService(db, f.owner);
+      const created = await money.createItemV2({
+        schemaVersion: 1,
+        item: { collectionId: f.collection, title: "Concurrent origin" },
+        purchase: {
+          op: "NEW",
+          authoring: {
+            kind: "DECIMAL",
+            profileId: "legacy-money-iso-2026-09-17-v1",
+            currency: "EUR",
+            decimal: "4.25",
+          },
+        },
+      });
+      const origin = await db.purchaseMoneyInterpretationEvent.findFirstOrThrow({
+        where: { itemId: created.item.id, operation: "AUTHOR" },
+      });
+      const outside = await db.collection.create({
+        data: { ownerId: f.owner, name: "Concurrent outside target" },
+      });
+      const target = await db.collectibleItem.create({
+        data: {
+          ownerId: f.owner,
+          collectionId: outside.id,
+          title: "Raw COPY destination",
+          purchaseAmountMinor: 425n,
+          purchaseCurrency: "EUR",
+        },
+      });
+      await f.service.addMember(f.actor, {
+        collectionId: f.collection,
+        userId: f.second,
+        role: "EDITOR",
+        expectedRevision: 0,
+      });
+      const name = `membership-copy-${randomUUID()}`,
+        url = new URL(isolated.databaseUrl);
+      url.searchParams.set("application_name", name);
+      const racing = createTestDatabaseClient({
+        databaseUrl: url.toString(),
+        schema: isolated.schema,
+      });
+      let entered!: () => void, release!: () => void;
+      const ready = new Promise<void>((resolve) => (entered = resolve)),
+        blocked = new Promise<void>((resolve) => (release = resolve));
+      const hooked: MembershipDatabase = {
+        $transaction: (work, options) =>
+          db.$transaction(
+            async (tx) =>
+              work({
+                $queryRaw: async <R>(query: Prisma.Sql) => {
+                  const rows = await tx.$queryRaw<R>(query);
+                  if (query.sql.includes('SELECT EXISTS(SELECT 1 FROM "Grading" source')) {
+                    entered();
+                    await blocked;
+                  }
+                  return rows;
+                },
+              }),
+            options,
+          ),
+      };
+      const transfer = createMembershipService(hooked).transferOwnership(f.actor, {
+        collectionId: f.collection,
+        newOwnerId: f.second,
+        expectedRevision: 1,
+        confirmPrivateTransfer: true,
+      });
+      let copy: Promise<unknown> | undefined;
+      try {
+        await ready;
+        copy = racing.$executeRaw`INSERT INTO "PurchaseMoneyInterpretationEvent" (id,"itemId",generation,sequence,operation,"rawAmountMinor","rawCurrency",exponent,"unitKey","unitLabel","basisId","sourceEventId","originEventId","actorId")
+          SELECT ${randomUUID()}::uuid,${target.id}::uuid,${target.purchaseMoneyGeneration}::uuid,2,'COPY',"rawAmountMinor","rawCurrency",exponent,"unitKey","unitLabel","basisId",id,id,${f.owner}
+          FROM "PurchaseMoneyInterpretationEvent" WHERE id=${origin.id}::uuid`;
+        let finished = false;
+        const outcome = copy.then(
+          (value) => {
+            finished = true;
+            return { ok: true as const, value };
+          },
+          (error) => {
+            finished = true;
+            return { ok: false as const, error };
+          },
+        );
+        await vi.waitFor(
+          async () => {
+            if (finished) return;
+            const [row] = await db.$queryRaw<
+              { count: bigint }[]
+            >`SELECT count(*) FROM pg_stat_activity WHERE application_name=${name} AND state='active' AND wait_event_type='Lock'`;
+            expect(Number(row!.count)).toBeGreaterThan(0);
+          },
+          { timeout: 1000, interval: 10 },
+        );
+        release();
+        await transfer;
+        const result = await outcome;
+        expect(result.ok).toBe(false);
+        if (!result.ok)
+          expect(result.error).toMatchObject({
+            meta: { driverAdapterError: { cause: { originalCode: "40001" } } },
+          });
+        expect(
+          await db.purchaseMoneyInterpretationEvent.count({
+            where: { itemId: target.id, operation: "COPY" },
+          }),
+        ).toBe(0);
+        expect(
+          (await db.collectibleItem.findUniqueOrThrow({ where: { id: created.item.id } })).ownerId,
+        ).toBe(f.second);
+      } finally {
+        release();
+        await Promise.allSettled([transfer, ...(copy ? [copy] : [])]);
+        await racing.$disconnect();
+      }
+    });
+    it("reports a controlled conflict when a recipient adds the same certificate after preflight", async () => {
+      const f = await fixture();
+      const item = await db.collectibleItem.create({
+        data: { ownerId: f.owner, collectionId: f.collection, title: "Certificate race source" },
+      });
+      await createGradingService(db, f.owner).addGrading(item.id, {
+        provider: "PSA",
+        grade: "10",
+        certificateNo: "race-001",
+      });
+      const outside = await db.collection.create({
+        data: { ownerId: f.second, name: "Certificate race recipient" },
+      });
+      const target = await db.collectibleItem.create({
+        data: { ownerId: f.second, collectionId: outside.id, title: "Certificate race target" },
+      });
+      await f.service.addMember(f.actor, {
+        collectionId: f.collection,
+        userId: f.second,
+        role: "EDITOR",
+        expectedRevision: 0,
+      });
+      let entered!: () => void, release!: () => void;
+      const ready = new Promise<void>((resolve) => (entered = resolve)),
+        blocked = new Promise<void>((resolve) => (release = resolve));
+      const hooked: MembershipDatabase = {
+        $transaction: (work, options) =>
+          db.$transaction(
+            async (tx) =>
+              work({
+                $queryRaw: async <R>(query: Prisma.Sql) => {
+                  const rows = await tx.$queryRaw<R>(query);
+                  if (query.sql.includes('SELECT EXISTS(SELECT 1 FROM "Grading" source')) {
+                    entered();
+                    await blocked;
+                  }
+                  return rows;
+                },
+              }),
+            options,
+          ),
+      };
+      const transfer = createMembershipService(hooked).transferOwnership(f.actor, {
+        collectionId: f.collection,
+        newOwnerId: f.second,
+        expectedRevision: 1,
+        confirmPrivateTransfer: true,
+      });
+      const result = transfer.then(
+        (value) => ({ ok: true as const, value }),
+        (error) => ({ ok: false as const, error }),
+      );
+      try {
+        await ready;
+        await createGradingService(db, f.second).addGrading(target.id, {
+          provider: "PSA",
+          grade: "9",
+          certificateNo: "race-001",
+        });
+        release();
+        const outcome = await result;
+        expect(outcome.ok).toBe(false);
+        if (!outcome.ok) expect(outcome.error).toMatchObject({ code: "MEMBERSHIP_CONFLICT" });
+        expect(
+          (await db.collectibleItem.findUniqueOrThrow({ where: { id: item.id } })).ownerId,
+        ).toBe(f.owner);
+        expect(
+          await db.collectionOwnershipTransfer.count({ where: { collectionId: f.collection } }),
+        ).toBe(0);
+      } finally {
+        release();
+        await result;
+      }
+    });
+
+    it("enforces final money ownership coherence even when raw SQL bypasses service preflight", async () => {
+      const f = await fixture(),
+        money = createPersonalMoneyService(db, f.owner);
+      const created = await money.createItemV2({
+        schemaVersion: 1,
+        item: { collectionId: f.collection, title: "Database coherence origin", quantity: 2 },
+        purchase: {
+          op: "NEW",
+          authoring: {
+            kind: "DECIMAL",
+            profileId: "legacy-money-iso-2026-09-17-v1",
+            currency: "EUR",
+            decimal: "1",
+          },
+        },
+      });
+      const split = await createItemService(db, f.owner).splitQuantityItem(created.item.id, 1);
+      const outside = await db.collection.create({
+        data: { ownerId: f.owner, name: "Database coherence outside" },
+      });
+      await db.collectibleItem.update({
+        where: { id: split.created.id },
+        data: { collectionId: outside.id },
+      });
+      await f.service.addMember(f.actor, {
+        collectionId: f.collection,
+        userId: f.second,
+        role: "EDITOR",
+        expectedRevision: 0,
+      });
+      await expect(
+        db.$transaction(async (tx) => {
+          await tx.$executeRaw`INSERT INTO "CollectionOwnershipTransfer" (id,"collectionId","fromOwnerId","toOwnerId","actorId","fromRevision","toRevision","transactionId") VALUES (${randomUUID()}::uuid,${f.collection}::uuid,${f.owner},${f.second},${f.owner},1,2,pg_current_xact_id()::text)`;
+          await tx.collectionMember.delete({
+            where: { collectionId_userId: { collectionId: f.collection, userId: f.second } },
+          });
+          await tx.collection.update({
+            where: { id: f.collection },
+            data: { ownerId: f.second, collaborationRevision: 2 },
+          });
+          await tx.collectionMember.create({
+            data: { collectionId: f.collection, userId: f.owner, role: "ADMIN" },
+          });
+        }),
+      ).rejects.toMatchObject({
+        cause: { code: "23514" },
+        message: "Ownership transfer must preserve private money provenance",
+      });
+      expect((await db.collection.findUniqueOrThrow({ where: { id: f.collection } })).ownerId).toBe(
+        f.owner,
+      );
+      expect(
+        (await money.getMoney({ family: "PURCHASE", itemId: split.created.id })).interpretation,
+      ).toMatchObject({ kind: "INTERPRETED", decimal: "1.00" });
     });
   },
 );
