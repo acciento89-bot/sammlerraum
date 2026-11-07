@@ -18,7 +18,7 @@ This is the handoff/status file for long-running implementation. Update it after
 | 05 | Catalog, Condition & Grading | 7 | complete (7/7) | — |
 | 06 | Valuations & Market Data | 6 | complete (6/6) | — |
 | 07 | Search, Smart Collections & Dashboard | 5 | in progress (1/5) | Task 2 |
-| 08 | Import, Export, Insurance & Reports | 7 | in progress (5/7) | Task 6 |
+| 08 | Import, Export, Insurance & Reports | 7 | in progress (6/7) | Task 7 |
 | 09 | Collaboration, Sharing & Audit | 7 | not started | Task 1 |
 | 10 | Community, Moderation & Notifications | 8 | not started | Task 1 |
 | 11 | AI-Assisted Capture | 5 | not started | Task 1 |
@@ -76,8 +76,9 @@ This is the handoff/status file for long-running implementation. Update it after
 - [x] P08 T03 — Explicit approved atomic inventory commit with target preconditions and durable receipts
 - [x] P08 T04 — Owned bounded CSV/XLSX export source, durable private artifacts and retry-safe producer
 - [x] P08 T05 — Revisioned private collection/item insurance with exact money and safe clearing
+- [x] P08 T06 — Selected protected PDF inventory reports with actual rendering and evidence attachments
 
-**Verified completion: 46/91 tasks.** Later tasks remain open as listed in the phase table and detail plans.
+**Verified completion: 47/91 tasks.** Later tasks remain open as listed in the phase table and detail plans.
 
 ## Update rule
 
@@ -1057,3 +1058,11 @@ Task4 is locally accepted:45/91, Phase08fourofseven; next private insurance reco
 Source44cea43 implements owned setCollectionInsurance/setItemInsurance/getInsuranceData, exact canonical amount/currency/persisted exponent, real as-of date, private insurer/policy/notes and explicit collection-total versus per-unit bases. Parent-first locks and exact revision preconditions prevent stale overwrites; clearing retains an empty revision tombstone against stale initial recreation. Database owned FKs, target uniqueness, amount/currency/date checks and revision/identity trigger enforce the stored model. Public item projections and default tabular exports omit private records. No live collaboration authority is fabricated; Phase09 must deliberately extend owner-only editing.
 
 19actual native insurance casesPASS, plus full890native/77files/0skip148.29s,1523regular/761explicitnative-disabled12.00s, shared-base types, whole lint, actual worker/web builds and22built DE/EN desktop/mobile inventory browser casesPASS26.0s. Root reviewed the complete Task5 source against these recorded rulings; no separate independent Task5 verdict is claimed. The current inline execution workflow reserves its next fresh whole review for the completed remaining plan, rather than repeatedly buying a reviewer per task. Final task-done19casesPASS. Root locally accepts Task5:46/91, next selectable PDF reportsTask6. Source publication remains gated by both exact Task4 workflows42306854709/42306847581 on ec746ed. No insurance API/UI/PDF/live deployment claim from service tests.
+
+## 07 November 2026 — Phase08 Task6 selected protected PDF reports
+
+Source24ce8462cafcbd66b82c9a0a50b36c343649cd69: explicit selected projection, actual owned same-RR source/insurance/image/proof linkage, immutable report intents, cancellable fenced PDF producer, durable dispatcher, authenticated same-origin bounded POST and complete private media artifacts. Reused artifact repository/dispatch mechanics keep fixed internal table/queue allowlists and preserve tabular behavior. Defaults omit private notes/location/insurance/policies/proofs. Selected proofs are exact original bytes in PDF attachments. Values mean M7 purchase values; independent explicit insurance declarations are not added to them or represented as an appraisal.
+
+Actual3page A4 image/Unicode PDF independently parsed/rendered and visually checked on first/last pages. Full-font embedding fixes a genuine raster defect missed by text extraction; genuine header-raster RED492pixels is retained. Pinned MIT PDF runtime and unchanged OFL fonts/notices/provenance reach built dist and final Docker COPY. Source glyph coverage is finite; unsupported text fails rather than producing missing glyphs. No universal script, PDF/A or professional-appraisal claim.
+
+Shared-base types, full lint, actual worker/web builds passed. Whole native allowlist80files:902PASS/1existing clock-conditional skip152.55s; regular1530PASS/774native-disabled13.26s;22built DE/EN desktop/mobile inventory browser casesPASS31.7s. The skipped pre-existing market permit case “hour-only carry preserves the already charged same-day count” intentionally cannot run during UTC hour00; execute its scoped file after01UTC while continuing Task7, before whole-plan release. No zero-skip whole-native claim. All13new report native cases passed; final task-done25PDF/insurance casesPASS. Root source review under inline workflow; next independent whole remaining-plan review follows Task7. Task6 locally accepted47/91, Phase08sixofseven. Actual report/download/history/UI/expiry integration remains Task7, no deployment/main application merge. Task5 exact998791c workflows42311819462/42311812949 bothSUCCESS.
