@@ -10,6 +10,7 @@ export default withNextIntl({
     return [
       ...[
         "/l/:token",
+        "/share/:token",
         "/:locale(de|en)/locations/:locationId",
         "/:locale(de|en)/locations/:locationId/label",
       ].map((source) => ({

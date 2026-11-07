@@ -19,7 +19,7 @@ This is the handoff/status file for long-running implementation. Update it after
 | 06 | Valuations & Market Data | 6 | complete (6/6) | — |
 | 07 | Search, Smart Collections & Dashboard | 5 | in progress (1/5) | Task 2 |
 | 08 | Import, Export, Insurance & Reports | 7 | complete (7/7) | — |
-| 09 | Collaboration, Sharing & Audit | 7 | Tasks1–2 implemented/verified; whole-phase review pending | Task 3 |
+| 09 | Collaboration, Sharing & Audit | 7 | Tasks1–3 implemented/verified; whole-phase review pending | Task 4 |
 | 10 | Community, Moderation & Notifications | 8 | not started | Task 1 |
 | 11 | AI-Assisted Capture | 5 | not started | Task 1 |
 | 12 | Premium & Billing | 5 | not started | Task 1 |
@@ -82,6 +82,7 @@ This is the handoff/status file for long-running implementation. Update it after
 - [ ] P09 T01 — Membership/atomic owner transfer implemented and locally verified; independent whole-phase review pending
 
 - [ ] P09 T02 — Recipient-bound one-time invitations/API implemented and locally verified; independent whole-phase review pending
+- [ ] P09 T03 — Granular read-only shares, PIN/session protection, protected files and DE/EN viewer implemented and locally verified; independent whole-phase review pending
 
 **Verified completion: 48/91 tasks.** Later tasks remain open as listed in the phase table and detail plans.
 
@@ -1100,3 +1101,14 @@ Source8284c06 implements Owner/Admin invitation issuance/revocation and verified
 Evidence:23native invitation+3actual PG handler+10pure boundary tests; whole89files1008nativePASS/0skip165.97s,1542regularPASS/878explicit native-disabled skips14.17s, root types/workspace lint/full production buildPASS, actual compiled3-cookie-session API journey1PASS1.9s and closing36PASS. Genuine unused-link and two real in-flight expiry failures were closed with atomic rollback and stable private errors. Task1 exact17d1406 push CI42339097557 actuallySUCCESS; new Task2 remote CI follows publication. Private source/evidence retained in the Phase09 workspace; existing DraftPR only, no application merge/deployment, real customers, other apps/stores or automation.
 
 Task2 implementation is recorded complete under inline execution; independent whole-phase review followsTask7. Respecting the master review/persistence rule, both P09 checkboxes stay unchecked and reviewed total remains48/91. Next:Task3 explicit granular sharing, expiry/PIN and default private-field exclusions.
+
+
+## 07 November 2026 — Phase09 Task3 implementation verified, whole-phase review pending
+
+Explicit Owner-issued read-only grants now target a collection, selected node subtree or individual item, independently of membership.32-byte public tokens are stored only as SHA256; verified registered recipients are checked afresh. Default excludes private notes, storage locations, insurance/policies, purchase receipts, images, values, documents and export. Selected private fields use explicit projections; original financial bits and evidenced units remain exact, no authors/evidence/fact tokens or storage keys leak. A subtree never reveals its parent's policy or other siblings. Ownership transfer permanently revokes old grants even on a round trip.
+
+Optional6–12digit PIN uses salted async scrypt outside SQL, persistent5-attempt/15min budget and reusable10min hash-only access sessions. Selected document/image bytes use real current authorization and asset-identity checks before/after storage I/O; a revocation during the actual read refuses returned bytes. Images never authorize private PDFs. Explicit grant export is bounded JSON, same selected fields,1000items/2MiB. New no-store/noindex/referrer-protected REST routes and responsive DE/EN/share viewer provide PIN entry, read-only item details, optional image preview, selected proof downloads, export and stable100-item pages.
+
+Evidence: frozen043000 forward migration applied to both retained guarded test DBs; eight previous hashes unchanged, exact schema diff empty. Whole functional code:91native files1029PASS/0skip168.41s;1542regularPASS/899native-disabled skips14.97s; full production build, workspace lint and web-specific strict typesPASS. Final focused22PASS includes an additional actual image-byte test after the full native checkpoint.7actual compiled browser/cookie-session casesPASS6.8s cover DE/EN desktop/mobile, PIN, selected JSON bytes, personal receiver/current cookies, no membership, immediate revocation and collection-insurance display. Actual PNG views retained, not physical-device proof. Genuine failures and test-precondition corrections retained; an existing PDF test needed its documented local Python reader, and combined credential fixtures needed isolated synthetic addresses to respect the unchanged real login limiter. No test disables that limiter or clears general counters.
+
+Task2 exact5914a7c CI42342569290 is now verified SUCCESS. Task3 source/evidence publication follows to the existing DraftPR1 only. No application merge, deployment, live provider/mail/customer operation, other app/store work or automation. Task3 is implementation-complete under inline execution; all three P09 review checkboxes remain unchecked and reviewed total48/91 until the independent whole-phase review afterTask7. Next:Task4 append-only audit history; member/share management UI and full core audited mutation integration remain assigned toTasks5/7.

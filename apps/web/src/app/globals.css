@@ -1307,3 +1307,126 @@ body:has(.transfer-shell) .skip-link:not(:focus) {
   margin-inline-start: 0.65rem;
   margin-block-start: 0.65rem;
 }
+
+/* Explicit read-only shared selections retain the collection workspace's visual language. */
+.shared-shell {
+  width: min(66rem, calc(100% - 2rem));
+  margin: 3rem auto 5rem;
+}
+.shared-heading {
+  margin-bottom: 2rem;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 1.5rem;
+}
+.shared-heading h1 {
+  font-size: clamp(1.8rem, 5vw, 2.6rem);
+  line-height: 1.15;
+  margin: 1.2rem 0 0.5rem;
+}
+.shared-heading p {
+  color: var(--muted);
+  margin: 0;
+}
+.shared-badge {
+  float: right;
+  border: 1px solid var(--line);
+  border-radius: 2rem;
+  padding: 0.2rem 0.8rem;
+  color: var(--green);
+  background: var(--surface);
+  font-size: 0.85rem;
+}
+.shared-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 25rem), 1fr));
+  gap: 1.25rem;
+  margin: 1.5rem 0;
+}
+.shared-card {
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 0.9rem;
+  background: var(--surface);
+  padding: 1.5rem;
+  box-shadow: 0 5px 18px #18221c06;
+  overflow-wrap: anywhere;
+}
+.shared-card h2 {
+  font-size: 1.35rem;
+  line-height: 1.3;
+  margin: 0 0 0.8rem;
+}
+.shared-card dl {
+  display: grid;
+  grid-template-columns: minmax(5rem, auto) minmax(0, 1fr);
+  gap: 0.5rem 1rem;
+}
+.shared-card dt {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+.shared-card dd {
+  margin: 0;
+}
+.shared-description {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.shared-actions,
+.shared-attachments {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.7rem;
+}
+.shared-actions {
+  justify-content: space-between;
+}
+.shared-attachments {
+  margin-top: 1rem;
+}
+.shared-attachments figure {
+  margin: 0.8rem 0;
+}
+.shared-attachments img {
+  max-width: 100%;
+  max-height: 25rem;
+  object-fit: contain;
+  border-radius: 0.5rem;
+}
+.shared-pin {
+  max-width: 23rem;
+  display: grid;
+  gap: 0.8rem;
+  background: var(--surface);
+  padding: 1.5rem;
+  border: 1px solid var(--line);
+  border-radius: 0.9rem;
+}
+.shared-notice {
+  border-left: 3px solid var(--accent);
+  padding: 0.6rem 1rem;
+  background: var(--surface);
+}
+.shared-line {
+  display: block;
+}
+.shared-shell button:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}
+@media (max-width: 480px) {
+  .shared-shell {
+    margin-top: 1.5rem;
+  }
+  .shared-card {
+    padding: 1.1rem;
+  }
+  .shared-card dl {
+    grid-template-columns: 1fr;
+    gap: 0.2rem;
+  }
+  .shared-card dd {
+    margin-bottom: 0.6rem;
+  }
+}

@@ -139,6 +139,9 @@ model User {
   collectionInvitationsTargeted CollectionInvitation[]        @relation("CollectionInvitationTarget")
   collectionInvitationsAccepted CollectionInvitation[]        @relation("CollectionInvitationAcceptor")
 
+  sharesCreated  CollectionShare[] @relation("ShareCreator")
+  sharesReceived CollectionShare[] @relation("ShareRecipient")
+
   @@unique([email])
   @@map("user")
 }
@@ -162,6 +165,7 @@ model Collection {
 
   insuranceRecords InsuranceRecord[]
   invitations      CollectionInvitation[]
+  shares           CollectionShare[]
 
   @@unique([id, ownerId])
   @@index([ownerId])
@@ -1422,4 +1426,45 @@ model CollectionInvitation {
   @@index([targetUserId])
   @@index([targetEmail])
   @@index([acceptedByUserId])
+}
+
+model CollectionShare {
+  pinBudget       SharePinBudget?
+  accessSessions  ShareAccessSession[]
+  id              String               @id @default(uuid()) @db.Uuid
+  collectionId    String               @db.Uuid
+  creatorUserId   String
+  targetKind      String               @db.VarChar(10)
+  targetId        String               @db.Uuid
+  recipientUserId String?
+  tokenHash       String?              @unique @db.Char(64)
+  permissions     Json
+  pinHash         String?
+  revision        Int                  @default(0)
+  createdAt       DateTime             @default(dbgenerated("timezone('UTC'::text, CURRENT_TIMESTAMP)"))
+  expiresAt       DateTime?
+  revokedAt       DateTime?
+  collection      Collection           @relation(fields: [collectionId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  creator         User                 @relation("ShareCreator", fields: [creatorUserId], references: [id], onDelete: Cascade, onUpdate: Restrict)
+  recipient       User?                @relation("ShareRecipient", fields: [recipientUserId], references: [id], onDelete: Cascade, onUpdate: Restrict)
+
+  @@index([collectionId, id])
+  @@index([creatorUserId])
+  @@index([recipientUserId])
+}
+
+model SharePinBudget {
+  shareId         String          @id @db.Uuid
+  attempts        Int
+  windowStartedAt DateTime
+  share           CollectionShare @relation(fields: [shareId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model ShareAccessSession {
+  tokenHash String          @id @db.Char(64)
+  shareId   String          @db.Uuid
+  expiresAt DateTime
+  share     CollectionShare @relation(fields: [shareId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([shareId, expiresAt])
 }

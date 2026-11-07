@@ -8,6 +8,12 @@ export default defineConfig({
     baseURL: "http://localhost:3000",
   },
   projects: [
+    {
+      name: "sharing-desktop",
+      testMatch: "**/sharing.spec.ts",
+      use: { viewport: { width: 1440, height: 1000 } },
+    },
+    { name: "sharing-mobile", testMatch: "**/sharing.spec.ts", use: { ...devices["Pixel 7"] } },
     { name: "collaboration-api", testMatch: "**/collaboration-api.spec.ts" },
     ...(process.env.RUN_MONEY_CONSUMERS_E2E === "1"
       ? [

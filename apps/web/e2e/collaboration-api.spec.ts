@@ -1,3 +1,4 @@
+import { credentialRateLimitFixture } from "./support/credential-rate-limit-fixture";
 import { randomUUID } from "node:crypto";
 import { test, expect, type APIRequestContext } from "@playwright/test";
 import { createPrismaClient } from "@sammlerraum/db/create-client";
@@ -15,6 +16,7 @@ test("compiled invitation routes use real isolated cookie sessions and current d
   const ids = [randomUUID(), randomUUID(), randomUUID()],
     password = "own-invitation-cookie-test-password";
   const contexts: APIRequestContext[] = [];
+  const addresses: Awaited<ReturnType<typeof credentialRateLimitFixture>>[] = [];
   try {
     for (const id of ids) {
       await db.user.create({
@@ -38,7 +40,10 @@ test("compiled invitation routes use real isolated cookie sessions and current d
         extraHTTPHeaders: { origin },
       });
       contexts.push(context);
+      const address = await credentialRateLimitFixture(db);
+      addresses.push(address);
       const signed = await context.post("/api/auth/sign-in/email", {
+        headers: { "x-forwarded-for": address.ip },
         data: { email: `${id}@example.invalid`, password },
       });
       expect(signed.status()).toBe(200);
@@ -110,6 +115,7 @@ test("compiled invitation routes use real isolated cookie sessions and current d
   } finally {
     await Promise.all(contexts.map((context) => context.dispose()));
     await db.user.deleteMany({ where: { id: { in: ids } } });
+    for (const address of addresses) await address.cleanup();
     await db.$disconnect();
   }
 });

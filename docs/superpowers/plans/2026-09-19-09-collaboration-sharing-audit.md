@@ -136,7 +136,7 @@ Implementation verified at8284c06:1008native/89files,1542regular,types/lint/prod
 **Interfaces:**
 - Produces: `createShare`, `resolveShare`, `revokeShare`.
 
-- [ ] **Step 1: Write failing expiry/default-scope tests**
+- [x] **Step 1: Write failing expiry/default-scope tests**
 
 ```ts
 it("rejects an expired share", async () => {
@@ -155,21 +155,21 @@ it("excludes location private notes and policy data by default", async () => {
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run packages/domain/src/sharing/share-service.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement share model**
+- [x] **Step 3: Implement share model**
 
 Targets: collection, node, or item. Recipient: public token or registered user. Options: expiry, PIN hash, images, values, selected document IDs, export permission. Store token hash only.
 
-- [ ] **Step 4: Run tests**
+- [x] **Step 4: Run tests**
 
 Run: `pnpm vitest run packages/domain/src/sharing`  
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/db packages/domain/src/sharing packages/contracts/src/sharing.ts apps/web/src/app/share
@@ -177,6 +177,8 @@ git commit -m "feat: add granular collection and item shares"
 ```
 
 ---
+
+Implementation verified: minimal read-only collection/node/item grants, hash-only tokens, persistent PIN budget and short-lived access sessions, exact selected-field projection, actual before/after-I/O protected delivery, explicit bounded JSON export, same-origin/fresh-session API and DE/EN responsive viewer. Whole functional source:1029native/91files,1542regular,workspace production build/lint and7actual-built browser/cookie journeysPASS. Final focused22PASS adds an actual image-byte witness after the full native checkpoint. Independent whole-phase review followsTask7; reviewed total stays48. No application merge/deployment/provider activation.
 
 ### Task 4: Add append-only audit events
 

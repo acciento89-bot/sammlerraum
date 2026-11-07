@@ -53,7 +53,8 @@
     "./search/search-read": "./src/search/search-read.ts",
     "./exports/artifact-access-service": "./src/exports/artifact-access-service.ts",
     "./collaboration/membership-service": "./src/collaboration/membership-service.ts",
-    "./collaboration/invitation-service": "./src/collaboration/invitation-service.ts"
+    "./collaboration/invitation-service": "./src/collaboration/invitation-service.ts",
+    "./sharing/share-service": "./src/sharing/share-service.ts"
   },
   "scripts": {
     "build": "pnpm typecheck",
