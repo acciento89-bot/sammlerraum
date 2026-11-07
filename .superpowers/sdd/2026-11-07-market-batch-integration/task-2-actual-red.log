@@ -1,0 +1,61 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/market-data/market-batch.integration.test.ts (3 tests | 3 failed) 627ms
+   × bounded exact market relation on real PostgreSQL > selects exact latest eligible values without displacing them with a newer wrong metric, qualifier or denomination 216ms
+     → SEARCH_INVARIANT
+   × bounded exact market relation on real PostgreSQL > omits foreign/deleted parent and retired exact identifiers instead of exposing stale values 31ms
+     → SEARCH_INVARIANT
+   × bounded exact market relation on real PostgreSQL > prepares with three data queries independent of many owned items sharing one target 38ms
+     → SEARCH_INVARIANT
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/market-data/market-batch.integration.test.ts > bounded exact market relation on real PostgreSQL > selects exact latest eligible values without displacing them with a newer wrong metric, qualifier or denomination
+ItemSearchError: SEARCH_INVARIANT
+ ❯ searchFail packages/contracts/src/item-search.ts:24:9
+     22| }
+     23| export function searchFail(code: ItemSearchError["code"]): never {
+     24|   throw new ItemSearchError(code);
+       |         ^
+     25| }
+     26| const textValid = (v: string) =>
+ ❯ runSearchTransaction packages/domain/src/search/search-read.ts:92:14
+ ❯ packages/domain/src/market-data/market-batch.integration.test.ts:47:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  |workspace| packages/domain/src/market-data/market-batch.integration.test.ts > bounded exact market relation on real PostgreSQL > omits foreign/deleted parent and retired exact identifiers instead of exposing stale values
+ItemSearchError: SEARCH_INVARIANT
+ ❯ searchFail packages/contracts/src/item-search.ts:24:9
+     22| }
+     23| export function searchFail(code: ItemSearchError["code"]): never {
+     24|   throw new ItemSearchError(code);
+       |         ^
+     25| }
+     26| const textValid = (v: string) =>
+ ❯ runSearchTransaction packages/domain/src/search/search-read.ts:92:14
+ ❯ packages/domain/src/market-data/market-batch.integration.test.ts:53:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  |workspace| packages/domain/src/market-data/market-batch.integration.test.ts > bounded exact market relation on real PostgreSQL > prepares with three data queries independent of many owned items sharing one target
+ItemSearchError: SEARCH_INVARIANT
+ ❯ searchFail packages/contracts/src/item-search.ts:24:9
+     22| }
+     23| export function searchFail(code: ItemSearchError["code"]): never {
+     24|   throw new ItemSearchError(code);
+       |         ^
+     25| }
+     26| const textValid = (v: string) =>
+ ❯ runSearchTransaction packages/domain/src/search/search-read.ts:92:14
+ ❯ packages/domain/src/market-data/market-batch.integration.test.ts:59:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed (3)
+   Start at  16:51:07
+   Duration  1.21s (transform 232ms, setup 6ms, collect 418ms, tests 627ms, environment 0ms, prepare 35ms)
+
