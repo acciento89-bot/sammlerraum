@@ -10,6 +10,7 @@ export function CollectorNavigation({
 }) {
   const t = useTranslations("Search");
   const collaboration = useTranslations("Collaboration");
+  const community = useTranslations("Community");
   return (
     <nav className="management-nav" aria-label={t("navigation")}>
       <Link href={`/${locale}/collections`} prefetch={false}>
@@ -38,6 +39,15 @@ export function CollectorNavigation({
         aria-current={current === "saved" ? "page" : undefined}
       >
         {t("navSaved")}
+      </Link>
+      <Link href={`/${locale}/community`} prefetch={false}>
+        {community("community")}
+      </Link>
+      <Link href={`/${locale}/wishlist`} prefetch={false}>
+        {community("wishlist")}
+      </Link>
+      <Link href={`/${locale}/notifications`} prefetch={false}>
+        {community("notifications")}
       </Link>
       <Link href={`/${locale}/audit`}>{collaboration("audit")}</Link>
       <Link href={`/${locale}/account/profile`} prefetch={false}>

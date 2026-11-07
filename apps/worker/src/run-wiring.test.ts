@@ -1,6 +1,7 @@
 import { expect, it, vi } from "vitest";
 const wiring = vi.hoisted(() => ({
   startWorker: vi.fn(async (_options: unknown) => {}),
+  emailEnabled: false,
   register: vi.fn(),
   registerCancellable: vi.fn(),
   disconnect: vi.fn(async () => {}),
@@ -13,7 +14,23 @@ vi.mock("./main", () => ({
   startWorker: wiring.startWorker,
 }));
 vi.mock("@sammlerraum/config/server", () => ({
+  parseNotificationEmailEnv: () =>
+    wiring.emailEnabled
+      ? {
+          APP_ORIGIN: "https://example.invalid",
+          SMTP_HOST: "smtp.example.invalid",
+          SMTP_PORT: 587,
+          SMTP_SECURE: false,
+          SMTP_USER: "owned-smtp-user",
+          SMTP_PASSWORD: "owned-smtp-secret",
+          SMTP_FROM: "Sammlerraum <notice@example.invalid>",
+        }
+      : null,
   serverEnv: {
+    APP_ORIGIN: "https://example.invalid",
+    get NOTIFICATION_EMAIL_ENABLED() {
+      return wiring.emailEnabled;
+    },
     DATABASE_URL: "postgresql://fixture:fixture@localhost/synthetic_test",
     UPLOADS_DIR: "/tmp/synthetic",
     MEDIA_RETENTION_HOURS: 168,
@@ -67,9 +84,39 @@ it("passes the production-composed market lifecycle to startWorker and registers
     marketSync: { start(): void; stop(): Promise<void> };
     disconnectDatabase(): Promise<void>;
   };
+  expect(options).not.toHaveProperty("notificationDispatcher");
+  expect(wiring.registerCancellable).not.toHaveBeenCalledWith(
+    "notification.send-email",
+    expect.any(Function),
+  );
   expect(options.marketSync).toEqual({ start: expect.any(Function), stop: expect.any(Function) });
   options.marketSync.start();
   await options.marketSync.stop();
   await options.disconnectDatabase();
   expect(wiring.disconnect).toHaveBeenCalledTimes(2);
+});
+
+it("composes the notification worker only after explicit email activation", async () => {
+  vi.resetModules();
+  wiring.startWorker.mockClear();
+  wiring.register.mockClear();
+  wiring.registerCancellable.mockClear();
+  wiring.emailEnabled = true;
+  try {
+    await import("./run");
+    await vi.waitFor(() => expect(wiring.startWorker).toHaveBeenCalledOnce());
+    expect(wiring.registerCancellable).toHaveBeenCalledWith(
+      "notification.send-email",
+      expect.any(Function),
+    );
+    const options = wiring.startWorker.mock.calls[0]![0] as {
+      notificationDispatcher: { start(): void; stop(): Promise<void> };
+    };
+    expect(options.notificationDispatcher).toEqual(
+      expect.objectContaining({ start: expect.any(Function), stop: expect.any(Function) }),
+    );
+    await options.notificationDispatcher.stop();
+  } finally {
+    wiring.emailEnabled = false;
+  }
 });

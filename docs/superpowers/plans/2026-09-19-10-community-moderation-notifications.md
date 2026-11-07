@@ -329,7 +329,7 @@ git commit -m "feat: deliver localized notification emails"
 **Interfaces:**
 - Produces: authorized feed and complete community/wishlist/notification user flows.
 
-- [ ] **Step 1: Write failing feed privacy test**
+- [x] **Step 1: Write failing feed privacy test**
 
 ```ts
 it("drops content that became private after the feed event was created", async () => {
@@ -338,16 +338,16 @@ it("drops content that became private after the feed event was created", async (
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run packages/domain/src/community/feed-service.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement feed and UI**
+- [x] **Step 3: Implement feed and UI**
 
 Feed is query-time policy filtered. UI supports follow, favorite, comment/reply, block/report, wishlist create/fulfill, duplicate marking, trade status display, notification read state, and comment-disable controls for owners.
 
-- [ ] **Step 4: Run E2E/build**
+- [x] **Step 4: Run E2E/build**
 
 Run:
 ```bash
@@ -358,7 +358,7 @@ pnpm --filter @sammlerraum/web build
 
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/domain/src/community apps/web

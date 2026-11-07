@@ -11,6 +11,7 @@ type Translation = (key: string) => string;
 
 export function CollectionsManager({ locale }: { locale: "de" | "en" }) {
   const t = useTranslations("Collections");
+  const community = useTranslations("Community");
   const search = useTranslations("Search");
   const common = useTranslations("Management");
   const [collections, setCollections] = useState<Collection[]>([]);
@@ -82,6 +83,9 @@ export function CollectionsManager({ locale }: { locale: "de" | "en" }) {
         <Link href={`/${locale}/exports`}>{common("exports")}</Link>
         <Link href={`/${locale}/insurance`}>{common("insurance")}</Link>
         <Link href={`/${locale}/catalog`}>{common("catalog")}</Link>
+        <Link href={`/${locale}/community`}>{community("community")}</Link>
+        <Link href={`/${locale}/wishlist`}>{community("wishlist")}</Link>
+        <Link href={`/${locale}/notifications`}>{community("notifications")}</Link>
         <Link href={`/${locale}/account/profile`}>{common("account")}</Link>
       </nav>
       <header className="management-heading">

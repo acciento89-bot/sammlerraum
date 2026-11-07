@@ -9,7 +9,7 @@ import {
 } from "@sammlerraum/contracts/notifications";
 import { createNotificationService } from "@sammlerraum/domain/notifications/notification-service";
 import type { createItemSearchRouteDependencies } from "./item-search-routes";
-import { readSearchQueryMap } from "./item-search-routes";
+import { readPrivateQuery as readSearchQueryMap } from "./api/read-private-query";
 import { apiRoute } from "./api/route-handler";
 import { readPrivateJson } from "./api/read-private-json";
 export function createNotificationDependencies(

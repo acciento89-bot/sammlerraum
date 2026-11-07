@@ -117,6 +117,7 @@ export function ItemForm({
   initialCollectionId?: string;
 }) {
   const media = useTranslations("Media");
+  const community = useTranslations("Community");
   const t = useTranslations("ItemForm");
   const moneyText = useTranslations("LegacyMoney");
   const common = useTranslations("Management");
@@ -927,6 +928,9 @@ export function ItemForm({
           {t("back")}
         </Link>
         {item && <Link href={`/${locale}/items/${item.id}/values`}>{t("valuations")}</Link>}
+        {item && (
+          <Link href={`/${locale}/wishlist?itemId=${item.id}`}>{community("duplicates")}</Link>
+        )}
       </nav>
       <header className="management-heading">
         <p className="eyebrow">{t(item ? "editEyebrow" : "newEyebrow")}</p>

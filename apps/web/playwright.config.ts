@@ -8,6 +8,16 @@ export default defineConfig({
     baseURL: "http://localhost:3000",
   },
   projects: [
+    {
+      name: "community-ui-desktop",
+      testMatch: "**/community.spec.ts",
+      use: { viewport: { width: 1440, height: 1000 } },
+    },
+    {
+      name: "community-ui-mobile",
+      testMatch: "**/community.spec.ts",
+      use: { ...devices["Pixel 7"] },
+    },
     { name: "community-api", testMatch: "**/community-api.spec.ts" },
     {
       name: "collaboration-ui-desktop",

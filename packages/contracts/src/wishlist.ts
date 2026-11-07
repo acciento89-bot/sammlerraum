@@ -68,3 +68,8 @@ export const DuplicateCandidatesQuerySchema = z
   .strict();
 export const WISHLIST_MAX_ENTRIES = 1000;
 export const DUPLICATE_MAX_RELATIONS = 10000;
+export const DuplicatePairSchema = z
+  .object({ itemAId: WishlistIdSchema, itemBId: WishlistIdSchema })
+  .strict()
+  .refine((v) => v.itemAId !== v.itemBId);
+export const EmptyWishlistCommandSchema = z.object({}).strict();

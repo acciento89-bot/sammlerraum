@@ -28,3 +28,6 @@ export const CommunityListQuerySchema = z
   .strict();
 export const COMMUNITY_MAX_FOLLOWS = 5000;
 export const COMMUNITY_MAX_FAVORITES = 10000;
+export const CommunityFeedQuerySchema = CommunityListQuerySchema.extend({
+  scope: z.enum(["ALL", "FOLLOWING", "FAVORITES"]).default("ALL"),
+}).strict();
