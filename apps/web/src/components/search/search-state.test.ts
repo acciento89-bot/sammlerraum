@@ -33,7 +33,7 @@ describe("typed search drafts", () => {
     expect(fromDraft(draft)).toEqual(filter);
     expect(JSON.stringify(fromDraft(draft))).not.toContain('"key"');
   });
-  it("roundtrips nested NOT, OR and false/zero and leaves unavailable subtrees intact for repair", () => {
+  it("roundtrips supported nested NOT, OR and duplicate false/zero operands", () => {
     const root: ItemFilterNode = {
       kind: "not",
       child: {
@@ -49,8 +49,37 @@ describe("typed search drafts", () => {
     };
     const filter = parseItemFilter({ version: 1, root });
     expect(fromDraft(toDraft(filter))).toEqual(filter);
-    expect(available(root)).toBe(false);
+    expect(available(root)).toBe(true);
     expect(available({ kind: "purchaseMoney", test: { op: "missing" } })).toBe(true);
+  });
+  it("keeps a still-unavailable market subtree intact for repair without losing false or zero", () => {
+    const root: ItemFilterNode = {
+      kind: "not",
+      child: {
+        kind: "or",
+        children: [
+          { kind: "duplicate", value: false },
+          {
+            kind: "marketMoney",
+            selector: {
+              mode: "CURRENT_ITEM_MAPPING",
+              providerId: "fixture",
+              identifierNamespace: "fixture",
+              identifierType: "product",
+              kind: "LAST_SOLD",
+              sourceMetric: "market",
+              qualifiers: { graded: false },
+              currency: "EUR",
+              minorUnitExponent: 2,
+            },
+            test: { op: "range", minMinor: "0", maxMinor: "0" },
+          },
+        ],
+      },
+    };
+    const filter = parseItemFilter({ version: 1, root });
+    expect(fromDraft(toDraft(filter))).toEqual(filter);
+    expect(available(root)).toBe(false);
   });
   it("uses the actual parser for depth 5/6 and leaves 50/51", () => {
     const leaf: ItemFilterNode = { kind: "tags", test: { op: "present" } };
