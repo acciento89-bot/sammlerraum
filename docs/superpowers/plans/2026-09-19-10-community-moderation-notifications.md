@@ -186,7 +186,7 @@ git commit -m "feat: add comments blocks and reports"
 **Interfaces:**
 - Produces: `listReports`, `resolveReport`, `hideContent`, `restoreContent`.
 
-- [ ] **Step 1: Write failing moderator-access test**
+- [x] **Step 1: Write failing moderator-access test**
 
 ```ts
 it("keeps reported hidden comment available to authorized moderators", async () => {
@@ -196,21 +196,21 @@ it("keeps reported hidden comment available to authorized moderators", async () 
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run packages/domain/src/moderation/moderation-service.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement moderation status and roles**
+- [x] **Step 3: Implement moderation status and roles**
 
 Introduce application moderator/admin role separate from collection roles. Actions require reason and emit audit events with source `MODERATION`.
 
-- [ ] **Step 4: Run tests**
+- [x] **Step 4: Run tests**
 
 Run: `pnpm vitest run packages/domain/src/moderation`  
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/domain/src/moderation apps/web/src/app/api/v1/moderation

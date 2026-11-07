@@ -40,7 +40,8 @@
     "./restore": "./src/restore.ts",
     "./wishlist": "./src/wishlist.ts",
     "./community": "./src/community.ts",
-    "./comments": "./src/comments.ts"
+    "./comments": "./src/comments.ts",
+    "./moderation": "./src/moderation.ts"
   },
   "scripts": {
     "build": "pnpm typecheck",

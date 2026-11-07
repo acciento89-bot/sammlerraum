@@ -137,6 +137,42 @@ test("compiled community endpoints bind real cookies, enforce current public vis
       },
     });
     expect(report.status()).toBe(200);
+    const reportReceipt = await report.json();
+    expect((await owner.get("/api/v1/moderation/reports")).status()).toBe(403);
+    expect((await owner.get(`/api/v1/moderation/comments/${comment.id}`)).status()).toBe(403);
+    await db.applicationRoleGrant.create({
+      data: {
+        userId: ids[0]!,
+        role: "MODERATOR",
+        grantedBy: "owned-cookie-test",
+        reason: "Synthetic browser moderation fixture",
+      },
+    });
+    const moderationListing = await actor.get("/api/v1/moderation/reports");
+    expect(moderationListing.status()).toBe(200);
+    expect(moderationListing.headers()["cache-control"]).toBe("no-store");
+    expect((await moderationListing.json()).reports).toEqual(
+      expect.arrayContaining([expect.objectContaining({ id: reportReceipt.id })]),
+    );
+    expect(
+      (
+        await actor.post(`/api/v1/moderation/comments/${comment.id}`, {
+          data: { action: "HIDE", reason: "Owned browser review" },
+        })
+      ).status(),
+    ).toBe(200);
+    expect((await (await owner.get(commentsUrl)).json()).comments).toEqual([]);
+    expect((await (await actor.get(`/api/v1/moderation/comments/${comment.id}`)).json()).body).toBe(
+      "Own compiled cookie comment",
+    );
+    expect(
+      (
+        await actor.post(`/api/v1/moderation/comments/${comment.id}`, {
+          data: { action: "RESTORE", reason: "Owned restriction lifted" },
+        })
+      ).status(),
+    ).toBe(200);
+
     expect(
       (await db.communityReport.findFirstOrThrow({ where: { commentId: comment.id } })).reporterId,
     ).toBe(ids[1]);
@@ -155,6 +191,23 @@ test("compiled community endpoints bind real cookies, enforce current public vis
     expect(
       (await db.communityComment.findUniqueOrThrow({ where: { id: comment.id } })).deletedAt,
     ).not.toBeNull();
+    expect(
+      (
+        await actor.post(`/api/v1/moderation/reports/${reportReceipt.id}`, {
+          data: { outcome: "RESOLVED", reason: "Owned report reviewed" },
+        })
+      ).status(),
+    ).toBe(200);
+    expect(
+      await db.communityModerationEvent.count({
+        where: { reportId: reportReceipt.id, source: "MODERATION", action: "REPORT_RESOLVED" },
+      }),
+    ).toBe(1);
+    expect((await db.communityComment.findUniqueOrThrow({ where: { id: comment.id } })).body).toBe(
+      "",
+    );
+    await db.applicationRoleGrant.delete({ where: { userId: ids[0]! } });
+    expect((await actor.get("/api/v1/moderation/reports")).status()).toBe(403);
     await createItemService(db, ids[1]!).updateItem(item.id, { visibility: "PRIVATE" });
     expect((await (await actor.get("/api/v1/community/favorites")).json()).favorites).toEqual([]);
     expect(
@@ -187,6 +240,8 @@ test("compiled community endpoints bind real cookies, enforce current public vis
     expect((await (await actor.get("/api/v1/community/follows")).json()).follows).toEqual([]);
   } finally {
     for (const context of contexts) await context.dispose();
+    await db.applicationRoleGrant.deleteMany({ where: { userId: { in: ids } } });
+    await db.communityReport.deleteMany({ where: { reporterId: { in: ids } } });
     await db.user.deleteMany({ where: { id: { in: ids } } });
     for (const address of addresses) await address.cleanup();
     await db.$disconnect();

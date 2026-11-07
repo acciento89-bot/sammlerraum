@@ -109,6 +109,7 @@ model User {
   sessions                   Session[]
   accounts                   Account[]
   passkeys                   Passkey[]
+  communityModerationEvents  CommunityModerationEvent[]
   communityPreference        CommunityPreference?
   communityComments          CommunityComment[]                 @relation("CommentAuthor")
   communityReports           CommunityReport[]                  @relation("ReportReporter")
@@ -1648,21 +1649,22 @@ model CommunityPreference {
 }
 
 model CommunityComment {
-  id                 String             @id @default(uuid()) @db.Uuid
+  moderationEvents   CommunityModerationEvent[]
+  id                 String                     @id @default(uuid()) @db.Uuid
   authorId           String
-  collectionId       String             @db.Uuid
-  itemId             String?            @db.Uuid
-  parentId           String?            @db.Uuid
+  collectionId       String                     @db.Uuid
+  itemId             String?                    @db.Uuid
+  parentId           String?                    @db.Uuid
   body               String
   ownerHiddenAt      DateTime?
   moderationHiddenAt DateTime?
   deletedAt          DateTime?
-  createdAt          DateTime           @default(now())
-  author             User               @relation("CommentAuthor", fields: [authorId], references: [id], onDelete: Cascade)
-  collection         Collection         @relation(fields: [collectionId], references: [id], onDelete: Cascade, onUpdate: Restrict)
-  item               CollectibleItem?   @relation(fields: [itemId, collectionId], references: [id, collectionId], onDelete: Cascade, onUpdate: Restrict)
-  parent             CommunityComment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: SetNull, onUpdate: Restrict)
-  replies            CommunityComment[] @relation("CommentReplies")
+  createdAt          DateTime                   @default(now())
+  author             User                       @relation("CommentAuthor", fields: [authorId], references: [id], onDelete: Cascade)
+  collection         Collection                 @relation(fields: [collectionId], references: [id], onDelete: Cascade, onUpdate: Restrict)
+  item               CollectibleItem?           @relation(fields: [itemId, collectionId], references: [id, collectionId], onDelete: Cascade, onUpdate: Restrict)
+  parent             CommunityComment?          @relation("CommentReplies", fields: [parentId], references: [id], onDelete: SetNull, onUpdate: Restrict)
+  replies            CommunityComment[]         @relation("CommentReplies")
   reports            CommunityReport[]
 
   @@index([collectionId, itemId, id])
@@ -1683,27 +1685,50 @@ enum CommunityReportTarget {
 }
 
 model CommunityReport {
-  id               String                @id @default(uuid()) @db.Uuid
+  moderationEvents CommunityModerationEvent[]
+  id               String                     @id @default(uuid()) @db.Uuid
   reporterId       String?
   targetType       CommunityReportTarget
-  targetSnapshotId String                @db.VarChar(128)
+  targetSnapshotId String                     @db.VarChar(128)
   userId           String?
-  commentId        String?               @db.Uuid
-  category         String                @db.VarChar(32)
+  commentId        String?                    @db.Uuid
+  category         String                     @db.VarChar(32)
   reason           String
-  status           CommunityReportStatus @default(OPEN)
-  createdAt        DateTime              @default(now())
+  status           CommunityReportStatus      @default(OPEN)
+  createdAt        DateTime                   @default(now())
   resolvedAt       DateTime?
   resolvedById     String?
   resolutionReason String?
-  reporter         User?                 @relation("ReportReporter", fields: [reporterId], references: [id], onDelete: SetNull)
-  targetUser       User?                 @relation("ReportUserTarget", fields: [userId], references: [id], onDelete: SetNull)
-  comment          CommunityComment?     @relation(fields: [commentId], references: [id], onDelete: SetNull, onUpdate: Restrict)
-  resolvedBy       User?                 @relation("ReportResolver", fields: [resolvedById], references: [id], onDelete: SetNull)
+  reporter         User?                      @relation("ReportReporter", fields: [reporterId], references: [id], onDelete: SetNull)
+  targetUser       User?                      @relation("ReportUserTarget", fields: [userId], references: [id], onDelete: SetNull)
+  comment          CommunityComment?          @relation(fields: [commentId], references: [id], onDelete: SetNull, onUpdate: Restrict)
+  resolvedBy       User?                      @relation("ReportResolver", fields: [resolvedById], references: [id], onDelete: SetNull)
 
   @@index([status, createdAt, id])
   @@index([reporterId, targetType, targetSnapshotId])
   @@index([commentId])
   @@index([userId])
   @@index([resolvedById])
+}
+
+// Platform-only append history; never part of content-owner audit reads.
+model CommunityModerationEvent {
+  id               String            @id @default(uuid()) @db.Uuid
+  actorId          String?
+  reportId         String?           @db.Uuid
+  commentId        String?           @db.Uuid
+  targetSnapshotId String            @db.VarChar(128)
+  source           AuditSource       @default(MODERATION)
+  action           String            @db.VarChar(40)
+  reason           String
+  before           Json
+  after            Json
+  createdAt        DateTime          @default(now())
+  actor            User?             @relation(fields: [actorId], references: [id], onDelete: SetNull, onUpdate: Restrict)
+  report           CommunityReport?  @relation(fields: [reportId], references: [id], onDelete: SetNull, onUpdate: Restrict)
+  comment          CommunityComment? @relation(fields: [commentId], references: [id], onDelete: SetNull, onUpdate: Restrict)
+
+  @@index([reportId, createdAt])
+  @@index([commentId, createdAt])
+  @@index([actorId])
 }

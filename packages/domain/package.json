@@ -64,7 +64,8 @@
     "./wishlist/wishlist-service": "./src/wishlist/wishlist-service.ts",
     "./community/social-service": "./src/community/social-service.ts",
     "./community/comment-service": "./src/community/comment-service.ts",
-    "./moderation/block-report-service": "./src/moderation/block-report-service.ts"
+    "./moderation/block-report-service": "./src/moderation/block-report-service.ts",
+    "./moderation/moderation-service": "./src/moderation/moderation-service.ts"
   },
   "scripts": {
     "build": "pnpm typecheck",
