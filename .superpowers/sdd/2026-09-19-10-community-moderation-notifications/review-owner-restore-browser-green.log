@@ -1,0 +1,23 @@
+[WebServer] (node:94420) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 9 tests using 1 worker
+(node:94421) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+T
+Testing stopped early after 1 maximum allowed failures.
+
+
+  1) [community-ui-desktop] › e2e/community.spec.ts:16:3 › de: complete community, private wishes, notifications and moderator journey 
+
+    Test timeout of 120000ms exceeded.
+
+    Error Context: test-results/community-de-complete-comm-75641-tions-and-moderator-journey-community-ui-desktop/error-context.md
+
+  1 failed
+    [community-ui-desktop] › e2e/community.spec.ts:16:3 › de: complete community, private wishes, notifications and moderator journey 
+  8 did not run
+  1 error was not a part of any test, see above for details
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/community.spec.ts e2e/community-api.spec.ts e2e/public-profile.spec.ts --project=community-ui-desktop --project=community-ui-mobile --project=community-api --workers=1 --max-failures=1

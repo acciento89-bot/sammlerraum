@@ -1,0 +1,41 @@
+[WebServer] (node:94033) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+(node:94034) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+F
+Testing stopped early after 1 maximum allowed failures.
+
+
+  1) [community-ui-desktop] › e2e/community.spec.ts:16:3 › de: complete community, private wishes, notifications and moderator journey 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByTestId('feed-0ad93635-e5f1-41e1-99b9-64c15e73108a').getByTestId('comment-e6c4be1b-32be-48a5-98f6-b569f21a5dda').getByRole('button', { name: 'Wieder anzeigen', exact: true })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByTestId('feed-0ad93635-e5f1-41e1-99b9-64c15e73108a').getByTestId('comment-e6c4be1b-32be-48a5-98f6-b569f21a5dda').getByRole('button', { name: 'Wieder anzeigen', exact: true }) with timeout 5000ms
+      - waiting for getByTestId('feed-0ad93635-e5f1-41e1-99b9-64c15e73108a').getByTestId('comment-e6c4be1b-32be-48a5-98f6-b569f21a5dda').getByRole('button', { name: 'Wieder anzeigen', exact: true })
+
+
+      232 |       const hiddenRow = mine.getByTestId(`comment-${recoverableComment.id}`);
+      233 |       await hiddenRow.getByRole("button",{name:locale === "de" ? "Ausblenden" : "Hide",exact:true}).click();
+    > 234 |       await expect(hiddenRow.getByRole("button",{name:locale === "de" ? "Wieder anzeigen" : "Restore comment",exact:true})).toBeVisible();
+          |                                                                                                                             ^
+      235 |       await page.reload();
+      236 |       const restoredMine = page.getByTestId(`feed-${ownedItem.id}`);
+      237 |       await restoredMine.getByRole("button",{name:labels.comments,exact:true}).click();
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/community.spec.ts:234:125
+
+    Error Context: test-results/community-de-complete-comm-75641-tions-and-moderator-journey-community-ui-desktop/error-context.md
+
+  1 failed
+    [community-ui-desktop] › e2e/community.spec.ts:16:3 › de: complete community, private wishes, notifications and moderator journey 
+  1 error was not a part of any test, see above for details
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/community.spec.ts --project=community-ui-desktop --grep de: --workers=1 --max-failures=1

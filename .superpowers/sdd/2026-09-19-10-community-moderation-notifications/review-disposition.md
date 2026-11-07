@@ -1,0 +1,17 @@
+# Root consolidated disposition — original review preserved
+
+Candidate372334a received With fixes:0Critical,1Important,2Minor. The original whole-phase-review.md is immutable evidence; no rereview.
+
+I1 accepted: root verified completion emission in renew as well as READY. Actual new native claim/renew/fail witness failed with a premature notification; inventory EMAIL opt-in was enabled to cover downstream eligibility. Surgical correction removes only the renew emission, retaining successful READY atomicity and its owner-first lock order. Negative failed-stale-readiness receipt assertions also added. Focused source/native/API cohort36PASS4.77s after correction.
+
+M1 accepted and included in same correction pass: bounded ancestry read supports32edges; parent acceptance now allows31edges so inserted child can remain readable. Native root+32replies witness was readable,33rd creation incorrectly succeeded before fix. New regression asserts rejection with unchanged comment and notification counts, retains cycle/depth fail-closed behavior. Reply affordance also derives its actual bounded visibility.
+
+M2 accepted and included in same pass: provide explicit includeOwnerHidden management mode with an actual current-owner check, never change default/public visibility. Nonowner/anonymous requests cannot obtain hidden content. Owner view preserves platform-hide, author-delete and blocked-ancestry suppression. Hidden rows are clearly labeled, have a restore control, and cannot receive replies. Reloading fetches actual management mode; no client-supplied owner authority. Native rejected spoofed mode, owner recovery, platform-hidden/deleted exclusions now pass. Compiled hide/reload/restore and real-cookie forged-view denial tests added; their final runtime gate still pending.
+
+No migrations, credentials, providers/mail, main/deploy, production/customer data, devices/stores or automation actions. Root owns all runtime. Final correction acceptance pending types/lint/build, actual responsive browsers and green broad suites.
+
+Compiled correction diagnostics confirm hide/reload/restore, owner-only visibility, restored public default and policy controls succeeded. Test then waited for a block control inside a different comment thread that the deliberate reload had collapsed. Actual Playwright action trace shows screenshot succeeded146ms (no InputUI/font/device issue). Correct the journey by reopening that separate thread before its existing block action; do not relax any assertion or alter product behavior. Private verbose action trace retained locally, not intended for publication.
+
+Final affected compiled9browser cases PASS25.1s: DE/EN desktop/mobile hide→reload→owner inspection→restore→public reappearance, plus forged nonowner hidden-view404 and malformed-flag400, and existing public profile privacy routes. Root full regular/native correction gates and worker build/lint run sequentially now. No second independent review.
+
+Root final consolidated local acceptance: all3 findings closed with actual negative native and compiled browser witnesses. Final1550native/139files0skip205.29s,1631regular/1035explicit native-disabled61.87s,9affected compiled DE/EN desktop/mobile/API browsers25.1s; original broader218browser baseline4.8m retained. Strict types/lint and web/worker buildsPASS,18frozen migrations intact, no schema changes. Exact corrected-head remote CI still pending before canonical phase/task acceptance. No second review.

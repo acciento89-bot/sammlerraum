@@ -1,0 +1,42 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/community/comment-service.test.ts (9 tests | 1 failed) 910ms
+   × actual public comment creation and owner controls > keeps the deepest accepted reply readable and rejects the next without rows or notices 342ms
+     → expected true to be false // Object.is equality
+   ✓ actual public comment creation and owner controls > lets only the actual owner inspect and restore owner-hidden content while preserving platform/deletion boundaries 43ms
+   ✓ actual public comment creation and owner controls > creates bounded public replies with actual author identity and no private projection fields 20ms
+   ✓ actual public comment creation and owner controls > requires all actual owner comment switches at global, collection and item levels 27ms
+   ✓ actual public comment creation and owner controls > rejects cross-target replies and private targets even for the Owner 29ms
+   ✓ actual public comment creation and owner controls > permits only original-author deletion or actual content-owner hiding and retains reported bodies privately 29ms
+   ✓ actual public comment creation and owner controls > blocks direct comments and replies in either direction using actual persisted block state 15ms
+   ✓ actual public comment creation and owner controls > observes an owner switch disabled after discovery but before actual participant locks 18ms
+   ✓ actual public comment creation and owner controls > hides descendants of an owner-hidden parent and clears unreported deleted bodies 28ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/community/comment-service.test.ts > actual public comment creation and owner controls > keeps the deepest accepted reply readable and rejects the next without rows or notices
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ packages/domain/src/community/comment-service.test.ts:58:29
+     56|       let last=await f.service.createComment(f.peer,{target,body:"Dept…
+     57|       for(let depth=1;depth<=32;depth++) last=await f.service.createCo…
+     58|       expect(last.canReply).toBe(false);
+       |                             ^
+     59|       expect((await f.service.listComments(f.outsider,{target,limit:50…
+     60|       const before=await db.communityComment.count({where:{collectionI…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 8 passed (9)
+   Start at  16:17:43
+   Duration  1.51s (transform 194ms, setup 6ms, collect 370ms, tests 910ms, environment 0ms, prepare 57ms)
+

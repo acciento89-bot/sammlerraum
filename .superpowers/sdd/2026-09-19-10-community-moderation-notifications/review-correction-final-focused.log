@@ -1,0 +1,15 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ✓ |workspace| packages/domain/src/community/comment-service.test.ts (9 tests) 921ms
+   ✓ actual public comment creation and owner controls > keeps the deepest accepted reply readable and rejects the next without rows or notices  370ms
+ ✓ |workspace| apps/worker/src/jobs/tabular-export.integration.test.ts (11 tests) 829ms
+ ✓ |workspace| packages/domain/src/moderation/moderation-service.test.ts (7 tests) 643ms
+ ✓ |workspace| apps/web/src/lib/comment-routes.integration.test.ts (1 test) 456ms
+ ✓ |workspace| apps/web/src/lib/comment-routes.test.ts (8 tests) 13ms
+
+ Test Files  5 passed (5)
+      Tests  36 passed (36)
+   Start at  16:18:32
+   Duration  4.71s (transform 361ms, setup 8ms, collect 1.17s, tests 2.86s, environment 0ms, prepare 162ms)
+
