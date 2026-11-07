@@ -19,7 +19,7 @@ This is the handoff/status file for long-running implementation. Update it after
 | 06 | Valuations & Market Data | 6 | complete (6/6) | — |
 | 07 | Search, Smart Collections & Dashboard | 5 | in progress (1/5) | Task 2 |
 | 08 | Import, Export, Insurance & Reports | 7 | complete (7/7) | — |
-| 09 | Collaboration, Sharing & Audit | 7 | Tasks1–4 implemented/verified; whole-phase review pending | Task 5 |
+| 09 | Collaboration, Sharing & Audit | 7 | Tasks1–5 implemented/verified; whole-phase review pending | Task 6 |
 | 10 | Community, Moderation & Notifications | 8 | not started | Task 1 |
 | 11 | AI-Assisted Capture | 5 | not started | Task 1 |
 | 12 | Premium & Billing | 5 | not started | Task 1 |
@@ -84,6 +84,8 @@ This is the handoff/status file for long-running implementation. Update it after
 - [ ] P09 T02 — Recipient-bound one-time invitations/API implemented and locally verified; independent whole-phase review pending
 - [ ] P09 T03 — Granular read-only shares, PIN/session protection, protected files and DE/EN viewer implemented and locally verified; independent whole-phase review pending
 - [ ] P09 T04 — Append-only current-resource audit history, real actor/source, bounded paging and erasure-safe anchors implemented and locally verified; independent whole-phase review pending
+
+- [ ] P09 T05 — Atomic real core mutation audit, exact money/import sources and erasure-safe role subjects implemented and locally verified; independent whole-phase review pending
 
 **Verified completion: 48/91 tasks.** Later tasks remain open as listed in the phase table and detail plans.
 
@@ -1124,3 +1126,14 @@ Stable item anchors preserve history after item moves, ownership transfer and ol
 Additive050000 migration frozen and applied to both retained guarded databases; previous nine migration hashes unchanged, generated Prisma client and exact schema diff empty.12focused native cases pass. Whole92files1042nativePASS/0skip168.98s,1542regularPASS/912explicit native-disabled skips15.57s, root types/workspace lint/full production buildPASS;7actual-built sharing/invitation cookie-session browser regression casesPASS7.7s. Genuine context-copy, text-alias sort and foreign-lock failures retained and corrected. Original fixture errors were corrected without weakening guards. Exact priorTask3 head40f771f CI42346201723 nowSUCCESS.
 
 Task4 implementation complete under inline execution, independent whole-phase review followsTask7. Reviewed48/91 remains unchanged with four implemented tasks explicitly pending that review. No main application merge/deployment, providers, real customer data, other apps/stores or automation. NextTask5 connects real core mutations in their original transactions, followed by restoration and collaboration management UI.
+
+
+## 07 November 2026 — Phase09 Task5 actual mutation audit verified
+
+Real item/collection/node changes now append strict history in their actual transactions: creation, metadata/visibility, condition/category, grading CRUD, exact per-unit valuation, location creation/move/assignment, tags, typed fields, image/document linking/sort/category/unlink, catalogue assignment, split/archive/disposal/trash, role management/owner transfer and invitation/share grant/revocation. Explicit purchase authoring/classification/revocation and legacy raw changes preserve real generations, exact digits and evidence-derived units; unknown units stay unknown. Import batches retain actual IMPORT source and original job actor with retry-idempotent receipts. No bearer tokens, receipt/evidence text, invite email, storage keys or private note bodies are copied into snapshots. Text digests are not reversible note backups.
+
+Additive060000 provides a separate subject-user FK; real account erasure may clear actual actor/subject identities while arbitrary changes remain rejected. Viewer self-removal and invitation acceptance use narrow actual DB membership/accepted-receipt checks; they do not authorize generic edits. Audit failure rolls actual condition/location/grading/role/money writes back, including original immutable money assertions. Maximum valid100-tag/100-option and long Unicode notes remain accepted within16KiB per-event limits.
+
+Task5 source3e156ec: closing1415PASS/116files/0skip185.79s includes entire domain with native enabled plus every remaining native CI selection. Regular1542PASS/936explicit native-disabled skips16.50s; strict root/web types, workspace lint and full production buildPASS. Seven real compiled DE/EN desktop/mobile cookie/browser journeysPASS7.7s. Eleven frozen forward migration receipts unchanged; both guarded local DB schema diffs empty. One old CI certificate-race fixture was corrected to an actual native late writer because app writers now serialize at the earlier actor fence; real uniqueness/rollback assertions remain. No current-CI success is inferred.
+
+Task5 implementation complete; independent whole-phase review still followsTask7. Reviewed48/91 remains unchanged, now five implementations explicitly pending review. No main application merge/deployment, live providers/mail/customer data, other apps/stores or automation. Continue immediately withTask6 safe conflict-aware restoration, thenTask7 collaboration management UI.

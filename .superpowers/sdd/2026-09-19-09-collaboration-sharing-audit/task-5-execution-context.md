@@ -12,3 +12,5 @@ Task5 spec26 coverage: actual collection/item/node fields/visibility, condition/
 Task5 still NOT complete. Remaining deliberate producer closure: public legacy raw purchase writes, classify/revoke money meaning, item disposal/catalog-link metadata, share/invitation management if needed by chosen scope; add maximum valid-payload and failure/erasure/forged-Viewer witnesses. Then full gates and normal task-done. Task6restore and Task7actual UI/Editor-authority integration remain later, one independent whole-phase review afterwards. No review count credit yet.
 
 Full93file native suite78057 COMPLETED1058PASS/0skip175.16s. Subsequent regular1542PASS, root/web types andlintPASS. No runtime sessions remain. Second partial checkpoint pending source commit/push; remaining Task5 actions unchanged.
+
+Task5 COMPLETE source3e156ec after actual task-done1415PASS/116files/0skip185.79s; regular1542PASS, root/web types/lint/full build, sevencompiled browser-cookie cases7.7sPASS and both actual schema diffs empty. No runtime sessions remain. NextTask6, no independent reviewer until afterTask7.

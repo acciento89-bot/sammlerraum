@@ -273,7 +273,7 @@ Expected: FAIL.
 
 Add audited mutations for visibility, condition, grading, values, location, tags/custom fields, media/document link changes, role changes, import changes, archive/delete/restore.
 
-- [ ] **Step 4: Run domain tests**
+- [x] **Step 4: Run domain tests**
 
 Run: `pnpm vitest run packages/domain`  
 Expected: PASS.
