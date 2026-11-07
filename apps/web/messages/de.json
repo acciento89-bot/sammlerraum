@@ -998,7 +998,21 @@
     "itemMilestone": "{count} Sammlerstücke erfasst",
     "wishMilestone": "Alle bisherigen Wünsche erfüllt",
     "achieved": "Erreicht",
-    "inProgress": "Noch offen"
+    "inProgress": "Noch offen",
+    "marketReferenceTitle": "Externe Referenzwert-Summen",
+    "marketReferenceHelp": "Getrennte Quellenangaben; keine Verkaufserlöse oder Bewertung des fairen Werts. Bei unvollständiger Abdeckung wird nur die erfasste Teilsumme angezeigt.",
+    "marketReferenceScope": "Alle eigenen Stücke im gewählten Lebenszyklus, unabhängig von Text und weiteren Filtern.",
+    "marketReferenceBasis": {
+      "ONE_PER_ITEM": "Ein Referenzwert je Stück-Eintrag",
+      "CURRENT_QUANTITY": "Referenzwert × aktuelle Stückzahl"
+    },
+    "marketReferenceCoverage": {
+      "COMPLETE": "Vollständige Datenabdeckung",
+      "PARTIAL": "Teilsumme — Werte fehlen",
+      "EMPTY": "Keine beitragenden Werte; keine Summe verfügbar"
+    },
+    "marketReferenceCounts": "{contributing} von {candidates} Einträgen tragen bei; {missing} fehlen. Beitragende Stückzahl: {quantity}.",
+    "marketReferencePeriod": "Quellenbeobachtungen: {from} bis {to}."
   },
   "Milestones": {
     "title": "Deine Meilensteine",

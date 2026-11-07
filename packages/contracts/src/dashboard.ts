@@ -1,3 +1,5 @@
+import { MarketSelectorSchema } from "./search";
+import { ValuationInstantSchema } from "./valuations";
 import { PurchaseCostResultSchema } from "./money-coverage";
 import { z } from "zod";
 import {
@@ -7,6 +9,86 @@ import {
   ItemSummarySchema,
 } from "./item-search";
 import { CanonicalTimestampSchema, TradeStatusSchema } from "./items";
+
+const marketInteger = (digits: number) =>
+  z
+    .string()
+    .regex(/^(?:0|[1-9][0-9]*)$/u)
+    .max(digits);
+export const MarketReferenceTotalSchema = z
+  .object({
+    selector: MarketSelectorSchema,
+    semantics: z.literal("ADDITIVE_PER_UNIT_REFERENCE_VALUE"),
+    basis: z.enum(["ONE_PER_ITEM", "CURRENT_QUANTITY"]),
+    coverage: z.enum(["COMPLETE", "PARTIAL", "EMPTY"]),
+    candidateItemCount: marketInteger(19),
+    contributingItemCount: marketInteger(19),
+    missingItemCount: marketInteger(19),
+    contributedQuantity: marketInteger(78),
+    observedAtFrom: ValuationInstantSchema.nullable(),
+    observedAtTo: ValuationInstantSchema.nullable(),
+    total: z
+      .union([
+        z.object({ type: z.literal("POINT"), amountMinor: marketInteger(78) }).strict(),
+        z
+          .object({
+            type: z.literal("RANGE"),
+            lowMinor: marketInteger(78),
+            highMinor: marketInteger(78),
+          })
+          .strict(),
+      ])
+      .nullable(),
+  })
+  .strict()
+  .superRefine((v, ctx) => {
+    const invalid = () =>
+      ctx.addIssue({ code: "custom", message: "Invalid market reference total" });
+    if (
+      ![
+        v.candidateItemCount,
+        v.contributingItemCount,
+        v.missingItemCount,
+        v.contributedQuantity,
+      ].every((n) => /^(?:0|[1-9][0-9]*)$/u.test(n))
+    ) {
+      invalid();
+      return;
+    }
+    const candidates = BigInt(v.candidateItemCount),
+      contributing = BigInt(v.contributingItemCount),
+      missing = BigInt(v.missingItemCount),
+      quantity = BigInt(v.contributedQuantity);
+    if (contributing + missing !== candidates || quantity < contributing) invalid();
+    if (contributing === 0n) {
+      if (
+        v.coverage !== "EMPTY" ||
+        v.total !== null ||
+        v.observedAtFrom !== null ||
+        v.observedAtTo !== null ||
+        quantity !== 0n
+      )
+        invalid();
+    } else {
+      if (
+        v.coverage !== (missing === 0n ? "COMPLETE" : "PARTIAL") ||
+        !v.total ||
+        !v.observedAtFrom ||
+        !v.observedAtTo ||
+        v.observedAtFrom > v.observedAtTo
+      )
+        invalid();
+      if (v.total && (v.selector.kind === "PRICE_RANGE") !== (v.total.type === "RANGE")) invalid();
+      if (
+        v.total?.type === "RANGE" &&
+        /^(?:0|[1-9][0-9]*)$/u.test(v.total.lowMinor) &&
+        /^(?:0|[1-9][0-9]*)$/u.test(v.total.highMinor) &&
+        BigInt(v.total.lowMinor) > BigInt(v.total.highMinor)
+      )
+        invalid();
+    }
+  });
+export type MarketReferenceTotal = z.infer<typeof MarketReferenceTotalSchema>;
 
 export const DASHBOARD_MAX_RESPONSE_BYTES = 1048576;
 const count = z.number().int().nonnegative().safe();
@@ -205,13 +287,22 @@ export const DashboardDataSchema = DashboardSummarySchema.extend({
       .strict(),
     PurchaseCostResultSchema,
   ]),
-  marketValues: z
-    .object({
-      state: z.literal("UNAVAILABLE"),
-      reason: z.literal("MARKET_AGGREGATION_UNAVAILABLE"),
-      groups: z.null(),
-    })
-    .strict(),
+  marketValues: z.union([
+    z
+      .object({
+        state: z.literal("UNAVAILABLE"),
+        reason: z.literal("MARKET_AGGREGATION_UNAVAILABLE"),
+        groups: z.null(),
+      })
+      .strict(),
+    z
+      .object({
+        state: z.literal("AVAILABLE"),
+        selectionBasis: z.literal("ALL_LIFECYCLE_OWNED"),
+        groups: z.array(MarketReferenceTotalSchema).min(1).max(50),
+      })
+      .strict(),
+  ]),
   duplicates: z.union([
     z
       .object({

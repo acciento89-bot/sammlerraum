@@ -27,8 +27,8 @@ Ruling: use current existing ownedCandidates and candidateFrom to derive id/quan
 
 ### Task 4: Explicit aggregate and dashboard consumer
 
-- [ ] TDD granted point/interval additive per-unit reference totals with ONE_PER_ITEM/CURRENT_QUANTITY, exact SQL numeric sums, explicit full selector groups and coverage/missing≠zero; no inferred rights or FX.
-- [ ] Integrate the strict original MarketReferenceTotal into the current dashboard; default-empty production policy remains unavailable. Preserve private current dashboard progress and legacy-money semantics.
+- [x] TDD granted point/interval additive per-unit reference totals with ONE_PER_ITEM/CURRENT_QUANTITY, exact SQL numeric sums, explicit full selector groups and coverage/missing≠zero; no inferred rights or FX.
+- [x] Integrate the strict original MarketReferenceTotal into the current dashboard; default-empty production policy remains unavailable. Preserve private current dashboard progress and legacy-money semantics.
 
 ### Task 5: Final local/CI proof and one prerequisite review
 

@@ -998,7 +998,21 @@
     "itemMilestone": "{count} collectibles recorded",
     "wishMilestone": "All existing wishes fulfilled",
     "achieved": "Achieved",
-    "inProgress": "In progress"
+    "inProgress": "In progress",
+    "marketReferenceTitle": "External reference-value totals",
+    "marketReferenceHelp": "Separate source estimates; these are not realized proceeds or a fair-value assessment. Incomplete coverage shows only the contributed subtotal.",
+    "marketReferenceScope": "All your items in the selected lifecycle, independently of text and other filters.",
+    "marketReferenceBasis": {
+      "ONE_PER_ITEM": "One reference value per item",
+      "CURRENT_QUANTITY": "Reference value × current quantity"
+    },
+    "marketReferenceCoverage": {
+      "COMPLETE": "Complete data coverage",
+      "PARTIAL": "Partial subtotal — values are missing",
+      "EMPTY": "No contributing values; no total available"
+    },
+    "marketReferenceCounts": "{contributing} of {candidates} items contribute; {missing} missing. Contributing quantity: {quantity}.",
+    "marketReferencePeriod": "Source observations: {from} to {to}."
   },
   "Milestones": {
     "title": "Your milestones",

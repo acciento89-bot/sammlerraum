@@ -220,7 +220,7 @@ const qualifiers = z
       Object.keys(v).length;
     return Object.keys(v).length <= 16 && jsonbBytes <= 1024;
   });
-const marketSelector = object({
+export const MarketSelectorSchema = object({
   mode: z.literal("CURRENT_ITEM_MAPPING"),
   providerId: SourceKeySchema.shape.providerId,
   identifierNamespace: SourceKeySchema.shape.identifierNamespace,
@@ -239,7 +239,7 @@ const marketInterval = object({
 }).refine(validRange);
 const marketLeaf = object({
   kind: z.literal("marketMoney"),
-  selector: marketSelector,
+  selector: MarketSelectorSchema,
   test: z.union([marketRange, marketInterval, presence]),
 }).refine(
   (v) =>

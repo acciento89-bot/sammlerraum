@@ -1,4 +1,5 @@
 "use client";
+import { MarketReferenceValues } from "./market-reference-values";
 import { PurchaseCosts } from "./purchase-costs";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
@@ -348,6 +349,9 @@ export function DashboardResults({
           ))}
         </ul>
       </section>
+      {data.marketValues.state === "AVAILABLE" && (
+        <MarketReferenceValues groups={data.marketValues.groups} locale={locale} />
+      )}
       <section aria-labelledby="dashboard-capabilities-heading">
         <h3 id="dashboard-capabilities-heading">{t("capabilitiesTitle")}</h3>
         <p>{t("capabilitiesHelp")}</p>
@@ -358,10 +362,12 @@ export function DashboardResults({
               <dd>{t("purchaseUnavailable")}</dd>
             </div>
           )}
-          <div>
-            <dt>{t("marketValues")}</dt>
-            <dd>{t("marketUnavailable")}</dd>
-          </div>
+          {data.marketValues.state === "UNAVAILABLE" && (
+            <div>
+              <dt>{t("marketValues")}</dt>
+              <dd>{t("marketUnavailable")}</dd>
+            </div>
+          )}
           <div>
             <dt>{t("duplicates")}</dt>
             <dd>
