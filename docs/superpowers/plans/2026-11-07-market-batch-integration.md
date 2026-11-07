@@ -17,8 +17,8 @@ Ruling: use current existing ownedCandidates and candidateFrom to derive id/quan
 
 ### Task 2: Fixed-query validated current/history manifests
 
-- [ ] TDD native cases and implement the original three-data-query design,1024distinct current+history revisions,8MiB snapshot and normalized manifest caps, exact canonical parser parity and whole-scope ambiguity. Trusted callback-scoped transaction handle only, no nested transaction/N+1/fetch.
-- [ ] Prove exact current nullable targets, active variants/identifiers, identifier replacement semantics, current invariant/history ineligibility, latest eligible identity, caps, snapshot/budget/dependency behavior and fixed query counts.
+- [x] TDD native cases and implement the original three-data-query design,1024distinct current+history revisions,8MiB snapshot and normalized manifest caps, exact canonical parser parity and whole-scope ambiguity. Trusted callback-scoped transaction handle only, no nested transaction/N+1/fetch.
+- [x] Prove exact current nullable targets, active variants/identifiers, identifier replacement semantics, current invariant/history ineligibility, latest eligible identity, caps, snapshot/budget/dependency behavior and fixed query counts.
 
 ### Task 3: Actual search filter consumer
 

@@ -212,6 +212,7 @@ export function captureMarketRights(
   if (selectors.length) admitted(actor, selectors, capturedUse, deps);
   return Object.freeze({
     selectors,
+    use: capturedUse,
     assertCurrent() {
       if (selectors.length) admitted(actor, selectors, capturedUse, deps);
     },

@@ -20,7 +20,7 @@ This is the handoff/status file for long-running implementation. Update it after
 | 07 | Search, Smart Collections & Dashboard | 5 | in progress (1/5) | Task 2 |
 | 08 | Import, Export, Insurance & Reports | 7 | complete (7/7) | — |
 | 09 | Collaboration, Sharing & Audit | 7 | complete (7/7); corrected1760cd2 CI SUCCESS | — |
-| 10 | Community, Moderation & Notifications | 8 | All8 implemented; single review/root corrections locally accepted; exact corrected CI pending | Correction acceptance |
+| 10 | Community, Moderation & Notifications | 8 | complete (8/8); corrected d69f78f CI SUCCESS | — |
 | 11 | AI-Assisted Capture | 5 | not started | Task 1 |
 | 12 | Premium & Billing | 5 | not started | Task 1 |
 | 13 | Integration, Hardening & Release | 7 | not started | Task 1 |
@@ -90,7 +90,16 @@ This is the handoff/status file for long-running implementation. Update it after
 - [x] P09 T06 — Conflict-aware restoration and permanent capability retirement; reviewed/corrected, exact1760cd2 CI SUCCESS
 - [x] P09 T07 — DE/EN current-role collaboration UI and Editor/Admin authoring; reviewed/corrected, exact1760cd2 CI SUCCESS
 
-**Verified completion: 55/91 tasks.** Later tasks remain open as listed in the phase table and detail plans.
+- [x] P10 T01 — Private wishlist and distinct duplicate relations
+- [x] P10 T02 — Public follows/favorites with current visibility and block fences
+- [x] P10 T03 — Bounded public comments/replies, owner controls and private reports
+- [x] P10 T04 — Real-role platform moderation and private immutable decision history
+- [x] P10 T05 — Recipient notifications, current-target redaction and category/channel preferences
+- [x] P10 T06 — Localized durable email delivery with safe ambiguity/cancellation semantics
+- [x] P10 T07 — Responsive DE/EN community/wishlist/notification/moderation workflows
+- [x] P10 T08 — Stable public collector routes, atomic domain-event notices and real dashboard progress
+
+**Verified completion: 63/91 tasks.** Later tasks remain open as listed in the phase table and detail plans.
 
 ## Update rule
 
@@ -1227,3 +1236,7 @@ Source372334a adds stable anonymous DE/EN public collector/profile/collection/it
 ### 7Nov Phase10 single review and consolidated correction locally closed
 
 Original372334a independent review:With fixes,0Critical/1Important/2Minor. Root accepted all3 and corrected them together, without rereview: export lease renewals never emit completion; only successful READY can do so; depth33 replies now reject before rows/notices and deepest accepted response disables further replies; owner-only hidden-comment management survives reload and restores owner-hidden content without bypassing public/default/platform-hide/deletion/block boundaries. Real negative/native and old-compiled browser RED witnesses retained. Final1550native/139files0skip205.29s,1631regular/1035native-disabled61.87s,9affected compiledbrowser25.1s, types/lint and both buildsPASS; broader218browser baseline fromTask8 remains retained. All18frozen migration files unchanged; original screenshots/PDFs restored exactly and current variants separately retained. Original reviewer report remains unchanged; root final receipt/disposition records closure. Canonical55/91 remains until exact corrected-head CI completes. Continue Phase07 remaining search/smart/dashboard review debt; no live providers/deployment, other apps/stores/devices or automation.
+
+### 7Nov Phase10 accepted after exact corrected CI
+
+Actual corrected evidence d69f78f54fb80b729865a636a0c69acf564e2fca run42387013995 completedSUCCESS. Its source4709d23 closes all3 original single-review findings via the retained root consolidated TDD pass. All8Phase10tasks now reviewed/locally verified/committed/pushed and exactCI-green; canonical count63/91, no effort percentage inferred. Current Phase07market prerequisite is separate and unfinished: rights Task1 source0b9a6ea local142tests/typesPASS, Task2 native eligibility/caps active; no market/fullPhase07 checkoff, live activation or production claim from this count.

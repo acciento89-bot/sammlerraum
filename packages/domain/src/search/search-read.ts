@@ -1,3 +1,4 @@
+import { MarketBatchError } from "../market-data/market-batch";
 import { MembershipError } from "@sammlerraum/contracts/collaboration";
 import { ReportError } from "@sammlerraum/contracts/reports";
 import { InsuranceError } from "@sammlerraum/contracts/insurance";
@@ -71,6 +72,7 @@ export async function runSearchTransaction<T>(
       return result;
     } catch (error) {
       if (
+        error instanceof MarketBatchError ||
         error instanceof MembershipError ||
         error instanceof ItemSearchError ||
         error instanceof FilterValidationError ||
