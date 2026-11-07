@@ -10,6 +10,7 @@ export function ImportManager({ locale }: { locale: "de" | "en" }) {
     router = useRouter();
   const [collections, setCollections] = useState<{ id: string; name: string }[]>([]),
     [busy, setBusy] = useState(false),
+    [selectedFormat, setSelectedFormat] = useState("CSV"),
     [error, setError] = useState(""),
     [recent, setRecent] = useState<{ job: ImportJobDto; expiresAt: string }[]>([]),
     [historyError, setHistoryError] = useState(false),
@@ -95,6 +96,9 @@ export function ImportManager({ locale }: { locale: "de" | "en" }) {
             hasHeader: data.get("header") === "on",
             delimiter: data.get("delimiter"),
             sourceProfile: data.get("profile"),
+            ...(format === "XLSX" && data.get("sheetName")
+              ? { sheetName: data.get("sheetName") }
+              : {}),
           },
         }),
       );
@@ -194,11 +198,32 @@ export function ImportManager({ locale }: { locale: "de" | "en" }) {
           </label>
           <label>
             {text("Dateiformat", "File format")}
-            <select name="format">
+            <select
+              name="format"
+              value={selectedFormat}
+              onChange={(event) => setSelectedFormat(event.target.value)}
+            >
               <option value="CSV">CSV</option>
               <option value="XLSX">XLSX</option>
             </select>
           </label>
+          {selectedFormat === "XLSX" && (
+            <label>
+              {text("Arbeitsblatt (XLSX)", "Worksheet (XLSX)")}
+              <input
+                name="sheetName"
+                aria-label={text("Arbeitsblatt (XLSX)", "Worksheet (XLSX)")}
+                maxLength={31}
+                aria-describedby="worksheet-help"
+              />
+              <span className="field-help" id="worksheet-help">
+                {text(
+                  "Bei mehreren Arbeitsblättern den exakten Blattnamen eintragen. Bei nur einem Blatt kann das Feld leer bleiben.",
+                  "For workbooks with several sheets, enter the exact worksheet name. Leave blank when the workbook has one sheet.",
+                )}
+              </span>
+            </label>
+          )}
           <label>
             <input type="checkbox" name="header" defaultChecked />
             {text("Erste Zeile enthält Spaltenüberschriften", "First row contains headers")}

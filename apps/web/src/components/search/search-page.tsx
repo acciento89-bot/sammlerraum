@@ -1,4 +1,5 @@
 "use client";
+import { SelectionExportAction } from "../exports/selection-export-action";
 import { useMoneyConsumers } from "./money-consumer-context";
 import { PersonalMilestones } from "../dashboard/personal-milestones";
 import type { DashboardData } from "@sammlerraum/contracts/dashboard";
@@ -458,6 +459,13 @@ export function SearchPage({
         <h1>{view === "dashboard" ? dt("title") : t("title")}</h1>
         <p>{view === "dashboard" ? dt("intro") : t("intro")}</p>
         <p className="field-help">{t("tokenHelp")}</p>
+        <SelectionExportAction
+          locale={locale}
+          scope={{ kind: "SEARCH" }}
+          query={query}
+          disabled={loading || !(data || dashboard) || !!error || dirty || stale || saveProtected}
+          label={`${locale === "de" ? "Angewendete Suche" : "Applied search"}: ${query.text || (locale === "de" ? "ohne Suchtext" : "no search text")}${query.filter ? (locale === "de" ? " · mit Filterbedingungen" : " · with filters") : ""} · ${query.lifecycle === "ACTIVE" ? (locale === "de" ? "Aktive Objekte" : "Active items") : query.lifecycle === "ARCHIVED" ? (locale === "de" ? "Archivierte Objekte" : "Archived items") : query.lifecycle === "DISPOSED" ? (locale === "de" ? "Abgegebene Objekte" : "Disposed items") : locale === "de" ? "Alle Objektstatus" : "All item states"}`}
+        />
         <button
           type="button"
           disabled={loading || !(data || dashboard) || !!error || dirty}

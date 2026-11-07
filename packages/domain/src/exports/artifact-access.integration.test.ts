@@ -1,3 +1,4 @@
+import { createRequire } from "node:module";
 import { randomUUID, createHash } from "node:crypto";
 import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
@@ -7,6 +8,9 @@ import { createLegacyMoneyTestSchema } from "@sammlerraum/db/test-legacy-money-s
 import { createTestDatabaseClient } from "@sammlerraum/db/test-database";
 import { createMediaAssetLocker } from "@sammlerraum/db/media-lock";
 import { LocalPersistentStorage } from "@sammlerraum/storage";
+import { createReportService } from "../reports/report-service";
+import { createPrismaReportRepository } from "../../../../apps/worker/src/jobs/insurance-report-repository";
+import { createInsuranceReportJob } from "../../../../apps/worker/src/jobs/insurance-report-runtime";
 import { createExportService } from "./export-service";
 import { createArtifactAccessService } from "./artifact-access-service";
 import { createPrismaTabularExportRepository } from "../../../../apps/worker/src/jobs/tabular-export-repository";
@@ -190,6 +194,113 @@ describe.runIf(process.env.RUN_DATABASE_INTEGRATION === "1")(
           })
         ).items,
       ).toEqual([]);
+    });
+    it("revokes a full-inventory download and history after a captured item is erased", async () => {
+      const f = await fixture(),
+        job = await f.exports.requestExport(f.actor, {
+          scope: { kind: "ALL" },
+          format: "CSV",
+          locale: "de",
+          includePrivateNotes: true,
+        });
+      await build({ ...f, job });
+      await db.$executeRaw`UPDATE "CollectibleItem" SET "deletedAt"=now() WHERE "ownerId"=${f.owner}`;
+      const read = vi.spyOn(storage, "read"),
+        access = createArtifactAccessService(db, storage, lock);
+      await expect(
+        access.downloadArtifact(f.actor, { kind: "TABULAR", jobId: job.id }),
+      ).rejects.toMatchObject({ code: "EXPORT_NOT_FOUND" });
+      expect(read).not.toHaveBeenCalled();
+      expect((await access.listArtifacts(f.actor)).items.some((row) => row.id === job.id)).toBe(
+        false,
+      );
+      read.mockRestore();
+    });
+    it("revokes a full-inventory snapshot after a captured collection is erased", async () => {
+      const f = await fixture(),
+        job = await f.exports.requestExport(f.actor, {
+          scope: { kind: "ALL" },
+          format: "CSV",
+          locale: "de",
+        });
+      await build({ ...f, job });
+      await db.$executeRaw`UPDATE "Collection" SET "deletedAt"=now() WHERE id=${f.collection}::uuid`;
+      await expect(
+        createArtifactAccessService(db, storage, lock).downloadArtifact(f.actor, {
+          kind: "TABULAR",
+          jobId: job.id,
+        }),
+      ).rejects.toMatchObject({ code: "EXPORT_NOT_FOUND" });
+    });
+    it("preserves captured bytes across ordinary title and quantity edits", async () => {
+      const f = await fixture();
+      await build(f);
+      await db.$executeRaw`UPDATE "CollectibleItem" SET title='New title after export',quantity=7 WHERE "ownerId"=${f.owner}`;
+      const result = await createArtifactAccessService(db, storage, lock).downloadArtifact(
+        f.actor,
+        { kind: "TABULAR", jobId: f.job.id },
+      );
+      expect(Buffer.from(result.bytes).toString()).toContain("Reader item");
+      expect(Buffer.from(result.bytes).toString()).not.toContain("New title after export");
+    });
+    it("rechecks captured item erasure after the actual storage read settles", async () => {
+      const f = await fixture();
+      await build(f);
+      const racing = {
+        put: storage.put.bind(storage),
+        delete: storage.delete.bind(storage),
+        exists: storage.exists.bind(storage),
+        read: async (...args: Parameters<typeof storage.read>) => {
+          const bytes = await storage.read(...args);
+          await db.$executeRaw`UPDATE "CollectibleItem" SET "deletedAt"=now() WHERE "ownerId"=${f.owner}`;
+          return bytes;
+        },
+      };
+      await expect(
+        createArtifactAccessService(db, racing, lock).downloadArtifact(f.actor, {
+          kind: "TABULAR",
+          jobId: f.job.id,
+        }),
+      ).rejects.toMatchObject({ code: "EXPORT_NOT_FOUND" });
+    });
+    it("revokes a real PDF download when its selected private proof is unlinked", async () => {
+      const f = await fixture(),
+        item = await db.collectibleItem.findFirstOrThrow({ where: { ownerId: f.owner } }),
+        { PDFDocument } = createRequire(
+          new URL("../../../../apps/worker/package.json", import.meta.url),
+        )("pdf-lib"),
+        doc = await PDFDocument.create();
+      doc.addPage().drawText("Selected evidence");
+      const bytes = await doc.save(),
+        assetId = randomUUID(),
+        key = `originals/${assetId}`;
+      await storage.put(key, bytes);
+      await db.$executeRaw`INSERT INTO "MediaAsset" (id,"ownerId",kind,status,"storageKey","mimeType","byteSize","checksumSha256","originalFileName","updatedAt") VALUES (${assetId}::uuid,${f.owner},'DOCUMENT','READY',${key},'application/pdf',${BigInt(bytes.length)},${createHash("sha256").update(bytes).digest("hex")},'Selected.pdf',now())`;
+      await db.$executeRaw`INSERT INTO "DocumentLink" (id,"assetId","ownerId","itemId",position) VALUES (${randomUUID()}::uuid,${assetId}::uuid,${f.owner},${item.id}::uuid,0)`;
+      const service = createReportService(db),
+        job = await service.requestInsuranceReport(f.actor, {
+          scope: { kind: "COLLECTION", collectionId: f.collection },
+          locale: "de",
+          include: ["proofs"],
+          proofAssetIds: [assetId],
+        });
+      await createInsuranceReportJob(
+        createPrismaReportRepository(db),
+        service,
+        storage,
+        lock,
+      )({ jobId: job.id });
+      expect((await db.reportJob.findUniqueOrThrow({ where: { id: job.id } })).status).toBe(
+        "READY",
+      );
+      const access = createArtifactAccessService(db, storage, lock);
+      expect(
+        (await access.downloadArtifact(f.actor, { kind: "REPORT", jobId: job.id })).mimeType,
+      ).toBe("application/pdf");
+      await db.documentLink.deleteMany({ where: { assetId } });
+      await expect(
+        access.downloadArtifact(f.actor, { kind: "REPORT", jobId: job.id }),
+      ).rejects.toMatchObject({ code: "EXPORT_NOT_FOUND" });
     });
   },
 );

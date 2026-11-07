@@ -1,4 +1,5 @@
 "use client";
+import { SelectionExportAction } from "../exports/selection-export-action";
 
 import type { Collection, CollectionNode } from "@sammlerraum/contracts/collections";
 import type { CustomFieldDefinition, CustomFieldType } from "@sammlerraum/contracts/custom-fields";
@@ -269,7 +270,14 @@ export function CollectionDetail({
             <RecordTree
               records={data.nodes}
               render={(node) => (
-                <NodeEditor node={node} all={data.nodes} mutate={mutate} t={t} common={common} />
+                <NodeEditor
+                  node={node}
+                  all={data.nodes}
+                  mutate={mutate}
+                  t={t}
+                  common={common}
+                  locale={locale}
+                />
               )}
             />
           )}
@@ -452,12 +460,14 @@ type Mutation = (url: string, method: string, body?: unknown) => Promise<boolean
 type Translation = (key: string) => string;
 
 function NodeEditor({
+  locale,
   node,
   all,
   mutate,
   t,
   common,
 }: {
+  locale: "de" | "en";
   node: CollectionNode;
   all: CollectionNode[];
   mutate: Mutation;
@@ -467,6 +477,11 @@ function NodeEditor({
   return (
     <details>
       <summary>{node.name}</summary>
+      <SelectionExportAction
+        locale={locale}
+        scope={{ kind: "SUBTREE", collectionId: node.collectionId, nodeId: node.id }}
+        label={`${locale === "de" ? "Teilbaum" : "Subtree"}: ${node.name}`}
+      />
       <form
         className="compact-form"
         onSubmit={async (event) => {

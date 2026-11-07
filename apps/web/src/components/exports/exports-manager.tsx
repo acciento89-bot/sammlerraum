@@ -99,6 +99,9 @@ export function ExportsManager({ locale }: { locale: "de" | "en" }) {
       <nav className="management-nav">
         <Link href={`/${locale}/collections`}>{text("Sammlungen", "Collections")}</Link>
         <Link href={`/${locale}/imports`}>{text("Importe", "Imports")}</Link>
+        <Link href={`/${locale}/search`}>
+          {text("Suche und Auswahl-Export", "Search and selection export")}
+        </Link>
         <Link href={`/${locale}/insurance`}>
           {text("Versicherung und PDF", "Insurance and PDF")}
         </Link>

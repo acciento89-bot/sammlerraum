@@ -1,3 +1,4 @@
+import { workbookFixture } from "../../worker/src/jobs/import-xlsx-fixture.test-helper";
 import { writeFile, readFile, mkdir } from "node:fs/promises";
 import { createRequire } from "node:module";
 import { randomUUID, createHash } from "node:crypto";
@@ -26,6 +27,63 @@ async function captureTransferView(page: Page, info: TestInfo, stage: string) {
     directory,
   );
   await page.screenshot({ path: decodeURIComponent(path.pathname), fullPage: true });
+}
+async function additionalFixture(page: Page) {
+  const userId = randomUUID(),
+    password = "correct-horse-battery-staple",
+    email = `transfer-scope-${userId}@example.test`;
+  await db.user.create({
+    data: {
+      id: userId,
+      name: "Transfer browser",
+      email,
+      emailVerified: true,
+      accounts: {
+        create: {
+          id: randomUUID(),
+          accountId: userId,
+          providerId: "credential",
+          password: await hashPassword(password),
+        },
+      },
+    },
+  });
+  await db.rateLimit.deleteMany();
+  const login = await page.request.post("/api/auth/sign-in/email", {
+    headers: { origin: "http://localhost:3000" },
+    data: { email, password },
+  });
+  expect(login.status()).toBe(200);
+  const collection = await db.collection.create({
+    data: { ownerId: userId, name: "Scoped collection" },
+  });
+  return {
+    userId,
+    collection,
+    async cleanup() {
+      const sourceIds = await db.importJob.findMany({
+          where: { ownerId: userId },
+          select: { id: true },
+        }),
+        assets = await db.mediaAsset.findMany({
+          where: { ownerId: userId },
+          select: { id: true, storageKey: true },
+        }),
+        lock = createMediaAssetLocker(url),
+        storage = new LocalPersistentStorage(process.env.UPLOADS_DIR!, lock);
+      for (const job of sourceIds)
+        await lock(
+          `import-source:${job.id}`,
+          () => storage.delete(`imports/${job.id}/source`),
+          true,
+        );
+      for (const asset of assets)
+        await lock(asset.id, () => storage.delete(asset.storageKey), true);
+      await db.documentLink.deleteMany({ where: { ownerId: userId } });
+      await db.mediaAsset.deleteMany({ where: { ownerId: userId } });
+      await db.user.deleteMany({ where: { id: userId } });
+    },
+  };
 }
 const enabled = process.env.RUN_AUTH_E2E === "1",
   url = process.env.DATABASE_URL ?? "";
@@ -490,6 +548,159 @@ test.describe("real import, export and private report flow", () => {
       for (const id of ids)
         await lock(`import-source:${id}`, () => storage.delete(`imports/${id}/source`), true);
       await db.user.deleteMany({ where: { id: userId } });
+    }
+  });
+  test("review: a named worksheet imports the intended sheet from a real multi-sheet XLSX", async ({
+    page,
+  }, info) => {
+    const f = await additionalFixture(page);
+    try {
+      const ns = "http://schemas.openxmlformats.org/spreadsheetml/2006/main",
+        rel = "http://schemas.openxmlformats.org/officeDocument/2006/relationships",
+        file = workbookFixture(
+          '<row r="1"><c r="A1" t="inlineStr"><is><t>Title</t></is></c></row><row r="2"><c r="A2" t="inlineStr"><is><t>Named-sheet item</t></is></c></row>',
+          {
+            "xl/workbook.xml": `<workbook xmlns="${ns}" xmlns:r="${rel}"><sheets><sheet name="Inventory" sheetId="1" r:id="r1"/><sheet name="Notes" sheetId="2" r:id="r2"/></sheets></workbook>`,
+            "xl/_rels/workbook.xml.rels": `<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="r1" Type="${rel}/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="r2" Type="${rel}/worksheet" Target="worksheets/sheet2.xml"/></Relationships>`,
+            "xl/worksheets/sheet2.xml": `<worksheet xmlns="${ns}"><sheetData><row r="1"><c r="A1" t="inlineStr"><is><t>Never import this notes sheet</t></is></c></row></sheetData></worksheet>`,
+          },
+        );
+      await page.goto("/de/imports");
+      await page.getByLabel("Zielsammlung", { exact: true }).selectOption(f.collection.id);
+      await page.getByLabel("Dateiformat").selectOption("XLSX");
+      await page.getByLabel("Arbeitsblatt (XLSX)", { exact: true }).fill("Inventory");
+      await page.getByLabel("Datei auswählen", { exact: true }).setInputFiles({
+        name: "multi-sheet.xlsx",
+        mimeType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        buffer: Buffer.from(file),
+      });
+      await captureTransferView(page, info, "xlsx-upload");
+      await page.getByRole("button", { name: "Datei hochladen", exact: true }).click();
+      await expect(page.getByLabel("Titelspalte", { exact: true })).toBeVisible({ timeout: 30000 });
+      await page.getByRole("button", { name: "Vorschau erstellen", exact: true }).click();
+      await expect(page.getByText("Named-sheet item", { exact: false }).first()).toBeVisible();
+      await page.getByLabel("Entscheidung für Zeile 1", { exact: true }).selectOption("CREATE");
+      await page.getByRole("button", { name: "Entscheidungen speichern", exact: true }).click();
+      await expect(page.getByRole("button", { name: "Import starten", exact: true })).toBeEnabled();
+      await page.getByRole("button", { name: "Import starten", exact: true }).click();
+      await expect(page.getByText("Import abgeschlossen", { exact: true })).toBeVisible({
+        timeout: 30000,
+      });
+      expect(
+        await db.collectibleItem.findMany({
+          where: { ownerId: f.userId },
+          select: { title: true },
+        }),
+      ).toEqual([{ title: "Named-sheet item" }]);
+    } finally {
+      await f.cleanup();
+    }
+  });
+  test("review: actual filtered search exports all matching rows without unrelated inventory", async ({
+    page,
+  }, info) => {
+    const f = await additionalFixture(page);
+    try {
+      await db.collectibleItem.createMany({
+        data: [
+          ...Array.from({ length: 25 }, (_, index) => ({
+            ownerId: f.userId,
+            collectionId: f.collection.id,
+            title: `Needle selected ${index}`,
+          })),
+          { ownerId: f.userId, collectionId: f.collection.id, title: "Excluded unrelated" },
+        ],
+      });
+      await page.goto("/de/search");
+      await expect(page.getByTestId("search-total")).toContainText("26");
+      if (await page.evaluate(() => matchMedia("(max-width:44rem)").matches))
+        await page.getByRole("button", { name: "Filter öffnen", exact: true }).click();
+      await page.getByLabel("Suchtext", { exact: true }).fill("Needle");
+      await page.getByRole("button", { name: "Anwenden", exact: true }).click();
+      await expect(page.getByTestId("search-total")).toContainText("25");
+      await page.getByRole("button", { name: "Suchergebnis exportieren", exact: true }).click();
+      await expect(page.getByText("Angewendete Suche: Needle", { exact: false })).toBeVisible();
+      await captureTransferView(page, info, "scope-search");
+      await page.getByRole("button", { name: "Auswahl exportieren", exact: true }).click();
+      await expect(page).toHaveURL(/\/de\/exports$/u);
+      const downloadLink = page.getByRole("link", { name: "CSV herunterladen", exact: true });
+      await expect(downloadLink).toBeVisible({ timeout: 30000 });
+      const completed = page.waitForEvent("download");
+      await downloadLink.click();
+      const bytes = await readFile((await (await completed).path())!);
+      for (let index = 0; index < 25; index++)
+        expect(bytes.toString()).toContain(`Needle selected ${index}`);
+      expect(bytes.toString()).not.toContain("Excluded unrelated");
+      const job = await db.exportJob.findFirstOrThrow({ where: { ownerId: f.userId } });
+      expect(job.request).toMatchObject({
+        scope: { kind: "SEARCH" },
+        query: { text: "Needle", limit: 20 },
+      });
+    } finally {
+      await f.cleanup();
+    }
+  });
+  test("review: an actual collection subtree export includes descendants and excludes siblings", async ({
+    page,
+  }, info) => {
+    const f = await additionalFixture(page);
+    try {
+      const parent = await db.collectionNode.create({
+          data: { collectionId: f.collection.id, name: "Selected branch" },
+        }),
+        child = await db.collectionNode.create({
+          data: { collectionId: f.collection.id, parentId: parent.id, name: "Included child" },
+        }),
+        sibling = await db.collectionNode.create({
+          data: { collectionId: f.collection.id, name: "Excluded branch" },
+        });
+      await db.collectibleItem.createMany({
+        data: [
+          {
+            ownerId: f.userId,
+            collectionId: f.collection.id,
+            nodeId: parent.id,
+            title: "Chosen parent",
+          },
+          {
+            ownerId: f.userId,
+            collectionId: f.collection.id,
+            nodeId: child.id,
+            title: "Chosen descendant",
+          },
+          {
+            ownerId: f.userId,
+            collectionId: f.collection.id,
+            nodeId: sibling.id,
+            title: "Excluded sibling",
+          },
+        ],
+      });
+      await page.goto(`/de/collections/${f.collection.id}`);
+      const selected = page
+        .locator("details")
+        .filter({ has: page.locator("summary").filter({ hasText: /^Selected branch$/u }) });
+      await selected.locator("summary").first().click();
+      await selected.getByRole("button", { name: "Teilbaum exportieren", exact: true }).click();
+      await expect(selected.getByText("Teilbaum: Selected branch", { exact: false })).toBeVisible();
+      await captureTransferView(page, info, "scope-subtree");
+      await selected.getByRole("button", { name: "Auswahl exportieren", exact: true }).click();
+      await expect(page).toHaveURL(/\/de\/exports$/u);
+      const downloadLink = page.getByRole("link", { name: "CSV herunterladen", exact: true });
+      await expect(downloadLink).toBeVisible({ timeout: 30000 });
+      const completed = page.waitForEvent("download");
+      await downloadLink.click();
+      const bytes = await readFile((await (await completed).path())!);
+      expect(bytes.toString()).toContain("Chosen parent");
+      expect(bytes.toString()).toContain("Chosen descendant");
+      expect(bytes.toString()).not.toContain("Excluded sibling");
+      expect(
+        (await db.exportJob.findFirstOrThrow({ where: { ownerId: f.userId } })).request,
+      ).toMatchObject({
+        scope: { kind: "SUBTREE", collectionId: f.collection.id, nodeId: parent.id },
+      });
+    } finally {
+      await f.cleanup();
     }
   });
 });

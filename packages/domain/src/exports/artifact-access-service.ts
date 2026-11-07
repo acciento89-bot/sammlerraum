@@ -1,7 +1,16 @@
 import { createHash } from "node:crypto";
 import { z } from "zod";
-import { ExportError, EXPORT_MAX_BYTES, ExportScopeSchema } from "@sammlerraum/contracts/exports";
-import { parseInsuranceReportOptions } from "@sammlerraum/contracts/reports";
+import {
+  ExportError,
+  EXPORT_MAX_BYTES,
+  ExportScopeSchema,
+  TabularExportSnapshotSchema,
+} from "@sammlerraum/contracts/exports";
+import {
+  ReportSnapshotSchema,
+  type ReportAsset,
+  parseInsuranceReportOptions,
+} from "@sammlerraum/contracts/reports";
 import { Prisma } from "@sammlerraum/db/search-sql";
 import type { StorageProvider, StorageStagingLocker } from "@sammlerraum/storage";
 import {
@@ -77,9 +86,78 @@ export function createArtifactAccessService(
   options: { canonicalMoneyEnabled?: boolean } = {},
 ) {
   const exports = createExportService(database, options);
+  async function capturedPermission(tx: BoundedSearchReadTransaction, owner: string, row: Row) {
+    if (row.status !== "READY") return;
+    const [stored] = await tx.$queryRaw<{ sourceJson: string | null; sourceHash: string | null }[]>(
+      Prisma.sql`SELECT "sourceJson","sourceHash" FROM ${table(row.kind)} WHERE id=${row.id}::uuid AND "ownerId"=${owner}`,
+    );
+    if (
+      !stored?.sourceJson ||
+      Buffer.byteLength(stored.sourceJson) > 8388608 ||
+      createHash("sha256").update(stored.sourceJson).digest("hex") !== stored.sourceHash
+    )
+      return fail("EXPORT_INTEGRITY");
+    let raw: unknown;
+    try {
+      raw = JSON.parse(stored.sourceJson);
+    } catch {
+      return fail("EXPORT_INTEGRITY");
+    }
+    const itemIds: string[] = [],
+      collectionIds = new Set<string>(),
+      assets: { asset: ReportAsset; kind: "IMAGE" | "DOCUMENT" }[] = [];
+    if (row.kind === "TABULAR") {
+      const parsed = TabularExportSnapshotSchema.safeParse(raw);
+      if (!parsed.success || parsed.data.ownerId !== owner) return fail("EXPORT_INTEGRITY");
+      for (const item of parsed.data.metadata) {
+        itemIds.push(item.itemId);
+        collectionIds.add(item.collectionId);
+      }
+    } else {
+      const parsed = ReportSnapshotSchema.safeParse(raw);
+      if (!parsed.success || parsed.data.ownerId !== owner) return fail("EXPORT_INTEGRITY");
+      for (const item of parsed.data.items) {
+        itemIds.push(item.itemId);
+        collectionIds.add(item.collectionId);
+        for (const asset of item.images ?? []) assets.push({ asset, kind: "IMAGE" });
+      }
+      for (const entry of parsed.data.collectionInsurance ?? [])
+        collectionIds.add(entry.collectionId);
+      for (const asset of parsed.data.proofs ?? []) assets.push({ asset, kind: "DOCUMENT" });
+    }
+    // Reauthorize identities, not whole-source equality: ordinary edits preserve as-of snapshots.
+    const parents = [...collectionIds];
+    for (let offset = 0; offset < parents.length; offset += 32) {
+      const batch = parents.slice(offset, offset + 32);
+      const rows = await tx.$queryRaw<{ id: string }[]>(
+        Prisma.sql`SELECT id FROM "Collection" WHERE "ownerId"=${owner} AND "deletedAt" IS NULL AND id IN (${Prisma.join(batch.map((id) => Prisma.sql`${id}::uuid`))})`,
+      );
+      if (rows.length !== batch.length) return fail("EXPORT_NOT_FOUND");
+    }
+    for (let offset = 0; offset < itemIds.length; offset += 32) {
+      const batch = itemIds.slice(offset, offset + 32);
+      const rows = await tx.$queryRaw<{ id: string }[]>(
+        Prisma.sql`SELECT i.id FROM "CollectibleItem" i JOIN "Collection" c ON c.id=i."collectionId" AND c."ownerId"=i."ownerId" WHERE i."ownerId"=${owner} AND i."deletedAt" IS NULL AND c."deletedAt" IS NULL AND i.id IN (${Prisma.join(batch.map((id) => Prisma.sql`${id}::uuid`))})`,
+      );
+      if (rows.length !== batch.length) return fail("EXPORT_NOT_FOUND");
+    }
+    for (let offset = 0; offset < assets.length; offset += 16) {
+      const batch = assets.slice(offset, offset + 16);
+      const tuples = batch.map(
+        ({ asset, kind }) =>
+          Prisma.sql`(${asset.assetId}::uuid,${asset.itemId}::uuid,${kind}::text,${asset.storageKey}::text,${asset.mimeType}::text,${asset.byteSize}::bigint,${asset.checksumSha256}::text)`,
+      );
+      const rows = await tx.$queryRaw<{ id: string }[]>(
+        Prisma.sql`SELECT a.id FROM (VALUES ${Prisma.join(tuples)}) e(id,item,kind,key,mime,bytes,hash) JOIN "MediaAsset" a ON a.id=e.id AND a."ownerId"=${owner} AND a.kind::text=e.kind AND a.status='READY' AND a."cleanupStartedAt" IS NULL AND a."storageKey"=e.key AND a."mimeType"=e.mime AND a."byteSize"=e.bytes AND a."checksumSha256"=e.hash WHERE (e.kind='DOCUMENT' AND EXISTS(SELECT 1 FROM "DocumentLink" l WHERE l."assetId"=a.id AND l."itemId"=e.item AND l."ownerId"=${owner})) OR (e.kind='IMAGE' AND EXISTS(SELECT 1 FROM "MediaLink" l WHERE l."assetId"=a.id AND l."itemId"=e.item AND l."ownerId"=${owner}))`,
+      );
+      if (rows.length !== batch.length) return fail("EXPORT_NOT_FOUND");
+    }
+    tx.checkBudget();
+  }
   async function permission(tx: BoundedSearchReadTransaction, owner: string, row: Row) {
     if (row.kind === "TABULAR") {
       await exports.validateExportRequestInTransaction(tx, { userId: owner }, row.request);
+      await capturedPermission(tx, owner, row);
       return;
     }
     const request = parseInsuranceReportOptions(row.request);
@@ -96,6 +174,7 @@ export function createArtifactAccessService(
         includeLocations: request.include.includes("storageLocations"),
       },
     );
+    await capturedPermission(tx, owner, row);
   }
   async function resolve(
     owner: string,
