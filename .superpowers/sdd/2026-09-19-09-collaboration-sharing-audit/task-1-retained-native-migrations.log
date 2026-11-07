@@ -1,0 +1,19 @@
+Loaded Prisma config from prisma.config.ts.
+
+Prisma schema loaded from prisma/schema.prisma.
+Datasource "db": PostgreSQL database "sammlerraum_test", schema "public" at "localhost:5432"
+
+47 migrations found in prisma/migrations
+
+Applying migration `20261107030000_collection_memberships`
+Applying migration `20261107031000_private_ownership_transition_guards`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20261107030000_collection_memberships/
+    └─ migration.sql
+  └─ 20261107031000_private_ownership_transition_guards/
+    └─ migration.sql
+
+All migrations have been successfully applied.

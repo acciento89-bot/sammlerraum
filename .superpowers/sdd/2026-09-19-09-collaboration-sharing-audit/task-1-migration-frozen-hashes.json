@@ -1,0 +1,27 @@
+[
+  {
+    "path": "packages/db/prisma/migrations/20261107030000_collection_memberships/migration.sql",
+    "sha256": "e0227c325e59a5c2c028825fd12d16f80650b967a9bc502fe5bd4b223613c5e7",
+    "bytes": 7564
+  },
+  {
+    "path": "packages/db/prisma/migrations/20261107031000_private_ownership_transition_guards/migration.sql",
+    "sha256": "d2cc81175b1100d3a83ad175d1a1f1a03e68b690b1398fbfbd7b2ca3279c5d0f",
+    "bytes": 3416
+  },
+  {
+    "path": "packages/db/prisma/migrations/20261107032000_transferred_valuation_authorship/migration.sql",
+    "sha256": "a4844bab4daaaad3eed954f2a116ccf5f7b3d4d87649a5ebad3b8c18a9c24c32",
+    "bytes": 2846
+  },
+  {
+    "path": "packages/db/prisma/migrations/20261107033000_transferred_grading_identity/migration.sql",
+    "sha256": "4f2fbaa44d7c1a60de6460aba610ecda86690dd9ad70a6077cf776359fb172ab",
+    "bytes": 1856
+  },
+  {
+    "path": "packages/db/prisma/migrations/20261107034000_transferred_private_media/migration.sql",
+    "sha256": "ebaccd668e64c74e65cabea92d65229c7e1af628373b7a89d887ef6039a5bb6f",
+    "bytes": 2848
+  }
+]

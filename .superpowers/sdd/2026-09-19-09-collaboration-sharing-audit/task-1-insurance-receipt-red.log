@@ -1,0 +1,80 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/collaboration/membership-service.test.ts (12 tests | 3 failed) 557ms
+   × strict membership inputs > rejects malformed Unicode user IDs instead of normalizing into another identity 6ms
+     → expected true to be false // Object.is equality
+   ✓ actual collection membership and atomic ownership > transfers ownership atomically and leaves exactly one derived owner 142ms
+   ✓ actual collection membership and atomic ownership > never accepts a second OWNER through membership creation or role editing 11ms
+   ✓ actual collection membership and atomic ownership > checks real membership and limits an Admin below Owner authority 16ms
+   ✓ actual collection membership and atomic ownership > rejects stale role decisions and a transfer without explicit private-data confirmation 8ms
+   ✓ actual collection membership and atomic ownership > allows member self-removal but never removes the sole owner 11ms
+   ✓ actual collection membership and atomic ownership > serializes simultaneous transfers so only one current owner decision wins 35ms
+   ✓ actual collection membership and atomic ownership > transfers a populated collection without changing item IDs, quantities or raw price digits 22ms
+   × actual collection membership and atomic ownership > preserves private collection and item insurance through an explicitly confirmed transfer 22ms
+     → MEMBERSHIP_TRANSFER_BLOCKED
+   ✓ actual collection membership and atomic ownership > retains a completed transfer and collection when the previous owner erases their account 19ms
+   ✓ actual collection membership and atomic ownership > prevents arbitrary database owner changes and a duplicate owner membership 11ms
+   × actual collection membership and atomic ownership > cannot persist a claimed completed ownership transition without actually changing the owner 8ms
+     → promise resolved "1" instead of rejecting
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/collaboration/membership-service.test.ts > strict membership inputs > rejects malformed Unicode user IDs instead of normalizing into another identity
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ packages/domain/src/collaboration/membership-service.test.ts:30:134
+     28| describe("strict membership inputs",()=>{
+     29|   it("rejects malformed Unicode user IDs instead of normalizing into a…
+     30|     expect(MemberMutationSchema.safeParse({collectionId:randomUUID(),u…
+       |                                                                                                                                      ^
+     31|   });
+     32| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  |workspace| packages/domain/src/collaboration/membership-service.test.ts > actual collection membership and atomic ownership > preserves private collection and item insurance through an explicitly confirmed transfer
+MembershipError: MEMBERSHIP_TRANSFER_BLOCKED
+ ❯ fail packages/domain/src/collaboration/membership-service.ts:28:9
+     26| type Member = { userId: string; role: Role };
+     27| function fail(code: MembershipError["code"]): never {
+     28|   throw new MembershipError(code);
+       |         ^
+     29| }
+     30| function parse<T>(schema: z.ZodType<T>, input: unknown): T {
+ ❯ packages/domain/src/collaboration/membership-service.ts:180:43
+ ❯ database.$transaction.isolationLevel packages/domain/src/search/search-read.ts:60:26
+ ❯ Proxy._transactionWithCallback node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:861:18
+ ❯ runSearchTransaction packages/domain/src/search/search-read.ts:32:22
+ ❯ packages/domain/src/collaboration/membership-service.test.ts:257:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  |workspace| packages/domain/src/collaboration/membership-service.test.ts > actual collection membership and atomic ownership > cannot persist a claimed completed ownership transition without actually changing the owner
+AssertionError: promise resolved "1" instead of rejecting
+
+- Expected: 
+Error {
+  "message": "rejected promise",
+}
+
++ Received: 
+1
+
+ ❯ packages/domain/src/collaboration/membership-service.test.ts:281:295
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 9 passed (12)
+   Start at  04:27:47
+   Duration  1.02s (transform 131ms, setup 6ms, collect 293ms, tests 557ms, environment 0ms, prepare 35ms)
+

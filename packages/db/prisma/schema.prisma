@@ -130,21 +130,28 @@ model User {
   customMoneyEvents          CustomMoneyInterpretationEvent[]
   catalogMoneyEvents         CatalogMoneyInterpretationEvent[]
 
-  reportJobs ReportJob[]
+  reportJobs               ReportJob[]
+  collectionMemberships    CollectionMember[]
+  collectionTransfersFrom  CollectionOwnershipTransfer[] @relation("CollectionTransferFrom")
+  collectionTransfersTo    CollectionOwnershipTransfer[] @relation("CollectionTransferTo")
+  collectionTransfersActed CollectionOwnershipTransfer[] @relation("CollectionTransferActor")
 
   @@unique([email])
   @@map("user")
 }
 
 model Collection {
-  id                     String                  @id @default(uuid()) @db.Uuid
+  collaborationRevision  Int                           @default(0)
+  members                CollectionMember[]
+  ownershipTransfers     CollectionOwnershipTransfer[]
+  id                     String                        @id @default(uuid()) @db.Uuid
   ownerId                String
   name                   String
-  visibility             Visibility              @default(PRIVATE)
-  createdAt              DateTime                @default(now())
-  updatedAt              DateTime                @updatedAt
+  visibility             Visibility                    @default(PRIVATE)
+  createdAt              DateTime                      @default(now())
+  updatedAt              DateTime                      @updatedAt
   deletedAt              DateTime?
-  owner                  User                    @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  owner                  User                          @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   nodes                  CollectionNode[]
   items                  CollectibleItem[]
   customFieldDefinitions CustomFieldDefinition[]
@@ -528,7 +535,7 @@ model MediaLink {
   title     String?         @db.VarChar(255)
   createdAt DateTime        @default(now())
   asset     MediaAsset      @relation(fields: [assetId, ownerId], references: [id, ownerId], onDelete: Restrict)
-  item      CollectibleItem @relation(fields: [itemId, ownerId], references: [id, ownerId], onDelete: Cascade)
+  item      CollectibleItem @relation(fields: [itemId, ownerId], references: [id, ownerId], onDelete: Cascade, onUpdate: NoAction)
 
   @@unique([itemId, assetId, purpose])
   @@index([itemId, position])
@@ -546,7 +553,7 @@ model DocumentLink {
   title      String?          @db.VarChar(255)
   createdAt  DateTime         @default(now())
   asset      MediaAsset       @relation(fields: [assetId, ownerId], references: [id, ownerId], onDelete: Restrict)
-  item       CollectibleItem  @relation(fields: [itemId, ownerId], references: [id, ownerId], onDelete: Cascade)
+  item       CollectibleItem  @relation(fields: [itemId, ownerId], references: [id, ownerId], onDelete: Cascade, onUpdate: NoAction)
 
   @@unique([itemId, assetId])
   @@index([itemId, position])
@@ -824,7 +831,7 @@ model Grading {
   source          String?         @db.VarChar(1000)
   createdAt       DateTime        @default(now())
   updatedAt       DateTime        @updatedAt
-  item            CollectibleItem @relation(fields: [itemId, ownerId, itemQuantity], references: [id, ownerId, quantity], onDelete: Cascade, onUpdate: Restrict)
+  item            CollectibleItem @relation(fields: [itemId, ownerId, itemQuantity], references: [id, ownerId, quantity], onDelete: Cascade, onUpdate: NoAction)
 
   @@unique([ownerId, providerKey, certificateKey])
   @@index([itemId, ownerId])
@@ -836,20 +843,21 @@ enum ValuationType {
 
 // Append-only personal per-unit estimates. SQL prohibits UPDATE; private erasure can DELETE.
 model Valuation {
-  id                String          @id @default(uuid()) @db.Uuid
-  itemId            String          @db.Uuid
-  ownerId           String
-  actorUserId       String
-  type              ValuationType   @default(MANUAL)
-  basis             String          @default("PER_UNIT") @db.VarChar(8)
-  amountMinor       BigInt
-  currency          String          @db.VarChar(3)
-  minorUnitExponent Int
-  note              String?         @db.VarChar(2000)
-  observedAt        DateTime        @db.Timestamptz(3)
-  createdAt         DateTime        @default(now()) @db.Timestamptz(3)
-  item              CollectibleItem @relation(fields: [itemId, ownerId], references: [id, ownerId], onDelete: Cascade, onUpdate: Restrict)
-  actor             User            @relation(fields: [actorUserId], references: [id], onDelete: Cascade, onUpdate: Restrict)
+  id                   String          @id @default(uuid()) @db.Uuid
+  itemId               String          @db.Uuid
+  ownerId              String
+  actorUserId          String?
+  ownershipTransferred Boolean         @default(false)
+  type                 ValuationType   @default(MANUAL)
+  basis                String          @default("PER_UNIT") @db.VarChar(8)
+  amountMinor          BigInt
+  currency             String          @db.VarChar(3)
+  minorUnitExponent    Int
+  note                 String?         @db.VarChar(2000)
+  observedAt           DateTime        @db.Timestamptz(3)
+  createdAt            DateTime        @default(now()) @db.Timestamptz(3)
+  item                 CollectibleItem @relation(fields: [itemId, ownerId], references: [id, ownerId], onDelete: Cascade, onUpdate: NoAction)
+  actor                User?           @relation(fields: [actorUserId], references: [id], onDelete: SetNull, onUpdate: Restrict)
 
   @@index([itemId, ownerId, observedAt(sort: Desc), createdAt(sort: Desc), id(sort: Desc)])
   @@index([actorUserId])
@@ -1159,7 +1167,7 @@ model ImportJob {
   uploadRequestId        String?             @db.Uuid
   uploadOptions          Json?
   uploadCompletedAt      DateTime?
-  sourceExpiresAt        DateTime            @default(dbgenerated("(timezone('UTC'::text, CURRENT_TIMESTAMP) + '24 hours'::interval)"))
+  sourceExpiresAt        DateTime            @default(dbgenerated("(timezone('UTC'::text, CURRENT_TIMESTAMP) + '24:00:00'::interval)"))
   lastDispatchedAt       DateTime?
   parserOptions          Json?
   parsedHeader           Json?
@@ -1289,8 +1297,8 @@ model InsuranceRecord {
   createdAt         DateTime         @default(now())
   updatedAt         DateTime         @updatedAt
   owner             User             @relation(fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: Restrict)
-  collection        Collection?      @relation(fields: [collectionId, ownerId], references: [id, ownerId], onDelete: Cascade, onUpdate: Restrict)
-  item              CollectibleItem? @relation(fields: [itemId, ownerId], references: [id, ownerId], onDelete: Cascade, onUpdate: Restrict)
+  collection        Collection?      @relation(fields: [collectionId, ownerId], references: [id, ownerId], onDelete: Cascade, onUpdate: NoAction)
+  item              CollectibleItem? @relation(fields: [itemId, ownerId], references: [id, ownerId], onDelete: Cascade, onUpdate: NoAction)
 
   @@index([ownerId, updatedAt, id])
 }
@@ -1336,4 +1344,47 @@ model ImportSourceObject {
   job              ImportJob? @relation(fields: [jobId], references: [id], onDelete: SetNull, onUpdate: NoAction)
 
   @@index([lastAttemptAt, expiresAt, id])
+}
+
+enum CollectionMemberRole {
+  ADMIN
+  EDITOR
+  VIEWER
+}
+
+// OWNER is derived solely from Collection.ownerId, never a second membership row.
+model CollectionMember {
+  collectionId String               @db.Uuid
+  userId       String
+  role         CollectionMemberRole
+  createdAt    DateTime             @default(dbgenerated("timezone('UTC'::text, CURRENT_TIMESTAMP)")) @db.Timestamp(3)
+  updatedAt    DateTime             @default(dbgenerated("timezone('UTC'::text, CURRENT_TIMESTAMP)")) @db.Timestamp(3)
+  collection   Collection           @relation(fields: [collectionId], references: [id], onDelete: Cascade, onUpdate: Restrict)
+  user         User                 @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Restrict)
+
+  @@id([collectionId, userId])
+  @@index([userId, collectionId])
+}
+
+// Transaction-bound ownership transition receipt; never contains item values or file bytes.
+model CollectionOwnershipTransfer {
+  id            String     @id @db.Uuid
+  collectionId  String     @db.Uuid
+  fromOwnerId   String?
+  toOwnerId     String?
+  actorId       String?
+  fromRevision  Int
+  toRevision    Int
+  transactionId String     @db.VarChar(20)
+  createdAt     DateTime   @default(dbgenerated("timezone('UTC'::text, CURRENT_TIMESTAMP)")) @db.Timestamp(3)
+  collection    Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade, onUpdate: Restrict)
+  fromOwner     User?      @relation("CollectionTransferFrom", fields: [fromOwnerId], references: [id], onDelete: SetNull, onUpdate: Restrict)
+  toOwner       User?      @relation("CollectionTransferTo", fields: [toOwnerId], references: [id], onDelete: SetNull, onUpdate: Restrict)
+  actor         User?      @relation("CollectionTransferActor", fields: [actorId], references: [id], onDelete: SetNull, onUpdate: Restrict)
+
+  @@unique([collectionId, toRevision])
+  @@unique([collectionId, transactionId])
+  @@index([fromOwnerId])
+  @@index([toOwnerId])
+  @@index([actorId])
 }

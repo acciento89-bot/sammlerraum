@@ -20,7 +20,7 @@ export type ManualValuation = Money & {
   id: string;
   itemId: string;
   ownerId: string;
-  actorUserId: string;
+  actorUserId: string | null;
   type: "MANUAL";
   basis: "PER_UNIT";
   minorUnitExponent: number;

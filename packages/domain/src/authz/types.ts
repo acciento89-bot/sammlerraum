@@ -8,7 +8,8 @@ export type PolicyAction =
   | "item.delete"
   | "document.view"
   | "comment.create"
-  | "members.manage";
+  | "members.manage"
+  | "ownership.transfer";
 
 export type Visibility = "PRIVATE" | "UNLISTED" | "PUBLIC";
 export type CollectionRole = "OWNER" | "ADMIN" | "EDITOR" | "VIEWER";

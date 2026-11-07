@@ -51,7 +51,8 @@
     "./reports/report-service": "./src/reports/report-service.ts",
     "./imports/import-workflow-service": "./src/imports/import-workflow-service.ts",
     "./search/search-read": "./src/search/search-read.ts",
-    "./exports/artifact-access-service": "./src/exports/artifact-access-service.ts"
+    "./exports/artifact-access-service": "./src/exports/artifact-access-service.ts",
+    "./collaboration/membership-service": "./src/collaboration/membership-service.ts"
   },
   "scripts": {
     "build": "pnpm typecheck",

@@ -1,0 +1,39 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/collaboration/membership-service.test.ts (13 tests | 1 failed) 585ms
+   ✓ strict membership inputs > rejects malformed Unicode user IDs instead of normalizing into another identity 2ms
+   ✓ actual collection membership and atomic ownership > transfers ownership atomically and leaves exactly one derived owner 144ms
+   ✓ actual collection membership and atomic ownership > never accepts a second OWNER through membership creation or role editing 11ms
+   ✓ actual collection membership and atomic ownership > checks real membership and limits an Admin below Owner authority 16ms
+   ✓ actual collection membership and atomic ownership > rejects stale role decisions and a transfer without explicit private-data confirmation 8ms
+   ✓ actual collection membership and atomic ownership > allows member self-removal but never removes the sole owner 12ms
+   ✓ actual collection membership and atomic ownership > serializes simultaneous transfers so only one current owner decision wins 36ms
+   ✓ actual collection membership and atomic ownership > transfers a populated collection without changing item IDs, quantities or raw price digits 29ms
+   ✓ actual collection membership and atomic ownership > preserves private collection and item insurance through an explicitly confirmed transfer 31ms
+   ✓ actual collection membership and atomic ownership > retains a completed transfer and collection when the previous owner erases their account 20ms
+   ✓ actual collection membership and atomic ownership > prevents arbitrary database owner changes and a duplicate owner membership 10ms
+   ✓ actual collection membership and atomic ownership > cannot persist a claimed completed ownership transition without actually changing the owner 16ms
+   × actual collection membership and atomic ownership > feeds current database roles into the policy and withdraws access after member removal 7ms
+     → f.service.getCollectionAuthorizationFacts is not a function
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/collaboration/membership-service.test.ts > actual collection membership and atomic ownership > feeds current database roles into the policy and withdraws access after member removal
+TypeError: f.service.getCollectionAuthorizationFacts is not a function
+ ❯ packages/domain/src/collaboration/membership-service.test.ts:361:35
+    359|       const f=await fixture();await f.service.addMember(f.actor,{colle…
+    360|       const viewer=createTrustedActorFacts({type:"AUTHENTICATED",userI…
+    361|       const facts=await f.service.getCollectionAuthorizationFacts({use…
+       |                                   ^
+    362|       expect(authorize(viewer,"collection.view",facts).allowed).toBe(t…
+    363|       expect(authorize(viewer,"collection.edit",facts).allowed).toBe(f…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 12 passed (13)
+   Start at  04:30:53
+   Duration  1.07s (transform 142ms, setup 7ms, collect 305ms, tests 585ms, environment 0ms, prepare 44ms)
+

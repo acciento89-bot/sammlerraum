@@ -128,6 +128,7 @@ async function lockOwnedItem(
     JOIN "Collection" collection ON collection."id" = item."collectionId"
     WHERE item."id" = ${itemId}::uuid
       AND collection."ownerId" = ${actorUserId}
+      AND item."ownerId" = ${actorUserId}
       AND item."deletedAt" IS NULL
       AND collection."deletedAt" IS NULL
     FOR UPDATE OF item

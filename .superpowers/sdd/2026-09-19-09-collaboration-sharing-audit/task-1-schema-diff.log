@@ -1,0 +1,5 @@
+Loaded Prisma config from prisma.config.ts.
+
+-- AlterTable
+ALTER TABLE "ImportJob" ALTER COLUMN "sourceExpiresAt" SET DEFAULT (timezone('UTC'::text, CURRENT_TIMESTAMP) + '24 hours'::interval);
+

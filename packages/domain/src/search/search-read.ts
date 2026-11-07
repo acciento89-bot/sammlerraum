@@ -1,3 +1,4 @@
+import { MembershipError } from "@sammlerraum/contracts/collaboration";
 import { ReportError } from "@sammlerraum/contracts/reports";
 import { InsuranceError } from "@sammlerraum/contracts/insurance";
 import { ExportError } from "@sammlerraum/contracts/exports";
@@ -70,6 +71,7 @@ export async function runSearchTransaction<T>(
       return result;
     } catch (error) {
       if (
+        error instanceof MembershipError ||
         error instanceof ItemSearchError ||
         error instanceof FilterValidationError ||
         error instanceof SmartCollectionError ||

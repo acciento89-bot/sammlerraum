@@ -157,6 +157,7 @@ jobs:
           packages/domain/src/catalog/proposal-service.test.ts
           packages/domain/src/condition/condition-service.test.ts
           packages/domain/src/grading/grading-service.test.ts
+          packages/domain/src/collaboration/membership-service.test.ts
           packages/domain/src/valuations/valuation-service.test.ts
           packages/domain/src/valuations/valuation-query.test.ts
           packages/domain/src/search/legacy-money-query.integration.test.ts

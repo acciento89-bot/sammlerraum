@@ -21,6 +21,7 @@ const POLICY_ACTIONS = new Set<unknown>([
   "document.view",
   "comment.create",
   "members.manage",
+  "ownership.transfer",
 ] satisfies PolicyAction[]);
 
 const noPolicy = (): AuthorizationDecision => ({ allowed: false, reason: "NO_POLICY" });
@@ -77,7 +78,8 @@ function actionMatchesResource(action: PolicyAction, resource: ResourceFacts): b
     action === "collection.view" ||
     action === "collection.edit" ||
     action === "collection.delete" ||
-    action === "members.manage"
+    action === "members.manage" ||
+    action === "ownership.transfer"
   ) {
     return resource.type === "COLLECTION";
   }
@@ -114,7 +116,11 @@ export function authorize(
   if (action === "item.edit") {
     return allowForRole(actor, resource, ["OWNER", "ADMIN", "EDITOR"]) ?? denied();
   }
-  if (action === "collection.delete" || action === "item.delete") {
+  if (
+    action === "collection.delete" ||
+    action === "item.delete" ||
+    action === "ownership.transfer"
+  ) {
     return allowForRole(actor, resource, ["OWNER"]) ?? denied();
   }
   if (action === "members.manage") {

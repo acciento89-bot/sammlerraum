@@ -1,0 +1,80 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/collaboration/membership-service.test.ts (24 tests | 1 failed) 6312ms
+   ✓ strict membership inputs > rejects malformed Unicode user IDs instead of normalizing into another identity 2ms
+   ✓ actual collection membership and atomic ownership > transfers ownership atomically and leaves exactly one derived owner 139ms
+   ✓ actual collection membership and atomic ownership > never accepts a second OWNER through membership creation or role editing 12ms
+   ✓ actual collection membership and atomic ownership > checks real membership and limits an Admin below Owner authority 16ms
+   ✓ actual collection membership and atomic ownership > rejects stale role decisions and a transfer without explicit private-data confirmation 9ms
+   ✓ actual collection membership and atomic ownership > allows member self-removal but never removes the sole owner 10ms
+   ✓ actual collection membership and atomic ownership > serializes simultaneous transfers so only one current owner decision wins 21ms
+   ✓ actual collection membership and atomic ownership > transfers a populated collection without changing item IDs, quantities or raw price digits 28ms
+   ✓ actual collection membership and atomic ownership > preserves private collection and item insurance through an explicitly confirmed transfer 32ms
+   ✓ actual collection membership and atomic ownership > retains a completed transfer and collection when the previous owner erases their account 20ms
+   ✓ actual collection membership and atomic ownership > prevents arbitrary database owner changes and a duplicate owner membership 26ms
+   ✓ actual collection membership and atomic ownership > cannot persist a claimed completed ownership transition without actually changing the owner 14ms
+   ✓ actual collection membership and atomic ownership > feeds current database roles into the policy and withdraws access after member removal 12ms
+   ✓ actual collection membership and atomic ownership > preserves immutable manual valuation amounts and their real author through ownership transfer and author erasure 193ms
+   ✓ actual collection membership and atomic ownership > does not leave a concurrent real tag writer's private tag attached under the wrong owner 71ms
+   ✓ actual collection membership and atomic ownership > rejects a former owner's tag write that waited behind the actual ownership transfer 38ms
+   ✓ actual collection membership and atomic ownership > rejects a former owner's identifier write that waited behind the actual ownership transfer 32ms
+   ✓ actual collection membership and atomic ownership > copies private tags to the recipient without changing either owner's other collections 40ms
+   ✓ actual collection membership and atomic ownership > preserves exact grading certificates, quantity and timestamps during ownership transfer 33ms
+   ✓ actual collection membership and atomic ownership > rolls back the entire transfer on a recipient certificate conflict 37ms
+   ✓ actual collection membership and atomic ownership > transfers an actual private PDF upload without changing its bytes, identity, links or access boundary 161ms
+   ✓ actual collection membership and atomic ownership > does not transfer an asset also referenced by another collection 14ms
+   ✓ actual collection membership and atomic ownership > preserves real image originals and variants shared only inside the transferred collection 74ms
+   × actual collection membership and atomic ownership > blocks the transfer while the actual shared media advisory lock is held 5006ms
+     → Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/collaboration/membership-service.test.ts > actual collection membership and atomic ownership > blocks the transfer while the actual shared media advisory lock is held
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ packages/domain/src/collaboration/membership-service.test.ts:739:5
+    737|       } finally { await rm(root, { recursive: true, force: true }); }
+    738|     });
+    739|     it("blocks the transfer while the actual shared media advisory loc…
+       |     ^
+    740|       const f = await fixture();
+    741|       const item = await db.collectibleItem.create({ data: { ownerId: …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+⎯⎯⎯⎯⎯⎯ Unhandled Errors ⎯⎯⎯⎯⎯⎯
+
+Vitest caught 1 unhandled error during the test run.
+This might cause false positive tests. Resolve unhandled errors to make sure your tests are not affected.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+PrismaClientKnownRequestError: 
+Invalid `prisma.$queryRaw()` invocation:
+
+
+Raw query failed. Code: `N/A`. Message: `Failed to deserialize column of type 'void'. If you're using $queryRaw and this column is explicitly marked as `Unsupported` in your Prisma schema, try casting this column to any supported Prisma type such as `String`.`
+ ❯ vn.handleRequestError node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:238:13
+ ❯ vn.handleAndLogRequestError node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:184:12
+ ❯ vn.request node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:153:12
+ ❯ processTicksAndRejections node:internal/process/task_queues:104:5
+ ❯ a node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:1014:24
+ ❯ packages/domain/src/collaboration/membership-service.test.ts:748:9
+ ❯ Proxy._transactionWithCallback node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:861:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { code: 'P2010', meta: { driverAdapterError: { stack: 'DriverAdapterError: UnsupportedNativeDataType\n    at PgTransaction.queryRaw (file:///Volumes/SSK%20SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/node_modules/.pnpm/@prisma+adapter-pg@7.10.0/node_modules/@prisma/adapter-pg/dist/index.mjs:602:15)\n    at processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client-engine-runtime/src/interpreter/query-interpreter.ts:200:28\n    at e.run (/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client-engine-runtime/src/interpreter/query-interpreter.ts:115:40)\n    at execute (/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/core/engines/client/LocalExecutor.ts:81:12)\n    at yr.request (/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/core/engines/client/ClientEngine.ts:510:22)\n    at Object.singleLoader (/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:113:26)', message: 'UnsupportedNativeDataType', name: 'DriverAdapterError', cause: { kind: 'UnsupportedNativeDataType', type: 'void' }, constructor: 'Function<DriverAdapterError>', toString: 'Function<toString>' } }, clientVersion: '7.10.0', batchRequestIdx: undefined }
+This error originated in "packages/domain/src/collaboration/membership-service.test.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The latest test that might've caused the error is "blocks the transfer while the actual shared media advisory lock is held". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 23 passed (24)
+     Errors  1 error
+   Start at  05:05:25
+   Duration  6.84s (transform 187ms, setup 6ms, collect 368ms, tests 6.31s, environment 0ms, prepare 35ms)
+

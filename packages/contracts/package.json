@@ -33,7 +33,8 @@
     "./imports": "./src/imports.ts",
     "./exports": "./src/exports.ts",
     "./insurance": "./src/insurance.ts",
-    "./reports": "./src/reports.ts"
+    "./reports": "./src/reports.ts",
+    "./collaboration": "./src/collaboration.ts"
   },
   "scripts": {
     "build": "pnpm typecheck",
