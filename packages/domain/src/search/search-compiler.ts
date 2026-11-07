@@ -1,3 +1,4 @@
+import { markedDuplicatePredicate } from "./duplicate-filter";
 import { Prisma } from "@sammlerraum/db/search-sql";
 import type { ItemFilterLeaf, ItemFilterNode } from "@sammlerraum/contracts/search";
 import { searchFail, type SearchLifecycle } from "@sammlerraum/contracts/item-search";
@@ -284,8 +285,10 @@ export function compileFilter(
     }
     case "marketMoney":
       return market ? market.predicate(node) : searchFail("SEARCH_INVARIANT");
-    case "duplicate":
-      return searchFail("SEARCH_INVARIANT");
+    case "duplicate": {
+      const marked = markedDuplicatePredicate(owner);
+      return node.value ? marked : Prisma.sql`NOT (${marked})`;
+    }
   }
   const exhaustive: never = node;
   return exhaustive;

@@ -1240,3 +1240,7 @@ Original372334a independent review:With fixes,0Critical/1Important/2Minor. Root 
 ### 7Nov Phase10 accepted after exact corrected CI
 
 Actual corrected evidence d69f78f54fb80b729865a636a0c69acf564e2fca run42387013995 completedSUCCESS. Its source4709d23 closes all3 original single-review findings via the retained root consolidated TDD pass. All8Phase10tasks now reviewed/locally verified/committed/pushed and exactCI-green; canonical count63/91, no effort percentage inferred. Current Phase07market prerequisite is separate and unfinished: rights Task1 source0b9a6ea local142tests/typesPASS, Task2 native eligibility/caps active; no market/fullPhase07 checkoff, live activation or production claim from this count.
+
+### 7Nov market prerequisite accepted; duplicate integration active
+
+Exact617aa5cbea0584905563a731ff0c2d1c371f164c run42393762009 completedSUCCESS, including actual native and remaining workflow gates. The one market-prerequisite review and consolidated193336e correction are closed; Tasks1–5 accepted. Local baseline1653regular/1626native plus corrected90affected checks, types/lint/worker+web builds and160compiled DE/EN desktop/mobile search/dashboard casesPASS. Eighteen frozen migrations unchanged, historical proofs preserved. No fullPhase07 count added: real duplicate filtering and shared bulk authorization remain separate. Independent duplicate Task1 locally implemented with201affected native/pure checks and typesPASS; UI/saved/dashboard tests and its one final review remain pending. Canonical63/91.

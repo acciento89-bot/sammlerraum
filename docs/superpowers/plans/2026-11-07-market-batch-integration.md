@@ -32,6 +32,6 @@ Ruling: use current existing ownedCandidates and candidateFrom to derive id/quan
 
 ### Task 5: Final local/CI proof and one prerequisite review
 
-- [ ] Capture actual bounded synthetic PostgreSQL plans/counts and allowed FILTER/aggregate execution, Phase06 regression, default-OFF composition and zero fetch calls; no speculative index migration.
-- [ ] Add actual native CI tests, operational capability/limits documentation; run relevant regular/types/lint/build/browsers after focused gates.
-- [ ] One fresh whole-prerequisite review followed by one consolidated root correction; preserve all proof workspaces and original migration bytes. Existing DraftPR push/readback and exact CI only; no fullPhase07 acceptance until other prerequisites close.
+- [x] Capture actual bounded synthetic PostgreSQL plans/counts and allowed FILTER/aggregate execution, Phase06 regression, default-OFF composition and zero fetch calls; no speculative index migration.
+- [x] Add actual native CI tests, operational capability/limits documentation; run relevant regular/types/lint/build/browsers after focused gates.
+- [x] One fresh whole-prerequisite review followed by one consolidated root correction; preserve all proof workspaces and original migration bytes. Existing DraftPR push/readback and exact CI only; no fullPhase07 acceptance until other prerequisites close.

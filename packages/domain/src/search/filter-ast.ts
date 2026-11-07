@@ -29,8 +29,6 @@ export function validateCurrentFilterAvailability(
       pending.push(...node.children.toReversed());
     } else if (node.kind === "not") {
       pending.push(node.child);
-    } else if (node.kind === "duplicate") {
-      throw new FilterValidationError("FILTER_UNAVAILABLE", "DUPLICATE_NOT_IMPLEMENTED");
     } else if (node.kind === "marketMoney" && !marketPrepared) {
       throw new FilterValidationError("FILTER_UNAVAILABLE", "MARKET_FILTER_SEAM_UNAVAILABLE");
     } else if (

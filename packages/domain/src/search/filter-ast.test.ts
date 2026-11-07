@@ -442,7 +442,6 @@ describe("closed typed filter language", () => {
 
 describe("current availability is whole-tree and never a truth evaluator", () => {
   it.each([
-    { kind: "duplicate", value: false },
     { kind: "purchaseMoney", test: legacy },
     field("MONEY", legacy),
     field("MONEY", legacy, "CATALOG"),
@@ -460,6 +459,8 @@ describe("current availability is whole-tree and never a truth evaluator", () =>
   it("permits structural manual/presence declarations without claiming runtime executability", () => {
     for (const leaf of [
       category,
+      { kind: "duplicate", value: false },
+      { kind: "duplicate", value: true },
       { kind: "manualMoney", test: canonical },
       { kind: "purchaseMoney", test: { op: "present" } },
       field("MONEY", { op: "missing" }),
@@ -475,7 +476,10 @@ describe("current availability is whole-tree and never a truth evaluator", () =>
       ],
     };
     expect(() => validateCurrentFilterAvailability(envelope(root))).toThrowError(
-      expect.objectContaining({ code: "FILTER_UNAVAILABLE", reason: "DUPLICATE_NOT_IMPLEMENTED" }),
+      expect.objectContaining({
+        code: "FILTER_UNAVAILABLE",
+        reason: "LEGACY_MONEY_INTERPRETATION_UNAVAILABLE",
+      }),
     );
   });
 });

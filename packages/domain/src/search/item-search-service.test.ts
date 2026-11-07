@@ -547,7 +547,6 @@ describe.runIf(enabled)("owned item search PostgreSQL", () => {
   });
   it("rejects all unavailable families below NOT/OR even on empty candidates", async () => {
     const leaves = [
-      { kind: "duplicate", value: true },
       {
         kind: "purchaseMoney",
         test: {
