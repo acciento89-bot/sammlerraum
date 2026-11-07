@@ -832,7 +832,8 @@
     "saveApplied": "Apply your changes before saving this search.",
     "navDashboard": "Dashboard",
     "openDashboard": "Open selection dashboard",
-    "canonicalRangeHelp": "Amount bounds compare evidenced prices exactly, including different recorded decimal places. Unresolved prices anywhere in the checked owned inventory prevent this search."
+    "canonicalRangeHelp": "Amount bounds compare evidenced prices exactly, including different recorded decimal places. Unresolved prices anywhere in the checked owned inventory prevent this search.",
+    "duplicateHelp": "Uses your explicit duplicate marks while both entries and their collections remain yours and have not been deleted."
   },
   "SavedSearches": {
     "title": "Saved searches",

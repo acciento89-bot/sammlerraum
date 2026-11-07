@@ -1,3 +1,5 @@
+import { createWishlistService } from "@sammlerraum/domain/wishlist/wishlist-service";
+import { createItemService } from "@sammlerraum/domain/items/item-service";
 import { resolve } from "node:path";
 import { expect, test, type Page } from "@playwright/test";
 import { searchFixture, cleanupSearchFixture, db, enabled, origin } from "./support/search-fixture";
@@ -781,7 +783,21 @@ for (const locale of ["de", "en"] as const) {
               root: {
                 kind: "and",
                 children: [
-                  { kind: "duplicate", value: false },
+                  {
+                    kind: "marketMoney",
+                    selector: {
+                      mode: "CURRENT_ITEM_MAPPING",
+                      providerId: "fixture",
+                      identifierNamespace: "fixture",
+                      identifierType: "product",
+                      kind: "LAST_SOLD",
+                      sourceMetric: "market",
+                      qualifiers: {},
+                      currency: "EUR",
+                      minorUnitExponent: 2,
+                    },
+                    test: { op: "present" },
+                  },
                   { kind: "tags", test: { op: "missing" } },
                 ],
               },
@@ -800,9 +816,9 @@ for (const locale of ["de", "en"] as const) {
       expect((await response).status()).toBe(422);
       await panel(page, locale);
       await expect(page.getByRole("button", { name: c.apply, exact: true })).toBeDisabled();
-      const unavailable = page.getByRole("group", { name: c.families.duplicate, exact: true });
+      const unavailable = page.getByRole("group", { name: c.families.marketMoney, exact: true });
       await unavailable.getByRole("button", { name: c.edit, exact: true }).click();
-      await expect(unavailable.getByLabel(c.value, { exact: true })).toHaveValue(c.false);
+      await expect(unavailable).toContainText("LAST_SOLD");
       await unavailable.getByRole("button", { name: c.remove, exact: true }).click();
       await apply(page, locale, 1);
       await cleanFilter(page, locale);
@@ -2374,6 +2390,60 @@ for (const locale of ["de", "en"] as const) {
           `../../.superpowers/sdd/2026-11-07-market-batch-integration/market-${locale}-${info.project.name}.png`,
         ),
       });
+    } finally {
+      await cleanupSearchFixture(f);
+    }
+  });
+}
+
+for (const locale of ["de", "en"] as const) {
+  test(`${locale}: real duplicate filters remain editable and refresh live marks in owned search`, async ({
+    page,
+  }, info) => {
+    test.skip(!enabled, "Requires guarded auth database");
+    const f = await searchFixture();
+    try {
+      const second = await createItemService(db!, f.ownerId).createItem({
+        collectionId: f.collectionId,
+        title: "Explicit duplicate specimen",
+        quantity: 1,
+      });
+      const marks = createWishlistService(db!),
+        actor = { userId: f.ownerId };
+      await marks.markDuplicateRelation(actor, f.itemId, second.id);
+      await signIn(page, f);
+      await page.goto(`/${locale}/search`);
+      await expect(page.getByTestId("search-total")).toContainText("2");
+      await addLeaf(page, locale, "duplicate");
+      const c = copies[locale],
+        group = page.getByRole("group", { name: c.families.duplicate, exact: true });
+      await expect(group.getByLabel(c.value, { exact: true })).toBeEnabled();
+      await group.getByLabel(c.value, { exact: true }).selectOption("true");
+      await apply(page, locale, 2);
+      await expect(
+        page.getByRole("link", { name: "Explicit duplicate specimen", exact: true }),
+      ).toBeVisible();
+      await panel(page, locale);
+      await group.getByLabel(c.value, { exact: true }).selectOption("false");
+      await apply(page, locale, 0);
+      await marks.unmarkDuplicateRelation(actor, f.itemId, second.id);
+      await panel(page, locale);
+      await apply(page, locale, 2);
+      await panel(page, locale);
+      await group.getByLabel(c.value, { exact: true }).selectOption("true");
+      await apply(page, locale, 0);
+      await marks.markDuplicateRelation(actor, f.itemId, second.id);
+      await panel(page, locale);
+      await apply(page, locale, 2);
+      await page.screenshot({
+        path: resolve(
+          `../../.superpowers/sdd/2026-11-07-duplicate-filter-integration/duplicate-${locale}-${info.project.name}.png`,
+        ),
+        fullPage: true,
+      });
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
+        true,
+      );
     } finally {
       await cleanupSearchFixture(f);
     }

@@ -204,3 +204,13 @@ it("enables supported legacy ranges only with affirmative consumer rollout", () 
   }).root;
   expect(available(unsupported, true)).toBe(false);
 });
+
+it.each([true, false])(
+  "makes the actual duplicate family available while preserving its Boolean operand: %s",
+  (value) => {
+    const leaf = { kind: "duplicate" as const, value };
+    expect(available(leaf)).toBe(true);
+    expect(fromDraft(toDraft({ version: 1, root: leaf }))).toEqual({ version: 1, root: leaf });
+    expect(available({ kind: "not", child: leaf })).toBe(true);
+  },
+);

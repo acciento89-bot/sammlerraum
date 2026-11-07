@@ -265,7 +265,24 @@ describe.runIf(enabled)("native private query POST transport", () => {
         ['{"cursor":"a="}', 400, "SEARCH_INVALID"],
         [
           JSON.stringify({
-            f: filter({ kind: "not", child: { kind: "duplicate", value: true } }),
+            f: filter({
+              kind: "not",
+              child: {
+                kind: "marketMoney",
+                selector: {
+                  mode: "CURRENT_ITEM_MAPPING",
+                  providerId: "fixture",
+                  identifierNamespace: "fixture",
+                  identifierType: "product",
+                  kind: "LAST_SOLD",
+                  sourceMetric: "market",
+                  qualifiers: {},
+                  currency: "EUR",
+                  minorUnitExponent: 2,
+                },
+                test: { op: "present" },
+              },
+            }),
             text: "private-body-secret",
           }),
           422,

@@ -101,7 +101,24 @@ describe.runIf(enabled)("native saved-query authorized routes", () => {
     }
     expect((await h.GET(new Request(`${origin}/?cursor=${"x".repeat(32769)}`))).status).toBe(414);
     for (const [root, status] of [
-      [{ kind: "duplicate", value: true }, 422],
+      [
+        {
+          kind: "marketMoney",
+          selector: {
+            mode: "CURRENT_ITEM_MAPPING",
+            providerId: "fixture",
+            identifierNamespace: "fixture",
+            identifierType: "product",
+            kind: "LAST_SOLD",
+            sourceMetric: "market",
+            qualifiers: {},
+            currency: "EUR",
+            minorUnitExponent: 2,
+          },
+          test: { op: "present" },
+        },
+        422,
+      ],
       [{ kind: "collection", test: { op: "eq", value: randomUUID() } }, 422],
     ] as const) {
       expect(

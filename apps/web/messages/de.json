@@ -832,7 +832,8 @@
     "saveApplied": "Wende deine Änderungen zuerst an, bevor du die Suche speicherst.",
     "navDashboard": "Übersicht",
     "openDashboard": "Auswahl als Übersicht öffnen",
-    "canonicalRangeHelp": "Betragsgrenzen vergleichen belegte Preise exakt, auch wenn sie mit unterschiedlichen Nachkommastellen erfasst wurden. Nicht eindeutig erklärte Preise im geprüften eigenen Bestand verhindern diese Suche."
+    "canonicalRangeHelp": "Betragsgrenzen vergleichen belegte Preise exakt, auch wenn sie mit unterschiedlichen Nachkommastellen erfasst wurden. Nicht eindeutig erklärte Preise im geprüften eigenen Bestand verhindern diese Suche.",
+    "duplicateHelp": "Berücksichtigt deine markierten Dubletten, solange beide Einträge und ihre Sammlungen weiterhin zu deinem Bestand gehören und nicht gelöscht sind."
   },
   "SavedSearches": {
     "title": "Gespeicherte Suchen",

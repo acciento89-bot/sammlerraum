@@ -62,57 +62,64 @@ export function FilterLeafEditor({
           onChange={(e) => onChange(newLeaf(e.target.value as LeafValue["kind"]).value)}
         >
           {families.map((f) => (
-            <option key={f} value={f} disabled={f === "marketMoney" || f === "duplicate"}>
+            <option key={f} value={f} disabled={f === "marketMoney"}>
               {t(`families.${f}`)}
-              {f === "marketMoney" || f === "duplicate" ? ` · ${t("notAvailable")}` : ""}
+              {f === "marketMoney" ? ` · ${t("notAvailable")}` : ""}
             </option>
           ))}
         </select>
       </SearchLabel>
-      {kind === "marketMoney" || kind === "duplicate" ? (
+      {kind === "duplicate" ? (
+        <>
+          <SearchLabel>
+            {t("value")}
+            <select
+              value={String(value.value ?? false)}
+              onChange={(e) => onChange({ kind: "duplicate", value: e.target.value === "true" })}
+            >
+              <option value="true">{t("true")}</option>
+              <option value="false">{t("false")}</option>
+            </select>
+          </SearchLabel>
+          <p>{t("duplicateHelp")}</p>
+        </>
+      ) : kind === "marketMoney" ? (
         <div role="status">
           <p>{t("unavailableFamily")}</p>
-          {kind === "duplicate" ? (
-            <SearchLabel>
-              {t("value")}
-              <input readOnly value={value.value ? t("true") : t("false")} />
-            </SearchLabel>
-          ) : (
-            <dl>
-              {Object.entries(value.selector ?? {})
-                .filter(([, v]) => typeof v === "string" || typeof v === "number")
-                .map(([key, v]) => (
-                  <div key={key}>
-                    <dt>{t(`marketFields.${key}`)}</dt>
-                    <dd>{String(v)}</dd>
-                  </div>
-                ))}
+          <dl>
+            {Object.entries(value.selector ?? {})
+              .filter(([, v]) => typeof v === "string" || typeof v === "number")
+              .map(([key, v]) => (
+                <div key={key}>
+                  <dt>{t(`marketFields.${key}`)}</dt>
+                  <dd>{String(v)}</dd>
+                </div>
+              ))}
+            <div>
+              <dt>{t("operator")}</dt>
+              <dd>{t(`operators.${test.op}`)}</dd>
+            </div>
+            {test.minMinor !== undefined && (
               <div>
-                <dt>{t("operator")}</dt>
-                <dd>{t(`operators.${test.op}`)}</dd>
+                <dt>{t("minimumMinor")}</dt>
+                <dd>{test.minMinor}</dd>
               </div>
-              {test.minMinor !== undefined && (
-                <div>
-                  <dt>{t("minimumMinor")}</dt>
-                  <dd>{test.minMinor}</dd>
+            )}
+            {test.maxMinor !== undefined && (
+              <div>
+                <dt>{t("maximumMinor")}</dt>
+                <dd>{test.maxMinor}</dd>
+              </div>
+            )}
+            {!!value.selector?.qualifiers &&
+              typeof value.selector.qualifiers === "object" &&
+              Object.entries(value.selector.qualifiers).map(([key, v]) => (
+                <div key={key}>
+                  <dt>{key}</dt>
+                  <dd>{typeof v === "boolean" ? t(v ? "true" : "false") : String(v)}</dd>
                 </div>
-              )}
-              {test.maxMinor !== undefined && (
-                <div>
-                  <dt>{t("maximumMinor")}</dt>
-                  <dd>{test.maxMinor}</dd>
-                </div>
-              )}
-              {!!value.selector?.qualifiers &&
-                typeof value.selector.qualifiers === "object" &&
-                Object.entries(value.selector.qualifiers).map(([key, v]) => (
-                  <div key={key}>
-                    <dt>{key}</dt>
-                    <dd>{typeof v === "boolean" ? t(v ? "true" : "false") : String(v)}</dd>
-                  </div>
-                ))}
-            </dl>
-          )}
+              ))}
+          </dl>
         </div>
       ) : kind === "customField" || kind === "catalogAttribute" ? (
         <DefinitionEditor value={value} onChange={onChange} locale={locale} cache={cache} />

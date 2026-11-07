@@ -261,12 +261,43 @@ describe.runIf(enabled)("owned dynamic saved queries PostgreSQL", () => {
         create("Invalid", { text: "no candidates", filter: { version: 1, root } }),
       ).rejects.toMatchObject({ code: "FILTER_REFERENCE_INVALID" });
     for (const root of [
-      { kind: "not", child: { kind: "duplicate", value: true } },
+      {
+        kind: "not",
+        child: {
+          kind: "marketMoney",
+          selector: {
+            mode: "CURRENT_ITEM_MAPPING",
+            providerId: "fixture",
+            identifierNamespace: "fixture",
+            identifierType: "product",
+            kind: "LAST_SOLD",
+            sourceMetric: "market",
+            qualifiers: {},
+            currency: "EUR",
+            minorUnitExponent: 2,
+          },
+          test: { op: "present" },
+        },
+      },
       {
         kind: "or",
         children: [
           { kind: "tags", test: { op: "present" } },
-          { kind: "duplicate", value: true },
+          {
+            kind: "marketMoney",
+            selector: {
+              mode: "CURRENT_ITEM_MAPPING",
+              providerId: "fixture",
+              identifierNamespace: "fixture",
+              identifierType: "product",
+              kind: "LAST_SOLD",
+              sourceMetric: "market",
+              qualifiers: {},
+              currency: "EUR",
+              minorUnitExponent: 2,
+            },
+            test: { op: "present" },
+          },
         ],
       },
     ])
@@ -278,7 +309,24 @@ describe.runIf(enabled)("owned dynamic saved queries PostgreSQL", () => {
     const saved = await create();
     const unsupported = {
       ...definition,
-      filter: { version: 1, root: { kind: "duplicate", value: true } },
+      filter: {
+        version: 1,
+        root: {
+          kind: "marketMoney",
+          selector: {
+            mode: "CURRENT_ITEM_MAPPING",
+            providerId: "fixture",
+            identifierNamespace: "fixture",
+            identifierType: "product",
+            kind: "LAST_SOLD",
+            sourceMetric: "market",
+            qualifiers: {},
+            currency: "EUR",
+            minorUnitExponent: 2,
+          },
+          test: { op: "present" },
+        },
+      },
     };
     await db!.smartCollection.update({
       where: { id: saved.id },

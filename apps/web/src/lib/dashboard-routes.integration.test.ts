@@ -73,7 +73,27 @@ describe.runIf(enabled)("native owned dashboard route", () => {
   it("projects only closed semantic reference and unavailable filter errors", async () => {
     const { handler } = await handlers();
     for (const [root, code] of [
-      [{ kind: "not", child: { kind: "duplicate", value: true } }, "FILTER_UNAVAILABLE"],
+      [
+        {
+          kind: "not",
+          child: {
+            kind: "marketMoney",
+            selector: {
+              mode: "CURRENT_ITEM_MAPPING",
+              providerId: "fixture",
+              identifierNamespace: "fixture",
+              identifierType: "product",
+              kind: "LAST_SOLD",
+              sourceMetric: "market",
+              qualifiers: {},
+              currency: "EUR",
+              minorUnitExponent: 2,
+            },
+            test: { op: "present" },
+          },
+        },
+        "FILTER_UNAVAILABLE",
+      ],
       [{ kind: "collection", test: { op: "eq", value: randomUUID() } }, "FILTER_REFERENCE_INVALID"],
     ]) {
       const r = await handler.GET(

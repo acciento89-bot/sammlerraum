@@ -1,3 +1,5 @@
+import { createSmartCollectionService } from "./smart-collection-service";
+import { createDashboardService } from "../dashboard/dashboard-service";
 import { randomUUID } from "node:crypto";
 import { beforeAll, afterAll, describe, it, expect } from "vitest";
 import { createLegacyMoneyTestSchema } from "@sammlerraum/db/test-legacy-money-schema";
@@ -184,6 +186,40 @@ describe.runIf(process.env.RUN_DATABASE_INTEGRATION === "1")(
         (await recipient.search.searchItems(recipient.actor, { filter: filter(true) })).total,
       ).toBe(0);
       expect(await db.duplicateRelation.count({ where: { ownerId: f.owner } })).toBe(0);
+    });
+    it("reevaluates actual marks in saved searches and preserves independent dashboard pair counts", async () => {
+      const f = await fixture(),
+        saved = createSmartCollectionService(db),
+        dashboard = createDashboardService(db);
+      await f.wishes.markDuplicateRelation(f.actor, f.a.id, f.b.id);
+      const definition = await saved.createSmartCollection(f.actor, {
+        name: "My actual duplicates",
+        definition: { version: 1, text: "", filter: filter(true), lifecycle: "ACTIVE" },
+      });
+      expect((await saved.resolveSmartCollectionItems(f.actor, definition.id)).total).toBe(2);
+      const yes = await dashboard.getDashboard(f.actor, { filter: filter(true) }),
+        no = await dashboard.getDashboard(f.actor, { filter: filter(false) });
+      expect(yes.selection.itemCount).toBe(2);
+      expect(yes.selection.unitCount).toBe("2");
+      expect(no.selection.itemCount).toBe(1);
+      expect(no.selection.unitCount).toBe("8");
+      expect(yes.duplicates).toMatchObject({
+        state: "AVAILABLE",
+        selectionBasis: "ALL_LIVE_OWNED_PAIRS",
+        count: 1,
+      });
+      expect(no.duplicates).toEqual(yes.duplicates);
+      await f.wishes.unmarkDuplicateRelation(f.actor, f.a.id, f.b.id);
+      expect((await saved.resolveSmartCollectionItems(f.actor, definition.id)).total).toBe(0);
+      expect(
+        (await dashboard.getDashboard(f.actor, { filter: filter(true) })).selection.itemCount,
+      ).toBe(0);
+      await f.wishes.markDuplicateRelation(f.actor, f.a.id, f.c.id);
+      expect(
+        (await saved.resolveSmartCollectionItems(f.actor, definition.id)).items
+          .map((x) => x.id)
+          .sort(),
+      ).toEqual([f.a.id, f.c.id].sort());
     });
   },
 );

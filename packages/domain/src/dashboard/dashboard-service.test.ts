@@ -430,7 +430,27 @@ describe.runIf(enabled)("dashboard actual observations and filters", () => {
       await expect(
         f.read({
           text: "nothing",
-          filter: { version: 1, root: { kind: "not", child: { kind: "duplicate", value: true } } },
+          filter: {
+            version: 1,
+            root: {
+              kind: "not",
+              child: {
+                kind: "marketMoney",
+                selector: {
+                  mode: "CURRENT_ITEM_MAPPING",
+                  providerId: "fixture",
+                  identifierNamespace: "fixture",
+                  identifierType: "product",
+                  kind: "LAST_SOLD",
+                  sourceMetric: "market",
+                  qualifiers: {},
+                  currency: "EUR",
+                  minorUnitExponent: 2,
+                },
+                test: { op: "present" },
+              },
+            },
+          },
         }),
       ).rejects.toMatchObject({ code: "FILTER_UNAVAILABLE" });
       await expect(
