@@ -1,6 +1,6 @@
 # Task1 guarded collection membership and ownership transfer — current candidate
 
-Status: implementation checkpoint and focused proofs complete; full validation running. NOT yet task accepted. Approved Phase09 Task1/spec§7; local source/test/draftPR only. Root is sole implementer and local runtime owner.
+Status: Task1 implementation verified and plan-closing test recorded; independent whole-Phase09 review pending. Master reviewed count remains48/91. Approved Phase09 Task1/spec§7; local source/test/draftPR only. Root is sole implementer and local runtime owner.
 
 ## Behavior
 
@@ -30,3 +30,5 @@ Status: implementation checkpoint and focused proofs complete; full validation r
 - Root TypeScript and workspace lint PASS; complete production workspace build PASS.
 - Actual built-browser existing collection/item and protected location-label flows:24PASS in29.4s, one worker, desktop Chromium and Pixel7 emulation, separate guarded browser DB. No physical-device or new collaboration UI claim.
 - Relevant new browser UI belongs to later Task7, not this domain foundation. Both retained native/browser databases have the seven frozen forward migrations. Final schema diff/focused plan-closing policy command pending below; task will be recorded only after success.
+
+Final actual schema diff empty. The task-done command passed59membership/policy tests at b3bbd78 and recorded82a1f0f..b3bbd78 in progress.md. No extra independent review or remote CI success claimed.

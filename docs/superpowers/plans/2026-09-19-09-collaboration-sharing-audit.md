@@ -39,7 +39,7 @@
 **Interfaces:**
 - Produces: `addMember`, `changeRole`, `transferOwnership`, `removeMember`.
 
-- [ ] **Step 1: Write failing ownership invariant test**
+- [x] **Step 1: Write failing ownership invariant test**
 
 ```ts
 it("transfers ownership atomically and leaves exactly one owner", async () => {
@@ -49,16 +49,16 @@ it("transfers ownership atomically and leaves exactly one owner", async () => {
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run packages/domain/src/collaboration/membership-service.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement roles**
+- [x] **Step 3: Implement roles**
 
 Roles: `OWNER`, `ADMIN`, `EDITOR`, `VIEWER`. Use transaction and a DB-level invariant strategy so owner transfer cannot briefly leave invalid state. Only owner can transfer ownership/delete collection.
 
-- [ ] **Step 4: Migrate and test**
+- [x] **Step 4: Migrate and test**
 
 Run:
 ```bash
@@ -68,7 +68,7 @@ pnpm vitest run packages/domain/src/collaboration packages/domain/src/authz
 
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/db packages/domain/src/collaboration packages/domain/src/authz
@@ -76,6 +76,8 @@ git commit -m "feat: add collaborative collection roles"
 ```
 
 ---
+
+Implementation verified at b3bbd78;59focused closing tests,982native,1532regular,types/lint/build and24built-browser checks pass. Independent whole-phase review follows Task7 under the current inline workflow; master reviewed-task count remains48 until that review.
 
 ### Task 2: Add secure invitations
 

@@ -19,7 +19,7 @@ This is the handoff/status file for long-running implementation. Update it after
 | 06 | Valuations & Market Data | 6 | complete (6/6) | — |
 | 07 | Search, Smart Collections & Dashboard | 5 | in progress (1/5) | Task 2 |
 | 08 | Import, Export, Insurance & Reports | 7 | complete (7/7) | — |
-| 09 | Collaboration, Sharing & Audit | 7 | not started | Task 1 |
+| 09 | Collaboration, Sharing & Audit | 7 | Task1 implemented/verified; whole-phase review pending | Task 2 |
 | 10 | Community, Moderation & Notifications | 8 | not started | Task 1 |
 | 11 | AI-Assisted Capture | 5 | not started | Task 1 |
 | 12 | Premium & Billing | 5 | not started | Task 1 |
@@ -78,6 +78,8 @@ This is the handoff/status file for long-running implementation. Update it after
 - [x] P08 T05 — Revisioned private collection/item insurance with exact money and safe clearing
 - [x] P08 T06 — Selected protected PDF inventory reports with actual rendering and evidence attachments
 - [x] P08 T07 — Actual private upload/profile/preview/approval/cancellation, artifact delivery/retention and localized insurance/report workflows
+
+- [ ] P09 T01 — Membership/atomic owner transfer implemented and locally verified; independent whole-phase review pending
 
 **Verified completion: 48/91 tasks.** Later tasks remain open as listed in the phase table and detail plans.
 
@@ -1078,3 +1080,12 @@ One fresh independent whole-phase review b2d7faa:0Critical/3Important/3Minor, or
 Final gate:948nativePASS/86files/0skip(151.24s),1531regularPASS/819explicit native-disabled cases, wholeworkspace types/lint/productionbuildPASS. Task-done runs the combined38actual built browser cases (16new integration+22existing inventory), allPASS0skip6.4min, including DE/EN desktop/mobile, valid private PDF evidence and CSV/XLSX downloads, named sheet selection, all25search matches across a20-row page, subtree descendants without siblings. Actual screenshots/source/artifact hashes retained; no physical-phone/Safari/production-capacity claim. Original failure evidence retained, two large closed records losslessly compressed with SHA/decompression receipts. PriorTask6 UTC00 conditional follow-up actually ran15PASS/0skip; final full suite also0skip.
 
 Root locally accepts Task7 and Phase08:48/91, sevenofseven. Exact new remoteCI still follows authorized source publication to existing DraftPR1; main gets only this ledger, never application source. Phase07 sharing/community/relations and all later plans remain open. No deployment, real provider/account operation, other app/store work or monitoring automation.
+
+
+## 07 November 2026 — Phase09 Task1 implementation verified, whole-phase review pending
+
+Source67d8bfc and b3bbd78 implement current DB-backed Owner/Admin/Editor/Viewer membership, revision preconditions and atomic ownership transfer. Owner derives once from Collection.ownerId; no second stored Owner. Actual sensitive transfer preserves private insurance, valuation authors/history, grading certificates, recipient-owned tag links, exclusive private media bytes/variants, copied location ancestry with new QR identities and original move facts. Terminal import staging is retired through retained known-source manifests and actual I/O-locked cleanup. Exact purchase/custom money facts and original units/authors remain unchanged; incoming/outgoing external provenance blocks transfer. Real child-write and late COPY/certificate races are covered. Seven additive migrations030000–036000 applied to both guarded local DBs; all prior migration bytes preserved.
+
+Current validation:982nativePASS/87files/0skip,1532regularPASS/852explicit native-disabled skips, root types/workspace lint/whole production buildPASS,24built desktop/mobile collection/item/location-label browser casesPASS, final scoped membership+policy59PASS. Exact schema diff empty. Valid PDF/PNG/WebP actual-byte fixtures and all genuine RED/fixture diagnostic logs retained in Phase09 workspace. Source has not been deployed or merged to main; existing DraftPR1 remains the only source publication target.
+
+Inline execution records Task1 implementation complete, then continues Task2 invitations. The one independent whole-phase review is scheduled after Task7. Respecting the earlier persistence rule, this review-pending master checkbox remains unchecked and the reviewed total stays48/91; this is new verified implementation, not a claim of an independently approved Phase09. No live providers, real users, other apps/stores or scheduled automation changed.
