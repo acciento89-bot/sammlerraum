@@ -159,6 +159,7 @@ jobs:
           packages/domain/src/grading/grading-service.test.ts
           packages/domain/src/collaboration/membership-service.test.ts
           packages/domain/src/collaboration/management-service.test.ts
+          packages/domain/src/wishlist/wishlist-service.test.ts
           packages/domain/src/collaboration/item-authoring-service.test.ts
           packages/domain/src/collaboration/collection-authoring-service.test.ts
           apps/web/src/lib/collaboration-management-routes.integration.test.ts

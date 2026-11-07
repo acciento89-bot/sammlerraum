@@ -109,6 +109,8 @@ model User {
   sessions                   Session[]
   accounts                   Account[]
   passkeys                   Passkey[]
+  wishlistEntries            WishlistEntry[]
+  duplicateRelations         DuplicateRelation[]
   profile                    UserProfile?
   collections                Collection[]
   smartCollections           SmartCollection[]
@@ -235,6 +237,8 @@ model CollectibleItem {
   customFieldValues       CustomFieldValue[]
   mediaLinks              MediaLink[]
   documentLinks           DocumentLink[]
+  duplicateRelationsA     DuplicateRelation[]                @relation("DuplicateA")
+  duplicateRelationsB     DuplicateRelation[]                @relation("DuplicateB")
   gradings                Grading[]
   valuations              Valuation[]
   purchaseMoneyEvents     PurchaseMoneyInterpretationEvent[]
@@ -664,6 +668,7 @@ model CatalogEntry {
   revisions          CatalogRevision[]
   proposals          CatalogProposal[]
   items              CollectibleItem[]
+  wishlistEntries    WishlistEntry[]
 
   @@unique([id, categoryTemplateId])
 }
@@ -678,6 +683,7 @@ model CatalogVariant {
   identifiers        CatalogExternalIdentifier[]
   attributes         CatalogAttributeValue[]
   items              CollectibleItem[]
+  wishlistEntries    WishlistEntry[]
 
   @@unique([id, entryId])
   @@index([entryId, active])
@@ -1527,4 +1533,45 @@ model ShareRevocation {
   revokedAt DateTime        @default(dbgenerated("timezone('UTC'::text, clock_timestamp())")) @db.Timestamp(3)
   reason    String          @db.VarChar(32)
   share     CollectionShare @relation(fields: [shareId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model WishlistEntry {
+  id                      String          @id @default(uuid()) @db.Uuid
+  ownerId                 String
+  title                   String
+  catalogEntryId          String?         @db.Uuid
+  catalogVariantId        String?         @db.Uuid
+  desiredCondition        String?
+  targetAmountMinor       BigInt?
+  targetCurrency          String?         @db.Char(3)
+  targetMinorUnitExponent Int?
+  targetUnitKey           String?         @db.VarChar(40)
+  priority                Int             @default(3)
+  notes                   String?
+  fulfilledAt             DateTime?
+  createdAt               DateTime        @default(now())
+  owner                   User            @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  catalogEntry            CatalogEntry?   @relation(fields: [catalogEntryId], references: [id], onDelete: SetNull, onUpdate: Restrict)
+  // SQL narrows SET NULL to variantId so the desired entry remains intact.
+  catalogVariant          CatalogVariant? @relation(fields: [catalogVariantId, catalogEntryId], references: [id, entryId], onDelete: SetNull, onUpdate: Restrict)
+
+  @@index([ownerId, id])
+  @@index([ownerId, fulfilledAt, id])
+  @@index([catalogEntryId])
+  @@index([catalogVariantId, catalogEntryId])
+}
+
+model DuplicateRelation {
+  id        String          @id @default(uuid()) @db.Uuid
+  ownerId   String
+  itemAId   String          @db.Uuid
+  itemBId   String          @db.Uuid
+  createdAt DateTime        @default(now())
+  owner     User            @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  itemA     CollectibleItem @relation("DuplicateA", fields: [itemAId], references: [id], onDelete: Cascade, onUpdate: Restrict)
+  itemB     CollectibleItem @relation("DuplicateB", fields: [itemBId], references: [id], onDelete: Cascade, onUpdate: Restrict)
+
+  @@unique([ownerId, itemAId, itemBId])
+  @@index([itemAId])
+  @@index([itemBId])
 }

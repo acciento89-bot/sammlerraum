@@ -37,7 +37,8 @@
     "./collaboration": "./src/collaboration.ts",
     "./sharing": "./src/sharing.ts",
     "./audit": "./src/audit.ts",
-    "./restore": "./src/restore.ts"
+    "./restore": "./src/restore.ts",
+    "./wishlist": "./src/wishlist.ts"
   },
   "scripts": {
     "build": "pnpm typecheck",

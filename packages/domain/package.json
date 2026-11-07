@@ -60,7 +60,8 @@
     "./audit/restore-service": "./src/audit/restore-service.ts",
     "./collaboration/management-service": "./src/collaboration/management-service.ts",
     "./collaboration/item-authoring-service": "./src/collaboration/item-authoring-service.ts",
-    "./collaboration/collection-authoring-service": "./src/collaboration/collection-authoring-service.ts"
+    "./collaboration/collection-authoring-service": "./src/collaboration/collection-authoring-service.ts",
+    "./wishlist/wishlist-service": "./src/wishlist/wishlist-service.ts"
   },
   "scripts": {
     "build": "pnpm typecheck",
