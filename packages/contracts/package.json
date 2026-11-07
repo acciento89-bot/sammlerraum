@@ -42,7 +42,8 @@
     "./community": "./src/community.ts",
     "./comments": "./src/comments.ts",
     "./moderation": "./src/moderation.ts",
-    "./notifications": "./src/notifications.ts"
+    "./notifications": "./src/notifications.ts",
+    "./scoped-search": "./src/scoped-search.ts"
   },
   "scripts": {
     "build": "pnpm typecheck",
