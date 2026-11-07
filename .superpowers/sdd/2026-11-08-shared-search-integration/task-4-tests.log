@@ -1,0 +1,17 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ✓ |workspace| apps/web/src/lib/private-search-routes.integration.test.ts (15 tests) 5130ms
+   ✓ native private query POST transport > accepts valid raw f beyond 10000 characters through the real service  425ms
+   ✓ native private query POST transport > preserves native dependency and output invariant failures for items  2070ms
+   ✓ native private query POST transport > preserves native dependency and output invariant failures for dashboard  2031ms
+ ✓ |workspace| apps/web/src/lib/scoped-search-routes.integration.test.ts (7 tests) 718ms
+ ✓ |workspace| apps/web/src/lib/share-routes.integration.test.ts (3 tests) 438ms
+ ✓ |workspace| apps/web/src/lib/smart-collection-routes.integration.test.ts (4 tests) 355ms
+ ✓ |workspace| apps/web/src/lib/item-search-routes.integration.test.ts (12 tests) 284ms
+
+ Test Files  5 passed (5)
+      Tests  41 passed (41)
+   Start at  00:44:52
+   Duration  8.70s (transform 386ms, setup 7ms, collect 1.10s, tests 6.93s, environment 0ms, prepare 170ms)
+

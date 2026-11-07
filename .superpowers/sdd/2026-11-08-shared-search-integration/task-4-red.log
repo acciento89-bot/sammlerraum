@@ -1,0 +1,22 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/web/src/lib/scoped-search-routes.integration.test.ts [ apps/web/src/lib/scoped-search-routes.integration.test.ts ]
+Error: Cannot find module './scoped-search-routes' imported from '/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/src/lib/scoped-search-routes.integration.test.ts'
+ ❯ apps/web/src/lib/scoped-search-routes.integration.test.ts:7:1
+
+
+Caused by: Error: Failed to load url ./scoped-search-routes (resolved id: ./scoped-search-routes) in /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/src/lib/scoped-search-routes.integration.test.ts. Does the file exist?
+ ❯ loadAndTransform ../../../../SSK%20SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/node_modules/.pnpm/vite@7.3.6_@types+node@24.5.2_jiti@2.7.0/node_modules/vite/dist/node/chunks/config.js:22739:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  no tests
+   Start at  00:39:50
+   Duration  535ms (transform 205ms, setup 6ms, collect 0ms, tests 0ms, environment 0ms, prepare 35ms)
+

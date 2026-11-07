@@ -1,0 +1,10 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ✓ |workspace| apps/web/src/lib/scoped-search-routes.integration.test.ts (5 tests) 575ms
+
+ Test Files  1 passed (1)
+      Tests  5 passed (5)
+   Start at  00:41:40
+   Duration  1.51s (transform 341ms, setup 7ms, collect 660ms, tests 575ms, environment 0ms, prepare 58ms)
+
