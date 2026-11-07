@@ -1,3 +1,4 @@
+import { loadCollectionReadAccess as load, type Parent, type Role } from "./collection-read-access";
 import { createTrustedAuditContext } from "../audit/audit-context";
 import { recordAuditEventInTransaction } from "../audit/audit-service";
 import { runTransferTransaction, type MembershipDatabase } from "./transfer-transaction";
@@ -21,13 +22,6 @@ import {
 } from "@sammlerraum/contracts/collaboration";
 import { runSearchTransaction, type BoundedSearchReadTransaction } from "../search/search-read";
 type Actor = { userId: string };
-type Parent = {
-  id: string;
-  ownerId: string;
-  visibility: "PRIVATE" | "UNLISTED" | "PUBLIC";
-  collaborationRevision: number;
-};
-type Role = "OWNER" | "ADMIN" | "EDITOR" | "VIEWER";
 type Member = { userId: string; role: Role };
 function fail(code: MembershipError["code"]): never {
   throw new MembershipError(code);
@@ -48,26 +42,6 @@ export function createMembershipService(database: MembershipDatabase) {
     );
     if (!identity) return fail("MEMBERSHIP_NOT_FOUND");
     return createTrustedAuditContext({ source: "USER", actorId: userId });
-  }
-  async function load(
-    tx: BoundedSearchReadTransaction,
-    collectionId: string,
-    userId: string,
-    lock = false,
-  ) {
-    const [parent] = await tx.$queryRaw<Parent[]>(
-      Prisma.sql`SELECT id,"ownerId",visibility,"collaborationRevision" FROM "Collection" WHERE id=${collectionId}::uuid AND "deletedAt" IS NULL ${lock ? Prisma.sql`FOR UPDATE` : Prisma.empty}`,
-    );
-    if (!parent) return fail("MEMBERSHIP_NOT_FOUND");
-    let role: Role | null = parent.ownerId === userId ? "OWNER" : null;
-    if (!role) {
-      const [member] = await tx.$queryRaw<Member[]>(
-        Prisma.sql`SELECT "userId",role FROM "CollectionMember" WHERE "collectionId"=${collectionId}::uuid AND "userId"=${userId}`,
-      );
-      role = member?.role ?? null;
-    }
-    if (!role) return fail("MEMBERSHIP_NOT_FOUND");
-    return { parent, role };
   }
   function revision(parent: Parent, expected: number) {
     if (parent.collaborationRevision !== expected || parent.collaborationRevision >= 2147483647)

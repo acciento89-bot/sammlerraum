@@ -1,3 +1,4 @@
+import { ShareError } from "@sammlerraum/contracts/sharing";
 import { MarketBatchError } from "../market-data/market-batch";
 import { MembershipError } from "@sammlerraum/contracts/collaboration";
 import { ReportError } from "@sammlerraum/contracts/reports";
@@ -72,6 +73,7 @@ export async function runSearchTransaction<T>(
       return result;
     } catch (error) {
       if (
+        error instanceof ShareError ||
         error instanceof MarketBatchError ||
         error instanceof MembershipError ||
         error instanceof ItemSearchError ||
