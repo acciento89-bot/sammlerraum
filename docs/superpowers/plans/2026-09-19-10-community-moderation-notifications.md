@@ -89,7 +89,7 @@ git commit -m "feat: add wishlists and duplicate relations"
 **Interfaces:**
 - Produces: `followUser`, `unfollowUser`, `favoriteTarget`, `unfavoriteTarget`.
 
-- [ ] **Step 1: Write failing visibility/block tests**
+- [x] **Step 1: Write failing visibility/block tests**
 
 ```ts
 it("cannot favorite a private item the actor cannot view", async () => {
@@ -103,21 +103,21 @@ it("blocked users cannot follow each other", async () => {
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run packages/domain/src/community/social-service.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement social relationships**
+- [x] **Step 3: Implement social relationships**
 
 Unique follow pair and favorite target constraints. Self-follow rejected. Favorite supports public collection/item targets only when policy allows current read.
 
-- [ ] **Step 4: Run tests**
+- [x] **Step 4: Run tests**
 
 Run: `pnpm vitest run packages/domain/src/community/social-service.test.ts`  
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/db packages/domain/src/community apps/web/src/app/api/v1/community

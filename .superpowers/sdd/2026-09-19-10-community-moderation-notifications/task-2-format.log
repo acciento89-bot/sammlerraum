@@ -1,0 +1,4 @@
+packages/contracts/src/community.ts 32ms
+packages/domain/src/community/social-scope.ts 4ms
+packages/domain/src/community/social-service.test.ts 18ms
+packages/domain/src/community/social-service.ts 23ms

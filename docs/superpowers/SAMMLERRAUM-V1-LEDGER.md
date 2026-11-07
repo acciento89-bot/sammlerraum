@@ -19,8 +19,8 @@ This is the handoff/status file for long-running implementation. Update it after
 | 06 | Valuations & Market Data | 6 | complete (6/6) | — |
 | 07 | Search, Smart Collections & Dashboard | 5 | in progress (1/5) | Task 2 |
 | 08 | Import, Export, Insurance & Reports | 7 | complete (7/7) | — |
-| 09 | Collaboration, Sharing & Audit | 7 | All seven implemented; single locally reviewed and corrected; exact new-head CI pending | Publish verified correction; continue Task10.1 |
-| 10 | Community, Moderation & Notifications | 8 | Task1 implemented/verified; whole-phase review afterTask8 | Task 2 |
+| 09 | Collaboration, Sharing & Audit | 7 | complete (7/7); corrected1760cd2 CI SUCCESS | — |
+| 10 | Community, Moderation & Notifications | 8 | Tasks1–2 implemented/verified; whole-phase review afterTask8 | Task 3 |
 | 11 | AI-Assisted Capture | 5 | not started | Task 1 |
 | 12 | Premium & Billing | 5 | not started | Task 1 |
 | 13 | Integration, Hardening & Release | 7 | not started | Task 1 |
@@ -79,18 +79,18 @@ This is the handoff/status file for long-running implementation. Update it after
 - [x] P08 T06 — Selected protected PDF inventory reports with actual rendering and evidence attachments
 - [x] P08 T07 — Actual private upload/profile/preview/approval/cancellation, artifact delivery/retention and localized insurance/report workflows
 
-- [ ] P09 T01 — Membership/atomic owner transfer implemented and locally verified; independent whole-phase review pending
+- [x] P09 T01 — Membership and atomic ownership transfer; reviewed/corrected, exact1760cd2 CI SUCCESS
 
-- [ ] P09 T02 — Recipient-bound one-time invitations/API implemented and locally verified; independent whole-phase review pending
-- [ ] P09 T03 — Granular read-only shares, PIN/session protection, protected files and DE/EN viewer implemented and locally verified; independent whole-phase review pending
-- [ ] P09 T04 — Append-only current-resource audit history, real actor/source, bounded paging and erasure-safe anchors implemented and locally verified; independent whole-phase review pending
+- [x] P09 T02 — Recipient-bound one-time invitations and API; reviewed/corrected, exact1760cd2 CI SUCCESS
+- [x] P09 T03 — Granular read-only shares, expiry/PIN/session and protected files; reviewed/corrected, exact1760cd2 CI SUCCESS
+- [x] P09 T04 — Append-only current-resource audit and erasure-safe anchors; reviewed/corrected, exact1760cd2 CI SUCCESS
 
-- [ ] P09 T05 — Atomic real core mutation audit, exact money/import sources and erasure-safe role subjects implemented and locally verified; independent whole-phase review pending
+- [x] P09 T05 — Atomic real-actor core mutation and money/import audit; reviewed/corrected, exact1760cd2 CI SUCCESS
 
-- [ ] P09 T06 — Conflict-aware restore and irreversible capability retirement locally verified/reviewed; exact new-head CI pending
-- [ ] P09 T07 — Actual role-aware collaboration UI and audited Editor/Admin authoring locally verified/reviewed; exact new-head CI pending
+- [x] P09 T06 — Conflict-aware restoration and permanent capability retirement; reviewed/corrected, exact1760cd2 CI SUCCESS
+- [x] P09 T07 — DE/EN current-role collaboration UI and Editor/Admin authoring; reviewed/corrected, exact1760cd2 CI SUCCESS
 
-**Verified completion: 48/91 tasks.** Later tasks remain open as listed in the phase table and detail plans.
+**Verified completion: 55/91 tasks.** Later tasks remain open as listed in the phase table and detail plans.
 
 ## Update rule
 
@@ -1191,3 +1191,11 @@ Phase10Task1 source now implements private wishlist create/list/fulfill/remove w
 
 
 Phase10Task1 sourcea73d14b is implementation-complete under inline execution; task-done closing15PASS1.41s recorded exactc63f920..a73d14b. Current whole1459native/123files190.37s,1565regular/980native-disabled57.13s, types/lint/full build and53compiled browser casesPASS; both final schema diffs empty,13frozen migration bytes unchanged. Actual regenerated PDF/browser artifacts retained in Phase10 and exact historical files restored. Source/evidence publication goes to existing DraftPR1 only. No whole-Phase10 review credit yet; canonical48unchanged while corrected Phase09 CI is still pending. NextTask2 actual follows/favorites with current public visibility and bidirectional block policy.
+
+
+## 07 November 2026 — Phase09 accepted after exact corrected-source CI SUCCESS
+
+Official run42366151094 for exact1760cd29f9239f83c92d37be22055c78d96467ed is actually completed SUCCESS. Full persisted run/jobs evidence in Phase10 phase09-correction-ci-closing.json and phase09-correction-ci-success-jobs.json. This closes the real concurrent-classification CI failure atc63f920; no failed assertion or timeout was waived. The one independent whole-Phase09 review plus its single consolidated root TDD correction is now accepted. All7Phase09 checklist entries checked and canonical reviewed55/91 (not an effort percentage). CurrentPhase10Task1/Task2 remain separate implementation/review-pending work. No application merge/deployment, live providers/mail/payments, other apps/stores or automations.
+
+
+Phase10Task2 implemented at2b863ea with actual follow/favorite HTTP and cookie-session binding, current-public ancestor policy, bidirectional blocks/atomic retirement and current-owner recheck. Native interleaving verifies a real late block denies an in-flight favorite. Full1466native/125files191.20s,1572regular/987native-disabled57.30s, types/lint/full production build and54compiled-browser casesPASS; closing14PASS via task-done. Both final guarded schema diffs empty;14frozen migrations unchanged; historical fixture bytes restored with fresh proofs retained. Whole-Phase10 review followsTask8, so reviewed55/91 unchanged. NextTask3 comments, actual block/report workflows. No application main merge/deploy or live provider/customer action.

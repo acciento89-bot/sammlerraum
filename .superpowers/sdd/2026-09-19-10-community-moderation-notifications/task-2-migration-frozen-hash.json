@@ -1,0 +1,5 @@
+{
+  "path": "packages/db/prisma/migrations/20261107090000_follows_favorites_blocks/migration.sql",
+  "sha256": "e106fb95411b0a7b8193692d682ffaf6cd4bfd4428ec1ebdfa250608f154ed4b",
+  "bytes": 4756
+}
