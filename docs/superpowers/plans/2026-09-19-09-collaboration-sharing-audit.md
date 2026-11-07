@@ -190,7 +190,7 @@ Implementation verified: minimal read-only collection/node/item grants, hash-onl
 **Interfaces:**
 - Produces: `recordAuditEvent`, `listAuditEventsForResource`.
 
-- [ ] **Step 1: Write failing source/actor test**
+- [x] **Step 1: Write failing source/actor test**
 
 ```ts
 it("records before after actor and source", async () => {
@@ -207,16 +207,16 @@ it("records before after actor and source", async () => {
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run packages/domain/src/audit/audit-service.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement audit model**
+- [x] **Step 3: Implement audit model**
 
 Source enum: `USER`, `IMPORT`, `AI`, `MARKET_SYNC`, `SYSTEM`, `MODERATION`. Store sanitized before/after JSON only for fields allowed by the event definition; never dump auth tokens or document bytes.
 
-- [ ] **Step 4: Migrate and test**
+- [x] **Step 4: Migrate and test**
 
 Run:
 ```bash
@@ -226,7 +226,7 @@ pnpm vitest run packages/domain/src/audit
 
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/db packages/domain/src/audit
@@ -234,6 +234,8 @@ git commit -m "feat: add append-only audit events"
 ```
 
 ---
+
+Implementation verified: actual current-owner scoped append-only history, actor/source/strict snapshots, original-actor erasure, stable item/collection/location anchors, real caller-transaction rollback, bounded bigint paging and locked foreign-resource privacy.1042native/92files,1542regular,types/lint/full build and7actual compiled browser regression casesPASS. Core producer wiring and further event definitions remainTask5, restorationTask6 and UI/API listingTask7. Independent whole-phase review pending; master reviewed48 unchanged.
 
 ### Task 5: Integrate audit emission into core mutations
 

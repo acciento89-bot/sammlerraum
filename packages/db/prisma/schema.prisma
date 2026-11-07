@@ -139,8 +139,10 @@ model User {
   collectionInvitationsTargeted CollectionInvitation[]        @relation("CollectionInvitationTarget")
   collectionInvitationsAccepted CollectionInvitation[]        @relation("CollectionInvitationAcceptor")
 
-  sharesCreated  CollectionShare[] @relation("ShareCreator")
-  sharesReceived CollectionShare[] @relation("ShareRecipient")
+  auditEventsActed    AuditEvent[]      @relation("AuditActor")
+  locationAuditEvents AuditEvent[]      @relation("AuditLocationOwner")
+  sharesCreated       CollectionShare[] @relation("ShareCreator")
+  sharesReceived      CollectionShare[] @relation("ShareRecipient")
 
   @@unique([email])
   @@map("user")
@@ -166,6 +168,7 @@ model Collection {
   insuranceRecords InsuranceRecord[]
   invitations      CollectionInvitation[]
   shares           CollectionShare[]
+  auditEvents      AuditEvent[]
 
   @@unique([id, ownerId])
   @@index([ownerId])
@@ -237,6 +240,7 @@ model CollectibleItem {
   customMoneyEvents       CustomMoneyInterpretationEvent[]
 
   insuranceRecords InsuranceRecord[]
+  auditEvents      AuditEvent[]
 
   @@unique([id, collectionId])
   @@unique([id, ownerId])
@@ -1467,4 +1471,48 @@ model ShareAccessSession {
   share     CollectionShare @relation(fields: [shareId], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   @@index([shareId, expiresAt])
+}
+
+enum AuditSource {
+  USER
+  IMPORT
+  AI
+  MARKET_SYNC
+  SYSTEM
+  MODERATION
+}
+
+enum AuditResourceType {
+  COLLECTION
+  NODE
+  ITEM
+  LOCATION
+  IMPORT_JOB
+  SHARE
+}
+
+model AuditEvent {
+  id                  String            @id @default(uuid()) @db.Uuid
+  sequence            BigInt            @unique @default(autoincrement())
+  resourceType        AuditResourceType
+  resourceId          String            @db.Uuid
+  collectionId        String?           @db.Uuid
+  itemId              String?           @db.Uuid
+  locationOwnerUserId String?
+  action              String            @db.VarChar(80)
+  source              AuditSource
+  actorId             String?
+  before              Json
+  after               Json
+  createdAt           DateTime          @default(dbgenerated("timezone('UTC'::text, clock_timestamp())"))
+  collection          Collection?       @relation(fields: [collectionId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  item                CollectibleItem?  @relation(fields: [itemId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  locationOwner       User?             @relation("AuditLocationOwner", fields: [locationOwnerUserId], references: [id], onDelete: Cascade, onUpdate: Restrict)
+  actor               User?             @relation("AuditActor", fields: [actorId], references: [id], onDelete: SetNull, onUpdate: Restrict)
+
+  @@index([resourceType, resourceId, sequence(sort: Desc)])
+  @@index([collectionId])
+  @@index([itemId])
+  @@index([locationOwnerUserId])
+  @@index([actorId])
 }

@@ -1,3 +1,4 @@
+import { AuditError } from "@sammlerraum/contracts/audit";
 import { ShareError } from "@sammlerraum/contracts/sharing";
 import { Prisma } from "@sammlerraum/db/search-sql";
 import { MembershipError, InvitationError } from "@sammlerraum/contracts/collaboration";
@@ -71,6 +72,7 @@ export async function runTransferTransaction<T>(
       );
     } catch (error) {
       if (
+        error instanceof AuditError ||
         error instanceof ShareError ||
         error instanceof MembershipError ||
         error instanceof InvitationError

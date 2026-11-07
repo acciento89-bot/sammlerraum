@@ -161,6 +161,7 @@ jobs:
           packages/domain/src/collaboration/invitation-service.test.ts
           apps/web/src/lib/invitation-routes.integration.test.ts
           packages/domain/src/sharing/share-service.test.ts
+          packages/domain/src/audit/audit-service.test.ts
           apps/web/src/lib/share-routes.integration.test.ts
           packages/domain/src/valuations/valuation-service.test.ts
           packages/domain/src/valuations/valuation-query.test.ts

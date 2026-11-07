@@ -19,7 +19,7 @@ This is the handoff/status file for long-running implementation. Update it after
 | 06 | Valuations & Market Data | 6 | complete (6/6) | — |
 | 07 | Search, Smart Collections & Dashboard | 5 | in progress (1/5) | Task 2 |
 | 08 | Import, Export, Insurance & Reports | 7 | complete (7/7) | — |
-| 09 | Collaboration, Sharing & Audit | 7 | Tasks1–3 implemented/verified; whole-phase review pending | Task 4 |
+| 09 | Collaboration, Sharing & Audit | 7 | Tasks1–4 implemented/verified; whole-phase review pending | Task 5 |
 | 10 | Community, Moderation & Notifications | 8 | not started | Task 1 |
 | 11 | AI-Assisted Capture | 5 | not started | Task 1 |
 | 12 | Premium & Billing | 5 | not started | Task 1 |
@@ -83,6 +83,7 @@ This is the handoff/status file for long-running implementation. Update it after
 
 - [ ] P09 T02 — Recipient-bound one-time invitations/API implemented and locally verified; independent whole-phase review pending
 - [ ] P09 T03 — Granular read-only shares, PIN/session protection, protected files and DE/EN viewer implemented and locally verified; independent whole-phase review pending
+- [ ] P09 T04 — Append-only current-resource audit history, real actor/source, bounded paging and erasure-safe anchors implemented and locally verified; independent whole-phase review pending
 
 **Verified completion: 48/91 tasks.** Later tasks remain open as listed in the phase table and detail plans.
 
@@ -1112,3 +1113,14 @@ Optional6–12digit PIN uses salted async scrypt outside SQL, persistent5-attemp
 Evidence: frozen043000 forward migration applied to both retained guarded test DBs; eight previous hashes unchanged, exact schema diff empty. Whole functional code:91native files1029PASS/0skip168.41s;1542regularPASS/899native-disabled skips14.97s; full production build, workspace lint and web-specific strict typesPASS. Final focused22PASS includes an additional actual image-byte test after the full native checkpoint.7actual compiled browser/cookie-session casesPASS6.8s cover DE/EN desktop/mobile, PIN, selected JSON bytes, personal receiver/current cookies, no membership, immediate revocation and collection-insurance display. Actual PNG views retained, not physical-device proof. Genuine failures and test-precondition corrections retained; an existing PDF test needed its documented local Python reader, and combined credential fixtures needed isolated synthetic addresses to respect the unchanged real login limiter. No test disables that limiter or clears general counters.
 
 Task2 exact5914a7c CI42342569290 is now verified SUCCESS. Task3 source/evidence publication follows to the existing DraftPR1 only. No application merge, deployment, live provider/mail/customer operation, other app/store work or automation. Task3 is implementation-complete under inline execution; all three P09 review checkboxes remain unchecked and reviewed total48/91 until the independent whole-phase review afterTask7. Next:Task4 append-only audit history; member/share management UI and full core audited mutation integration remain assigned toTasks5/7.
+
+
+## 07 November 2026 — Phase09 Task4 implementation verified, whole-phase review pending
+
+AuditEvent now stores exact original actor/source, database-UTC time, bigint sequence and explicit action-specific before/after snapshots. The internal caller-transaction writer never starts a nested transaction; a real inventory update and its audit append roll back together. Public domain facade is Owner-only and no audit-write HTTP route exists. Internal USER contexts still check actual current edit membership and preserve the Editor's true ID; SYSTEM/IMPORT/AI/MARKET_SYNC/MODERATION metadata requires a genuine immutable server context, never a copied JSON/prototype/spread object. Initial definitions cover item/collection visibility and location details; other core action definitions and mutation producers are explicitlyTask5 work, not yet claimed complete.
+
+Stable item anchors preserve history after item moves, ownership transfer and old-collection/account deletion. Current ownership controls reading; the former Owner/Admin cannot read the new owner's private history. Personal location deletion retains namespace history; actual namespace/account or resource hard erasure may remove its rows. SQL rejects arbitrary event rewriting/deletion; actor identity can clear only once that exact old account is really gone. Strict snapshots reject auth/session/document-byte row dumps. Bigint cursor paging remains numeric across55real events; locked foreign resources return private404 rather than exposing their lock state.
+
+Additive050000 migration frozen and applied to both retained guarded databases; previous nine migration hashes unchanged, generated Prisma client and exact schema diff empty.12focused native cases pass. Whole92files1042nativePASS/0skip168.98s,1542regularPASS/912explicit native-disabled skips15.57s, root types/workspace lint/full production buildPASS;7actual-built sharing/invitation cookie-session browser regression casesPASS7.7s. Genuine context-copy, text-alias sort and foreign-lock failures retained and corrected. Original fixture errors were corrected without weakening guards. Exact priorTask3 head40f771f CI42346201723 nowSUCCESS.
+
+Task4 implementation complete under inline execution, independent whole-phase review followsTask7. Reviewed48/91 remains unchanged with four implemented tasks explicitly pending that review. No main application merge/deployment, providers, real customer data, other apps/stores or automation. NextTask5 connects real core mutations in their original transactions, followed by restoration and collaboration management UI.

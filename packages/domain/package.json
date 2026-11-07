@@ -54,7 +54,9 @@
     "./exports/artifact-access-service": "./src/exports/artifact-access-service.ts",
     "./collaboration/membership-service": "./src/collaboration/membership-service.ts",
     "./collaboration/invitation-service": "./src/collaboration/invitation-service.ts",
-    "./sharing/share-service": "./src/sharing/share-service.ts"
+    "./sharing/share-service": "./src/sharing/share-service.ts",
+    "./audit/audit-service": "./src/audit/audit-service.ts",
+    "./audit/audit-context": "./src/audit/audit-context.ts"
   },
   "scripts": {
     "build": "pnpm typecheck",
