@@ -1,0 +1,10 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ✓ |workspace| packages/domain/src/sharing/share-service.test.ts (7 tests) 689ms
+
+ Test Files  1 passed (1)
+      Tests  7 passed (7)
+   Start at  06:33:54
+   Duration  1.14s (transform 146ms, setup 7ms, collect 286ms, tests 689ms, environment 0ms, prepare 37ms)
+

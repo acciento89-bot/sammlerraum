@@ -1,0 +1,35 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/sharing/share-service.test.ts (7 tests | 1 failed) 491ms
+   ✓ actual explicit granular read shares > excludes private notes, location, insurance, receipt and money data by default and stores only a token hash 141ms
+   ✓ actual explicit granular read shares > stops a known token immediately after revocation 15ms
+   ✓ actual explicit granular read shares > binds registered-user grants without adding membership or broadening a Viewer's edit rights 23ms
+   ✓ actual explicit granular read shares > resolves the selected node subtree without exposing siblings or other private ancestors 15ms
+   ✓ actual explicit granular read shares > permanently revokes the old owner's token during transfer, including a later ownership round trip 50ms
+   ✓ actual explicit granular read shares > rejects a genuinely expired stored grant using the database clock 6ms
+   × actual explicit granular read shares > stores a salted PIN hash and persists a bounded attempt budget before expensive checking 5ms
+     → SHARE_INVALID
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/sharing/share-service.test.ts > actual explicit granular read shares > stores a salted PIN hash and persists a bounded attempt budget before expensive checking
+ShareError: SHARE_INVALID
+ ❯ fail packages/domain/src/sharing/share-service.ts:14:56
+     12| type Item = { id: string; title: string; publicDescription: string | n…
+     13| const hash = (value: string) => createHash("sha256").update(value).dig…
+     14| function fail(code: ShareError["code"]): never { throw new ShareError(…
+       |                                                        ^
+     15| function parse<T>(schema: z.ZodType<T>, value: unknown): T { const res…
+     16| function permissions(row: Share) { const result = SharePermissionsSche…
+ ❯ Object.createShare packages/domain/src/sharing/share-service.ts:62:257
+ ❯ packages/domain/src/sharing/share-service.test.ts:77:51
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 6 passed (7)
+   Start at  06:32:58
+   Duration  920ms (transform 141ms, setup 6ms, collect 274ms, tests 491ms, environment 0ms, prepare 34ms)
+

@@ -1,0 +1,7 @@
+[
+  {
+    "path": "packages/db/prisma/migrations/20261107043000_granular_shares/migration.sql",
+    "sha256": "e4860c3f1fa72a09a32639cce78c57bd346392cfe92d7bc1163d59d2b874622b",
+    "bytes": 3791
+  }
+]

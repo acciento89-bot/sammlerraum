@@ -1,0 +1,31 @@
+[WebServer] (node:16399) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+(node:16400) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+F
+
+  1) [sharing-desktop] › e2e/sharing.spec.ts:9:2 › de shared selection opens through a PIN, downloads only selected fields and blocks revoked access 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+      16 |    await context.addCookies([{name:"NEXT_LOCALE",value:locale,url:"http://localhost:3000"}]);
+      17 |    const response=await page.goto(`/share/${token}`);
+    > 18 |    expect(response?.status()).toBe(200);
+         |                               ^
+      19 |    expect(response?.headers()["cache-control"]).toContain("no-store");
+      20 |    await expect(page.getByRole("heading",{level:1,name:locale==="de"?"Geteilte Auswahl":"Shared selection"})).toBeVisible();
+      21 |    await page.getByLabel("PIN",{exact:true}).fill(pin);
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/sharing.spec.ts:18:31
+
+    Error Context: test-results/sharing-de-shared-selectio-a2557-s-and-blocks-revoked-access-sharing-desktop/error-context.md
+
+  1 failed
+    [sharing-desktop] › e2e/sharing.spec.ts:9:2 › de shared selection opens through a PIN, downloads only selected fields and blocks revoked access 
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/sharing.spec.ts --project=sharing-desktop --workers=1 --grep de shared selection

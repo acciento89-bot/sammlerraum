@@ -1,0 +1,85 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/sharing/share-service.test.ts (10 tests | 2 failed) 797ms
+   ✓ actual explicit granular read shares > excludes private notes, location, insurance, receipt and money data by default and stores only a token hash 143ms
+   ✓ actual explicit granular read shares > stops a known token immediately after revocation 14ms
+   ✓ actual explicit granular read shares > binds registered-user grants without adding membership or broadening a Viewer's edit rights 24ms
+   ✓ actual explicit granular read shares > resolves the selected node subtree without exposing siblings or other private ancestors 20ms
+   ✓ actual explicit granular read shares > permanently revokes the old owner's token during transfer, including a later ownership round trip 46ms
+   ✓ actual explicit granular read shares > rejects a genuinely expired stored grant using the database clock 6ms
+   ✓ actual explicit granular read shares > stores a salted PIN hash and persists a bounded attempt budget before expensive checking 215ms
+   × actual explicit granular read shares > discloses only explicitly selected location, policy, values and document metadata 21ms
+     → 
+Invalid `db.storageLocation.create()` invocation in
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/domain/src/sharing/share-service.test.ts:91:43
+
+  88 
+  89 it("discloses only explicitly selected location, policy, values and document metadata",async()=>{
+  90  const f=await fixture();
+→ 91  const location=await db.storageLocation.create({
+        data: {
+          ownerId: "8bdfff32-9541-4acf-a024-04cd665ee304",
+          name: "Selected private cabinet",
+          type: "CABINET",
+      +   qrToken: String
+        }
+      })
+
+Argument `qrToken` is missing.
+   × actual explicit granular read shares > cannot select a document belonging to a different item or a sibling outside the chosen subtree 12ms
+     → expected ShareError: SHARE_INVALID { code: 'S…' } to match object { code: 'SHARE_NOT_FOUND' }
+(1 matching property omitted from actual)
+   ✓ actual explicit granular read shares > pages collections with stable bounded cursors and no duplicate or missing item 39ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/sharing/share-service.test.ts > actual explicit granular read shares > discloses only explicitly selected location, policy, values and document metadata
+PrismaClientValidationError: 
+Invalid `db.storageLocation.create()` invocation in
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/domain/src/sharing/share-service.test.ts:91:43
+
+  88 
+  89 it("discloses only explicitly selected location, policy, values and document metadata",async()=>{
+  90  const f=await fixture();
+→ 91  const location=await db.storageLocation.create({
+        data: {
+          ownerId: "8bdfff32-9541-4acf-a024-04cd665ee304",
+          name: "Selected private cabinet",
+          type: "CABINET",
+      +   qrToken: String
+        }
+      })
+
+Argument `qrToken` is missing.
+ ❯ throwValidationException node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/core/errorRendering/throwValidationException.ts:46:9
+ ❯ vn.handleRequestError node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:212:7
+ ❯ vn.handleAndLogRequestError node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:184:12
+ ❯ vn.request node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:153:12
+ ❯ a node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:1014:24
+ ❯ packages/domain/src/sharing/share-service.test.ts:91:18
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |workspace| packages/domain/src/sharing/share-service.test.ts > actual explicit granular read shares > cannot select a document belonging to a different item or a sibling outside the chosen subtree
+AssertionError: expected ShareError: SHARE_INVALID { code: 'S…' } to match object { code: 'SHARE_NOT_FOUND' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+- {
+-   "code": "SHARE_NOT_FOUND",
++ ShareError {
++   "code": "SHARE_INVALID",
+  }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 8 passed (10)
+   Start at  06:35:43
+   Duration  1.27s (transform 154ms, setup 6ms, collect 298ms, tests 797ms, environment 0ms, prepare 39ms)
+

@@ -1,0 +1,132 @@
+[WebServer] (node:17790) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 4 tests using 1 worker
+(node:17791) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+F(node:17800) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+F(node:17807) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+F(node:17813) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+F
+
+  1) [sharing-desktop] › e2e/sharing.spec.ts:11:3 › de shared selection opens through a PIN, downloads only selected fields and blocks revoked access 
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: getByRole('alert')
+    Expected substring: "nicht mehr verfügbar"
+    Error: strict mode violation: getByRole('alert') resolved to 2 elements:
+        1) <p role="alert" class="shared-notice">Diese Freigabe ist nicht mehr verfügbar.</p> aka getByText('Diese Freigabe ist nicht mehr')
+        2) <div role="alert" aria-live="assertive" id="__next-route-announcer__"></div> aka locator('[id="__next-route-announcer__"]')
+
+    Call log:
+      - Expect "toContainText" getByRole('alert') with timeout 5000ms
+      - waiting for getByRole('alert')
+
+
+      103 |       });
+      104 |       await page.reload();
+    > 105 |       await expect(page.getByRole("alert")).toContainText(
+          |                                             ^
+      106 |         locale === "de" ? "nicht mehr verfügbar" : "no longer available",
+      107 |       );
+      108 |       await expect(page.getByRole("heading", { name: item.title, exact: true })).toHaveCount(0);
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/sharing.spec.ts:105:45
+
+    Error Context: test-results/sharing-de-shared-selectio-a2557-s-and-blocks-revoked-access-sharing-desktop/error-context.md
+
+  2) [sharing-desktop] › e2e/sharing.spec.ts:11:3 › en shared selection opens through a PIN, downloads only selected fields and blocks revoked access 
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: getByRole('alert')
+    Expected substring: "no longer available"
+    Error: strict mode violation: getByRole('alert') resolved to 2 elements:
+        1) <p role="alert" class="shared-notice">This selection is no longer available.</p> aka getByText('This selection is no longer')
+        2) <div role="alert" aria-live="assertive" id="__next-route-announcer__"></div> aka locator('[id="__next-route-announcer__"]')
+
+    Call log:
+      - Expect "toContainText" getByRole('alert') with timeout 5000ms
+      - waiting for getByRole('alert')
+        - locator resolved to <div role="alert" aria-live="assertive" id="__next-route-announcer__"></div>
+        - unexpected value ""
+
+
+      103 |       });
+      104 |       await page.reload();
+    > 105 |       await expect(page.getByRole("alert")).toContainText(
+          |                                             ^
+      106 |         locale === "de" ? "nicht mehr verfügbar" : "no longer available",
+      107 |       );
+      108 |       await expect(page.getByRole("heading", { name: item.title, exact: true })).toHaveCount(0);
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/sharing.spec.ts:105:45
+
+    Error Context: test-results/sharing-en-shared-selectio-b088a-s-and-blocks-revoked-access-sharing-desktop/error-context.md
+
+  3) [sharing-mobile] › e2e/sharing.spec.ts:11:3 › de shared selection opens through a PIN, downloads only selected fields and blocks revoked access 
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: getByRole('alert')
+    Expected substring: "nicht mehr verfügbar"
+    Error: strict mode violation: getByRole('alert') resolved to 2 elements:
+        1) <p role="alert" class="shared-notice">Diese Freigabe ist nicht mehr verfügbar.</p> aka getByText('Diese Freigabe ist nicht mehr')
+        2) <div role="alert" aria-live="assertive" id="__next-route-announcer__"></div> aka locator('[id="__next-route-announcer__"]')
+
+    Call log:
+      - Expect "toContainText" getByRole('alert') with timeout 5000ms
+      - waiting for getByRole('alert')
+        - locator resolved to <div role="alert" aria-live="assertive" id="__next-route-announcer__"></div>
+        - unexpected value ""
+
+
+      103 |       });
+      104 |       await page.reload();
+    > 105 |       await expect(page.getByRole("alert")).toContainText(
+          |                                             ^
+      106 |         locale === "de" ? "nicht mehr verfügbar" : "no longer available",
+      107 |       );
+      108 |       await expect(page.getByRole("heading", { name: item.title, exact: true })).toHaveCount(0);
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/sharing.spec.ts:105:45
+
+    Error Context: test-results/sharing-de-shared-selectio-a2557-s-and-blocks-revoked-access-sharing-mobile/error-context.md
+
+  4) [sharing-mobile] › e2e/sharing.spec.ts:11:3 › en shared selection opens through a PIN, downloads only selected fields and blocks revoked access 
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: getByRole('alert')
+    Expected substring: "no longer available"
+    Error: strict mode violation: getByRole('alert') resolved to 2 elements:
+        1) <p role="alert" class="shared-notice">This selection is no longer available.</p> aka getByText('This selection is no longer')
+        2) <div role="alert" aria-live="assertive" id="__next-route-announcer__"></div> aka locator('[id="__next-route-announcer__"]')
+
+    Call log:
+      - Expect "toContainText" getByRole('alert') with timeout 5000ms
+      - waiting for getByRole('alert')
+        - locator resolved to <div role="alert" aria-live="assertive" id="__next-route-announcer__"></div>
+        - unexpected value ""
+
+
+      103 |       });
+      104 |       await page.reload();
+    > 105 |       await expect(page.getByRole("alert")).toContainText(
+          |                                             ^
+      106 |         locale === "de" ? "nicht mehr verfügbar" : "no longer available",
+      107 |       );
+      108 |       await expect(page.getByRole("heading", { name: item.title, exact: true })).toHaveCount(0);
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/sharing.spec.ts:105:45
+
+    Error Context: test-results/sharing-en-shared-selectio-b088a-s-and-blocks-revoked-access-sharing-mobile/error-context.md
+
+  4 failed
+    [sharing-desktop] › e2e/sharing.spec.ts:11:3 › de shared selection opens through a PIN, downloads only selected fields and blocks revoked access 
+    [sharing-desktop] › e2e/sharing.spec.ts:11:3 › en shared selection opens through a PIN, downloads only selected fields and blocks revoked access 
+    [sharing-mobile] › e2e/sharing.spec.ts:11:3 › de shared selection opens through a PIN, downloads only selected fields and blocks revoked access 
+    [sharing-mobile] › e2e/sharing.spec.ts:11:3 › en shared selection opens through a PIN, downloads only selected fields and blocks revoked access 
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/sharing.spec.ts --project=sharing-desktop --project=sharing-mobile --workers=1

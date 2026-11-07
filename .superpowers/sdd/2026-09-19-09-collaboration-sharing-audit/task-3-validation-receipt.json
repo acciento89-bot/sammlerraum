@@ -1,0 +1,71 @@
+{
+  "capturedAt": "2026-11-07T06:15:26.796882+00:00",
+  "base": "5914a7cd5fe061ed4b674ab547caf3058f32ae54",
+  "sourceCommit": "7664d9d0866c7483fe6041b714660df89c16ca61",
+  "checks": {
+    "native": {
+      "log": "task-3-full-native.log",
+      "sha256": "fcdd4481d3fae8d7cc0e5ebdf82851384fc4191eda243050551e9f5d23c3a298",
+      "result": "PASS"
+    },
+    "regular": {
+      "log": "task-3-full-regular-fixed-env.log",
+      "sha256": "c743a37facf20747a48ef593897e616a92c42911641c4d9e7ccda86971147119",
+      "result": "PASS"
+    },
+    "build": {
+      "log": "task-3-final-build.log",
+      "sha256": "fd661636588190e05a1a43ec83159e6b44c66e1fb4c30194003acada7fae2e8b",
+      "result": "PASS"
+    },
+    "lint": {
+      "log": "task-3-final-all-lint.log",
+      "sha256": "140a927d7298cc84bed5979618cdc5c0f563f64ba12a414ab7dd11e6ed42f0e6",
+      "result": "PASS"
+    },
+    "webTypes": {
+      "log": "task-3-final-web-types.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "result": "PASS"
+    },
+    "browser": {
+      "log": "task-3-final-browser-isolated-credentials.log",
+      "sha256": "a368a518eacf042ccc7a71c4d3332a5c401fdb36a9e8129b81ccbbb56c41afab",
+      "result": "PASS"
+    },
+    "closing": {
+      "log": "task-3-tests.log",
+      "sha256": "04bf34ffce1ffb8fd2ec1621b8fbc8a20787b70d78581c2e5537635c7291fd58",
+      "result": "PASS"
+    },
+    "schemaDiff": {
+      "log": "task-3-schema-diff.log",
+      "sha256": "851cb03656537c316e47f338a03d698c900be51b4e437beb434434f7e05c5917",
+      "result": "PASS"
+    }
+  },
+  "wholeFunctionalNative": {
+    "files": 91,
+    "passed": 1029,
+    "skipped": 0,
+    "durationSeconds": 168.41
+  },
+  "regularCheckpoint": {
+    "passed": 1542,
+    "nativeDisabledSkipped": 899
+  },
+  "finalFocusedNativeIncludingAddedImageWitness": 22,
+  "actualCompiledBrowserCookieJourneys": 7,
+  "priorTaskCi": {
+    "runId": 42342569290,
+    "head": "5914a7cd5fe061ed4b674ab547caf3058f32ae54",
+    "conclusion": "success"
+  },
+  "independentReview": "Pending one whole-Phase09 review after Task7",
+  "reviewedMasterCount": 48,
+  "noDeployment": true,
+  "notes": [
+    "Last supplemental PNG-byte witness and credential-fixture isolation changed tests only after broad functional-code gates; focused22 and7built browser cases pass.",
+    "Read-only Owner management/share/membership panels remainTask7; core audited mutation integrationTask5."
+  ]
+}

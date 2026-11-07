@@ -1,0 +1,55 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/sharing/share-service.test.ts (10 tests | 2 failed) 1564ms
+   ✓ actual explicit granular read shares > excludes private notes, location, insurance, receipt and money data by default and stores only a token hash 135ms
+   ✓ actual explicit granular read shares > stops a known token immediately after revocation 14ms
+   ✓ actual explicit granular read shares > binds registered-user grants without adding membership or broadening a Viewer's edit rights 138ms
+   ✓ actual explicit granular read shares > resolves the selected node subtree without exposing siblings or other private ancestors 17ms
+   ✓ actual explicit granular read shares > permanently revokes the old owner's token during transfer, including a later ownership round trip 49ms
+   ✓ actual explicit granular read shares > rejects a genuinely expired stored grant using the database clock 6ms
+   ✓ actual explicit granular read shares > stores a salted PIN hash and persists a bounded attempt budget before expensive checking 215ms
+   × actual explicit granular read shares > discloses only explicitly selected location, policy, values and document metadata 17ms
+     → SHARE_INVALID
+   × actual explicit granular read shares > cannot select a document belonging to a different item or a sibling outside the chosen subtree 10ms
+     → expected ShareError: SHARE_INVALID { code: 'S…' } to match object { code: 'SHARE_NOT_FOUND' }
+(1 matching property omitted from actual)
+   ✓ actual explicit granular read shares > pages collections with stable bounded cursors and no duplicate or missing item 36ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/sharing/share-service.test.ts > actual explicit granular read shares > discloses only explicitly selected location, policy, values and document metadata
+ShareError: SHARE_INVALID
+ ❯ fail packages/domain/src/sharing/share-service.ts:15:56
+     13| type Item = { id: string; title: string; publicDescription: string | n…
+     14| const hash = (value: string) => createHash("sha256").update(value).dig…
+     15| function fail(code: ShareError["code"]): never { throw new ShareError(…
+       |                                                        ^
+     16| function parse<T>(schema: z.ZodType<T>, value: unknown): T { const res…
+     17| function permissions(row: Share) { const result = SharePermissionsSche…
+ ❯ Object.createShare packages/domain/src/sharing/share-service.ts:73:244
+ ❯ packages/domain/src/sharing/share-service.test.ts:97:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |workspace| packages/domain/src/sharing/share-service.test.ts > actual explicit granular read shares > cannot select a document belonging to a different item or a sibling outside the chosen subtree
+AssertionError: expected ShareError: SHARE_INVALID { code: 'S…' } to match object { code: 'SHARE_NOT_FOUND' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+- {
+-   "code": "SHARE_NOT_FOUND",
++ ShareError {
++   "code": "SHARE_INVALID",
+  }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 8 passed (10)
+   Start at  06:36:27
+   Duration  2.00s (transform 143ms, setup 6ms, collect 278ms, tests 1.56s, environment 0ms, prepare 36ms)
+

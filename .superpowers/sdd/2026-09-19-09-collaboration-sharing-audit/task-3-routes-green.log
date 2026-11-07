@@ -1,0 +1,37 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| apps/web/src/lib/share-routes.integration.test.ts (3 tests | 1 failed) 391ms
+   ✓ native PostgreSQL granular sharing Request/Response handlers > creates through an authenticated owner, resolves anonymously and immediately blocks revoked links 127ms
+   ✓ native PostgreSQL granular sharing Request/Response handlers > rejects cross-origin access and rejects unauthenticated or forged-actor creation without side effects 7ms
+   × native PostgreSQL granular sharing Request/Response handlers > bounds actual JSON input and never accepts an injected query scope 7ms
+     → expected 413 to be 400 // Object.is equality
+ ✓ |workspace| packages/domain/src/sharing/share-service.test.ts (15 tests) 1065ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/web/src/lib/share-routes.integration.test.ts > native PostgreSQL granular sharing Request/Response handlers > bounds actual JSON input and never accepts an injected query scope
+AssertionError: expected 413 to be 400 // Object.is equality
+
+- Expected
++ Received
+
+- 400
++ 413
+
+ ❯ apps/web/src/lib/share-routes.integration.test.ts:38:88
+     36|  it("bounds actual JSON input and never accepts an injected query scop…
+     37|   const f=await fixture();
+     38|   expect((await f.handlers(f.owner).CREATE(post({padding:"x".repeat(17…
+       |                                                                                        ^
+     39|   const bad=new Request(origin+"/api/v1/shares?ownerId="+f.owner,{meth…
+     40|   expect((await f.handlers(f.owner).CREATE(bad)).status).toBe(400);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  1 failed | 17 passed (18)
+   Start at  06:45:05
+   Duration  2.26s (transform 199ms, setup 6ms, collect 506ms, tests 1.46s, environment 0ms, prepare 67ms)
+
