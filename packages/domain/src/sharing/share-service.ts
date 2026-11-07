@@ -107,7 +107,7 @@ export function createShareService(
   }
   async function load(tx: BoundedSearchReadTransaction, id: string) {
     const [row] = await tx.$queryRaw<Share[]>(
-      Prisma.sql`SELECT *,coalesce("expiresAt"<=timezone('UTC',clock_timestamp()),false) AS expired FROM "CollectionShare" WHERE id=${id}::uuid FOR SHARE`,
+      Prisma.sql`SELECT s.id,s."collectionId",s."creatorUserId",s."targetKind",s."targetId",s."recipientUserId",s."tokenHash",s.permissions,s."pinHash",s.revision,s."expiresAt",coalesce(s."revokedAt",r."revokedAt") AS "revokedAt",coalesce(s."expiresAt"<=timezone('UTC',clock_timestamp()),false) AS expired FROM "CollectionShare" s LEFT JOIN "ShareRevocation" r ON r."shareId"=s.id WHERE s.id=${id}::uuid FOR SHARE OF s`,
     );
     return row ?? fail("SHARE_NOT_FOUND");
   }
@@ -216,6 +216,14 @@ export function createShareService(
     if (input.kind === "IMAGE" ? !rights.images : !rights.documents.includes(input.linkId))
       return fail("SHARE_NOT_FOUND");
     const table = input.kind === "IMAGE" ? Prisma.sql`"MediaLink"` : Prisma.sql`"DocumentLink"`;
+    const [reference] = await tx.$queryRaw<{ itemId: string }[]>(
+      Prisma.sql`${shareScopeCte(row)} SELECT i.id AS "itemId" FROM ${table} l JOIN "CollectibleItem" i ON i.id=l."itemId" AND i."ownerId"=l."ownerId" WHERE ${shareItemPredicate(row)} AND l.id=${input.linkId}::uuid`,
+    );
+    if (!reference) return fail("SHARE_NOT_FOUND");
+    const [live] = await tx.$queryRaw<{ id: string }[]>(
+      Prisma.sql`SELECT id FROM "CollectibleItem" WHERE id=${reference.itemId}::uuid AND "collectionId"=${row.collectionId}::uuid AND "ownerId"=${row.creatorUserId} AND "deletedAt" IS NULL FOR SHARE`,
+    );
+    if (!live) return fail("SHARE_NOT_FOUND");
     const [asset] = await tx.$queryRaw<
       {
         id: string;
@@ -225,9 +233,11 @@ export function createShareService(
         checksumSha256: string;
       }[]
     >(
-      Prisma.sql`${shareScopeCte(row)} SELECT a.id,a."storageKey",a."mimeType",a."byteSize",a."checksumSha256" FROM ${table} l JOIN "CollectibleItem" i ON i.id=l."itemId" AND i."ownerId"=l."ownerId" JOIN "MediaAsset" a ON a.id=l."assetId" AND a."ownerId"=l."ownerId" WHERE ${shareItemPredicate(row)} AND l.id=${input.linkId}::uuid AND a.kind=${input.kind}::"MediaKind" AND a.status='READY' AND a."cleanupStartedAt" IS NULL AND a."byteSize" BETWEEN 1 AND 26214400 ${input.kind === "IMAGE" ? Prisma.sql`AND a."mimeType" IN ('image/jpeg','image/png','image/webp')` : Prisma.sql`AND a."mimeType"='application/pdf' ${rights.purchaseReceipts ? Prisma.empty : Prisma.sql`AND l.category NOT IN ('PURCHASE_RECEIPT','INVOICE')`}`}`,
+      Prisma.sql`${shareScopeCte(row)} SELECT a.id,a."storageKey",a."mimeType",a."byteSize",a."checksumSha256" FROM ${table} l JOIN "CollectibleItem" i ON i.id=l."itemId" AND i."ownerId"=l."ownerId" JOIN "MediaAsset" a ON a.id=l."assetId" AND a."ownerId"=l."ownerId" WHERE ${shareItemPredicate(row)} AND l.id=${input.linkId}::uuid AND a.kind=${input.kind}::"MediaKind" AND a.status='READY' AND a."cleanupStartedAt" IS NULL AND a."byteSize" BETWEEN 1 AND 26214400 ${input.kind === "IMAGE" ? Prisma.sql`AND a."mimeType" IN ('image/jpeg','image/png','image/webp')` : Prisma.sql`AND a."mimeType"='application/pdf' ${rights.purchaseReceipts ? Prisma.empty : Prisma.sql`AND l.category NOT IN ('PURCHASE_RECEIPT','INVOICE')`}`} FOR SHARE OF l,a`,
     );
     if (!asset) return fail("SHARE_NOT_FOUND");
+    const final = await authorized(tx, input.access, userId);
+    await checkPinAccess(tx, final, input.access, verifiedPinHash);
     return asset;
   }
   return {
@@ -259,7 +269,7 @@ export function createShareService(
             return fail("SHARE_INVALID");
         }
         const [count] = await tx.$queryRaw<{ count: bigint }[]>(
-          Prisma.sql`SELECT count(*) FROM "CollectionShare" WHERE "collectionId"=${p.id}::uuid AND "revokedAt" IS NULL AND ("expiresAt" IS NULL OR "expiresAt">timezone('UTC',clock_timestamp()))`,
+          Prisma.sql`SELECT count(*) FROM "CollectionShare" s WHERE s."collectionId"=${p.id}::uuid AND s."revokedAt" IS NULL AND NOT EXISTS(SELECT 1 FROM "ShareRevocation" r WHERE r."shareId"=s.id) AND (s."expiresAt" IS NULL OR s."expiresAt">timezone('UTC',clock_timestamp()))`,
         );
         if (!count || count.count >= 100n) return fail("SHARE_LIMIT_EXCEEDED");
         await validateShareDocuments(

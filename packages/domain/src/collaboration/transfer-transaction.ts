@@ -1,3 +1,4 @@
+import { RestoreError } from "@sammlerraum/contracts/restore";
 import { AuditError } from "@sammlerraum/contracts/audit";
 import { ShareError } from "@sammlerraum/contracts/sharing";
 import { Prisma } from "@sammlerraum/db/search-sql";
@@ -72,6 +73,7 @@ export async function runTransferTransaction<T>(
       );
     } catch (error) {
       if (
+        error instanceof RestoreError ||
         error instanceof AuditError ||
         error instanceof ShareError ||
         error instanceof MembershipError ||

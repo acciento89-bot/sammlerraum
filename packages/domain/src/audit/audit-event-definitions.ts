@@ -1,3 +1,4 @@
+import { UpdateItemInputSchema } from "@sammlerraum/contracts/items";
 import { SharePermissionsSchema } from "@sammlerraum/contracts/sharing";
 import { MoneyViewSchema } from "@sammlerraum/contracts/legacy-money";
 import { DocumentCategorySchema } from "@sammlerraum/contracts/media";
@@ -163,7 +164,52 @@ const invitedAccess = z
   })
   .strict()
   .nullable();
+const restoredRef = { restoredEventId: z.uuid() };
+const restoredItemDetails = z.union([
+  z.object({ title: UpdateItemInputSchema.shape.title.unwrap(), ...restoredRef }).strict(),
+  z.object({ quantity: UpdateItemInputSchema.shape.quantity.unwrap(), ...restoredRef }).strict(),
+  z.object({ nodeId: UpdateItemInputSchema.shape.nodeId.unwrap(), ...restoredRef }).strict(),
+  z
+    .object({ tradeStatus: UpdateItemInputSchema.shape.tradeStatus.unwrap(), ...restoredRef })
+    .strict(),
+  z
+    .object({
+      acquisitionType: UpdateItemInputSchema.shape.acquisitionType.unwrap(),
+      ...restoredRef,
+    })
+    .strict(),
+  z
+    .object({
+      acquisitionDate: UpdateItemInputSchema.shape.acquisitionDate.unwrap(),
+      ...restoredRef,
+    })
+    .strict(),
+]);
 const definitions = {
+  ITEM_VISIBILITY_RESTORED: { resourceType: "ITEM", snapshot: visibility.extend(restoredRef) },
+  COLLECTION_VISIBILITY_RESTORED: {
+    resourceType: "COLLECTION",
+    snapshot: visibility.extend(restoredRef),
+  },
+  ITEM_DETAILS_RESTORED: { resourceType: "ITEM", snapshot: restoredItemDetails },
+  COLLECTION_DETAILS_RESTORED: {
+    resourceType: "COLLECTION",
+    snapshot: z.object({ name: z.string().min(1).max(120), ...restoredRef }).strict(),
+  },
+  ITEM_CONDITION_RESTORED: { resourceType: "ITEM", snapshot: itemCondition.extend(restoredRef) },
+  ITEM_LOCATION_RESTORED: { resourceType: "ITEM", snapshot: itemLocation.extend(restoredRef) },
+  ITEM_ARCHIVE_RESTORED: {
+    resourceType: "ITEM",
+    snapshot: z.object({ archivedAt: z.iso.datetime().nullable(), ...restoredRef }).strict(),
+  },
+  ITEM_RESTORED: {
+    resourceType: "ITEM",
+    snapshot: z.object({ deleted: z.boolean(), ...restoredRef }).strict(),
+  },
+  COLLECTION_RESTORED: {
+    resourceType: "COLLECTION",
+    snapshot: z.object({ deleted: z.boolean(), ...restoredRef }).strict(),
+  },
   SHARE_CREATED: { resourceType: "SHARE", snapshot: sharedAccess },
   SHARE_REVOKED: { resourceType: "SHARE", snapshot: sharedAccess },
   INVITATION_CREATED: { resourceType: "COLLECTION", snapshot: invitedAccess },

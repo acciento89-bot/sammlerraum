@@ -298,7 +298,7 @@ git commit -m "feat: audit core collection mutations"
 **Interfaces:**
 - Produces: `softDeleteItem`, `restoreItem`, `restoreAuditEvent`.
 
-- [ ] **Step 1: Write failing newer-change conflict test**
+- [x] **Step 1: Write failing newer-change conflict test**
 
 ```ts
 it("refuses restoration when a newer conflicting field change exists", async () => {
@@ -307,16 +307,16 @@ it("refuses restoration when a newer conflicting field change exists", async () 
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run packages/domain/src/audit/restore-service.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement restore rules**
+- [x] **Step 3: Implement restore rules**
 
 Restore creates a new mutation and audit event. Supported field-level restore checks current version/updatedAt and later same-field events. Soft-deleted items have `deletedAt` and are excluded by normal queries.
 
-- [ ] **Step 4: Run tests/build**
+- [x] **Step 4: Run tests/build**
 
 Run:
 ```bash
@@ -326,7 +326,7 @@ pnpm --filter @sammlerraum/web build
 
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/db packages/domain/src/audit apps/web/src/app/api/v1/audit

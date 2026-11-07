@@ -56,7 +56,8 @@
     "./collaboration/invitation-service": "./src/collaboration/invitation-service.ts",
     "./sharing/share-service": "./src/sharing/share-service.ts",
     "./audit/audit-service": "./src/audit/audit-service.ts",
-    "./audit/audit-context": "./src/audit/audit-context.ts"
+    "./audit/audit-context": "./src/audit/audit-context.ts",
+    "./audit/restore-service": "./src/audit/restore-service.ts"
   },
   "scripts": {
     "build": "pnpm typecheck",

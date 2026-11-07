@@ -36,7 +36,8 @@
     "./reports": "./src/reports.ts",
     "./collaboration": "./src/collaboration.ts",
     "./sharing": "./src/sharing.ts",
-    "./audit": "./src/audit.ts"
+    "./audit": "./src/audit.ts",
+    "./restore": "./src/restore.ts"
   },
   "scripts": {
     "build": "pnpm typecheck",
