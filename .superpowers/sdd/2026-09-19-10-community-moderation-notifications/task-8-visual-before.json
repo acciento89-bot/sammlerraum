@@ -1,0 +1,50 @@
+[
+  {
+    "before": ".superpowers/sdd/2026-09-19-10-community-moderation-notifications/reports/task-8-before-layout-profile-en-community-ui-desktop.png",
+    "sha256": "b3cece97bfa71b91f364725fa14f186d4a8d74bb266668c639df891bd9891482"
+  },
+  {
+    "before": ".superpowers/sdd/2026-09-19-10-community-moderation-notifications/reports/task-8-before-layout-collection-de-community-ui-desktop.png",
+    "sha256": "970a5f0a2d345ef8668d6123a6746c96610e8ff89e87e15313705973a7fca9c4"
+  },
+  {
+    "before": ".superpowers/sdd/2026-09-19-10-community-moderation-notifications/reports/task-8-before-layout-item-de-community-ui-mobile.png",
+    "sha256": "a777c9884fea1fa228f6fffe5ab1d5aa143307bfbe0f5b66ddb40e1cb6e67a24"
+  },
+  {
+    "before": ".superpowers/sdd/2026-09-19-10-community-moderation-notifications/reports/task-8-before-layout-profile-en-community-ui-mobile.png",
+    "sha256": "8fe3015c0174020fe2f1df79df8aff4edf94af51a1bf4872ec4b6077edbcfe7b"
+  },
+  {
+    "before": ".superpowers/sdd/2026-09-19-10-community-moderation-notifications/reports/task-8-before-layout-collection-de-community-ui-mobile.png",
+    "sha256": "d08fb4792ed6a2cd9948b6308b5cc71d471c8000d2eb41e808e1e7afbb61b77c"
+  },
+  {
+    "before": ".superpowers/sdd/2026-09-19-10-community-moderation-notifications/reports/task-8-before-layout-item-en-community-ui-desktop.png",
+    "sha256": "4216fb84e5334bba7cec6ca2a237a70c3de39ac76302918e9adb5e821915d074"
+  },
+  {
+    "before": ".superpowers/sdd/2026-09-19-10-community-moderation-notifications/reports/task-8-before-layout-collection-en-community-ui-desktop.png",
+    "sha256": "935b167582889a4a837832aa81e3ad567f6b7ffe334124a69427e33c7e462f22"
+  },
+  {
+    "before": ".superpowers/sdd/2026-09-19-10-community-moderation-notifications/reports/task-8-before-layout-profile-de-community-ui-desktop.png",
+    "sha256": "31e94d394f4aa7eeb244d9e55beb9eea32e214838c618a476b97605435f5c4bd"
+  },
+  {
+    "before": ".superpowers/sdd/2026-09-19-10-community-moderation-notifications/reports/task-8-before-layout-item-en-community-ui-mobile.png",
+    "sha256": "7006288a0e2fd5236d90b1ad651cb3d23b0744392eb728af0d0fce6c28a5d071"
+  },
+  {
+    "before": ".superpowers/sdd/2026-09-19-10-community-moderation-notifications/reports/task-8-before-layout-item-de-community-ui-desktop.png",
+    "sha256": "fea127a9881bf66c7af15cd5005b8ea34a7644e9bca7ae04676ca5ecff7c23d6"
+  },
+  {
+    "before": ".superpowers/sdd/2026-09-19-10-community-moderation-notifications/reports/task-8-before-layout-profile-de-community-ui-mobile.png",
+    "sha256": "933c3b1bdc34b015598b1951b82780e83bbc9bced2d26930ff54d85255b98d5b"
+  },
+  {
+    "before": ".superpowers/sdd/2026-09-19-10-community-moderation-notifications/reports/task-8-before-layout-collection-en-community-ui-mobile.png",
+    "sha256": "752daaceae2cc9d8444209c7914e05f43692780478b8933dd613a316c991cd3b"
+  }
+]

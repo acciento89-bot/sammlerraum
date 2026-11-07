@@ -1,0 +1,93 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/moderation/moderation-service.test.ts (7 tests | 2 failed) 668ms
+   × actual application moderation authority and private review > emits generic author and reporter notices once per actual moderation transition 142ms
+     → expected +0 to be 1 // Object.is equality
+   × actual application moderation authority and private review > rejects ordinary users and collection admins, even with forged platform role claims 25ms
+     → expected 1 to be +0 // Object.is equality
+   ✓ actual application moderation authority and private review > keeps hidden reported comments privately reviewable and records reasoned MODERATION events 49ms
+   ✓ actual application moderation authority and private review > restoring a platform hide never reverses owner hides or author deletion 45ms
+   ✓ actual application moderation authority and private review > resolves a report exactly once, keeps a stable receipt and rejects conflicting or reasonless actions 24ms
+   ✓ actual application moderation authority and private review > releases deleted comment text only after the last pending report and retains immutable decisions after author erasure 44ms
+   ✓ actual application moderation authority and private review > rereads the actual role after revocation and never trusts a stale actor object 11ms
+ ❯ |workspace| apps/worker/src/jobs/tabular-export.integration.test.ts (10 tests | 2 failed) 778ms
+   × real tabular export source, assets and bytes > publishes one complete owned CSV artifact and reuses successful delivery 188ms
+     → expected +0 to be 1 // Object.is equality
+   × real tabular export source, assets and bytes > publishes one complete owned XLSX artifact and reuses successful delivery 40ms
+     → expected +0 to be 1 // Object.is equality
+   ✓ real tabular export source, assets and bytes > retains every attempt manifest and retries storage failure using the immutable source 43ms
+   ✓ real tabular export source, assets and bytes > refuses stale data instead of silently replacing the saved export source 50ms
+   ✓ real tabular export source, assets and bytes > fences expired claims, tracks abandoned outputs and closes exhausted attempts 12ms
+   ✓ real tabular export source, assets and bytes > does not publish after owner access disappears while file storage is in flight 30ms
+   ✓ real tabular export source, assets and bytes > keeps the actual asset lock until ignored cancellation settles and never marks its bytes ready 28ms
+   ✓ real tabular export source, assets and bytes > does not retain a job permission or source after its owned artifact is deleted 35ms
+   ✓ real tabular export source, assets and bytes > closes a whole-source export limit permanently instead of retrying an impossible build 32ms
+   ✓ real tabular export source, assets and bytes > retries a busy cleanup lock rather than waiting through an unbounded foreign hold 21ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/worker/src/jobs/tabular-export.integration.test.ts > real tabular export source, assets and bytes > publishes one complete owned CSV artifact and reuses successful delivery
+ FAIL  |workspace| apps/worker/src/jobs/tabular-export.integration.test.ts > real tabular export source, assets and bytes > publishes one complete owned XLSX artifact and reuses successful delivery
+AssertionError: expected +0 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ apps/worker/src/jobs/tabular-export.integration.test.ts:80:128
+     78|         const job = await state(f.job.id);
+     79|         expect(job.status).toBe("READY");
+     80|         expect(await db.notification.count({ where: { recipientId: f.o…
+       |                                                                                                                                ^
+     81|         const asset = await db.mediaAsset.findUniqueOrThrow({ where: {…
+     82|         expect(asset).toMatchObject({ ownerId: f.owner, kind: "DOCUMEN…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  |workspace| packages/domain/src/moderation/moderation-service.test.ts > actual application moderation authority and private review > emits generic author and reporter notices once per actual moderation transition
+AssertionError: expected +0 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ packages/domain/src/moderation/moderation-service.test.ts:74:115
+     72|       await f.service.hideContent(f.moderator, f.comment.id, { reason:…
+     73|       await f.service.hideContent(f.moderator, f.comment.id, { reason:…
+     74|       expect(await db.notification.count({ where: { recipientId: f.aut…
+       |                                                                                                                   ^
+     75|       const input = { outcome: "RESOLVED", reason: "Private resolution…
+     76|       await f.service.resolveReport(f.moderator, f.report.id, input);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  |workspace| packages/domain/src/moderation/moderation-service.test.ts > actual application moderation authority and private review > rejects ordinary users and collection admins, even with forged platform role claims
+AssertionError: expected 1 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ packages/domain/src/moderation/moderation-service.test.ts:99:57
+     97|         ).rejects.toMatchObject({ code: "MODERATION_FORBIDDEN" });
+     98|       }
+     99|       expect(await db.communityModerationEvent.count()).toBe(0);
+       |                                                         ^
+    100|     });
+    101|     it("keeps hidden reported comments privately reviewable and record…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  4 failed | 13 passed (17)
+   Start at  15:28:25
+   Duration  2.37s (transform 294ms, setup 7ms, collect 614ms, tests 1.45s, environment 0ms, prepare 81ms)
+

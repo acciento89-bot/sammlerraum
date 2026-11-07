@@ -1,0 +1,80 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/notifications/community-event-handlers.test.ts (4 tests | 3 failed) 567ms
+   × committed community events > emits one favorite notification on successful creation, deduplicates retries and redacts later private targets 149ms
+     → expected [] to have a length of 1 but got +0
+   × committed community events > notifies follows once and treats a real unfollow/refollow as a new occurrence 18ms
+     → expected [] to have a length of 1 but got +0
+   × committed community events > notifies the owner about a comment and the distinct parent author about a reply, without copying bodies 23ms
+     → expected [] to deeply equal [ 'COMMENT_RECEIVED', …(1) ]
+   ✓ committed community events > suppresses self notices and rolls back both the interaction and receipt on transaction failure 25ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/notifications/community-event-handlers.test.ts > committed community events > emits one favorite notification on successful creation, deduplicates retries and redacts later private targets
+AssertionError: expected [] to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ packages/domain/src/notifications/community-event-handlers.test.ts:35:35
+     33|     expect(a.favoriteId).toBe(b.favoriteId);
+     34|     const listing = await f.notifications.listNotifications(f.owner, {…
+     35|     expect(listing.notifications).toHaveLength(1);
+       |                                   ^
+     36|     expect(listing.notifications[0]).toMatchObject({ type: "FAVORITE_R…
+     37|     await createItemService(db, f.owner.userId).updateItem(f.item.id, …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  |workspace| packages/domain/src/notifications/community-event-handlers.test.ts > committed community events > notifies follows once and treats a real unfollow/refollow as a new occurrence
+AssertionError: expected [] to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ packages/domain/src/notifications/community-event-handlers.test.ts:46:82
+     44|     await f.social.followUser(f.actor, f.owner.userId);
+     45|     await f.social.followUser(f.actor, f.owner.userId);
+     46|     expect((await f.notifications.listNotifications(f.owner, {})).noti…
+       |                                                                                  ^
+     47|     await f.social.unfollowUser(f.actor, f.owner.userId);
+     48|     await f.social.followUser(f.actor, f.owner.userId);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  |workspace| packages/domain/src/notifications/community-event-handlers.test.ts > committed community events > notifies the owner about a comment and the distinct parent author about a reply, without copying bodies
+AssertionError: expected [] to deeply equal [ 'COMMENT_RECEIVED', …(1) ]
+
+- Expected
++ Received
+
+- [
+-   "COMMENT_RECEIVED",
+-   "COMMENT_RECEIVED",
+- ]
++ []
+
+ ❯ packages/domain/src/notifications/community-event-handlers.test.ts:56:99
+     54|     const parent = await comments.createComment(f.actor, { target, bod…
+     55|     await comments.createComment(third, { target, parentId: parent.id,…
+     56|     expect((await f.notifications.listNotifications(f.owner, {})).noti…
+       |                                                                                                   ^
+     57|     expect((await f.notifications.listNotifications(f.actor, {})).noti…
+     58|     const stored = await db.notification.findMany();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 1 passed (4)
+   Start at  15:19:45
+   Duration  1.15s (transform 186ms, setup 6ms, collect 363ms, tests 567ms, environment 0ms, prepare 52ms)
+

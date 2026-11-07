@@ -1,0 +1,36 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/community/public-profile-service.test.ts (3 tests | 1 failed) 535ms
+   × public collector routes > exposes only public profile fields and public collections without private totals 147ms
+     → expected undefined to be 'Public name' // Object.is equality
+   ✓ public collector routes > resolves stable collision-free collection slugs after renames and rejects wrong owner/slug 30ms
+   ✓ public collector routes > hides private/unlisted items and inaccessible ancestors even under a public collection URL 26ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/community/public-profile-service.test.ts > public collector routes > exposes only public profile fields and public collections without private totals
+AssertionError: expected undefined to be 'Public name' // Object.is equality
+
+- Expected: 
+"Public name"
+
++ Received: 
+undefined
+
+ ❯ packages/domain/src/community/public-profile-service.test.ts:80:81
+     78|       /Private collection|Private login name|@example.invalid|Hidden n…
+     79|     );
+     80|     expect((await f.service.getProfile(`%40${f.handle}`))?.profile.dis…
+       |                                                                                 ^
+     81|     expect(await f.service.getProfile(`%2540${f.handle}`)).toBeNull();
+     82|     expect(await f.service.getProfile("%ZZ")).toBeNull();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 2 passed (3)
+   Start at  15:39:32
+   Duration  988ms (transform 155ms, setup 7ms, collect 268ms, tests 535ms, environment 0ms, prepare 52ms)
+
