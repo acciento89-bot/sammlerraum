@@ -1,0 +1,48 @@
+{
+  "capturedAt": "2026-11-07T05:21:26.861202+00:00",
+  "checks": {
+    "native": {
+      "log": "task-2-full-native.log",
+      "sha256": "be58393e704bddd4d8e2a0413359400b9d020c2a2e9e80083e637cc2405c66a9",
+      "result": "PASS"
+    },
+    "regular": {
+      "log": "task-2-full-regular.log",
+      "sha256": "c3f64a73a903f5239d885bc2e75ab7316f79bb9c7b138a196f6d741bb7866c91",
+      "result": "PASS"
+    },
+    "cookieApi": {
+      "log": "task-2-compiled-cookie-api-first.log",
+      "sha256": "0a98b686890cd72435779a4c92143f3d7c45e8646adf0cb13d18ab76f9d6c809",
+      "result": "PASS"
+    },
+    "build": {
+      "log": "task-2-full-build.log",
+      "sha256": "fed0803cae39343d6e2921ff1fe34e944430a5e10a1afd693a5d26d15845881d",
+      "result": "PASS"
+    },
+    "lint": {
+      "log": "task-2-full-lint.log",
+      "sha256": "a6c8e9724a581e096283f08a1a24d18d0a8c44c5487f0c69d93dd05b4f73a905",
+      "result": "PASS"
+    },
+    "schema": {
+      "log": "task-2-schema-diff.log",
+      "sha256": "30247e337f470a92f09fd54433fbc19d8c115630797ce6bd4a61ba729d8a671a",
+      "result": "PASS"
+    },
+    "typecheck": {
+      "log": "task-2-final-typecheck.log",
+      "exitCode": 0,
+      "result": "PASS"
+    }
+  },
+  "nativeFiles": 89,
+  "nativePass": 1008,
+  "nativeSkip": 0,
+  "regularPass": 1542,
+  "regularNativeDisabledSkip": 878,
+  "actualCookieApiPass": 1,
+  "wholePhaseIndependentReview": "pending at Task7",
+  "deploy": false
+}

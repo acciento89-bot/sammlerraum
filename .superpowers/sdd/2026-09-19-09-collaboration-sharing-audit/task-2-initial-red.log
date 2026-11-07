@@ -1,0 +1,27 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/collaboration/invitation-service.test.ts [ packages/domain/src/collaboration/invitation-service.test.ts ]
+Error: Cannot find module './invitation-service' imported from '/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/domain/src/collaboration/invitation-service.test.ts'
+ ❯ packages/domain/src/collaboration/invitation-service.test.ts:5:1
+      3| import { createLegacyMoneyTestSchema } from "@sammlerraum/db/test-lega…
+      4| import { createTestDatabaseClient } from "@sammlerraum/db/test-databas…
+      5| import { createInvitationService } from "./invitation-service";
+       | ^
+      6| import { createMembershipService } from "./membership-service";
+      7| let isolated: Awaited<ReturnType<typeof createLegacyMoneyTestSchema>>;
+
+Caused by: Error: Failed to load url ./invitation-service (resolved id: ./invitation-service) in /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/domain/src/collaboration/invitation-service.test.ts. Does the file exist?
+ ❯ loadAndTransform ../../../../SSK%20SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/node_modules/.pnpm/vite@7.3.6_@types+node@24.5.2_jiti@2.7.0/node_modules/vite/dist/node/chunks/config.js:22739:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  no tests
+   Start at  05:39:17
+   Duration  203ms (transform 31ms, setup 6ms, collect 0ms, tests 0ms, environment 0ms, prepare 34ms)
+

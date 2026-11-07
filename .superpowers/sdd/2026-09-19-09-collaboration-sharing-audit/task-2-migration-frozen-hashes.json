@@ -1,0 +1,7 @@
+[
+  {
+    "path": "packages/db/prisma/migrations/20261107040000_collection_invitations/migration.sql",
+    "sha256": "f63547b2adb8c21b8e3af148508eee74dbab23ae3a693ef16a2930f1301741c3",
+    "bytes": 8525
+  }
+]

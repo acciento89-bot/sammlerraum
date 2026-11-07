@@ -1,5 +1,5 @@
 import { Prisma } from "@sammlerraum/db/search-sql";
-import { MembershipError } from "@sammlerraum/contracts/collaboration";
+import { MembershipError, InvitationError } from "@sammlerraum/contracts/collaboration";
 import { isReadDependencyFailure, isReadSerializationFailure } from "../api/read-dependency-errors";
 import type { SearchReadTransaction, BoundedSearchReadTransaction } from "../search/search-read";
 export type MembershipDatabase = {
@@ -69,7 +69,7 @@ export async function runTransferTransaction<T>(
         },
       );
     } catch (error) {
-      if (error instanceof MembershipError) throw error;
+      if (error instanceof MembershipError || error instanceof InvitationError) throw error;
       if (isUniqueConflict(error)) throw new MembershipError("MEMBERSHIP_CONFLICT");
       if (isReadSerializationFailure(error) && attempt < 2 && performance.now() < stop) continue;
       if (isReadDependencyFailure(error)) throw new MembershipError("MEMBERSHIP_UNAVAILABLE");

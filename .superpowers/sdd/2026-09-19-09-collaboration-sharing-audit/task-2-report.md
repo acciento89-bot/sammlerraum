@@ -1,0 +1,15 @@
+# Task2 secure collection invitations — verified implementation
+
+Approved plan/spec§7; source/test/existing DraftPR only. No deployment, live SMTP, external mail, customer data or other app/store action.
+
+Owner/Admin create and revoke pending invitations; only Owner grants Admin. Current DB roles, verified intended email/UID recipients, explicit scope and parent revision preconditions are authoritative. Random32-byte bearer token returned once; only its SHA256 hash persists.48hdefault/14dmaximum lifetime from one DB-UTC anchor,20pending invitations,200total members. Strict response contracts exclude hashes/internal creator data. Invites never overwrite a different existing role or fabricate another Owner.
+
+Consumption is atomic and same-user retry idempotent; replay after membership removal cannot re-add it. Genuine RED found unused EMAIL/USER invites could restore an explicitly removed member; the040000 member-deletion trigger now revokes those too. Account erasure removes creator/target/acceptor records and pending email-bound data; parent erasure remains possible. Native user/collection/member guards preserve actual membership rather than merely stamping acceptedAt.
+
+Fresh-auth REST routes: GET/POST /api/v1/collections/{collectionId}/invitations; POST /api/v1/collections/{collectionId}/invitations/{invitationId}/revoke; POST /api/v1/invitations/accept. Origin precedes cookie auth/private body for mutations, bounded lexical16KiB JSON rejects duplicate keys/Unicode/actor/scope injection, no-store/request IDs and closed errors. Pending link lists are owner/admin-only and never contain a reusable token. New landing/navigation UI remains Task7; no email-delivery claim (link creation only).
+
+Genuine RED/GREEN covers wrong/unverified recipients, immutable identity/hash-only storage, expiry/revocation, removed/reduced inviter permissions, simultaneous acceptance/last pending slot, full member capacity with a valid retry after freeing a slot, no membership overwrite, actual account erasure and unused-link resurrection. In-flight expiration during callbacks and inside the real SQL guard now returns closed EXPIRED and rolls back both membership and parent revision. Unknown JSON fixture types were fixed using strict public contracts, not any casts.
+
+Validation:23native domain+3actual PG Request/Response+10pure boundary checks; broad89nativefiles1008PASS/0skips165.97s; full regular1542PASS/878explicit native-disabled skips14.17s; root types/workspace lint/full production buildPASS; actual compiled HTTP API journey with three separate real cookie sessions1PASS1.9s (create/list/wrong recipient/accept/Viewer denial/revoke). This is a cookie/API journey, not visual or physical-device QA.040000 frozen/applied to BOTH guarded retained DBs; all seven earlier migration hashes unchanged and schema diff empty.
+
+Independent whole-Phase09 review follows Task7. Master reviewed count remains48 pending that review. Exact Task1 head17d1406 push CI42339097557 actually SUCCESS; current Task2 remote CI follows source publication and is not yet claimed. Full evidence, schema hashes and source manifest retained in this workspace.

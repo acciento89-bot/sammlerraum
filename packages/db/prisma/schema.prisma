@@ -130,11 +130,14 @@ model User {
   customMoneyEvents          CustomMoneyInterpretationEvent[]
   catalogMoneyEvents         CatalogMoneyInterpretationEvent[]
 
-  reportJobs               ReportJob[]
-  collectionMemberships    CollectionMember[]
-  collectionTransfersFrom  CollectionOwnershipTransfer[] @relation("CollectionTransferFrom")
-  collectionTransfersTo    CollectionOwnershipTransfer[] @relation("CollectionTransferTo")
-  collectionTransfersActed CollectionOwnershipTransfer[] @relation("CollectionTransferActor")
+  reportJobs                    ReportJob[]
+  collectionMemberships         CollectionMember[]
+  collectionTransfersFrom       CollectionOwnershipTransfer[] @relation("CollectionTransferFrom")
+  collectionTransfersTo         CollectionOwnershipTransfer[] @relation("CollectionTransferTo")
+  collectionTransfersActed      CollectionOwnershipTransfer[] @relation("CollectionTransferActor")
+  collectionInvitationsCreated  CollectionInvitation[]        @relation("CollectionInvitationCreator")
+  collectionInvitationsTargeted CollectionInvitation[]        @relation("CollectionInvitationTarget")
+  collectionInvitationsAccepted CollectionInvitation[]        @relation("CollectionInvitationAcceptor")
 
   @@unique([email])
   @@map("user")
@@ -158,6 +161,7 @@ model Collection {
   importJobs             ImportJob[]
 
   insuranceRecords InsuranceRecord[]
+  invitations      CollectionInvitation[]
 
   @@unique([id, ownerId])
   @@index([ownerId])
@@ -1387,4 +1391,35 @@ model CollectionOwnershipTransfer {
   @@index([fromOwnerId])
   @@index([toOwnerId])
   @@index([actorId])
+}
+
+enum CollectionInvitationTargetKind {
+  EMAIL
+  USER
+}
+
+model CollectionInvitation {
+  id               String                         @id @default(uuid()) @db.Uuid
+  collectionId     String                         @db.Uuid
+  creatorUserId    String
+  targetKind       CollectionInvitationTargetKind
+  targetEmail      String?                        @db.VarChar(254)
+  targetUserId     String?
+  role             CollectionMemberRole
+  tokenHash        String                         @unique @db.Char(64)
+  createdAt        DateTime                       @default(dbgenerated("timezone('UTC'::text, CURRENT_TIMESTAMP)"))
+  expiresAt        DateTime
+  acceptedAt       DateTime?
+  acceptedByUserId String?
+  revokedAt        DateTime?
+  collection       Collection                     @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  creator          User                           @relation("CollectionInvitationCreator", fields: [creatorUserId], references: [id], onDelete: Cascade, onUpdate: Restrict)
+  target           User?                          @relation("CollectionInvitationTarget", fields: [targetUserId], references: [id], onDelete: Cascade, onUpdate: Restrict)
+  acceptor         User?                          @relation("CollectionInvitationAcceptor", fields: [acceptedByUserId], references: [id], onDelete: Cascade, onUpdate: Restrict)
+
+  @@index([collectionId, expiresAt, id])
+  @@index([creatorUserId])
+  @@index([targetUserId])
+  @@index([targetEmail])
+  @@index([acceptedByUserId])
 }

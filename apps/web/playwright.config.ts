@@ -8,6 +8,7 @@ export default defineConfig({
     baseURL: "http://localhost:3000",
   },
   projects: [
+    { name: "collaboration-api", testMatch: "**/collaboration-api.spec.ts" },
     ...(process.env.RUN_MONEY_CONSUMERS_E2E === "1"
       ? [
           {
