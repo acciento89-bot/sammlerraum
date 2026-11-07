@@ -13,6 +13,7 @@ async function dependencies() {
     storage: new LocalPersistentStorage(serverEnv.UPLOADS_DIR, lock),
     lock,
     appOrigin: serverEnv.APP_ORIGIN,
+    authoringEnabled: serverEnv.MONEY_AUTHORING_ENABLED,
     getSession: (headers) =>
       auth.api.getSession({ headers, query: { disableCookieCache: true, disableRefresh: true } }),
   });

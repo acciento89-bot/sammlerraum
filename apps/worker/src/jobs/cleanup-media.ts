@@ -13,11 +13,16 @@ export function createMediaCleanupJob(
   storage: StorageProvider,
   withLock: MediaLocker,
   logger: Pick<Console, "error">,
-  options: { intervalMs?: number; cleanupTemporary?: () => Promise<unknown> } = {},
+  options: {
+    intervalMs?: number;
+    beforeCleanup?: () => Promise<unknown>;
+    cleanupTemporary?: () => Promise<unknown>;
+  } = {},
 ) {
   let timer: ReturnType<typeof setInterval> | undefined;
   let running: Promise<void> | undefined;
   async function run() {
+    await options.beforeCleanup?.();
     for (const assetId of await repository.findDeletableAssets()) {
       try {
         await withLock(assetId, async () => {

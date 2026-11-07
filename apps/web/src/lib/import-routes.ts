@@ -1,6 +1,7 @@
 import { ApiError } from "@sammlerraum/contracts/errors";
 import {
   ImportServiceError,
+  ImportCommitApprovalInputSchema,
   importFail,
   parseImportRequestJson,
   IMPORT_MAX_SOURCE_BYTES,
@@ -18,6 +19,7 @@ type Dependencies = {
   storage: StorageProvider;
   lock: StorageStagingLocker;
   appOrigin: string;
+  authoringEnabled?: boolean;
   getSession(headers: Headers): Promise<{ user: { id: string } } | null>;
 };
 export function createImportRouteHandlers(deps: Dependencies) {
@@ -67,8 +69,17 @@ export function createImportRouteHandlers(deps: Dependencies) {
       mapped(async () => {
         const who = await actor(request);
         if (operation === "profiles") {
+          const query = readSearchQueryMap(request, ["after"]);
+          return json(
+            await core.listImportProfiles(
+              who,
+              query.after === undefined ? {} : { after: parseImportRequestJson(query.after) },
+            ),
+          );
+        }
+        if (operation === "recent") {
           if (new URL(request.url).search) return importFail("IMPORT_INVALID");
-          return json(await core.listImportProfiles(who));
+          return json(await core.getRecentImports(who));
         }
         if (operation === "status") {
           const query = readSearchQueryMap(request, ["id"]);
@@ -128,10 +139,22 @@ export function createImportRouteHandlers(deps: Dependencies) {
             return json(await core.saveImportProfile(who, input));
           case "merge-target":
             return json(await commit.prepareMergeTarget(who, input));
+          case "cancel":
+            return json(await core.cancelImport(who, input));
           case "decisions":
             return json(await commit.saveDecisions(who, input));
-          case "approve":
+          case "approve": {
+            const checked = ImportCommitApprovalInputSchema.safeParse(input);
+            if (!checked.success) return importFail("IMPORT_INVALID");
+            const current = await core.getImportJob(who, checked.data.jobId);
+            if (current.mapping?.columns.purchaseMoney && deps.authoringEnabled !== true)
+              throw new ApiError(
+                "MONEY_UNAVAILABLE",
+                503,
+                "Monetary authoring is currently disabled",
+              );
             return json(await commit.approveCommit(who, input), 202);
+          }
           default:
             throw new ApiError("NOT_FOUND", 404, "Resource not found");
         }

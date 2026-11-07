@@ -13,6 +13,8 @@ import { createImportDispatcher } from "./jobs/import-dispatcher";
 import { createImportParser, IMPORT_PARSE_JOB } from "./jobs/import-parser-runtime";
 import { createProductionMarketProviders } from "./jobs/market-provider-composition";
 import { composeMarketSync } from "./jobs/market-sync-runtime";
+import { createImportSourceCleanup } from "./jobs/import-source-cleanup";
+import { createPrivateArtifactExpiry } from "./jobs/private-artifact-expiry";
 import type { StorageCleanupCursor } from "@sammlerraum/storage";
 import { createMediaCleanupService } from "@sammlerraum/domain/media/cleanup-service";
 import { createMediaCleanupJob } from "./jobs/cleanup-media";
@@ -63,6 +65,10 @@ async function startProductionWorker(): Promise<void> {
   const withAssetLock = createMediaAssetLocker(serverEnv.DATABASE_URL);
   const storage = new LocalPersistentStorage(serverEnv.UPLOADS_DIR, withAssetLock);
   const stagingCursor: StorageCleanupCursor = {};
+  const sourceCleanup = createImportSourceCleanup(prisma, storage, withAssetLock, console);
+  const artifactExpiry = createPrivateArtifactExpiry(prisma, {
+    retentionHours: serverEnv.MEDIA_RETENTION_HOURS,
+  });
   const mediaCleanup = createMediaCleanupJob(
     createMediaCleanupService(prisma, {
       retentionHours: serverEnv.MEDIA_RETENTION_HOURS,
@@ -73,6 +79,10 @@ async function startProductionWorker(): Promise<void> {
     console,
     {
       intervalMs: serverEnv.MEDIA_CLEANUP_INTERVAL_MS,
+      beforeCleanup: async () => {
+        await sourceCleanup.run();
+        await artifactExpiry.run();
+      },
       cleanupTemporary: () =>
         cleanupLocalStorageTemporaryFiles(serverEnv.UPLOADS_DIR, {
           maxAgeHours: serverEnv.STORAGE_TEMP_MAX_AGE_HOURS,

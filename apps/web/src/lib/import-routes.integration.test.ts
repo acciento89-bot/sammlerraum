@@ -7,6 +7,13 @@ import { createLegacyMoneyTestSchema } from "@sammlerraum/db/test-legacy-money-s
 import { createTestDatabaseClient } from "@sammlerraum/db/test-database";
 import { createMediaAssetLocker } from "@sammlerraum/db/media-lock";
 import { LocalPersistentStorage } from "@sammlerraum/storage";
+import { LEGACY_MONEY_PROFILE_ID } from "@sammlerraum/contracts/legacy-money";
+import { createImportWorkflowService } from "@sammlerraum/domain/imports/import-workflow-service";
+import { createImportService } from "@sammlerraum/domain/imports/import-service";
+import { createImportCommitService } from "@sammlerraum/domain/imports/import-commit-service";
+import { createImportParser } from "../../../worker/src/jobs/import-parser-runtime";
+import { createPrismaImportParserRepository } from "../../../worker/src/jobs/import-parser-repository";
+import { createImportCommitter } from "../../../worker/src/jobs/commit-import";
 import { createImportRouteHandlers } from "./import-routes";
 let db: ReturnType<typeof createTestDatabaseClient>,
   isolated: Awaited<ReturnType<typeof createLegacyMoneyTestSchema>>,
@@ -19,14 +26,17 @@ async function fixture() {
   await db.$executeRaw`INSERT INTO "Collection" (id,"ownerId",name,"updatedAt") VALUES (${collection}::uuid,${owner},'HTTP import',now())`;
   const getSession = vi.fn(async () => ({ user: { id: owner } })),
     lock = createMediaAssetLocker(isolated.databaseUrl),
-    handler = createImportRouteHandlers({
-      database: db,
-      storage: new LocalPersistentStorage(root, lock),
-      lock,
-      appOrigin: origin,
-      getSession,
-    });
-  return { owner, collection, getSession, handler };
+    storage = new LocalPersistentStorage(root, lock),
+    deps = { database: db, storage, lock, appOrigin: origin, getSession };
+  return {
+    owner,
+    collection,
+    getSession,
+    handler: createImportRouteHandlers(deps),
+    deps,
+    storage,
+    lock,
+  };
 }
 function upload(collectionId: string) {
   const form = new FormData();
@@ -114,6 +124,73 @@ describe.runIf(process.env.RUN_DATABASE_INTEGRATION === "1")(
         ).status,
       ).toBe(400);
       expect(await db.collectibleItem.count({ where: { ownerId: f.owner } })).toBe(0);
+    });
+    it("refuses monetary approval when authoring is off and commits exact money only when enabled", async () => {
+      const f = await fixture(),
+        actor = { userId: f.owner },
+        uploaded = await createImportWorkflowService(db, f.storage, f.lock).uploadImport(
+          actor,
+          {
+            collectionId: f.collection,
+            locale: "de",
+            fileName: "money.csv",
+            format: "CSV",
+            uploadRequestId: randomUUID(),
+            parserOptions: { format: "CSV", hasHeader: true },
+          },
+          Buffer.from("Title,Price\nMoney item,12.34\n"),
+        );
+      await createImportParser(
+        createPrismaImportParserRepository(db),
+        f.storage,
+        {},
+        f.lock,
+      )({ jobId: uploaded.job.id });
+      const core = createImportService(db),
+        commit = createImportCommitService(db),
+        parsed = await core.getImportJob(actor, uploaded.job.id),
+        preview = await core.buildImportPreview(actor, {
+          jobId: parsed.id,
+          expectedRevision: parsed.revision,
+          mapping: {
+            schemaVersion: 1,
+            locale: "de",
+            columns: {
+              title: 0,
+              purchaseMoney: {
+                sourceKind: "DECIMAL",
+                profileId: LEGACY_MONEY_PROFILE_ID,
+                amountColumn: 1,
+                fixedCurrency: "EUR",
+              },
+            },
+          },
+        }),
+        saved = await commit.saveDecisions(actor, {
+          jobId: parsed.id,
+          expectedRevision: preview.job.revision,
+          previewGeneration: preview.job.previewGeneration,
+          decisions: [{ rowNumber: 1, action: "CREATE" }],
+        });
+      const approval = {
+          jobId: parsed.id,
+          expectedRevision: saved.revision,
+          previewGeneration: preview.job.previewGeneration,
+        },
+        request = () =>
+          new Request(origin + "/api/v1/imports/approve", {
+            method: "POST",
+            headers: { origin, "content-type": "application/json" },
+            body: JSON.stringify(approval),
+          });
+      expect((await f.handler.POST(request(), "approve")).status).toBe(503);
+      expect(await db.collectibleItem.count({ where: { ownerId: f.owner } })).toBe(0);
+      const enabled = createImportRouteHandlers({ ...f.deps, authoringEnabled: true });
+      expect((await enabled.POST(request(), "approve")).status).toBe(202);
+      await createImportCommitter(commit)({ jobId: parsed.id });
+      expect(
+        await db.$queryRaw`SELECT "purchaseAmountMinor"::text AS amount,"purchaseCurrency" AS currency FROM "CollectibleItem" WHERE "ownerId"=${f.owner}`,
+      ).toEqual([{ amount: "1234", currency: "EUR" }]);
     });
   },
 );

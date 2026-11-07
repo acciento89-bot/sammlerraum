@@ -10,6 +10,7 @@ import { LocalPersistentStorage } from "@sammlerraum/storage";
 import { createImportCommitService } from "./import-commit-service";
 import { createImportCommitter } from "../../../../apps/worker/src/jobs/commit-import";
 import { createImportService } from "./import-service";
+import { createImportSourceCleanup } from "../../../../apps/worker/src/jobs/import-source-cleanup";
 import { createImportWorkflowService } from "./import-workflow-service";
 import { createImportDispatcher } from "../../../../apps/worker/src/jobs/import-dispatcher";
 import { createPrismaImportParserRepository } from "../../../../apps/worker/src/jobs/import-parser-repository";
@@ -235,6 +236,157 @@ describe.runIf(process.env.RUN_DATABASE_INTEGRATION === "1")(
         >`INSERT INTO "ImportJob" (id,"ownerId","collectionId",locale,"sourceFormat","sourceFileName","sourceByteSize","sourceChecksumSha256","sourceStorageKey","updatedAt") VALUES (${id}::uuid,${f.owner},${f.collection}::uuid,'de','CSV','clock.csv',1,${"b".repeat(64)},${`imports/${id}/source`},now()) RETURNING extract(epoch FROM ("sourceExpiresAt"-timezone('UTC',CURRENT_TIMESTAMP)))::double precision AS seconds`;
       });
       expect(rows[0]!.seconds).toBeCloseTo(86400, 0);
+    });
+    it("pages all owned mapping profiles without truncating those beyond the first50", async () => {
+      const f = await fixture(),
+        other = await fixture(),
+        core = createImportService(db);
+      await db.importMappingProfile.createMany({
+        data: Array.from({ length: 51 }, (_, index) => ({
+          id: randomUUID(),
+          ownerId: f.owner,
+          name: `Profile ${String(index + 1).padStart(2, "0")}`,
+          normalizedName: `profile ${String(index + 1).padStart(2, "0")}`,
+          mapping: { schemaVersion: 1, locale: "de", columns: { title: 0 } },
+        })),
+      });
+      const first = await core.listImportProfiles(f.actor);
+      expect(first.profiles).toHaveLength(50);
+      expect(first.hasMore).toBe(true);
+      expect(first.nextAfter).toEqual({ normalizedName: "profile 50", id: first.profiles[49]!.id });
+      const second = await core.listImportProfiles(f.actor, { after: first.nextAfter });
+      expect(second.profiles.map((profile) => profile.name)).toEqual(["Profile 51"]);
+      expect(second.hasMore).toBe(false);
+      expect(second.nextAfter).toBeNull();
+      expect((await core.listImportProfiles(other.actor)).profiles).toEqual([]);
+    });
+
+    it("cancels an own unapproved import and cleans its known bytes without changing inventory", async () => {
+      const f = await fixture(),
+        core = createImportService(db),
+        job = await createImportWorkflowService(db, storage, lock).uploadImport(
+          f.actor,
+          f.input,
+          Buffer.from("Title\nCancel\n"),
+        );
+      const cancelled = await core.cancelImport(f.actor, {
+        jobId: job.job.id,
+        expectedRevision: job.job.revision,
+      });
+      expect(cancelled.status).toBe("CANCELLED");
+      expect(await storage.exists(`imports/${job.job.id}/source`)).toBe(true);
+      await createImportSourceCleanup(db, storage, lock, { error: () => {} }).run();
+      expect(await storage.exists(`imports/${job.job.id}/source`)).toBe(false);
+      expect(await db.collectibleItem.count({ where: { ownerId: f.owner } })).toBe(0);
+    });
+    it("hides foreign cancellations and refuses a stale cancellation revision", async () => {
+      const f = await fixture(),
+        other = await fixture(),
+        core = createImportService(db),
+        job = await createImportWorkflowService(db, storage, lock).uploadImport(
+          f.actor,
+          f.input,
+          Buffer.from("Title\nPrivate\n"),
+        );
+      await expect(
+        core.cancelImport(other.actor, { jobId: job.job.id, expectedRevision: job.job.revision }),
+      ).rejects.toMatchObject({ code: "IMPORT_NOT_FOUND" });
+      await expect(
+        core.cancelImport(f.actor, { jobId: job.job.id, expectedRevision: job.job.revision + 1 }),
+      ).rejects.toMatchObject({ code: "IMPORT_CONFLICT" });
+      expect((await core.getImportJob(f.actor, job.job.id)).status).toBe("AWAITING_UPLOAD");
+    });
+    it("lists only current owned import jobs and never returns a storage path", async () => {
+      const f = await fixture(),
+        other = await fixture(),
+        core = createImportService(db),
+        job = await createImportWorkflowService(db, storage, lock).uploadImport(
+          f.actor,
+          f.input,
+          Buffer.from("Title\nListed\n"),
+        );
+      const own = await core.getRecentImports(f.actor);
+      expect(own.jobs.map((entry) => entry.job.id)).toEqual([job.job.id]);
+      expect(JSON.stringify(own)).not.toContain(`imports/${job.job.id}/source`);
+      expect((await core.getRecentImports(other.actor)).jobs).toEqual([]);
+    });
+    it("never cancels a durable approved commit", async () => {
+      const f = await fixture(),
+        core = createImportService(db),
+        commit = createImportCommitService(db),
+        uploaded = await createImportWorkflowService(db, storage, lock).uploadImport(
+          f.actor,
+          f.input,
+          Buffer.from("Title\nApproved\n"),
+        );
+      await createImportParser(
+        createPrismaImportParserRepository(db),
+        storage,
+        {},
+        lock,
+      )({ jobId: uploaded.job.id });
+      const parsed = await core.getImportJob(f.actor, uploaded.job.id),
+        preview = await core.buildImportPreview(f.actor, {
+          jobId: parsed.id,
+          expectedRevision: parsed.revision,
+          mapping: { schemaVersion: 1, locale: "de", columns: { title: 0 } },
+        }),
+        saved = await commit.saveDecisions(f.actor, {
+          jobId: parsed.id,
+          expectedRevision: preview.job.revision,
+          previewGeneration: preview.job.previewGeneration,
+          decisions: [{ rowNumber: 1, action: "CREATE" }],
+        }),
+        approved = await commit.approveCommit(f.actor, {
+          jobId: parsed.id,
+          expectedRevision: saved.revision,
+          previewGeneration: preview.job.previewGeneration,
+        });
+      await expect(
+        core.cancelImport(f.actor, { jobId: parsed.id, expectedRevision: approved.revision }),
+      ).rejects.toMatchObject({ code: "IMPORT_NOT_READY" });
+      await createImportCommitter(commit)({ jobId: parsed.id });
+      expect(await db.collectibleItem.count({ where: { ownerId: f.owner } })).toBe(1);
+    });
+
+    it("does not offer cancellation for an already approved import that failed", async () => {
+      const f = await fixture(),
+        core = createImportService(db),
+        commit = createImportCommitService(db),
+        uploaded = await createImportWorkflowService(db, storage, lock).uploadImport(
+          f.actor,
+          f.input,
+          Buffer.from("Title\nFailed approved\n"),
+        );
+      await createImportParser(
+        createPrismaImportParserRepository(db),
+        storage,
+        {},
+        lock,
+      )({ jobId: uploaded.job.id });
+      const parsed = await core.getImportJob(f.actor, uploaded.job.id),
+        preview = await core.buildImportPreview(f.actor, {
+          jobId: parsed.id,
+          expectedRevision: parsed.revision,
+          mapping: { schemaVersion: 1, locale: "de", columns: { title: 0 } },
+        }),
+        saved = await commit.saveDecisions(f.actor, {
+          jobId: parsed.id,
+          expectedRevision: preview.job.revision,
+          previewGeneration: preview.job.previewGeneration,
+          decisions: [{ rowNumber: 1, action: "CREATE" }],
+        }),
+        approved = await commit.approveCommit(f.actor, {
+          jobId: parsed.id,
+          expectedRevision: saved.revision,
+          previewGeneration: preview.job.previewGeneration,
+        });
+      expect(await commit.failCommit(parsed.id, approved.revision)).toBe(true);
+      const failed = await core.getImportJob(f.actor, parsed.id);
+      expect(failed.status).toBe("FAILED");
+      await expect(
+        core.cancelImport(f.actor, { jobId: parsed.id, expectedRevision: failed.revision }),
+      ).rejects.toMatchObject({ code: "IMPORT_NOT_READY" });
     });
   },
 );

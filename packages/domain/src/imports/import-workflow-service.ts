@@ -51,7 +51,7 @@ export function createImportWorkflowService(
               const rows = await tx.$queryRaw<
                 { sourceStorageKey: string; uploadCompletedAt: Date | null; expired: boolean }[]
               >(
-                Prisma.sql`SELECT j."sourceStorageKey",j."uploadCompletedAt",j."sourceExpiresAt"<=timezone('UTC',CURRENT_TIMESTAMP) AS expired FROM "ImportJob" j JOIN "Collection" c ON c.id=j."collectionId" AND c."ownerId"=j."ownerId" WHERE j.id=${job.id}::uuid AND j."ownerId"=${actor.userId} AND c."deletedAt" IS NULL`,
+                Prisma.sql`SELECT j."sourceStorageKey",j."uploadCompletedAt",j."sourceExpiresAt"<=timezone('UTC',CURRENT_TIMESTAMP) AS expired FROM "ImportJob" j JOIN "ImportSourceObject" o ON o.id=j.id AND o."jobId"=j.id AND o."cleanupStartedAt" IS NULL AND o."deletedAt" IS NULL JOIN "Collection" c ON c.id=j."collectionId" AND c."ownerId"=j."ownerId" WHERE j.id=${job.id}::uuid AND j."ownerId"=${actor.userId} AND c."deletedAt" IS NULL`,
               );
               if (rows.length !== 1) return importFail("IMPORT_NOT_FOUND");
               if (rows[0]!.expired) return importFail("IMPORT_CONFLICT");

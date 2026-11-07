@@ -124,6 +124,12 @@ jobs:
       - name: Run real database health and pg-boss singleton integration tests
         run: >-
           RUN_DATABASE_INTEGRATION=1 pnpm vitest run --no-file-parallelism
+          packages/domain/src/imports/import-workflow.integration.test.ts
+          apps/web/src/lib/import-routes.integration.test.ts
+          packages/domain/src/exports/artifact-access.integration.test.ts
+          apps/web/src/lib/transfer-routes.integration.test.ts
+          apps/worker/src/jobs/import-source-cleanup.integration.test.ts
+          apps/worker/src/jobs/private-artifact-expiry.integration.test.ts
           packages/db/src/postgres.integration.test.ts
           packages/db/src/media-migration.integration.test.ts
           packages/db/src/media-lock.integration.test.ts
@@ -210,6 +216,10 @@ jobs:
         run: >-
           RUN_AUTH_E2E=1 RUN_PRODUCTION_E2E=1 pnpm --filter @sammlerraum/web exec playwright test
           e2e/location-labels.spec.ts --workers=1
+      - name: Run actual import, export and insurance browser journeys
+        run: >-
+          RUN_IMPORT_E2E=1 RUN_AUTH_E2E=1 RUN_PRODUCTION_E2E=1 pnpm --filter @sammlerraum/web exec playwright test
+          e2e/import-report.spec.ts --workers=1
       - name: Run protected media browser journey against production
         run: >-
           RUN_MEDIA_E2E=1 RUN_AUTH_E2E=1 RUN_PRODUCTION_E2E=1 pnpm --filter @sammlerraum/web exec playwright test

@@ -410,3 +410,7 @@ export function parseImportRequestJson(raw: string): unknown {
     return importFail("IMPORT_INVALID");
   }
 }
+
+export const ImportCancellationInputSchema = z
+  .object({ jobId: id, expectedRevision: revision })
+  .strict();

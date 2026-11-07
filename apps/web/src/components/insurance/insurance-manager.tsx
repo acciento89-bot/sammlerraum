@@ -7,6 +7,14 @@ import { parseLocalizedMoney } from "@sammlerraum/domain/money/money";
 import { formatStoredMoney } from "@sammlerraum/domain/money/legacy-money-policy";
 import { privateApi } from "../exports/private-api";
 import { ReportFieldSelector, type ReportField } from "../reports/report-field-selector";
+type ProofOption = {
+  assetId: string;
+  fileName: string;
+  byteSize: string;
+  mimeType: string;
+  itemId: string;
+  itemTitle: string;
+};
 type Fields = {
   amount: string;
   currency: string;
@@ -38,7 +46,14 @@ export function InsuranceManager({ locale }: { locale: "de" | "en" }) {
     [busy, setBusy] = useState(false),
     [error, setError] = useState(""),
     [notice, setNotice] = useState(""),
-    [include, setInclude] = useState<ReportField[]>([]);
+    [include, setInclude] = useState<ReportField[]>([]),
+    [proofOptions, setProofOptions] = useState<ProofOption[]>([]),
+    [selectedProofs, setSelectedProofs] = useState<Record<string, ProofOption>>({}),
+    [proofCursor, setProofCursor] = useState<string | null>(null);
+  const selectedProofBytes = Object.values(selectedProofs).reduce(
+    (sum, proof) => sum + BigInt(proof.byteSize),
+    0n,
+  );
   const message = text(
     "Der Vorgang konnte nicht abgeschlossen werden. Bitte Ziel und aktuelle Daten erneut prüfen.",
     "The operation could not be completed. Check the target and current data again.",
@@ -174,6 +189,17 @@ export function InsuranceManager({ locale }: { locale: "de" | "en" }) {
       setNotice(text("Versicherung entfernt", "Insurance cleared"));
     });
   }
+  async function loadProofs(afterAssetId?: string) {
+    await act(async () => {
+      if (!collectionId) return;
+      const options = await privateApi<{ items: ProofOption[]; nextAfterAssetId: string | null }>(
+        "/api/v1/reports/insurance/proof-options",
+        { scope: { kind: "COLLECTION", collectionId }, ...(afterAssetId ? { afterAssetId } : {}) },
+      );
+      setProofOptions(options.items);
+      setProofCursor(options.nextAfterAssetId);
+    });
+  }
   async function report() {
     await act(async () => {
       if (!collectionId) return;
@@ -181,7 +207,7 @@ export function InsuranceManager({ locale }: { locale: "de" | "en" }) {
         scope: { kind: "COLLECTION", collectionId },
         locale,
         include,
-        proofAssetIds: [],
+        proofAssetIds: include.includes("proofs") ? Object.keys(selectedProofs) : [],
       });
       setNotice(text("Bericht beauftragt", "Report requested"));
     });
@@ -214,6 +240,10 @@ export function InsuranceManager({ locale }: { locale: "de" | "en" }) {
               value={collectionId}
               onChange={(e) => {
                 setCollectionId(e.target.value);
+                setInclude([]);
+                setProofOptions([]);
+                setSelectedProofs({});
+                setProofCursor(null);
                 setLoaded(null);
                 setItems([]);
                 setItemId("");
@@ -376,19 +406,77 @@ export function InsuranceManager({ locale }: { locale: "de" | "en" }) {
         <ReportFieldSelector
           locale={locale}
           value={include}
-          onChange={setInclude}
+          onChange={(value) => {
+            setInclude(value);
+            if (!value.includes("proofs")) {
+              setSelectedProofs({});
+              setProofOptions([]);
+              setProofCursor(null);
+            }
+          }}
           disabled={busy || dirty}
         />
+
         {include.includes("proofs") && (
-          <p>
-            {text(
-              "Noch keine Belege ausgewählt. Bitte Belege abwählen, um ohne Anhänge fortzufahren.",
-              "No proofs selected yet. Deselect proofs to continue without attachments.",
+          <fieldset className="form-stack" disabled={busy || dirty}>
+            <legend>{text("Belege auswählen", "Choose proof documents")}</legend>
+            <p>
+              {text(
+                "Maximal 20 Belege. Bilder und Belege dürfen zusammen höchstens 16 MiB umfassen.",
+                "At most 20 proof documents. Images and proofs together must not exceed 16 MiB.",
+              )}
+            </p>
+            <button disabled={!collectionId} onClick={() => void loadProofs()}>
+              {text("Belege laden", "Load proofs")}
+            </button>
+            {proofOptions.map((proof) => (
+              <label key={proof.assetId}>
+                <input
+                  type="checkbox"
+                  checked={Object.hasOwn(selectedProofs, proof.assetId)}
+                  disabled={
+                    !Object.hasOwn(selectedProofs, proof.assetId) &&
+                    Object.keys(selectedProofs).length >= 20
+                  }
+                  onChange={(event) => {
+                    const checked = event.target.checked;
+                    setSelectedProofs((prev) => {
+                      const next = { ...prev };
+                      if (checked && Object.keys(next).length < 20) next[proof.assetId] = proof;
+                      else if (!checked) delete next[proof.assetId];
+                      return next;
+                    });
+                  }}
+                />
+                {proof.fileName} · {proof.itemTitle} ·{" "}
+                {String((BigInt(proof.byteSize) + 1023n) / 1024n)}KiB
+              </label>
+            ))}
+            <button disabled={!proofCursor} onClick={() => void loadProofs(proofCursor!)}>
+              {text("Weitere Belege", "More proofs")}
+            </button>
+            <p aria-live="polite">
+              {text("Ausgewählte Belege", "Selected proofs")}: {Object.keys(selectedProofs).length}
+              /20 · {String((selectedProofBytes + 1023n) / 1024n)}KiB
+            </p>
+            {Object.values(selectedProofs).map((proof) => (
+              <p key={proof.assetId}>{proof.fileName}</p>
+            ))}
+            {selectedProofBytes > 16777216n && (
+              <p role="alert">
+                {text("Die Auswahl überschreitet 16 MiB.", "The selection exceeds 16 MiB.")}
+              </p>
             )}
-          </p>
+          </fieldset>
         )}
         <button
-          disabled={busy || dirty || !collectionId || include.includes("proofs")}
+          disabled={
+            busy ||
+            dirty ||
+            !collectionId ||
+            (include.includes("proofs") &&
+              (!Object.keys(selectedProofs).length || selectedProofBytes > 16777216n))
+          }
           onClick={() => void report()}
         >
           {text("PDF-Bericht erstellen", "Create PDF report")}

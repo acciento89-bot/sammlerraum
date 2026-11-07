@@ -164,3 +164,36 @@ it("drains an in-flight scan on stop and starts polling immediately", async () =
     vi.useRealTimers();
   }
 });
+
+it("expires transfer intents before selecting actual files for the same cleanup pass", async () => {
+  const root = await mkdtemp(join(tmpdir(), "cleanup-transfer-")),
+    storage = new LocalPersistentStorage(root);
+  let eligible = false;
+  const key = `originals/${asset}`;
+  const job = createMediaCleanupJob(
+    {
+      findDeletableAssets: async () => (eligible ? [asset] : []),
+      prepareDeletion: async () => [key],
+      finishDeletion: async () => {
+        eligible = false;
+      },
+      findTombstones: async () => [],
+      noteReconciled: async () => {},
+    },
+    storage,
+    async (_id, work) => work(),
+    { error: () => {} },
+    {
+      beforeCleanup: async () => {
+        eligible = true;
+      },
+    },
+  );
+  try {
+    await storage.put(key, Buffer.from("expired own file"));
+    await job.run();
+    expect(await storage.exists(key)).toBe(false);
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
+});

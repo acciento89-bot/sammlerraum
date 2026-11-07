@@ -149,5 +149,47 @@ describe.runIf(process.env.RUN_DATABASE_INTEGRATION === "1")(
       expect(row!.seconds).toBeGreaterThan(85);
       expect(row!.seconds).toBeLessThanOrEqual(90);
     });
+    it("lists only current owned proof metadata within the actual report scope", async () => {
+      const f = await fixture(),
+        other = await fixture(),
+        assetId = randomUUID(),
+        foreignAsset = randomUUID();
+      for (const [who, id] of [
+        [f, assetId],
+        [other, foreignAsset],
+      ] as const) {
+        const item = await db.collectibleItem.findFirstOrThrow({
+          where: { ownerId: who.owner },
+          select: { id: true },
+        });
+        await db.$executeRaw`INSERT INTO "MediaAsset" (id,"ownerId",kind,status,"storageKey","mimeType","byteSize","checksumSha256","originalFileName","updatedAt") VALUES (${id}::uuid,${who.owner},'DOCUMENT','READY',${`originals/${id}`},'application/pdf',10,${"a".repeat(64)},'Own proof.pdf',now())`;
+        await db.$executeRaw`INSERT INTO "DocumentLink" (id,"ownerId","itemId","assetId",position,visibility) VALUES (${randomUUID()}::uuid,${who.owner},${item.id}::uuid,${id}::uuid,0,'PRIVATE')`;
+      }
+      const result = await createArtifactAccessService(db, storage, lock).listProofOptions(
+        f.actor,
+        { scope: { kind: "COLLECTION", collectionId: f.collection } },
+      );
+      expect(result.items).toHaveLength(1);
+      expect(result.items[0]).toMatchObject({ assetId, fileName: "Own proof.pdf", byteSize: "10" });
+      expect(JSON.stringify(result)).not.toMatch(/storageKey|originals\//u);
+      expect(JSON.stringify(result)).not.toContain(foreignAsset);
+      await expect(
+        createArtifactAccessService(db, storage, lock).listProofOptions(f.actor, {
+          scope: { kind: "COLLECTION", collectionId: other.collection },
+        }),
+      ).rejects.toMatchObject({ code: "EXPORT_NOT_FOUND" });
+    });
+    it("excludes unlinked or nonready documents from report proof choices", async () => {
+      const f = await fixture(),
+        assetId = randomUUID();
+      await db.$executeRaw`INSERT INTO "MediaAsset" (id,"ownerId",kind,status,"storageKey","mimeType","byteSize","checksumSha256","originalFileName","updatedAt") VALUES (${assetId}::uuid,${f.owner},'DOCUMENT','READY',${`originals/${assetId}`},'application/pdf',10,${"b".repeat(64)},'Unlinked.pdf',now())`;
+      expect(
+        (
+          await createArtifactAccessService(db, storage, lock).listProofOptions(f.actor, {
+            scope: { kind: "COLLECTION", collectionId: f.collection },
+          })
+        ).items,
+      ).toEqual([]);
+    });
   },
 );

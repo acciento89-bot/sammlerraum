@@ -8,16 +8,21 @@ import type {
   ImportDecisionInput,
   ImportProfileDto,
 } from "@sammlerraum/contracts/imports";
+import { ImportMappingSchema } from "@sammlerraum/contracts/imports";
+import { loadMoneyCapabilities, requireMoneyAuthoring } from "../money/legacy-money-client";
 import { MappingEditor } from "./mapping-editor";
 import { importApi } from "./import-api";
 type State = {
   job: ImportJobDto;
+  approved: boolean;
   header: (string | null)[] | null;
   columnCount: number;
   savedRows: number;
   errorCode: string | null;
   expiresAt: string;
 };
+type ProfileCursor = { normalizedName: string; id: string };
+type ProfilePage = { profiles: ImportProfileDto[]; nextAfter: ProfileCursor | null };
 type Review = ImportPreviewPage & { decisions: ImportDecisionInput[] };
 export function ImportDetail({ locale, jobId }: { locale: "de" | "en"; jobId: string }) {
   const text = (de: string, en: string) => (locale === "de" ? de : en);
@@ -35,11 +40,31 @@ export function ImportDetail({ locale, jobId }: { locale: "de" | "en"; jobId: st
     [error, setError] = useState(""),
     [profiles, setProfiles] = useState<ImportProfileDto[]>([]),
     [profile, setProfile] = useState<ImportProfileDto | null>(null),
-    [profileName, setProfileName] = useState("");
+    [profileCursor, setProfileCursor] = useState<ProfileCursor | null>(null),
+    [profilePageStart, setProfilePageStart] = useState<ProfileCursor | null>(null),
+    [profileName, setProfileName] = useState(""),
+    [moneyAuthoringEnabled, setMoneyAuthoringEnabled] = useState(false),
+    [targets, setTargets] = useState<
+      Record<string, { id: string; title: string; quantity: number }>
+    >({});
   const message = text(
     "Der Vorgang konnte nicht abgeschlossen werden. Lade den aktuellen Stand und prüfe deine Auswahl erneut.",
     "The operation could not be completed. Reload the current state and check your selection.",
   );
+  useEffect(() => {
+    let active = true;
+    loadMoneyCapabilities()
+      .then(requireMoneyAuthoring)
+      .then(() => {
+        if (active) setMoneyAuthoringEnabled(true);
+      })
+      .catch(() => {
+        if (active) setMoneyAuthoringEnabled(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, [jobId]);
   async function refresh() {
     const next = await importApi<State>(`status?id=${jobId}`);
     setState(next);
@@ -52,6 +77,7 @@ export function ImportDetail({ locale, jobId }: { locale: "de" | "en"; jobId: st
       afterRowNumber: after,
     });
     setReview(page);
+    setTargets({});
     setCursor(after);
     setChoices(Object.fromEntries(page.decisions.map((d) => [d.rowNumber, d])));
     setDirty(false);
@@ -62,15 +88,20 @@ export function ImportDetail({ locale, jobId }: { locale: "de" | "en"; jobId: st
       .then((next) => {
         if (!active) return;
         setState(next);
-        if (next.job.mapping) setMapping(next.job.mapping);
+        setMapping(
+          next.job.mapping ?? { schemaVersion: 1, locale: next.job.locale, columns: { title: 0 } },
+        );
         if (next.job.status === "REVIEW_READY") void rows().catch(() => setError(message));
       })
       .catch(() => {
         if (active) setError(message);
       });
-    importApi<{ profiles: ImportProfileDto[] }>("profiles")
+    importApi<ProfilePage>("profiles")
       .then((v) => {
-        if (active) setProfiles(v.profiles);
+        if (active) {
+          setProfiles(v.profiles);
+          setProfileCursor(v.nextAfter);
+        }
       })
       .catch(() => {});
     return () => {
@@ -113,15 +144,39 @@ export function ImportDetail({ locale, jobId }: { locale: "de" | "en"; jobId: st
       setBusy(false);
     }
   }
+  async function profilePage(after: ProfileCursor | null) {
+    await act(async () => {
+      const result = await importApi<ProfilePage>(
+        after ? "profiles?after=" + encodeURIComponent(JSON.stringify(after)) : "profiles",
+      );
+      setProfiles(result.profiles);
+      setProfileCursor(result.nextAfter);
+      setProfilePageStart(after);
+    });
+  }
   async function preview() {
     await act(async () => {
       if (!state) return;
       let current = state.job;
+      const checked = ImportMappingSchema.safeParse(mapping),
+        checkedProfile = profile ? ImportMappingSchema.safeParse(profile.mapping) : null;
+      const selectedProfile =
+        profile &&
+        checked.success &&
+        checkedProfile?.success &&
+        JSON.stringify(checked.data) === JSON.stringify(checkedProfile.data)
+          ? profile
+          : null;
       for (let batch = 0; batch <= 100; batch++) {
         const result = await importApi<{ job: ImportJobDto; complete: boolean }>("preview", {
           jobId,
           expectedRevision: current.revision,
-          mapping,
+          ...((current.mappingProfile ?? selectedProfile)
+            ? {
+                mappingProfileId: (current.mappingProfile ?? selectedProfile)!.id,
+                expectedProfileRevision: (current.mappingProfile ?? selectedProfile)!.revision,
+              }
+            : { mapping }),
         });
         current = result.job;
         setState((prev) => (prev ? { ...prev, job: current } : prev));
@@ -159,14 +214,33 @@ export function ImportDetail({ locale, jobId }: { locale: "de" | "en"; jobId: st
     });
   }
   async function merge(rowNumber: string, targetItemId: string) {
+    if (busy) return;
+    setChoices((prev) => {
+      const next = { ...prev };
+      delete next[rowNumber];
+      return next;
+    });
+    setTargets((prev) => {
+      const next = { ...prev };
+      delete next[rowNumber];
+      return next;
+    });
+    setDirty(true);
     await act(async () => {
       if (!state) return;
-      const target = await importApi<{ preconditionToken: string }>("merge-target", {
+      const target = await importApi<{
+        preconditionToken: string;
+        item: { title: string; quantity: number };
+      }>("merge-target", {
         jobId,
         previewGeneration: state.job.previewGeneration,
         rowNumber: Number(rowNumber),
         targetItemId,
       });
+      setTargets((prev) => ({
+        ...prev,
+        [rowNumber]: { id: targetItemId, title: target.item.title, quantity: target.item.quantity },
+      }));
       choose({
         rowNumber: Number(rowNumber),
         action: "MERGE",
@@ -218,10 +292,10 @@ export function ImportDetail({ locale, jobId }: { locale: "de" | "en"; jobId: st
       <p role="status">{labels[job.status]}</p>
       <p>
         {job.source.fileName} · {job.progress.parsedRows} {text("gelesene Zeilen", "parsed rows")} ·{" "}
-        {job.progress.committedRows} {text("übernommen", "committed")}
+        {job.progress.committedRows} {text("bearbeitete Datenzeilen", "processed data rows")}
       </p>
       {error && <p role="alert">{error}</p>}
-      {state.errorCode && (
+      {state.errorCode && state.approved === false && (
         <p role="alert">
           {text(
             "Die Quelle oder der aktuelle Bestand konnte nicht sicher verarbeitet werden. Bitte einen neuen Import mit korrigierter Datei starten.",
@@ -229,12 +303,16 @@ export function ImportDetail({ locale, jobId }: { locale: "de" | "en"; jobId: st
           )}
         </p>
       )}
-      {!complete && (
+      {!complete && job.status !== "CANCELLED" && (
         <button
           disabled={busy || dirty}
           onClick={() =>
             void act(async () => {
               await refresh();
+              await loadMoneyCapabilities()
+                .then(requireMoneyAuthoring)
+                .then(() => setMoneyAuthoringEnabled(true))
+                .catch(() => setMoneyAuthoringEnabled(false));
               if (job.status === "REVIEW_READY") await rows(cursor);
             })
           }
@@ -242,6 +320,48 @@ export function ImportDetail({ locale, jobId }: { locale: "de" | "en"; jobId: st
           {text("Stand aktualisieren", "Refresh status")}
         </button>
       )}
+      {state.approved === false &&
+        !["COMMITTING", "COMPLETED", "CANCELLED"].includes(job.status) && (
+          <button
+            disabled={busy}
+            onClick={() =>
+              void act(async () => {
+                const cancelled = await importApi<ImportJobDto>("cancel", {
+                  jobId,
+                  expectedRevision: job.revision,
+                });
+                setState((prev) => (prev ? { ...prev, job: cancelled } : prev));
+                setDirty(false);
+                setReview(null);
+              })
+            }
+          >
+            {text("Import abbrechen", "Cancel import")}
+          </button>
+        )}
+      {state.approved && job.status === "FAILED" && (
+        <p role="alert">
+          {text(
+            "Der freigegebene Import wurde gestoppt. Die ersten",
+            "The approved import stopped. The first",
+          )}{" "}
+          {job.progress.committedRows}{" "}
+          {text(
+            "Datenzeilen sind bereits bearbeitet, einschließlich übersprungener Zeilen. Prüfe den Bestand vor einem neuen Import; vorhandene Änderungen werden nicht zurückgenommen.",
+            "data rows have already been processed, including skipped rows. Check inventory before starting a new import; existing changes are not undone.",
+          )}
+        </p>
+      )}
+      {job.mapping?.columns.purchaseMoney &&
+        !moneyAuthoringEnabled &&
+        job.status === "REVIEW_READY" && (
+          <p role="status">
+            {text(
+              "Kaufpreisimporte sind derzeit nicht freigeschaltet. Aktualisiere den Stand oder brich den noch nicht freigegebenen Auftrag ab.",
+              "Purchase-value imports are currently unavailable. Refresh the state or cancel this unapproved job.",
+            )}
+          </p>
+        )}
       {editable && (
         <div className="management-card form-stack">
           <MappingEditor
@@ -249,31 +369,50 @@ export function ImportDetail({ locale, jobId }: { locale: "de" | "en"; jobId: st
             header={state.header}
             columnCount={state.columnCount}
             mapping={mapping}
+            moneyAuthoringEnabled={moneyAuthoringEnabled}
             onChange={setMapping}
             disabled={busy || job.status === "PREVIEWING"}
           />
           <label>
             {text("Zuordnungsprofil laden", "Load mapping profile")}
             <select
+              aria-label={text("Zuordnungsprofil laden", "Load mapping profile")}
               disabled={busy || job.status === "PREVIEWING"}
               value={profile?.id ?? ""}
               onChange={(e) => {
                 const selected = profiles.find((p) => p.id === e.target.value) ?? null;
                 setProfile(selected);
                 if (selected) {
-                  setMapping(selected.mapping);
+                  setMapping({ ...selected.mapping, locale: job.locale });
                   setProfileName(selected.name);
                 }
               }}
             >
               <option value="">{text("Eigene Zuordnung", "Custom mapping")}</option>
-              {profiles.map((p) => (
+              {[
+                ...(profile && !profiles.some((p) => p.id === profile.id) ? [profile] : []),
+                ...profiles,
+              ].map((p) => (
                 <option key={p.id} value={p.id}>
                   {p.name}
                 </option>
               ))}
             </select>
           </label>
+          <div className="management-actions">
+            <button
+              disabled={busy || job.status === "PREVIEWING" || profilePageStart === null}
+              onClick={() => void profilePage(null)}
+            >
+              {text("Erste Profile", "First profiles")}
+            </button>
+            <button
+              disabled={busy || job.status === "PREVIEWING" || profileCursor === null}
+              onClick={() => void profilePage(profileCursor)}
+            >
+              {text("Weitere Profile", "More profiles")}
+            </button>
+          </div>
           <label>
             {text("Profilname", "Profile name")}
             <input
@@ -283,10 +422,18 @@ export function ImportDetail({ locale, jobId }: { locale: "de" | "en"; jobId: st
               disabled={busy}
             />
           </label>
-          <button disabled={busy || !profileName.trim()} onClick={() => void saveProfile()}>
+          <button
+            disabled={
+              busy || !profileName.trim() || !ImportMappingSchema.safeParse(mapping).success
+            }
+            onClick={() => void saveProfile()}
+          >
             {text("Profil speichern", "Save profile")}
           </button>
-          <button disabled={busy} onClick={() => void preview()}>
+          <button
+            disabled={busy || !ImportMappingSchema.safeParse(mapping).success}
+            onClick={() => void preview()}
+          >
             {text("Vorschau erstellen", "Build preview")}
           </button>
         </div>
@@ -312,7 +459,54 @@ export function ImportDetail({ locale, jobId }: { locale: "de" | "en"; jobId: st
                       ? text("Fehler", "Error")
                       : text("Bereit", "Ready")}
                 </p>
-                {row.errors.length > 0 && <p>{row.errors.map((e) => e.field).join(", ")}</p>}
+                {row.values && (
+                  <dl>
+                    <dt>{text("Stückzahl", "Quantity")}</dt>
+                    <dd>{row.values.quantity}</dd>
+                    {row.values.identifier && (
+                      <>
+                        <dt>{text("Kennung", "Identifier")}</dt>
+                        <dd>
+                          {row.values.identifier.type}: {row.values.identifier.value}
+                        </dd>
+                      </>
+                    )}
+                    {row.values.acquiredOn && (
+                      <>
+                        <dt>{text("Erwerbsdatum", "Acquired on")}</dt>
+                        <dd>{row.values.acquiredOn}</dd>
+                      </>
+                    )}
+                    {row.values.purchaseMoney && (
+                      <>
+                        <dt>{text("Kaufpreis pro Stück", "Purchase value per unit")}</dt>
+                        <dd>
+                          {row.values.purchaseMoney.kind === "CANONICAL"
+                            ? `${row.values.purchaseMoney.receipt.normalizedDecimal.replace(".", locale === "de" ? "," : ".")} ${row.values.purchaseMoney.receipt.raw.currency}`
+                            : `${row.values.purchaseMoney.raw.amountMinor} ${row.values.purchaseMoney.raw.currency} · ${text("Einheit unbekannt", "Unknown unit")}`}
+                        </dd>
+                      </>
+                    )}
+                  </dl>
+                )}
+                {row.errors.length > 0 && (
+                  <p>
+                    {text("Ungültige Werte prüfen", "Check invalid values")}:{" "}
+                    {row.errors
+                      .map(
+                        (error) =>
+                          ({
+                            row: text("Zeile", "Row"),
+                            title: text("Titel", "Title"),
+                            quantity: text("Stückzahl", "Quantity"),
+                            identifier: text("Kennung", "Identifier"),
+                            purchaseMoney: text("Kaufpreis", "Purchase value"),
+                            acquiredOn: text("Erwerbsdatum", "Acquired date"),
+                          })[error.field],
+                      )
+                      .join(", ")}
+                  </p>
+                )}
                 <label>
                   {`${text("Entscheidung für Zeile", "Decision for row")} ${rowNumber}`}
                   <select
@@ -368,6 +562,12 @@ export function ImportDetail({ locale, jobId }: { locale: "de" | "en"; jobId: st
                     <legend>
                       {text("Nur ausgewählte Felder ersetzen", "Replace selected fields only")}
                     </legend>
+                    {targets[rowNumber]?.id === choice.targetItemId && (
+                      <p>
+                        {text("Bestehendes Exemplar", "Existing item")}: {targets[rowNumber]!.title}{" "}
+                        · {text("Stückzahl", "Quantity")}: {targets[rowNumber]!.quantity}
+                      </p>
+                    )}
                     <label>
                       {text("Ziel-Exemplar", "Target item")}
                       <select
@@ -402,7 +602,18 @@ export function ImportDetail({ locale, jobId }: { locale: "de" | "en"; jobId: st
                               choose({ ...choice, fields });
                             }}
                           />
-                          {field}
+                          {
+                            {
+                              title: text("Titel ersetzen", "Replace title"),
+                              quantity: text(
+                                "Stückzahl ersetzen, nicht addieren",
+                                "Replace quantity, do not add",
+                              ),
+                              identifier: text("Kennung ersetzen", "Replace identifier"),
+                              purchaseMoney: text("Kaufpreis ersetzen", "Replace purchase value"),
+                              acquiredOn: text("Erwerbsdatum ersetzen", "Replace acquired date"),
+                            }[field]
+                          }
                         </label>
                       ))}
                   </fieldset>
@@ -423,7 +634,12 @@ export function ImportDetail({ locale, jobId }: { locale: "de" | "en"; jobId: st
               {text("Entscheidungen speichern", "Save decisions")}
             </button>
             <button
-              disabled={busy || dirty || state.savedRows !== job.progress.totalRows}
+              disabled={
+                busy ||
+                dirty ||
+                state.savedRows !== job.progress.totalRows ||
+                (!!job.mapping?.columns.purchaseMoney && !moneyAuthoringEnabled)
+              }
               onClick={() =>
                 void act(async () => {
                   await importApi("approve", {

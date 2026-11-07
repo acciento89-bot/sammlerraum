@@ -1144,45 +1144,46 @@ enum ImportRowStatus {
 }
 
 model ImportJob {
-  id                     String             @id @default(uuid()) @db.Uuid
+  id                     String              @id @default(uuid()) @db.Uuid
   ownerId                String
-  collectionId           String             @db.Uuid
-  locale                 String             @db.VarChar(2)
-  status                 ImportJobStatus    @default(AWAITING_UPLOAD)
-  revision               Int                @default(1)
+  collectionId           String              @db.Uuid
+  locale                 String              @db.VarChar(2)
+  status                 ImportJobStatus     @default(AWAITING_UPLOAD)
+  revision               Int                 @default(1)
   sourceFormat           ImportSourceFormat
-  sourceFileName         String             @db.VarChar(255)
+  sourceFileName         String              @db.VarChar(255)
   sourceByteSize         BigInt
-  sourceChecksumSha256   String             @db.Char(64)
-  sourceStorageKey       String             @unique
+  sourceChecksumSha256   String              @db.Char(64)
+  sourceStorageKey       String              @unique
   sourceVerifiedAt       DateTime?
-  uploadRequestId        String?            @db.Uuid
+  uploadRequestId        String?             @db.Uuid
   uploadOptions          Json?
   uploadCompletedAt      DateTime?
-  sourceExpiresAt        DateTime           @default(dbgenerated("(timezone('UTC'::text, CURRENT_TIMESTAMP) + '24 hours'::interval)"))
+  sourceExpiresAt        DateTime            @default(dbgenerated("(timezone('UTC'::text, CURRENT_TIMESTAMP) + '24 hours'::interval)"))
   lastDispatchedAt       DateTime?
   parserOptions          Json?
   parsedHeader           Json?
-  parsingToken           String?            @db.Uuid
+  parsingToken           String?             @db.Uuid
   parsingLeaseUntil      DateTime?
-  parsingAttempts        Int                @default(0)
+  parsingAttempts        Int                 @default(0)
   totalRows              Int?
-  parsedRows             Int                @default(0)
-  previewedRows          Int                @default(0)
-  committedRows          Int                @default(0)
+  parsedRows             Int                 @default(0)
+  previewedRows          Int                 @default(0)
+  committedRows          Int                 @default(0)
   commitApprovedAt       DateTime?
   commitApprovalRevision Int?
-  previewGeneration      Int                @default(0)
+  previewGeneration      Int                 @default(0)
   mappingSnapshot        Json?
-  mappingHash            String?            @db.Char(64)
-  mappingProfileId       String?            @db.Uuid
+  mappingHash            String?             @db.Char(64)
+  mappingProfileId       String?             @db.Uuid
   mappingProfileRevision Int?
-  errorCode              String?            @db.VarChar(64)
-  createdAt              DateTime           @default(now())
-  updatedAt              DateTime           @updatedAt
-  owner                  User               @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  collection             Collection         @relation(fields: [collectionId, ownerId], references: [id, ownerId], onDelete: Cascade)
+  errorCode              String?             @db.VarChar(64)
+  createdAt              DateTime            @default(now())
+  updatedAt              DateTime            @updatedAt
+  owner                  User                @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  collection             Collection          @relation(fields: [collectionId, ownerId], references: [id, ownerId], onDelete: Cascade)
   rows                   ImportRow[]
+  sourceObject           ImportSourceObject?
 
   @@unique([ownerId, uploadRequestId])
   @@index([sourceExpiresAt, id])
@@ -1320,4 +1321,19 @@ model ReportJob {
   @@index([ownerId, createdAt(sort: Desc), id])
   @@index([status, processingLeaseUntil, id])
   @@index([status, lastDispatchedAt, id])
+}
+
+model ImportSourceObject {
+  id               String     @id @db.Uuid
+  jobId            String?    @unique @db.Uuid
+  storageKey       String     @unique
+  expiresAt        DateTime
+  createdAt        DateTime   @default(dbgenerated("timezone('UTC'::text, CURRENT_TIMESTAMP)"))
+  cleanupStartedAt DateTime?
+  deletedAt        DateTime?
+  lastAttemptAt    DateTime?
+  lastReconciledAt DateTime?
+  job              ImportJob? @relation(fields: [jobId], references: [id], onDelete: SetNull, onUpdate: NoAction)
+
+  @@index([lastAttemptAt, expiresAt, id])
 }

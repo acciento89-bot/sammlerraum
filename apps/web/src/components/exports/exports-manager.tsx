@@ -107,7 +107,7 @@ export function ExportsManager({ locale }: { locale: "de" | "en" }) {
       <p>
         {text(
           "Dateien bleiben privat und sind 24 Stunden verfügbar. Der Inhalt zeigt den bei der Erstellung erfassten Stand.",
-          "Files remain private and are available for24hours. Their content reflects the captured state at generation time.",
+          "Files remain private and are available for 24 hours. Their content reflects the captured state at generation time.",
         )}
       </p>
       {error && <p role="alert">{error}</p>}

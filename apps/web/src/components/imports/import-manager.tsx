@@ -2,13 +2,18 @@
 import Link from "next/link";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
+import { importApi } from "./import-api";
+import type { ImportJobDto } from "@sammlerraum/contracts/imports";
 import { IMPORT_MAX_SOURCE_BYTES } from "@sammlerraum/contracts/imports";
 export function ImportManager({ locale }: { locale: "de" | "en" }) {
   const text = (de: string, en: string) => (locale === "de" ? de : en),
     router = useRouter();
   const [collections, setCollections] = useState<{ id: string; name: string }[]>([]),
     [busy, setBusy] = useState(false),
-    [error, setError] = useState("");
+    [error, setError] = useState(""),
+    [recent, setRecent] = useState<{ job: ImportJobDto; expiresAt: string }[]>([]),
+    [historyError, setHistoryError] = useState(false),
+    [historyRetry, setHistoryRetry] = useState(0);
   const uploadKey = useRef<string | null>(null);
   useEffect(() => {
     let active = true;
@@ -28,6 +33,35 @@ export function ImportManager({ locale }: { locale: "de" | "en" }) {
       active = false;
     };
   }, [locale]);
+  useEffect(() => {
+    let active = true,
+      loading = false;
+    async function load() {
+      if (loading) return;
+      loading = true;
+      try {
+        const result = await importApi<{ jobs: { job: ImportJobDto; expiresAt: string }[] }>(
+          "recent",
+        );
+        if (active) {
+          setRecent(result.jobs);
+          setHistoryError(false);
+        }
+      } catch {
+        if (active) setHistoryError(true);
+      } finally {
+        loading = false;
+      }
+    }
+    void load();
+    const timer = setInterval(() => {
+      if (!document.hidden) void load();
+    }, 10000);
+    return () => {
+      active = false;
+      clearInterval(timer);
+    };
+  }, [locale, historyRetry]);
   async function upload(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (busy) return;
@@ -69,8 +103,13 @@ export function ImportManager({ locale }: { locale: "de" | "en" }) {
       const result = await response.json();
       if (!response.ok) throw Error(result.error?.code ?? "IMPORT_UNAVAILABLE");
       router.push(`/${locale}/imports/${result.job.id}`);
-    } catch (problem) {
-      setError(problem instanceof Error ? problem.message : "IMPORT_UNAVAILABLE");
+    } catch {
+      setError(
+        text(
+          "Upload nicht abgeschlossen. Bitte Quelle und Grenzen prüfen oder dieselbe Datei erneut versuchen.",
+          "Upload did not complete. Check the source and limits, or retry the same file.",
+        ),
+      );
       setBusy(false);
     }
   }
@@ -89,6 +128,42 @@ export function ImportManager({ locale }: { locale: "de" | "en" }) {
         )}
       </p>
       {error && <p role="alert">{error}</p>}
+      <section aria-labelledby="recent-imports">
+        <h2 id="recent-imports">{text("Deine Importaufträge", "Your import jobs")}</h2>
+        <button onClick={() => setHistoryRetry((v) => v + 1)}>
+          {text("Aufträge aktualisieren", "Refresh jobs")}
+        </button>
+        {historyError && (
+          <p role="alert">
+            {text("Aufträge konnten nicht geladen werden.", "Could not load import jobs.")}
+          </p>
+        )}
+        {recent.length === 0 && !historyError && (
+          <p>{text("Noch keine aktuellen Importaufträge.", "No current import jobs yet.")}</p>
+        )}
+        {recent.map(({ job }) => (
+          <article className="management-card" key={job.id}>
+            <Link href={`/${locale}/imports/${job.id}`}>
+              <strong>{job.source.fileName}</strong> ·{" "}
+              {job.status === "COMPLETED"
+                ? text("Abgeschlossen", "Complete")
+                : job.status === "CANCELLED"
+                  ? text("Abgebrochen", "Cancelled")
+                  : job.status === "FAILED"
+                    ? text("Fehlgeschlagen", "Failed")
+                    : job.status === "COMMITTING"
+                      ? text("Wird übernommen", "Committing")
+                      : ["PARSED", "PREVIEWING", "REVIEW_READY"].includes(job.status)
+                        ? text("Prüfung und Freigabe offen", "Awaiting review and approval")
+                        : text("Datei wird eingelesen", "Reading source")}
+            </Link>
+            <p>
+              {job.progress.parsedRows} {text("gelesene Zeilen", "parsed rows")} ·{" "}
+              {job.progress.committedRows} {text("bearbeitete Datenzeilen", "processed data rows")}
+            </p>
+          </article>
+        ))}
+      </section>
       <form
         className="form-stack"
         onSubmit={upload}

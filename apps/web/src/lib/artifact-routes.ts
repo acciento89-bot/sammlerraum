@@ -45,6 +45,16 @@ export function createArtifactRouteHandlers(deps: PrivateTransferContext) {
   const json = (value: unknown, status = 200) =>
     Response.json(value, { status, headers: { "cache-control": "no-store" } });
   return {
+    POST_PROOF_OPTIONS: apiRoute(async (request) =>
+      mapped(async () =>
+        json(
+          await service.listProofOptions(
+            await actor(request, true),
+            await readPrivateJson(request),
+          ),
+        ),
+      ),
+    ),
     POST_EXPORT: apiRoute(async (request) =>
       mapped(async () =>
         json(

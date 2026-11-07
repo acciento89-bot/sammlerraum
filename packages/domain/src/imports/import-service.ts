@@ -17,6 +17,7 @@ import { Prisma } from "@sammlerraum/db/search-sql";
 import { searchFail } from "@sammlerraum/contracts/item-search";
 import {
   ImportJobCreateInputSchema,
+  ImportCancellationInputSchema,
   ImportParserOptionsSchema,
   ImportJobDtoSchema,
   ImportProfileMutationSchema,
@@ -210,6 +211,7 @@ type JobRow = {
   sourceChecksumSha256: string;
   sourceStorageKey: string;
   sourceVerifiedAt: Date | null;
+  commitApprovedAt: Date | null;
   parsedHeader: unknown;
   errorCode: string | null;
   uploadCompletedAt: Date | null;
@@ -358,6 +360,9 @@ export function createImportService(database: SearchDatabase) {
         await tx.$queryRaw(
           Prisma.sql`INSERT INTO "ImportJob" (id,"ownerId","collectionId",locale,"sourceFormat","sourceFileName","sourceByteSize","sourceChecksumSha256","sourceStorageKey","uploadRequestId","uploadOptions","createdAt","updatedAt") VALUES (${id}::uuid,${owner},${value.collectionId}::uuid,${value.locale},${value.source.format}::"ImportSourceFormat",${value.source.fileName},${value.source.byteSize}::bigint,${value.source.checksumSha256},${`imports/${id}/source`},${uploadValue?.requestId ?? null}::uuid,${uploadValue ? JSON.stringify(uploadValue.options) : null}::jsonb,date_trunc('milliseconds',clock_timestamp()),date_trunc('milliseconds',clock_timestamp())) RETURNING id`,
         );
+        await tx.$queryRaw(
+          Prisma.sql`INSERT INTO "ImportSourceObject" (id,"jobId","storageKey","expiresAt") SELECT id,id,"sourceStorageKey","sourceExpiresAt" FROM "ImportJob" WHERE id=${id}::uuid RETURNING id`,
+        );
         return jobDto(await loadJob(tx, owner, id));
       });
     },
@@ -365,6 +370,33 @@ export function createImportService(database: SearchDatabase) {
       const owner = actor(who),
         id = parse(z.string().uuid(), input);
       return runSearchTransaction(database, async (tx) => jobDto(await loadJob(tx, owner, id)));
+    },
+    async getRecentImports(who: ImportActor) {
+      const owner = actor(who);
+      return runSearchTransaction(database, async (tx) => {
+        const rows = await tx.$queryRaw<JobRow[]>(
+          Prisma.sql`SELECT ${jobColumns} FROM "ImportJob" j JOIN "Collection" c ON c.id=j."collectionId" AND c."ownerId"=j."ownerId" WHERE j."ownerId"=${owner} AND c."deletedAt" IS NULL AND (j."sourceExpiresAt">timezone('UTC',CURRENT_TIMESTAMP) OR j.status='COMMITTING') ORDER BY j."createdAt" DESC,j.id LIMIT 20`,
+        );
+        return {
+          jobs: rows.map((row) => ({ job: jobDto(row), expiresAt: iso(row.sourceExpiresAt) })),
+        };
+      });
+    },
+    async cancelImport(who: ImportActor, input: unknown) {
+      const owner = actor(who),
+        request = parse(ImportCancellationInputSchema, input);
+      return runSearchTransaction(database, async (tx) => {
+        const job = await loadJob(tx, owner, request.jobId, true);
+        if (job.commitApprovedAt !== null || ["COMMITTING", "COMPLETED"].includes(job.status))
+          return importFail("IMPORT_NOT_READY");
+        if (job.revision !== request.expectedRevision || job.revision === 2147483647)
+          return importFail("IMPORT_CONFLICT");
+        if (job.status === "CANCELLED") return jobDto(job);
+        await tx.$queryRaw(
+          Prisma.sql`UPDATE "ImportJob" SET status='CANCELLED',"parsingToken"=NULL,"parsingLeaseUntil"=NULL,"errorCode"=NULL,revision=revision+1,"updatedAt"=date_trunc('milliseconds',clock_timestamp()) WHERE id=${job.id}::uuid RETURNING id`,
+        );
+        return jobDto(await loadJob(tx, owner, job.id));
+      });
     },
     async getImportState(who: ImportActor, input: unknown) {
       const owner = actor(who),
@@ -376,6 +408,7 @@ export function createImportService(database: SearchDatabase) {
         );
         return {
           job: jobDto(row),
+          approved: row.commitApprovedAt !== null,
           header: row.parsedHeader === null ? null : parse(ImportRawRowSchema, row.parsedHeader),
           columnCount: counts?.columns ?? 0,
           savedRows: Number(counts?.saved ?? 0n),
@@ -403,13 +436,34 @@ export function createImportService(database: SearchDatabase) {
       });
       return { ...page, decisions };
     },
-    async listImportProfiles(who: ImportActor) {
-      const owner = actor(who);
+    async listImportProfiles(who: ImportActor, input: unknown = {}) {
+      const owner = actor(who),
+        request = parse(
+          z
+            .object({
+              after: z
+                .object({
+                  normalizedName: ImportProfileMutationSchema.shape.name,
+                  id: z.string().uuid(),
+                })
+                .strict()
+                .optional(),
+            })
+            .strict(),
+          input,
+        );
       return runSearchTransaction(database, async (tx) => {
         const rows = await tx.$queryRaw<ProfileRow[]>(
-          Prisma.sql`SELECT * FROM "ImportMappingProfile" WHERE "ownerId"=${owner} ORDER BY "normalizedName",id LIMIT 51`,
-        );
-        return { profiles: rows.slice(0, 50).map(profileDto), hasMore: rows.length > 50 };
+            Prisma.sql`SELECT * FROM "ImportMappingProfile" WHERE "ownerId"=${owner} ${request.after ? Prisma.sql`AND ("normalizedName",id)>(${request.after.normalizedName},${request.after.id}::uuid)` : Prisma.empty} ORDER BY "normalizedName",id LIMIT 51`,
+          ),
+          profiles = rows.slice(0, 50),
+          last = profiles.at(-1);
+        return {
+          profiles: profiles.map(profileDto),
+          hasMore: rows.length > 50,
+          nextAfter:
+            rows.length > 50 && last ? { normalizedName: last.normalizedName, id: last.id } : null,
+        };
       });
     },
     async buildImportPreview(who: ImportActor, input: unknown) {

@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 import { z } from "zod";
-import { ExportError, EXPORT_MAX_BYTES } from "@sammlerraum/contracts/exports";
+import { ExportError, EXPORT_MAX_BYTES, ExportScopeSchema } from "@sammlerraum/contracts/exports";
 import { parseInsuranceReportOptions } from "@sammlerraum/contracts/reports";
 import { Prisma } from "@sammlerraum/db/search-sql";
 import type { StorageProvider, StorageStagingLocker } from "@sammlerraum/storage";
@@ -133,6 +133,45 @@ export function createArtifactAccessService(
     });
   }
   return {
+    async listProofOptions(who: { userId: string }, input: unknown) {
+      const owner = actor(who),
+        request = parse(
+          z
+            .object({
+              scope: ExportScopeSchema,
+              query: z.unknown().optional(),
+              afterAssetId: id.optional(),
+            })
+            .strict(),
+          input,
+        );
+      const source = await exports.captureExportSource(
+          { userId: owner },
+          { scope: request.scope, query: request.query, locale: "de", format: "CSV" },
+        ),
+        ids = source.money.rows.map((row) => row.itemId);
+      if (!ids.length) return { items: [], hasMore: false, nextAfterAssetId: null };
+      return runSearchTransaction(database, async (tx) => {
+        const rows = await tx.$queryRaw<
+          {
+            assetId: string;
+            fileName: string;
+            byteSize: string;
+            mimeType: string;
+            itemId: string;
+            itemTitle: string;
+          }[]
+        >(
+          Prisma.sql`SELECT a.id AS "assetId",a."originalFileName" AS "fileName",a."byteSize"::text AS "byteSize",a."mimeType",selected."itemId",selected."itemTitle" FROM "MediaAsset" a JOIN LATERAL (SELECT i.id AS "itemId",i.title AS "itemTitle" FROM "DocumentLink" l JOIN "CollectibleItem" i ON i.id=l."itemId" AND i."ownerId"=l."ownerId" JOIN "Collection" c ON c.id=i."collectionId" AND c."ownerId"=i."ownerId" WHERE l."assetId"=a.id AND l."ownerId"=${owner} AND i.id IN (${Prisma.join(ids.map((id) => Prisma.sql`${id}::uuid`))}) AND i."deletedAt" IS NULL AND c."deletedAt" IS NULL ORDER BY i.id LIMIT 1) selected ON TRUE WHERE a."ownerId"=${owner} AND a.kind='DOCUMENT' AND a.status='READY' AND a."cleanupStartedAt" IS NULL AND a."mimeType" IN ('application/pdf','image/jpeg','image/png','image/webp') AND a."byteSize" BETWEEN 1 AND 16777216 AND a."checksumSha256"~'^[a-f0-9]{64}$' ${request.afterAssetId ? Prisma.sql`AND a.id>${request.afterAssetId}::uuid` : Prisma.empty} ORDER BY a.id LIMIT 51`,
+        );
+        const items = rows.slice(0, 50);
+        return {
+          items,
+          hasMore: rows.length > 50,
+          nextAfterAssetId: rows.length > 50 ? items.at(-1)!.assetId : null,
+        };
+      });
+    },
     async listArtifacts(who: { userId: string }, input: unknown = {}) {
       const owner = actor(who),
         request = parse(historyInput, input);
