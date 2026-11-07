@@ -1,0 +1,284 @@
+[
+  {
+    "ownedItems": 1,
+    "distinctTargets": 1,
+    "observations": 13,
+    "searchCallsIncludingConfiguration": 17,
+    "aggregateCallsIncludingConfiguration": 9,
+    "searchMs": 26.76533399999971,
+    "aggregateMs": 15.729832999999417,
+    "plans": [
+      {
+        "query": "/* market:prepare:current */",
+        "executionMs": 0.082,
+        "sharedHitBlocks": 13,
+        "tempWrittenBlocks": 0
+      },
+      {
+        "query": "/* market:prepare:history */",
+        "executionMs": 0.091,
+        "sharedHitBlocks": 13,
+        "tempWrittenBlocks": 0
+      },
+      {
+        "query": "/* market:prepare:ambiguity */",
+        "executionMs": 0.106,
+        "sharedHitBlocks": 13,
+        "tempWrittenBlocks": 0
+      },
+      {
+        "query": "consumer",
+        "executionMs": 0.13,
+        "sharedHitBlocks": 18,
+        "tempWrittenBlocks": 0
+      },
+      {
+        "query": "consumer",
+        "executionMs": 0.101,
+        "sharedHitBlocks": 18,
+        "tempWrittenBlocks": 0
+      },
+      {
+        "query": "/* market:aggregate */",
+        "executionMs": 0.128,
+        "sharedHitBlocks": 13,
+        "tempWrittenBlocks": 0
+      }
+    ]
+  },
+  {
+    "ownedItems": 1,
+    "distinctTargets": 1,
+    "observations": 13,
+    "searchCallsIncludingConfiguration": 17,
+    "aggregateCallsIncludingConfiguration": 9,
+    "searchMs": 23.76287500000035,
+    "aggregateMs": 15.025916999999936,
+    "plans": [
+      {
+        "query": "/* market:prepare:current */",
+        "executionMs": 0.077,
+        "sharedHitBlocks": 13,
+        "tempWrittenBlocks": 0
+      },
+      {
+        "query": "/* market:prepare:history */",
+        "executionMs": 0.083,
+        "sharedHitBlocks": 9,
+        "tempWrittenBlocks": 0
+      },
+      {
+        "query": "/* market:prepare:ambiguity */",
+        "executionMs": 0.111,
+        "sharedHitBlocks": 9,
+        "tempWrittenBlocks": 0
+      },
+      {
+        "query": "consumer",
+        "executionMs": 0.128,
+        "sharedHitBlocks": 14,
+        "tempWrittenBlocks": 0
+      },
+      {
+        "query": "consumer",
+        "executionMs": 0.103,
+        "sharedHitBlocks": 14,
+        "tempWrittenBlocks": 0
+      },
+      {
+        "query": "/* market:aggregate */",
+        "executionMs": 0.133,
+        "sharedHitBlocks": 9,
+        "tempWrittenBlocks": 0
+      }
+    ]
+  },
+  {
+    "ownedItems": 50,
+    "distinctTargets": 1,
+    "observations": 13,
+    "searchCallsIncludingConfiguration": 17,
+    "aggregateCallsIncludingConfiguration": 9,
+    "searchMs": 27.43554200000017,
+    "aggregateMs": 16.24870800000008,
+    "plans": [
+      {
+        "query": "/* market:prepare:current */",
+        "executionMs": 0.088,
+        "sharedHitBlocks": 14,
+        "tempWrittenBlocks": 0
+      },
+      {
+        "query": "/* market:prepare:history */",
+        "executionMs": 0.421,
+        "sharedHitBlocks": 306,
+        "tempWrittenBlocks": 0
+      },
+      {
+        "query": "/* market:prepare:ambiguity */",
+        "executionMs": 0.682,
+        "sharedHitBlocks": 306,
+        "tempWrittenBlocks": 0
+      },
+      {
+        "query": "consumer",
+        "executionMs": 1.324,
+        "sharedHitBlocks": 410,
+        "tempWrittenBlocks": 0
+      },
+      {
+        "query": "consumer",
+        "executionMs": 1.31,
+        "sharedHitBlocks": 410,
+        "tempWrittenBlocks": 0
+      },
+      {
+        "query": "/* market:aggregate */",
+        "executionMs": 0.642,
+        "sharedHitBlocks": 306,
+        "tempWrittenBlocks": 0
+      }
+    ]
+  },
+  {
+    "ownedItems": 50,
+    "distinctTargets": 50,
+    "observations": 650,
+    "searchCallsIncludingConfiguration": 17,
+    "aggregateCallsIncludingConfiguration": 9,
+    "searchMs": 30.968041999999514,
+    "aggregateMs": 18.69183299999986,
+    "plans": [
+      {
+        "query": "/* market:prepare:current */",
+        "executionMs": 0.546,
+        "sharedHitBlocks": 406,
+        "tempWrittenBlocks": 0
+      },
+      {
+        "query": "/* market:prepare:history */",
+        "executionMs": 0.529,
+        "sharedHitBlocks": 410,
+        "tempWrittenBlocks": 0
+      },
+      {
+        "query": "/* market:prepare:ambiguity */",
+        "executionMs": 0.933,
+        "sharedHitBlocks": 654,
+        "tempWrittenBlocks": 0
+      },
+      {
+        "query": "consumer",
+        "executionMs": 1.452,
+        "sharedHitBlocks": 660,
+        "tempWrittenBlocks": 0
+      },
+      {
+        "query": "consumer",
+        "executionMs": 1.605,
+        "sharedHitBlocks": 660,
+        "tempWrittenBlocks": 0
+      },
+      {
+        "query": "/* market:aggregate */",
+        "executionMs": 0.789,
+        "sharedHitBlocks": 410,
+        "tempWrittenBlocks": 0
+      }
+    ]
+  },
+  {
+    "ownedItems": 500,
+    "distinctTargets": 1,
+    "observations": 13,
+    "searchCallsIncludingConfiguration": 17,
+    "aggregateCallsIncludingConfiguration": 9,
+    "searchMs": 143.81866699999955,
+    "aggregateMs": 28.348833000000013,
+    "plans": [
+      {
+        "query": "/* market:prepare:current */",
+        "executionMs": 0.215,
+        "sharedHitBlocks": 27,
+        "tempWrittenBlocks": 0
+      },
+      {
+        "query": "/* market:prepare:history */",
+        "executionMs": 3.22,
+        "sharedHitBlocks": 2519,
+        "tempWrittenBlocks": 0
+      },
+      {
+        "query": "/* market:prepare:ambiguity */",
+        "executionMs": 5.745,
+        "sharedHitBlocks": 2518,
+        "tempWrittenBlocks": 0
+      },
+      {
+        "query": "consumer",
+        "executionMs": 72.882,
+        "sharedHitBlocks": 3535,
+        "tempWrittenBlocks": 0
+      },
+      {
+        "query": "consumer",
+        "executionMs": 73.378,
+        "sharedHitBlocks": 3535,
+        "tempWrittenBlocks": 0
+      },
+      {
+        "query": "/* market:aggregate */",
+        "executionMs": 5.493,
+        "sharedHitBlocks": 2519,
+        "tempWrittenBlocks": 0
+      }
+    ]
+  },
+  {
+    "ownedItems": 500,
+    "distinctTargets": 500,
+    "observations": 6500,
+    "searchCallsIncludingConfiguration": 17,
+    "aggregateCallsIncludingConfiguration": 9,
+    "searchMs": 181.00829199999862,
+    "aggregateMs": 52.852208000000246,
+    "plans": [
+      {
+        "query": "/* market:prepare:current */",
+        "executionMs": 4.849,
+        "sharedHitBlocks": 4518,
+        "tempWrittenBlocks": 0
+      },
+      {
+        "query": "/* market:prepare:history */",
+        "executionMs": 4.546,
+        "sharedHitBlocks": 4689,
+        "tempWrittenBlocks": 0
+      },
+      {
+        "query": "/* market:prepare:ambiguity */",
+        "executionMs": 10.617,
+        "sharedHitBlocks": 12171,
+        "tempWrittenBlocks": 0
+      },
+      {
+        "query": "consumer",
+        "executionMs": 78.551,
+        "sharedHitBlocks": 15189,
+        "tempWrittenBlocks": 0
+      },
+      {
+        "query": "consumer",
+        "executionMs": 78.663,
+        "sharedHitBlocks": 15189,
+        "tempWrittenBlocks": 0
+      },
+      {
+        "query": "/* market:aggregate */",
+        "executionMs": 7.138,
+        "sharedHitBlocks": 4689,
+        "tempWrittenBlocks": 0
+      }
+    ]
+  }
+]

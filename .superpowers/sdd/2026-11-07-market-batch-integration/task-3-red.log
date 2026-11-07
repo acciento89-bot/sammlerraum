@@ -1,0 +1,82 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/search/market-filter.integration.test.ts (7 tests | 7 failed) 722ms
+   × market filters through real owned and saved searches > evaluates point zero, huge exact integers, missing and NOT without coercion or quantity multiplication 202ms
+     → FILTER_UNAVAILABLE
+   × market filters through real owned and saved searches > rejects whole-scope ambiguity even outside the matching text branch 49ms
+     → expected FilterValidationError: FILTER_UNAVAILABLE { …(2) } to match object { code: 'FILTER_UNAVAILABLE', …(1) }
+(1 matching property omitted from actual)
+   × market filters through real owned and saved searches > rejects whole-scope ambiguity even outside the matching and branch 36ms
+     → expected FilterValidationError: FILTER_UNAVAILABLE { …(2) } to match object { code: 'FILTER_UNAVAILABLE', …(1) }
+(1 matching property omitted from actual)
+   × market filters through real owned and saved searches > rejects whole-scope ambiguity even outside the matching not branch 34ms
+     → expected FilterValidationError: FILTER_UNAVAILABLE { …(2) } to match object { code: 'FILTER_UNAVAILABLE', …(1) }
+(1 matching property omitted from actual)
+   × market filters through real owned and saved searches > rejects whole-scope ambiguity even outside the matching or branch 35ms
+     → expected FilterValidationError: FILTER_UNAVAILABLE { …(2) } to match object { code: 'FILTER_UNAVAILABLE', …(1) }
+(1 matching property omitted from actual)
+   × market filters through real owned and saved searches > denies empty inventories with no independent rights and never treats denial as missing 24ms
+     → expected FilterValidationError: FILTER_UNAVAILABLE { …(2) } to match object { code: 'FILTER_UNAVAILABLE', …(1) }
+(1 matching property omitted from actual)
+   × market filters through real owned and saved searches > rechecks saved searches against current rights rather than persisting a permission 28ms
+     → SMART_COLLECTION_INVALID
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 7 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/search/market-filter.integration.test.ts > market filters through real owned and saved searches > evaluates point zero, huge exact integers, missing and NOT without coercion or quantity multiplication
+FilterValidationError: FILTER_UNAVAILABLE
+ ❯ validateCurrentFilterAvailability packages/domain/src/search/filter-ast.ts:34:13
+     32|       throw new FilterValidationError("FILTER_UNAVAILABLE", "DUPLICATE…
+     33|     } else if (node.kind === "marketMoney") {
+     34|       throw new FilterValidationError("FILTER_UNAVAILABLE", "MARKET_FI…
+       |             ^
+     35|     } else if (
+     36|       (node.kind === "purchaseMoney" && node.test.op === "range") ||
+ ❯ Object.searchItems packages/domain/src/search/item-search-service.ts:116:25
+ ❯ packages/domain/src/search/market-filter.integration.test.ts:42:26
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/7]⎯
+
+ FAIL  |workspace| packages/domain/src/search/market-filter.integration.test.ts > market filters through real owned and saved searches > rejects whole-scope ambiguity even outside the matching text branch
+ FAIL  |workspace| packages/domain/src/search/market-filter.integration.test.ts > market filters through real owned and saved searches > rejects whole-scope ambiguity even outside the matching and branch
+ FAIL  |workspace| packages/domain/src/search/market-filter.integration.test.ts > market filters through real owned and saved searches > rejects whole-scope ambiguity even outside the matching not branch
+ FAIL  |workspace| packages/domain/src/search/market-filter.integration.test.ts > market filters through real owned and saved searches > rejects whole-scope ambiguity even outside the matching or branch
+ FAIL  |workspace| packages/domain/src/search/market-filter.integration.test.ts > market filters through real owned and saved searches > denies empty inventories with no independent rights and never treats denial as missing
+AssertionError: expected FilterValidationError: FILTER_UNAVAILABLE { …(2) } to match object { code: 'FILTER_UNAVAILABLE', …(1) }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+- {
++ FilterValidationError {
+    "code": "FILTER_UNAVAILABLE",
+-   "reason": "MARKET_MAPPING_AMBIGUOUS",
++   "reason": "MARKET_FILTER_SEAM_UNAVAILABLE",
+  }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/7]⎯
+
+ FAIL  |workspace| packages/domain/src/search/market-filter.integration.test.ts > market filters through real owned and saved searches > rechecks saved searches against current rights rather than persisting a permission
+SmartCollectionError: SMART_COLLECTION_INVALID
+ ❯ smartFail packages/contracts/src/smart-collections.ts:21:9
+     19| }
+     20| export function smartFail(code: SmartCollectionError["code"]): never {
+     21|   throw new SmartCollectionError(code);
+       |         ^
+     22| }
+     23| const nameValid = (v: string) =>
+ ❯ parseSmartCollectionDefinition packages/contracts/src/smart-collections.ts:52:12
+ ❯ parseSmartCollectionMutation packages/contracts/src/smart-collections.ts:68:17
+ ❯ Object.createSmartCollection packages/domain/src/search/smart-collection-service.ts:113:20
+ ❯ packages/domain/src/search/market-filter.integration.test.ts:66:28
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/7]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  7 failed (7)
+   Start at  17:21:25
+   Duration  1.34s (transform 256ms, setup 5ms, collect 454ms, tests 722ms, environment 0ms, prepare 34ms)
+

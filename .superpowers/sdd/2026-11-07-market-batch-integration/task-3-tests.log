@@ -1,0 +1,11 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ✓ |workspace| packages/domain/src/search/market-filter.integration.test.ts (11 tests) 1303ms
+   ✓ market filters through real owned and saved searches > evaluates point zero, huge exact integers, missing and NOT without coercion or quantity multiplication  333ms
+
+ Test Files  1 passed (1)
+      Tests  11 passed (11)
+   Start at  17:26:26
+   Duration  1.92s (transform 248ms, setup 6ms, collect 443ms, tests 1.30s, environment 0ms, prepare 36ms)
+

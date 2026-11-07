@@ -1,0 +1,10 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ✓ |workspace| packages/domain/src/market-data/market-aggregate.integration.test.ts (9 tests) 1254ms
+
+ Test Files  1 passed (1)
+      Tests  9 passed (9)
+   Start at  17:35:31
+   Duration  1.88s (transform 257ms, setup 5ms, collect 466ms, tests 1.25s, environment 0ms, prepare 35ms)
+

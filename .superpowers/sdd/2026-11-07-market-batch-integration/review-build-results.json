@@ -1,0 +1,14 @@
+[
+  {
+    "gate": "lint",
+    "exitCode": 0
+  },
+  {
+    "gate": "worker-build",
+    "exitCode": 0
+  },
+  {
+    "gate": "web-build",
+    "exitCode": 0
+  }
+]

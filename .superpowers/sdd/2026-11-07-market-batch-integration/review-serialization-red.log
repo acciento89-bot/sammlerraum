@@ -1,0 +1,169 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/market-data/market-batch.integration.test.ts (40 tests | 6 failed | 34 skipped) 713ms
+   ↓ bounded exact market relation on real PostgreSQL > selects exact latest eligible values without displacing them with a newer wrong metric, qualifier or denomination
+   ↓ bounded exact market relation on real PostgreSQL > omits foreign/deleted parent and retired exact identifiers instead of exposing stale values
+   ↓ bounded exact market relation on real PostgreSQL > prepares with three data queries for 1 owned items sharing one target
+   ↓ bounded exact market relation on real PostgreSQL > prepares with three data queries for 50 owned items sharing one target
+   ↓ bounded exact market relation on real PostgreSQL > prepares with three data queries for 500 owned items sharing one target
+   ↓ bounded exact market relation on real PostgreSQL > keeps old observations when a current identifier is replaced by a new row with the same value
+   ↓ bounded exact market relation on real PostgreSQL > rejects two qualifying semantic identities across the whole outer scope, but not an identifier lacking the requested metric
+   ↓ bounded exact market relation on real PostgreSQL > excludes foreign ambiguity and deleted own parents from the independent owned candidate scope
+   ↓ bounded exact market relation on real PostgreSQL > never falls back from a variant-linked item to an entry-only observation
+   ↓ bounded exact market relation on real PostgreSQL > requires a live exact variant even when both snapshots still contain it
+   ↓ bounded exact market relation on real PostgreSQL > rejects more than 200 live exact-target identifiers before snapshot intersection
+   ↓ bounded exact market relation on real PostgreSQL > rejects malformed driver counts instead of interpreting a noncanonical envelope
+   ↓ bounded exact market relation on real PostgreSQL > expires callback-scoped handles and rejects structurally forged or cross-context reuse
+   ↓ bounded exact market relation on real PostgreSQL > does not upgrade a FILTER handle when the caller mutates its purpose during preparation
+   ↓ bounded exact market relation on real PostgreSQL > rejects scope mutation during awaited preparation instead of relabeling the prepared owner's data
+   ↓ bounded exact market relation on real PostgreSQL > fails closed on a real PostgreSQL statement timeout without disclosing database details
+   ↓ bounded exact market relation on real PostgreSQL > rejects an exhausted application budget after an awaited database read
+   ↓ bounded exact market relation on real PostgreSQL > rechecks live rights after consumption and does not return a revoked result
+   ↓ bounded exact market relation on real PostgreSQL > keeps one RepeatableRead snapshot across a concurrent identifier retirement
+   ↓ bounded exact market relation on real PostgreSQL > refuses 1025 distinct current revisions before transferring their JSON snapshots
+   ↓ bounded exact market relation on real PostgreSQL > refuses an actual over-8MiB set of valid current snapshots before JSON transfer
+   ↓ bounded exact market relation on real PostgreSQL > enforces the combined current and historical revision cap in PostgreSQL before returning JSON
+   ↓ bounded exact market relation on real PostgreSQL > rejects complete current-snapshot corruption: duplicateVariants
+   ↓ bounded exact market relation on real PostgreSQL > rejects complete current-snapshot corruption: duplicateIdentifiers
+   ↓ bounded exact market relation on real PostgreSQL > rejects complete current-snapshot corruption: duplicateTuple
+   ↓ bounded exact market relation on real PostgreSQL > rejects complete current-snapshot corruption: wrongCategory
+   ↓ bounded exact market relation on real PostgreSQL > rejects complete current-snapshot corruption: orphanVariant
+   ↓ bounded exact market relation on real PostgreSQL > measures actual search/aggregate plans and configuration calls for 1 rows, distinct=false
+   ↓ bounded exact market relation on real PostgreSQL > measures actual search/aggregate plans and configuration calls for 1 rows, distinct=true
+   ↓ bounded exact market relation on real PostgreSQL > measures actual search/aggregate plans and configuration calls for 50 rows, distinct=false
+   ↓ bounded exact market relation on real PostgreSQL > measures actual search/aggregate plans and configuration calls for 50 rows, distinct=true
+   ↓ bounded exact market relation on real PostgreSQL > measures actual search/aggregate plans and configuration calls for 500 rows, distinct=false
+   ↓ bounded exact market relation on real PostgreSQL > measures actual search/aggregate plans and configuration calls for 500 rows, distinct=true
+   × bounded exact market relation on real PostgreSQL > retries a first current serialization failure through the outer transaction with fresh rights 233ms
+     → MARKET_BATCH_DEPENDENCY
+   × bounded exact market relation on real PostgreSQL > retries a first history serialization failure through the outer transaction with fresh rights 35ms
+     → MARKET_BATCH_DEPENDENCY
+   × bounded exact market relation on real PostgreSQL > retries a first ambiguity serialization failure through the outer transaction with fresh rights 31ms
+     → MARKET_BATCH_DEPENDENCY
+   × bounded exact market relation on real PostgreSQL > retries a first aggregate serialization failure through the outer transaction with fresh rights 42ms
+     → MARKET_BATCH_DEPENDENCY
+   × bounded exact market relation on real PostgreSQL > bounds exhausted market serialization failures at three whole transaction attempts 26ms
+     → expected 1 to be 3 // Object.is equality
+   × bounded exact market relation on real PostgreSQL > rechecks revoked rights on the next market serialization attempt instead of reusing the previous receipt 22ms
+     → expected ItemSearchError: SEARCH_UNAVAILABLE { code: '…' } to match object { code: 'FILTER_UNAVAILABLE', …(1) }
+(1 matching property omitted from actual)
+   ↓ bounded exact market relation on real PostgreSQL > treats malformed historical snapshots as ineligible and malformed current snapshots as invariant
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/market-data/market-batch.integration.test.ts > bounded exact market relation on real PostgreSQL > retries a first current serialization failure through the outer transaction with fresh rights
+MarketBatchError: MARKET_BATCH_DEPENDENCY
+ ❯ batchRead packages/domain/src/market-data/market-batch.ts:178:47
+    176|     return rows;
+    177|   } catch (error) {
+    178|     if (isReadDependencyFailure(error)) throw new MarketBatchError("MA…
+       |                                               ^
+    179|     throw error;
+    180|   }
+ ❯ packages/domain/src/market-data/market-batch.ts:351:28
+ ❯ withMarketRights packages/domain/src/market-data/market-query-policy.ts:229:14
+ ❯ withMarketBatch packages/domain/src/market-data/market-batch.ts:336:18
+ ❯ database.$transaction.isolationLevel packages/domain/src/search/search-read.ts:61:26
+ ❯ Proxy._transactionWithCallback node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:861:18
+ ❯ runSearchTransaction packages/domain/src/search/search-read.ts:33:22
+ ❯ packages/domain/src/market-data/market-batch.integration.test.ts:770:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  |workspace| packages/domain/src/market-data/market-batch.integration.test.ts > bounded exact market relation on real PostgreSQL > retries a first history serialization failure through the outer transaction with fresh rights
+MarketBatchError: MARKET_BATCH_DEPENDENCY
+ ❯ batchRead packages/domain/src/market-data/market-batch.ts:178:47
+    176|     return rows;
+    177|   } catch (error) {
+    178|     if (isReadDependencyFailure(error)) throw new MarketBatchError("MA…
+       |                                               ^
+    179|     throw error;
+    180|   }
+ ❯ packages/domain/src/market-data/market-batch.ts:373:28
+ ❯ withMarketRights packages/domain/src/market-data/market-query-policy.ts:229:14
+ ❯ withMarketBatch packages/domain/src/market-data/market-batch.ts:336:18
+ ❯ database.$transaction.isolationLevel packages/domain/src/search/search-read.ts:61:26
+ ❯ Proxy._transactionWithCallback node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:861:18
+ ❯ runSearchTransaction packages/domain/src/search/search-read.ts:33:22
+ ❯ packages/domain/src/market-data/market-batch.integration.test.ts:770:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  |workspace| packages/domain/src/market-data/market-batch.integration.test.ts > bounded exact market relation on real PostgreSQL > retries a first ambiguity serialization failure through the outer transaction with fresh rights
+MarketBatchError: MARKET_BATCH_DEPENDENCY
+ ❯ batchRead packages/domain/src/market-data/market-batch.ts:178:47
+    176|     return rows;
+    177|   } catch (error) {
+    178|     if (isReadDependencyFailure(error)) throw new MarketBatchError("MA…
+       |                                               ^
+    179|     throw error;
+    180|   }
+ ❯ packages/domain/src/market-data/market-batch.ts:383:23
+ ❯ withMarketRights packages/domain/src/market-data/market-query-policy.ts:229:14
+ ❯ withMarketBatch packages/domain/src/market-data/market-batch.ts:336:18
+ ❯ database.$transaction.isolationLevel packages/domain/src/search/search-read.ts:61:26
+ ❯ Proxy._transactionWithCallback node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:861:18
+ ❯ runSearchTransaction packages/domain/src/search/search-read.ts:33:22
+ ❯ packages/domain/src/market-data/market-batch.integration.test.ts:770:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+ FAIL  |workspace| packages/domain/src/market-data/market-batch.integration.test.ts > bounded exact market relation on real PostgreSQL > retries a first aggregate serialization failure through the outer transaction with fresh rights
+MarketBatchError: MARKET_BATCH_DEPENDENCY
+ ❯ aggregateMarketBatch packages/domain/src/market-data/market-aggregate.ts:54:47
+     52|     );
+     53|   } catch (error) {
+     54|     if (isReadDependencyFailure(error)) throw new MarketBatchError("MA…
+       |                                               ^
+     55|     throw error;
+     56|   }
+ ❯ consumeBatch packages/domain/src/market-data/market-batch.ts:289:20
+ ❯ withMarketRights packages/domain/src/market-data/market-query-policy.ts:229:14
+ ❯ withMarketBatch packages/domain/src/market-data/market-batch.ts:336:18
+ ❯ database.$transaction.isolationLevel packages/domain/src/search/search-read.ts:61:26
+ ❯ Proxy._transactionWithCallback node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:861:18
+ ❯ runSearchTransaction packages/domain/src/search/search-read.ts:33:22
+ ❯ packages/domain/src/market-data/market-batch.integration.test.ts:770:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯
+
+ FAIL  |workspace| packages/domain/src/market-data/market-batch.integration.test.ts > bounded exact market relation on real PostgreSQL > bounds exhausted market serialization failures at three whole transaction attempts
+AssertionError: expected 1 to be 3 // Object.is equality
+
+- Expected
++ Received
+
+- 3
++ 1
+
+ ❯ packages/domain/src/market-data/market-batch.integration.test.ts:780:24
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/6]⎯
+
+ FAIL  |workspace| packages/domain/src/market-data/market-batch.integration.test.ts > bounded exact market relation on real PostgreSQL > rechecks revoked rights on the next market serialization attempt instead of reusing the previous receipt
+AssertionError: expected ItemSearchError: SEARCH_UNAVAILABLE { code: '…' } to match object { code: 'FILTER_UNAVAILABLE', …(1) }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+- {
+-   "code": "FILTER_UNAVAILABLE",
+-   "reason": "MARKET_QUERY_RIGHTS_DISABLED",
++ ItemSearchError {
++   "code": "SEARCH_UNAVAILABLE",
+  }
+
+ ❯ packages/domain/src/market-data/market-batch.integration.test.ts:786:7
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/6]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  6 failed | 34 skipped (40)
+   Start at  17:45:11
+   Duration  1.46s (transform 299ms, setup 5ms, collect 543ms, tests 713ms, environment 0ms, prepare 39ms)
+

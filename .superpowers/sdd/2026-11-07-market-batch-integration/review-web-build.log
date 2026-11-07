@@ -1,0 +1,187 @@
+
+> @sammlerraum/web@ build /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web
+> next build
+
+▲ Next.js 16.3.5 (Turbopack)
+✓ Running next.config.ts took 239ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 8.6s
+  Running TypeScript ...
+  Finished TypeScript in 10.6s ...
+  Collecting page data using 7 workers ...
+  Generating static pages using 7 workers (0/61) ...
+  Generating static pages using 7 workers (15/61) 
+  Generating static pages using 7 workers (30/61) 
+  Generating static pages using 7 workers (45/61) 
+✓ Generating static pages using 7 workers (61/61) in 270ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ○ /_not-found
+├   /[locale]
+│ ├ ● /de
+│ └ ● /en
+├ ƒ /[locale]/[publicHandle]
+├ ƒ /[locale]/[publicHandle]/[collectionSlug]
+├ ƒ /[locale]/[publicHandle]/[collectionSlug]/items/[itemId]
+├ ƒ /[locale]/account/profile
+├ ƒ /[locale]/account/security
+├ ƒ /[locale]/audit
+├ ƒ /[locale]/catalog
+├ ƒ /[locale]/catalog/[entryId]
+├ ƒ /[locale]/catalog/moderation
+├ ƒ /[locale]/catalog/proposals
+├ ƒ /[locale]/collections
+├ ƒ /[locale]/collections/[collectionId]
+├ ƒ /[locale]/collections/[collectionId]/members
+├ ƒ /[locale]/collections/[collectionId]/sharing
+├ ƒ /[locale]/collections/[collectionId]/workspace
+├ ƒ /[locale]/community
+├ ƒ /[locale]/community/moderation
+├ ƒ /[locale]/dashboard
+├ ƒ /[locale]/exports
+├ ƒ /[locale]/imports
+├ ƒ /[locale]/imports/[jobId]
+├ ƒ /[locale]/insurance
+├ ƒ /[locale]/invite/[token]
+├ ƒ /[locale]/items/[itemId]
+├ ƒ /[locale]/items/[itemId]/values
+├ ƒ /[locale]/items/new
+├ ƒ /[locale]/locations/[locationId]
+├ ƒ /[locale]/locations/[locationId]/label
+├ ƒ /[locale]/login
+├ ƒ /[locale]/milestones
+├ ƒ /[locale]/notifications
+├ ƒ /[locale]/register
+├ ƒ /[locale]/search
+├ ƒ /[locale]/smart-collections
+├ ƒ /[locale]/smart-collections/[id]
+├ ƒ /[locale]/wishlist
+├ ƒ /api/auth/[...all]
+├ ƒ /api/health
+├ ƒ /api/openapi.json
+├ ƒ /api/v1/account/profile
+├ ƒ /api/v1/account/recovery-methods
+├ ƒ /api/v1/account/sessions
+├ ƒ /api/v1/audit
+├ ƒ /api/v1/audit/[eventId]/restore
+├ ƒ /api/v1/catalog/capabilities
+├ ƒ /api/v1/catalog/entries/[entryId]
+├ ƒ /api/v1/catalog/entries/[entryId]/revisions
+├ ƒ /api/v1/catalog/entries/[entryId]/revisions/[revision]
+├ ƒ /api/v1/catalog/entries/[entryId]/revisions/[revision]/money
+├ ƒ /api/v1/catalog/entries/[entryId]/revisions/[revision]/money/classifications
+├ ƒ /api/v1/catalog/entries/[entryId]/revisions/[revision]/money/revocations
+├ ƒ /api/v1/catalog/entries/[entryId]/rollback
+├ ƒ /api/v1/catalog/moderation/proposals
+├ ƒ /api/v1/catalog/moderation/proposals/[proposalId]
+├ ƒ /api/v1/catalog/money-proposals
+├ ƒ /api/v1/catalog/proposals
+├ ƒ /api/v1/catalog/proposals/[proposalId]
+├ ƒ /api/v1/catalog/proposals/[proposalId]/decision
+├ ƒ /api/v1/catalog/search
+├ ƒ /api/v1/categories
+├ ƒ /api/v1/categories/[categoryId]
+├ ƒ /api/v1/categories/[categoryId]/condition-scheme
+├ ƒ /api/v1/collaboration/collections
+├ ƒ /api/v1/collections
+├ ƒ /api/v1/collections/[collectionId]
+├ ƒ /api/v1/collections/[collectionId]/custom-fields
+├ ƒ /api/v1/collections/[collectionId]/invitations
+├ ƒ /api/v1/collections/[collectionId]/invitations/[invitationId]/revoke
+├ ƒ /api/v1/collections/[collectionId]/members
+├ ƒ /api/v1/collections/[collectionId]/nodes
+├ ƒ /api/v1/collections/[collectionId]/nodes/[nodeId]
+├ ƒ /api/v1/collections/[collectionId]/sharing
+├ ƒ /api/v1/collections/[collectionId]/workspace
+├ ƒ /api/v1/collections/[collectionId]/workspace/items
+├ ƒ /api/v1/collections/[collectionId]/workspace/items/[itemId]
+├ ƒ /api/v1/collections/[collectionId]/workspace/nodes
+├ ƒ /api/v1/collections/[collectionId]/workspace/nodes/[nodeId]
+├ ƒ /api/v1/collections/[collectionId]/workspace/settings
+├ ƒ /api/v1/community/blocks
+├ ƒ /api/v1/community/comments
+├ ƒ /api/v1/community/comments/[commentId]
+├ ƒ /api/v1/community/comments/policy
+├ ƒ /api/v1/community/favorites
+├ ƒ /api/v1/community/feed
+├ ƒ /api/v1/community/follows
+├ ƒ /api/v1/community/reports
+├ ƒ /api/v1/dashboard
+├ ƒ /api/v1/dashboard/milestones
+├ ƒ /api/v1/dashboard/milestones/[id]
+├ ƒ /api/v1/dashboard/milestones/query
+├ ƒ /api/v1/exports
+├ ƒ /api/v1/exports/download
+├ ƒ /api/v1/imports/[operation]
+├ ƒ /api/v1/insurance
+├ ƒ /api/v1/invitations/accept
+├ ƒ /api/v1/items
+├ ƒ /api/v1/items/[itemId]
+├ ƒ /api/v1/items/[itemId]/archive
+├ ƒ /api/v1/items/[itemId]/catalog-link
+├ ƒ /api/v1/items/[itemId]/category
+├ ƒ /api/v1/items/[itemId]/condition
+├ ƒ /api/v1/items/[itemId]/custom-fields/[fieldId]
+├ ƒ /api/v1/items/[itemId]/documents
+├ ƒ /api/v1/items/[itemId]/documents/[linkId]
+├ ƒ /api/v1/items/[itemId]/gradings
+├ ƒ /api/v1/items/[itemId]/gradings/[gradingId]
+├ ƒ /api/v1/items/[itemId]/identifiers
+├ ƒ /api/v1/items/[itemId]/location
+├ ƒ /api/v1/items/[itemId]/media
+├ ƒ /api/v1/items/[itemId]/media/[linkId]
+├ ƒ /api/v1/items/[itemId]/money
+├ ƒ /api/v1/items/[itemId]/money/custom/[fieldId]/classifications
+├ ƒ /api/v1/items/[itemId]/money/custom/[fieldId]/revocations
+├ ƒ /api/v1/items/[itemId]/money/purchase/classifications
+├ ƒ /api/v1/items/[itemId]/money/purchase/revocations
+├ ƒ /api/v1/items/[itemId]/split
+├ ƒ /api/v1/items/[itemId]/tags
+├ ƒ /api/v1/items/[itemId]/valuations
+├ ƒ /api/v1/locations
+├ ƒ /api/v1/locations/[locationId]
+├ ƒ /api/v1/media/[assetId]/[variant]
+├ ƒ /api/v1/media/avatar
+├ ƒ /api/v1/media/documents
+├ ƒ /api/v1/media/images
+├ ƒ /api/v1/moderation/comments/[commentId]
+├ ƒ /api/v1/moderation/reports
+├ ƒ /api/v1/moderation/reports/[reportId]
+├ ƒ /api/v1/money/capabilities
+├ ƒ /api/v1/money/items
+├ ƒ /api/v1/money/items/[itemId]
+├ ƒ /api/v1/money/items/[itemId]/custom-fields/[fieldId]
+├ ƒ /api/v1/notifications
+├ ƒ /api/v1/notifications/[notificationId]/read
+├ ƒ /api/v1/notifications/preferences
+├ ƒ /api/v1/notifications/read-all
+├ ƒ /api/v1/reports/insurance
+├ ƒ /api/v1/reports/insurance/proof-options
+├ ƒ /api/v1/search/items
+├ ƒ /api/v1/search/references/collections
+├ ƒ /api/v1/search/references/conditions
+├ ƒ /api/v1/search/references/custom-fields
+├ ƒ /api/v1/shares
+├ ƒ /api/v1/shares/[shareId]/revoke
+├ ƒ /api/v1/shares/assets
+├ ƒ /api/v1/shares/export
+├ ƒ /api/v1/shares/resolve
+├ ƒ /api/v1/smart-collections
+├ ƒ /api/v1/smart-collections/[id]
+├ ƒ /api/v1/smart-collections/[id]/items
+├ ƒ /api/v1/wishlist
+├ ƒ /api/v1/wishlist/[wishId]
+├ ƒ /api/v1/wishlist/[wishId]/fulfill
+├ ƒ /api/v1/wishlist/duplicates
+├ ƒ /l/[token]
+└ ƒ /share/[token]
+
+
+ƒ Proxy (Middleware)
+
+○  (Static)   prerendered as static content
+●  (SSG)      prerendered as static HTML (uses generateStaticParams)
+ƒ  (Dynamic)  server-rendered on demand
+
