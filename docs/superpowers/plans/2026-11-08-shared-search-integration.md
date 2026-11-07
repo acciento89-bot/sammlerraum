@@ -16,7 +16,7 @@
 - Existing source-recovery checkout and DraftPR1 only. No main/merge/deploy, providers/licensing activation, real email/payments/customer data, stores/devices or automations.
 - Reuse canonical PIN budgets, recipient/token/creator/revocation/expiry validation and source lock order. No alternate authorization implementation or per-item read loop; no identity impersonation for mutations.
 - Existing12s total/three full serialization attempts/5s transaction/2s statement/500ms lock budgets. Existing16KiB filter/32KiB query, text200codepoints/800UTF8 bytes, page20/max50, cursor2048base64url and1MiB response limits remain.
-- Preserve all18frozen migrations. No new schema is needed for symbolic saved definitions or read contexts; do not weaken native guards. Retain proof workspaces and restore exact historical PDF/PNG variants after copying fresh evidence.
+- Preserve all18frozen migrations. Task3 native RED proved the original definition constraint only permits version1. Add a new scoped-definition migration preserving the v1 branch and exact credential-free v2 shape; never edit applied migration bytes or weaken native grant guards. Retain proof workspaces and restore exact historical PDF/PNG variants after copying fresh evidence.
 
 ## Review focus
 

@@ -1,3 +1,8 @@
+import {
+  ScopedSearchReferenceSchema,
+  type ScopedSearchReference,
+  parseScopedSearchQuery,
+} from "./scoped-search";
 import { z } from "zod";
 import { parseItemSearchQuery, type SearchLifecycle } from "./item-search";
 import { parseItemFilterJson, type ItemFilter } from "./search";
@@ -153,4 +158,58 @@ export function parseSmartCollectionDelete(input: unknown) {
   const r = deleteWire.safeParse(input);
   if (!r.success) return smartFail("SMART_COLLECTION_INVALID");
   return r.data;
+}
+
+/** Version2 is explicitly scoped. AST filterVersion remains1; no access secret is stored. */
+export const ScopedSmartCollectionDefinitionSchema = z
+  .object({
+    version: z.literal(2),
+    scope: ScopedSearchReferenceSchema,
+    text: z.string(),
+    filter: z.unknown(),
+    lifecycle: z.enum(["ACTIVE", "ARCHIVED", "DISPOSED", "ALL"]),
+  })
+  .strict();
+export type ScopedSmartCollectionDefinition = {
+  version: 2;
+  scope: ScopedSearchReference;
+  text: string;
+  filter: ItemFilter | null;
+  lifecycle: SearchLifecycle;
+};
+export type ScopedSmartCollectionDetail = SmartCollectionSummary & {
+  definition: ScopedSmartCollectionDefinition;
+};
+export function parseScopedSmartCollectionDefinition(
+  value: unknown,
+): ScopedSmartCollectionDefinition {
+  const parsed = ScopedSmartCollectionDefinitionSchema.safeParse(value);
+  if (!parsed.success || parsed.data.filter === undefined)
+    return smartFail("SMART_COLLECTION_INVALID");
+  const query = parseScopedSearchQuery({
+    text: parsed.data.text,
+    filter: parsed.data.filter,
+    lifecycle: parsed.data.lifecycle,
+  });
+  return {
+    version: 2,
+    scope: parsed.data.scope,
+    text: query.text,
+    filter: query.filter,
+    lifecycle: query.lifecycle,
+  };
+}
+export function parseScopedSmartCollectionMutation(input: unknown, update = false) {
+  const schema = update
+    ? mutationSchema.extend({ expectedRevision: SmartCollectionRevisionSchema }).strict()
+    : mutationSchema;
+  const parsed = schema.safeParse(input);
+  if (!parsed.success) return smartFail("SMART_COLLECTION_INVALID");
+  return {
+    name: parsed.data.name,
+    definition: parseScopedSmartCollectionDefinition(parsed.data.definition),
+    ...("expectedRevision" in parsed.data
+      ? { expectedRevision: parsed.data.expectedRevision as number }
+      : {}),
+  };
 }

@@ -59,7 +59,12 @@ export async function withScopedSelection<T>(
   context: ScopedReadContext,
   query: NormalizedItemSearchQuery,
   canonicalMoneyEnabled: boolean,
-  consume: (selection: { prefix: Prisma.Sql; predicate: Prisma.Sql; readAt: string }) => Promise<T>,
+  consume: (selection: {
+    prefix: Prisma.Sql;
+    predicate: Prisma.Sql;
+    outerPredicate: Prisma.Sql;
+    readAt: string;
+  }) => Promise<T>,
 ): Promise<T> {
   const state = scopedReadState(context);
   validateScopedFields(context, query);
@@ -75,6 +80,7 @@ export async function withScopedSelection<T>(
         consume({
           prefix: selection.prefix,
           predicate: selection.matchedPredicate,
+          outerPredicate: selection.outerPredicate,
           readAt: selection.readAt,
         }),
       { predicate: state.predicate },
@@ -124,6 +130,7 @@ export async function withScopedSelection<T>(
   if (integrity?.invalid) return searchFail("SEARCH_INVARIANT");
   return consume({
     prefix: state.prefix,
+    outerPredicate: outer,
     predicate: and([
       outer,
       query.filter ? compile(query.filter.root) : TRUE,

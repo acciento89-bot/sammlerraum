@@ -43,7 +43,8 @@
     "./comments": "./src/comments.ts",
     "./moderation": "./src/moderation.ts",
     "./notifications": "./src/notifications.ts",
-    "./scoped-search": "./src/scoped-search.ts"
+    "./scoped-search": "./src/scoped-search.ts",
+    "./scoped-dashboard": "./src/scoped-dashboard.ts"
   },
   "scripts": {
     "build": "pnpm typecheck",

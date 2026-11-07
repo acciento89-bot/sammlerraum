@@ -43,3 +43,7 @@ Reuse current DE/EN responsive workspace and share views for selecting the targe
 ## Proof boundary
 
 Native tests must exercise allowed member/user/token-share queries and denied fields, exact node/item targets, hidden reference probes, PIN budget/session expiry, revocation/transfer/restore, authorization changes during count/page, false/zero/NOT/OR on empty scopes, saved re-resolution and dashboard parity. Retain bounded 1/50/500 scope plans/query counts and zero N+1 behavior. Preserve all existing share, owned-search, money and duplicate regression tests. Root owns serial runtime and source; one final whole-prerequisite review and one consolidated root correction. Existing draft only, no fullPhase07 count until actual completion/review/exact CI.
+
+## Evidence-based schema adjustment during Task3
+
+Actual native scoped-save RED on8November identified the original SmartCollection_definition_check requires definition.version1. The original assumption of no required schema change was wrong. Root adds a separate migration20261108010000_scoped_saved_searches: preserve original v1 checks, retain filterVersion1 and all prior migration bytes, and permit only exact symbolic scoped v2 keys. No PIN/token/session fields are accepted in v2, including nested target keys. Current access remains exclusively runtime authorization; stored UUIDs are not grants. No live database is changed.
