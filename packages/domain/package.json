@@ -68,7 +68,11 @@
     "./moderation/moderation-service": "./src/moderation/moderation-service.ts",
     "./notifications/notification-service": "./src/notifications/notification-service.ts",
     "./community/feed-service": "./src/community/feed-service.ts",
-    "./community/public-profile-service": "./src/community/public-profile-service.ts"
+    "./community/public-profile-service": "./src/community/public-profile-service.ts",
+    "./search/scoped-search-service": "./src/search/scoped-search-service.ts",
+    "./search/scoped-saved-search-service": "./src/search/scoped-saved-search-service.ts",
+    "./search/scoped-discovery-service": "./src/search/scoped-discovery-service.ts",
+    "./dashboard/scoped-dashboard-service": "./src/dashboard/scoped-dashboard-service.ts"
   },
   "scripts": {
     "build": "pnpm typecheck",

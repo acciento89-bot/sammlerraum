@@ -1,4 +1,4 @@
-import { utf8Length } from "./search-parser";
+import { utf8Length, scanScopedSearchJson } from "./search-parser";
 import { z } from "zod";
 import {
   parseItemSearchQuery,
@@ -45,3 +45,40 @@ export const ScopedSearchPageSchema = z
   })
   .strict();
 export type ScopedSearchPage = z.infer<typeof ScopedSearchPageSchema>;
+
+/** Strict lexical boundary before nested target/query schemas, including duplicate JSON keys. */
+export function parseScopedSearchRequestJson(raw: string): unknown {
+  scanScopedSearchJson(raw);
+  return JSON.parse(raw) as unknown;
+}
+export const ScopedDiscoveryInputSchema = z
+  .object({
+    family: z.enum(["MEMBER_COLLECTION", "SHARE"]),
+    limit: z.number().int().min(1).max(50).default(20),
+    cursor: z
+      .string()
+      .regex(/^[A-Za-z0-9_-]{1,2048}$/u)
+      .optional(),
+  })
+  .strict();
+export const ScopedDiscoveryPageSchema = z
+  .object({
+    items: z
+      .array(
+        z.discriminatedUnion("kind", [
+          z
+            .object({
+              kind: z.literal("MEMBER_COLLECTION"),
+              collectionId: z.uuid(),
+              name: z.string().min(1).max(200),
+            })
+            .strict(),
+          z
+            .object({ kind: z.literal("SHARE"), shareId: z.uuid(), pinRequired: z.boolean() })
+            .strict(),
+        ]),
+      )
+      .max(50),
+    nextCursor: z.string().max(2048).nullable(),
+  })
+  .strict();

@@ -202,3 +202,13 @@ export function guardLogicalComplexity(root: unknown): void {
     } else if (++leaves > 50) filterTooComplex();
   }
 }
+
+/** Scoped request envelope; the nested AST still receives its original independent bounds. */
+export const scanScopedSearchJson = (raw: string): void =>
+  scanJson(raw, {
+    bytes: 32768,
+    nodes: 1024,
+    array: 50,
+    stringUnits: 32768,
+    stringBytes: 32768,
+  });
