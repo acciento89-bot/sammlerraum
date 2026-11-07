@@ -1,3 +1,5 @@
+import type { MarketBatchDependencies } from "../market-data/market-batch";
+import { disabledSearchMarket } from "./search-selection";
 import { randomUUID, createHash } from "node:crypto";
 import { Prisma } from "@sammlerraum/db/search-sql";
 import { FilterValidationError } from "@sammlerraum/contracts/search";
@@ -79,6 +81,7 @@ async function validateDefinition(
   actor: SearchActor,
   definition: SmartCollectionDetail["definition"],
   canonicalMoneyEnabled: boolean,
+  market: MarketBatchDependencies,
 ) {
   await executeItemSearch(
     tx,
@@ -86,6 +89,7 @@ async function validateDefinition(
     { ...definitionQuery(definition), limit: 1 },
     null,
     canonicalMoneyEnabled,
+    market,
   );
 }
 function definitionQuery(definition: SmartCollectionDetail["definition"]) {
@@ -101,9 +105,10 @@ function storedAvailability(error: unknown): never {
 }
 export function createSmartCollectionService(
   database: SearchDatabase,
-  options: { canonicalMoneyEnabled?: boolean } = {},
+  options: { canonicalMoneyEnabled?: boolean; market?: MarketBatchDependencies } = {},
 ) {
   const canonicalMoneyEnabled = options.canonicalMoneyEnabled === true;
+  const market = options.market ?? disabledSearchMarket;
   return {
     async createSmartCollection(
       actor: SearchActor,
@@ -113,7 +118,7 @@ export function createSmartCollectionService(
         mutation = parseSmartCollectionMutation(input),
         id = randomUUID();
       return runSearchTransaction(database, async (tx) => {
-        await validateDefinition(tx, actor, mutation.definition, canonicalMoneyEnabled);
+        await validateDefinition(tx, actor, mutation.definition, canonicalMoneyEnabled, market);
         const [row] = await tx.$queryRaw<SavedRow[]>(
           Prisma.sql`INSERT INTO "SmartCollection" (id,"ownerId",name,"filterVersion",definition,revision,"createdAt","updatedAt") VALUES (${id}::uuid,${owner},${mutation.name},1,${JSON.stringify(mutation.definition)}::jsonb,1,date_trunc('milliseconds',transaction_timestamp()),date_trunc('milliseconds',transaction_timestamp())) RETURNING id,name,revision,"filterVersion",definition,"createdAt","updatedAt"`,
         );
@@ -174,7 +179,7 @@ export function createSmartCollectionService(
           current.revision >= SMART_COLLECTION_MAX_REVISION
         )
           return smartFail("SMART_COLLECTION_CONFLICT");
-        await validateDefinition(tx, actor, mutation.definition, canonicalMoneyEnabled);
+        await validateDefinition(tx, actor, mutation.definition, canonicalMoneyEnabled, market);
         const [row] = await tx.$queryRaw<SavedRow[]>(
           Prisma.sql`UPDATE "SmartCollection" SET name=${mutation.name},definition=${JSON.stringify(mutation.definition)}::jsonb,revision=revision+1,"updatedAt"=date_trunc('milliseconds',transaction_timestamp()) WHERE id=${id}::uuid AND "ownerId"=${owner} AND "deletedAt" IS NULL AND revision=${expectedRevision} RETURNING id,name,revision,"filterVersion",definition,"createdAt","updatedAt"`,
         );
@@ -220,6 +225,7 @@ export function createSmartCollectionService(
             { ...definitionQuery(saved.definition), ...page },
             { smartCollectionId: id, revision: saved.revision },
             canonicalMoneyEnabled,
+            market,
           );
         } catch (error) {
           return storedAvailability(error);

@@ -133,12 +133,14 @@ export function compileFilter(
   node: ItemFilterNode,
   owner: string,
   money?: { compile(leaf: ItemFilterLeaf): Prisma.Sql },
+  market?: { predicate(leaf: Extract<ItemFilterLeaf, { kind: "marketMoney" }>): Prisma.Sql },
 ): Prisma.Sql {
   if ("children" in node)
     return (node.kind === "and" ? and : or)(
-      node.children.map((n) => compileFilter(n, owner, money)),
+      node.children.map((n) => compileFilter(n, owner, money, market)),
     );
-  if (node.kind === "not") return Prisma.sql`NOT (${compileFilter(node.child, owner, money)})`;
+  if (node.kind === "not")
+    return Prisma.sql`NOT (${compileFilter(node.child, owner, money, market)})`;
   switch (node.kind) {
     case "collection":
       return comparison(Prisma.sql`i."collectionId"`, node.test, "uuid");
@@ -280,8 +282,9 @@ export function compileFilter(
         Prisma.sql`EXISTS(SELECT 1 FROM "CatalogAttributeValue" a WHERE ${base} AND ${match})`,
       ]);
     }
-    case "duplicate":
     case "marketMoney":
+      return market ? market.predicate(node) : searchFail("SEARCH_INVARIANT");
+    case "duplicate":
       return searchFail("SEARCH_INVARIANT");
   }
   const exhaustive: never = node;

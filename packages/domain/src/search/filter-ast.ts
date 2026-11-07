@@ -18,6 +18,7 @@ export function validateFilterComplexity(value: unknown): void {
 export function validateCurrentFilterAvailability(
   value: unknown,
   canonicalMoneyEnabled = false,
+  marketPrepared = false,
 ): void {
   const filter = parseItemFilter(value);
   if (canonicalMoneyEnabled) collectLegacyMoneyRequests(filter);
@@ -30,7 +31,7 @@ export function validateCurrentFilterAvailability(
       pending.push(node.child);
     } else if (node.kind === "duplicate") {
       throw new FilterValidationError("FILTER_UNAVAILABLE", "DUPLICATE_NOT_IMPLEMENTED");
-    } else if (node.kind === "marketMoney") {
+    } else if (node.kind === "marketMoney" && !marketPrepared) {
       throw new FilterValidationError("FILTER_UNAVAILABLE", "MARKET_FILTER_SEAM_UNAVAILABLE");
     } else if (
       (node.kind === "purchaseMoney" && node.test.op === "range") ||

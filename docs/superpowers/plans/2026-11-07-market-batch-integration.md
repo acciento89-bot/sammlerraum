@@ -22,8 +22,8 @@ Ruling: use current existing ownedCandidates and candidateFrom to derive id/quan
 
 ### Task 3: Actual search filter consumer
 
-- [ ] TDD whole-outer-scope ambiguity/rights checks before text/AST/page/count, exact point/range/qualifier/exponent/presence semantics, NOT/OR and empty/exhausted-page parity.
-- [ ] Integrate with current prepareItemSelection/compiler/cursor/saved-query path; preserve other unavailable-family guards and generic422/no-store/auth contracts.
+- [x] TDD whole-outer-scope ambiguity/rights checks before text/AST/page/count, exact point/range/qualifier/exponent/presence semantics, NOT/OR and empty/exhausted-page parity.
+- [x] Integrate with current prepareItemSelection/compiler/cursor/saved-query path; preserve other unavailable-family guards and generic422/no-store/auth contracts.
 
 ### Task 4: Explicit aggregate and dashboard consumer
 

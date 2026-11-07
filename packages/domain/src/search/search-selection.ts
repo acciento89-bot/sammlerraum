@@ -1,3 +1,17 @@
+import { ProviderRegistry } from "@sammlerraum/market-data/provider-registry";
+import { emptyMarketDisplayPolicy } from "../valuations/market-display-policy";
+import { emptyMarketQueryPolicy, marketBatchFilterError } from "../market-data/market-query-policy";
+import {
+  withMarketBatch,
+  MarketBatchError,
+  type MarketBatchDependencies,
+  type PreparedMarketBatch,
+} from "../market-data/market-batch";
+export const disabledSearchMarket: MarketBatchDependencies = Object.freeze({
+  registry: new ProviderRegistry([]),
+  displayPolicy: emptyMarketDisplayPolicy,
+  queryPolicy: emptyMarketQueryPolicy,
+});
 import { prepareLegacyMoneyPredicates } from "./legacy-money-query";
 import { Prisma } from "@sammlerraum/db/search-sql";
 import { searchFail, type NormalizedItemSearchQuery } from "@sammlerraum/contracts/item-search";
@@ -17,16 +31,18 @@ import { validateRetainedUrls } from "./search-url-integrity";
 import { compileBroadText, invalidBroadFacts } from "./search-text";
 import type { BoundedSearchReadTransaction } from "./search-read";
 /** Internal SQL selection in the caller's bounded snapshot; never a persisted permission. */
-export async function prepareItemSelection(
+async function prepareSelection(
   tx: BoundedSearchReadTransaction,
   actor: { userId: string },
   query: Pick<NormalizedItemSearchQuery, "text" | "filter" | "lifecycle">,
   canonicalMoneyEnabled = false,
   trustedOuterRestriction?: { predicate: Prisma.Sql },
+  market?: PreparedMarketBatch,
 ) {
   if (!actor || typeof actor.userId !== "string" || !actor.userId || actor.userId.includes("\0"))
     return searchFail("SEARCH_INVALID");
-  if (query.filter) validateCurrentFilterAvailability(query.filter, canonicalMoneyEnabled);
+  if (query.filter)
+    validateCurrentFilterAvailability(query.filter, canonicalMoneyEnabled, !!market);
   const [clock] = await tx.$queryRaw<{ now: Date; collation: boolean }[]>(
     Prisma.sql`SELECT date_trunc('milliseconds',transaction_timestamp()) AS now,EXISTS(SELECT 1 FROM pg_collation WHERE collname='und-x-icu' AND collprovider='i' AND collisdeterministic AND collnamespace='pg_catalog'::regnamespace) AS collation`,
   );
@@ -52,7 +68,7 @@ export async function prepareItemSelection(
     : undefined;
   const predicate = and([
     outer,
-    query.filter ? compileFilter(query.filter.root, actor.userId, money) : TRUE,
+    query.filter ? compileFilter(query.filter.root, actor.userId, money, market) : TRUE,
     query.text ? compileBroadText(query.text, actor.userId) : TRUE,
   ]);
   return {
@@ -61,4 +77,69 @@ export async function prepareItemSelection(
     outerPredicate: outer,
     matchedPredicate: predicate,
   };
+}
+
+/** Existing non-market consumers retain their closed producer-gap checks. */
+export const prepareItemSelection = (
+  tx: BoundedSearchReadTransaction,
+  actor: { userId: string },
+  query: Pick<NormalizedItemSearchQuery, "text" | "filter" | "lifecycle">,
+  canonicalMoneyEnabled = false,
+  trustedOuterRestriction?: { predicate: Prisma.Sql },
+) => prepareSelection(tx, actor, query, canonicalMoneyEnabled, trustedOuterRestriction);
+type Selection = Awaited<ReturnType<typeof prepareSelection>> & { prefix: Prisma.Sql };
+/** All executable market fragments are consumed before the private scoped handle expires. */
+export async function withItemSelection<T>(
+  tx: BoundedSearchReadTransaction,
+  actor: { userId: string },
+  query: Pick<NormalizedItemSearchQuery, "text" | "filter" | "lifecycle">,
+  canonicalMoneyEnabled: boolean,
+  dependencies: MarketBatchDependencies,
+  consume: (selection: Selection) => Promise<T>,
+  trustedOuterRestriction?: { predicate: Prisma.Sql },
+): Promise<T> {
+  if (query.filter) validateCurrentFilterAvailability(query.filter, canonicalMoneyEnabled, true);
+  const selectors = leaves(query.filter?.root ?? null).flatMap((n) =>
+    n.kind === "marketMoney" ? [n.selector] : [],
+  );
+  if (!selectors.length)
+    return consume({
+      ...(await prepareSelection(tx, actor, query, canonicalMoneyEnabled, trustedOuterRestriction)),
+      prefix: Prisma.empty,
+    });
+  const owned = ownedCandidates(actor.userId, query.lifecycle);
+  const outer = trustedOuterRestriction ? and([owned, trustedOuterRestriction.predicate]) : owned;
+  try {
+    return await withMarketBatch(
+      {
+        tx,
+        scope: { actorUserId: actor.userId, lifecycle: query.lifecycle },
+        ownedCandidates: Prisma.sql`SELECT i.id,i.quantity,i."catalogEntryId",i."catalogVariantId" ${candidateFrom} WHERE ${outer}`,
+        checkBudget: tx.checkBudget,
+      },
+      selectors,
+      { purpose: "FILTER" },
+      dependencies,
+      async (batch) =>
+        consume({
+          ...(await prepareSelection(
+            tx,
+            actor,
+            query,
+            canonicalMoneyEnabled,
+            trustedOuterRestriction,
+            batch,
+          )),
+          prefix: Prisma.sql`WITH ${batch.ctes} `,
+        }),
+    );
+  } catch (error) {
+    const unavailable = marketBatchFilterError(error);
+    if (unavailable) throw unavailable;
+    if (error instanceof MarketBatchError)
+      return searchFail(
+        error.code === "MARKET_BATCH_DEPENDENCY" ? "SEARCH_UNAVAILABLE" : "SEARCH_INVARIANT",
+      );
+    throw error;
+  }
 }
