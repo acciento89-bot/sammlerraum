@@ -1207,3 +1207,7 @@ Source e8b76c3 adds public comment/reply threads, owner comment policies/hides, 
 ### 7Nov Phase10Task4 implementation closed
 
 Source08451c2 adds authoritative platform-only report review/hide/restore/resolution and private append-only reasoned MODERATION events. Focused38 native/HTTP checks, shared root types, formatting and actual web production build pass; compiled real-cookie flow passes including ordinary-user denial and current grant revocation. Both owned schema diffs empty,16 recorded migration hashes unchanged. Exact prior Task2 evidence CI42368933320 completedSUCCESS; Task3 evidence CI42372269966 was stillin_progress when queried, not assumed successful. Whole-Phase10 review remains afterTask8; reviewed55/91 unchanged. NextTask5 notifications/preferences. No application merge/deployment/live-provider action.
+
+### 7Nov Phase10Task5 implementation closed
+
+Source3ef1a91 adds stable typed event-key notifications, current-public target projection, per-category/channel DE/EN preferences and recipient-only REST reads/mark-read.6native notification cases and affected36case cohort pass; root types, precise format and actual web production build pass. Compiled real-cookie API flowPASS2.4s, including foreign-recipient denial/security-email override. Both owned schema diffs empty;17 recorded frozen migration hashes unchanged. SMTP/provider activation remainsOFF. One whole-Phase10 review afterTask8, reviewed55/91 unchanged. NextTask6 durable email delivery.
