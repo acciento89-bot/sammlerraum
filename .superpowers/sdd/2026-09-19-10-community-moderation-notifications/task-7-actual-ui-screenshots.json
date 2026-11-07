@@ -1,0 +1,82 @@
+[
+  {
+    "path": ".superpowers/sdd/2026-09-19-10-community-moderation-notifications/reports/task-7-community-de-community-ui-desktop.png",
+    "bytes": 521414,
+    "sha256": "fc7d1908d45f33f71ba86ee03fd8f6aee29afc914f528927de23958dd08fcd96"
+  },
+  {
+    "path": ".superpowers/sdd/2026-09-19-10-community-moderation-notifications/reports/task-7-community-de-community-ui-mobile.png",
+    "bytes": 1574434,
+    "sha256": "b20b6019090f982b0e9820b4546fffe70296fa6bad1c13bb1d6c8be6450423e8"
+  },
+  {
+    "path": ".superpowers/sdd/2026-09-19-10-community-moderation-notifications/reports/task-7-community-en-community-ui-desktop.png",
+    "bytes": 505008,
+    "sha256": "72209b94509ad6a909fc506ed29e4bd12672661b3e2733108c13e2b279b9d2b0"
+  },
+  {
+    "path": ".superpowers/sdd/2026-09-19-10-community-moderation-notifications/reports/task-7-community-en-community-ui-mobile.png",
+    "bytes": 1501765,
+    "sha256": "e91de3e14b4b5e733383157f8141a7a5e1e6f071d4ab1a235b613ff8b72f0cb7"
+  },
+  {
+    "path": ".superpowers/sdd/2026-09-19-10-community-moderation-notifications/reports/task-7-wishlist-de-community-ui-desktop.png",
+    "bytes": 226307,
+    "sha256": "d83b6cb8ed29dabff2b536ca4f51ccd7ac3decd45f4914d8ef7f8b8812f8a22c"
+  },
+  {
+    "path": ".superpowers/sdd/2026-09-19-10-community-moderation-notifications/reports/task-7-wishlist-de-community-ui-mobile.png",
+    "bytes": 686470,
+    "sha256": "5226e43340cd14f76a673d94070d6b0861e0b6ce12cc0f1ef1afc7ca7282dcf6"
+  },
+  {
+    "path": ".superpowers/sdd/2026-09-19-10-community-moderation-notifications/reports/task-7-wishlist-en-community-ui-desktop.png",
+    "bytes": 250494,
+    "sha256": "bef36183cb3f4aadebfc509e7625fc69f1d346fdc417902911af5acb49d28189"
+  },
+  {
+    "path": ".superpowers/sdd/2026-09-19-10-community-moderation-notifications/reports/task-7-wishlist-en-community-ui-mobile.png",
+    "bytes": 518654,
+    "sha256": "0465caa82d9723ed7a06ec4266d133a738ba2166aed59c35b9342b6138ac34b9"
+  },
+  {
+    "path": ".superpowers/sdd/2026-09-19-10-community-moderation-notifications/reports/task-7-notifications-de-community-ui-desktop.png",
+    "bytes": 254213,
+    "sha256": "e8a2bc0b9e2d92925a35fad0b9dbd6607973d2013047f16b32018b4d928d04c7"
+  },
+  {
+    "path": ".superpowers/sdd/2026-09-19-10-community-moderation-notifications/reports/task-7-notifications-de-community-ui-mobile.png",
+    "bytes": 556095,
+    "sha256": "368f4c4dec95363ce42bb27289a01659fd07a224fd6836e2a702597850183663"
+  },
+  {
+    "path": ".superpowers/sdd/2026-09-19-10-community-moderation-notifications/reports/task-7-notifications-en-community-ui-desktop.png",
+    "bytes": 253789,
+    "sha256": "c14efa4bcd64fa219aa8611d0b5d6bdbf38f4fa878d2f10ba9f523cf32c2c118"
+  },
+  {
+    "path": ".superpowers/sdd/2026-09-19-10-community-moderation-notifications/reports/task-7-notifications-en-community-ui-mobile.png",
+    "bytes": 513853,
+    "sha256": "4f344ce4caa14154fa30fbda7fd0127c3c36ca61920f9a493aba82694fae2a1a"
+  },
+  {
+    "path": ".superpowers/sdd/2026-09-19-10-community-moderation-notifications/reports/task-7-moderation-de-community-ui-desktop.png",
+    "bytes": 215494,
+    "sha256": "08c6685c3a71aa39b62010ffa58a969258feab7769bcd0f459ea713a8fa36754"
+  },
+  {
+    "path": ".superpowers/sdd/2026-09-19-10-community-moderation-notifications/reports/task-7-moderation-de-community-ui-mobile.png",
+    "bytes": 523796,
+    "sha256": "e3cdc7a4a89356a09869e2680f097d1f17d8879a39373406ead1a2385b3bce25"
+  },
+  {
+    "path": ".superpowers/sdd/2026-09-19-10-community-moderation-notifications/reports/task-7-moderation-en-community-ui-desktop.png",
+    "bytes": 174715,
+    "sha256": "c09993d381f0a7c63d6fc4f51c7a0d9f70c1963f4df06420b7296e318246c387"
+  },
+  {
+    "path": ".superpowers/sdd/2026-09-19-10-community-moderation-notifications/reports/task-7-moderation-en-community-ui-mobile.png",
+    "bytes": 413599,
+    "sha256": "11fd458aeb5673f3872aa45bb53431e4b617ee03b0d08b63474fe36fc8259472"
+  }
+]

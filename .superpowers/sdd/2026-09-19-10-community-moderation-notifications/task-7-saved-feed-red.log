@@ -1,0 +1,32 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/community/feed-service.test.ts (5 tests | 1 failed) 576ms
+   ✓ actual query-time community feed privacy > drops formerly public item/collection activity and never exposes private notes, acquisition data or email 155ms
+   ✓ actual query-time community feed privacy > applies following and both-direction block policy at query time 26ms
+   ✓ actual query-time community feed privacy > excludes public items below a currently hidden ancestor 13ms
+   × actual query-time community feed privacy > lists current public saved items and drops private or removed favorites 13ms
+     → COMMUNITY_INVALID
+   ✓ actual query-time community feed privacy > uses bounded deterministic pages without exposing private cursor references 38ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/community/feed-service.test.ts > actual query-time community feed privacy > lists current public saved items and drops private or removed favorites
+CommunityError: COMMUNITY_INVALID
+ ❯ Object.getFeed packages/domain/src/community/feed-service.ts:27:34
+     25|     async getFeed(who: CommunityActor, input: unknown = {}) {
+     26|       const parsed = CommunityFeedQuerySchema.safeParse(input);
+     27|       if (!parsed.success) throw new CommunityError("COMMUNITY_INVALID…
+       |                                  ^
+     28|       const value = parsed.data,
+     29|         actor = communityActor(who);
+ ❯ packages/domain/src/community/feed-service.test.ts:106:31
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 4 passed (5)
+   Start at  14:36:01
+   Duration  1.11s (transform 163ms, setup 6ms, collect 332ms, tests 576ms, environment 0ms, prepare 51ms)
+

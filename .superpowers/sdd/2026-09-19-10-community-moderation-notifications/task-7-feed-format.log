@@ -1,0 +1,4 @@
+packages/contracts/src/community.ts 33ms
+packages/domain/package.json 11ms (unchanged)
+packages/domain/src/community/feed-service.test.ts 19ms
+packages/domain/src/community/feed-service.ts 8ms

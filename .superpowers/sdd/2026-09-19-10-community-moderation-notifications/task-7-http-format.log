@@ -1,0 +1,9 @@
+packages/contracts/src/wishlist.ts 38ms
+apps/web/src/lib/community-wishlist-dependencies.ts 3ms
+apps/web/src/lib/community-wishlist-routes.test.ts 8ms
+apps/web/src/lib/community-wishlist-routes.ts 11ms
+apps/web/src/app/api/v1/community/feed/route.ts 1ms
+apps/web/src/app/api/v1/wishlist/[wishId]/fulfill/route.ts 2ms
+apps/web/src/app/api/v1/wishlist/[wishId]/route.ts 1ms
+apps/web/src/app/api/v1/wishlist/duplicates/route.ts 1ms
+apps/web/src/app/api/v1/wishlist/route.ts 1ms

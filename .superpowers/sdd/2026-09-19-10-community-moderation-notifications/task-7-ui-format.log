@@ -1,0 +1,37 @@
+apps/web/src/components/community/comment-thread.tsx 60ms
+apps/web/src/components/community/community-feed.tsx 29ms
+apps/web/src/components/community/community-navigation.tsx 4ms
+apps/web/src/components/community/community-request.ts 5ms
+[error] apps/web/src/components/community/moderation-center.tsx: SyntaxError: ';' expected. (7:56)
+[error]    5 | import {CommunityNavigation,CommunityHero} from "./community-navigation";
+[error]    6 | import {communityRequest,communityError} from "./community-request";
+[error] >  7 | type Service=ReturnType<typeof createModerationService>,Reports=Awaited<ReturnType<Service["listReports"]>>,Report=Reports["reports"][number],Review=Awaited<ReturnType<Service["getCommentForReview"]>>;
+[error]      |                                                        ^
+[error]    8 | export function ModerationCenter({locale}:{locale:string}){
+[error]    9 |  const t=useTranslations("Community"),[data,setData]=useState<Reports|null>(null),[filter,setFilter]=useState<"OPEN"|"RESOLVED"|"DISMISSED">("OPEN"),[selected,setSelected]=useState<Report|null>(null),[review,setReview]=useState<Review|null>(null),[reason,setReason]=useState(""),[busy,setBusy]=useState(false),[error,setError]=useState(""),[status,setStatus]=useState("");
+[error]   10 |  const load=useCallback(async(after?:string)=>{try{const value=await communityRequest<Reports>(`/api/v1/moderation/reports?status=${filter}${after?`&afterId=${after}`:""}`);setData(previous=>after&&previous?{...value,reports:[...previous.reports,...value.reports]}:value);setError("");}catch(e){setData(null);setSelected(null);setReview(null);setError(communityError(e,t));}},[filter,t]);useEffect(()=>{setSelected(null);setReview(null);void load();},[load]);
+[error] apps/web/src/components/community/notification-center.tsx: SyntaxError: ';' expected. (8:58)
+[error]    6 | import {CommunityNavigation,CommunityHero} from "./community-navigation";
+[error]    7 | import {communityRequest,communityError} from "./community-request";
+[error] >  8 | type Service=ReturnType<typeof createNotificationService>,Notices=Awaited<ReturnType<Service["listNotifications"]>>,Preferences=Awaited<ReturnType<Service["getPreferences"]>>;
+[error]      |                                                          ^
+[error]    9 | export function NotificationCenter({locale,moderator}:{locale:string;moderator:boolean}){
+[error]   10 |  const t=useTranslations("Community"),[data,setData]=useState<Notices|null>(null),[prefs,setPrefs]=useState<Preferences|null>(null),[busy,setBusy]=useState(false),[error,setError]=useState(""),[status,setStatus]=useState("");
+[error]   11 |  const load=useCallback(async(after?:string)=>{try{const value=await communityRequest<Notices>(`/api/v1/notifications${after?`?afterId=${after}`:""}`);setData(previous=>after&&previous?{...value,notifications:[...previous.notifications,...value.notifications]}:value);setError("");}catch(e){setData(null);setError(communityError(e,t));}},[t]);useEffect(()=>{void load();void communityRequest<Preferences>("/api/v1/notifications/preferences").then(setPrefs).catch(e=>setError(communityError(e,t)));},[load,t]);
+apps/web/src/components/community/report-dialog.tsx 5ms
+apps/web/src/components/community/wish-price.test.ts 2ms
+apps/web/src/components/community/wish-price.ts 3ms
+apps/web/src/components/community/wishlist-workspace.tsx 22ms
+apps/web/src/components/items/item-form.tsx 88ms
+apps/web/src/components/collections/collections-manager.tsx 8ms
+apps/web/src/components/search/collector-navigation.tsx 4ms
+apps/web/src/lib/community-page-session.ts 2ms
+apps/web/src/app/[locale]/(app)/community/moderation/page.tsx 1ms
+apps/web/src/app/[locale]/(app)/community/page.tsx 1ms
+apps/web/src/app/[locale]/(app)/wishlist/page.tsx 1ms
+apps/web/src/app/[locale]/(app)/notifications/page.tsx 1ms
+apps/web/messages/de.json 33ms (unchanged)
+apps/web/messages/en.json 14ms (unchanged)
+apps/web/src/app/globals.css 72ms
+apps/web/e2e/community.spec.ts 21ms
+apps/web/playwright.config.ts 3ms

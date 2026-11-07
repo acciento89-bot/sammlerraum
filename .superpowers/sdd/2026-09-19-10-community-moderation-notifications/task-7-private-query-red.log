@@ -1,0 +1,71 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| apps/web/src/lib/private-community-query.test.ts (15 tests | 15 failed) 14ms
+   × consistent strict private community query boundary > social: rejects forged=1 before database access 8ms
+     → expected 500 to be 400 // Object.is equality
+   × consistent strict private community query boundary > social: rejects limit=1&limit=2 before database access 1ms
+     → expected 500 to be 400 // Object.is equality
+   × consistent strict private community query boundary > social: rejects limit=% before database access 0ms
+     → expected 500 to be 400 // Object.is equality
+   × consistent strict private community query boundary > comments: rejects forged=1 before database access 1ms
+     → expected 500 to be 400 // Object.is equality
+   × consistent strict private community query boundary > comments: rejects limit=1&limit=2 before database access 1ms
+     → expected 500 to be 400 // Object.is equality
+   × consistent strict private community query boundary > comments: rejects limit=% before database access 0ms
+     → expected 500 to be 400 // Object.is equality
+   × consistent strict private community query boundary > moderation: rejects forged=1 before database access 0ms
+     → expected 500 to be 400 // Object.is equality
+   × consistent strict private community query boundary > moderation: rejects limit=1&limit=2 before database access 0ms
+     → expected 500 to be 400 // Object.is equality
+   × consistent strict private community query boundary > moderation: rejects limit=% before database access 0ms
+     → expected 500 to be 400 // Object.is equality
+   × consistent strict private community query boundary > notifications: rejects forged=1 before database access 1ms
+     → expected 500 to be 400 // Object.is equality
+   × consistent strict private community query boundary > notifications: rejects limit=1&limit=2 before database access 0ms
+     → expected 500 to be 400 // Object.is equality
+   × consistent strict private community query boundary > notifications: rejects limit=% before database access 0ms
+     → expected 500 to be 400 // Object.is equality
+   × consistent strict private community query boundary > workspace: rejects forged=1 before database access 0ms
+     → expected 500 to be 400 // Object.is equality
+   × consistent strict private community query boundary > workspace: rejects limit=1&limit=2 before database access 0ms
+     → expected 500 to be 400 // Object.is equality
+   × consistent strict private community query boundary > workspace: rejects limit=% before database access 0ms
+     → expected 500 to be 400 // Object.is equality
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 15 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/web/src/lib/private-community-query.test.ts > consistent strict private community query boundary > social: rejects forged=1 before database access
+ FAIL  |workspace| apps/web/src/lib/private-community-query.test.ts > consistent strict private community query boundary > social: rejects limit=1&limit=2 before database access
+ FAIL  |workspace| apps/web/src/lib/private-community-query.test.ts > consistent strict private community query boundary > social: rejects limit=% before database access
+ FAIL  |workspace| apps/web/src/lib/private-community-query.test.ts > consistent strict private community query boundary > comments: rejects forged=1 before database access
+ FAIL  |workspace| apps/web/src/lib/private-community-query.test.ts > consistent strict private community query boundary > comments: rejects limit=1&limit=2 before database access
+ FAIL  |workspace| apps/web/src/lib/private-community-query.test.ts > consistent strict private community query boundary > comments: rejects limit=% before database access
+ FAIL  |workspace| apps/web/src/lib/private-community-query.test.ts > consistent strict private community query boundary > moderation: rejects forged=1 before database access
+ FAIL  |workspace| apps/web/src/lib/private-community-query.test.ts > consistent strict private community query boundary > moderation: rejects limit=1&limit=2 before database access
+ FAIL  |workspace| apps/web/src/lib/private-community-query.test.ts > consistent strict private community query boundary > moderation: rejects limit=% before database access
+ FAIL  |workspace| apps/web/src/lib/private-community-query.test.ts > consistent strict private community query boundary > notifications: rejects forged=1 before database access
+ FAIL  |workspace| apps/web/src/lib/private-community-query.test.ts > consistent strict private community query boundary > notifications: rejects limit=1&limit=2 before database access
+ FAIL  |workspace| apps/web/src/lib/private-community-query.test.ts > consistent strict private community query boundary > notifications: rejects limit=% before database access
+ FAIL  |workspace| apps/web/src/lib/private-community-query.test.ts > consistent strict private community query boundary > workspace: rejects forged=1 before database access
+ FAIL  |workspace| apps/web/src/lib/private-community-query.test.ts > consistent strict private community query boundary > workspace: rejects limit=1&limit=2 before database access
+ FAIL  |workspace| apps/web/src/lib/private-community-query.test.ts > consistent strict private community query boundary > workspace: rejects limit=% before database access
+AssertionError: expected 500 to be 400 // Object.is equality
+
+- Expected
++ Received
+
+- 400
++ 500
+
+ ❯ apps/web/src/lib/private-community-query.test.ts:13:105
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/15]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  15 failed (15)
+   Start at  14:18:25
+   Duration  823ms (transform 301ms, setup 6ms, collect 584ms, tests 14ms, environment 0ms, prepare 60ms)
+

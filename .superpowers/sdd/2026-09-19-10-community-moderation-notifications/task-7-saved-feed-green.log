@@ -1,0 +1,12 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ✓ |workspace| packages/domain/src/community/feed-service.test.ts (5 tests) 923ms
+   ✓ actual query-time community feed privacy > drops formerly public item/collection activity and never exposes private notes, acquisition data or email  471ms
+ ✓ |workspace| apps/web/src/components/community/wish-price.test.ts (3 tests) 44ms
+
+ Test Files  2 passed (2)
+      Tests  8 passed (8)
+   Start at  14:36:56
+   Duration  1.70s (transform 199ms, setup 7ms, collect 389ms, tests 967ms, environment 0ms, prepare 85ms)
+

@@ -1,0 +1,45 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| apps/web/src/lib/community-wishlist-routes.test.ts (5 tests | 1 failed) 13ms
+   ✓ authenticated feed and private wishlist boundary > requires a fresh session for feed and private wishes 3ms
+   ✓ authenticated feed and private wishlist boundary > rejects cross-origin creation before authentication lookup 0ms
+   ✓ authenticated feed and private wishlist boundary > rejects injected ownership and duplicate pairs that reference one specimen twice 5ms
+   × authenticated feed and private wishlist boundary > rejects unknown viewer filters before querying private data 2ms
+     → expected 500 to be 400 // Object.is equality
+   ✓ authenticated feed and private wishlist boundary > returns no-store errors without database/session diagnostics 1ms
+ ✓ |workspace| packages/domain/src/moderation/moderation-service.test.ts (6 tests) 630ms
+ ✓ |workspace| packages/domain/src/community/comment-service.test.ts (7 tests) 582ms
+ ✓ |workspace| packages/domain/src/notifications/notification-service.test.ts (6 tests) 549ms
+ ✓ |workspace| packages/domain/src/community/social-service.test.ts (6 tests) 567ms
+ ✓ |workspace| packages/domain/src/community/feed-service.test.ts (4 tests) 529ms
+ ✓ |workspace| packages/domain/src/moderation/block-report-service.test.ts (4 tests) 544ms
+ ✓ |workspace| packages/domain/src/wishlist/wishlist-service.test.ts (9 tests) 772ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/web/src/lib/community-wishlist-routes.test.ts > authenticated feed and private wishlist boundary > rejects unknown viewer filters before querying private data
+AssertionError: expected 500 to be 400 // Object.is equality
+
+- Expected
++ Received
+
+- 400
++ 500
+
+ ❯ apps/web/src/lib/community-wishlist-routes.test.ts:63:7
+     61|     expect(
+     62|       (await f.handlers.FEED(new Request(origin + "/api/v1/community/f…
+     63|     ).toBe(400);
+       |       ^
+     64|     expect(f.transaction).not.toHaveBeenCalled();
+     65|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 7 passed (8)
+      Tests  1 failed | 46 passed (47)
+   Start at  14:11:52
+   Duration  6.60s (transform 345ms, setup 10ms, collect 1.36s, tests 4.19s, environment 1ms, prepare 257ms)
+
