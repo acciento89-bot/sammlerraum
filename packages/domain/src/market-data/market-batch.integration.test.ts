@@ -761,6 +761,9 @@ describe.runIf(process.env.RUN_DATABASE_INTEGRATION === "1")(
         );
         expect(fetch).not.toHaveBeenCalled();
       },
+      // Includes guarded insertion of 6,500 observations and separate EXPLAIN runs.
+      // Each application operation retains its own unchanged transaction budgets.
+      30_000,
     );
     it.each(["current", "history", "ambiguity", "aggregate"])(
       "retries a first %s serialization failure through the outer transaction with fresh rights",
