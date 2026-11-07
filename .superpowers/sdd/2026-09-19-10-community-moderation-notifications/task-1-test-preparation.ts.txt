@@ -1,0 +1,45 @@
+// Prepared while Phase09 final gates run; copied into packages only after Phase09 persistence.
+import { randomUUID } from "node:crypto";
+import { beforeAll, afterAll, describe, it, expect } from "vitest";
+import { createLegacyMoneyTestSchema } from "@sammlerraum/db/test-legacy-money-schema";
+import { createTestDatabaseClient } from "@sammlerraum/db/test-database";
+import { createItemService } from "../items/item-service";
+import { createGradingService } from "../grading/grading-service";
+import { createWishlistService } from "./wishlist-service";
+let db: ReturnType<typeof createTestDatabaseClient>, isolated: Awaited<ReturnType<typeof createLegacyMoneyTestSchema>>;
+describe.runIf(process.env.RUN_DATABASE_INTEGRATION === "1")("owned wishlist and distinct specimen duplicates", () => {
+  beforeAll(async () => { isolated = await createLegacyMoneyTestSchema(); db = createTestDatabaseClient({ databaseUrl: isolated.databaseUrl, schema: isolated.schema }); });
+  afterAll(async () => { await db?.$disconnect(); await isolated?.cleanup(); });
+  async function user() { const id = randomUUID(); await db.user.create({ data: { id, name: "Own wishlist fixture", email: `${id}@example.invalid`, emailVerified: true } }); return { userId: id }; }
+  it("marks canonical duplicate specimens idempotently without merging their grading or item data", async () => {
+    const actor = await user(), c = await db.collection.create({ data: { ownerId: actor.userId, name: "Separate graded specimens" } }), items = createItemService(db, actor.userId), a = await items.createItem({ collectionId: c.id, title: "Collector card" }), b = await items.createItem({ collectionId: c.id, title: "Collector card" });
+    await createGradingService(db, actor.userId).addGrading(a.id, { provider: "PSA", grade: "9", certificateNo: "own-a" });
+    await createGradingService(db, actor.userId).addGrading(b.id, { provider: "PSA", grade: "10", certificateNo: "own-b" });
+    const before = await db.grading.findMany({ where: { itemId: { in: [a.id, b.id] } }, orderBy: { id: "asc" } }), service = createWishlistService(db);
+    await service.markDuplicateRelation(actor, a.id, b.id);
+    await service.markDuplicateRelation(actor, b.id, a.id);
+    expect(await service.areMarkedDuplicates(actor, a.id, b.id)).toBe(true);
+    expect(await db.duplicateRelation.count({ where: { ownerId: actor.userId } })).toBe(1);
+    expect(await db.grading.findMany({ where: { itemId: { in: [a.id, b.id] } }, orderBy: { id: "asc" } })).toEqual(before);
+    expect(await db.collectibleItem.count({ where: { id: { in: [a.id, b.id] } } })).toBe(2);
+  });
+  it("keeps wishlists private and preserves declared prospective money independently of historical amounts", async () => {
+    const actor = await user(), foreign = await user(), service = createWishlistService(db);
+    const wish = await service.createWishlistEntry(actor, { title: "Desired first edition", desiredCondition: "Complete", priority: 3, notes: "Own private wishlist note", targetPrice: { amountMinor: "12345", currency: "EUR", minorUnitExponent: 2 } });
+    expect(wish.targetPrice).toEqual({ amountMinor: "12345", currency: "EUR", minorUnitExponent: 2 });
+    expect((await service.listWishlistEntries(actor, {})).entries).toEqual(expect.arrayContaining([expect.objectContaining({ id: wish.id, notes: "Own private wishlist note" })]));
+    expect((await service.listWishlistEntries(foreign, {})).entries).toEqual([]);
+    await expect(service.fulfillWishlistEntry(foreign, wish.id)).rejects.toMatchObject({ code: "WISHLIST_NOT_FOUND" });
+    const fulfilled = await service.fulfillWishlistEntry(actor, wish.id), retried = await service.fulfillWishlistEntry(actor, wish.id);
+    expect(fulfilled.fulfilledAt).not.toBeNull(); expect(retried.fulfilledAt).toBe(fulfilled.fulfilledAt);
+    await expect(service.createWishlistEntry(actor, { title: "Wrong declared scale", targetPrice: { amountMinor: "12345", currency: "EUR", minorUnitExponent: 0 } })).rejects.toThrow();
+  });
+  it("refuses self-pairs, foreign specimens and trashed items without partial relation writes", async () => {
+    const actor = await user(), foreign = await user(), c = await db.collection.create({ data: { ownerId: actor.userId, name: "Owned private inventory" } }), other = await db.collection.create({ data: { ownerId: foreign.userId, name: "Other private inventory" } }), a = await createItemService(db, actor.userId).createItem({ collectionId: c.id, title: "Owned" }), b = await createItemService(db, foreign.userId).createItem({ collectionId: other.id, title: "Foreign" }), service = createWishlistService(db);
+    await expect(service.markDuplicateRelation(actor, a.id, a.id)).rejects.toThrow();
+    await expect(service.markDuplicateRelation(actor, a.id, b.id)).rejects.toMatchObject({ code: "WISHLIST_NOT_FOUND" });
+    const deleted = await createItemService(db, actor.userId).createItem({ collectionId: c.id, title: "Trashed" }); await createItemService(db, actor.userId).deleteItem(deleted.id);
+    await expect(service.markDuplicateRelation(actor, a.id, deleted.id)).rejects.toMatchObject({ code: "WISHLIST_NOT_FOUND" });
+    expect(await db.duplicateRelation.count({ where: { ownerId: actor.userId } })).toBe(0);
+  });
+});

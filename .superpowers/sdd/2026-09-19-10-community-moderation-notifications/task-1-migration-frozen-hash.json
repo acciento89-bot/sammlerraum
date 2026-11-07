@@ -1,0 +1,5 @@
+{
+  "path": "packages/db/prisma/migrations/20261107080000_wishlist_duplicates/migration.sql",
+  "sha256": "1dff2861e8ddfd50f196e12da51961d163fbeab0924401bf9c33ef53178eea85",
+  "bytes": 5658
+}

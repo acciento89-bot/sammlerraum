@@ -1,0 +1,27 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/wishlist/wishlist-service.test.ts [ packages/domain/src/wishlist/wishlist-service.test.ts ]
+Error: Cannot find module './wishlist-service' imported from '/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/domain/src/wishlist/wishlist-service.test.ts'
+ ❯ packages/domain/src/wishlist/wishlist-service.test.ts:8:1
+      6| import { createItemService } from "../items/item-service";
+      7| import { createGradingService } from "../grading/grading-service";
+      8| import { createWishlistService } from "./wishlist-service";
+       | ^
+      9| let db: ReturnType<typeof createTestDatabaseClient>, isolated: Awaited…
+     10| describe.runIf(process.env.RUN_DATABASE_INTEGRATION === "1")("owned wi…
+
+Caused by: Error: Failed to load url ./wishlist-service (resolved id: ./wishlist-service) in /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/domain/src/wishlist/wishlist-service.test.ts. Does the file exist?
+ ❯ loadAndTransform ../../../../SSK%20SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/node_modules/.pnpm/vite@7.3.6_@types+node@24.5.2_jiti@2.7.0/node_modules/vite/dist/node/chunks/config.js:22739:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  no tests
+   Start at  11:45:22
+   Duration  476ms (transform 156ms, setup 6ms, collect 0ms, tests 0ms, environment 0ms, prepare 51ms)
+

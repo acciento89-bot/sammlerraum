@@ -39,7 +39,7 @@
 **Interfaces:**
 - Produces: `createWishlistEntry`, `fulfillWishlistEntry`, `markDuplicateRelation`, `listDuplicateCandidates`.
 
-- [ ] **Step 1: Write failing separate-exemplar test**
+- [x] **Step 1: Write failing separate-exemplar test**
 
 ```ts
 it("marks two distinct exemplars as duplicates without merging their grading", async () => {
@@ -49,16 +49,16 @@ it("marks two distinct exemplars as duplicates without merging their grading", a
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run packages/domain/src/wishlist/wishlist-service.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement wishlist/duplicate models**
+- [x] **Step 3: Implement wishlist/duplicate models**
 
 Wishlist supports optional catalog entry/variant, free title, desired condition, target price, currency, priority, notes, fulfillment timestamp. `DuplicateRelation` links two item IDs canonically ordered to prevent duplicate pair rows.
 
-- [ ] **Step 4: Migrate and test**
+- [x] **Step 4: Migrate and test**
 
 Run:
 ```bash
@@ -68,7 +68,7 @@ pnpm vitest run packages/domain/src/wishlist
 
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/db packages/domain/src/wishlist packages/contracts/src/wishlist.ts

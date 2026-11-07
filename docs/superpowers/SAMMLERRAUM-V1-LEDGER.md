@@ -20,7 +20,7 @@ This is the handoff/status file for long-running implementation. Update it after
 | 07 | Search, Smart Collections & Dashboard | 5 | in progress (1/5) | Task 2 |
 | 08 | Import, Export, Insurance & Reports | 7 | complete (7/7) | — |
 | 09 | Collaboration, Sharing & Audit | 7 | All seven implemented; single locally reviewed and corrected; exact new-head CI pending | Publish verified correction; continue Task10.1 |
-| 10 | Community, Moderation & Notifications | 8 | not started | Task 1 |
+| 10 | Community, Moderation & Notifications | 8 | Task1 implemented/verified; whole-phase review afterTask8 | Task 2 |
 | 11 | AI-Assisted Capture | 5 | not started | Task 1 |
 | 12 | Premium & Billing | 5 | not started | Task 1 |
 | 13 | Integration, Hardening & Release | 7 | not started | Task 1 |
@@ -1181,3 +1181,13 @@ Ruling: frozen plan commands mentioning prisma migrate dev are adapted to new ad
 
 
 Phase09 final local acceptance: root completed the single consolidated correction with actual RED→GREEN witnesses for all3Important findings. Full native1449/1449, regular1559PASS/970native-disabled, build/types/lintPASS,53real compiled browser casesPASS; explicit reopening after stale draft rejection is verified. Both guarded schema comparisons empty and12frozen migration hashes preserved. Full report/rulings/raw evidence in Phase09 workspace. Existing remote Task7 evidence a4d748e CI remains in progress on latest actual query; new corrected source will be pushed to the same DraftPR1, not merged or deployed. Canonical reviewed48remains unchanged until required new-head remote checks are actually accepted. Next independent implementation:Phase10Task1 wishlists and separate-specimen duplicate relations, using the frozen plan and prepared failing-native-test draft.
+
+
+## 07 November 2026 — Actual remote CI finding closed locally; Phase10 Task1 active
+
+Exact Phase09c63f920 run42365262882 failed the existing concurrent classification case: one writer returned SEARCH_UNAVAILABLE rather than the required genuine MONEY_CONFLICT. This supersedes the earlier local-only acceptance pending remote confirmation. Root reproduced the two actual parent SHARE locks and their later exclusive upgrades in a deterministic native witness (phase09-money-upgrade-red.log). Correction1760cd2 acquires the exclusive parent lock at the start of the direct money subject path; no event/token/conflict assertion is weakened. All37money+6current-member+9wishlist-native+6contract casesPASS; current whole native1459/1459PASS/123files190.37s. Correction pushed/readback verified to the same DraftPR1; new-head remote CI remains pending. This continues the existing consolidated correction; no second reviewer and no blind rerun. Master reviewed48unchanged.
+
+Phase10Task1 source now implements private wishlist create/list/fulfill/remove with declared prospective target-price scale, coherent optional catalog/variant, canonical separate-specimen duplicate mark/unmark/candidates, owner-transfer retirement and account erasure. Nine native and six pure contract tests verify privacy, grading preservation, actual owner transfer, direct SQL guards, concurrent idempotency, pagination and safe malformed-money rejection. The one additive20261107080000 migration is applied/frozen only on both guarded local test DBs with empty actual schema diffs. Current regular/lint/build/53browser gates are still running; Task1 is not yet complete/committed/reviewed. No new public screens or production activation claimed from this domain checkpoint.
+
+
+Phase10Task1 sourcea73d14b is implementation-complete under inline execution; task-done closing15PASS1.41s recorded exactc63f920..a73d14b. Current whole1459native/123files190.37s,1565regular/980native-disabled57.13s, types/lint/full build and53compiled browser casesPASS; both final schema diffs empty,13frozen migration bytes unchanged. Actual regenerated PDF/browser artifacts retained in Phase10 and exact historical files restored. Source/evidence publication goes to existing DraftPR1 only. No whole-Phase10 review credit yet; canonical48unchanged while corrected Phase09 CI is still pending. NextTask2 actual follows/favorites with current public visibility and bidirectional block policy.

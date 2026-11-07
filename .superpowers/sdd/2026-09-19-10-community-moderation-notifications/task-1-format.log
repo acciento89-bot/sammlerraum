@@ -1,0 +1,5 @@
+packages/contracts/src/wishlist.ts 35ms
+packages/contracts/src/wishlist.test.ts 5ms
+packages/domain/src/wishlist/wishlist-service.test.ts 31ms
+packages/domain/src/wishlist/wishlist-service.ts 25ms
+.github/workflows/ci.yml 18ms (unchanged)
