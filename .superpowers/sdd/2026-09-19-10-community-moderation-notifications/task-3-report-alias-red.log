@@ -1,0 +1,28 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/moderation/block-report-service.test.ts (3 tests | 1 failed | 2 skipped) 439ms
+   ↓ actual personal blocks and private abuse reports > keeps own block/unblock retries idempotent and removes actual relationships without touching another person's block
+   ↓ actual personal blocks and private abuse reports > deduplicates private pending reports, retains hidden reported comment bodies, and never grants moderation authority
+   × actual personal blocks and private abuse reports > normalizes equivalent UUID spellings into one actual pending report 147ms
+     → expected 'ae3732fa-5758-4dd5-bcf1-ed587a0dc18a' to be '440223b4-42e0-47e2-b1b2-c8fda917c7db' // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/moderation/block-report-service.test.ts > actual personal blocks and private abuse reports > normalizes equivalent UUID spellings into one actual pending report
+AssertionError: expected 'ae3732fa-5758-4dd5-bcf1-ed587a0dc18a' to be '440223b4-42e0-47e2-b1b2-c8fda917c7db' // Object.is equality
+
+Expected: "440223b4-42e0-47e2-b1b2-c8fda917c7db"
+Received: "ae3732fa-5758-4dd5-bcf1-ed587a0dc18a"
+
+ ❯ packages/domain/src/moderation/block-report-service.test.ts:110:24
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 2 skipped (3)
+   Start at  12:54:34
+   Duration  961ms (transform 185ms, setup 8ms, collect 339ms, tests 439ms, environment 0ms, prepare 54ms)
+

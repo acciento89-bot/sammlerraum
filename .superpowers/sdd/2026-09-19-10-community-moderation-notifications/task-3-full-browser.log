@@ -1,0 +1,35 @@
+[WebServer] (node:74551) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 54 tests using 1 worker
+(node:74552) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+F
+Testing stopped early after 1 maximum allowed failures.
+
+
+  1) [community-api] › e2e/community-api.spec.ts:12:1 › compiled community endpoints bind real cookies, enforce current public visibility and block cleanup 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 400
+
+      152 |     ).toBe(200);
+      153 |     expect((await (await actor.get(commentsUrl)).json()).comments).toEqual([]);
+    > 154 |     expect((await actor.delete(`/api/v1/community/comments/${comment.id}`)).status()).toBe(200);
+          |                                                                                       ^
+      155 |     expect(
+      156 |       (await db.communityComment.findUniqueOrThrow({ where: { id: comment.id } })).deletedAt,
+      157 |     ).not.toBeNull();
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/community-api.spec.ts:154:87
+
+    Error Context: test-results/community-api-compiled-com-56fbd-isibility-and-block-cleanup-community-api/error-context.md
+
+  1 failed
+    [community-api] › e2e/community-api.spec.ts:12:1 › compiled community endpoints bind real cookies, enforce current public visibility and block cleanup 
+  53 did not run
+  1 error was not a part of any test, see above for details
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/community-api.spec.ts e2e/collaboration-sharing.spec.ts e2e/collaboration-management.spec.ts e2e/sharing.spec.ts e2e/collaboration-api.spec.ts e2e/collections-items.spec.ts --project=community-api --project=collaboration-ui-desktop --project=collaboration-ui-mobile --project=sharing-desktop --project=sharing-mobile --project=collaboration-api --project=desktop --project=mobile --workers=1 --max-failures=1
