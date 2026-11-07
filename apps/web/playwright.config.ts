@@ -8,6 +8,7 @@ export default defineConfig({
     baseURL: "http://localhost:3000",
   },
   projects: [
+    { name: "community-api", testMatch: "**/community-api.spec.ts" },
     {
       name: "collaboration-ui-desktop",
       testMatch: ["**/collaboration-sharing.spec.ts", "**/collaboration-management.spec.ts"],

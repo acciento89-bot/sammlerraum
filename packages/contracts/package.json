@@ -38,7 +38,8 @@
     "./sharing": "./src/sharing.ts",
     "./audit": "./src/audit.ts",
     "./restore": "./src/restore.ts",
-    "./wishlist": "./src/wishlist.ts"
+    "./wishlist": "./src/wishlist.ts",
+    "./community": "./src/community.ts"
   },
   "scripts": {
     "build": "pnpm typecheck",

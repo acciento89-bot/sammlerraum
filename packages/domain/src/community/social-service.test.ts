@@ -1,0 +1,251 @@
+import { randomUUID } from "node:crypto";
+import { beforeAll, afterAll, describe, it, expect } from "vitest";
+import { createLegacyMoneyTestSchema } from "@sammlerraum/db/test-legacy-money-schema";
+import { createTestDatabaseClient } from "@sammlerraum/db/test-database";
+import { createMembershipService } from "../collaboration/membership-service";
+import { createItemService } from "../items/item-service";
+import { createSocialService } from "./social-service";
+let db: ReturnType<typeof createTestDatabaseClient>,
+  isolated: Awaited<ReturnType<typeof createLegacyMoneyTestSchema>>;
+describe.runIf(process.env.RUN_DATABASE_INTEGRATION === "1")(
+  "actual current public community relationships",
+  () => {
+    beforeAll(async () => {
+      isolated = await createLegacyMoneyTestSchema();
+      db = createTestDatabaseClient({ databaseUrl: isolated.databaseUrl, schema: isolated.schema });
+    });
+    afterAll(async () => {
+      await db?.$disconnect();
+      await isolated?.cleanup();
+    });
+    async function user() {
+      const id = randomUUID();
+      await db.user.create({
+        data: {
+          id,
+          name: "Own social fixture",
+          email: `${id}@example.invalid`,
+          emailVerified: true,
+          profile: {
+            create: {
+              handle: `u_${id.replaceAll("-", "").slice(0, 20)}`,
+              displayName: "Public display",
+            },
+          },
+        },
+      });
+      return { userId: id };
+    }
+    it("keeps follow retries unique, rejects self-follow and allows explicit unfollow", async () => {
+      const actor = await user(),
+        target = await user(),
+        service = createSocialService(db);
+      await expect(service.followUser(actor, actor.userId)).rejects.toMatchObject({
+        code: "COMMUNITY_INVALID",
+      });
+      await Promise.all([
+        service.followUser(actor, target.userId),
+        service.followUser(actor, target.userId),
+      ]);
+      expect(
+        await db.userFollow.count({
+          where: { followerId: actor.userId, followedId: target.userId },
+        }),
+      ).toBe(1);
+      await service.unfollowUser(actor, target.userId);
+      await service.unfollowUser(actor, target.userId);
+      expect(await db.userFollow.count({ where: { followerId: actor.userId } })).toBe(0);
+    });
+    it("treats either block direction as denying follows and favorites", async () => {
+      const actor = await user(),
+        target = await user(),
+        c = await db.collection.create({
+          data: { ownerId: target.userId, name: "Public target", visibility: "PUBLIC" },
+        }),
+        item = await createItemService(db, target.userId).createItem({
+          collectionId: c.id,
+          title: "Public target",
+          visibility: "PUBLIC",
+        }),
+        service = createSocialService(db);
+      for (const [blockerId, blockedId] of [
+        [actor.userId, target.userId],
+        [target.userId, actor.userId],
+      ]) {
+        const block = await db.userBlock.create({
+          data: { blockerId: blockerId!, blockedId: blockedId! },
+        });
+        await expect(service.followUser(actor, target.userId)).rejects.toMatchObject({
+          code: "BLOCKED_INTERACTION",
+        });
+        await expect(
+          service.favoriteTarget(actor, { type: "ITEM", id: item.id }),
+        ).rejects.toMatchObject({ code: "BLOCKED_INTERACTION" });
+        await expect(
+          service.favoriteTarget(actor, { type: "COLLECTION", id: c.id }),
+        ).rejects.toMatchObject({ code: "BLOCKED_INTERACTION" });
+        await db.userBlock.delete({ where: { id: block.id } });
+      }
+    });
+    it("never lets membership or Owner privilege favorite a private item or a public child below a private ancestor", async () => {
+      const owner = await user(),
+        actor = await user(),
+        c = await db.collection.create({
+          data: { ownerId: owner.userId, name: "Public collection", visibility: "PUBLIC" },
+        }),
+        parent = await db.collectionNode.create({
+          data: { collectionId: c.id, name: "Private ancestor", visibility: "PRIVATE" },
+        }),
+        child = await db.collectionNode.create({
+          data: {
+            collectionId: c.id,
+            parentId: parent.id,
+            name: "Public child",
+            visibility: "PUBLIC",
+          },
+        }),
+        items = createItemService(db, owner.userId),
+        under = await items.createItem({
+          collectionId: c.id,
+          nodeId: child.id,
+          title: "Public nested item",
+          visibility: "PUBLIC",
+        }),
+        privateItem = await items.createItem({
+          collectionId: c.id,
+          title: "Private item",
+          visibility: "PRIVATE",
+        }),
+        service = createSocialService(db);
+      await createMembershipService(db).addMember(owner, {
+        collectionId: c.id,
+        userId: actor.userId,
+        role: "EDITOR",
+        expectedRevision: 0,
+      });
+      for (const who of [actor, owner])
+        for (const item of [under, privateItem])
+          await expect(
+            service.favoriteTarget(who, { type: "ITEM", id: item.id }),
+          ).rejects.toMatchObject({ code: "NOT_FOUND" });
+    });
+    it("filters saved favorites again when visibility becomes private", async () => {
+      const owner = await user(),
+        actor = await user(),
+        c = await db.collection.create({
+          data: { ownerId: owner.userId, name: "Favorite policy changes", visibility: "PUBLIC" },
+        }),
+        item = await createItemService(db, owner.userId).createItem({
+          collectionId: c.id,
+          title: "Previously public",
+          visibility: "PUBLIC",
+        }),
+        service = createSocialService(db);
+      await service.favoriteTarget(actor, { type: "ITEM", id: item.id });
+      await service.favoriteTarget(actor, { type: "ITEM", id: item.id });
+      expect(await db.favorite.count({ where: { userId: actor.userId, itemId: item.id } })).toBe(1);
+      expect((await service.listFavorites(actor, {})).favorites).toEqual(
+        expect.arrayContaining([expect.objectContaining({ id: item.id })]),
+      );
+      await createItemService(db, owner.userId).updateItem(item.id, { visibility: "PRIVATE" });
+      expect((await service.listFavorites(actor, {})).favorites).toEqual([]);
+    });
+
+    it("a new block retires existing direct relationships and cannot be bypassed by a queued favorite", async () => {
+      const actor = await user(),
+        target = await user(),
+        c = await db.collection.create({
+          data: {
+            ownerId: target.userId,
+            name: "Previously public relation",
+            visibility: "PUBLIC",
+          },
+        }),
+        item = await createItemService(db, target.userId).createItem({
+          collectionId: c.id,
+          title: "Public relation",
+          visibility: "PUBLIC",
+        }),
+        service = createSocialService(db);
+      await Promise.all([
+        service.followUser(actor, target.userId),
+        service.followUser(target, actor.userId),
+      ]);
+      await service.favoriteTarget(actor, { type: "ITEM", id: item.id });
+      await service.favoriteTarget(actor, { type: "COLLECTION", id: c.id });
+      await db.userBlock.create({ data: { blockerId: target.userId, blockedId: actor.userId } });
+      expect(
+        await db.userFollow.count({
+          where: {
+            OR: [
+              { followerId: actor.userId, followedId: target.userId },
+              { followerId: target.userId, followedId: actor.userId },
+            ],
+          },
+        }),
+      ).toBe(0);
+      expect(await db.favorite.count({ where: { userId: actor.userId } })).toBe(0);
+      expect((await service.listFavorites(actor, {})).favorites).toEqual([]);
+      expect((await service.listFollowing(actor, {})).follows).toEqual([]);
+    });
+    it("rechecks a real block committed after discovery but before acquiring the user-pair fence", async () => {
+      const actor = await user(),
+        target = await user(),
+        c = await db.collection.create({
+          data: { ownerId: target.userId, name: "Actual in-flight block", visibility: "PUBLIC" },
+        }),
+        item = await createItemService(db, target.userId).createItem({
+          collectionId: c.id,
+          title: "In-flight public target",
+          visibility: "PUBLIC",
+        });
+      let signal!: () => void,
+        release!: () => void,
+        paused = false;
+      const reached = new Promise<void>((r) => {
+          signal = r;
+        }),
+        held = new Promise<void>((r) => {
+          release = r;
+        });
+      const wrapped: Parameters<typeof createSocialService>[0] = {
+        $transaction: (work, options) =>
+          db.$transaction(
+            (tx) =>
+              work({
+                $queryRaw: async <T>(
+                  query: import("@sammlerraum/db/search-sql").Prisma.Sql,
+                ): Promise<T> => {
+                  if (
+                    !paused &&
+                    query.strings.join("?").includes('ORDER BY id COLLATE "C" FOR NO KEY UPDATE')
+                  ) {
+                    paused = true;
+                    signal();
+                    await held;
+                  }
+                  return tx.$queryRaw<T>(query);
+                },
+              }),
+            options,
+          ),
+      };
+      const pending = createSocialService(wrapped)
+        .favoriteTarget(actor, { type: "ITEM", id: item.id })
+        .then(
+          (value) => ({ value }),
+          (error) => ({ error }),
+        );
+      try {
+        await reached;
+        await db.userBlock.create({ data: { blockerId: target.userId, blockedId: actor.userId } });
+        release();
+        expect(await pending).toMatchObject({ error: { code: "BLOCKED_INTERACTION" } });
+        expect(await db.favorite.count({ where: { userId: actor.userId } })).toBe(0);
+      } finally {
+        release();
+        await pending;
+      }
+    });
+  },
+);
