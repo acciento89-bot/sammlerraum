@@ -8,3 +8,6 @@ Task2 implementation verified at8284c06; closing36PASS. Full1008native/1542regul
 Task 3: complete (commits 5914a7c..7664d9d, tests: env RUN_DATABASE_INTEGRATION=1 npm exec --yes --package=node@24.19.0 --package=pnpm@10.17.1 -- pnpm vitest run packages/domain/src/sharing/share-service.test.ts apps/web/src/lib/share-routes.integration.test.ts --no-file-parallelism →    Duration  2.29s (transform 193ms, setup 6ms, collect 464ms, tests 1.54s, environment 0ms, prepare 65ms))
 
 Task3 implementation verified at7664d9d; closing22PASS. Whole functional1029native/1542regular/full build/lint/web strict types and7actual compiled browser-cookie journeysPASS. Whole-phase independent review pending; master reviewed48 unchanged. NextTask4 audit.
+Task 4: complete (commits 40f771f..9ed6da7, tests: env RUN_DATABASE_INTEGRATION=1 npm exec --yes --package=node@24.19.0 --package=pnpm@10.17.1 -- pnpm vitest run packages/domain/src/audit/audit-service.test.ts --no-file-parallelism →    Duration  1.26s (transform 163ms, setup 6ms, collect 312ms, tests 766ms, environment 0ms, prepare 55ms))
+
+Task4 implementation verified at9ed6da7; closing12PASS. Whole1042native/1542regular/types/lint/full build and7actual compiled browser-cookie regression journeysPASS. Whole-phase independent review pending; master reviewed48 unchanged. NextTask5 actual core producers, not just generic append.

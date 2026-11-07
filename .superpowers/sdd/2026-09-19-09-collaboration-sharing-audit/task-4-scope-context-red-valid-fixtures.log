@@ -1,0 +1,99 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/audit/audit-service.test.ts (10 tests | 4 failed) 777ms
+   ✓ native append-only audit history > records original actor, source, exact before/after and database time 152ms
+   ✓ native append-only audit history > rejects auth/session/byte dumps and forged user/source identity before appending 9ms
+   ✓ native append-only audit history > blocks arbitrary SQL rewriting/deletion and foreign-owner reads/writes 58ms
+   ✓ native append-only audit history > retains an item's history after moving it and deleting the old collection 23ms
+   ✓ native append-only audit history > follows current ownership, preserves the true original actor and permits actual actor/account erasure 62ms
+   × native append-only audit history > records all declared sources only through genuine server contexts and rejects copied context objects 9ms
+     → promise resolved "{ …(10) }" instead of rejecting
+   ✓ native append-only audit history > rolls audit and the actual inventory mutation back together in the caller's transaction 11ms
+   × native append-only audit history > pages actual committed events with exact bigint cursors and bounded resource-local results 171ms
+     → expected [ { …(10) }, { …(10) }, …(6) ] to have a length of 5 but got 8
+   × native append-only audit history > anchors collection events to the current collection and never accepts an incomplete SQL scope 3ms
+     → AUDIT_INVALID
+   × native append-only audit history > retains a deleted personal location's history but removes it with the actual namespace account 4ms
+     → AUDIT_INVALID
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/audit/audit-service.test.ts > native append-only audit history > records all declared sources only through genuine server contexts and rejects copied context objects
+AssertionError: promise resolved "{ …(10) }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "action": "ITEM_VISIBILITY_CHANGED",
++   "actorId": "92255171-c7bf-4daa-89fa-cf531c770bda",
++   "after": {
++     "visibility": "PUBLIC",
++   },
++   "before": {
++     "visibility": "PRIVATE",
++   },
++   "createdAt": "2026-11-07T06:29:47.837Z",
++   "id": "eaae5e61-57af-4087-968b-d520a8588c9a",
++   "resourceId": "e1514c14-6fee-4038-b483-86f01c31cc01",
++   "resourceType": "ITEM",
++   "sequence": "5",
++   "source": "SYSTEM",
+  }
+
+ ❯ packages/domain/src/audit/audit-service.test.ts:57:218
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  |workspace| packages/domain/src/audit/audit-service.test.ts > native append-only audit history > pages actual committed events with exact bigint cursors and bounded resource-local results
+AssertionError: expected [ { …(10) }, { …(10) }, …(6) ] to have a length of 5 but got 8
+
+- Expected
++ Received
+
+- 5
++ 8
+
+ ❯ packages/domain/src/audit/audit-service.test.ts:69:164
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  |workspace| packages/domain/src/audit/audit-service.test.ts > native append-only audit history > anchors collection events to the current collection and never accepts an incomplete SQL scope
+AuditError: AUDIT_INVALID
+ ❯ checkedAuditMutation packages/domain/src/audit/audit-event-definitions.ts:9:69
+      7|  const parsed=AuditMutationSchema.safeParse(input);if(!parsed.success)…
+      8|  const value=parsed.data,definition=definitions[value.action as keyof …
+      9|  if(!definition||definition.resourceType!==value.resourceType)throw ne…
+       |                                                                     ^
+     10|  const before=definition.snapshot.safeParse(value.before),after=defini…
+     11|  if(!before.success||!after.success||JSON.stringify(before.data)===JSO…
+ ❯ Object.recordAuditEvent packages/domain/src/audit/audit-service.ts:35:44
+ ❯ packages/domain/src/audit/audit-service.test.ts:74:31
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  |workspace| packages/domain/src/audit/audit-service.test.ts > native append-only audit history > retains a deleted personal location's history but removes it with the actual namespace account
+AuditError: AUDIT_INVALID
+ ❯ checkedAuditMutation packages/domain/src/audit/audit-event-definitions.ts:9:69
+      7|  const parsed=AuditMutationSchema.safeParse(input);if(!parsed.success)…
+      8|  const value=parsed.data,definition=definitions[value.action as keyof …
+      9|  if(!definition||definition.resourceType!==value.resourceType)throw ne…
+       |                                                                     ^
+     10|  const before=definition.snapshot.safeParse(value.before),after=defini…
+     11|  if(!before.success||!after.success||JSON.stringify(before.data)===JSO…
+ ❯ Object.recordAuditEvent packages/domain/src/audit/audit-service.ts:35:44
+ ❯ packages/domain/src/audit/audit-service.test.ts:80:31
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  4 failed | 6 passed (10)
+   Start at  07:29:46
+   Duration  1.35s (transform 176ms, setup 7ms, collect 361ms, tests 777ms, environment 0ms, prepare 56ms)
+

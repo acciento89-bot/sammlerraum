@@ -1,0 +1,112 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/audit/audit-service.test.ts (10 tests | 4 failed) 769ms
+   ✓ native append-only audit history > records original actor, source, exact before/after and database time 129ms
+   ✓ native append-only audit history > rejects auth/session/byte dumps and forged user/source identity before appending 7ms
+   ✓ native append-only audit history > blocks arbitrary SQL rewriting/deletion and foreign-owner reads/writes 58ms
+   ✓ native append-only audit history > retains an item's history after moving it and deleting the old collection 23ms
+   ✓ native append-only audit history > follows current ownership, preserves the true original actor and permits actual actor/account erasure 63ms
+   × native append-only audit history > records all declared sources only through genuine server contexts and rejects copied context objects 9ms
+     → promise resolved "{ …(10) }" instead of rejecting
+   ✓ native append-only audit history > rolls audit and the actual inventory mutation back together in the caller's transaction 9ms
+   × native append-only audit history > pages actual committed events with exact bigint cursors and bounded resource-local results 154ms
+     → expected [ { …(10) }, { …(10) }, …(7) ] to have a length of 5 but got 9
+   × native append-only audit history > anchors collection events to the current collection and never accepts an incomplete SQL scope 2ms
+     → AUDIT_INVALID
+   × native append-only audit history > retains a deleted personal location's history but removes it with the actual namespace account 4ms
+     → 
+Invalid `db.storageLocation.create()` invocation in
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/domain/src/audit/audit-service.test.ts:77:61
+
+  74  await expect(db.$executeRaw`INSERT INTO "AuditEvent" (id,"resourceType","resourceId",action,source,"actorId",before,after) VALUES (${randomUUID()}::uuid,'ITEM',${f.item}::uuid,'ITEM_VISIBILITY_CHANGED','USER',${f.owner},'{"visibility":"PRIVATE"}'::jsonb,'{"visibility":"PUBLIC"}'::jsonb)`).rejects.toThrow();
+  75 });
+  76 it("retains a deleted personal location's history but removes it with the actual namespace account",async()=>{
+→ 77  const f=await fixture(),location=await db.storageLocation.create(
+Database error. Code: `23514`. Message: `new row for relation "StorageLocation" violates check constraint "StorageLocation_qrToken_check"`
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/audit/audit-service.test.ts > native append-only audit history > records all declared sources only through genuine server contexts and rejects copied context objects
+AssertionError: promise resolved "{ …(10) }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "action": "ITEM_VISIBILITY_CHANGED",
++   "actorId": "84d483f9-8d99-4305-934c-5d13c1b57674",
++   "after": {
++     "visibility": "PUBLIC",
++   },
++   "before": {
++     "visibility": "PRIVATE",
++   },
++   "createdAt": "2026-11-07T06:28:51.533Z",
++   "id": "386d9d8f-f16c-4520-ac4a-4fea82cd5803",
++   "resourceId": "df7d38da-3e33-4b05-aa6b-df12414eeaf6",
++   "resourceType": "ITEM",
++   "sequence": "5",
++   "source": "SYSTEM",
+  }
+
+ ❯ packages/domain/src/audit/audit-service.test.ts:56:218
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  |workspace| packages/domain/src/audit/audit-service.test.ts > native append-only audit history > pages actual committed events with exact bigint cursors and bounded resource-local results
+AssertionError: expected [ { …(10) }, { …(10) }, …(7) ] to have a length of 5 but got 9
+
+- Expected
++ Received
+
+- 5
++ 9
+
+ ❯ packages/domain/src/audit/audit-service.test.ts:68:164
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  |workspace| packages/domain/src/audit/audit-service.test.ts > native append-only audit history > anchors collection events to the current collection and never accepts an incomplete SQL scope
+AuditError: AUDIT_INVALID
+ ❯ checkedAuditMutation packages/domain/src/audit/audit-event-definitions.ts:9:69
+      7|  const parsed=AuditMutationSchema.safeParse(input);if(!parsed.success)…
+      8|  const value=parsed.data,definition=definitions[value.action as keyof …
+      9|  if(!definition||definition.resourceType!==value.resourceType)throw ne…
+       |                                                                     ^
+     10|  const before=definition.snapshot.safeParse(value.before),after=defini…
+     11|  if(!before.success||!after.success||JSON.stringify(before.data)===JSO…
+ ❯ Object.recordAuditEvent packages/domain/src/audit/audit-service.ts:35:44
+ ❯ packages/domain/src/audit/audit-service.test.ts:73:31
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  |workspace| packages/domain/src/audit/audit-service.test.ts > native append-only audit history > retains a deleted personal location's history but removes it with the actual namespace account
+PrismaClientKnownRequestError: 
+Invalid `db.storageLocation.create()` invocation in
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/domain/src/audit/audit-service.test.ts:77:61
+
+  74  await expect(db.$executeRaw`INSERT INTO "AuditEvent" (id,"resourceType","resourceId",action,source,"actorId",before,after) VALUES (${randomUUID()}::uuid,'ITEM',${f.item}::uuid,'ITEM_VISIBILITY_CHANGED','USER',${f.owner},'{"visibility":"PRIVATE"}'::jsonb,'{"visibility":"PUBLIC"}'::jsonb)`).rejects.toThrow();
+  75 });
+  76 it("retains a deleted personal location's history but removes it with the actual namespace account",async()=>{
+→ 77  const f=await fixture(),location=await db.storageLocation.create(
+Database error. Code: `23514`. Message: `new row for relation "StorageLocation" violates check constraint "StorageLocation_qrToken_check"`
+ ❯ vn.handleRequestError node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:238:13
+ ❯ vn.handleAndLogRequestError node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:184:12
+ ❯ vn.request node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:153:12
+ ❯ a node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:1014:24
+ ❯ packages/domain/src/audit/audit-service.test.ts:77:36
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  4 failed | 6 passed (10)
+   Start at  07:28:50
+   Duration  1.35s (transform 179ms, setup 7ms, collect 365ms, tests 769ms, environment 0ms, prepare 53ms)
+
