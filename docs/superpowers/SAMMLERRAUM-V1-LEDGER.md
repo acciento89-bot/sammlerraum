@@ -19,7 +19,7 @@ This is the handoff/status file for long-running implementation. Update it after
 | 06 | Valuations & Market Data | 6 | complete (6/6) | — |
 | 07 | Search, Smart Collections & Dashboard | 5 | in progress (1/5) | Task 2 |
 | 08 | Import, Export, Insurance & Reports | 7 | complete (7/7) | — |
-| 09 | Collaboration, Sharing & Audit | 7 | Tasks1–5 implemented/verified; whole-phase review pending | Task 6 |
+| 09 | Collaboration, Sharing & Audit | 7 | All seven implemented; single locally reviewed and corrected; exact new-head CI pending | Publish verified correction; continue Task10.1 |
 | 10 | Community, Moderation & Notifications | 8 | not started | Task 1 |
 | 11 | AI-Assisted Capture | 5 | not started | Task 1 |
 | 12 | Premium & Billing | 5 | not started | Task 1 |
@@ -86,6 +86,9 @@ This is the handoff/status file for long-running implementation. Update it after
 - [ ] P09 T04 — Append-only current-resource audit history, real actor/source, bounded paging and erasure-safe anchors implemented and locally verified; independent whole-phase review pending
 
 - [ ] P09 T05 — Atomic real core mutation audit, exact money/import sources and erasure-safe role subjects implemented and locally verified; independent whole-phase review pending
+
+- [ ] P09 T06 — Conflict-aware restore and irreversible capability retirement locally verified/reviewed; exact new-head CI pending
+- [ ] P09 T07 — Actual role-aware collaboration UI and audited Editor/Admin authoring locally verified/reviewed; exact new-head CI pending
 
 **Verified completion: 48/91 tasks.** Later tasks remain open as listed in the phase table and detail plans.
 
@@ -1155,3 +1158,26 @@ Source68e09b7 provides responsive DE/EN member management, invitation issuance/r
 Native current-role withdrawal, stale confirmations, original-actor/provenance and HTTP checksPASS. Entire current domain plus all remaining native CI selections1446PASS/122files/0skip187.07s; regular1559PASS/967native-disabled16.54s (overlap). Strict root/web types, whole lint and full production buildPASS. Complete actual compiled49cookie/browser casesPASS56.0s:20new management/restore/current-role journeys,7prior sharing/invitation and22old Owner collector paths. Closing20new UI casesPASS24.9s on committed source. Both guarded schema diffs empty;12frozen migration hashes unchanged. Actual screenshots inspected and retained, not physical-device or production-capacity proof. Existing old collector fixtures now use exact owned synthetic credential counters rather than global resets; a response-body-after-navigation test race was corrected without weakening original refresh/no-duplicate/archive assertions. Correct authoring flag is confined to the guarded test browser server; production defaults remain unchanged.
 
 All seven Phase09 implementations are now locally verified. Single fresh whole-phase read-only review is active against82a1f0f..68e09b7; master reviewed48/91 and all Phase09 review checkboxes remain pending. Previous exactTask6 head3806d4c CI42357381299 verifiedSUCCESS; new Task7 CI awaits publication. Source/tests/existing DraftPR only, no application merge/deploy, provider/mail/customer data, other apps/stores, devices or stopped automation changes. Root continues with review adjudication and Phase10 preflight.
+
+
+## 07 November 2026 — Single Phase09 review, consolidated correction active
+
+Independent source review of82a1f0f..68e09b7 completed:0Critical,3Important,1Minor; not merge-ready as reviewed. Root accepted the three concrete integration failures and reproduced them before correction: two distinct-actor native lock cycles, valid multilingual requests above16KiB rejected, and a compiled browser stale node draft that silently acquired fresh confirmation and overwrote another administrator. Evidence:Phase09 review-fix-native-red.log/review-fix-browser-red.log and phase-review-findings.md.
+
+I1 root ruling: consistent parent-before-item fences across actual producers (metadata, tags/identifiers, condition/grading/custom fields, media/cleanup and direct money). A smaller collaborative SHARE-only approach was considered and rejected after inspecting later money lock upgrades. Original actor/ownership distinction, post-lock role checks and frozen schema remain. Native regression observes actual PostgreSQL lock waits, not guessed timing. I2 captures each form's original parent confirmation with its unsaved draft, including across item-triggered workspace refresh. I3 bounds only inventory requests at64KiB in both byte reader and fixed lexical scanner, keeping other routes at16KiB; tested9000CJK and10000escaped characters plus duplicate-key/oversized rejection. UI character limits are aligned with the same item contracts as part of that valid-input boundary.
+
+Final: Ruling: production capacity/physical devices — no production/device assurance follows from local source tests; outside current authorization; cost if wrong is load/device failure, retained for release hardening.
+Final: Ruling: live mail/providers/deployment/purchases — no live activation is performed or inferred; cost if wrong is unintended external side effects, avoided by scope restriction.
+Final: Ruling: unchanged unrelated earlier phases — retain prior independent reviews; changed integration edges are covered here; cost if wrong is legacy regression, checked through the full existing native and browser cohorts.
+Final: Ruling: legal sufficiency of retention — technical erasure/retention is tested, not a legal compliance opinion; cost if wrong requires policy/legal assessment before release.
+
+Current targeted9native regressions and root/web strict types pass. Full native/current compiled-browser/build/lint gates are running; no final review acceptance/master credit yet. Original Task7 source and evidence are already pushed at68e09b7/a4d748e; existing DraftPR1 updated honestly. No main merge/deployment, other app/store, provider or automation changes.
+
+### Phase10 read-only interface preflight
+
+Read the complete frozen eight-task plan and relevant product sections. Wishlist/community/notification modules do not yet exist. Reuse existing real application moderator/admin grants rather than inventing a second authority model; existing collection roles are not application moderation. Wishlist and duplicate ownership must remain private and current; separate exemplar IDs/condition/grading are never merged. Canonical UUID pair uniqueness, deletion/ownership-transfer retirement and bounded actual-owner queries need native witnesses. New target prices require an explicit prospective currency/unit declaration, not reinterpretation of historical raw money. Optional catalog/variant references must be coherent/current. Existing search/dashboard duplicate/wishlist placeholders need actual integration at their assigned later steps; do not label placeholders complete.
+
+Ruling: frozen plan commands mentioning prisma migrate dev are adapted to new additive migrations plus migrate deploy on the two guarded owned PostgreSQL17.11 databases. No migration reset or rewriting of the12 frozen Phase09 files. Existing test helper already applies new migrations to isolated native schemas. No new Phase10 runtime/source implementation is started while Phase09's final source gates run.
+
+
+Phase09 final local acceptance: root completed the single consolidated correction with actual RED→GREEN witnesses for all3Important findings. Full native1449/1449, regular1559PASS/970native-disabled, build/types/lintPASS,53real compiled browser casesPASS; explicit reopening after stale draft rejection is verified. Both guarded schema comparisons empty and12frozen migration hashes preserved. Full report/rulings/raw evidence in Phase09 workspace. Existing remote Task7 evidence a4d748e CI remains in progress on latest actual query; new corrected source will be pushed to the same DraftPR1, not merged or deployed. Canonical reviewed48remains unchanged until required new-head remote checks are actually accepted. Next independent implementation:Phase10Task1 wishlists and separate-specimen duplicate relations, using the frozen plan and prepared failing-native-test draft.
