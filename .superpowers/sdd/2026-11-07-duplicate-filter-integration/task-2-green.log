@@ -1,0 +1,105 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ✓ |workspace| apps/web/src/components/search/filter-draft.test.ts (235 tests) 38ms
+ ✓ |workspace| packages/domain/src/search/duplicate-filter.integration.test.ts (8 tests) 785ms
+ ❯ |workspace| apps/web/src/lib/smart-collection-routes.integration.test.ts (4 tests | 1 failed) 573ms
+   ✓ native saved-query authorized routes > creates/lists/details/replaces/resolves/deletes actual saved definitions  311ms
+   × native saved-query authorized routes > enforces auth/origin/raw filter/body/query boundaries and closed errors 18ms
+     → expected 201 to be 422 // Object.is equality
+   ✓ native saved-query authorized routes > uses all actual Next route modules with native service dependencies 40ms
+   ✓ native saved-query authorized routes > projects dependency/invariant/stored errors without leaking request or database values 1ms
+ ❯ |workspace| apps/web/src/lib/dashboard-routes.integration.test.ts (12 tests | 1 failed) 334ms
+   ✓ native owned dashboard route > returns matched units and collections with fresh session/no-store/request ID 202ms
+   ✓ native owned dashboard route > closes malformed and overridden wire f=null 1ms
+   ✓ native owned dashboard route > closes malformed and overridden wire text=%FF 1ms
+   ✓ native owned dashboard route > closes malformed and overridden wire text=% 0ms
+   ✓ native owned dashboard route > closes malformed and overridden wire text=a&%74ext=b 0ms
+   ✓ native owned dashboard route > closes malformed and overridden wire owner=secret 0ms
+   ✓ native owned dashboard route > closes malformed and overridden wire limit=1 0ms
+   ✓ native owned dashboard route > closes malformed and overridden wire cursor=abc 1ms
+   ✓ native owned dashboard route > closes malformed and overridden wire scope=SHARED 1ms
+   ✓ native owned dashboard route > closes malformed and overridden wire f=%7B%22version%22%3A1%2C%22version%22%3A1%7D 1ms
+   ✓ native owned dashboard route > enforces query bytes and authentication 1ms
+   × native owned dashboard route > projects only closed semantic reference and unavailable filter errors 23ms
+     → expected 200 to be 422 // Object.is equality
+ ❯ |workspace| apps/web/src/lib/item-search-routes.integration.test.ts (12 tests | 1 failed) 357ms
+   ✓ native authorized item search route > returns only owned summaries with fresh authentication and no-store/request ID 239ms
+   ✓ native authorized item search route > rejects malformed query f=null 1ms
+   ✓ native authorized item search route > rejects malformed query text=%FF 1ms
+   ✓ native authorized item search route > rejects malformed query text=% 0ms
+   ✓ native authorized item search route > rejects malformed query text=a&%74ext=b 0ms
+   ✓ native authorized item search route > rejects malformed query unknown=secret 1ms
+   ✓ native authorized item search route > rejects malformed query limit=01 0ms
+   ✓ native authorized item search route > rejects malformed query limit=+1 0ms
+   ✓ native authorized item search route > rejects malformed query f=%7B%22version%22%3A1%2C%22version%22%3A1%7D 1ms
+   ✓ native authorized item search route > rejects encoded query size before parsing and missing authentication 1ms
+   × native authorized item search route > keeps unavailable and reference errors closed 11ms
+     → expected 200 to be 422 // Object.is equality
+   ✓ native authorized item search route > preserves specific filter codes and generic safe dependency/invariant responses 2ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/web/src/lib/dashboard-routes.integration.test.ts > native owned dashboard route > projects only closed semantic reference and unavailable filter errors
+AssertionError: expected 200 to be 422 // Object.is equality
+
+- Expected
++ Received
+
+- 422
++ 200
+
+ ❯ apps/web/src/lib/dashboard-routes.integration.test.ts:84:24
+     82|         ),
+     83|       );
+     84|       expect(r.status).toBe(422);
+       |                        ^
+     85|       const b = await r.json();
+     86|       expect(b.error.code).toBe(code);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  |workspace| apps/web/src/lib/item-search-routes.integration.test.ts > native authorized item search route > keeps unavailable and reference errors closed
+AssertionError: expected 200 to be 422 // Object.is equality
+
+- Expected
++ Received
+
+- 422
++ 200
+
+ ❯ apps/web/src/lib/item-search-routes.integration.test.ts:106:24
+    104|         ),
+    105|       );
+    106|       expect(r.status).toBe(422);
+       |                        ^
+    107|       const body = await r.json();
+    108|       expect(body.error.code).toBe(code);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  |workspace| apps/web/src/lib/smart-collection-routes.integration.test.ts > native saved-query authorized routes > enforces auth/origin/raw filter/body/query boundaries and closed errors
+AssertionError: expected 201 to be 422 // Object.is equality
+
+- Expected
++ Received
+
+- 422
++ 201
+
+ ❯ apps/web/src/lib/smart-collection-routes.integration.test.ts:110:9
+    108|         (await h.POST(req({ name: "Unavailable", f: JSON.stringify({ v…
+    109|           .status,
+    110|       ).toBe(status);
+       |         ^
+    111|     }
+    112|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  3 failed | 2 passed (5)
+      Tests  3 failed | 268 passed (271)
+   Start at  23:46:41
+   Duration  3.55s (transform 369ms, setup 9ms, collect 776ms, tests 2.09s, environment 0ms, prepare 175ms)
+

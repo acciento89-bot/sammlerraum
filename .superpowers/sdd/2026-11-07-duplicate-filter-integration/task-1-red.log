@@ -1,0 +1,112 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/search/duplicate-filter.integration.test.ts (7 tests | 7 failed) 627ms
+   × actual private duplicate-filter semantics > matches both explicit endpoints and complements false without title or quantity inference 165ms
+     → FILTER_UNAVAILABLE
+   × actual private duplicate-filter semantics > supports mixed NOT/OR over current facts and returns no false match for missing declarations 17ms
+     → FILTER_UNAVAILABLE
+   × actual private duplicate-filter semantics > retains explicit relations across ordinary partner lifecycle changes while applying candidate lifecycle 26ms
+     → FILTER_UNAVAILABLE
+   × actual private duplicate-filter semantics > excludes a deleted partner item instead of retaining a stale flag 19ms
+     → FILTER_UNAVAILABLE
+   × actual private duplicate-filter semantics > excludes a deleted partner parent instead of retaining a stale flag 14ms
+     → FILTER_UNAVAILABLE
+   × actual private duplicate-filter semantics > rechecks real mark/unmark and pre-cursor totals on an exhausted page 13ms
+     → FILTER_UNAVAILABLE
+   × actual private duplicate-filter semantics > does not grant private duplicate inference to a collection member and retires pairs on actual transfer 25ms
+     → FILTER_UNAVAILABLE
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 7 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/search/duplicate-filter.integration.test.ts > actual private duplicate-filter semantics > matches both explicit endpoints and complements false without title or quantity inference
+FilterValidationError: FILTER_UNAVAILABLE
+ ❯ validateCurrentFilterAvailability packages/domain/src/search/filter-ast.ts:33:13
+     31|       pending.push(node.child);
+     32|     } else if (node.kind === "duplicate") {
+     33|       throw new FilterValidationError("FILTER_UNAVAILABLE", "DUPLICATE…
+       |             ^
+     34|     } else if (node.kind === "marketMoney" && !marketPrepared) {
+     35|       throw new FilterValidationError("FILTER_UNAVAILABLE", "MARKET_FI…
+ ❯ Object.searchItems packages/domain/src/search/item-search-service.ts:125:9
+ ❯ packages/domain/src/search/duplicate-filter.integration.test.ts:15:216
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/7]⎯
+
+ FAIL  |workspace| packages/domain/src/search/duplicate-filter.integration.test.ts > actual private duplicate-filter semantics > supports mixed NOT/OR over current facts and returns no false match for missing declarations
+FilterValidationError: FILTER_UNAVAILABLE
+ ❯ validateCurrentFilterAvailability packages/domain/src/search/filter-ast.ts:33:13
+     31|       pending.push(node.child);
+     32|     } else if (node.kind === "duplicate") {
+     33|       throw new FilterValidationError("FILTER_UNAVAILABLE", "DUPLICATE…
+       |             ^
+     34|     } else if (node.kind === "marketMoney" && !marketPrepared) {
+     35|       throw new FilterValidationError("FILTER_UNAVAILABLE", "MARKET_FI…
+ ❯ Object.searchItems packages/domain/src/search/item-search-service.ts:125:9
+ ❯ packages/domain/src/search/duplicate-filter.integration.test.ts:16:296
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/7]⎯
+
+ FAIL  |workspace| packages/domain/src/search/duplicate-filter.integration.test.ts > actual private duplicate-filter semantics > retains explicit relations across ordinary partner lifecycle changes while applying candidate lifecycle
+FilterValidationError: FILTER_UNAVAILABLE
+ ❯ validateCurrentFilterAvailability packages/domain/src/search/filter-ast.ts:33:13
+     31|       pending.push(node.child);
+     32|     } else if (node.kind === "duplicate") {
+     33|       throw new FilterValidationError("FILTER_UNAVAILABLE", "DUPLICATE…
+       |             ^
+     34|     } else if (node.kind === "marketMoney" && !marketPrepared) {
+     35|       throw new FilterValidationError("FILTER_UNAVAILABLE", "MARKET_FI…
+ ❯ Object.searchItems packages/domain/src/search/item-search-service.ts:125:9
+ ❯ packages/domain/src/search/duplicate-filter.integration.test.ts:17:262
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/7]⎯
+
+ FAIL  |workspace| packages/domain/src/search/duplicate-filter.integration.test.ts > actual private duplicate-filter semantics > excludes a deleted partner item instead of retaining a stale flag
+ FAIL  |workspace| packages/domain/src/search/duplicate-filter.integration.test.ts > actual private duplicate-filter semantics > excludes a deleted partner parent instead of retaining a stale flag
+FilterValidationError: FILTER_UNAVAILABLE
+ ❯ validateCurrentFilterAvailability packages/domain/src/search/filter-ast.ts:33:13
+     31|       pending.push(node.child);
+     32|     } else if (node.kind === "duplicate") {
+     33|       throw new FilterValidationError("FILTER_UNAVAILABLE", "DUPLICATE…
+       |             ^
+     34|     } else if (node.kind === "marketMoney" && !marketPrepared) {
+     35|       throw new FilterValidationError("FILTER_UNAVAILABLE", "MARKET_FI…
+ ❯ Object.searchItems packages/domain/src/search/item-search-service.ts:125:9
+ ❯ packages/domain/src/search/duplicate-filter.integration.test.ts:18:350
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/7]⎯
+
+ FAIL  |workspace| packages/domain/src/search/duplicate-filter.integration.test.ts > actual private duplicate-filter semantics > rechecks real mark/unmark and pre-cursor totals on an exhausted page
+FilterValidationError: FILTER_UNAVAILABLE
+ ❯ validateCurrentFilterAvailability packages/domain/src/search/filter-ast.ts:33:13
+     31|       pending.push(node.child);
+     32|     } else if (node.kind === "duplicate") {
+     33|       throw new FilterValidationError("FILTER_UNAVAILABLE", "DUPLICATE…
+       |             ^
+     34|     } else if (node.kind === "marketMoney" && !marketPrepared) {
+     35|       throw new FilterValidationError("FILTER_UNAVAILABLE", "MARKET_FI…
+ ❯ Object.searchItems packages/domain/src/search/item-search-service.ts:125:9
+ ❯ packages/domain/src/search/duplicate-filter.integration.test.ts:19:233
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/7]⎯
+
+ FAIL  |workspace| packages/domain/src/search/duplicate-filter.integration.test.ts > actual private duplicate-filter semantics > does not grant private duplicate inference to a collection member and retires pairs on actual transfer
+FilterValidationError: FILTER_UNAVAILABLE
+ ❯ validateCurrentFilterAvailability packages/domain/src/search/filter-ast.ts:33:13
+     31|       pending.push(node.child);
+     32|     } else if (node.kind === "duplicate") {
+     33|       throw new FilterValidationError("FILTER_UNAVAILABLE", "DUPLICATE…
+       |             ^
+     34|     } else if (node.kind === "marketMoney" && !marketPrepared) {
+     35|       throw new FilterValidationError("FILTER_UNAVAILABLE", "MARKET_FI…
+ ❯ Object.searchItems packages/domain/src/search/item-search-service.ts:125:9
+ ❯ packages/domain/src/search/duplicate-filter.integration.test.ts:20:412
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/7]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  7 failed (7)
+   Start at  18:02:10
+   Duration  1.38s (transform 287ms, setup 7ms, collect 529ms, tests 627ms, environment 0ms, prepare 55ms)
+

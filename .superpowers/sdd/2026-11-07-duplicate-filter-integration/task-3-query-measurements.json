@@ -1,0 +1,134 @@
+[
+  {
+    "ownedItems": 1,
+    "explicitPairs": 0,
+    "results": [
+      {
+        "value": true,
+        "total": 0,
+        "elapsedMs": 4.469333000000006,
+        "rawCallsIncludingConfiguration": 11
+      },
+      {
+        "value": false,
+        "total": 1,
+        "elapsedMs": 4.095166999999947,
+        "rawCallsIncludingConfiguration": 11
+      }
+    ],
+    "plans": [
+      {
+        "query": "SELECT count(*) AS total FROM \"CollectibleItem\" i JOIN \"Collection\" c ON c.id=i.\"collectionId\" AND c.\"ownerId\"=i.\"ownerId\" WHERE ((i.\"ownerId\"=$1 AND c.\"ownerId\"=$2 AND i.\"deletedAt\" IS NULL AND c.\"deletedAt\" IS NULL AND i.\"archivedAt\" IS NULL AND i.\"disposedAt\" IS NULL) AND EXISTS(SELECT 1 FROM \"DuplicateRelation\" d JOIN \"CollectibleItem\" a ON a.id=d.\"itemAId\" JOIN \"Collection\" ac ON ac.id=a.\"collectionId\" AND ac.\"ownerId\"=a.\"ownerId\" JOIN \"CollectibleItem\" b ON b.id=d.\"itemBId\" JOIN \"Collection\" bc ON bc.id=b.\"collectionId\" AND bc.\"ownerId\"=b.\"ownerId\" WHERE d.\"ownerId\"=$3 AND (d.\"itemAId\"=i.id OR d.\"itemBId\"=i.id) AND a.\"ownerId\"=$4 AND b.\"ownerId\"=$5 AND a.\"deletedAt\" IS NULL AND b.\"deletedAt\" IS NULL AND ac.\"deletedAt\" IS NULL AND bc.\"deletedAt\" IS NULL) AND TRUE)",
+        "executionMs": 0.04,
+        "sharedHitBlocks": 9,
+        "tempWrittenBlocks": 0
+      },
+      {
+        "query": "SELECT i.id,i.title,i.\"collectionId\",i.\"categoryTemplateId\",i.\"conditionOptionId\",i.quantity,i.visibility,i.\"tradeStatus\",i.\"archivedAt\",i.\"disposedAt\",i.\"createdAt\",i.\"updatedAt\" FROM \"CollectibleItem\" i JOIN \"Collection\" c ON c.id=i.\"collectionId\" AND c.\"ownerId\"=i.\"ownerId\" WHERE ((i.\"ownerId\"=$1 AND c.\"ownerId\"=$2 AND i.\"deletedAt\" IS NULL AND c.\"deletedAt\" IS NULL AND i.\"archivedAt\" IS NULL AND i.\"disposedAt\" IS NULL) AND EXISTS(SELECT 1 FROM \"DuplicateRelation\" d JOIN \"CollectibleItem\" a ON a.id=d.\"itemAId\" JOIN \"Collection\" ac ON ac.id=a.\"collectionId\" AND ac.\"ownerId\"=a.\"ownerId\" JOIN \"CollectibleItem\" b ON b.id=d.\"itemBId\" JOIN \"Collection\" bc ON bc.id=b.\"collectionId\" AND bc.\"ownerId\"=b.\"ownerId\" WHERE d.\"ownerId\"=$3 AND (d.\"itemAId\"=i.id OR d.\"itemBId\"=i.id) AND a.\"ownerId\"=$4 AND b.\"ownerId\"=$5 AND a.\"deletedAt\" IS NULL AND b.\"deletedAt\" IS NULL AND ac.\"deletedAt\" IS NULL AND bc.\"deletedAt\" IS NULL) AND TRUE) AND TRUE ORDER BY i.\"createdAt\" DESC,i.id DESC LIMIT $6",
+        "executionMs": 0.032,
+        "sharedHitBlocks": 9,
+        "tempWrittenBlocks": 0
+      },
+      {
+        "query": "SELECT count(*) AS total FROM \"CollectibleItem\" i JOIN \"Collection\" c ON c.id=i.\"collectionId\" AND c.\"ownerId\"=i.\"ownerId\" WHERE ((i.\"ownerId\"=$1 AND c.\"ownerId\"=$2 AND i.\"deletedAt\" IS NULL AND c.\"deletedAt\" IS NULL AND i.\"archivedAt\" IS NULL AND i.\"disposedAt\" IS NULL) AND NOT (EXISTS(SELECT 1 FROM \"DuplicateRelation\" d JOIN \"CollectibleItem\" a ON a.id=d.\"itemAId\" JOIN \"Collection\" ac ON ac.id=a.\"collectionId\" AND ac.\"ownerId\"=a.\"ownerId\" JOIN \"CollectibleItem\" b ON b.id=d.\"itemBId\" JOIN \"Collection\" bc ON bc.id=b.\"collectionId\" AND bc.\"ownerId\"=b.\"ownerId\" WHERE d.\"ownerId\"=$3 AND (d.\"itemAId\"=i.id OR d.\"itemBId\"=i.id) AND a.\"ownerId\"=$4 AND b.\"ownerId\"=$5 AND a.\"deletedAt\" IS NULL AND b.\"deletedAt\" IS NULL AND ac.\"deletedAt\" IS NULL AND bc.\"deletedAt\" IS NULL)) AND TRUE)",
+        "executionMs": 0.038,
+        "sharedHitBlocks": 9,
+        "tempWrittenBlocks": 0
+      },
+      {
+        "query": "SELECT i.id,i.title,i.\"collectionId\",i.\"categoryTemplateId\",i.\"conditionOptionId\",i.quantity,i.visibility,i.\"tradeStatus\",i.\"archivedAt\",i.\"disposedAt\",i.\"createdAt\",i.\"updatedAt\" FROM \"CollectibleItem\" i JOIN \"Collection\" c ON c.id=i.\"collectionId\" AND c.\"ownerId\"=i.\"ownerId\" WHERE ((i.\"ownerId\"=$1 AND c.\"ownerId\"=$2 AND i.\"deletedAt\" IS NULL AND c.\"deletedAt\" IS NULL AND i.\"archivedAt\" IS NULL AND i.\"disposedAt\" IS NULL) AND NOT (EXISTS(SELECT 1 FROM \"DuplicateRelation\" d JOIN \"CollectibleItem\" a ON a.id=d.\"itemAId\" JOIN \"Collection\" ac ON ac.id=a.\"collectionId\" AND ac.\"ownerId\"=a.\"ownerId\" JOIN \"CollectibleItem\" b ON b.id=d.\"itemBId\" JOIN \"Collection\" bc ON bc.id=b.\"collectionId\" AND bc.\"ownerId\"=b.\"ownerId\" WHERE d.\"ownerId\"=$3 AND (d.\"itemAId\"=i.id OR d.\"itemBId\"=i.id) AND a.\"ownerId\"=$4 AND b.\"ownerId\"=$5 AND a.\"deletedAt\" IS NULL AND b.\"deletedAt\" IS NULL AND ac.\"deletedAt\" IS NULL AND bc.\"deletedAt\" IS NULL)) AND TRUE) AND TRUE ORDER BY i.\"createdAt\" DESC,i.id DESC LIMIT $6",
+        "executionMs": 0.029,
+        "sharedHitBlocks": 9,
+        "tempWrittenBlocks": 0
+      }
+    ]
+  },
+  {
+    "ownedItems": 50,
+    "explicitPairs": 25,
+    "results": [
+      {
+        "value": true,
+        "total": 50,
+        "elapsedMs": 7.470624999999927,
+        "rawCallsIncludingConfiguration": 11
+      },
+      {
+        "value": false,
+        "total": 0,
+        "elapsedMs": 7.121958000000177,
+        "rawCallsIncludingConfiguration": 11
+      }
+    ],
+    "plans": [
+      {
+        "query": "SELECT count(*) AS total FROM \"CollectibleItem\" i JOIN \"Collection\" c ON c.id=i.\"collectionId\" AND c.\"ownerId\"=i.\"ownerId\" WHERE ((i.\"ownerId\"=$1 AND c.\"ownerId\"=$2 AND i.\"deletedAt\" IS NULL AND c.\"deletedAt\" IS NULL AND i.\"archivedAt\" IS NULL AND i.\"disposedAt\" IS NULL) AND EXISTS(SELECT 1 FROM \"DuplicateRelation\" d JOIN \"CollectibleItem\" a ON a.id=d.\"itemAId\" JOIN \"Collection\" ac ON ac.id=a.\"collectionId\" AND ac.\"ownerId\"=a.\"ownerId\" JOIN \"CollectibleItem\" b ON b.id=d.\"itemBId\" JOIN \"Collection\" bc ON bc.id=b.\"collectionId\" AND bc.\"ownerId\"=b.\"ownerId\" WHERE d.\"ownerId\"=$3 AND (d.\"itemAId\"=i.id OR d.\"itemBId\"=i.id) AND a.\"ownerId\"=$4 AND b.\"ownerId\"=$5 AND a.\"deletedAt\" IS NULL AND b.\"deletedAt\" IS NULL AND ac.\"deletedAt\" IS NULL AND bc.\"deletedAt\" IS NULL) AND TRUE)",
+        "executionMs": 1.906,
+        "sharedHitBlocks": 4771,
+        "tempWrittenBlocks": 0
+      },
+      {
+        "query": "SELECT i.id,i.title,i.\"collectionId\",i.\"categoryTemplateId\",i.\"conditionOptionId\",i.quantity,i.visibility,i.\"tradeStatus\",i.\"archivedAt\",i.\"disposedAt\",i.\"createdAt\",i.\"updatedAt\" FROM \"CollectibleItem\" i JOIN \"Collection\" c ON c.id=i.\"collectionId\" AND c.\"ownerId\"=i.\"ownerId\" WHERE ((i.\"ownerId\"=$1 AND c.\"ownerId\"=$2 AND i.\"deletedAt\" IS NULL AND c.\"deletedAt\" IS NULL AND i.\"archivedAt\" IS NULL AND i.\"disposedAt\" IS NULL) AND EXISTS(SELECT 1 FROM \"DuplicateRelation\" d JOIN \"CollectibleItem\" a ON a.id=d.\"itemAId\" JOIN \"Collection\" ac ON ac.id=a.\"collectionId\" AND ac.\"ownerId\"=a.\"ownerId\" JOIN \"CollectibleItem\" b ON b.id=d.\"itemBId\" JOIN \"Collection\" bc ON bc.id=b.\"collectionId\" AND bc.\"ownerId\"=b.\"ownerId\" WHERE d.\"ownerId\"=$3 AND (d.\"itemAId\"=i.id OR d.\"itemBId\"=i.id) AND a.\"ownerId\"=$4 AND b.\"ownerId\"=$5 AND a.\"deletedAt\" IS NULL AND b.\"deletedAt\" IS NULL AND ac.\"deletedAt\" IS NULL AND bc.\"deletedAt\" IS NULL) AND TRUE) AND TRUE ORDER BY i.\"createdAt\" DESC,i.id DESC LIMIT $6",
+        "executionMs": 1.896,
+        "sharedHitBlocks": 4771,
+        "tempWrittenBlocks": 0
+      },
+      {
+        "query": "SELECT count(*) AS total FROM \"CollectibleItem\" i JOIN \"Collection\" c ON c.id=i.\"collectionId\" AND c.\"ownerId\"=i.\"ownerId\" WHERE ((i.\"ownerId\"=$1 AND c.\"ownerId\"=$2 AND i.\"deletedAt\" IS NULL AND c.\"deletedAt\" IS NULL AND i.\"archivedAt\" IS NULL AND i.\"disposedAt\" IS NULL) AND NOT (EXISTS(SELECT 1 FROM \"DuplicateRelation\" d JOIN \"CollectibleItem\" a ON a.id=d.\"itemAId\" JOIN \"Collection\" ac ON ac.id=a.\"collectionId\" AND ac.\"ownerId\"=a.\"ownerId\" JOIN \"CollectibleItem\" b ON b.id=d.\"itemBId\" JOIN \"Collection\" bc ON bc.id=b.\"collectionId\" AND bc.\"ownerId\"=b.\"ownerId\" WHERE d.\"ownerId\"=$3 AND (d.\"itemAId\"=i.id OR d.\"itemBId\"=i.id) AND a.\"ownerId\"=$4 AND b.\"ownerId\"=$5 AND a.\"deletedAt\" IS NULL AND b.\"deletedAt\" IS NULL AND ac.\"deletedAt\" IS NULL AND bc.\"deletedAt\" IS NULL)) AND TRUE)",
+        "executionMs": 1.874,
+        "sharedHitBlocks": 4771,
+        "tempWrittenBlocks": 0
+      },
+      {
+        "query": "SELECT i.id,i.title,i.\"collectionId\",i.\"categoryTemplateId\",i.\"conditionOptionId\",i.quantity,i.visibility,i.\"tradeStatus\",i.\"archivedAt\",i.\"disposedAt\",i.\"createdAt\",i.\"updatedAt\" FROM \"CollectibleItem\" i JOIN \"Collection\" c ON c.id=i.\"collectionId\" AND c.\"ownerId\"=i.\"ownerId\" WHERE ((i.\"ownerId\"=$1 AND c.\"ownerId\"=$2 AND i.\"deletedAt\" IS NULL AND c.\"deletedAt\" IS NULL AND i.\"archivedAt\" IS NULL AND i.\"disposedAt\" IS NULL) AND NOT (EXISTS(SELECT 1 FROM \"DuplicateRelation\" d JOIN \"CollectibleItem\" a ON a.id=d.\"itemAId\" JOIN \"Collection\" ac ON ac.id=a.\"collectionId\" AND ac.\"ownerId\"=a.\"ownerId\" JOIN \"CollectibleItem\" b ON b.id=d.\"itemBId\" JOIN \"Collection\" bc ON bc.id=b.\"collectionId\" AND bc.\"ownerId\"=b.\"ownerId\" WHERE d.\"ownerId\"=$3 AND (d.\"itemAId\"=i.id OR d.\"itemBId\"=i.id) AND a.\"ownerId\"=$4 AND b.\"ownerId\"=$5 AND a.\"deletedAt\" IS NULL AND b.\"deletedAt\" IS NULL AND ac.\"deletedAt\" IS NULL AND bc.\"deletedAt\" IS NULL)) AND TRUE) AND TRUE ORDER BY i.\"createdAt\" DESC,i.id DESC LIMIT $6",
+        "executionMs": 1.913,
+        "sharedHitBlocks": 4771,
+        "tempWrittenBlocks": 0
+      }
+    ]
+  },
+  {
+    "ownedItems": 500,
+    "explicitPairs": 250,
+    "results": [
+      {
+        "value": true,
+        "total": 500,
+        "elapsedMs": 367.0902500000002,
+        "rawCallsIncludingConfiguration": 11
+      },
+      {
+        "value": false,
+        "total": 0,
+        "elapsedMs": 364.87350000000015,
+        "rawCallsIncludingConfiguration": 11
+      }
+    ],
+    "plans": [
+      {
+        "query": "SELECT count(*) AS total FROM \"CollectibleItem\" i JOIN \"Collection\" c ON c.id=i.\"collectionId\" AND c.\"ownerId\"=i.\"ownerId\" WHERE ((i.\"ownerId\"=$1 AND c.\"ownerId\"=$2 AND i.\"deletedAt\" IS NULL AND c.\"deletedAt\" IS NULL AND i.\"archivedAt\" IS NULL AND i.\"disposedAt\" IS NULL) AND EXISTS(SELECT 1 FROM \"DuplicateRelation\" d JOIN \"CollectibleItem\" a ON a.id=d.\"itemAId\" JOIN \"Collection\" ac ON ac.id=a.\"collectionId\" AND ac.\"ownerId\"=a.\"ownerId\" JOIN \"CollectibleItem\" b ON b.id=d.\"itemBId\" JOIN \"Collection\" bc ON bc.id=b.\"collectionId\" AND bc.\"ownerId\"=b.\"ownerId\" WHERE d.\"ownerId\"=$3 AND (d.\"itemAId\"=i.id OR d.\"itemBId\"=i.id) AND a.\"ownerId\"=$4 AND b.\"ownerId\"=$5 AND a.\"deletedAt\" IS NULL AND b.\"deletedAt\" IS NULL AND ac.\"deletedAt\" IS NULL AND bc.\"deletedAt\" IS NULL) AND TRUE)",
+        "executionMs": 208.408,
+        "sharedHitBlocks": 631899,
+        "tempWrittenBlocks": 0
+      },
+      {
+        "query": "SELECT i.id,i.title,i.\"collectionId\",i.\"categoryTemplateId\",i.\"conditionOptionId\",i.quantity,i.visibility,i.\"tradeStatus\",i.\"archivedAt\",i.\"disposedAt\",i.\"createdAt\",i.\"updatedAt\" FROM \"CollectibleItem\" i JOIN \"Collection\" c ON c.id=i.\"collectionId\" AND c.\"ownerId\"=i.\"ownerId\" WHERE ((i.\"ownerId\"=$1 AND c.\"ownerId\"=$2 AND i.\"deletedAt\" IS NULL AND c.\"deletedAt\" IS NULL AND i.\"archivedAt\" IS NULL AND i.\"disposedAt\" IS NULL) AND EXISTS(SELECT 1 FROM \"DuplicateRelation\" d JOIN \"CollectibleItem\" a ON a.id=d.\"itemAId\" JOIN \"Collection\" ac ON ac.id=a.\"collectionId\" AND ac.\"ownerId\"=a.\"ownerId\" JOIN \"CollectibleItem\" b ON b.id=d.\"itemBId\" JOIN \"Collection\" bc ON bc.id=b.\"collectionId\" AND bc.\"ownerId\"=b.\"ownerId\" WHERE d.\"ownerId\"=$3 AND (d.\"itemAId\"=i.id OR d.\"itemBId\"=i.id) AND a.\"ownerId\"=$4 AND b.\"ownerId\"=$5 AND a.\"deletedAt\" IS NULL AND b.\"deletedAt\" IS NULL AND ac.\"deletedAt\" IS NULL AND bc.\"deletedAt\" IS NULL) AND TRUE) AND TRUE ORDER BY i.\"createdAt\" DESC,i.id DESC LIMIT $6",
+        "executionMs": 208.344,
+        "sharedHitBlocks": 631899,
+        "tempWrittenBlocks": 0
+      },
+      {
+        "query": "SELECT count(*) AS total FROM \"CollectibleItem\" i JOIN \"Collection\" c ON c.id=i.\"collectionId\" AND c.\"ownerId\"=i.\"ownerId\" WHERE ((i.\"ownerId\"=$1 AND c.\"ownerId\"=$2 AND i.\"deletedAt\" IS NULL AND c.\"deletedAt\" IS NULL AND i.\"archivedAt\" IS NULL AND i.\"disposedAt\" IS NULL) AND NOT (EXISTS(SELECT 1 FROM \"DuplicateRelation\" d JOIN \"CollectibleItem\" a ON a.id=d.\"itemAId\" JOIN \"Collection\" ac ON ac.id=a.\"collectionId\" AND ac.\"ownerId\"=a.\"ownerId\" JOIN \"CollectibleItem\" b ON b.id=d.\"itemBId\" JOIN \"Collection\" bc ON bc.id=b.\"collectionId\" AND bc.\"ownerId\"=b.\"ownerId\" WHERE d.\"ownerId\"=$3 AND (d.\"itemAId\"=i.id OR d.\"itemBId\"=i.id) AND a.\"ownerId\"=$4 AND b.\"ownerId\"=$5 AND a.\"deletedAt\" IS NULL AND b.\"deletedAt\" IS NULL AND ac.\"deletedAt\" IS NULL AND bc.\"deletedAt\" IS NULL)) AND TRUE)",
+        "executionMs": 208.133,
+        "sharedHitBlocks": 631899,
+        "tempWrittenBlocks": 0
+      },
+      {
+        "query": "SELECT i.id,i.title,i.\"collectionId\",i.\"categoryTemplateId\",i.\"conditionOptionId\",i.quantity,i.visibility,i.\"tradeStatus\",i.\"archivedAt\",i.\"disposedAt\",i.\"createdAt\",i.\"updatedAt\" FROM \"CollectibleItem\" i JOIN \"Collection\" c ON c.id=i.\"collectionId\" AND c.\"ownerId\"=i.\"ownerId\" WHERE ((i.\"ownerId\"=$1 AND c.\"ownerId\"=$2 AND i.\"deletedAt\" IS NULL AND c.\"deletedAt\" IS NULL AND i.\"archivedAt\" IS NULL AND i.\"disposedAt\" IS NULL) AND NOT (EXISTS(SELECT 1 FROM \"DuplicateRelation\" d JOIN \"CollectibleItem\" a ON a.id=d.\"itemAId\" JOIN \"Collection\" ac ON ac.id=a.\"collectionId\" AND ac.\"ownerId\"=a.\"ownerId\" JOIN \"CollectibleItem\" b ON b.id=d.\"itemBId\" JOIN \"Collection\" bc ON bc.id=b.\"collectionId\" AND bc.\"ownerId\"=b.\"ownerId\" WHERE d.\"ownerId\"=$3 AND (d.\"itemAId\"=i.id OR d.\"itemBId\"=i.id) AND a.\"ownerId\"=$4 AND b.\"ownerId\"=$5 AND a.\"deletedAt\" IS NULL AND b.\"deletedAt\" IS NULL AND ac.\"deletedAt\" IS NULL AND bc.\"deletedAt\" IS NULL)) AND TRUE) AND TRUE ORDER BY i.\"createdAt\" DESC,i.id DESC LIMIT $6",
+        "executionMs": 209.605,
+        "sharedHitBlocks": 631899,
+        "tempWrittenBlocks": 0
+      }
+    ]
+  }
+]

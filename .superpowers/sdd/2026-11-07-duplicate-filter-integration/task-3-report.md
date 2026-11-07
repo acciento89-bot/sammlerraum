@@ -1,0 +1,5 @@
+# Duplicate final local verification
+
+Implementation and one whole-plan review/consolidated root correction locally closed. Actual12native duplicate cases include overlapping pair/cardinality and stable MVCC count/page across concurrent unmark. Guarded1/50/500fixtures retain full PostgreSQL count/page EXPLAIN plans and compact measurements; fixed11raw/config calls/request. Final529related native checks,1655regular checks, types/lint, worker/web builds and8actual compiled desktop/mobile DE/EN checks pass. Counts overlap, not summed. Regular1107native-disabled cases are not database proof. All18prior migrations preserved; no schema/index/provider activation. Original historical proof bytes restored with current variants retained.
+
+Task3 exact remote CI remains pending until the new pushed SHA actually succeeds. The prior market617aa5c CI42393762009 is completeSUCCESS. Shared search bulk authorization/field inference remains the next independent prerequisite, not waived. Canonical63/91 unchanged.

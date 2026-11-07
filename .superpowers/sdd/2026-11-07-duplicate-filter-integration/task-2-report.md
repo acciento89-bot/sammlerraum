@@ -1,0 +1,7 @@
+# Duplicate Task2 — actual saved/dashboard/API and responsive controls
+
+Existing mixed compiler and bounded transaction path now supports live duplicate facts throughout owned and saved queries and dashboard selection. Actual mark/unmark changes saved resolution; selected item/unit counts are separate from the existing full-own pair count. No pair IDs/other endpoint facts enter ItemSummary. Localized true/false controls enable only duplicate; market controls and actual independent rights remain disabled by default.
+
+Initial pure RED2failed/241passed after writing Boolean round-trip/availability checks and real saved/dashboard native cases. Expanded330PASS/8files15.50s includes235draft,8duplicate and all relevant native API/saved/dashboard cohorts. Old unavailable-family fixtures were updated from newly implemented duplicate to still-unavailable default market leaves, retaining the same generic422/no-store/reference/privacy checks rather than dropping them. Structural duplicate-key/version/complexity tests remain unchanged.
+
+Root types/lint/worker+web production buildsPASS. Actual compiled browser8PASS13.1s:4new DE/EN desktop/mobile Boolean/live mark/unmark cases and4old full-tree unavailable repair/retry cases now using market. Real test actors, database producers and web requests used; no response mocking for the duplicate journey. Screenshots retained in this workspace. Task3 performance/final review/exact CI remains pending; canonical63/91 unchanged.
