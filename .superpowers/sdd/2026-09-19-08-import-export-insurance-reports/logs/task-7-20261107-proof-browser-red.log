@@ -1,0 +1,44 @@
+[WebServer] (node:88097) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:88098) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:88109) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [desktop] › e2e/import-report.spec.ts:110:3 › real import, export and private report flow › insurance and explicit-field PDF stay private and real CSV/XLSX downloads work (7.3s)
+
+
+  1) [desktop] › e2e/import-report.spec.ts:110:3 › real import, export and private report flow › insurance and explicit-field PDF stay private and real CSV/XLSX downloads work 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('button', { name: 'Belege laden', exact: true })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('button', { name: 'Belege laden', exact: true }) with timeout 5000ms
+      - waiting for getByRole('button', { name: 'Belege laden', exact: true })
+
+
+      186 |       await page.getByRole("checkbox", { name: "Versicherungsdaten", exact: true }).check();
+      187 |       await page.getByRole("checkbox",{name:"Belege",exact:true}).check();
+    > 188 |       await expect(page.getByRole("button",{name:"Belege laden",exact:true})).toBeVisible();
+          |                                                                               ^
+      189 |       await page.getByRole("button",{name:"Belege laden",exact:true}).click();
+      190 |       await page.getByRole("checkbox",{name:/Browser proof\.pdf/u}).check();
+      191 |
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/import-report.spec.ts:188:79
+
+    Error Context: test-results/import-report-real-import--aa9ae-eal-CSV-XLSX-downloads-work-desktop/error-context.md
+
+    Error Context: test-results/import-report-real-import--aa9ae-eal-CSV-XLSX-downloads-work-desktop/error-context.md
+
+  1 failed
+    [desktop] › e2e/import-report.spec.ts:110:3 › real import, export and private report flow › insurance and explicit-field PDF stay private and real CSV/XLSX downloads work 
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/import-report.spec.ts --project=desktop --workers=1 --grep insurance and explicit-field

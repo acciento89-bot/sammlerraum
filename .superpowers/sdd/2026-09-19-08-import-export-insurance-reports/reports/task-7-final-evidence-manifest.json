@@ -1,0 +1,127 @@
+{
+  "capturedAt": "2026-11-07T03:10:30.110096+00:00",
+  "sourceHead": "b295fc31c1f8e089610d5b7d3605d4750389bc4e",
+  "runtime": "Actual built Next/worker + isolated synthetic owned PostgreSQL fixtures; desktop Chromium and Pixel7 browser emulation, no physical device claim",
+  "files": [
+    {
+      "path": ".superpowers/sdd/2026-09-19-08-import-export-insurance-reports/reports/task-7-screenshots/desktop-de-exports.png",
+      "bytes": 291315,
+      "sha256": "8e0deee015d5ab1d3ab63e1c4a97ed241557872815f8da9c477abd027bbcf3f4"
+    },
+    {
+      "path": ".superpowers/sdd/2026-09-19-08-import-export-insurance-reports/reports/task-7-screenshots/desktop-de-insurance.png",
+      "bytes": 426919,
+      "sha256": "51d434ec131dd262b727fd4d68d13d8fd87efe52d68f2546aa0cb7ad91e7b68c"
+    },
+    {
+      "path": ".superpowers/sdd/2026-09-19-08-import-export-insurance-reports/reports/task-7-screenshots/desktop-de-preview.png",
+      "bytes": 274060,
+      "sha256": "2dae8b64ea49a1e78a0c856f03c7ce996c1f15abda33b1e25774f944719370fe"
+    },
+    {
+      "path": ".superpowers/sdd/2026-09-19-08-import-export-insurance-reports/reports/task-7-screenshots/desktop-de-scope-search.png",
+      "bytes": 585369,
+      "sha256": "e7b2f418abfb96a40d46d1b6fa34307d083aca72468983afc4d6839be00293e5"
+    },
+    {
+      "path": ".superpowers/sdd/2026-09-19-08-import-export-insurance-reports/reports/task-7-screenshots/desktop-de-scope-subtree.png",
+      "bytes": 333607,
+      "sha256": "e5bc8af9a0bf710bcd65be9ea6c666ddc2d87e78712b89a82ac6e698c4baf285"
+    },
+    {
+      "path": ".superpowers/sdd/2026-09-19-08-import-export-insurance-reports/reports/task-7-screenshots/desktop-de-upload.png",
+      "bytes": 269000,
+      "sha256": "7f0b293c3e769c671d40b36accb8a506a49b72f75159cc92f2f5433b173ddf1c"
+    },
+    {
+      "path": ".superpowers/sdd/2026-09-19-08-import-export-insurance-reports/reports/task-7-screenshots/desktop-de-xlsx-upload.png",
+      "bytes": 355293,
+      "sha256": "12f90361c71abedc44c88f07cb93ed1b105dfeee749fa64d83a1a858e0aa659c"
+    },
+    {
+      "path": ".superpowers/sdd/2026-09-19-08-import-export-insurance-reports/reports/task-7-screenshots/desktop-en-exports.png",
+      "bytes": 286305,
+      "sha256": "e7db6a155333273a5e2c0baa4dfbf33cacfa6c6176a113a938903d7dd0b6fd80"
+    },
+    {
+      "path": ".superpowers/sdd/2026-09-19-08-import-export-insurance-reports/reports/task-7-screenshots/desktop-en-insurance.png",
+      "bytes": 411129,
+      "sha256": "cae7b2903acf62a32c361b500bfeef246ccf5e14e7b0caa544b1ceb7aa61c0d3"
+    },
+    {
+      "path": ".superpowers/sdd/2026-09-19-08-import-export-insurance-reports/reports/task-7-screenshots/desktop-en-preview.png",
+      "bytes": 270943,
+      "sha256": "c4edbaaef33e97daff525493fdb9d189a889d2c57f2cf8d694b30d7f415e7795"
+    },
+    {
+      "path": ".superpowers/sdd/2026-09-19-08-import-export-insurance-reports/reports/task-7-screenshots/desktop-en-upload.png",
+      "bytes": 251273,
+      "sha256": "5a161e12d2f62ba3879673e73b3c3c9cbef1c17ec3714108b8939c864d3c3ff5"
+    },
+    {
+      "path": ".superpowers/sdd/2026-09-19-08-import-export-insurance-reports/reports/task-7-screenshots/mobile-de-exports.png",
+      "bytes": 604062,
+      "sha256": "f2e7612870564236eeeef2ece5af4417ac69edb402c3ae82f7ed95592ac449c1"
+    },
+    {
+      "path": ".superpowers/sdd/2026-09-19-08-import-export-insurance-reports/reports/task-7-screenshots/mobile-de-insurance.png",
+      "bytes": 1168347,
+      "sha256": "4042af5ec3554b0c2d4827370e215a3848c9beffad21fc8d60c3dee40508d129"
+    },
+    {
+      "path": ".superpowers/sdd/2026-09-19-08-import-export-insurance-reports/reports/task-7-screenshots/mobile-de-preview.png",
+      "bytes": 830011,
+      "sha256": "2f1b9155e6a672c236e704d86746789971c3da3b0172928f8706ca5cf90a20f0"
+    },
+    {
+      "path": ".superpowers/sdd/2026-09-19-08-import-export-insurance-reports/reports/task-7-screenshots/mobile-de-scope-search.png",
+      "bytes": 1729698,
+      "sha256": "49a638551eecf793d05546b6396d1e941ca0d557c9e2f80a9fe734f3e861c9f6"
+    },
+    {
+      "path": ".superpowers/sdd/2026-09-19-08-import-export-insurance-reports/reports/task-7-screenshots/mobile-de-scope-subtree.png",
+      "bytes": 938873,
+      "sha256": "7683163ba0ba15e6a85281a8204b8d8d5acaab6b6e8319a725d744a4efcf3101"
+    },
+    {
+      "path": ".superpowers/sdd/2026-09-19-08-import-export-insurance-reports/reports/task-7-screenshots/mobile-de-upload.png",
+      "bytes": 685097,
+      "sha256": "339de9d9ba8c04f4f89c8eb5687b4f540298e095af938bce74bbd7919e9347cd"
+    },
+    {
+      "path": ".superpowers/sdd/2026-09-19-08-import-export-insurance-reports/reports/task-7-screenshots/mobile-de-xlsx-upload.png",
+      "bytes": 993346,
+      "sha256": "08b1b891f29e23db0d1bd39b796b660e0d5b439dabb0e9f9a6efd59b64841f69"
+    },
+    {
+      "path": ".superpowers/sdd/2026-09-19-08-import-export-insurance-reports/reports/task-7-screenshots/mobile-en-exports.png",
+      "bytes": 607126,
+      "sha256": "cc92dbf94875a85de46701ead4526ea6dc3e760d142de7fcd9b445f8ba86ccfe"
+    },
+    {
+      "path": ".superpowers/sdd/2026-09-19-08-import-export-insurance-reports/reports/task-7-screenshots/mobile-en-insurance.png",
+      "bytes": 954249,
+      "sha256": "7f427cd02fe250e973a9e8595aab2703fa20c56e314efb0ffb17a0533a3f65d9"
+    },
+    {
+      "path": ".superpowers/sdd/2026-09-19-08-import-export-insurance-reports/reports/task-7-screenshots/mobile-en-preview.png",
+      "bytes": 832677,
+      "sha256": "b6de0e5ccede5fed536252d5b665e3a044c6a490dc7eb43e73e3b3a2091fa859"
+    },
+    {
+      "path": ".superpowers/sdd/2026-09-19-08-import-export-insurance-reports/reports/task-7-screenshots/mobile-en-upload.png",
+      "bytes": 650392,
+      "sha256": "423f41ae3e7caacd14278cdf8cb77e9d3e1bcf9850f1a79def2c517935e4584b"
+    },
+    {
+      "path": ".superpowers/sdd/2026-09-19-08-import-export-insurance-reports/reports/task-7-rendered-pdf/task-7-preview-1.png",
+      "bytes": 215067,
+      "sha256": "ccf4be0cdf792846b31ac0b377519b6dcb02d2383722e16c4cf80f480a4a0f33"
+    },
+    {
+      "path": ".superpowers/sdd/2026-09-19-08-import-export-insurance-reports/reports/task-7-rendered-pdf/task-7-preview.pdf",
+      "bytes": 2458277,
+      "sha256": "3e78a2c06e6b0b0ce4e87b249c6237c58b17d157efb36b1583476c8d16ce21f4"
+    }
+  ]
+}

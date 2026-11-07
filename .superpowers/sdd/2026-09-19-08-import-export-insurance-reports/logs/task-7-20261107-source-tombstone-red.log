@@ -1,0 +1,33 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| apps/worker/src/jobs/import-source-cleanup.integration.test.ts (5 tests | 1 failed) 614ms
+   ✓ actual known-source retention and erasure > retains a known manifest through parent erasure and deletes only its own source bytes 168ms
+   ✓ actual known-source retention and erasure > does not delete while real source I/O ownership is held 46ms
+   ✓ actual known-source retention and erasure > retains a deletion failure for an actual retry instead of losing its manifest 40ms
+   ✓ actual known-source retention and erasure > expires unapproved sources but preserves an active approved commit and unrelated inventory 71ms
+   × actual known-source retention and erasure > keeps known cleanup keys beyond seven days and removes an actual late source write 35ms
+     → expected [] to have a length of 1 but got +0
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/worker/src/jobs/import-source-cleanup.integration.test.ts > actual known-source retention and erasure > keeps known cleanup keys beyond seven days and removes an actual late source write
+AssertionError: expected [] to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ apps/worker/src/jobs/import-source-cleanup.integration.test.ts:17:253
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 4 passed (5)
+   Start at  03:06:46
+   Duration  1.17s (transform 202ms, setup 7ms, collect 369ms, tests 614ms, environment 0ms, prepare 52ms)
+

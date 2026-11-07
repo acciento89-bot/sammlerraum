@@ -1,0 +1,32 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| apps/web/src/lib/import-routes.integration.test.ts (4 tests | 1 failed) 460ms
+   ✓ real owned import HTTP boundary > uploads observed bytes and exposes only owned state and parsed header 114ms
+   ✓ real owned import HTTP boundary > rejects cross-origin mutations before auth and hides another owner job 25ms
+   ✓ real owned import HTTP boundary > rejects duplicate JSON keys and query ambiguity without changing inventory 23ms
+   × real owned import HTTP boundary > refuses monetary approval when authoring is off and commits exact money only when enabled 66ms
+     → expected 202 to be 403 // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/web/src/lib/import-routes.integration.test.ts > real owned import HTTP boundary > refuses monetary approval when authoring is off and commits exact money only when enabled
+AssertionError: expected 202 to be 403 // Object.is equality
+
+- Expected
++ Received
+
+- 403
++ 202
+
+ ❯ apps/web/src/lib/import-routes.integration.test.ts:122:66
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 3 passed (4)
+   Start at  02:59:26
+   Duration  1.23s (transform 288ms, setup 7ms, collect 573ms, tests 460ms, environment 0ms, prepare 55ms)
+

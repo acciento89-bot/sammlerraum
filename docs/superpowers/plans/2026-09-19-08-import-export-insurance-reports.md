@@ -328,7 +328,7 @@ git commit -m "feat: generate insurance inventory reports"
 - Consumes: import/export/insurance/report APIs and job progress.
 - Produces: preview/mapping/conflict-resolution flow, export request/history, insurance editor, explicit PDF field selector.
 
-- [ ] **Step 1: Write failing conflict-resolution E2E**
+- [x] **Step 1: Write failing conflict-resolution E2E**
 
 ```ts
 test("import conflict requires an explicit row decision before commit", async ({ page }) => {
@@ -340,16 +340,16 @@ test("import conflict requires an explicit row decision before commit", async ({
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm --filter @sammlerraum/web exec playwright test e2e/import-report.spec.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement UI**
+- [x] **Step 3: Implement UI**
 
 Show parser/job progress, row errors, mapping-profile save/load, conflict decisions, and export history. Insurance report selector defaults all sensitive switches off and shows the exact included fields before queueing a report.
 
-- [ ] **Step 4: Run E2E/build**
+- [x] **Step 4: Run E2E/build**
 
 Run:
 ```bash
@@ -359,7 +359,7 @@ pnpm --filter @sammlerraum/web build
 
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add apps/web

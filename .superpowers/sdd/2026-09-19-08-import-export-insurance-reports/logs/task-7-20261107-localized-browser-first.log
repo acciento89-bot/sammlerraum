@@ -1,0 +1,92 @@
+[WebServer] (node:92399) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:92400) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 10 tests using 1 worker
+
+(node:92413) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [desktop] › e2e/import-report.spec.ts:90:5 › real import, export and private report flow › de: import conflict requires an explicit row decision before commit (25.9s)
+  ✓   2 [desktop] › e2e/import-report.spec.ts:242:5 › real import, export and private report flow › de: insurance and explicit-field PDF stay private and real CSV/XLSX downloads work (33.3s)
+  ✓   3 [desktop] › e2e/import-report.spec.ts:90:5 › real import, export and private report flow › en: import conflict requires an explicit row decision before commit (24.8s)
+  ✘   4 [desktop] › e2e/import-report.spec.ts:242:5 › real import, export and private report flow › en: insurance and explicit-field PDF stay private and real CSV/XLSX downloads work (31.8s)
+(node:93112) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   5 [desktop] › e2e/import-report.spec.ts:414:3 › real import, export and private report flow › own import history opens a job and cancellation leaves inventory untouched (11.8s)
+(node:93204) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] ⨯ Error: The destination stream closed early.
+[WebServer]     at ignore-listed frames {
+[WebServer]   digest: '3437032557'
+[WebServer] }
+  ✓   6 [mobile] › e2e/import-report.spec.ts:90:5 › real import, export and private report flow › de: import conflict requires an explicit row decision before commit (22.5s)
+  ✓   7 [mobile] › e2e/import-report.spec.ts:242:5 › real import, export and private report flow › de: insurance and explicit-field PDF stay private and real CSV/XLSX downloads work (38.1s)
+  ✓   8 [mobile] › e2e/import-report.spec.ts:90:5 › real import, export and private report flow › en: import conflict requires an explicit row decision before commit (21.3s)
+  ✘   9 [mobile] › e2e/import-report.spec.ts:242:5 › real import, export and private report flow › en: insurance and explicit-field PDF stay private and real CSV/XLSX downloads work (31.4s)
+(node:93570) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  10 [mobile] › e2e/import-report.spec.ts:414:3 › real import, export and private report flow › own import history opens a job and cancellation leaves inventory untouched (5.0s)
+
+
+  1) [desktop] › e2e/import-report.spec.ts:242:5 › real import, export and private report flow › en: insurance and explicit-field PDF stay private and real CSV/XLSX downloads work 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('link', { name: 'Download PDF', exact: true })
+    Expected: visible
+    Timeout: 30000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('link', { name: 'Download PDF', exact: true }) with timeout 30000ms
+      - waiting for getByRole('link', { name: 'Download PDF', exact: true })
+
+
+      356 |         await expect(
+      357 |           page.getByRole("link", { name: label("PDF herunterladen"), exact: true }),
+    > 358 |         ).toBeVisible({
+          |           ^
+      359 |           timeout: 30000,
+      360 |         });
+      361 |         await captureTransferView(page, testInfo, "exports");
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/import-report.spec.ts:358:11
+
+    Error Context: test-results/import-report-real-import--a2d1b-eal-CSV-XLSX-downloads-work-desktop/error-context.md
+
+    Error Context: test-results/import-report-real-import--a2d1b-eal-CSV-XLSX-downloads-work-desktop/error-context.md
+
+  2) [mobile] › e2e/import-report.spec.ts:242:5 › real import, export and private report flow › en: insurance and explicit-field PDF stay private and real CSV/XLSX downloads work 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('link', { name: 'Download PDF', exact: true })
+    Expected: visible
+    Timeout: 30000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('link', { name: 'Download PDF', exact: true }) with timeout 30000ms
+      - waiting for getByRole('link', { name: 'Download PDF', exact: true })
+
+
+      356 |         await page.goto(`/${locale}/exports`);
+      357 |         await expect(
+    > 358 |           page.getByRole("heading", { name: label("Exporte und Berichte"), exact: true }),
+          |           ^
+      359 |         ).toBeVisible();
+      360 |         await expect(
+      361 |           page.getByRole("link", { name: label("PDF herunterladen"), exact: true }),
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/import-report.spec.ts:358:11
+
+    Error Context: test-results/import-report-real-import--a2d1b-eal-CSV-XLSX-downloads-work-mobile/error-context.md
+
+    Error Context: test-results/import-report-real-import--a2d1b-eal-CSV-XLSX-downloads-work-mobile/error-context.md
+
+  2 failed
+    [desktop] › e2e/import-report.spec.ts:242:5 › real import, export and private report flow › en: insurance and explicit-field PDF stay private and real CSV/XLSX downloads work 
+    [mobile] › e2e/import-report.spec.ts:242:5 › real import, export and private report flow › en: insurance and explicit-field PDF stay private and real CSV/XLSX downloads work 
+  8 passed (4.2m)
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/import-report.spec.ts --project=desktop --project=mobile --workers=1

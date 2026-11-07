@@ -1,6 +1,6 @@
 # Sammlerraum V1 Completion Ledger
 
-**Stand:** 06.11.2026
+**Stand:** 07.11.2026
 **Master plan:** `docs/superpowers/plans/2026-09-19-sammlerraum-v1-master-plan.md`  
 **Canonical product/system spec:** `docs/superpowers/specs/2026-09-19-sammlerraum-design.md`  
 **SEO/Search Console spec:** `docs/superpowers/specs/2026-09-19-seo-search-console-design.md`
@@ -18,7 +18,7 @@ This is the handoff/status file for long-running implementation. Update it after
 | 05 | Catalog, Condition & Grading | 7 | complete (7/7) | — |
 | 06 | Valuations & Market Data | 6 | complete (6/6) | — |
 | 07 | Search, Smart Collections & Dashboard | 5 | in progress (1/5) | Task 2 |
-| 08 | Import, Export, Insurance & Reports | 7 | in progress (6/7) | Task 7 |
+| 08 | Import, Export, Insurance & Reports | 7 | complete (7/7) | — |
 | 09 | Collaboration, Sharing & Audit | 7 | not started | Task 1 |
 | 10 | Community, Moderation & Notifications | 8 | not started | Task 1 |
 | 11 | AI-Assisted Capture | 5 | not started | Task 1 |
@@ -77,8 +77,9 @@ This is the handoff/status file for long-running implementation. Update it after
 - [x] P08 T04 — Owned bounded CSV/XLSX export source, durable private artifacts and retry-safe producer
 - [x] P08 T05 — Revisioned private collection/item insurance with exact money and safe clearing
 - [x] P08 T06 — Selected protected PDF inventory reports with actual rendering and evidence attachments
+- [x] P08 T07 — Actual private upload/profile/preview/approval/cancellation, artifact delivery/retention and localized insurance/report workflows
 
-**Verified completion: 47/91 tasks.** Later tasks remain open as listed in the phase table and detail plans.
+**Verified completion: 48/91 tasks.** Later tasks remain open as listed in the phase table and detail plans.
 
 ## Update rule
 
@@ -1066,3 +1067,14 @@ Source24ce8462cafcbd66b82c9a0a50b36c343649cd69: explicit selected projection, ac
 Actual3page A4 image/Unicode PDF independently parsed/rendered and visually checked on first/last pages. Full-font embedding fixes a genuine raster defect missed by text extraction; genuine header-raster RED492pixels is retained. Pinned MIT PDF runtime and unchanged OFL fonts/notices/provenance reach built dist and final Docker COPY. Source glyph coverage is finite; unsupported text fails rather than producing missing glyphs. No universal script, PDF/A or professional-appraisal claim.
 
 Shared-base types, full lint, actual worker/web builds passed. Whole native allowlist80files:902PASS/1existing clock-conditional skip152.55s; regular1530PASS/774native-disabled13.26s;22built DE/EN desktop/mobile inventory browser casesPASS31.7s. The skipped pre-existing market permit case “hour-only carry preserves the already charged same-day count” intentionally cannot run during UTC hour00; execute its scoped file after01UTC while continuing Task7, before whole-plan release. No zero-skip whole-native claim. All13new report native cases passed; final task-done25PDF/insurance casesPASS. Root source review under inline workflow; next independent whole remaining-plan review follows Task7. Task6 locally accepted47/91, Phase08sixofseven. Actual report/download/history/UI/expiry integration remains Task7, no deployment/main application merge. Task5 exact998791c workflows42311819462/42311812949 bothSUCCESS.
+
+
+## 07 November 2026 — Phase08 connected private workflows locally accepted
+
+Source checkpoints e313453 and b2d7faa; one root review-fix source b295fc31c1f8e089610d5b7d3605d4750389bc4e. Actual source-byte upload, frozen profiles, row decisions/approval, ongoing job history/cancellation, durable parse/commit dispatch, exact-source cleanup and protected private export/PDF downloads are connected to the DE/EN UI. Explicit money/date semantics and independent insurance/proof selection remain fail-closed. Source cleanup manifests survive parent removal and retain only exact internal tombstones, with physical-I/O locks and no arbitrary filesystem scan. Selected evidence and captured item/collection access are rechecked before and after download reads; ordinary title/value edits preserve as-of snapshots.
+
+One fresh independent whole-phase review b2d7faa:0Critical/3Important/3Minor, original With fixes retained. Root accepted all three Important findings and closed them in one genuine RED→GREEN pass: captured member/proof erasure13nativePASS; named multi-sheet XLSX and applied-search/subtree exports6real desktop/mobilePASS. Root adjudicated every declined judgment. No second independent PASS claimed. Three explicit deferred minors remain in task-7-whole-phase-review.md/progress.md for later hardening: saved-choice placeholder recovery, filtering unavailable MERGE fields, bounded already-FAILED duplicate retries without inventory writes.
+
+Final gate:948nativePASS/86files/0skip(151.24s),1531regularPASS/819explicit native-disabled cases, wholeworkspace types/lint/productionbuildPASS. Task-done runs the combined38actual built browser cases (16new integration+22existing inventory), allPASS0skip6.4min, including DE/EN desktop/mobile, valid private PDF evidence and CSV/XLSX downloads, named sheet selection, all25search matches across a20-row page, subtree descendants without siblings. Actual screenshots/source/artifact hashes retained; no physical-phone/Safari/production-capacity claim. Original failure evidence retained, two large closed records losslessly compressed with SHA/decompression receipts. PriorTask6 UTC00 conditional follow-up actually ran15PASS/0skip; final full suite also0skip.
+
+Root locally accepts Task7 and Phase08:48/91, sevenofseven. Exact new remoteCI still follows authorized source publication to existing DraftPR1; main gets only this ledger, never application source. Phase07 sharing/community/relations and all later plans remain open. No deployment, real provider/account operation, other app/store work or monitoring automation.

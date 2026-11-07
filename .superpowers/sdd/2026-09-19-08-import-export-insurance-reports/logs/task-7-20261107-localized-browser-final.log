@@ -1,0 +1,27 @@
+[WebServer] (node:93872) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:93873) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 10 tests using 1 worker
+
+(node:93884) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [desktop] › e2e/import-report.spec.ts:94:5 › real import, export and private report flow › de: import conflict requires an explicit row decision before commit (25.6s)
+  ✓   2 [desktop] › e2e/import-report.spec.ts:246:5 › real import, export and private report flow › de: insurance and explicit-field PDF stay private and real CSV/XLSX downloads work (35.4s)
+  ✓   3 [desktop] › e2e/import-report.spec.ts:94:5 › real import, export and private report flow › en: import conflict requires an explicit row decision before commit (22.7s)
+  ✓   4 [desktop] › e2e/import-report.spec.ts:246:5 › real import, export and private report flow › en: insurance and explicit-field PDF stay private and real CSV/XLSX downloads work (38.1s)
+  ✓   5 [desktop] › e2e/import-report.spec.ts:418:3 › real import, export and private report flow › own import history opens a job and cancellation leaves inventory untouched (10.8s)
+(node:94327) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] ⨯ Error: The destination stream closed early.
+[WebServer]     at ignore-listed frames {
+[WebServer]   digest: '3437032557'
+[WebServer] }
+  ✓   6 [mobile] › e2e/import-report.spec.ts:94:5 › real import, export and private report flow › de: import conflict requires an explicit row decision before commit (22.5s)
+  ✓   7 [mobile] › e2e/import-report.spec.ts:246:5 › real import, export and private report flow › de: insurance and explicit-field PDF stay private and real CSV/XLSX downloads work (36.0s)
+  ✓   8 [mobile] › e2e/import-report.spec.ts:94:5 › real import, export and private report flow › en: import conflict requires an explicit row decision before commit (25.0s)
+  ✓   9 [mobile] › e2e/import-report.spec.ts:246:5 › real import, export and private report flow › en: insurance and explicit-field PDF stay private and real CSV/XLSX downloads work (36.1s)
+  ✓  10 [mobile] › e2e/import-report.spec.ts:418:3 › real import, export and private report flow › own import history opens a job and cancellation leaves inventory untouched (11.8s)
+
+  10 passed (4.4m)

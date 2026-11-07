@@ -1,0 +1,38 @@
+[WebServer] (node:93662) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:93663) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:93675) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [mobile] › e2e/import-report.spec.ts:246:5 › real import, export and private report flow › de: insurance and explicit-field PDF stay private and real CSV/XLSX downloads work (1.8s)
+
+
+  1) [mobile] › e2e/import-report.spec.ts:246:5 › real import, export and private report flow › de: insurance and explicit-field PDF stay private and real CSV/XLSX downloads work 
+
+    Error: expect(received).toBeLessThanOrEqual(expected)
+
+    Expected: <= 32
+    Received:    342.8125
+
+      15 |   for (const checkbox of await page.locator(".transfer-shell input[type=checkbox]").all()) {
+      16 |     const box = await checkbox.boundingBox();
+    > 17 |     expect(box?.width).toBeLessThanOrEqual(32);
+         |                        ^
+      18 |   }
+      19 |   const directory = new URL(
+      20 |     "../../../.superpowers/sdd/2026-09-19-08-import-export-insurance-reports/reports/task-7-screenshots/",
+        at captureTransferView (/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/import-report.spec.ts:17:24)
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/import-report.spec.ts:351:9
+
+    Error Context: test-results/import-report-real-import--c85f8-eal-CSV-XLSX-downloads-work-mobile/error-context.md
+
+    Error Context: test-results/import-report-real-import--c85f8-eal-CSV-XLSX-downloads-work-mobile/error-context.md
+
+  1 failed
+    [mobile] › e2e/import-report.spec.ts:246:5 › real import, export and private report flow › de: insurance and explicit-field PDF stay private and real CSV/XLSX downloads work 
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/import-report.spec.ts --project=mobile --workers=1 --grep de: insurance

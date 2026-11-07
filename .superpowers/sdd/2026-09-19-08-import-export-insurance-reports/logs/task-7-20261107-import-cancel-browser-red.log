@@ -1,0 +1,44 @@
+[WebServer] (node:90568) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:90569) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:90581) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [desktop] › e2e/import-report.spec.ts:264:2 › real import, export and private report flow › own import history opens a job and cancellation leaves inventory untouched (17.9s)
+
+
+  1) [desktop] › e2e/import-report.spec.ts:264:2 › real import, export and private report flow › own import history opens a job and cancellation leaves inventory untouched 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('link', { name: /cancel-source\.csv/u })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('link', { name: /cancel-source\.csv/u }) with timeout 5000ms
+      - waiting for getByRole('link', { name: /cancel-source\.csv/u })
+
+
+      269 |    const collection=await db.collection.create({data:{ownerId:userId,name:'Cancel Browser Collection'}});
+      270 |    await page.goto('/de/imports');await page.getByLabel('Zielsammlung',{exact:true}).selectOption(collection.id);await page.getByLabel('Datei auswählen',{exact:true}).setInputFiles({name:'cancel-source.csv',mimeType:'text/csv',buffer:Buffer.from('Title\nDo not import\n')});await page.getByRole('button',{name:'Datei hochladen',exact:true}).click();await expect(page.getByLabel('Titelspalte',{exact:true})).toBeVisible({timeout:30000});knownJobId=new URL(page.url()).pathname.split('/').at(-1)!;
+    > 271 |    await page.goto('/de/imports');await expect(page.getByRole('link',{name:/cancel-source\.csv/u})).toBeVisible();await page.getByRole('link',{name:/cancel-source\.csv/u}).click();
+          |                                                                                                     ^
+      272 |    await expect(page.getByRole('button',{name:'Import abbrechen',exact:true})).toBeVisible();const cancelled=page.waitForResponse(r=>r.url().endsWith('/api/v1/imports/cancel')&&r.request().method()==='POST');await page.getByRole('button',{name:'Import abbrechen',exact:true}).click();const response=await cancelled;expect(response.status()).toBe(200);expect((await response.json()).status).toBe('CANCELLED');await expect(page.getByText('Import abgebrochen',{exact:true})).toBeVisible();expect(await db.collectibleItem.count({where:{ownerId:userId}})).toBe(0);expect(await db.collection.count({where:{ownerId:userId}})).toBe(1);
+      273 |   }finally{
+      274 |    const rows=await db.$queryRaw<{id:string}[]>`SELECT id FROM "ImportJob" WHERE "ownerId"=${userId}`,ids=new Set(rows.map(row=>row.id));if(knownJobId&&/^[a-f0-9-]{36}$/u.test(knownJobId))ids.add(knownJobId);const lock=createMediaAssetLocker(url),storage=new LocalPersistentStorage(process.env.UPLOADS_DIR!,lock);for(const id of ids)await lock(`import-source:${id}`,()=>storage.delete(`imports/${id}/source`),true);await db.user.deleteMany({where:{id:userId}});
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/import-report.spec.ts:271:101
+
+    Error Context: test-results/import-report-real-import--802af--leaves-inventory-untouched-desktop/error-context.md
+
+    Error Context: test-results/import-report-real-import--802af--leaves-inventory-untouched-desktop/error-context.md
+
+  1 failed
+    [desktop] › e2e/import-report.spec.ts:264:2 › real import, export and private report flow › own import history opens a job and cancellation leaves inventory untouched 
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/import-report.spec.ts --project=desktop --workers=1 --grep own import history
