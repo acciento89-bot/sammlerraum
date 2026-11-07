@@ -139,6 +139,7 @@ model User {
   collectionInvitationsTargeted CollectionInvitation[]        @relation("CollectionInvitationTarget")
   collectionInvitationsAccepted CollectionInvitation[]        @relation("CollectionInvitationAcceptor")
 
+  auditEventsSubject  AuditEvent[]      @relation("AuditSubject")
   auditEventsActed    AuditEvent[]      @relation("AuditActor")
   locationAuditEvents AuditEvent[]      @relation("AuditLocationOwner")
   sharesCreated       CollectionShare[] @relation("ShareCreator")
@@ -1502,6 +1503,7 @@ model AuditEvent {
   action              String            @db.VarChar(80)
   source              AuditSource
   actorId             String?
+  subjectUserId       String?
   before              Json
   after               Json
   createdAt           DateTime          @default(dbgenerated("timezone('UTC'::text, clock_timestamp())"))
@@ -1509,10 +1511,12 @@ model AuditEvent {
   item                CollectibleItem?  @relation(fields: [itemId], references: [id], onDelete: Cascade, onUpdate: NoAction)
   locationOwner       User?             @relation("AuditLocationOwner", fields: [locationOwnerUserId], references: [id], onDelete: Cascade, onUpdate: Restrict)
   actor               User?             @relation("AuditActor", fields: [actorId], references: [id], onDelete: SetNull, onUpdate: Restrict)
+  subject             User?             @relation("AuditSubject", fields: [subjectUserId], references: [id], onDelete: SetNull, onUpdate: Restrict)
 
   @@index([resourceType, resourceId, sequence(sort: Desc)])
   @@index([collectionId])
   @@index([itemId])
   @@index([locationOwnerUserId])
   @@index([actorId])
+  @@index([subjectUserId])
 }

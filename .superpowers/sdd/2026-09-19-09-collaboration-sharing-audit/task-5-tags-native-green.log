@@ -1,0 +1,13 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ✓ |workspace| packages/domain/src/collaboration/membership-service.test.ts (34 tests) 2051ms
+ ✓ |workspace| packages/domain/src/audit/core-audit-integration.test.ts (10 tests) 690ms
+ ✓ |workspace| packages/domain/src/items/identifier-service.test.ts (11 tests) 513ms
+   ✓ identifier and tag PostgreSQL integration > completes reverse-order overlapping tag replacements without a deadlock  316ms
+
+ Test Files  3 passed (3)
+      Tests  55 passed (55)
+   Start at  08:30:17
+   Duration  4.63s (transform 370ms, setup 8ms, collect 920ms, tests 3.26s, environment 0ms, prepare 116ms)
+

@@ -1,0 +1,89 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/audit/core-audit-integration.test.ts (11 tests | 1 failed) 768ms
+   ✓ actual core mutations append their real audit in the same transaction > records actual condition and location changes with the real user and before/after values 173ms
+   ✓ actual core mutations append their real audit in the same transaction > a genuine default audit INSERT failure rolls the actual condition write back 55ms
+   ✓ actual core mutations append their real audit in the same transaction > records category changes and condition clearing without inventing a second unchanged event 24ms
+   ✓ actual core mutations append their real audit in the same transaction > audits grading create/update/delete with selected authored facts and excludes verification URLs/source text 24ms
+   ✓ actual core mutations append their real audit in the same transaction > keeps a manual valuation's exact bigint, stored scale, basis and true author in audit 17ms
+   ✓ actual core mutations append their real audit in the same transaction > records private location creation and hierarchy moves without duplicating QR access tokens 27ms
+   ✓ actual core mutations append their real audit in the same transaction > rolls back grading, valuations and location history together when their audit append fails 27ms
+   ✓ actual core mutations append their real audit in the same transaction > tracks collection and node creation, rename, visibility, move and soft deletion 37ms
+   ✓ actual core mutations append their real audit in the same transaction > audits real item create, meaningful edits, split, archive and soft delete without storing private note text 39ms
+   ✓ actual core mutations append their real audit in the same transaction > audits attached and detached tags exactly once and rolls back actual tag replacement on audit failure 37ms
+   × actual core mutations append their real audit in the same transaction > records typed custom-field values and clearing with exact stored decimals and private text fingerprints 30ms
+     → expected [ { …(10) }, { …(10) } ] to deep equally contain ObjectContaining{…}
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/audit/core-audit-integration.test.ts > actual core mutations append their real audit in the same transaction > records typed custom-field values and clearing with exact stored decimals and private text fingerprints
+AssertionError: expected [ { …(10) }, { …(10) } ] to deep equally contain ObjectContaining{…}
+
+- Expected: 
+ObjectContaining {
+  "action": "ITEM_CUSTOM_FIELD_CHANGED",
+  "after": ObjectContaining {
+    "decimalValue": StringMatching /^12\.340*$/,
+    "fieldDefinitionId": "1805c1d0-37ef-4e9d-a1be-1e542f2b2a9f",
+    "type": "DECIMAL",
+  },
+  "before": null,
+}
+
++ Received: 
+[
+  {
+    "action": "ITEM_CATEGORY_CHANGED",
+    "actorId": "0d76b0f1-4f3f-490f-bfd0-05e22fad3ff1",
+    "after": {
+      "categoryTemplateId": "2f9b0ca2-a377-4743-9325-6b52155c8169",
+      "conditionOptionId": null,
+    },
+    "before": {
+      "categoryTemplateId": null,
+      "conditionOptionId": null,
+    },
+    "createdAt": "2026-11-07T07:31:20.768Z",
+    "id": "bfe77be7-0ab0-404d-a1dd-721d322b8a44",
+    "resourceId": "48a7caf5-5717-4b3a-90d6-b7592a7d7c59",
+    "resourceType": "ITEM",
+    "sequence": "61",
+    "source": "USER",
+  },
+  {
+    "action": "ITEM_CREATED",
+    "actorId": "0d76b0f1-4f3f-490f-bfd0-05e22fad3ff1",
+    "after": {
+      "acquisitionDate": null,
+      "acquisitionType": "OTHER",
+      "collectionId": "ac3224b9-065c-4eb6-86ce-2f7b808bd488",
+      "nodeId": null,
+      "privateNotesHash": null,
+      "publicDescriptionHash": null,
+      "quantity": 2,
+      "title": "Actually changed item",
+      "tradeStatus": "NOT_FOR_TRADE",
+      "visibility": "PRIVATE",
+    },
+    "before": null,
+    "createdAt": "2026-11-07T07:31:20.765Z",
+    "id": "8b952ece-1098-4c9c-9c6a-034438b21e86",
+    "resourceId": "48a7caf5-5717-4b3a-90d6-b7592a7d7c59",
+    "resourceType": "ITEM",
+    "sequence": "60",
+    "source": "USER",
+  },
+]
+
+ ❯ packages/domain/src/audit/core-audit-integration.test.ts:444:18
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 10 passed (11)
+   Start at  08:31:19
+   Duration  1.31s (transform 199ms, setup 7ms, collect 349ms, tests 768ms, environment 0ms, prepare 57ms)
+

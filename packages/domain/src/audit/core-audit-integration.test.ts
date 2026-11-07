@@ -1,3 +1,10 @@
+import { createMembershipService } from "../collaboration/membership-service";
+import { createPersonalMoneyService } from "../money/personal-money-service";
+import sharp from "sharp";
+import { createMediaService } from "../media/media-service";
+import { createMediaCleanupService } from "../media/cleanup-service";
+import { createCustomFieldService } from "../custom-fields/custom-field-service";
+import { createTagService } from "../items/tag-service";
 import { createCollectionService } from "../collections/collection-service";
 import { createGradingService } from "../grading/grading-service";
 import { createValuationService } from "../valuations/valuation-service";
@@ -424,6 +431,365 @@ describe.runIf(process.env.RUN_DATABASE_INTEGRATION === "1")(
           after: expect.objectContaining({ title: "Changed actual title", quantity: 2 }),
         }),
       );
+    });
+    it("audits attached and detached tags exactly once and rolls back actual tag replacement on audit failure", async () => {
+      const f = await fixture(),
+        tags = createTagService(db, f.owner),
+        first = await tags.setItemTags(f.item, [" First tag ", "first tag", "Keep tag"]);
+      const second = await tags.setItemTags(f.item, ["Keep tag", "New tag"]);
+      const events = (
+        await f.audit.listAuditEventsForResource(f.who, {
+          resourceType: "ITEM",
+          resourceId: f.item,
+          limit: 50,
+        })
+      ).events;
+      expect(events.filter((e) => e.action === "ITEM_TAG_ATTACHED")).toHaveLength(3);
+      expect(events).toContainEqual(
+        expect.objectContaining({
+          action: "ITEM_TAG_DETACHED",
+          before: { id: first[0]!.id, name: "First tag" },
+          after: null,
+        }),
+      );
+      await tags.setItemTags(f.item, ["New tag", "Keep tag"]);
+      expect(
+        (
+          await f.audit.listAuditEventsForResource(f.who, {
+            resourceType: "ITEM",
+            resourceId: f.item,
+            limit: 50,
+          })
+        ).events,
+      ).toHaveLength(events.length);
+      await db.$executeRawUnsafe(
+        `CREATE FUNCTION owned_tag_audit_failure() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN IF NEW.action='ITEM_TAG_ATTACHED' THEN RAISE EXCEPTION 'Owned tag audit failure' USING ERRCODE='23514'; END IF; RETURN NEW; END $$`,
+      );
+      await db.$executeRawUnsafe(
+        `CREATE TRIGGER owned_tag_audit_failure BEFORE INSERT ON "AuditEvent" FOR EACH ROW EXECUTE FUNCTION owned_tag_audit_failure()`,
+      );
+      try {
+        await expect(tags.setItemTags(f.item, ["Must roll back"])).rejects.toThrow();
+        expect(
+          (await db.itemTag.findMany({ where: { itemId: f.item } })).map((v) => v.tagId).sort(),
+        ).toEqual(second.map((t) => t.id).sort());
+      } finally {
+        await db.$executeRawUnsafe(`DROP TRIGGER owned_tag_audit_failure ON "AuditEvent"`);
+        await db.$executeRawUnsafe(`DROP FUNCTION owned_tag_audit_failure()`);
+      }
+    });
+
+    it("records typed custom-field values and clearing with exact stored decimals and private text fingerprints", async () => {
+      const f = await fixture(),
+        fields = createCustomFieldService(db, f.owner),
+        decimal = await fields.createFieldDefinition({
+          collectionId: f.collection,
+          name: "Exact decimal",
+          type: "DECIMAL",
+        }),
+        note = await fields.createFieldDefinition({
+          collectionId: f.collection,
+          name: "Private field",
+          type: "LONG_TEXT",
+        });
+      await fields.setFieldValue(f.item, decimal.id, "12.34");
+      await fields.setFieldValue(f.item, note.id, "never-copy-private-custom-field");
+      await fields.setFieldValue(f.item, decimal.id, null);
+      const events = (
+        await f.audit.listAuditEventsForResource(f.who, {
+          resourceType: "ITEM",
+          resourceId: f.item,
+          limit: 50,
+        })
+      ).events;
+      expect(events).toContainEqual(
+        expect.objectContaining({
+          action: "ITEM_CUSTOM_FIELD_CHANGED",
+          before: null,
+          after: expect.objectContaining({
+            fieldDefinitionId: decimal.id,
+            type: "DECIMAL",
+            decimalValue: expect.stringMatching(/^12\.340*$/),
+          }),
+        }),
+      );
+      expect(events).toContainEqual(
+        expect.objectContaining({
+          action: "ITEM_CUSTOM_FIELD_CHANGED",
+          before: expect.objectContaining({ fieldDefinitionId: decimal.id, type: "DECIMAL" }),
+          after: null,
+        }),
+      );
+      expect(JSON.stringify(events)).not.toContain("never-copy-private-custom-field");
+      expect(events).toContainEqual(
+        expect.objectContaining({
+          after: expect.objectContaining({
+            fieldDefinitionId: note.id,
+            longTextHash: expect.stringMatching(/^[a-f0-9]{64}$/),
+          }),
+        }),
+      );
+      const definitions = (
+        await f.audit.listAuditEventsForResource(f.who, {
+          resourceType: "COLLECTION",
+          resourceId: f.collection,
+          limit: 50,
+        })
+      ).events;
+      expect(definitions).toContainEqual(
+        expect.objectContaining({
+          action: "CUSTOM_FIELD_DEFINITION_CREATED",
+          after: expect.objectContaining({
+            id: decimal.id,
+            type: "DECIMAL",
+            name: "Exact decimal",
+          }),
+        }),
+      );
+    });
+
+    it("audits actual media/document linking, reordering, metadata and unlink without copying storage keys", async () => {
+      const f = await fixture(),
+        objects = new Map<string, Uint8Array>(),
+        storage = {
+          put: async (key: string, bytes: Uint8Array) => {
+            objects.set(key, bytes);
+          },
+          read: async (key: string) => {
+            const bytes = objects.get(key);
+            if (!bytes) throw new Error("Missing owned fixture bytes");
+            return bytes;
+          },
+          delete: async (key: string) => {
+            objects.delete(key);
+          },
+          exists: async (key: string) => objects.has(key),
+        },
+        media = createMediaService(db, storage),
+        cleanup = createMediaCleanupService(db, { retentionHours: 24 });
+      const png = await sharp({ create: { width: 2, height: 2, channels: 3, background: "red" } })
+        .png()
+        .toBuffer();
+      const first = await media.createImageUpload(f.owner, png, {
+          fileName: "audit-first.png",
+          claimedMime: "image/png",
+        }),
+        second = await media.createImageUpload(f.owner, png, {
+          fileName: "audit-second.png",
+          claimedMime: "image/png",
+        });
+      const a = await media.linkAsset(f.owner, {
+          target: "ITEM",
+          itemId: f.item,
+          assetId: first.id,
+          purpose: "GALLERY",
+        }),
+        b = await media.linkAsset(f.owner, {
+          target: "ITEM",
+          itemId: f.item,
+          assetId: second.id,
+          purpose: "GALLERY",
+        });
+      await media.reorderGallery(f.owner, f.item, [b.id, a.id]);
+      const document = await media.createDocumentUpload(
+          f.owner,
+          Buffer.from("%PDF-1.7\n1 0 obj <<>> endobj\n%%EOF"),
+          { fileName: "audit-proof.pdf", claimedMime: "application/pdf" },
+        ),
+        linked = await media.linkAsset(f.owner, {
+          target: "ITEM_DOCUMENT",
+          itemId: f.item,
+          assetId: document.id,
+          category: "OTHER_PRIVATE",
+        });
+      await media.updateDocument(f.owner, f.item, linked.id, {
+        category: "INSURANCE",
+        visibility: "PRIVATE",
+      });
+      await cleanup.unlinkAsset(f.owner, "ITEM", a.id, f.item);
+      await cleanup.unlinkAsset(f.owner, "ITEM_DOCUMENT", linked.id, f.item);
+      const events = (
+        await f.audit.listAuditEventsForResource(f.who, {
+          resourceType: "ITEM",
+          resourceId: f.item,
+          limit: 50,
+        })
+      ).events;
+      expect(events.map((e) => e.action)).toEqual(
+        expect.arrayContaining([
+          "ITEM_MEDIA_LINKED",
+          "ITEM_MEDIA_REORDERED",
+          "ITEM_DOCUMENT_LINKED",
+          "ITEM_DOCUMENT_CHANGED",
+          "ITEM_MEDIA_UNLINKED",
+          "ITEM_DOCUMENT_UNLINKED",
+        ]),
+      );
+      const actualKeys = (await db.mediaAsset.findMany({ where: { ownerId: f.owner } })).map(
+        (asset) => asset.storageKey,
+      );
+      for (const key of actualKeys) expect(JSON.stringify(events)).not.toContain(key);
+      expect(events.every((e) => e.actorId === f.owner)).toBe(true);
+      expect(objects.size).toBe(3);
+    });
+
+    it("audits actual V2 item authoring and exact interpreted purchase changes without exposing fact tokens or receipts", async () => {
+      const f = await fixture(),
+        money = createPersonalMoneyService(db, f.owner),
+        created = await money.createItemV2({
+          schemaVersion: 1,
+          item: { collectionId: f.collection, title: "Authored purchase" },
+          purchase: {
+            op: "NEW",
+            authoring: {
+              kind: "DECIMAL",
+              profileId: "legacy-money-iso-2026-09-17-v1",
+              currency: "AFN",
+              decimal: "1",
+            },
+          },
+        });
+      await money.updateItemV2(created.item.id, {
+        schemaVersion: 1,
+        item: { title: "Renamed V2 item" },
+      });
+      const replaced = await money.updateItemV2(created.item.id, {
+        schemaVersion: 1,
+        purchase: {
+          op: "REPLACE",
+          expectedFactToken: created.purchase.factToken,
+          authoring: {
+            kind: "DECIMAL",
+            profileId: "legacy-money-iso-2026-09-17-v1",
+            currency: "JPY",
+            decimal: "2",
+          },
+        },
+      });
+      await money.updateItemV2(created.item.id, {
+        schemaVersion: 1,
+        purchase: { op: "CLEAR", expectedFactToken: replaced.purchase.factToken },
+      });
+      const events = (
+        await f.audit.listAuditEventsForResource(f.who, {
+          resourceType: "ITEM",
+          resourceId: created.item.id,
+          limit: 50,
+        })
+      ).events;
+      expect(events.map((e) => e.action)).toEqual(
+        expect.arrayContaining(["ITEM_CREATED", "ITEM_DETAILS_CHANGED", "ITEM_MONEY_CHANGED"]),
+      );
+      expect(events).toContainEqual(
+        expect.objectContaining({
+          action: "ITEM_MONEY_CHANGED",
+          before: expect.objectContaining({
+            raw: { amountMinor: "100", currency: "AFN" },
+            interpretation: expect.objectContaining({
+              kind: "INTERPRETED",
+              exponent: 2,
+              decimal: "1.00",
+            }),
+          }),
+          after: expect.objectContaining({
+            raw: { amountMinor: "2", currency: "JPY" },
+            interpretation: expect.objectContaining({
+              kind: "INTERPRETED",
+              exponent: 0,
+              decimal: "2",
+            }),
+          }),
+        }),
+      );
+      expect(events).toContainEqual(
+        expect.objectContaining({
+          action: "ITEM_MONEY_CHANGED",
+          after: expect.objectContaining({ raw: null, interpretation: { kind: "MISSING" } }),
+        }),
+      );
+      expect(JSON.stringify(events)).not.toContain(created.purchase.factToken);
+      expect(JSON.stringify(events)).not.toMatch(/expectedFactToken|receipt|correctionReason/);
+    });
+
+    it("retains the real membership manager, separate erasable subject and before/after roles including Viewer self-removal", async () => {
+      const f = await fixture(),
+        memberId = randomUUID();
+      await db.user.create({
+        data: {
+          id: memberId,
+          name: "Audit member",
+          email: `${memberId}@example.invalid`,
+          emailVerified: true,
+        },
+      });
+      const members = createMembershipService(db);
+      await members.addMember(f.who, {
+        collectionId: f.collection,
+        userId: memberId,
+        role: "EDITOR",
+        expectedRevision: 0,
+      });
+      await members.changeRole(f.who, {
+        collectionId: f.collection,
+        userId: memberId,
+        role: "VIEWER",
+        expectedRevision: 1,
+      });
+      await members.removeMember(
+        { userId: memberId },
+        { collectionId: f.collection, userId: memberId, expectedRevision: 2 },
+      );
+      const events = (
+        await f.audit.listAuditEventsForResource(f.who, {
+          resourceType: "COLLECTION",
+          resourceId: f.collection,
+          limit: 50,
+        })
+      ).events;
+      expect(events).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            action: "MEMBERSHIP_ADDED",
+            actorId: f.owner,
+            subjectUserId: memberId,
+            before: { role: null },
+            after: { role: "EDITOR" },
+          }),
+          expect.objectContaining({
+            action: "MEMBERSHIP_ROLE_CHANGED",
+            actorId: f.owner,
+            subjectUserId: memberId,
+            before: { role: "EDITOR" },
+            after: { role: "VIEWER" },
+          }),
+          expect.objectContaining({
+            action: "MEMBERSHIP_REMOVED",
+            actorId: memberId,
+            subjectUserId: memberId,
+            before: { role: "VIEWER" },
+            after: { role: null },
+          }),
+        ]),
+      );
+      await db.user.delete({ where: { id: memberId } });
+      const erased = (
+        await f.audit.listAuditEventsForResource(f.who, {
+          resourceType: "COLLECTION",
+          resourceId: f.collection,
+          limit: 50,
+        })
+      ).events;
+      expect(erased.filter((e) => e.action.startsWith("MEMBERSHIP_"))).toHaveLength(3);
+      expect(erased).toContainEqual(
+        expect.objectContaining({
+          action: "MEMBERSHIP_REMOVED",
+          actorId: null,
+          subjectUserId: null,
+          before: { role: "VIEWER" },
+          after: { role: null },
+        }),
+      );
+      expect(JSON.stringify(erased)).not.toContain(memberId);
     });
   },
 );

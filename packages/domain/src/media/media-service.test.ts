@@ -1,3 +1,9 @@
+import { createTrustedAuditContext } from "../audit/audit-context";
+import type { MutationAuditPort } from "../audit/mutation-audit";
+const unitMediaAudit = (): MutationAuditPort => ({
+  begin: async (_tx, actorId) => createTrustedAuditContext({ source: "USER", actorId }),
+  append: async () => {},
+});
 import { randomUUID } from "node:crypto";
 import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
@@ -87,7 +93,14 @@ function fixture() {
     },
     $transaction: async <T>(operation: (transaction: typeof tx) => Promise<T>) => operation(tx),
   };
-  return { storage, db, tx, assets, bytes, service: createMediaService(db as never, storage) };
+  return {
+    storage,
+    db,
+    tx,
+    assets,
+    bytes,
+    service: createMediaService(db as never, storage, {}, unitMediaAudit()),
+  };
 }
 
 describe("media service", () => {

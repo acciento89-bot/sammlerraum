@@ -1,3 +1,9 @@
+import { createTrustedAuditContext } from "../audit/audit-context";
+import type { MutationAuditPort } from "../audit/mutation-audit";
+const unitTagAudit = (): MutationAuditPort => ({
+  begin: async (_tx, actorId) => createTrustedAuditContext({ source: "USER", actorId }),
+  append: async () => {},
+});
 import { randomUUID } from "node:crypto";
 
 import { createPrismaClient } from "@sammlerraum/db/create-client";
@@ -217,7 +223,11 @@ describe("item tag service", () => {
         operation(transaction),
       ),
     };
-    const service = createTagService(database as unknown as TagDatabase, "trusted-owner");
+    const service = createTagService(
+      database as unknown as TagDatabase,
+      "trusted-owner",
+      unitTagAudit(),
+    );
 
     const saved = await service.setItemTags(itemId, [" Signed ", "signed", "  Mint   Condition "]);
 
@@ -271,6 +281,7 @@ describe("item tag service", () => {
           operation(transaction),
       } as unknown as TagDatabase,
       "trusted-owner",
+      unitTagAudit(),
     );
 
     await expect(service.setItemTags(otherItemId, ["Secret"])).rejects.toMatchObject({
@@ -283,7 +294,11 @@ describe("item tag service", () => {
 
   it("rejects NUL in tag names before opening a transaction", async () => {
     const database = { $transaction: vi.fn() };
-    const service = createTagService(database as unknown as TagDatabase, "trusted-owner");
+    const service = createTagService(
+      database as unknown as TagDatabase,
+      "trusted-owner",
+      unitTagAudit(),
+    );
 
     await expect(service.setItemTags(itemId, ["signed\u0000copy"])).rejects.toMatchObject({
       code: "TAGS_INVALID",

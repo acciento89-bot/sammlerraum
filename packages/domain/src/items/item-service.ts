@@ -1,3 +1,4 @@
+import type { AuditContext } from "../audit/audit-context";
 import { createHash } from "node:crypto";
 import { defaultMutationAudit, type MutationAuditPort } from "../audit/mutation-audit";
 import { moneyTransaction } from "../money/legacy-money-transaction";
@@ -452,11 +453,20 @@ export async function readOwnedItemInTransaction(
   return toItem(await lockOwnedItem(transaction, id, actorUserId));
 }
 
+type ItemMutationAuditOptions = { auditPort?: MutationAuditPort; auditContext?: AuditContext };
 export async function createItemInTransaction(
   transaction: ItemTransaction,
   actorUserId: string,
   data: ReturnType<typeof CreateItemInputSchema.parse>,
+  auditOptions: ItemMutationAuditOptions = {},
 ): Promise<CollectibleItem> {
+  const auditPort = auditOptions.auditPort ?? defaultMutationAudit,
+    audit = await auditPort.begin(
+      transaction,
+      actorUserId,
+      () => new ItemServiceError("COLLECTION_NOT_FOUND"),
+      auditOptions.auditContext,
+    );
   await lockOwnedCollection(transaction, data.collectionId, actorUserId);
   await ensureNodeInCollection(transaction, data.nodeId, data.collectionId);
   const item = await transaction.collectibleItem.create({
@@ -479,7 +489,15 @@ export async function createItemInTransaction(
     },
     select: itemSelect,
   });
-  return toItem(item);
+  const created = toItem(item);
+  await auditPort.append(transaction, audit, {
+    resourceType: "ITEM",
+    resourceId: item.id,
+    action: "ITEM_CREATED",
+    before: null,
+    after: { ...itemAuditSnapshot(created), visibility: created.visibility },
+  });
+  return created;
 }
 
 export async function updateItemInTransaction(
@@ -487,9 +505,17 @@ export async function updateItemInTransaction(
   actorUserId: string,
   itemIdInput: string,
   input: UpdateItemInput,
+  auditOptions: ItemMutationAuditOptions = {},
 ): Promise<CollectibleItem> {
   const itemId = CollectibleItemSchema.shape.id.parse(itemIdInput);
   const data = input; // Validated by the legacy or explicit-money service before entering this body.
+  const auditPort = auditOptions.auditPort ?? defaultMutationAudit,
+    audit = await auditPort.begin(
+      transaction,
+      actorUserId,
+      () => new ItemServiceError("ITEM_NOT_FOUND"),
+      auditOptions.auditContext,
+    );
   const existing = await lockOwnedItem(transaction, itemId, actorUserId);
   ensureActive(existing);
   if (data.nodeId !== undefined) {
@@ -521,13 +547,32 @@ export async function updateItemInTransaction(
     update.disposedAt = new Date(data.disposedAt);
     update.tradeStatus = "NOT_FOR_TRADE";
   }
-  return toItem(
+  const saved = toItem(
     await transaction.collectibleItem.update({
       where: { id: existing.id },
       data: update,
       select: itemSelect,
     }),
   );
+  const before = itemAuditSnapshot(existing),
+    after = itemAuditSnapshot(saved);
+  if (JSON.stringify(before) !== JSON.stringify(after))
+    await auditPort.append(transaction, audit, {
+      resourceType: "ITEM",
+      resourceId: itemId,
+      action: "ITEM_DETAILS_CHANGED",
+      before,
+      after,
+    });
+  if (existing.visibility !== saved.visibility)
+    await auditPort.append(transaction, audit, {
+      resourceType: "ITEM",
+      resourceId: itemId,
+      action: "ITEM_VISIBILITY_CHANGED",
+      before: { visibility: existing.visibility },
+      after: { visibility: saved.visibility },
+    });
+  return saved;
 }
 
 function itemAuditSnapshot(item: StoredItem | CollectibleItem) {
@@ -556,62 +601,18 @@ export function createItemService(
   async function createItem(input: CreateItemInput): Promise<CollectibleItem> {
     const data = CreateItemInputSchema.parse(input);
     return database.$transaction(
-      async (transaction) => {
-        const audit = await auditPort.begin(
-          transaction,
-          actorUserId,
-          () => new ItemServiceError("COLLECTION_NOT_FOUND"),
-        );
-        const created = await createItemInTransaction(transaction, actorUserId, data);
-        await auditPort.append(transaction, audit, {
-          resourceType: "ITEM",
-          resourceId: created.id,
-          action: "ITEM_CREATED",
-          before: null,
-          after: { ...itemAuditSnapshot(created), visibility: created.visibility },
-        });
-        return created;
-      },
+      (tx) => createItemInTransaction(tx, actorUserId, data, { auditPort }),
       { isolationLevel: "ReadCommitted" },
     );
   }
-
   async function updateItem(itemIdInput: string, input: UpdateItemInput): Promise<CollectibleItem> {
-    const itemId = CollectibleItemSchema.shape.id.parse(itemIdInput);
-    const data = UpdateItemInputSchema.parse(input);
+    const itemId = CollectibleItemSchema.shape.id.parse(itemIdInput),
+      data = UpdateItemInputSchema.parse(input);
     return database.$transaction(
-      async (transaction) => {
-        const audit = await auditPort.begin(
-          transaction,
-          actorUserId,
-          () => new ItemServiceError("ITEM_NOT_FOUND"),
-        );
-        const existing = await lockOwnedItem(transaction, itemId, actorUserId),
-          before = itemAuditSnapshot(existing);
-        const updated = await updateItemInTransaction(transaction, actorUserId, itemId, data),
-          after = itemAuditSnapshot(updated);
-        if (JSON.stringify(before) !== JSON.stringify(after))
-          await auditPort.append(transaction, audit, {
-            resourceType: "ITEM",
-            resourceId: itemId,
-            action: "ITEM_DETAILS_CHANGED",
-            before,
-            after,
-          });
-        if (existing.visibility !== updated.visibility)
-          await auditPort.append(transaction, audit, {
-            resourceType: "ITEM",
-            resourceId: itemId,
-            action: "ITEM_VISIBILITY_CHANGED",
-            before: { visibility: existing.visibility },
-            after: { visibility: updated.visibility },
-          });
-        return updated;
-      },
+      (tx) => updateItemInTransaction(tx, actorUserId, itemId, data, { auditPort }),
       { isolationLevel: "ReadCommitted" },
     );
   }
-
   async function archiveItem(itemIdInput: string): Promise<CollectibleItem> {
     const itemId = CollectibleItemSchema.shape.id.parse(itemIdInput);
     return database.$transaction(

@@ -39,6 +39,7 @@ export const AuditMutationSchema = z
     resourceType: AuditResourceTypeSchema,
     resourceId: z.uuid(),
     action: z.string().regex(/^[A-Z][A-Z0-9_]{1,79}$/),
+    subjectUserId: MembershipActorIdSchema.nullable().default(null),
     before: z.unknown(),
     after: z.unknown(),
   })
@@ -63,6 +64,7 @@ export const AuditEventSchema = z
     action: z.string(),
     source: AuditSourceSchema,
     actorId: MembershipActorIdSchema.nullable(),
+    subjectUserId: MembershipActorIdSchema.nullable().default(null),
     before: z.unknown(),
     after: z.unknown(),
     createdAt: z.iso.datetime(),

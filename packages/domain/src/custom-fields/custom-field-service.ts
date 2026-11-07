@@ -1,3 +1,5 @@
+import { createHash } from "node:crypto";
+import { defaultMutationAudit, type MutationAuditPort } from "../audit/mutation-audit";
 import {
   HistoricalMoneyValueSchema,
   type AuthoringReceipt,
@@ -366,13 +368,54 @@ function persistenceData(
   return data;
 }
 
+type AuditValueRow = {
+  shortTextValue: string | null;
+  longTextValue: string | null;
+  integerValue: string | null;
+  decimalValue: string | null;
+  dateValue: string | null;
+  booleanValue: boolean | null;
+  singleSelectOptionId: string | null;
+  urlValue: string | null;
+  moneyAmountMinor: string | null;
+  moneyCurrency: string | null;
+  multiSelectOptionIds: string[];
+};
+async function fieldAuditSnapshot(
+  tx: CustomFieldTransaction,
+  itemId: string,
+  fieldDefinitionId: string,
+  type: CustomFieldType,
+) {
+  const [row] = await tx.$queryRaw<
+    AuditValueRow[]
+  >`SELECT value."shortTextValue",value."longTextValue",value."integerValue"::text,value."decimalValue"::text,to_char(value."dateValue",'YYYY-MM-DD') AS "dateValue",value."booleanValue",value."singleSelectOptionId",value."urlValue",value."moneyAmountMinor"::text,value."moneyCurrency",COALESCE((SELECT jsonb_agg(selection."optionId" ORDER BY selection.position) FROM "CustomFieldMultiSelectValue" selection WHERE selection."itemId"=value."itemId" AND selection."fieldDefinitionId"=value."fieldDefinitionId"),'[]'::jsonb) AS "multiSelectOptionIds" FROM "CustomFieldValue" value WHERE value."itemId"=${itemId}::uuid AND value."fieldDefinitionId"=${fieldDefinitionId}::uuid`;
+  if (!row) return null;
+  const hash = (text: string | null) =>
+    text == null ? null : createHash("sha256").update(text).digest("hex");
+  return {
+    fieldDefinitionId,
+    type,
+    shortTextHash: hash(row.shortTextValue),
+    longTextHash: hash(row.longTextValue),
+    integerValue: row.integerValue ?? null,
+    decimalValue: row.decimalValue ?? null,
+    dateValue: row.dateValue ?? null,
+    booleanValue: row.booleanValue ?? null,
+    singleSelectOptionId: row.singleSelectOptionId ?? null,
+    urlHash: hash(row.urlValue),
+    moneyAmountMinor: row.moneyAmountMinor ?? null,
+    moneyCurrency: row.moneyCurrency ?? null,
+    multiSelectOptionIds: row.multiSelectOptionIds ?? [],
+  };
+}
 export async function setFieldValueInTransaction(
   transaction: CustomFieldTransaction,
   actorUserId: string,
   itemIdInput: string,
   fieldDefinitionIdInput: string,
   value: unknown,
-  options: { authoringReceipt?: AuthoringReceipt } = {},
+  options: { authoringReceipt?: AuthoringReceipt; auditPort?: MutationAuditPort } = {},
 ): Promise<CustomFieldValueRecord | null> {
   const itemIdResult = CustomFieldDefinitionSchema.shape.id.safeParse(itemIdInput);
   const fieldIdResult = CustomFieldDefinitionSchema.shape.id.safeParse(fieldDefinitionIdInput);
@@ -382,6 +425,12 @@ export async function setFieldValueInTransaction(
   const itemId = itemIdResult.data;
   const fieldDefinitionId = fieldIdResult.data;
 
+  const auditPort = options.auditPort ?? defaultMutationAudit;
+  const audit = await auditPort.begin(
+    transaction,
+    actorUserId,
+    () => new CustomFieldServiceError("CUSTOM_FIELD_NOT_FOUND"),
+  );
   const fields = await transaction.$queryRaw<FieldTypeRow[]>`
     SELECT definition."type", definition."collectionId"
     FROM "CollectibleItem" item
@@ -400,8 +449,17 @@ export async function setFieldValueInTransaction(
   if (!field) {
     throw new CustomFieldServiceError("CUSTOM_FIELD_NOT_FOUND");
   }
+  const before = await fieldAuditSnapshot(transaction, itemId, fieldDefinitionId, field.type);
   if (value === null) {
     await transaction.customFieldValue.deleteMany({ where: { itemId, fieldDefinitionId } });
+    if (before !== null)
+      await auditPort.append(transaction, audit, {
+        resourceType: "ITEM",
+        resourceId: itemId,
+        action: "ITEM_CUSTOM_FIELD_CHANGED",
+        before,
+        after: null,
+      });
     return null;
   }
   const optionsRows = await transaction.customFieldOption.findMany({
@@ -464,16 +522,34 @@ export async function setFieldValueInTransaction(
       });
     }
   }
+  const after = await fieldAuditSnapshot(transaction, itemId, fieldDefinitionId, field.type);
+  if (JSON.stringify(before) !== JSON.stringify(after))
+    await auditPort.append(transaction, audit, {
+      resourceType: "ITEM",
+      resourceId: itemId,
+      action: "ITEM_CUSTOM_FIELD_CHANGED",
+      before,
+      after,
+    });
   return { itemId, fieldDefinitionId, type: field.type, value: canonical };
 }
 
-export function createCustomFieldService(database: CustomFieldDatabase, actorUserId: string) {
+export function createCustomFieldService(
+  database: CustomFieldDatabase,
+  actorUserId: string,
+  auditPort: MutationAuditPort = defaultMutationAudit,
+) {
   async function createFieldDefinition(
     input: CreateCustomFieldDefinitionInput,
   ): Promise<CustomFieldDefinition> {
     const definition = parseDefinition(input);
     return database.$transaction(
       async (transaction) => {
+        const audit = await auditPort.begin(
+          transaction,
+          actorUserId,
+          () => new CustomFieldServiceError("COLLECTION_NOT_FOUND"),
+        );
         const collections = await transaction.$queryRaw<Array<{ id: string }>>`
           SELECT "id"
           FROM "Collection"
@@ -519,6 +595,18 @@ export function createCustomFieldService(database: CustomFieldDatabase, actorUse
           select: { id: true, value: true, position: true },
           orderBy: { position: "asc" },
         });
+        await auditPort.append(transaction, audit, {
+          resourceType: "COLLECTION",
+          resourceId: definition.collectionId,
+          action: "CUSTOM_FIELD_DEFINITION_CREATED",
+          before: null,
+          after: {
+            id: created.id,
+            name: created.name,
+            type: created.type,
+            optionIds: options.map((option) => option.id),
+          },
+        });
         return CustomFieldDefinitionSchema.parse({
           ...created,
           options: options.map((option) => option.value),
@@ -543,7 +631,9 @@ export function createCustomFieldService(database: CustomFieldDatabase, actorUse
 
     return database.$transaction(
       (transaction) =>
-        setFieldValueInTransaction(transaction, actorUserId, itemId, fieldDefinitionId, value),
+        setFieldValueInTransaction(transaction, actorUserId, itemId, fieldDefinitionId, value, {
+          auditPort,
+        }),
       { isolationLevel: "ReadCommitted" },
     );
   }

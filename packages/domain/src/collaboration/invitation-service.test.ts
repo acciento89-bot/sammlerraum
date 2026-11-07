@@ -91,6 +91,42 @@ describe.runIf(process.env.RUN_DATABASE_INTEGRATION === "1")(
         (await createMembershipService(db).getMembershipState(f.actor, f.collection)).revision,
       ).toBe(1);
     });
+
+    it.each(["VIEWER", "EDITOR"] as const)(
+      "records actual %s invitation membership exactly once with the accepting user",
+      async (role) => {
+        const f = await fixture(),
+          created = await f.service.createInvitation(f.actor, {
+            collectionId: f.collection,
+            expectedRevision: 0,
+            target: { kind: "USER", userId: f.recipient },
+            role,
+          });
+        await f.service.acceptInvitation({ userId: f.recipient }, { token: created.token });
+        const events = await db.auditEvent.findMany({
+          where: { collectionId: f.collection, action: "MEMBERSHIP_JOINED" },
+        });
+        expect(events).toHaveLength(1);
+        expect(events[0]).toMatchObject({
+          source: "USER",
+          actorId: f.recipient,
+          subjectUserId: f.recipient,
+          before: { role: null, invitationId: created.invitation.id },
+          after: { role, invitationId: created.invitation.id },
+        });
+        expect(
+          JSON.stringify(events, (_key, value) =>
+            typeof value === "bigint" ? value.toString() : value,
+          ),
+        ).not.toContain(created.token);
+        await f.service.acceptInvitation({ userId: f.recipient }, { token: created.token });
+        expect(
+          await db.auditEvent.count({
+            where: { collectionId: f.collection, action: "MEMBERSHIP_JOINED" },
+          }),
+        ).toBe(1);
+      },
+    );
     it("requires current verified identity instead of trusting possession of the token", async () => {
       const f = await fixture();
       const created = await f.service.createInvitation(f.actor, {

@@ -1,3 +1,6 @@
+import { MoneyViewSchema } from "@sammlerraum/contracts/legacy-money";
+import { DocumentCategorySchema } from "@sammlerraum/contracts/media";
+import { CustomFieldTypeSchema } from "@sammlerraum/contracts/custom-fields";
 import { AcquisitionTypeSchema, TradeStatusSchema } from "@sammlerraum/contracts/items";
 import { LocationTypeSchema } from "@sammlerraum/contracts/locations";
 import { z } from "zod";
@@ -72,7 +75,118 @@ const itemDetails = z
       .nullable(),
   })
   .strict();
+const tag = z
+  .object({ id: z.uuid(), name: z.string().min(1).max(100) })
+  .strict()
+  .nullable();
+const digest = z
+  .string()
+  .regex(/^[a-f0-9]{64}$/)
+  .nullable();
+const customValue = z
+  .object({
+    fieldDefinitionId: z.uuid(),
+    type: CustomFieldTypeSchema,
+    shortTextHash: digest,
+    longTextHash: digest,
+    integerValue: z
+      .string()
+      .regex(/^-?[0-9]+$/)
+      .nullable(),
+    decimalValue: z
+      .string()
+      .regex(/^-?[0-9]+(?:\.[0-9]+)?$/)
+      .nullable(),
+    dateValue: z.string().nullable(),
+    booleanValue: z.boolean().nullable(),
+    singleSelectOptionId: z.uuid().nullable(),
+    urlHash: digest,
+    moneyAmountMinor: z
+      .string()
+      .regex(/^[0-9]+$/)
+      .nullable(),
+    moneyCurrency: z.string().nullable(),
+    multiSelectOptionIds: z.array(z.uuid()).max(100),
+  })
+  .strict()
+  .nullable();
+const imageLink = z
+  .object({
+    id: z.uuid(),
+    purpose: z.enum(["GALLERY", "DETAIL"]),
+    position: z.number().int().nonnegative(),
+  })
+  .strict()
+  .nullable();
+const documentLink = z
+  .object({
+    id: z.uuid(),
+    category: DocumentCategorySchema,
+    visibility: visibility.shape.visibility,
+    position: z.number().int().nonnegative(),
+  })
+  .strict()
+  .nullable();
+const money = z
+  .object({
+    family: z.enum(["PURCHASE", "CUSTOM"]),
+    fieldDefinitionId: z.uuid().nullable(),
+    generation: z.uuid().nullable(),
+    sequence: z.string().regex(/^[0-9]+$/),
+    raw: MoneyViewSchema.shape.raw,
+    interpretation: MoneyViewSchema.shape.interpretation,
+  })
+  .strict()
+  .nullable();
+const memberRole = z.enum(["OWNER", "ADMIN", "EDITOR", "VIEWER"]);
+const membership = z.object({ role: memberRole.nullable() }).strict();
 const definitions = {
+  MEMBERSHIP_ADDED: { resourceType: "COLLECTION", snapshot: membership },
+  MEMBERSHIP_ROLE_CHANGED: { resourceType: "COLLECTION", snapshot: membership },
+  MEMBERSHIP_REMOVED: { resourceType: "COLLECTION", snapshot: membership },
+  MEMBERSHIP_JOINED: {
+    resourceType: "COLLECTION",
+    snapshot: membership.extend({ invitationId: z.uuid() }),
+  },
+  COLLECTION_OWNERSHIP_TRANSFERRED: {
+    resourceType: "COLLECTION",
+    snapshot: z.object({ role: memberRole, previousOwnerRole: memberRole }).strict(),
+  },
+  IMPORT_BATCH_COMMITTED: {
+    resourceType: "IMPORT_JOB",
+    snapshot: z
+      .object({
+        committedRows: z.number().int().nonnegative(),
+        status: z.enum(["COMMITTING", "COMPLETED"]),
+        revision: z.number().int().nonnegative(),
+      })
+      .strict(),
+  },
+  ITEM_MONEY_CHANGED: { resourceType: "ITEM", snapshot: money },
+  ITEM_MEDIA_LINKED: { resourceType: "ITEM", snapshot: imageLink },
+  ITEM_MEDIA_UNLINKED: { resourceType: "ITEM", snapshot: imageLink },
+  ITEM_MEDIA_REORDERED: {
+    resourceType: "ITEM",
+    snapshot: z.object({ id: z.uuid(), position: z.number().int().nonnegative() }).strict(),
+  },
+  ITEM_DOCUMENT_LINKED: { resourceType: "ITEM", snapshot: documentLink },
+  ITEM_DOCUMENT_UNLINKED: { resourceType: "ITEM", snapshot: documentLink },
+  ITEM_DOCUMENT_CHANGED: { resourceType: "ITEM", snapshot: documentLink },
+  CUSTOM_FIELD_DEFINITION_CREATED: {
+    resourceType: "COLLECTION",
+    snapshot: z
+      .object({
+        id: z.uuid(),
+        name: z.string().min(1).max(120),
+        type: CustomFieldTypeSchema,
+        optionIds: z.array(z.uuid()).max(100),
+      })
+      .strict()
+      .nullable(),
+  },
+  ITEM_CUSTOM_FIELD_CHANGED: { resourceType: "ITEM", snapshot: customValue },
+  ITEM_TAG_ATTACHED: { resourceType: "ITEM", snapshot: tag },
+  ITEM_TAG_DETACHED: { resourceType: "ITEM", snapshot: tag },
   ITEM_CREATED: {
     resourceType: "ITEM",
     snapshot: itemDetails.extend({ visibility: visibility.shape.visibility }).nullable(),
@@ -123,6 +237,17 @@ export function checkedAuditMutation(input: unknown) {
   if (!parsed.success) throw new AuditError("AUDIT_INVALID");
   const value = parsed.data,
     definition = definitions[value.action as keyof typeof definitions];
+  if (
+    value.subjectUserId !== null &&
+    ![
+      "MEMBERSHIP_ADDED",
+      "MEMBERSHIP_ROLE_CHANGED",
+      "MEMBERSHIP_REMOVED",
+      "MEMBERSHIP_JOINED",
+      "COLLECTION_OWNERSHIP_TRANSFERRED",
+    ].includes(value.action)
+  )
+    throw new AuditError("AUDIT_INVALID");
   if (!definition || definition.resourceType !== value.resourceType)
     throw new AuditError("AUDIT_INVALID");
   const before = definition.snapshot.safeParse(value.before),

@@ -1,3 +1,5 @@
+import { defaultMutationAudit, type MutationAuditPort } from "../audit/mutation-audit";
+import type { AuditContext } from "../audit/audit-context";
 import { createHash, randomUUID } from "node:crypto";
 
 import {
@@ -98,6 +100,7 @@ export function createMediaService(
   database: MediaDatabase,
   storage: StorageProvider,
   configuredLimits: Partial<MediaLimits> = {},
+  auditPort: MutationAuditPort = defaultMutationAudit,
 ) {
   const limits = limitsWithDefaults(configuredLimits);
 
@@ -202,10 +205,17 @@ export function createMediaService(
   async function withItem<T>(
     actorUserId: string,
     itemId: string,
-    operation: (tx: Pick<MediaDatabase, "$queryRaw" | "mediaLink" | "documentLink">) => Promise<T>,
+    operation: (
+      tx: Pick<MediaDatabase, "$queryRaw" | "mediaLink" | "documentLink">,
+      audit: AuditContext | null,
+    ) => Promise<T>,
+    mutating = false,
   ) {
     MediaAssetSchema.shape.id.parse(itemId);
     return database.$transaction(async (tx) => {
+      const audit = mutating
+        ? await auditPort.begin(tx, actorUserId, () => new MediaServiceError("ITEM_NOT_FOUND"))
+        : null;
       const rows = await tx.$queryRaw<Array<{ id: string }>>`
         SELECT item."id" FROM "CollectibleItem" item
         JOIN "Collection" collection ON collection."id" = item."collectionId"
@@ -214,7 +224,7 @@ export function createMediaService(
         FOR UPDATE OF item
       `;
       if (!rows[0]) throw new MediaServiceError("ITEM_NOT_FOUND");
-      return operation(tx);
+      return operation(tx, audit);
     });
   }
 
@@ -262,17 +272,32 @@ export function createMediaService(
       if (linkIds.length > 200 || new Set(linkIds).size !== linkIds.length)
         throw new MediaServiceError("INVALID_UPLOAD");
       for (const id of linkIds) MediaAssetSchema.shape.id.parse(id);
-      return withItem(actorUserId, itemId, async (tx) => {
-        const links = await tx.mediaLink.findMany({
-          where: { itemId, ownerId: actorUserId, purpose: "GALLERY", asset: { kind: "IMAGE" } },
-          select: { id: true },
-        });
-        if (links.length !== linkIds.length || links.some((link) => !linkIds.includes(link.id)))
-          throw new MediaServiceError("ASSET_NOT_FOUND");
-        // First gallery IMAGE by position is the title image. One transaction preserves the rest of the order.
-        for (const [position, id] of linkIds.entries())
-          await tx.mediaLink.update({ where: { id }, data: { position } });
-      });
+      return withItem(
+        actorUserId,
+        itemId,
+        async (tx, audit) => {
+          const links = await tx.mediaLink.findMany({
+            where: { itemId, ownerId: actorUserId, purpose: "GALLERY", asset: { kind: "IMAGE" } },
+            select: { id: true, position: true },
+          });
+          if (links.length !== linkIds.length || links.some((link) => !linkIds.includes(link.id)))
+            throw new MediaServiceError("ASSET_NOT_FOUND");
+          // First gallery IMAGE by position is the title image. One transaction preserves the rest of the order.
+          for (const [position, id] of linkIds.entries()) {
+            const before = links.find((link) => link.id === id)!;
+            await tx.mediaLink.update({ where: { id }, data: { position } });
+            if (before.position !== position)
+              await auditPort.append(tx, audit!, {
+                resourceType: "ITEM",
+                resourceId: itemId,
+                action: "ITEM_MEDIA_REORDERED",
+                before: { id, position: before.position },
+                after: { id, position },
+              });
+          }
+        },
+        true,
+      );
     },
     async updateDocument(
       actorUserId: string,
@@ -283,16 +308,39 @@ export function createMediaService(
       const category = DocumentCategorySchema.parse(input.category);
       if (!["PRIVATE", "UNLISTED", "PUBLIC"].includes(input.visibility))
         throw new MediaServiceError("INVALID_UPLOAD");
-      return withItem(actorUserId, itemId, async (tx) => {
-        const link = await tx.documentLink.findFirst({
-          where: { id: linkId, itemId, ownerId: actorUserId },
-        });
-        if (!link) throw new MediaServiceError("ASSET_NOT_FOUND");
-        await tx.documentLink.update({
-          where: { id: link.id },
-          data: { category, visibility: input.visibility },
-        });
-      });
+      return withItem(
+        actorUserId,
+        itemId,
+        async (tx, audit) => {
+          const link = await tx.documentLink.findFirst({
+            where: { id: linkId, itemId, ownerId: actorUserId },
+          });
+          if (!link) throw new MediaServiceError("ASSET_NOT_FOUND");
+          await tx.documentLink.update({
+            where: { id: link.id },
+            data: { category, visibility: input.visibility },
+          });
+          if (link.category !== category || link.visibility !== input.visibility)
+            await auditPort.append(tx, audit!, {
+              resourceType: "ITEM",
+              resourceId: itemId,
+              action: "ITEM_DOCUMENT_CHANGED",
+              before: {
+                id: link.id,
+                category: link.category,
+                visibility: link.visibility,
+                position: link.position,
+              },
+              after: {
+                id: link.id,
+                category,
+                visibility: input.visibility,
+                position: link.position,
+              },
+            });
+        },
+        true,
+      );
     },
     createImageUpload: (actorUserId: string, bytes: Uint8Array, meta: UploadMetadata) =>
       upload(actorUserId, bytes, meta, "IMAGE"),
@@ -306,6 +354,11 @@ export function createMediaService(
       try {
         return await database.$transaction(
           async (tx) => {
+            const audit = await auditPort.begin(
+              tx,
+              actorUserId,
+              () => new MediaServiceError("ITEM_NOT_FOUND"),
+            );
             // Lock item first, matching quantity-split lock ordering. Deleted parents are hidden.
             const rows = await tx.$queryRaw<Array<{ id: string }>>`
             SELECT item."id" FROM "CollectibleItem" item
@@ -351,6 +404,13 @@ export function createMediaService(
                   position: (last?.position ?? -1) + 1,
                 },
               });
+              await auditPort.append(tx, audit, {
+                resourceType: "ITEM",
+                resourceId: data.itemId,
+                action: "ITEM_MEDIA_LINKED",
+                before: null,
+                after: { id: link.id, purpose: link.purpose, position: link.position },
+              });
               return {
                 id: link.id,
                 itemId: link.itemId,
@@ -374,6 +434,18 @@ export function createMediaService(
                 visibility: data.visibility,
                 title: data.title ?? null,
                 position: (last?.position ?? -1) + 1,
+              },
+            });
+            await auditPort.append(tx, audit, {
+              resourceType: "ITEM",
+              resourceId: data.itemId,
+              action: "ITEM_DOCUMENT_LINKED",
+              before: null,
+              after: {
+                id: link.id,
+                category: link.category,
+                visibility: link.visibility,
+                position: link.position,
               },
             });
             return {

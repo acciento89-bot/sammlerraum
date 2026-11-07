@@ -1,3 +1,4 @@
+import { defaultMutationAudit, type MutationAuditPort } from "../audit/mutation-audit";
 import { CollectibleItemSchema } from "@sammlerraum/contracts/items";
 
 export type StoredTag = {
@@ -105,7 +106,11 @@ async function lockOwnedItem(
   }
 }
 
-export function createTagService(database: TagDatabase, actorUserId: string) {
+export function createTagService(
+  database: TagDatabase,
+  actorUserId: string,
+  auditPort: MutationAuditPort = defaultMutationAudit,
+) {
   async function setItemTags(
     itemIdInput: string,
     tagsInput: readonly string[],
@@ -115,7 +120,15 @@ export function createTagService(database: TagDatabase, actorUserId: string) {
 
     return database.$transaction(
       async (transaction) => {
+        const audit = await auditPort.begin(
+          transaction,
+          actorUserId,
+          () => new TagServiceError("ITEM_NOT_FOUND"),
+        );
         await lockOwnedItem(transaction, itemId, actorUserId);
+        const before = await transaction.$queryRaw<
+          Array<{ id: string; name: string }>
+        >`SELECT tag.id,tag.name FROM "ItemTag" link JOIN "Tag" tag ON tag.id=link."tagId" WHERE link."itemId"=${itemId}::uuid AND tag."ownerId"=${actorUserId} ORDER BY tag.id`;
         await transaction.itemTag.deleteMany({ where: { itemId } });
 
         const tagsInLockOrder = [...tags].sort((left, right) =>
@@ -155,6 +168,26 @@ export function createTagService(database: TagDatabase, actorUserId: string) {
             data: saved.map((tag) => ({ itemId, tagId: tag.id })),
           });
         }
+        const beforeIds = new Set(before.map((t) => t.id)),
+          afterIds = new Set(saved.map((t) => t.id));
+        for (const tag of before)
+          if (!afterIds.has(tag.id))
+            await auditPort.append(transaction, audit, {
+              resourceType: "ITEM",
+              resourceId: itemId,
+              action: "ITEM_TAG_DETACHED",
+              before: { id: tag.id, name: tag.name },
+              after: null,
+            });
+        for (const tag of saved)
+          if (!beforeIds.has(tag.id))
+            await auditPort.append(transaction, audit, {
+              resourceType: "ITEM",
+              resourceId: itemId,
+              action: "ITEM_TAG_ATTACHED",
+              before: null,
+              after: { id: tag.id, name: tag.name },
+            });
         return saved;
       },
       { isolationLevel: "ReadCommitted" },

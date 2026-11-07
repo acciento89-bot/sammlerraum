@@ -1,3 +1,6 @@
+import { beginMutationAudit, appendMutationAudit } from "../audit/mutation-audit";
+import { createTrustedAuditContext } from "../audit/audit-context";
+import { captureMoneyAuditSnapshot } from "../audit/money-audit";
 import { createHash } from "node:crypto";
 import { z } from "zod";
 import { Prisma } from "@sammlerraum/db/search-sql";
@@ -122,9 +125,19 @@ function actor(input: { userId: string }) {
   return input.userId;
 }
 async function lockJob(tx: Tx, id: string, owner?: string): Promise<Job> {
+  const [discovered] = await q<{ ownerId: string }[]>(
+    tx,
+    Prisma.sql`SELECT j."ownerId" FROM "ImportJob" j JOIN "Collection" c ON c.id=j."collectionId" AND c."ownerId"=j."ownerId" WHERE j.id=${id}::uuid AND c."deletedAt" IS NULL ${owner === undefined ? Prisma.empty : Prisma.sql`AND j."ownerId"=${owner}`}`,
+  );
+  if (!discovered) return importFail("IMPORT_NOT_FOUND");
+  await beginMutationAudit(
+    tx,
+    discovered.ownerId,
+    () => new ImportServiceError("IMPORT_NOT_FOUND"),
+  );
   const [job] = await q<Job[]>(
     tx,
-    Prisma.sql`SELECT j.* FROM "ImportJob" j JOIN "Collection" c ON c.id=j."collectionId" AND c."ownerId"=j."ownerId" WHERE j.id=${id}::uuid AND c."deletedAt" IS NULL ${owner === undefined ? Prisma.empty : Prisma.sql`AND j."ownerId"=${owner} AND j."sourceExpiresAt">timezone('UTC',CURRENT_TIMESTAMP)`} FOR UPDATE OF j,c`,
+    Prisma.sql`SELECT j.* FROM "ImportJob" j JOIN "Collection" c ON c.id=j."collectionId" AND c."ownerId"=j."ownerId" WHERE j.id=${id}::uuid AND j."ownerId"=${discovered.ownerId} AND c."deletedAt" IS NULL ${owner === undefined ? Prisma.empty : Prisma.sql`AND j."ownerId"=${owner} AND j."sourceExpiresAt">timezone('UTC',CURRENT_TIMESTAMP)`} FOR UPDATE OF j,c`,
   );
   if (!job) return importFail("IMPORT_NOT_FOUND");
   return job;
@@ -433,6 +446,7 @@ export function createImportCommitService(database: ImportCommitDatabase) {
     try {
       return await run(async (tx) => {
         const job = await lockJob(tx, jobId);
+        const audit = createTrustedAuditContext({ source: "IMPORT", actorId: job.ownerId });
         observedRevision = job.revision;
         const map = mapping(job);
         if (
@@ -476,6 +490,7 @@ export function createImportCommitService(database: ImportCommitDatabase) {
           if (choice.action !== "SKIP") {
             if (!value.values) return importFail("IMPORT_CONFLICT");
             await recheckMatches(tx, job, value);
+            let beforeMoney: Awaited<ReturnType<typeof captureMoneyAuditSnapshot>> | null = null;
             const values = value.values,
               imported = values.purchaseMoney;
             let meaning = imported ? validateMoneyImportRow(imported.source, imported) : null;
@@ -508,6 +523,12 @@ export function createImportCommitService(database: ImportCommitDatabase) {
               )
                 return importFail("IMPORT_CONFLICT");
               itemId = choice.targetItemId;
+              if (choice.fields.includes("purchaseMoney"))
+                beforeMoney = await captureMoneyAuditSnapshot(
+                  moneyTransaction(tx),
+                  { family: "PURCHASE", itemId },
+                  job.ownerId,
+                );
               const fields: Record<string, unknown> = {};
               for (const field of choice.fields) {
                 if (field === "title") fields.title = values.title;
@@ -534,7 +555,9 @@ export function createImportCommitService(database: ImportCommitDatabase) {
                   }
                 : metadata;
               if (Object.keys(write).length)
-                await updateItemInTransaction(tx, job.ownerId, itemId, write);
+                await updateItemInTransaction(tx, job.ownerId, itemId, write, {
+                  auditContext: audit,
+                });
               if (choice.fields.includes("identifier") && values.identifier) {
                 const current = await tx.itemIdentifier.findMany({
                   where: { itemId },
@@ -552,18 +575,23 @@ export function createImportCommitService(database: ImportCommitDatabase) {
                 ).setItemIdentifiers(itemId, [...current, values.identifier]);
               }
             } else {
-              const item = await createItemInTransaction(tx, job.ownerId, {
-                ...CreateItemInputSchema.parse({
-                  collectionId: job.collectionId,
-                  title: values.title,
-                  quantity: values.quantity,
-                  acquisitionDate: values.acquiredOn,
-                  visibility: "PRIVATE",
-                  tradeStatus: "NOT_FOR_TRADE",
-                }),
-                purchaseAmountMinor: rawMoney ? Number(rawMoney.amountMinor) : null,
-                purchaseCurrency: rawMoney?.currency ?? null,
-              });
+              const item = await createItemInTransaction(
+                tx,
+                job.ownerId,
+                {
+                  ...CreateItemInputSchema.parse({
+                    collectionId: job.collectionId,
+                    title: values.title,
+                    quantity: values.quantity,
+                    acquisitionDate: values.acquiredOn,
+                    visibility: "PRIVATE",
+                    tradeStatus: "NOT_FOR_TRADE",
+                  }),
+                  purchaseAmountMinor: rawMoney ? Number(rawMoney.amountMinor) : null,
+                  purchaseCurrency: rawMoney?.currency ?? null,
+                },
+                { auditContext: audit },
+              );
               itemId = item.id;
               if (values.identifier)
                 await createIdentifierService(
@@ -585,6 +613,24 @@ export function createImportCommitService(database: ImportCommitDatabase) {
                   view.factToken,
                 );
               await appendMoneyAssertion(money, fact, { kind: "AUTHOR", receipt: meaning.receipt });
+            }
+            if (
+              rawMoney &&
+              (choice.action !== "MERGE" || choice.fields.includes("purchaseMoney"))
+            ) {
+              const after = await captureMoneyAuditSnapshot(
+                moneyTransaction(tx),
+                { family: "PURCHASE", itemId: itemId! },
+                job.ownerId,
+              );
+              if (JSON.stringify(beforeMoney) !== JSON.stringify(after))
+                await appendMutationAudit(tx, audit, {
+                  resourceType: "ITEM",
+                  resourceId: itemId!,
+                  action: "ITEM_MONEY_CHANGED",
+                  before: beforeMoney,
+                  after,
+                });
             }
           }
           const committedAt = new Date().toISOString(),
@@ -611,6 +657,17 @@ export function createImportCommitService(database: ImportCommitDatabase) {
           tx,
           Prisma.sql`UPDATE "ImportJob" SET "committedRows"=${committedRows},status=${complete ? "COMPLETED" : "COMMITTING"}::"ImportJobStatus",revision=revision+1,"updatedAt"=date_trunc('milliseconds',clock_timestamp()) WHERE id=${job.id}::uuid RETURNING id`,
         );
+        await appendMutationAudit(tx, audit, {
+          resourceType: "IMPORT_JOB",
+          resourceId: job.id,
+          action: "IMPORT_BATCH_COMMITTED",
+          before: { committedRows: job.committedRows, status: job.status, revision: job.revision },
+          after: {
+            committedRows,
+            status: complete ? "COMPLETED" : "COMMITTING",
+            revision: job.revision + 1,
+          },
+        });
         return { complete, processed, committedRows };
       });
     } catch (error) {

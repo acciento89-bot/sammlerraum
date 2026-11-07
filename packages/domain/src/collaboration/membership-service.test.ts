@@ -1601,7 +1601,7 @@ describe.runIf(process.env.RUN_DATABASE_INTEGRATION === "1")(
         await racing.$disconnect();
       }
     });
-    it("reports a controlled conflict when a recipient adds the same certificate after preflight", async () => {
+    it("reports a controlled conflict when a native recipient writer adds the same certificate after preflight", async () => {
       const f = await fixture();
       const item = await db.collectibleItem.create({
         data: { ownerId: f.owner, collectionId: f.collection, title: "Certificate race source" },
@@ -1655,10 +1655,18 @@ describe.runIf(process.env.RUN_DATABASE_INTEGRATION === "1")(
       );
       try {
         await ready;
-        await createGradingService(db, f.second).addGrading(target.id, {
-          provider: "PSA",
-          grade: "9",
-          certificateNo: "race-001",
+        // Normal audited grading writers now share the earlier actor identity fence.
+        // A native late writer still exercises the final certificate uniqueness safeguard.
+        await db.grading.create({
+          data: {
+            itemId: target.id,
+            ownerId: f.second,
+            provider: "PSA",
+            providerKey: "psa",
+            grade: "9",
+            certificateNo: "race-001",
+            certificateKey: "race-001",
+          },
         });
         release();
         const outcome = await result;

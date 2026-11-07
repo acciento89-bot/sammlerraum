@@ -1,3 +1,4 @@
+import { defaultMutationAudit, type MutationAuditPort } from "../audit/mutation-audit";
 import type { MediaDatabase } from "./media-service";
 
 export class MediaCleanupError extends Error {
@@ -9,9 +10,10 @@ export class MediaCleanupError extends Error {
 
 export function createMediaCleanupService(
   database: MediaDatabase,
-  options: { retentionHours: number; batchSize?: number },
+  options: { retentionHours: number; batchSize?: number; auditPort?: MutationAuditPort },
 ) {
   const batchSize = options.batchSize ?? 100;
+  const auditPort = options.auditPort ?? defaultMutationAudit;
   if (
     !Number.isSafeInteger(options.retentionHours) ||
     options.retentionHours < 1 ||
@@ -42,17 +44,39 @@ export function createMediaCleanupService(
         }
         // Preserve item -> asset ordering shared with split and link. Foreign IDs are hidden.
         if (!itemId) throw new MediaCleanupError();
+        const audit = await auditPort.begin(tx, actorUserId, () => new MediaCleanupError());
         const item = await tx.$queryRaw<Array<{ id: string }>>`
           SELECT i.id FROM "CollectibleItem" i JOIN "Collection" c ON c.id = i."collectionId"
           WHERE i.id = ${itemId}::uuid AND i."ownerId" = ${actorUserId}
           AND i."deletedAt" IS NULL AND c."deletedAt" IS NULL FOR UPDATE OF i`;
         if (!item[0]) throw new MediaCleanupError();
         const where = { id: linkId, ownerId: actorUserId, itemId };
+        const link =
+          target === "ITEM"
+            ? await tx.mediaLink.findFirst({ where })
+            : await tx.documentLink.findFirst({ where });
+        if (!link) throw new MediaCleanupError();
+        const before =
+          "purpose" in link
+            ? { id: link.id, purpose: link.purpose, position: link.position }
+            : {
+                id: link.id,
+                category: link.category,
+                visibility: link.visibility,
+                position: link.position,
+              };
         const result =
           target === "ITEM"
             ? await tx.mediaLink.deleteMany({ where })
             : await tx.documentLink.deleteMany({ where });
         if (!result.count) throw new MediaCleanupError();
+        await auditPort.append(tx, audit, {
+          resourceType: "ITEM",
+          resourceId: itemId,
+          action: target === "ITEM" ? "ITEM_MEDIA_UNLINKED" : "ITEM_DOCUMENT_UNLINKED",
+          before,
+          after: null,
+        });
       });
     },
     async findDeletableAssets() {

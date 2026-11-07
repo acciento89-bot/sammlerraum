@@ -1,7 +1,11 @@
 import { AuditError } from "@sammlerraum/contracts/audit";
 import type { Prisma } from "@sammlerraum/db/search-sql";
 import type { SearchReadTransaction } from "../search/search-read";
-import { createTrustedAuditContext, type AuditContext } from "./audit-context";
+import {
+  createTrustedAuditContext,
+  requireTrustedAuditContext,
+  type AuditContext,
+} from "./audit-context";
 import { recordAuditEventInTransaction } from "./audit-service";
 import { lockAuditUser } from "./audit-scope";
 export type TaggedAuditTransaction = {
@@ -20,8 +24,13 @@ export async function beginMutationAudit(
   tx: TaggedAuditTransaction,
   actorId: string,
   missing?: () => Error,
+  suppliedContext?: AuditContext,
 ): Promise<AuditContext> {
-  const context = createTrustedAuditContext({ source: "USER", actorId });
+  const context =
+    suppliedContext === undefined
+      ? createTrustedAuditContext({ source: "USER", actorId })
+      : requireTrustedAuditContext(suppliedContext);
+  if (context.actorId !== actorId) throw new AuditError("AUDIT_INVALID");
   try {
     await lockAuditUser(auditSqlTransaction(tx), actorId);
   } catch (error) {

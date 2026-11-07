@@ -1,3 +1,5 @@
+import { createTrustedAuditContext } from "../audit/audit-context";
+import { recordAuditEventInTransaction } from "../audit/audit-service";
 import { runTransferTransaction, type MembershipDatabase } from "./transfer-transaction";
 import { transferPrivateTags } from "./transfer-tags";
 import { transferPrivateLocations } from "./transfer-locations";
@@ -40,6 +42,13 @@ function actor(who: Actor) {
 }
 /** Server-side private memberships. No supplied role is authorization. */
 export function createMembershipService(database: MembershipDatabase) {
+  async function auditIdentity(tx: BoundedSearchReadTransaction, userId: string) {
+    const [identity] = await tx.$queryRaw<{ id: string }[]>(
+      Prisma.sql`SELECT id FROM "user" WHERE id=${userId} FOR NO KEY UPDATE`,
+    );
+    if (!identity) return fail("MEMBERSHIP_NOT_FOUND");
+    return createTrustedAuditContext({ source: "USER", actorId: userId });
+  }
   async function load(
     tx: BoundedSearchReadTransaction,
     collectionId: string,
@@ -126,7 +135,8 @@ export function createMembershipService(database: MembershipDatabase) {
     async addMember(who: Actor, input: unknown) {
       const userId = actor(who),
         value = parse(MemberMutationSchema, input);
-      return runSearchTransaction(database, async (tx) => {
+      return runTransferTransaction(database, async (tx) => {
+        const audit = await auditIdentity(tx, userId);
         const { parent, role } = await load(tx, value.collectionId, userId, true);
         manage(role);
         revision(parent, value.expectedRevision);
@@ -140,13 +150,22 @@ export function createMembershipService(database: MembershipDatabase) {
         await tx.$queryRaw(
           Prisma.sql`INSERT INTO "CollectionMember" ("collectionId","userId",role) VALUES (${parent.id}::uuid,${value.userId},${value.role}::"CollectionMemberRole") RETURNING "userId"`,
         );
+        await recordAuditEventInTransaction(tx, audit, {
+          resourceType: "COLLECTION",
+          resourceId: parent.id,
+          action: "MEMBERSHIP_ADDED",
+          subjectUserId: value.userId,
+          before: { role: null },
+          after: { role: value.role },
+        });
         return state(tx, await advance(tx, parent));
       });
     },
     async changeRole(who: Actor, input: unknown) {
       const userId = actor(who),
         value = parse(MemberMutationSchema, input);
-      return runSearchTransaction(database, async (tx) => {
+      return runTransferTransaction(database, async (tx) => {
+        const audit = await auditIdentity(tx, userId);
         const { parent, role } = await load(tx, value.collectionId, userId, true);
         manage(role);
         revision(parent, value.expectedRevision);
@@ -156,6 +175,14 @@ export function createMembershipService(database: MembershipDatabase) {
         if (role !== "OWNER" && (value.role === "ADMIN" || target.role === "ADMIN"))
           return fail("MEMBERSHIP_FORBIDDEN");
         if (target.role === value.role) return state(tx, parent);
+        await recordAuditEventInTransaction(tx, audit, {
+          resourceType: "COLLECTION",
+          resourceId: parent.id,
+          action: "MEMBERSHIP_ROLE_CHANGED",
+          subjectUserId: value.userId,
+          before: { role: target.role },
+          after: { role: value.role },
+        });
         await tx.$queryRaw(
           Prisma.sql`UPDATE "CollectionMember" SET role=${value.role}::"CollectionMemberRole","updatedAt"=timezone('UTC',clock_timestamp()) WHERE "collectionId"=${parent.id}::uuid AND "userId"=${value.userId} RETURNING "userId"`,
         );
@@ -165,7 +192,8 @@ export function createMembershipService(database: MembershipDatabase) {
     async removeMember(who: Actor, input: unknown) {
       const userId = actor(who),
         value = parse(MemberRemovalSchema, input);
-      return runSearchTransaction(database, async (tx) => {
+      return runTransferTransaction(database, async (tx) => {
+        const audit = await auditIdentity(tx, userId);
         const { parent, role } = await load(tx, value.collectionId, userId, true);
         revision(parent, value.expectedRevision);
         if (value.userId === parent.ownerId) return fail("MEMBERSHIP_OWNER_REQUIRED");
@@ -175,6 +203,14 @@ export function createMembershipService(database: MembershipDatabase) {
           manage(role);
           if (role !== "OWNER" && target.role === "ADMIN") return fail("MEMBERSHIP_FORBIDDEN");
         }
+        await recordAuditEventInTransaction(tx, audit, {
+          resourceType: "COLLECTION",
+          resourceId: parent.id,
+          action: "MEMBERSHIP_REMOVED",
+          subjectUserId: value.userId,
+          before: { role: target.role },
+          after: { role: null },
+        });
         await tx.$queryRaw(
           Prisma.sql`DELETE FROM "CollectionMember" WHERE "collectionId"=${parent.id}::uuid AND "userId"=${value.userId} RETURNING "userId"`,
         );
@@ -195,7 +231,8 @@ export function createMembershipService(database: MembershipDatabase) {
         if (role !== "OWNER") return fail("MEMBERSHIP_FORBIDDEN");
         revision(parent, value.expectedRevision);
         if (value.newOwnerId === parent.ownerId) return fail("MEMBERSHIP_INVALID");
-        if (!(await member(tx, parent.id, value.newOwnerId))) return fail("MEMBERSHIP_NOT_FOUND");
+        const recipient = await member(tx, parent.id, value.newOwnerId);
+        if (!recipient) return fail("MEMBERSHIP_NOT_FOUND");
         await verifiedUser(tx, value.newOwnerId);
         // Parent first, then every item in stable order. This fences existing/new child writers.
         const lockedItems = await tx.$queryRaw<{ id: string }[]>(
@@ -215,6 +252,18 @@ export function createMembershipService(database: MembershipDatabase) {
         );
         await tx.$queryRaw(
           Prisma.sql`INSERT INTO "CollectionOwnershipTransfer" (id,"collectionId","fromOwnerId","toOwnerId","actorId","fromRevision","toRevision","transactionId") VALUES (${randomUUID()}::uuid,${parent.id}::uuid,${parent.ownerId},${value.newOwnerId},${userId},${parent.collaborationRevision},${parent.collaborationRevision + 1},pg_current_xact_id()::text) RETURNING id`,
+        );
+        await recordAuditEventInTransaction(
+          tx,
+          createTrustedAuditContext({ source: "USER", actorId: userId }),
+          {
+            resourceType: "COLLECTION",
+            resourceId: parent.id,
+            action: "COLLECTION_OWNERSHIP_TRANSFERRED",
+            subjectUserId: value.newOwnerId,
+            before: { role: recipient.role, previousOwnerRole: "OWNER" },
+            after: { role: "OWNER", previousOwnerRole: "ADMIN" },
+          },
         );
         await transferPrivateLocations(tx, parent.id, parent.ownerId, value.newOwnerId);
         await transferPrivateMedia(tx, assetIds, value.newOwnerId);

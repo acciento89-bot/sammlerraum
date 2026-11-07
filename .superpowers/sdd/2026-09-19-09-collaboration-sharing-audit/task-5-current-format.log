@@ -1,0 +1,22 @@
+packages/contracts/src/audit.ts 36ms
+[error] No parser could be inferred for file "/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/db/prisma/schema.prisma".
+packages/domain/src/audit/audit-event-definitions.ts 28ms
+packages/domain/src/audit/audit-service.ts 17ms
+packages/domain/src/audit/core-audit-integration.test.ts 43ms
+packages/domain/src/audit/money-audit.ts 2ms
+packages/domain/src/audit/mutation-audit.ts 3ms
+packages/domain/src/collaboration/invitation-service.test.ts 43ms
+packages/domain/src/collaboration/invitation-service.ts 17ms
+packages/domain/src/collaboration/membership-service.test.ts 77ms
+packages/domain/src/collaboration/membership-service.ts 13ms
+packages/domain/src/custom-fields/custom-field-service.test.ts 26ms
+packages/domain/src/custom-fields/custom-field-service.ts 20ms
+packages/domain/src/imports/import-commit-service.ts 36ms
+packages/domain/src/imports/import-workflow.integration.test.ts 22ms
+packages/domain/src/items/identifier-service.test.ts 19ms
+packages/domain/src/items/item-service.ts 30ms
+packages/domain/src/items/tag-service.ts 7ms
+packages/domain/src/media/cleanup-service.ts 7ms
+packages/domain/src/media/media-service.test.ts 22ms
+packages/domain/src/media/media-service.ts 15ms
+packages/domain/src/money/personal-money-service.ts 10ms

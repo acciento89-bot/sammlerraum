@@ -1,3 +1,9 @@
+import { createTrustedAuditContext } from "../audit/audit-context";
+import type { MutationAuditPort } from "../audit/mutation-audit";
+const unitFieldAudit = (): MutationAuditPort => ({
+  begin: async (_tx, actorId) => createTrustedAuditContext({ source: "USER", actorId }),
+  append: async () => {},
+});
 import { randomUUID } from "node:crypto";
 
 import { createPrismaClient } from "@sammlerraum/db/create-client";
@@ -29,6 +35,7 @@ describe("custom field service", () => {
           operation(transaction),
       } as unknown as CustomFieldDatabase,
       "trusted-owner",
+      unitFieldAudit(),
     );
 
     await expect(service.setFieldValue(itemId, fieldId, "twelve")).rejects.toMatchObject({
@@ -122,6 +129,7 @@ describe("custom field service", () => {
           operation(transaction),
       } as unknown as CustomFieldDatabase,
       "trusted-owner",
+      unitFieldAudit(),
     );
 
     await expect(
@@ -152,6 +160,7 @@ describe("custom field service", () => {
     const service = createCustomFieldService(
       database as unknown as CustomFieldDatabase,
       "trusted-owner",
+      unitFieldAudit(),
     );
 
     await expect(
@@ -170,6 +179,7 @@ describe("custom field service", () => {
     const service = createCustomFieldService(
       database as unknown as CustomFieldDatabase,
       "trusted-owner",
+      unitFieldAudit(),
     );
 
     await expect(
@@ -204,6 +214,7 @@ describe("custom field service", () => {
           operation(transaction),
       } as unknown as CustomFieldDatabase,
       "trusted-owner",
+      unitFieldAudit(),
     );
 
     await expect(service.setFieldValue(itemId, fieldId, " mint ")).resolves.toEqual({
@@ -247,6 +258,7 @@ describe("custom field service", () => {
           operation(transaction),
       } as unknown as CustomFieldDatabase,
       "trusted-owner",
+      unitFieldAudit(),
     );
 
     await expect(
@@ -274,6 +286,7 @@ describe("custom field service", () => {
           operation(transaction),
       } as unknown as CustomFieldDatabase,
       "trusted-owner",
+      unitFieldAudit(),
     );
 
     await expect(service.setFieldValue(itemId, fieldId, null)).resolves.toBeNull();
@@ -297,6 +310,7 @@ describe("custom field service", () => {
           operation(transaction),
       } as unknown as CustomFieldDatabase,
       "trusted-owner",
+      unitFieldAudit(),
     );
 
     await expect(service.setFieldValue(itemId, fieldId, "secret")).rejects.toMatchObject({

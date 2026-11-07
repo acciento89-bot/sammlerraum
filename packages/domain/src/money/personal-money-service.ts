@@ -1,3 +1,6 @@
+import { beginMutationAudit, appendMutationAudit } from "../audit/mutation-audit";
+import { captureMoneyAuditSnapshot } from "../audit/money-audit";
+import type { AuditContext } from "../audit/audit-context";
 import { readPersonalMoneyHistory } from "./personal-money-history";
 import {
   CreateItemMoneyInputSchema,
@@ -112,10 +115,33 @@ export function createPersonalMoneyService(database: PersonalMoneyDatabase, acto
     }
   }
 
+  async function appendPurchaseAudit(
+    tx: Tx,
+    money: SearchReadTransaction,
+    audit: AuditContext,
+    s: MoneySubject,
+    before: Awaited<ReturnType<typeof captureMoneyAuditSnapshot>> | null,
+  ) {
+    if (s.family === "CATALOG") return legacyMoneyFail("LEGACY_MONEY_INVALID");
+    const after = await captureMoneyAuditSnapshot(money, s, actorId);
+    if (JSON.stringify(before) !== JSON.stringify(after))
+      await appendMutationAudit(tx, audit, {
+        resourceType: "ITEM",
+        resourceId: s.itemId,
+        action: "ITEM_MONEY_CHANGED",
+        before,
+        after,
+      });
+  }
   async function createItemV2(input: unknown): Promise<ItemMoneyResult> {
     const data = parse(CreateItemMoneyInputSchema, input),
       receipt = data.purchase ? parseLegacyMoneyAuthoring(data.purchase.authoring) : null;
     return run(async (tx, money) => {
+      const audit = await beginMutationAudit(
+        tx,
+        actorId,
+        () => new LegacyMoneyError("MONEY_NOT_FOUND"),
+      );
       const item = await createItemInTransaction(tx, actorId, {
         ...data.item,
         ...(receipt ? raw(receipt) : { purchaseAmountMinor: null, purchaseCurrency: null }),
@@ -126,13 +152,24 @@ export function createPersonalMoneyService(database: PersonalMoneyDatabase, acto
           fact = await requireMoneyToken(money, s, who, view.factToken);
         await appendMoneyAssertion(money, fact, { kind: "AUTHOR", receipt });
       }
+      if (receipt)
+        await appendPurchaseAudit(tx, money, audit, { family: "PURCHASE", itemId: item.id }, null);
       return result(tx, money, item.id);
     });
   }
   async function updateItemV2(id: string, input: unknown): Promise<ItemMoneyResult> {
     const data = parse(UpdateItemMoneyInputSchema, input);
     return run(async (tx, money) => {
+      const audit = await beginMutationAudit(
+        tx,
+        actorId,
+        () => new LegacyMoneyError("MONEY_NOT_FOUND"),
+      );
       const s = personal({ family: "PURCHASE", itemId: id });
+      const before =
+        data.purchase && data.purchase.op !== "RETAIN"
+          ? await captureMoneyAuditSnapshot(money, s, actorId)
+          : null;
       if (data.purchase) await requireMoneyToken(money, s, who, data.purchase.expectedFactToken);
       // RETAIN/omission must omit raw column names from the existing writer.
       const receipt =
@@ -157,6 +194,8 @@ export function createPersonalMoneyService(database: PersonalMoneyDatabase, acto
             : {}),
         });
       }
+      if (data.purchase && data.purchase.op !== "RETAIN")
+        await appendPurchaseAudit(tx, money, audit, s, before);
       return result(tx, money, id);
     });
   }
@@ -168,8 +207,14 @@ export function createPersonalMoneyService(database: PersonalMoneyDatabase, acto
     const data = parse(CustomMoneyWriteInputSchema, input),
       s = personal({ family: "CUSTOM", itemId, fieldDefinitionId });
     return run(async (tx, money) => {
+      const audit = await beginMutationAudit(
+        tx,
+        actorId,
+        () => new LegacyMoneyError("MONEY_NOT_FOUND"),
+      );
       await requireMoneyToken(money, s, who, data.intent.expectedFactToken);
       if (data.intent.op === "RETAIN") return readMoneyFact(money, s, who);
+      const before = await captureMoneyAuditSnapshot(money, s, actorId);
       const receipt =
         data.intent.op === "REPLACE" ? parseLegacyMoneyAuthoring(data.intent.authoring) : null;
       await setFieldValueInTransaction(
@@ -193,6 +238,7 @@ export function createPersonalMoneyService(database: PersonalMoneyDatabase, acto
             : {}),
         });
       }
+      await appendPurchaseAudit(tx, money, audit, s, before);
       return readMoneyFact(money, s, who);
     });
   }

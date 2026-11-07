@@ -1,0 +1,13 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ✓ |workspace| packages/domain/src/audit/core-audit-integration.test.ts (13 tests) 886ms
+ ✓ |workspace| packages/domain/src/money/personal-money-service.test.ts (13 tests) 775ms
+ ✓ |workspace| packages/domain/src/custom-fields/custom-field-service.test.ts (36 tests) 335ms
+ ✓ |workspace| packages/domain/src/items/item-service.test.ts (15 tests) 326ms
+
+ Test Files  4 passed (4)
+      Tests  77 passed (77)
+   Start at  08:38:43
+   Duration  3.87s (transform 292ms, setup 8ms, collect 926ms, tests 2.32s, environment 0ms, prepare 151ms)
+

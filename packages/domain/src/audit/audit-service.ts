@@ -19,7 +19,7 @@ import {
   type AuditContext,
 } from "./audit-context";
 import { resolveAuditScope, lockAuditUser, auditAnchorPredicate } from "./audit-scope";
-const columns = Prisma.sql`id,sequence::text,"resourceType","resourceId",action,source,"actorId",before,after,to_char("createdAt",'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') AS "createdAt"`;
+const columns = Prisma.sql`id,sequence::text,"resourceType","resourceId",action,source,"actorId","subjectUserId",before,after,to_char("createdAt",'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') AS "createdAt"`;
 function checkedRow(input: unknown) {
   const parsed = AuditEventSchema.safeParse(input);
   if (!parsed.success) throw new AuditError("AUDIT_INTEGRITY");
@@ -29,6 +29,7 @@ function checkedRow(input: unknown) {
       resourceType: value.resourceType,
       resourceId: value.resourceId,
       action: value.action,
+      subjectUserId: value.subjectUserId,
       before: value.before,
       after: value.after,
     });
@@ -58,11 +59,36 @@ export async function recordAuditEventInTransaction(
     const [allowed] = await tx.$queryRaw<{ present: boolean }[]>(
       Prisma.sql`SELECT EXISTS(SELECT 1 FROM "CollectionMember" m WHERE m."collectionId"=${scope.collectionId ? Prisma.sql`${scope.collectionId}::uuid` : Prisma.sql`(SELECT "collectionId" FROM "CollectibleItem" WHERE id=${scope.itemId}::uuid)`} AND m."userId"=${who.actorId} AND m.role IN ('ADMIN','EDITOR')) AS present`,
     );
-    if (!allowed?.present) throw new AuditError("AUDIT_NOT_FOUND");
+    let selfAuthorized = false;
+    if (
+      !allowed?.present &&
+      value.resourceType === "COLLECTION" &&
+      value.subjectUserId === who.actorId
+    ) {
+      if (value.action === "MEMBERSHIP_REMOVED") {
+        const before = value.before as { role: string | null },
+          after = value.after as { role: string | null };
+        const [self] = await tx.$queryRaw<{ present: boolean }[]>(
+          Prisma.sql`SELECT EXISTS(SELECT 1 FROM "CollectionMember" WHERE "collectionId"=${scope.collectionId}::uuid AND "userId"=${who.actorId} AND role::text=${before.role}) AS present`,
+        );
+        selfAuthorized = after.role === null && self?.present === true;
+      } else if (value.action === "MEMBERSHIP_JOINED") {
+        const before = value.before as { role: string | null; invitationId: string },
+          after = value.after as { role: string | null; invitationId: string };
+        const [claim] = await tx.$queryRaw<{ present: boolean }[]>(
+          Prisma.sql`SELECT EXISTS(SELECT 1 FROM "CollectionInvitation" i JOIN "CollectionMember" m ON m."collectionId"=i."collectionId" AND m."userId"=i."acceptedByUserId" AND m.role=i.role WHERE i.id=${after.invitationId}::uuid AND i."collectionId"=${scope.collectionId}::uuid AND i."acceptedByUserId"=${who.actorId} AND i."acceptedAt" IS NOT NULL AND i."revokedAt" IS NULL AND i.role::text=${after.role}) AS present`,
+        );
+        selfAuthorized =
+          before.role === null &&
+          before.invitationId === after.invitationId &&
+          claim?.present === true;
+      }
+    }
+    if (!allowed?.present && !selfAuthorized) throw new AuditError("AUDIT_NOT_FOUND");
   }
   const id = randomUUID();
   const [row] = await tx.$queryRaw<unknown[]>(
-    Prisma.sql`INSERT INTO "AuditEvent" (id,"resourceType","resourceId","collectionId","itemId","locationOwnerUserId",action,source,"actorId",before,after) VALUES (${id}::uuid,${value.resourceType}::"AuditResourceType",${value.resourceId}::uuid,${scope.collectionId}::uuid,${scope.itemId}::uuid,${scope.locationOwnerUserId},${value.action},${who.source}::"AuditSource",${who.actorId},${JSON.stringify(value.before)}::jsonb,${JSON.stringify(value.after)}::jsonb) RETURNING ${columns}`,
+    Prisma.sql`INSERT INTO "AuditEvent" (id,"resourceType","resourceId","collectionId","itemId","locationOwnerUserId",action,source,"actorId","subjectUserId",before,after) VALUES (${id}::uuid,${value.resourceType}::"AuditResourceType",${value.resourceId}::uuid,${scope.collectionId}::uuid,${scope.itemId}::uuid,${scope.locationOwnerUserId},${value.action},${who.source}::"AuditSource",${who.actorId},${value.subjectUserId},${JSON.stringify(value.before)}::jsonb,${JSON.stringify(value.after)}::jsonb) RETURNING ${columns}`,
   );
   return checkedRow(row);
 }

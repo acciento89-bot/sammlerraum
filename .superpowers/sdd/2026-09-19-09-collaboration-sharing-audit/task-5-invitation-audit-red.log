@@ -1,0 +1,55 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/collaboration/invitation-service.test.ts (25 tests | 2 failed | 23 skipped) 435ms
+   ↓ actual recipient-bound invitations > does not allow a different verified account to accept an email-bound invite
+   ↓ actual recipient-bound invitations > accepts the intended verified recipient atomically and derives exactly one owner
+   × actual recipient-bound invitations > records actual VIEWER invitation membership exactly once with the accepting user 138ms
+     → expected [] to have a length of 1 but got +0
+   × actual recipient-bound invitations > records actual EDITOR invitation membership exactly once with the accepting user 20ms
+     → expected [] to have a length of 1 but got +0
+   ↓ actual recipient-bound invitations > requires current verified identity instead of trusting possession of the token
+   ↓ actual recipient-bound invitations > does not re-add membership when a consumed invitation is replayed after removal
+   ↓ actual recipient-bound invitations > stores only the token hash and hides tokens from the authorized pending list
+   ↓ actual recipient-bound invitations > revokes a link without changing membership and rejects its later use
+   ↓ actual recipient-bound invitations > serializes simultaneous acceptance without duplicating membership or revisions
+   ↓ actual recipient-bound invitations > checks current inviter authority after demotion rather than trusting an issued role
+   ↓ actual recipient-bound invitations > rejects an actual expired stored invitation using the database clock
+   ↓ actual recipient-bound invitations > never overwrites a different existing membership through an invitation
+   ↓ actual recipient-bound invitations > erases pending email invitations when the intended account is deleted
+   ↓ actual recipient-bound invitations > rejects owner-role injection and stale membership decisions
+   ↓ actual recipient-bound invitations > bounds pending invitations and rejects duplicate active targets
+   ↓ actual recipient-bound invitations > retains the exact maximum lifetime from one database-issued UTC anchor
+   ↓ actual recipient-bound invitations > rejects raw consumption without the actual resulting membership
+   ↓ actual recipient-bound invitations > rejects a changed email and preserves immutable recipient, role and token identity
+   ↓ actual recipient-bound invitations > does not preserve an old Owner's Admin grant after ownership transfer
+   ↓ actual recipient-bound invitations > revokes an unconsumed EMAIL invitation when the member is explicitly removed
+   ↓ actual recipient-bound invitations > revokes an unconsumed USER invitation when the member is explicitly removed
+   ↓ actual recipient-bound invitations > keeps the pending-invitation cap under concurrent Owner/Admin creation
+   ↓ actual recipient-bound invitations > does not consume a token at membership capacity and can accept after a genuine slot is freed
+   ↓ actual recipient-bound invitations > rolls back a token that expires during the real acceptance transaction with a closed expiry result
+   ↓ actual recipient-bound invitations > maps the actual database expiry guard even when expiry happens inside the consuming SQL statement
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/collaboration/invitation-service.test.ts > actual recipient-bound invitations > records actual VIEWER invitation membership exactly once with the accepting user
+ FAIL  |workspace| packages/domain/src/collaboration/invitation-service.test.ts > actual recipient-bound invitations > records actual EDITOR invitation membership exactly once with the accepting user
+AssertionError: expected [] to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ packages/domain/src/collaboration/invitation-service.test.ts:99:22
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 23 skipped (25)
+   Start at  08:46:00
+   Duration  1000ms (transform 200ms, setup 6ms, collect 370ms, tests 435ms, environment 0ms, prepare 55ms)
+

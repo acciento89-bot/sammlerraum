@@ -1,0 +1,109 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/audit/core-audit-integration.test.ts (10 tests | 1 failed) 709ms
+   ✓ actual core mutations append their real audit in the same transaction > records actual condition and location changes with the real user and before/after values 166ms
+   ✓ actual core mutations append their real audit in the same transaction > a genuine default audit INSERT failure rolls the actual condition write back 53ms
+   ✓ actual core mutations append their real audit in the same transaction > records category changes and condition clearing without inventing a second unchanged event 24ms
+   ✓ actual core mutations append their real audit in the same transaction > audits grading create/update/delete with selected authored facts and excludes verification URLs/source text 25ms
+   ✓ actual core mutations append their real audit in the same transaction > keeps a manual valuation's exact bigint, stored scale, basis and true author in audit 17ms
+   ✓ actual core mutations append their real audit in the same transaction > records private location creation and hierarchy moves without duplicating QR access tokens 27ms
+   ✓ actual core mutations append their real audit in the same transaction > rolls back grading, valuations and location history together when their audit append fails 27ms
+   ✓ actual core mutations append their real audit in the same transaction > tracks collection and node creation, rename, visibility, move and soft deletion 36ms
+   ✓ actual core mutations append their real audit in the same transaction > audits real item create, meaningful edits, split, archive and soft delete without storing private note text 40ms
+   × audits attached and detached tags exactly once and rolls back actual tag replacement on audit failure 12ms
+     → 
+Invalid `db.user.create()` invocation in
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/domain/src/audit/core-audit-integration.test.ts:20:17
+
+  17   isolated: Awaited<ReturnType<typeof createLegacyMoneyTestSchema>>;
+  18 async function fixture(quantity = 2) {
+  19   const owner = randomUUID();
+→ 20   await db.user.create(
+The table `legacy_money_store_58dc1d48_4f4e_456e_b200_8060f89e76d5.user` does not exist in the current database.
+ ✓ |workspace| packages/domain/src/items/identifier-service.test.ts (11 tests) 519ms
+   ✓ identifier and tag PostgreSQL integration > completes reverse-order overlapping tag replacements without a deadlock  315ms
+ ❯ |workspace| packages/domain/src/collaboration/membership-service.test.ts (34 tests | 1 failed) 6830ms
+   ✓ strict membership inputs > rejects malformed Unicode user IDs instead of normalizing into another identity 2ms
+   ✓ actual collection membership and atomic ownership > transfers ownership atomically and leaves exactly one derived owner 138ms
+   ✓ actual collection membership and atomic ownership > never accepts a second OWNER through membership creation or role editing 13ms
+   ✓ actual collection membership and atomic ownership > checks real membership and limits an Admin below Owner authority 18ms
+   ✓ actual collection membership and atomic ownership > rejects stale role decisions and a transfer without explicit private-data confirmation 9ms
+   ✓ actual collection membership and atomic ownership > allows member self-removal but never removes the sole owner 11ms
+   ✓ actual collection membership and atomic ownership > serializes simultaneous transfers so only one current owner decision wins 25ms
+   ✓ actual collection membership and atomic ownership > transfers a populated collection without changing item IDs, quantities or raw price digits 34ms
+   ✓ actual collection membership and atomic ownership > preserves private collection and item insurance through an explicitly confirmed transfer 39ms
+   ✓ actual collection membership and atomic ownership > retains a completed transfer and collection when the previous owner erases their account 26ms
+   ✓ actual collection membership and atomic ownership > prevents arbitrary database owner changes and a duplicate owner membership 35ms
+   ✓ actual collection membership and atomic ownership > cannot persist a claimed completed ownership transition without actually changing the owner 13ms
+   ✓ actual collection membership and atomic ownership > feeds current database roles into the policy and withdraws access after member removal 16ms
+   ✓ actual collection membership and atomic ownership > preserves immutable manual valuation amounts and their real author through ownership transfer and author erasure 54ms
+   ✓ actual collection membership and atomic ownership > does not leave a concurrent real tag writer's private tag attached under the wrong owner 71ms
+   ✓ actual collection membership and atomic ownership > rejects a former owner's tag write that waited behind the actual ownership transfer 56ms
+   ✓ actual collection membership and atomic ownership > rejects a former owner's identifier write that waited behind the actual ownership transfer 39ms
+   ✓ actual collection membership and atomic ownership > copies private tags to the recipient without changing either owner's other collections 61ms
+   ✓ actual collection membership and atomic ownership > preserves exact grading certificates, quantity and timestamps during ownership transfer 42ms
+   ✓ actual collection membership and atomic ownership > rolls back the entire transfer on a recipient certificate conflict 29ms
+   ✓ actual collection membership and atomic ownership > transfers an actual private PDF upload without changing its bytes, identity, links or access boundary 191ms
+   ✓ actual collection membership and atomic ownership > does not transfer an asset also referenced by another collection 21ms
+   ✓ actual collection membership and atomic ownership > preserves real image originals and variants shared only inside the transferred collection 84ms
+   ✓ actual collection membership and atomic ownership > blocks the transfer while the actual shared media advisory lock is held 41ms
+   ✓ actual collection membership and atomic ownership > copies only the needed location hierarchy with fresh QR identities and preserves real move history 61ms
+   ✓ actual collection membership and atomic ownership > rejects cyclic source locations atomically rather than losing their path 21ms
+   ✓ actual collection membership and atomic ownership > does not invent a move author or mutate historical timestamps 11ms
+   ✓ actual collection membership and atomic ownership > retains the known source manifest and safely erases cancelled private imports across transfer 86ms
+   ✓ actual collection membership and atomic ownership > preserves exact purchase and custom-money COPY meaning and real authors within a whole transferred scope 127ms
+   ✓ actual collection membership and atomic ownership > blocks a cross-collection money lineage when transferring its origin 32ms
+   ✓ actual collection membership and atomic ownership > blocks a cross-collection money lineage when transferring its copy 31ms
+   ✓ actual collection membership and atomic ownership > fences a real raw COPY insert racing after the transfer's closed-scope check 60ms
+   × actual collection membership and atomic ownership > reports a controlled conflict when a recipient adds the same certificate after preflight 5005ms
+     → Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+   ✓ actual collection membership and atomic ownership > enforces final money ownership coherence even when raw SQL bypasses service preflight 86ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/audit/core-audit-integration.test.ts > audits attached and detached tags exactly once and rolls back actual tag replacement on audit failure
+PrismaClientKnownRequestError: 
+Invalid `db.user.create()` invocation in
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/domain/src/audit/core-audit-integration.test.ts:20:17
+
+  17   isolated: Awaited<ReturnType<typeof createLegacyMoneyTestSchema>>;
+  18 async function fixture(quantity = 2) {
+  19   const owner = randomUUID();
+→ 20   await db.user.create(
+The table `legacy_money_store_58dc1d48_4f4e_456e_b200_8060f89e76d5.user` does not exist in the current database.
+ ❯ vn.handleRequestError node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:238:13
+ ❯ vn.handleAndLogRequestError node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:184:12
+ ❯ vn.request node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:153:12
+ ❯ a node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:1014:24
+ ❯ fixture packages/domain/src/audit/core-audit-integration.test.ts:20:3
+     18| async function fixture(quantity = 2) {
+     19|   const owner = randomUUID();
+     20|   await db.user.create({
+       |   ^
+     21|     data: {
+     22|       id: owner,
+ ❯ packages/domain/src/audit/core-audit-integration.test.ts:432:13
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |workspace| packages/domain/src/collaboration/membership-service.test.ts > actual collection membership and atomic ownership > reports a controlled conflict when a recipient adds the same certificate after preflight
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ packages/domain/src/collaboration/membership-service.test.ts:1604:5
+    1602|       }
+    1603|     });
+    1604|     it("reports a controlled conflict when a recipient adds the same c…
+       |     ^
+    1605|       const f = await fixture();
+    1606|       const item = await db.collectibleItem.create({
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  2 failed | 1 passed (3)
+      Tests  2 failed | 53 passed (55)
+   Start at  08:29:01
+   Duration  9.38s (transform 368ms, setup 7ms, collect 876ms, tests 8.06s, environment 0ms, prepare 116ms)
+

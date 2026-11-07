@@ -202,6 +202,29 @@ describe.runIf(process.env.RUN_DATABASE_INTEGRATION === "1")(
       ]);
       await createImportCommitter(commit)({ jobId: parsed.id });
       expect(await db.collectibleItem.count({ where: { ownerId: f.owner } })).toBe(1);
+      const actualItem = await db.collectibleItem.findFirstOrThrow({ where: { ownerId: f.owner } });
+      const itemAudit = await db.auditEvent.findMany({
+        where: { resourceType: "ITEM", resourceId: actualItem.id },
+      });
+      expect(itemAudit).toContainEqual(
+        expect.objectContaining({ action: "ITEM_CREATED", source: "IMPORT", actorId: f.owner }),
+      );
+      const jobAudit = await db.auditEvent.findMany({
+        where: { resourceType: "IMPORT_JOB", resourceId: parsed.id },
+      });
+      expect(jobAudit).toContainEqual(
+        expect.objectContaining({
+          action: "IMPORT_BATCH_COMMITTED",
+          source: "IMPORT",
+          actorId: f.owner,
+          before: expect.objectContaining({ committedRows: 0 }),
+          after: expect.objectContaining({ committedRows: 1, status: "COMPLETED" }),
+        }),
+      );
+      await createImportCommitter(commit)({ jobId: parsed.id });
+      expect(
+        await db.auditEvent.count({ where: { resourceType: "IMPORT_JOB", resourceId: parsed.id } }),
+      ).toBe(jobAudit.length);
     });
     it("limits active source jobs but allows an exact retry at the quota", async () => {
       const f = await fixture(),

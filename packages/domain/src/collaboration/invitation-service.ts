@@ -1,3 +1,5 @@
+import { createTrustedAuditContext } from "../audit/audit-context";
+import { recordAuditEventInTransaction } from "../audit/audit-service";
 import { createHash, randomBytes, randomUUID } from "node:crypto";
 import { z } from "zod";
 import { Prisma } from "@sammlerraum/db/search-sql";
@@ -267,6 +269,19 @@ export function createInvitationService(database: MembershipDatabase) {
           throw error;
         }
         if (!accepted) return fail("INVITATION_EXPIRED");
+        if (!current)
+          await recordAuditEventInTransaction(
+            tx,
+            createTrustedAuditContext({ source: "USER", actorId: userId }),
+            {
+              resourceType: "COLLECTION",
+              resourceId: p.id,
+              action: "MEMBERSHIP_JOINED",
+              subjectUserId: userId,
+              before: { role: null, invitationId: row.id },
+              after: { role: row.role, invitationId: row.id },
+            },
+          );
         return {
           collectionId: p.id,
           role: row.role,
