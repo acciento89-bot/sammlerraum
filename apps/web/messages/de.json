@@ -1525,7 +1525,11 @@
     "reportType_COMMENT": "Kommentar",
     "reportType_USER": "Nutzer",
     "filter": "Auswahl",
-    "favoritesFilter": "Gemerkte Objekte"
+    "favoritesFilter": "Gemerkte Objekte",
+    "restoreComment": "Wieder anzeigen",
+    "commentRestored": "Der Beitrag ist wieder sichtbar.",
+    "commentHidden": "Der Beitrag ist für andere ausgeblendet.",
+    "ownerHiddenNote": "Von dir ausgeblendet · nur für dich zur Verwaltung sichtbar."
   },
   "PublicCollector": {
     "navigation": "Öffentliches Profil",

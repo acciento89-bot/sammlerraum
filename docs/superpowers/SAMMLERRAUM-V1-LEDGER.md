@@ -20,7 +20,7 @@ This is the handoff/status file for long-running implementation. Update it after
 | 07 | Search, Smart Collections & Dashboard | 5 | in progress (1/5) | Task 2 |
 | 08 | Import, Export, Insurance & Reports | 7 | complete (7/7) | — |
 | 09 | Collaboration, Sharing & Audit | 7 | complete (7/7); corrected1760cd2 CI SUCCESS | — |
-| 10 | Community, Moderation & Notifications | 8 | Tasks1–2 implemented/verified; whole-phase review afterTask8 | Task 3 |
+| 10 | Community, Moderation & Notifications | 8 | All8 implemented; single review/root corrections locally accepted; exact corrected CI pending | Correction acceptance |
 | 11 | AI-Assisted Capture | 5 | not started | Task 1 |
 | 12 | Premium & Billing | 5 | not started | Task 1 |
 | 13 | Integration, Hardening & Release | 7 | not started | Task 1 |
@@ -1223,3 +1223,7 @@ Sourcef7bb4af adds responsive DE/EN community, private wishlist/duplicate compar
 ### 7Nov Phase10Task8 implementation closed, whole-phase review pending
 
 Source372334a adds stable anonymous DE/EN public collector/profile/collection/item routes, effective ancestry privacy and single-decoded @handles; actual follow/favorite/comment/reply/moderation/import/export notifications share the source transaction and stable occurrence keys. Current public/job links redact unavailable targets. Dashboard now reads real own wishes/fulfilled wishes/current live explicit duplicate pairs and informational milestones with explicit full-own selection bases. Final local1547native/139files/0skip211.79s,1631regular/1032native-disabled,218compiled-browser4.8m, final types/lint and worker/web buildsPASS. Both guarded schema diffs empty;18frozen migrations unchanged. Actual encoded-handle404, mobile hero composition, old unread expectation and invalid immutable expiry fixture witnesses retained and corrected; original historical proof bytes restored while fresh variants retained. All8Phase10tasks implemented/locally verified; no Phase10 independent review credit yet. Canonical accepted count55/91 remains unchanged until the ONE whole-phase review and any consolidated root corrections close.
+
+### 7Nov Phase10 single review and consolidated correction locally closed
+
+Original372334a independent review:With fixes,0Critical/1Important/2Minor. Root accepted all3 and corrected them together, without rereview: export lease renewals never emit completion; only successful READY can do so; depth33 replies now reject before rows/notices and deepest accepted response disables further replies; owner-only hidden-comment management survives reload and restores owner-hidden content without bypassing public/default/platform-hide/deletion/block boundaries. Real negative/native and old-compiled browser RED witnesses retained. Final1550native/139files0skip205.29s,1631regular/1035native-disabled61.87s,9affected compiledbrowser25.1s, types/lint and both buildsPASS; broader218browser baseline fromTask8 remains retained. All18frozen migration files unchanged; original screenshots/PDFs restored exactly and current variants separately retained. Original reviewer report remains unchanged; root final receipt/disposition records closure. Canonical55/91 remains until exact corrected-head CI completes. Continue Phase07 remaining search/smart/dashboard review debt; no live providers/deployment, other apps/stores/devices or automation.

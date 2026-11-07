@@ -51,6 +51,75 @@ describe.runIf(process.env.RUN_DATABASE_INTEGRATION === "1")(
         });
       return { owner, peer, outsider, collection, item, service: createCommentService(db) };
     }
+    it("keeps the deepest accepted reply readable and rejects the next without rows or notices", async () => {
+      const f = await fixture(),
+        target = { type: "ITEM" as const, id: f.item.id };
+      let last = await f.service.createComment(f.peer, { target, body: "Depth0" });
+      for (let depth = 1; depth <= 32; depth++)
+        last = await f.service.createComment(f.peer, {
+          target,
+          parentId: last.id,
+          body: `Depth${depth}`,
+        });
+      expect(last.canReply).toBe(false);
+      expect(
+        (await f.service.listComments(f.outsider, { target, limit: 50 })).comments.some(
+          (c) => c.id === last.id,
+        ),
+      ).toBe(true);
+      const before = await db.communityComment.count({ where: { collectionId: f.collection.id } }),
+        notices = await db.notification.count({ where: { recipientId: f.owner.userId } });
+      await expect(
+        f.service.createComment(f.peer, {
+          target,
+          parentId: last.id,
+          body: "Never invisible success",
+        }),
+      ).rejects.toMatchObject({ code: "COMMENT_PARENT_INVALID" });
+      expect(await db.communityComment.count({ where: { collectionId: f.collection.id } })).toBe(
+        before,
+      );
+      expect(await db.notification.count({ where: { recipientId: f.owner.userId } })).toBe(notices);
+    });
+    it("lets only the actual owner inspect and restore owner-hidden content while preserving platform/deletion boundaries", async () => {
+      const f = await fixture(),
+        target = { type: "ITEM" as const, id: f.item.id };
+      const comment = await f.service.createComment(f.peer, {
+        target,
+        body: "Owner can recover this comment",
+      });
+      await f.service.moderateOwnContentComment(f.owner, comment.id, { hidden: true });
+      expect((await f.service.listComments(null, { target })).comments).toEqual([]);
+      expect((await f.service.listComments(f.owner, { target })).comments).toEqual([]);
+      await expect(
+        f.service.listComments(f.peer, { target, includeOwnerHidden: true }),
+      ).rejects.toMatchObject({ code: "NOT_FOUND" });
+      const managed = await f.service.listComments(f.owner, { target, includeOwnerHidden: true });
+      expect(managed.comments[0]).toMatchObject({
+        id: comment.id,
+        ownerHidden: true,
+        canReply: false,
+      });
+      await f.service.moderateOwnContentComment(f.owner, comment.id, { hidden: false });
+      expect((await f.service.listComments(null, { target })).comments[0]).toMatchObject({
+        id: comment.id,
+      });
+      await db.communityComment.update({
+        where: { id: comment.id },
+        data: { moderationHiddenAt: new Date() },
+      });
+      expect(
+        (await f.service.listComments(f.owner, { target, includeOwnerHidden: true })).comments,
+      ).toEqual([]);
+      await db.communityComment.update({
+        where: { id: comment.id },
+        data: { moderationHiddenAt: null },
+      });
+      await f.service.deleteOwnComment(f.peer, comment.id);
+      expect(
+        (await f.service.listComments(f.owner, { target, includeOwnerHidden: true })).comments,
+      ).toEqual([]);
+    });
     it("creates bounded public replies with actual author identity and no private projection fields", async () => {
       const f = await fixture(),
         target = { type: "ITEM" as const, id: f.item.id },

@@ -50,11 +50,14 @@ export function commentTarget(meta: Pick<CommentMeta, "itemId" | "collectionId">
     : { type: "COLLECTION", id: meta.collectionId };
 }
 /** cm is a trusted fixed alias; hidden/deleted/blocked ancestry cannot reappear as visible replies. */
-export function visibleCommentTree(actor: string | null) {
+export function visibleCommentTree(
+  actor: string | null,
+  options: { maxDepth?: 31 | 32; includeOwnerHidden?: boolean } = {},
+) {
   return Prisma.sql`coalesce((WITH RECURSIVE chain AS (
  SELECT x.id,x."parentId",x."authorId",x."ownerHiddenAt",x."moderationHiddenAt",x."deletedAt",ARRAY[x.id] AS path,false AS cycle,0 AS depth FROM "CommunityComment" x WHERE x.id=cm.id
- UNION ALL SELECT p.id,p."parentId",p."authorId",p."ownerHiddenAt",p."moderationHiddenAt",p."deletedAt",a.path||p.id,p.id=ANY(a.path),a.depth+1 FROM "CommunityComment" p JOIN chain a ON p.id=a."parentId" WHERE NOT a.cycle AND a.depth<32
- ) SELECT bool_and("ownerHiddenAt" IS NULL AND "moderationHiddenAt" IS NULL AND "deletedAt" IS NULL AND NOT cycle AND ${actor === null ? Prisma.sql`true` : notBlocked(actor, Prisma.sql`chain."authorId"`)}) AND bool_or("parentId" IS NULL) FROM chain),false)`;
+ UNION ALL SELECT p.id,p."parentId",p."authorId",p."ownerHiddenAt",p."moderationHiddenAt",p."deletedAt",a.path||p.id,p.id=ANY(a.path),a.depth+1 FROM "CommunityComment" p JOIN chain a ON p.id=a."parentId" WHERE NOT a.cycle AND a.depth<${options.maxDepth ?? 32}
+ ) SELECT bool_and((${options.includeOwnerHidden === true} OR "ownerHiddenAt" IS NULL) AND "moderationHiddenAt" IS NULL AND "deletedAt" IS NULL AND NOT cycle AND ${actor === null ? Prisma.sql`true` : notBlocked(actor, Prisma.sql`chain."authorId"`)}) AND bool_or("parentId" IS NULL) FROM chain),false)`;
 }
 type PublicCommentRow = {
   id: string;
@@ -65,12 +68,16 @@ type PublicCommentRow = {
   handle: string | null;
   displayName: string | null;
   avatarAssetId: string | null;
+  ownerHidden?: boolean;
+  canReply?: boolean;
 };
 function dto(row: PublicCommentRow) {
   return {
     id: row.id,
     parentId: row.parentId,
     body: row.body,
+    ownerHidden: row.ownerHidden ?? false,
+    canReply: row.canReply ?? true,
     createdAt: new Date(row.createdAt).toISOString(),
     author: {
       userId: row.authorId,
@@ -153,7 +160,7 @@ export function createCommentService(db: CommunityDatabase) {
         if (!policy.enabled) return fail("COMMENTS_DISABLED");
         if (parent) {
           const [allowed] = await tx.$queryRaw<{ id: string }[]>(
-            Prisma.sql`SELECT cm.id FROM "CommunityComment" cm WHERE cm.id=${parent.id}::uuid AND ${visibleCommentTree(actor)} FOR SHARE OF cm`,
+            Prisma.sql`SELECT cm.id FROM "CommunityComment" cm WHERE cm.id=${parent.id}::uuid AND ${visibleCommentTree(actor, { maxDepth: 31 })} FOR SHARE OF cm`,
           );
           if (!allowed) return fail("COMMENT_PARENT_INVALID");
         }
@@ -166,7 +173,7 @@ export function createCommentService(db: CommunityDatabase) {
           Prisma.sql`INSERT INTO "CommunityComment"(id,"authorId","collectionId","itemId","parentId",body)VALUES(${id}::uuid,${actor},${fresh.collectionId}::uuid,${itemId}::uuid,${value.parentId}::uuid,${value.body})`,
         );
         const [row] = await tx.$queryRaw<PublicCommentRow[]>(
-          Prisma.sql`SELECT cm.id,cm."parentId",cm.body,cm."createdAt",cm."authorId",p.handle,p."displayName",p."avatarAssetId" FROM "CommunityComment" cm LEFT JOIN "UserProfile" p ON p."userId"=cm."authorId" WHERE cm.id=${id}::uuid`,
+          Prisma.sql`SELECT cm.id,cm."parentId",cm.body,cm."createdAt",cm."authorId",p.handle,p."displayName",p."avatarAssetId",${visibleCommentTree(actor, { maxDepth: 31 })} AS "canReply" FROM "CommunityComment" cm LEFT JOIN "UserProfile" p ON p."userId"=cm."authorId" WHERE cm.id=${id}::uuid`,
         );
         if (!row) return fail("COMMUNITY_CONFLICT");
         await communityEventHandlers(tx).onCommentCreated({
@@ -188,10 +195,11 @@ export function createCommentService(db: CommunityDatabase) {
         await parentFence(tx, initial.collectionId, initial.ownerId);
         const fresh = await loadPublicCommunityTarget(tx, value.target);
         if (fresh.ownerId !== initial.ownerId) return fail("COMMUNITY_CONFLICT");
+        if (value.includeOwnerHidden && actor !== fresh.ownerId) return fail("NOT_FOUND");
         if (actor) await assertCommunityInteraction(tx, actor, fresh.ownerId);
         const itemId = value.target.type === "ITEM" ? value.target.id : null,
           rows = await tx.$queryRaw<PublicCommentRow[]>(
-            Prisma.sql`SELECT cm.id,cm."parentId",cm.body,cm."createdAt",cm."authorId",p.handle,p."displayName",p."avatarAssetId" FROM "CommunityComment" cm LEFT JOIN "UserProfile" p ON p."userId"=cm."authorId" WHERE cm."collectionId"=${fresh.collectionId}::uuid AND cm."itemId" IS NOT DISTINCT FROM ${itemId}::uuid AND ${visibleCommentTree(actor)} ${value.afterId ? Prisma.sql`AND cm.id>${value.afterId}::uuid` : Prisma.empty} ORDER BY cm.id LIMIT ${value.limit + 1}`,
+            Prisma.sql`SELECT cm.id,cm."parentId",cm.body,cm."createdAt",cm."authorId",p.handle,p."displayName",p."avatarAssetId",cm."ownerHiddenAt" IS NOT NULL AS "ownerHidden",${visibleCommentTree(actor, { maxDepth: 31 })} AS "canReply" FROM "CommunityComment" cm LEFT JOIN "UserProfile" p ON p."userId"=cm."authorId" WHERE cm."collectionId"=${fresh.collectionId}::uuid AND cm."itemId" IS NOT DISTINCT FROM ${itemId}::uuid AND ${visibleCommentTree(actor, { includeOwnerHidden: value.includeOwnerHidden })} ${value.afterId ? Prisma.sql`AND cm.id>${value.afterId}::uuid` : Prisma.empty} ORDER BY cm.id LIMIT ${value.limit + 1}`,
           );
         const policy = await postingPolicy(tx, fresh.ownerId, fresh.collectionId, itemId);
         return {

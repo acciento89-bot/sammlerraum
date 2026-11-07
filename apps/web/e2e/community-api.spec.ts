@@ -156,6 +156,24 @@ test("compiled community endpoints bind real cookies, enforce current public vis
     expect((await (await owner.get(commentsUrl)).json()).comments).toHaveLength(1);
     expect(
       (
+        await owner.patch(`/api/v1/community/comments/${comment.id}`, { data: { hidden: true } })
+      ).status(),
+    ).toBe(200);
+    expect((await (await actor.get(commentsUrl)).json()).comments).toHaveLength(0);
+    expect((await actor.get(`${commentsUrl}&includeOwnerHidden=true`)).status()).toBe(404);
+    expect((await owner.get(`${commentsUrl}&includeOwnerHidden=maybe`)).status()).toBe(400);
+    expect(
+      (await (await owner.get(`${commentsUrl}&includeOwnerHidden=true`)).json()).comments[0],
+    ).toMatchObject({ id: comment.id, ownerHidden: true, canReply: false });
+    expect(
+      (
+        await owner.patch(`/api/v1/community/comments/${comment.id}`, { data: { hidden: false } })
+      ).status(),
+    ).toBe(200);
+    expect((await (await actor.get(commentsUrl)).json()).comments).toHaveLength(1);
+
+    expect(
+      (
         await actor.post("/api/v1/community/comments/policy", {
           data: { scope: "ITEM", targetId: item.id, enabled: false },
         })

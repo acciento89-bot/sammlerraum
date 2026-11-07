@@ -15,6 +15,7 @@ export const CreateCommentSchema = z
   .strict();
 export const CommentListSchema = CommunityListQuerySchema.extend({
   target: FavoriteTargetSchema,
+  includeOwnerHidden: z.boolean().default(false),
 }).strict();
 export const CommentPolicySchema = z.discriminatedUnion("scope", [
   z.object({ scope: z.literal("GLOBAL"), enabled: z.boolean() }).strict(),

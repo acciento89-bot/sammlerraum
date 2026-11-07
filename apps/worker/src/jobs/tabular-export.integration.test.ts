@@ -69,6 +69,26 @@ describe.runIf(process.env.RUN_DATABASE_INTEGRATION === "1")(
       await isolated?.cleanup();
       if (root) await rm(root, { recursive: true, force: true });
     });
+    it("never reports completion from claim, lease renewal or failure", async () => {
+      const f = await fixture();
+      await db.user.update({ where: { id: f.owner }, data: { emailVerified: true } });
+      await createNotificationService(db).updatePreferences(f.actor, {
+        preferences: [{ category: "INVENTORY", channel: "EMAIL", enabled: true }],
+      });
+      const claim = await f.repo.claim(f.job.id);
+      expect(claim).not.toBeNull();
+      expect(await db.notification.count({ where: { recipientId: f.owner } })).toBe(0);
+      expect(await f.repo.renew(claim!)).toBe(true);
+      expect(await db.notification.count({ where: { recipientId: f.owner } })).toBe(0);
+      await f.repo.fail(claim!, "EXPORT_BUILD_FAILED", false);
+      expect((await state(f.job.id)).status).toBe("FAILED");
+      expect(await db.notification.count({ where: { recipientId: f.owner } })).toBe(0);
+      expect(
+        await db.notificationEmailDelivery.count({
+          where: { notification: { recipientId: f.owner } },
+        }),
+      ).toBe(0);
+    });
     it.each(["CSV", "XLSX"] as const)(
       "publishes one complete owned %s artifact and reuses successful delivery",
       async (format) => {
@@ -179,6 +199,9 @@ describe.runIf(process.env.RUN_DATABASE_INTEGRATION === "1")(
         sourceJson: source,
       });
       expect(await db.mediaAsset.count({ where: { ownerId: f.owner, status: "READY" } })).toBe(0);
+      expect(
+        await db.notification.count({ where: { recipientId: f.owner, type: "EXPORT_COMPLETED" } }),
+      ).toBe(0);
     });
     it("fences expired claims, tracks abandoned outputs and closes exhausted attempts", async () => {
       const f = await fixture(),
@@ -220,6 +243,9 @@ describe.runIf(process.env.RUN_DATABASE_INTEGRATION === "1")(
         errorCode: "EXPORT_NOT_FOUND",
       });
       expect(await db.mediaAsset.count({ where: { ownerId: f.owner, status: "READY" } })).toBe(0);
+      expect(
+        await db.notification.count({ where: { recipientId: f.owner, type: "EXPORT_COMPLETED" } }),
+      ).toBe(0);
     });
     it("keeps the actual asset lock until ignored cancellation settles and never marks its bytes ready", async () => {
       const f = await fixture(),
@@ -266,6 +292,9 @@ describe.runIf(process.env.RUN_DATABASE_INTEGRATION === "1")(
       expect((await outcome)?.message).toBe("Export temporarily unavailable");
       expect(await state(f.job.id)).toMatchObject({ status: "PENDING" });
       expect(await db.mediaAsset.count({ where: { ownerId: f.owner, status: "READY" } })).toBe(0);
+      expect(
+        await db.notification.count({ where: { recipientId: f.owner, type: "EXPORT_COMPLETED" } }),
+      ).toBe(0);
     });
     it("does not retain a job permission or source after its owned artifact is deleted", async () => {
       const f = await fixture();

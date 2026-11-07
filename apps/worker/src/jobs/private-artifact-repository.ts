@@ -139,12 +139,6 @@ export function createPrismaPrivateArtifactRepository(
           { id: string }[]
         >`UPDATE "MediaAsset" SET "processingLeaseUntil"=now()+interval '90 seconds' WHERE id=${claim.assetId}::uuid AND "ownerId"=${claim.ownerId} AND "processingToken"=${claim.token}::uuid AND status='PROCESSING' AND "cleanupStartedAt" IS NULL RETURNING id`;
         if (assets.length !== 1) throw integrity();
-        if (kind === "TABULAR")
-          await communityEventHandlers(tx).onJobCompleted({
-            id: claim.id,
-            recipientId: claim.ownerId,
-            kind: "EXPORT",
-          });
         return true;
       });
     },

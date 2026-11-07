@@ -160,6 +160,10 @@ for (const locale of ["de", "en"] as const)
         { userId: owner },
         { target: { type: "ITEM", id: foreignItem.id }, body: `Public collector note ${prefix}` },
       );
+      const recoverableComment = await createCommentService(db).createComment(
+        { userId: owner },
+        { target: { type: "ITEM", id: ownedItem.id }, body: `Recoverable owner comment ${prefix}` },
+      );
       await createNotificationService(db).createNotificationOnce({
         recipientId: viewer,
         actorId: owner,
@@ -226,6 +230,54 @@ for (const locale of ["de", "en"] as const)
       await expect(dialog).not.toBeVisible();
       const mine = page.getByTestId(`feed-${ownedItem.id}`);
       await mine.getByRole("button", { name: labels.comments, exact: true }).click();
+      const hiddenRow = mine.getByTestId(`comment-${recoverableComment.id}`);
+      await hiddenRow
+        .getByRole("button", { name: locale === "de" ? "Ausblenden" : "Hide", exact: true })
+        .click();
+      await expect(
+        hiddenRow.getByRole("button", {
+          name: locale === "de" ? "Wieder anzeigen" : "Restore comment",
+          exact: true,
+        }),
+      ).toBeVisible();
+      await page.reload();
+      const restoredMine = page.getByTestId(`feed-${ownedItem.id}`);
+      await restoredMine.getByRole("button", { name: labels.comments, exact: true }).click();
+      const persistedHiddenRow = restoredMine.getByTestId(`comment-${recoverableComment.id}`);
+      await expect(
+        persistedHiddenRow.getByText(
+          locale === "de"
+            ? "Von dir ausgeblendet · nur für dich zur Verwaltung sichtbar."
+            : "Hidden by you · visible only to you for management.",
+          { exact: true },
+        ),
+      ).toBeVisible();
+      expect(
+        (
+          await (
+            await page.request.get(`/api/v1/community/comments?type=ITEM&id=${ownedItem.id}`)
+          ).json()
+        ).comments.some((c: { id: string }) => c.id === recoverableComment.id),
+      ).toBe(false);
+      await persistedHiddenRow
+        .getByRole("button", {
+          name: locale === "de" ? "Wieder anzeigen" : "Restore comment",
+          exact: true,
+        })
+        .click();
+      await expect(
+        persistedHiddenRow.getByRole("button", {
+          name: locale === "de" ? "Ausblenden" : "Hide",
+          exact: true,
+        }),
+      ).toBeVisible();
+      expect(
+        (
+          await (
+            await page.request.get(`/api/v1/community/comments?type=ITEM&id=${ownedItem.id}`)
+          ).json()
+        ).comments.some((c: { id: string }) => c.id === recoverableComment.id),
+      ).toBe(true);
       await mine.getByLabel(labels.commentBody, { exact: true }).fill("Owned policy draft");
       await expect(mine.getByRole("button", { name: labels.send, exact: true })).toBeEnabled();
       await mine.getByLabel(labels.itemPolicy, { exact: true }).uncheck();
@@ -239,9 +291,11 @@ for (const locale of ["de", "en"] as const)
         "../../.superpowers/sdd/2026-09-19-10-community-moderation-notifications/reports";
       await mkdir(reportDir, { recursive: true });
       await page.screenshot({
+        timeout: 10000,
         path: `${reportDir}/task-7-community-${locale}-${testInfo.project.name}.png`,
         fullPage: true,
       });
+      await card.getByRole("button", { name: labels.comments, exact: true }).click();
       await card.getByRole("button", { name: labels.block, exact: true }).click();
       await expect(card).not.toBeVisible();
       extraIds.push(...Array.from({ length: 21 }, () => randomUUID()));
@@ -285,6 +339,7 @@ for (const locale of ["de", "en"] as const)
       await wish.getByRole("button", { name: labels.fulfill, exact: true }).click();
       await expect(wish).toContainText(labels.fulfilled);
       await page.screenshot({
+        timeout: 10000,
         path: `${reportDir}/task-7-wishlist-${locale}-${testInfo.project.name}.png`,
         fullPage: true,
       });
@@ -313,6 +368,7 @@ for (const locale of ["de", "en"] as const)
       await expect(page.getByRole("button", { name: labels.readAll, exact: true })).toBeDisabled();
       await page.getByRole("button", { name: labels.savePrefs, exact: true }).click();
       await page.screenshot({
+        timeout: 10000,
         path: `${reportDir}/task-7-notifications-${locale}-${testInfo.project.name}.png`,
         fullPage: true,
       });
@@ -344,6 +400,7 @@ for (const locale of ["de", "en"] as const)
       await page.getByRole("button", { name: labels.resolve, exact: true }).click();
       await expect(report).not.toBeVisible();
       await page.screenshot({
+        timeout: 10000,
         path: `${reportDir}/task-7-moderation-${locale}-${testInfo.project.name}.png`,
         fullPage: true,
       });

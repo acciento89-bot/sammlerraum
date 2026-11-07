@@ -9,6 +9,8 @@ type Comment = {
   id: string;
   parentId: string | null;
   body: string;
+  ownerHidden?: boolean;
+  canReply?: boolean;
   createdAt: string;
   author: { userId: string; displayName: string | null; handle: string | null };
 };
@@ -37,7 +39,7 @@ export function CommentThread({
     async (after?: string) => {
       try {
         const next = await communityRequest<Thread>(
-          `/api/v1/community/comments?type=ITEM&id=${item.id}${after ? `&afterId=${after}` : ""}`,
+          `/api/v1/community/comments?type=ITEM&id=${item.id}${item.isOwner ? "&includeOwnerHidden=true" : ""}${after ? `&afterId=${after}` : ""}`,
         );
         setData((previous) =>
           after && previous
@@ -100,11 +102,21 @@ export function CommentThread({
     try {
       await communityRequest(
         `/api/v1/community/comments/${comment.id}`,
-        ownerHide ? { method: "PATCH", body: { hidden: true } } : { method: "DELETE" },
+        ownerHide
+          ? { method: "PATCH", body: { hidden: !comment.ownerHidden } }
+          : { method: "DELETE" },
       );
       setReply(null);
       await load();
-      setStatus(t("commentRemoved"));
+      setStatus(
+        t(
+          ownerHide
+            ? comment.ownerHidden
+              ? "commentRestored"
+              : "commentHidden"
+            : "commentRemoved",
+        ),
+      );
     } catch (e) {
       setError(communityError(e, t));
     } finally {
@@ -171,13 +183,14 @@ export function CommentThread({
                     )}
                   </time>
                 </div>
+                {comment.ownerHidden && <p className="community-muted">{t("ownerHiddenNote")}</p>}
                 <p className="community-comment-body">{comment.body}</p>
                 <div className="community-small-actions">
                   <button
                     type="button"
                     className="text-button"
                     onClick={() => setReply(comment)}
-                    disabled={busy || !data.commentsEnabled}
+                    disabled={busy || !data.commentsEnabled || comment.canReply === false}
                   >
                     {t("reply")}
                   </button>
@@ -207,7 +220,7 @@ export function CommentThread({
                       disabled={busy}
                       onClick={() => void remove(comment, true)}
                     >
-                      {t("hideComment")}
+                      {t(comment.ownerHidden ? "restoreComment" : "hideComment")}
                     </button>
                   )}
                 </div>

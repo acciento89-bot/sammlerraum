@@ -1525,7 +1525,11 @@
     "reportType_COMMENT": "Comment",
     "reportType_USER": "User",
     "filter": "Selection",
-    "favoritesFilter": "Saved items"
+    "favoritesFilter": "Saved items",
+    "restoreComment": "Restore comment",
+    "commentRestored": "The comment is visible again.",
+    "commentHidden": "The comment is hidden from others.",
+    "ownerHiddenNote": "Hidden by you · visible only to you for management."
   },
   "PublicCollector": {
     "navigation": "Public profile",

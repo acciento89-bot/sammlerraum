@@ -82,10 +82,12 @@ export function createCommentHandlers(dependencies: ReturnType<typeof createComm
       throw error;
     }
   }
-  function query(request: Request, withTarget = false) {
+  function query(request: Request, withTarget = false, ownerView = false) {
     const raw = readSearchQueryMap(
       request,
-      withTarget ? ["type", "id", "limit", "afterId"] : ["limit", "afterId"],
+      withTarget
+        ? ["type", "id", "limit", "afterId", ...(ownerView ? ["includeOwnerHidden"] : [])]
+        : ["limit", "afterId"],
     );
     if (raw.limit !== undefined && !/^[1-9][0-9]?$/u.test(raw.limit))
       throw new ApiError("VALIDATION_ERROR", 400, "Invalid community page");
@@ -93,7 +95,10 @@ export function createCommentHandlers(dependencies: ReturnType<typeof createComm
       ...(raw.limit === undefined ? {} : { limit: Number(raw.limit) }),
       ...(raw.afterId === undefined ? {} : { afterId: raw.afterId }),
     });
+    if (raw.includeOwnerHidden !== undefined && !["true", "false"].includes(raw.includeOwnerHidden))
+      throw new ApiError("VALIDATION_ERROR", 400, "Invalid owner comment view");
     return {
+      includeOwnerHidden: raw.includeOwnerHidden === "true",
       paging,
       target: withTarget ? FavoriteTargetSchema.parse({ type: raw.type, id: raw.id }) : null,
     };
@@ -102,8 +107,12 @@ export function createCommentHandlers(dependencies: ReturnType<typeof createComm
     COMMENTS: apiRoute((request) =>
       run(async () => {
         const who = await actor(request, false, true),
-          value = query(request, true);
-        return dependencies.comments.listComments(who, { target: value.target, ...value.paging });
+          value = query(request, true, true);
+        return dependencies.comments.listComments(who, {
+          target: value.target,
+          includeOwnerHidden: value.includeOwnerHidden,
+          ...value.paging,
+        });
       }),
     ),
     CREATE_COMMENT: apiRoute((request) =>
