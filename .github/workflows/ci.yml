@@ -162,6 +162,7 @@ jobs:
           packages/domain/src/community/social-service.test.ts
           apps/web/src/lib/social-routes.integration.test.ts
           apps/web/src/lib/comment-routes.integration.test.ts
+          apps/worker/src/jobs/send-email.integration.test.ts
           packages/domain/src/wishlist/wishlist-service.test.ts
           packages/domain/src/collaboration/item-authoring-service.test.ts
           packages/domain/src/collaboration/collection-authoring-service.test.ts

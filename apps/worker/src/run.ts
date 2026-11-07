@@ -1,3 +1,7 @@
+import { createSmtpProvider } from "@sammlerraum/email/smtp-provider";
+import { createSendEmailJob, NOTIFICATION_EMAIL_JOB } from "./jobs/send-email";
+import { createNotificationEmailRepository } from "./jobs/notification-email-repository";
+import { createNotificationEmailDispatcher } from "./jobs/notification-email-dispatcher";
 import { createReportService } from "@sammlerraum/domain/reports/report-service";
 import { createPrismaReportRepository } from "./jobs/insurance-report-repository";
 import { createInsuranceReportJob, INSURANCE_REPORT_JOB } from "./jobs/insurance-report-runtime";
@@ -25,7 +29,7 @@ import { createImageProcessor, IMAGE_JOB } from "./jobs/process-image";
 
 async function startProductionWorker(): Promise<void> {
   const [
-    { serverEnv },
+    { serverEnv, parseNotificationEmailEnv },
     { prisma },
     { checkDatabaseHealth },
     { createPgBossServices },
@@ -41,6 +45,7 @@ async function startProductionWorker(): Promise<void> {
     import("@sammlerraum/db/media-lock"),
     import("./main"),
   ]);
+  const notificationSmtp = parseNotificationEmailEnv(process.env);
   const { runtime, client, registry, producerBackend } = createPgBossServices(
     serverEnv.DATABASE_URL,
   );
@@ -144,11 +149,23 @@ async function startProductionWorker(): Promise<void> {
   });
   const imageDispatcher = createImageDispatcher(repository, client, console);
   const importDispatcher = createImportDispatcher(prisma, client, console);
+  let notificationDispatcher: ReturnType<typeof createNotificationEmailDispatcher> | undefined;
+  if (serverEnv.NOTIFICATION_EMAIL_ENABLED && notificationSmtp) {
+    const emailRepository = createNotificationEmailRepository(prisma);
+    const sendEmail = createSendEmailJob(emailRepository, createSmtpProvider(notificationSmtp), {
+      appOrigin: serverEnv.APP_ORIGIN,
+    });
+    registry.registerCancellable(NOTIFICATION_EMAIL_JOB, (payload, { signal }) =>
+      sendEmail(payload, signal),
+    );
+    notificationDispatcher = createNotificationEmailDispatcher(emailRepository, client, console);
+  }
   await worker.startWorker({
     queue: runtime,
     imageDispatcher,
     exportDispatcher,
     reportDispatcher,
+    ...(notificationDispatcher ? { notificationDispatcher } : {}),
     importDispatcher,
     mediaCleanup,
     marketSync,

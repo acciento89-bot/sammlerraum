@@ -17,6 +17,7 @@ describe("parseServerEnv", () => {
   it("accepts the required foundation environment", () => {
     expect(parseServerEnv(validEnvironment)).toEqual({
       ...validEnvironment,
+      NOTIFICATION_EMAIL_ENABLED: false,
       MONEY_AUTHORING_ENABLED: false,
       MONEY_CANONICAL_CONSUMERS_ENABLED: false,
       SCRYDEX_ENABLED: false,

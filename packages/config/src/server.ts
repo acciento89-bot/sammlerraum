@@ -58,6 +58,7 @@ const providerCredential = () =>
 const providerBudget = (maximum: number) => z.coerce.number().int().min(0).max(maximum).default(0);
 const schema = z
   .object({
+    NOTIFICATION_EMAIL_ENABLED: providerFlag(),
     MONEY_AUTHORING_ENABLED: providerFlag(),
     MONEY_CANONICAL_CONSUMERS_ENABLED: providerFlag(),
     SCRYDEX_ENABLED: providerFlag(),
@@ -167,3 +168,34 @@ export function parseAuthEnv(input: Record<string, string | undefined>): AuthEnv
 }
 
 export const serverEnv = parseServerEnv(process.env);
+
+/** Separate worker SMTP validation; no Google/Apple credential dependency and disabled by default. */
+export function parseNotificationEmailEnv(input: Record<string, string | undefined>) {
+  const enabled = providerFlag().safeParse(input.NOTIFICATION_EMAIL_ENABLED);
+  if (!enabled.success) throw new EnvironmentConfigurationError(["NOTIFICATION_EMAIL_ENABLED"]);
+  if (!enabled.data) return null;
+  const smtp = z
+    .object({
+      APP_ORIGIN: z.string().transform(applicationOrigin),
+      SMTP_HOST: z
+        .string()
+        .min(1)
+        .max(253)
+        .refine((v) => !/[\s/?#@]/u.test(v)),
+      SMTP_PORT: z.coerce.number().int().min(1).max(65535),
+      SMTP_SECURE: z.enum(["true", "false"]).transform((v) => v === "true"),
+      SMTP_USER: z.string().min(1).max(4096),
+      SMTP_PASSWORD: z.string().min(1).max(4096),
+      SMTP_FROM: z
+        .string()
+        .min(3)
+        .max(254)
+        .refine((v) => v.includes("@") && !/[\r\n]/u.test(v)),
+    })
+    .safeParse(input);
+  if (!smtp.success)
+    throw new EnvironmentConfigurationError([
+      ...new Set(smtp.error.issues.map((i) => String(i.path[0]))),
+    ]);
+  return smtp.data;
+}

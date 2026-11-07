@@ -1738,21 +1738,22 @@ model CommunityModerationEvent {
 }
 
 model Notification {
-  id           String    @id @default(uuid()) @db.Uuid
-  recipientId  String
-  actorId      String?
-  eventKey     String    @db.VarChar(200)
-  type         String    @db.VarChar(40)
-  category     String    @db.VarChar(24)
-  targetType   String    @db.VarChar(24)
-  targetId     String    @db.VarChar(128)
-  locale       String    @default("de") @db.VarChar(2)
-  inAppEnabled Boolean   @default(true)
-  emailWanted  Boolean   @default(false)
-  readAt       DateTime?
-  createdAt    DateTime  @default(now())
-  recipient    User      @relation("NotificationRecipient", fields: [recipientId], references: [id], onDelete: Cascade, onUpdate: Restrict)
-  actor        User?     @relation("NotificationActor", fields: [actorId], references: [id], onDelete: SetNull, onUpdate: Restrict)
+  emailDelivery NotificationEmailDelivery?
+  id            String                     @id @default(uuid()) @db.Uuid
+  recipientId   String
+  actorId       String?
+  eventKey      String                     @db.VarChar(200)
+  type          String                     @db.VarChar(40)
+  category      String                     @db.VarChar(24)
+  targetType    String                     @db.VarChar(24)
+  targetId      String                     @db.VarChar(128)
+  locale        String                     @default("de") @db.VarChar(2)
+  inAppEnabled  Boolean                    @default(true)
+  emailWanted   Boolean                    @default(false)
+  readAt        DateTime?
+  createdAt     DateTime                   @default(now())
+  recipient     User                       @relation("NotificationRecipient", fields: [recipientId], references: [id], onDelete: Cascade, onUpdate: Restrict)
+  actor         User?                      @relation("NotificationActor", fields: [actorId], references: [id], onDelete: SetNull, onUpdate: Restrict)
 
   @@unique([recipientId, eventKey])
   @@index([recipientId, inAppEnabled, createdAt(sort: Desc), id(sort: Desc)])
@@ -1773,4 +1774,23 @@ model NotificationSettings {
   userId String @id
   locale String @default("de") @db.VarChar(2)
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Restrict)
+}
+
+model NotificationEmailDelivery {
+  id                String       @id @default(uuid()) @db.Uuid
+  notificationId    String       @unique @db.Uuid
+  status            String       @default("PENDING") @db.VarChar(16)
+  attempts          Int          @default(0)
+  leaseToken        String?      @db.Uuid
+  leaseUntil        DateTime?
+  nextAttemptAt     DateTime     @default(now())
+  providerMessageId String?      @db.VarChar(512)
+  lastOutcome       String?      @db.VarChar(32)
+  sentAt            DateTime?
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @default(now())
+  notification      Notification @relation(fields: [notificationId], references: [id], onDelete: Cascade, onUpdate: Restrict)
+
+  @@index([status, nextAttemptAt, id])
+  @@index([status, leaseUntil])
 }

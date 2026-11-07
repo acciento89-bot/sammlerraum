@@ -19,6 +19,14 @@ describe("startWorker", () => {
     });
     const worker = await startWorker({
       queue: queue as never,
+      notificationDispatcher: {
+        start: () => {
+          calls.push("notification-start");
+        },
+        stop: async () => {
+          calls.push("notification-stop");
+        },
+      },
       mediaCleanup: {
         start: () => {
           calls.push("cleanup-start");
@@ -72,12 +80,14 @@ describe("startWorker", () => {
       "dispatch-start",
       "export-start",
       "report-start",
+      "notification-start",
       "cleanup-start",
       "health-stop",
       "cleanup-stop",
       "dispatch-stop",
       "export-stop",
       "report-stop",
+      "notification-stop",
       "queue-stop",
       "database-stop",
     ]);

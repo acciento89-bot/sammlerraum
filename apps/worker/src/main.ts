@@ -28,6 +28,7 @@ type StartWorkerOptions = {
   exportDispatcher?: { start(): void; stop(): Promise<void> };
   importDispatcher?: { start(): void; stop(): Promise<void> };
   reportDispatcher?: { start(): void; stop(): Promise<void> };
+  notificationDispatcher?: { start(): void; stop(): Promise<void> };
 };
 
 export type RunningWorker = {
@@ -91,6 +92,7 @@ export async function startWorker(options: StartWorkerOptions): Promise<RunningW
       await attempt(() => options.imageDispatcher?.stop());
       await attempt(() => options.exportDispatcher?.stop());
       await attempt(() => options.reportDispatcher?.stop());
+      await attempt(() => options.notificationDispatcher?.stop());
       await attempt(() => options.importDispatcher?.stop());
       await marketResult;
       await attempt(() => options.queue.stop());
@@ -112,6 +114,7 @@ export async function startWorker(options: StartWorkerOptions): Promise<RunningW
     options.imageDispatcher?.start();
     options.exportDispatcher?.start();
     options.reportDispatcher?.start();
+    options.notificationDispatcher?.start();
     options.importDispatcher?.start();
     options.mediaCleanup?.start();
     options.marketSync?.start();
