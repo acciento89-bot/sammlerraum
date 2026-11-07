@@ -98,6 +98,63 @@ test("compiled community endpoints bind real cookies, enforce current public vis
     );
     expect((await owner.get("/api/v1/community/favorites")).status()).toBe(200);
     expect((await (await owner.get("/api/v1/community/favorites")).json()).favorites).toEqual([]);
+    const commentTarget = { type: "ITEM", id: item.id };
+    const createdComment = await actor.post("/api/v1/community/comments", {
+      data: { target: commentTarget, body: "Own compiled cookie comment" },
+    });
+    expect(createdComment.status()).toBe(200);
+    const comment = await createdComment.json();
+    expect(comment.author.userId).toBe(ids[0]);
+    const commentsUrl = `/api/v1/community/comments?type=ITEM&id=${item.id}`;
+    expect((await (await owner.get(commentsUrl)).json()).comments).toHaveLength(1);
+    expect(
+      (
+        await actor.post("/api/v1/community/comments/policy", {
+          data: { scope: "ITEM", targetId: item.id, enabled: false },
+        })
+      ).status(),
+    ).toBe(404);
+    expect(
+      (
+        await owner.post("/api/v1/community/comments/policy", {
+          data: { scope: "ITEM", targetId: item.id, enabled: false },
+        })
+      ).status(),
+    ).toBe(200);
+    expect(
+      (
+        await actor.post("/api/v1/community/comments", {
+          data: { target: commentTarget, body: "Must be rejected" },
+        })
+      ).status(),
+    ).toBe(403);
+    const report = await owner.post("/api/v1/community/reports", {
+      data: {
+        type: "COMMENT",
+        commentId: comment.id,
+        category: "SPAM",
+        reason: "Own browser test report",
+      },
+    });
+    expect(report.status()).toBe(200);
+    expect(
+      (await db.communityReport.findFirstOrThrow({ where: { commentId: comment.id } })).reporterId,
+    ).toBe(ids[1]);
+    expect(
+      (
+        await actor.patch(`/api/v1/community/comments/${comment.id}`, { data: { hidden: true } })
+      ).status(),
+    ).toBe(404);
+    expect(
+      (
+        await owner.patch(`/api/v1/community/comments/${comment.id}`, { data: { hidden: true } })
+      ).status(),
+    ).toBe(200);
+    expect((await (await actor.get(commentsUrl)).json()).comments).toEqual([]);
+    expect((await actor.delete(`/api/v1/community/comments/${comment.id}`)).status()).toBe(200);
+    expect(
+      (await db.communityComment.findUniqueOrThrow({ where: { id: comment.id } })).deletedAt,
+    ).not.toBeNull();
     await createItemService(db, ids[1]!).updateItem(item.id, { visibility: "PRIVATE" });
     expect((await (await actor.get("/api/v1/community/favorites")).json()).favorites).toEqual([]);
     expect(
@@ -111,7 +168,13 @@ test("compiled community endpoints bind real cookies, enforce current public vis
         await actor.post("/api/v1/community/favorites", { data: { type: "ITEM", id: item.id } })
       ).status(),
     ).toBe(200);
-    await db.userBlock.create({ data: { blockerId: ids[1]!, blockedId: ids[0]! } });
+    expect(
+      (await owner.post("/api/v1/community/blocks", { data: { userId: ids[0] } })).status(),
+    ).toBe(200);
+    expect(
+      (await actor.delete("/api/v1/community/blocks", { data: { userId: ids[1] } })).status(),
+    ).toBe(200);
+    expect(await db.userBlock.count({ where: { blockerId: ids[1]!, blockedId: ids[0]! } })).toBe(1);
     expect(
       (await actor.post("/api/v1/community/follows", { data: { userId: ids[1] } })).status(),
     ).toBe(403);

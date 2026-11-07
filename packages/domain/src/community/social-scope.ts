@@ -22,11 +22,21 @@ export type PublicCommunityTarget = {
   title: string;
 };
 
-export async function lockCommunityUsers(tx: SearchReadTransaction, actor: string, target = actor) {
+/** Every interaction/setting mutation agrees on one stable participant order. */
+export async function lockCommunityParticipants(
+  tx: SearchReadTransaction,
+  ids: string[],
+  mode: "READ" | "WRITE" = "WRITE",
+) {
+  const unique = [...new Set(ids)];
+  if (!unique.length || unique.length > 4) throw new CommunityError("COMMUNITY_INVALID");
   const rows = await tx.$queryRaw<{ id: string }[]>(
-    Prisma.sql`SELECT id FROM "user" WHERE id IN (${actor},${target}) ORDER BY id COLLATE "C" FOR NO KEY UPDATE`,
+    Prisma.sql`SELECT id FROM "user" WHERE id IN (${Prisma.join(unique)}) ORDER BY id COLLATE "C" ${mode === "WRITE" ? Prisma.sql`FOR NO KEY UPDATE` : Prisma.sql`FOR SHARE`}`,
   );
-  if (rows.length !== (actor === target ? 1 : 2)) throw new CommunityError("NOT_FOUND");
+  if (rows.length !== unique.length) throw new CommunityError("NOT_FOUND");
+}
+export async function lockCommunityUsers(tx: SearchReadTransaction, actor: string, target = actor) {
+  return lockCommunityParticipants(tx, [actor, target]);
 }
 export async function assertCommunityInteraction(
   tx: SearchReadTransaction,

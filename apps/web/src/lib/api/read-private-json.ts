@@ -5,7 +5,7 @@ import { readBoundedBody } from "./read-bounded-body";
 /** Reuse the bounded lexical scanner: duplicate keys, invalid Unicode and deep JSON never reach a service. */
 export async function readPrivateJson(
   request: Request,
-  profile: "default" | "item" = "default",
+  profile: "default" | "item" | "community" = "default",
 ): Promise<unknown> {
   if (
     new URL(request.url).search ||
@@ -13,11 +13,11 @@ export async function readPrivateJson(
     !/^application\/json(?:\s*;|$)/iu.test(request.headers.get("content-type") ?? "")
   )
     throw new ApiError("VALIDATION_ERROR", 400, "Invalid private request");
-  const bytes = await readBoundedBody(request, profile === "item" ? 65536 : 16384);
+  const bytes = await readBoundedBody(request, profile === "default" ? 16384 : 65536);
   try {
     if (bytes[0] === 239 && bytes[1] === 187 && bytes[2] === 191) throw Error();
     const raw = new TextDecoder("utf-8", { fatal: true }).decode(bytes);
-    return profile === "item"
+    return profile !== "default"
       ? parseCollaborativeItemRequestJson(raw)
       : parseImportRequestJson(raw);
   } catch {

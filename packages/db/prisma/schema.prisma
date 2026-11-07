@@ -109,6 +109,11 @@ model User {
   sessions                   Session[]
   accounts                   Account[]
   passkeys                   Passkey[]
+  communityPreference        CommunityPreference?
+  communityComments          CommunityComment[]                 @relation("CommentAuthor")
+  communityReports           CommunityReport[]                  @relation("ReportReporter")
+  communityReportsTargeted   CommunityReport[]                  @relation("ReportUserTarget")
+  communityReportsResolved   CommunityReport[]                  @relation("ReportResolver")
   following                  UserFollow[]                       @relation("Following")
   followers                  UserFollow[]                       @relation("Followers")
   blocksCreated              UserBlock[]                        @relation("Blocker")
@@ -173,11 +178,13 @@ model Collection {
   customFieldDefinitions CustomFieldDefinition[]
   importJobs             ImportJob[]
 
-  insuranceRecords InsuranceRecord[]
-  invitations      CollectionInvitation[]
-  shares           CollectionShare[]
-  auditEvents      AuditEvent[]
-  favorites        Favorite[]
+  insuranceRecords  InsuranceRecord[]
+  invitations       CollectionInvitation[]
+  shares            CollectionShare[]
+  auditEvents       AuditEvent[]
+  favorites         Favorite[]
+  commentsEnabled   Boolean                @default(true)
+  communityComments CommunityComment[]
 
   @@unique([id, ownerId])
   @@index([ownerId])
@@ -250,9 +257,11 @@ model CollectibleItem {
   purchaseMoneyEvents     PurchaseMoneyInterpretationEvent[]
   customMoneyEvents       CustomMoneyInterpretationEvent[]
 
-  insuranceRecords InsuranceRecord[]
-  auditEvents      AuditEvent[]
-  favorites        Favorite[]
+  insuranceRecords  InsuranceRecord[]
+  auditEvents       AuditEvent[]
+  favorites         Favorite[]
+  commentsEnabled   Boolean            @default(true)
+  communityComments CommunityComment[]
 
   @@unique([id, collectionId])
   @@unique([id, ownerId])
@@ -1630,4 +1639,71 @@ model Favorite {
   @@index([userId, id])
   @@index([collectionId])
   @@index([itemId])
+}
+
+model CommunityPreference {
+  userId          String  @id
+  commentsEnabled Boolean @default(true)
+  user            User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model CommunityComment {
+  id                 String             @id @default(uuid()) @db.Uuid
+  authorId           String
+  collectionId       String             @db.Uuid
+  itemId             String?            @db.Uuid
+  parentId           String?            @db.Uuid
+  body               String
+  ownerHiddenAt      DateTime?
+  moderationHiddenAt DateTime?
+  deletedAt          DateTime?
+  createdAt          DateTime           @default(now())
+  author             User               @relation("CommentAuthor", fields: [authorId], references: [id], onDelete: Cascade)
+  collection         Collection         @relation(fields: [collectionId], references: [id], onDelete: Cascade, onUpdate: Restrict)
+  item               CollectibleItem?   @relation(fields: [itemId, collectionId], references: [id, collectionId], onDelete: Cascade, onUpdate: Restrict)
+  parent             CommunityComment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: SetNull, onUpdate: Restrict)
+  replies            CommunityComment[] @relation("CommentReplies")
+  reports            CommunityReport[]
+
+  @@index([collectionId, itemId, id])
+  @@index([authorId, createdAt])
+  @@index([itemId])
+  @@index([parentId])
+}
+
+enum CommunityReportStatus {
+  OPEN
+  RESOLVED
+  DISMISSED
+}
+
+enum CommunityReportTarget {
+  USER
+  COMMENT
+}
+
+model CommunityReport {
+  id               String                @id @default(uuid()) @db.Uuid
+  reporterId       String?
+  targetType       CommunityReportTarget
+  targetSnapshotId String                @db.VarChar(128)
+  userId           String?
+  commentId        String?               @db.Uuid
+  category         String                @db.VarChar(32)
+  reason           String
+  status           CommunityReportStatus @default(OPEN)
+  createdAt        DateTime              @default(now())
+  resolvedAt       DateTime?
+  resolvedById     String?
+  resolutionReason String?
+  reporter         User?                 @relation("ReportReporter", fields: [reporterId], references: [id], onDelete: SetNull)
+  targetUser       User?                 @relation("ReportUserTarget", fields: [userId], references: [id], onDelete: SetNull)
+  comment          CommunityComment?     @relation(fields: [commentId], references: [id], onDelete: SetNull, onUpdate: Restrict)
+  resolvedBy       User?                 @relation("ReportResolver", fields: [resolvedById], references: [id], onDelete: SetNull)
+
+  @@index([status, createdAt, id])
+  @@index([reporterId, targetType, targetSnapshotId])
+  @@index([commentId])
+  @@index([userId])
+  @@index([resolvedById])
 }

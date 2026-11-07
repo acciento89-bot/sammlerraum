@@ -138,7 +138,7 @@ git commit -m "feat: add follows and favorites"
 **Interfaces:**
 - Produces: `createComment`, `deleteOwnComment`, `moderateOwnContentComment`, `blockUser`, `reportUser`, `reportComment`.
 
-- [ ] **Step 1: Write failing comment disable/block tests**
+- [x] **Step 1: Write failing comment disable/block tests**
 
 ```ts
 it("rejects comments when the item owner disabled them", async () => {
@@ -153,21 +153,21 @@ it("a block removes direct comment permission", async () => {
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run packages/domain/src/community/comment-service.test.ts packages/domain/src/moderation/block-report-service.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement models/services**
+- [x] **Step 3: Implement models/services**
 
 Comment target is collection or item, supports optional parent comment for reply, soft-delete/hide state. Reports retain reason/category, reporter, target snapshot IDs, moderation status. Blocks are directional but policy treats either relevant direction as disabling direct interaction.
 
-- [ ] **Step 4: Run tests**
+- [x] **Step 4: Run tests**
 
 Run: `pnpm vitest run packages/domain/src/community packages/domain/src/moderation`  
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/db packages/domain/src/community packages/domain/src/moderation

@@ -6,7 +6,9 @@ export type CommunityErrorCode =
   | "BLOCKED_INTERACTION"
   | "COMMUNITY_CONFLICT"
   | "COMMUNITY_LIMIT"
-  | "COMMUNITY_UNAVAILABLE";
+  | "COMMUNITY_UNAVAILABLE"
+  | "COMMENTS_DISABLED"
+  | "COMMENT_PARENT_INVALID";
 export class CommunityError extends Error {
   constructor(readonly code: CommunityErrorCode) {
     super(code);
