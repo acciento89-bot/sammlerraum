@@ -3,7 +3,7 @@ import {
   MarketReferenceTotalSchema,
   type MarketReferenceTotal,
 } from "@sammlerraum/contracts/dashboard";
-import { isReadDependencyFailure } from "../api/read-dependency-errors";
+import { isReadDependencyFailure, isReadSerializationFailure } from "../api/read-dependency-errors";
 import { marketSelectorKey } from "./market-query-policy";
 import {
   marketBatchForUse,
@@ -51,6 +51,7 @@ export async function aggregateMarketBatch(
       Prisma.sql`/* market:aggregate */ WITH ${state.ctes},market_totals AS (SELECT "selectorOrdinal",count(*)::text AS "contributingItemCount",sum(quantity::numeric)::text AS "contributedQuantity",sum("amountMinor"::numeric*${weight})::text AS "amountMinor",sum("lowMinor"::numeric*${weight})::text AS "lowMinor",sum("highMinor"::numeric*${weight})::text AS "highMinor",min("observedAt") AS "observedAtFrom",max("observedAt") AS "observedAtTo" FROM market_latest GROUP BY "selectorOrdinal") SELECT s."selectorOrdinal",c.count AS "candidateItemCount",coalesce(t."contributingItemCount",'0') AS "contributingItemCount",coalesce(t."contributedQuantity",'0') AS "contributedQuantity",t."amountMinor",t."lowMinor",t."highMinor",t."observedAtFrom",t."observedAtTo" FROM market_selectors s CROSS JOIN (SELECT count(*)::text AS count FROM market_candidates) c LEFT JOIN market_totals t USING("selectorOrdinal") ORDER BY s."selectorOrdinal"`,
     );
   } catch (error) {
+    if (isReadSerializationFailure(error)) throw error;
     if (isReadDependencyFailure(error)) throw new MarketBatchError("MARKET_BATCH_DEPENDENCY");
     throw error;
   }

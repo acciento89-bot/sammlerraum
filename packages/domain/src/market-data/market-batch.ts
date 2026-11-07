@@ -71,7 +71,7 @@ import { Prisma as Sql } from "@sammlerraum/db/search-sql";
 import { CatalogSnapshotSchema } from "@sammlerraum/contracts/catalog";
 import { parseItemFilter } from "@sammlerraum/contracts/search";
 import { MembershipActorIdSchema } from "@sammlerraum/contracts/collaboration";
-import { isReadDependencyFailure } from "../api/read-dependency-errors";
+import { isReadDependencyFailure, isReadSerializationFailure } from "../api/read-dependency-errors";
 import { withMarketRights, marketSelectorKey } from "./market-query-policy";
 import {
   currentMarketSnapshots,
@@ -175,6 +175,7 @@ async function batchRead<T>(context: MarketBatchContext, query: Prisma.Sql): Pro
     context.checkBudget();
     return rows;
   } catch (error) {
+    if (isReadSerializationFailure(error)) throw error;
     if (isReadDependencyFailure(error)) throw new MarketBatchError("MARKET_BATCH_DEPENDENCY");
     throw error;
   }

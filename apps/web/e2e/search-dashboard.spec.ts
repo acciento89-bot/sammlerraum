@@ -2356,11 +2356,9 @@ for (const locale of ["de", "en"] as const) {
           .filter({ hasText: locale === "de" ? "Teilsumme" : "Partial subtotal" }),
       ).toHaveCount(2);
       await expect(
-        section
-          .getByRole("status")
-          .filter({
-            hasText: locale === "de" ? "Keine beitragenden Werte" : "No contributing values",
-          }),
+        section.getByRole("status").filter({
+          hasText: locale === "de" ? "Keine beitragenden Werte" : "No contributing values",
+        }),
       ).toHaveCount(1);
       await expect(section).toContainText(
         locale === "de" ? "184.467.440.737.095.516,14 EUR" : "184,467,440,737,095,516.14 EUR",

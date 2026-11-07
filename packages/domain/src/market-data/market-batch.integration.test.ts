@@ -762,6 +762,162 @@ describe.runIf(process.env.RUN_DATABASE_INTEGRATION === "1")(
         expect(fetch).not.toHaveBeenCalled();
       },
     );
+    it.each(["current", "history", "ambiguity", "aggregate"])(
+      "retries a first %s serialization failure through the outer transaction with fresh rights",
+      async (phase) => {
+        const f = await fixture();
+        await record(f);
+        let attempts = 0,
+          failed = false,
+          snapshots = 0;
+        const dependency = {
+          ...deps,
+          queryPolicy: {
+            snapshotForOwner: () => {
+              snapshots++;
+              return {
+                queryGrants: [{ selector, purposes: ["FILTER" as const] }],
+                aggregateGrants: [
+                  {
+                    selector,
+                    semantics: "ADDITIVE_PER_UNIT_REFERENCE_VALUE" as const,
+                    bases: ["ONE_PER_ITEM" as const],
+                  },
+                ],
+              };
+            },
+          },
+        };
+        const measured: SearchDatabase = {
+          $transaction: (work, options) => {
+            attempts++;
+            return db.$transaction(
+              (tx) =>
+                work({
+                  $queryRaw: async <T>(sql: Prisma.Sql) => {
+                    if (
+                      !failed &&
+                      sql.text.includes(
+                        phase === "aggregate" ? "market:aggregate" : `market:prepare:${phase}`,
+                      )
+                    ) {
+                      failed = true;
+                      throw Object.assign(new Error("private serialization detail"), {
+                        code: "40001",
+                      });
+                    }
+                    return tx.$queryRaw<T>(sql);
+                  },
+                }),
+              options,
+            );
+          },
+        };
+        const result = await runSearchRead(measured, async (tx) => {
+          const context = {
+            tx,
+            scope: { actorUserId: f.owner, lifecycle: "ACTIVE" as const },
+            ownedCandidates: Prisma.sql`SELECT i.id,i.quantity,i."catalogEntryId",i."catalogVariantId" ${candidateFrom} WHERE ${ownedCandidates(f.owner, "ACTIVE")}`,
+            checkBudget: tx.checkBudget,
+          };
+          return withMarketBatch(
+            context,
+            [selector],
+            phase === "aggregate"
+              ? { purpose: "DASHBOARD_AGGREGATE", basis: "ONE_PER_ITEM" }
+              : { purpose: "FILTER" },
+            dependency,
+            async (batch) =>
+              phase === "aggregate"
+                ? aggregateMarketBatch(context, batch, [selector], "ONE_PER_ITEM")
+                : tx.$queryRaw(Prisma.sql`WITH ${batch.ctes} SELECT count(*) FROM market_latest`),
+          );
+        });
+        expect(result).toHaveLength(1);
+        expect(failed).toBe(true);
+        expect(attempts).toBe(2);
+        expect(snapshots).toBeGreaterThanOrEqual(3);
+      },
+    );
+    it("bounds exhausted market serialization failures at three whole transaction attempts", async () => {
+      const f = await fixture();
+      let attempts = 0;
+      const measured: SearchDatabase = {
+        $transaction: (work, options) => {
+          attempts++;
+          return db.$transaction(
+            (tx) =>
+              work({
+                $queryRaw: async <T>(sql: Prisma.Sql) => {
+                  if (sql.text.includes("market:prepare:current"))
+                    throw Object.assign(new Error("do not disclose"), { code: "40001" });
+                  return tx.$queryRaw<T>(sql);
+                },
+              }),
+            options,
+          );
+        },
+      };
+      await expect(
+        createItemSearchService(measured, { market: deps }).searchItems(
+          { userId: f.owner },
+          {
+            filter: {
+              version: 1,
+              root: { kind: "marketMoney", selector, test: { op: "present" } },
+            },
+          },
+        ),
+      ).rejects.toMatchObject({ code: "SEARCH_UNAVAILABLE", message: "SEARCH_UNAVAILABLE" });
+      expect(attempts).toBe(3);
+    });
+    it("rechecks revoked rights on the next market serialization attempt instead of reusing the previous receipt", async () => {
+      const f = await fixture();
+      let attempts = 0,
+        allowed = true;
+      const dependency = {
+        ...deps,
+        queryPolicy: {
+          snapshotForOwner: () => ({
+            queryGrants: allowed ? [{ selector, purposes: ["FILTER" as const] }] : [],
+            aggregateGrants: [],
+          }),
+        },
+      };
+      const measured: SearchDatabase = {
+        $transaction: (work, options) => {
+          attempts++;
+          return db.$transaction(
+            (tx) =>
+              work({
+                $queryRaw: async <T>(sql: Prisma.Sql) => {
+                  if (sql.text.includes("market:prepare:current")) {
+                    allowed = false;
+                    throw Object.assign(new Error("do not disclose"), { code: "40001" });
+                  }
+                  return tx.$queryRaw<T>(sql);
+                },
+              }),
+            options,
+          );
+        },
+      };
+      await expect(
+        createItemSearchService(measured, { market: dependency }).searchItems(
+          { userId: f.owner },
+          {
+            filter: {
+              version: 1,
+              root: { kind: "marketMoney", selector, test: { op: "present" } },
+            },
+          },
+        ),
+      ).rejects.toMatchObject({
+        code: "FILTER_UNAVAILABLE",
+        reason: "MARKET_QUERY_RIGHTS_DISABLED",
+      });
+      expect(attempts).toBe(2);
+    });
     it("treats malformed historical snapshots as ineligible and malformed current snapshots as invariant", async () => {
       const f = await fixture();
       await record(f);
