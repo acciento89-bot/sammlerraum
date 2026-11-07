@@ -2,3 +2,6 @@
 Task 1: complete (commits 82a1f0f..b3bbd78, tests: env RUN_DATABASE_INTEGRATION=1 npm exec --yes --package=node@24.19.0 --package=pnpm@10.17.1 -- pnpm vitest run packages/domain/src/collaboration/membership-service.test.ts packages/domain/src/authz/policy.test.ts --no-file-parallelism →    Duration  2.57s (transform 284ms, setup 6ms, collect 608ms, tests 1.67s, environment 0ms, prepare 81ms))
 
 Task1 implementation is locally verified. Independent whole-Phase09 review follows Task7 under inline execution; master reviewed count stays48 until that review. Next Task2 secure invitations.
+Task 2: complete (commits 17d1406..8284c06, tests: env RUN_DATABASE_INTEGRATION=1 npm exec --yes --package=node@24.19.0 --package=pnpm@10.17.1 -- pnpm vitest run packages/domain/src/collaboration/invitation-service.test.ts apps/web/src/lib/invitation-routes.integration.test.ts apps/web/src/lib/invitation-routes.test.ts --no-file-parallelism →    Duration  3.25s (transform 222ms, setup 7ms, collect 684ms, tests 2.14s, environment 0ms, prepare 96ms))
+
+Task2 implementation verified at8284c06; closing36PASS. Full1008native/1542regular/types/lint/build and actual cookie-session API journeyPASS. Whole-phase independent review pending; master reviewed48unchanged. Next Task3 sharing.

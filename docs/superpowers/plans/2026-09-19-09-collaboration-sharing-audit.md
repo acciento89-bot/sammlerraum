@@ -90,7 +90,7 @@ Implementation verified at b3bbd78;59focused closing tests,982native,1532regular
 **Interfaces:**
 - Produces: `createInvitation`, `acceptInvitation`, `revokeInvitation`.
 
-- [ ] **Step 1: Write failing intended-recipient test**
+- [x] **Step 1: Write failing intended-recipient test**
 
 ```ts
 it("does not allow a different verified account to accept an email-bound invite", async () => {
@@ -99,21 +99,21 @@ it("does not allow a different verified account to accept an email-bound invite"
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run packages/domain/src/collaboration/invitation-service.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement invitation tokens**
+- [x] **Step 3: Implement invitation tokens**
 
 Store only token hash, intended normalized email or invited user ID, role, expiry, creator, accepted/revoked timestamps. Generate token with `crypto.randomBytes(32)`.
 
-- [ ] **Step 4: Run tests**
+- [x] **Step 4: Run tests**
 
 Run: `pnpm vitest run packages/domain/src/collaboration/invitation-service.test.ts`  
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/db packages/domain/src/collaboration apps/web/src/app/api/v1/collections
@@ -121,6 +121,8 @@ git commit -m "feat: add secure collection invitations"
 ```
 
 ---
+
+Implementation verified at8284c06:1008native/89files,1542regular,types/lint/productionbuild and actual3-cookie API journeyPASS; scoped closing36PASS. Independent whole-phase review followsTask7; master reviewed total stays48. No live mail/provider activation.
 
 ### Task 3: Add granular share links and registered-user shares
 

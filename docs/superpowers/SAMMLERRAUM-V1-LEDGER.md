@@ -19,7 +19,7 @@ This is the handoff/status file for long-running implementation. Update it after
 | 06 | Valuations & Market Data | 6 | complete (6/6) | — |
 | 07 | Search, Smart Collections & Dashboard | 5 | in progress (1/5) | Task 2 |
 | 08 | Import, Export, Insurance & Reports | 7 | complete (7/7) | — |
-| 09 | Collaboration, Sharing & Audit | 7 | Task1 implemented/verified; whole-phase review pending | Task 2 |
+| 09 | Collaboration, Sharing & Audit | 7 | Tasks1–2 implemented/verified; whole-phase review pending | Task 3 |
 | 10 | Community, Moderation & Notifications | 8 | not started | Task 1 |
 | 11 | AI-Assisted Capture | 5 | not started | Task 1 |
 | 12 | Premium & Billing | 5 | not started | Task 1 |
@@ -80,6 +80,8 @@ This is the handoff/status file for long-running implementation. Update it after
 - [x] P08 T07 — Actual private upload/profile/preview/approval/cancellation, artifact delivery/retention and localized insurance/report workflows
 
 - [ ] P09 T01 — Membership/atomic owner transfer implemented and locally verified; independent whole-phase review pending
+
+- [ ] P09 T02 — Recipient-bound one-time invitations/API implemented and locally verified; independent whole-phase review pending
 
 **Verified completion: 48/91 tasks.** Later tasks remain open as listed in the phase table and detail plans.
 
@@ -1089,3 +1091,12 @@ Source67d8bfc and b3bbd78 implement current DB-backed Owner/Admin/Editor/Viewer 
 Current validation:982nativePASS/87files/0skip,1532regularPASS/852explicit native-disabled skips, root types/workspace lint/whole production buildPASS,24built desktop/mobile collection/item/location-label browser casesPASS, final scoped membership+policy59PASS. Exact schema diff empty. Valid PDF/PNG/WebP actual-byte fixtures and all genuine RED/fixture diagnostic logs retained in Phase09 workspace. Source has not been deployed or merged to main; existing DraftPR1 remains the only source publication target.
 
 Inline execution records Task1 implementation complete, then continues Task2 invitations. The one independent whole-phase review is scheduled after Task7. Respecting the earlier persistence rule, this review-pending master checkbox remains unchecked and the reviewed total stays48/91; this is new verified implementation, not a claim of an independently approved Phase09. No live providers, real users, other apps/stores or scheduled automation changed.
+
+
+## 07 November 2026 — Phase09 Task2 implementation verified, whole-phase review pending
+
+Source8284c06 implements Owner/Admin invitation issuance/revocation and verified email/UID acceptance with32crypto-random bytes and hash-only storage, current grant authority, DB-UTC expiry, bounded pending/member counts and no role overwrite. Same-user retry cannot re-add removed membership; unused EMAIL/USER links are revoked on removal too. Creator/target/acceptor and email-bound erasure remain possible. One040000 additive migration applied to both guarded DBs; seven earlier hashes unchanged. New same-origin/fresh-cookie-auth private REST routes and strict request/response projections exclude hashes/internal identities. No SMTP delivery or new collaboration UI claim; management/landing UI followsTask7.
+
+Evidence:23native invitation+3actual PG handler+10pure boundary tests; whole89files1008nativePASS/0skip165.97s,1542regularPASS/878explicit native-disabled skips14.17s, root types/workspace lint/full production buildPASS, actual compiled3-cookie-session API journey1PASS1.9s and closing36PASS. Genuine unused-link and two real in-flight expiry failures were closed with atomic rollback and stable private errors. Task1 exact17d1406 push CI42339097557 actuallySUCCESS; new Task2 remote CI follows publication. Private source/evidence retained in the Phase09 workspace; existing DraftPR only, no application merge/deployment, real customers, other apps/stores or automation.
+
+Task2 implementation is recorded complete under inline execution; independent whole-phase review followsTask7. Respecting the master review/persistence rule, both P09 checkboxes stay unchecked and reviewed total remains48/91. Next:Task3 explicit granular sharing, expiry/PIN and default private-field exclusions.
