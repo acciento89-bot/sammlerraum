@@ -78,6 +78,15 @@ function dto(row: Invite) {
           : ("PENDING" as const),
   });
 }
+function invitationAuditSnapshot(row: Invite) {
+  return {
+    invitationId: row.id,
+    role: row.role,
+    targetKind: row.targetKind,
+    expiresAt: row.expiresAt.toISOString(),
+    revoked: row.revokedAt !== null,
+  };
+}
 /** Invitations grant membership only through actual current identity, creator role and parent locks. */
 export function createInvitationService(database: MembershipDatabase) {
   async function within<T>(work: (tx: BoundedSearchReadTransaction) => Promise<T>) {
@@ -183,7 +192,19 @@ export function createInvitationService(database: MembershipDatabase) {
         await tx.$queryRaw(Prisma.sql`WITH issued AS(SELECT date_trunc('milliseconds',timezone('UTC',clock_timestamp())) AS now)
           INSERT INTO "CollectionInvitation" (id,"collectionId","creatorUserId","targetKind","targetEmail","targetUserId",role,"tokenHash","createdAt","expiresAt")
           SELECT ${id}::uuid,${p.id}::uuid,${userId},${value.target.kind}::"CollectionInvitationTargetKind",${targetEmail},${targetUserId},${value.role}::"CollectionMemberRole",${hash(token)},issued.now,issued.now+${value.expiresInSeconds}*interval '1 second' FROM issued RETURNING id`);
-        return { invitation: dto(await load(tx, id, p.id)), token };
+        const created = await load(tx, id, p.id);
+        await recordAuditEventInTransaction(
+          tx,
+          createTrustedAuditContext({ source: "USER", actorId: userId }),
+          {
+            resourceType: "COLLECTION",
+            resourceId: p.id,
+            action: "INVITATION_CREATED",
+            before: null,
+            after: invitationAuditSnapshot(created),
+          },
+        );
+        return { invitation: dto(created), token };
       });
     },
     async getPendingInvitations(who: Actor, collectionIdInput: unknown) {
@@ -215,7 +236,20 @@ export function createInvitationService(database: MembershipDatabase) {
           await tx.$queryRaw(
             Prisma.sql`UPDATE "CollectionInvitation" SET "revokedAt"=date_trunc('milliseconds',timezone('UTC',clock_timestamp())) WHERE id=${row.id}::uuid RETURNING id`,
           );
-        return dto(await load(tx, row.id, p.id));
+        const after = await load(tx, row.id, p.id);
+        if (!row.revokedAt)
+          await recordAuditEventInTransaction(
+            tx,
+            createTrustedAuditContext({ source: "USER", actorId: userId }),
+            {
+              resourceType: "COLLECTION",
+              resourceId: p.id,
+              action: "INVITATION_REVOKED",
+              before: invitationAuditSnapshot(row),
+              after: invitationAuditSnapshot(after),
+            },
+          );
+        return dto(after);
       });
     },
     async acceptInvitation(who: Actor, input: unknown) {

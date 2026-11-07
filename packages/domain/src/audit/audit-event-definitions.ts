@@ -1,3 +1,4 @@
+import { SharePermissionsSchema } from "@sammlerraum/contracts/sharing";
 import { MoneyViewSchema } from "@sammlerraum/contracts/legacy-money";
 import { DocumentCategorySchema } from "@sammlerraum/contracts/media";
 import { CustomFieldTypeSchema } from "@sammlerraum/contracts/custom-fields";
@@ -140,7 +141,49 @@ const money = z
   .nullable();
 const memberRole = z.enum(["OWNER", "ADMIN", "EDITOR", "VIEWER"]);
 const membership = z.object({ role: memberRole.nullable() }).strict();
+const sharedAccess = z
+  .object({
+    id: z.uuid(),
+    revision: z.number().int().nonnegative(),
+    target: z.object({ kind: z.enum(["COLLECTION", "NODE", "ITEM"]), id: z.uuid() }).strict(),
+    permissions: SharePermissionsSchema,
+    expiresAt: z.iso.datetime().nullable(),
+    revoked: z.boolean(),
+    pinRequired: z.boolean(),
+  })
+  .strict()
+  .nullable();
+const invitedAccess = z
+  .object({
+    invitationId: z.uuid(),
+    role: z.enum(["ADMIN", "EDITOR", "VIEWER"]),
+    targetKind: z.enum(["EMAIL", "USER"]),
+    expiresAt: z.iso.datetime(),
+    revoked: z.boolean(),
+  })
+  .strict()
+  .nullable();
 const definitions = {
+  SHARE_CREATED: { resourceType: "SHARE", snapshot: sharedAccess },
+  SHARE_REVOKED: { resourceType: "SHARE", snapshot: sharedAccess },
+  INVITATION_CREATED: { resourceType: "COLLECTION", snapshot: invitedAccess },
+  INVITATION_REVOKED: { resourceType: "COLLECTION", snapshot: invitedAccess },
+  ITEM_CATALOG_LINK_CHANGED: {
+    resourceType: "ITEM",
+    snapshot: z
+      .object({
+        catalogEntryId: z.uuid().nullable(),
+        catalogVariantId: z.uuid().nullable(),
+        categoryTemplateId: z.uuid().nullable(),
+      })
+      .strict(),
+  },
+  ITEM_DISPOSED: {
+    resourceType: "ITEM",
+    snapshot: z
+      .object({ disposedAt: z.iso.datetime().nullable(), tradeStatus: TradeStatusSchema })
+      .strict(),
+  },
   MEMBERSHIP_ADDED: { resourceType: "COLLECTION", snapshot: membership },
   MEMBERSHIP_ROLE_CHANGED: { resourceType: "COLLECTION", snapshot: membership },
   MEMBERSHIP_REMOVED: { resourceType: "COLLECTION", snapshot: membership },

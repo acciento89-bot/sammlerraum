@@ -1,0 +1,47 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ✓ |workspace| packages/domain/src/items/item-service.test.ts (15 tests) 366ms
+ ❯ |workspace| packages/domain/src/audit/core-audit-integration.test.ts (18 tests | 1 failed) 1037ms
+   ✓ actual core mutations append their real audit in the same transaction > records actual condition and location changes with the real user and before/after values 153ms
+   ✓ actual core mutations append their real audit in the same transaction > a genuine default audit INSERT failure rolls the actual condition write back 74ms
+   ✓ actual core mutations append their real audit in the same transaction > records category changes and condition clearing without inventing a second unchanged event 23ms
+   ✓ actual core mutations append their real audit in the same transaction > audits grading create/update/delete with selected authored facts and excludes verification URLs/source text 21ms
+   ✓ actual core mutations append their real audit in the same transaction > keeps a manual valuation's exact bigint, stored scale, basis and true author in audit 14ms
+   ✓ actual core mutations append their real audit in the same transaction > records private location creation and hierarchy moves without duplicating QR access tokens 24ms
+   ✓ actual core mutations append their real audit in the same transaction > rolls back grading, valuations and location history together when their audit append fails 24ms
+   ✓ actual core mutations append their real audit in the same transaction > tracks collection and node creation, rename, visibility, move and soft deletion 31ms
+   ✓ actual core mutations append their real audit in the same transaction > audits real item create, meaningful edits, split, archive and soft delete without storing private note text 40ms
+   ✓ actual core mutations append their real audit in the same transaction > audits attached and detached tags exactly once and rolls back actual tag replacement on audit failure 40ms
+   ✓ actual core mutations append their real audit in the same transaction > records typed custom-field values and clearing with exact stored decimals and private text fingerprints 36ms
+   ✓ actual core mutations append their real audit in the same transaction > audits actual media/document linking, reordering, metadata and unlink without copying storage keys 64ms
+   ✓ actual core mutations append their real audit in the same transaction > audits actual V2 item authoring and exact interpreted purchase changes without exposing fact tokens or receipts 59ms
+   ✓ actual core mutations append their real audit in the same transaction > retains the real membership manager, separate erasable subject and before/after roles including Viewer self-removal 34ms
+   ✓ actual core mutations append their real audit in the same transaction > keeps legacy raw purchase creation and replacement unknown while auditing exact changed raw digits 21ms
+   ✓ actual core mutations append their real audit in the same transaction > audits explicit money classification and revocation without persisting private evidence text 40ms
+   ✓ actual core mutations append their real audit in the same transaction > records disposal even when the item was already not offered for trade 13ms
+   × actual core mutations append their real audit in the same transaction > records actual catalog linking and unlinking with the existing category constraint 26ms
+     → expected [] to have a length of 2 but got +0
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/audit/core-audit-integration.test.ts > actual core mutations append their real audit in the same transaction > records actual catalog linking and unlinking with the existing category constraint
+AssertionError: expected [] to have a length of 2 but got +0
+
+- Expected
++ Received
+
+- 2
++ 0
+
+ ❯ packages/domain/src/audit/core-audit-integration.test.ts:818:191
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  1 failed | 32 passed (33)
+   Start at  08:56:32
+   Duration  2.49s (transform 322ms, setup 7ms, collect 755ms, tests 1.40s, environment 0ms, prepare 86ms)
+

@@ -251,7 +251,7 @@ Implementation verified: actual current-owner scoped append-only history, actor/
 - Consumes: audit service.
 - Produces: core mutation audit coverage.
 
-- [ ] **Step 1: Write failing mutation coverage test**
+- [x] **Step 1: Write failing mutation coverage test**
 
 ```ts
 it("records item condition and location changes", async () => {
@@ -264,12 +264,12 @@ it("records item condition and location changes", async () => {
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run packages/domain/src/audit/core-audit-integration.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Emit audit in same transaction where possible**
+- [x] **Step 3: Emit audit in same transaction where possible**
 
 Add audited mutations for visibility, condition, grading, values, location, tags/custom fields, media/document link changes, role changes, import changes, archive/delete/restore.
 
@@ -278,7 +278,7 @@ Add audited mutations for visibility, condition, grading, values, location, tags
 Run: `pnpm vitest run packages/domain`  
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/domain

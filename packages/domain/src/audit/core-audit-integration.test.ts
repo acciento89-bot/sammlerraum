@@ -1,3 +1,9 @@
+import { createTrustedAuditContext } from "./audit-context";
+import { recordAuditEventInTransaction } from "./audit-service";
+import { runTransferTransaction } from "../collaboration/transfer-transaction";
+import { createShareService } from "../sharing/share-service";
+import { createInvitationService } from "../collaboration/invitation-service";
+import { createCatalogMaintenanceService } from "../catalog/catalog-service";
 import { createMembershipService } from "../collaboration/membership-service";
 import { createPersonalMoneyService } from "../money/personal-money-service";
 import sharp from "sharp";
@@ -790,6 +796,386 @@ describe.runIf(process.env.RUN_DATABASE_INTEGRATION === "1")(
         }),
       );
       expect(JSON.stringify(erased)).not.toContain(memberId);
+    });
+    it("keeps legacy raw purchase creation and replacement unknown while auditing exact changed raw digits", async () => {
+      const f = await fixture(),
+        items = createItemService(db, f.owner),
+        created = await items.createItem({
+          collectionId: f.collection,
+          title: "Raw purchase audit",
+          purchaseAmountMinor: 1,
+          purchaseCurrency: "AFN",
+        });
+      await items.updateItem(created.id, { purchaseAmountMinor: 2, purchaseCurrency: "AFN" });
+      const events = (
+        await f.audit.listAuditEventsForResource(f.who, {
+          resourceType: "ITEM",
+          resourceId: created.id,
+          limit: 50,
+        })
+      ).events;
+      expect(events.filter((e) => e.action === "ITEM_MONEY_CHANGED")).toHaveLength(2);
+      expect(events).toContainEqual(
+        expect.objectContaining({
+          action: "ITEM_MONEY_CHANGED",
+          before: expect.objectContaining({
+            raw: { amountMinor: "1", currency: "AFN" },
+            interpretation: { kind: "UNKNOWN", reason: "RAW_WRITER" },
+          }),
+          after: expect.objectContaining({
+            raw: { amountMinor: "2", currency: "AFN" },
+            interpretation: { kind: "UNKNOWN", reason: "RAW_WRITER" },
+          }),
+        }),
+      );
+    });
+    it("audits explicit money classification and revocation without persisting private evidence text", async () => {
+      const f = await fixture(),
+        items = createItemService(db, f.owner),
+        created = await items.createItem({
+          collectionId: f.collection,
+          title: "Classification audit",
+          purchaseAmountMinor: 1,
+          purchaseCurrency: "AFN",
+        }),
+        money = createPersonalMoneyService(db, f.owner),
+        subject = { family: "PURCHASE" as const, itemId: created.id },
+        raw = await money.getMoney(subject);
+      await money.classifyMoney(subject, {
+        expectedFactToken: raw.factToken,
+        exponent: 2,
+        unit: { kind: "SUPPORTED", unitKey: "iso4217-2026-09-17:AFN" },
+        evidence: { category: "OWNER_ATTESTATION", reason: "never-copy-private-attestation" },
+      });
+      const history = (await money.listHistory(subject, { limit: 1 })) as {
+          events: Array<{ id: string; expectedAssertionToken: string | null }>;
+        },
+        latest = history.events[0]!;
+      await money.revokeAssertion(subject, {
+        assertionId: latest.id,
+        expectedAssertionToken: latest.expectedAssertionToken,
+        reason: "never-copy-private-revocation",
+      });
+      const events = (
+        await f.audit.listAuditEventsForResource(f.who, {
+          resourceType: "ITEM",
+          resourceId: created.id,
+          limit: 50,
+        })
+      ).events;
+      expect(events).toContainEqual(
+        expect.objectContaining({
+          action: "ITEM_MONEY_CHANGED",
+          before: expect.objectContaining({
+            interpretation: { kind: "UNKNOWN", reason: "RAW_WRITER" },
+          }),
+          after: expect.objectContaining({
+            interpretation: expect.objectContaining({
+              kind: "INTERPRETED",
+              exponent: 2,
+              decimal: "0.01",
+              evidenceCategory: "OWNER_ATTESTATION",
+            }),
+          }),
+        }),
+      );
+      expect(events).toContainEqual(
+        expect.objectContaining({
+          action: "ITEM_MONEY_CHANGED",
+          after: expect.objectContaining({
+            interpretation: { kind: "UNKNOWN", reason: "REVOKED" },
+          }),
+        }),
+      );
+      expect(JSON.stringify(events)).not.toMatch(
+        /never-copy-private-attestation|never-copy-private-revocation/,
+      );
+    });
+    it("records disposal even when the item was already not offered for trade", async () => {
+      const f = await fixture(),
+        disposedAt = new Date().toISOString();
+      await createItemService(db, f.owner).updateItem(f.item, { disposedAt });
+      const events = (
+        await f.audit.listAuditEventsForResource(f.who, {
+          resourceType: "ITEM",
+          resourceId: f.item,
+          limit: 50,
+        })
+      ).events;
+      expect(events).toContainEqual(
+        expect.objectContaining({
+          action: "ITEM_DISPOSED",
+          before: { disposedAt: null, tradeStatus: "NOT_FOR_TRADE" },
+          after: { disposedAt, tradeStatus: "NOT_FOR_TRADE" },
+        }),
+      );
+    });
+
+    it("records actual catalog linking and unlinking with the existing category constraint", async () => {
+      const f = await fixture(),
+        categoryTemplateId = (await db.collectibleItem.findUniqueOrThrow({ where: { id: f.item } }))
+          .categoryTemplateId!,
+        entry = await createCatalogMaintenanceService(db).createCatalogEntry({
+          categoryTemplateId,
+          text: { language: "en", title: "Owned audit reference" },
+        }),
+        items = createItemService(db, f.owner);
+      await items.linkItemToCatalog(f.item, entry.state.id);
+      await items.unlinkItemFromCatalog(f.item);
+      const events = (
+        await f.audit.listAuditEventsForResource(f.who, {
+          resourceType: "ITEM",
+          resourceId: f.item,
+          limit: 50,
+        })
+      ).events;
+      expect(events.filter((e) => e.action === "ITEM_CATALOG_LINK_CHANGED")).toHaveLength(2);
+      expect(events).toContainEqual(
+        expect.objectContaining({
+          action: "ITEM_CATALOG_LINK_CHANGED",
+          before: { catalogEntryId: null, catalogVariantId: null, categoryTemplateId },
+          after: { catalogEntryId: entry.state.id, catalogVariantId: null, categoryTemplateId },
+        }),
+      );
+    });
+
+    it("records share and invitation creation/revocation without retaining bearer tokens or invite emails", async () => {
+      const f = await fixture(),
+        shares = createShareService(db),
+        created = await shares.createShare(f.who, {
+          target: { kind: "ITEM", id: f.item },
+          recipient: { kind: "TOKEN" },
+          expectedRevision: 0,
+          permissions: { images: true },
+        });
+      await shares.revokeShare(f.who, {
+        shareId: created.share.id,
+        expectedRevision: created.share.revision,
+      });
+      const shareEvents = (
+        await f.audit.listAuditEventsForResource(f.who, {
+          resourceType: "SHARE",
+          resourceId: created.share.id,
+          limit: 50,
+        })
+      ).events;
+      expect(shareEvents.map((e) => e.action)).toEqual(
+        expect.arrayContaining(["SHARE_CREATED", "SHARE_REVOKED"]),
+      );
+      expect(JSON.stringify(shareEvents)).not.toContain(created.token!);
+      expect(JSON.stringify(shareEvents)).not.toMatch(/tokenHash|pinHash/);
+      const invitations = createInvitationService(db),
+        invited = await invitations.createInvitation(f.who, {
+          collectionId: f.collection,
+          expectedRevision: 0,
+          target: { kind: "EMAIL", email: "private-invite-recipient@example.invalid" },
+          role: "VIEWER",
+        });
+      await invitations.revokeInvitation(f.who, {
+        collectionId: f.collection,
+        invitationId: invited.invitation.id,
+        expectedRevision: 0,
+      });
+      const invitationEvents = (
+        await f.audit.listAuditEventsForResource(f.who, {
+          resourceType: "COLLECTION",
+          resourceId: f.collection,
+          limit: 50,
+        })
+      ).events;
+      expect(invitationEvents.map((e) => e.action)).toEqual(
+        expect.arrayContaining(["INVITATION_CREATED", "INVITATION_REVOKED"]),
+      );
+      expect(JSON.stringify(invitationEvents)).not.toContain(invited.token);
+      expect(JSON.stringify(invitationEvents)).not.toContain(
+        "private-invite-recipient@example.invalid",
+      );
+    });
+
+    it("rejects forged Viewer joins and another person's removal while preserving real subject erasure only", async () => {
+      const f = await fixture(),
+        viewer = randomUUID(),
+        other = randomUUID();
+      for (const id of [viewer, other])
+        await db.user.create({
+          data: {
+            id,
+            name: "Owned authority edge",
+            email: `${id}@example.invalid`,
+            emailVerified: true,
+          },
+        });
+      const members = createMembershipService(db);
+      await members.addMember(f.who, {
+        collectionId: f.collection,
+        userId: viewer,
+        role: "VIEWER",
+        expectedRevision: 0,
+      });
+      await members.addMember(f.who, {
+        collectionId: f.collection,
+        userId: other,
+        role: "VIEWER",
+        expectedRevision: 1,
+      });
+      const invitation = await createInvitationService(db).createInvitation(f.who, {
+          collectionId: f.collection,
+          expectedRevision: 2,
+          target: { kind: "USER", userId: viewer },
+          role: "VIEWER",
+        }),
+        context = createTrustedAuditContext({ source: "USER", actorId: viewer });
+      await expect(
+        runTransferTransaction(db, (tx) =>
+          recordAuditEventInTransaction(tx, context, {
+            resourceType: "COLLECTION",
+            resourceId: f.collection,
+            action: "MEMBERSHIP_JOINED",
+            subjectUserId: viewer,
+            before: { role: null, invitationId: invitation.invitation.id },
+            after: { role: "VIEWER", invitationId: invitation.invitation.id },
+          }),
+        ),
+      ).rejects.toMatchObject({ code: "AUDIT_NOT_FOUND" });
+      await expect(
+        runTransferTransaction(db, (tx) =>
+          recordAuditEventInTransaction(tx, context, {
+            resourceType: "COLLECTION",
+            resourceId: f.collection,
+            action: "MEMBERSHIP_REMOVED",
+            subjectUserId: other,
+            before: { role: "VIEWER" },
+            after: { role: null },
+          }),
+        ),
+      ).rejects.toMatchObject({ code: "AUDIT_NOT_FOUND" });
+      const [event] = await db.auditEvent.findMany({
+        where: { collectionId: f.collection, subjectUserId: other },
+      });
+      expect(event).toBeDefined();
+      await expect(
+        db.$executeRaw`UPDATE "AuditEvent" SET "subjectUserId"=NULL WHERE id=${event!.id}::uuid`,
+      ).rejects.toThrow();
+      await expect(
+        db.$executeRaw`UPDATE "AuditEvent" SET "subjectUserId"=${viewer} WHERE id=${event!.id}::uuid`,
+      ).rejects.toThrow();
+      expect(await db.collectionMember.count({ where: { collectionId: f.collection } })).toBe(2);
+    });
+    it("rolls back a real role grant and canonical purchase assertion when audit INSERT fails", async () => {
+      const f = await fixture(),
+        recipient = randomUUID();
+      await db.user.create({
+        data: {
+          id: recipient,
+          name: "Rollback role",
+          email: `${recipient}@example.invalid`,
+          emailVerified: true,
+        },
+      });
+      const money = createPersonalMoneyService(db, f.owner),
+        created = await money.createItemV2({
+          schemaVersion: 1,
+          item: { collectionId: f.collection, title: "Rollback actual money" },
+          purchase: {
+            op: "NEW",
+            authoring: {
+              kind: "DECIMAL",
+              profileId: "legacy-money-iso-2026-09-17-v1",
+              currency: "EUR",
+              decimal: "1",
+            },
+          },
+        });
+      const prior = await db.purchaseMoneyInterpretationEvent.count({
+        where: { itemId: created.item.id },
+      });
+      await db.$executeRawUnsafe(
+        `CREATE FUNCTION owned_roles_money_audit_failure() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN IF NEW.action IN ('MEMBERSHIP_ADDED','ITEM_MONEY_CHANGED') THEN RAISE EXCEPTION 'Owned audit rollback' USING ERRCODE='23514'; END IF; RETURN NEW; END $$`,
+      );
+      await db.$executeRawUnsafe(
+        `CREATE TRIGGER owned_roles_money_audit_failure BEFORE INSERT ON "AuditEvent" FOR EACH ROW EXECUTE FUNCTION owned_roles_money_audit_failure()`,
+      );
+      try {
+        await expect(
+          createMembershipService(db).addMember(f.who, {
+            collectionId: f.collection,
+            userId: recipient,
+            role: "EDITOR",
+            expectedRevision: 0,
+          }),
+        ).rejects.toThrow();
+        expect(await db.collectionMember.count({ where: { collectionId: f.collection } })).toBe(0);
+        expect(
+          (await db.collection.findUniqueOrThrow({ where: { id: f.collection } }))
+            .collaborationRevision,
+        ).toBe(0);
+        await expect(
+          money.updateItemV2(created.item.id, {
+            schemaVersion: 1,
+            purchase: {
+              op: "REPLACE",
+              expectedFactToken: created.purchase.factToken,
+              authoring: {
+                kind: "DECIMAL",
+                profileId: "legacy-money-iso-2026-09-17-v1",
+                currency: "EUR",
+                decimal: "2",
+              },
+            },
+          }),
+        ).rejects.toThrow();
+        expect(
+          (await money.getMoney({ family: "PURCHASE", itemId: created.item.id })).factToken,
+        ).toBe(created.purchase.factToken);
+        expect(
+          await db.purchaseMoneyInterpretationEvent.count({ where: { itemId: created.item.id } }),
+        ).toBe(prior);
+      } finally {
+        await db.$executeRawUnsafe(`DROP TRIGGER owned_roles_money_audit_failure ON "AuditEvent"`);
+        await db.$executeRawUnsafe(`DROP FUNCTION owned_roles_money_audit_failure()`);
+      }
+    });
+    it("does not shrink valid Unicode tag, selection and private-text limits to the audit payload bound", async () => {
+      const f = await fixture(),
+        tags = Array.from(
+          { length: 100 },
+          (_, index) => "界".repeat(97) + String(index).padStart(3, "0"),
+        );
+      await createTagService(db, f.owner).setItemTags(f.item, tags);
+      expect(
+        await db.auditEvent.count({ where: { resourceId: f.item, action: "ITEM_TAG_ATTACHED" } }),
+      ).toBe(100);
+      const fields = createCustomFieldService(db, f.owner),
+        options = Array.from(
+          { length: 100 },
+          (_, index) => "界".repeat(197) + String(index).padStart(3, "0"),
+        ),
+        definition = await fields.createFieldDefinition({
+          collectionId: f.collection,
+          name: "Large owned selection",
+          type: "MULTI_SELECT",
+          options,
+        });
+      await fields.setFieldValue(f.item, definition.id, options);
+      const note = await fields.createFieldDefinition({
+        collectionId: f.collection,
+        name: "Long owned text",
+        type: "LONG_TEXT",
+      });
+      await fields.setFieldValue(f.item, note.id, "界".repeat(10000));
+      await createItemService(db, f.owner).updateItem(f.item, {
+        privateNotes: "界".repeat(10000),
+        publicDescription: "字".repeat(10000),
+      });
+      const [size] = await db.$queryRaw<
+        Array<{ bytes: number }>
+      >`SELECT max(greatest(octet_length(before::text),octet_length(after::text)))::int AS bytes FROM "AuditEvent" WHERE "actorId"=${f.owner}`;
+      expect(size!.bytes).toBeLessThanOrEqual(16384);
+      expect(
+        await db.customFieldMultiSelectValue.count({
+          where: { itemId: f.item, fieldDefinitionId: definition.id },
+        }),
+      ).toBe(100);
     });
   },
 );

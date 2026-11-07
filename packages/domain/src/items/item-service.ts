@@ -1,3 +1,5 @@
+import { captureMoneyAuditSnapshot } from "../audit/money-audit";
+import { LegacyMoneyError } from "@sammlerraum/contracts/legacy-money";
 import type { AuditContext } from "../audit/audit-context";
 import { createHash } from "node:crypto";
 import { defaultMutationAudit, type MutationAuditPort } from "../audit/mutation-audit";
@@ -564,6 +566,17 @@ export async function updateItemInTransaction(
       before,
       after,
     });
+  if ((existing.disposedAt === null ? null : toTimestamp(existing.disposedAt)) !== saved.disposedAt)
+    await auditPort.append(transaction, audit, {
+      resourceType: "ITEM",
+      resourceId: itemId,
+      action: "ITEM_DISPOSED",
+      before: {
+        disposedAt: existing.disposedAt === null ? null : toTimestamp(existing.disposedAt),
+        tradeStatus: existing.tradeStatus,
+      },
+      after: { disposedAt: saved.disposedAt, tradeStatus: saved.tradeStatus },
+    });
   if (existing.visibility !== saved.visibility)
     await auditPort.append(transaction, audit, {
       resourceType: "ITEM",
@@ -575,6 +588,13 @@ export async function updateItemInTransaction(
   return saved;
 }
 
+function catalogLinkAuditSnapshot(item: StoredItem | CollectibleItem) {
+  return {
+    catalogEntryId: item.catalogEntryId,
+    catalogVariantId: item.catalogVariantId,
+    categoryTemplateId: item.categoryTemplateId,
+  };
+}
 function itemAuditSnapshot(item: StoredItem | CollectibleItem) {
   const hash = (text: string | null) =>
     text === null ? null : createHash("sha256").update(text).digest("hex");
@@ -593,15 +613,45 @@ function itemAuditSnapshot(item: StoredItem | CollectibleItem) {
 export function createItemService(
   database: ItemDatabase,
   actorUserId: string,
-  options: { now?: () => Date; auditPort?: MutationAuditPort } = {},
+  options: {
+    now?: () => Date;
+    auditPort?: MutationAuditPort;
+    captureMoneyAudit?: typeof captureMoneyAuditSnapshot;
+  } = {},
 ) {
   const now = options.now ?? (() => new Date());
   const auditPort = options.auditPort ?? defaultMutationAudit;
+  const captureMoney = options.captureMoneyAudit ?? captureMoneyAuditSnapshot;
 
   async function createItem(input: CreateItemInput): Promise<CollectibleItem> {
     const data = CreateItemInputSchema.parse(input);
     return database.$transaction(
-      (tx) => createItemInTransaction(tx, actorUserId, data, { auditPort }),
+      async (tx) => {
+        const audit = await auditPort.begin(
+          tx,
+          actorUserId,
+          () => new ItemServiceError("COLLECTION_NOT_FOUND"),
+        );
+        const created = await createItemInTransaction(tx, actorUserId, data, {
+          auditPort,
+          auditContext: audit,
+        });
+        if (data.purchaseAmountMinor !== null) {
+          const after = await captureMoney(
+            moneyTransaction(tx),
+            { family: "PURCHASE", itemId: created.id },
+            actorUserId,
+          );
+          await auditPort.append(tx, audit, {
+            resourceType: "ITEM",
+            resourceId: created.id,
+            action: "ITEM_MONEY_CHANGED",
+            before: null,
+            after,
+          });
+        }
+        return created;
+      },
       { isolationLevel: "ReadCommitted" },
     );
   }
@@ -609,7 +659,47 @@ export function createItemService(
     const itemId = CollectibleItemSchema.shape.id.parse(itemIdInput),
       data = UpdateItemInputSchema.parse(input);
     return database.$transaction(
-      (tx) => updateItemInTransaction(tx, actorUserId, itemId, data, { auditPort }),
+      async (tx) => {
+        const audit = await auditPort.begin(
+          tx,
+          actorUserId,
+          () => new ItemServiceError("ITEM_NOT_FOUND"),
+        );
+        let before: Awaited<ReturnType<typeof captureMoney>> | null = null;
+        if (data.purchaseAmountMinor !== undefined) {
+          try {
+            before = await captureMoney(
+              moneyTransaction(tx),
+              { family: "PURCHASE", itemId },
+              actorUserId,
+            );
+          } catch (error) {
+            if (error instanceof LegacyMoneyError && error.code === "MONEY_NOT_FOUND")
+              throw new ItemServiceError("ITEM_NOT_FOUND");
+            throw error;
+          }
+        }
+        const saved = await updateItemInTransaction(tx, actorUserId, itemId, data, {
+          auditPort,
+          auditContext: audit,
+        });
+        if (data.purchaseAmountMinor !== undefined) {
+          const after = await captureMoney(
+            moneyTransaction(tx),
+            { family: "PURCHASE", itemId },
+            actorUserId,
+          );
+          if (JSON.stringify(before) !== JSON.stringify(after))
+            await auditPort.append(tx, audit, {
+              resourceType: "ITEM",
+              resourceId: itemId,
+              action: "ITEM_MONEY_CHANGED",
+              before,
+              after,
+            });
+        }
+        return saved;
+      },
       { isolationLevel: "ReadCommitted" },
     );
   }
@@ -901,15 +991,31 @@ export function createItemService(
     const itemId = CatalogReadIdSchema.parse(itemIdInput);
     return database.$transaction(
       async (tx) => {
+        const audit = await auditPort.begin(
+          tx,
+          actorUserId,
+          () => new ItemServiceError("ITEM_NOT_FOUND"),
+        );
         const existing = await lockOwnedItem(tx, itemId, actorUserId);
         ensureActive(existing);
-        return toItem(
+        const saved = toItem(
           await tx.collectibleItem.update({
             where: { id: existing.id },
             data: { catalogEntryId: null, catalogVariantId: null },
             select: itemSelect,
           }),
         );
+        const before = catalogLinkAuditSnapshot(existing),
+          after = catalogLinkAuditSnapshot(saved);
+        if (JSON.stringify(before) !== JSON.stringify(after))
+          await auditPort.append(tx, audit, {
+            resourceType: "ITEM",
+            resourceId: itemId,
+            action: "ITEM_CATALOG_LINK_CHANGED",
+            before,
+            after,
+          });
+        return saved;
       },
       { isolationLevel: "ReadCommitted" },
     );
@@ -926,6 +1032,11 @@ export function createItemService(
       variantIdInput === null ? null : CatalogReadIdSchema.parse(variantIdInput);
     return database.$transaction(
       async (tx) => {
+        const audit = await auditPort.begin(
+          tx,
+          actorUserId,
+          () => new ItemServiceError("ITEM_NOT_FOUND"),
+        );
         const { entry, variant } = await lockCatalogParents(tx, {
           catalogEntryId,
           catalogVariantId,
@@ -946,7 +1057,7 @@ export function createItemService(
         )
           return toItem(existing);
         if (variant && !variant.active) throw new ItemServiceError("CATALOG_VARIANT_INACTIVE");
-        return toItem(
+        const saved = toItem(
           await tx.collectibleItem.update({
             where: { id: existing.id },
             data: {
@@ -957,6 +1068,17 @@ export function createItemService(
             select: itemSelect,
           }),
         );
+        const before = catalogLinkAuditSnapshot(existing),
+          after = catalogLinkAuditSnapshot(saved);
+        if (JSON.stringify(before) !== JSON.stringify(after))
+          await auditPort.append(tx, audit, {
+            resourceType: "ITEM",
+            resourceId: itemId,
+            action: "ITEM_CATALOG_LINK_CHANGED",
+            before,
+            after,
+          });
+        return saved;
       },
       { isolationLevel: "ReadCommitted" },
     );

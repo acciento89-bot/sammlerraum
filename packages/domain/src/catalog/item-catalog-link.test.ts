@@ -349,11 +349,14 @@ describe.runIf(enabled)("personal catalog links PostgreSQL", () => {
                         .includes('SELECT item."catalogEntryId",item."catalogVariantId"')
                     ) {
                       discoveries++;
-                      await service().linkItemToCatalog(
-                        target.id,
-                        entryId,
-                        discoveries % 2 === 1 ? null : variantId,
-                      );
+                      // Native writer bypasses the new shared actor fence to exercise revalidation.
+                      await db!.collectibleItem.update({
+                        where: { id: target.id },
+                        data: {
+                          catalogEntryId: entryId,
+                          catalogVariantId: discoveries % 2 === 1 ? null : variantId,
+                        },
+                      });
                     }
                     return result;
                   };
@@ -475,7 +478,11 @@ describe.runIf(enabled)("personal catalog links PostgreSQL", () => {
                         .includes('SELECT item."catalogEntryId",item."catalogVariantId"') &&
                       ++discoveries === 1
                     )
-                      await service().linkItemToCatalog(target.id, entryId);
+                      // The normal app writer waits on actor identity; native SQL still races.
+                      await db!.collectibleItem.update({
+                        where: { id: target.id },
+                        data: { catalogEntryId: entryId, catalogVariantId: null },
+                      });
                     return result;
                   };
                 },

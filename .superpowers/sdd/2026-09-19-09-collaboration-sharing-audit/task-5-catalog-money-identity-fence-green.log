@@ -1,0 +1,60 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/catalog/item-catalog-link.test.ts (14 tests | 2 failed) 10654ms
+   ✓ personal catalog links PostgreSQL > keeps the personal item and independent facts when its catalog link is removed 47ms
+   ✓ personal catalog links PostgreSQL > infers only an absent category and integrates DTO, resource reads and split 27ms
+   ✓ personal catalog links PostgreSQL > requires explicit unlink before category changes and never silently clears condition 31ms
+   ✓ personal catalog links PostgreSQL > checks entry/variant scope and preserves retired existing references without offering new selections 39ms
+   ✓ personal catalog links PostgreSQL > hides foreign/deleted items and retains owner reads for inactive items 19ms
+   ✓ personal catalog links PostgreSQL > enforces native partial-null and relational guards independently of services 42ms
+   ✓ personal catalog links PostgreSQL > preserves personal category/condition when otherwise deletable catalog targets disappear 29ms
+   ✓ personal catalog links PostgreSQL > pins column-specific native SET NULL actions and supporting indexes 6ms
+   × personal catalog links PostgreSQL > retries changed split parents three times without copying or decrementing 5004ms
+     → Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+   ✓ personal catalog links PostgreSQL > waits for a canonical writer before active validation and rejects its retired variant 76ms
+   ✓ personal catalog links PostgreSQL > holds parent locks while waiting on the item so a canonical writer cannot invert the order 45ms
+   × personal catalog links PostgreSQL > revalidates a changed split link before copying the new reference on a later attempt 5002ms
+     → Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+   ✓ personal catalog links PostgreSQL > rechecks category under the shared item lock after a competing category change 38ms
+   ✓ personal catalog links PostgreSQL > rejects disposed items and hides items in a deleted collection 38ms
+ ✓ |workspace| packages/domain/src/audit/core-audit-integration.test.ts (18 tests) 1011ms
+ ✓ |workspace| packages/domain/src/money/personal-money-service.test.ts (13 tests) 861ms
+ ✓ |workspace| packages/domain/src/items/item-service.test.ts (15 tests) 334ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/catalog/item-catalog-link.test.ts > personal catalog links PostgreSQL > retries changed split parents three times without copying or decrementing
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ packages/domain/src/catalog/item-catalog-link.test.ts:332:3
+    330|   });
+    331| 
+    332|   it("retries changed split parents three times without copying or dec…
+       |   ^
+    333|     const target = await service().createItem({ collectionId, title: "…
+    334|     await service().linkItemToCatalog(target.id, entryId, variantId);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |workspace| packages/domain/src/catalog/item-catalog-link.test.ts > personal catalog links PostgreSQL > revalidates a changed split link before copying the new reference on a later attempt
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ packages/domain/src/catalog/item-catalog-link.test.ts:454:3
+    452|   });
+    453| 
+    454|   it("revalidates a changed split link before copying the new referenc…
+       |   ^
+    455|     const target = await service().createItem({
+    456|       collectionId,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed | 3 passed (4)
+      Tests  2 failed | 58 passed (60)
+   Start at  08:58:16
+   Duration  14.49s (transform 349ms, setup 8ms, collect 1.05s, tests 12.86s, environment 0ms, prepare 145ms)
+

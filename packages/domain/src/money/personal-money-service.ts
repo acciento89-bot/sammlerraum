@@ -244,15 +244,33 @@ export function createPersonalMoneyService(database: PersonalMoneyDatabase, acto
   }
   const getMoney = (s: MoneySubject) => run((_tx, money) => readMoneyFact(money, personal(s), who));
   const classifyMoney = (s: MoneySubject, input: unknown) =>
-    run(async (_tx, money) => {
+    run(async (tx, money) => {
       const data = parse(ClassifyMoneyInputSchema, input),
-        fact = await requireMoneyToken(money, personal(s), who, data.expectedFactToken);
-      return appendMoneyAssertion(money, fact, { kind: "CLASSIFY", input: data });
+        subject = personal(s),
+        audit = await beginMutationAudit(
+          tx,
+          actorId,
+          () => new LegacyMoneyError("MONEY_NOT_FOUND"),
+        );
+      const fact = await requireMoneyToken(money, subject, who, data.expectedFactToken),
+        before = await captureMoneyAuditSnapshot(money, subject, actorId);
+      const saved = await appendMoneyAssertion(money, fact, { kind: "CLASSIFY", input: data });
+      await appendPurchaseAudit(tx, money, audit, subject, before);
+      return saved;
     });
   const revokeAssertion = (s: MoneySubject, input: unknown) =>
-    run((_tx, money) =>
-      revokeMoneyAssertion(money, personal(s), parse(RevokeMoneyInputSchema, input), who),
-    );
+    run(async (tx, money) => {
+      const data = parse(RevokeMoneyInputSchema, input),
+        subject = personal(s),
+        audit = await beginMutationAudit(
+          tx,
+          actorId,
+          () => new LegacyMoneyError("MONEY_NOT_FOUND"),
+        ),
+        before = await captureMoneyAuditSnapshot(money, subject, actorId);
+      await revokeMoneyAssertion(money, subject, data, who);
+      await appendPurchaseAudit(tx, money, audit, subject, before);
+    });
   const getMoneyBulk = (itemId: string, fields: string[]) =>
     run(async (_tx, money) => {
       if (fields.length > 50 || new Set(fields).size !== fields.length)

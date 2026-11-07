@@ -1,0 +1,170 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/audit/core-audit-integration.test.ts (17 tests | 3 failed) 1138ms
+   ✓ actual core mutations append their real audit in the same transaction > records actual condition and location changes with the real user and before/after values 178ms
+   ✓ actual core mutations append their real audit in the same transaction > a genuine default audit INSERT failure rolls the actual condition write back 52ms
+   ✓ actual core mutations append their real audit in the same transaction > records category changes and condition clearing without inventing a second unchanged event 23ms
+   ✓ actual core mutations append their real audit in the same transaction > audits grading create/update/delete with selected authored facts and excludes verification URLs/source text 23ms
+   ✓ actual core mutations append their real audit in the same transaction > keeps a manual valuation's exact bigint, stored scale, basis and true author in audit 16ms
+   ✓ actual core mutations append their real audit in the same transaction > records private location creation and hierarchy moves without duplicating QR access tokens 26ms
+   ✓ actual core mutations append their real audit in the same transaction > rolls back grading, valuations and location history together when their audit append fails 29ms
+   ✓ actual core mutations append their real audit in the same transaction > tracks collection and node creation, rename, visibility, move and soft deletion 42ms
+   ✓ actual core mutations append their real audit in the same transaction > audits real item create, meaningful edits, split, archive and soft delete without storing private note text 40ms
+   ✓ actual core mutations append their real audit in the same transaction > audits attached and detached tags exactly once and rolls back actual tag replacement on audit failure 36ms
+   ✓ actual core mutations append their real audit in the same transaction > records typed custom-field values and clearing with exact stored decimals and private text fingerprints 35ms
+   ✓ actual core mutations append their real audit in the same transaction > audits actual media/document linking, reordering, metadata and unlink without copying storage keys 63ms
+   ✓ actual core mutations append their real audit in the same transaction > audits actual V2 item authoring and exact interpreted purchase changes without exposing fact tokens or receipts 59ms
+   ✓ actual core mutations append their real audit in the same transaction > retains the real membership manager, separate erasable subject and before/after roles including Viewer self-removal 37ms
+   × actual core mutations append their real audit in the same transaction > keeps legacy raw purchase creation and replacement unknown while auditing exact changed raw digits 17ms
+     → expected [] to have a length of 2 but got +0
+   × actual core mutations append their real audit in the same transaction > audits explicit money classification and revocation without persisting private evidence text 25ms
+     → expected [ { …(11) } ] to deep equally contain ObjectContaining{…}
+   × actual core mutations append their real audit in the same transaction > records disposal even when the item was already not offered for trade 12ms
+     → expected [ { …(11) }, { …(11) } ] to deep equally contain ObjectContaining{…}
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/audit/core-audit-integration.test.ts > actual core mutations append their real audit in the same transaction > keeps legacy raw purchase creation and replacement unknown while auditing exact changed raw digits
+AssertionError: expected [] to have a length of 2 but got +0
+
+- Expected
++ Received
+
+- 2
++ 0
+
+ ❯ packages/domain/src/audit/core-audit-integration.test.ts:798:65
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  |workspace| packages/domain/src/audit/core-audit-integration.test.ts > actual core mutations append their real audit in the same transaction > audits explicit money classification and revocation without persisting private evidence text
+AssertionError: expected [ { …(11) } ] to deep equally contain ObjectContaining{…}
+
+- Expected: 
+ObjectContaining {
+  "action": "ITEM_MONEY_CHANGED",
+  "after": ObjectContaining {
+    "interpretation": ObjectContaining {
+      "decimal": "0.01",
+      "evidenceCategory": "OWNER_ATTESTATION",
+      "exponent": 2,
+      "kind": "INTERPRETED",
+    },
+  },
+  "before": ObjectContaining {
+    "interpretation": {
+      "kind": "UNKNOWN",
+      "reason": "RAW_WRITER",
+    },
+  },
+}
+
++ Received: 
+[
+  {
+    "action": "ITEM_CREATED",
+    "actorId": "c5e16d08-f756-4451-87ba-3daf7c3f1bce",
+    "after": {
+      "acquisitionDate": null,
+      "acquisitionType": "OTHER",
+      "collectionId": "a9007603-7ba0-40fc-b0a7-eb5eff439c36",
+      "nodeId": null,
+      "privateNotesHash": null,
+      "publicDescriptionHash": null,
+      "quantity": 1,
+      "title": "Classification audit",
+      "tradeStatus": "NOT_FOR_TRADE",
+      "visibility": "PRIVATE",
+    },
+    "before": null,
+    "createdAt": "2026-11-07T07:54:28.288Z",
+    "id": "6b015844-99da-4ba9-86cd-15b2b7ca2d32",
+    "resourceId": "d129f64d-4657-46ba-908a-3b80a529a96a",
+    "resourceType": "ITEM",
+    "sequence": "94",
+    "source": "USER",
+    "subjectUserId": null,
+  },
+]
+
+ ❯ packages/domain/src/audit/core-audit-integration.test.ts:806:22
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  |workspace| packages/domain/src/audit/core-audit-integration.test.ts > actual core mutations append their real audit in the same transaction > records disposal even when the item was already not offered for trade
+AssertionError: expected [ { …(11) }, { …(11) } ] to deep equally contain ObjectContaining{…}
+
+- Expected: 
+ObjectContaining {
+  "action": "ITEM_DISPOSED",
+  "after": {
+    "disposedAt": "2026-11-07T07:54:28.310Z",
+    "tradeStatus": "NOT_FOR_TRADE",
+  },
+  "before": {
+    "disposedAt": null,
+    "tradeStatus": "NOT_FOR_TRADE",
+  },
+}
+
++ Received: 
+[
+  {
+    "action": "ITEM_CATEGORY_CHANGED",
+    "actorId": "5bdeca85-3edb-4f3c-9096-d6c3f9983653",
+    "after": {
+      "categoryTemplateId": "11a13f28-079c-434b-a575-f366b715632c",
+      "conditionOptionId": null,
+    },
+    "before": {
+      "categoryTemplateId": null,
+      "conditionOptionId": null,
+    },
+    "createdAt": "2026-11-07T07:54:28.310Z",
+    "id": "59554e2d-aea2-4cf2-90fc-110413b8d911",
+    "resourceId": "09bf75d5-e525-4038-9e5f-f930a2e81f8b",
+    "resourceType": "ITEM",
+    "sequence": "96",
+    "source": "USER",
+    "subjectUserId": null,
+  },
+  {
+    "action": "ITEM_CREATED",
+    "actorId": "5bdeca85-3edb-4f3c-9096-d6c3f9983653",
+    "after": {
+      "acquisitionDate": null,
+      "acquisitionType": "OTHER",
+      "collectionId": "b9b59551-71aa-4e7d-9f6b-cba1fa5f342b",
+      "nodeId": null,
+      "privateNotesHash": null,
+      "publicDescriptionHash": null,
+      "quantity": 2,
+      "title": "Actually changed item",
+      "tradeStatus": "NOT_FOR_TRADE",
+      "visibility": "PRIVATE",
+    },
+    "before": null,
+    "createdAt": "2026-11-07T07:54:28.308Z",
+    "id": "4b1822e3-a297-4e9c-a490-4ed3d83d9ed0",
+    "resourceId": "09bf75d5-e525-4038-9e5f-f930a2e81f8b",
+    "resourceType": "ITEM",
+    "sequence": "95",
+    "source": "USER",
+    "subjectUserId": null,
+  },
+]
+
+ ❯ packages/domain/src/audit/core-audit-integration.test.ts:811:141
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 14 passed (17)
+   Start at  08:54:26
+   Duration  1.99s (transform 287ms, setup 6ms, collect 639ms, tests 1.14s, environment 0ms, prepare 61ms)
+

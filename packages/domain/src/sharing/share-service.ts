@@ -1,3 +1,5 @@
+import { createTrustedAuditContext } from "../audit/audit-context";
+import { recordAuditEventInTransaction } from "../audit/audit-service";
 import type { StorageProvider } from "@sammlerraum/storage";
 import { shareScopeCte, shareItemPredicate } from "./share-scope";
 import {
@@ -89,6 +91,13 @@ export function createShareService(
       }
       return fail("SHARE_INTEGRITY");
     }
+  }
+  async function auditIdentity(tx: BoundedSearchReadTransaction, userId: string) {
+    const [user] = await tx.$queryRaw<{ id: string }[]>(
+      Prisma.sql`SELECT id FROM "user" WHERE id=${userId} FOR NO KEY UPDATE`,
+    );
+    if (!user) return fail("SHARE_NOT_FOUND");
+    return createTrustedAuditContext({ source: "USER", actorId: userId });
   }
   async function parent(tx: BoundedSearchReadTransaction, id: string, exclusive = false) {
     const [row] = await tx.$queryRaw<Parent[]>(
@@ -237,6 +246,7 @@ export function createShareService(
           })()
         : null;
       return within(async (tx) => {
+        const audit = await auditIdentity(tx, userId);
         const collectionId = await targetCollection(tx, value.target.kind, value.target.id),
           p = await parent(tx, collectionId, true);
         if (p.ownerId !== userId) return fail("SHARE_NOT_FOUND");
@@ -268,7 +278,15 @@ export function createShareService(
         await tx.$queryRaw(
           Prisma.sql`INSERT INTO "CollectionShare" (id,"collectionId","creatorUserId","targetKind","targetId","recipientUserId","tokenHash",permissions,"pinHash","expiresAt") VALUES (${id}::uuid,${p.id}::uuid,${userId},${value.target.kind},${value.target.id}::uuid,${value.recipient.kind === "USER" ? value.recipient.userId : null},${token ? hash(token) : null},${JSON.stringify(value.permissions)}::jsonb,${pinHash},${value.expiresInSeconds === null ? Prisma.sql`NULL` : Prisma.sql`timezone('UTC',clock_timestamp())+${value.expiresInSeconds}*interval '1 second'`}) RETURNING id`,
         );
-        return { share: dto(await load(tx, id)), ...(token ? { token } : {}) };
+        const created = dto(await load(tx, id));
+        await recordAuditEventInTransaction(tx, audit, {
+          resourceType: "SHARE",
+          resourceId: id,
+          action: "SHARE_CREATED",
+          before: null,
+          after: created,
+        });
+        return { share: created, ...(token ? { token } : {}) };
       });
     },
     async resolveShare(who: Actor | null, input: unknown) {
@@ -378,6 +396,7 @@ export function createShareService(
       const userId = parse(MembershipActorIdSchema, who?.userId),
         value = parse(RevokeShareSchema, input);
       return within(async (tx) => {
+        const audit = await auditIdentity(tx, userId);
         const [ref] = await tx.$queryRaw<{ collectionId: string }[]>(
           Prisma.sql`SELECT "collectionId" FROM "CollectionShare" WHERE id=${value.shareId}::uuid`,
         );
@@ -390,7 +409,16 @@ export function createShareService(
           await tx.$queryRaw(
             Prisma.sql`UPDATE "CollectionShare" SET "revokedAt"=timezone('UTC',clock_timestamp()),revision=revision+1 WHERE id=${row.id}::uuid RETURNING id`,
           );
-        return dto(await load(tx, row.id));
+        const after = dto(await load(tx, row.id));
+        if (!row.revokedAt)
+          await recordAuditEventInTransaction(tx, audit, {
+            resourceType: "SHARE",
+            resourceId: row.id,
+            action: "SHARE_REVOKED",
+            before: dto(row),
+            after,
+          });
+        return after;
       });
     },
   };
