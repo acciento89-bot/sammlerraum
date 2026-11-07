@@ -1,0 +1,7 @@
+# Scoped saved definitions and dashboard task3
+
+Actual12consumer native cases: symbolic v2 without credentials; live title changes; missing/wrong/revoked token never redirects to owned; own-record privacy; original v1 untouched; saved revision conflicts and cursor binding; scoped list/deletion; actual membership removal; selected counts/units; ungranted summariesnull; granted manual estimates sum exact quantity withzero/missing; actual purchase enabled/disabled states.
+
+Initial native RED proved frozen original SmartCollection definition guard only accepts version1. Corrected original no-schema-change assumption explicitly in design/plan: separate additive20261108010000_scoped_saved_searches migration, no existing bytes modified. Actual negative table insertion tests then reproduced SQLNULL check bypass for nullkind/nulllifecycle; v2 type guards correct both without altering originalv1branch. Existing filterVersion1 remains AST version and all prior18frozenmigration hashes unchanged (receipt attached). No guard disabling or live DB modification.
+
+Task-done95actualtests/5files pass12.35s: new consumers/scoped search plus original saved/dashboard/money regressions. Typecheck passes. New scoped outputs closed: no hidden parent/owner/asset IDs, ungranted values unavailable/null, no invented private-pair/wishlist/market totals. Purchase coverage uses complete authorized outer relation before match; nohistory or foreign inventory in manual aggregates. No originalV1 count or release acceptance from this task alone.

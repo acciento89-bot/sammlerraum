@@ -1,0 +1,42 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/search/scoped-consumers.test.ts (10 tests | 2 failed) 678ms
+   ✓ live scoped saved definitions and dashboard parity > stores only a symbolic v2 reference and resolves current rows without retaining credentials 170ms
+   ✓ live scoped saved definitions and dashboard parity > never falls back to owned inventory after revocation or the wrong valid token 36ms
+   ✓ live scoped saved definitions and dashboard parity > rejects credentials embedded in a persisted definition and keeps original v1 behavior 16ms
+   ✓ live scoped saved definitions and dashboard parity > counts the same selected items and units and marks undisclosed summaries unavailable 20ms
+   ✓ live scoped saved definitions and dashboard parity > executes granted value summaries and preserves empty versus missing states 15ms
+   ✓ live scoped saved definitions and dashboard parity > rejects malformed or credential-bearing v2 rows at the actual database boundary: topSecret 25ms
+   ✓ live scoped saved definitions and dashboard parity > rejects malformed or credential-bearing v2 rows at the actual database boundary: scopeSecret 19ms
+   × live scoped saved definitions and dashboard parity > rejects malformed or credential-bearing v2 rows at the actual database boundary: nullKind 19ms
+     → promise resolved "1" instead of rejecting
+   × live scoped saved definitions and dashboard parity > rejects malformed or credential-bearing v2 rows at the actual database boundary: nullLifecycle 9ms
+     → promise resolved "1" instead of rejecting
+   ✓ live scoped saved definitions and dashboard parity > binds saved cursors to revisions and preserves explicit update conflicts 49ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/search/scoped-consumers.test.ts > live scoped saved definitions and dashboard parity > rejects malformed or credential-bearing v2 rows at the actual database boundary: nullKind
+ FAIL  |workspace| packages/domain/src/search/scoped-consumers.test.ts > live scoped saved definitions and dashboard parity > rejects malformed or credential-bearing v2 rows at the actual database boundary: nullLifecycle
+AssertionError: promise resolved "1" instead of rejecting
+
+- Expected: 
+Error {
+  "message": "rejected promise",
+}
+
++ Received: 
+1
+
+ ❯ packages/domain/src/search/scoped-consumers.test.ts:177:260
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 8 passed (10)
+   Start at  00:36:14
+   Duration  1.31s (transform 258ms, setup 5ms, collect 465ms, tests 678ms, environment 0ms, prepare 36ms)
+

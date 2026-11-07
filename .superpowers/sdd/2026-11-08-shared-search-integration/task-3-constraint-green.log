@@ -1,0 +1,10 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ✓ |workspace| packages/domain/src/search/scoped-consumers.test.ts (10 tests) 682ms
+
+ Test Files  1 passed (1)
+      Tests  10 passed (10)
+   Start at  00:36:37
+   Duration  1.31s (transform 255ms, setup 6ms, collect 461ms, tests 682ms, environment 0ms, prepare 35ms)
+
