@@ -1,3 +1,4 @@
+import { lockMutationItemParent } from "../audit/mutation-audit";
 import { beginMutationAudit, appendMutationAudit } from "../audit/mutation-audit";
 import { randomUUID } from "node:crypto";
 import {
@@ -53,6 +54,7 @@ function auditSnapshot(value: Grading) {
 }
 const providerKey = (value: string) => value.replace(/[A-Z]/gu, (letter) => letter.toLowerCase());
 async function lockItem(tx: Query, itemId: string, actorUserId: string, mutation: boolean) {
+  await lockMutationItemParent(tx, itemId, actorUserId);
   const [item] = await tx.$queryRaw<ItemRow[]>`
     SELECT item.id, item.quantity, item."archivedAt", item."disposedAt"
     FROM "CollectibleItem" item JOIN "Collection" collection ON collection.id=item."collectionId"

@@ -1,4 +1,11 @@
 import { z } from "zod";
+import { scanItemJson } from "./search-parser";
+
+/** Strict duplicate/Unicode/depth scanner with an inventory-specific fixed byte bound. */
+export function parseCollaborativeItemRequestJson(raw: string): unknown {
+  scanItemJson(raw);
+  return JSON.parse(raw);
+}
 
 import { HistoricalCurrencySchema } from "./legacy-money";
 

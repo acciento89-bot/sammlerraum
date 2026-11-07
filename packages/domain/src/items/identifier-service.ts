@@ -1,3 +1,4 @@
+import { lockMutationItemParent } from "../audit/mutation-audit";
 import { CollectibleItemSchema } from "@sammlerraum/contracts/items";
 
 export type ItemIdentifierInput = {
@@ -122,6 +123,7 @@ async function lockOwnedItem(
   itemId: string,
   actorUserId: string,
 ): Promise<void> {
+  await lockMutationItemParent(transaction, itemId, actorUserId);
   const rows = await transaction.$queryRaw<Array<{ id: string }>>`
     SELECT item."id"
     FROM "CollectibleItem" item

@@ -1,3 +1,4 @@
+import { lockMutationItemParent } from "../audit/mutation-audit";
 import { createHash } from "node:crypto";
 import { defaultMutationAudit, type MutationAuditPort } from "../audit/mutation-audit";
 import {
@@ -431,6 +432,7 @@ export async function setFieldValueInTransaction(
     actorUserId,
     () => new CustomFieldServiceError("CUSTOM_FIELD_NOT_FOUND"),
   );
+  await lockMutationItemParent(transaction, itemId, actorUserId);
   const fields = await transaction.$queryRaw<FieldTypeRow[]>`
     SELECT definition."type", definition."collectionId"
     FROM "CollectibleItem" item

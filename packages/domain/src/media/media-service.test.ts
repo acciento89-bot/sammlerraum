@@ -44,7 +44,9 @@ function fixture() {
     exists: vi.fn(async (key: string) => key in bytes),
   };
   const tx = {
-    $queryRaw: vi.fn(async () => [{ id: "00000000-0000-4000-8000-000000000001" }]),
+    $queryRaw: vi.fn(async (_query: TemplateStringsArray) => [
+      { id: "00000000-0000-4000-8000-000000000001" },
+    ]),
     mediaAsset: {
       findFirst: vi.fn(async ({ where }: { where: { id: string; ownerId: string } }) =>
         assets[where.id]?.ownerId === where.ownerId ? assets[where.id] : null,
@@ -269,7 +271,10 @@ describe("media service", () => {
     const { service, tx, assets } = fixture();
     const assetId = randomUUID();
     assets[assetId] = { id: assetId, ownerId: actor, kind: "IMAGE", status: "READY" };
-    tx.$queryRaw.mockResolvedValueOnce([]);
+    // Parent and item are separate fences; deny the actual owned-item lookup.
+    tx.$queryRaw.mockImplementation(async (query: TemplateStringsArray) =>
+      query.join("?").includes("FOR UPDATE OF item") ? [] : [{ id: "owned-parent" }],
+    );
     await expect(
       service.linkAsset(actor, {
         target: "ITEM",

@@ -1,3 +1,4 @@
+import { lockMutationItemParent } from "../audit/mutation-audit";
 import { defaultMutationAudit, type MutationAuditPort } from "../audit/mutation-audit";
 import type { MediaDatabase } from "./media-service";
 
@@ -45,6 +46,7 @@ export function createMediaCleanupService(
         // Preserve item -> asset ordering shared with split and link. Foreign IDs are hidden.
         if (!itemId) throw new MediaCleanupError();
         const audit = await auditPort.begin(tx, actorUserId, () => new MediaCleanupError());
+        await lockMutationItemParent(tx, itemId, actorUserId);
         const item = await tx.$queryRaw<Array<{ id: string }>>`
           SELECT i.id FROM "CollectibleItem" i JOIN "Collection" c ON c.id = i."collectionId"
           WHERE i.id = ${itemId}::uuid AND i."ownerId" = ${actorUserId}

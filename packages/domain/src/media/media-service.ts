@@ -1,3 +1,4 @@
+import { lockMutationItemParent } from "../audit/mutation-audit";
 import { defaultMutationAudit, type MutationAuditPort } from "../audit/mutation-audit";
 import type { AuditContext } from "../audit/audit-context";
 import { createHash, randomUUID } from "node:crypto";
@@ -216,6 +217,7 @@ export function createMediaService(
       const audit = mutating
         ? await auditPort.begin(tx, actorUserId, () => new MediaServiceError("ITEM_NOT_FOUND"))
         : null;
+      await lockMutationItemParent(tx, itemId, actorUserId);
       const rows = await tx.$queryRaw<Array<{ id: string }>>`
         SELECT item."id" FROM "CollectibleItem" item
         JOIN "Collection" collection ON collection."id" = item."collectionId"
@@ -359,7 +361,8 @@ export function createMediaService(
               actorUserId,
               () => new MediaServiceError("ITEM_NOT_FOUND"),
             );
-            // Lock item first, matching quantity-split lock ordering. Deleted parents are hidden.
+            // Parent before item, matching shared writers; assets remain after the item lock.
+            await lockMutationItemParent(tx, data.itemId, actorUserId);
             const rows = await tx.$queryRaw<Array<{ id: string }>>`
             SELECT item."id" FROM "CollectibleItem" item
             JOIN "Collection" collection ON collection."id" = item."collectionId"

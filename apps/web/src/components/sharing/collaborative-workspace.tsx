@@ -119,7 +119,7 @@ export function CollaborativeWorkspace({
                     {t("fieldtitle")}
                     <input
                       name="title"
-                      maxLength={2000}
+                      maxLength={200}
                       defaultValue={editing?.title ?? ""}
                       required
                     />
@@ -128,7 +128,7 @@ export function CollaborativeWorkspace({
                     {t("description")}
                     <textarea
                       name="description"
-                      maxLength={100000}
+                      maxLength={10000}
                       defaultValue={editing?.publicDescription ?? ""}
                     />
                   </label>

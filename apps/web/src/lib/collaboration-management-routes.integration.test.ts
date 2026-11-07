@@ -34,6 +34,86 @@ describe.runIf(process.env.RUN_DATABASE_INTEGRATION === "1")(
       await db?.$disconnect();
       await isolated?.cleanup();
     });
+    it("accepts valid multibyte descriptions above 16KiB on create/update while bounding the actual request stream", async () => {
+      const owner = randomUUID();
+      await db.user.create({
+        data: {
+          id: owner,
+          name: "Own multilingual request fixture",
+          email: `${owner}@example.invalid`,
+          emailVerified: true,
+        },
+      });
+      const c = await db.collection.create({
+          data: { ownerId: owner, name: "Multilingual collection" },
+        }),
+        handlers = createCollaborationManagementHandlers(
+          createCollaborationManagementDependencies(
+            db,
+            { api: { getSession: async () => ({ user: { id: owner } }) } },
+            origin,
+          ),
+        ),
+        path = `/api/v1/collections/${c.id}/workspace/items`,
+        description = "收藏品".repeat(3000);
+      const created = await handlers.CREATE_SHARED_ITEM(
+        request(path, { title: "Valid multilingual description", publicDescription: description }),
+        c.id,
+      );
+      expect(created.status).toBe(200);
+      const itemId = ((await created.json()) as { item: { id: string } }).item.id;
+      const view = (await (await handlers.WORKSPACE(request(path), c.id)).json()) as {
+        items: { id: string; updatedAt: string; latestSequence: string | null }[];
+      };
+      const item = view.items.find((row: { id: string }) => row.id === itemId);
+      if (!item) throw Error("Created multilingual item absent from workspace");
+      const updated = await handlers.UPDATE_SHARED_ITEM(
+        request(path, {
+          changes: { title: "Only title changed", publicDescription: description },
+          expectedUpdatedAt: item.updatedAt,
+          expectedLatestSequence: item.latestSequence,
+        }),
+        c.id,
+        itemId,
+      );
+      expect(updated.status).toBe(200);
+      expect(
+        (await db.collectibleItem.findUniqueOrThrow({ where: { id: itemId } })).publicDescription,
+      ).toBe(description);
+      const escapedRequest = new Request(origin + path, {
+        method: "POST",
+        headers: { origin, "content-type": "application/json" },
+        body: JSON.stringify({
+          title: "Valid escaped maximum",
+          publicDescription: "品".repeat(10000),
+        }).replaceAll("品", "\\u54c1"),
+      });
+      expect((await handlers.CREATE_SHARED_ITEM(escapedRequest, c.id)).status).toBe(200);
+      const duplicateRequest = new Request(origin + path, {
+        method: "POST",
+        headers: { origin, "content-type": "application/json" },
+        body:
+          '{"title":"first","title":"second","publicDescription":' +
+          JSON.stringify(description) +
+          "}",
+      });
+      expect((await handlers.CREATE_SHARED_ITEM(duplicateRequest, c.id)).status).toBe(400);
+      const oversized = { title: "Rejected oversize", publicDescription: "x".repeat(65536) };
+      expect((await handlers.CREATE_SHARED_ITEM(request(path, oversized), c.id)).status).toBe(413);
+      expect(
+        (
+          await handlers.UPDATE_SHARED_ITEM(
+            request(path, {
+              changes: oversized,
+              expectedUpdatedAt: item.updatedAt,
+              expectedLatestSequence: item.latestSequence,
+            }),
+            c.id,
+            itemId,
+          )
+        ).status,
+      ).toBe(413);
+    });
     it("reads actual member roles, forbids Editor role management, persists Owner changes and hides Owner history from members", async () => {
       const owner = randomUUID(),
         editor = randomUUID(),

@@ -63,6 +63,9 @@ export const copyBoundedFilterInput = (input: unknown): unknown =>
 export const copyBoundedCatalogMoneyInput = (input: unknown): unknown =>
   copyJsonInput(input, catalogMoneyBounds);
 export const scanFilterJson = (raw: string): void => scanJson(raw, filterBounds);
+/** Inventory descriptions retain their 10,000-unit contract; only this fixed envelope is larger. */
+export const scanItemJson = (raw: string): void =>
+  scanJson(raw, { ...filterBounds, bytes: 64 * 1024 });
 export const scanCatalogMoneyJson = (raw: string): void => scanJson(raw, catalogMoneyBounds);
 /** Bounds and snapshots own JSON data iteratively; never invokes accessors/toJSON. */
 function copyJsonInput(input: unknown, bounds: JsonBounds): unknown {

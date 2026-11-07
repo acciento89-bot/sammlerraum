@@ -181,13 +181,14 @@ export function createCollaborationManagementHandlers(
         });
       }),
     ),
+    // 10,000 UTF-16 units may occupy 60,000 bytes when JSON-escaped; bound the full envelope.
     CREATE_SHARED_ITEM: apiRoute((request, id: string) =>
       run(async () => {
         const who = await actor(request, true);
         readSearchQueryMap(request, []);
         const body = CollaborativeItemCreateSchema.omit({ collectionId: true })
           .strict()
-          .parse(await readPrivateJson(request));
+          .parse(await readPrivateJson(request, "item"));
         return {
           item: await dependencies
             .items(who.userId)
@@ -200,7 +201,7 @@ export function createCollaborationManagementHandlers(
         const who = await actor(request, true);
         readSearchQueryMap(request, []);
         const { changes, ...preconditions } = CollaborativeItemUpdateRequestSchema.parse(
-          await readPrivateJson(request),
+          await readPrivateJson(request, "item"),
         );
         return {
           item: await dependencies

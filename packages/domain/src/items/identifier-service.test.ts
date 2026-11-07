@@ -111,8 +111,8 @@ describe("item identifier service", () => {
   it("atomically replaces identifiers after locking the owned item", async () => {
     const calls: string[] = [];
     const transaction = {
-      $queryRaw: vi.fn().mockImplementation(async () => {
-        calls.push("lock");
+      $queryRaw: vi.fn().mockImplementation(async (query: TemplateStringsArray) => {
+        calls.push(query.join("?").includes("FOR SHARE OF c") ? "parent-lock" : "item-lock");
         return [{ id: itemId }];
       }),
       itemIdentifier: {
@@ -151,7 +151,7 @@ describe("item identifier service", () => {
     await service.setItemIdentifiers(itemId, [{ type: "certificate", value: "AB-012" }]);
 
     expect(database.$transaction).toHaveBeenCalledOnce();
-    expect(calls).toEqual(["lock", "delete", "create", "read"]);
+    expect(calls).toEqual(["parent-lock", "item-lock", "delete", "create", "read"]);
   });
 
   it("returns a safe not-found error and performs no writes for another owner's item", async () => {

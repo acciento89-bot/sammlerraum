@@ -1,3 +1,4 @@
+import { lockMutationItemParent } from "../audit/mutation-audit";
 import { captureMoneyAuditSnapshot } from "../audit/money-audit";
 import { LegacyMoneyError } from "@sammlerraum/contracts/legacy-money";
 import type { AuditContext } from "../audit/audit-context";
@@ -377,7 +378,10 @@ async function lockOwnedCollection(
   if (rows.length !== 1) throw new ItemServiceError("COLLECTION_NOT_FOUND");
 }
 
-/** Shared metadata writers retain their own actor; ownership is a separate current DB fact. */
+/** Shared metadata writers retain their own actor; ownership is a separate current DB fact.
+ * The parent UPDATE fence is acquired before the item. Owner producers likewise lock their
+ * parent before the item, so later audit append cannot invert this resource order.
+ */
 async function lockEditableCollection(
   transaction: ItemTransaction,
   collectionId: string,
@@ -405,6 +409,7 @@ async function lockOwnedItem(
   itemId: string,
   actorUserId: string,
 ): Promise<StoredItem> {
+  await lockMutationItemParent(transaction, itemId, actorUserId);
   const rows = await transaction.$queryRaw<StoredItem[]>`
     SELECT
       item."id",

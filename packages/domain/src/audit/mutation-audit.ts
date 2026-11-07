@@ -1,3 +1,4 @@
+import { Prisma as AuditSql } from "@sammlerraum/db/search-sql";
 import { AuditError } from "@sammlerraum/contracts/audit";
 import type { Prisma } from "@sammlerraum/db/search-sql";
 import type { SearchReadTransaction } from "../search/search-read";
@@ -56,3 +57,19 @@ export const defaultMutationAudit: MutationAuditPort = Object.freeze({
   begin: beginMutationAudit,
   append: appendMutationAudit,
 });
+
+/** Owner item producers lock the parent before the item; audit append also needs that parent.
+ * The actor fence serializes Owner-side upgrades, while a collaborative parent UPDATE waits here.
+ * The existing producer still performs its full authorization/item check after this fence.
+ */
+export async function lockMutationItemParent(
+  tx: TaggedAuditTransaction,
+  itemId: string,
+  ownerId: string,
+) {
+  await auditSqlTransaction(tx).$queryRaw(AuditSql.sql`
+    SELECT c.id FROM "Collection" c WHERE c."ownerId"=${ownerId} AND c."deletedAt" IS NULL
+      AND c.id=(SELECT i."collectionId" FROM "CollectibleItem" i WHERE i.id=${itemId}::uuid AND i."ownerId"=${ownerId} AND i."deletedAt" IS NULL)
+    FOR SHARE OF c
+  `);
+}

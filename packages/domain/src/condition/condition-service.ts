@@ -1,3 +1,4 @@
+import { lockMutationItemParent } from "../audit/mutation-audit";
 import { beginMutationAudit, appendMutationAudit } from "../audit/mutation-audit";
 import { randomUUID } from "node:crypto";
 import {
@@ -117,6 +118,7 @@ async function state(tx: Query, itemId: string, actorUserId: string): Promise<It
   });
 }
 async function lockItem(tx: Query, itemId: string, actorUserId: string): Promise<ItemRow> {
+  await lockMutationItemParent(tx, itemId, actorUserId);
   const [item] = await tx.$queryRaw<ItemRow[]>`
     SELECT item.id, item."categoryTemplateId", item."conditionOptionId", item."catalogEntryId", item."archivedAt", item."disposedAt"
     FROM "CollectibleItem" item JOIN "Collection" collection ON collection.id = item."collectionId"

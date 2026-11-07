@@ -1,11 +1,32 @@
 "use client";
-import { useState, type FormEvent } from "react";
+import { useState, type FormEvent, type ReactNode } from "react";
 import { useTranslations } from "next-intl";
 import type { createCollaborationManagementService } from "@sammlerraum/domain/collaboration/management-service";
 import { managementRequest, managementError } from "./management-request";
 type Workspace = Awaited<
   ReturnType<ReturnType<typeof createCollaborationManagementService>["getWorkspace"]>
 >;
+type Confirmation = { expectedUpdatedAt: string; expectedLatestSequence: string | null };
+/** A background workspace refresh must never renew an unsaved draft's confirmation. */
+function DraftForm({
+  version,
+  onSubmit,
+  children,
+}: {
+  version: Workspace["collection"];
+  onSubmit: (event: FormEvent<HTMLFormElement>, expected: Confirmation) => void;
+  children: ReactNode;
+}) {
+  const [expected] = useState<Confirmation>(() => ({
+    expectedUpdatedAt: version.updatedAt,
+    expectedLatestSequence: version.latestSequence,
+  }));
+  return (
+    <form className="form-stack" onSubmit={(event) => onSubmit(event, expected)}>
+      {children}
+    </form>
+  );
+}
 export function CollectionSettings({
   data,
   onSaved,
@@ -17,17 +38,18 @@ export function CollectionSettings({
     [busy, setBusy] = useState(false),
     [error, setError] = useState(""),
     [status, setStatus] = useState(""),
-    [nodeId, setNodeId] = useState("");
+    [nodeId, setNodeId] = useState(""),
+    [savedRevision, setSavedRevision] = useState(0);
   if (!["OWNER", "ADMIN"].includes(data.actorRole)) return null;
   const node = data.nodes.find((row) => row.id === nodeId);
-  async function save(event: FormEvent<HTMLFormElement>, kind: "collection" | "node") {
+  async function save(
+    event: FormEvent<HTMLFormElement>,
+    kind: "collection" | "node",
+    expected: Confirmation,
+  ) {
     event.preventDefault();
     const element = event.currentTarget,
       form = new FormData(element),
-      expected = {
-        expectedUpdatedAt: data.collection.updatedAt,
-        expectedLatestSequence: data.collection.latestSequence,
-      },
       changes = { name: String(form.get("name")), visibility: String(form.get("visibility")) };
     setBusy(true);
     setError("");
@@ -46,6 +68,7 @@ export function CollectionSettings({
       setNodeId("");
       if (kind === "node") element.reset();
       await onSaved();
+      setSavedRevision((value) => value + 1);
       setStatus(t("collectionSettingsSaved"));
     } catch (problem) {
       setError(managementError(problem, t));
@@ -63,10 +86,10 @@ export function CollectionSettings({
       )}
       {status && <p role="status">{status}</p>}
       <div className="management-grid">
-        <form
-          className="form-stack"
-          onSubmit={(event) => void save(event, "collection")}
-          key={`${data.collection.name}-${data.collection.visibility}`}
+        <DraftForm
+          version={data.collection}
+          onSubmit={(event, expected) => void save(event, "collection", expected)}
+          key={`collection-${data.collection.id}-${savedRevision}`}
         >
           <h2>{t("collectionDetails")}</h2>
           <label>
@@ -86,7 +109,7 @@ export function CollectionSettings({
           <button type="submit" disabled={busy}>
             {t("saveCollection")}
           </button>
-        </form>
+        </DraftForm>
         <section>
           <h2>{t("manageNodes")}</h2>
           <label>
@@ -100,10 +123,10 @@ export function CollectionSettings({
               ))}
             </select>
           </label>
-          <form
-            className="form-stack"
-            key={nodeId || "new"}
-            onSubmit={(event) => void save(event, "node")}
+          <DraftForm
+            version={data.collection}
+            key={`node-${nodeId || "new"}-${savedRevision}`}
+            onSubmit={(event, expected) => void save(event, "node", expected)}
           >
             <label>
               {t("nodeName")}
@@ -139,7 +162,7 @@ export function CollectionSettings({
             <button type="submit" disabled={busy}>
               {t("saveNode")}
             </button>
-          </form>
+          </DraftForm>
           {data.moreNodes && <p>{t("moreTargets")}</p>}
         </section>
       </div>
