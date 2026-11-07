@@ -1,0 +1,24 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/collaboration/management-service.test.ts (3 tests | 1 failed) 452ms
+   ✓ owned collaboration management projections > lists safe owner setup and treats durable trash revocations as revoked without returning hashes or private content 125ms
+   ✓ owned collaboration management projections > shows member names only inside current membership and transfers the global history to the actual new owner 69ms
+   × owned collaboration management projections > opens shared metadata for current members without disclosing private notes or money and closes after removal 14ms
+     → service.getSharedCollections is not a function
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/collaboration/management-service.test.ts > owned collaboration management projections > opens shared metadata for current members without disclosing private notes or money and closes after removal
+TypeError: service.getSharedCollections is not a function
+ ❯ packages/domain/src/collaboration/management-service.test.ts:129:817
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 2 passed (3)
+   Start at  10:22:37
+   Duration  980ms (transform 194ms, setup 6ms, collect 369ms, tests 452ms, environment 0ms, prepare 35ms)
+

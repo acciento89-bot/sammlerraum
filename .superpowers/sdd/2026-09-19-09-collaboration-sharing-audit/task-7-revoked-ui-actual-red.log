@@ -1,0 +1,38 @@
+[WebServer] (node:44067) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+(node:44082) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+F
+
+  1) [collaboration-ui-desktop] › e2e/collaboration-sharing.spec.ts:11:2 › de owner creates and revokes a share through management UI and the guest immediately loses access 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('heading', { name: 'Freigaben verwalten', level: 1 })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('heading', { name: 'Freigaben verwalten', level: 1 }) with timeout 5000ms
+      - waiting for getByRole('heading', { name: 'Freigaben verwalten', level: 1 })
+
+
+      16 |    expect((await context.request.post("/api/auth/sign-in/email",{headers:{origin:"http://localhost:3000","x-forwarded-for":address.ip},data:{email:`${owner}@example.invalid`,password}})).status()).toBe(200);
+      17 |    await page.goto(`/${locale}/collections/${collection.id}/sharing`);
+    > 18 |    await expect(page.getByRole("heading",{level:1,name:locale==="de"?"Freigaben verwalten":"Manage sharing"})).toBeVisible({timeout:5000});
+         |                                                                                                                ^
+      19 |    await page.getByLabel(locale==="de"?"Bilder":"Images",{exact:true}).check();
+      20 |    await page.getByRole("button",{name:locale==="de"?"Freigabe erstellen":"Create share",exact:true}).click();
+      21 |    const link=page.getByRole("link",{name:locale==="de"?"Freigabelink öffnen":"Open share link",exact:true});await expect(link).toBeVisible();const href=await link.getAttribute("href");expect(href).toMatch(/\/share\/[A-Za-z0-9_-]{43}$/);
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/collaboration-sharing.spec.ts:18:112
+
+    Error Context: test-results/collaboration-sharing-de-o-14ccf-st-immediately-loses-access-collaboration-ui-desktop/error-context.md
+
+  1 failed
+    [collaboration-ui-desktop] › e2e/collaboration-sharing.spec.ts:11:2 › de owner creates and revokes a share through management UI and the guest immediately loses access 
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/collaboration-sharing.spec.ts --project=collaboration-ui-desktop --grep de owner --workers=1

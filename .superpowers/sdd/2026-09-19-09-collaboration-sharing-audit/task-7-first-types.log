@@ -1,0 +1,5 @@
+apps/web/src/lib/collaboration-management-routes.ts(13,2): error TS2322: Type 'ZodObject<{ expectedRevision: ZodNumber; userId: ZodString; role: ZodEnum<{ ADMIN: "ADMIN"; EDITOR: "EDITOR"; VIEWER: "VIEWER"; }>; action: ZodLiteral<"CHANGE_ROLE">; }, $strict>' is not assignable to type '$ZodTypeDiscriminable<string>'.
+  The types of '_zod.version.minor' are incompatible between these types.
+    Type '1' is not assignable to type '6'.
+apps/web/src/lib/collaboration-management-routes.ts(25,294): error TS2339: Property 'action' does not exist on type 'unknown'.
+apps/web/src/lib/collaboration-management-routes.ts(25,304): error TS2700: Rest types may only be created from object types.

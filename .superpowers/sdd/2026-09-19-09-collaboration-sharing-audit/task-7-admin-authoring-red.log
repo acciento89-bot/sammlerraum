@@ -1,0 +1,27 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/collaboration/collection-authoring-service.test.ts [ packages/domain/src/collaboration/collection-authoring-service.test.ts ]
+Error: Cannot find module './collection-authoring-service' imported from '/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/domain/src/collaboration/collection-authoring-service.test.ts'
+ ❯ packages/domain/src/collaboration/collection-authoring-service.test.ts:6:1
+      4| import {createTestDatabaseClient} from "@sammlerraum/db/test-database";
+      5| import {createMembershipService} from "./membership-service";
+      6| import {createCollaborativeCollectionService} from "./collection-autho…
+       | ^
+      7| import {createCollectionService} from "../collections/collection-servi…
+      8| let db:ReturnType<typeof createTestDatabaseClient>,isolated:Awaited<Re…
+
+Caused by: Error: Failed to load url ./collection-authoring-service (resolved id: ./collection-authoring-service) in /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/domain/src/collaboration/collection-authoring-service.test.ts. Does the file exist?
+ ❯ loadAndTransform ../../../../SSK%20SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/node_modules/.pnpm/vite@7.3.6_@types+node@24.5.2_jiti@2.7.0/node_modules/vite/dist/node/chunks/config.js:22739:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  no tests
+   Start at  10:47:39
+   Duration  574ms (transform 176ms, setup 5ms, collect 0ms, tests 0ms, environment 0ms, prepare 51ms)
+

@@ -1,0 +1,22 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/web/src/components/auth/invitation-return-path.test.ts [ apps/web/src/components/auth/invitation-return-path.test.ts ]
+Error: Cannot find module './invitation-return-path' imported from '/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/src/components/auth/invitation-return-path.test.ts'
+ ❯ apps/web/src/components/auth/invitation-return-path.test.ts:2:1
+
+
+Caused by: Error: Failed to load url ./invitation-return-path (resolved id: ./invitation-return-path) in /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/src/components/auth/invitation-return-path.test.ts. Does the file exist?
+ ❯ loadAndTransform ../../../../SSK%20SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/node_modules/.pnpm/vite@7.3.6_@types+node@24.5.2_jiti@2.7.0/node_modules/vite/dist/node/chunks/config.js:22739:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  no tests
+   Start at  10:05:16
+   Duration  262ms (transform 22ms, setup 5ms, collect 0ms, tests 0ms, environment 0ms, prepare 52ms)
+

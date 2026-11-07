@@ -1,0 +1,7 @@
+src/components/sharing/audit-manager.tsx(18,48): error TS2375: Type '{ locale: string; collectionId: string | undefined; current: "audit"; }' is not assignable to type '{ locale: string; collectionId?: string; current: "members" | "sharing" | "audit"; }' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+  Types of property 'collectionId' are incompatible.
+    Type 'string | undefined' is not assignable to type 'string'.
+      Type 'undefined' is not assignable to type 'string'.
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 2: tsc --noEmit

@@ -1,0 +1,168 @@
+[WebServer] (node:45676) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 12 tests using 1 worker
+(node:45677) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+·F(node:45688) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+·F(node:45700) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+··(node:45711) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+·F(node:45723) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+F(node:45732) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+F(node:45738) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+··
+
+  1) [collaboration-ui-desktop] › e2e/collaboration-management.spec.ts:165:3 › de audit comparison restores a selected field and rejects a stale confirmation 
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: getByRole('alert')
+    Expected substring: "Stand hat sich geändert"
+    Error: strict mode violation: getByRole('alert') resolved to 2 elements:
+        1) <p role="alert" class="form-error">Der Stand hat sich geändert. Bitte neu laden und …</p> aka getByText('Der Stand hat sich geändert.')
+        2) <div role="alert" aria-live="assertive" id="__next-route-announcer__"></div> aka locator('[id="__next-route-announcer__"]')
+
+    Call log:
+      - Expect "toContainText" getByRole('alert') with timeout 5000ms
+      - waiting for getByRole('alert')
+        - locator resolved to <div role="alert" aria-live="assertive" id="__next-route-announcer__"></div>
+        - unexpected value ""
+
+
+      237 |         })
+      238 |         .click();
+    > 239 |       await expect(page.getByRole("alert")).toContainText(
+          |                                             ^
+      240 |         locale === "de" ? "Stand hat sich geändert" : "state changed",
+      241 |       );
+      242 |       expect(await db.collectibleItem.findUniqueOrThrow({ where: { id: item.id } })).toMatchObject({
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/collaboration-management.spec.ts:239:45
+
+    Error Context: test-results/collaboration-management-d-7f183-ejects-a-stale-confirmation-collaboration-ui-desktop/error-context.md
+
+  2) [collaboration-ui-desktop] › e2e/collaboration-management.spec.ts:165:3 › en audit comparison restores a selected field and rejects a stale confirmation 
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: getByRole('alert')
+    Expected substring: "state changed"
+    Error: strict mode violation: getByRole('alert') resolved to 2 elements:
+        1) <p role="alert" class="form-error">The state changed. Reload and inspect your select…</p> aka getByText('The state changed. Reload and')
+        2) <div role="alert" aria-live="assertive" id="__next-route-announcer__"></div> aka locator('[id="__next-route-announcer__"]')
+
+    Call log:
+      - Expect "toContainText" getByRole('alert') with timeout 5000ms
+      - waiting for getByRole('alert')
+        - locator resolved to <div role="alert" aria-live="assertive" id="__next-route-announcer__"></div>
+        - unexpected value ""
+
+
+      237 |         })
+      238 |         .click();
+    > 239 |       await expect(page.getByRole("alert")).toContainText(
+          |                                             ^
+      240 |         locale === "de" ? "Stand hat sich geändert" : "state changed",
+      241 |       );
+      242 |       expect(await db.collectibleItem.findUniqueOrThrow({ where: { id: item.id } })).toMatchObject({
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/collaboration-management.spec.ts:239:45
+
+    Error Context: test-results/collaboration-management-e-cd668-ejects-a-stale-confirmation-collaboration-ui-desktop/error-context.md
+
+  3) [collaboration-ui-mobile] › e2e/collaboration-management.spec.ts:165:3 › de audit comparison restores a selected field and rejects a stale confirmation 
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: getByRole('alert')
+    Expected substring: "Stand hat sich geändert"
+    Error: strict mode violation: getByRole('alert') resolved to 2 elements:
+        1) <p role="alert" class="form-error">Der Stand hat sich geändert. Bitte neu laden und …</p> aka getByText('Der Stand hat sich geändert.')
+        2) <div role="alert" aria-live="assertive" id="__next-route-announcer__"></div> aka locator('[id="__next-route-announcer__"]')
+
+    Call log:
+      - Expect "toContainText" getByRole('alert') with timeout 5000ms
+      - waiting for getByRole('alert')
+        - locator resolved to <div role="alert" aria-live="assertive" id="__next-route-announcer__"></div>
+        - unexpected value ""
+
+
+      237 |         })
+      238 |         .click();
+    > 239 |       await expect(page.getByRole("alert")).toContainText(
+          |                                             ^
+      240 |         locale === "de" ? "Stand hat sich geändert" : "state changed",
+      241 |       );
+      242 |       expect(await db.collectibleItem.findUniqueOrThrow({ where: { id: item.id } })).toMatchObject({
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/collaboration-management.spec.ts:239:45
+
+    Error Context: test-results/collaboration-management-d-7f183-ejects-a-stale-confirmation-collaboration-ui-mobile/error-context.md
+
+  4) [collaboration-ui-mobile] › e2e/collaboration-management.spec.ts:61:3 › en invitation acceptance, actual role changes and member removal work through the UI 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('alert')
+    Expected: visible
+    Error: strict mode violation: getByRole('alert') resolved to 2 elements:
+        1) <p role="alert" class="form-error">This area is not available to this account.</p> aka getByText('This area is not available to')
+        2) <div role="alert" aria-live="assertive" id="__next-route-announcer__"></div> aka locator('[id="__next-route-announcer__"]')
+
+    Call log:
+      - Expect "toBeVisible" getByRole('alert') with timeout 5000ms
+      - waiting for getByRole('alert')
+
+
+      149 |         .toBe(0);
+      150 |       await recipientPage.reload();
+    > 151 |       await expect(recipientPage.getByRole("alert")).toBeVisible();
+          |                                                      ^
+      152 |       await expect(
+      153 |         recipientPage.getByRole("heading", {
+      154 |           name: locale === "de" ? "Aktuelle Mitglieder" : "Current members",
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/collaboration-management.spec.ts:151:54
+
+    Error Context: test-results/collaboration-management-e-f35c0-removal-work-through-the-UI-collaboration-ui-mobile/error-context.md
+
+  5) [collaboration-ui-mobile] › e2e/collaboration-management.spec.ts:165:3 › en audit comparison restores a selected field and rejects a stale confirmation 
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: getByRole('alert')
+    Expected substring: "state changed"
+    Error: strict mode violation: getByRole('alert') resolved to 2 elements:
+        1) <p role="alert" class="form-error">The state changed. Reload and inspect your select…</p> aka getByText('The state changed. Reload and')
+        2) <div role="alert" aria-live="assertive" id="__next-route-announcer__"></div> aka locator('[id="__next-route-announcer__"]')
+
+    Call log:
+      - Expect "toContainText" getByRole('alert') with timeout 5000ms
+      - waiting for getByRole('alert')
+        - locator resolved to <div role="alert" aria-live="assertive" id="__next-route-announcer__"></div>
+        - unexpected value ""
+
+
+      237 |         })
+      238 |         .click();
+    > 239 |       await expect(page.getByRole("alert")).toContainText(
+          |                                             ^
+      240 |         locale === "de" ? "Stand hat sich geändert" : "state changed",
+      241 |       );
+      242 |       expect(await db.collectibleItem.findUniqueOrThrow({ where: { id: item.id } })).toMatchObject({
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/collaboration-management.spec.ts:239:45
+
+    Error Context: test-results/collaboration-management-e-cd668-ejects-a-stale-confirmation-collaboration-ui-mobile/error-context.md
+
+  5 failed
+    [collaboration-ui-desktop] › e2e/collaboration-management.spec.ts:165:3 › de audit comparison restores a selected field and rejects a stale confirmation 
+    [collaboration-ui-desktop] › e2e/collaboration-management.spec.ts:165:3 › en audit comparison restores a selected field and rejects a stale confirmation 
+    [collaboration-ui-mobile] › e2e/collaboration-management.spec.ts:165:3 › de audit comparison restores a selected field and rejects a stale confirmation 
+    [collaboration-ui-mobile] › e2e/collaboration-management.spec.ts:61:3 › en invitation acceptance, actual role changes and member removal work through the UI 
+    [collaboration-ui-mobile] › e2e/collaboration-management.spec.ts:165:3 › en audit comparison restores a selected field and rejects a stale confirmation 
+  7 passed (21.1s)
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/collaboration-sharing.spec.ts e2e/collaboration-management.spec.ts --project=collaboration-ui-desktop --project=collaboration-ui-mobile --workers=1

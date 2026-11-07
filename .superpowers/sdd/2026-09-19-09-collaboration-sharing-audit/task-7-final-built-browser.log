@@ -1,0 +1,153 @@
+[WebServer] (node:49995) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 45 tests using 1 worker
+(node:49998) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+········(node:50030) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+········(node:50067) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+···(node:50078) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+···(node:50088) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+·(node:50091) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+T(node:50122) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+T(node:50217) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+T(node:50272) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+F(node:50291) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+·T(node:50341) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+  1) [desktop] › e2e/collections-items.spec.ts:239:3 › localized collection and item management › collector creates a nested collection and item with custom field and location 
+
+    Test timeout of 60000ms exceeded.
+
+    Error Context: test-results/collections-items-localize-ed035-h-custom-field-and-location-desktop/error-context.md
+
+    Error Context: test-results/collections-items-localize-ed035-h-custom-field-and-location-desktop/error-context.md
+
+  2) [desktop] › e2e/collections-items.spec.ts:399:3 › localized collection and item management › unrelated edits preserve nested placement, currencies, and canonical tags 
+
+    Test timeout of 60000ms exceeded.
+
+    Error: page.waitForResponse: Test timeout of 60000ms exceeded.
+
+      466 |           moneyWrites++;
+      467 |       });
+    > 468 |       const coreSaved = page.waitForResponse(
+          |                              ^
+      469 |         (response) =>
+      470 |           response.url().endsWith(`/api/v1/money/items/${item.id}`) &&
+      471 |           response.request().method() === "PATCH",
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/collections-items.spec.ts:468:30
+
+    Error Context: test-results/collections-items-localize-b353a-rrencies-and-canonical-tags-desktop/error-context.md
+
+    Error Context: test-results/collections-items-localize-b353a-rrencies-and-canonical-tags-desktop/error-context.md
+
+  3) [desktop] › e2e/collections-items.spec.ts:512:3 › localized collection and item management › a rejected core request releases the form for retry 
+
+    Test timeout of 60000ms exceeded.
+
+    Error: locator.click: Test timeout of 60000ms exceeded.
+    Call log:
+      - waiting for getByRole('button', { name: 'Stück speichern' })
+        - locator resolved to <button disabled type="submit">Stück speichern</button>
+      - attempting click action
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+        - waiting 20ms
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 100ms
+        114 × waiting for element to be visible, enabled and stable
+            - element is not enabled
+          - retrying click action
+            - waiting 500ms
+        - waiting for element to be visible, enabled and stable
+
+
+      526 |       });
+      527 |       const save = page.getByRole("button", { name: labels.saveItem });
+    > 528 |       await save.click();
+          |                  ^
+      529 |       await expect(page.locator(".management-shell p[role='alert']")).toContainText(
+      530 |         moneyCopy[locale].refused,
+      531 |       );
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/collections-items.spec.ts:528:18
+
+    Error Context: test-results/collections-items-localize-31603-releases-the-form-for-retry-desktop/error-context.md
+
+    Error Context: test-results/collections-items-localize-31603-releases-the-form-for-retry-desktop/error-context.md
+
+  4) [desktop] › e2e/collections-items.spec.ts:538:3 › localized collection and item management › failed collection options can retry without losing the item draft 
+
+    Error: expect(locator).toBeEnabled() failed
+
+    Locator:  getByRole('button', { name: 'Stück speichern' })
+    Expected: enabled
+    Received: disabled
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toBeEnabled" getByRole('button', { name: 'Stück speichern' }) with timeout 5000ms
+      - waiting for getByRole('button', { name: 'Stück speichern' })
+        14 × locator resolved to <button disabled type="submit">Stück speichern</button>
+           - unexpected value "disabled"
+
+
+      562 |       failing = false;
+      563 |       await page.getByRole("button", { name: labels.retryLoad }).click();
+    > 564 |       await expect(page.getByRole("button", { name: labels.saveItem })).toBeEnabled();
+          |                                                                         ^
+      565 |       await expect(page.getByLabel(labels.title)).toHaveValue("Keep my draft");
+      566 |       expect(attempts).toBeGreaterThan(attemptsBeforeRetry);
+      567 |     } finally {
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/collections-items.spec.ts:564:73
+
+    Error Context: test-results/collections-items-localize-801b6-thout-losing-the-item-draft-desktop/error-context.md
+
+    Error Context: test-results/collections-items-localize-801b6-thout-losing-the-item-draft-desktop/error-context.md
+
+  5) [desktop] › e2e/collections-items.spec.ts:605:3 › localized collection and item management › metadata retry reuses the item and does not repeat a successful location 
+
+    Test timeout of 60000ms exceeded.
+
+    Error: page.waitForResponse: Test timeout of 60000ms exceeded.
+
+      642 |       });
+      643 |       const save = page.getByRole("button", { name: labels.saveItem });
+    > 644 |       const itemCreated = page.waitForResponse(
+          |                                ^
+      645 |         (response) =>
+      646 |           response.url().endsWith("/api/v1/money/items") && response.request().method() === "POST",
+      647 |       );
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/collections-items.spec.ts:644:32
+
+    Error Context: test-results/collections-items-localize-69da2-epeat-a-successful-location-desktop/error-context.md
+
+    Error Context: test-results/collections-items-localize-69da2-epeat-a-successful-location-desktop/error-context.md
+
+  5 failed
+    [desktop] › e2e/collections-items.spec.ts:239:3 › localized collection and item management › collector creates a nested collection and item with custom field and location 
+    [desktop] › e2e/collections-items.spec.ts:399:3 › localized collection and item management › unrelated edits preserve nested placement, currencies, and canonical tags 
+    [desktop] › e2e/collections-items.spec.ts:512:3 › localized collection and item management › a rejected core request releases the form for retry 
+    [desktop] › e2e/collections-items.spec.ts:538:3 › localized collection and item management › failed collection options can retry without losing the item draft 
+    [desktop] › e2e/collections-items.spec.ts:605:3 › localized collection and item management › metadata retry reuses the item and does not repeat a successful location 
+  1 interrupted
+    [desktop] › e2e/collections-items.spec.ts:679:3 › localized collection and item management › invalid later custom fields cause zero writes before correction 
+  15 did not run
+  24 passed (5.4m)
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 130: playwright test e2e/collaboration-sharing.spec.ts e2e/collaboration-management.spec.ts e2e/sharing.spec.ts e2e/collaboration-api.spec.ts e2e/collections-items.spec.ts --project=collaboration-ui-desktop --project=collaboration-ui-mobile --project=sharing-desktop --project=sharing-mobile --project=collaboration-api --project=desktop --project=mobile --workers=1
