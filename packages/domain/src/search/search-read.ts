@@ -1,3 +1,4 @@
+import { ReportError } from "@sammlerraum/contracts/reports";
 import { InsuranceError } from "@sammlerraum/contracts/insurance";
 import { ExportError } from "@sammlerraum/contracts/exports";
 import { ImportServiceError } from "@sammlerraum/contracts/imports";
@@ -76,6 +77,7 @@ export async function runSearchTransaction<T>(
         error instanceof ImportServiceError ||
         error instanceof ExportError ||
         error instanceof InsuranceError ||
+        error instanceof ReportError ||
         error instanceof MoneyTransferError ||
         error instanceof LegacyMoneyError
       )

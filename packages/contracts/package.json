@@ -32,7 +32,8 @@
     "./money-transfer": "./src/money-transfer.ts",
     "./imports": "./src/imports.ts",
     "./exports": "./src/exports.ts",
-    "./insurance": "./src/insurance.ts"
+    "./insurance": "./src/insurance.ts",
+    "./reports": "./src/reports.ts"
   },
   "scripts": {
     "build": "pnpm typecheck",

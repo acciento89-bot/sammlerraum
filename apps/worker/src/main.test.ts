@@ -27,6 +27,14 @@ describe("startWorker", () => {
           calls.push("cleanup-stop");
         },
       },
+      reportDispatcher: {
+        start: () => {
+          calls.push("report-start");
+        },
+        stop: async () => {
+          calls.push("report-stop");
+        },
+      },
       exportDispatcher: {
         start: () => {
           calls.push("export-start");
@@ -63,11 +71,13 @@ describe("startWorker", () => {
       "queue-start",
       "dispatch-start",
       "export-start",
+      "report-start",
       "cleanup-start",
       "health-stop",
       "cleanup-stop",
       "dispatch-stop",
       "export-stop",
+      "report-stop",
       "queue-stop",
       "database-stop",
     ]);

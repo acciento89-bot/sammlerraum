@@ -170,6 +170,20 @@ export function createExportService(
       captureExportSourceInTransaction(tx, actor, input),
     );
   }
+  async function validateExportRequestInTransaction(
+    tx: BoundedSearchReadTransaction,
+    actor: { userId: string },
+    input: unknown,
+  ) {
+    const owner = who(actor),
+      request = requestValue(input);
+    await scopeRestriction(tx, owner, request);
+    const [refs] = await tx.$queryRaw<{ valid: boolean }[]>(
+      Prisma.sql`SELECT ${referencePredicate(leaves(request.query.filter?.root ?? null), owner)} AS valid`,
+    );
+    if (!refs?.valid) throw new ExportError("EXPORT_NOT_FOUND");
+    return request;
+  }
   async function requestExport(actor: { userId: string }, input: unknown) {
     const owner = who(actor),
       request = requestValue(input);
@@ -195,5 +209,10 @@ export function createExportService(
       return job;
     });
   }
-  return { requestExport, captureExportSource, captureExportSourceInTransaction };
+  return {
+    requestExport,
+    captureExportSource,
+    captureExportSourceInTransaction,
+    validateExportRequestInTransaction,
+  };
 }

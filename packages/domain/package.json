@@ -47,7 +47,8 @@
     "./imports/import-service": "./src/imports/import-service.ts",
     "./imports/import-commit-service": "./src/imports/import-commit-service.ts",
     "./exports/export-service": "./src/exports/export-service.ts",
-    "./insurance/insurance-service": "./src/insurance/insurance-service.ts"
+    "./insurance/insurance-service": "./src/insurance/insurance-service.ts",
+    "./reports/report-service": "./src/reports/report-service.ts"
   },
   "scripts": {
     "build": "pnpm typecheck",

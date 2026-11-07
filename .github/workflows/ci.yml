@@ -62,6 +62,8 @@ jobs:
       - run: pnpm --filter @sammlerraum/db prisma generate
       - name: Apply PostgreSQL migrations
         run: pnpm --filter @sammlerraum/db prisma migrate deploy
+      - name: Install independent PDF verification tools
+        run: sudo apt-get update && sudo apt-get install -y poppler-utils
       - run: pnpm test
       - name: Lint workspace
         id: lint
@@ -160,6 +162,9 @@ jobs:
           apps/worker/src/jobs/commit-import.test.ts
           packages/domain/src/exports/export-service.integration.test.ts
           packages/domain/src/insurance/insurance-service.test.ts
+          packages/domain/src/reports/report-service.integration.test.ts
+          apps/worker/src/jobs/insurance-report.integration.test.ts
+          apps/web/src/lib/insurance-report-routes.integration.test.ts
           apps/worker/src/jobs/tabular-export.integration.test.ts
           packages/db/src/import-jobs.integration.test.ts
           apps/web/src/lib/legacy-money-query-routes.integration.test.ts

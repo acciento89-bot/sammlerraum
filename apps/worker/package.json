@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "esbuild src/run.ts --bundle --platform=node --format=cjs --external:sharp --outfile=dist/worker.cjs && esbuild src/main.ts --bundle --platform=node --format=cjs --outfile=dist/main.cjs && esbuild src/maintenance/initialize-catalog.ts --bundle --platform=node --format=cjs --outfile=dist/initialize-catalog.cjs && cp ../../docs/licenses/import-parser.txt dist/IMPORT-PARSER-LICENSES.txt",
+    "build": "esbuild src/run.ts --bundle --platform=node --format=cjs --external:sharp --outfile=dist/worker.cjs && esbuild src/main.ts --bundle --platform=node --format=cjs --outfile=dist/main.cjs && esbuild src/maintenance/initialize-catalog.ts --bundle --platform=node --format=cjs --outfile=dist/initialize-catalog.cjs && cp ../../docs/licenses/import-parser.txt dist/IMPORT-PARSER-LICENSES.txt && mkdir -p dist/report-fonts && cp assets/report-fonts/* dist/report-fonts/ && cp ../../docs/licenses/pdf-report.txt dist/PDF-REPORT-LICENSES.txt",
     "dev": "esbuild src/run.ts --bundle --platform=node --format=cjs --external:sharp --outfile=dist/worker.cjs --watch",
     "lint": "prettier --check src package.json",
     "start": "node dist/worker.cjs",
@@ -11,6 +11,7 @@
     "catalog:init": "node dist/initialize-catalog.cjs"
   },
   "dependencies": {
+    "@pdf-lib/fontkit": "1.1.1",
     "@prisma/client": "7.10.0",
     "@sammlerraum/config": "workspace:*",
     "@sammlerraum/contracts": "workspace:*",
@@ -20,6 +21,7 @@
     "@sammlerraum/queue": "workspace:*",
     "@sammlerraum/storage": "workspace:*",
     "csv-parse": "7.0.3",
+    "pdf-lib": "1.17.1",
     "saxes": "6.0.0",
     "sharp": "0.35.4",
     "yauzl": "3.4.0",

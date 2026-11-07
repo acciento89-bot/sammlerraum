@@ -130,6 +130,8 @@ model User {
   customMoneyEvents          CustomMoneyInterpretationEvent[]
   catalogMoneyEvents         CatalogMoneyInterpretationEvent[]
 
+  reportJobs ReportJob[]
+
   @@unique([email])
   @@map("user")
 }
@@ -487,6 +489,7 @@ model MediaAsset {
   updatedAt            DateTime              @updatedAt
   owner                User                  @relation(fields: [ownerId], references: [id], onDelete: Restrict)
   exportJobs           ExportJob[]
+  reportJobs           ReportJob[]
   variants             MediaVariant[]
   mediaLinks           MediaLink[]
   documentLinks        DocumentLink[]
@@ -1282,4 +1285,32 @@ model InsuranceRecord {
   item              CollectibleItem? @relation(fields: [itemId, ownerId], references: [id, ownerId], onDelete: Cascade, onUpdate: Restrict)
 
   @@index([ownerId, updatedAt, id])
+}
+
+model ReportJob {
+  id                   String          @id @default(uuid()) @db.Uuid
+  ownerId              String
+  format               String          @default("PDF") @db.VarChar(3)
+  locale               String          @db.VarChar(2)
+  request              Json
+  status               ExportJobStatus @default(PENDING)
+  revision             Int             @default(1)
+  sourceJson           String?         @db.Text
+  sourceHash           String?         @db.Char(64)
+  sourceAt             DateTime?
+  artifactId           String?         @db.Uuid
+  processingToken      String?         @db.Uuid
+  processingLeaseUntil DateTime?
+  processingAttempts   Int             @default(0)
+  lastDispatchedAt     DateTime?
+  errorCode            String?         @db.VarChar(64)
+  expiresAt            DateTime
+  createdAt            DateTime        @default(now())
+  updatedAt            DateTime        @updatedAt
+  owner                User            @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  artifact             MediaAsset?     @relation(fields: [artifactId, ownerId], references: [id, ownerId], onDelete: Cascade)
+
+  @@index([ownerId, createdAt(sort: Desc), id])
+  @@index([status, processingLeaseUntil, id])
+  @@index([status, lastDispatchedAt, id])
 }

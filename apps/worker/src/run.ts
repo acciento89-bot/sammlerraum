@@ -1,3 +1,7 @@
+import { createReportService } from "@sammlerraum/domain/reports/report-service";
+import { createPrismaReportRepository } from "./jobs/insurance-report-repository";
+import { createInsuranceReportJob, INSURANCE_REPORT_JOB } from "./jobs/insurance-report-runtime";
+import { createInsuranceReportDispatcher } from "./jobs/insurance-report-dispatcher";
 import { createExportService } from "@sammlerraum/domain/exports/export-service";
 import { createPrismaTabularExportRepository } from "./jobs/tabular-export-repository";
 import { createTabularExportJob, TABULAR_EXPORT_JOB } from "./jobs/tabular-export-runtime";
@@ -86,6 +90,19 @@ async function startProductionWorker(): Promise<void> {
     maxBytes: serverEnv.IMPORT_MAX_BYTES,
     maxRows: serverEnv.IMPORT_MAX_ROWS,
   });
+  const reportRepository = createPrismaReportRepository(prisma);
+  registry.registerCancellable(
+    INSURANCE_REPORT_JOB,
+    createInsuranceReportJob(
+      reportRepository,
+      createReportService(prisma, {
+        canonicalMoneyEnabled: serverEnv.MONEY_CANONICAL_CONSUMERS_ENABLED,
+      }),
+      storage,
+      withAssetLock,
+    ),
+  );
+  const reportDispatcher = createInsuranceReportDispatcher(reportRepository, client, console);
   const exportRepository = createPrismaTabularExportRepository(prisma);
   registry.registerCancellable(
     TABULAR_EXPORT_JOB,
@@ -114,6 +131,7 @@ async function startProductionWorker(): Promise<void> {
     queue: runtime,
     imageDispatcher,
     exportDispatcher,
+    reportDispatcher,
     mediaCleanup,
     marketSync,
     databaseHealth: () => checkDatabaseHealth(prisma),
