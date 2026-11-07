@@ -1,3 +1,4 @@
+import { communityEventHandlers } from "../notifications/community-event-handlers";
 import { randomUUID } from "node:crypto";
 import { z } from "zod";
 import { Prisma } from "@sammlerraum/db/search-sql";
@@ -168,6 +169,13 @@ export function createCommentService(db: CommunityDatabase) {
           Prisma.sql`SELECT cm.id,cm."parentId",cm.body,cm."createdAt",cm."authorId",p.handle,p."displayName",p."avatarAssetId" FROM "CommunityComment" cm LEFT JOIN "UserProfile" p ON p."userId"=cm."authorId" WHERE cm.id=${id}::uuid`,
         );
         if (!row) return fail("COMMUNITY_CONFLICT");
+        await communityEventHandlers(tx).onCommentCreated({
+          id,
+          actorId: actor,
+          ownerId: fresh.ownerId,
+          parentAuthorId: parent?.authorId ?? null,
+          target: value.target,
+        });
         return dto(row);
       });
     },

@@ -1,3 +1,4 @@
+import { communityEventHandlers } from "../notifications/community-event-handlers";
 import { randomUUID } from "node:crypto";
 import { z } from "zod";
 import { Prisma } from "@sammlerraum/db/search-sql";
@@ -59,9 +60,19 @@ export function createModerationService(db: CommunityDatabase) {
       throw error;
     }
   }
-  async function commentLock(tx: SearchReadTransaction, actor: string, id: string) {
+  async function commentLock(
+    tx: SearchReadTransaction,
+    actor: string,
+    id: string,
+    extraParticipants: string[] = [],
+  ) {
     const initial = await loadCommentMeta(tx, id);
-    await lockCommunityParticipants(tx, [actor, initial.ownerId, initial.authorId]);
+    await lockCommunityParticipants(tx, [
+      actor,
+      initial.ownerId,
+      initial.authorId,
+      ...extraParticipants,
+    ]);
     const [parent] = await tx.$queryRaw<{ id: string }[]>(
       Prisma.sql`SELECT id FROM "Collection" WHERE id=${initial.collectionId}::uuid AND "ownerId"=${initial.ownerId} FOR SHARE`,
     );
@@ -76,6 +87,7 @@ export function createModerationService(db: CommunityDatabase) {
     tx: SearchReadTransaction,
     actor: string,
     input: {
+      recipientId?: string | null;
       reportId?: string | null;
       commentId?: string | null;
       target: string;
@@ -85,9 +97,15 @@ export function createModerationService(db: CommunityDatabase) {
       after: unknown;
     },
   ) {
+    const eventId = randomUUID();
     await tx.$queryRaw(
-      Prisma.sql`INSERT INTO "CommunityModerationEvent"(id,"actorId","reportId","commentId","targetSnapshotId",source,action,reason,before,after) VALUES(${randomUUID()}::uuid,${actor},${input.reportId ?? null}::uuid,${input.commentId ?? null}::uuid,${input.target},'MODERATION',${input.action},${input.reason},${JSON.stringify(input.before)}::jsonb,${JSON.stringify(input.after)}::jsonb)`,
+      Prisma.sql`INSERT INTO "CommunityModerationEvent"(id,"actorId","reportId","commentId","targetSnapshotId",source,action,reason,before,after) VALUES(${eventId}::uuid,${actor},${input.reportId ?? null}::uuid,${input.commentId ?? null}::uuid,${input.target},'MODERATION',${input.action},${input.reason},${JSON.stringify(input.before)}::jsonb,${JSON.stringify(input.after)}::jsonb)`,
     );
+    if (input.recipientId)
+      await communityEventHandlers(tx).onModerationStatus({
+        id: eventId,
+        recipientId: input.recipientId,
+      });
   }
   async function setHidden(who: CommunityActor, idInput: string, input: unknown, hidden: boolean) {
     const id = parse(ModerationIdSchema, idInput),
@@ -104,6 +122,7 @@ export function createModerationService(db: CommunityDatabase) {
           Prisma.sql`UPDATE "CommunityComment" SET "moderationHiddenAt"=${hidden ? Prisma.sql`timezone('UTC',clock_timestamp())` : Prisma.sql`NULL`} WHERE id=${id}::uuid`,
         );
         await append(tx, actor, {
+          recipientId: meta.authorId,
           commentId: id,
           target: id,
           action: hidden ? "COMMENT_HIDDEN" : "COMMENT_RESTORED",
@@ -164,12 +183,22 @@ export function createModerationService(db: CommunityDatabase) {
       const id = parse(ModerationIdSchema, idInput),
         value = parse(ResolveCommunityReportSchema, input);
       return run(who, async (tx, actor) => {
-        const [initial] = await tx.$queryRaw<{ commentId: string | null }[]>(
-          Prisma.sql`SELECT "commentId" FROM "CommunityReport" WHERE id=${id}::uuid`,
-        );
+        const [initial] = await tx.$queryRaw<
+          { commentId: string | null; reporterId: string | null }[]
+        >(Prisma.sql`SELECT "commentId","reporterId" FROM "CommunityReport" WHERE id=${id}::uuid`);
         if (!initial) return absent();
-        if (initial.commentId) await commentLock(tx, actor, initial.commentId);
-        else await lockCommunityParticipants(tx, [actor]);
+        if (initial.commentId)
+          await commentLock(
+            tx,
+            actor,
+            initial.commentId,
+            initial.reporterId ? [initial.reporterId] : [],
+          );
+        else
+          await lockCommunityParticipants(tx, [
+            actor,
+            ...(initial.reporterId ? [initial.reporterId] : []),
+          ]);
         const [row] = await tx.$queryRaw<ReportRow[]>(
           Prisma.sql`SELECT id,"commentId",status,"resolvedById","resolutionReason","resolvedAt" FROM "CommunityReport" WHERE id=${id}::uuid FOR UPDATE`,
         );
@@ -193,6 +222,7 @@ export function createModerationService(db: CommunityDatabase) {
         );
         if (!saved) return absent();
         await append(tx, actor, {
+          recipientId: initial.reporterId,
           reportId: id,
           commentId: row.commentId,
           target: id,

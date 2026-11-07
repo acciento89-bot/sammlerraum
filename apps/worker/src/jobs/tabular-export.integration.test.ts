@@ -1,3 +1,4 @@
+import { createNotificationService } from "@sammlerraum/domain/notifications/notification-service";
 import { createHash, randomUUID } from "node:crypto";
 import { mkdtemp, rm } from "node:fs/promises";
 import { join } from "node:path";
@@ -77,6 +78,33 @@ describe.runIf(process.env.RUN_DATABASE_INTEGRATION === "1")(
         await handler({ jobId: f.job.id });
         const job = await state(f.job.id);
         expect(job.status).toBe("READY");
+        expect(
+          await db.notification.count({
+            where: { recipientId: f.owner, type: "EXPORT_COMPLETED", targetId: f.job.id },
+          }),
+        ).toBe(1);
+        const notices = createNotificationService(db);
+        expect(
+          (await notices.listNotifications(f.actor, {})).notifications.find(
+            (n) => n.type === "EXPORT_COMPLETED",
+          ),
+        ).toMatchObject({ safeTarget: { type: "EXPORT_JOB", id: f.job.id } });
+        // Expiry is immutable: create a separate historically expired own fixture,
+        // never weaken the request-identity guard to manipulate a current job.
+        const expiredId = randomUUID();
+        await db.$executeRaw`INSERT INTO "ExportJob"(id,"ownerId",format,locale,request,status,"artifactId","sourceJson","sourceHash","sourceAt","createdAt","updatedAt","expiresAt") SELECT ${expiredId}::uuid,"ownerId",format,locale,request,'READY',"artifactId","sourceJson","sourceHash","sourceAt",clock_timestamp()-interval '2 days',clock_timestamp()-interval '2 days',clock_timestamp()-interval '1 day' FROM "ExportJob" WHERE id=${f.job.id}::uuid`;
+        const expiredNotice = await notices.createNotificationOnce({
+          recipientId: f.owner,
+          eventKey: `export:completed:${expiredId}`,
+          type: "EXPORT_COMPLETED",
+          target: { type: "EXPORT_JOB", id: expiredId },
+        });
+        expect(
+          (await notices.listNotifications(f.actor, {})).notifications.find(
+            (n) => n.id === expiredNotice.id,
+          ),
+        ).toMatchObject({ safeTarget: null, safeTargetLabel: null });
+        await db.exportJob.delete({ where: { id: expiredId } });
         const asset = await db.mediaAsset.findUniqueOrThrow({ where: { id: job.artifactId! } });
         expect(asset).toMatchObject({ ownerId: f.owner, kind: "DOCUMENT", status: "READY" });
         const bytes = await storage.read(asset.storageKey, { maxBytes: 32 * 1024 * 1024 });

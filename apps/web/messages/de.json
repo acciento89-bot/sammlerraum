@@ -968,7 +968,7 @@
     "recentHelp": "Sortiert nach dem tatsächlichen Erfassungszeitpunkt im Inventar.",
     "recentItem": "Aktuelle Menge {quantity} · erfasst am {time} UTC",
     "capabilitiesTitle": "Weitere Auswertungen",
-    "capabilitiesHelp": "Diese Bereiche sind noch nicht verfügbar. Daraus lässt sich kein Wert oder eine Anzahl ableiten.",
+    "capabilitiesHelp": "Dubletten und Wünsche beziehen sich auf deinen gesamten eigenen Bestand. Noch nicht verfügbare Auswertungen werden ausdrücklich gekennzeichnet.",
     "purchaseTotals": "Gesamte Kaufkosten",
     "purchaseUnavailable": "Kaufkosten werden in dieser Übersicht noch nicht berechnet. Vorhandene Kaufpreisangaben bleiben bei den ergänzbaren Angaben sichtbar.",
     "marketValues": "Externe Marktwerte",
@@ -991,7 +991,14 @@
     "purchasePartialHelp": "Diese Teilsumme enthält nur Einheiten mit belegtem Kaufpreis. Die fehlenden Preise sind nicht als null eingerechnet.",
     "purchaseUnknownHelp": "Mindestens eine Preisangabe im geprüften Bestand hat keine gültige, eindeutige Erklärung. Prüfe diese Angaben, bevor du eine Einkaufssumme verwendest.",
     "purchaseStoredScale": "Belegte Nachkommastellen: {scale}",
-    "purchaseGroupingHelp": "Währungen und belegte Nachkommastellen bleiben getrennt. Es findet keine Umrechnung statt."
+    "purchaseGroupingHelp": "Währungen und belegte Nachkommastellen bleiben getrennt. Es findet keine Umrechnung statt.",
+    "wishProgress": "{open} offen · {fulfilled} erfüllt",
+    "progressTitle": "Deine Sammelmeilensteine",
+    "progressHelp": "Informationen aus deinem gesamten aktuellen Bestand und deiner privaten Wunschliste. Keine öffentlichen Ranglisten.",
+    "itemMilestone": "{count} Sammlerstücke erfasst",
+    "wishMilestone": "Alle bisherigen Wünsche erfüllt",
+    "achieved": "Erreicht",
+    "inProgress": "Noch offen"
   },
   "Milestones": {
     "title": "Deine Meilensteine",
@@ -1519,5 +1526,14 @@
     "reportType_USER": "Nutzer",
     "filter": "Auswahl",
     "favoritesFilter": "Gemerkte Objekte"
+  },
+  "PublicCollector": {
+    "navigation": "Öffentliches Profil",
+    "discover": "Entdecken",
+    "publicProfile": "Öffentliches Sammlerprofil",
+    "collections": "Sammlungen",
+    "items": "Sammlerstücke",
+    "empty": "Hier gibt es noch keine öffentlichen Einträge.",
+    "next": "Weitere anzeigen"
   }
 }

@@ -1,3 +1,5 @@
+import { communityEventHandlers } from "../../../../packages/domain/src/notifications/community-event-handlers";
+import { lockCommunityParticipants } from "../../../../packages/domain/src/community/social-scope";
 import { ReportError } from "@sammlerraum/contracts/reports";
 import { randomUUID } from "node:crypto";
 import type { PrismaClient, Prisma as PrismaTypes } from "@prisma/client";
@@ -137,6 +139,12 @@ export function createPrismaPrivateArtifactRepository(
           { id: string }[]
         >`UPDATE "MediaAsset" SET "processingLeaseUntil"=now()+interval '90 seconds' WHERE id=${claim.assetId}::uuid AND "ownerId"=${claim.ownerId} AND "processingToken"=${claim.token}::uuid AND status='PROCESSING' AND "cleanupStartedAt" IS NULL RETURNING id`;
         if (assets.length !== 1) throw integrity();
+        if (kind === "TABULAR")
+          await communityEventHandlers(tx).onJobCompleted({
+            id: claim.id,
+            recipientId: claim.ownerId,
+            kind: "EXPORT",
+          });
         return true;
       });
     },
@@ -163,6 +171,7 @@ export function createPrismaPrivateArtifactRepository(
       )
         throw integrity();
       return runSearchTransaction(database, async (tx) => {
+        await lockCommunityParticipants(tx, [claim.ownerId]);
         const job = await lockJob(tx, claim.id, table);
         if (!current(job, claim) || job!.sourceJson === null) return false;
         const [asset] = await tx.$queryRaw<{ id: string }[]>(
@@ -179,6 +188,12 @@ export function createPrismaPrivateArtifactRepository(
           Prisma.sql`UPDATE "MediaAsset" SET status='READY',"byteSize"=${BigInt(data.byteSize)},"checksumSha256"=${data.checksumSha256},"processingToken"=NULL,"processingLeaseUntil"=NULL,"processingErrorCode"=NULL,"updatedAt"=date_trunc('milliseconds',clock_timestamp()) WHERE id=${claim.assetId}::uuid AND "ownerId"=${claim.ownerId} AND "processingToken"=${claim.token}::uuid AND "cleanupStartedAt" IS NULL RETURNING id`,
         );
         if (assets.length !== 1) throw integrity();
+        if (kind === "TABULAR")
+          await communityEventHandlers(tx).onJobCompleted({
+            id: claim.id,
+            recipientId: claim.ownerId,
+            kind: "EXPORT",
+          });
         return true;
       });
     },

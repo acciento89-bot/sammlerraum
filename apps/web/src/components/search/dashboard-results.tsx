@@ -332,6 +332,22 @@ export function DashboardResults({
       {"coverage" in data.purchaseTotals && (
         <PurchaseCosts data={data.purchaseTotals} locale={locale} />
       )}
+      <section aria-labelledby="dashboard-progress-heading" className="management-card">
+        <h3 id="dashboard-progress-heading">{t("progressTitle")}</h3>
+        <p>{t("progressHelp")}</p>
+        <ul>
+          {(data.milestoneCandidates ?? []).map((candidate) => (
+            <li key={`${candidate.kind}:${candidate.threshold}`}>
+              <span aria-hidden="true">{candidate.achieved ? "✓" : "○"}</span>{" "}
+              {candidate.kind === "ITEM_COUNT"
+                ? t("itemMilestone", { count: candidate.threshold })
+                : t("wishMilestone")}
+              {" · "}
+              {t(candidate.achieved ? "achieved" : "inProgress")}
+            </li>
+          ))}
+        </ul>
+      </section>
       <section aria-labelledby="dashboard-capabilities-heading">
         <h3 id="dashboard-capabilities-heading">{t("capabilitiesTitle")}</h3>
         <p>{t("capabilitiesHelp")}</p>
@@ -348,11 +364,22 @@ export function DashboardResults({
           </div>
           <div>
             <dt>{t("duplicates")}</dt>
-            <dd>{t("relationsUnavailable")}</dd>
+            <dd>
+              {data.duplicates.state === "AVAILABLE"
+                ? data.duplicates.count.toLocaleString(locale)
+                : t("relationsUnavailable")}
+            </dd>
           </div>
           <div>
             <dt>{t("wishlist")}</dt>
-            <dd>{t("relationsUnavailable")}</dd>
+            <dd>
+              {data.wishlist.state === "AVAILABLE"
+                ? t("wishProgress", {
+                    open: data.wishlist.count,
+                    fulfilled: data.wishlist.fulfilledCount,
+                  })
+                : t("relationsUnavailable")}
+            </dd>
           </div>
           <div>
             <dt>{t("shared")}</dt>

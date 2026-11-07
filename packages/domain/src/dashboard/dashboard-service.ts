@@ -22,7 +22,7 @@ import {
   dashboardDistributionsSql,
   dashboardRankingsSql,
 } from "./dashboard-sql";
-import type { Prisma } from "@sammlerraum/db/search-sql";
+import { Prisma } from "@sammlerraum/db/search-sql";
 
 async function read<T>(
   tx: BoundedSearchReadTransaction,
@@ -74,6 +74,16 @@ export function createDashboardService(
           DashboardDistributionsSchema,
         );
         const rankings = await read(tx, dashboardRankingsSql(predicate), DashboardRankingsSchema);
+        const [progress] = await tx.$queryRaw<
+          { wishes: bigint; fulfilled: bigint; duplicates: bigint; items: bigint }[]
+        >(
+          Prisma.sql`/* dashboard:community_progress */ SELECT (SELECT count(*) FROM "WishlistEntry" WHERE "ownerId"=${actor.userId} AND "fulfilledAt" IS NULL) AS wishes,(SELECT count(*) FROM "WishlistEntry" WHERE "ownerId"=${actor.userId} AND "fulfilledAt" IS NOT NULL) AS fulfilled,(SELECT count(*) FROM "DuplicateRelation" r JOIN "CollectibleItem" a ON a.id=r."itemAId" JOIN "Collection" ac ON ac.id=a."collectionId" JOIN "CollectibleItem" b ON b.id=r."itemBId" JOIN "Collection" bc ON bc.id=b."collectionId" WHERE r."ownerId"=${actor.userId} AND a."ownerId"=${actor.userId} AND b."ownerId"=${actor.userId} AND ac."ownerId"=${actor.userId} AND bc."ownerId"=${actor.userId} AND a."deletedAt" IS NULL AND b."deletedAt" IS NULL AND ac."deletedAt" IS NULL AND bc."deletedAt" IS NULL) AS duplicates,(SELECT count(*) FROM "CollectibleItem" i JOIN "Collection" c ON c.id=i."collectionId" WHERE i."ownerId"=${actor.userId} AND c."ownerId"=${actor.userId} AND i."deletedAt" IS NULL AND c."deletedAt" IS NULL) AS items`,
+        );
+        if (
+          !progress ||
+          Object.values(progress).some((n) => n < 0n || n > BigInt(Number.MAX_SAFE_INTEGER))
+        )
+          return searchFail("SEARCH_INVARIANT");
         return finalizeDashboard(
           {
             version: 1,
@@ -100,8 +110,29 @@ export function createDashboardService(
               reason: "MARKET_AGGREGATION_UNAVAILABLE",
               groups: null,
             },
-            duplicates: { state: "UNAVAILABLE", reason: "DUPLICATE_NOT_IMPLEMENTED", count: null },
-            wishlist: { state: "UNAVAILABLE", reason: "WISHLIST_NOT_IMPLEMENTED", count: null },
+            duplicates: {
+              state: "AVAILABLE",
+              selectionBasis: "ALL_LIVE_OWNED_PAIRS",
+              count: Number(progress.duplicates),
+            },
+            wishlist: {
+              state: "AVAILABLE",
+              selectionBasis: "ALL_OWNED_WISHES",
+              count: Number(progress.wishes),
+              fulfilledCount: Number(progress.fulfilled),
+            },
+            milestoneCandidates: [
+              ...[10, 50, 100, 500, 1000].map((threshold) => ({
+                kind: "ITEM_COUNT",
+                threshold,
+                achieved: progress.items >= BigInt(threshold),
+              })),
+              {
+                kind: "WISHLIST_COMPLETED",
+                threshold: 1,
+                achieved: progress.fulfilled > 0n && progress.wishes === 0n,
+              },
+            ],
           },
           tx.checkBudget,
         );

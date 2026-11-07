@@ -137,7 +137,14 @@ test("compiled community endpoints bind real cookies, enforce current public vis
         })
       ).status(),
     ).toBe(400);
-    expect((await (await owner.get("/api/v1/notifications")).json()).unreadCount).toBe(0);
+    const pendingNotices = await (await owner.get("/api/v1/notifications")).json();
+    expect(pendingNotices.unreadCount).toBe(2);
+    expect(
+      pendingNotices.notifications
+        .filter((n: { readAt: string | null }) => n.readAt === null)
+        .map((n: { type: string }) => n.type)
+        .sort(),
+    ).toEqual(["FAVORITE_RECEIVED", "FOLLOW_RECEIVED"]);
     const commentTarget = { type: "ITEM", id: item.id };
     const createdComment = await actor.post("/api/v1/community/comments", {
       data: { target: commentTarget, body: "Own compiled cookie comment" },

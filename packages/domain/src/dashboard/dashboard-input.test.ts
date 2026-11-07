@@ -8,6 +8,7 @@ const timestamp = "2025-01-01T00:00:00.000Z",
 const pair = { itemCount: 0, unitCount: "0" };
 function empty(): DashboardData {
   return {
+    milestoneCandidates: [],
     version: 1,
     scope: "OWNED",
     lifecycle: "ACTIVE",

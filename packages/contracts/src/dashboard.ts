@@ -212,20 +212,51 @@ export const DashboardDataSchema = DashboardSummarySchema.extend({
       groups: z.null(),
     })
     .strict(),
-  duplicates: z
-    .object({
-      state: z.literal("UNAVAILABLE"),
-      reason: z.literal("DUPLICATE_NOT_IMPLEMENTED"),
-      count: z.null(),
-    })
-    .strict(),
-  wishlist: z
-    .object({
-      state: z.literal("UNAVAILABLE"),
-      reason: z.literal("WISHLIST_NOT_IMPLEMENTED"),
-      count: z.null(),
-    })
-    .strict(),
+  duplicates: z.union([
+    z
+      .object({
+        state: z.literal("UNAVAILABLE"),
+        reason: z.literal("DUPLICATE_NOT_IMPLEMENTED"),
+        count: z.null(),
+      })
+      .strict(),
+    z
+      .object({
+        state: z.literal("AVAILABLE"),
+        selectionBasis: z.literal("ALL_LIVE_OWNED_PAIRS"),
+        count,
+      })
+      .strict(),
+  ]),
+  wishlist: z.union([
+    z
+      .object({
+        state: z.literal("UNAVAILABLE"),
+        reason: z.literal("WISHLIST_NOT_IMPLEMENTED"),
+        count: z.null(),
+      })
+      .strict(),
+    z
+      .object({
+        state: z.literal("AVAILABLE"),
+        selectionBasis: z.literal("ALL_OWNED_WISHES"),
+        count,
+        fulfilledCount: count,
+      })
+      .strict(),
+  ]),
+  milestoneCandidates: z
+    .array(
+      z
+        .object({
+          kind: z.enum(["ITEM_COUNT", "WISHLIST_COMPLETED"]),
+          threshold: count,
+          achieved: z.boolean(),
+        })
+        .strict(),
+    )
+    .max(8)
+    .default([]),
 }).strict();
 export type DashboardData = z.infer<typeof DashboardDataSchema>;
 export function parseDashboardQuery(input: unknown) {

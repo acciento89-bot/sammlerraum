@@ -1,3 +1,4 @@
+import { communityEventHandlers } from "../notifications/community-event-handlers";
 import { randomUUID } from "node:crypto";
 import { z } from "zod";
 import { Prisma } from "@sammlerraum/db/search-sql";
@@ -80,6 +81,11 @@ export function createSocialService(database: CommunityDatabase) {
         await tx.$queryRaw(
           Prisma.sql`INSERT INTO "UserFollow"(id,"followerId","followedId")VALUES(${id}::uuid,${actor},${target})`,
         );
+        await communityEventHandlers(tx).onFollowCreated({
+          id,
+          actorId: actor,
+          recipientId: target,
+        });
         return { id, userId: target, followed: true };
       });
     },
@@ -122,6 +128,12 @@ export function createSocialService(database: CommunityDatabase) {
         await tx.$queryRaw(
           Prisma.sql`INSERT INTO "Favorite"(id,"userId",type,"collectionId","itemId")VALUES(${favoriteId}::uuid,${actor},${target.type}::"FavoriteTargetType",${target.type === "COLLECTION" ? target.id : null}::uuid,${target.type === "ITEM" ? target.id : null}::uuid)`,
         );
+        await communityEventHandlers(tx).onFavoriteCreated({
+          id: favoriteId,
+          actorId: actor,
+          recipientId: fresh.ownerId,
+          target,
+        });
         return { favoriteId, target, favorited: true };
       });
     },

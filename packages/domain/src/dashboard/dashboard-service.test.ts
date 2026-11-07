@@ -424,8 +424,8 @@ describe.runIf(enabled)("dashboard actual observations and filters", () => {
       expect(await f.read()).toMatchObject({
         purchaseTotals: { state: "UNAVAILABLE", groups: null },
         marketValues: { state: "UNAVAILABLE", groups: null },
-        duplicates: { state: "UNAVAILABLE", count: null },
-        wishlist: { state: "UNAVAILABLE", count: null },
+        duplicates: { state: "AVAILABLE", count: 0 },
+        wishlist: { state: "AVAILABLE", count: 0, fulfilledCount: 0 },
       });
       await expect(
         f.read({
@@ -798,8 +798,8 @@ describe.runIf(enabled)("dashboard actual cost evidence", () => {
           { text: "Needle" },
         );
         expect(result.selection.itemCount).toBe(Math.ceil(n / 10));
-        expect(calls).toBe(15);
-        expect(queries).toHaveLength(4);
+        expect(calls).toBe(17);
+        expect(queries).toHaveLength(5);
         console.info(
           "dashboard measured query count",
           JSON.stringify({
@@ -874,7 +874,7 @@ describe.runIf(enabled)("dashboard actual cost evidence", () => {
           )
         ).selection.itemCount,
       ).toBe(1);
-      expect(calls).toBe(17);
+      expect(calls).toBe(19);
       await db!.customFieldValue.updateMany({
         where: { itemId: b.id },
         data: { urlValue: "https://user:password@example.invalid/" },
@@ -973,5 +973,35 @@ describe.runIf(enabled)("dashboard complete selected facts", () => {
         { currency: "JPY", minorUnitExponent: 0, totalMinor: "100" },
         { currency: "KWD", minorUnitExponent: 3, totalMinor: "200" },
       ]);
+    }));
+});
+
+describe.runIf(enabled)("actual private community progress", () => {
+  it("counts only the owner's wishes and current live duplicate pairs, independent of search text", async () =>
+    fixture(async (f) => {
+      const a = await f.item("First"),
+        b = await f.item("Second");
+      await db!.wishlistEntry.createMany({
+        data: [
+          { ownerId: f.owner, title: "Open wish" },
+          { ownerId: f.owner, title: "Completed wish", fulfilledAt: new Date() },
+        ],
+      });
+      const [itemAId, itemBId] = [a.id, b.id].sort();
+      await db!.duplicateRelation.create({
+        data: { ownerId: f.owner, itemAId: itemAId!, itemBId: itemBId! },
+      });
+      const progress = await f.read({ text: "No match" });
+      expect(progress).toMatchObject({
+        wishlist: {
+          state: "AVAILABLE",
+          selectionBasis: "ALL_OWNED_WISHES",
+          count: 1,
+          fulfilledCount: 1,
+        },
+        duplicates: { state: "AVAILABLE", selectionBasis: "ALL_LIVE_OWNED_PAIRS", count: 1 },
+      });
+      await db!.collectibleItem.update({ where: { id: a.id }, data: { deletedAt: new Date() } });
+      expect((await f.read()).duplicates.count).toBe(0);
     }));
 });

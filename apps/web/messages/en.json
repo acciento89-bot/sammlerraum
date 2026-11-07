@@ -968,7 +968,7 @@
     "recentHelp": "Ranked by the actual inventory creation time.",
     "recentItem": "Current quantity {quantity} · recorded at {time} UTC",
     "capabilitiesTitle": "Further metrics",
-    "capabilitiesHelp": "These areas are not available yet. No amount or count can be inferred from that status.",
+    "capabilitiesHelp": "Duplicates and wishes refer to your complete own inventory. Analyses that are not yet available are explicitly marked.",
     "purchaseTotals": "Total purchase costs",
     "purchaseUnavailable": "Purchase costs are not calculated in this overview yet. Purchase-price entries remain covered by the missing-details section.",
     "marketValues": "External market values",
@@ -991,7 +991,14 @@
     "purchasePartialHelp": "This subtotal includes only units with an evidenced purchase price. Missing prices have not been treated as zero.",
     "purchaseUnknownHelp": "At least one price in the checked inventory has no valid, unambiguous interpretation. Review those entries before using a purchase-cost sum.",
     "purchaseStoredScale": "Evidenced decimal places: {scale}",
-    "purchaseGroupingHelp": "Currencies and evidenced decimal places remain separate. No currency conversion is applied."
+    "purchaseGroupingHelp": "Currencies and evidenced decimal places remain separate. No currency conversion is applied.",
+    "wishProgress": "{open} open · {fulfilled} fulfilled",
+    "progressTitle": "Your collecting milestones",
+    "progressHelp": "Based on your complete current inventory and private wishlist. No public rankings.",
+    "itemMilestone": "{count} collectibles recorded",
+    "wishMilestone": "All existing wishes fulfilled",
+    "achieved": "Achieved",
+    "inProgress": "In progress"
   },
   "Milestones": {
     "title": "Your milestones",
@@ -1519,5 +1526,14 @@
     "reportType_USER": "User",
     "filter": "Selection",
     "favoritesFilter": "Saved items"
+  },
+  "PublicCollector": {
+    "navigation": "Public profile",
+    "discover": "Discover",
+    "publicProfile": "Public collector profile",
+    "collections": "Collections",
+    "items": "Collectibles",
+    "empty": "There are no public entries here yet.",
+    "next": "Show more"
   }
 }

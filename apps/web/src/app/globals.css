@@ -2330,3 +2330,55 @@ body:has(.transfer-shell) .skip-link:not(:focus) {
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+/* Public collector pages share the collection's paper/forest visual language. */
+.public-collector .community-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+  margin: 1.5rem 0;
+}
+.public-collector .community-card {
+  padding: 1.5rem;
+  border: 1px solid var(--line);
+  border-radius: 1.2rem;
+  background: var(--paper);
+  overflow-wrap: anywhere;
+}
+.public-collector .community-card img {
+  display: block;
+  width: 100%;
+  max-height: 32rem;
+  object-fit: contain;
+  border-radius: 0.8rem;
+}
+.public-collector .community-card h3 {
+  font-size: 1.35rem;
+}
+.public-collector .community-card p {
+  white-space: pre-wrap;
+  line-height: 1.7;
+}
+.public-collector .community-navigation {
+  flex-wrap: wrap;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 780px) {
+  .public-collector .community-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.public-collector .community-hero > div {
+  min-width: 0;
+}
+.public-collector .community-hero h1 {
+  overflow-wrap: anywhere;
+}
+.public-collector .community-card {
+  background: var(--surface);
+}
+.public-collector .community-navigation a {
+  overflow-wrap: anywhere;
+  min-width: 0;
+}

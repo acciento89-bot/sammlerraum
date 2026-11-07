@@ -223,6 +223,11 @@ describe.runIf(process.env.RUN_DATABASE_INTEGRATION === "1")(
       );
       await createImportCommitter(commit)({ jobId: parsed.id });
       expect(
+        await db.notification.count({
+          where: { recipientId: f.owner, type: "IMPORT_COMPLETED", targetId: parsed.id },
+        }),
+      ).toBe(1);
+      expect(
         await db.auditEvent.count({ where: { resourceType: "IMPORT_JOB", resourceId: parsed.id } }),
       ).toBe(jobAudit.length);
     });

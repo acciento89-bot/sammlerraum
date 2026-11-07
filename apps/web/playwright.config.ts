@@ -10,12 +10,12 @@ export default defineConfig({
   projects: [
     {
       name: "community-ui-desktop",
-      testMatch: "**/community.spec.ts",
+      testMatch: ["**/community.spec.ts", "**/public-profile.spec.ts"],
       use: { viewport: { width: 1440, height: 1000 } },
     },
     {
       name: "community-ui-mobile",
-      testMatch: "**/community.spec.ts",
+      testMatch: ["**/community.spec.ts", "**/public-profile.spec.ts"],
       use: { ...devices["Pixel 7"] },
     },
     { name: "community-api", testMatch: "**/community-api.spec.ts" },

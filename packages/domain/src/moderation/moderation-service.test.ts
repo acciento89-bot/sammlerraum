@@ -67,6 +67,30 @@ describe.runIf(process.env.RUN_DATABASE_INTEGRATION === "1")(
         service: createModerationService(db),
       };
     }
+    it("emits generic author and reporter notices once per actual moderation transition", async () => {
+      const f = await fixture();
+      await f.service.hideContent(f.moderator, f.comment.id, {
+        reason: "Confidential moderation reason",
+      });
+      await f.service.hideContent(f.moderator, f.comment.id, {
+        reason: "Confidential moderation reason",
+      });
+      expect(
+        await db.notification.count({
+          where: { recipientId: f.author.userId, type: "MODERATION_STATUS" },
+        }),
+      ).toBe(1);
+      const input = { outcome: "RESOLVED", reason: "Private resolution reason" };
+      await f.service.resolveReport(f.moderator, f.report.id, input);
+      await f.service.resolveReport(f.moderator, f.report.id, input);
+      const notices = await db.notification.findMany({
+        where: { recipientId: f.owner.userId, type: "MODERATION_STATUS" },
+      });
+      expect(notices).toHaveLength(1);
+      expect(JSON.stringify(notices)).not.toMatch(
+        /Confidential|Private resolution|Own reported comment/,
+      );
+    });
     it("rejects ordinary users and collection admins, even with forged platform role claims", async () => {
       const f = await fixture();
       const admin = await user();
@@ -84,7 +108,9 @@ describe.runIf(process.env.RUN_DATABASE_INTEGRATION === "1")(
           f.service.hideContent(actor, f.comment.id, { reason: "Unauthorized" }),
         ).rejects.toMatchObject({ code: "MODERATION_FORBIDDEN" });
       }
-      expect(await db.communityModerationEvent.count()).toBe(0);
+      expect(
+        await db.communityModerationEvent.count({ where: { actorId: f.moderator.userId } }),
+      ).toBe(0);
     });
     it("keeps hidden reported comments privately reviewable and records reasoned MODERATION events", async () => {
       const f = await fixture();

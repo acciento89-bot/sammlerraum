@@ -1,4 +1,9 @@
-import { beginMutationAudit, appendMutationAudit } from "../audit/mutation-audit";
+import { communityEventHandlers } from "../notifications/community-event-handlers";
+import {
+  beginMutationAudit,
+  appendMutationAudit,
+  auditSqlTransaction,
+} from "../audit/mutation-audit";
 import { createTrustedAuditContext } from "../audit/audit-context";
 import { captureMoneyAuditSnapshot } from "../audit/money-audit";
 import { createHash } from "node:crypto";
@@ -668,6 +673,12 @@ export function createImportCommitService(database: ImportCommitDatabase) {
             revision: job.revision + 1,
           },
         });
+        if (complete)
+          await communityEventHandlers(auditSqlTransaction(tx)).onJobCompleted({
+            id: job.id,
+            recipientId: job.ownerId,
+            kind: "IMPORT",
+          });
         return { complete, processed, committedRows };
       });
     } catch (error) {

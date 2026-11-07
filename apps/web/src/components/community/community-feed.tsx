@@ -235,7 +235,7 @@ export function CommunityFeed({
                 </div>
                 <Link
                   className="community-item-cover"
-                  href={`/${locale}/items/${item.id}`}
+                  href={`/${locale}/@${item.handle}/collection-${item.collectionId}/items/${item.id}`}
                   prefetch={false}
                   aria-label={`${t("openItem")}: ${item.title}`}
                 >
@@ -254,7 +254,10 @@ export function CommunityFeed({
                 </Link>
                 <div className="community-card-content">
                   <h2>
-                    <Link href={`/${locale}/items/${item.id}`} prefetch={false}>
+                    <Link
+                      href={`/${locale}/@${item.handle}/collection-${item.collectionId}/items/${item.id}`}
+                      prefetch={false}
+                    >
                       {item.title}
                     </Link>
                   </h2>

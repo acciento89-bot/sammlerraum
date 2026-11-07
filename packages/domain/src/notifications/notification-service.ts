@@ -112,6 +112,8 @@ type NotificationRow = {
   createdAt: Date;
   safeTargetLabel: string | null;
   available: boolean;
+  publicHandle: string | null;
+  publicCollectionId: string | null;
 };
 export function createNotificationService(db: CommunityDatabase) {
   async function own<T>(
@@ -179,9 +181,9 @@ export function createNotificationService(db: CommunityDatabase) {
         const publicActor = Prisma.sql`(n."actorId" IS NULL OR ${notBlocked(userId, Prisma.sql`n."actorId"`)})`;
         const publicItem = Prisma.sql`(${publicItemPredicate} AND ${notBlocked(userId, Prisma.sql`c."ownerId"`)})`;
         const publicCollection = Prisma.sql`(nc.visibility='PUBLIC' AND nc."deletedAt" IS NULL AND ${notBlocked(userId, Prisma.sql`nc."ownerId"`)})`;
-        const available = Prisma.sql`(${publicActor} AND CASE n."targetType" WHEN 'USER' THEN p."userId" IS NOT NULL AND ${notBlocked(userId, Prisma.sql`p."userId"`)} WHEN 'ITEM' THEN ${publicItem} WHEN 'COLLECTION' THEN ${publicCollection} WHEN 'ACCOUNT' THEN n."targetId"=${userId} ELSE false END)`;
+        const available = Prisma.sql`(${publicActor} AND CASE n."targetType" WHEN 'USER' THEN p."userId" IS NOT NULL AND ${notBlocked(userId, Prisma.sql`p."userId"`)} WHEN 'ITEM' THEN ${publicItem} WHEN 'COLLECTION' THEN ${publicCollection} WHEN 'ACCOUNT' THEN n."targetId"=${userId} WHEN 'IMPORT_JOB' THEN EXISTS(SELECT 1 FROM "ImportJob" j JOIN "Collection" jc ON jc.id=j."collectionId" AND jc."ownerId"=j."ownerId" WHERE j.id::text=n."targetId" AND j."ownerId"=${userId} AND j.status='COMPLETED' AND jc."deletedAt" IS NULL AND j."sourceExpiresAt">timezone('UTC',clock_timestamp())) WHEN 'EXPORT_JOB' THEN EXISTS(SELECT 1 FROM "ExportJob" j JOIN "MediaAsset" a ON a.id=j."artifactId" AND a."ownerId"=j."ownerId" WHERE j.id::text=n."targetId" AND j."ownerId"=${userId} AND j.status='READY' AND j."expiresAt">timezone('UTC',clock_timestamp()) AND a.status='READY' AND a."cleanupStartedAt" IS NULL) ELSE false END)`;
         const rows = await tx.$queryRaw<NotificationRow[]>(
-          Prisma.sql`WITH page AS (SELECT * FROM "Notification" WHERE "recipientId"=${userId} AND "inAppEnabled" ${value.afterId ? Prisma.sql`AND ("createdAt",id)<(SELECT "createdAt",id FROM "Notification" WHERE id=${value.afterId}::uuid AND "recipientId"=${userId})` : Prisma.empty} ORDER BY "createdAt" DESC,id DESC LIMIT ${value.limit + 1}) SELECT n.id,n.type,n.category,n."targetType",n."targetId",n."readAt",n."createdAt",coalesce(${available},false) AS available,CASE WHEN ${available} THEN CASE n."targetType" WHEN 'USER' THEN p."displayName" WHEN 'ITEM' THEN i.title WHEN 'COLLECTION' THEN nc.name ELSE NULL END ELSE NULL END AS "safeTargetLabel" FROM page n LEFT JOIN "UserProfile" p ON p."userId"=CASE WHEN n."targetType"='USER' THEN n."targetId" END LEFT JOIN "CollectibleItem" i ON i.id=CASE WHEN n."targetType"='ITEM' THEN n."targetId"::uuid END LEFT JOIN "Collection" c ON c.id=i."collectionId" LEFT JOIN "Collection" nc ON nc.id=CASE WHEN n."targetType"='COLLECTION' THEN n."targetId"::uuid END ORDER BY n."createdAt" DESC,n.id DESC`,
+          Prisma.sql`WITH page AS (SELECT * FROM "Notification" WHERE "recipientId"=${userId} AND "inAppEnabled" ${value.afterId ? Prisma.sql`AND ("createdAt",id)<(SELECT "createdAt",id FROM "Notification" WHERE id=${value.afterId}::uuid AND "recipientId"=${userId})` : Prisma.empty} ORDER BY "createdAt" DESC,id DESC LIMIT ${value.limit + 1}) SELECT n.id,n.type,n.category,n."targetType",n."targetId",n."readAt",n."createdAt",coalesce(${available},false) AS available,coalesce(p.handle,op.handle) AS "publicHandle",coalesce(c.id,nc.id)::text AS "publicCollectionId",CASE WHEN ${available} THEN CASE n."targetType" WHEN 'USER' THEN p."displayName" WHEN 'ITEM' THEN i.title WHEN 'COLLECTION' THEN nc.name ELSE NULL END ELSE NULL END AS "safeTargetLabel" FROM page n LEFT JOIN "UserProfile" p ON p."userId"=CASE WHEN n."targetType"='USER' THEN n."targetId" END LEFT JOIN "CollectibleItem" i ON i.id=CASE WHEN n."targetType"='ITEM' THEN n."targetId"::uuid END LEFT JOIN "Collection" c ON c.id=i."collectionId" LEFT JOIN "Collection" nc ON nc.id=CASE WHEN n."targetType"='COLLECTION' THEN n."targetId"::uuid END LEFT JOIN "UserProfile" op ON op."userId"=coalesce(c."ownerId",nc."ownerId") ORDER BY n."createdAt" DESC,n.id DESC`,
         );
         const [unread] = await tx.$queryRaw<{ count: bigint }[]>(
           Prisma.sql`SELECT count(*) FROM "Notification" WHERE "recipientId"=${userId} AND "inAppEnabled" AND "readAt" IS NULL`,
@@ -195,6 +197,18 @@ export function createNotificationService(db: CommunityDatabase) {
             createdAt: row.createdAt.toISOString(),
             safeTarget: row.available ? { type: row.targetType, id: row.targetId } : null,
             safeTargetLabel: row.safeTargetLabel,
+            publicPath:
+              row.available &&
+              row.publicHandle &&
+              /^[a-z0-9][a-z0-9-]{2,63}$/.test(row.publicHandle)
+                ? row.targetType === "USER"
+                  ? `/@${row.publicHandle}`
+                  : row.targetType === "ITEM" && row.publicCollectionId
+                    ? `/@${row.publicHandle}/collection-${row.publicCollectionId}/items/${row.targetId}`
+                    : row.targetType === "COLLECTION" && row.publicCollectionId
+                      ? `/@${row.publicHandle}/collection-${row.publicCollectionId}`
+                      : null
+                : null,
           })),
           next: rows.length > value.limit ? rows[value.limit - 1]!.id : null,
           unreadCount: Number(unread?.count ?? 0n),

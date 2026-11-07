@@ -92,6 +92,9 @@ export function NotificationCenter({ locale, moderator }: { locale: string; mode
   function targetLink(notice: Notices["notifications"][number]) {
     const target = notice.safeTarget;
     if (!target) return null;
+    if (notice.publicPath) return `/${locale}${notice.publicPath}`;
+    if (target.type === "IMPORT_JOB") return `/${locale}/imports/${target.id}`;
+    if (target.type === "EXPORT_JOB") return `/${locale}/exports`;
     return target.type === "ITEM"
       ? `/${locale}/items/${target.id}`
       : target.type === "ACCOUNT" && notice.type === "SECURITY_ALERT"
