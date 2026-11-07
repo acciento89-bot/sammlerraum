@@ -179,6 +179,9 @@ jobs:
           apps/web/src/lib/share-routes.integration.test.ts
           packages/domain/src/valuations/valuation-service.test.ts
           packages/domain/src/valuations/valuation-query.test.ts
+          packages/domain/src/market-data/market-batch.integration.test.ts
+          packages/domain/src/market-data/market-aggregate.integration.test.ts
+          packages/domain/src/search/market-filter.integration.test.ts
           packages/domain/src/search/legacy-money-query.integration.test.ts
           packages/domain/src/search/legacy-money-query.test.ts
           packages/domain/src/money/purchase-cost.test.ts

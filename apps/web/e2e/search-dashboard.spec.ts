@@ -2282,3 +2282,102 @@ for (const locale of ["de", "en"] as const) {
     });
   }
 }
+
+for (const locale of ["de", "en"] as const) {
+  test(`${locale}: compiled dashboard renders synthetic permitted market totals with explicit partial and empty coverage`, async ({
+    page,
+  }, info) => {
+    test.skip(!enabled, "Requires guarded auth database");
+    const f = await searchFixture();
+    try {
+      await signIn(page, f);
+      await page.route("**/api/v1/dashboard", async (route) => {
+        const response = await route.fetch();
+        expect(response.status()).toBe(200);
+        const data = await response.json();
+        const selector = {
+          mode: "CURRENT_ITEM_MAPPING",
+          providerId: "synthetic-source",
+          identifierNamespace: "fixture",
+          identifierType: "product",
+          kind: "LAST_SOLD",
+          sourceMetric: "reference",
+          qualifiers: { graded: false },
+          currency: "EUR",
+          minorUnitExponent: 2,
+        };
+        const common = {
+          semantics: "ADDITIVE_PER_UNIT_REFERENCE_VALUE",
+          basis: "CURRENT_QUANTITY",
+          candidateItemCount: "2",
+          contributingItemCount: "1",
+          missingItemCount: "1",
+          contributedQuantity: "3",
+          observedAtFrom: "2025-01-01T00:00:00.000Z",
+          observedAtTo: "2025-02-01T00:00:00.000Z",
+        };
+        data.marketValues = {
+          state: "AVAILABLE",
+          selectionBasis: "ALL_LIFECYCLE_OWNED",
+          groups: [
+            {
+              ...common,
+              selector,
+              coverage: "PARTIAL",
+              total: { type: "POINT", amountMinor: "18446744073709551614" },
+            },
+            {
+              ...common,
+              selector: { ...selector, kind: "PRICE_RANGE" },
+              coverage: "PARTIAL",
+              total: { type: "RANGE", lowMinor: "1200", highMinor: "2700" },
+            },
+            {
+              ...common,
+              selector: { ...selector, sourceMetric: "missing" },
+              coverage: "EMPTY",
+              contributingItemCount: "0",
+              missingItemCount: "2",
+              contributedQuantity: "0",
+              observedAtFrom: null,
+              observedAtTo: null,
+              total: null,
+            },
+          ],
+        };
+        await route.fulfill({ response, json: data });
+      });
+      await page.goto(`/${locale}/dashboard`);
+      const section = page.getByTestId("dashboard-market-reference-values");
+      await expect(section).toBeVisible();
+      await expect(
+        section
+          .getByRole("status")
+          .filter({ hasText: locale === "de" ? "Teilsumme" : "Partial subtotal" }),
+      ).toHaveCount(2);
+      await expect(
+        section
+          .getByRole("status")
+          .filter({
+            hasText: locale === "de" ? "Keine beitragenden Werte" : "No contributing values",
+          }),
+      ).toHaveCount(1);
+      await expect(section).toContainText(
+        locale === "de" ? "184.467.440.737.095.516,14 EUR" : "184,467,440,737,095,516.14 EUR",
+      );
+      await expect(section).toContainText(
+        locale === "de" ? "12,00 – 27,00 EUR" : "12.00 – 27.00 EUR",
+      );
+      expect(
+        await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
+      ).toBe(true);
+      await section.screenshot({
+        path: resolve(
+          `../../.superpowers/sdd/2026-11-07-market-batch-integration/market-${locale}-${info.project.name}.png`,
+        ),
+      });
+    } finally {
+      await cleanupSearchFixture(f);
+    }
+  });
+}

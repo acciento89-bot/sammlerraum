@@ -17,7 +17,7 @@ export function MarketReferenceValues({
     values = useTranslations("Valuations");
   return (
     <section
-      className="management-card"
+      className="management-card market-reference-values"
       aria-labelledby="dashboard-market-heading"
       data-testid="dashboard-market-reference-values"
     >

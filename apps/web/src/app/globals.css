@@ -2382,3 +2382,7 @@ body:has(.transfer-shell) .skip-link:not(:focus) {
   overflow-wrap: anywhere;
   min-width: 0;
 }
+
+.market-reference-values li {
+  overflow-wrap: anywhere;
+}

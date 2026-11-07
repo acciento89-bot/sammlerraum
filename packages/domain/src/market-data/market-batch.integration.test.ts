@@ -1,3 +1,6 @@
+import { createItemSearchService } from "../search/item-search-service";
+import type { SearchDatabase } from "../search/search-read";
+import { aggregateMarketBatch } from "./market-aggregate";
 import { searchFail } from "@sammlerraum/contracts/item-search";
 import { historicalMarketSnapshots } from "./market-batch-sql";
 import { CatalogSnapshotSchema } from "@sammlerraum/contracts/catalog";
@@ -625,6 +628,140 @@ describe.runIf(process.env.RUN_DATABASE_INTEGRATION === "1")(
         }),
       ).rejects.toMatchObject({ code: "MARKET_BATCH_INVARIANT" });
     });
+    it.each(
+      [1, 50, 500].flatMap((n) => [
+        { n, distinct: false },
+        { n, distinct: true },
+      ]),
+    )(
+      "measures actual search/aggregate plans and configuration calls for $n rows, distinct=$distinct",
+      async ({ n, distinct }) => {
+        const f = await fixture();
+        await record(f);
+        if (distinct && n > 1) {
+          const original = await db.catalogRevision.findUniqueOrThrow({
+            where: { entryId_revision: { entryId: f.entryId, revision: 2 } },
+          });
+          await db.$executeRaw`INSERT INTO "CatalogEntry"(id,"categoryTemplateId",revision,authored) SELECT gen_random_uuid(),"categoryTemplateId",1,authored FROM "CatalogEntry" CROSS JOIN generate_series(1,${n - 1}) WHERE id=${f.entryId}::uuid`;
+          await db.$executeRaw`INSERT INTO "CatalogExternalIdentifier"(id,"entryId",namespace,type,value,sources) SELECT gen_random_uuid(),id,'fixture','product','product-'||id::text,'[]'::jsonb FROM "CatalogEntry" WHERE "categoryTemplateId"=${f.category.id}::uuid AND id<>${f.entryId}::uuid`;
+          await db.$executeRaw`INSERT INTO "CatalogRevision"("entryId",revision,snapshot) SELECT e.id,1,jsonb_set(jsonb_set(${JSON.stringify(original.snapshot)}::jsonb,'{id}',to_jsonb(e.id::text)),'{identifiers}',jsonb_build_array(jsonb_build_object('id',x.id,'namespace',x.namespace,'type',x.type,'value',x.value,'sources','[]'::jsonb))) FROM "CatalogEntry" e JOIN "CatalogExternalIdentifier" x ON x."entryId"=e.id WHERE e."categoryTemplateId"=${f.category.id}::uuid AND e.id<>${f.entryId}::uuid`;
+          await db.$executeRaw`INSERT INTO "CollectibleItem"(id,"ownerId","collectionId",title,"categoryTemplateId","catalogEntryId","updatedAt") SELECT gen_random_uuid(),${f.owner},${f.collection.id}::uuid,'Distinct owned market fixture',"categoryTemplateId",id,now() FROM "CatalogEntry" WHERE "categoryTemplateId"=${f.category.id}::uuid AND id<>${f.entryId}::uuid`;
+          await db.$executeRaw`INSERT INTO "MarketObservation" SELECT (jsonb_populate_record(NULL::"MarketObservation",to_jsonb(o)||jsonb_build_object('id',gen_random_uuid(),'pollId',gen_random_uuid(),'entryId',x."entryId",'catalogRevision',1,'identifierId',x.id,'externalId',x.value))).* FROM "MarketObservation" o CROSS JOIN "CatalogExternalIdentifier" x JOIN "CatalogEntry" e ON e.id=x."entryId" WHERE o."entryId"=${f.entryId}::uuid AND e."categoryTemplateId"=${f.category.id}::uuid AND e.id<>${f.entryId}::uuid`;
+        } else if (n > 1) {
+          await db.collectibleItem.createMany({
+            data: Array.from({ length: n - 1 }, (_, i) => ({
+              ownerId: f.owner,
+              collectionId: f.collection.id,
+              title: `Shared market ${i}`,
+              categoryTemplateId: f.category.id,
+              catalogEntryId: f.entryId,
+              quantity: 1,
+            })),
+          });
+        }
+        // Guarded native insertion retains all immutable identity and catalog-binding checks.
+        await db.$executeRaw`INSERT INTO "MarketObservation" SELECT (jsonb_populate_record(NULL::"MarketObservation",to_jsonb(o)||jsonb_build_object('id',gen_random_uuid(),'pollId',gen_random_uuid(),'sourceMetric',CASE WHEN g.n%3=0 THEN 'market' ELSE 'irrelevant' END,'qualifiers',CASE WHEN g.n%2=0 THEN '{"graded":false}'::jsonb ELSE '{"graded":true}'::jsonb END))).* FROM "MarketObservation" o JOIN "CatalogEntry" e ON e.id=o."entryId" CROSS JOIN generate_series(1,12) AS g(n) WHERE e."categoryTemplateId"=${f.category.id}::uuid`;
+        const queries: Prisma.Sql[] = [];
+        const measured: SearchDatabase = {
+          $transaction: (work, options) =>
+            db.$transaction(
+              (tx) =>
+                work({
+                  $queryRaw: async <T>(sql: Prisma.Sql) => {
+                    queries.push(sql);
+                    return tx.$queryRaw<T>(sql);
+                  },
+                }),
+              options,
+            ),
+        };
+        const start = performance.now();
+        const page = await createItemSearchService(measured, { market: deps }).searchItems(
+          { userId: f.owner },
+          {
+            limit: 1,
+            filter: {
+              version: 1,
+              root: { kind: "marketMoney", selector, test: { op: "present" } },
+            },
+          },
+        );
+        expect(page.total).toBe(n);
+        expect(page.items).toHaveLength(1);
+        const searchCalls = queries.length,
+          searchMs = performance.now() - start;
+        expect(queries.filter((q) => q.text.includes("market:prepare:")).length).toBe(3);
+        const aggregateDeps = {
+          ...deps,
+          queryPolicy: {
+            snapshotForOwner: () => ({
+              queryGrants: [],
+              aggregateGrants: [
+                {
+                  selector,
+                  semantics: "ADDITIVE_PER_UNIT_REFERENCE_VALUE" as const,
+                  bases: ["CURRENT_QUANTITY" as const],
+                },
+              ],
+            }),
+          },
+        };
+        const aggregateStart = performance.now();
+        const totals = await runSearchRead(measured, async (tx) => {
+          const context = {
+            tx,
+            scope: { actorUserId: f.owner, lifecycle: "ACTIVE" as const },
+            ownedCandidates: Prisma.sql`SELECT i.id,i.quantity,i."catalogEntryId",i."catalogVariantId" ${candidateFrom} WHERE ${ownedCandidates(f.owner, "ACTIVE")}`,
+            checkBudget: tx.checkBudget,
+          };
+          return withMarketBatch(
+            context,
+            [selector],
+            { purpose: "DASHBOARD_AGGREGATE", basis: "CURRENT_QUANTITY" },
+            aggregateDeps,
+            (batch) => aggregateMarketBatch(context, batch, [selector], "CURRENT_QUANTITY"),
+          );
+        });
+        expect(totals[0]!.candidateItemCount).toBe(String(n));
+        const aggregateMs = performance.now() - aggregateStart,
+          aggregateCalls = queries.length - searchCalls;
+        expect(searchCalls).toBe(17);
+        expect(aggregateCalls).toBe(9);
+        const selected = queries.filter(
+          (q) =>
+            !q.text.includes("set_config(") &&
+            (q.text.includes("market:prepare:") ||
+              q.text.includes("SELECT count(*) AS total") ||
+              q.text.includes("SELECT i.id,i.title") ||
+              q.text.includes("market:aggregate")),
+        );
+        const unique = [...new Map(selected.map((q) => [q.text, q])).values()];
+        const plans = await runSearchRead(db, async (tx) => {
+          const result = [];
+          for (const sql of unique) {
+            const plan = await tx.$queryRaw(
+              Prisma.sql`EXPLAIN (ANALYZE,BUFFERS,FORMAT JSON) ${sql}`,
+            );
+            result.push({ query: sql.text, plan });
+          }
+          return result;
+        });
+        console.info(
+          "MARKET_BATCH_QUERY_PROOF",
+          JSON.stringify({
+            ownedItems: n,
+            distinctTargets: distinct ? n : 1,
+            observations: 13 * (distinct ? n : 1),
+            searchCallsIncludingConfiguration: searchCalls,
+            aggregateCallsIncludingConfiguration: aggregateCalls,
+            searchMs,
+            aggregateMs,
+            plans,
+          }),
+        );
+        expect(fetch).not.toHaveBeenCalled();
+      },
+    );
     it("treats malformed historical snapshots as ineligible and malformed current snapshots as invariant", async () => {
       const f = await fixture();
       await record(f);
