@@ -1,0 +1,29 @@
+Scope: all 12 workspace projects
+Lockfile is up to date, resolution step is skipped
+Progress: resolved 1, reused 0, downloaded 0, added 0
+Packages: +344
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Progress: resolved 344, reused 0, downloaded 85, added 82
+Progress: resolved 344, reused 0, downloaded 167, added 174
+Progress: resolved 344, reused 0, downloaded 213, added 221
+Progress: resolved 344, reused 0, downloaded 237, added 242
+Progress: resolved 344, reused 0, downloaded 243, added 247
+Progress: resolved 344, reused 0, downloaded 246, added 251
+Progress: resolved 344, reused 0, downloaded 248, added 251
+Progress: resolved 344, reused 0, downloaded 249, added 251
+Progress: resolved 344, reused 0, downloaded 253, added 255
+Progress: resolved 344, reused 0, downloaded 256, added 255
+Progress: resolved 344, reused 0, downloaded 261, added 259
+Progress: resolved 344, reused 0, downloaded 287, added 267
+Progress: resolved 344, reused 0, downloaded 332, added 342
+Progress: resolved 344, reused 0, downloaded 332, added 343
+Progress: resolved 344, reused 0, downloaded 333, added 343
+Progress: resolved 344, reused 0, downloaded 333, added 344, done
+
+devDependencies:
++ @types/node 24.5.2
++ prettier 3.6.2
++ typescript 5.9.2
++ vitest 3.2.7
+
+Done in 17.9s using pnpm v10.17.1

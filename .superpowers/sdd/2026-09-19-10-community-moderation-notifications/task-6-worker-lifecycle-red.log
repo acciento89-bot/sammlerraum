@@ -1,0 +1,53 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| apps/worker/src/main.test.ts (6 tests | 1 failed) 8ms
+   × startWorker > starts durable dispatch after queue startup and stops it before queue teardown 5ms
+     → expected [ 'queue-start', …(11) ] to deeply equal [ 'queue-start', …(13) ]
+   ✓ startWorker > installs the queue error listener before startup and keeps an emitted error unhealthy 1ms
+   ✓ startWorker > rolls back queue, endpoint, and database resources in reverse lifecycle order 0ms
+   ✓ runWorkerMain > returns exit code 1 and logs a generic startup configuration error 0ms
+   ✓ shares stop completion and never disconnects DB when market work cannot settle 1ms
+   ✓ attempts independent cleanup when market stop throws synchronously 0ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/worker/src/main.test.ts > startWorker > starts durable dispatch after queue startup and stops it before queue teardown
+AssertionError: expected [ 'queue-start', …(11) ] to deeply equal [ 'queue-start', …(13) ]
+
+- Expected
++ Received
+
+  [
+    "queue-start",
+    "dispatch-start",
+    "export-start",
+    "report-start",
+-   "notification-start",
+    "cleanup-start",
+    "health-stop",
+    "cleanup-stop",
+    "dispatch-stop",
+    "export-stop",
+    "report-stop",
+-   "notification-stop",
+    "queue-stop",
+    "database-stop",
+  ]
+
+ ❯ apps/worker/src/main.test.ts:74:19
+     72|     });
+     73|     await worker.stop();
+     74|     expect(calls).toEqual([
+       |                   ^
+     75|       "queue-start",
+     76|       "dispatch-start",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 5 passed (6)
+   Start at  13:56:23
+   Duration  204ms (transform 29ms, setup 5ms, collect 26ms, tests 8ms, environment 0ms, prepare 37ms)
+

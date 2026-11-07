@@ -1,0 +1,2 @@
+packages/email/src/smtp-provider.test.ts 41ms
+apps/worker/src/jobs/send-email.integration.test.ts 22ms

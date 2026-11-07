@@ -1,0 +1,16 @@
+
+> @sammlerraum/worker@ build /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/worker
+> esbuild src/run.ts --bundle --platform=node --format=cjs --external:sharp --outfile=dist/worker.cjs && esbuild src/main.ts --bundle --platform=node --format=cjs --outfile=dist/main.cjs && esbuild src/maintenance/initialize-catalog.ts --bundle --platform=node --format=cjs --outfile=dist/initialize-catalog.cjs && cp ../../docs/licenses/import-parser.txt dist/IMPORT-PARSER-LICENSES.txt && mkdir -p dist/report-fonts && cp assets/report-fonts/* dist/report-fonts/ && cp ../../docs/licenses/pdf-report.txt dist/PDF-REPORT-LICENSES.txt
+
+
+  dist/worker.cjs  11.0mb ⚠️
+
+⚡ Done in 202ms
+
+  dist/main.cjs  5.2kb
+
+⚡ Done in 3ms
+
+  dist/initialize-catalog.cjs  6.2mb ⚠️
+
+⚡ Done in 75ms

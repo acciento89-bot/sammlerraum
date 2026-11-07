@@ -1,0 +1,19 @@
+packages/email/package.json 14ms
+packages/email/src/smtp-provider.test.ts 35ms
+packages/email/src/smtp-provider.ts 11ms
+packages/email/src/templates.ts 5ms
+packages/email/src/types.ts 3ms
+packages/config/src/server.ts 18ms
+packages/config/src/server.test.ts 12ms (unchanged)
+packages/config/src/notification-email.test.ts 2ms
+apps/worker/src/jobs/send-email.integration.test.ts 10ms
+apps/worker/src/jobs/send-email.test.ts 4ms
+apps/worker/src/jobs/send-email.ts 4ms
+apps/worker/src/jobs/notification-email-dispatcher.test.ts 2ms
+apps/worker/src/jobs/notification-email-dispatcher.ts 2ms
+apps/worker/src/jobs/notification-email-repository.ts 11ms
+apps/worker/src/main.ts 7ms (unchanged)
+apps/worker/src/main.test.ts 9ms
+apps/worker/src/run.ts 8ms
+apps/worker/package.json 1ms (unchanged)
+.github/workflows/ci.yml 18ms (unchanged)
