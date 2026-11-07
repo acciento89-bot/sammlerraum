@@ -272,7 +272,7 @@ git commit -m "feat: add private insurance records"
 **Interfaces:**
 - Produces: `InsuranceReportOptions`, PDF asset.
 
-- [ ] **Step 1: Write failing default-exclusion test**
+- [x] **Step 1: Write failing default-exclusion test**
 
 ```ts
 it("excludes sensitive fields unless explicitly selected", async () => {
@@ -283,16 +283,16 @@ it("excludes sensitive fields unless explicitly selected", async () => {
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run apps/worker/src/jobs/build-insurance-report.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement report generation**
+- [x] **Step 3: Implement report generation**
 
 Generate snapshot metadata with `reportAsOf`, selected fields, item images, values, and explicitly selected proofs. Persist report as protected media asset.
 
-- [ ] **Step 4: Run tests/build**
+- [x] **Step 4: Run tests/build**
 
 Run:
 ```bash
@@ -302,7 +302,7 @@ pnpm --filter @sammlerraum/web build
 
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/domain/src/reports apps/worker/src/jobs/build-insurance-report* apps/web/src/app/api/v1/reports

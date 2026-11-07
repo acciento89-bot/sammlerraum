@@ -1,0 +1,27 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| apps/worker/src/jobs/build-insurance-report.test.ts (6 tests | 1 failed) 866ms
+   ✓ excludes every sensitive report field unless explicitly selected 6ms
+   ✓ accepts explicit note/location selection while preserving as-of and canonical item values 1ms
+   ✓ rejects hidden paths, owner overrides and implicitly selected private proofs 1ms
+   ✓ creates a complete readable A4 PDF from the explicitly selected model 105ms
+   × renders a real multipage Unicode/image preview and verifies it with independent PDF tools 627ms
+     → expected 492 to be greater than 1000
+   ✓ refuses wrong selected asset bytes and over-budget PDFs without returning a partial document 125ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/worker/src/jobs/build-insurance-report.test.ts > renders a real multipage Unicode/image preview and verifies it with independent PDF tools
+AssertionError: expected 492 to be greater than 1000
+ ❯ apps/worker/src/jobs/build-insurance-report.test.ts:23:322
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 5 passed (6)
+   Start at  00:15:42
+   Duration  1.71s (transform 173ms, setup 8ms, collect 547ms, tests 866ms, environment 0ms, prepare 70ms)
+

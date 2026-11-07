@@ -1,0 +1,31 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/reports/report-service.integration.test.ts (4 tests | 4 skipped) 200ms
+   ↓ actual selected private report source > captures only owned basic fields by default even when private insurance and files exist
+   ↓ actual selected private report source > selects image and insurance value while excluding unselected policy references
+   ↓ actual selected private report source > requires exact owned current proof links inside the selected scope
+   ↓ actual selected private report source > creates only an owned durable PDF intent and rejects foreign collections
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/reports/report-service.integration.test.ts > actual selected private report source
+error: type "ReportJobStatus" does not exist
+ ❯ node_modules/.pnpm/pg@8.23.0/node_modules/pg/lib/client.js:694:17
+ ❯ createLegacyMoneyTestSchema packages/db/src/testing/legacy-money-schema.ts:29:7
+     27|     for (const name of (await readdir(migrations)).filter((n) => /^\d+…
+     28|       if (name === "20261106004500_legacy_money_provenance") await bef…
+     29|       await client.query(await readFile(new URL(`${name}/migration.sql…
+       |       ^
+     30|     }
+     31|     await client.query("COMMIT");
+ ❯ packages/domain/src/reports/report-service.integration.test.ts:11:31
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  4 skipped (4)
+   Start at  00:21:13
+   Duration  797ms (transform 211ms, setup 6ms, collect 396ms, tests 200ms, environment 0ms, prepare 53ms)
+

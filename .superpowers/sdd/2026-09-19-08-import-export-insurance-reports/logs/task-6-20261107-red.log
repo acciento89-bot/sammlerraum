@@ -1,0 +1,27 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/worker/src/jobs/build-insurance-report.test.ts [ apps/worker/src/jobs/build-insurance-report.test.ts ]
+Error: Cannot find module '../../../../packages/domain/src/reports/report-schema' imported from '/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/worker/src/jobs/build-insurance-report.test.ts'
+ ❯ apps/worker/src/jobs/build-insurance-report.test.ts:3:1
+      1| import {randomUUID} from 'node:crypto';
+      2| import {it,expect} from 'vitest';
+      3| import {buildReportModel,parseInsuranceReportOptions} from '../../../.…
+       | ^
+      4| import {buildInsuranceReport} from './build-insurance-report';
+      5| import {buildMoneyExportSnapshot} from '@sammlerraum/domain/money/mone…
+
+Caused by: Error: Failed to load url ../../../../packages/domain/src/reports/report-schema (resolved id: ../../../../packages/domain/src/reports/report-schema) in /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/worker/src/jobs/build-insurance-report.test.ts. Does the file exist?
+ ❯ loadAndTransform ../../../../SSK%20SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/node_modules/.pnpm/vite@7.3.6_@types+node@24.5.2_jiti@2.7.0/node_modules/vite/dist/node/chunks/config.js:22739:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  no tests
+   Start at  00:01:31
+   Duration  244ms (transform 22ms, setup 6ms, collect 0ms, tests 0ms, environment 0ms, prepare 49ms)
+

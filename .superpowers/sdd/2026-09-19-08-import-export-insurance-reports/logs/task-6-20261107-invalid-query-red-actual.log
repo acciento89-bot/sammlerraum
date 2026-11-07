@@ -1,0 +1,36 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| apps/web/src/lib/insurance-report-routes.integration.test.ts (3 tests | 1 failed) 300ms
+   ✓ actual private PDF request HTTP envelope > derives actor only from fresh auth and persists a private pending intent 82ms
+   × actual private PDF request HTTP envelope > rejects foreign origins before auth, foreign collections, owner overrides and duplicate JSON keys 8ms
+     → expected 500 to be 400 // Object.is equality
+   ✓ actual private PDF request HTTP envelope > requires a session and counts actual body bytes without trusting content length 2ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/web/src/lib/insurance-report-routes.integration.test.ts > actual private PDF request HTTP envelope > rejects foreign origins before auth, foreign collections, owner overrides and duplicate JSON keys
+AssertionError: expected 500 to be 400 // Object.is equality
+
+- Expected
++ Received
+
+- 400
++ 500
+
+ ❯ apps/web/src/lib/insurance-report-routes.integration.test.ts:93:105
+     91|           .status,
+     92|       ).toBe(400);
+     93|       expect((await f.handler.POST(request({scope:{kind:"ALL"},locale:…
+       |                                                                                                         ^
+     94|       expect(await db.$queryRaw`SELECT id FROM "ReportJob" WHERE "owne…
+     95|     });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 2 passed (3)
+   Start at  00:33:13
+   Duration  911ms (transform 202ms, setup 6ms, collect 383ms, tests 300ms, environment 0ms, prepare 37ms)
+

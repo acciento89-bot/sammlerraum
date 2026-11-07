@@ -1,0 +1,29 @@
+packages/contracts/src/reports.ts 54ms
+packages/contracts/package.json 11ms (unchanged)
+packages/domain/package.json 1ms (unchanged)
+packages/domain/src/reports/report-schema.ts 8ms
+packages/domain/src/reports/report-service.integration.test.ts 14ms
+packages/domain/src/reports/report-service.ts 19ms
+packages/domain/src/exports/export-service.ts 15ms
+packages/domain/src/search/search-read.ts 7ms (unchanged)
+apps/worker/src/jobs/build-insurance-report.test.ts 17ms
+apps/worker/src/jobs/build-insurance-report.ts 20ms
+apps/worker/src/jobs/insurance-report-dispatcher.test.ts 3ms
+apps/worker/src/jobs/insurance-report-dispatcher.ts 1ms
+apps/worker/src/jobs/insurance-report-repository.ts 1ms
+apps/worker/src/jobs/insurance-report-runtime.ts 8ms
+apps/worker/src/jobs/insurance-report.integration.test.ts 12ms
+apps/worker/src/jobs/private-artifact-dispatcher.ts 3ms (unchanged)
+apps/worker/src/jobs/private-artifact-repository.ts 10ms
+apps/worker/src/jobs/tabular-export-repository.ts 1ms
+apps/worker/src/jobs/tabular-export-dispatcher.ts 1ms
+apps/worker/src/main.ts 6ms (unchanged)
+apps/worker/src/main.test.ts 7ms
+apps/worker/src/run.ts 6ms
+apps/worker/src/run-wiring.test.ts 6ms
+apps/worker/package.json 1ms (unchanged)
+apps/web/src/lib/insurance-report-route-dependencies.ts 1ms
+apps/web/src/lib/insurance-report-routes.integration.test.ts 6ms
+apps/web/src/lib/insurance-report-routes.ts 3ms
+apps/web/src/app/api/v1/reports/insurance/route.ts 1ms
+.github/workflows/ci.yml 17ms (unchanged)

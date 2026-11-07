@@ -1,0 +1,10 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ✓ |workspace| apps/web/src/lib/insurance-report-routes.integration.test.ts (3 tests) 322ms
+
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+   Start at  00:32:29
+   Duration  1.03s (transform 204ms, setup 6ms, collect 450ms, tests 322ms, environment 0ms, prepare 55ms)
+

@@ -1,0 +1,24 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| apps/worker/src/jobs/build-insurance-report.test.ts (6 tests | 1 failed) 3114ms
+   ✓ excludes every sensitive report field unless explicitly selected 6ms
+   ✓ accepts explicit note/location selection while preserving as-of and canonical item values 1ms
+   ✓ rejects hidden paths, owner overrides and implicitly selected private proofs 1ms
+   ✓ creates a complete readable A4 PDF from the explicitly selected model 107ms
+   × renders a real multipage Unicode/image preview and verifies it with independent PDF tools 2872ms
+     → spawn pdftotext ENOENT
+   ✓ refuses wrong selected asset bytes and over-budget PDFs without returning a partial document 127ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/worker/src/jobs/build-insurance-report.test.ts > renders a real multipage Unicode/image preview and verifies it with independent PDF tools
+Error: spawn pdftotext ENOENT
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 5 passed (6)
+   Start at  00:12:13
+   Duration  3.90s (transform 169ms, setup 7ms, collect 514ms, tests 3.11s, environment 0ms, prepare 68ms)
+

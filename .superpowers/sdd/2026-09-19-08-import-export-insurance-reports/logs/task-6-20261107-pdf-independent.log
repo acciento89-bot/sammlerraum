@@ -1,0 +1,11 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ✓ |workspace| apps/worker/src/jobs/build-insurance-report.test.ts (6 tests) 1713ms
+   ✓ renders a real multipage Unicode/image preview and verifies it with independent PDF tools  1472ms
+
+ Test Files  1 passed (1)
+      Tests  6 passed (6)
+   Start at  00:14:31
+   Duration  2.52s (transform 169ms, setup 7ms, collect 514ms, tests 1.71s, environment 0ms, prepare 59ms)
+
