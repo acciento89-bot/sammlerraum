@@ -1,3 +1,5 @@
+import { Prisma } from "@sammlerraum/db/search-sql";
+import { runSearchRead, type SearchDatabase } from "./search-read";
 import { createSmartCollectionService } from "./smart-collection-service";
 import { createDashboardService } from "../dashboard/dashboard-service";
 import { randomUUID } from "node:crypto";
@@ -221,5 +223,117 @@ describe.runIf(process.env.RUN_DATABASE_INTEGRATION === "1")(
           .sort(),
       ).toEqual([f.a.id, f.c.id].sort());
     });
+    it("counts overlapping explicit pairs once per item and keeps one snapshot across concurrent unmark", async () => {
+      const f = await fixture();
+      await f.wishes.markDuplicateRelation(f.actor, f.a.id, f.b.id);
+      await f.wishes.markDuplicateRelation(f.actor, f.a.id, f.c.id);
+      expect((await f.search.searchItems(f.actor, { filter: filter(true) })).total).toBe(3);
+      await f.wishes.unmarkDuplicateRelation(f.actor, f.a.id, f.c.id);
+      let changed = false;
+      const measured: SearchDatabase = {
+        $transaction: (work, options) =>
+          db.$transaction(
+            (tx) =>
+              work({
+                $queryRaw: async <T>(sql: Prisma.Sql) => {
+                  const result = await tx.$queryRaw<T>(sql);
+                  if (!changed && sql.text.startsWith("SELECT count(*) AS total")) {
+                    changed = true;
+                    await f.wishes.unmarkDuplicateRelation(f.actor, f.a.id, f.b.id);
+                  }
+                  return result;
+                },
+              }),
+            options,
+          ),
+      };
+      const page = await createItemSearchService(measured).searchItems(f.actor, {
+        filter: filter(true),
+      });
+      expect(changed).toBe(true);
+      expect(page.total).toBe(2);
+      expect(page.items).toHaveLength(2);
+      expect((await f.search.searchItems(f.actor, { filter: filter(true) })).total).toBe(0);
+    });
+    it.each([1, 50, 500])(
+      "keeps duplicate query work bounded for %s owned items with native plans",
+      async (n) => {
+        const owner = randomUUID();
+        await db.user.create({
+          data: { id: owner, name: "Bounded duplicate fixture", email: `${owner}@example.invalid` },
+        });
+        const collection = await db.collection.create({
+          data: { ownerId: owner, name: "Bounded duplicate scope" },
+        });
+        const ids = Array.from({ length: n }, () => randomUUID());
+        await db.collectibleItem.createMany({
+          data: ids.map((id) => ({
+            id,
+            ownerId: owner,
+            collectionId: collection.id,
+            title: "Native bounded duplicate specimen",
+            quantity: 1,
+          })),
+        });
+        const pairs = Array.from({ length: Math.floor(n / 2) }, (_, i) =>
+          [ids[i * 2]!, ids[i * 2 + 1]!].sort(),
+        );
+        if (pairs.length)
+          await db.duplicateRelation.createMany({
+            data: pairs.map(([a, b]) => ({ ownerId: owner, itemAId: a!, itemBId: b! })),
+          });
+        const queries: Prisma.Sql[] = [];
+        const measured: SearchDatabase = {
+          $transaction: (work, options) =>
+            db.$transaction(
+              (tx) =>
+                work({
+                  $queryRaw: async <T>(sql: Prisma.Sql) => {
+                    queries.push(sql);
+                    return tx.$queryRaw<T>(sql);
+                  },
+                }),
+              options,
+            ),
+        };
+        const result = [];
+        for (const value of [true, false]) {
+          const before = queries.length,
+            start = performance.now();
+          const page = await createItemSearchService(measured).searchItems(
+            { userId: owner },
+            { filter: filter(value), limit: 1 },
+          );
+          const expected = value ? Math.floor(n / 2) * 2 : n % 2;
+          expect(page.total).toBe(expected);
+          expect(page.items).toHaveLength(Math.min(expected, 1));
+          expect(queries.length - before).toBe(11);
+          result.push({
+            value,
+            total: page.total,
+            elapsedMs: performance.now() - start,
+            rawCallsIncludingConfiguration: queries.length - before,
+          });
+        }
+        const plans = await runSearchRead(db, async (tx) => {
+          const output = [];
+          for (const sql of queries.filter(
+            (q) =>
+              q.text.startsWith("SELECT count(*) AS total") ||
+              q.text.startsWith("SELECT i.id,i.title"),
+          )) {
+            output.push({
+              query: sql.text,
+              plan: await tx.$queryRaw(Prisma.sql`EXPLAIN (ANALYZE,BUFFERS,FORMAT JSON) ${sql}`),
+            });
+          }
+          return output;
+        });
+        console.info(
+          "DUPLICATE_QUERY_PROOF",
+          JSON.stringify({ ownedItems: n, explicitPairs: pairs.length, results: result, plans }),
+        );
+      },
+    );
   },
 );
