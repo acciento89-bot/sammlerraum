@@ -1,0 +1,2 @@
+# SDD ledger — plan: docs/superpowers/plans/2026-11-08-shared-search-integration.md
+Task 1: complete (commits d331efb..0445506, tests: npm exec --yes --package=node@24.19.0 --package=pnpm@10.17.1 -- pnpm exec vitest run packages/domain/src/sharing packages/domain/src/collaboration packages/domain/src/authz/policy.test.ts packages/domain/src/search/scoped-read-context.test.ts --maxWorkers=1 →    Duration  11.10s (transform 395ms, setup 11ms, collect 1.65s, tests 8.31s, environment 1ms, prepare 281ms))

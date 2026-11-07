@@ -1,0 +1,21 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ✓ |workspace| packages/domain/src/collaboration/membership-service.test.ts (34 tests) 2000ms
+ ✓ |workspace| packages/domain/src/sharing/share-service.test.ts (19 tests) 1324ms
+ ✓ |workspace| packages/domain/src/search/scoped-read-context.test.ts (9 tests) 971ms
+   ✓ callback-scoped bulk read authority > rechecks wall-clock expiry after asynchronous consumption  323ms
+ ✓ |workspace| packages/domain/src/sharing/share-read-access.test.ts (3 tests) 571ms
+ ✓ |workspace| packages/domain/src/authz/policy.test.ts (25 tests) 4ms
+ ✓ |workspace| packages/domain/src/collaboration/collection-authoring-service.test.ts (2 tests) 469ms
+ ✓ |workspace| packages/domain/src/collaboration/invitation-service.test.ts (25 tests) 1884ms
+   ✓ actual recipient-bound invitations > rolls back a token that expires during the real acceptance transaction with a closed expiry result  519ms
+   ✓ actual recipient-bound invitations > maps the actual database expiry guard even when expiry happens inside the consuming SQL statement  378ms
+ ✓ |workspace| packages/domain/src/collaboration/item-authoring-service.test.ts (6 tests) 584ms
+ ✓ |workspace| packages/domain/src/collaboration/management-service.test.ts (3 tests) 502ms
+
+ Test Files  9 passed (9)
+      Tests  126 passed (126)
+   Start at  00:23:35
+   Duration  11.10s (transform 395ms, setup 11ms, collect 1.65s, tests 8.31s, environment 1ms, prepare 281ms)
+

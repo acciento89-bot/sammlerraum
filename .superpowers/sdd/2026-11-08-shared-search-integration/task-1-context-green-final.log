@@ -1,0 +1,14 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ✓ |workspace| packages/domain/src/search/scoped-read-context.test.ts (6 tests) 860ms
+   ✓ callback-scoped bulk read authority > rechecks wall-clock expiry after asynchronous consumption  325ms
+ ✓ |workspace| packages/domain/src/collaboration/membership-service.test.ts (34 tests) 2030ms
+ ✓ |workspace| packages/domain/src/sharing/share-service.test.ts (19 tests) 1331ms
+ ✓ |workspace| packages/domain/src/sharing/share-read-access.test.ts (3 tests) 571ms
+
+ Test Files  4 passed (4)
+      Tests  62 passed (62)
+   Start at  00:21:48
+   Duration  6.35s (transform 355ms, setup 7ms, collect 995ms, tests 4.79s, environment 0ms, prepare 132ms)
+
