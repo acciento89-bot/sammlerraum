@@ -861,8 +861,10 @@ async function lockSubject(
     );
     if (rows.length !== 1) return legacyMoneyFail("MONEY_NOT_FOUND");
   } else {
+    // The subsequent subject lock is exclusive on this parent. Acquire that strength first:
+    // two independent classification transactions must never hold SHARE then both upgrade.
     await tx.$queryRaw(
-      Prisma.sql`SELECT c.id FROM "Collection" c WHERE c."ownerId"=${user} AND c."deletedAt" IS NULL AND c.id=(SELECT i."collectionId" FROM "CollectibleItem" i WHERE i.id=${s.itemId}::uuid AND i."ownerId"=${user} AND i."deletedAt" IS NULL) FOR SHARE OF c`,
+      Prisma.sql`SELECT c.id FROM "Collection" c WHERE c."ownerId"=${user} AND c."deletedAt" IS NULL AND c.id=(SELECT i."collectionId" FROM "CollectibleItem" i WHERE i.id=${s.itemId}::uuid AND i."ownerId"=${user} AND i."deletedAt" IS NULL) FOR UPDATE OF c`,
     );
     const rows = await tx.$queryRaw<Array<{ id: string }>>(Prisma.sql`
    SELECT i.id FROM "CollectibleItem" i JOIN "Collection" c ON c.id=i."collectionId" AND c."ownerId"=i."ownerId"

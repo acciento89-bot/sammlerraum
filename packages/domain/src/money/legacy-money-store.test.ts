@@ -1,3 +1,4 @@
+import type { SearchDatabase } from "../search/search-read";
 import { randomUUID } from "node:crypto";
 import { beforeAll, afterAll, describe, expect, it } from "vitest";
 import { createLegacyMoneyTestSchema } from "@sammlerraum/db/test-legacy-money-schema";
@@ -495,6 +496,70 @@ describe.runIf(enabled)("legacy money real Prisma transaction store", () => {
     expect(current.factToken).toBe(view.factToken);
   });
 
+  it("settles simultaneous parent lock upgrades as one classification and one genuine stale-token conflict", async () => {
+    const f = await fixture(),
+      current = await runSearchTransaction(db, (tx) =>
+        readMoneyFact(tx, f.subject, { userId: f.actor }),
+      );
+    let acquired = 0,
+      release!: () => void;
+    const bothShared = new Promise<void>((resolve) => {
+      release = resolve;
+    });
+    const guarded: SearchDatabase = {
+      $transaction: (work, options) =>
+        db.$transaction(
+          (tx) =>
+            work({
+              $queryRaw: async <T>(query: Prisma.Sql): Promise<T> => {
+                const result = await tx.$queryRaw<T>(query),
+                  sql = query.strings.join("?");
+                // A real shared-parent upgrade must not be mistaken for a stale-token conflict.
+                // Hold both actual old SHARE locks together; an exclusive parent-first writer needs no upgrade.
+                if (
+                  sql.includes('c.id=(SELECT i."collectionId"') &&
+                  sql.includes("FOR SHARE OF c")
+                ) {
+                  acquired++;
+                  if (acquired >= 2) release();
+                  await bothShared;
+                }
+                return result;
+              },
+            }),
+          options,
+        ),
+    };
+    try {
+      const results = await Promise.allSettled(
+        [1, 2].map((n) =>
+          runSearchTransaction(guarded, async (tx) => {
+            const fact = await requireMoneyToken(
+              tx,
+              f.subject,
+              { userId: f.actor },
+              current.factToken,
+            );
+            return appendMoneyAssertion(tx, fact, {
+              kind: "CLASSIFY",
+              input: {
+                expectedFactToken: current.factToken,
+                exponent: 0,
+                unit: { kind: "SUPPORTED", unitKey: "iso4217-2026-09-17:AFN" },
+                evidence: { category: "OWNER_ATTESTATION", reason: `Actual upgrade race ${n}` },
+              },
+            });
+          }),
+        ),
+      );
+      expect(results.filter((row) => row.status === "fulfilled")).toHaveLength(1);
+      expect(results.find((row) => row.status === "rejected")).toMatchObject({
+        reason: { code: "MONEY_CONFLICT" },
+      });
+    } finally {
+      release();
+    }
+  });
   it("detects equal-value ABA raw writes and serializes concurrent classifications", async () => {
     const f = await fixture(),
       old = await runSearchTransaction(db, (tx) =>
