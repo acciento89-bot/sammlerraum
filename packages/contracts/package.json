@@ -47,7 +47,8 @@
     "./scoped-dashboard": "./src/scoped-dashboard.ts",
     "./ai": "./src/ai.ts",
     "./billing": "./src/billing.ts",
-    "./billing-ui": "./src/billing-ui.ts"
+    "./billing-ui": "./src/billing-ui.ts",
+    "./search-indexing": "./src/search-indexing.ts"
   },
   "scripts": {
     "build": "pnpm typecheck",

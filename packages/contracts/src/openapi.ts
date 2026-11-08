@@ -1,3 +1,8 @@
+import {
+  SearchPreferenceInput,
+  SearchPreferenceReadResponse,
+  SearchPreferenceWriteResponse,
+} from "./search-indexing";
 import { z } from "zod";
 
 import { PublicProfileSchema } from "./profile";
@@ -69,6 +74,20 @@ const RevokeAccountSessionSchema = z
     description: "Stable identifier of the owned session to revoke.",
   });
 
+SearchPreferenceInput.register(schemaRegistry, {
+  id: "SearchPreferenceInput",
+  description:
+    "Explicit owner search indexing consent, preferred public locale and expected revision. No client owner identity.",
+});
+SearchPreferenceReadResponse.register(schemaRegistry, {
+  id: "SearchPreferenceReadResponse",
+  description: "Own preference, or null before profile creation. Never a public profile field.",
+});
+SearchPreferenceWriteResponse.register(schemaRegistry, {
+  id: "SearchPreferenceWriteResponse",
+  description: "Updated own preference with incremented revision.",
+});
+
 const schemaReference = (name: string) => ({ $ref: `#/components/schemas/${name}` });
 const errorResponse = (description: string, schema = "ApiError") => ({
   description,
@@ -102,6 +121,66 @@ export function buildOpenApiDocument({
     openapi: "3.1.0",
     info: { title: "Sammlerraum API", version: "1.0.0" },
     paths: {
+      "/api/v1/account/search-indexing": {
+        get: {
+          operationId: "readOwnSearchIndexingPreference",
+          summary: "Read the fresh authenticated owner's private search preference",
+          security: [{ sessionCookie: [] }],
+          responses: {
+            "200": {
+              description: "Own preference",
+              headers: { "Cache-Control": { schema: { type: "string", const: "no-store" } } },
+              content: {
+                "application/json": { schema: schemaReference("SearchPreferenceReadResponse") },
+              },
+            },
+            "401": errorResponse("Authentication required"),
+            "500": errorResponse("Unexpected server error"),
+          },
+        },
+        put: {
+          operationId: "updateOwnSearchIndexingPreference",
+          summary:
+            "Save explicit owner consent with expected revision; privacy controls have no paid-plan gate",
+          security: [{ sessionCookie: [] }],
+          parameters: [
+            {
+              in: "header",
+              name: "Origin",
+              required: true,
+              schema: { type: "string", enum: [new URL(appOrigin).origin] },
+            },
+          ],
+          requestBody: {
+            required: true,
+            content: { "application/json": { schema: schemaReference("SearchPreferenceInput") } },
+          },
+          responses: {
+            "200": {
+              description: "Preference saved",
+              headers: { "Cache-Control": { schema: { type: "string", const: "no-store" } } },
+              content: {
+                "application/json": { schema: schemaReference("SearchPreferenceWriteResponse") },
+              },
+            },
+            "400": {
+              description: "Malformed JSON or invalid strict input",
+              content: {
+                "application/json": {
+                  schema: {
+                    oneOf: [schemaReference("ApiError"), schemaReference("ApiValidationError")],
+                  },
+                },
+              },
+            },
+            "401": errorResponse("Authentication required"),
+            "403": errorResponse("Exact Origin required"),
+            "404": errorResponse("Own profile not found"),
+            "409": errorResponse("Preference changed; reload and explicitly review consent"),
+            "500": errorResponse("Unexpected server error"),
+          },
+        },
+      },
       "/api/v1/account/sessions": {
         get: {
           operationId: "listAccountSessions",

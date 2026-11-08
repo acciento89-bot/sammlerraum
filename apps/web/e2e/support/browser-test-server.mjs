@@ -178,9 +178,11 @@ const next = spawn(
       // Read-only marketing proof deliberately uses a different ordinary runtime origin
       // from the build. No application policy or handler is replaced.
       APP_ORIGIN:
-        process.env.RUN_MARKETING_E2E === "1"
-          ? "https://runtime-seo.example.test"
-          : "http://localhost:3000",
+        process.env.RUN_SEO_RELEASE_E2E === "1"
+          ? "https://sammlerraum.de"
+          : process.env.RUN_MARKETING_E2E === "1"
+            ? "https://runtime-seo.example.test"
+            : "http://localhost:3000",
       NODE_EXTRA_CA_CERTS: certificatePath,
       // Avoid DNS resolution of localhost escaping the synthetic loopback mail fixture.
       SMTP_HOST: "127.0.0.1",

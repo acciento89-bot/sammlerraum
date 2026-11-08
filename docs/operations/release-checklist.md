@@ -30,3 +30,9 @@ This checklist separates tested source, production-like containers and actual pu
 - Verify the full approved user-facing configuration and real service integrations using authorized own accounts/data; never make a real purchase, send to customers or activate paid providers merely to fill a test checkbox.
 - Run the SEO/privacy/Lighthouse/Search Console gates from Phase14, including explicit default-off public indexing, real canonicals/sitemaps/social previews and actual authorized domain ownership evidence. Never submit private/unlisted/token/account URLs for indexing.
 - Only then mark the corresponding production tasks complete and report actual availability. A TLS/hostname error or unavailable production page remains a blocker even when source tests pass.
+
+## SEO source and owner-account gates
+
+- Mandatory exact-source CI includes bilingual marketing/consent/sitemap/public-indexability/category/schema/PNG browser gates and the three-run six-URL Lighthouse thresholds. Preserve the repository public-seo-evidence artifact (synthetic public-page proof only).
+- Follow [google-search-console.md](google-search-console.md) for owned privacy fixtures, live GET-only verification and the separate actual Domain Property/TXT/sitemap-processing/inspection receipts. Missing fixtures or an incomplete verification budget is a failed gate, never a sampled complete result.
+- Keep verification TXT values and the own-fixture manifest outsideGit. Private/unlisted/token/customer records must never be submitted for indexing to make a checklist green.

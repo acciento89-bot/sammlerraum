@@ -1,15 +1,14 @@
-import { z } from "zod";
+import {
+  SearchPreferenceInput,
+  type SearchPreference,
+} from "@sammlerraum/contracts/search-indexing";
+export {
+  SearchPreferenceInput,
+  type SearchPreference,
+} from "@sammlerraum/contracts/search-indexing";
 import { Prisma } from "@sammlerraum/db/search-sql";
 import { communityActor, communityTransaction } from "../community/community-transaction";
 import type { CommunityDatabase } from "../community/social-service";
-export const SearchPreferenceInput = z
-  .object({
-    searchEngineIndexingEnabled: z.boolean(),
-    publicLocale: z.enum(["de", "en"]),
-    revision: z.number().int().min(0).max(2147483646),
-  })
-  .strict();
-export type SearchPreference = z.infer<typeof SearchPreferenceInput>;
 export class SearchPreferenceError extends Error {
   constructor(readonly code: "NOT_FOUND" | "CONFLICT") {
     super(code);

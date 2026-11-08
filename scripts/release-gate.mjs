@@ -5,6 +5,7 @@ import { mkdirSync, writeFileSync } from "node:fs";
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const repo = "acciento89-bot/sammlerraum";
 export const requiredSteps = Object.freeze([
+  "Verify read-only SEO release verifier against actual compiled web application",
   "Verify bilingual marketing metadata on desktop and mobile",
   "Verify explicit owner search indexing controls on desktop and mobile",
   "Verify dynamic private-safe sitemap protocol",

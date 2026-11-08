@@ -23,6 +23,7 @@ export default defineConfig({
     baseURL: "http://localhost:3000",
   },
   projects: [
+    { name: "seo-release-api", testMatch: "**/seo-release-verifier.spec.ts" },
     {
       name: "seo-desktop",
       testMatch: [
