@@ -69,7 +69,13 @@ export async function PublicCollector({
             {data.items.map((i) => (
               <article className="community-card" key={i.id}>
                 {i.imageAssetId && (
-                  <img src={`/api/v1/media/${i.imageAssetId}/medium`} alt="" loading="lazy" />
+                  <img
+                    src={`/api/v1/media/${i.imageAssetId}/medium`}
+                    alt=""
+                    width={800}
+                    height={600}
+                    loading="lazy"
+                  />
                 )}
                 <h3>
                   <Link href={`${home}/${data.collection.slug}/items/${i.id}`}>{i.title}</Link>
@@ -92,7 +98,12 @@ export async function PublicCollector({
       {"item" in data && (
         <article className="community-card">
           {data.item.imageAssetId && (
-            <img src={`/api/v1/media/${data.item.imageAssetId}/medium`} alt="" />
+            <img
+              src={`/api/v1/media/${data.item.imageAssetId}/medium`}
+              alt=""
+              width={800}
+              height={600}
+            />
           )}
           {data.item.publicDescription && (
             <p className="community-body">{data.item.publicDescription}</p>

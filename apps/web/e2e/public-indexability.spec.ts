@@ -106,6 +106,16 @@ for (const locale of ["de", "en"] as const)
           `${origin}/${locale}/opengraph-image`,
         );
       }
+      // Actual compiled navigation must keep the resource, including in both directions.
+      for (const path of [profilePath, collectionPath, itemPath]) {
+        await page.goto(path + "?token=synthetic-no-copy");
+        const other = locale === "de" ? "en" : "de";
+        const target = path.replace(/^\/(de|en)/u, `/${other}`);
+        await page.locator(`.language-nav a[hreflang="${other}"]`).click();
+        await expect(page).toHaveURL(origin + target);
+        await page.locator(`.language-nav a[hreflang="${locale}"]`).click();
+        await expect(page).toHaveURL(origin + path);
+      }
       await page.goto(itemPath + "?utm_source=synthetic&token=not-a-share-token");
       await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
         "href",
@@ -153,6 +163,85 @@ for (const locale of ["de", "en"] as const)
       });
       expect((await page.goto(collectionPath))?.status()).toBe(404);
     } finally {
+      await cleanupSearchFixture(f);
+    }
+  });
+
+for (const locale of ["de", "en"] as const)
+  test(`${locale}: public collection and item images reserve space while an authorized image is delayed`, async ({
+    page,
+  }) => {
+    test.skip(!enabled || process.env.RUN_SEO_E2E !== "1", "Guarded owned public image fixture");
+    const f = await searchFixture(),
+      handle = `image-${randomUUID()}`;
+    let release: (() => void) | undefined;
+    try {
+      await db!.userProfile.create({
+        data: { userId: f.ownerId, handle, displayName: "Owned image collector" },
+      });
+      await db!.collection.update({
+        where: { id: f.collectionId },
+        data: { visibility: "PUBLIC" },
+      });
+      await db!.collectibleItem.update({
+        where: { id: f.itemId },
+        data: { visibility: "PUBLIC", publicDescription: "Owned public image story" },
+      });
+      const asset = await db!.mediaAsset.create({
+        data: {
+          ownerId: f.ownerId,
+          kind: "IMAGE",
+          status: "READY",
+          storageKey: `owned-seo-test/${randomUUID()}`,
+          mimeType: "image/png",
+          byteSize: 68n,
+          checksumSha256: "0".repeat(64),
+          originalFileName: "owned.png",
+          width: 1,
+          height: 1,
+        },
+      });
+      await db!.mediaLink.create({
+        data: { assetId: asset.id, ownerId: f.ownerId, itemId: f.itemId, position: 0 },
+      });
+      for (const suffix of ["", `/items/${f.itemId}`]) {
+        const delayed = new Promise<void>((resolve) => {
+          release = resolve;
+        });
+        await page.route(`**/api/v1/media/${asset.id}/medium`, async (route) => {
+          await delayed;
+          await route.fulfill({
+            contentType: "image/png",
+            body: Buffer.from(
+              "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+a5HcAAAAASUVORK5CYII=",
+              "base64",
+            ),
+          });
+        });
+        await page.goto(`/${locale}/@${handle}/collection-${f.collectionId}${suffix}`, {
+          waitUntil: "domcontentloaded",
+        });
+        const image = page.locator(`.public-collector img[src*="${asset.id}"]`);
+        await expect(image).toBeVisible();
+        await page.evaluate(() => document.fonts.ready);
+        const before = await image.boundingBox();
+        const following = image.locator("xpath=following-sibling::*[1]");
+        const beforeText = await following.boundingBox();
+        expect(before!.height).toBeGreaterThan(80);
+        release!();
+        await expect
+          .poll(() => image.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0))
+          .toBe(true);
+        const after = await image.boundingBox(),
+          afterText = await following.boundingBox();
+        expect(Math.abs(after!.height - before!.height)).toBeLessThan(1);
+        expect(Math.abs(afterText!.y - beforeText!.y)).toBeLessThan(1);
+        await page.unroute(`**/api/v1/media/${asset.id}/medium`);
+      }
+    } finally {
+      release?.();
+      await db!.mediaLink.deleteMany({ where: { ownerId: f.ownerId } });
+      await db!.mediaAsset.deleteMany({ where: { ownerId: f.ownerId } });
       await cleanupSearchFixture(f);
     }
   });

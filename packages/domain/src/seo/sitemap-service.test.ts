@@ -3,6 +3,10 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { createTestDatabaseClient } from "@sammlerraum/db/test-database";
 import { createLegacyMoneyTestSchema } from "@sammlerraum/db/test-legacy-money-schema";
 import { createItemService } from "../items/item-service";
+import { Prisma } from "@sammlerraum/db/search-sql";
+import { publicItemPredicate } from "../community/social-scope";
+import { writeFile, mkdir } from "node:fs/promises";
+import { resolve } from "node:path";
 import { createCommunitySitemapService } from "./sitemap-service";
 describe.runIf(process.env.RUN_DATABASE_INTEGRATION === "1")(
   "actual privacy-safe bounded community sitemaps",
@@ -191,18 +195,42 @@ describe.runIf(process.env.RUN_DATABASE_INTEGRATION === "1")(
         const id = randomUUID();
         if (createHash("md5").update(id).digest("hex").startsWith("a")) ids.push(id);
       }
+      let parentId: string | null = null;
+      for (let depth = 0; depth < 8; depth++) {
+        const node: { id: string } = await db.collectionNode.create({
+          data: {
+            collectionId: f.c.id,
+            parentId,
+            name: `Public scale depth ${depth}`,
+            visibility: "PUBLIC",
+          },
+        });
+        parentId = node.id;
+      }
       for (let n = 0; n < ids.length; n += 500)
         await db.collectibleItem.createMany({
           data: ids.slice(n, n + 500).map((id) => ({
             id,
             ownerId: f.who,
             collectionId: f.c.id,
+            nodeId: parentId,
             title: "Owned scale fixture",
             visibility: "PUBLIC" as const,
           })),
         });
       await expect(f.service.getIndexableCommunityPage("i-a")).rejects.toThrow("segment changed");
+      const started = performance.now();
       const index = await f.service.listSegments();
+      const discoveryMs = performance.now() - started;
+      const plan = await db.$queryRaw(
+        Prisma.sql`EXPLAIN (ANALYZE, BUFFERS, FORMAT JSON) SELECT i.id FROM "UserProfile" p JOIN "CollectibleItem" i ON i."ownerId"=p."userId" JOIN "Collection" c ON c.id=i."collectionId" WHERE p."searchEngineIndexingEnabled"=true AND ${publicItemPredicate} AND md5(i.id::text) COLLATE "C">='a' AND md5(i.id::text) COLLATE "C"<'ag' ORDER BY md5(i.id::text) COLLATE "C",i.id LIMIT 10001`,
+      );
+      const folder = resolve(".superpowers/sdd/2026-09-19-14-seo-search-console");
+      await mkdir(folder, { recursive: true });
+      await writeFile(
+        resolve(folder, "review-sitemap-scale-latest.json"),
+        JSON.stringify({ fixture: { items: 10001, ancestorDepth: 8 }, discoveryMs, plan }, null, 2),
+      );
       expect(index).not.toContain("i-a");
       const split = index.filter((p) => p.startsWith("i-a"));
       expect(split.length).toBeGreaterThan(1);

@@ -54,30 +54,31 @@ export function createCommunitySitemapService(db: CommunityDatabase) {
   return {
     async listSegments(pageSize = 10000): Promise<string[]> {
       size(pageSize);
-      return communityTransaction(db, async (tx) => {
-        const leaves: string[] = [];
-        for (const kind of ["p", "c", "i"] as const) {
-          const s = source(kind),
-            hash = Prisma.sql`md5(${s.id})`,
-            queue = [""];
-          while (queue.length) {
-            if (queue.length + leaves.length > maxSegments)
-              throw new Error("Sitemap index capacity exceeded");
-            const prefix = queue.shift()!;
-            const rows = await tx.$queryRaw<{ prefix: string; count: bigint }[]>(
-              Prisma.sql`SELECT substring(${hash},1,${prefix.length + 1}) AS prefix, count(*)::bigint AS count FROM ${s.from} WHERE p."searchEngineIndexingEnabled"=true AND ${s.effective} ${range(hash, prefix)} GROUP BY 1 ORDER BY 1`,
-            );
-            for (const row of rows) {
-              if (row.count > BigInt(pageSize)) {
-                if (row.prefix.length >= 32) throw new Error("Sitemap hash range exhausted");
-                queue.push(row.prefix);
-              } else leaves.push(`${kind}-${row.prefix}`);
-            }
-          }
+      const leaves: string[] = [];
+      for (const kind of ["p", "c", "i"] as const) {
+        const s = source(kind),
+          hash = Prisma.sql`md5(${s.id})`;
+        // Start with real hash ranges: never count the global eligible population.
+        const queue = [..."0123456789abcdef"];
+        while (queue.length) {
+          if (queue.length + leaves.length > maxSegments)
+            throw new Error("Sitemap index capacity exceeded");
+          const prefix = queue.shift()!;
+          // Every probe has its own normal read deadlines. LIMIT stops eligibility/
+          // ancestor checks after the split threshold; no exact aggregate is needed.
+          const rows = await communityTransaction(db, (tx) =>
+            tx.$queryRaw<{ id: string }[]>(
+              Prisma.sql`SELECT ${s.id} AS id FROM ${s.from} WHERE p."searchEngineIndexingEnabled"=true AND ${s.effective} ${range(hash, prefix)} ORDER BY (${hash}) COLLATE "C", ${s.id} LIMIT ${pageSize + 1}`,
+            ),
+          );
+          if (rows.length > pageSize) {
+            if (prefix.length >= 32) throw new Error("Sitemap hash range exhausted");
+            queue.push(...[..."0123456789abcdef"].map((child) => prefix + child));
+          } else if (rows.length) leaves.push(`${kind}-${prefix}`);
         }
-        if (leaves.length > maxSegments) throw new Error("Sitemap index capacity exceeded");
-        return leaves.sort();
-      });
+      }
+      if (leaves.length > maxSegments) throw new Error("Sitemap index capacity exceeded");
+      return leaves.sort();
     },
     async getIndexableCommunityPage(
       page: string,

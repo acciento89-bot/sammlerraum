@@ -1,4 +1,5 @@
 "use client";
+import { publicCollectorLocaleHref } from "../../seo/public-collector-locale";
 import { categoryLocaleHref } from "../../seo/category-routes";
 import { marketingLocaleHref } from "../../seo/public-pages";
 import { billingLocaleHref } from "../billing/billing-locale-navigation";
@@ -44,6 +45,7 @@ export function LocaleNavigation({ locale }: { locale: string }) {
         <Link
           key={language}
           href={
+            publicCollectorLocaleHref(pathname ?? "", language, moneySearch) ??
             categoryLocaleHref(pathname ?? "", language) ??
             marketingLocaleHref(pathname ?? "", language) ??
             billingLocaleHref(pathname ?? "", language) ??
