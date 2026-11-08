@@ -28,7 +28,6 @@ function source(kind: Kind) {
     return {
       from: Prisma.sql`"UserProfile" p`,
       id: Prisma.sql`p."userId"`,
-      coarse: Prisma.sql`true`,
       effective: Prisma.sql`true`,
       fields: Prisma.sql`NULL::text AS "collectionId", NULL::text AS "itemId", p."updatedAt" AS "lastModified"`,
     };
@@ -36,14 +35,12 @@ function source(kind: Kind) {
     return {
       from: Prisma.sql`"UserProfile" p JOIN "Collection" c ON c."ownerId"=p."userId"`,
       id: Prisma.sql`c.id::text`,
-      coarse: Prisma.sql`c.visibility='PUBLIC' AND c."deletedAt" IS NULL`,
       effective: Prisma.sql`c.visibility='PUBLIC' AND c."deletedAt" IS NULL`,
       fields: Prisma.sql`c.id::text AS "collectionId", NULL::text AS "itemId", greatest(p."updatedAt",c."updatedAt") AS "lastModified"`,
     };
   return {
     from: Prisma.sql`"UserProfile" p JOIN "CollectibleItem" i ON i."ownerId"=p."userId" JOIN "Collection" c ON c.id=i."collectionId"`,
     id: Prisma.sql`i.id::text`,
-    coarse: Prisma.sql`i.visibility='PUBLIC' AND i."deletedAt" IS NULL AND c.visibility='PUBLIC' AND c."deletedAt" IS NULL AND i."ownerId"=c."ownerId"`,
     effective: publicItemPredicate,
     fields: Prisma.sql`c.id::text AS "collectionId", i.id::text AS "itemId", greatest(p."updatedAt",c."updatedAt",i."updatedAt") AS "lastModified"`,
   };
@@ -68,7 +65,7 @@ export function createCommunitySitemapService(db: CommunityDatabase) {
               throw new Error("Sitemap index capacity exceeded");
             const prefix = queue.shift()!;
             const rows = await tx.$queryRaw<{ prefix: string; count: bigint }[]>(
-              Prisma.sql`SELECT substring(${hash},1,${prefix.length + 1}) AS prefix, count(*)::bigint AS count FROM ${s.from} WHERE p."searchEngineIndexingEnabled"=true AND ${s.coarse} ${range(hash, prefix)} GROUP BY 1 ORDER BY 1`,
+              Prisma.sql`SELECT substring(${hash},1,${prefix.length + 1}) AS prefix, count(*)::bigint AS count FROM ${s.from} WHERE p."searchEngineIndexingEnabled"=true AND ${s.effective} ${range(hash, prefix)} GROUP BY 1 ORDER BY 1`,
             );
             for (const row of rows) {
               if (row.count > BigInt(pageSize)) {

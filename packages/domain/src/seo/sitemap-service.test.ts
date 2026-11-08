@@ -155,6 +155,35 @@ describe.runIf(process.env.RUN_DATABASE_INTEGRATION === "1")(
       for (const page of first.pages)
         expect((await f.service.getIndexableCommunityPage(page, 2)).length).toBeLessThanOrEqual(2);
     });
+    it("does not advertise a sitemap bucket supported only by a public child beneath a private ancestor", async () => {
+      const f = await fixture();
+      const before = await f.service.listSegments();
+      const used = new Set(before.filter((p) => p.startsWith("i-")).map((p) => p.slice(2, 3)));
+      expect(used.size).toBeLessThan(16);
+      let id: string, prefix: string;
+      do {
+        id = randomUUID();
+        prefix = createHash("md5").update(id).digest("hex").slice(0, 1);
+      } while (used.has(prefix));
+      const node = await db.collectionNode.create({
+        data: {
+          collectionId: f.c.id,
+          name: "Private sitemap-only ancestor",
+          visibility: "PRIVATE",
+        },
+      });
+      await db.collectibleItem.create({
+        data: {
+          id,
+          ownerId: f.who,
+          collectionId: f.c.id,
+          nodeId: node.id,
+          title: "Hidden bucket candidate",
+          visibility: "PUBLIC",
+        },
+      });
+      expect(await f.service.listSegments()).toEqual(before);
+    });
     it("really splits a range exceeding10000 records and never returns a partial overflow", async () => {
       const f = await fixture(),
         ids: string[] = [];
