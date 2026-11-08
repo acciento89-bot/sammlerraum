@@ -22,8 +22,8 @@ This is the handoff/status file for long-running implementation. Update it after
 | 09 | Collaboration, Sharing & Audit | 7 | complete (7/7); corrected1760cd2 CI SUCCESS | — |
 | 10 | Community, Moderation & Notifications | 8 | complete (8/8); corrected d69f78f CI SUCCESS | — |
 | 11 | AI-Assisted Capture | 5 | complete (5/5); corrected8957121 CI SUCCESS | — |
-| 12 | Premium & Billing | 5 | Tasks1–5 reviewed; four consolidated corrections locally verified; exact CI pending | CI |
-| 13 | Integration, Hardening & Release | 7 | not started | Task 1 |
+| 12 | Premium & Billing | 5 | complete (5/5); corrected7289140 CI SUCCESS | — |
+| 13 | Integration, Hardening & Release | 7 | Task1 locally complete; Task2 four flows verified; whole-phase acceptance pending | Task2 contract / Task3 |
 | 14 | SEO & Google Search Console | 7 | not started | Task 1 |
 
 **Total:** 91 implementation tasks.
@@ -1295,3 +1295,7 @@ Billing final local Task5 source25f4d50:3019nativezeroSkip,279files,273.79s; com
 One fresh whole-phase review on e1b5810 found0Critical/4Important/0Minor. Root verified and closed all4 in source38745a551e1ebab1f63592a3e70e662fbdf65622, one consolidated RED→GREEN pass, no rereview: invoice-line service-period refunds; revision-protected quota-stopped imports; pre-enqueue advanced-filter checks with durable exact owner/request/query admission across downgrade; immutable generated-artifact origin excluded consistently from uploaded-original usage and incoming ownership capacity. Current ownership/source/freshness checks remain intact.
 
 Final local3030native/279files/zeroSkip278.25s, types/lint, both production builds and12compiledBilling16.8s+32compiledAI35.1sPASS. Broadsearch/shared196passed with4environment failures from omitted MONEY_AUTHORING_ENABLED=true; all4 affected cases pass9.2s on unchanged source with the intended flag. Exact CI uses the flag and must pass the complete suite; no local200green claim.75oldmigrationfiles unchanged, one additive frozen migration (76currentfiles);20own QA hashes retained and unrelated historical images restored exactly after preserving current variants. Existing DraftPR1 only; no merge/deployment/provider/payment/mail/customer/device/store/automation actions. Canonical accepted72/91 remains unchanged until exact CI.
+
+### Phase12 accepted — canonical77/91
+
+Exact7289140d8fd422cc0561e03cf5e5f33a75d683f4 run42458240201/job128661743488 completedSUCCESS. Fresh direct final logs confirm all mandatory stages, including complete200search/shared,32compiledAI and12compiledBilling; all job steps successful. Original one whole-review and four consolidated root corrections closed, no rereview. All5Billingtasks accepted; canonical77/91. LocalPhase13Task1(84cookie permission checks) andTask2(four complete DE/EN desktop/mobile flows) remain independent whole-review/exactCI pending; no extra acceptance credit. DraftPR1 stays unmerged; no production/live provider/payment activation.

@@ -403,3 +403,26 @@ jobs:
         run: >-
           pnpm --filter @sammlerraum/web exec playwright test e2e/security-permissions.spec.ts
           --project=security-api --workers=1
+
+      - name: Verify complete V1 collector flows in DE and EN on desktop and mobile
+        env:
+          RUN_AUTH_E2E: "1"
+          RUN_PRODUCTION_E2E: "1"
+          RUN_V1_E2E: "1"
+          RUN_BILLING_E2E: "1"
+          RUN_IMPORT_E2E: "1"
+          RUN_MEDIA_E2E: "1"
+          MONEY_AUTHORING_ENABLED: "true"
+          BILLING_ENABLED: "true"
+          BILLING_ENVIRONMENT: test
+          STRIPE_SECRET_KEY: sk_test_sammlerraum_offline_fixture
+          STRIPE_WEBHOOK_SECRET: whsec_synthetic_offline_only
+          STRIPE_PREMIUM_MONTHLY_PRICE_ID: price_monthly_fixture
+          STRIPE_PREMIUM_YEARLY_PRICE_ID: price_yearly_fixture
+          AI_ANALYSIS_ENABLED: "true"
+          AI_OPENAI_API_KEY: fixture-not-a-real-key
+          AI_OPENAI_MODEL: fixture-vision
+          AI_MONTHLY_REQUEST_LIMIT: "3"
+        run: >-
+          pnpm --filter @sammlerraum/web exec playwright test e2e/v1-critical-paths.spec.ts
+          --project=v1-desktop --project=v1-mobile --workers=1

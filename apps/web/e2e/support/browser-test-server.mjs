@@ -193,7 +193,23 @@ const mediaWorker =
   process.env.RUN_MEDIA_E2E === "1" || process.env.RUN_IMPORT_E2E === "1"
     ? spawn(process.execPath, [join(webRoot, "../worker/dist/worker.cjs")], {
         cwd: join(webRoot, "../worker"),
-        env: { ...process.env, NODE_ENV: "test", APP_ORIGIN: "http://localhost:3000" },
+        env: {
+          ...process.env,
+          NODE_ENV: "test",
+          APP_ORIGIN: "http://localhost:3000",
+          NODE_EXTRA_CA_CERTS: certificatePath,
+          SMTP_HOST: "127.0.0.1",
+          SMTP_PORT: String(smtpPort),
+          SMTP_SECURE: "true",
+          SMTP_USER: "e2e-user",
+          SMTP_PASSWORD: "e2e-password",
+          SMTP_FROM: "noreply@example.test",
+          // Full-flow analysis and billing use explicitly fake provider protocol drivers.
+          // The real media/import worker must never consume those jobs with an external adapter.
+          ...(process.env.RUN_V1_E2E === "1"
+            ? { AI_ANALYSIS_ENABLED: "false", BILLING_ENABLED: "false" }
+            : {}),
+        },
         stdio: "inherit",
       })
     : undefined;

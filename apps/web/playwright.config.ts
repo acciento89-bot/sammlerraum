@@ -25,6 +25,16 @@ export default defineConfig({
   projects: [
     { name: "security-api", testMatch: "**/security-permissions.spec.ts" },
     {
+      name: "v1-desktop",
+      testMatch: "**/v1-critical-paths.spec.ts",
+      use: { viewport: { width: 1440, height: 900 } },
+    },
+    {
+      name: "v1-mobile",
+      testMatch: "**/v1-critical-paths.spec.ts",
+      use: { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true },
+    },
+    {
       name: "billing-desktop",
       testMatch: "**/billing.spec.ts",
       use: { viewport: { width: 1440, height: 1000 } },
