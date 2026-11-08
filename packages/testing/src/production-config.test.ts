@@ -11,7 +11,9 @@ function read(path: string): string {
 
 describe("production container configuration", () => {
   it("ships the explicit additive category initializer in the non-root worker image", () => {
-    expect(read("Dockerfile.worker")).toContain("COPY --from=build --chown=node:node /app/apps/worker/dist/initialize-catalog.cjs ./dist/initialize-catalog.cjs");
+    expect(read("Dockerfile.worker")).toContain(
+      "COPY --from=build --chown=node:node /app/apps/worker/dist/initialize-catalog.cjs ./dist/initialize-catalog.cjs",
+    );
   });
   it("ships the original collector artwork in the standalone web runtime", () => {
     expect(read("Dockerfile.web")).toContain(
