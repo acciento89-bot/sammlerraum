@@ -133,6 +133,29 @@ async function currentSources(tx: BoundedSearchReadTransaction, row: JobRow) {
   if (sha(saved) !== sha(actual)) return failure("AI_SOURCE_NOT_AUTHORIZED");
   return actual;
 }
+/** Internal transaction composition. Never grants member/share image-export permission. */
+export async function readOwnedAIAnalysisInTransaction(
+  tx: BoundedSearchReadTransaction,
+  actor: { userId: string },
+  idInput: unknown,
+) {
+  const who = owner(actor),
+    id = parse(AIIdSchema, idInput);
+  const [row] = await tx.$queryRaw<JobRow[]>(
+    Prisma.sql`SELECT * FROM "AIAnalysisJob" WHERE id=${id}::uuid AND "requesterId"=${who}`,
+  );
+  if (!row) return failure("AI_ITEM_NOT_FOUND");
+  const item = await ownedItem(tx, who, row.itemId);
+  if (item.collectionId !== row.collectionId) return failure("AI_SOURCE_NOT_AUTHORIZED");
+  await currentSources(tx, row);
+  const [result] = await tx.$queryRaw<{ payload: unknown; payloadSha256: string }[]>(
+    Prisma.sql`SELECT payload,"payloadSha256" FROM "AIAnalysisSuggestion" WHERE "jobId"=${id}::uuid`,
+  );
+  if (row.status !== "READY" || !result) return failure("AI_NOT_READY");
+  const analysis = parseCollectibleAnalysis(result.payload);
+  if (sha(analysis) !== result.payloadSha256) return failure("AI_UNAVAILABLE");
+  return { job: summary(row), analysis };
+}
 export function createAIAnalysisService(
   database: MembershipDatabase,
   options: { providerId: string; model: string; monthlyRequestLimit: number; leaseMs?: number },

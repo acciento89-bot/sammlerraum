@@ -1836,6 +1836,7 @@ model AIAnalysisJob {
   requester        User                  @relation(fields: [requesterId], references: [id], onDelete: Cascade)
   item             CollectibleItem       @relation(fields: [itemId], references: [id], onDelete: Cascade)
   collection       Collection            @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  decision         AIAnalysisDecision?
   suggestion       AIAnalysisSuggestion?
   attemptRecords   AIAnalysisAttempt[]
 
@@ -1877,4 +1878,14 @@ model AIAnalysisUsageReport {
   outputTokens Int?
   recordedAt   DateTime          @default(now())
   attempt      AIAnalysisAttempt @relation(fields: [attemptToken], references: [token], onDelete: Cascade)
+}
+
+model AIAnalysisDecision {
+  jobId         String        @id @db.Uuid
+  requestKey    String        @db.Uuid
+  requestDigest String        @db.Char(64)
+  selections    Json
+  accepted      Json
+  createdAt     DateTime      @default(now())
+  job           AIAnalysisJob @relation(fields: [jobId], references: [id], onDelete: Cascade)
 }

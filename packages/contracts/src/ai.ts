@@ -113,3 +113,43 @@ export function parseCollectibleAnalysis(input: unknown): CollectibleAnalysis {
     throw new AIAnalysisError("AI_INVALID_RESPONSE");
   }
 }
+
+export const ApplyAISuggestionsSchema = z
+  .object({
+    requestKey: AIIdSchema,
+    baseline: z.string().regex(/^[a-f0-9]{64}$/u),
+    title: z.boolean(),
+    category: z.boolean(),
+    manufacturerFieldId: AIIdSchema.nullable(),
+    seriesOrSetFieldId: AIIdSchema.nullable(),
+    yearFieldId: AIIdSchema.nullable(),
+    identifierIndices: z
+      .array(z.number().int().min(0).max(19))
+      .max(20)
+      .refine((values) => new Set(values).size === values.length),
+    catalogCandidateIndex: z.number().int().min(0).max(9).nullable(),
+  })
+  .strict()
+  .superRefine((value, context) => {
+    const targets = [value.manufacturerFieldId, value.seriesOrSetFieldId, value.yearFieldId].filter(
+      (id) => id !== null,
+    );
+    if (new Set(targets).size !== targets.length)
+      context.addIssue({ code: "custom", message: "Distinct field destinations required" });
+  });
+export const AIApplyReceiptSchema = z
+  .object({
+    analysisId: AIIdSchema,
+    requestKey: AIIdSchema,
+    accepted: z
+      .array(
+        z
+          .string()
+          .regex(
+            /^(title|category|manufacturer|seriesOrSet|year|catalogCandidate|identifier:[0-9]{1,2})$/u,
+          ),
+      )
+      .max(26),
+    decidedAt: CanonicalTimestampSchema,
+  })
+  .strict();

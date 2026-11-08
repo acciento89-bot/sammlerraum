@@ -186,6 +186,24 @@ const restoredItemDetails = z.union([
     .strict(),
 ]);
 const definitions = {
+  AI_SUGGESTIONS_APPLIED: {
+    resourceType: "ITEM",
+    snapshot: z
+      .object({
+        analysisId: z.uuid(),
+        accepted: z
+          .array(
+            z
+              .string()
+              .regex(
+                /^(title|category|manufacturer|seriesOrSet|year|catalogCandidate|identifier:[0-9]{1,2})$/u,
+              ),
+          )
+          .max(26),
+      })
+      .strict()
+      .nullable(),
+  },
   ITEM_VISIBILITY_RESTORED: { resourceType: "ITEM", snapshot: visibility.extend(restoredRef) },
   COLLECTION_VISIBILITY_RESTORED: {
     resourceType: "COLLECTION",

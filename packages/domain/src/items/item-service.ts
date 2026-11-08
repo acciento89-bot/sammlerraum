@@ -1104,60 +1104,14 @@ export function createItemService(
     entryIdInput: string,
     variantIdInput: string | null = null,
   ): Promise<CollectibleItem> {
-    const itemId = CatalogReadIdSchema.parse(itemIdInput);
-    const catalogEntryId = CatalogReadIdSchema.parse(entryIdInput);
-    const catalogVariantId =
-      variantIdInput === null ? null : CatalogReadIdSchema.parse(variantIdInput);
+    CatalogReadIdSchema.parse(itemIdInput);
+    CatalogReadIdSchema.parse(entryIdInput);
+    if (variantIdInput !== null) CatalogReadIdSchema.parse(variantIdInput);
     return database.$transaction(
-      async (tx) => {
-        const audit = await auditPort.begin(
-          tx,
-          actorUserId,
-          () => new ItemServiceError("ITEM_NOT_FOUND"),
-        );
-        const { entry, variant } = await lockCatalogParents(tx, {
-          catalogEntryId,
-          catalogVariantId,
-        });
-        const existing = await lockOwnedItem(tx, itemId, actorUserId);
-        ensureActive(existing);
-        if (!entry) throw new ItemServiceError("CATALOG_NOT_FOUND");
-        if (catalogVariantId !== null && !variant)
-          throw new ItemServiceError("CATALOG_VARIANT_NOT_FOUND");
-        if (
-          existing.categoryTemplateId !== null &&
-          existing.categoryTemplateId !== entry.categoryTemplateId
-        )
-          throw new ItemServiceError("ITEM_CATALOG_CATEGORY_MISMATCH");
-        if (
-          existing.catalogEntryId === catalogEntryId &&
-          existing.catalogVariantId === catalogVariantId
-        )
-          return toItem(existing);
-        if (variant && !variant.active) throw new ItemServiceError("CATALOG_VARIANT_INACTIVE");
-        const saved = toItem(
-          await tx.collectibleItem.update({
-            where: { id: existing.id },
-            data: {
-              catalogEntryId,
-              catalogVariantId,
-              categoryTemplateId: existing.categoryTemplateId ?? entry.categoryTemplateId,
-            },
-            select: itemSelect,
-          }),
-        );
-        const before = catalogLinkAuditSnapshot(existing),
-          after = catalogLinkAuditSnapshot(saved);
-        if (JSON.stringify(before) !== JSON.stringify(after))
-          await auditPort.append(tx, audit, {
-            resourceType: "ITEM",
-            resourceId: itemId,
-            action: "ITEM_CATALOG_LINK_CHANGED",
-            before,
-            after,
-          });
-        return saved;
-      },
+      (tx) =>
+        linkItemToCatalogInTransaction(tx, actorUserId, itemIdInput, entryIdInput, variantIdInput, {
+          auditPort,
+        }),
       { isolationLevel: "ReadCommitted" },
     );
   }
@@ -1231,4 +1185,64 @@ export function createItemService(
     unlinkItemFromCatalog,
     getItemCatalogLink,
   };
+}
+
+/** Same canonical catalog links/locks/audit for explicit AI confirmation and normal owner editing. */
+export async function linkItemToCatalogInTransaction(
+  tx: ItemTransaction,
+  actorUserId: string,
+  itemIdInput: string,
+  entryIdInput: string,
+  variantIdInput: string | null = null,
+  auditOptions: ItemMutationAuditOptions = {},
+) {
+  const itemId = CatalogReadIdSchema.parse(itemIdInput),
+    catalogEntryId = CatalogReadIdSchema.parse(entryIdInput),
+    catalogVariantId = variantIdInput === null ? null : CatalogReadIdSchema.parse(variantIdInput);
+  const auditPort = auditOptions.auditPort ?? defaultMutationAudit;
+  const audit = await auditPort.begin(
+    tx,
+    actorUserId,
+    () => new ItemServiceError("ITEM_NOT_FOUND"),
+    auditOptions.auditContext,
+  );
+  const { entry, variant } = await lockCatalogParents(tx, {
+    catalogEntryId,
+    catalogVariantId,
+  });
+  const existing = await lockOwnedItem(tx, itemId, actorUserId);
+  ensureActive(existing);
+  if (!entry) throw new ItemServiceError("CATALOG_NOT_FOUND");
+  if (catalogVariantId !== null && !variant)
+    throw new ItemServiceError("CATALOG_VARIANT_NOT_FOUND");
+  if (
+    existing.categoryTemplateId !== null &&
+    existing.categoryTemplateId !== entry.categoryTemplateId
+  )
+    throw new ItemServiceError("ITEM_CATALOG_CATEGORY_MISMATCH");
+  if (existing.catalogEntryId === catalogEntryId && existing.catalogVariantId === catalogVariantId)
+    return toItem(existing);
+  if (variant && !variant.active) throw new ItemServiceError("CATALOG_VARIANT_INACTIVE");
+  const saved = toItem(
+    await tx.collectibleItem.update({
+      where: { id: existing.id },
+      data: {
+        catalogEntryId,
+        catalogVariantId,
+        categoryTemplateId: existing.categoryTemplateId ?? entry.categoryTemplateId,
+      },
+      select: itemSelect,
+    }),
+  );
+  const before = catalogLinkAuditSnapshot(existing),
+    after = catalogLinkAuditSnapshot(saved);
+  if (JSON.stringify(before) !== JSON.stringify(after))
+    await auditPort.append(tx, audit, {
+      resourceType: "ITEM",
+      resourceId: itemId,
+      action: "ITEM_CATALOG_LINK_CHANGED",
+      before,
+      after,
+    });
+  return saved;
 }

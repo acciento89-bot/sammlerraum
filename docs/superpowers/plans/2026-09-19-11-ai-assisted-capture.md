@@ -206,7 +206,7 @@ git commit -m "feat: process AI item analysis jobs"
 **Interfaces:**
 - Produces: `applySuggestions(actor, analysisId, selections)`.
 
-- [ ] **Step 1: Write failing rejection/partial-acceptance test**
+- [x] **Step 1: Write failing rejection/partial-acceptance test**
 
 ```ts
 it("applies selected title but leaves rejected manufacturer untouched", async () => {
@@ -220,21 +220,21 @@ it("applies selected title but leaves rejected manufacturer untouched", async ()
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run packages/domain/src/ai/suggestion-apply-service.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement explicit selections**
+- [x] **Step 3: Implement explicit selections**
 
 Only whitelisted fields can be applied. Catalog candidate linking requires a separate explicit candidate selection. Condition/grading/value/authenticity/provenance remain outside automatic apply.
 
-- [ ] **Step 4: Run tests**
+- [x] **Step 4: Run tests**
 
 Run: `pnpm vitest run packages/domain/src/ai`  
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/domain/src/ai apps/web/src/app/api/v1/ai
