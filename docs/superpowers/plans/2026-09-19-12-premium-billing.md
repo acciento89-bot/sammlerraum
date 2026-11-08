@@ -96,7 +96,7 @@ git commit -m "feat: add provider-neutral premium entitlements"
 **Interfaces:**
 - Produces: `BillingProvider.createCheckout`, `createPortalSession`.
 
-- [ ] **Step 1: Write failing ownership test**
+- [x] **Step 1: Write failing ownership test**
 
 ```ts
 it("does not create a portal session for a customer not owned by the actor", async () => {
@@ -105,12 +105,12 @@ it("does not create a portal session for a customer not owned by the actor", asy
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run packages/billing/src/stripe-provider.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement Stripe adapter**
+- [x] **Step 3: Implement Stripe adapter**
 
 Require production env:
 
@@ -123,12 +123,12 @@ STRIPE_PREMIUM_YEARLY_PRICE_ID
 
 Checkout attaches immutable local subject ID metadata. Portal creation looks up locally owned Stripe customer ID; client-supplied customer IDs are ignored.
 
-- [ ] **Step 4: Run tests**
+- [x] **Step 4: Run tests**
 
 Run: `pnpm vitest run packages/billing`  
 Expected: PASS with mocked Stripe client.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/billing apps/web/src/app/api/v1/billing .env.example

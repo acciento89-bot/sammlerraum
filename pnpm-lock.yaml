@@ -105,6 +105,9 @@ importers:
       '@sammlerraum/ai':
         specifier: workspace:*
         version: link:../../packages/ai
+      '@sammlerraum/billing':
+        specifier: workspace:*
+        version: link:../../packages/billing
       '@sammlerraum/config':
         specifier: workspace:*
         version: link:../../packages/config

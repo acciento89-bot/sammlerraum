@@ -77,7 +77,8 @@
     "./ai/suggestion-apply-service": "./src/ai/suggestion-apply-service.ts",
     "./ai/usage-service": "./src/ai/usage-service.ts",
     "./billing/entitlement-service": "./src/billing/entitlement-service.ts",
-    "./billing/session-service": "./src/billing/session-service.ts"
+    "./billing/session-service": "./src/billing/session-service.ts",
+    "./billing/webhook-service": "./src/billing/webhook-service.ts"
   },
   "scripts": {
     "build": "pnpm typecheck",

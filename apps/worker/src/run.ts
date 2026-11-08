@@ -1,3 +1,10 @@
+import { StripeBillingProvider } from "@sammlerraum/billing/stripe-provider";
+import { createBillingWebhookService } from "@sammlerraum/domain/billing/webhook-service";
+import {
+  createBillingDispatcher,
+  createBillingSyncJob,
+  BILLING_SYNC_JOB,
+} from "./jobs/billing-sync";
 import { OpenAICollectibleProvider } from "@sammlerraum/ai/openai-provider";
 import { createAIAnalysisService } from "@sammlerraum/domain/ai/ai-analysis-service";
 import { createAnalyzeItemJob, AI_ANALYZE_ITEM_JOB } from "./jobs/analyze-item";
@@ -33,7 +40,7 @@ import { createImageProcessor, IMAGE_JOB } from "./jobs/process-image";
 
 async function startProductionWorker(): Promise<void> {
   const [
-    { serverEnv, parseNotificationEmailEnv },
+    { serverEnv, parseNotificationEmailEnv, parseBillingProviderEnv },
     { prisma },
     { checkDatabaseHealth },
     { createPgBossServices },
@@ -184,6 +191,17 @@ async function startProductionWorker(): Promise<void> {
     );
     aiDispatcher = createAIAnalysisDispatcher(service, client, console);
   }
+  let billingDispatcher: ReturnType<typeof createBillingDispatcher> | undefined;
+  const billingConfig = parseBillingProviderEnv(process.env);
+  if (billingConfig) {
+    const provider = new StripeBillingProvider(billingConfig);
+    const service = createBillingWebhookService(marketDatabase, {
+      providerId: provider.id,
+      liveMode: billingConfig.liveMode,
+    });
+    registry.registerCancellable(BILLING_SYNC_JOB, createBillingSyncJob(service, provider));
+    billingDispatcher = createBillingDispatcher(service, client, console);
+  }
   await worker.startWorker({
     queue: runtime,
     imageDispatcher,
@@ -191,6 +209,7 @@ async function startProductionWorker(): Promise<void> {
     reportDispatcher,
     ...(notificationDispatcher ? { notificationDispatcher } : {}),
     ...(aiDispatcher ? { aiDispatcher } : {}),
+    ...(billingDispatcher ? { billingDispatcher } : {}),
     importDispatcher,
     mediaCleanup,
     marketSync,

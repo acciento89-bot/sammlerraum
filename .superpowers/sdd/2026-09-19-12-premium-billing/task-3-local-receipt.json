@@ -1,0 +1,17 @@
+{
+  "base": "be72786925de5c0f7ce67c286f7ab5930cd987c0",
+  "regularPassed": 1731,
+  "regularNativeDisabled": 1240,
+  "nativePassed": 2971,
+  "nativeSkipped": 0,
+  "nativeSeconds": 272.19,
+  "files": 272,
+  "types": "PASS",
+  "workspaceFormatting": "PASS",
+  "workerBuild": "PASS",
+  "optimizedWebBuild": "PASS",
+  "frozenPriorMigrationFiles": 72,
+  "providerActivated": false,
+  "accepted": false,
+  "notes": "Initial whole regular failure from obsolete config fixture exports was corrected, not ignored. Expired fence, reordered/duplicate receipt, mode isolation, canonical refund graph and actual native-fetch body cancellation covered."
+}

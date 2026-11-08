@@ -1,3 +1,11 @@
+import { AsyncLocalStorage } from "node:async_hooks";
+import {
+  verifyStripeWebhook,
+  readStripeEventState,
+  resolveStripeCustomer,
+  assertNoExistingStripeSubscription,
+} from "./stripe-sync";
+import type { VerifiedBillingEvent } from "@sammlerraum/contracts/billing";
 import { createHash } from "node:crypto";
 import Stripe from "stripe";
 import { z } from "zod";
@@ -38,18 +46,21 @@ function safeUrl(value: unknown, host: string): string {
 }
 /** Official instance SDK, pinned public endpoint, bounded timeout and zero hidden retries. */
 export class StripeBillingProvider implements BillingProvider {
-  readonly id = "stripe";
+  readonly id: string;
   private client: Stripe;
+  private requestContext = new AsyncLocalStorage<{ signal: AbortSignal; calls: number }>();
   private origin: string;
   constructor(
     private config: {
       apiKey: string;
+      webhookSecret?: string;
       appOrigin: string;
       monthlyPriceId: string;
       yearlyPriceId: string;
       fetch?: typeof fetch;
     },
   ) {
+    this.id = /^(?:rk|sk)_live_/u.test(config.apiKey) ? "stripe_live" : "stripe_test";
     try {
       const origin = new URL(config.appOrigin);
       if (
@@ -75,7 +86,18 @@ export class StripeBillingProvider implements BillingProvider {
       protocol: "https",
       maxNetworkRetries: 0,
       timeout: 15000,
-      httpClient: Stripe.createFetchHttpClient(config.fetch),
+      httpClient: Stripe.createFetchHttpClient(async (input, init) => {
+        const context = this.requestContext.getStore();
+        if (!context) return (config.fetch ?? globalThis.fetch)(input, init);
+        context.signal.throwIfAborted();
+        if (++context.calls > 32) throw new BillingError("BILLING_UNAVAILABLE");
+        const signals = [context.signal];
+        if (init?.signal) signals.push(init.signal);
+        return (config.fetch ?? globalThis.fetch)(input, {
+          ...init,
+          signal: AbortSignal.any(signals),
+        });
+      }),
     });
   }
   private async invoke<T>(work: () => Promise<T>): Promise<T> {
@@ -105,6 +127,7 @@ export class StripeBillingProvider implements BillingProvider {
   async createCheckout(input: CheckoutInput) {
     const data = parse(checkout, input);
     return this.invoke(async () => {
+      await assertNoExistingStripeSubscription(this.client, data.customerId);
       const suffix = [...createHash("sha256").update(data.requestKey).digest().subarray(0, 8)]
         .map((byte) => String.fromCharCode(97 + (byte % 26)))
         .join("");
@@ -167,5 +190,32 @@ export class StripeBillingProvider implements BillingProvider {
         url: safeUrl(session.url, "billing.stripe.com"),
       };
     });
+  }
+  verifyWebhook(raw: Buffer, signature: string) {
+    return verifyStripeWebhook(this.client, this.config.webhookSecret, raw, signature);
+  }
+  async readEventState(
+    event: VerifiedBillingEvent,
+    customerId: string,
+    options: { signal: AbortSignal },
+  ) {
+    return this.invoke(() =>
+      this.requestContext.run({ signal: options.signal, calls: 0 }, () =>
+        readStripeEventState(
+          this.client,
+          event,
+          customerId,
+          [this.config.monthlyPriceId, this.config.yearlyPriceId],
+          options.signal,
+        ),
+      ),
+    );
+  }
+  async resolveCustomer(event: VerifiedBillingEvent, options: { signal: AbortSignal }) {
+    return this.invoke(() =>
+      this.requestContext.run({ signal: options.signal, calls: 0 }, () =>
+        resolveStripeCustomer(this.client, event, options.signal),
+      ),
+    );
   }
 }

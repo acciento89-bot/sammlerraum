@@ -1,5 +1,5 @@
 import { it, expect } from "vitest";
-import { parseBillingPolicyEnv } from "./server";
+import { parseBillingPolicyEnv, parseBillingProviderEnv } from "./server";
 const tier = {
   ITEM_CREATE: 2,
   MEDIA_COUNT: 2,
@@ -52,4 +52,25 @@ it("keeps payment activation off and requires complete explicit provider configu
       STRIPE_PREMIUM_YEARLY_PRICE_ID: ready.STRIPE_PREMIUM_MONTHLY_PRICE_ID,
     }),
   ).toThrow();
+});
+
+it("derives Stripe test/live mode only from the key prefix, never an embedded suffix", () => {
+  const ready = {
+    BILLING_ENABLED: "true",
+    BILLING_ENVIRONMENT: "test",
+    STRIPE_SECRET_KEY: "rk_test_fixture_live_embedded",
+    STRIPE_WEBHOOK_SECRET: "whsec_fixture",
+    STRIPE_PREMIUM_MONTHLY_PRICE_ID: "price_monthly_fixture",
+    STRIPE_PREMIUM_YEARLY_PRICE_ID: "price_yearly_fixture",
+    APP_ORIGIN: "https://sammlerraum.example",
+    BILLING_PLAN_LIMITS: JSON.stringify({ FREE: tier, PREMIUM: tier }),
+  };
+  expect(parseBillingProviderEnv(ready)).toMatchObject({ liveMode: false });
+  expect(
+    parseBillingProviderEnv({
+      ...ready,
+      BILLING_ENVIRONMENT: "live",
+      STRIPE_SECRET_KEY: "rk_live_fixture_test_embedded",
+    }),
+  ).toMatchObject({ liveMode: true });
 });

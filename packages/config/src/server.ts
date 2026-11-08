@@ -270,11 +270,25 @@ export function parseBillingProviderEnv(input: Record<string, string | undefined
   if (url.protocol !== "https:" && !["localhost", "127.0.0.1", "[::1]"].includes(url.hostname))
     throw new EnvironmentConfigurationError(["APP_ORIGIN"]);
   parseBillingPolicyEnv(input);
+  const context = parseBillingContextEnv(input),
+    liveMode = /^(?:rk|sk)_live_/u.test(p.STRIPE_SECRET_KEY);
+  if (liveMode !== context.liveMode)
+    throw new EnvironmentConfigurationError(["STRIPE_SECRET_KEY", "BILLING_ENVIRONMENT"]);
   return {
+    liveMode,
     apiKey: p.STRIPE_SECRET_KEY,
     webhookSecret: p.STRIPE_WEBHOOK_SECRET,
     monthlyPriceId: p.STRIPE_PREMIUM_MONTHLY_PRICE_ID,
     yearlyPriceId: p.STRIPE_PREMIUM_YEARLY_PRICE_ID,
     appOrigin: p.APP_ORIGIN,
   };
+}
+
+/** Payment data is namespace-isolated even if an operator changes test/live credentials. */
+export function parseBillingContextEnv(input: Record<string, string | undefined>) {
+  const mode = z
+    .enum(["test", "live"])
+    .safeParse(input.BILLING_ENVIRONMENT ?? (input.NODE_ENV === "production" ? "live" : "test"));
+  if (!mode.success) throw new EnvironmentConfigurationError(["BILLING_ENVIRONMENT"]);
+  return { liveMode: mode.data === "live", providerIds: [`stripe_${mode.data}`] };
 }

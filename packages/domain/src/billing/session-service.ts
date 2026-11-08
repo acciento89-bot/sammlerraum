@@ -103,11 +103,11 @@ export function createBillingSessionService(
       }
       if (purpose === "CHECKOUT" && !prior) {
         const [active] = await tx.$queryRaw<{ id: string }[]>(
-          Prisma.sql`SELECT id FROM "BillingSubscription" WHERE "subjectId"=${who} AND status IN ('ACTIVE','TRIALING') AND "currentPeriodStart"<=clock_timestamp() AND "currentPeriodEnd">clock_timestamp() LIMIT 1`,
+          Prisma.sql`SELECT id FROM "BillingSubscription" WHERE "subjectId"=${who} AND provider=${provider.id} AND status IN ('ACTIVE','TRIALING') AND "currentPeriodStart"<=clock_timestamp() AND "currentPeriodEnd">clock_timestamp() LIMIT 1`,
         );
         if (active) return fail("BILLING_CONFLICT");
         const [pending] = await tx.$queryRaw<{ id: string }[]>(
-          Prisma.sql`SELECT id FROM "BillingOperation" WHERE "subjectId"=${who} AND purpose='CHECKOUT' AND "expiresAt">clock_timestamp() LIMIT 1`,
+          Prisma.sql`SELECT id FROM "BillingOperation" WHERE "subjectId"=${who} AND provider=${provider.id} AND purpose='CHECKOUT' AND "expiresAt">clock_timestamp() LIMIT 1`,
         );
         if (pending) return fail("BILLING_CONFLICT");
       }

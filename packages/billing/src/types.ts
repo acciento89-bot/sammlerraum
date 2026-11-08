@@ -19,3 +19,24 @@ export interface BillingProvider {
     requestKey: string;
   }): Promise<BillingSession>;
 }
+
+import type {
+  VerifiedBillingEvent,
+  BillingSubscriptionSnapshot,
+} from "@sammlerraum/contracts/billing";
+export type {
+  VerifiedBillingEvent,
+  BillingSubscriptionSnapshot,
+} from "@sammlerraum/contracts/billing";
+export interface BillingSyncProvider {
+  readonly id: string;
+  resolveCustomer(
+    event: VerifiedBillingEvent,
+    options: { signal: AbortSignal },
+  ): Promise<string | null>;
+  readEventState(
+    event: VerifiedBillingEvent,
+    customerId: string,
+    options: { signal: AbortSignal },
+  ): Promise<BillingSubscriptionSnapshot[]>;
+}

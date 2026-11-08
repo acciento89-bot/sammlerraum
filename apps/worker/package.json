@@ -27,7 +27,8 @@
     "yauzl": "3.4.0",
     "zod": "4.1.11",
     "@sammlerraum/email": "workspace:*",
-    "@sammlerraum/ai": "workspace:*"
+    "@sammlerraum/ai": "workspace:*",
+    "@sammlerraum/billing": "workspace:*"
   },
   "devDependencies": {
     "@types/yauzl": "3.4.0",

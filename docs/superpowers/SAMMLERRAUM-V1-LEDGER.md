@@ -1,6 +1,6 @@
 # Sammlerraum V1 Completion Ledger
 
-**Stand:** 07.11.2026
+**Stand:** 08.11.2026
 **Master plan:** `docs/superpowers/plans/2026-09-19-sammlerraum-v1-master-plan.md`  
 **Canonical product/system spec:** `docs/superpowers/specs/2026-09-19-sammlerraum-design.md`  
 **SEO/Search Console spec:** `docs/superpowers/specs/2026-09-19-seo-search-console-design.md`
@@ -17,12 +17,12 @@ This is the handoff/status file for long-running implementation. Update it after
 | 04 | Media & Documents | 6 | complete (6/6) | — |
 | 05 | Catalog, Condition & Grading | 7 | complete (7/7) | — |
 | 06 | Valuations & Market Data | 6 | complete (6/6) | — |
-| 07 | Search, Smart Collections & Dashboard | 5 | in progress (1/5) | Task 2 |
+| 07 | Search, Smart Collections & Dashboard | 5 | complete (5/5); exact77b69f9 CI SUCCESS | — |
 | 08 | Import, Export, Insurance & Reports | 7 | complete (7/7) | — |
 | 09 | Collaboration, Sharing & Audit | 7 | complete (7/7); corrected1760cd2 CI SUCCESS | — |
 | 10 | Community, Moderation & Notifications | 8 | complete (8/8); corrected d69f78f CI SUCCESS | — |
-| 11 | AI-Assisted Capture | 5 | not started | Task 1 |
-| 12 | Premium & Billing | 5 | not started | Task 1 |
+| 11 | AI-Assisted Capture | 5 | complete (5/5); corrected8957121 CI SUCCESS | — |
+| 12 | Premium & Billing | 5 | in progress; Tasks1–2 local, not phase-reviewed/accepted | Task 3 |
 | 13 | Integration, Hardening & Release | 7 | not started | Task 1 |
 | 14 | SEO & Google Search Console | 7 | not started | Task 1 |
 
@@ -1262,3 +1262,15 @@ Original single whole-plan review81e170c found0Critical/5Important/2Minor. Root 
 ### 8Nov original Phase07 completed — canonical67/91
 
 Exact77b69f9478e06db09d04df173b7b6b9df6535354 run42433316774completedSUCCESS; actual verifyjob128586743495 and all required steps successful, including native/build/production browser/Docker gates. Existing DraftPR1 remains open/unmerged. One independent shared review81e170c and single consolidated root correction0ec1415/testonly successors close all7findings; no rereview. Complete local1659regular,2832native0skip,234compiledbrowser plusbothbuilds/types/lint retained with hashreceipts. All originalPhase07Tasks2–5 now separately accepted, increasing63→67/91. No implicitshared/Publicunion, ungrantedfieldenablement, providerlicense activation or fake totals. Phase11Task1 source5347ba8 locally implemented/verified110affected+18completionchecks, immutable advisory result/ownedsource/quota models, no item mutation or realprovider calls. Phase11Task2 active; neither Phase11 whole-review nor acceptance credit yet. Later local AI source not part of77CI and not pushed. Otherapps/stores/devices/automations unchanged; no main merge/deployment/live mail/payments/customerdata.
+
+### 8Nov AI phase accepted — canonical72/91
+
+Exact source8957121f7698067415c8271514c6aff09be89c64, run42443172217/job128616510919 completedSUCCESS. Fresh direct final job log confirms the required32compiled AI journeys35.6s; partial cached CLI log/step snapshots were not accepted as proof. Root local corrected1689regular/2899actualPostgreSQLzeroSkip, types/lint/worker+webbuild,32compiledAI plus preceding46AI/adjacent inventory journeys, preserved prior migration bytes and one independent whole-phase review/four consolidatedRED→GREEN corrections retained. No deferred minors, no second review. Explicit source ownership/consent, durable bounded worker/nullable usage, immutable advisory results and atomic field-by-field decisions. No real provider calls or paid activation.
+
+- [x] P11 T01 — Provider-neutral analysis contract and durable owned jobs/suggestions/usage
+- [x] P11 T02 — Official structured vision adapter with verified processed image bytes and private-input minimization
+- [x] P11 T03 — Fenced durable worker, bounded retries/cancellation and late measured usage
+- [x] P11 T04 — Explicit atomic audited selection/application with stale/reference guards
+- [x] P11 T05 — Owner-only DE/EN responsive capture/review/recovery, personal field setup and usage
+
+Billing local Task1e8300e7 and Task2be72786 are separately tested but not included in the AI candidate's source/CI acceptance. Task3 canonical signed-event sync in progress. Canonical accepted progress72/91, original scope91 unchanged. Source/DraftPR1 only; no main merge/deployment, live payments/providers/customer data, other apps/devices/stores/automations.

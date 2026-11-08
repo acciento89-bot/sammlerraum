@@ -3,6 +3,7 @@ const wiring = vi.hoisted(() => ({
   startWorker: vi.fn(async (_options: unknown) => {}),
   emailEnabled: false,
   aiEnabled: false,
+  billingEnabled: false,
   register: vi.fn(),
   registerCancellable: vi.fn(),
   disconnect: vi.fn(async () => {}),
@@ -15,6 +16,17 @@ vi.mock("./main", () => ({
   startWorker: wiring.startWorker,
 }));
 vi.mock("@sammlerraum/config/server", () => ({
+  parseBillingProviderEnv: () =>
+    wiring.billingEnabled
+      ? {
+          apiKey: "rk_test_fixture",
+          liveMode: false,
+          webhookSecret: "whsec_fixture",
+          monthlyPriceId: "price_monthly_fixture",
+          yearlyPriceId: "price_yearly_fixture",
+          appOrigin: "https://example.invalid",
+        }
+      : null,
   parseNotificationEmailEnv: () =>
     wiring.emailEnabled
       ? {
@@ -93,6 +105,11 @@ it("passes the production-composed market lifecycle to startWorker and registers
   };
   expect(options).not.toHaveProperty("notificationDispatcher");
   expect(options).not.toHaveProperty("aiDispatcher");
+  expect(options).not.toHaveProperty("billingDispatcher");
+  expect(wiring.registerCancellable).not.toHaveBeenCalledWith(
+    "billing.sync-receipt",
+    expect.any(Function),
+  );
   expect(wiring.registerCancellable).not.toHaveBeenCalledWith(
     "ai.analyze-item",
     expect.any(Function),
@@ -155,5 +172,30 @@ it("registers the advisory photo worker only after explicit AI activation", asyn
     await options.aiDispatcher.stop();
   } finally {
     wiring.aiEnabled = false;
+  }
+});
+
+it("registers canonical billing reconciliation only after explicit complete payment activation", async () => {
+  vi.resetModules();
+  wiring.startWorker.mockClear();
+  wiring.register.mockClear();
+  wiring.registerCancellable.mockClear();
+  wiring.billingEnabled = true;
+  try {
+    await import("./run");
+    await vi.waitFor(() => expect(wiring.startWorker).toHaveBeenCalledOnce());
+    expect(wiring.registerCancellable).toHaveBeenCalledWith(
+      "billing.sync-receipt",
+      expect.any(Function),
+    );
+    const options = wiring.startWorker.mock.calls[0]![0] as {
+      billingDispatcher: { start(): void; stop(): Promise<void> };
+    };
+    expect(options.billingDispatcher).toEqual(
+      expect.objectContaining({ start: expect.any(Function), stop: expect.any(Function) }),
+    );
+    await options.billingDispatcher.stop();
+  } finally {
+    wiring.billingEnabled = false;
   }
 });

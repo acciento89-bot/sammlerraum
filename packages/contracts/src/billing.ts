@@ -65,7 +65,9 @@ export class BillingError extends Error {
       | "BILLING_INVALID_REQUEST"
       | "BILLING_NOT_FOUND"
       | "BILLING_UNAVAILABLE"
-      | "BILLING_CONFLICT",
+      | "BILLING_CONFLICT"
+      | "BILLING_EVENT_CONFLICT"
+      | "BILLING_INVALID_SIGNATURE",
   ) {
     super(code);
     this.name = "BillingError";
@@ -97,3 +99,66 @@ export function assertPlanFeature(
   } else throw new BillingError("BILLING_INVALID_REQUEST");
   return entitlements;
 }
+
+const billingOpaqueId = z
+  .string()
+  .min(1)
+  .max(255)
+  .regex(/^[A-Za-z0-9_.:-]+$/u);
+export const VerifiedBillingEventSchema = z.strictObject({
+  eventId: billingOpaqueId,
+  type: z
+    .string()
+    .min(1)
+    .max(100)
+    .regex(/^[a-z_.]+$/u),
+  created: z.number().int().min(0).max(253402300799),
+  liveMode: z.boolean(),
+  customerId: billingOpaqueId.nullable(),
+  subscriptionId: billingOpaqueId.nullable(),
+  invoiceId: billingOpaqueId.nullable(),
+  chargeId: billingOpaqueId.nullable(),
+  paymentIntentId: billingOpaqueId.nullable(),
+  objectId: billingOpaqueId.nullable().optional(),
+  digest: z.string().regex(/^[a-f0-9]{64}$/u),
+});
+export type VerifiedBillingEvent = z.infer<typeof VerifiedBillingEventSchema>;
+export const BillingSubscriptionSnapshotSchema = z
+  .strictObject({
+    subscriptionId: billingOpaqueId,
+    customerId: billingOpaqueId,
+    status: z.enum([
+      "ACTIVE",
+      "TRIALING",
+      "PAST_DUE",
+      "CANCELED",
+      "UNPAID",
+      "INCOMPLETE",
+      "INCOMPLETE_EXPIRED",
+      "PAUSED",
+    ]),
+    currentPeriodStart: z.date(),
+    currentPeriodEnd: z.date(),
+    cancelAtPeriodEnd: z.boolean(),
+    planEligible: z.boolean(),
+    risk: z
+      .strictObject({
+        reason: z.enum(["REFUND", "DISPUTE", "FRAUD"]),
+        through: z.date().nullable(),
+      })
+      .nullable(),
+  })
+  .refine(
+    (s) =>
+      s.currentPeriodEnd > s.currentPeriodStart &&
+      (!s.risk || s.risk.reason === "REFUND" || s.risk.through === null),
+  );
+export type BillingSubscriptionSnapshot = z.infer<typeof BillingSubscriptionSnapshotSchema>;
+
+export const BillingProviderContextSchema = z.strictObject({
+  providerIds: z
+    .array(z.string().regex(/^[a-z][a-z0-9_-]{0,31}$/u))
+    .min(1)
+    .max(4),
+});
+export type BillingProviderContext = z.infer<typeof BillingProviderContextSchema>;

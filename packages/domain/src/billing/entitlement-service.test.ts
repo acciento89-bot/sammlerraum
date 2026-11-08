@@ -55,10 +55,10 @@ describe.runIf(process.env.RUN_DATABASE_INTEGRATION === "1")("local billing enti
     end = new Date(Date.now() + 3600000),
   ) {
     await db.$executeRaw`INSERT INTO "BillingAccount" ("subjectId",provider,"providerCustomerId") VALUES (${subjectId},'stripe',${"cus_" + randomUUID()})`;
-    await db.$executeRaw`INSERT INTO "BillingSubscription" (id,"subjectId",provider,"providerSubscriptionId",status,"currentPeriodStart","currentPeriodEnd","providerUpdatedAt") VALUES (${randomUUID()}::uuid,${subjectId},'stripe',${"sub_" + randomUUID()},${status}::"BillingSubscriptionStatus",${new Date(Date.now() - 3600000)},${end},CURRENT_TIMESTAMP)`;
+    await db.$executeRaw`INSERT INTO "BillingSubscription" (id,"subjectId",provider,"providerSubscriptionId","planEligible",status,"currentPeriodStart","currentPeriodEnd","providerUpdatedAt") VALUES (${randomUUID()}::uuid,${subjectId},'stripe',${"sub_" + randomUUID()},true,${status}::"BillingSubscriptionStatus",${new Date(Date.now() - 3600000)},${end},CURRENT_TIMESTAMP)`;
   }
   it("rejects item creation at the explicit Free limit and allows a fitting batch", async () => {
-    const service = createEntitlementService(db, policy),
+    const service = createEntitlementService(db, policy, { providerIds: ["stripe"] }),
       id = await user();
     expect(await service.getEntitlements(id)).toMatchObject({
       plan: "FREE",
@@ -75,7 +75,7 @@ describe.runIf(process.env.RUN_DATABASE_INTEGRATION === "1")("local billing enti
     ).rejects.toMatchObject({ code: "PLAN_LIMIT_REACHED" });
   });
   it("blocks premium-only operations while keeping base inventory independent", async () => {
-    const service = createEntitlementService(db, policy),
+    const service = createEntitlementService(db, policy, { providerIds: ["stripe"] }),
       id = await user();
     for (const f of [
       "XLSX",
@@ -95,7 +95,7 @@ describe.runIf(process.env.RUN_DATABASE_INTEGRATION === "1")("local billing enti
     const owner = await user(),
       other = await user();
     await subscription(owner, "ACTIVE");
-    const service = createEntitlementService(db, policy);
+    const service = createEntitlementService(db, policy, { providerIds: ["stripe"] });
     await expect(service.assertEntitled(owner, "XLSX")).resolves.toMatchObject({ plan: "PREMIUM" });
     await expect(service.assertEntitled(other, "XLSX")).rejects.toMatchObject({
       code: "PREMIUM_REQUIRED",
@@ -110,7 +110,7 @@ describe.runIf(process.env.RUN_DATABASE_INTEGRATION === "1")("local billing enti
       const item = await db.collectibleItem.create({
         data: { ownerId: id, collectionId: collection.id, title: "Retained" },
       });
-      const service = createEntitlementService(db, policy);
+      const service = createEntitlementService(db, policy, { providerIds: ["stripe"] });
       expect((await service.getEntitlements(id)).plan).toBe("FREE");
       expect(await db.collectibleItem.findUnique({ where: { id: item.id } })).toMatchObject({
         title: "Retained",
@@ -120,19 +120,24 @@ describe.runIf(process.env.RUN_DATABASE_INTEGRATION === "1")("local billing enti
   it("downgrades an expired active record using the database clock", async () => {
     const id = await user();
     await subscription(id, "ACTIVE", new Date(Date.now() - 1000));
-    expect((await createEntitlementService(db, policy).getEntitlements(id)).plan).toBe("FREE");
+    expect(
+      (await createEntitlementService(db, policy, { providerIds: ["stripe"] }).getEntitlements(id))
+        .plan,
+    ).toBe("FREE");
   });
   it("retains active cancellation until paid period end", async () => {
     const id = await user();
     await subscription(id, "ACTIVE");
     await db.$executeRaw`UPDATE "BillingSubscription" SET "cancelAtPeriodEnd"=true WHERE "subjectId"=${id}`;
-    expect(await createEntitlementService(db, policy).getEntitlements(id)).toMatchObject({
+    expect(
+      await createEntitlementService(db, policy, { providerIds: ["stripe"] }).getEntitlements(id),
+    ).toMatchObject({
       plan: "PREMIUM",
       cancelAtPeriodEnd: true,
     });
   });
   it("fails closed for nonexistent subjects and invalid quantities", async () => {
-    const service = createEntitlementService(db, policy),
+    const service = createEntitlementService(db, policy, { providerIds: ["stripe"] }),
       id = await user();
     await expect(service.getEntitlements("missing")).rejects.toMatchObject({
       code: "BILLING_NOT_FOUND",
@@ -144,5 +149,24 @@ describe.runIf(process.env.RUN_DATABASE_INTEGRATION === "1")("local billing enti
     await expect(service.assertEntitled(id, "ITEM_CREATE")).rejects.toMatchObject({
       code: "BILLING_INVALID_REQUEST",
     });
+  });
+  it("never grants a test subscription in the live provider context", async () => {
+    const subject = await user();
+    await db.$executeRaw`INSERT INTO "BillingAccount" ("subjectId",provider,"providerCustomerId") VALUES (${subject},'stripe_test','cus_isolated_test')`;
+    await db.$executeRaw`INSERT INTO "BillingSubscription" (id,"subjectId",provider,"providerSubscriptionId","planEligible",status,"currentPeriodStart","currentPeriodEnd","providerUpdatedAt") VALUES (${randomUUID()}::uuid,${subject},'stripe_test','sub_isolated_test',true,'ACTIVE',${new Date(Date.now() - 1000)},${new Date(Date.now() + 3600000)},CURRENT_TIMESTAMP)`;
+    expect(
+      (
+        await createEntitlementService(db, policy, {
+          providerIds: ["stripe_live"],
+        }).getEntitlements(subject)
+      ).plan,
+    ).toBe("FREE");
+    expect(
+      (
+        await createEntitlementService(db, policy, {
+          providerIds: ["stripe_test"],
+        }).getEntitlements(subject)
+      ).plan,
+    ).toBe("PREMIUM");
   });
 });

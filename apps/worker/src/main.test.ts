@@ -19,6 +19,14 @@ describe("startWorker", () => {
     });
     const worker = await startWorker({
       queue: queue as never,
+      billingDispatcher: {
+        start: () => {
+          calls.push("billing-start");
+        },
+        stop: async () => {
+          calls.push("billing-stop");
+        },
+      },
       aiDispatcher: {
         start: () => {
           calls.push("ai-start");
@@ -90,6 +98,7 @@ describe("startWorker", () => {
       "report-start",
       "notification-start",
       "ai-start",
+      "billing-start",
       "cleanup-start",
       "health-stop",
       "cleanup-stop",
@@ -98,6 +107,7 @@ describe("startWorker", () => {
       "report-stop",
       "notification-stop",
       "ai-stop",
+      "billing-stop",
       "queue-stop",
       "database-stop",
     ]);

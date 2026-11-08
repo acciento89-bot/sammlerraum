@@ -6,19 +6,21 @@ async function fixture(status = 200, override?: unknown) {
     const request = new Request(input, init);
     requests.push(request);
     const path = new URL(request.url).pathname;
-    const result = path.endsWith("/customers")
-      ? { id: "cus_owned", object: "customer" }
-      : path.endsWith("/billing_portal/sessions")
-        ? {
-            id: "bps_owned",
-            url: "https://billing.stripe.com/p/session/owned",
-            customer: "cus_owned",
-          }
-        : {
-            id: "cs_owned",
-            url: "https://checkout.stripe.com/c/pay/owned",
-            expires_at: Math.floor(Date.now() / 1000) + 3600,
-          };
+    const result = path.endsWith("/subscriptions")
+      ? { object: "list", data: [], has_more: false }
+      : path.endsWith("/customers")
+        ? { id: "cus_owned", object: "customer" }
+        : path.endsWith("/billing_portal/sessions")
+          ? {
+              id: "bps_owned",
+              url: "https://billing.stripe.com/p/session/owned",
+              customer: "cus_owned",
+            }
+          : {
+              id: "cs_owned",
+              url: "https://checkout.stripe.com/c/pay/owned",
+              expires_at: Math.floor(Date.now() / 1000) + 3600,
+            };
     return Response.json(override ?? result, { status, headers: { "request-id": "req_fixture" } });
   };
   const path = "./stripe-provider",
@@ -49,7 +51,9 @@ it("creates hosted subscription Checkout with configured price and owner-bound m
   const { provider, requests } = await fixture();
   const result = await provider.createCheckout(input());
   expect(result).toMatchObject({ id: "cs_owned", url: "https://checkout.stripe.com/c/pay/owned" });
-  const request = requests[0]!,
+  const request = requests.find((request) =>
+      new URL(request.url).pathname.endsWith("/checkout/sessions"),
+    )!,
     params = new URLSearchParams(await request.text());
   expect(new URL(request.url).origin).toBe("https://api.stripe.com");
   expect(params.get("mode")).toBe("subscription");
@@ -72,10 +76,9 @@ it("reuses the exact operation key and integration identifier for retries", asyn
     operation = input();
   await provider.createCheckout(operation);
   await provider.createCheckout(operation);
-  expect(await requests[0]!.text()).toBe(await requests[1]!.text());
-  expect(requests[0]!.headers.get("idempotency-key")).toBe(
-    requests[1]!.headers.get("idempotency-key"),
-  );
+  const posts = requests.filter((request) => request.method === "POST");
+  expect(await posts[0]!.text()).toBe(await posts[1]!.text());
+  expect(posts[0]!.headers.get("idempotency-key")).toBe(posts[1]!.headers.get("idempotency-key"));
 });
 it("creates customers with only immutable local subject metadata", async () => {
   const { provider, requests } = await fixture();
@@ -128,4 +131,29 @@ it("sanitizes provider errors and disables hidden SDK retries", async () => {
     message: "BILLING_UNAVAILABLE",
   });
   expect(requests).toHaveLength(1);
+});
+
+it("prevents a second purchase when an active provider subscription exists before its local webhook", async () => {
+  const requests: Request[] = [];
+  const path = "./stripe-provider",
+    m = await import(path);
+  const provider = new m.StripeBillingProvider({
+    apiKey: "fixture-not-a-real-key",
+    appOrigin: "https://sammlerraum.example",
+    monthlyPriceId: "price_monthly_fixture",
+    yearlyPriceId: "price_yearly_fixture",
+    fetch: async (input: Parameters<typeof fetch>[0], init?: RequestInit) => {
+      const request = new Request(input, init);
+      requests.push(request);
+      return Response.json({
+        object: "list",
+        data: [{ id: "sub_existing", status: "active" }],
+        has_more: false,
+      });
+    },
+  });
+  await expect(provider.createCheckout(input())).rejects.toMatchObject({
+    code: "BILLING_CONFLICT",
+  });
+  expect(requests.every((r) => r.method === "GET")).toBe(true);
 });

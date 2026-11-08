@@ -2,6 +2,8 @@ import { Prisma } from "@sammlerraum/db/search-sql";
 import {
   BillingError,
   BillingPolicySchema,
+  BillingProviderContextSchema,
+  type BillingProviderContext,
   assertPlanFeature,
   type BillingFeature,
   type BillingPolicy,
@@ -19,7 +21,10 @@ export async function getEntitlementsInTransaction(
   tx: SearchReadTransaction,
   subjectId: unknown,
   policy: BillingPolicy,
+  context: BillingProviderContext,
 ): Promise<Entitlements> {
+  if (!BillingProviderContextSchema.safeParse(context).success)
+    throw new BillingError("BILLING_UNAVAILABLE");
   const subject = MembershipActorIdSchema.safeParse(subjectId);
   if (!subject.success) throw new BillingError("BILLING_NOT_FOUND");
   const [user] = await tx.$queryRaw<{ id: string }[]>(
@@ -29,7 +34,7 @@ export async function getEntitlementsInTransaction(
   const [subscription] = await tx.$queryRaw<
     { currentPeriodEnd: Date; cancelAtPeriodEnd: boolean }[]
   >(
-    Prisma.sql`SELECT "currentPeriodEnd","cancelAtPeriodEnd" FROM "BillingSubscription" WHERE "subjectId"=${subject.data} AND status IN ('ACTIVE','TRIALING') AND "currentPeriodStart"<=clock_timestamp() AND "currentPeriodEnd">clock_timestamp() ORDER BY "currentPeriodEnd" DESC,id LIMIT 1`,
+    Prisma.sql`SELECT "currentPeriodEnd","cancelAtPeriodEnd" FROM "BillingSubscription" WHERE "subjectId"=${subject.data} AND provider=ANY(${context.providerIds}::text[]) AND "planEligible" AND ("riskReason" IS NULL OR ("riskReason"='REFUND' AND "riskThrough" IS NOT NULL AND "currentPeriodStart">="riskThrough")) AND status IN ('ACTIVE','TRIALING') AND "currentPeriodStart"<=clock_timestamp() AND "currentPeriodEnd">clock_timestamp() ORDER BY "currentPeriodEnd" DESC,id LIMIT 1`,
   );
   const plan = subscription ? "PREMIUM" : "FREE";
   return {
@@ -39,14 +44,21 @@ export async function getEntitlementsInTransaction(
     cancelAtPeriodEnd: subscription?.cancelAtPeriodEnd ?? false,
   };
 }
-export function createEntitlementService(database: MembershipDatabase, policyInput: BillingPolicy) {
+export function createEntitlementService(
+  database: MembershipDatabase,
+  policyInput: BillingPolicy,
+  contextInput: BillingProviderContext,
+) {
+  const context = BillingProviderContextSchema.safeParse(contextInput);
+  if (!context.success) throw new BillingError("BILLING_UNAVAILABLE");
   const parsed = BillingPolicySchema.safeParse(policyInput);
   if (!parsed.success) throw new BillingError("BILLING_UNAVAILABLE");
-  const policy = parsed.data;
+  const policy = parsed.data,
+    providerContext = context.data;
   async function getEntitlements(subjectId: unknown) {
     try {
       return await runTransferTransaction(database, (tx) =>
-        getEntitlementsInTransaction(tx, subjectId, policy),
+        getEntitlementsInTransaction(tx, subjectId, policy, providerContext),
       );
     } catch (error) {
       if (error instanceof BillingError) throw error;

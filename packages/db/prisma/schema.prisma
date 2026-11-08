@@ -99,6 +99,7 @@ model UserProfile {
 }
 
 model User {
+  billingWebhookReceipts     BillingWebhookReceipt[]
   billingAccounts            BillingAccount[]
   id                         String                             @id
   name                       String
@@ -1903,6 +1904,8 @@ enum BillingSubscriptionStatus {
 }
 
 model BillingAccount {
+  syncToken          String?               @db.Uuid
+  syncExpiresAt      DateTime?
   customerRequestKey String                @unique @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   operations         BillingOperation[]
   subjectId          String
@@ -1917,6 +1920,9 @@ model BillingAccount {
 }
 
 model BillingSubscription {
+  planEligible           Boolean                   @default(false)
+  riskReason             String?
+  riskThrough            DateTime?
   id                     String                    @id @default(uuid()) @db.Uuid
   subjectId              String
   provider               String
@@ -1954,4 +1960,26 @@ model BillingOperation {
   @@unique([provider, purpose, providerSessionId])
   @@index([subjectId, purpose, expiresAt])
   @@index([subjectId, createdAt])
+}
+
+model BillingWebhookReceipt {
+  subjectId        String?
+  user             User?     @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  id               String    @id @db.Uuid
+  provider         String
+  eventId          String
+  digest           String    @db.Char(64)
+  event            Json
+  status           String    @default("PENDING")
+  attemptCount     Int       @default(0)
+  leaseToken       String?   @db.Uuid
+  leaseExpiresAt   DateTime?
+  nextAttemptAt    DateTime  @default(now())
+  lastDispatchedAt DateTime?
+  lastErrorCode    String?
+  createdAt        DateTime  @default(now())
+  appliedAt        DateTime?
+
+  @@unique([provider, eventId])
+  @@index([provider, status, nextAttemptAt])
 }
