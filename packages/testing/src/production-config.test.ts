@@ -93,7 +93,10 @@ describe("production container configuration", () => {
       expect(workflow).toContain(command);
     }
     expect(workflow).toContain("postgres:17");
-    expect(workflow).toContain("pg-boss singleton integration tests");
-    expect(workflow).toContain("packages/domain/src/identity/profile-service.test.ts");
+    expect(workflow).toContain("bash scripts/test-native-complete.sh");
+    expect(read("scripts/test-native-complete.sh")).toContain(
+      "RUN_DATABASE_INTEGRATION=1 pnpm exec vitest run",
+    );
+    expect(read("scripts/test-native-complete.sh")).toContain("report.numPendingTests");
   });
 });

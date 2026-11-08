@@ -1,0 +1,29 @@
+{
+  "base": "0b83dd8df33ae538a5fe3db127282df79e8457f6",
+  "wholeNative": {
+    "passed": 3055,
+    "files": 282,
+    "skipped": 0,
+    "seconds": 277.67,
+    "log": "task-6-whole-native.log",
+    "source": "Task6 working tree before three additional billing-namespace boundary cases; not an exact final-head CI claim"
+  },
+  "finalFocused": {
+    "passed": 20,
+    "files": 5,
+    "log": "task-6-focused-final.log"
+  },
+  "namespaceCorrection": {
+    "redFailed": 3,
+    "redPassed": 6,
+    "log": "task-6-namespace-actual-red.log",
+    "change": "only exact four own billing endpoints exempt; payouts/escrow/connect under billing rejected"
+  },
+  "types": "task-6-types.log",
+  "recursiveLint": "task-6-lint.log",
+  "coordinatorContract": "task-6-coordinator-contract-final.log",
+  "historicalVariantsRetained": 2,
+  "actualRemoteWholeGate": "pending final exact source",
+  "wholePhaseReview": "pending",
+  "acceptedTaskCredit": false
+}

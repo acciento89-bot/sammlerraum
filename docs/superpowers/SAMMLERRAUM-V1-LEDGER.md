@@ -23,7 +23,7 @@ This is the handoff/status file for long-running implementation. Update it after
 | 10 | Community, Moderation & Notifications | 8 | complete (8/8); corrected d69f78f CI SUCCESS | — |
 | 11 | AI-Assisted Capture | 5 | complete (5/5); corrected8957121 CI SUCCESS | — |
 | 12 | Premium & Billing | 5 | complete (5/5); corrected7289140 CI SUCCESS | — |
-| 13 | Integration, Hardening & Release | 7 | Task1 locally complete; Task2 four flows verified; whole-phase acceptance pending | Task2 contract / Task3 |
+| 13 | Integration, Hardening & Release | 7 | T1–4 local contracts passed; T5–6 exact CI pending; T7 prepared, live TLS gate unresolved | Whole source review / actual container gates |
 | 14 | SEO & Google Search Console | 7 | not started | Task 1 |
 
 **Total:** 91 implementation tasks.

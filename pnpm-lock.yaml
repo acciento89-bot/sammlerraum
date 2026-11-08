@@ -275,6 +275,9 @@ importers:
 
   packages/testing:
     devDependencies:
+      '@formatjs/icu-messageformat-parser':
+        specifier: 3.5.20
+        version: 3.5.20
       sharp:
         specifier: 0.35.4
         version: 0.35.4(@types/node@24.5.2)
