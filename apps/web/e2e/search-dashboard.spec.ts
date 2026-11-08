@@ -460,15 +460,35 @@ for (const locale of ["de", "en"] as const) {
       await expect(page.getByRole("button", { name: c.openFilters, exact: true })).toBeVisible();
       await panel(page, locale);
       await expect(page.locator("dialog[open]")).toBeVisible();
-      expect(
-        await page.locator(".search-shell .management-nav a").evaluateAll((links) =>
-          links.every((link) => {
-            const range = document.createRange();
-            range.selectNodeContents(link);
-            return range.getClientRects().length === 1;
-          }),
-        ),
-      ).toBe(true);
+      // The collector shell replaces the hidden legacy toolbar. Wrapped labels
+      // are valid; displayed navigation must remain readable inside its targets.
+      const navigation = await page
+        .locator(".workspace-navigation a, .workspace-mobile-shortcuts a")
+        .evaluateAll((links) => {
+          const visible = links.filter((link) =>
+            link.checkVisibility({ visibilityProperty: true }),
+          );
+          return {
+            count: visible.length,
+            contained: visible.every((link) => {
+              const bounds = link.getBoundingClientRect();
+              const label = link.querySelector("span:not([aria-hidden])");
+              if (!label || !label.textContent?.trim() || bounds.height < 44) return false;
+              const range = document.createRange();
+              range.selectNodeContents(label);
+              const text = range.getBoundingClientRect();
+              return (
+                text.width > 0 &&
+                text.left >= bounds.left - 1 &&
+                text.right <= bounds.right + 1 &&
+                text.top >= bounds.top - 1 &&
+                text.bottom <= bounds.bottom + 1
+              );
+            }),
+          };
+        });
+      expect(navigation.count).toBeGreaterThanOrEqual(3);
+      expect(navigation.contained, JSON.stringify(navigation)).toBe(true);
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
         true,
       );
