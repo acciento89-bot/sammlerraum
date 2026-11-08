@@ -6,7 +6,10 @@
     "language": "Language",
     "german": "Deutsch",
     "english": "English",
-    "footer": "Sammlerraum – a quiet place for remarkable things."
+    "footer": "Sammlerraum – a quiet place for remarkable things.",
+    "legalInformation": "Legal information",
+    "privacy": "Privacy notice",
+    "imprint": "Legal notice"
   },
   "Home": {
     "eyebrow": "Digital collection archive",

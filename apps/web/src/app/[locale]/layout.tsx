@@ -8,6 +8,7 @@ import type { ReactNode } from "react";
 
 import { LocaleNavigation } from "../../components/search/locale-navigation";
 import { routing } from "../../i18n/routing";
+import { legalHref } from "../../seo/legal-routes";
 import "../globals.css";
 
 type Props = {
@@ -62,6 +63,11 @@ export default async function LocaleLayout({ children, params }: Props) {
           <main id="main-content">{children}</main>
           <footer className="site-footer">
             <p>{t("footer")}</p>
+            <nav aria-label={t("legalInformation")}>
+              <Link href={legalHref(locale, "privacy")}>{t("privacy")}</Link>
+              {" · "}
+              <Link href={legalHref(locale, "imprint")}>{t("imprint")}</Link>
+            </nav>
           </footer>
         </NextIntlClientProvider>
       </body>

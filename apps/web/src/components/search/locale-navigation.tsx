@@ -2,6 +2,7 @@
 import { publicCollectorLocaleHref } from "../../seo/public-collector-locale";
 import { categoryLocaleHref } from "../../seo/category-routes";
 import { marketingLocaleHref } from "../../seo/public-pages";
+import { legalLocaleHref } from "../../seo/legal-routes";
 import { billingLocaleHref } from "../billing/billing-locale-navigation";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -45,6 +46,7 @@ export function LocaleNavigation({ locale }: { locale: string }) {
         <Link
           key={language}
           href={
+            legalLocaleHref(pathname ?? "", language) ??
             publicCollectorLocaleHref(pathname ?? "", language, moneySearch) ??
             categoryLocaleHref(pathname ?? "", language) ??
             marketingLocaleHref(pathname ?? "", language) ??

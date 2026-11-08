@@ -6,7 +6,10 @@
     "language": "Sprache",
     "german": "Deutsch",
     "english": "English",
-    "footer": "Sammlerraum – ein ruhiger Ort für besondere Dinge."
+    "footer": "Sammlerraum – ein ruhiger Ort für besondere Dinge.",
+    "legalInformation": "Rechtliche Informationen",
+    "privacy": "Datenschutzerklärung",
+    "imprint": "Impressum"
   },
   "Home": {
     "eyebrow": "Digitales Sammlungsarchiv",

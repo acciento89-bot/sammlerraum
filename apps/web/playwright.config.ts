@@ -48,12 +48,12 @@ export default defineConfig({
     },
     {
       name: "marketing-desktop",
-      testMatch: "**/marketing-seo.spec.ts",
+      testMatch: ["**/marketing-seo.spec.ts", "**/legal-information.spec.ts"],
       use: { viewport: { width: 1440, height: 900 } },
     },
     {
       name: "marketing-mobile",
-      testMatch: "**/marketing-seo.spec.ts",
+      testMatch: ["**/marketing-seo.spec.ts", "**/legal-information.spec.ts"],
       use: { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true },
     },
     { name: "security-api", testMatch: "**/security-permissions.spec.ts" },
