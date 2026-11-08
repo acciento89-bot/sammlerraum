@@ -1,3 +1,4 @@
+import { AIAnalysisError } from "@sammlerraum/contracts/ai";
 import { RestoreError } from "@sammlerraum/contracts/restore";
 import { AuditError } from "@sammlerraum/contracts/audit";
 import { ShareError } from "@sammlerraum/contracts/sharing";
@@ -73,6 +74,7 @@ export async function runTransferTransaction<T>(
       );
     } catch (error) {
       if (
+        error instanceof AIAnalysisError ||
         error instanceof RestoreError ||
         error instanceof AuditError ||
         error instanceof ShareError ||

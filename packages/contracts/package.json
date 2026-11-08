@@ -44,7 +44,8 @@
     "./moderation": "./src/moderation.ts",
     "./notifications": "./src/notifications.ts",
     "./scoped-search": "./src/scoped-search.ts",
-    "./scoped-dashboard": "./src/scoped-dashboard.ts"
+    "./scoped-dashboard": "./src/scoped-dashboard.ts",
+    "./ai": "./src/ai.ts"
   },
   "scripts": {
     "build": "pnpm typecheck",
