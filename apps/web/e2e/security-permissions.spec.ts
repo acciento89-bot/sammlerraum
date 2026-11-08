@@ -34,10 +34,10 @@ test.describe("compiled V1 permission matrix", () => {
   test.skip(!enabled, "Dedicated guarded real-cookie permission run");
   test.beforeAll(async ({ playwright }) => {
     const [guard] = await db!.$queryRaw<
-      { name: string; version: string }[]
-    >`SELECT current_database() AS name,current_setting('server_version') AS version`;
-    if (!guard?.name.endsWith("_test") || !guard.version.startsWith("17.11"))
-      throw Error("Owned PostgreSQL17.11 required");
+      { name: string; major: number }[]
+    >`SELECT current_database() AS name,current_setting('server_version_num')::integer/10000 AS major`;
+    if (!guard?.name.endsWith("_test") || guard.major !== 17)
+      throw Error("Owned PostgreSQL17 required");
     await appendFile(
       resolve(
         process.cwd(),

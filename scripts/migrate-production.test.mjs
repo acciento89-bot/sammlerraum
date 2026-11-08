@@ -23,3 +23,11 @@ test("migration requires exact reviewed source, isolated scratch target or produ
     }),
   );
 });
+
+test("resolves the installed executable from Prisma's bin manifest rather than its non-executable package main", async () => {
+  const { resolvePrismaCLI } = await import("./migrate-production.mjs");
+  assert.equal(typeof resolvePrismaCLI, "function");
+  const { existsSync } = await import("node:fs");
+  assert.equal(existsSync(resolvePrismaCLI()), true);
+  assert.match(resolvePrismaCLI(), /[/\\]build[/\\]index[.]js$/u);
+});

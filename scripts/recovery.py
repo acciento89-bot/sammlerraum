@@ -54,6 +54,9 @@ def private_directory(path, empty=False):
     require(path.is_dir(), 'Directory required')
     if empty:
         require(not any(path.iterdir()), 'Destination must be empty')
+        require(path.stat().st_uid == os.geteuid(), 'Scratch root must belong to the recovery operator')
+        path.chmod(0o700)
+        require(not any(path.iterdir()), 'Destination must stay empty before recovery')
     return path
 
 

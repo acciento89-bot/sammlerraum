@@ -7,11 +7,16 @@ import subprocess
 import sys
 from pathlib import Path
 from urllib.request import urlopen
+from urllib.parse import urlsplit
+
+
+class ProductionVerificationError(ValueError):
+    pass
 
 
 def require(value, message):
     if not value:
-        raise ValueError(message)
+        raise ProductionVerificationError(message)
 
 
 def memory_bytes(value):
@@ -50,7 +55,9 @@ def validate(config):
         required = ('DATABASE_URL','APP_ORIGIN','BILLING_PLAN_LIMITS')
         require(all(isinstance(env.get(k), str) and env[k] for k in required), 'Required application configuration missing')
         require(env.get('NODE_ENV') == 'production' and env.get('UPLOADS_DIR') == '/data/uploads', 'Production environment/storage required')
-        require(env['APP_ORIGIN'].startswith('https://') or (env.get('DEPLOYMENT_SCRATCH') == 'true' and '_test' in env['DATABASE_URL']), 'HTTPS application origin required')
+        origin, database = urlsplit(env['APP_ORIGIN']), urlsplit(env['DATABASE_URL'])
+        isolated_http = env.get('DEPLOYMENT_SCRATCH') == 'true' and database.path.endswith('_test') and origin.hostname in ('localhost','127.0.0.1','::1') and origin.scheme == 'http'
+        require(origin.scheme == 'https' or isolated_http, 'HTTPS application origin or isolated loopback scratch required')
         # A source-ready release must not silently activate paid providers or marketplace transactions.
         for key in ('BILLING_ENABLED','AI_ANALYSIS_ENABLED','MARKET_SYNC_ENABLED','SCRYDEX_ENABLED','PRICECHARTING_ENABLED','NOTIFICATION_EMAIL_ENABLED'):
             require(env.get(key) == 'false', 'Separate provider activation required')
@@ -86,6 +93,9 @@ def main():
 if __name__ == '__main__':
     try:
         main()
+    except ProductionVerificationError as error:
+        print('Production verification refused: '+str(error),file=sys.stderr)
+        sys.exit(1)
     except (OSError, ValueError, KeyError, TypeError, subprocess.TimeoutExpired):
         print('Production verification failed; configuration, isolation or health gate refused', file=sys.stderr)
         sys.exit(1)

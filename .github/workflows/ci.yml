@@ -331,7 +331,7 @@ jobs:
         env:
           RESTORE_TEST_PASSWORD: disposable-ci-restore-only
 
-      - name: Verify immutable production-like stack and non-destructive restart
+      - name: Verify immutable production-like stack, real recovered app and non-destructive restart
         run: |
           python3 scripts/verify-production_test.py
           node --test scripts/migrate-production.test.mjs
@@ -339,4 +339,7 @@ jobs:
           bash scripts/test-production-stack.sh
 
       - name: Verify exact-source release coordinator contracts
-        run: node --test scripts/release-gate.test.mjs
+        run: |
+          node --test scripts/release-gate.test.mjs
+          python3 scripts/smoke-production_test.py
+          python3 scripts/verify-restored-app_test.py

@@ -19,7 +19,7 @@ python3 - <<'PY'
 from pathlib import Path
 import os,json
 policy=json.loads(Path('packages/testing/fixtures/security-billing-policy.json').read_text())
-values=dict(DATABASE_URL=os.environ['DATABASE_URL'],APP_ORIGIN='https://example.invalid',UPLOADS_DIR='/data/uploads',LOG_LEVEL='info',BETTER_AUTH_SECRET='owned-synthetic-stack-secret-at-least-thirty-two-characters',GOOGLE_CLIENT_ID='owned-fixture',GOOGLE_CLIENT_SECRET='owned-fixture',APPLE_CLIENT_ID='owned-fixture',APPLE_CLIENT_SECRET='owned-fixture',SMTP_HOST='smtp.example.invalid',SMTP_PORT='587',SMTP_SECURE='false',SMTP_USER='owned-fixture',SMTP_PASSWORD='owned-fixture',SMTP_FROM='noreply@example.invalid',BILLING_PLAN_LIMITS=json.dumps(policy,separators=(',',':')),BILLING_ENVIRONMENT='test',BILLING_ENABLED='false',AI_ANALYSIS_ENABLED='false',MARKET_SYNC_ENABLED='false',SCRYDEX_ENABLED='false',PRICECHARTING_ENABLED='false',NOTIFICATION_EMAIL_ENABLED='false')
+values=dict(DATABASE_URL=os.environ['DATABASE_URL'],APP_ORIGIN='http://127.0.0.1:3349',DEPLOYMENT_SCRATCH='true',UPLOADS_DIR='/data/uploads',LOG_LEVEL='info',BETTER_AUTH_SECRET='owned-synthetic-stack-secret-at-least-thirty-two-characters',GOOGLE_CLIENT_ID='owned-fixture',GOOGLE_CLIENT_SECRET='owned-fixture',APPLE_CLIENT_ID='owned-fixture',APPLE_CLIENT_SECRET='owned-fixture',SMTP_HOST='smtp.example.invalid',SMTP_PORT='587',SMTP_SECURE='false',SMTP_USER='owned-fixture',SMTP_PASSWORD='owned-fixture',SMTP_FROM='noreply@example.invalid',BILLING_PLAN_LIMITS=json.dumps(policy,separators=(',',':')),BILLING_ENVIRONMENT='test',BILLING_ENABLED='false',AI_ANALYSIS_ENABLED='false',MARKET_SYNC_ENABLED='false',SCRYDEX_ENABLED='false',PRICECHARTING_ENABLED='false',NOTIFICATION_EMAIL_ENABLED='false')
 Path(os.environ['SAMMLERRAUM_ENV_FILE']).write_text(''.join(k+'='+v+'\n' for k,v in values.items()))
 PY
 compose=(docker compose -f docker-compose.prod.yml)
@@ -50,3 +50,6 @@ python3 scripts/verify-production.py --config-json "$private_config" --health-ur
 [[ "$("${compose[@]}" exec -T db psql -U test -d "$POSTGRES_DB" -Atqc 'SELECT receipt FROM sammlerraum_ci_restart_receipt')" = "$GITHUB_SHA" ]]
 "${compose[@]}" exec -T worker node -e "if(require('node:fs').readFileSync('/data/uploads/.ci-restart-receipt','utf8')!==process.argv[1])process.exit(1)" "$GITHUB_SHA"
 python3 scripts/verify-production.py --config-json "$private_config" --health-url http://127.0.0.1:3349/api/health
+
+# Connect the actual backup/restored resources to the reviewed application, not a health fixture.
+bash scripts/test-production-recovery.sh

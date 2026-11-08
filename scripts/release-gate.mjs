@@ -14,7 +14,7 @@ export const requiredSteps = Object.freeze([
   "Verify complete V1 permission matrix through actual cookie sessions",
   "Verify complete V1 collector flows in DE and EN on desktop and mobile",
   "Verify actual PostgreSQL17 database and media recovery",
-  "Verify immutable production-like stack and non-destructive restart",
+  "Verify immutable production-like stack, real recovered app and non-destructive restart",
 ]);
 export function validateGate(run, jobs, sha) {
   if (run.head_sha !== sha || run.status !== "completed" || run.conclusion !== "success")

@@ -49,6 +49,19 @@ class ConfigContract(unittest.TestCase):
             with self.subTest(key=key), self.assertRaises(ValueError):
                 m.validate(c)
 
+    def test_http_scratch_exception_requires_loopback_and_exact_test_database(self):
+        c = fixture()
+        for name in ('web','worker'):
+            c['services'][name]['environment'].update(APP_ORIGIN='http://127.0.0.1:3349',DEPLOYMENT_SCRATCH='true')
+        m.validate(c)
+        for origin in ('http://example.test','http://127.0.0.1.evil.test'):
+            d = copy.deepcopy(c)
+            d['services']['web']['environment']['APP_ORIGIN'] = origin
+            with self.assertRaises(ValueError): m.validate(d)
+        d = copy.deepcopy(c)
+        d['services']['web']['environment']['DATABASE_URL'] = 'postgresql://test:test@db/production'
+        with self.assertRaises(ValueError): m.validate(d)
+
     def test_rejects_wrong_volumes_or_database_binding(self):
         c = fixture(); c['volumes']['uploads']['name'] = 'owned-db'
         with self.assertRaises(ValueError): m.validate(c)

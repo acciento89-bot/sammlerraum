@@ -230,5 +230,13 @@ class RecoveryDrill(unittest.TestCase):
             link.unlink()
 
 
+    def test_09_existing_empty_scratch_root_becomes_private_before_restore(self):
+        root = self.area / 'owned-permissions-scratch'
+        root.mkdir()
+        root.chmod(0o777)
+        r.private_directory(root, empty=True)
+        self.assertEqual(root.stat().st_mode & 0o077, 0)
+
+
 if __name__ == '__main__':
     unittest.main(verbosity=2)
