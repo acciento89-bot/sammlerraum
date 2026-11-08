@@ -148,6 +148,11 @@ jobs:
           RUN_SEO_E2E=1 RUN_AUTH_E2E=1 RUN_PRODUCTION_E2E=1
           pnpm --filter @sammlerraum/web exec playwright test e2e/search-indexing-control.spec.ts
           --project=seo-desktop --project=seo-mobile --workers=1
+      - name: Verify dynamic private-safe sitemap protocol
+        run: >-
+          RUN_SEO_E2E=1 RUN_AUTH_E2E=1 RUN_PRODUCTION_E2E=1
+          pnpm --filter @sammlerraum/web exec playwright test e2e/sitemaps.spec.ts
+          --project=seo-desktop --workers=1
       - name: Run storage label browser journeys against production
         run: >-
           RUN_AUTH_E2E=1 RUN_PRODUCTION_E2E=1 pnpm --filter @sammlerraum/web exec playwright test

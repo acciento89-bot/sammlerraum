@@ -81,7 +81,8 @@
     "./billing/webhook-service": "./src/billing/webhook-service.ts",
     "./billing/billing-overview": "./src/billing/billing-overview.ts",
     "./seo/search-preference-service": "./src/seo/search-preference-service.ts",
-    "./seo/indexability": "./src/seo/indexability.ts"
+    "./seo/indexability": "./src/seo/indexability.ts",
+    "./seo/sitemap-service": "./src/seo/sitemap-service.ts"
   },
   "scripts": {
     "build": "pnpm typecheck",

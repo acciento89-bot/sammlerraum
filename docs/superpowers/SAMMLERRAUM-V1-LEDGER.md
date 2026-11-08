@@ -24,7 +24,7 @@ This is the handoff/status file for long-running implementation. Update it after
 | 11 | AI-Assisted Capture | 5 | complete (5/5); corrected8957121 CI SUCCESS | — |
 | 12 | Premium & Billing | 5 | complete (5/5); corrected7289140 CI SUCCESS | — |
 | 13 | Integration, Hardening & Release | 7 | T1–4 local contracts passed; T5–6 exact CI pending; T7 prepared, live TLS gate unresolved | Whole source review / actual container gates |
-| 14 | SEO & Google Search Console | 7 | not started | Task 1 |
+| 14 | SEO & Google Search Console | 7 | source work in progress; whole review/exact CI pending | Tasks1,3,2 locally verified; Task4 next |
 
 **Total:** 91 implementation tasks.
 
@@ -1303,3 +1303,7 @@ Exact7289140d8fd422cc0561e03cf5e5f33a75d683f4 run42458240201/job128661743488 com
 ### Phase13 single whole-review consolidated correction — final CI pending
 
 Immutable06cab579 review found0Critical/2Important/1Minor. Root211f9b9 closes source gaps in one consolidated pass: actual reviewed web image consumes separately restored DB/uploads with preserved own session/protected original+variant checks; public smoke validates owned final URL, locale and localized page identity; permission guard targets PostgreSQL17major. Non-root private restore roots are restricted0700. Actual older CI0b83dd8/run42463679266 reached container migration and exposed incorrect Prisma main resolution; installed bin-manifest resolution is fixed and the real runner locally applied all75migrations to a fresh own scratch DB. Earlier stages passed; failed CI is not acceptance. Current local3058native/282files/zeroSkip, recovery9, types/lint/both builds,84compiled permission +4complete locale/viewport flowsPASS. Final actual corrected-container/fullCI still required. Canonical77/91, source/DraftPR1 only; Phase13 live smoke still fails predeployment TLS and remains unchecked. Phase14 only preflight prepared; no scope reduction.
+
+### Phase14 source progress — no new acceptance credit
+
+T1 f8f88fc adds canonical bilingual marketing pages and runtime-origin metadata (8requiredunit, earlier11focused,4compiledDEENdesktop/mobile). T3 248dbfa adds explicit default-off owner indexing consent/publiclocale/revisionCAS, private same-origin fresh-session API, responsive controls;31native/identity/API+4compiledownerjourneysPASS. T2 adds privacy-safe dynamic XML sitemap index/robots/marketing/community files, stable bounded hash ranges/indexes and fresh effective visibility;30native/unit including10001-record split+1compiledprotocolPASS. Types/lint/buildPASS. These are local source proofs pending one whole-phase review and exact CI; canonical accepted77/91 unchanged. Phase13 corrected frozen3762e56/run42467819313 remainsrunning with no observed failures; never marklive smoke/DNS ownership from source.

@@ -1,0 +1,72 @@
+{
+  "scope": "local source and owned fixtures, not live indexing",
+  "nativeAndUnitPassed": 30,
+  "compiledProtocolPassed": 1,
+  "scaleActualRowsInSingleHashRange": 10001,
+  "artifacts": [
+    {
+      "path": "task-2-types.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "task-2-migrate-browser.log",
+      "sha256": "de7294c6e18f217936740a68d2f5b6e11f20a50acb22959746d37773d218e22e"
+    },
+    {
+      "path": "task-2-migrate-native.log",
+      "sha256": "7fc007d271d09ed345e079cb4942ca62bd071a729a920093738b979a8d2449ab"
+    },
+    {
+      "path": "task-2-red.log",
+      "sha256": "15d8bff87e6230dde016de18f6ce1624259e1052b29fcf3741b36b3900fc260e"
+    },
+    {
+      "path": "task-2-root-types.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "task-2-lint.log",
+      "sha256": "6549a416892c21fbafb57ff592b3f12014b82e6d54f98740cfd55022b79accb2"
+    },
+    {
+      "path": "task-2-format.log",
+      "sha256": "d2fcadb234a5f7448978f64e6ee63820c3bda6999bfdc7d74fad1faf8ccc51c8"
+    },
+    {
+      "path": "task-2-lint-final.log",
+      "sha256": "564518c806f10dba8cbbdb81bfde8c9c3da5c57b85e3613e26dbbd5c4f9000af"
+    },
+    {
+      "path": "task-2-xml-red.log",
+      "sha256": "59800b70d9889f92b83bc2aab79801baeebb4f3d73a7bfd0cacd9f10179180b7"
+    },
+    {
+      "path": "task-2-native-first.log",
+      "sha256": "46389bb66396ce05caebadbb7303971cc873f2b767c5640986f08599245df78e"
+    },
+    {
+      "path": "task-2-format-final.log",
+      "sha256": "7ec0caef06d0451666157c9494061e4a76b0396ca8e65103018c3677cb6f28b4"
+    },
+    {
+      "path": "task-2-compiled.log",
+      "sha256": "5afd3044099f0c606400097cc5b81174515f13195ab7cac6b180dd9c6b6dd758"
+    },
+    {
+      "path": "task-2-scale-green.log",
+      "sha256": "7ec86a485d2304ce352f06fd4046a1c48b8a2c8b6479d744605af2375148f91b"
+    },
+    {
+      "path": "task-2-native-green.log",
+      "sha256": "56efbd33738641e36d4286451dc98ee5267daf6bb7fb45d34d420f6e7e874e64"
+    },
+    {
+      "path": "task-2-package-format.log",
+      "sha256": "aa6b28370fe35573fd636f809b50f037f7139560e3cad86c773b128de1a01ce4"
+    },
+    {
+      "path": "task-2-build.log",
+      "sha256": "6138e6b2828aad666d02f0d81860082d9f09345d3f0554139f79a576eb19decd"
+    }
+  ]
+}
