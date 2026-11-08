@@ -30,6 +30,13 @@ describe.runIf(runIntegration)("pg-boss singleton integration", () => {
 
       expect(second).toBe(first);
       const jobs = await boss!.findJobs(queueName, { key: singletonKey });
+      expect(jobs[0]).toMatchObject({
+        retryLimit: 5,
+        retryDelay: 5,
+        retryBackoff: true,
+        retryDelayMax: 300,
+        expireInSeconds: 120,
+      });
       expect(
         jobs.filter((job) => !["completed", "cancelled", "failed"].includes(job.state)),
       ).toHaveLength(1);

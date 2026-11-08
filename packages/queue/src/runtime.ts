@@ -3,6 +3,7 @@ import { EventEmitter } from "node:events";
 import type { Job, PgBoss } from "pg-boss";
 
 import { ensureExclusiveQueue } from "./pg-boss-queue";
+import { WORKER_FETCH_POLICY } from "./job-policy";
 import type { JobHandler } from "./types";
 
 type RegisteredHandler = {
@@ -59,6 +60,7 @@ export type QueueRuntimeBackend = Pick<
 >;
 
 export class QueueRuntime extends EventEmitter {
+  private readonly active = new Set<Promise<void>>();
   private started = false;
   private initialized = false;
   private queueHealthy = true;
@@ -89,21 +91,32 @@ export class QueueRuntime extends EventEmitter {
       this.started = true;
       for (const registration of this.registry.entries()) {
         await ensureExclusiveQueue(this.backend, registration.name);
-        await this.backend.work(registration.name, async (jobs: Job<unknown>[]) => {
-          await Promise.all(
-            jobs.map((job) =>
-              registration.cancellable
-                ? registration.cancellable(job.data, { signal: job.signal })
-                : registration.handle(job.data),
-            ),
-          );
-        });
+        await this.backend.work(
+          registration.name,
+          WORKER_FETCH_POLICY,
+          async (jobs: Job<unknown>[]) => {
+            if (!this.started) throw new Error("Worker stopping");
+            const running = (async () => {
+              // Even an unexpectedly large broker batch may not fan out memory-heavy work.
+              for (const job of jobs) {
+                if (registration.cancellable)
+                  await registration.cancellable(job.data, { signal: job.signal });
+                else await registration.handle(job.data);
+              }
+            })();
+            this.active.add(running);
+            try {
+              await running;
+            } finally {
+              this.active.delete(running);
+            }
+          },
+        );
       }
       this.initialized = this.queueHealthy;
     } catch (error) {
       this.queueHealthy = false;
-      await this.backend.stop().catch(() => undefined);
-      this.started = false;
+      await this.stop().catch(() => undefined);
       throw error;
     }
   }
@@ -117,6 +130,8 @@ export class QueueRuntime extends EventEmitter {
     this.queueHealthy = false;
     this.started = false;
     this.backend.off("error", this.handleBackendError);
-    await this.backend.stop();
+    await this.backend.stop({ graceful: true, timeout: 30000 });
+    // A broker timeout/abort is not proof that underlying I/O has settled.
+    await Promise.allSettled([...this.active]);
   }
 }

@@ -152,6 +152,24 @@ describe.runIf(process.env.RUN_DATABASE_INTEGRATION === "1")(
         /Original private item|private-filename|storageKey|ownerId/,
       );
     });
+    it("keeps the real immutable result after a lost post-commit acknowledgement and does not call the provider again", async () => {
+      const f = await fixture();
+      const original = f.service.storeAnalysisResult.bind(f.service);
+      vi.spyOn(f.service, "storeAnalysisResult").mockImplementationOnce(async (...args) => {
+        await original(...args);
+        throw new Error("synthetic lost response after result commit");
+      });
+      await f.handler({ analysisJobId: f.job.id });
+      await f.handler({ analysisJobId: f.job.id });
+      expect(f.analyze).toHaveBeenCalledOnce();
+      expect((await f.service.getAnalysis({ userId: f.owner }, f.job.id)).job.status).toBe("READY");
+      expect(
+        await db.aIAnalysisAttempt.count({ where: { jobId: f.job.id, outcome: "SUCCEEDED" } }),
+      ).toBe(1);
+      expect((await db.collectibleItem.findUniqueOrThrow({ where: { id: f.item.id } })).title).toBe(
+        "Original private item",
+      );
+    });
     it("terminally rejects an unlinked source before storage or provider IO", async () => {
       const f = await fixture();
       await db.mediaLink.delete({ where: { id: f.link.id } });

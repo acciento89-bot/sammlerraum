@@ -70,6 +70,7 @@ export async function startWorker(options: StartWorkerOptions): Promise<RunningW
       process.off("SIGINT", handleSignal);
       // Abort market I/O synchronously before waiting for independent cleanup.
       let marketSettled = true;
+      let queueSettled = true;
       const errors: unknown[] = [];
       let marketStop: Promise<void> | undefined;
       try {
@@ -99,10 +100,15 @@ export async function startWorker(options: StartWorkerOptions): Promise<RunningW
       await attempt(() => options.billingDispatcher?.stop());
       await attempt(() => options.importDispatcher?.stop());
       await marketResult;
-      await attempt(() => options.queue.stop());
+      try {
+        await options.queue.stop();
+      } catch {
+        queueSettled = false;
+        errors.push(new Error("Queue shutdown failed"));
+      }
       options.queue.off("error", handleQueueError);
       // An abort/timeout is not proof that a transport or transaction has stopped.
-      if (marketSettled) await attempt(() => options.disconnectDatabase());
+      if (marketSettled && queueSettled) await attempt(() => options.disconnectDatabase());
       if (errors.length) throw new Error("Worker shutdown failed");
     })();
     return stopPromise;

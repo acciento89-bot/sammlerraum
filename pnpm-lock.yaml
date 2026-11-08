@@ -273,7 +273,11 @@ importers:
 
   packages/storage: {}
 
-  packages/testing: {}
+  packages/testing:
+    devDependencies:
+      sharp:
+        specifier: 0.35.4
+        version: 0.35.4(@types/node@24.5.2)
 
 packages:
 

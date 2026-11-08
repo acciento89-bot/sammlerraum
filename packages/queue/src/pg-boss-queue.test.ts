@@ -45,6 +45,10 @@ describe("PgBossQueue", () => {
       "image.process",
       { id: "a" },
       {
+        expireInSeconds: 120,
+        retryDelay: 5,
+        retryBackoff: true,
+        retryDelayMax: 300,
         retryLimit: 5,
         singletonKey: "generated-key",
       },
@@ -138,7 +142,7 @@ describe("QueueRuntime and WorkerRegistry", () => {
       stop: vi.fn().mockResolvedValue(undefined),
       createQueue: vi.fn().mockResolvedValue(undefined),
       getQueue: vi.fn().mockResolvedValue(queueRecord()),
-      work: vi.fn(async (_name, work) => {
+      work: vi.fn(async (_name, _options, work) => {
         batchHandler = work;
         return "worker-1";
       }),
@@ -203,7 +207,7 @@ it("forwards the actual broker cancellation signal only to opt-in handlers", asy
     stop: vi.fn(async () => {}),
     createQueue: vi.fn(async () => {}),
     getQueue: vi.fn(async () => ({ name: "market.sync", policy: "exclusive" })),
-    work: vi.fn(async (_name, callback) => {
+    work: vi.fn(async (_name, _options, callback) => {
       work = callback;
     }),
   });

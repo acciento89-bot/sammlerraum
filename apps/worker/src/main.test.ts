@@ -268,3 +268,25 @@ it("attempts independent cleanup when market stop throws synchronously", async (
   await expect(worker.stop()).rejects.toThrow();
   expect(calls).toEqual(["health", "queue"]);
 });
+
+it("keeps application database connections alive when queue shutdown cannot prove settlement", async () => {
+  const disconnectDatabase = vi.fn(async () => {});
+  const queue = Object.assign(new EventEmitter(), {
+    start: async () => {},
+    stop: async () => {
+      throw Error("unsettled queue shutdown");
+    },
+    isReady: () => true,
+  });
+  const worker = await startWorker({
+    queue,
+    databaseHealth: async () => ({ ok: true }),
+    disconnectDatabase,
+    startHealth: async () => ({ close: async () => {}, port: 1, host: "127.0.0.1" }),
+    healthPort: 1,
+    logger: { info: vi.fn(), error: vi.fn() },
+    installSignals: false,
+  });
+  await expect(worker.stop()).rejects.toThrow("Worker shutdown failed");
+  expect(disconnectDatabase).not.toHaveBeenCalled();
+});

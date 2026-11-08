@@ -141,3 +141,78 @@ describe.runIf(process.env.RUN_DATABASE_INTEGRATION === "1")("durable image clai
     }
   });
 });
+
+describe.runIf(process.env.RUN_DATABASE_INTEGRATION === "1")(
+  "real image READY acknowledgement recovery",
+  () => {
+    it("does not revert READY or duplicate variants after the durable transition succeeds then throws", async () => {
+      const { default: sharp } = await import("sharp");
+      const { createImageProcessor } = await import("./process-image");
+      const { vi } = await import("vitest");
+      const db = createTestDatabaseClient(),
+        ownerId = randomUUID(),
+        id = randomUUID();
+      const bytes = await sharp({
+        create: { width: 8, height: 8, channels: 3, background: "#4b7965" },
+      })
+        .png()
+        .toBuffer();
+      const originalKey = `originals/${id}`;
+      const objects = new Map<string, Uint8Array>([[originalKey, bytes]]);
+      const put = vi.fn(async (key: string, data: Uint8Array) => {
+        objects.set(key, data);
+      });
+      try {
+        await db.user.create({
+          data: { id: ownerId, name: "Owned image recovery", email: `${ownerId}@example.test` },
+        });
+        await db.mediaAsset.create({
+          data: {
+            id,
+            ownerId,
+            kind: "IMAGE",
+            status: "PENDING",
+            mimeType: "image/png",
+            storageKey: originalKey,
+            byteSize: BigInt(bytes.length),
+            checksumSha256: createHash("sha256").update(bytes).digest("hex"),
+            originalFileName: "owned.png",
+          },
+        });
+        const repo = createPrismaImageRepository(db),
+          ready = repo.ready.bind(repo);
+        vi.spyOn(repo, "ready").mockImplementationOnce(async (claim) => {
+          await ready(claim);
+          throw Error("lost post-commit acknowledgement");
+        });
+        const storage = {
+          read: async (key: string) => {
+            const data = objects.get(key);
+            if (!data) throw Error("missing");
+            return data;
+          },
+          put,
+          exists: async (key: string) => objects.has(key),
+          delete: async (key: string) => {
+            objects.delete(key);
+          },
+        };
+        const handler = createImageProcessor(repo, storage);
+        await handler({ assetId: id });
+        await handler({ assetId: id });
+        expect((await db.mediaAsset.findUniqueOrThrow({ where: { id } })).status).toBe("READY");
+        expect(await db.mediaVariant.count({ where: { assetId: id } })).toBe(3);
+        expect(put).toHaveBeenCalledTimes(3);
+        for (const variant of await db.mediaVariant.findMany({ where: { assetId: id } }))
+          expect(createHash("sha256").update(objects.get(variant.storageKey)!).digest("hex")).toBe(
+            variant.checksumSha256,
+          );
+      } finally {
+        await db.mediaVariant.deleteMany({ where: { assetId: id } });
+        await db.mediaAsset.deleteMany({ where: { id } });
+        await db.user.deleteMany({ where: { id: ownerId } });
+        await db.$disconnect();
+      }
+    });
+  },
+);

@@ -58,12 +58,19 @@ class ProcessingFailure extends Error {
   }
 }
 
-async function guardedRead(storage: StorageProvider, key: string): Promise<Uint8Array> {
+async function guardedRead(
+  storage: StorageProvider,
+  key: string,
+  maxBytes: number,
+): Promise<Uint8Array> {
   try {
-    return await storage.read(key);
+    return await storage.read(key, { maxBytes });
   } catch (error) {
     if (error instanceof Error && "code" in error && error.code === "STORAGE_NOT_FOUND") {
       throw new ProcessingFailure("SOURCE_MISSING", false);
+    }
+    if (error instanceof Error && "code" in error && error.code === "STORAGE_TOO_LARGE") {
+      throw new ProcessingFailure("SOURCE_TOO_LARGE", false);
     }
     throw new ProcessingFailure("STORAGE_ERROR", true);
   }
@@ -91,7 +98,7 @@ export function createImageProcessor(
       ) {
         throw new ProcessingFailure("SOURCE_TOO_LARGE", false);
       }
-      const bytes = await guardedRead(storage, claim.storageKey);
+      const bytes = await guardedRead(storage, claim.storageKey, maxBytes);
       if (bytes.byteLength !== Number(claim.byteSize) || digest(bytes) !== claim.checksumSha256) {
         throw new ProcessingFailure("SOURCE_INVALID", false);
       }

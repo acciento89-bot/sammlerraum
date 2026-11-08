@@ -2,6 +2,8 @@ import { randomUUID } from "node:crypto";
 
 import type { FindJobsOptions, JobWithMetadata, QueueResult, SendOptions } from "pg-boss";
 
+import { brokerJobPolicy } from "./job-policy";
+
 import type { EnqueueOptions, QueueClient } from "./types";
 
 export const REQUIRED_QUEUE_POLICY = "exclusive" as const;
@@ -37,9 +39,15 @@ export class PgBossQueue implements QueueClient {
     payload: T,
     options: EnqueueOptions = {},
   ): Promise<string> {
+    if (
+      options.retryLimit !== undefined &&
+      (!Number.isInteger(options.retryLimit) || options.retryLimit < 0 || options.retryLimit > 5)
+    )
+      throw new RangeError("Invalid queue retry budget");
     await ensureExclusiveQueue(this.backend, name);
     const singletonKey = options.singletonKey ?? this.createSingletonKey();
     const sendOptions: SendOptions = {
+      ...brokerJobPolicy(name),
       singletonKey,
       retryLimit: options.retryLimit ?? 5,
       ...(options.priority === undefined ? {} : { priority: options.priority }),
