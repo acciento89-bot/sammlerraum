@@ -6,10 +6,12 @@ import { getMessages, getTranslations, setRequestLocale } from "next-intl/server
 import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
 
-import { LocaleNavigation } from "../../components/search/locale-navigation";
+import { SiteHeader } from "../../components/visual/site-header";
 import { routing } from "../../i18n/routing";
 import { legalHref } from "../../seo/legal-routes";
 import "../globals.css";
+import "../collector-design.css";
+import "../collector-hub.css";
 
 type Props = {
   children: ReactNode;
@@ -46,20 +48,7 @@ export default async function LocaleLayout({ children, params }: Props) {
           <a className="skip-link" href="#main-content">
             {t("home")}
           </a>
-          <header className="site-header">
-            <div className="header-inner">
-              <Link className="brand" href={`/${locale}`} aria-label={t("home")}>
-                <span className="brand-mark" aria-hidden="true">
-                  S
-                </span>
-                <span>
-                  <strong>{t("brand")}</strong>
-                  <small>{t("tagline")}</small>
-                </span>
-              </Link>
-              <LocaleNavigation locale={locale} />
-            </div>
-          </header>
+          <SiteHeader locale={locale} />
           <main id="main-content">{children}</main>
           <footer className="site-footer">
             <p>{t("footer")}</p>

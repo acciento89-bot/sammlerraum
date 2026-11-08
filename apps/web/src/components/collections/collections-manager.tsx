@@ -1,4 +1,6 @@
 "use client";
+import { CollectorIllustration } from "../visual/collector-illustration";
+import { Icon } from "../visual/icon";
 import { SharedCollections } from "../sharing/shared-collections";
 
 import type { Collection, Visibility } from "@sammlerraum/contracts/collections";
@@ -11,6 +13,7 @@ type Translation = (key: string) => string;
 
 export function CollectionsManager({ locale }: { locale: "de" | "en" }) {
   const t = useTranslations("Collections");
+  const visual = useTranslations("Visual");
   const community = useTranslations("Community");
   const search = useTranslations("Search");
   const common = useTranslations("Management");
@@ -69,7 +72,7 @@ export function CollectionsManager({ locale }: { locale: "de" | "en" }) {
 
   return (
     <section className="management-shell">
-      <nav className="management-nav" aria-label={common("navigation")}>
+      <nav className="management-nav legacy-collector-nav" aria-label={common("navigation")}>
         <Link aria-current="page" href={`/${locale}/collections`}>
           {t("title")}
         </Link>
@@ -94,7 +97,7 @@ export function CollectionsManager({ locale }: { locale: "de" | "en" }) {
         <p className="form-intro">{t("intro")}</p>
       </header>
 
-      <div className="management-grid">
+      <div className="management-grid collection-shelf">
         <section className="management-card" aria-labelledby="new-collection-title">
           <h2 id="new-collection-title">{t("newTitle")}</h2>
           <form className="form-stack" onSubmit={create}>
@@ -112,14 +115,24 @@ export function CollectionsManager({ locale }: { locale: "de" | "en" }) {
           {loading ? (
             <p role="status">{common("loading")}</p>
           ) : collections.length === 0 ? (
-            <p className="empty-state">{t("empty")}</p>
+            <div className="collector-empty-state">
+              <Icon name="layers" />
+              <h3>{visual("collectionEmptyTitle")}</h3>
+              <p>{visual("collectionEmptyBody")}</p>
+            </div>
           ) : (
-            <ul className="collection-list">
+            <ul className="collection-card-grid">
               {collections.map((collection) => (
                 <li key={collection.id}>
                   <Link href={`/${locale}/collections/${collection.id}`}>
-                    <strong>{collection.name}</strong>
-                    <span>{common(`visibility${collection.visibility}`)}</span>
+                    <CollectorIllustration seed={collection.name} />
+                    <span className="collection-card-body">
+                      <strong>{collection.name}</strong>
+                      <small>
+                        <Icon name={collection.visibility === "PRIVATE" ? "lock" : "users"} />
+                        {common(`visibility${collection.visibility}`)}
+                      </small>
+                    </span>
                   </Link>
                 </li>
               ))}

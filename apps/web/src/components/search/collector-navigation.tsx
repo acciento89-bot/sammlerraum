@@ -12,7 +12,7 @@ export function CollectorNavigation({
   const collaboration = useTranslations("Collaboration");
   const community = useTranslations("Community");
   return (
-    <nav className="management-nav" aria-label={t("navigation")}>
+    <nav className="management-nav legacy-collector-nav" aria-label={t("navigation")}>
       <Link href={`/${locale}/collections`} prefetch={false}>
         {t("collections")}
       </Link>

@@ -13,7 +13,7 @@
   },
   "Home": {
     "eyebrow": "Digital collection archive",
-    "title": "What matters to us deserves a good place.",
+    "title": "Welcome to Sammlerraum!",
     "intro": "Sammlerraum helps document collections clearly and preserve the stories behind them.",
     "status": "Your collection. A clearer view.",
     "detail": "Document objects, find their details and work together on selected content.",
@@ -1963,5 +1963,103 @@
         "name": "Stamps"
       }
     }
+  },
+  "Visual": {
+    "workspaceNavigation": "Sammlerraum navigation",
+    "yourSpace": "Your collecting space",
+    "menu": "Menu",
+    "privateTitle": "Your collection stays yours.",
+    "privateBody": "You decide what to share.",
+    "groups": {
+      "collection": "Your collection",
+      "community": "Collect together",
+      "tools": "Tools",
+      "account": "Your account"
+    },
+    "categoryEyebrow": "As individual as your passion",
+    "categoryIntro": "From your first coin to a shelf full of records. Your collecting space grows with you.",
+    "quickCapture": "Add a collectible",
+    "quickCollection": "Create a collection",
+    "quickImport": "Import a list",
+    "quickActions": "Your next discovery",
+    "collectionEmptyTitle": "Your collection begins here.",
+    "collectionEmptyBody": "A good place for your first find. Create your first collection using the form.",
+    "authTitle": "Your collection. Your rules.",
+    "authBody": "Everything you collect. Everything that makes it special."
+  },
+  "CollectorHub": {
+    "navigation": "Main navigation",
+    "nav": {
+      "home": "Home",
+      "collection": "My collection",
+      "community": "Community",
+      "trading": "Wishlist & trading",
+      "catalog": "Reference catalog",
+      "features": "Features & knowledge",
+      "pricing": "Free & Premium"
+    },
+    "sidebarTitle": "Your collection. Your community.",
+    "sidebarFoot": "Collect. Share. Discover.",
+    "joinFree": "Join for free",
+    "eyebrow": "Collect. Share. Discover.",
+    "title": "Welcome to Sammlerraum!",
+    "intro": "Your place for special pieces – to preserve, discover and connect.",
+    "join": "Become a member",
+    "possibilities": "Explore Sammlerraum",
+    "benefits": {
+      "community": {
+        "title": "Community",
+        "body": "Discover like-minded collectors"
+      },
+      "trading": {
+        "title": "Wishlist & trading",
+        "body": "Find your next treasure"
+      },
+      "catalog": {
+        "title": "Knowledge & details",
+        "body": "Document your pieces better"
+      },
+      "private": {
+        "title": "Your collection",
+        "body": "Private until you share"
+      }
+    },
+    "feedTitle": "From the collecting world",
+    "feedIntro": "Topics and inspiration from Sammlerraum",
+    "openCommunity": "Explore the community",
+    "editorial": "Editorial",
+    "cardsTag": "Trading cards",
+    "watchesTag": "Watches",
+    "stampsTag": "Stamps",
+    "stories": {
+      "cards": {
+        "title": "More than a card: a collection with character.",
+        "body": "Editions, condition and special finds: give your favourite cards their own space."
+      },
+      "watches": {
+        "title": "Timeless pieces. The details make the difference.",
+        "body": "Keep references, provenance and the stories of your watches together."
+      },
+      "stamps": {
+        "title": "Small formats, big stories.",
+        "body": "Organise stamps by themes and series, and discover the gaps in your collection."
+      }
+    },
+    "exploreTopic": "Explore this topic",
+    "realFeedTitle": "Your community is waiting.",
+    "realFeedBody": "Sign in to see publicly shared pieces, follow collectors, comment and save favourites.",
+    "communityTitle": "Our community",
+    "communityBody": "A place for collectors, their discoveries and the stories behind them. Join us from the start.",
+    "privacyNote": "You choose what to share.",
+    "categoriesTitle": "Collecting categories",
+    "tipTitle": "Did you know?",
+    "tipBody": "Create multiple collections and organise your favourite pieces with your own fields and tags.",
+    "learnMore": "Learn more",
+    "illustrationNote": "Editorial collecting topics with original illustrative images.",
+    "freePremium": "Compare Free & Premium",
+    "globalSearch": "Search collectibles, topics and details …",
+    "searchLabel": "Search collectibles",
+    "notifications": "Open notifications",
+    "account": "Open my account"
   }
 }

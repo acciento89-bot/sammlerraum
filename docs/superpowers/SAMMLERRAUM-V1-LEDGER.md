@@ -1,9 +1,15 @@
 # Sammlerraum V1 Completion Ledger
 
 **Stand:** 08.11.2026
+
+**Gesamtabnahme wieder offen — ausdrückliche Nutzerkorrektur,08November2026:** Die bisherigen91technischen Aufgaben sind historische Implementierungsbelege, keine bestätigte visuelle oder vollständige betriebliche Produktabnahme. Der Nutzer beanstandet die Abweichung vom ursprünglichen Konzept im Chat „Fertigstellung trotz Datenverlust“ und verlangt dessen tatsächliche Umsetzung sowie die noch offenen Live-Dienste/Betriebsaufgaben. Bis diese Punkte sichtbar und praktisch geprüft sind, darf Sammlerraum insgesamt nicht als fertig bezeichnet werden.
+**Visuelle Korrektur, 08.11.2026:** Der Nutzer hat inzwischen die konkrete Bildvorlage „Sammlerraum_ Deine Welt zum Sammeln.png“ bereitgestellt. Maßgeblich ist jetzt deren Community-Aufbau mit dunkelblauer Seitenleiste, goldenen Akzenten, zentralem Sammler-Banner und Inhalts-/Kontextspalten. Die vorherige warme Landingpage wurde ausdrücklich verworfen; auch der zwischenzeitliche violette Galerieansatz ist überholt. Keine erfundenen Nutzerzahlen/-aktivitäten oder geschützten Franchise-Bilder aus der Vorlage übernehmen. Umsetzung und Prüfung liegen im Plan `docs/superpowers/plans/2026-11-08-sammlerraum-visual-finish.md`. Die technische Gesamtzählung unten bleibt historisch, nicht gleichbedeutend mit vollständiger Produktabnahme.
+
 **Master plan:** `docs/superpowers/plans/2026-09-19-sammlerraum-v1-master-plan.md`  
 **Canonical product/system spec:** `docs/superpowers/specs/2026-09-19-sammlerraum-design.md`  
 **SEO/Search Console spec:** `docs/superpowers/specs/2026-09-19-seo-search-console-design.md`
+
+**Konzeptgrundlage bestätigt, 08.11.2026:** Der Nutzer verweist auf den Chat „Konzeptbild finden“ und die dort verlinkte GitHub-Spezifikation vom 19.09.2026. Chat und lokale Spezifikation wurden gelesen. Das ursprüngliche Konzeptbild ist nicht mehr auffindbar; seine Wiederbeschaffung ist keine Voraussetzung für die Fortsetzung. Die Spezifikation ist die fachliche Grundlage. Sie verlangt eine eigenständige Sammlerplattform statt einer generischen Inventar-App, enthält aber keine konkreten Bildschirm-Mockups, Farbwerte oder Schriftvorgaben. Die visuelle Überarbeitung ist daher als neue Umsetzung dieser Grundlage zu kennzeichnen, nicht als wiederhergestelltes Originalbild.
 
 **Implementation branch:** [`work/sammlerraum-v1`](https://github.com/acciento89-bot/sammlerraum/tree/work/sammlerraum-v1) · [Draft PR #1](https://github.com/acciento89-bot/sammlerraum/pull/1). This ledger tracks verified implementation on that branch; application code has not been merged into main; reviewed immutable application source bd80ec748010 is now deployed at https://sammlerraum.de. The ledger on main is synchronized after each verified task completion.
 

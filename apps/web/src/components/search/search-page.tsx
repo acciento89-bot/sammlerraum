@@ -1,4 +1,5 @@
 "use client";
+import { Icon } from "../visual/icon";
 import { SelectionExportAction } from "../exports/selection-export-action";
 import { useMoneyConsumers } from "./money-consumer-context";
 import { PersonalMilestones } from "../dashboard/personal-milestones";
@@ -42,6 +43,7 @@ export function SearchPage({
 }) {
   const canonicalMoneyEnabled = useMoneyConsumers();
   const t = useTranslations("Search");
+  const visual = useTranslations("Visual");
   const dt = useTranslations("Dashboard");
   const savedT = useTranslations("SavedSearches");
   const router = useRouter();
@@ -433,7 +435,9 @@ export function SearchPage({
     </form>
   );
   return (
-    <section className="management-shell search-shell">
+    <section
+      className={`management-shell search-shell ${view === "dashboard" ? "dashboard-view" : ""}`}
+    >
       <CollectorNavigation locale={locale} current={view} />
       {error !== "session" && (
         <SavedSearchDialog
@@ -483,6 +487,34 @@ export function SearchPage({
         </button>
         {dirty && <p className="field-help">{t("saveApplied")}</p>}
       </header>
+      {view === "dashboard" && error !== "session" && (
+        <div className="dashboard-quick-start">
+          <p className="quick-actions-heading">{visual("quickActions")}</p>
+          <div className="workspace-quick-actions">
+            <Link href={`/${locale}/items/new`}>
+              <span>
+                <Icon name="plus" />
+              </span>
+              {visual("quickCapture")}
+              <Icon name="arrow" />
+            </Link>
+            <Link href={`/${locale}/collections`}>
+              <span>
+                <Icon name="grid" />
+              </span>
+              {visual("quickCollection")}
+              <Icon name="arrow" />
+            </Link>
+            <Link href={`/${locale}/imports`}>
+              <span>
+                <Icon name="upload" />
+              </span>
+              {visual("quickImport")}
+              <Icon name="arrow" />
+            </Link>
+          </div>
+        </div>
+      )}
       {view === "dashboard" && error !== "session" && (
         <PersonalMilestones key={`${actor}:milestones-preview`} actor={actor} locale={locale} />
       )}

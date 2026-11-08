@@ -1,4 +1,5 @@
 "use client";
+import { ItemCover } from "../visual/item-cover";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
@@ -86,6 +87,7 @@ export function SearchResults({
         <ul className="search-results">
           {data.items.map((item) => (
             <li className="management-card" key={item.id}>
+              <ItemCover itemId={item.id} title={item.title} />
               <h3>
                 <Link href={`/${locale}/items/${item.id}`} prefetch={false}>
                   {item.title}

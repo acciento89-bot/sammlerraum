@@ -13,7 +13,7 @@
   },
   "Home": {
     "eyebrow": "Digitales Sammlungsarchiv",
-    "title": "Was uns wichtig ist, verdient einen guten Platz.",
+    "title": "Willkommen im Sammlerraum!",
     "intro": "Sammlerraum hilft dabei, Sammlungen übersichtlich zu dokumentieren und ihre Geschichten zu bewahren.",
     "status": "Deine Sammlung. Dein Überblick.",
     "detail": "Objekte dokumentieren, Details wiederfinden und ausgewählte Inhalte gemeinsam bearbeiten.",
@@ -1963,5 +1963,103 @@
         "name": "Briefmarken"
       }
     }
+  },
+  "Visual": {
+    "workspaceNavigation": "Sammlerraum-Navigation",
+    "yourSpace": "Dein Sammlerraum",
+    "menu": "Menü",
+    "privateTitle": "Deine Sammlung bleibt deine.",
+    "privateBody": "Du entscheidest, was du teilst.",
+    "groups": {
+      "collection": "Deine Sammlung",
+      "community": "Gemeinsam sammeln",
+      "tools": "Werkzeuge",
+      "account": "Dein Konto"
+    },
+    "categoryEyebrow": "So vielfältig wie deine Leidenschaft",
+    "categoryIntro": "Von der ersten Münze bis zum gut gefüllten Plattenregal. Dein Sammlerraum wächst mit dir.",
+    "quickCapture": "Sammlerstück erfassen",
+    "quickCollection": "Sammlung anlegen",
+    "quickImport": "Liste importieren",
+    "quickActions": "Dein nächster Fund",
+    "collectionEmptyTitle": "Hier beginnt deine Sammlung.",
+    "collectionEmptyBody": "Ein guter Platz für deinen ersten Fund. Lege links deine erste Sammlung an.",
+    "authTitle": "Deine Sammlung. Deine Regeln.",
+    "authBody": "Alles, was du sammelst. Alles, was es besonders macht."
+  },
+  "CollectorHub": {
+    "navigation": "Hauptnavigation",
+    "nav": {
+      "home": "Startseite",
+      "collection": "Meine Sammlung",
+      "community": "Community",
+      "trading": "Wunschliste & Tausch",
+      "catalog": "Referenzkatalog",
+      "features": "Funktionen & Wissen",
+      "pricing": "Free & Premium"
+    },
+    "sidebarTitle": "Deine Sammlung. Deine Community.",
+    "sidebarFoot": "Sammeln. Teilen. Entdecken.",
+    "joinFree": "Jetzt kostenlos registrieren",
+    "eyebrow": "Sammeln. Teilen. Entdecken.",
+    "title": "Willkommen im Sammlerraum!",
+    "intro": "Dein Ort für besondere Stücke – zum Bewahren, Entdecken und Vernetzen.",
+    "join": "Jetzt Mitglied werden",
+    "possibilities": "Möglichkeiten in Sammlerraum",
+    "benefits": {
+      "community": {
+        "title": "Community",
+        "body": "Gleichgesinnte entdecken"
+      },
+      "trading": {
+        "title": "Wünschen & Tauschen",
+        "body": "Deine nächsten Fundstücke"
+      },
+      "catalog": {
+        "title": "Wissen & Details",
+        "body": "Objekte besser dokumentieren"
+      },
+      "private": {
+        "title": "Deine Sammlung",
+        "body": "Privat, bis du sie teilst"
+      }
+    },
+    "feedTitle": "Neues aus der Sammlerwelt",
+    "feedIntro": "Themen und Inspiration von Sammlerraum",
+    "openCommunity": "Zur Community",
+    "editorial": "Redaktion",
+    "cardsTag": "Sammelkarten",
+    "watchesTag": "Uhren",
+    "stampsTag": "Briefmarken",
+    "stories": {
+      "cards": {
+        "title": "Mehr als eine Karte: Deine Sammlung hat Charakter.",
+        "body": "Editionen, Zustand und besondere Funde: Gib deinen Lieblingskarten einen eigenen Platz."
+      },
+      "watches": {
+        "title": "Zeitlose Stücke. Die Details machen den Unterschied.",
+        "body": "Halte Referenzen, Herkunft und die Geschichte deiner Uhren nachvollziehbar fest."
+      },
+      "stamps": {
+        "title": "Kleine Formate, große Geschichten.",
+        "body": "Ordne deine Briefmarken nach Themen und Serien – und finde Lücken in deiner Sammlung."
+      }
+    },
+    "exploreTopic": "Thema entdecken",
+    "realFeedTitle": "Deine Community wartet auf dich.",
+    "realFeedBody": "Nach der Anmeldung siehst du öffentlich geteilte Stücke und kannst folgen, kommentieren und Favoriten speichern.",
+    "communityTitle": "Unsere Community",
+    "communityBody": "Ein Ort für Sammler, ihre Fundstücke und die Geschichten dahinter. Sei von Anfang an dabei.",
+    "privacyNote": "Du entscheidest, was du teilst.",
+    "categoriesTitle": "Sammler-Kategorien",
+    "tipTitle": "Schon gewusst?",
+    "tipBody": "Du kannst mehrere Sammlungen anlegen und deine Lieblingsstücke mit eigenen Feldern und Tags organisieren.",
+    "learnMore": "Mehr erfahren",
+    "illustrationNote": "Redaktionelle Sammlerthemen mit eigenen illustrativen Bildern.",
+    "freePremium": "Free & Premium im Vergleich",
+    "globalSearch": "Suche nach Sammlerstücken, Themen und Details …",
+    "searchLabel": "Sammlerstücke suchen",
+    "notifications": "Benachrichtigungen öffnen",
+    "account": "Mein Konto öffnen"
   }
 }

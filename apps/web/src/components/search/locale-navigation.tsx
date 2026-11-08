@@ -58,6 +58,7 @@ export function LocaleNavigation({ locale }: { locale: string }) {
                 ? `/${language}${pathname!.slice(3)}`
                 : `/${language}`)
           }
+          aria-label={t(language === "de" ? "german" : "english")}
           hrefLang={language}
           prefetch={false}
           aria-current={locale === language ? "page" : undefined}

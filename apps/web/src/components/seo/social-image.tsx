@@ -10,11 +10,11 @@ export function socialImage(model: OgModel) {
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
-          background: "#f3efe4",
-          color: "#17291f",
+          background: "#142139",
+          color: "#fffaf0",
           padding: "64px 76px",
           fontFamily: "sans-serif",
-          border: "18px solid #315d48",
+          border: "18px solid #c5a249",
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
@@ -24,7 +24,7 @@ export function socialImage(model: OgModel) {
               width: 80,
               height: 80,
               borderRadius: 40,
-              background: "#315d48",
+              background: "#24344c",
               color: "white",
               alignItems: "center",
               justifyContent: "center",
@@ -32,7 +32,13 @@ export function socialImage(model: OgModel) {
               fontWeight: 700,
             }}
           >
-            S
+            <svg width="52" height="56" viewBox="0 0 38 42" fill="none">
+              <path
+                d="m19 1 18 10-18 10L1 11z M1 14l16 9v18L1 32z M21 23l16-9v18l-16 9z"
+                fill="#efd17b"
+              />
+              <path d="m9 7 18 10" stroke="#142139" strokeWidth="2.5" />
+            </svg>
           </div>
           <div style={{ fontSize: 46, fontWeight: 700 }}>{model.title}</div>
         </div>
@@ -40,11 +46,11 @@ export function socialImage(model: OgModel) {
           <div style={{ fontSize: 76, fontWeight: 700, lineHeight: 1.08, maxWidth: 1000 }}>
             {model.subtitle}
           </div>
-          <div style={{ fontSize: 30, color: "#465c4c", maxWidth: 1000, lineHeight: 1.35 }}>
+          <div style={{ fontSize: 30, color: "#cad0dd", maxWidth: 1000, lineHeight: 1.35 }}>
             {model.caption}
           </div>
         </div>
-        <div style={{ fontSize: 22, color: "#946145", letterSpacing: 5 }}>
+        <div style={{ fontSize: 22, color: "#efd17b", letterSpacing: 5 }}>
           DE / EN · SAMMLERRAUM
         </div>
       </div>

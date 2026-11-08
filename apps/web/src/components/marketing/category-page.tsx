@@ -1,3 +1,5 @@
+import { Icon } from "../visual/icon";
+import { CollectorIllustration } from "../visual/collector-illustration";
 import { StructuredData } from "../seo/structured-data";
 import { websiteJsonLd } from "../../seo/structured-data";
 import { siteOrigin } from "../../seo/page-metadata";
@@ -30,16 +32,40 @@ export async function renderCategoryRoute(props: Props, expected: PublicLocale) 
 }
 export async function CategoryLinks({ locale }: { locale: PublicLocale }) {
   const t = await getTranslations({ locale, namespace: "Categories" });
+  const visual = await getTranslations({ locale, namespace: "Visual" });
+  const artwork: Record<string, string> = { coins: "coins", stamps: "stamps", vinyl: "vinyl" };
   return (
     <section
       className="marketing-shell category-links-section"
       aria-labelledby="category-links-heading"
     >
-      <h2 id="category-links-heading">{t("heading")}</h2>
+      <div className="section-title">
+        <div>
+          <p className="eyebrow">{visual("categoryEyebrow")}</p>
+          <h2 id="category-links-heading">{t("heading")}</h2>
+        </div>
+        <p>{visual("categoryIntro")}</p>
+      </div>
       <ul className="category-links">
         {CATEGORY_PAGES.map((page) => (
           <li key={page.key}>
-            <Link href={categoryPath(locale, page[locale].slug)}>{page[locale].name}</Link>
+            <Link href={categoryPath(locale, page[locale].slug)}>
+              {artwork[page.key] ? (
+                <img
+                  src={`/art/${artwork[page.key]}.webp`}
+                  width="640"
+                  height="480"
+                  alt=""
+                  loading="lazy"
+                />
+              ) : (
+                <CollectorIllustration seed={page.key} />
+              )}
+              <span className="category-card-label">
+                {page[locale].name}
+                <Icon name="arrow" />
+              </span>
+            </Link>
           </li>
         ))}
       </ul>

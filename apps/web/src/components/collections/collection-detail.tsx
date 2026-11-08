@@ -1,4 +1,5 @@
 "use client";
+import { ItemCover } from "../visual/item-cover";
 import { SelectionExportAction } from "../exports/selection-export-action";
 
 import type { Collection, CollectionNode } from "@sammlerraum/contracts/collections";
@@ -234,6 +235,30 @@ export function CollectionDetail({
       )}
 
       <div className="management-grid">
+        <section className="management-card wide" aria-labelledby="items-heading">
+          <h2 id="items-heading">{t("items")}</h2>
+          {data.items.length === 0 ? (
+            <p className="empty-state">{t("noItems")}</p>
+          ) : (
+            <ul className="collection-card-grid item-card-grid">
+              {data.items.map((item) => (
+                <li key={item.id}>
+                  <Link href={`/${locale}/items/${item.id}`}>
+                    <ItemCover itemId={item.id} title={item.title} />
+                    <span className="collection-card-body">
+                      <strong>{item.title}</strong>
+                      <small>
+                        {item.quantity} · {common(`visibility${item.visibility}`)}
+                        {item.archivedAt ? ` · ${t("archived")}` : ""}
+                      </small>
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+
         <details className="management-card">
           <summary>{t("settings")}</summary>
           <form className="form-stack" onSubmit={updateCollection}>
@@ -378,27 +403,6 @@ export function CollectionDetail({
                 />
               )}
             />
-          )}
-        </section>
-
-        <section className="management-card wide" aria-labelledby="items-heading">
-          <h2 id="items-heading">{t("items")}</h2>
-          {data.items.length === 0 ? (
-            <p className="empty-state">{t("noItems")}</p>
-          ) : (
-            <ul className="collection-list">
-              {data.items.map((item) => (
-                <li key={item.id}>
-                  <Link href={`/${locale}/items/${item.id}`}>
-                    <strong>{item.title}</strong>
-                    <span>
-                      {item.quantity} · {common(`visibility${item.visibility}`)}
-                      {item.archivedAt ? ` · ${t("archived")}` : ""}
-                    </span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
           )}
         </section>
       </div>

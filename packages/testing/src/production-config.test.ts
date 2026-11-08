@@ -10,6 +10,11 @@ function read(path: string): string {
 }
 
 describe("production container configuration", () => {
+  it("ships the original collector artwork in the standalone web runtime", () => {
+    expect(read("Dockerfile.web")).toContain(
+      "COPY --from=build --chown=node:node /app/apps/web/public ./apps/web/public",
+    );
+  });
   it("uses pinned Node and pnpm runtimes and packages built web and worker outputs", () => {
     const web = read("Dockerfile.web");
     const worker = read("Dockerfile.worker");

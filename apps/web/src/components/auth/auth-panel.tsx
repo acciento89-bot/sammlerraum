@@ -13,6 +13,7 @@ type Props = { locale: "de" | "en"; mode: "login" | "register" };
 
 export function AuthPanel({ locale, mode }: Props) {
   const t = useTranslations("Auth");
+  const visual = useTranslations("Visual");
   const router = useRouter();
   const params = useSearchParams();
   const token = params.get("token");
@@ -86,104 +87,113 @@ export function AuthPanel({ locale, mode }: Props) {
   }
 
   return (
-    <section className="account-shell" aria-labelledby="auth-title">
-      <div className="auth-card">
-        <p className="eyebrow">{t("eyebrow")}</p>
-        <h1 id="auth-title">{t(mode === "login" ? "loginTitle" : "registerTitle")}</h1>
-        <p className="form-intro">{t(mode === "login" ? "loginIntro" : "registerIntro")}</p>
-        {view === "reset" ? (
-          <form className="form-stack" onSubmit={resetPassword}>
-            <label>
-              {t("newPassword")}
-              <input
-                name="newPassword"
-                type="password"
-                minLength={12}
-                maxLength={128}
-                autoComplete="new-password"
-                required
-              />
-            </label>
-            <button type="submit">{t("savePassword")}</button>
-          </form>
-        ) : (
-          <form className="form-stack" onSubmit={submit}>
-            {mode === "register" && (
+    <div className="auth-experience">
+      <aside className="auth-visual">
+        <img src="/art/community-hero.webp" width="1440" height="960" alt="" />
+        <div className="auth-visual-copy">
+          <h2>{visual("authTitle")}</h2>
+          <p>{visual("authBody")}</p>
+        </div>
+      </aside>
+      <section className="account-shell" aria-labelledby="auth-title">
+        <div className="auth-card">
+          <p className="eyebrow">{t("eyebrow")}</p>
+          <h1 id="auth-title">{t(mode === "login" ? "loginTitle" : "registerTitle")}</h1>
+          <p className="form-intro">{t(mode === "login" ? "loginIntro" : "registerIntro")}</p>
+          {view === "reset" ? (
+            <form className="form-stack" onSubmit={resetPassword}>
               <label>
-                {t("name")}
-                <input name="name" autoComplete="name" required />
+                {t("newPassword")}
+                <input
+                  name="newPassword"
+                  type="password"
+                  minLength={12}
+                  maxLength={128}
+                  autoComplete="new-password"
+                  required
+                />
               </label>
-            )}
-            <label>
-              {t("email")}
-              <input
-                name="email"
-                type="email"
-                autoComplete="username"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </label>
-            <label>
-              {t("password")}
-              <input
-                name="password"
-                type="password"
-                minLength={12}
-                maxLength={128}
-                autoComplete={mode === "login" ? "current-password" : "new-password"}
-                required
-              />
-            </label>
-            <button type="submit">{t(mode === "login" ? "login" : "register")}</button>
-          </form>
-        )}
-        {message && (
-          <p className="success" role="status">
-            {message}
-          </p>
-        )}
-        {error && (
-          <p className="error" role="alert">
-            {error}
-          </p>
-        )}
-        {mode === "register" && message && (
-          <button className="text-button" onClick={resend}>
-            {t("resend")}
-          </button>
-        )}
-        {mode === "login" && !token && (
-          <>
-            <div className="divider">
-              <span>{t("or")}</span>
-            </div>
-            <div className="social-buttons">
-              <button onClick={() => social("google")}>{t("google")}</button>
-              <button onClick={() => social("apple")}>{t("apple")}</button>
-              <button onClick={passkeySignIn}>{t("passkeySignIn")}</button>
-            </div>
-            <button className="text-button" onClick={() => setForgot(!forgot)}>
-              {t("forgot")}
-            </button>
-            {forgot && (
-              <form className="form-stack inset-form" onSubmit={resetRequest}>
+              <button type="submit">{t("savePassword")}</button>
+            </form>
+          ) : (
+            <form className="form-stack" onSubmit={submit}>
+              {mode === "register" && (
                 <label>
-                  {t("resetEmail")}
-                  <input name="resetEmail" type="email" autoComplete="email" required />
+                  {t("name")}
+                  <input name="name" autoComplete="name" required />
                 </label>
-                <button type="submit">{t("sendReset")}</button>
-              </form>
-            )}
-          </>
-        )}
-        <p className="auth-switch">
-          <Link href={`/${locale}/${mode === "login" ? "register" : "login"}${invitationQuery}`}>
-            {t(mode === "login" ? "toRegister" : "toLogin")}
-          </Link>
-        </p>
-      </div>
-    </section>
+              )}
+              <label>
+                {t("email")}
+                <input
+                  name="email"
+                  type="email"
+                  autoComplete="username"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+              </label>
+              <label>
+                {t("password")}
+                <input
+                  name="password"
+                  type="password"
+                  minLength={12}
+                  maxLength={128}
+                  autoComplete={mode === "login" ? "current-password" : "new-password"}
+                  required
+                />
+              </label>
+              <button type="submit">{t(mode === "login" ? "login" : "register")}</button>
+            </form>
+          )}
+          {message && (
+            <p className="success" role="status">
+              {message}
+            </p>
+          )}
+          {error && (
+            <p className="error" role="alert">
+              {error}
+            </p>
+          )}
+          {mode === "register" && message && (
+            <button className="text-button" onClick={resend}>
+              {t("resend")}
+            </button>
+          )}
+          {mode === "login" && !token && (
+            <>
+              <div className="divider">
+                <span>{t("or")}</span>
+              </div>
+              <div className="social-buttons">
+                <button onClick={() => social("google")}>{t("google")}</button>
+                <button onClick={() => social("apple")}>{t("apple")}</button>
+                <button onClick={passkeySignIn}>{t("passkeySignIn")}</button>
+              </div>
+              <button className="text-button" onClick={() => setForgot(!forgot)}>
+                {t("forgot")}
+              </button>
+              {forgot && (
+                <form className="form-stack inset-form" onSubmit={resetRequest}>
+                  <label>
+                    {t("resetEmail")}
+                    <input name="resetEmail" type="email" autoComplete="email" required />
+                  </label>
+                  <button type="submit">{t("sendReset")}</button>
+                </form>
+              )}
+            </>
+          )}
+          <p className="auth-switch">
+            <Link href={`/${locale}/${mode === "login" ? "register" : "login"}${invitationQuery}`}>
+              {t(mode === "login" ? "toRegister" : "toLogin")}
+            </Link>
+          </p>
+        </div>
+      </section>
+    </div>
   );
 }

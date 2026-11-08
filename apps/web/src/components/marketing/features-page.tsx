@@ -1,3 +1,4 @@
+import { Icon } from "../visual/icon";
 import { StructuredData } from "../seo/structured-data";
 import { websiteJsonLd } from "../../seo/structured-data";
 import { siteOrigin } from "../../seo/page-metadata";
@@ -18,8 +19,13 @@ export async function MarketingFeaturesPage({ params }: { params: Promise<{ loca
       <h1 id="features-title">{t("featuresTitle")}</h1>
       <p className="intro">{t("featuresIntro")}</p>
       <div className="marketing-grid">
-        {features.map((key) => (
+        {features.map((key, index) => (
           <article className="marketing-card" key={key}>
+            <span className="feature-art">
+              <Icon
+                name={(["layers", "book", "search", "upload", "users", "spark"] as const)[index]!}
+              />
+            </span>
             <h2>{t(`feature${key}Title`)}</h2>
             <p>{t(`feature${key}Body`)}</p>
           </article>
