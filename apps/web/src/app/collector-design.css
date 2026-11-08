@@ -922,3 +922,34 @@ button:disabled {
     transition: none !important;
   }
 }
+
+.category-card-description {
+  display: block;
+  padding: 0 1.2rem 1rem;
+  font-size: 0.86rem;
+  line-height: 1.5;
+  color: var(--collector-muted, #596376);
+}
+.category-card-start {
+  display: block;
+  padding: 0 1.2rem 1.2rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #80601b;
+}
+.hub-all-categories {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  padding: 0.75rem 0;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #80601b;
+}
+.hub-all-categories svg {
+  width: 1rem;
+  height: 1rem;
+  flex: none;
+}

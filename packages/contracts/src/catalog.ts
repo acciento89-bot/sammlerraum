@@ -252,3 +252,5 @@ export type CatalogEntryRevision = {
   state: CatalogSnapshot;
   rollbackFromRevision: number | null;
 };
+
+export { COLLECTING_CATEGORIES, type CollectingCategoryDefinition } from "./collecting-categories";

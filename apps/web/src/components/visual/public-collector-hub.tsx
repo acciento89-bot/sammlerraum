@@ -198,6 +198,12 @@ export async function PublicCollectorHub({ locale }: { locale: "de" | "en" }) {
                   );
                 })}
               </ul>
+              <Link
+                className="hub-all-categories"
+                href={`${PUBLIC_MARKETING_PAGES.features[locale]}#category-links-heading`}
+              >
+                {t("allCategories")} <Icon name="arrow" />
+              </Link>
             </section>
             <section className="hub-tip">
               <Icon name="spark" />

@@ -1,5 +1,6 @@
 import {
   CreateCategoryTemplateInputSchema,
+  COLLECTING_CATEGORIES,
   type CreateCategoryTemplateInput,
 } from "@sammlerraum/contracts/catalog";
 import {
@@ -62,6 +63,31 @@ export const STARTER_CATALOG: StarterDefinition[] = [
       options: options(["M", "NM", "VG+", "VG", "G", "F", "P"]),
     },
   },
+  ...COLLECTING_CATEGORIES.filter(
+    (category) => !["trading_cards", "vinyl"].includes(category.key),
+  ).map((category) => ({
+    template: {
+      key: category.key,
+      labels: { ...category.labels },
+      definitions: category.fields.map(([key, de, en]) => field(key, de, en)),
+    },
+    scheme: {
+      key: `${category.key}_authored_v1`,
+      labels: { de: "Beschriebener Zustand", en: "Described condition" },
+      // Authored descriptive choices, not certification grades or asserted market equivalence.
+      options: [
+        ["unassessed", "Nicht bewertet", "Not assessed"],
+        ["excellent", "Sehr gut", "Excellent"],
+        ["good", "Gut", "Good"],
+        ["used", "Gebraucht", "Used"],
+        ["damaged", "Beschädigt", "Damaged"],
+      ].map(([labelKey, de, en]) => ({
+        labelKey: labelKey!,
+        labels: { de: de!, en: en! },
+        normalizedBand: null,
+      })),
+    },
+  })),
 ];
 type Query = { $queryRaw<T>(query: TemplateStringsArray, ...values: unknown[]): Promise<T> };
 export type InitializerDatabase = {

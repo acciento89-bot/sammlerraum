@@ -252,7 +252,7 @@
     "metadataSaveError": "Die Zusatzdaten konnten nicht vollständig gespeichert werden.",
     "retryWithoutDuplicate": "Du kannst erneut speichern. Das bereits angelegte Stück wird dabei aktualisiert und nicht dupliziert.",
     "savedDetails": "Gespeicherte Zusatzdaten",
-    "saveBeforeReference": "Speichere dieses Stück zuerst, um Kategorie, Katalogverknüpfung, Zustand und Grading zu ergänzen.",
+    "saveBeforeReference": "Speichere dieses Stück zuerst, um Katalogverknüpfung, Zustand und Grading zu ergänzen.",
     "valuations": "Wertverlauf"
   },
   "LocationLabel": {
@@ -1988,6 +1988,7 @@
     "authBody": "Alles, was du sammelst. Alles, was es besonders macht."
   },
   "CollectorHub": {
+    "allCategories": "Alle 36 Sammelgebiete entdecken",
     "navigation": "Hauptnavigation",
     "nav": {
       "home": "Startseite",
@@ -2054,7 +2055,7 @@
     "categoriesTitle": "Sammler-Kategorien",
     "tipTitle": "Schon gewusst?",
     "tipBody": "Du kannst mehrere Sammlungen anlegen und deine Lieblingsstücke mit eigenen Feldern und Tags organisieren.",
-    "learnMore": "Mehr erfahren",
+    "learnMore": "Sammlerraum-Funktionen entdecken",
     "illustrationNote": "Redaktionelle Sammlerthemen mit eigenen illustrativen Bildern.",
     "freePremium": "Free & Premium im Vergleich",
     "globalSearch": "Suche nach Sammlerstücken, Themen und Details …",

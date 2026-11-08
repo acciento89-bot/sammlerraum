@@ -533,9 +533,17 @@ export async function createItemInTransaction(
   if (quotaOwner !== null && ownerId !== quotaOwner)
     throw new ItemServiceError("COLLECTION_NOT_FOUND");
   await ensureNodeInCollection(transaction, data.nodeId, data.collectionId);
+  const categoryTemplateId = data.categoryTemplateId ?? null;
+  if (categoryTemplateId !== null) {
+    const categories = await transaction.$queryRaw<Array<{ id: string }>>`
+      SELECT id FROM "CategoryTemplate" WHERE id=${categoryTemplateId}::uuid FOR SHARE
+    `;
+    if (categories.length !== 1) throw new ItemServiceError("CATALOG_NOT_FOUND");
+  }
   const item = await transaction.collectibleItem.create({
     data: {
       collectionId: data.collectionId,
+      categoryTemplateId,
       ownerId,
       nodeId: data.nodeId,
       title: data.title,

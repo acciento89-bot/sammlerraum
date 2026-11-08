@@ -252,7 +252,7 @@
     "metadataSaveError": "Some additional details could not be saved.",
     "retryWithoutDuplicate": "You can save again. The existing item will be updated without creating a duplicate.",
     "savedDetails": "Saved additional details",
-    "saveBeforeReference": "Save this item first to add a category, catalog reference, condition and grading.",
+    "saveBeforeReference": "Save this item first to add a catalog reference, condition and grading.",
     "valuations": "Valuation history"
   },
   "LocationLabel": {
@@ -1988,6 +1988,7 @@
     "authBody": "Everything you collect. Everything that makes it special."
   },
   "CollectorHub": {
+    "allCategories": "Explore all 36 collecting areas",
     "navigation": "Main navigation",
     "nav": {
       "home": "Home",
@@ -2054,7 +2055,7 @@
     "categoriesTitle": "Collecting categories",
     "tipTitle": "Did you know?",
     "tipBody": "Create multiple collections and organise your favourite pieces with your own fields and tags.",
-    "learnMore": "Learn more",
+    "learnMore": "Explore Sammlerraum features",
     "illustrationNote": "Editorial collecting topics with original illustrative images.",
     "freePremium": "Compare Free & Premium",
     "globalSearch": "Search collectibles, topics and details …",

@@ -9,7 +9,7 @@ import {
 import { createConditionMaintenanceService } from "../condition/condition-service";
 const enabled = process.env.RUN_DATABASE_INTEGRATION === "1";
 const db = enabled ? createTestDatabaseClient() : undefined;
-const prefix = `init_${randomUUID().replaceAll("-", "")}_`;
+const prefix = `init_${randomUUID().replaceAll("-", "").slice(0, 12)}_`;
 const definitions = () =>
   STARTER_CATALOG.map((row) => ({
     ...row,
@@ -42,8 +42,10 @@ describe.runIf(enabled)("explicit authored catalog initializer", () => {
       orderBy: { key: "asc" },
       include: { conditionScheme: { include: { options: { orderBy: { position: "asc" } } } } },
     });
-    expect(categories).toHaveLength(2);
-    expect(categories.flatMap((row) => row.conditionScheme!.options)).toHaveLength(13);
+    expect(categories).toHaveLength(STARTER_CATALOG.length);
+    expect(categories.flatMap((row) => row.conditionScheme!.options)).toHaveLength(
+      STARTER_CATALOG.reduce((total, row) => total + row.scheme.options.length, 0),
+    );
     expect(
       categories
         .flatMap((row) => row.conditionScheme!.options)
@@ -64,7 +66,8 @@ describe.runIf(enabled)("explicit authored catalog initializer", () => {
         categoryTemplateId: categories[0]!.id,
         key: "later_field",
         type: "SHORT_TEXT",
-        position: seeds[0]!.template.definitions!.length,
+        position: seeds.find((row) => row.template.key === categories[0]!.key)!.template
+          .definitions!.length,
         labels: {
           create: [
             { locale: "de", label: "Späteres Feld" },
@@ -178,5 +181,20 @@ describe.runIf(enabled)("explicit authored catalog initializer", () => {
       await expect(
         initializeCatalogDefinitions(db!, { definitions: [variant], apply: true }),
       ).rejects.toThrow("CATALOG_INITIALIZER_CONFLICT");
+  });
+});
+
+describe("authored broad collecting initialization", () => {
+  it("installs every supported collecting area including Sonstiges while preserving original seed identities", () => {
+    expect(STARTER_CATALOG).toHaveLength(36);
+    expect(STARTER_CATALOG.slice(0, 2).map((row) => row.template.key)).toEqual([
+      "trading_cards",
+      "vinyl",
+    ]);
+    expect(STARTER_CATALOG.at(-1)?.template).toMatchObject({
+      key: "other",
+      labels: { de: "Sonstiges", en: "Other" },
+    });
+    expect(STARTER_CATALOG.every((row) => row.template.definitions!.length >= 2)).toBe(true);
   });
 });

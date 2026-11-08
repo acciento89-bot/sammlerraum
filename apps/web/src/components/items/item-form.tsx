@@ -40,6 +40,7 @@ import {
 } from "../money/legacy-money-client";
 import { acceptsMoneyAcknowledgement } from "../money/legacy-money-acknowledgement";
 import { useCollectorConfirmation } from "../search/use-saved-confirmation";
+import { CategoryPicker } from "../catalog/category-picker";
 import { ConditionGradingEditor } from "./condition-grading-editor";
 import { ItemGalleryEditor } from "../media/item-gallery-editor";
 import type { Collection, CollectionNode } from "@sammlerraum/contracts/collections";
@@ -129,6 +130,7 @@ export function ItemForm({
   const [collections, setCollections] = useState<Collection[]>([]);
   const [collectionId, setCollectionId] = useState(initialCollectionId);
   const [nodeId, setNodeId] = useState("");
+  const [newItemCategory, setNewItemCategory] = useState("");
   const [optionsCollectionId, setOptionsCollectionId] = useState("");
   const [optionsLoadFailed, setOptionsLoadFailed] = useState(false);
   const [optionsRetry, setOptionsRetry] = useState(0);
@@ -596,6 +598,7 @@ export function ItemForm({
       return;
     }
     const core = {
+      ...(!workingItemId ? { categoryTemplateId: newItemCategory || null } : {}),
       nodeId: nodeId || null,
       title: form.get("title"),
       publicDescription: String(form.get("publicDescription") ?? "").trim() || null,
@@ -1142,6 +1145,13 @@ export function ItemForm({
                   ))}
                 </select>
               </label>
+            )}
+            {!workingItemId && (
+              <CategoryPicker
+                locale={locale}
+                value={newItemCategory}
+                onChange={setNewItemCategory}
+              />
             )}
             <label>
               {t("node")}

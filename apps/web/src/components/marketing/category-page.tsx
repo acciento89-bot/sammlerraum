@@ -1,3 +1,4 @@
+import { COLLECTING_CATEGORIES } from "@sammlerraum/contracts/catalog";
 import { Icon } from "../visual/icon";
 import { CollectorIllustration } from "../visual/collector-illustration";
 import { StructuredData } from "../seo/structured-data";
@@ -47,27 +48,34 @@ export async function CategoryLinks({ locale }: { locale: PublicLocale }) {
         <p>{visual("categoryIntro")}</p>
       </div>
       <ul className="category-links">
-        {CATEGORY_PAGES.map((page) => (
-          <li key={page.key}>
-            <Link href={categoryPath(locale, page[locale].slug)}>
-              {artwork[page.key] ? (
-                <img
-                  src={`/art/${artwork[page.key]}.webp`}
-                  width="640"
-                  height="480"
-                  alt=""
-                  loading="lazy"
-                />
-              ) : (
-                <CollectorIllustration seed={page.key} />
-              )}
-              <span className="category-card-label">
-                {page[locale].name}
-                <Icon name="arrow" />
-              </span>
-            </Link>
-          </li>
-        ))}
+        {COLLECTING_CATEGORIES.map((area) => {
+          const page = CATEGORY_PAGES.find((page) => page.key === area.pageKey);
+          const href = page ? categoryPath(locale, page[locale].slug) : `/${locale}/collections`;
+          const artKey = area.pageKey ?? area.key;
+          return (
+            <li key={area.key}>
+              <Link href={href}>
+                {artwork[artKey] ? (
+                  <img
+                    src={`/art/${artwork[artKey]}.webp`}
+                    width="640"
+                    height="480"
+                    alt=""
+                    loading="lazy"
+                  />
+                ) : (
+                  <CollectorIllustration seed={area.key} />
+                )}
+                <span className="category-card-label">
+                  {area.labels[locale]}
+                  <Icon name="arrow" />
+                </span>
+                <span className="category-card-description">{area.examples[locale]}</span>
+                {!page && <span className="category-card-start">{t("create")}</span>}
+              </Link>
+            </li>
+          );
+        })}
       </ul>
     </section>
   );

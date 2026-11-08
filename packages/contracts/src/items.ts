@@ -92,6 +92,7 @@ function requireMoneyPair(
 export const CreateItemInputSchema = z
   .object({
     collectionId: ItemIdSchema,
+    categoryTemplateId: ItemIdSchema.nullable().optional(),
     nodeId: ItemIdSchema.nullable().default(null),
     title: ItemTitleSchema,
     publicDescription: OptionalTextSchema.default(null),

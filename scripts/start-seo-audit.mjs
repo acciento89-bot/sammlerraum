@@ -1,5 +1,5 @@
 import { spawn } from "node:child_process";
-import { symlink, realpath } from "node:fs/promises";
+import { ensureStandaloneAssets } from "./standalone-assets.mjs";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 const root = resolve(dirname(fileURLToPath(import.meta.url)), ".."),
@@ -10,13 +10,7 @@ if (
   !decodeURIComponent(database.pathname).endsWith("_test")
 )
   throw Error("SEO audit requires an owned loopback test database configuration");
-const source = resolve(web, ".next/static"),
-  target = resolve(web, ".next/standalone/apps/web/.next/static");
-try {
-  await symlink(source, target, "dir");
-} catch (error) {
-  if (error.code !== "EEXIST" || (await realpath(target)) !== (await realpath(source))) throw error;
-}
+await ensureStandaloneAssets(web);
 const child = spawn(process.execPath, [resolve(web, ".next/standalone/apps/web/server.js")], {
   cwd: web,
   env: {

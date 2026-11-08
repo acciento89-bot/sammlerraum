@@ -175,7 +175,7 @@ jobs:
           --project=seo-release-api --workers=1
       - name: Verify public-page Lighthouse SEO accessibility best practices and performance
         run: |
-          node --test scripts/lighthouse-config_test.mjs
+          node --test scripts/lighthouse-config_test.mjs scripts/standalone-assets_test.mjs
           pnpm lighthouse:ci
       - name: Preserve actual SEO browser and Lighthouse evidence
         uses: actions/upload-artifact@v4
