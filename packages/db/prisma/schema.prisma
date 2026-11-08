@@ -1824,6 +1824,25 @@ enum AIAnalysisAttemptStatus {
   ABANDONED
 }
 
+model ExternalSpendMonth {
+  month          DateTime                   @id @db.Date
+  ceilingCents   Int
+  fixedCostCents Int
+  reservedCents  Int                        @default(0)
+  reservations   ExternalSpendReservation[]
+}
+
+model ExternalSpendReservation {
+  key         String             @id @db.Char(64)
+  month       DateTime           @db.Date
+  providerId  String             @db.VarChar(64)
+  amountCents Int
+  createdAt   DateTime           @default(now())
+  budget      ExternalSpendMonth @relation(fields: [month], references: [month], onDelete: Restrict)
+
+  @@index([month])
+}
+
 model AIAnalysisJob {
   id               String                @id @default(uuid()) @db.Uuid
   requesterId      String

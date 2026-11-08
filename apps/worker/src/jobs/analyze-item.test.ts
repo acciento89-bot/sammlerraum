@@ -27,7 +27,7 @@ describe.runIf(process.env.RUN_DATABASE_INTEGRATION === "1")(
       await db?.$disconnect();
       await isolated?.cleanup();
     });
-    async function fixture() {
+    async function fixture(reserveExternalCall?: (callId: string) => Promise<boolean>) {
       const owner = `analysis-worker-${randomUUID()}`;
       await db.user.create({
         data: {
@@ -109,6 +109,7 @@ describe.runIf(process.env.RUN_DATABASE_INTEGRATION === "1")(
         service,
         { id: "fixture", model: "fixture-vision", analyzeCollectible: analyze },
         { read },
+        reserveExternalCall ? { reserveExternalCall } : {},
       );
       return {
         owner,
@@ -126,6 +127,52 @@ describe.runIf(process.env.RUN_DATABASE_INTEGRATION === "1")(
         module: module!,
       };
     }
+    it("does not contact the provider after the aggregate spend ceiling is exhausted", async () => {
+      await db.$executeRawUnsafe('TRUNCATE "ExternalSpendReservation","ExternalSpendMonth"');
+      const { createExternalSpendGate } = await import(
+        "../../../../packages/domain/src/billing/external-spend-gate"
+      );
+      const gate = createExternalSpendGate(db, {
+        providerId: "openai",
+        monthlyLimitCents: 10,
+        fixedMonthlyCostCents: 10,
+        callReservationCents: 10,
+      });
+      const f = await fixture((id) => gate.reserve(id));
+      await f.handler({ analysisJobId: f.job.id });
+      expect(f.analyze).not.toHaveBeenCalled();
+      expect(await db.aIAnalysisJob.findUniqueOrThrow({ where: { id: f.job.id } })).toMatchObject({
+        status: "FAILED",
+        errorCode: "AI_LIMIT_REACHED",
+      });
+      await db.$executeRawUnsafe('TRUNCATE "ExternalSpendReservation","ExternalSpendMonth"');
+    });
+    it("keeps the reservation for an uncertain failed call and blocks another paid retry", async () => {
+      await db.$executeRawUnsafe('TRUNCATE "ExternalSpendReservation","ExternalSpendMonth"');
+      const { createExternalSpendGate } = await import(
+        "../../../../packages/domain/src/billing/external-spend-gate"
+      );
+      const gate = createExternalSpendGate(db, {
+        providerId: "openai",
+        monthlyLimitCents: 10,
+        fixedMonthlyCostCents: 0,
+        callReservationCents: 10,
+      });
+      const f = await fixture((id) => gate.reserve(id));
+      f.analyze.mockRejectedValueOnce(new Error("uncertain provider response"));
+      await f.handler({ analysisJobId: f.job.id });
+      await db.aIAnalysisJob.update({
+        where: { id: f.job.id },
+        data: { nextAttemptAt: new Date(0) },
+      });
+      await f.handler({ analysisJobId: f.job.id });
+      expect(f.analyze).toHaveBeenCalledTimes(1);
+      expect(await db.aIAnalysisJob.findUniqueOrThrow({ where: { id: f.job.id } })).toMatchObject({
+        status: "FAILED",
+        errorCode: "AI_LIMIT_REACHED",
+      });
+      await db.$executeRawUnsafe('TRUNCATE "ExternalSpendReservation","ExternalSpendMonth"');
+    });
     it("processes only the selected display image once and never auto-mutates the item", async () => {
       const f = await fixture();
       const before = await db.collectibleItem.findUniqueOrThrow({ where: { id: f.item.id } });

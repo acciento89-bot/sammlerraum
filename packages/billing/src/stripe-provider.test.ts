@@ -35,7 +35,7 @@ async function fixture(status = 200, override?: unknown, portalConfigurationId?:
       appOrigin: "https://sammlerraum.example",
       monthlyPriceId: "price_monthly_fixture",
       yearlyPriceId: "price_yearly_fixture",
-      portalConfigurationId,
+      ...(portalConfigurationId ? { portalConfigurationId } : {}),
       fetch: transport,
     }),
   };

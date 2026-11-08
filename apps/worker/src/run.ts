@@ -1,5 +1,6 @@
 import { StripeBillingProvider } from "@sammlerraum/billing/stripe-provider";
 import { createBillingWebhookService } from "@sammlerraum/domain/billing/webhook-service";
+import { createExternalSpendGate } from "@sammlerraum/domain/billing/external-spend-gate";
 import {
   createBillingDispatcher,
   createBillingSyncJob,
@@ -185,9 +186,17 @@ async function startProductionWorker(): Promise<void> {
       model: provider.model,
       monthlyRequestLimit: serverEnv.AI_MONTHLY_REQUEST_LIMIT,
     });
+    const spendGate = createExternalSpendGate(marketDatabase, {
+      providerId: provider.id,
+      monthlyLimitCents: serverEnv.EXTERNAL_MONTHLY_BUDGET_EUR_CENTS,
+      fixedMonthlyCostCents: serverEnv.EXTERNAL_FIXED_MONTHLY_EUR_CENTS,
+      callReservationCents: serverEnv.AI_CALL_RESERVATION_EUR_CENTS,
+    });
     registry.registerCancellable(
       AI_ANALYZE_ITEM_JOB,
-      createAnalyzeItemJob(service, provider, storage),
+      createAnalyzeItemJob(service, provider, storage, {
+        reserveExternalCall: (callId) => spendGate.reserve(callId),
+      }),
     );
     aiDispatcher = createAIAnalysisDispatcher(service, client, console);
   }

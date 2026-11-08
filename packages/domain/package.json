@@ -3,6 +3,7 @@
   "private": true,
   "type": "module",
   "exports": {
+    "./billing/external-spend-gate": "./src/billing/external-spend-gate.ts",
     "./api/resource-query": "./src/api/resource-query.ts",
     "./authz/policy": "./src/authz/policy.ts",
     "./authz/types": "./src/authz/types.ts",

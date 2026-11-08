@@ -19,6 +19,9 @@ describe("parseServerEnv", () => {
       ...validEnvironment,
       AI_ANALYSIS_ENABLED: false,
       AI_MONTHLY_REQUEST_LIMIT: 0,
+      EXTERNAL_MONTHLY_BUDGET_EUR_CENTS: 0,
+      EXTERNAL_FIXED_MONTHLY_EUR_CENTS: 0,
+      AI_CALL_RESERVATION_EUR_CENTS: 0,
       NOTIFICATION_EMAIL_ENABLED: false,
       MONEY_AUTHORING_ENABLED: false,
       MONEY_CANONICAL_CONSUMERS_ENABLED: false,
@@ -221,12 +224,24 @@ describe("explicit bounded AI activation", () => {
       AI_OPENAI_API_KEY: "fixture-key",
       AI_OPENAI_MODEL: "fixture-vision",
       AI_MONTHLY_REQUEST_LIMIT: "10",
+      EXTERNAL_MONTHLY_BUDGET_EUR_CENTS: "2500",
+      EXTERNAL_FIXED_MONTHLY_EUR_CENTS: "0",
+      AI_CALL_RESERVATION_EUR_CENTS: "10",
     };
     expect(parseServerEnv(ready)).toMatchObject({
       AI_ANALYSIS_ENABLED: true,
       AI_MONTHLY_REQUEST_LIMIT: 10,
     });
     expect(() => parseServerEnv({ ...ready, AI_MONTHLY_REQUEST_LIMIT: "0" })).toThrow(
+      EnvironmentConfigurationError,
+    );
+    expect(() => parseServerEnv({ ...ready, EXTERNAL_MONTHLY_BUDGET_EUR_CENTS: "2501" })).toThrow(
+      EnvironmentConfigurationError,
+    );
+    expect(() => parseServerEnv({ ...ready, AI_CALL_RESERVATION_EUR_CENTS: undefined })).toThrow(
+      EnvironmentConfigurationError,
+    );
+    expect(() => parseServerEnv({ ...ready, EXTERNAL_FIXED_MONTHLY_EUR_CENTS: "2495" })).toThrow(
       EnvironmentConfigurationError,
     );
   });

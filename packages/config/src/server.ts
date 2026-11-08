@@ -69,6 +69,9 @@ const schema = z
       .regex(/^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$/u)
       .optional(),
     AI_MONTHLY_REQUEST_LIMIT: providerBudget(10000),
+    EXTERNAL_MONTHLY_BUDGET_EUR_CENTS: providerBudget(2500),
+    EXTERNAL_FIXED_MONTHLY_EUR_CENTS: providerBudget(2500),
+    AI_CALL_RESERVATION_EUR_CENTS: providerBudget(2500),
     NOTIFICATION_EMAIL_ENABLED: providerFlag(),
     MONEY_AUTHORING_ENABLED: providerFlag(),
     MONEY_CANONICAL_CONSUMERS_ENABLED: providerFlag(),
@@ -109,7 +112,15 @@ const schema = z
   .superRefine((env, context) => {
     if (
       env.AI_ANALYSIS_ENABLED &&
-      !(env.AI_OPENAI_API_KEY && env.AI_OPENAI_MODEL && env.AI_MONTHLY_REQUEST_LIMIT > 0)
+      !(
+        env.AI_OPENAI_API_KEY &&
+        env.AI_OPENAI_MODEL &&
+        env.AI_MONTHLY_REQUEST_LIMIT > 0 &&
+        env.EXTERNAL_MONTHLY_BUDGET_EUR_CENTS > 0 &&
+        env.AI_CALL_RESERVATION_EUR_CENTS > 0 &&
+        env.EXTERNAL_FIXED_MONTHLY_EUR_CENTS + env.AI_CALL_RESERVATION_EUR_CENTS <=
+          env.EXTERNAL_MONTHLY_BUDGET_EUR_CENTS
+      )
     )
       context.addIssue({
         code: "custom",
@@ -265,7 +276,9 @@ export function parseBillingProviderEnv(input: Record<string, string | undefined
     webhookSecret: p.STRIPE_WEBHOOK_SECRET,
     monthlyPriceId: p.STRIPE_PREMIUM_MONTHLY_PRICE_ID,
     yearlyPriceId: p.STRIPE_PREMIUM_YEARLY_PRICE_ID,
-    portalConfigurationId: p.STRIPE_PORTAL_CONFIGURATION_ID,
+    ...(p.STRIPE_PORTAL_CONFIGURATION_ID
+      ? { portalConfigurationId: p.STRIPE_PORTAL_CONFIGURATION_ID }
+      : {}),
     appOrigin: p.APP_ORIGIN,
   };
 }

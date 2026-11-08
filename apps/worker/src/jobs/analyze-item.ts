@@ -17,7 +17,11 @@ export function createAnalyzeItemJob(
   service: ReturnType<typeof createAIAnalysisService>,
   provider: AIProvider,
   storage: Pick<StorageProvider, "read">,
-  options: { heartbeatMs?: number; timeoutMs?: number } = {},
+  options: {
+    heartbeatMs?: number;
+    timeoutMs?: number;
+    reserveExternalCall?: (callId: string) => Promise<boolean>;
+  } = {},
 ) {
   return async (input: unknown, context?: { signal: AbortSignal }): Promise<void> => {
     const parsed = Payload.safeParse(input);
@@ -93,6 +97,9 @@ export function createAnalyzeItemJob(
         }
       }
       const publicContext = await service.getWorkerContext(claim);
+      check();
+      if (options.reserveExternalCall && !(await options.reserveExternalCall(claim.token)))
+        throw new AIAnalysisError("AI_LIMIT_REACHED");
       check();
       const result = await provider.analyzeCollectible({
         images,
