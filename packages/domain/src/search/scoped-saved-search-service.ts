@@ -1,3 +1,4 @@
+import { scopedReadBudgetDatabase } from "./scoped-read-budget";
 import { z } from "zod";
 import { createHash, randomUUID } from "node:crypto";
 import { Prisma } from "@sammlerraum/db/search-sql";
@@ -199,6 +200,7 @@ export function createScopedSavedSearchService(
       input: unknown = {},
       access?: unknown,
     ) {
+      const boundedDatabase = scopedReadBudgetDatabase(database);
       const expected = z
         .object({
           limit: z.number().int().min(1).max(50).optional(),
@@ -216,14 +218,14 @@ export function createScopedSavedSearchService(
         id = parseSmartCollectionId(idInput),
         page = parseSmartCollectionPageInput(pageInput);
       // Read only the caller's own symbolic reference before durable PIN preflight.
-      const initial = await runSearchRead(database, async (tx) =>
+      const initial = await runSearchRead(boundedDatabase, async (tx) =>
         detail(await load(tx, owner, id)),
       );
       if (expectedRevision !== undefined && initial.revision !== expectedRevision)
         return smartFail("SMART_COLLECTION_CONFLICT");
       try {
         return await withScopedReadContext(
-          database,
+          boundedDatabase,
           actor,
           target(initial.definition, access),
           async (context) => {

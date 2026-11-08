@@ -217,6 +217,13 @@ jobs:
           packages/domain/src/search/smart-collection-service.test.ts
           apps/web/src/lib/smart-collection-routes.integration.test.ts
           packages/domain/src/search/item-search-service.test.ts
+          packages/domain/src/sharing/share-read-access.test.ts
+          packages/domain/src/search/scoped-read-budget.test.ts
+          packages/domain/src/search/scoped-read-context.test.ts
+          packages/domain/src/search/scoped-search-service.test.ts
+          packages/domain/src/search/scoped-consumers.test.ts
+          packages/domain/src/search/scoped-performance.integration.test.ts
+          apps/web/src/lib/scoped-search-routes.integration.test.ts
           packages/domain/src/search/search-reference-service.integration.test.ts
           apps/web/src/lib/search-reference-routes.integration.test.ts
           packages/domain/src/search/search-read.integration.test.ts
@@ -321,3 +328,13 @@ jobs:
           RUN_AUTH_E2E=1 RUN_PRODUCTION_E2E=1 pnpm --filter @sammlerraum/web exec playwright test
           e2e/collaboration-sharing.spec.ts e2e/collaboration-management.spec.ts
           --project=collaboration-ui-desktop --project=collaboration-ui-mobile --workers=1
+
+      - name: Verify scoped shared-search cookie privacy and responsive repair
+        env:
+          RUN_AUTH_E2E: "1"
+          RUN_PRODUCTION_E2E: "1"
+          RUN_IMPORT_E2E: "0"
+          MONEY_AUTHORING_ENABLED: "true"
+        run: >-
+          pnpm --filter @sammlerraum/web exec playwright test
+          e2e/scoped-search.spec.ts --project=desktop --project=mobile --workers=1

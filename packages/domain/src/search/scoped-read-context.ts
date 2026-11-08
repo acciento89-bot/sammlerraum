@@ -1,3 +1,4 @@
+import { scopedReadBudgetDatabase } from "./scoped-read-budget";
 import { z } from "zod";
 import { Prisma } from "@sammlerraum/db/search-sql";
 import { MembershipActorIdSchema, MembershipError } from "@sammlerraum/contracts/collaboration";
@@ -77,9 +78,10 @@ export async function withScopedReadContext<T>(
   if (actorId && !actorId.success) throw new MembershipError("MEMBERSHIP_INVALID");
   const userId = actorId?.success ? actorId.data : null;
   if (target.kind === "SHARE" && target.access.after) throw new ShareError("SHARE_INVALID");
-  const port = createShareReadAccessPort(database);
+  const boundedDatabase = scopedReadBudgetDatabase(database);
+  const port = createShareReadAccessPort(boundedDatabase);
   const verifiedPinHash = target.kind === "SHARE" ? await port.unlock(target.access, userId) : null;
-  return runSearchRead(database, async (raw) => {
+  return runSearchRead(boundedDatabase, async (raw) => {
     let active = true;
     const check = () => {
       if (!active) throw new ShareError("SHARE_INTEGRITY");

@@ -1,3 +1,5 @@
+import { errorCode } from "../api/read-dependency-errors";
+import type { MembershipDatabase } from "../collaboration/transfer-transaction";
 import { randomUUID, randomBytes, createHash } from "node:crypto";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { Prisma } from "@sammlerraum/db/search-sql";
@@ -221,5 +223,85 @@ describe.runIf(process.env.RUN_DATABASE_INTEGRATION === "1")(
         code: "SHARE_INTEGRITY",
       });
     });
+    it.each(["MEMBER", "SHARE"])(
+      "retries a genuine PostgreSQL serialization conflict with fresh %s access",
+      async (kind) => {
+        const f = await fixture(),
+          members = createMembershipService(db);
+        await members.addMember(
+          { userId: f.owner },
+          { collectionId: f.collection.id, userId: f.viewer, role: "VIEWER", expectedRevision: 0 },
+        );
+        const grant =
+          kind === "SHARE"
+            ? await f.service.createShare(
+                { userId: f.owner },
+                {
+                  target: { kind: "ITEM", id: f.item.id },
+                  recipient: { kind: "TOKEN" },
+                  expectedRevision: 1,
+                  pin: "813529",
+                },
+              )
+            : null;
+        let changed = false;
+        const codes: string[] = [];
+        const measured: MembershipDatabase = {
+          $transaction: async (work, options) => {
+            try {
+              return await db.$transaction(
+                (tx) =>
+                  work({
+                    $queryRaw: async <T>(sql: Prisma.Sql) => {
+                      if (
+                        !changed &&
+                        options.isolationLevel === "RepeatableRead" &&
+                        sql.text.includes('FROM "Collection" WHERE id=') &&
+                        sql.text.includes("FOR SHARE")
+                      ) {
+                        changed = true;
+                        // The read snapshot exists, but it has not yet locked its parent.
+                        // This independent real mutation commits before the locking read.
+                        if (grant)
+                          await f.service.revokeShare(
+                            { userId: f.owner },
+                            { shareId: grant.share.id, expectedRevision: 0 },
+                          );
+                        else
+                          await members.removeMember(
+                            { userId: f.owner },
+                            {
+                              collectionId: f.collection.id,
+                              userId: f.viewer,
+                              expectedRevision: 1,
+                            },
+                          );
+                      }
+                      return tx.$queryRaw<T>(sql);
+                    },
+                  }),
+                options,
+              );
+            } catch (error) {
+              const code = errorCode(error);
+              if (code) codes.push(code);
+              throw error;
+            }
+          },
+        };
+        const target = grant
+          ? { kind: "SHARE", access: { token: grant.token, pin: "813529" } }
+          : { kind: "MEMBER_COLLECTION", collectionId: f.collection.id };
+        await expect(
+          withScopedReadContext(measured, grant ? null : { userId: f.viewer }, target, ids),
+        ).rejects.toMatchObject({ code: grant ? "SHARE_REVOKED" : "MEMBERSHIP_NOT_FOUND" });
+        expect(changed).toBe(true);
+        expect(codes).toContain("40001");
+        if (grant)
+          expect(
+            (await db.sharePinBudget.findUnique({ where: { shareId: grant.share.id } }))?.attempts,
+          ).toBe(1);
+      },
+    );
   },
 );
