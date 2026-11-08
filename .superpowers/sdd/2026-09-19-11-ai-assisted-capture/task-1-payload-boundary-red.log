@@ -1,0 +1,30 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/ai/ai-analysis-service.test.ts (7 tests | 1 failed) 742ms
+   ✓ provider-neutral owned photo analysis > stores one immutable suggestion without changing the actual item 273ms
+   ✓ provider-neutral owned photo analysis > binds the request nonce to its selected sources and reserves quota only once 35ms
+   ✓ provider-neutral owned photo analysis > never accepts another owner's item, an unlinked photo or a document source 24ms
+   ✓ provider-neutral owned photo analysis > rejects untrusted response fields and revoked sources before result persistence 29ms
+   ✓ provider-neutral owned photo analysis > serializes concurrent quota reservations for the same actual owner 20ms
+   ✓ provider-neutral owned photo analysis > keeps completed suggestions compatible with actual owner collection erasure 33ms
+   × provider-neutral owned photo analysis > round-trips a near-limit valid payload without confusing compact JSON and JSONB formatting 28ms
+     → AI_UNAVAILABLE
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/ai/ai-analysis-service.test.ts > provider-neutral owned photo analysis > round-trips a near-limit valid payload without confusing compact JSON and JSONB formatting
+AIAnalysisError: AI_UNAVAILABLE
+ ❯ failure packages/domain/src/ai/ai-analysis-service.ts:14:66
+
+ ❯ run packages/domain/src/ai/ai-analysis-service.ts:44:172
+ ❯ packages/domain/src/ai/ai-analysis-service.test.ts:99:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 6 passed (7)
+   Start at  02:39:18
+   Duration  971ms (transform 84ms, setup 6ms, collect 63ms, tests 742ms, environment 0ms, prepare 36ms)
+

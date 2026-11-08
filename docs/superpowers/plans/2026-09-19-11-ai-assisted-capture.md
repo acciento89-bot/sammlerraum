@@ -43,7 +43,7 @@
   - `AIProvider.analyzeCollectible(input): Promise<CollectibleAnalysis>`
   - `requestItemAnalysis(actor, itemId, assetIds): Promise<AIAnalysisJob>`.
 
-- [ ] **Step 1: Write failing no-auto-mutation test**
+- [x] **Step 1: Write failing no-auto-mutation test**
 
 ```ts
 it("stores suggestions without changing the item", async () => {
@@ -55,12 +55,12 @@ it("stores suggestions without changing the item", async () => {
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run packages/domain/src/ai/ai-analysis-service.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement canonical analysis schema**
+- [x] **Step 3: Implement canonical analysis schema**
 
 ```ts
 export const CollectibleAnalysisSchema = z.object({
@@ -82,7 +82,7 @@ export const CollectibleAnalysisSchema = z.object({
 
 Persist `AIAnalysisJob`, usage metadata, status, provider/model, and immutable suggestion payload.
 
-- [ ] **Step 4: Migrate and test**
+- [x] **Step 4: Migrate and test**
 
 Run:
 ```bash
@@ -92,7 +92,7 @@ pnpm vitest run packages/domain/src/ai
 
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/ai packages/contracts/src/ai.ts packages/db packages/domain/src/ai
