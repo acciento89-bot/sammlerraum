@@ -5,7 +5,7 @@
 **Canonical product/system spec:** `docs/superpowers/specs/2026-09-19-sammlerraum-design.md`  
 **SEO/Search Console spec:** `docs/superpowers/specs/2026-09-19-seo-search-console-design.md`
 
-**Implementation branch:** [`work/sammlerraum-v1`](https://github.com/acciento89-bot/sammlerraum/tree/work/sammlerraum-v1) · [Draft PR #1](https://github.com/acciento89-bot/sammlerraum/pull/1). This ledger tracks verified implementation on that branch; code has not been merged into main or deployed. The ledger on main is synchronized after each verified task completion.
+**Implementation branch:** [`work/sammlerraum-v1`](https://github.com/acciento89-bot/sammlerraum/tree/work/sammlerraum-v1) · [Draft PR #1](https://github.com/acciento89-bot/sammlerraum/pull/1). This ledger tracks verified implementation on that branch; application code has not been merged into main; reviewed immutable application source bd80ec748010 is now deployed at https://sammlerraum.de. The ledger on main is synchronized after each verified task completion.
 
 This is the handoff/status file for long-running implementation. Update it after every completed and reviewed task.
 
@@ -24,7 +24,7 @@ This is the handoff/status file for long-running implementation. Update it after
 | 11 | AI-Assisted Capture | 5 | complete (5/5); corrected8957121 CI SUCCESS | — |
 | 12 | Premium & Billing | 5 | complete (5/5); corrected7289140 CI SUCCESS | — |
 | 13 | Integration, Hardening & Release | 7 | 6/7 accepted; corrected3762e56 exact CI SUCCESS | T7 actual authorized production deployment/smoke |
-| 14 | SEO & Google Search Console | 7 | 6/7 accepted; corrected9e25543 exact CI SUCCESS | T7 actual HTTPS, Search Console ownership and processing |
+| 14 | SEO & Google Search Console | 7 | complete (7/7); bd80 exact CI and actual owned production/Search Console proof | — |
 
 **Total:** 91 implementation tasks.
 
@@ -128,9 +128,9 @@ This is the handoff/status file for long-running implementation. Update it after
 - [x] P14 T04 — Protected social previews, structured data and stable public images; reviewed exact9e25543 CI SUCCESS
 - [x] P14 T05 — Bilingual category landing pages; reviewed exact9e25543 CI SUCCESS
 - [x] P14 T06 — Measured SEO, accessibility and performance gates; reviewed exact9e25543 CI SUCCESS
-- [ ] P14 T07 — Actual public HTTPS, Search Console ownership and sitemap processing remain required
+- [x] P14 T07 — Actual public HTTPS, verified Domain Property,23/23 live privacy checks, processed sitemap index/all4children and7representative inspections
 
-**Verified completion: 89/91 tasks.** Phases1–12, Phase13Tasks1–6 and Phase14Tasks1–6 are accepted against reviewed exact-source CI. Phase13Task7 actual live deployment/smoke and Phase14Task7 actual HTTPS/Search Console ownership/processing remain unchecked.
+**Verified completion: 90/91 tasks.** Phases1–12, Phase13Tasks1–6 and all Phase14 tasks are accepted. Reviewed bd80 exact CI completed with3118native tests/zero skipped and all18mandatory gates. Actual authorized HTTPS deployment, verified Domain Property,23/23owned live privacy checks, successful sitemap processing and representative URL inspections complete P14T7. P13T7 remains open only for the actual Apple sign-in return, currently awaiting the correct account’s two-factor confirmation; real Google sign-in and verification/reset mail delivery already passed.
 
 ## Update rule
 
@@ -1346,3 +1346,16 @@ Reviewed application source9e2554353b73ba305f8ab53183c3823734bf3d07, run42476496
 Own PostgreSQL17.11 and matching9e25543 migration/web/worker images actually started healthy; guarded migration exited0. Real own empty-install backup restored separately, followed by full migrated DB/uploads backup and independent restored same-image web with original recovery verifier PASS. Source writers paused only for snapshot, recovered proof stack stopped, persistent volumes retained. Google Domain Property ownership actually confirmed; own OAuth clients and send-only SMTP created privately, real SMTP TLS/authentication passed. Source app still lacks public live HTTPS/callback/mail/SEO/SearchConsole processing proof, so89/91 remains unchanged.
 
 Actual OAuth preflight exposed missing public privacy/supplier routes. Release correction adds bounded DE/EN documents and shared footer/language links with runtime-truthful optional-provider copy. Four original missing-implementation assertions and one compiled baseline footer failure witnessed;34focused native tests pass, corrected web types/recursive lint/build pass,4compiled desktop/mobile journeys pass. Mobile heading wrap was separately reproduced and corrected;4journeys with actual one-line geometry now pass. All306historical tracked proofs preserved. New application source requires new exact CI and matching images; accepted9e25543 evidence is not reused as proof of this changed source.
+
+
+### 8November actual authorized launch and SEO acceptance — canonical90/91
+
+Application source bd80ec748010406379aa521338e9841c125a3ab1 completed exact CI42488308395/job128754936480:57successful steps,18mandatory gates,3118native tests/298files/zero failed or skipped. Its matching immutable web/worker/migrate images actually run in the own Portainer stack with healthy DB/web/worker and migration exit0. Own backup/restored-application verification and separately encrypted off-server database/uploads/runtime copies are proven; the private recovery key stays on the protected internal Mac. No application code or schema changed after this CI.
+
+The specifically approved narrow host proxy edit, own network attachment and apex/www A-record activation were performed. Actual active Caddy configuration equals the saved candidate, original rule content was preserved, and the one-shot writer was stopped/removed. Trusted public TLS, www redirect and13/13normal-DNS public smoke passed. Mail DNS was preserved. Runtime SMTP465 was independently shown to time out from the actual server; configuration-only587 with mandatory STARTTLS/certificate validation passed SMTP AUTH and actual verification/reset delivery. Own email verification followed by a fresh normal password login returned200/emailVerifiedtrue. Real Google sign-in returned to the authenticated application. The remaining Apple test uses the correct authorized account and awaits its current two-factor confirmation; no Apple success is inferred from configuration.
+
+Two verified owned test accounts and labelled synthetic public/private/unlisted records were created through actual normal application flows. Explicit indexing opt-in was saved only for the own public example; the other owned profile remained opted out. Actual GET-only production SEO/privacy verifier passed23/23checks, including private/unlisted404, noindex/consent, canonical/hreflang, genuine PNGs and complete bounded sitemap coverage. No credentials, cookies, private fixture manifest or private notes enter this public ledger.
+
+The actual verified Google Domain Property processed sitemap.xml without errors on08November2026. All four children are successful: marketing18URLs and three community segments1URL each; the parent aggregate still displayed0, so only the actual child sum21 is reported. The initial transient fetch failure is retained privately rather than erased. Seven representative index inspections were performed: DE/EN homepages, DE/EN coin landing pages and the own explicitly opted-in public profile/collection/item. These are not yet indexed; Google-selected canonical/last crawl remain unavailable until crawling. Google’s real smartphone live test of/de succeeded, allowed indexing, and read the correct declared canonical. No indexing request was made for opted-out/private/unlisted resources. Page Indexing is still processing; mobile/desktop Core Web Vitals each say insufficient90-day usage data, not a measured performance pass. Manual Actions and Security Issues both report no problems. Trusted HTTPS is directly verified; the current property navigation provides no separate HTTPS report. P14T7 is complete without inventing indexed status or field measurements.
+
+Operational receipts remain privately outsideGit under the owner’s SammlerraumStatus deployment-candidate directory. Future recreation of the separately managed existing Caddy container must preserve/rejoin the own proxy network; ordinary restart retains the actual attachment. No unrelated app, database, provider, payment service or automation was changed.

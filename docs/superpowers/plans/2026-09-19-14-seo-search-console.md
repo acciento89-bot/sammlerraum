@@ -562,7 +562,7 @@ git commit -m "seo: add structured data previews and Lighthouse gate"
 - Produces reproducible Search Console setup steps.
 - Produces read-only `verify-seo-production.sh`.
 
-- [ ] **Step 1: Document Search Console Domain Property setup**
+- [x] **Step 1: Document Search Console Domain Property setup**
 
 Use:
 
@@ -578,7 +578,7 @@ Procedure:
 5. keep the DNS verification record;
 6. never commit the TXT token to Git.
 
-- [ ] **Step 2: Document sitemap submission and representative inspections**
+- [x] **Step 2: Document sitemap submission and representative inspections**
 
 Submit:
 
@@ -596,7 +596,7 @@ Inspect:
 
 Record whether Google-selected canonical matches Sammlerraum canonical.
 
-- [ ] **Step 3: Implement production verifier**
+- [x] **Step 3: Implement production verifier**
 
 `scripts/verify-seo-production.sh` checks:
 - robots and sitemap return 200;
@@ -608,11 +608,11 @@ Record whether Google-selected canonical matches Sammlerraum canonical.
 - Open Graph image endpoint returns image content;
 - no private/unlisted fixture URL appears in sitemap.
 
-- [ ] **Step 4: Add SEO verifier to production smoke**
+- [x] **Step 4: Add SEO verifier to production smoke**
 
 Run it only read-only after deployment.
 
-- [ ] **Step 5: Run after production deploy**
+- [x] **Step 5: Run after production deploy**
 
 Run:
 
@@ -624,9 +624,12 @@ Expected: PASS.
 
 Search Console DNS verification/sitemap submission remain explicit account-owner operations and must be checked off separately.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add docs/operations/google-search-console.md scripts/verify-seo-production.sh docs/operations/release-checklist.md .github/workflows/production-smoke.yml
 git commit -m "ops: add Search Console and SEO verification"
 ```
+
+
+Actual Task7 acceptance08November2026: verified own Domain Property, authorized trusted production HTTPS,23/23real owned SEO/privacy checks, sitemap index and all4children successfully processed (21childURLs),7representative index inspections and real Google smartphone/de live fetch. New-domain indexing/canonical selection and field-vitals availability remain honestly pending; they are not substituted with local measurements. Exact reviewed application bd80CI42488308395 passed before deployment. Source/runbook implementation was already committed; this operational acceptance is recorded separately. See completion ledger for the complete evidence and remaining P13Apple-return gate.
