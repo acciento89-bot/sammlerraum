@@ -1,0 +1,74 @@
+[WebServer] (node:18835) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 4 tests using 1 worker
+(node:18836) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+F(node:18852) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+F
+Testing stopped early after 2 maximum allowed failures.
+
+
+  1) [desktop] › e2e/scoped-search.spec.ts:324:56 › de: delayed scoped search preserves newer draft changes 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByTestId('scoped-search-panel').getByText('Bedingungen geändert. Bitte anwenden, bevor weitere Treffer geladen werden.', { exact: true })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByTestId('scoped-search-panel').getByText('Bedingungen geändert. Bitte anwenden, bevor weitere Treffer geladen werden.', { exact: true }) with timeout 5000ms
+      - waiting for getByTestId('scoped-search-panel').getByText('Bedingungen geändert. Bitte anwenden, bevor weitere Treffer geladen werden.', { exact: true })
+
+
+      347 |         release();
+      348 |         await expect(panel).toHaveAttribute("aria-busy", "false");
+    > 349 |         await expect(panel.getByText(locale === "de" ? "Bedingungen geändert. Bitte anwenden, bevor weitere Treffer geladen werden." : "Conditions changed. Apply them before loading more results.", { exact: true })).toBeVisible();
+          |                                                                                                                                                                                                                         ^
+      350 |       }
+      351 |     } finally { await cleanup(f); }
+      352 |   });
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/scoped-search.spec.ts:349:217
+
+    Error Context: test-results/scoped-search-de-delayed-s-64cf6-eserves-newer-draft-changes-desktop/error-context.md
+
+    Error Context: test-results/scoped-search-de-delayed-s-64cf6-eserves-newer-draft-changes-desktop/error-context.md
+
+  2) [desktop] › e2e/scoped-search.spec.ts:324:56 › de: delayed scoped dashboard preserves newer draft changes 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByTestId('scoped-search-panel').getByText('Bedingungen geändert. Bitte anwenden, bevor weitere Treffer geladen werden.', { exact: true })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByTestId('scoped-search-panel').getByText('Bedingungen geändert. Bitte anwenden, bevor weitere Treffer geladen werden.', { exact: true }) with timeout 5000ms
+      - waiting for getByTestId('scoped-search-panel').getByText('Bedingungen geändert. Bitte anwenden, bevor weitere Treffer geladen werden.', { exact: true })
+
+
+      347 |         release();
+      348 |         await expect(panel).toHaveAttribute("aria-busy", "false");
+    > 349 |         await expect(panel.getByText(locale === "de" ? "Bedingungen geändert. Bitte anwenden, bevor weitere Treffer geladen werden." : "Conditions changed. Apply them before loading more results.", { exact: true })).toBeVisible();
+          |                                                                                                                                                                                                                         ^
+      350 |       }
+      351 |     } finally { await cleanup(f); }
+      352 |   });
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/scoped-search.spec.ts:349:217
+
+    Error Context: test-results/scoped-search-de-delayed-s-c62b3-eserves-newer-draft-changes-desktop/error-context.md
+
+    Error Context: test-results/scoped-search-de-delayed-s-c62b3-eserves-newer-draft-changes-desktop/error-context.md
+
+  2 failed
+    [desktop] › e2e/scoped-search.spec.ts:324:56 › de: delayed scoped search preserves newer draft changes 
+    [desktop] › e2e/scoped-search.spec.ts:324:56 › de: delayed scoped dashboard preserves newer draft changes 
+  2 did not run
+  1 error was not a part of any test, see above for details
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/scoped-search.spec.ts --grep delayed scoped --project desktop --workers=1 --max-failures=2

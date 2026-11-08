@@ -1,0 +1,15 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ✓ |workspace| packages/domain/src/search/scoped-read-budget.test.ts (2 tests) 747ms
+   ✓ one scoped operation deadline across canonical preflight and read > does not reset its outer deadline when a second real transaction begins  417ms
+ ✓ |workspace| packages/domain/src/search/scoped-read-context.test.ts (9 tests) 979ms
+   ✓ callback-scoped bulk read authority > rechecks wall-clock expiry after asynchronous consumption  324ms
+ ✓ |workspace| packages/domain/src/search/scoped-search-service.test.ts (17 tests) 745ms
+ ✓ |workspace| packages/domain/src/search/scoped-consumers.test.ts (13 tests) 793ms
+
+ Test Files  4 passed (4)
+      Tests  41 passed (41)
+   Start at  01:15:25
+   Duration  4.82s (transform 307ms, setup 7ms, collect 1.03s, tests 3.26s, environment 0ms, prepare 126ms)
+

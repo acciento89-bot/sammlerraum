@@ -1,0 +1,5 @@
+packages/contracts/src/scoped-search.ts 45ms
+packages/domain/src/search/scoped-read-context.ts 19ms
+packages/domain/src/search/scoped-read-context.test.ts 30ms
+packages/domain/src/search/scoped-consumers.test.ts 18ms
+apps/web/e2e/scoped-search.spec.ts 22ms (unchanged)

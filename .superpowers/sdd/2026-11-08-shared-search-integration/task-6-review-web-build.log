@@ -1,0 +1,17 @@
+
+> @sammlerraum/web@ build /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web
+> next build
+
+▲ Next.js 16.3.5 (Turbopack)
+✓ Running next.config.ts took 157ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 11.1s
+  Running TypeScript ...
+src/lib/item-search-routes.integration.test.ts(2,46): error TS2307: Cannot find module '@sammlerraum/domain/market-data/market-batch' or its corresponding type declarations.
+src/lib/item-search-routes.integration.test.ts(49,40): error TS7006: Parameter 'actor' implicitly has an 'any' type.
+Failed to type check.
+
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @sammlerraum/web@ build: `next build`
+Exit status 1
