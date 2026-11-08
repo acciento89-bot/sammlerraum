@@ -1,0 +1,37 @@
+[WebServer] (node:11676) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+(node:11677) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+F
+Testing stopped early after 1 maximum allowed failures.
+
+
+  1) [mobile] › e2e/scoped-search.spec.ts:211:3 › en: retained unavailable false predicate stays editable and repairs the same scoped saved record 
+
+    Error: expect(received).toBeGreaterThan(expected)
+
+    Expected: > 266
+    Received:   170.078125
+
+      72 |   const panel = page.getByTestId("scoped-search-panel"), box = await panel.boundingBox();
+      73 |   const input = await panel.locator('input[type="search"]').boundingBox();
+    > 74 |   expect(input!.width).toBeGreaterThan(box!.width * 0.7);
+         |                        ^
+      75 |   await expect
+      76 |     .poll(() => page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1))
+      77 |     .toBe(true);
+        at capture (/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/scoped-search.spec.ts:74:24)
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/scoped-search.spec.ts:271:7
+
+    Error Context: test-results/scoped-search-en-retained--2f6fd-he-same-scoped-saved-record-mobile/error-context.md
+
+    Error Context: test-results/scoped-search-en-retained--2f6fd-he-same-scoped-saved-record-mobile/error-context.md
+
+  1 failed
+    [mobile] › e2e/scoped-search.spec.ts:211:3 › en: retained unavailable false predicate stays editable and repairs the same scoped saved record 
+  1 error was not a part of any test, see above for details
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/scoped-search.spec.ts --grep en: retained --project=mobile --workers=1 --max-failures=1

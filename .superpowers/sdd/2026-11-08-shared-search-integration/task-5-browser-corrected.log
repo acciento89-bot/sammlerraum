@@ -1,0 +1,45 @@
+[WebServer] (node:11218) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 12 tests using 1 worker
+(node:11219) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+··F
+Testing stopped early after 1 maximum allowed failures.
+
+
+  1) [desktop] › e2e/scoped-search.spec.ts:208:3 › de: retained unavailable false predicate stays editable and repairs the same scoped saved record 
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: getByTestId('scoped-search-panel').locator('.scoped-retained-condition')
+    Expected substring: "\"value\": false"
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toContainText" getByTestId('scoped-search-panel').locator('.scoped-retained-condition') with timeout 5000ms
+      - waiting for getByTestId('scoped-search-panel').locator('.scoped-retained-condition')
+
+
+      248 |       await panel.getByRole("button", { name, exact: true }).click();
+      249 |       await expect(panel.getByRole("alert")).toContainText(t.unavailable);
+    > 250 |       await expect(panel.locator(".scoped-retained-condition")).toContainText('"value": false');
+          |                                                                 ^
+      251 |       await panel.getByRole("button", { name: t.remove, exact: true }).click();
+      252 |       await panel.getByRole("button", { name: t.apply, exact: true }).click();
+      253 |       await expect(panel.locator(".scoped-result-list li")).toHaveCount(1);
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/scoped-search.spec.ts:250:65
+
+    Error Context: test-results/scoped-search-de-retained--de19e-he-same-scoped-saved-record-desktop/error-context.md
+
+    Error Context: test-results/scoped-search-de-retained--de19e-he-same-scoped-saved-record-desktop/error-context.md
+
+  1 failed
+    [desktop] › e2e/scoped-search.spec.ts:208:3 › de: retained unavailable false predicate stays editable and repairs the same scoped saved record 
+  9 did not run
+  2 passed (9.6s)
+  1 error was not a part of any test, see above for details
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/scoped-search.spec.ts --workers=1 --max-failures=1

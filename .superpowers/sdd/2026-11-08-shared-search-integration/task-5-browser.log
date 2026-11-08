@@ -1,0 +1,45 @@
+[WebServer] (node:10919) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 12 tests using 1 worker
+(node:10920) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+F
+Testing stopped early after 1 maximum allowed failures.
+
+
+  1) [desktop] › e2e/scoped-search.spec.ts:82:3 › de: real member cookie searches saves and summarizes only its selected private collection 
+
+    PrismaClientKnownRequestError: 
+    Invalid `prisma.user.deleteMany()` invocation:
+
+
+    Foreign key constraint violated on the constraint: `AuditEvent_collectionId_fkey`
+
+       at support/search-fixture.ts:80
+
+      78 | export async function cleanupSearchFixture(f: { ownerId: string; foreignId: string; ip: string }) {
+      79 |   if (!db) return;
+    > 80 |   await db.user.deleteMany({ where: { id: { in: [f.ownerId, f.foreignId] } } });
+         |   ^
+      81 |   await db.rateLimit.deleteMany({ where: { key: `${f.ip}|/sign-in/email` } });
+      82 | }
+      83 |
+        at vn.handleRequestError (/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:238:13)
+        at vn.handleAndLogRequestError (/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:184:12)
+        at vn.request (/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:153:12)
+        at a (/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:1014:24)
+        at cleanupSearchFixture (/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/support/search-fixture.ts:80:3)
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/scoped-search.spec.ts:149:7
+
+    Error Context: test-results/scoped-search-de-real-memb-90904-selected-private-collection-desktop/error-context.md
+
+    Error Context: test-results/scoped-search-de-real-memb-90904-selected-private-collection-desktop/error-context.md
+
+  1 failed
+    [desktop] › e2e/scoped-search.spec.ts:82:3 › de: real member cookie searches saves and summarizes only its selected private collection 
+  11 did not run
+  1 error was not a part of any test, see above for details
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/scoped-search.spec.ts --workers=1 --max-failures=1

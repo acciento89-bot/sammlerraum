@@ -62,9 +62,9 @@
 
 **Files:** Reuse current workspace/share views and search draft controls; add explicit scoped components/state and DE/EN messages plus compiled Playwright cases.
 
-- [ ] TDD scope capability/repair behavior, scoped saved links and ephemeral access prompts without credentials in QueryStore/history. Preserve original OWNED UI behavior.
-- [ ] Implement explicit target context, permitted filters and safe shared summaries in current workspace/share navigation. Preserve unsupported saved operands for editing/removal.
-- [ ] Run actual DE/EN desktop/mobile allowed/denied/current-access journeys, screenshot current UI, types/lint/build and commit.
+- [x] TDD scope capability/repair behavior, scoped saved links and ephemeral access prompts without credentials in QueryStore/history. Preserve original OWNED UI behavior.
+- [x] Implement explicit target context, permitted filters and safe shared summaries in current workspace/share navigation. Preserve unsupported saved operands for editing/removal.
+- [x] Run actual DE/EN desktop/mobile allowed/denied/current-access journeys, screenshot current UI, types/lint/build and commit.
 
 ### Task 6: Whole-prerequisite proof, one review and draft integration
 

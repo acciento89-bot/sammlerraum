@@ -1,0 +1,47 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| apps/web/src/lib/scoped-search-routes.integration.test.ts (8 tests | 1 failed) 681ms
+   ✓ actual scoped Request/Response handlers > executes anonymous token rows and dashboard through actual domain/database consumers 142ms
+   ✓ actual scoped Request/Response handlers > requires a fresh account for member/saved data and applies privacy headers also on errors 10ms
+   ✓ actual scoped Request/Response handlers > bounds nested raw JSON and rejects duplicate keys, credentials in query history and URL injection 10ms
+   ✓ actual scoped Request/Response handlers > saves symbolic definitions through authenticated HTTP and rejects wrong grants on later resolve 34ms
+   ✓ actual scoped Request/Response handlers > discovers only actual member collections and current named recipient grants 35ms
+   ✓ actual scoped Request/Response handlers > retains PIN budgets and uses the same existing unlock session for actual scoped HTTP 134ms
+   ✓ actual scoped Request/Response handlers > accepts a valid 16KiB filter string but denies hidden leaves before matching 16ms
+   × actual scoped Request/Response handlers > returns only current usable field families without exposing hidden grant metadata 9ms
+     → f.handlers(...).routes.CAPABILITIES is not a function
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/web/src/components/search/scoped-capabilities.test.ts [ apps/web/src/components/search/scoped-capabilities.test.ts ]
+Error: Cannot find module './scoped-capabilities' imported from '/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/src/components/search/scoped-capabilities.test.ts'
+ ❯ apps/web/src/components/search/scoped-capabilities.test.ts:3:1
+
+
+Caused by: Error: Failed to load url ./scoped-capabilities (resolved id: ./scoped-capabilities) in /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/src/components/search/scoped-capabilities.test.ts. Does the file exist?
+ ❯ loadAndTransform ../../../../SSK%20SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/node_modules/.pnpm/vite@7.3.6_@types+node@24.5.2_jiti@2.7.0/node_modules/vite/dist/node/chunks/config.js:22739:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/web/src/lib/scoped-search-routes.integration.test.ts > actual scoped Request/Response handlers > returns only current usable field families without exposing hidden grant metadata
+TypeError: f.handlers(...).routes.CAPABILITIES is not a function
+ ❯ apps/web/src/lib/scoped-search-routes.integration.test.ts:293:54
+    291|     it("returns only current usable field families without exposing hi…
+    292|       const f = await fixture();
+    293|       const response = await f.handlers(null).routes.CAPABILITIES(post…
+       |                                                      ^
+    294|       expect(response.status).toBe(200);
+    295|       const value = await response.json();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  1 failed | 7 passed (8)
+   Start at  00:46:26
+   Duration  1.57s (transform 294ms, setup 6ms, collect 545ms, tests 681ms, environment 0ms, prepare 66ms)
+
