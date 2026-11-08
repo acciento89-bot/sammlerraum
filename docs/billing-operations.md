@@ -22,6 +22,10 @@ Domain feature gates have passed the local whole-native suite. Localized pricing
   Features: `MARKET_DATA`, `EXTENDED_HISTORY`, `ADVANCED_ANALYTICS`, `XLSX`, `ADVANCED_FILTERS`.
   Zero means no new admissions; null explicitly means unlimited. Premium cannot narrow Free.
   No production quota values or price amounts are guessed by source code.
+- Set `STRIPE_PORTAL_CONFIGURATION_ID` to the dedicated Sammlerraum portal configuration when
+  sharing a Stripe account with other apps. Sessions explicitly select it, so the account-wide
+  default and other products remain unchanged. Configure invoice history, payment-method changes
+  and cancellation at period end on that own configuration; do not activate unreviewed product switches.
 - Enabled payments require `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, and distinct monthly/yearly
   Price IDs. Prefer a restricted server key. No key or session URL belongs in client configuration or logs.
 - Do not change prices/origin while a Checkout is pending. Provider idempotency conflicts fail

@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { it, expect } from "vitest";
-async function fixture(status = 200, override?: unknown) {
+async function fixture(status = 200, override?: unknown, portalConfigurationId?: string) {
   const requests: Request[] = [];
   const transport: typeof fetch = async (input, init) => {
     const request = new Request(input, init);
@@ -35,6 +35,7 @@ async function fixture(status = 200, override?: unknown) {
       appOrigin: "https://sammlerraum.example",
       monthlyPriceId: "price_monthly_fixture",
       yearlyPriceId: "price_yearly_fixture",
+      portalConfigurationId,
       fetch: transport,
     }),
   };
@@ -99,6 +100,16 @@ it("creates an owned hosted portal with a server-derived return origin", async (
   const body = new URLSearchParams(await requests[0]!.text());
   expect(body.get("customer")).toBe("cus_owned");
   expect(body.get("return_url")).toBe("https://sammlerraum.example/en/account/billing");
+});
+it("uses the dedicated app portal instead of the account-wide default", async () => {
+  const { provider, requests } = await fixture(200, undefined, "bpc_sammlerraum");
+  await provider.createPortalSession({
+    customerId: "cus_owned",
+    locale: "de",
+    requestKey: randomUUID(),
+  });
+  const body = new URLSearchParams(await requests[0]!.text());
+  expect(body.get("configuration")).toBe("bpc_sammlerraum");
 });
 it.each([
   "https://evil.example/checkout",

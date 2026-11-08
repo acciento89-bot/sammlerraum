@@ -236,6 +236,11 @@ export function parseBillingProviderEnv(input: Record<string, string | undefined
         .string()
         .max(255)
         .regex(/^price_[A-Za-z0-9_]+$/u),
+      STRIPE_PORTAL_CONFIGURATION_ID: z
+        .string()
+        .max(255)
+        .regex(/^bpc_[A-Za-z0-9_]+$/u)
+        .optional(),
       APP_ORIGIN: z.string().transform(applicationOrigin),
     })
     .safeParse(input);
@@ -260,6 +265,7 @@ export function parseBillingProviderEnv(input: Record<string, string | undefined
     webhookSecret: p.STRIPE_WEBHOOK_SECRET,
     monthlyPriceId: p.STRIPE_PREMIUM_MONTHLY_PRICE_ID,
     yearlyPriceId: p.STRIPE_PREMIUM_YEARLY_PRICE_ID,
+    portalConfigurationId: p.STRIPE_PORTAL_CONFIGURATION_ID,
     appOrigin: p.APP_ORIGIN,
   };
 }

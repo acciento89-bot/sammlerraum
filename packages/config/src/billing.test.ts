@@ -46,6 +46,18 @@ it("keeps payment activation off and requires complete explicit provider configu
   expect(module.parseBillingProviderEnv(ready)).toMatchObject({
     monthlyPriceId: "price_monthly_fixture",
   });
+  expect(
+    module.parseBillingProviderEnv({
+      ...ready,
+      STRIPE_PORTAL_CONFIGURATION_ID: "bpc_sammlerraum",
+    }),
+  ).toMatchObject({ portalConfigurationId: "bpc_sammlerraum" });
+  expect(() =>
+    module.parseBillingProviderEnv({
+      ...ready,
+      STRIPE_PORTAL_CONFIGURATION_ID: "https://foreign.example",
+    }),
+  ).toThrow("STRIPE_PORTAL_CONFIGURATION_ID");
   expect(() =>
     module.parseBillingProviderEnv({
       ...ready,

@@ -58,6 +58,7 @@ export class StripeBillingProvider implements BillingProvider {
       appOrigin: string;
       monthlyPriceId: string;
       yearlyPriceId: string;
+      portalConfigurationId?: string;
       fetch?: typeof fetch;
     },
   ) {
@@ -239,6 +240,9 @@ export class StripeBillingProvider implements BillingProvider {
         {
           customer: data.customerId,
           locale: data.locale,
+          ...(this.config.portalConfigurationId
+            ? { configuration: this.config.portalConfigurationId }
+            : {}),
           return_url: `${this.origin}/${data.locale}/account/billing`,
         },
         { idempotencyKey: "sammlerraum:portal:" + data.requestKey },
