@@ -67,7 +67,7 @@ describe("production container configuration", () => {
     expect(compose).toContain("args:\n        NEXT_PUBLIC_APP_ORIGIN: ${NEXT_PUBLIC_APP_ORIGIN}");
     expect(compose.match(/NEXT_PUBLIC_APP_ORIGIN:/g)).toHaveLength(1);
     expect(workflow).toContain(
-      "docker build -f Dockerfile.web --build-arg NEXT_PUBLIC_APP_ORIGIN=https://example.invalid .",
+      "docker build -f Dockerfile.web -t sammlerraum-web-ci --build-arg NEXT_PUBLIC_APP_ORIGIN=https://example.invalid .",
     );
     expect(workflow).toMatch(
       /name: Build workspace\s+env:\s+NODE_ENV: production\s+run: pnpm build/,
