@@ -23,6 +23,9 @@ class LocaleSmoke(unittest.TestCase):
   cls.base=f'http://localhost:{cls.server.server_port}'
  @classmethod
  def tearDownClass(cls):cls.server.shutdown();cls.server.server_close()
+ def test_home_marker_matches_collector_hub(self):
+  self.assertEqual(m.page_marker('de',''), 'Willkommen im Sammlerraum!')
+  self.assertEqual(m.page_marker('en',''), 'Welcome to Sammlerraum!')
  def test_correct_real_html_locale_and_page_marker(self):
   self.assertTrue(m.probe_page(self.base,'/de/pricing','de','Tarife & Leistungen'))
  def test_wrong_page_and_language_fail(self):

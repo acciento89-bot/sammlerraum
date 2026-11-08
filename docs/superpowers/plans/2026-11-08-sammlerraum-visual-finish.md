@@ -23,26 +23,29 @@
 
 ### Task 1: Presentation foundation and public experience
 Files: globals.css, locale layout, home page, marketing components, messages/de.json and en.json; new visual components and public artwork.
-- [ ] Record baseline selected tests and add a failing behavioral check for locale-safe navigation and first-party artwork mappings.
-- [ ] Implement responsive typography, spacing, controls, cards, public navigation, original editorial imagery, home, feature and category presentation, and auth framing.
-- [ ] Run selected tests, typecheck, production compilation and real desktop/mobile rendering.
-- [ ] Commit verified presentation changes.
+- [x] Record baseline selected tests and add a failing behavioral check for locale-safe navigation and first-party artwork mappings.
+- [x] Implement responsive typography, spacing, controls, cards, public navigation, original editorial imagery, home, feature and category presentation, and auth framing.
+- [x] Run selected tests, typecheck, production compilation and real desktop/mobile rendering.
+- [x] Commit verified presentation changes.
 
 ### Task 2: Authenticated workspace
 Files: new (app)/layout.tsx and workspace navigation; existing collection/detail/dashboard components and CSS.
-- [ ] Add failing route-state tests for nested item, collection, account and management sections.
-- [ ] Implement grouped sidebar, mobile navigation, clean content headings, dashboard quick actions, image-aware item/collection presentation and empty states without changing data policies.
-- [ ] Exercise existing critical paths against a disposable local fixture; capture dashboard, collection, item, search, auth and public pages on desktop/mobile.
-- [ ] Commit verified workspace changes.
+- [x] Add failing route-state tests for nested item, collection, account and management sections.
+- [x] Implement grouped sidebar, mobile navigation, clean content headings, dashboard quick actions, image-aware item/collection presentation and empty states without changing data policies.
+- [x] Exercise existing critical paths against a disposable local fixture; capture dashboard, collection, item, search, auth and public pages on desktop/mobile.
+- [x] Commit verified workspace changes.
 
 ### Task 3: Review, release and evidence
-- [ ] Review complete diff, links, responsive layout, accessibility and image sizes; fix material findings.
-- [ ] Run appropriate regression checks once on final source and build immutable release.
-- [ ] Deploy to existing Sammlerraum stack only after release proof, retain rollback, verify normal public and owned account paths.
-- [ ] Update product ledger accurately; provide real screenshots in chat. Track any still inactive operating services separately and continue them.
+- [x] Review complete diff, links, responsive layout, accessibility and image sizes; fix material findings.
+- [x] Run appropriate regression checks once on final source and build immutable release.
+- [x] Deploy to existing Sammlerraum stack only after release proof, retain rollback, verify normal public and owned account paths.
+- [x] Update product ledger accurately; provide real screenshots in chat. Track any still inactive operating services separately and continue them.
 
 ## Owner correction during implementation
 The initial warm editorial/serif direction was explicitly rejected as too similar to LeihNest. It is not approved and must not ship. Replace it with a modern collector-gallery direction: bold sans-serif, cool cobalt/lavender/graphite, original studio collectible imagery, object cards, dark workspace sidebar and clear utility controls. Existing functions and privacy constraints remain unchanged.
 
 ## Concrete reference supplied by owner
 Use the attached `Sammlerraum_ Deine Welt zum Sammeln.png` as the visual authority: navy persistent sidebar, gold active navigation and CTAs, global search bar, panoramic collecting hero, four benefit links, feed cards plus a right-hand context/category/tip column. The preceding lavender gallery proposal is superseded. Do not copy licensed characters, invented member counts or fake user activity from the reference. Use original artwork and clearly editorial content until real community data are available. Existing authenticated community keeps its real policy-filtered feed.
+
+## Actual visual release proof
+Application b579b0a969d2 is live in own stack30, web image sha256:baff68eba6a1275f2d2e0a039b37d35e8287e959106b26102a7e8d9f0676595e, healthy. Server build label matches source; complete editor JSON equals the prepared web-only configuration. Existing DB/worker/migrate/runtime settings preserved. Normal HTTPS public smoke13/13, committed artwork bytes7/7 and protected own-account route checks2/2 pass. Local native3126/0skipped, compiled browser4/4, production build/types pass. Separate full exact-source CI42508015323 is in progress, not reported as passed. Real screenshots are delivered in chat and the external VisualReference-20261108 gallery. Overall product acceptance remains owner-reopened; paid providers and outstanding operational activation are separate from this visual release.
