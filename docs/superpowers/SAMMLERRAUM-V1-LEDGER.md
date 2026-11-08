@@ -23,7 +23,7 @@ This is the handoff/status file for long-running implementation. Update it after
 | 10 | Community, Moderation & Notifications | 8 | complete (8/8); corrected d69f78f CI SUCCESS | — |
 | 11 | AI-Assisted Capture | 5 | complete (5/5); corrected8957121 CI SUCCESS | — |
 | 12 | Premium & Billing | 5 | complete (5/5); corrected7289140 CI SUCCESS | — |
-| 13 | Integration, Hardening & Release | 7 | 6/7 accepted; corrected3762e56 exact CI SUCCESS | T7 actual authorized production deployment/smoke |
+| 13 | Integration, Hardening & Release | 7 | complete (7/7); exact bd80CI and actual authorized production/TLS/auth/mail/recovery proof | — |
 | 14 | SEO & Google Search Console | 7 | complete (7/7); bd80 exact CI and actual owned production/Search Console proof | — |
 
 **Total:** 91 implementation tasks.
@@ -120,7 +120,7 @@ This is the handoff/status file for long-running implementation. Update it after
 - [x] P13 T04 — Harden worker/jobs and resource limits
 - [x] P13 T05 — Add production compose, migration entrypoint, and deploy verification
 - [x] P13 T06 — Add final release-gate script and marketplace boundary test
-- [ ] P13 T07 — Production smoke after Portainer deployment; actual production still required
+- [x] P13 T07 — Actual authorized matching-image deployment; healthy persistent services,13/13public HTTPS smoke,Google/Apple live returns,verification/reset delivery and protected off-server recovery proved
 
 - [x] P14 T01 — Canonical bilingual public metadata and locale navigation; reviewed exact9e25543 CI SUCCESS
 - [x] P14 T02 — Privacy-safe bounded sitemap discovery and robots; reviewed exact9e25543 CI SUCCESS
@@ -130,7 +130,7 @@ This is the handoff/status file for long-running implementation. Update it after
 - [x] P14 T06 — Measured SEO, accessibility and performance gates; reviewed exact9e25543 CI SUCCESS
 - [x] P14 T07 — Actual public HTTPS, verified Domain Property,23/23 live privacy checks, processed sitemap index/all4children and7representative inspections
 
-**Verified completion: 90/91 tasks.** Phases1–12, Phase13Tasks1–6 and all Phase14 tasks are accepted. Reviewed bd80 exact CI completed with3118native tests/zero skipped and all18mandatory gates. Actual authorized HTTPS deployment, verified Domain Property,23/23owned live privacy checks, successful sitemap processing and representative URL inspections complete P14T7. P13T7 remains open only for the actual Apple sign-in return, currently awaiting the correct account’s two-factor confirmation; real Google sign-in and verification/reset mail delivery already passed.
+**Verified completion: 91/91 tasks.** All original14phases are accepted. Exact reviewed application bd80CI passed3118native tests/zero skipped and all18mandatory gates. Matching immutable production images, trusted public HTTPS,13/13public smoke,real Google/Apple sign-in returns,verification/reset delivery,backup/restored-application/encrypted off-server recovery,23/23owned live SEO/privacy checks,processed sitemap index/all4children,7representative inspections and18actual public Lighthouse measurements are proved. Initial Google indexing/canonical selection/field-vitals data remain externally pending; separately gated paid AI/market/billing/notification dispatch remains deliberately disabled, not silently activated.
 
 ## Update rule
 
@@ -1359,3 +1359,10 @@ Two verified owned test accounts and labelled synthetic public/private/unlisted 
 The actual verified Google Domain Property processed sitemap.xml without errors on08November2026. All four children are successful: marketing18URLs and three community segments1URL each; the parent aggregate still displayed0, so only the actual child sum21 is reported. The initial transient fetch failure is retained privately rather than erased. Seven representative index inspections were performed: DE/EN homepages, DE/EN coin landing pages and the own explicitly opted-in public profile/collection/item. These are not yet indexed; Google-selected canonical/last crawl remain unavailable until crawling. Google’s real smartphone live test of/de succeeded, allowed indexing, and read the correct declared canonical. No indexing request was made for opted-out/private/unlisted resources. Page Indexing is still processing; mobile/desktop Core Web Vitals each say insufficient90-day usage data, not a measured performance pass. Manual Actions and Security Issues both report no problems. Trusted HTTPS is directly verified; the current property navigation provides no separate HTTPS report. P14T7 is complete without inventing indexed status or field measurements.
 
 Operational receipts remain privately outsideGit under the owner’s SammlerraumStatus deployment-candidate directory. Future recreation of the separately managed existing Caddy container must preserve/rejoin the own proxy network; ordinary restart retains the actual attachment. No unrelated app, database, provider, payment service or automation was changed.
+
+
+### 8November final actual Apple return and original V1 acceptance — canonical91/91
+
+After the owner completed Apple authentication, the actual authorized Apple web flow confirmed the correct existing account and existing Sammlerraum permission. Continuing returned through the real configured callback to the protected live/de/account/profile page with Profil bearbeiten and Abmelden visible. No new verification code was requested, no browser cookies were exported and no search indexing was enabled for this new ordinary account. Apple readiness is based on this actual return, not the owner’s login statement or a prepared key alone. P13T7 is therefore complete.
+
+The final public deployment also passed18actual Lighthouse measurements across6normal-DNS HTTPS pages: SEO/accessibility/best-practices100throughout,performance minimum94/median98. These are production laboratory measurements; mobile/desktop field Core Web Vitals still correctly have insufficient usage data. Exact application CI remains bd80/42488308395; subsequent acceptance documentation changes do not modify the reviewed deployed application. No unchanged full suite is rerun merely for documentation. All original91tasks are accepted. The existing source PR/workspace is preserved; main’s completion ledger is synchronized without merging unrelated application history. No new automation, payment/provider activation, customer mail or other-app work is introduced.
