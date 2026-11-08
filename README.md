@@ -1,6 +1,6 @@
 # Sammlerraum.de
 
-> **Status:** Implementierung im Arbeitszweig; Abnahme und verbleibende Live-Gates siehe Fortschritts-Ledger
+> **Status:** V1 live unter [sammlerraum.de](https://sammlerraum.de) · 91/91 ursprüngliche Aufgaben geprüft; Belege und bewusst deaktivierte optionale Dienste siehe Fortschritts-Ledger
 > **Repository:** `acciento89-bot/sammlerraum`  
 > **Stand:** 08.11.2026
 > **Konsolidierte Design-Spezifikation:** `docs/superpowers/specs/2026-09-19-sammlerraum-design.md`
