@@ -47,6 +47,9 @@ vi.mock("@sammlerraum/config/server", () => ({
     AI_OPENAI_API_KEY: "fixture-not-a-real-key",
     AI_OPENAI_MODEL: "fixture-vision",
     AI_MONTHLY_REQUEST_LIMIT: 10,
+    EXTERNAL_MONTHLY_BUDGET_EUR_CENTS: 2500,
+    EXTERNAL_FIXED_MONTHLY_EUR_CENTS: 0,
+    AI_CALL_RESERVATION_EUR_CENTS: 25,
     get NOTIFICATION_EMAIL_ENABLED() {
       return wiring.emailEnabled;
     },
