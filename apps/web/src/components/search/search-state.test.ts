@@ -52,7 +52,7 @@ describe("typed search drafts", () => {
     expect(available(root)).toBe(true);
     expect(available({ kind: "purchaseMoney", test: { op: "missing" } })).toBe(true);
   });
-  it("keeps a still-unavailable market subtree intact for repair without losing false or zero", () => {
+  it("keeps an authorable market subtree intact for live authorization without losing false or zero", () => {
     const root: ItemFilterNode = {
       kind: "not",
       child: {
@@ -79,7 +79,7 @@ describe("typed search drafts", () => {
     };
     const filter = parseItemFilter({ version: 1, root });
     expect(fromDraft(toDraft(filter))).toEqual(filter);
-    expect(available(root)).toBe(false);
+    expect(available(root)).toBe(true);
   });
   it("uses the actual parser for depth 5/6 and leaves 50/51", () => {
     const leaf: ItemFilterNode = { kind: "tags", test: { op: "present" } };
