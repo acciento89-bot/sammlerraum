@@ -815,7 +815,8 @@ for (const locale of ["de", "en"] as const) {
       await page.goto(`/${locale}/search?q=${token}`);
       expect((await response).status()).toBe(422);
       await panel(page, locale);
-      await expect(page.getByRole("button", { name: c.apply, exact: true })).toBeDisabled();
+      // A structurally valid market query remains editable/retryable; live rights are enforced by the actual 422 above.
+      await expect(page.getByRole("button", { name: c.apply, exact: true })).toBeEnabled();
       const unavailable = page.getByRole("group", { name: c.families.marketMoney, exact: true });
       await unavailable.getByRole("button", { name: c.edit, exact: true }).click();
       await expect(unavailable).toContainText("LAST_SOLD");
