@@ -256,7 +256,7 @@ git commit -m "feat: require confirmation for AI suggestions"
 **Interfaces:**
 - Produces: photo selection → queued analysis → progress → review → apply flow; `getAIUsage(userId, period)`.
 
-- [ ] **Step 1: Write failing E2E confirmation test**
+- [x] **Step 1: Write failing E2E confirmation test**
 
 ```ts
 test("AI suggestions do not change the item until the user confirms them", async ({ page }) => {
@@ -267,16 +267,16 @@ test("AI suggestions do not change the item until the user confirms them", async
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm --filter @sammlerraum/web exec playwright test e2e/ai-capture.spec.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement UI**
+- [x] **Step 3: Implement UI**
 
 Show warnings prominently, confidence only as provider evidence aid, never as authenticity score. Poll job status with bounded backoff. Display usage count through usage service so billing plan can enforce quotas later.
 
-- [ ] **Step 4: Run E2E/build**
+- [x] **Step 4: Run E2E/build**
 
 Run:
 ```bash
@@ -286,7 +286,7 @@ pnpm --filter @sammlerraum/web build
 
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add apps/web packages/domain/src/ai/usage-service.ts

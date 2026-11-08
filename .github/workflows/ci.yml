@@ -338,3 +338,26 @@ jobs:
         run: >-
           pnpm --filter @sammlerraum/web exec playwright test
           e2e/scoped-search.spec.ts --project=desktop --project=mobile --workers=1
+
+      - name: Verify private photo analysis against actual PostgreSQL and fake provider transport
+        env:
+          RUN_DATABASE_INTEGRATION: "1"
+        run: >-
+          pnpm exec vitest run packages/domain/src/ai packages/contracts/src/ai.test.ts
+          packages/ai/src/openai-provider.test.ts apps/worker/src/jobs/analyze-item.test.ts
+          apps/worker/src/jobs/ai-analysis-dispatcher.test.ts apps/web/src/lib/ai-routes.test.ts
+          apps/web/src/lib/ai-capture-routes.test.ts --maxWorkers=1
+      - name: Verify compiled photo analysis confirmation in both languages and screen sizes
+        env:
+          RUN_AUTH_E2E: "1"
+          RUN_PRODUCTION_E2E: "1"
+          RUN_AI_E2E: "1"
+          RUN_IMPORT_E2E: "0"
+          RUN_MEDIA_E2E: "0"
+          AI_ANALYSIS_ENABLED: "true"
+          AI_OPENAI_API_KEY: fixture-not-a-real-key
+          AI_OPENAI_MODEL: fixture-vision
+          AI_MONTHLY_REQUEST_LIMIT: "3"
+        run: >-
+          pnpm --filter @sammlerraum/web exec playwright test e2e/ai-capture.spec.ts
+          --project=ai-desktop --project=ai-mobile --workers=1

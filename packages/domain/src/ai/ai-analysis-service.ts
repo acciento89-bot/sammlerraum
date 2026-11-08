@@ -327,6 +327,40 @@ export function createAIAnalysisService(
         return true;
       });
     },
+    async getCapture(actor: { userId: string }, itemIdInput: unknown) {
+      const who = owner(actor),
+        id = parse(AIIdSchema, itemIdInput);
+      return run(async (tx) => {
+        const item = await ownedItem(tx, who, id);
+        const photos = await tx.$queryRaw<{ assetId: string }[]>(
+          Prisma.sql`SELECT a.id AS "assetId" FROM "MediaLink" l JOIN "MediaAsset" a ON a.id=l."assetId" AND a."ownerId"=l."ownerId" JOIN "MediaVariant" v ON v."assetId"=a.id AND v.name='MEDIUM' WHERE l."itemId"=${id}::uuid AND l."ownerId"=${who} AND l.purpose='GALLERY' AND a.kind='IMAGE' AND a.status='READY' AND a."cleanupStartedAt" IS NULL AND v."mimeType"='image/webp' AND v."byteSize" BETWEEN 1 AND 2097152 AND v.width BETWEEN 1 AND 640 AND v.height BETWEEN 1 AND 640 AND NOT EXISTS(SELECT 1 FROM "DocumentLink" d WHERE d."assetId"=a.id) ORDER BY l.position,l.id LIMIT 200`,
+        );
+        const [job] = await tx.$queryRaw<JobRow[]>(
+          Prisma.sql`SELECT * FROM "AIAnalysisJob" WHERE "requesterId"=${who} AND "itemId"=${id}::uuid AND "collectionId"=${item.collectionId}::uuid ORDER BY "createdAt" DESC,id DESC LIMIT 1`,
+        );
+        return { itemId: id, photos, latestJob: job ? summary(job) : null };
+      });
+    },
+    async cancelAnalysis(actor: { userId: string }, idInput: unknown) {
+      const who = owner(actor),
+        id = parse(AIIdSchema, idInput);
+      return run(async (tx) => {
+        const initial = await load(tx, id, who);
+        if (!initial) return failure("AI_ITEM_NOT_FOUND");
+        await ownedItem(tx, who, initial.itemId);
+        const row = await load(tx, id, who, true);
+        if (!row) return failure("AI_ITEM_NOT_FOUND");
+        if (!["PENDING", "PROCESSING"].includes(row.status)) return summary(row);
+        await tx.$queryRaw(
+          Prisma.sql`UPDATE "AIAnalysisAttempt" SET outcome='ABANDONED',"finishedAt"=date_trunc('milliseconds',clock_timestamp() AT TIME ZONE 'UTC') WHERE "jobId"=${id}::uuid AND outcome='PENDING'`,
+        );
+        const [saved] = await tx.$queryRaw<JobRow[]>(
+          Prisma.sql`UPDATE "AIAnalysisJob" SET status='CANCELLED',"errorCode"=NULL,"leaseToken"=NULL,"leaseUntil"=NULL,"updatedAt"=date_trunc('milliseconds',clock_timestamp() AT TIME ZONE 'UTC') WHERE id=${id}::uuid RETURNING *`,
+        );
+        if (!saved) return failure("AI_UNAVAILABLE");
+        return summary(saved);
+      });
+    },
     async requestItemAnalysis(
       actor: { userId: string },
       itemId: unknown,

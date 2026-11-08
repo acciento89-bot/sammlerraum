@@ -9,6 +9,12 @@ export default defineConfig({
   },
   projects: [
     {
+      name: "ai-desktop",
+      testMatch: "**/ai-capture.spec.ts",
+      use: { viewport: { width: 1440, height: 1000 } },
+    },
+    { name: "ai-mobile", testMatch: "**/ai-capture.spec.ts", use: { ...devices["Pixel 7"] } },
+    {
       name: "community-ui-desktop",
       testMatch: ["**/community.spec.ts", "**/public-profile.spec.ts"],
       use: { viewport: { width: 1440, height: 1000 } },

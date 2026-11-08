@@ -244,12 +244,12 @@ describe.runIf(process.env.RUN_DATABASE_INTEGRATION === "1")(
         providerId: "fixture",
         model: "fixture-vision",
         monthlyRequestLimit: 10,
-        leaseMs: 80,
+        leaseMs: 500,
       });
       const first = await service.claimAnalysis(f.job.id);
       expect(first).not.toBeNull();
       expect(await service.renewAnalysis(first!)).toBe(true);
-      await new Promise((resolve) => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, 550));
       const second = await service.claimAnalysis(f.job.id);
       expect(second!.token).not.toBe(first!.token);
       await expect(service.storeAnalysisResult(first!, valid)).rejects.toMatchObject({
@@ -270,11 +270,11 @@ describe.runIf(process.env.RUN_DATABASE_INTEGRATION === "1")(
         providerId: "fixture",
         model: "fixture-vision",
         monthlyRequestLimit: 10,
-        leaseMs: 50,
+        leaseMs: 500,
       });
       for (let i = 0; i < 3; i++) {
         expect(await service.claimAnalysis(f.job.id)).not.toBeNull();
-        await new Promise((resolve) => setTimeout(resolve, 65));
+        await new Promise((resolve) => setTimeout(resolve, 550));
       }
       const clock = vi.spyOn(Date, "now").mockReturnValue(0);
       try {
@@ -304,10 +304,10 @@ describe.runIf(process.env.RUN_DATABASE_INTEGRATION === "1")(
         providerId: "fixture",
         model: "fixture-vision",
         monthlyRequestLimit: 10,
-        leaseMs: 50,
+        leaseMs: 500,
       });
       const first = await service.claimAnalysis(f.job.id);
-      await new Promise((resolve) => setTimeout(resolve, 65));
+      await new Promise((resolve) => setTimeout(resolve, 550));
       const second = await service.claimAnalysis(f.job.id);
       expect(second).not.toBeNull();
       await service.recordAnalysisUsage(first!, { inputTokens: 11, outputTokens: 4 });

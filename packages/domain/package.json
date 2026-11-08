@@ -74,7 +74,8 @@
     "./search/scoped-discovery-service": "./src/search/scoped-discovery-service.ts",
     "./dashboard/scoped-dashboard-service": "./src/dashboard/scoped-dashboard-service.ts",
     "./ai/ai-analysis-service": "./src/ai/ai-analysis-service.ts",
-    "./ai/suggestion-apply-service": "./src/ai/suggestion-apply-service.ts"
+    "./ai/suggestion-apply-service": "./src/ai/suggestion-apply-service.ts",
+    "./ai/usage-service": "./src/ai/usage-service.ts"
   },
   "scripts": {
     "build": "pnpm typecheck",

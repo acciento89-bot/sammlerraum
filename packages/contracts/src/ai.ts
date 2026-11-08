@@ -153,3 +153,77 @@ export const AIApplyReceiptSchema = z
     decidedAt: CanonicalTimestampSchema,
   })
   .strict();
+
+export const AIUsageSchema = z
+  .object({
+    period: z.string().regex(/^[0-9]{4}-(0[1-9]|1[0-2])$/u),
+    requests: z.number().int().nonnegative().safe(),
+    completed: z.number().int().nonnegative().safe(),
+    failed: z.number().int().nonnegative().safe(),
+    cancelled: z.number().int().nonnegative().safe(),
+    inProgress: z.number().int().nonnegative().safe(),
+    attempts: z.number().int().nonnegative().safe(),
+    inputTokens: z
+      .string()
+      .regex(/^[0-9]+$/u)
+      .nullable(),
+    outputTokens: z
+      .string()
+      .regex(/^[0-9]+$/u)
+      .nullable(),
+    unknownInputAttempts: z.number().int().nonnegative().safe(),
+    unknownOutputAttempts: z.number().int().nonnegative().safe(),
+  })
+  .strict();
+export const AICaptureSchema = z
+  .object({
+    itemId: AIIdSchema,
+    photos: z.array(z.object({ assetId: AIIdSchema }).strict()).max(200),
+    latestJob: AIAnalysisJobSchema.nullable(),
+    enabled: z.boolean(),
+    monthlyLimit: z.number().int().min(0).max(10000),
+    usage: AIUsageSchema,
+  })
+  .strict();
+export const AIReviewSchema = z
+  .object({
+    job: AIAnalysisJobSchema,
+    analysis: CollectibleAnalysisSchema,
+    baseline: z.string().regex(/^[a-f0-9]{64}$/u),
+    item: z
+      .object({
+        id: AIIdSchema,
+        collectionId: AIIdSchema,
+        title: z.string().max(200),
+        categoryTemplateId: AIIdSchema.nullable(),
+        catalogEntryId: AIIdSchema.nullable(),
+        catalogVariantId: AIIdSchema.nullable(),
+      })
+      .strict(),
+    fields: z
+      .array(
+        z
+          .object({
+            id: AIIdSchema,
+            name: z.string().max(120),
+            type: z.enum(["SHORT_TEXT", "INTEGER"]),
+            value: z.string().max(1000).nullable(),
+          })
+          .strict(),
+      )
+      .max(100),
+    fieldsTruncated: z.boolean(),
+    identifiers: z
+      .array(z.object({ type: z.string().max(64), value: z.string().max(512) }).strict())
+      .max(100),
+    catalogCandidates: z
+      .array(
+        CollectibleAnalysisSchema.shape.catalogCandidates.element
+          .extend({ index: z.number().int().min(0).max(9), title: z.string().max(500).nullable() })
+          .strict(),
+      )
+      .max(10),
+    decision: AIApplyReceiptSchema.nullable(),
+  })
+  .strict();
+export type AIReview = z.infer<typeof AIReviewSchema>;

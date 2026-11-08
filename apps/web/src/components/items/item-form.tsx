@@ -116,6 +116,7 @@ export function ItemForm({
   itemId?: string;
   initialCollectionId?: string;
 }) {
+  const aiText = useTranslations("AI");
   const media = useTranslations("Media");
   const community = useTranslations("Community");
   const t = useTranslations("ItemForm");
@@ -928,6 +929,7 @@ export function ItemForm({
           {t("back")}
         </Link>
         {item && <Link href={`/${locale}/items/${item.id}/values`}>{t("valuations")}</Link>}
+        {item && <Link href={`/${locale}/items/${item.id}/ai`}>{aiText("title")}</Link>}
         {item && (
           <Link href={`/${locale}/wishlist?itemId=${item.id}`}>{community("duplicates")}</Link>
         )}
