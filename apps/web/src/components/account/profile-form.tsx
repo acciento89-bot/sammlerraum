@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useEffect, useState, type FormEvent } from "react";
 import { profileFeedback } from "../auth/account-ui-state";
@@ -13,6 +14,7 @@ type Profile = {
 
 export function ProfileForm({ profile }: { profile: Profile | null }) {
   const t = useTranslations("Profile");
+  const router = useRouter();
   const [hydrated, setHydrated] = useState(false);
   useEffect(() => setHydrated(true), []);
   const [feedback, setFeedback] = useState<
@@ -33,6 +35,7 @@ export function ProfileForm({ profile }: { profile: Profile | null }) {
         avatarAssetId: null,
       }),
     });
+    if (response.ok) router.refresh();
     setFeedback({
       message: response.ok ? t("saved") : t("error"),
       ...profileFeedback(response.ok),

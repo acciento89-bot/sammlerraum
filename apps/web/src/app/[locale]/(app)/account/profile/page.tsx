@@ -1,3 +1,5 @@
+import { createSearchPreferenceService } from "@sammlerraum/domain/seo/search-preference-service";
+import { SearchIndexingControl } from "../../../../../components/profile/search-indexing-control";
 import { createProfileService } from "@sammlerraum/domain/identity/profile-service";
 import { prisma } from "@sammlerraum/db/client";
 import { headers } from "next/headers";
@@ -21,9 +23,10 @@ export default async function ProfilePage({
     query: { disableCookieCache: true, disableRefresh: true },
   });
   if (!session) redirect(`/${locale}/login`);
-  const [profile, t] = await Promise.all([
+  const [profile, t, preference] = await Promise.all([
     createProfileService(prisma).getOwnProfile(session.user.id),
     getTranslations("Profile"),
+    createSearchPreferenceService(prisma).getOwn(session.user.id),
   ]);
   return (
     <section className="account-shell">
@@ -34,6 +37,7 @@ export default async function ProfilePage({
         <p className="form-intro">{t("intro")}</p>
         <ProfileForm profile={profile} />
       </div>
+      <SearchIndexingControl preference={preference} />
     </section>
   );
 }

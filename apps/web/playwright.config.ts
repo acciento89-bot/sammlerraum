@@ -24,6 +24,16 @@ export default defineConfig({
   },
   projects: [
     {
+      name: "seo-desktop",
+      testMatch: ["**/search-indexing-control.spec.ts", "**/public-indexability.spec.ts"],
+      use: { viewport: { width: 1440, height: 1000 } },
+    },
+    {
+      name: "seo-mobile",
+      testMatch: ["**/search-indexing-control.spec.ts", "**/public-indexability.spec.ts"],
+      use: { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true },
+    },
+    {
       name: "marketing-desktop",
       testMatch: "**/marketing-seo.spec.ts",
       use: { viewport: { width: 1440, height: 900 } },

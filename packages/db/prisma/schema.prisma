@@ -87,6 +87,9 @@ model SystemMetadata {
 }
 
 model UserProfile {
+  searchEngineIndexingEnabled Boolean @default(false)
+  publicLocale String @default("de")
+  searchIndexingRevision Int @default(0)
   userId        String      @id
   handle        String      @unique
   displayName   String

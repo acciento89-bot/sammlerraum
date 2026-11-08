@@ -1819,5 +1819,17 @@
     "featureSharingBody": "Invite collaborators with clear roles or share selected content. Visibility and permissions remain explicit.",
     "featureAssistTitle": "Suggestions stay suggestions",
     "featureAssistBody": "Optional photo analysis uses selected images. Review suggested details and apply only what you explicitly confirm."
+  },
+  "SearchIndexing": {
+    "title": "Search engine visibility",
+    "allow": "Allow search engines to index my public content",
+    "explanation": "Your public profile and public collections are visible in Sammlerraum independently of this setting. They may appear in Google or Bing only with your consent. Private and unlisted content stays excluded.",
+    "removal": "Turning this off withdraws permission to index these pages. Search engines may take time to remove previous results. This does not make your content private.",
+    "language": "Preferred language of public pages",
+    "save": "Save search engine preference",
+    "saved": "Search engine preference saved.",
+    "conflict": "This preference changed in the meantime. The current setting has been loaded. Please review your selection again.",
+    "error": "The preference could not be saved. Please try again.",
+    "createProfile": "Save your collector profile first to manage its search engine preference."
   }
 }

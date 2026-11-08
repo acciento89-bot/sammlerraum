@@ -79,7 +79,9 @@
     "./billing/entitlement-service": "./src/billing/entitlement-service.ts",
     "./billing/session-service": "./src/billing/session-service.ts",
     "./billing/webhook-service": "./src/billing/webhook-service.ts",
-    "./billing/billing-overview": "./src/billing/billing-overview.ts"
+    "./billing/billing-overview": "./src/billing/billing-overview.ts",
+    "./seo/search-preference-service": "./src/seo/search-preference-service.ts",
+    "./seo/indexability": "./src/seo/indexability.ts"
   },
   "scripts": {
     "build": "pnpm typecheck",

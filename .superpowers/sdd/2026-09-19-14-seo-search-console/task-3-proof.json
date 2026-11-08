@@ -1,0 +1,83 @@
+{
+  "scope": "local source, owned test databases only",
+  "nativeIdentityApiPassed": 31,
+  "compiledBrowserPassed": 4,
+  "artifacts": [
+    {
+      "path": "task-3-browser-final.log",
+      "sha256": "0e17fd1bb76cea4e72db2b0244042f7151b7a4b29d4c2b41c99246bf5244c42c"
+    },
+    {
+      "path": "task-3-api-native-green.log",
+      "sha256": "6de470db788ddaf032eaa40375790315c592914a7a958e7a7a22eb9bdc6cdefc"
+    },
+    {
+      "path": "task-3-api-red.log",
+      "sha256": "685cd5bf3fdef63cbf89da3f227ef3d4c10a90e06fee2f7c15379ccc6d497592"
+    },
+    {
+      "path": "task-3-migrate-browser.log",
+      "sha256": "0d00979e14a14026dabef5d9f9b5a245b931b18b8c638ed4c86513a58b72b4aa"
+    },
+    {
+      "path": "task-3-browser-red.log",
+      "sha256": "c707b38bc1f67cd9283deee47030b070bbba48fb4e1c28799c91e290a1cdb1e4"
+    },
+    {
+      "path": "task-3-generate.log",
+      "sha256": "e3a55eb684fc16f17db21faf8db0b3e4a131c2a7ec01ce1e92b9938575017230"
+    },
+    {
+      "path": "task-3-suite.log",
+      "sha256": "1d87672c79c1d42f65650a5eb4a4e941e919ec1fd79fbdfc8702c93b3da00bf0"
+    },
+    {
+      "path": "task-3-types.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "task-3-red.log",
+      "sha256": "b462e7eccdadeb31c5e7dcc880ab767b338448b8b47492a1bdd2edef9656833e"
+    },
+    {
+      "path": "task-3-lint.log",
+      "sha256": "bb21394d1246285c44e1463ac86c72beb3ca86611086edadbc0eab2ce2950b65"
+    },
+    {
+      "path": "task-3-browser-green.log",
+      "sha256": "9c013482c0638af5c84302be5f36600df65450946725010bad008599718743e4"
+    },
+    {
+      "path": "task-3-build.log",
+      "sha256": "901a6c02f6002a9b9d7865237c396683668ed0e389e89c99a08ee62f39b7fd3a"
+    },
+    {
+      "path": "task-3-migrate-native.log",
+      "sha256": "f0c3022d6764cf50b46a0ffbbb4fd0b53da7c018da22f1865fe397d68defc6c6"
+    },
+    {
+      "path": "task-3-format.log",
+      "sha256": "31ccf4758c885cd69597773a693b018f08c7996c7e73c529d84dd040a52a9afe"
+    },
+    {
+      "path": "task-3-first-green.log",
+      "sha256": "4650d22805d3751d3d4629d34fa3f71b4c27cd8ce8bdabf4caee66b922e11f46"
+    },
+    {
+      "path": "screenshots/task3-en-seo-desktop-withdrawn.png",
+      "sha256": "babcaca8953e1a961b8aae7a93b4a370e2085a68f9ed0023d9f184ae1ed04b51"
+    },
+    {
+      "path": "screenshots/task3-de-seo-mobile-withdrawn.png",
+      "sha256": "e97e34f44043d4eb9fbf5f409a4edabcdd8a8d2677312ec961a6ec6bdeab6a8e"
+    },
+    {
+      "path": "screenshots/task3-de-seo-desktop-withdrawn.png",
+      "sha256": "efe9657d2b0560f76d07906d47fa121e6ebf8a1cc4dab8c4958c76d0eba197d4"
+    },
+    {
+      "path": "screenshots/task3-en-seo-mobile-withdrawn.png",
+      "sha256": "71c0ae3f053fbb2a60c5f9e062f6da970a68ab2a887e90289af1797fadf89fc8"
+    }
+  ]
+}

@@ -1819,5 +1819,17 @@
     "featureSharingBody": "Lade Mitwirkende mit klaren Rollen ein oder teile ausgewählte Inhalte. Sichtbarkeit und Berechtigungen bleiben ausdrücklich festgelegt.",
     "featureAssistTitle": "Vorschläge bleiben Vorschläge",
     "featureAssistBody": "Die optionale Fotoanalyse arbeitet mit ausgewählten Bildern. Prüfe vorgeschlagene Merkmale und übernimm nur, was du selbst bestätigst."
+  },
+  "SearchIndexing": {
+    "title": "Auffindbarkeit in Suchmaschinen",
+    "allow": "Öffentliche Inhalte für Suchmaschinen freigeben",
+    "explanation": "Dein öffentliches Profil und deine öffentlichen Sammlungen sind unabhängig davon in Sammlerraum sichtbar. Nur mit deiner Zustimmung dürfen sie in Google oder Bing erscheinen. Private und ungelistete Inhalte bleiben ausgeschlossen.",
+    "removal": "Nach dem Ausschalten werden die Seiten nicht mehr zur Indexierung freigegeben. Suchmaschinen brauchen möglicherweise Zeit, um frühere Ergebnisse zu entfernen. Deine Inhalte werden dadurch nicht privat.",
+    "language": "Bevorzugte Sprache der öffentlichen Seiten",
+    "save": "Suchmaschinen-Einstellung speichern",
+    "saved": "Suchmaschinen-Einstellung gespeichert.",
+    "conflict": "Die Einstellung wurde inzwischen geändert. Der aktuelle Stand wurde geladen. Bitte prüfe deine Auswahl erneut.",
+    "error": "Die Einstellung konnte nicht gespeichert werden. Bitte versuche es erneut.",
+    "createProfile": "Speichere zuerst dein Sammlerprofil, um die Suchmaschinen-Einstellung zu verwalten."
   }
 }
