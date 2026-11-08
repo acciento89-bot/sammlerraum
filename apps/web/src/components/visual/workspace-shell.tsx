@@ -65,6 +65,21 @@ export function WorkspaceShell({ locale, children }: { locale: "de" | "en"; chil
           </summary>
           {nav}
         </details>
+        <nav className="workspace-mobile-shortcuts" aria-label={t("workspaceNavigation")}>
+          {links
+            .filter((link) => ["dashboard", "collections", "search"].includes(link.key))
+            .map((link) => (
+              <Link
+                key={link.key}
+                href={link.href}
+                prefetch={false}
+                aria-current={active === link.key ? "page" : undefined}
+              >
+                <Icon name={link.icon} />
+                <span>{link.label}</span>
+              </Link>
+            ))}
+        </nav>
         {children}
       </div>
     </div>
