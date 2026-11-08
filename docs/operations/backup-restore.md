@@ -1,0 +1,31 @@
+# Database and uploads recovery
+
+A backup is complete only when `manifest.json` exists and a real scratch restore verifies. The manifest is an integrity receipt, not a signature: use only trusted private backups. Database dumps contain personal information and authentication records. Keep the whole backup private, encrypted at rest, access controlled, off the public web/uploads service and on a separate failure domain. Runtime `.env`, provider keys, certificates and deployment secrets are **not** copied; maintain their separate encrypted operator recovery procedure. Never commit backups to Git.
+
+## Prerequisites and consistency
+
+Use Python 3.11+ and PostgreSQL **17** clients/server (`PSQL`, `PG_DUMP`, `PG_RESTORE` can select absolute executables). Pass database URLs through the environment, never terminal argument lists or chat. Resolve symbolic directory aliases such as macOS `/tmp` to their real paths first. Existing uploads must be a real directory tree containing regular files; symlinks, links and unsafe archive paths are refused.
+
+Schedule a maintenance window: stop new mutations and gracefully drain/stop web and worker writers, uploads, image processing and cleanup. Keep PostgreSQL running. Do not delete volumes. Backups refuse unfinished uploads, processing or deletion claims. Repair/reconcile such intents through the normal application lifecycle, never delete rows just to make a backup pass. Database schema changes must also be stopped.
+
+The script exports one repeatable-read SQL snapshot and keeps it alive for `pg_dump --format=custom`, table counts and the DB object inventory. Originals, variants, retained private reports and non-deleted import sources are checked against the actual archived bytes. Database checksums/lengths are authoritative where the schema stores them; import sources additionally receive archive SHA256 hashes. Missing or changed referenced objects prevent the completion manifest. Copying database and uploads at unrelated times is insufficient. A storage race can cause a refused backup; retry only after writers are quiescent. Restored queue records may require normal lease expiry/reconciliation before workers resume.
+
+## Create a private backup
+
+Set `DATABASE_URL` for the source, then run `bash scripts/backup.sh /private/backups/UTC-unique-name --uploads /real/persistent/uploads`. The backup destination must be empty, outside the uploads tree and protected. Files use umask 077. The script writes `database.dump`, `uploads.tar` and an atomic UTC `manifest.json` with artifact and per-object checksums plus snapshot table counts. An interrupted directory without the final manifest is not a valid backup. Preserve a previous verified backup until a newer restore drill passes.
+
+## Restore only to an isolated scratch target
+
+Create an **empty**, separately owned PostgreSQL17 database ending `_test`. Set `RESTORE_DATABASE_URL` and `RESTORE_SCRATCH_DATABASE` to that exact database name. Run `bash scripts/restore.sh /private/backups/UTC-unique-name --uploads /real/empty/scratch-uploads`. No production restore, cleanup/drop, overwrite of a non-empty database or replacement of existing uploads is implemented. A partial failed scratch restore needs a new empty target; the script never removes existing data.
+
+The restore preflights the complete archive and checksums before SQL execution, restores with `pg_restore --exit-on-error --no-owner --no-acl`, extracts only regular safe paths, and compares database inventories/counts. It then writes a restore receipt bound to the manifest. Keep restored web/worker outbound mail, payment and provider integrations **disabled** until recovery verification and deliberate operator activation. Do not start production dispatchers against a scratch copy.
+
+Start the recovered application in isolated mode against the restored DB/uploads and run `bash scripts/verify-restore.sh /private/backups/UTC-unique-name --uploads /real/scratch-uploads --health-url http://127.0.0.1:3000/api/health`. The URL must be the recovered service, not an unrelated healthy server. Verification requires exact table counts, all restored file checksums/reference inventories, matching receipt and HTTP200 JSON `status: ok`. Do this before enabling writers; counts intentionally reject mutations after the snapshot. Full production application readiness is additionally covered by the separate deployment/release gates.
+
+`docker-compose.restore-test.yml` provides a separate PostgreSQL17 scratch service with loopback-only port15433 and **temporary** data. Supply `RESTORE_TEST_PASSWORD`, start with `docker compose -f docker-compose.restore-test.yml up -d`, and use the target `sammlerraum_restore_test`. Stop the disposable service normally afterwards. It references no production volumes. Do not use any volume-deleting deployment command.
+
+## Automated actual recovery drill
+
+`RECOVERY_TEST_DATABASE_URL` must refer to an owned loopback `_test` server with permission to create scratch databases. Run `python3 scripts/recovery_test.py`. The drill creates two random, owned databases, applies the frozen migrations, seeds only synthetic original/variant/private-document/import bytes, runs the real dump and restore, and checks a database-backed recovered health endpoint. It deliberately removes/corrupts bytes, corrupts the dump, changes DB counts, supplies unsafe archive entries, omits health and tries an invalid/existing restore target. It cleans up only databases created by that process. The health fixture proves recovered DB availability; it does not claim a full recovered Next.js deployment. The later application gate remains mandatory.
+
+CI runs the same drill inside `Dockerfile.recovery-test` with PostgreSQL17 clients. On the Mac without Docker, the real drill uses installed PostgreSQL17 clients. Neither path accesses production or calls providers. Retain exit status and proof logs without private DB URLs or contents. Periodically repeat recovery drills against encrypted, access-controlled production backups under separate operator authorization; synthetic CI proof cannot establish production backup availability.
