@@ -606,10 +606,21 @@ for (const locale of ["de", "en"] as const) {
       await page.unroute("**/api/v1/search/market-selectors");
       // Real deployment has no activated license: source registration never invents one.
       await page.goto(`/${locale}/search`);
-      await page
-        .locator(".management-nav")
-        .getByRole("link", { name: locale === "de" ? "Wunschliste" : "Wishlist", exact: true })
-        .click();
+      if (info.project.name === "mobile")
+        await page.locator(".workspace-mobile-menu > summary").click();
+      const workspaceNavigation = page.locator(
+        info.project.name === "mobile"
+          ? ".workspace-mobile-menu .workspace-navigation"
+          : ".workspace-sidebar .workspace-navigation",
+      );
+      const wishlistLink = workspaceNavigation.getByRole("link", {
+        name: locale === "de" ? "Wunschliste & Tausch" : "Wishlist & trading",
+        exact: true,
+      });
+      await expect(wishlistLink).toBeVisible();
+      await expect(wishlistLink).toHaveAttribute("href", `/${locale}/wishlist`);
+      await wishlistLink.click();
+      await expect(page).toHaveURL(new RegExp(`/${locale}/wishlist$`, "u"));
       const text = page.getByLabel(
         locale === "de" ? "In meiner Wunschliste suchen" : "Search my wishlist",
         { exact: true },

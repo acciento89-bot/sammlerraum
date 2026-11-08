@@ -147,7 +147,7 @@ for (const locale of ["de", "en"] as const)
         await page.getByRole("button", { name: copy.Collections.create, exact: true }).click();
         const response = await created;
         expect(response.status()).toBe(201);
-        const collectionLink = page.locator(".collection-list a").filter({ hasText: f.collection });
+        const collectionLink = page.getByRole("link").filter({ hasText: f.collection });
         await expect(collectionLink).toBeVisible();
         const destination = await collectionLink.getAttribute("href");
         if (!destination) throw Error("Created collection has no real navigation target");
