@@ -10,6 +10,18 @@ describe("public sitemap and robots protocol", () => {
       "https://sammlerraum.de/en/features",
       "https://sammlerraum.de/de/preise",
       "https://sammlerraum.de/en/pricing",
+      "https://sammlerraum.de/de/sammeln/sammelkarten",
+      "https://sammlerraum.de/en/collecting/trading-cards",
+      "https://sammlerraum.de/de/sammeln/muenzen",
+      "https://sammlerraum.de/en/collecting/coins",
+      "https://sammlerraum.de/de/sammeln/uhren",
+      "https://sammlerraum.de/en/collecting/watches",
+      "https://sammlerraum.de/de/sammeln/schallplatten",
+      "https://sammlerraum.de/en/collecting/vinyl",
+      "https://sammlerraum.de/de/sammeln/comics",
+      "https://sammlerraum.de/en/collecting/comics",
+      "https://sammlerraum.de/de/sammeln/briefmarken",
+      "https://sammlerraum.de/en/collecting/stamps",
     ]);
     expect(rows.every((r) => !r.lastModified && r.alternates?.languages?.en)).toBe(true);
   });

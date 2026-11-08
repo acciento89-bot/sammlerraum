@@ -1,3 +1,4 @@
+import { searchMetadata } from "../../../../seo/search-metadata";
 import { serverEnv } from "@sammlerraum/config/server";
 import { MoneyConsumerProvider } from "../../../../components/search/money-consumer-context";
 import { headers } from "next/headers";
@@ -7,6 +8,9 @@ import { auth } from "../../../../lib/auth";
 import { SearchPage } from "../../../../components/search/search-page";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
+export async function generateMetadata({ params }: { params: Promise<{ locale: "de" | "en" }> }) {
+  return searchMetadata((await params).locale);
+}
 export default async function CollectorSearchPage({
   params,
 }: {

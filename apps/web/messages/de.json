@@ -1831,5 +1831,134 @@
     "conflict": "Die Einstellung wurde inzwischen geändert. Der aktuelle Stand wurde geladen. Bitte prüfe deine Auswahl erneut.",
     "error": "Die Einstellung konnte nicht gespeichert werden. Bitte versuche es erneut.",
     "createProfile": "Speichere zuerst dein Sammlerprofil, um die Suchmaschinen-Einstellung zu verwalten."
+  },
+  "Categories": {
+    "eyebrow": "FÜR DEINE SAMMLUNG",
+    "heading": "Was sammelst du?",
+    "create": "Sammlung anlegen",
+    "features": "Alle Funktionen ansehen",
+    "related": "Weitere Sammelthemen",
+    "pages": {
+      "tradingCards": {
+        "title": "Sammelkarten übersichtlich dokumentieren",
+        "description": "Sammelkarten, Editionen und Zustände in einem persönlichen Archiv festhalten.",
+        "intro": "Eine Karte ist mehr als ihr Motiv. Set, Kartennummer, Sprache und Zustand entscheiden darüber, welche Ausgabe in deiner Sammlung liegt. Mit Sammlerraum kannst du diese Details zusammen mit eigenen Fotos festhalten, Bestände strukturieren und später gezielt wiederfinden. So bleibt auch bei mehreren Editionen nachvollziehbar, welches Exemplar du bereits besitzt.",
+        "sections": {
+          "0": {
+            "title": "Ausgaben auseinanderhalten",
+            "body": "Trenne Serien und Editionen in Sammlungen oder Ordnern. Halte Nummer, Sprache und Besonderheiten bei deinem Objekt fest und nutze Tags für eigene Gruppen. So werden ähnlich aussehende Karten nicht versehentlich zum selben Exemplar."
+          },
+          "1": {
+            "title": "Zustand mit Bildern festhalten",
+            "body": "Fotografiere Vorder- und Rückseite und ergänze deine Zustandsnotizen. Ein vorhandenes Grading lässt sich dokumentieren; Sammlerraum ersetzt dabei weder eine professionelle Prüfung noch garantiert es einen Marktwert."
+          },
+          "2": {
+            "title": "Dein Bestand bleibt dein Bestand",
+            "body": "Suche in deinen eigenen Objekten und notiere gesuchte Karten auf deiner Wunschliste. Private Kaufbelege und persönliche Notizen bleiben vom öffentlichen Beschreibungstext getrennt. Du wählst selbst aus, was andere sehen dürfen."
+          }
+        },
+        "name": "Sammelkarten"
+      },
+      "coins": {
+        "title": "Münzen sammeln, Details bewahren",
+        "description": "Münzen, Jahrgänge und Erhaltungsmerkmale mit Fotos und eigenen Notizen ordnen.",
+        "intro": "Prägestätte, Jahrgang und Erhaltung machen aus ähnlichen Münzen unterschiedliche Sammlerstücke. In Sammlerraum kannst du zu jedem Exemplar eigene Bilder und Beschreibungen ablegen und die Sammlung nach deinen Kriterien gliedern. Ob ein einzelner Fund oder eine über Jahre gewachsene Reihe: Die Angaben bleiben mit genau dem Objekt verbunden, zu dem sie gehören.",
+        "sections": {
+          "0": {
+            "title": "Reihen nachvollziehbar ordnen",
+            "body": "Lege Sammlungen etwa nach Land, Thema oder Prägeserie an. Notiere Jahrgang, Nominal und weitere Merkmale beim jeweiligen Objekt und ergänze Tags. Deine eigene Ordnung muss keinem fremden Katalogschema folgen."
+          },
+          "1": {
+            "title": "Erhaltungsmerkmale dokumentieren",
+            "body": "Nutze Fotos für Vorderseite, Rückseite und erkennbare Besonderheiten. Ergänze Zustandsangaben und vorhandene Prüfunterlagen. Die Dokumentation hilft beim Wiederfinden, ersetzt aber keine Echtheitsprüfung oder fachliche Bewertung."
+          },
+          "2": {
+            "title": "Unterlagen kontrolliert aufbewahren",
+            "body": "Kaufbelege, private Anmerkungen und Lagerorte gehören in die dafür vorgesehenen geschützten Bereiche. Für einen öffentlichen Einblick wählst du Sammlungen bewusst aus; ein öffentliches Bild macht private Unterlagen nicht öffentlich."
+          }
+        },
+        "name": "Münzen"
+      },
+      "watches": {
+        "title": "Uhren mit ihrer Geschichte archivieren",
+        "description": "Uhrenmodelle, eigene Fotos und private Unterlagen an einem Ort dokumentieren.",
+        "intro": "Eine Uhr begleitet oft mehr als einen Zeitpunkt. Modell, Referenz, Zustand und die Geschichte deines Exemplars verdienen einen nachvollziehbaren Platz. Sammlerraum verbindet eigene Fotos mit strukturierten Objektangaben und privaten Unterlagen. So kannst du verschiedene Modelle oder Varianten auseinanderhalten, ohne persönliche Kaufdaten in einer öffentlichen Beschreibung unterzubringen.",
+        "sections": {
+          "0": {
+            "title": "Modelle und Exemplare unterscheiden",
+            "body": "Ordne deine Uhren etwa nach Marke oder eigener Sammlung. Halte Referenzen und sichtbare Besonderheiten beim Objekt fest. Für besonders sensible Kennungen kannst du private Notizen nutzen, statt sie öffentlich im Titel zu nennen."
+          },
+          "1": {
+            "title": "Zustand und Unterlagen zusammenhalten",
+            "body": "Ergänze Bilder, Zustandsnotizen und vorhandene Service- oder Kaufunterlagen. Du entscheidest, welche Dokumente für deine eigene Übersicht wichtig sind. Das Archiv übernimmt keine Echtheitsprüfung und verspricht keine Wertentwicklung."
+          },
+          "2": {
+            "title": "Einblicke bewusst begrenzen",
+            "body": "Eine öffentliche Vorstellung deiner Uhr braucht keine persönlichen Belege oder Lagerorte. Trenne den öffentlichen Beschreibungstext von privaten Informationen und gib nur die Sammlungen frei, die du tatsächlich zeigen möchtest."
+          }
+        },
+        "name": "Uhren"
+      },
+      "vinyl": {
+        "title": "Deine Plattensammlung im Überblick",
+        "description": "Alben, Pressungen und Zustandsnotizen für die eigene Vinylsammlung festhalten.",
+        "intro": "Dasselbe Album kann als unterschiedliche Pressung im Regal stehen. In Sammlerraum kannst du deine Schallplatten mit eigenen Bildern, Ausgabenmerkmalen und Zustandsnotizen dokumentieren. Ordne die Sammlung nach Interpret, Reihe oder deiner persönlichen Systematik und finde das konkrete Exemplar später wieder. Die Geschichte deiner Sammlung bleibt dabei genauso wichtig wie der einzelne Titel.",
+        "sections": {
+          "0": {
+            "title": "Pressungen kenntlich machen",
+            "body": "Erfasse Albumtitel und unterscheidende Angaben wie Label oder Ausgabe in deiner Beschreibung. Sammlungen, Ordner und Tags helfen dir, deine eigene Ordnung aufzubauen, ohne ähnlich benannte Pressungen zu verwechseln."
+          },
+          "1": {
+            "title": "Platte und Hülle dokumentieren",
+            "body": "Halte den Zustand von Tonträger und Hülle mit eigenen Notizen und Fotos fest. Eine neue Beobachtung lässt sich beim Objekt ergänzen. Die Dokumentation ist deine Bestandsaufnahme und kein automatisches Klang- oder Wertgutachten."
+          },
+          "2": {
+            "title": "Lücken und Funde im Blick behalten",
+            "body": "Notiere gesuchte Ausgaben auf deiner Wunschliste und nutze die Suche für vorhandene Objekte. Private Belege bleiben geschützt, während du ausgewählte öffentliche Beschreibungen und Bilder bewusst mit anderen teilen kannst."
+          }
+        },
+        "name": "Schallplatten"
+      },
+      "comics": {
+        "title": "Comics als Sammlung dokumentieren",
+        "description": "Serien, Ausgaben und Varianten mit eigenen Bildern und Notizen zusammenhalten.",
+        "intro": "Serientitel allein reichen bei Comics selten aus. Heftnummer, Ausgabe und Covervariante können den Unterschied zwischen zwei Exemplaren ausmachen. Mit Sammlerraum kannst du diese Angaben zusammen mit eigenen Bildern festhalten und Reihen nach deinem Bedarf gliedern. So entsteht eine nachvollziehbare Übersicht, die auch besondere Funde und den Zustand deiner einzelnen Hefte berücksichtigt.",
+        "sections": {
+          "0": {
+            "title": "Serien und Varianten trennen",
+            "body": "Nutze Sammlungen oder Ordner für Reihen und halte unterscheidende Angaben direkt beim Objekt fest. Tags unterstützen deine eigenen Gruppen. Du kannst eine andere Ordnung wählen, wenn sich deine Sammlung später verändert."
+          },
+          "1": {
+            "title": "Jedes Exemplar beschreiben",
+            "body": "Ergänze Zustandsnotizen und Fotos zu deinem Heft oder Band. Ein vorhandenes Grading kann Teil der Dokumentation sein; die App selbst beurteilt weder Echtheit noch Erhaltungsgrad und garantiert keinen Verkaufspreis."
+          },
+          "2": {
+            "title": "Gezielt ergänzen und teilen",
+            "body": "Führe fehlende Hefte auf deiner Wunschliste und suche nach bereits vorhandenen Objekten. Für öffentliche Einblicke gibst du ausgewählte Inhalte frei. Kaufunterlagen und private Anmerkungen bleiben davon getrennt."
+          }
+        },
+        "name": "Comics"
+      },
+      "stamps": {
+        "title": "Briefmarken mit ihren Details bewahren",
+        "description": "Ausgaben, Motive und eigene Zustandsnotizen für deine Briefmarkensammlung ordnen.",
+        "intro": "Bei einer Briefmarke stecken die Unterschiede oft im Detail. Ausgabe, Motiv und erkennbare Merkmale gehören deshalb zu einer guten Dokumentation. In Sammlerraum kannst du eigene Bilder und Beschreibungen zu jedem Exemplar ablegen und deine Sammlung etwa nach Land, Thema oder Reihe aufbauen. So bleiben auch kleine Besonderheiten nachvollziehbar, ohne dass deine Ordnung unübersichtlich wird.",
+        "sections": {
+          "0": {
+            "title": "Reihen nach deinen Kriterien aufbauen",
+            "body": "Lege Sammlungen oder Ordner für Länder, Themen oder Ausgaben an. Notiere unterscheidende Merkmale direkt am Objekt und ergänze eigene Tags. Die Struktur lässt sich an deine persönliche Sammelweise anpassen."
+          },
+          "1": {
+            "title": "Besonderheiten sichtbar festhalten",
+            "body": "Ergänze Fotos und Zustandsnotizen, beispielsweise zu sichtbaren Stempeln oder auffälligen Details. Vorhandene Prüfunterlagen kannst du geschützt ablegen. Die App ersetzt keine philatelistische Prüfung und ermittelt keinen garantierten Katalogwert."
+          },
+          "2": {
+            "title": "Bestand und Wünsche verbinden",
+            "body": "Nutze die Suche für vorhandene Objekte und halte gesuchte Ergänzungen auf der Wunschliste fest. Öffentliche Beschreibungen lassen sich gezielt freigeben; persönliche Belege und private Notizen bleiben davon getrennt."
+          }
+        },
+        "name": "Briefmarken"
+      }
+    }
   }
 }

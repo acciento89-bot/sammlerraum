@@ -1,9 +1,16 @@
 import type { MetadataRoute } from "next";
 import { PUBLIC_MARKETING_PAGES } from "./public-pages";
+import { CATEGORY_ROUTES, categoryPath } from "./category-routes";
 import { siteOrigin } from "./page-metadata";
 export function buildMarketingSitemap(origin: string): MetadataRoute.Sitemap {
   const base = siteOrigin(origin);
-  return Object.values(PUBLIC_MARKETING_PAGES).flatMap((paths) =>
+  return [
+    ...Object.values(PUBLIC_MARKETING_PAGES),
+    ...CATEGORY_ROUTES.map((page) => ({
+      de: categoryPath("de", page.de),
+      en: categoryPath("en", page.en),
+    })),
+  ].flatMap((paths) =>
     (["de", "en"] as const).map((locale) => ({
       url: new URL(paths[locale], base).href,
       alternates: {

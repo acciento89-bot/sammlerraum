@@ -23,8 +23,8 @@ This is the handoff/status file for long-running implementation. Update it after
 | 10 | Community, Moderation & Notifications | 8 | complete (8/8); corrected d69f78f CI SUCCESS | — |
 | 11 | AI-Assisted Capture | 5 | complete (5/5); corrected8957121 CI SUCCESS | — |
 | 12 | Premium & Billing | 5 | complete (5/5); corrected7289140 CI SUCCESS | — |
-| 13 | Integration, Hardening & Release | 7 | T1–4 local contracts passed; T5–6 exact CI pending; T7 prepared, live TLS gate unresolved | Whole source review / actual container gates |
-| 14 | SEO & Google Search Console | 7 | source work in progress; whole review/exact CI pending | Tasks1,3,2 locally verified; Task4 next |
+| 13 | Integration, Hardening & Release | 7 | 6/7 accepted; corrected3762e56 exact CI SUCCESS | T7 actual authorized production deployment/smoke |
+| 14 | SEO & Google Search Console | 7 | source work in progress; whole review/exact CI pending | Tasks1,3,2,4 locally verified; Task5 in progress |
 
 **Total:** 91 implementation tasks.
 
@@ -109,7 +109,20 @@ This is the handoff/status file for long-running implementation. Update it after
 - [x] P11 T04 — Explicit atomic audited selection/application with stale/reference guards
 - [x] P11 T05 — Owner-only DE/EN responsive capture/review/recovery, personal field setup and usage
 
-**Verified completion: 72/91 tasks.** Exact AI source8957121 and CI acceptance are recorded below. Billing local progress is not accepted phase credit; later tasks remain open as listed.
+- [x] P12 T01 — Add plan/entitlement model and provider-neutral feature gate
+- [x] P12 T02 — Add Stripe billing adapter, checkout, and portal
+- [x] P12 T03 — Add signed idempotent billing webhook
+- [x] P12 T04 — Enforce entitlements across expensive/advanced features
+- [x] P12 T05 — Add pricing, plan status, and billing UI
+- [x] P13 T01 — Add full permission-matrix security tests
+- [x] P13 T02 — Add complete critical-path E2E suite in DE and EN
+- [x] P13 T03 — Add backup and restore scripts with integrity manifest
+- [x] P13 T04 — Harden worker/jobs and resource limits
+- [x] P13 T05 — Add production compose, migration entrypoint, and deploy verification
+- [x] P13 T06 — Add final release-gate script and marketplace boundary test
+- [ ] P13 T07 — Production smoke after Portainer deployment; actual production still required
+
+**Verified completion: 83/91 tasks.** Phases1–12 and Phase13Tasks1–6 are accepted against reviewed exact-source CI. Phase13Task7 actual live smoke and all seven Phase14 tasks remain unchecked until their real completion gates. Phase14 source work continues below; local implementation is not acceptance credit.
 
 ## Update rule
 
@@ -1307,3 +1320,7 @@ Immutable06cab579 review found0Critical/2Important/1Minor. Root211f9b9 closes so
 ### Phase14 source progress — no new acceptance credit
 
 T1 f8f88fc adds canonical bilingual marketing pages and runtime-origin metadata (8requiredunit, earlier11focused,4compiledDEENdesktop/mobile). T3 248dbfa adds explicit default-off owner indexing consent/publiclocale/revisionCAS, private same-origin fresh-session API, responsive controls;31native/identity/API+4compiledownerjourneysPASS. T2 adds privacy-safe dynamic XML sitemap index/robots/marketing/community files, stable bounded hash ranges/indexes and fresh effective visibility;30native/unit including10001-record split+1compiledprotocolPASS. Types/lint/buildPASS. These are local source proofs pending one whole-phase review and exact CI; canonical accepted77/91 unchanged. Phase13 corrected frozen3762e56/run42467819313 remainsrunning with no observed failures; never marklive smoke/DNS ownership from source.
+
+### Phase13 exact-source acceptance — canonical83/91
+
+Reviewed corrected3762e564b3f1416fec02a98267fccfb70e0d6ede run42467819313/job128691305247 completedSUCCESS2026-11-08T10:27:29Z. Fresh final raw logs and exported validateGate both confirm all mandatory executed stages:3058native/zeroSkip;232compiledshared-search,32AI,12Billing;84permissionmatrix and4completeDEENdesktop/mobile journeys;9realPostgreSQL/mediarecovery checks; all75frozen migrations in actual non-root containers; actual same reviewed web image reads restored DB/private originals+variants with preserved authenticated session and denies anonymous access. All workflow steps successful. The one whole review and consolidated correction are closed, no rereview. Accept only originalP13Tasks1–6. T7actual authorized Portainer deployment/live smoke is still unchecked; source CI is not proof of public availability. Phase14 local work receives no additional acceptance credit yet.

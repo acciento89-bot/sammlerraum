@@ -25,10 +25,21 @@ export function marketingMetadata(
   locale: PublicLocale,
   origin?: string,
 ): Metadata {
-  const base = siteOrigin(origin),
-    paths = PUBLIC_MARKETING_PAGES[page];
+  return localizedMarketingMetadata(
+    PUBLIC_MARKETING_PAGES[page],
+    (locale === "de" ? de : en).SEO[page],
+    locale,
+    origin,
+  );
+}
+export function localizedMarketingMetadata(
+  paths: { de: string; en: string },
+  copy: { title: string; description: string },
+  locale: PublicLocale,
+  origin?: string,
+): Metadata {
+  const base = siteOrigin(origin);
   const text = (locale === "de" ? de : en).SEO;
-  const copy = text[page];
   const image = {
     url: new URL(`/${locale}/opengraph-image`, base).href,
     width: 1200,

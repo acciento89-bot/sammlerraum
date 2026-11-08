@@ -1,4 +1,5 @@
 "use client";
+import { categoryLocaleHref } from "../../seo/category-routes";
 import { marketingLocaleHref } from "../../seo/public-pages";
 import { billingLocaleHref } from "../billing/billing-locale-navigation";
 import Link from "next/link";
@@ -43,6 +44,7 @@ export function LocaleNavigation({ locale }: { locale: string }) {
         <Link
           key={language}
           href={
+            categoryLocaleHref(pathname ?? "", language) ??
             marketingLocaleHref(pathname ?? "", language) ??
             billingLocaleHref(pathname ?? "", language) ??
             moneyLocaleHref(pathname ?? "", language, moneySearch) ??

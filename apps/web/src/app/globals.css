@@ -2722,3 +2722,23 @@ body:has(.transfer-shell) .skip-link:not(:focus) {
 .marketing-actions {
   margin-bottom: 2rem;
 }
+
+.category-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding: 0;
+  list-style: none;
+}
+.category-links a {
+  display: inline-block;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border, #d9d2c4);
+  border-radius: 999px;
+  background: #fffdf8;
+  color: #183127;
+  font-weight: 600;
+}
+.category-links-section {
+  padding-top: 0;
+}

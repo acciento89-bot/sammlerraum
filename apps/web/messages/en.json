@@ -1831,5 +1831,134 @@
     "conflict": "This preference changed in the meantime. The current setting has been loaded. Please review your selection again.",
     "error": "The preference could not be saved. Please try again.",
     "createProfile": "Save your collector profile first to manage its search engine preference."
+  },
+  "Categories": {
+    "eyebrow": "FOR YOUR COLLECTION",
+    "heading": "What do you collect?",
+    "create": "Create your collection",
+    "features": "Explore all features",
+    "related": "More collecting topics",
+    "pages": {
+      "tradingCards": {
+        "title": "Keep your trading card collection understandable",
+        "description": "Record trading cards, editions and condition in your own collection archive.",
+        "intro": "A trading card is more than its artwork. The set, card number, language and condition help distinguish one copy from another. Sammlerraum keeps those details together with your own photographs so you can organize your collection and find things again. Even when several editions look alike, you retain a clear record of the copy you actually own.",
+        "sections": {
+          "0": {
+            "title": "Tell editions apart",
+            "body": "Separate sets and editions into collections or folders. Record numbers, languages and distinguishing details with each object, then add tags for your own groups. Similar artwork does not have to mean a duplicate record."
+          },
+          "1": {
+            "title": "Document condition with photographs",
+            "body": "Attach front and back photographs and your own condition notes. You can document an existing grading result; Sammlerraum does not replace professional authentication or promise a particular market value."
+          },
+          "2": {
+            "title": "Keep control of your collection",
+            "body": "Search your own objects and keep missing cards on your wishlist. Private receipts and personal notes stay separate from the public description. You decide which parts of your collection other people may see."
+          }
+        },
+        "name": "Trading Cards"
+      },
+      "coins": {
+        "title": "Preserve the details of your coin collection",
+        "description": "Organize coins, dates and condition observations with photographs and your own notes.",
+        "intro": "Mint, date and condition can distinguish coins that look almost identical at first glance. Sammlerraum lets you attach your own images and descriptions to each example and organize the collection using your criteria. Whether it is one memorable find or a series built over many years, the information stays connected to the particular object it describes.",
+        "sections": {
+          "0": {
+            "title": "Organize series your way",
+            "body": "Create collections by country, subject or issue series. Record dates, denominations and distinguishing features with each object and add your own tags. Your organization does not have to follow somebody else's catalogue structure."
+          },
+          "1": {
+            "title": "Record visible condition",
+            "body": "Use photographs for the obverse, reverse and distinctive details. Add condition observations and existing documentation. These records help you identify an object again; they do not replace authentication or an expert valuation."
+          },
+          "2": {
+            "title": "Control access to supporting records",
+            "body": "Keep receipts, personal notes and storage locations in their protected areas. Choose deliberately which collections to show publicly. Sharing an image does not automatically publish the private documents behind it."
+          }
+        },
+        "name": "Coins"
+      },
+      "watches": {
+        "title": "Archive your watches and their stories",
+        "description": "Keep watch models, personal photographs and private supporting records together.",
+        "intro": "A watch often carries more than the time. Its model, reference, condition and the story of your particular example deserve a clear record. Sammlerraum connects your own photographs with object details and private documentation. You can distinguish models and variants without putting personal purchase information into a public description.",
+        "sections": {
+          "0": {
+            "title": "Distinguish models from individual examples",
+            "body": "Organize watches by brand or a collection of your choosing. Record references and distinguishing features with the object. Keep sensitive identifiers in private notes instead of exposing them in a public title."
+          },
+          "1": {
+            "title": "Keep condition and documentation together",
+            "body": "Attach photographs, condition notes and existing service or purchase records. You decide which documents matter for your own overview. This archive does not authenticate watches or promise future investment returns."
+          },
+          "2": {
+            "title": "Share an introduction, not everything",
+            "body": "A public introduction to a watch does not require your receipts or storage locations. Keep public descriptions separate from private information and publish only the collections you intentionally want other people to see."
+          }
+        },
+        "name": "Watches"
+      },
+      "vinyl": {
+        "title": "Make sense of your record collection",
+        "description": "Record albums, pressings and condition notes for the vinyl you actually own.",
+        "intro": "The same album may appear on your shelf in several different pressings. Sammlerraum helps you document records with your own images, edition details and condition notes. Organize by artist, series or a system of your choosing, then find the particular copy again. The story of your collection can stay connected to the individual record rather than disappearing into an unrelated list.",
+        "sections": {
+          "0": {
+            "title": "Identify different pressings",
+            "body": "Record the album title and distinguishing information such as label or edition in your description. Collections, folders and tags help you build your own system without confusing pressings that share a familiar title."
+          },
+          "1": {
+            "title": "Document the record and its sleeve",
+            "body": "Keep your own notes and photographs of both the record and its cover. Add observations to the object when needed. These are your collection records, not an automatic assessment of playback quality or a guaranteed valuation."
+          },
+          "2": {
+            "title": "Keep track of missing editions",
+            "body": "Use a wishlist for editions you are looking for and search your existing objects before adding another copy. Private receipts stay protected while you deliberately share selected public descriptions and photographs with others."
+          }
+        },
+        "name": "Vinyl"
+      },
+      "comics": {
+        "title": "Document the comics you collect",
+        "description": "Keep series, issues and variants together with your own pictures and notes.",
+        "intro": "A series title is rarely enough to identify a comic. Issue number, edition and cover variant may distinguish two copies of a familiar story. Sammlerraum keeps those details with your own photographs and lets you organize runs according to your needs. You gain a clear overview that can also preserve memorable finds and the condition of each individual issue.",
+        "sections": {
+          "0": {
+            "title": "Separate series and variants",
+            "body": "Use collections or folders for runs and record distinguishing information directly with each object. Tags support groups of your choosing. You can adapt your organization as the collection develops over time."
+          },
+          "1": {
+            "title": "Describe the individual copy",
+            "body": "Add condition notes and photographs for an issue or volume. Existing grading may be documented; the application does not authenticate comics, assign a professional grade or guarantee a resale price."
+          },
+          "2": {
+            "title": "Fill gaps and share deliberately",
+            "body": "Keep missing issues on a wishlist and search existing objects before adding another record. Choose selected content for public introductions while keeping purchase records and personal notes in their separate protected areas."
+          }
+        },
+        "name": "Comics"
+      },
+      "stamps": {
+        "title": "Preserve the details of your stamp collection",
+        "description": "Organize issues, subjects and personal condition notes for the stamps you collect.",
+        "intro": "The differences between stamps often lie in small details. Issues, subjects and visible characteristics deserve a place in your records. Sammlerraum lets you attach your own photographs and descriptions to individual examples and organize collections by country, theme or series. Distinctive features remain understandable without forcing your collection into an increasingly confusing list.",
+        "sections": {
+          "0": {
+            "title": "Build series around your criteria",
+            "body": "Create collections or folders for countries, themes or issues. Record distinguishing details with each object and add your own tags. The structure can follow the way you personally collect rather than a compulsory external catalogue."
+          },
+          "1": {
+            "title": "Keep visible characteristics understandable",
+            "body": "Add photographs and condition observations, including visible postmarks or unusual details. Existing inspection documents can be kept privately. The app does not replace expert philatelic examination or guarantee a catalogue value."
+          },
+          "2": {
+            "title": "Connect your collection and wishlist",
+            "body": "Search the objects you already hold and record missing additions on a wishlist. Choose which descriptions to show publicly while keeping personal receipts and private notes separate from that public introduction."
+          }
+        },
+        "name": "Stamps"
+      }
+    }
   }
 }
