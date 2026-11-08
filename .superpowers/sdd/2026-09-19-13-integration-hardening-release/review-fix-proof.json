@@ -1,0 +1,74 @@
+{
+  "implementationHead": "211f9b9c9c4a06f8ec59d6b7b73e7d73284cb768",
+  "reviewedHead": "06cab579f45c9f118368a003e7887deb6161f3ab",
+  "singleReview": {
+    "critical": 0,
+    "important": 2,
+    "minor": 1,
+    "report": "whole-review-final.md",
+    "disposition": "whole-review-disposition.md",
+    "rereview": false
+  },
+  "wholeNative": {
+    "passed": 3058,
+    "files": 282,
+    "skipped": 0,
+    "seconds": 278.94,
+    "log": "review-fix-whole-native.log"
+  },
+  "actualDatabaseRecovery": {
+    "passed": 9,
+    "seconds": 10.291,
+    "log": "review-fix-recovery-nine.log"
+  },
+  "actualMigrationRunner": {
+    "migrationsApplied": 75,
+    "newOwnedScratchDatabase": true,
+    "cleanedOnlyOwnScratch": true,
+    "log": "review-fix-real-migration-runner.log"
+  },
+  "compiledPermissionMatrix": {
+    "passed": 84,
+    "seconds": 3.5,
+    "log": "review-fix-permission-matrix.log"
+  },
+  "completeCompiledJourneys": {
+    "passed": 4,
+    "locales": [
+      "de",
+      "en"
+    ],
+    "viewports": [
+      "1440x900",
+      "390x844"
+    ],
+    "minutes": 3.3,
+    "log": "review-fix-complete-four.log"
+  },
+  "offlineHTTPChecks": {
+    "publicPageContractTests": 4,
+    "restoredPrivateAppContractTests": 4,
+    "productionConfigTests": 5,
+    "nodeCoordinatorAndMigrationContracts": 3
+  },
+  "types": "review-fix-types.log",
+  "webTypes": "review-fix-web-types.log",
+  "recursiveLint": "review-fix-lint.log",
+  "workerBuild": "review-fix-worker-build.log",
+  "optimizedWebBuild": "review-fix-web-build.log",
+  "frozenMigrationFilesUnchanged": 76,
+  "browserVariantsPreserved": 33,
+  "earlierHistoricalNativeVariantsPreserved": 2,
+  "realRecoveredDockerApplication": "source wired; exact corrected-head CI required, not locally executed",
+  "previousCI": {
+    "head": "0b83dd8df33ae538a5fe3db127282df79e8457f6",
+    "run": 42463679266,
+    "conclusion": "failure",
+    "cause": "actual migration runner incorrectly resolved non-executable Prisma package main; reproduced, bin-manifest fix plus real75migration local drill pass",
+    "allEarlierMandatoryStages": "success",
+    "acceptance": false
+  },
+  "actualProduction": "not deployed; predeployment TLS smoke remains failed",
+  "finalExactCI": "pending",
+  "acceptedTaskCredit": false
+}
