@@ -1,0 +1,34 @@
+{
+  "sourceBase": "3c93994f854de6016c43ff53ed927f7677b44c49",
+  "wholeNative": {
+    "passed": 3019,
+    "skipped": 0,
+    "files": 279,
+    "seconds": 273.79,
+    "log": "task-5-native-full.log"
+  },
+  "compiledBilling": {
+    "passed": 12,
+    "seconds": 17.0,
+    "log": "task-5-browser-free-core.log"
+  },
+  "compiledAdjacent": {
+    "passed": 4,
+    "seconds": 9.1,
+    "log": "task-5-adjacent-policy-green.log"
+  },
+  "webBuild": "task-5-green-build4.log",
+  "types": "task-5-types-final.log",
+  "lint": "task-5-lint-final.log",
+  "workerBuild": "task-5-worker-build.log",
+  "migrationFilesUnchanged": 75,
+  "realProviderCallsOrPayments": false,
+  "phaseReview": "pending",
+  "exactRemoteCI": "pending",
+  "implementationHead": "25f4d50c8ce430c2b9ed70722e98ad84be7e0922",
+  "finalTaskContract": {
+    "passed": 12,
+    "seconds": 17.5,
+    "log": "task-5-tests.log"
+  }
+}

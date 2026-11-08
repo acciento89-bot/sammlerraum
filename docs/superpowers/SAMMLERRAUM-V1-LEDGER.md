@@ -22,7 +22,7 @@ This is the handoff/status file for long-running implementation. Update it after
 | 09 | Collaboration, Sharing & Audit | 7 | complete (7/7); corrected1760cd2 CI SUCCESS | — |
 | 10 | Community, Moderation & Notifications | 8 | complete (8/8); corrected d69f78f CI SUCCESS | — |
 | 11 | AI-Assisted Capture | 5 | complete (5/5); corrected8957121 CI SUCCESS | — |
-| 12 | Premium & Billing | 5 | in progress; Tasks1–4 local complete, Task5 final local verification; whole-phase review/CI pending | Task 5 |
+| 12 | Premium & Billing | 5 | Tasks1–5 local complete; whole-phase fresh review and exact CI pending | Review + CI |
 | 13 | Integration, Hardening & Release | 7 | not started | Task 1 |
 | 14 | SEO & Google Search Console | 7 | not started | Task 1 |
 
@@ -1286,3 +1286,5 @@ Billing Task4 source3c93994 follows local Task1e8300e7, Task2be72786 and Task3
 825a0a5. Actual current whole-native2994/2994 and final domain1455/1455, root types, CI-required recursive lint and additive-migration parity passed. Native restricted-policy witnesses cover atomic inventory/media/AI/profile admissions, actual collaborator authorship/owner quota, ownership-transfer recipient budgets, restoration, Free CSV/basic dashboard/manual reads and non-destructive downgrade. No paid provider activation or customer payment occurred.
 
 Task5 current source adds DE/EN public pricing and private current-plan/usage UI, fresh-session local status API, bounded closed official-SDK price projection/cache, retained-data/cancellation/return messaging, and responsive comparison. Local focused25 and compiled12 Billing +4 adjacent existing inventory/search journeys pass; full current-source gates are running. New strict Billing native and guarded offline compiled browser stages are wired into CI. The source has not yet passed its single whole-phase fresh review or exact remote CI; canonical accepted progress remains72/91. Main/deployment/live provider/payment actions remain unchanged.
+
+Billing final local Task5 source25f4d50:3019nativezeroSkip,279files,273.79s; compiled12Billing17.5s plus4adjacent9.1s, actual bounded Free dashboard and20own QA images retained. Roottypes/lint/worker+optimizedwebbuild and75prior migrationfiles unchanged. All5local task contracts complete; one independent whole-phase review begins. Canonicalaccepted72/91 remains unchanged until corrected exactCI; no main/deploy/provider activation.
