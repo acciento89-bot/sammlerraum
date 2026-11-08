@@ -263,7 +263,7 @@ export function AnalysisCapture({
             <h2>{t("usageTitle")}</h2>
             <p data-testid="ai-usage">
               {t("usage", {
-                count: capture.usage.requests,
+                count: capture.usage.admittedRequests,
                 limit: capture.monthlyLimit,
                 period: capture.usage.period,
               })}
@@ -336,7 +336,7 @@ export function AnalysisCapture({
                   !capture.enabled ||
                   !consent ||
                   selected.length === 0 ||
-                  capture.usage.requests >= capture.monthlyLimit
+                  capture.usage.admittedRequests >= capture.monthlyLimit
                 }
                 onClick={() => void start()}
               >

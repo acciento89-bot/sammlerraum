@@ -99,6 +99,8 @@ model UserProfile {
 }
 
 model User {
+  billingQuotaFence          BillingQuotaFence?
+  aiAnalysisAdmissions       AIAnalysisAdmission[]
   billingWebhookReceipts     BillingWebhookReceipt[]
   billingAccounts            BillingAccount[]
   id                         String                             @id
@@ -1982,4 +1984,19 @@ model BillingWebhookReceipt {
 
   @@unique([provider, eventId])
   @@index([provider, status, nextAttemptAt])
+}
+
+model BillingQuotaFence {
+  subjectId String @id
+  revision  BigInt @default(0)
+  user      User   @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+}
+
+model AIAnalysisAdmission {
+  analysisJobId String   @id @db.Uuid
+  ownerId       String
+  admittedAt    DateTime
+  user          User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  @@index([ownerId, admittedAt])
 }

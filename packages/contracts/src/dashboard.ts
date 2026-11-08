@@ -277,6 +277,11 @@ export const DashboardDataSchema = DashboardSummarySchema.extend({
   ...DashboardManualSchema.shape,
   ...DashboardDistributionsSchema.shape,
   ...DashboardRankingsSchema.shape,
+  advancedAnalytics: z.enum(["AVAILABLE", "PREMIUM_REQUIRED"]).optional(),
+  manualChange: DashboardManualSchema.shape.manualChange.nullable(),
+  condition: DashboardDistributionsSchema.shape.condition.nullable(),
+  grading: DashboardDistributionsSchema.shape.grading.nullable(),
+  topCollections: DashboardRankingsSchema.shape.topCollections.nullable(),
   purchaseTotals: z.union([
     z
       .object({

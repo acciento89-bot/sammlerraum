@@ -8,7 +8,11 @@ async function fixture(enabled = true) {
     request = vi.fn(async () => ({ id: randomUUID(), status: "PENDING" })),
     cancel = vi.fn(async () => ({ status: "CANCELLED" })),
     get = vi.fn(async () => ({ status: "PENDING" })),
-    usage = vi.fn(async () => ({ requests: 0 }));
+    usage = vi.fn(async () => ({
+      requests: 0,
+      admittedRequests: 0,
+      planMonthlyLimit: null as number | null,
+    }));
   const handlers = module!.createAICaptureRouteHandlers({
     appOrigin: "https://example.invalid",
     enabled,
@@ -72,4 +76,14 @@ it("checks origin and never takes a user id from request data for cancellation o
   );
   expect(response.status).toBe(400);
   expect(f.usage).not.toHaveBeenCalled();
+});
+
+it("presents the effective smaller plan allowance rather than only the technical provider budget", async () => {
+  const f = await fixture();
+  f.usage.mockResolvedValueOnce({ requests: 0, admittedRequests: 0, planMonthlyLimit: 1 });
+  const response = await f.handlers.CAPTURE(
+    new Request(`https://example.invalid/api/v1/items/${f.id}/ai`),
+    f.id,
+  );
+  expect(await response.json()).toMatchObject({ capture: { monthlyLimit: 1 } });
 });

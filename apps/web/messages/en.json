@@ -1030,7 +1030,8 @@
       "EMPTY": "No contributing values; no total available"
     },
     "marketReferenceCounts": "{contributing} of {candidates} items contribute; {missing} missing. Contributing quantity: {quantity}.",
-    "marketReferencePeriod": "Source observations: {from} to {to}."
+    "marketReferencePeriod": "Source observations: {from} to {to}.",
+    "premiumAnalytics": "Advanced analytics are available with Premium. Your basic collection overview remains available."
   },
   "Milestones": {
     "title": "Your milestones",

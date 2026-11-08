@@ -22,19 +22,20 @@ export async function getEntitlementsInTransaction(
   subjectId: unknown,
   policy: BillingPolicy,
   context: BillingProviderContext,
+  options: { lockSubject?: boolean; requireVerified?: boolean } = {},
 ): Promise<Entitlements> {
   if (!BillingProviderContextSchema.safeParse(context).success)
     throw new BillingError("BILLING_UNAVAILABLE");
   const subject = MembershipActorIdSchema.safeParse(subjectId);
   if (!subject.success) throw new BillingError("BILLING_NOT_FOUND");
   const [user] = await tx.$queryRaw<{ id: string }[]>(
-    Prisma.sql`SELECT id FROM "user" WHERE id=${subject.data} AND "emailVerified" FOR UPDATE`,
+    Prisma.sql`SELECT id FROM "user" WHERE id=${subject.data} ${options.requireVerified === false ? Prisma.empty : Prisma.sql`AND "emailVerified"`} ${options.lockSubject === false ? Prisma.empty : Prisma.sql`FOR NO KEY UPDATE`}`,
   );
   if (!user) throw new BillingError("BILLING_NOT_FOUND");
   const [subscription] = await tx.$queryRaw<
     { currentPeriodEnd: Date; cancelAtPeriodEnd: boolean }[]
   >(
-    Prisma.sql`SELECT "currentPeriodEnd","cancelAtPeriodEnd" FROM "BillingSubscription" WHERE "subjectId"=${subject.data} AND provider=ANY(${context.providerIds}::text[]) AND "planEligible" AND ("riskReason" IS NULL OR ("riskReason"='REFUND' AND "riskThrough" IS NOT NULL AND "currentPeriodStart">="riskThrough")) AND status IN ('ACTIVE','TRIALING') AND "currentPeriodStart"<=clock_timestamp() AND "currentPeriodEnd">clock_timestamp() ORDER BY "currentPeriodEnd" DESC,id LIMIT 1`,
+    Prisma.sql`SELECT "currentPeriodEnd","cancelAtPeriodEnd" FROM "BillingSubscription" WHERE "subjectId"=${subject.data} AND provider=ANY(${context.providerIds}::text[]) AND "planEligible" AND ("riskReason" IS NULL OR ("riskReason"='REFUND' AND "riskThrough" IS NOT NULL AND "currentPeriodStart">="riskThrough")) AND status IN ('ACTIVE','TRIALING') AND "currentPeriodStart"<=clock_timestamp() AT TIME ZONE 'UTC' AND "currentPeriodEnd">clock_timestamp() AT TIME ZONE 'UTC'  ORDER BY "currentPeriodEnd" DESC,id LIMIT 1`,
   );
   const plan = subscription ? "PREMIUM" : "FREE";
   return {

@@ -32,7 +32,7 @@ export function DashboardResults({
     const request = channel.current.begin();
     setLabels({});
     setMetadataError(false);
-    const ids = [...new Set(data.condition.groups.map((row) => row.categoryTemplateId))],
+    const ids = [...new Set((data.condition?.groups ?? []).map((row) => row.categoryTemplateId))],
       batches: string[][] = [];
     for (let offset = 0; offset < ids.length; offset += 50)
       batches.push(ids.slice(offset, offset + 50));
@@ -82,6 +82,9 @@ export function DashboardResults({
   return (
     <div className="dashboard-content">
       <p>{t("ownedScope")}</p>
+      {data.advancedAnalytics === "PREMIUM_REQUIRED" && (
+        <p role="status">{t("premiumAnalytics")}</p>
+      )}
       <p className="field-help">{t("readAt", { time: date(data.readAt) })}</p>
       <dl className="dashboard-metrics">
         <div className="management-card">
@@ -171,45 +174,47 @@ export function DashboardResults({
           </article>
         ))}
       </section>
-      <section aria-labelledby="dashboard-change-heading">
-        <h3 id="dashboard-change-heading">{t("changeTitle")}</h3>
-        <p>{t("changeHelp")}</p>
-        <p role="status">{t(`states.${data.manualChange.state}`)}</p>
-        <p>{t("comparable", { value: pair(data.manualChange.comparable) })}</p>
-        <ul>
-          {exclusions.map((key) => (
-            <li key={key}>
-              {t(`exclusions.${key}`)}: {pair(data.manualChange.excluded[key])}
-            </li>
+      {data.manualChange && (
+        <section aria-labelledby="dashboard-change-heading">
+          <h3 id="dashboard-change-heading">{t("changeTitle")}</h3>
+          <p>{t("changeHelp")}</p>
+          <p role="status">{t(`states.${data.manualChange.state}`)}</p>
+          <p>{t("comparable", { value: pair(data.manualChange.comparable) })}</p>
+          <ul>
+            {exclusions.map((key) => (
+              <li key={key}>
+                {t(`exclusions.${key}`)}: {pair(data.manualChange!.excluded[key])}
+              </li>
+            ))}
+          </ul>
+          {(data.manualChange.groups ?? []).map((group) => (
+            <article
+              className="management-card"
+              key={`${group.currency}:${group.minorUnitExponent}`}
+              data-testid={`dashboard-change-${group.currency}-${group.minorUnitExponent}`}
+            >
+              <h4>
+                {group.currency} · {t("ownEstimate")}
+              </h4>
+              <p className="dashboard-money">
+                {money(group.deltaMinor, group.minorUnitExponent, locale)} {group.currency}
+              </p>
+              <p>{t("storedScale", { scale: group.minorUnitExponent })}</p>
+              <p>{t("comparable", { value: pair(group.contributors) })}</p>
+              <p>
+                {t("previousObservations", {
+                  time: span(group.previousObservedAtFrom, group.previousObservedAtTo),
+                })}
+              </p>
+              <p>
+                {t("latestObservations", {
+                  time: span(group.latestObservedAtFrom, group.latestObservedAtTo),
+                })}
+              </p>
+            </article>
           ))}
-        </ul>
-        {(data.manualChange.groups ?? []).map((group) => (
-          <article
-            className="management-card"
-            key={`${group.currency}:${group.minorUnitExponent}`}
-            data-testid={`dashboard-change-${group.currency}-${group.minorUnitExponent}`}
-          >
-            <h4>
-              {group.currency} · {t("ownEstimate")}
-            </h4>
-            <p className="dashboard-money">
-              {money(group.deltaMinor, group.minorUnitExponent, locale)} {group.currency}
-            </p>
-            <p>{t("storedScale", { scale: group.minorUnitExponent })}</p>
-            <p>{t("comparable", { value: pair(group.contributors) })}</p>
-            <p>
-              {t("previousObservations", {
-                time: span(group.previousObservedAtFrom, group.previousObservedAtTo),
-              })}
-            </p>
-            <p>
-              {t("latestObservations", {
-                time: span(group.latestObservedAtFrom, group.latestObservedAtTo),
-              })}
-            </p>
-          </article>
-        ))}
-      </section>
+        </section>
+      )}
       <section aria-labelledby="dashboard-trade-heading">
         <h3 id="dashboard-trade-heading">{t("tradeTitle")}</h3>
         <p>{t("tradeReady", { value: pair(data.tradeReady) })}</p>
@@ -233,77 +238,83 @@ export function DashboardResults({
           ))}
         </dl>
       </section>
-      <section aria-labelledby="dashboard-condition-heading">
-        <h3 id="dashboard-condition-heading">{t("conditionTitle")}</h3>
-        <p>{t("conditionMissing", { value: pair(data.condition.missing) })}</p>
-        {metadataError && (
-          <p role="status">
-            {t("metadataFailed")}{" "}
-            <button className="secondary-button" onClick={() => setRetry((value) => value + 1)}>
-              {search("retry")}
-            </button>
+      {data.condition && (
+        <section aria-labelledby="dashboard-condition-heading">
+          <h3 id="dashboard-condition-heading">{t("conditionTitle")}</h3>
+          <p>{t("conditionMissing", { value: pair(data.condition.missing) })}</p>
+          {metadataError && (
+            <p role="status">
+              {t("metadataFailed")}{" "}
+              <button className="secondary-button" onClick={() => setRetry((value) => value + 1)}>
+                {search("retry")}
+              </button>
+            </p>
+          )}
+          {data.condition.groups.length ? (
+            <ul>
+              {(data.condition?.groups ?? []).map((group) => (
+                <li key={`${group.categoryTemplateId}:${group.conditionOptionId}`}>
+                  <strong>
+                    {category(group.categoryTemplateId)} ·{" "}
+                    {locale === "de" ? group.labelDe : group.labelEn}
+                  </strong>
+                  <p>{pair(group)}</p>
+                  {!group.optionActive && <p>{t("optionInactive")}</p>}
+                  {!group.schemeActive && <p>{t("schemeInactive")}</p>}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>{t("noConditionGroups")}</p>
+          )}
+        </section>
+      )}
+      {data.grading && (
+        <section aria-labelledby="dashboard-grading-heading">
+          <h3 id="dashboard-grading-heading">{t("gradingTitle")}</h3>
+          <p>
+            {t("gradingCounts", {
+              items: integer(String(data.grading.gradedItemCount), locale),
+              records: integer(String(data.grading.gradingRecordCount), locale),
+            })}
           </p>
-        )}
-        {data.condition.groups.length ? (
+          <p className="field-help">{t("gradingHelp")}</p>
           <ul>
-            {data.condition.groups.map((group) => (
-              <li key={`${group.categoryTemplateId}:${group.conditionOptionId}`}>
-                <strong>
-                  {category(group.categoryTemplateId)} ·{" "}
-                  {locale === "de" ? group.labelDe : group.labelEn}
-                </strong>
-                <p>{pair(group)}</p>
-                {!group.optionActive && <p>{t("optionInactive")}</p>}
-                {!group.schemeActive && <p>{t("schemeInactive")}</p>}
+            {data.grading.groups.map((row, index) => (
+              <li key={index}>
+                {row.providerKey} · {row.grade}:{" "}
+                {t("gradingCounts", {
+                  items: integer(String(row.itemCount), locale),
+                  records: integer(String(row.recordCount), locale),
+                })}
               </li>
             ))}
           </ul>
-        ) : (
-          <p>{t("noConditionGroups")}</p>
-        )}
-      </section>
-      <section aria-labelledby="dashboard-grading-heading">
-        <h3 id="dashboard-grading-heading">{t("gradingTitle")}</h3>
-        <p>
-          {t("gradingCounts", {
-            items: integer(String(data.grading.gradedItemCount), locale),
-            records: integer(String(data.grading.gradingRecordCount), locale),
-          })}
-        </p>
-        <p className="field-help">{t("gradingHelp")}</p>
-        <ul>
-          {data.grading.groups.map((row, index) => (
-            <li key={index}>
-              {row.providerKey} · {row.grade}:{" "}
-              {t("gradingCounts", {
-                items: integer(String(row.itemCount), locale),
-                records: integer(String(row.recordCount), locale),
-              })}
-            </li>
-          ))}
-        </ul>
-      </section>
-      <section aria-labelledby="dashboard-collections-heading">
-        <h3 id="dashboard-collections-heading">{t("topCollections")}</h3>
-        <p>{t("collectionRankHelp")}</p>
-        <p>
-          {t("limited", {
-            shown: data.topCollections.items.length,
-            eligible: data.topCollections.eligibleCount,
-          })}
-          {data.topCollections.hasMore ? ` · ${t("moreAvailable")}` : ""}
-        </p>
-        <ol>
-          {data.topCollections.items.map((row) => (
-            <li key={row.id}>
-              <Link href={`/${locale}/collections/${row.id}`} prefetch={false}>
-                {row.name}
-              </Link>
-              <p>{pair(row)}</p>
-            </li>
-          ))}
-        </ol>
-      </section>
+        </section>
+      )}
+      {data.topCollections && (
+        <section aria-labelledby="dashboard-collections-heading">
+          <h3 id="dashboard-collections-heading">{t("topCollections")}</h3>
+          <p>{t("collectionRankHelp")}</p>
+          <p>
+            {t("limited", {
+              shown: data.topCollections.items.length,
+              eligible: data.topCollections.eligibleCount,
+            })}
+            {data.topCollections.hasMore ? ` · ${t("moreAvailable")}` : ""}
+          </p>
+          <ol>
+            {data.topCollections.items.map((row) => (
+              <li key={row.id}>
+                <Link href={`/${locale}/collections/${row.id}`} prefetch={false}>
+                  {row.name}
+                </Link>
+                <p>{pair(row)}</p>
+              </li>
+            ))}
+          </ol>
+        </section>
+      )}
       <section aria-labelledby="dashboard-recent-heading">
         <h3 id="dashboard-recent-heading">{t("recentTitle")}</h3>
         <p>{t("recentHelp")}</p>

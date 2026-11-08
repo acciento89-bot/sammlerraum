@@ -1,3 +1,4 @@
+import { assertFeatureInTransaction } from "../billing/admission";
 import { randomUUID } from "node:crypto";
 import { Prisma } from "@sammlerraum/db/search-sql";
 import {
@@ -194,9 +195,10 @@ export function createExportService(
       );
       if (!refs?.valid) throw new ExportError("EXPORT_NOT_FOUND");
       const [user] = await tx.$queryRaw<{ id: string }[]>(
-        Prisma.sql`UPDATE "user" SET id=id WHERE id=${owner} RETURNING id`,
+        Prisma.sql`UPDATE "user" SET "updatedAt"="updatedAt" WHERE id=${owner} RETURNING id`,
       );
       if (!user) throw new ExportError("EXPORT_NOT_FOUND");
+      if (request.format === "XLSX") await assertFeatureInTransaction(tx, owner, "XLSX");
       const [active] = await tx.$queryRaw<{ count: bigint }[]>(
         Prisma.sql`SELECT count(*) AS count FROM "ExportJob" WHERE "ownerId"=${owner} AND status IN ('PENDING','BUILDING') AND "expiresAt">CURRENT_TIMESTAMP`,
       );

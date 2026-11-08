@@ -1,3 +1,9 @@
+import { BillingError } from "@sammlerraum/contracts/billing";
+import {
+  quotaIsBounded,
+  lockBillingQuotaSubject,
+  assertQuotaInTransaction,
+} from "../billing/admission";
 import { loadCollectionReadAccess as load, type Parent, type Role } from "./collection-read-access";
 import { createTrustedAuditContext } from "../audit/audit-context";
 import { recordAuditEventInTransaction } from "../audit/audit-service";
@@ -201,6 +207,13 @@ export function createMembershipService(database: MembershipDatabase) {
           Prisma.sql`SELECT id FROM "user" WHERE id IN (${userId},${value.newOwnerId}) ORDER BY id COLLATE "C" FOR NO KEY UPDATE`,
         );
         if (users.length !== 2) return fail("MEMBERSHIP_NOT_FOUND");
+        if (
+          ["ITEM_CREATE", "MEDIA_COUNT", "MEDIA_BYTES"].some((feature) =>
+            quotaIsBounded(feature as "ITEM_CREATE" | "MEDIA_COUNT" | "MEDIA_BYTES"),
+          )
+        ) {
+          for (const id of [userId, value.newOwnerId].sort()) await lockBillingQuotaSubject(tx, id);
+        }
         const { parent, role } = await load(tx, value.collectionId, userId, true);
         if (role !== "OWNER") return fail("MEMBERSHIP_FORBIDDEN");
         revision(parent, value.expectedRevision);
@@ -219,6 +232,27 @@ export function createMembershipService(database: MembershipDatabase) {
         );
         if (certificateConflict?.conflict) return fail("MEMBERSHIP_CONFLICT");
         const assetIds = await lockPrivateTransferMedia(tx, parent.id, parent.ownerId);
+        if (quotaIsBounded("ITEM_CREATE")) {
+          const [count] = await tx.$queryRaw<{ amount: string }[]>(
+            Prisma.sql`SELECT count(*)::text AS amount FROM "CollectibleItem" WHERE "collectionId"=${parent.id}::uuid AND "ownerId"=${parent.ownerId} AND "deletedAt" IS NULL`,
+          );
+          const amount = Number(count?.amount);
+          if (!Number.isSafeInteger(amount) || amount < 0)
+            throw new BillingError("PLAN_LIMIT_REACHED");
+          if (amount) await assertQuotaInTransaction(tx, value.newOwnerId, "ITEM_CREATE", amount);
+        }
+        if (assetIds.length) {
+          await assertQuotaInTransaction(tx, value.newOwnerId, "MEDIA_COUNT", assetIds.length);
+          if (quotaIsBounded("MEDIA_BYTES")) {
+            const [size] = await tx.$queryRaw<{ bytes: string }[]>(
+              Prisma.sql`SELECT COALESCE(sum("byteSize"),0)::text AS bytes FROM "MediaAsset" WHERE id=ANY(${assetIds}::uuid[])`,
+            );
+            const bytes = Number(size?.bytes);
+            if (!Number.isSafeInteger(bytes) || bytes < 0)
+              throw new BillingError("PLAN_LIMIT_REACHED");
+            if (bytes) await assertQuotaInTransaction(tx, value.newOwnerId, "MEDIA_BYTES", bytes);
+          }
+        }
         await retirePrivateImports(tx, parent.id, parent.ownerId);
         await transferPrivateTags(tx, parent.id, parent.ownerId, value.newOwnerId);
         await tx.$queryRaw(

@@ -2,7 +2,7 @@
 
 Status: source implementation in progress. Payments are disabled by default. No live credentials,
 provider accounts, purchases or webhook registrations are created by the local checks.
-Domain-wide feature enforcement and the localized pricing/account UI are separate remaining gates.
+Domain feature gates have passed the local whole-native suite. Localized pricing/account UI, whole-phase review and exact remote CI remain release gates.
 
 ## Configuration and isolation
 
@@ -97,3 +97,14 @@ Mapped receipts, accounts and local subscriptions cascade on actual account eras
 removal flow must also settle/cancel any paid renewal before dropping its binding; that integration is a
 release gate, not a claim that deleting a local row cancels an external subscription. No customer data
 is deleted by ordinary plan downgrade. Free core/read access remains available according to product policy.
+
+## Admission semantics
+
+- Inventory capacity counts live items in live owned collections, including archived/disposed rows. Soft deletion frees a slot; restoring an item/collection or accepting an ownership transfer rechecks capacity atomically. Downgrade keeps existing rows.
+- Media capacity counts retained original asset rows and their original byte size, including pending/failed originals until cleanup; derived variants are excluded. Admission commits its intent before storage I/O. Existing artifact/report completion and read access are not retroactively canceled by downgrade. This is a product admission metric, not a physical disk quota: monitor and enforce system storage limits separately.
+- A versioned owner quota fence serializes bounded admissions with local billing reconciliation. Actual collaborator identity stays in the audit; collection owner capacity funds shared writes. Recipient capacity is checked before an ownership transfer makes changes.
+- Monthly AI admission records survive physical item/job/collection erasure, so deleting a result does not replenish processing allowance. Exact request retries do not double count. Actual account erasure may remove its private ledger after resource cleanup. Usage distinguishes retained job details from admitted requests, and the UI effective cap is the smaller of plan allowance and technical provider budget.
+- Free retains basic inventory/community/search/wishlist/duplicates/manual-current values and CSV. Advanced typed/date/money filters and OR/NOT, historical/source valuation views, XLSX, and advanced dashboard analyses follow explicit policy. Saved content stays stored after a downgrade, but execution rechecks current entitlement.
+- A Free dashboard returns truthful basic totals, current manual values and recent additions; Premium analysis fields are null with an explicit capability state, never fake zero/empty results. Market access additionally requires independent source display/query/aggregation rights; Premium cannot activate a provider or confer a license.
+
+Legacy regression and browser test harnesses explicitly load a synthetic unrestricted policy. Bounded native billing tests use a restricted Free/Premium policy against actual SQL. Application code has no test-mode or payment-OFF feature bypass. Missing/malformed central policy fails closed.

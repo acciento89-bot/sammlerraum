@@ -390,14 +390,14 @@ describe.runIf(enabled)("dashboard actual observations and filters", () => {
           },
         });
         await db!.conditionOption.update({ where: { id: option.id }, data: { active: true } });
-        expect((await f.read()).condition.groups[0]).toMatchObject({
+        expect((await f.read()).condition!.groups[0]).toMatchObject({
           optionActive: true,
           schemeActive: false,
           itemCount: 1,
         });
         await db!.conditionScheme.update({ where: { id: scheme.id }, data: { active: true } });
         await db!.conditionOption.update({ where: { id: option.id }, data: { active: false } });
-        expect((await f.read()).condition.groups[0]).toMatchObject({
+        expect((await f.read()).condition!.groups[0]).toMatchObject({
           optionActive: false,
           schemeActive: true,
           itemCount: 1,
@@ -625,9 +625,9 @@ describe.runIf(enabled)("dashboard bounded sets and consistency", () => {
         })),
       });
       const data = await f.read();
-      expect(data.grading.groups).toHaveLength(128);
-      expect(data.grading.gradedItemCount).toBe(1);
-      expect(data.grading.gradingRecordCount).toBe(128);
+      expect(data.grading!.groups).toHaveLength(128);
+      expect(data.grading!.gradedItemCount).toBe(1);
+      expect(data.grading!.gradingRecordCount).toBe(128);
       await db!.grading.create({
         data: {
           itemId: item.id,
@@ -696,7 +696,7 @@ describe.runIf(enabled)("dashboard bounded sets and consistency", () => {
             conditionOptionId: o.id,
           })),
         });
-        expect((await f.read()).condition.groups).toHaveLength(128);
+        expect((await f.read()).condition!.groups).toHaveLength(128);
         await db!.collectibleItem.create({
           data: {
             ownerId: f.owner,
@@ -960,7 +960,7 @@ describe.runIf(enabled)("dashboard complete selected facts", () => {
       });
       const data = await f.read({ text: "Selected" });
       expect(data.collections.ownedLiveCount).toBe(4);
-      expect(data.topCollections.items.map((x) => x.id)).toEqual([
+      expect(data.topCollections!.items.map((x) => x.id)).toEqual([
         third.id,
         second.id,
         f.collection,

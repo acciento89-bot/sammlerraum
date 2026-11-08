@@ -1,3 +1,4 @@
+import { assertQuotaInTransaction, quotaIsBounded } from "../billing/admission";
 import { lockMutationItemParent } from "../audit/mutation-audit";
 import { defaultMutationAudit, type MutationAuditPort } from "../audit/mutation-audit";
 import type { AuditContext } from "../audit/audit-context";
@@ -172,21 +173,30 @@ export function createMediaService(
     const storageKey = `originals/${id}`;
     const checksumSha256 = createHash("sha256").update(bytes).digest("hex");
     // This row must commit before put: failures leave a discoverable key for Task 5 cleanup.
-    const intent = await database.mediaAsset.create({
-      data: {
-        id,
-        ownerId: actorUserId,
-        kind,
-        status: "UPLOADING",
-        storageKey,
-        mimeType: mime,
-        byteSize: BigInt(bytes.byteLength),
-        checksumSha256,
-        width,
-        height,
-        originalFileName: name,
-      },
-    });
+    const createData = {
+      id,
+      ownerId: actorUserId,
+      kind,
+      status: "UPLOADING",
+      storageKey,
+      mimeType: mime,
+      byteSize: BigInt(bytes.byteLength),
+      checksumSha256,
+      width,
+      height,
+      originalFileName: name,
+    } as const;
+    const intent =
+      quotaIsBounded("MEDIA_COUNT") || quotaIsBounded("MEDIA_BYTES")
+        ? await database.$transaction(
+            async (tx) => {
+              await assertQuotaInTransaction(tx, actorUserId, "MEDIA_COUNT", 1);
+              await assertQuotaInTransaction(tx, actorUserId, "MEDIA_BYTES", bytes.byteLength);
+              return tx.mediaAsset.create({ data: createData });
+            },
+            { isolationLevel: "ReadCommitted", maxWait: 2000, timeout: 5000 },
+          )
+        : await database.mediaAsset.create({ data: createData });
     await storage.put(storageKey, bytes);
     // PENDING is the durable processing intent for all image MIME, including image documents.
     let saved;

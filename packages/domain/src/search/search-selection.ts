@@ -1,3 +1,5 @@
+import { assertReadFeatureInTransaction } from "../billing/admission";
+import type { ItemFilterNode } from "@sammlerraum/contracts/search";
 import { ProviderRegistry } from "@sammlerraum/market-data/provider-registry";
 import { emptyMarketDisplayPolicy } from "../valuations/market-display-policy";
 import { emptyMarketQueryPolicy, marketBatchFilterError } from "../market-data/market-query-policy";
@@ -30,6 +32,28 @@ import {
 import { validateRetainedUrls } from "./search-url-integrity";
 import { compileBroadText, invalidBroadFacts } from "./search-text";
 import type { BoundedSearchReadTransaction } from "./search-read";
+/** Free collection/category/tag/duplicate/lifecycle facets remain core search. */
+function advancedFilter(node: ItemFilterNode): boolean {
+  if (node.kind === "and") return node.children.some(advancedFilter);
+  if (node.kind === "or" || node.kind === "not") return true;
+  return ![
+    "collection",
+    "category",
+    "tags",
+    "duplicate",
+    "tradeStatus",
+    "visibility",
+    "media",
+  ].includes(node.kind);
+}
+export async function assertFilterEntitlement(
+  tx: BoundedSearchReadTransaction,
+  subjectId: string,
+  filter: { root: ItemFilterNode } | null | undefined,
+) {
+  if (filter && advancedFilter(filter.root))
+    await assertReadFeatureInTransaction(tx, subjectId, "ADVANCED_FILTERS");
+}
 /** Internal SQL selection in the caller's bounded snapshot; never a persisted permission. */
 async function prepareSelection(
   tx: BoundedSearchReadTransaction,
@@ -43,6 +67,7 @@ async function prepareSelection(
     return searchFail("SEARCH_INVALID");
   if (query.filter)
     validateCurrentFilterAvailability(query.filter, canonicalMoneyEnabled, !!market);
+  await assertFilterEntitlement(tx, actor.userId, query.filter);
   const [clock] = await tx.$queryRaw<{ now: Date; collation: boolean }[]>(
     Prisma.sql`SELECT date_trunc('milliseconds',transaction_timestamp()) AS now,EXISTS(SELECT 1 FROM pg_collation WHERE collname='und-x-icu' AND collprovider='i' AND collisdeterministic AND collnamespace='pg_catalog'::regnamespace) AS collation`,
   );

@@ -1,3 +1,5 @@
+import { Prisma as PrismaQuota } from "@sammlerraum/db/search-sql";
+import { assertQuotaInTransaction, quotaIsBounded } from "../billing/admission";
 import { lockMutationItemParent } from "../audit/mutation-audit";
 import { captureMoneyAuditSnapshot } from "../audit/money-audit";
 import { LegacyMoneyError } from "@sammlerraum/contracts/legacy-money";
@@ -511,12 +513,25 @@ export async function createItemInTransaction(
       () => new ItemServiceError("COLLECTION_NOT_FOUND"),
       auditOptions.auditContext,
     );
+  let quotaOwner: string | null = null;
+  if (quotaIsBounded("ITEM_CREATE")) {
+    const q = moneyTransaction(transaction),
+      collaborative = auditOptions.collaborativeCollectionId !== undefined;
+    const [parent] = await q.$queryRaw<{ ownerId: string }[]>(
+      PrismaQuota.sql`SELECT c."ownerId" FROM "Collection" c WHERE c.id=${data.collectionId}::uuid AND c."deletedAt" IS NULL AND (c."ownerId"=${actorUserId} ${collaborative ? PrismaQuota.sql`OR EXISTS(SELECT 1 FROM "CollectionMember" m WHERE m."collectionId"=c.id AND m."userId"=${actorUserId} AND m.role IN ('ADMIN','EDITOR'))` : PrismaQuota.empty})`,
+    );
+    if (!parent) throw new ItemServiceError("COLLECTION_NOT_FOUND");
+    quotaOwner = parent.ownerId;
+    await assertQuotaInTransaction(q, quotaOwner, "ITEM_CREATE", 1);
+  }
   let ownerId = actorUserId;
   if (auditOptions.collaborativeCollectionId !== undefined) {
     if (auditOptions.collaborativeCollectionId !== data.collectionId)
       throw new ItemServiceError("COLLECTION_NOT_FOUND");
     ownerId = await lockEditableCollection(transaction, data.collectionId, actorUserId);
   } else await lockOwnedCollection(transaction, data.collectionId, actorUserId);
+  if (quotaOwner !== null && ownerId !== quotaOwner)
+    throw new ItemServiceError("COLLECTION_NOT_FOUND");
   await ensureNodeInCollection(transaction, data.nodeId, data.collectionId);
   const item = await transaction.collectibleItem.create({
     data: {
@@ -863,6 +878,12 @@ export function createItemService(
             AND item."deletedAt" IS NULL AND collection."deletedAt" IS NULL
         `;
             if (!discovered) throw new ItemServiceError("ITEM_NOT_FOUND");
+            await assertQuotaInTransaction(
+              moneyTransaction(transaction),
+              actorUserId,
+              "ITEM_CREATE",
+              1,
+            );
             const parents = await lockCatalogParents(transaction, discovered);
             const item = await lockOwnedItem(transaction, itemId, actorUserId);
             if (

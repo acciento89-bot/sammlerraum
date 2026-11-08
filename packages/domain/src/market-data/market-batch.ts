@@ -1,3 +1,4 @@
+import { assertReadFeatureInTransaction } from "../billing/admission";
 import type { Prisma } from "@sammlerraum/db/search-sql";
 import type { ItemFilterLeaf } from "@sammlerraum/contracts/search";
 import type { SearchReadTransaction } from "../search/search-read";
@@ -310,6 +311,8 @@ export async function withMarketBatch<T>(
   )
     return batchInvariant();
   context.checkBudget();
+  if (selectors.length)
+    await assertReadFeatureInTransaction(context.tx, context.scope.actorUserId, "MARKET_DATA");
   const initial = {
     tx: context.tx,
     actor: context.scope.actorUserId,

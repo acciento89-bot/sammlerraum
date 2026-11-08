@@ -33,7 +33,10 @@ export function createAICaptureRouteHandlers(dependencies: {
         return output("capture", {
           ...capture,
           enabled: dependencies.enabled,
-          monthlyLimit: dependencies.monthlyLimit,
+          monthlyLimit: Math.min(
+            dependencies.monthlyLimit,
+            usage.planMonthlyLimit ?? dependencies.monthlyLimit,
+          ),
           usage,
         });
       } catch (error) {

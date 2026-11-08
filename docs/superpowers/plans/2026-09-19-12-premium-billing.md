@@ -148,7 +148,7 @@ git commit -m "feat: add Stripe checkout and customer portal"
 - Consumes: verified Stripe events.
 - Produces: synchronized local subscription state + processed event id.
 
-- [ ] **Step 1: Write failing duplicate/reordered tests**
+- [x] **Step 1: Write failing duplicate/reordered tests**
 
 ```ts
 it("processes the same event id once", async () => {
@@ -164,21 +164,21 @@ it("does not let an older subscription update overwrite a newer state", async ()
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run packages/domain/src/billing/webhook-service.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement webhook sync**
+- [x] **Step 3: Implement webhook sync**
 
 Verify signature before parsing. Persist processed event IDs transactionally. Map subscription status/current period to local entitlement state. Return non-2xx on transient application failure so provider retries.
 
-- [ ] **Step 4: Run tests**
+- [x] **Step 4: Run tests**
 
 Run: `pnpm vitest run packages/domain/src/billing/webhook-service.test.ts apps/web/src/app/api/v1/billing/webhook`  
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/domain/src/billing apps/web/src/app/api/v1/billing/webhook
@@ -202,7 +202,7 @@ git commit -m "feat: synchronize billing webhooks safely"
 - Consumes: `assertEntitled`.
 - Produces: server-enforced plan boundaries.
 
-- [ ] **Step 1: Write failing cross-feature gate test**
+- [x] **Step 1: Write failing cross-feature gate test**
 
 ```ts
 it("blocks premium-only XLSX while leaving CSV available to Free", async () => {
@@ -213,21 +213,21 @@ it("blocks premium-only XLSX while leaving CSV available to Free", async () => {
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run packages/domain/src/billing/entitlement-integration.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Apply gates**
+- [x] **Step 3: Apply gates**
 
 Enforce gates inside domain services before queueing cost. Downgrade never deletes excess existing items/media; it blocks new over-limit writes and premium-only operations while preserving reads/export paths permitted by product policy.
 
-- [ ] **Step 4: Run full domain tests**
+- [x] **Step 4: Run full domain tests**
 
 Run: `pnpm vitest run packages/domain`  
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/domain

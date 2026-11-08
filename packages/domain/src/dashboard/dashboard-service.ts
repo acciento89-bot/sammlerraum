@@ -1,3 +1,4 @@
+import { featureEnabledInTransaction } from "../billing/admission";
 import { readPurchaseCost } from "../money/purchase-cost";
 import { checkedDashboardPart, finalizeDashboard, type Schema } from "./dashboard-result";
 import { searchFail } from "@sammlerraum/contracts/item-search";
@@ -74,6 +75,7 @@ export function createDashboardService(
       if (query.filter)
         validateCurrentFilterAvailability(query.filter, canonicalMoneyEnabled, true);
       return runSearchRead(database, async (tx) => {
+        const advanced = await featureEnabledInTransaction(tx, actor.userId, "ADVANCED_ANALYTICS");
         return withItemSelection(
           tx,
           actor,
@@ -103,11 +105,13 @@ export function createDashboardService(
                 DashboardManualSchema,
                 true,
               );
-              const distributions = await read(
-                readTx,
-                dashboardDistributionsSql(predicate),
-                DashboardDistributionsSchema,
-              );
+              const distributions = advanced
+                ? await read(
+                    readTx,
+                    dashboardDistributionsSql(predicate),
+                    DashboardDistributionsSchema,
+                  )
+                : { condition: null, grading: null };
               const rankings = await read(
                 readTx,
                 dashboardRankingsSql(predicate),
@@ -133,6 +137,9 @@ export function createDashboardService(
                   ...manual,
                   ...distributions,
                   ...rankings,
+                  advancedAnalytics: advanced ? "AVAILABLE" : "PREMIUM_REQUIRED",
+                  manualChange: advanced ? manual.manualChange : null,
+                  topCollections: advanced ? rankings.topCollections : null,
                   purchaseTotals: canonicalMoneyEnabled
                     ? await readPurchaseCost(
                         readTx,

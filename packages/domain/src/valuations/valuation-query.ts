@@ -1,3 +1,5 @@
+import { assertReadFeatureInTransaction, featureEnabledInTransaction } from "../billing/admission";
+import { moneyTransaction } from "../money/legacy-money-transaction";
 import { CatalogSnapshotSchema, type CatalogSnapshot } from "@sammlerraum/contracts/catalog";
 import {
   ManualValuationSchema,
@@ -156,7 +158,7 @@ export function createValuationQuery(
         !sameContext(historyCursor.context, selector.context))
     )
       return fail("VALUATION_INVALID");
-    const grants = displayGrants(policy, registry, actor.userId).filter(
+    const configuredGrants = displayGrants(policy, registry, actor.userId).filter(
       (g) => scope === "CURRENT_MAPPING" || g.allowHistorical,
     );
     const stop = performance.now() + 12000;
@@ -204,6 +206,19 @@ export function createValuationQuery(
               Item[]
             >`SELECT quantity,"archivedAt","disposedAt","catalogEntryId","catalogVariantId" FROM "CollectibleItem" WHERE id=${itemId}::uuid AND "collectionId"=${discovered.collectionId}::uuid AND "ownerId"=${actor.userId} AND "deletedAt" IS NULL FOR SHARE`;
             if (!item) return fail("ITEM_NOT_FOUND");
+            const billingTx = moneyTransaction(tx);
+            if (
+              sourceView ||
+              scope === "HISTORICAL_MAPPING" ||
+              opts?.manualCursor ||
+              opts?.groupCursor
+            )
+              await assertReadFeatureInTransaction(billingTx, actor.userId, "EXTENDED_HISTORY");
+            const grants =
+              configuredGrants.length &&
+              (await featureEnabledInTransaction(billingTx, actor.userId, "MARKET_DATA"))
+                ? configuredGrants
+                : [];
             const snapshots = new Map<number, CatalogSnapshot | null>();
             let categoryTemplateId: string | undefined;
             async function snapshot(revision: number): Promise<CatalogSnapshot | null> {

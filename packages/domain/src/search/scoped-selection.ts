@@ -14,7 +14,11 @@ import { and, or, TRUE, compileFilter, leaves, candidateFrom } from "./search-co
 import { scopedReadState, type ScopedReadContext } from "./scoped-read-context";
 import { prepareLegacyMoneyPredicates } from "./legacy-money-query";
 import { validateCurrentFilterAvailability } from "./filter-ast";
-import { disabledSearchMarket, withItemSelection } from "./search-selection";
+import {
+  assertFilterEntitlement,
+  disabledSearchMarket,
+  withItemSelection,
+} from "./search-selection";
 
 const MEMBER_FIELDS = [
   "collection",
@@ -96,6 +100,11 @@ export async function withScopedSelection<T>(
       { predicate: state.predicate },
     );
   }
+  await assertFilterEntitlement(
+    state.tx,
+    state.mode === "SHARE" ? state.ownerUserId : state.actorUserId!,
+    query.filter,
+  );
   const tx = {
     checkBudget: state.tx.checkBudget,
     $queryRaw: <R>(sql: Prisma.Sql) =>

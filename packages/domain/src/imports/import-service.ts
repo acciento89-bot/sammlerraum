@@ -1,3 +1,4 @@
+import { assertQuotaInTransaction } from "../billing/admission";
 import {
   ImportMappingSchema,
   ImportRawRowSchema,
@@ -341,7 +342,7 @@ export function createImportService(database: SearchDatabase) {
         if (owned.length !== 1) return importFail("IMPORT_NOT_FOUND");
         if (uploadValue) {
           const own = await tx.$queryRaw<{ id: string }[]>(
-            Prisma.sql`UPDATE "user" SET id=id WHERE id=${owner} RETURNING id`,
+            Prisma.sql`UPDATE "user" SET "updatedAt"="updatedAt" WHERE id=${owner} RETURNING id`,
           );
           if (own.length !== 1) return importFail("IMPORT_NOT_FOUND");
           const existing = await tx.$queryRaw<{ id: string; same: boolean; expired: boolean }[]>(
@@ -482,9 +483,11 @@ export function createImportService(database: SearchDatabase) {
         // Advance the owner's MVCC version as well as locking it: a stale
         // RepeatableRead contender must retry before checking unique names.
         const own = await tx.$queryRaw<{ id: string }[]>(
-          Prisma.sql`UPDATE "user" SET id=id WHERE id=${owner} RETURNING id`,
+          Prisma.sql`UPDATE "user" SET "updatedAt"="updatedAt" WHERE id=${owner} RETURNING id`,
         );
         if (own.length !== 1) return importFail("IMPORT_NOT_FOUND");
+        if (value.profileId === undefined)
+          await assertQuotaInTransaction(tx, owner, "IMPORT_PROFILES");
         if (value.profileId !== undefined) {
           const current = await tx.$queryRaw<ProfileRow[]>(
             Prisma.sql`SELECT * FROM "ImportMappingProfile" WHERE id=${value.profileId}::uuid AND "ownerId"=${owner} FOR UPDATE`,

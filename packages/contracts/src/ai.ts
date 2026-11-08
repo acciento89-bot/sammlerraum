@@ -158,6 +158,8 @@ export const AIUsageSchema = z
   .object({
     period: z.string().regex(/^[0-9]{4}-(0[1-9]|1[0-2])$/u),
     requests: z.number().int().nonnegative().safe(),
+    admittedRequests: z.number().int().nonnegative().safe(),
+    planMonthlyLimit: z.number().int().nonnegative().safe().nullable(),
     completed: z.number().int().nonnegative().safe(),
     failed: z.number().int().nonnegative().safe(),
     cancelled: z.number().int().nonnegative().safe(),

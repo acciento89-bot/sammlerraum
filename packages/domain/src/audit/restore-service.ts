@@ -1,3 +1,9 @@
+import { BillingError } from "@sammlerraum/contracts/billing";
+import {
+  assertQuotaInTransaction,
+  lockBillingQuotaSubject,
+  quotaIsBounded,
+} from "../billing/admission";
 import { randomUUID } from "node:crypto";
 import { Prisma } from "@sammlerraum/db/search-sql";
 import { z } from "zod";
@@ -96,7 +102,7 @@ export function createRestoreService(database: MembershipDatabase) {
     try {
       return await runTransferTransaction(database, work);
     } catch (error) {
-      if (error instanceof RestoreError) throw error;
+      if (error instanceof RestoreError || error instanceof BillingError) throw error;
       if (error instanceof AuditError && error.code === "AUDIT_NOT_FOUND")
         return fail("RESTORE_NOT_FOUND");
       if (error instanceof MembershipError && error.code === "MEMBERSHIP_UNAVAILABLE")
@@ -255,6 +261,17 @@ export function createRestoreService(database: MembershipDatabase) {
     );
     if (changed?.present) return fail("RESTORE_CONFLICT");
     await validateReplacement(tx, event, { ...current, ownerId: who.userId }, input.field, before);
+    if (input.field === "deletedAt" && current.deletedAt !== null) {
+      const [row] =
+        event.resourceType === "ITEM"
+          ? [{ amount: "1" }]
+          : await tx.$queryRaw<{ amount: string }[]>(
+              Prisma.sql`SELECT count(*)::text AS amount FROM "CollectibleItem" WHERE "collectionId"=${event.resourceId}::uuid AND "ownerId"=${who.userId} AND "deletedAt" IS NULL`,
+            );
+      const amount = Number(row?.amount);
+      if (!Number.isSafeInteger(amount) || amount < 0) return fail("RESTORE_INTEGRITY");
+      if (amount) await assertQuotaInTransaction(tx, who.userId, "ITEM_CREATE", amount);
+    }
     const table =
       event.resourceType === "ITEM" ? Prisma.sql`"CollectibleItem"` : Prisma.sql`"Collection"`;
     const updated = await tx.$queryRaw<{ id: string }[]>(
@@ -327,7 +344,12 @@ export function createRestoreService(database: MembershipDatabase) {
     },
     async restoreAuditEvent(who: Actor, input: unknown) {
       const request = parse(RestoreAuditInputSchema, input);
-      return within(async (tx) => restore(tx, who, await identity(tx, who), request));
+      return within(async (tx) => {
+        const context = await identity(tx, who);
+        if (request.field === "deletedAt" && quotaIsBounded("ITEM_CREATE"))
+          await lockBillingQuotaSubject(tx, who.userId);
+        return restore(tx, who, context, request);
+      });
     },
     async softDeleteItem(who: Actor, input: unknown) {
       const request = parse(SoftDeleteItemInputSchema, input);
@@ -353,6 +375,7 @@ export function createRestoreService(database: MembershipDatabase) {
       const request = parse(RestoreItemInputSchema, input);
       return within(async (tx) => {
         const context = await identity(tx, who);
+        if (quotaIsBounded("ITEM_CREATE")) await lockBillingQuotaSubject(tx, who.userId);
         await state(tx, who, { resourceType: "ITEM", resourceId: request.itemId });
         const [event] = await tx.$queryRaw<{ id: string }[]>(
           Prisma.sql`SELECT id FROM "AuditEvent" WHERE "resourceType"='ITEM' AND "resourceId"=${request.itemId}::uuid AND action='ITEM_DELETED' ORDER BY sequence DESC LIMIT 1`,

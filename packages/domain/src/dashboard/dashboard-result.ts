@@ -43,11 +43,18 @@ export function checkedDashboardPart<T>(
 /** Validate the bounded wire object while still inside the caller's transaction budget. */
 export function finalizeDashboard(value: unknown, checkBudget: () => void): DashboardData {
   const result = checkedDashboardPart(DashboardDataSchema, value, checkBudget);
+  const advanced = [result.manualChange, result.condition, result.grading, result.topCollections];
+  if (
+    result.advancedAnalytics === "PREMIUM_REQUIRED"
+      ? advanced.some((value) => value !== null)
+      : advanced.some((value) => value === null)
+  )
+    return searchFail("SEARCH_INVARIANT");
   // Shape validation alone does not establish a supported currency/exponent pair.
   // SQL separately validates the chosen prior point, including excluded histories.
   for (const group of [
     ...(result.manualValues.groups ?? []),
-    ...(result.manualChange.groups ?? []),
+    ...(result.manualChange?.groups ?? []),
   ]) {
     let exponent: number;
     try {

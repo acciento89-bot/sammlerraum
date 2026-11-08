@@ -4,6 +4,11 @@ import { dirname, join } from "node:path";
 import { createServer } from "node:tls";
 import { fileURLToPath } from "node:url";
 
+// Explicit legacy-regression product configuration; application code has no test-mode bypass.
+process.env.BILLING_PLAN_LIMITS ??= await readFile(
+  new URL("../../../../packages/testing/fixtures/legacy-billing-policy.json", import.meta.url),
+  "utf8",
+);
 const smtpPort = 3465;
 const mailboxPath = process.env.E2E_MAILBOX_PATH;
 if (!mailboxPath) throw new Error("E2E_MAILBOX_PATH is required");

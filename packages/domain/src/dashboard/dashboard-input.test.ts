@@ -129,7 +129,7 @@ describe("dashboard request and result bounds", () => {
       if (section === "manualValues") {
         Object.assign(data.manualValues.groups![0]!, { currency, minorUnitExponent });
       } else {
-        data.manualChange.groups = [
+        data.manualChange!.groups = [
           {
             source: "MANUAL",
             basis: "PER_UNIT",

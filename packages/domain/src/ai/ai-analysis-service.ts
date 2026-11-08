@@ -1,3 +1,8 @@
+import {
+  assertQuotaInTransaction,
+  lockBillingQuotaSubject,
+  quotaIsBounded,
+} from "../billing/admission";
 import { createHash, randomUUID } from "node:crypto";
 import { z } from "zod";
 import { Prisma } from "@sammlerraum/db/search-sql";
@@ -93,7 +98,7 @@ function summary(row: JobRow): AIAnalysisJob {
 /** Canonical user→parent→item lock order, without granting a member/share third-party processing rights. */
 async function ownedItem(tx: BoundedSearchReadTransaction, actor: string, itemId: string) {
   const user = await tx.$queryRaw<{ id: string }[]>(
-    Prisma.sql`SELECT id FROM "user" WHERE id=${actor} AND "emailVerified" FOR UPDATE`,
+    Prisma.sql`SELECT id FROM "user" WHERE id=${actor} AND "emailVerified" FOR NO KEY UPDATE`,
   );
   if (!user.length) return failure("AI_ITEM_NOT_FOUND");
   const parents = await tx.$queryRaw<{ id: string }[]>(
@@ -194,7 +199,9 @@ export function createAIAnalysisService(
     return rows[0];
   }
   async function lockRequester(tx: BoundedSearchReadTransaction, row: JobRow) {
-    await tx.$queryRaw(Prisma.sql`SELECT id FROM "user" WHERE id=${row.requesterId} FOR UPDATE`);
+    await tx.$queryRaw(
+      Prisma.sql`SELECT id FROM "user" WHERE id=${row.requesterId} FOR NO KEY UPDATE`,
+    );
   }
   async function closePending(
     tx: BoundedSearchReadTransaction,
@@ -371,6 +378,11 @@ export function createAIAnalysisService(
         input = parse(RequestAIAnalysisSchema, { itemId, assetIds, requestKey });
       const digest = sha({ itemId: input.itemId, assetIds: input.assetIds });
       return run(async (tx) => {
+        const verified = await tx.$queryRaw<{ id: string }[]>(
+          Prisma.sql`SELECT id FROM "user" WHERE id=${who} AND "emailVerified" FOR NO KEY UPDATE`,
+        );
+        if (!verified.length) return failure("AI_ITEM_NOT_FOUND");
+        if (quotaIsBounded("AI_MONTHLY")) await lockBillingQuotaSubject(tx, who);
         const item = await ownedItem(tx, who, input.itemId);
         const prior = await tx.$queryRaw<JobRow[]>(
           Prisma.sql`SELECT * FROM "AIAnalysisJob" WHERE "requesterId"=${who} AND "requestKey"=${input.requestKey}::uuid`,
@@ -380,8 +392,9 @@ export function createAIAnalysisService(
           return summary(prior[0]);
         }
         const selected = await sources(tx, who, input.itemId, input.assetIds);
+        await assertQuotaInTransaction(tx, who, "AI_MONTHLY");
         const [count] = await tx.$queryRaw<{ total: bigint }[]>(
-          Prisma.sql`SELECT count(*) AS total FROM "AIAnalysisJob" WHERE "requesterId"=${who} AND "createdAt">=date_trunc('month',clock_timestamp() AT TIME ZONE 'UTC') AND "createdAt"<date_trunc('month',clock_timestamp() AT TIME ZONE 'UTC')+interval '1 month'`,
+          Prisma.sql`SELECT count(*) AS total FROM "AIAnalysisAdmission" WHERE "ownerId"=${who} AND "admittedAt">=date_trunc('month',clock_timestamp() AT TIME ZONE 'UTC') AND "admittedAt"<date_trunc('month',clock_timestamp() AT TIME ZONE 'UTC')+interval '1 month'`,
         );
         if (!count || count.total >= BigInt(config.monthlyRequestLimit))
           return failure("AI_LIMIT_REACHED");

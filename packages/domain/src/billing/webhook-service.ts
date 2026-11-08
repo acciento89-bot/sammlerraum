@@ -1,3 +1,4 @@
+import { lockBillingQuotaSubject } from "./admission";
 import { randomUUID } from "node:crypto";
 import { z } from "zod";
 import { Prisma } from "@sammlerraum/db/search-sql";
@@ -49,7 +50,7 @@ export function createBillingWebhookService(
     );
     if (!hint) return null;
     const [user] = await t.$queryRaw<{ id: string }[]>(
-      Prisma.sql`SELECT id FROM "user" WHERE id=${hint.subjectId} FOR UPDATE`,
+      Prisma.sql`SELECT id FROM "user" WHERE id=${hint.subjectId} FOR NO KEY UPDATE`,
     );
     if (!user) return null;
     const [account] = await t.$queryRaw<Account[]>(
@@ -148,6 +149,7 @@ export function createBillingWebhookService(
         signal.throwIfAborted();
         const a = await lockAccount(t, customerId);
         if (!a || a.syncToken !== accountToken) return fail("BILLING_CONFLICT");
+        await lockBillingQuotaSubject(t, a.subjectId);
         const [fresh] = await t.$queryRaw<{ valid: boolean }[]>(
           Prisma.sql`SELECT "syncExpiresAt">clock_timestamp() AS valid FROM "BillingAccount" WHERE "subjectId"=${a.subjectId} AND provider=${config.providerId}`,
         );

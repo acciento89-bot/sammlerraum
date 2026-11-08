@@ -1,4 +1,7 @@
-import { BillingPolicySchema } from "@sammlerraum/contracts/billing";
+import { EnvironmentConfigurationError } from "./errors";
+import { parseBillingPolicyEnv, parseBillingContextEnv } from "./billing";
+export { EnvironmentConfigurationError } from "./errors";
+export { parseBillingPolicyEnv, parseBillingContextEnv } from "./billing";
 import { isAbsolute } from "node:path";
 
 import { z } from "zod";
@@ -151,16 +154,6 @@ const authSchema = z.object({
 export type ServerEnv = z.infer<typeof schema>;
 export type AuthEnv = z.infer<typeof authSchema>;
 
-export class EnvironmentConfigurationError extends Error {
-  readonly invalidVariables: readonly string[];
-
-  constructor(invalidVariables: readonly string[]) {
-    super(`Invalid environment configuration: ${invalidVariables.join(", ")}`);
-    this.name = "EnvironmentConfigurationError";
-    this.invalidVariables = invalidVariables;
-  }
-}
-
 export function parseServerEnv(input: Record<string, string | undefined>): ServerEnv {
   const result = schema.safeParse(input);
   if (result.success) {
@@ -218,19 +211,6 @@ export function parseNotificationEmailEnv(input: Record<string, string | undefin
   return smtp.data;
 }
 
-/** Required central product policy; never substitute guessed Free/Premium quotas. */
-export function parseBillingPolicyEnv(input: Record<string, string | undefined>) {
-  try {
-    if (!input.BILLING_PLAN_LIMITS || Buffer.byteLength(input.BILLING_PLAN_LIMITS, "utf8") > 8192)
-      throw new Error();
-    const parsed = BillingPolicySchema.safeParse(JSON.parse(input.BILLING_PLAN_LIMITS));
-    if (!parsed.success) throw new Error();
-    return parsed.data;
-  } catch {
-    throw new EnvironmentConfigurationError(["BILLING_PLAN_LIMITS"]);
-  }
-}
-
 /** Payment I/O activation is independent of required domain quotas. Disabled deployments use no keys. */
 export function parseBillingProviderEnv(input: Record<string, string | undefined>) {
   const flag = providerFlag().safeParse(input.BILLING_ENABLED);
@@ -282,13 +262,4 @@ export function parseBillingProviderEnv(input: Record<string, string | undefined
     yearlyPriceId: p.STRIPE_PREMIUM_YEARLY_PRICE_ID,
     appOrigin: p.APP_ORIGIN,
   };
-}
-
-/** Payment data is namespace-isolated even if an operator changes test/live credentials. */
-export function parseBillingContextEnv(input: Record<string, string | undefined>) {
-  const mode = z
-    .enum(["test", "live"])
-    .safeParse(input.BILLING_ENVIRONMENT ?? (input.NODE_ENV === "production" ? "live" : "test"));
-  if (!mode.success) throw new EnvironmentConfigurationError(["BILLING_ENVIRONMENT"]);
-  return { liveMode: mode.data === "live", providerIds: [`stripe_${mode.data}`] };
 }

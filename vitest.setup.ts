@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 Object.assign(process.env, { NODE_ENV: "test" });
 process.env.DATABASE_URL = "postgresql://test:test@localhost:5432/sammlerraum_test";
 process.env.APP_ORIGIN = "http://localhost:3000";
@@ -15,3 +16,10 @@ process.env.SMTP_SECURE = "false";
 process.env.SMTP_USER = "test-smtp-user";
 process.env.SMTP_PASSWORD = "test-smtp-password";
 process.env.SMTP_FROM = "Sammlerraum <noreply@example.test>";
+
+// Explicit legacy capability fixture, not a production/test-mode bypass in domain code.
+process.env.BILLING_ENABLED = "false";
+process.env.BILLING_PLAN_LIMITS = readFileSync(
+  new URL("./packages/testing/fixtures/legacy-billing-policy.json", import.meta.url),
+  "utf8",
+);

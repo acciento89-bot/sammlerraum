@@ -1,3 +1,4 @@
+import { BillingError } from "@sammlerraum/contracts/billing";
 import {
   ApiError,
   type ApiErrorEnvelope,
@@ -61,6 +62,24 @@ export function apiRoute<Args extends unknown[]>(
       });
     } catch (error) {
       if (error instanceof ApiError) return errorResponse(error, requestId);
+      if (error instanceof BillingError) {
+        const status =
+          error.code === "BILLING_UNAVAILABLE"
+            ? 503
+            : error.code === "BILLING_NOT_FOUND"
+              ? 404
+              : error.code === "BILLING_INVALID_REQUEST"
+                ? 400
+                : error.code === "PLAN_LIMIT_REACHED" ||
+                    error.code === "BILLING_CONFLICT" ||
+                    error.code === "BILLING_EVENT_CONFLICT"
+                  ? 409
+                  : 403;
+        return errorResponse(
+          new ApiError(error.code, status, "This action is not currently available for this plan"),
+          requestId,
+        );
+      }
       if (error instanceof ZodError) {
         return errorResponse(
           new ApiError("VALIDATION_ERROR", 400, VALIDATION_ERROR_MESSAGE),

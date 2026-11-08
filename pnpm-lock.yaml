@@ -224,6 +224,9 @@ importers:
       '@sammlerraum/billing':
         specifier: workspace:*
         version: link:../billing
+      '@sammlerraum/config':
+        specifier: workspace:*
+        version: link:../config
       '@sammlerraum/contracts':
         specifier: workspace:*
         version: link:../contracts

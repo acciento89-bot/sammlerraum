@@ -1,3 +1,4 @@
+import { BillingError } from "@sammlerraum/contracts/billing";
 import { ShareError } from "@sammlerraum/contracts/sharing";
 import { MarketBatchError } from "../market-data/market-batch";
 import { MembershipError } from "@sammlerraum/contracts/collaboration";
@@ -73,6 +74,7 @@ export async function runSearchTransaction<T>(
       return result;
     } catch (error) {
       if (
+        error instanceof BillingError ||
         error instanceof ShareError ||
         error instanceof MarketBatchError ||
         error instanceof MembershipError ||

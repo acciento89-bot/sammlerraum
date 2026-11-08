@@ -1030,7 +1030,8 @@
       "EMPTY": "Keine beitragenden Werte; keine Summe verfügbar"
     },
     "marketReferenceCounts": "{contributing} von {candidates} Einträgen tragen bei; {missing} fehlen. Beitragende Stückzahl: {quantity}.",
-    "marketReferencePeriod": "Quellenbeobachtungen: {from} bis {to}."
+    "marketReferencePeriod": "Quellenbeobachtungen: {from} bis {to}.",
+    "premiumAnalytics": "Erweiterte Analysen sind mit Premium verfügbar. Deine grundlegende Sammlungsübersicht bleibt nutzbar."
   },
   "Milestones": {
     "title": "Deine Meilensteine",
