@@ -1,3 +1,6 @@
+import { StructuredData } from "../seo/structured-data";
+import { websiteJsonLd } from "../../seo/structured-data";
+import { siteOrigin } from "../../seo/page-metadata";
 import Link from "next/link";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
@@ -10,6 +13,7 @@ export async function MarketingFeaturesPage({ params }: { params: Promise<{ loca
   const [t, home] = await Promise.all([getTranslations("SEO"), getTranslations("Home")]);
   return (
     <section className="marketing-shell" aria-labelledby="features-title">
+      <StructuredData value={websiteJsonLd(siteOrigin().origin)} />
       <p className="eyebrow">Sammlerraum</p>
       <h1 id="features-title">{t("featuresTitle")}</h1>
       <p className="intro">{t("featuresIntro")}</p>

@@ -1,0 +1,110 @@
+{
+  "scope": "actual local source proofs, not production or SearchConsole verification",
+  "seoNativeTranslationPassed": 48,
+  "compiledPassed": 8,
+  "nodeContractsPassed": 2,
+  "lighthouseActualRuns": 18,
+  "lighthouseAllThresholdsPassed": true,
+  "artifacts": [
+    {
+      "path": "task-6-lighthouse-config-green.log",
+      "sha256": "5318572e69d0709629a290fc76f7ead9a127f1f12d444c2a0ff6439f65841db8"
+    },
+    {
+      "path": "task-6-first-green.log",
+      "sha256": "73239308d4cd7f3312d9e8a29fda587b579ba85012082d741e3c700696461b2b"
+    },
+    {
+      "path": "task-6-web-types-final.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "task-6-root-types.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "task-6-build.log",
+      "sha256": "fa7dc4dce089e701e28a56b4332a33ec7fab10accf495cc2603c9f15bba1b3a3"
+    },
+    {
+      "path": "task-6-lhci-install.log",
+      "sha256": "019de3d00c1d0d7939436c36b45021b345f98e5733c96fb4c2b3da4cbccaf39d"
+    },
+    {
+      "path": "task-6-compiled.log",
+      "sha256": "a14be45db41917e43bb68eb0c6ba1ae9e4b5d8b99e352adf3342051b33e52bc0"
+    },
+    {
+      "path": "task-6-web-types.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "task-6-format-web.log",
+      "sha256": "c33ba9fdfda212c26a81084193b6778de19818fc41b8df5d94b75b33295507bb"
+    },
+    {
+      "path": "task-6-lighthouse-first.log",
+      "sha256": "fb905f9463b8118d77a0e647088963aea60252ee1a32aa426b4484808a2e2e4a"
+    },
+    {
+      "path": "task-6-red.log",
+      "sha256": "72401ca35dc8166ef5752840eb87f7ed95295dba124251d54426433ea17d928b"
+    },
+    {
+      "path": "task-6-format-root.log",
+      "sha256": "08d339ef7830da356c65208ca909a45549207d81c78d0b45a08f0557eaacb820"
+    },
+    {
+      "path": "task-6-suite.log",
+      "sha256": "ebbd56ca57b46c163e0c4b8acbe29d270b84fee76e7b0d6e49b2b92fd7b788b3"
+    },
+    {
+      "path": "task-6-lint.log",
+      "sha256": "f56d5e326084fac1832aa30ed8326862a41fd35390d49ad8c2f7cfffecff7329"
+    },
+    {
+      "path": "task-6-lighthouse-config-red.log",
+      "sha256": "138476643f2307a036365561485daf01a8c6c35218d7222ad2ebc2bbe34dce13"
+    },
+    {
+      "path": "task-6-node.log",
+      "sha256": "2b087007cba7ac70ed73d2284fac4952d2dacd77f18de476f2748892d72ef5f8"
+    },
+    {
+      "path": "task-6-format-tests.log",
+      "sha256": "aa76d5d6af0a181bae2e3985cbb97780da71a14e97a8bc66f0e8ad1f7cd7c4a2"
+    },
+    {
+      "path": "previews/task6-de-seo-desktop-category.png",
+      "sha256": "c8e9d49cb5c5c69230aaa0512f523953ad8f78feeb42a0408e693d2dc5956540"
+    },
+    {
+      "path": "previews/task6-en-seo-desktop-category.png",
+      "sha256": "a53e9dcda2a28fe5217a70b8e62bec8f7fdc8726e73c2ec68608f277aff8d74e"
+    },
+    {
+      "path": "previews/task6-de-seo-desktop-home.png",
+      "sha256": "ef4101e90fd75c46fe3e008233b06158b3e08f74496c9b9845ed90f1be41e70d"
+    },
+    {
+      "path": "previews/task6-de-seo-mobile-category.png",
+      "sha256": "c8e9d49cb5c5c69230aaa0512f523953ad8f78feeb42a0408e693d2dc5956540"
+    },
+    {
+      "path": "previews/task6-en-seo-desktop-home.png",
+      "sha256": "1167db68807cbd86f0bdfc1015bebfd787d28ad48aa7f2b608aad5291c949efd"
+    },
+    {
+      "path": "previews/task6-de-seo-mobile-home.png",
+      "sha256": "ef4101e90fd75c46fe3e008233b06158b3e08f74496c9b9845ed90f1be41e70d"
+    },
+    {
+      "path": "previews/task6-en-seo-mobile-home.png",
+      "sha256": "1167db68807cbd86f0bdfc1015bebfd787d28ad48aa7f2b608aad5291c949efd"
+    },
+    {
+      "path": "previews/task6-en-seo-mobile-category.png",
+      "sha256": "a53e9dcda2a28fe5217a70b8e62bec8f7fdc8726e73c2ec68608f277aff8d74e"
+    }
+  ]
+}

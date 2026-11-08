@@ -62,6 +62,7 @@ for (const locale of ["de", "en"] as const)
           "href",
           canonical(path),
         );
+        await expect(page.locator('script[type="application/ld+json"]')).toHaveCount(0);
         expect(await page.content()).not.toContain(secret);
         expect(await page.content()).not.toContain(hiddenComment);
       }
@@ -87,6 +88,11 @@ for (const locale of ["de", "en"] as const)
           "content",
           "index, follow",
         );
+        const structured = await page
+          .locator('script[type="application/ld+json"]')
+          .evaluateAll((nodes) => nodes.map((node) => JSON.parse(node.textContent ?? "null")));
+        expect(JSON.stringify(structured)).toContain("BreadcrumbList");
+        expect(JSON.stringify(structured)).not.toMatch(/Product|offers|price|aggregateRating/u);
         await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
           "href",
           canonical(path),
@@ -129,6 +135,7 @@ for (const locale of ["de", "en"] as const)
       expect(await (await request.get(`/sitemaps/community/${pSegment}`)).text()).not.toContain(
         handle,
       );
+      await expect(page.locator('script[type="application/ld+json"]')).toHaveCount(0);
       const node = await db!.collectionNode.create({
         data: { collectionId: f.collectionId, name: "Private ancestor", visibility: "PRIVATE" },
       });

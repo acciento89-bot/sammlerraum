@@ -1,3 +1,6 @@
+import { StructuredData } from "../seo/structured-data";
+import { websiteJsonLd } from "../../seo/structured-data";
+import { siteOrigin } from "../../seo/page-metadata";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
@@ -56,6 +59,7 @@ async function CollectorCategoryPage({
     copy = category[locale];
   return (
     <section className="marketing-shell" aria-labelledby="category-page-title">
+      <StructuredData value={websiteJsonLd(siteOrigin().origin)} />
       <nav aria-label={locale === "de" ? "Seitenpfad" : "Breadcrumb"}>
         <Link href={`/${locale}`}>Sammlerraum</Link>
         <span aria-hidden="true"> / </span>

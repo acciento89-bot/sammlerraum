@@ -1,3 +1,6 @@
+import { StructuredData } from "../../../components/seo/structured-data";
+import { websiteJsonLd } from "../../../seo/structured-data";
+import { siteOrigin } from "../../../seo/page-metadata";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { marketingMetadata } from "../../../seo/page-metadata";
@@ -25,6 +28,7 @@ export default async function PricingPage({
   const [t, catalog] = await Promise.all([getTranslations("Billing"), publicBillingCatalog()]);
   return (
     <section className="account-shell billing-shell">
+      <StructuredData value={websiteJsonLd(siteOrigin().origin)} />
       <p className="eyebrow">{t("eyebrow")}</p>
       <h1>{t("pricingTitle")}</h1>
       <p className="form-intro">{t("pricingIntro")}</p>

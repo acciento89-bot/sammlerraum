@@ -1,3 +1,6 @@
+import { StructuredData } from "../../components/seo/structured-data";
+import { websiteJsonLd } from "../../seo/structured-data";
+import { siteOrigin } from "../../seo/page-metadata";
 import { CategoryLinks } from "../../components/marketing/category-page";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -20,6 +23,7 @@ export default async function HomePage({ params }: Props) {
 
   return (
     <>
+      <StructuredData value={websiteJsonLd(siteOrigin().origin)} />
       <section className="hero" aria-labelledby="page-title">
         <p className="eyebrow">{t("eyebrow")}</p>
         <h1 id="page-title">{t("title")}</h1>

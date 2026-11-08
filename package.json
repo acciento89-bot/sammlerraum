@@ -12,9 +12,11 @@
     "typecheck": "pnpm -r typecheck",
     "format": "prettier --check .",
     "dev:web": "pnpm --filter @sammlerraum/web dev",
-    "dev:worker": "pnpm --filter @sammlerraum/worker dev"
+    "dev:worker": "pnpm --filter @sammlerraum/worker dev",
+    "lighthouse:ci": "lhci autorun"
   },
   "devDependencies": {
+    "@lhci/cli": "0.16.0",
     "@types/node": "24.5.2",
     "prettier": "3.6.2",
     "typescript": "5.9.2",

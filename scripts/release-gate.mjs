@@ -5,6 +5,13 @@ import { mkdirSync, writeFileSync } from "node:fs";
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const repo = "acciento89-bot/sammlerraum";
 export const requiredSteps = Object.freeze([
+  "Verify bilingual marketing metadata on desktop and mobile",
+  "Verify explicit owner search indexing controls on desktop and mobile",
+  "Verify dynamic private-safe sitemap protocol",
+  "Verify public indexing consent and ancestor privacy in both locales and layouts",
+  "Verify all curated category pages and noindex search in both locales and layouts",
+  "Verify factual structured data and actual private-safe PNG previews",
+  "Verify public-page Lighthouse SEO accessibility best practices and performance",
   "Lint workspace",
   "Build workspace",
   "Verify complete native V1 without skipped tests",

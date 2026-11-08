@@ -1,4 +1,5 @@
-import { collectorMetadata } from "../../../../seo/public-collector-metadata";
+import { StructuredData } from "../../../../components/seo/structured-data";
+import { collectorMetadata, collectorJsonLd } from "../../../../seo/public-collector-metadata";
 import { notFound } from "next/navigation";
 import { setRequestLocale } from "next-intl/server";
 import { createPublicProfileService } from "@sammlerraum/domain/community/public-profile-service";
@@ -27,5 +28,10 @@ export default async function Page({
     afterId,
   );
   if (!data) notFound();
-  return <PublicCollector locale={locale} data={data} />;
+  return (
+    <>
+      <StructuredData value={await collectorJsonLd("collection", params)} />
+      <PublicCollector locale={locale} data={data} />
+    </>
+  );
 }

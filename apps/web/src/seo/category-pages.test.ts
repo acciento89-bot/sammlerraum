@@ -19,6 +19,13 @@ describe("six deliberately curated bilingual category pages", () => {
         expect(findCategory(locale, page[locale].slug)).toBe(page);
         const metadata = categoryMetadata(page, locale, "https://sammlerraum.de");
         expect(metadata.robots).toMatchObject({ index: true, follow: true });
+        expect(metadata.openGraph).toMatchObject({
+          images: [
+            {
+              url: `https://sammlerraum.de/${locale}/${locale === "de" ? "sammeln" : "collecting"}/${page[locale].slug}/opengraph-image`,
+            },
+          ],
+        });
         expect(metadata.alternates?.languages).toMatchObject({
           "de-DE": `/de/sammeln/${page.de.slug}`,
           en: `/en/collecting/${page.en.slug}`,
