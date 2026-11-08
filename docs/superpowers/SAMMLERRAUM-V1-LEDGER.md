@@ -22,7 +22,7 @@ This is the handoff/status file for long-running implementation. Update it after
 | 09 | Collaboration, Sharing & Audit | 7 | complete (7/7); corrected1760cd2 CI SUCCESS | — |
 | 10 | Community, Moderation & Notifications | 8 | complete (8/8); corrected d69f78f CI SUCCESS | — |
 | 11 | AI-Assisted Capture | 5 | complete (5/5); corrected8957121 CI SUCCESS | — |
-| 12 | Premium & Billing | 5 | Tasks1–5 local complete; whole-phase fresh review and exact CI pending | Review + CI |
+| 12 | Premium & Billing | 5 | Tasks1–5 reviewed; four consolidated corrections locally verified; exact CI pending | CI |
 | 13 | Integration, Hardening & Release | 7 | not started | Task 1 |
 | 14 | SEO & Google Search Console | 7 | not started | Task 1 |
 
@@ -1288,3 +1288,10 @@ Billing Task4 source3c93994 follows local Task1e8300e7, Task2be72786 and Task3
 Task5 current source adds DE/EN public pricing and private current-plan/usage UI, fresh-session local status API, bounded closed official-SDK price projection/cache, retained-data/cancellation/return messaging, and responsive comparison. Local focused25 and compiled12 Billing +4 adjacent existing inventory/search journeys pass; full current-source gates are running. New strict Billing native and guarded offline compiled browser stages are wired into CI. The source has not yet passed its single whole-phase fresh review or exact remote CI; canonical accepted progress remains72/91. Main/deployment/live provider/payment actions remain unchanged.
 
 Billing final local Task5 source25f4d50:3019nativezeroSkip,279files,273.79s; compiled12Billing17.5s plus4adjacent9.1s, actual bounded Free dashboard and20own QA images retained. Roottypes/lint/worker+optimizedwebbuild and75prior migrationfiles unchanged. All5local task contracts complete; one independent whole-phase review begins. Canonicalaccepted72/91 remains unchanged until corrected exactCI; no main/deploy/provider activation.
+
+
+### Phase12 single whole-review correction — exact CI pending
+
+One fresh whole-phase review on e1b5810 found0Critical/4Important/0Minor. Root verified and closed all4 in source38745a551e1ebab1f63592a3e70e662fbdf65622, one consolidated RED→GREEN pass, no rereview: invoice-line service-period refunds; revision-protected quota-stopped imports; pre-enqueue advanced-filter checks with durable exact owner/request/query admission across downgrade; immutable generated-artifact origin excluded consistently from uploaded-original usage and incoming ownership capacity. Current ownership/source/freshness checks remain intact.
+
+Final local3030native/279files/zeroSkip278.25s, types/lint, both production builds and12compiledBilling16.8s+32compiledAI35.1sPASS. Broadsearch/shared196passed with4environment failures from omitted MONEY_AUTHORING_ENABLED=true; all4 affected cases pass9.2s on unchanged source with the intended flag. Exact CI uses the flag and must pass the complete suite; no local200green claim.75oldmigrationfiles unchanged, one additive frozen migration (76currentfiles);20own QA hashes retained and unrelated historical images restored exactly after preserving current variants. Existing DraftPR1 only; no merge/deployment/provider/payment/mail/customer/device/store/automation actions. Canonical accepted72/91 remains unchanged until exact CI.

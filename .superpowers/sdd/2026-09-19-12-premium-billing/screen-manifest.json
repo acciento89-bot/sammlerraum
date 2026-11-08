@@ -6,12 +6,12 @@
   },
   {
     "path": "screenshots/de-billing-desktop-free-dashboard.png",
-    "sha256": "463fcec866a6cdf60f53f78ee0b3206530dafe49b6b8a70395e89fdb03b6a4c4",
+    "sha256": "1f5e1f2ad5c76216d597475fbdbd094274f98cb783505a1551e74b32afb419a2",
     "syntheticOwnFixture": true
   },
   {
     "path": "screenshots/de-billing-desktop-premium.png",
-    "sha256": "84ea397eeae2086df2a0057eda99ecec82746547f877af4d5da3f769e4f4ffd7",
+    "sha256": "144bc0450b6a22ac9c2812c7ee5dcdbce1b0296dfe9bc9ad747680961a403607",
     "syntheticOwnFixture": true
   },
   {
@@ -31,12 +31,12 @@
   },
   {
     "path": "screenshots/de-billing-mobile-free-dashboard.png",
-    "sha256": "ddaaf52297872f46754040f117990439b8188380e4ef4796cfe9c1b9ebb5ee03",
+    "sha256": "c14bf30624e7fee861bdc9e6c43077732c5ba755b6cad7c7cd8bdcdef6533c96",
     "syntheticOwnFixture": true
   },
   {
     "path": "screenshots/de-billing-mobile-premium.png",
-    "sha256": "f0370cbf3cef5cc5fabde511dcfebcd2a772edb7623baefd09917157607410c5",
+    "sha256": "79a44c97732e1ad7028e3a0c53fc770b7543c5aec2f70942173ae354ee79768d",
     "syntheticOwnFixture": true
   },
   {
@@ -56,12 +56,12 @@
   },
   {
     "path": "screenshots/en-billing-desktop-free-dashboard.png",
-    "sha256": "12b49676c6910d930a49cd3607a3801adfbec97a9b43f680544d0a5ce9c20033",
+    "sha256": "33da61a3a30212a194f0f893e35a0d897b65b1345dc90c0c3163a8853550a4f2",
     "syntheticOwnFixture": true
   },
   {
     "path": "screenshots/en-billing-desktop-premium.png",
-    "sha256": "076305f7dd7bdb4ece94f17171089bf6f5b63ad75e1b2178906daa9a9c976a4f",
+    "sha256": "45ee8267cf80a46b1fec479cff5af12c15749b8159db683b8868d55434afad7a",
     "syntheticOwnFixture": true
   },
   {
@@ -81,12 +81,12 @@
   },
   {
     "path": "screenshots/en-billing-mobile-free-dashboard.png",
-    "sha256": "52fb9c4f89afb5da0a6071786e23b6e3aa0ec26c900aa3c88971659b6876d303",
+    "sha256": "7a0f892e25ac7cf5e56a0661db22b926737f30819b38385f8d9071715a27c925",
     "syntheticOwnFixture": true
   },
   {
     "path": "screenshots/en-billing-mobile-premium.png",
-    "sha256": "fe2f9b1cb57c78fc03f929f20c272653a4cd1b5a394c9e8d7c03679c5142424c",
+    "sha256": "a8b81a1b1718d157123b70ab9ac7ab37ebedfb00795b262d516e4c8047783073",
     "syntheticOwnFixture": true
   },
   {
