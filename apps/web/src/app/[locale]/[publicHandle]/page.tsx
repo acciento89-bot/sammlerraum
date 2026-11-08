@@ -1,9 +1,13 @@
+import { collectorMetadata } from "../../../seo/public-collector-metadata";
 import { notFound } from "next/navigation";
 import { setRequestLocale } from "next-intl/server";
 import { createPublicProfileService } from "@sammlerraum/domain/community/public-profile-service";
 import { PublicCollector } from "../../../components/community/public-collector";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
+export function generateMetadata(props: Parameters<typeof collectorMetadata>[1]) {
+  return collectorMetadata("profile", props);
+}
 export default async function Page({
   params,
   searchParams,

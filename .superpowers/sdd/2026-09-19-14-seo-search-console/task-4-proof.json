@@ -1,0 +1,67 @@
+{
+  "scope": "local source, owned fixtures only",
+  "focusedPassed": 7,
+  "compiledBrowserPassed": 4,
+  "artifacts": [
+    {
+      "path": "task-4-lint.log",
+      "sha256": "9dfe69f008b4fb27733257ba5e964b52998e26378dc3e3c1331d4cd688cec8de"
+    },
+    {
+      "path": "task-4-focused-green.log",
+      "sha256": "76efe95371ee06ff4ac56681e071cc2d272008bcd39cb68cbca8a193dbc26793"
+    },
+    {
+      "path": "task-4-browser.log",
+      "sha256": "5b46c52ac251ee14aaa14b63770c7ae5f1876ffcaef56277238c7eac3409ea2a"
+    },
+    {
+      "path": "task-4-root-types.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "task-4-native-green.log",
+      "sha256": "524a48b4ea1c58c7deaeb042e0a73242996286d16b61d13ed94842679eb498b0"
+    },
+    {
+      "path": "task-4-format-domain.log",
+      "sha256": "ead4c82ce28c0603600f55c6112d01a6f0dca34342611701ea0c4e41918e8b58"
+    },
+    {
+      "path": "task-4-web-types.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "task-4-build.log",
+      "sha256": "a6502a01e412e2f59ce4d70ca797f82a3fe0de62a85fc57e9db8851801d0aaca"
+    },
+    {
+      "path": "task-4-metadata-red.log",
+      "sha256": "da0b3642a5cf27ee49d762c7e16ac2de81d73dfd03a3d920423d32888bcaadef"
+    },
+    {
+      "path": "task-4-red.log",
+      "sha256": "7d23bdd31d9aebdc5044329a403664f50754ad03aceda42b18c95bc9b798c039"
+    },
+    {
+      "path": "task-4-format-web.log",
+      "sha256": "4444cd3099c95a55553749f87730cf52308520d92a24d3edc4b8c937a23a2c34"
+    },
+    {
+      "path": "screenshots/task4-en-seo-mobile-public-item.png",
+      "sha256": "b4f6f13843c4eddc24b0042f7b6da619f1fbcedb7734842c7b173c51ccd3c74f"
+    },
+    {
+      "path": "screenshots/task4-de-seo-mobile-public-item.png",
+      "sha256": "5c78367886bc2a1214495c18ddf457c089dd882618443c5c6e02e69678313582"
+    },
+    {
+      "path": "screenshots/task4-en-seo-desktop-public-item.png",
+      "sha256": "f0deb34e218c9aa3af6379ddc5b42e5b678c0b821049f1fde8ceed78f1873275"
+    },
+    {
+      "path": "screenshots/task4-de-seo-desktop-public-item.png",
+      "sha256": "66754edb1f313faa1b34c9d5408859ec7352404afaacdfb52862fcef9a029399"
+    }
+  ]
+}
