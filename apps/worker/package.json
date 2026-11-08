@@ -26,7 +26,8 @@
     "sharp": "0.35.4",
     "yauzl": "3.4.0",
     "zod": "4.1.11",
-    "@sammlerraum/email": "workspace:*"
+    "@sammlerraum/email": "workspace:*",
+    "@sammlerraum/ai": "workspace:*"
   },
   "devDependencies": {
     "@types/yauzl": "3.4.0",

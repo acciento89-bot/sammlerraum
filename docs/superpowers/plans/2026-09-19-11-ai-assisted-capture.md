@@ -157,7 +157,7 @@ git commit -m "feat: add initial AI vision provider"
 - Consumes: `ai.analyze-item { analysisJobId }`.
 - Produces: validated persisted suggestion set + usage metrics.
 
-- [ ] **Step 1: Write failing retry/private-media tests**
+- [x] **Step 1: Write failing retry/private-media tests**
 
 ```ts
 it("does not create a second suggestion set on retry", async () => {
@@ -173,21 +173,21 @@ it("fails if a referenced asset is no longer authorized for the requesting user"
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run apps/worker/src/jobs/analyze-item.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement handler**
+- [x] **Step 3: Implement handler**
 
 Re-check current media policy before provider call. Accept image-purpose assets only; never follow arbitrary document links. Record provider/model/input image count and provider-reported usage if available.
 
-- [ ] **Step 4: Run tests**
+- [x] **Step 4: Run tests**
 
 Run: `pnpm vitest run apps/worker/src/jobs/analyze-item.test.ts`  
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add apps/worker/src/jobs/analyze-item* apps/worker/src/main.ts

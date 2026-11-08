@@ -2,6 +2,7 @@ import { expect, it, vi } from "vitest";
 const wiring = vi.hoisted(() => ({
   startWorker: vi.fn(async (_options: unknown) => {}),
   emailEnabled: false,
+  aiEnabled: false,
   register: vi.fn(),
   registerCancellable: vi.fn(),
   disconnect: vi.fn(async () => {}),
@@ -28,6 +29,12 @@ vi.mock("@sammlerraum/config/server", () => ({
       : null,
   serverEnv: {
     APP_ORIGIN: "https://example.invalid",
+    get AI_ANALYSIS_ENABLED() {
+      return wiring.aiEnabled;
+    },
+    AI_OPENAI_API_KEY: "fixture-not-a-real-key",
+    AI_OPENAI_MODEL: "fixture-vision",
+    AI_MONTHLY_REQUEST_LIMIT: 10,
     get NOTIFICATION_EMAIL_ENABLED() {
       return wiring.emailEnabled;
     },
@@ -85,6 +92,11 @@ it("passes the production-composed market lifecycle to startWorker and registers
     disconnectDatabase(): Promise<void>;
   };
   expect(options).not.toHaveProperty("notificationDispatcher");
+  expect(options).not.toHaveProperty("aiDispatcher");
+  expect(wiring.registerCancellable).not.toHaveBeenCalledWith(
+    "ai.analyze-item",
+    expect.any(Function),
+  );
   expect(wiring.registerCancellable).not.toHaveBeenCalledWith(
     "notification.send-email",
     expect.any(Function),
@@ -118,5 +130,30 @@ it("composes the notification worker only after explicit email activation", asyn
     await options.notificationDispatcher.stop();
   } finally {
     wiring.emailEnabled = false;
+  }
+});
+
+it("registers the advisory photo worker only after explicit AI activation", async () => {
+  vi.resetModules();
+  wiring.startWorker.mockClear();
+  wiring.register.mockClear();
+  wiring.registerCancellable.mockClear();
+  wiring.aiEnabled = true;
+  try {
+    await import("./run");
+    await vi.waitFor(() => expect(wiring.startWorker).toHaveBeenCalledOnce());
+    expect(wiring.registerCancellable).toHaveBeenCalledWith(
+      "ai.analyze-item",
+      expect.any(Function),
+    );
+    const options = wiring.startWorker.mock.calls[0]![0] as {
+      aiDispatcher: { start(): void; stop(): Promise<void> };
+    };
+    expect(options.aiDispatcher).toEqual(
+      expect.objectContaining({ start: expect.any(Function), stop: expect.any(Function) }),
+    );
+    await options.aiDispatcher.stop();
+  } finally {
+    wiring.aiEnabled = false;
   }
 });

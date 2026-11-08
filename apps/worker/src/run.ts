@@ -1,3 +1,7 @@
+import { OpenAICollectibleProvider } from "@sammlerraum/ai/openai-provider";
+import { createAIAnalysisService } from "@sammlerraum/domain/ai/ai-analysis-service";
+import { createAnalyzeItemJob, AI_ANALYZE_ITEM_JOB } from "./jobs/analyze-item";
+import { createAIAnalysisDispatcher } from "./jobs/ai-analysis-dispatcher";
 import { createSmtpProvider } from "@sammlerraum/email/smtp-provider";
 import { createSendEmailJob, NOTIFICATION_EMAIL_JOB } from "./jobs/send-email";
 import { createNotificationEmailRepository } from "./jobs/notification-email-repository";
@@ -160,12 +164,33 @@ async function startProductionWorker(): Promise<void> {
     );
     notificationDispatcher = createNotificationEmailDispatcher(emailRepository, client, console);
   }
+  let aiDispatcher: ReturnType<typeof createAIAnalysisDispatcher> | undefined;
+  if (serverEnv.AI_ANALYSIS_ENABLED) {
+    // Server config has already required an explicit model, key and positive admission budget.
+    if (!serverEnv.AI_OPENAI_API_KEY || !serverEnv.AI_OPENAI_MODEL)
+      throw new Error("Analysis configuration unavailable");
+    const provider = new OpenAICollectibleProvider({
+      apiKey: serverEnv.AI_OPENAI_API_KEY,
+      model: serverEnv.AI_OPENAI_MODEL,
+    });
+    const service = createAIAnalysisService(marketDatabase, {
+      providerId: provider.id,
+      model: provider.model,
+      monthlyRequestLimit: serverEnv.AI_MONTHLY_REQUEST_LIMIT,
+    });
+    registry.registerCancellable(
+      AI_ANALYZE_ITEM_JOB,
+      createAnalyzeItemJob(service, provider, storage),
+    );
+    aiDispatcher = createAIAnalysisDispatcher(service, client, console);
+  }
   await worker.startWorker({
     queue: runtime,
     imageDispatcher,
     exportDispatcher,
     reportDispatcher,
     ...(notificationDispatcher ? { notificationDispatcher } : {}),
+    ...(aiDispatcher ? { aiDispatcher } : {}),
     importDispatcher,
     mediaCleanup,
     marketSync,

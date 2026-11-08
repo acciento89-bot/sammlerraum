@@ -1865,7 +1865,16 @@ model AIAnalysisAttempt {
   errorCode    String?                 @db.VarChar(64)
   startedAt    DateTime                @default(now())
   finishedAt   DateTime?
+  usageReport  AIAnalysisUsageReport?
   job          AIAnalysisJob           @relation(fields: [jobId], references: [id], onDelete: Cascade)
 
   @@id([jobId, number])
+}
+
+model AIAnalysisUsageReport {
+  attemptToken String            @id @db.Uuid
+  inputTokens  Int?
+  outputTokens Int?
+  recordedAt   DateTime          @default(now())
+  attempt      AIAnalysisAttempt @relation(fields: [attemptToken], references: [token], onDelete: Cascade)
 }
