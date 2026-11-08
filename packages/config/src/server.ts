@@ -58,6 +58,13 @@ const providerCredential = () =>
 const providerBudget = (maximum: number) => z.coerce.number().int().min(0).max(maximum).default(0);
 const schema = z
   .object({
+    AI_ANALYSIS_ENABLED: providerFlag(),
+    AI_OPENAI_API_KEY: providerCredential(),
+    AI_OPENAI_MODEL: z
+      .string()
+      .regex(/^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$/u)
+      .optional(),
+    AI_MONTHLY_REQUEST_LIMIT: providerBudget(10000),
     NOTIFICATION_EMAIL_ENABLED: providerFlag(),
     MONEY_AUTHORING_ENABLED: providerFlag(),
     MONEY_CANONICAL_CONSUMERS_ENABLED: providerFlag(),
@@ -96,6 +103,16 @@ const schema = z
     WORKER_HEALTH_PORT: z.coerce.number().int().min(1).max(65535).default(3001),
   })
   .superRefine((env, context) => {
+    if (
+      env.AI_ANALYSIS_ENABLED &&
+      !(env.AI_OPENAI_API_KEY && env.AI_OPENAI_MODEL && env.AI_MONTHLY_REQUEST_LIMIT > 0)
+    )
+      context.addIssue({
+        code: "custom",
+        path: ["AI_ANALYSIS_ENABLED"],
+        message: "incomplete AI configuration",
+      });
+
     for (const provider of ["SCRYDEX", "PRICECHARTING"] as const) {
       if (!env[`${provider}_ENABLED`]) continue;
       const valid =

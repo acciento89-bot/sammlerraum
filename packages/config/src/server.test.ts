@@ -17,6 +17,8 @@ describe("parseServerEnv", () => {
   it("accepts the required foundation environment", () => {
     expect(parseServerEnv(validEnvironment)).toEqual({
       ...validEnvironment,
+      AI_ANALYSIS_ENABLED: false,
+      AI_MONTHLY_REQUEST_LIMIT: 0,
       NOTIFICATION_EMAIL_ENABLED: false,
       MONEY_AUTHORING_ENABLED: false,
       MONEY_CANONICAL_CONSUMERS_ENABLED: false,
@@ -198,4 +200,34 @@ it.each([
   expect(() => parseServerEnv({ ...validEnvironment, [key]: value })).toThrow(
     EnvironmentConfigurationError,
   );
+});
+
+describe("explicit bounded AI activation", () => {
+  it("keeps AI off even if credentials and a model exist", () => {
+    const parsed = parseServerEnv({
+      ...validEnvironment,
+      AI_OPENAI_API_KEY: "fixture-key",
+      AI_OPENAI_MODEL: "fixture-vision",
+    });
+    expect(parsed).toMatchObject({ AI_ANALYSIS_ENABLED: false, AI_MONTHLY_REQUEST_LIMIT: 0 });
+  });
+  it("rejects partial activation and accepts only an explicit positive limit", () => {
+    expect(() => parseServerEnv({ ...validEnvironment, AI_ANALYSIS_ENABLED: "true" })).toThrow(
+      EnvironmentConfigurationError,
+    );
+    const ready = {
+      ...validEnvironment,
+      AI_ANALYSIS_ENABLED: "true",
+      AI_OPENAI_API_KEY: "fixture-key",
+      AI_OPENAI_MODEL: "fixture-vision",
+      AI_MONTHLY_REQUEST_LIMIT: "10",
+    };
+    expect(parseServerEnv(ready)).toMatchObject({
+      AI_ANALYSIS_ENABLED: true,
+      AI_MONTHLY_REQUEST_LIMIT: 10,
+    });
+    expect(() => parseServerEnv({ ...ready, AI_MONTHLY_REQUEST_LIMIT: "0" })).toThrow(
+      EnvironmentConfigurationError,
+    );
+  });
 });

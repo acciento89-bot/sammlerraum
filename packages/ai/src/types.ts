@@ -4,6 +4,12 @@ export type AICollectibleImage = Readonly<{ bytes: Uint8Array; mimeType: "image/
 export type AIAnalysisInput = Readonly<{
   images: readonly AICollectibleImage[];
   signal: AbortSignal;
+  categories?: readonly string[];
+  catalogCandidates?: readonly Readonly<{
+    catalogEntryId: string;
+    catalogVariantId: string | null;
+    title: string;
+  }>[];
 }>;
 export type AIAnalysisOutput = Readonly<{ analysis: CollectibleAnalysis; usage: AIReportedUsage }>;
 export interface AIProvider {

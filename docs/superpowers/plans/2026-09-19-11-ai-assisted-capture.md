@@ -113,7 +113,7 @@ git commit -m "feat: add provider-neutral AI analysis model"
 - Consumes: `AI_OPENAI_API_KEY`, `AI_OPENAI_MODEL`.
 - Produces: `OpenAICollectibleProvider` implementing `AIProvider`.
 
-- [ ] **Step 1: Write failing schema-validation test**
+- [x] **Step 1: Write failing schema-validation test**
 
 ```ts
 it("rejects provider output that does not satisfy the canonical schema", async () => {
@@ -123,21 +123,21 @@ it("rejects provider output that does not satisfy the canonical schema", async (
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run packages/ai/src/openai-provider.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement adapter**
+- [x] **Step 3: Implement adapter**
 
 Use the official SDK response API with a system instruction that explicitly forbids asserting authenticity/value/grading/provenance as facts and requires structured JSON conforming to `CollectibleAnalysisSchema`. Convert only authorized image bytes to provider input. Parse and validate the final output through Zod before returning it.
 
-- [ ] **Step 4: Run tests**
+- [x] **Step 4: Run tests**
 
 Run: `pnpm vitest run packages/ai/src/openai-provider.test.ts`  
 Expected: PASS using a fake SDK client; no real API request in CI.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/ai packages/config .env.example

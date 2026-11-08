@@ -3,7 +3,8 @@
   "private": true,
   "type": "module",
   "exports": {
-    "./types": "./src/types.ts"
+    "./types": "./src/types.ts",
+    "./openai-provider": "./src/openai-provider.ts"
   },
   "scripts": {
     "build": "pnpm typecheck",
@@ -11,6 +12,8 @@
     "lint": "prettier --check ."
   },
   "dependencies": {
-    "@sammlerraum/contracts": "workspace:*"
+    "@sammlerraum/contracts": "workspace:*",
+    "openai": "7.53.0",
+    "zod": "4.1.11"
   }
 }
