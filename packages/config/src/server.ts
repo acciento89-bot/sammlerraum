@@ -230,3 +230,51 @@ export function parseBillingPolicyEnv(input: Record<string, string | undefined>)
     throw new EnvironmentConfigurationError(["BILLING_PLAN_LIMITS"]);
   }
 }
+
+/** Payment I/O activation is independent of required domain quotas. Disabled deployments use no keys. */
+export function parseBillingProviderEnv(input: Record<string, string | undefined>) {
+  const flag = providerFlag().safeParse(input.BILLING_ENABLED);
+  if (!flag.success) throw new EnvironmentConfigurationError(["BILLING_ENABLED"]);
+  if (!flag.data) return null;
+  const parsed = z
+    .object({
+      STRIPE_SECRET_KEY: z
+        .string()
+        .min(12)
+        .max(4096)
+        .regex(/^(?:rk|sk)_(?:test|live)_[A-Za-z0-9_]+$/u),
+      STRIPE_WEBHOOK_SECRET: z
+        .string()
+        .min(8)
+        .max(4096)
+        .regex(/^whsec_[A-Za-z0-9_]+$/u),
+      STRIPE_PREMIUM_MONTHLY_PRICE_ID: z
+        .string()
+        .max(255)
+        .regex(/^price_[A-Za-z0-9_]+$/u),
+      STRIPE_PREMIUM_YEARLY_PRICE_ID: z
+        .string()
+        .max(255)
+        .regex(/^price_[A-Za-z0-9_]+$/u),
+      APP_ORIGIN: z.string().transform(applicationOrigin),
+    })
+    .safeParse(input);
+  if (!parsed.success)
+    throw new EnvironmentConfigurationError([
+      ...new Set(parsed.error.issues.map((i) => String(i.path[0]))),
+    ]);
+  const p = parsed.data,
+    url = new URL(p.APP_ORIGIN);
+  if (p.STRIPE_PREMIUM_MONTHLY_PRICE_ID === p.STRIPE_PREMIUM_YEARLY_PRICE_ID)
+    throw new EnvironmentConfigurationError(["STRIPE_PREMIUM_YEARLY_PRICE_ID"]);
+  if (url.protocol !== "https:" && !["localhost", "127.0.0.1", "[::1]"].includes(url.hostname))
+    throw new EnvironmentConfigurationError(["APP_ORIGIN"]);
+  parseBillingPolicyEnv(input);
+  return {
+    apiKey: p.STRIPE_SECRET_KEY,
+    webhookSecret: p.STRIPE_WEBHOOK_SECRET,
+    monthlyPriceId: p.STRIPE_PREMIUM_MONTHLY_PRICE_ID,
+    yearlyPriceId: p.STRIPE_PREMIUM_YEARLY_PRICE_ID,
+    appOrigin: p.APP_ORIGIN,
+  };
+}

@@ -1903,6 +1903,8 @@ enum BillingSubscriptionStatus {
 }
 
 model BillingAccount {
+  customerRequestKey String                @unique @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  operations         BillingOperation[]
   subjectId          String
   provider           String
   providerCustomerId String?
@@ -1929,4 +1931,27 @@ model BillingSubscription {
 
   @@unique([provider, providerSubscriptionId])
   @@index([subjectId, currentPeriodEnd])
+}
+
+model BillingOperation {
+  id                String         @id @db.Uuid
+  subjectId         String
+  provider          String
+  requestKey        String         @db.Uuid
+  requestDigest     String         @db.Char(64)
+  purpose           String
+  cadence           String?
+  locale            String
+  status            String         @default("PENDING")
+  dispatchCount     Int            @default(0)
+  providerSessionId String?
+  url               String?
+  expiresAt         DateTime
+  createdAt         DateTime       @default(now())
+  account           BillingAccount @relation(fields: [subjectId, provider], references: [subjectId, provider], onDelete: Cascade)
+
+  @@unique([subjectId, requestKey])
+  @@unique([provider, purpose, providerSessionId])
+  @@index([subjectId, purpose, expiresAt])
+  @@index([subjectId, createdAt])
 }

@@ -26,3 +26,30 @@ it("does not leak malformed private input in validation errors", () => {
     /^Invalid environment configuration: BILLING_PLAN_LIMITS$/u,
   );
 });
+
+it("keeps payment activation off and requires complete explicit provider configuration", async () => {
+  const module = await import("./server");
+  expect(module.parseBillingProviderEnv, "provider configuration parser exists").toBeTypeOf(
+    "function",
+  );
+  expect(module.parseBillingProviderEnv({})).toBeNull();
+  expect(() => module.parseBillingProviderEnv({ BILLING_ENABLED: "true" })).toThrow();
+  const ready = {
+    BILLING_ENABLED: "true",
+    STRIPE_SECRET_KEY: "rk_test_fixture",
+    STRIPE_WEBHOOK_SECRET: "whsec_fixture",
+    STRIPE_PREMIUM_MONTHLY_PRICE_ID: "price_monthly_fixture",
+    STRIPE_PREMIUM_YEARLY_PRICE_ID: "price_yearly_fixture",
+    APP_ORIGIN: "https://sammlerraum.example",
+    BILLING_PLAN_LIMITS: JSON.stringify({ FREE: tier, PREMIUM: tier }),
+  };
+  expect(module.parseBillingProviderEnv(ready)).toMatchObject({
+    monthlyPriceId: "price_monthly_fixture",
+  });
+  expect(() =>
+    module.parseBillingProviderEnv({
+      ...ready,
+      STRIPE_PREMIUM_YEARLY_PRICE_ID: ready.STRIPE_PREMIUM_MONTHLY_PRICE_ID,
+    }),
+  ).toThrow();
+});

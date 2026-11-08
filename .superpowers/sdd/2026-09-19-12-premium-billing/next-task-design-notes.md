@@ -1,0 +1,25 @@
+# Next-task preflight (not implementation or acceptance)
+
+## Task3
+
+Verified actual installed stripe23.1.0 types: API2026-10-28.endive; subscription periods live on SubscriptionItem.current_period_start/end. InvoicePaymentListParams supports payment:{type:'payment_intent',payment_intent:id},status:'paid',pagination. Invoice parent subscription_details is the first-class subscription relation. Do not use deleted/obsolete top-level invoice/paymentIntent fields or arbitrary metadata. Risk graph may involve multiple invoices: paginate has_more within explicit work budget, do not silently acknowledge partial reconciliation as complete.
+
+Proposed shape to decide at brief: bounded raw signature verification via official SDK before parsing, extract only minimal opaque signed event hints, durable receipt id+digest+status, duplicate event payload mismatch fails closed. Endpoint truthfully ACKs durable queueing, not premature applied state; dispatcher recovers lost wakeups. No provider call/DB transaction overlap. One renewable/fenced account sync claim across all canonical state reads and commit, reject expired stale responses, actual DB clock. Event timestamps/IDs are audit/idempotency, never ordering authority. Re-read canonical subscription and bind its actual customer to a local account. Checkout/metadata/return URLs grant nothing. Do not create accounts from webhook metadata.
+
+Must consider lifecycle customer.subscription.*, invoice.paid/payment_failed, async Checkout success, refund/dispute/fraud per Stripe guidance. Restrict to this app's locally mapped subscriptions and approved plan prices; a shared Stripe account/foreign product's payment must not alter another app. Handle current-period vs historical/partial refunds and risk-hold restoration explicitly rather than let an ordinary delayed update resurrect a suspended entitlement. No real webhook registrations/keys/payments. Official SDK fake HTTP and test HMAC fixtures only.
+
+Potential deployment consistency: do not replace price/origin while pending operations exist. Current Task2 documented safe conflict/unavailability rather than changing an idempotency key and risking duplicate charge sessions. Numeric entitlement policy is independent from payment-I/O activation; no BILLING_ENABLED bypass for domain gates.
+
+## Task4
+
+Required actual entrypoints include low-level item helpers/import commit/quantity split/collaborative owner quotas, media admission and bytes, durable AI admission, advanced reads/saved views/exports. New cost admission must lock owning user before parent/resource locks, matching existing user→collection→item order, and remain atomic with the real write. Actor subscription controls their own advanced reads; owner's quota controls writes to owned resources. ACL/source market licenses are independent and never enlarged by Premium.
+
+Explicit strict central deployment policy, no hidden product numbers/defaults. Existing tests may use a centrally explicit synthetic policy, but cannot insert production test bypasses or skip actual admission calls. Native integration witnesses must set a bounded Free policy and exercise the real paths; positive Premium counterpart and downgrade/no-data-loss required. Do not remove Free core, basic/community search, duplicates, wishlist/manual values/CSV access. Define advanced filter classification explicitly from the real AST, not a UI toggle or caller assertion. Saved advanced views stay stored after downgrade but execution rechecks.
+
+AI admission accounting must survive physical item/job erasure independently of AI result rows while account privacy deletion may erase ownership. Backfill existing admissions once, no double-count jobs+reservations; admission and job creation share owner lock and transaction. Current own usage should distinguish retained operations from erased details without inventing provider tokens.
+
+Need inspect actual account-deletion flow before release; do not leave paid renewal unintentionally active if account deletion can remove the only local binding. This is a preflight question about code, not authorization to call a live provider or a claim of implemented cancellation.
+
+## Task3 required Checkout reconciliation dependency
+
+Before treating the billing phase as ready, add actual fake-HTTP witness for an already active managed provider subscription whose webhook has not reached local state. Local active-plan check alone cannot prevent a second purchase after an old operation expires during an outage. Checkout is an allowed place to read canonical customer subscriptions (normal entitlement checks stay local); refuse a new purchase when that dedicated locally owned customer already has an active/trialing/unpaid/pending subscription and direct to plan sync/Portal. Keep exact idempotent operations/metadata and no provider grant on redirect. This belongs to Task3 lifecycle integration and must be covered before phase review/activation, not silently treated as satisfied by Task2's local concurrent-nonce test. Do not mutate Task2 source during its current full gates.

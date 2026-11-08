@@ -76,7 +76,8 @@
     "./ai/ai-analysis-service": "./src/ai/ai-analysis-service.ts",
     "./ai/suggestion-apply-service": "./src/ai/suggestion-apply-service.ts",
     "./ai/usage-service": "./src/ai/usage-service.ts",
-    "./billing/entitlement-service": "./src/billing/entitlement-service.ts"
+    "./billing/entitlement-service": "./src/billing/entitlement-service.ts",
+    "./billing/session-service": "./src/billing/session-service.ts"
   },
   "scripts": {
     "build": "pnpm typecheck",
@@ -89,7 +90,8 @@
     "file-type": "21.3.4",
     "sharp": "0.35.4",
     "@sammlerraum/market-data": "workspace:*",
-    "zod": "4.1.11"
+    "zod": "4.1.11",
+    "@sammlerraum/billing": "workspace:*"
   },
   "devDependencies": {
     "@sammlerraum/db": "workspace:*"

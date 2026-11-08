@@ -42,7 +42,7 @@
   - `getEntitlements(subjectId): Promise<Entitlements>`
   - `assertEntitled(subjectId, feature, usage?)`.
 
-- [ ] **Step 1: Write failing free-limit/server-gate test**
+- [x] **Step 1: Write failing free-limit/server-gate test**
 
 ```ts
 it("rejects item creation above the configured free limit", async () => {
@@ -52,18 +52,18 @@ it("rejects item creation above the configured free limit", async () => {
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run packages/domain/src/billing/entitlement-service.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement entitlement model**
+- [x] **Step 3: Implement entitlement model**
 
 Plan keys: `FREE`, `PREMIUM`. Feature gates include item count, media count/bytes, AI usage, market-data access, extended history, advanced analytics, XLSX, expanded import profiles, advanced filters.
 
 Required production configuration includes numeric limits where Free is bounded; tests use explicit fixture values rather than implicit defaults.
 
-- [ ] **Step 4: Migrate and test**
+- [x] **Step 4: Migrate and test**
 
 Run:
 ```bash
@@ -73,7 +73,7 @@ pnpm vitest run packages/domain/src/billing
 
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/db packages/domain/src/billing packages/contracts/src/billing.ts packages/config

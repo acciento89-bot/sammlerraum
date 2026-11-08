@@ -32,6 +32,9 @@ importers:
       '@better-auth/utils':
         specifier: 0.4.2
         version: 0.4.2
+      '@sammlerraum/billing':
+        specifier: workspace:*
+        version: link:../../packages/billing
       '@sammlerraum/config':
         specifier: workspace:*
         version: link:../../packages/config
@@ -164,6 +167,18 @@ importers:
         specifier: 4.1.11
         version: 4.1.11
 
+  packages/billing:
+    dependencies:
+      '@sammlerraum/contracts':
+        specifier: workspace:*
+        version: link:../contracts
+      stripe:
+        specifier: 23.1.0
+        version: 23.1.0(@types/node@24.5.2)
+      zod:
+        specifier: 4.1.11
+        version: 4.1.11
+
   packages/config:
     dependencies:
       '@sammlerraum/contracts':
@@ -203,6 +218,9 @@ importers:
 
   packages/domain:
     dependencies:
+      '@sammlerraum/billing':
+        specifier: workspace:*
+        version: link:../billing
       '@sammlerraum/contracts':
         specifier: workspace:*
         version: link:../contracts
@@ -2181,6 +2199,15 @@ packages:
 
   strip-literal@3.1.0:
     resolution: {integrity: sha512-8r3mkIM/2+PpjHoOtiAW8Rg3jJLHaV7xPwG+YRGrv6FP0wwk/toTpATxWYOW0BKdWwl82VT2tFYi5DlROa0Mxg==}
+
+  stripe@23.1.0:
+    resolution: {integrity: sha512-fVUfMSfTPoukfoV//MUKAx2+YxyKmYaYtnAL9VkfnHfaPNQylFdWZMD+zgUFerI8rjbaiER8Vzj2XEUQ2AhAsQ==}
+    engines: {node: '>=20'}
+    peerDependencies:
+      '@types/node': '>=20'
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
 
   strtok3@10.3.5:
     resolution: {integrity: sha512-ki4hZQfh5rX0QDLLkOCj+h+CVNkqmp/CMf8v8kZpkNVK6jGQooMytqzLZYUVYIZcFZ6yDB70EfD8POcFXiF5oA==}
@@ -4233,6 +4260,10 @@ snapshots:
   strip-literal@3.1.0:
     dependencies:
       js-tokens: 9.0.1
+
+  stripe@23.1.0(@types/node@24.5.2):
+    optionalDependencies:
+      '@types/node': 24.5.2
 
   strtok3@10.3.5:
     dependencies:

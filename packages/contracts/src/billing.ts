@@ -64,7 +64,8 @@ export class BillingError extends Error {
       | "PREMIUM_REQUIRED"
       | "BILLING_INVALID_REQUEST"
       | "BILLING_NOT_FOUND"
-      | "BILLING_UNAVAILABLE",
+      | "BILLING_UNAVAILABLE"
+      | "BILLING_CONFLICT",
   ) {
     super(code);
     this.name = "BillingError";
