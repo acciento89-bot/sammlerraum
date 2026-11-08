@@ -5,9 +5,11 @@ import { defineConfig, devices } from "@playwright/test";
 // The real application still fails closed when its own policy is missing.
 process.env.BILLING_PLAN_LIMITS ??= readFileSync(
   new URL(
-    process.env.RUN_BILLING_E2E === "1"
-      ? "../../packages/testing/fixtures/billing-browser-policy.json"
-      : "../../packages/testing/fixtures/legacy-billing-policy.json",
+    process.env.RUN_SECURITY_E2E === "1"
+      ? "../../packages/testing/fixtures/security-billing-policy.json"
+      : process.env.RUN_BILLING_E2E === "1"
+        ? "../../packages/testing/fixtures/billing-browser-policy.json"
+        : "../../packages/testing/fixtures/legacy-billing-policy.json",
     import.meta.url,
   ),
   "utf8",
@@ -21,6 +23,7 @@ export default defineConfig({
     baseURL: "http://localhost:3000",
   },
   projects: [
+    { name: "security-api", testMatch: "**/security-permissions.spec.ts" },
     {
       name: "billing-desktop",
       testMatch: "**/billing.spec.ts",
