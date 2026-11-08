@@ -2618,3 +2618,73 @@ body:has(.transfer-shell) .skip-link:not(:focus) {
     width: 100%;
   }
 }
+
+/* Responsive billing: preserve exact counts and readable plan comparison on mobile. */
+.billing-shell > section {
+  margin-block: 1.75rem;
+}
+.billing-plans,
+.billing-usage-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+  margin-block: 1.25rem;
+}
+.billing-plans article {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.65rem;
+}
+.billing-plans h2,
+.billing-plans p {
+  margin: 0;
+}
+.billing-plans button,
+.billing-link {
+  margin-top: auto;
+  min-height: 2.8rem;
+}
+.billing-premium {
+  border-color: var(--accent, #226b5d);
+}
+.billing-price,
+.billing-plan {
+  font-size: clamp(1.65rem, 4vw, 2.45rem);
+  font-weight: 750;
+  overflow-wrap: anywhere;
+}
+.billing-price span {
+  font-size: 0.95rem;
+}
+.billing-comparison {
+  max-width: 100%;
+  overflow-x: auto;
+  margin-block: 1.5rem;
+}
+.billing-comparison table {
+  min-width: 34rem;
+  width: 100%;
+  border-collapse: collapse;
+}
+.billing-comparison caption {
+  font-size: 1.2rem;
+  font-weight: 700;
+  text-align: left;
+  margin-bottom: 0.8rem;
+}
+.billing-comparison th,
+.billing-comparison td {
+  padding: 0.8rem 0.6rem;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  overflow-wrap: normal;
+}
+.billing-comparison thead th,
+.billing-comparison td {
+  white-space: nowrap;
+}
+.billing-usage-grid progress {
+  width: 100%;
+  accent-color: #226b5d;
+}

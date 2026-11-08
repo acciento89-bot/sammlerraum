@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 type Props = { params: Promise<{ locale: "de" | "en" }> };
@@ -12,6 +13,9 @@ export default async function HomePage({ params }: Props) {
       <p className="eyebrow">{t("eyebrow")}</p>
       <h1 id="page-title">{t("title")}</h1>
       <p className="intro">{t("intro")}</p>
+      <p>
+        <Link href={`/${locale}/pricing`}>{t("pricing")}</Link>
+      </p>
       <aside className="status-card" aria-label={t("status")}>
         <span className="status-dot" aria-hidden="true" />
         <div>

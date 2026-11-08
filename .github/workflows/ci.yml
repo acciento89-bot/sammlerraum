@@ -361,3 +361,31 @@ jobs:
         run: >-
           pnpm --filter @sammlerraum/web exec playwright test e2e/ai-capture.spec.ts e2e/ai-catalog-review.spec.ts
           --project=ai-desktop --project=ai-mobile --workers=1
+
+      - name: Verify local billing ownership, lifecycle, quotas and public metadata
+        env:
+          RUN_DATABASE_INTEGRATION: "1"
+        run: >-
+          pnpm exec vitest run packages/domain/src/billing packages/billing
+          packages/contracts/src/billing.test.ts packages/config/src/billing.test.ts
+          packages/config/src/billing-isolation.test.ts apps/web/src/lib/billing-routes.test.ts
+          apps/web/src/lib/billing-webhook-route.test.ts apps/web/src/lib/billing-status-route.test.ts
+          apps/web/src/lib/billing-price-cache.test.ts apps/web/src/components/billing/billing-locale-navigation.test.ts
+          apps/worker/src/jobs/billing-sync.test.ts apps/worker/src/main.test.ts apps/worker/src/run-wiring.test.ts --maxWorkers=1
+      - name: Verify compiled billing in both languages and screen sizes with offline SDK transport
+        env:
+          RUN_AUTH_E2E: "1"
+          RUN_PRODUCTION_E2E: "1"
+          RUN_BILLING_E2E: "1"
+          RUN_IMPORT_E2E: "0"
+          RUN_MEDIA_E2E: "0"
+          BILLING_ENVIRONMENT: test
+          BILLING_ENABLED: "true"
+          # Deliberately invalid synthetic credentials; preload refuses any other key.
+          STRIPE_SECRET_KEY: sk_test_sammlerraum_offline_fixture
+          STRIPE_WEBHOOK_SECRET: whsec_synthetic_offline_only
+          STRIPE_PREMIUM_MONTHLY_PRICE_ID: price_monthly_fixture
+          STRIPE_PREMIUM_YEARLY_PRICE_ID: price_yearly_fixture
+        run: >-
+          pnpm --filter @sammlerraum/web exec playwright test e2e/billing.spec.ts
+          --project=billing-desktop --project=billing-mobile --workers=1

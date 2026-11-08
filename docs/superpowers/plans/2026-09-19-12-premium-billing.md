@@ -249,7 +249,7 @@ git commit -m "feat: enforce premium entitlements server-side"
 - Consumes: public plan display config + billing APIs.
 - Produces: DE/EN pricing, checkout, portal, current plan/usage UI.
 
-- [ ] **Step 1: Write failing redirect-does-not-grant test**
+- [x] **Step 1: Write failing redirect-does-not-grant test**
 
 ```ts
 test("checkout return alone does not show Premium as active", async ({ page }) => {
@@ -260,16 +260,16 @@ test("checkout return alone does not show Premium as active", async ({ page }) =
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm --filter @sammlerraum/web exec playwright test e2e/billing.spec.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement UI**
+- [x] **Step 3: Implement UI**
 
 Price amounts are obtained from server-side configured Stripe Price metadata or a synchronized public plan display record; never duplicate price strings independently in DE/EN source code. Show usage/limits, cancellation state, and preserved-data downgrade messaging.
 
-- [ ] **Step 4: Run E2E/build**
+- [x] **Step 4: Run E2E/build**
 
 Run:
 ```bash
@@ -279,7 +279,7 @@ pnpm --filter @sammlerraum/web build
 
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add apps/web

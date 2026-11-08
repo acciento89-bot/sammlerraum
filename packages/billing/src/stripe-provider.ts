@@ -1,3 +1,4 @@
+import { BillingOfferSchema, type BillingOffer } from "@sammlerraum/contracts/billing-ui";
 import { AsyncLocalStorage } from "node:async_hooks";
 import {
   verifyStripeWebhook,
@@ -107,6 +108,67 @@ export class StripeBillingProvider implements BillingProvider {
       if (error instanceof BillingError) throw error;
       throw new BillingError("BILLING_UNAVAILABLE");
     }
+  }
+  /** Whitelisted fixed recurring offers; never return product/customer metadata. */
+  async getPublicPrices(options: { signal?: AbortSignal } = {}): Promise<BillingOffer[]> {
+    const signal = options.signal
+      ? AbortSignal.any([options.signal, AbortSignal.timeout(10000)])
+      : AbortSignal.timeout(10000);
+    return this.invoke(() =>
+      this.requestContext.run({ signal, calls: 0 }, async () => {
+        signal.throwIfAborted();
+        const result: BillingOffer[] = [];
+        for (const cadence of ["MONTHLY", "YEARLY"] as const) {
+          const id = cadence === "MONTHLY" ? this.config.monthlyPriceId : this.config.yearlyPriceId;
+          const price = await this.client.prices.retrieve(id);
+          signal.throwIfAborted();
+          const amount = price.unit_amount,
+            currency = price.currency?.toUpperCase();
+          const decimal = price.unit_amount_decimal?.toString();
+          if (
+            price.id !== id ||
+            !price.active ||
+            price.livemode !== (this.id === "stripe_live") ||
+            price.type !== "recurring" ||
+            price.billing_scheme !== "per_unit" ||
+            price.custom_unit_amount ||
+            price.tiers_mode ||
+            price.transform_quantity ||
+            !Number.isSafeInteger(amount) ||
+            amount === null ||
+            amount < 0 ||
+            typeof decimal !== "string" ||
+            !/^\d+(?:\.0{1,12})?$/u.test(decimal) ||
+            BigInt(decimal.split(".")[0]!) !== BigInt(amount) ||
+            !currency ||
+            !Intl.supportedValuesOf("currency").includes(currency) ||
+            price.recurring?.interval !== (cadence === "MONTHLY" ? "month" : "year") ||
+            price.recurring.interval_count !== 1 ||
+            price.recurring.usage_type !== "licensed"
+          )
+            throw new BillingError("BILLING_UNAVAILABLE");
+          // Stripe charge representation differs from ISO payout/display units for ISK/UGX.
+          // https://docs.stripe.com/currencies#special-cases ; unsupported ambiguous scales fail closed.
+          const legacy = currency === "ISK" || currency === "UGX";
+          const scale = legacy
+            ? 2
+            : new Intl.NumberFormat("en", { style: "currency", currency }).resolvedOptions()
+                .maximumFractionDigits!;
+          if (currency === "MGA" || ![0, 2].includes(scale) || (legacy && amount % 100 !== 0))
+            throw new BillingError("BILLING_UNAVAILABLE");
+          result.push(
+            BillingOfferSchema.parse({
+              cadence,
+              amountMinor: String(amount),
+              currency,
+              minorUnitExponent: scale,
+              taxBehavior: price.tax_behavior ?? "unspecified",
+            }),
+          );
+        }
+        return result;
+      }),
+    );
   }
   async createCustomer(input: { subjectId: string; requestKey: string }) {
     const data = parse(

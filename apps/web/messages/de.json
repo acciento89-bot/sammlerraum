@@ -13,7 +13,8 @@
     "title": "Was uns wichtig ist, verdient einen guten Platz.",
     "intro": "Sammlerraum hilft dabei, Sammlungen übersichtlich zu dokumentieren und ihre Geschichten zu bewahren.",
     "status": "Die Plattform wird vorbereitet.",
-    "detail": "Erste Funktionen für Sammlungen, Objekte und gemeinsame Arbeit folgen bald."
+    "detail": "Erste Funktionen für Sammlungen, Objekte und gemeinsame Arbeit folgen bald.",
+    "pricing": "Free & Premium ansehen"
   },
   "Auth": {
     "eyebrow": "Sicherer Zugang",
@@ -48,7 +49,8 @@
     "nav": "Kontobereich",
     "profile": "Profil",
     "security": "Sicherheit",
-    "signOut": "Abmelden"
+    "signOut": "Abmelden",
+    "billing": "Tarif & Abrechnung"
   },
   "Profile": {
     "eyebrow": "Öffentliches Profil",
@@ -1711,5 +1713,78 @@
     },
     "identifierMatch": "Gleiche sichtbare Kennung im Katalog · Zuordnung selbst prüfen",
     "titleMatch": "Katalogname entspricht dem Titelvorschlag · Zuordnung selbst prüfen"
+  },
+  "Billing": {
+    "eyebrow": "Sammlerraum · Free & Premium",
+    "pricingTitle": "Deine Sammlung. Dein passender Tarif.",
+    "pricingIntro": "Die grundlegende Verwaltung deiner Sammlung bleibt dauerhaft kostenlos. Vergleiche die zusätzlichen Möglichkeiten von Premium.",
+    "accountTitle": "Tarif & Abrechnung",
+    "currentPlan": "Dein bestätigter Tarif",
+    "freeForever": "Dauerhaft kostenlos",
+    "freeCore": "Sammlung verwalten, grundlegende Suche, Wunschliste, Dubletten, manuelle Werte und Basis-Community bleiben nutzbar.",
+    "openCollection": "Zur Sammlung",
+    "pricingUnavailable": "Preise derzeit nicht verfügbar",
+    "noGuessedPrice": "Premium kann zurzeit nicht gebucht werden. Bitte versuche es später erneut.",
+    "viewAccount": "Tarif im Konto ansehen",
+    "checkoutTotal": "Der endgültige Betrag und die verfügbaren Zahlungsarten werden vor dem Abschluss im Checkout angezeigt.",
+    "compare": "Tarife im Vergleich",
+    "feature": "Leistung",
+    "included": "Enthalten",
+    "notIncluded": "Nicht enthalten",
+    "unlimited": "Unbegrenzt",
+    "policyUnavailable": "Die Tarifkonfiguration ist derzeit nicht verfügbar.",
+    "currentPlanHint": "Maßgeblich ist der bestätigte Abozustand.",
+    "returnPending": "Du bist vom Checkout zurückgekehrt. Premium wird erst nach bestätigter Verarbeitung aktiv. Der Status wird kurz automatisch aktualisiert.",
+    "cancelScheduled": "Gekündigt zum {date}. Premium bleibt bis zu diesem Zeitpunkt aktiv.",
+    "periodEnd": "Aktueller Premium-Zeitraum bis {date}.",
+    "preservedData": "Bei einem Tarifwechsel bleiben deine vorhandenen Sammlungsdaten erhalten.",
+    "excess": "Du nutzt mehr als das aktuelle Kontingent. Vorhandene Daten bleiben erhalten; zusätzliche Einträge oder Dateien benötigen wieder freien Platz oder ein höheres Kontingent.",
+    "refresh": "Status aktualisieren",
+    "manage": "Abo und Rechnungen verwalten",
+    "paymentsUnavailable": "Die Zahlungsverwaltung ist derzeit nicht verfügbar. Dein bestätigter Tarif wird weiterhin angezeigt.",
+    "statusUnavailable": "Dein Tarifstatus konnte nicht sicher geladen werden. Bitte lade die Seite erneut oder prüfe deine Anmeldung.",
+    "actionUnavailable": "Die Abrechnung konnte nicht geöffnet werden. Bitte versuche es später erneut.",
+    "conflict": "Es gibt bereits einen laufenden Vorgang oder ein bestehendes Abo. Bitte prüfe den Status und nutze gegebenenfalls die Aboverwaltung.",
+    "usage": "Dein aktueller Verbrauch",
+    "resetAt": "Das monatliche KI-Kontingent beginnt neu am {date}.",
+    "mediaUsageHelp": "Dateiverbrauch umfasst aufbewahrte Originaldateien, einschließlich noch nicht bereinigter Uploads. Abgeleitete Bildgrößen werden nicht zusätzlich gezählt.",
+    "upgrade": "Premium für deine Sammlung",
+    "changeInPortal": "Du kannst deinen bestehenden Tarif und die Kündigung in der Aboverwaltung prüfen.",
+    "choose": "{cadence} wählen",
+    "plans": {
+      "FREE": "Free",
+      "PREMIUM": "Premium"
+    },
+    "cadence": {
+      "MONTHLY": "Monatlich",
+      "YEARLY": "Jährlich"
+    },
+    "period": {
+      "MONTHLY": "Abrechnung pro Monat",
+      "YEARLY": "Abrechnung pro Jahr"
+    },
+    "tax": {
+      "inclusive": "Angezeigter Preis einschließlich Steuern.",
+      "exclusive": "Steuern können zum angezeigten Preis hinzukommen.",
+      "unspecified": "Die Steuerbehandlung wird im Checkout angezeigt."
+    },
+    "status": {
+      "FREE": "Free ist aktiv.",
+      "PREMIUM": "Premium aktiv"
+    },
+    "features": {
+      "ITEM_CREATE": "Aktive Sammlungseinträge",
+      "MEDIA_COUNT": "Aufbewahrte Originaldateien",
+      "MEDIA_BYTES": "Originaldateien · Byte",
+      "AI_MONTHLY": "KI-Analysen pro Monat",
+      "IMPORT_PROFILES": "Gespeicherte Importprofile",
+      "MARKET_DATA": "Lizenzierte Marktpreisdaten",
+      "EXTENDED_HISTORY": "Erweiterte Wert-Historie",
+      "ADVANCED_ANALYTICS": "Erweiterte Analysen",
+      "XLSX": "Excel-Export",
+      "ADVANCED_FILTERS": "Erweiterte Suchfilter"
+    },
+    "serviceAvailability": "Marktdaten setzen eine verfügbare und freigeschaltete Datenquelle voraus. KI-Analysen benötigen einen verfügbaren Analysedienst.",
+    "comparisonScroll": "Falls nicht alle Spalten sichtbar sind, kannst du den Tarifvergleich seitlich verschieben."
   }
 }

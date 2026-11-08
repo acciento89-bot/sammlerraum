@@ -1,4 +1,17 @@
+import { readFileSync } from "node:fs";
 import { defineConfig, devices } from "@playwright/test";
+
+// Both fixture workers and the spawned app use explicit synthetic product policy.
+// The real application still fails closed when its own policy is missing.
+process.env.BILLING_PLAN_LIMITS ??= readFileSync(
+  new URL(
+    process.env.RUN_BILLING_E2E === "1"
+      ? "../../packages/testing/fixtures/billing-browser-policy.json"
+      : "../../packages/testing/fixtures/legacy-billing-policy.json",
+    import.meta.url,
+  ),
+  "utf8",
+);
 
 export default defineConfig({
   testDir: "./e2e",
@@ -8,6 +21,12 @@ export default defineConfig({
     baseURL: "http://localhost:3000",
   },
   projects: [
+    {
+      name: "billing-desktop",
+      testMatch: "**/billing.spec.ts",
+      use: { viewport: { width: 1440, height: 1000 } },
+    },
+    { name: "billing-mobile", testMatch: "**/billing.spec.ts", use: { ...devices["Pixel 7"] } },
     {
       name: "ai-desktop",
       testMatch: ["**/ai-capture.spec.ts", "**/ai-catalog-review.spec.ts"],

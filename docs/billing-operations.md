@@ -108,3 +108,29 @@ is deleted by ordinary plan downgrade. Free core/read access remains available a
 - A Free dashboard returns truthful basic totals, current manual values and recent additions; Premium analysis fields are null with an explicit capability state, never fake zero/empty results. Market access additionally requires independent source display/query/aggregation rights; Premium cannot activate a provider or confer a license.
 
 Legacy regression and browser test harnesses explicitly load a synthetic unrestricted policy. Bounded native billing tests use a restricted Free/Premium policy against actual SQL. Application code has no test-mode or payment-OFF feature bypass. Missing/malformed central policy fails closed.
+
+## Pricing and own account UI
+
+`/[locale]/pricing` and `/[locale]/account/billing` support German/English and responsive layouts.
+The account page and `/api/v1/billing/status` use a fresh own session and local database snapshot;
+return query parameters never grant a plan. Unknown subject/query hints are rejected. Private status
+responses are not cached. Over-limit retained usage is displayed exactly rather than clamped or deleted.
+
+When payment configuration is complete and enabled, public offers are read from the configured immutable
+Stripe Price IDs through the official SDK. Only a closed cadence/amount/currency/charge-scale/tax-behavior
+projection reaches the client, never keys, customer IDs or provider metadata. Current fixed-offer display
+supports validated zero/two-decimal denominations, with the documented ISK/UGX legacy charge representation;
+ambiguous MGA/three-decimal offers remain unavailable until separately verified. No guessed price is substituted.
+Metadata has a real 10-second overall transport budget and a single bounded configuration cache
+(success 300 seconds, failure 30 seconds); own plan/status is never cached there. Ordinary feature checks
+never contact Stripe. Hosted Checkout remains the final price/payment-method confirmation.
+
+Clients retain the same request nonce on hosted-action retries. Redirect URLs are restricted again in the
+client to the expected official HTTPS host. Returning from Checkout may trigger a short bounded status
+refresh, but Premium appears only when local confirmed subscription state says so. The Portal manages
+an already locally owned customer; customer identity must match the provider's returned session.
+
+The browser suite uses only a guarded loopback `_test` database and an offline SDK preload, loaded by the
+test runner rather than application code. A dedicated synthetic key is required, and every Stripe-host
+request is answered locally or rejected. No real Checkout, payment, customer, provider account or webhook
+resource is created. Browser price amounts are synthetic examples, not configured production offers.

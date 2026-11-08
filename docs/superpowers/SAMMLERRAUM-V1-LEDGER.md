@@ -22,7 +22,7 @@ This is the handoff/status file for long-running implementation. Update it after
 | 09 | Collaboration, Sharing & Audit | 7 | complete (7/7); corrected1760cd2 CI SUCCESS | — |
 | 10 | Community, Moderation & Notifications | 8 | complete (8/8); corrected d69f78f CI SUCCESS | — |
 | 11 | AI-Assisted Capture | 5 | complete (5/5); corrected8957121 CI SUCCESS | — |
-| 12 | Premium & Billing | 5 | in progress; Tasks1–2 local, not phase-reviewed/accepted | Task 3 |
+| 12 | Premium & Billing | 5 | in progress; Tasks1–4 local complete, Task5 final local verification; whole-phase review/CI pending | Task 5 |
 | 13 | Integration, Hardening & Release | 7 | not started | Task 1 |
 | 14 | SEO & Google Search Console | 7 | not started | Task 1 |
 
@@ -71,6 +71,10 @@ This is the handoff/status file for long-running implementation. Update it after
 - [x] P06 T05 — Add valuation history UI contracts and localization
 - [x] P06 T06 — Add the first two production market-data adapters
 - [x] P07 T01 — Define typed filter AST and complexity limits
+- [x] P07 T02 — Authorized SQL filter compilation; exact77b69f9 CI SUCCESS
+- [x] P07 T03 — Owned dynamic Smart Collections; exact77b69f9 CI SUCCESS
+- [x] P07 T04 — Bounded real dashboard queries; exact77b69f9 CI SUCCESS
+- [x] P07 T05 — DE/EN responsive search and dashboard; exact77b69f9 CI SUCCESS
 - [x] P08 T01 — Persisted import jobs, versioned mapping profiles and conflict-safe previews
 - [x] P08 T02 — Bounded verified CSV/XLSX worker with durable retry-safe parsed rows
 - [x] P08 T03 — Explicit approved atomic inventory commit with target preconditions and durable receipts
@@ -99,7 +103,13 @@ This is the handoff/status file for long-running implementation. Update it after
 - [x] P10 T07 — Responsive DE/EN community/wishlist/notification/moderation workflows
 - [x] P10 T08 — Stable public collector routes, atomic domain-event notices and real dashboard progress
 
-**Verified completion: 63/91 tasks.** Later tasks remain open as listed in the phase table and detail plans.
+- [x] P11 T01 — Provider-neutral analysis contract and durable owned jobs/suggestions/usage
+- [x] P11 T02 — Official structured vision adapter with verified processed image bytes and private-input minimization
+- [x] P11 T03 — Fenced durable worker, bounded retries/cancellation and late measured usage
+- [x] P11 T04 — Explicit atomic audited selection/application with stale/reference guards
+- [x] P11 T05 — Owner-only DE/EN responsive capture/review/recovery, personal field setup and usage
+
+**Verified completion: 72/91 tasks.** Exact AI source8957121 and CI acceptance are recorded below. Billing local progress is not accepted phase credit; later tasks remain open as listed.
 
 ## Update rule
 
@@ -1267,10 +1277,12 @@ Exact77b69f9478e06db09d04df173b7b6b9df6535354 run42433316774completedSUCCESS; ac
 
 Exact source8957121f7698067415c8271514c6aff09be89c64, run42443172217/job128616510919 completedSUCCESS. Fresh direct final job log confirms the required32compiled AI journeys35.6s; partial cached CLI log/step snapshots were not accepted as proof. Root local corrected1689regular/2899actualPostgreSQLzeroSkip, types/lint/worker+webbuild,32compiledAI plus preceding46AI/adjacent inventory journeys, preserved prior migration bytes and one independent whole-phase review/four consolidatedRED→GREEN corrections retained. No deferred minors, no second review. Explicit source ownership/consent, durable bounded worker/nullable usage, immutable advisory results and atomic field-by-field decisions. No real provider calls or paid activation.
 
-- [x] P11 T01 — Provider-neutral analysis contract and durable owned jobs/suggestions/usage
-- [x] P11 T02 — Official structured vision adapter with verified processed image bytes and private-input minimization
-- [x] P11 T03 — Fenced durable worker, bounded retries/cancellation and late measured usage
-- [x] P11 T04 — Explicit atomic audited selection/application with stale/reference guards
-- [x] P11 T05 — Owner-only DE/EN responsive capture/review/recovery, personal field setup and usage
 
 Billing local Task1e8300e7 and Task2be72786 are separately tested but not included in the AI candidate's source/CI acceptance. Task3 canonical signed-event sync in progress. Canonical accepted progress72/91, original scope91 unchanged. Source/DraftPR1 only; no main merge/deployment, live payments/providers/customer data, other apps/devices/stores/automations.
+
+### 8Nov Billing local Tasks1–4 complete; Task5 whole gates running
+
+Billing Task4 source3c93994 follows local Task1e8300e7, Task2be72786 and Task3
+825a0a5. Actual current whole-native2994/2994 and final domain1455/1455, root types, CI-required recursive lint and additive-migration parity passed. Native restricted-policy witnesses cover atomic inventory/media/AI/profile admissions, actual collaborator authorship/owner quota, ownership-transfer recipient budgets, restoration, Free CSV/basic dashboard/manual reads and non-destructive downgrade. No paid provider activation or customer payment occurred.
+
+Task5 current source adds DE/EN public pricing and private current-plan/usage UI, fresh-session local status API, bounded closed official-SDK price projection/cache, retained-data/cancellation/return messaging, and responsive comparison. Local focused25 and compiled12 Billing +4 adjacent existing inventory/search journeys pass; full current-source gates are running. New strict Billing native and guarded offline compiled browser stages are wired into CI. The source has not yet passed its single whole-phase fresh review or exact remote CI; canonical accepted progress remains72/91. Main/deployment/live provider/payment actions remain unchanged.

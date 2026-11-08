@@ -29,6 +29,7 @@ const tier = z.strictObject({
   XLSX: z.boolean(),
   ADVANCED_FILTERS: z.boolean(),
 });
+export const BillingTierSchema = tier;
 export const BillingPolicySchema = z
   .strictObject({ FREE: tier, PREMIUM: tier })
   .superRefine((policy, ctx) => {

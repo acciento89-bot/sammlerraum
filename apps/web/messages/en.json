@@ -13,7 +13,8 @@
     "title": "What matters to us deserves a good place.",
     "intro": "Sammlerraum helps document collections clearly and preserve the stories behind them.",
     "status": "The platform is being prepared.",
-    "detail": "The first tools for collections, objects, and shared work are coming soon."
+    "detail": "The first tools for collections, objects, and shared work are coming soon.",
+    "pricing": "Explore Free & Premium"
   },
   "Auth": {
     "eyebrow": "Secure access",
@@ -48,7 +49,8 @@
     "nav": "Account area",
     "profile": "Profile",
     "security": "Security",
-    "signOut": "Sign out"
+    "signOut": "Sign out",
+    "billing": "Plan & billing"
   },
   "Profile": {
     "eyebrow": "Public profile",
@@ -1711,5 +1713,78 @@
     },
     "identifierMatch": "Matching visible identifier in the catalog · verify the identity yourself",
     "titleMatch": "Catalog name matches the suggested title · verify the identity yourself"
+  },
+  "Billing": {
+    "eyebrow": "Sammlerraum · Free & Premium",
+    "pricingTitle": "Your collection. The plan that fits.",
+    "pricingIntro": "Core collection management stays free permanently. Compare the additional capabilities of Premium.",
+    "accountTitle": "Plan & billing",
+    "currentPlan": "Your confirmed plan",
+    "freeForever": "Free permanently",
+    "freeCore": "Collection management, basic search, wishlist, duplicates, manual valuations and basic community remain available.",
+    "openCollection": "Open collection",
+    "pricingUnavailable": "Prices currently unavailable",
+    "noGuessedPrice": "Premium cannot be purchased right now. Please try again later.",
+    "viewAccount": "View plan in your account",
+    "checkoutTotal": "The final total and available payment methods are shown before completion in Checkout.",
+    "compare": "Compare plans",
+    "feature": "Feature",
+    "included": "Included",
+    "notIncluded": "Not included",
+    "unlimited": "Unlimited",
+    "policyUnavailable": "Plan configuration is currently unavailable.",
+    "currentPlanHint": "The confirmed subscription state is authoritative.",
+    "returnPending": "You have returned from Checkout. Premium activates only after confirmed processing. The status will refresh automatically for a short time.",
+    "cancelScheduled": "Cancellation scheduled for {date}. Premium remains active until then.",
+    "periodEnd": "Current Premium period ends {date}.",
+    "preservedData": "Existing collection data is preserved when your plan changes.",
+    "excess": "Your current usage exceeds this allowance. Existing data is preserved; additional items or files require free capacity or a higher allowance.",
+    "refresh": "Refresh status",
+    "manage": "Manage subscription and invoices",
+    "paymentsUnavailable": "Payment management is currently unavailable. Your confirmed plan remains displayed.",
+    "statusUnavailable": "Your plan could not be loaded safely. Please reload the page or check your sign-in.",
+    "actionUnavailable": "Billing could not be opened. Please try again later.",
+    "conflict": "An operation or subscription already exists. Check the current status and use subscription management if appropriate.",
+    "usage": "Your current usage",
+    "resetAt": "The monthly AI allowance resets on {date}.",
+    "mediaUsageHelp": "File usage includes retained originals, including uploads awaiting cleanup. Derived image sizes are not counted again.",
+    "upgrade": "Premium for your collection",
+    "changeInPortal": "Review your existing plan and cancellation in subscription management.",
+    "choose": "Choose {cadence}",
+    "plans": {
+      "FREE": "Free",
+      "PREMIUM": "Premium"
+    },
+    "cadence": {
+      "MONTHLY": "Monthly",
+      "YEARLY": "Yearly"
+    },
+    "period": {
+      "MONTHLY": "Billed per month",
+      "YEARLY": "Billed per year"
+    },
+    "tax": {
+      "inclusive": "Displayed price includes taxes.",
+      "exclusive": "Taxes may be added to the displayed price.",
+      "unspecified": "Tax treatment is shown in Checkout."
+    },
+    "status": {
+      "FREE": "Free is active.",
+      "PREMIUM": "Premium active"
+    },
+    "features": {
+      "ITEM_CREATE": "Active collection items",
+      "MEDIA_COUNT": "Retained original files",
+      "MEDIA_BYTES": "Original files · bytes",
+      "AI_MONTHLY": "AI analyses per month",
+      "IMPORT_PROFILES": "Saved import profiles",
+      "MARKET_DATA": "Licensed market data",
+      "EXTENDED_HISTORY": "Extended value history",
+      "ADVANCED_ANALYTICS": "Advanced analytics",
+      "XLSX": "Excel export",
+      "ADVANCED_FILTERS": "Advanced search filters"
+    },
+    "serviceAvailability": "Market data requires an available, enabled data source. AI analysis requires an available analysis service.",
+    "comparisonScroll": "If some columns are hidden, scroll the comparison sideways to see every plan."
   }
 }

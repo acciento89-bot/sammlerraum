@@ -15,6 +15,7 @@ export function AccountNav({ locale }: { locale: string }) {
       <a href={`/${locale}/dashboard`}>{search("navDashboard")}</a>
       <a href={`/${locale}/account/profile`}>{t("profile")}</a>
       <a href={`/${locale}/account/security`}>{t("security")}</a>
+      <a href={`/${locale}/account/billing`}>{t("billing")}</a>
       <button
         onClick={async () => {
           clearSearchSession();

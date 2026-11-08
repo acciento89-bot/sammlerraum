@@ -1,4 +1,5 @@
 "use client";
+import { billingLocaleHref } from "../billing/billing-locale-navigation";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -41,6 +42,7 @@ export function LocaleNavigation({ locale }: { locale: string }) {
         <Link
           key={language}
           href={
+            billingLocaleHref(pathname ?? "", language) ??
             moneyLocaleHref(pathname ?? "", language, moneySearch) ??
             (queryView
               ? `/${language}/${queryView}${suffix}`

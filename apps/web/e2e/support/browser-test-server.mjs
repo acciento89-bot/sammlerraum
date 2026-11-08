@@ -6,7 +6,12 @@ import { fileURLToPath } from "node:url";
 
 // Explicit legacy-regression product configuration; application code has no test-mode bypass.
 process.env.BILLING_PLAN_LIMITS ??= await readFile(
-  new URL("../../../../packages/testing/fixtures/legacy-billing-policy.json", import.meta.url),
+  new URL(
+    process.env.RUN_BILLING_E2E === "1"
+      ? "../../../../packages/testing/fixtures/billing-browser-policy.json"
+      : "../../../../packages/testing/fixtures/legacy-billing-policy.json",
+    import.meta.url,
+  ),
   "utf8",
 );
 const smtpPort = 3465;
@@ -147,7 +152,12 @@ if (production) {
 const next = spawn(
   production ? process.execPath : "npm",
   production
-    ? [join(webRoot, ".next/standalone/apps/web/server.js")]
+    ? [
+        ...(process.env.RUN_BILLING_E2E === "1"
+          ? ["--import", join(webRoot, "e2e/support/billing-provider-preload.mjs")]
+          : []),
+        join(webRoot, ".next/standalone/apps/web/server.js"),
+      ]
     : [
         "exec",
         "--yes",
