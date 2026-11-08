@@ -1,6 +1,6 @@
 # Sammlerraum V1 Completion Ledger
 
-**Stand:** 07.11.2026
+**Stand:** 08.11.2026
 **Master plan:** `docs/superpowers/plans/2026-09-19-sammlerraum-v1-master-plan.md`  
 **Canonical product/system spec:** `docs/superpowers/specs/2026-09-19-sammlerraum-design.md`  
 **SEO/Search Console spec:** `docs/superpowers/specs/2026-09-19-seo-search-console-design.md`
@@ -17,14 +17,14 @@ This is the handoff/status file for long-running implementation. Update it after
 | 04 | Media & Documents | 6 | complete (6/6) | — |
 | 05 | Catalog, Condition & Grading | 7 | complete (7/7) | — |
 | 06 | Valuations & Market Data | 6 | complete (6/6) | — |
-| 07 | Search, Smart Collections & Dashboard | 5 | in progress (1/5) | Task 2 |
+| 07 | Search, Smart Collections & Dashboard | 5 | complete (5/5); exact77b69f9 CI SUCCESS | — |
 | 08 | Import, Export, Insurance & Reports | 7 | complete (7/7) | — |
-| 09 | Collaboration, Sharing & Audit | 7 | not started | Task 1 |
-| 10 | Community, Moderation & Notifications | 8 | not started | Task 1 |
-| 11 | AI-Assisted Capture | 5 | not started | Task 1 |
-| 12 | Premium & Billing | 5 | not started | Task 1 |
-| 13 | Integration, Hardening & Release | 7 | not started | Task 1 |
-| 14 | SEO & Google Search Console | 7 | not started | Task 1 |
+| 09 | Collaboration, Sharing & Audit | 7 | complete (7/7); corrected1760cd2 CI SUCCESS | — |
+| 10 | Community, Moderation & Notifications | 8 | complete (8/8); corrected d69f78f CI SUCCESS | — |
+| 11 | AI-Assisted Capture | 5 | complete (5/5); corrected8957121 CI SUCCESS | — |
+| 12 | Premium & Billing | 5 | complete (5/5); corrected7289140 CI SUCCESS | — |
+| 13 | Integration, Hardening & Release | 7 | 6/7 accepted; corrected3762e56 exact CI SUCCESS | T7 actual authorized production deployment/smoke |
+| 14 | SEO & Google Search Console | 7 | 6/7 accepted; corrected9e25543 exact CI SUCCESS | T7 actual HTTPS, Search Console ownership and processing |
 
 **Total:** 91 implementation tasks.
 
@@ -71,6 +71,10 @@ This is the handoff/status file for long-running implementation. Update it after
 - [x] P06 T05 — Add valuation history UI contracts and localization
 - [x] P06 T06 — Add the first two production market-data adapters
 - [x] P07 T01 — Define typed filter AST and complexity limits
+- [x] P07 T02 — Authorized SQL filter compilation; exact77b69f9 CI SUCCESS
+- [x] P07 T03 — Owned dynamic Smart Collections; exact77b69f9 CI SUCCESS
+- [x] P07 T04 — Bounded real dashboard queries; exact77b69f9 CI SUCCESS
+- [x] P07 T05 — DE/EN responsive search and dashboard; exact77b69f9 CI SUCCESS
 - [x] P08 T01 — Persisted import jobs, versioned mapping profiles and conflict-safe previews
 - [x] P08 T02 — Bounded verified CSV/XLSX worker with durable retry-safe parsed rows
 - [x] P08 T03 — Explicit approved atomic inventory commit with target preconditions and durable receipts
@@ -79,7 +83,54 @@ This is the handoff/status file for long-running implementation. Update it after
 - [x] P08 T06 — Selected protected PDF inventory reports with actual rendering and evidence attachments
 - [x] P08 T07 — Actual private upload/profile/preview/approval/cancellation, artifact delivery/retention and localized insurance/report workflows
 
-**Verified completion: 48/91 tasks.** Later tasks remain open as listed in the phase table and detail plans.
+- [x] P09 T01 — Membership and atomic ownership transfer; reviewed/corrected, exact1760cd2 CI SUCCESS
+
+- [x] P09 T02 — Recipient-bound one-time invitations and API; reviewed/corrected, exact1760cd2 CI SUCCESS
+- [x] P09 T03 — Granular read-only shares, expiry/PIN/session and protected files; reviewed/corrected, exact1760cd2 CI SUCCESS
+- [x] P09 T04 — Append-only current-resource audit and erasure-safe anchors; reviewed/corrected, exact1760cd2 CI SUCCESS
+
+- [x] P09 T05 — Atomic real-actor core mutation and money/import audit; reviewed/corrected, exact1760cd2 CI SUCCESS
+
+- [x] P09 T06 — Conflict-aware restoration and permanent capability retirement; reviewed/corrected, exact1760cd2 CI SUCCESS
+- [x] P09 T07 — DE/EN current-role collaboration UI and Editor/Admin authoring; reviewed/corrected, exact1760cd2 CI SUCCESS
+
+- [x] P10 T01 — Private wishlist and distinct duplicate relations
+- [x] P10 T02 — Public follows/favorites with current visibility and block fences
+- [x] P10 T03 — Bounded public comments/replies, owner controls and private reports
+- [x] P10 T04 — Real-role platform moderation and private immutable decision history
+- [x] P10 T05 — Recipient notifications, current-target redaction and category/channel preferences
+- [x] P10 T06 — Localized durable email delivery with safe ambiguity/cancellation semantics
+- [x] P10 T07 — Responsive DE/EN community/wishlist/notification/moderation workflows
+- [x] P10 T08 — Stable public collector routes, atomic domain-event notices and real dashboard progress
+
+- [x] P11 T01 — Provider-neutral analysis contract and durable owned jobs/suggestions/usage
+- [x] P11 T02 — Official structured vision adapter with verified processed image bytes and private-input minimization
+- [x] P11 T03 — Fenced durable worker, bounded retries/cancellation and late measured usage
+- [x] P11 T04 — Explicit atomic audited selection/application with stale/reference guards
+- [x] P11 T05 — Owner-only DE/EN responsive capture/review/recovery, personal field setup and usage
+
+- [x] P12 T01 — Add plan/entitlement model and provider-neutral feature gate
+- [x] P12 T02 — Add Stripe billing adapter, checkout, and portal
+- [x] P12 T03 — Add signed idempotent billing webhook
+- [x] P12 T04 — Enforce entitlements across expensive/advanced features
+- [x] P12 T05 — Add pricing, plan status, and billing UI
+- [x] P13 T01 — Add full permission-matrix security tests
+- [x] P13 T02 — Add complete critical-path E2E suite in DE and EN
+- [x] P13 T03 — Add backup and restore scripts with integrity manifest
+- [x] P13 T04 — Harden worker/jobs and resource limits
+- [x] P13 T05 — Add production compose, migration entrypoint, and deploy verification
+- [x] P13 T06 — Add final release-gate script and marketplace boundary test
+- [ ] P13 T07 — Production smoke after Portainer deployment; actual production still required
+
+- [x] P14 T01 — Canonical bilingual public metadata and locale navigation; reviewed exact9e25543 CI SUCCESS
+- [x] P14 T02 — Privacy-safe bounded sitemap discovery and robots; reviewed exact9e25543 CI SUCCESS
+- [x] P14 T03 — Explicit default-off owner indexing consent; reviewed exact9e25543 CI SUCCESS
+- [x] P14 T04 — Protected social previews, structured data and stable public images; reviewed exact9e25543 CI SUCCESS
+- [x] P14 T05 — Bilingual category landing pages; reviewed exact9e25543 CI SUCCESS
+- [x] P14 T06 — Measured SEO, accessibility and performance gates; reviewed exact9e25543 CI SUCCESS
+- [ ] P14 T07 — Actual public HTTPS, Search Console ownership and sitemap processing remain required
+
+**Verified completion: 89/91 tasks.** Phases1–12, Phase13Tasks1–6 and Phase14Tasks1–6 are accepted against reviewed exact-source CI. Phase13Task7 actual live deployment/smoke and Phase14Task7 actual HTTPS/Search Console ownership/processing remain unchecked.
 
 ## Update rule
 
@@ -1078,3 +1129,214 @@ One fresh independent whole-phase review b2d7faa:0Critical/3Important/3Minor, or
 Final gate:948nativePASS/86files/0skip(151.24s),1531regularPASS/819explicit native-disabled cases, wholeworkspace types/lint/productionbuildPASS. Task-done runs the combined38actual built browser cases (16new integration+22existing inventory), allPASS0skip6.4min, including DE/EN desktop/mobile, valid private PDF evidence and CSV/XLSX downloads, named sheet selection, all25search matches across a20-row page, subtree descendants without siblings. Actual screenshots/source/artifact hashes retained; no physical-phone/Safari/production-capacity claim. Original failure evidence retained, two large closed records losslessly compressed with SHA/decompression receipts. PriorTask6 UTC00 conditional follow-up actually ran15PASS/0skip; final full suite also0skip.
 
 Root locally accepts Task7 and Phase08:48/91, sevenofseven. Exact new remoteCI still follows authorized source publication to existing DraftPR1; main gets only this ledger, never application source. Phase07 sharing/community/relations and all later plans remain open. No deployment, real provider/account operation, other app/store work or monitoring automation.
+
+
+## 07 November 2026 — Phase09 Task1 implementation verified, whole-phase review pending
+
+Source67d8bfc and b3bbd78 implement current DB-backed Owner/Admin/Editor/Viewer membership, revision preconditions and atomic ownership transfer. Owner derives once from Collection.ownerId; no second stored Owner. Actual sensitive transfer preserves private insurance, valuation authors/history, grading certificates, recipient-owned tag links, exclusive private media bytes/variants, copied location ancestry with new QR identities and original move facts. Terminal import staging is retired through retained known-source manifests and actual I/O-locked cleanup. Exact purchase/custom money facts and original units/authors remain unchanged; incoming/outgoing external provenance blocks transfer. Real child-write and late COPY/certificate races are covered. Seven additive migrations030000–036000 applied to both guarded local DBs; all prior migration bytes preserved.
+
+Current validation:982nativePASS/87files/0skip,1532regularPASS/852explicit native-disabled skips, root types/workspace lint/whole production buildPASS,24built desktop/mobile collection/item/location-label browser casesPASS, final scoped membership+policy59PASS. Exact schema diff empty. Valid PDF/PNG/WebP actual-byte fixtures and all genuine RED/fixture diagnostic logs retained in Phase09 workspace. Source has not been deployed or merged to main; existing DraftPR1 remains the only source publication target.
+
+Inline execution records Task1 implementation complete, then continues Task2 invitations. The one independent whole-phase review is scheduled after Task7. Respecting the earlier persistence rule, this review-pending master checkbox remains unchecked and the reviewed total stays48/91; this is new verified implementation, not a claim of an independently approved Phase09. No live providers, real users, other apps/stores or scheduled automation changed.
+
+
+## 07 November 2026 — Phase09 Task2 implementation verified, whole-phase review pending
+
+Source8284c06 implements Owner/Admin invitation issuance/revocation and verified email/UID acceptance with32crypto-random bytes and hash-only storage, current grant authority, DB-UTC expiry, bounded pending/member counts and no role overwrite. Same-user retry cannot re-add removed membership; unused EMAIL/USER links are revoked on removal too. Creator/target/acceptor and email-bound erasure remain possible. One040000 additive migration applied to both guarded DBs; seven earlier hashes unchanged. New same-origin/fresh-cookie-auth private REST routes and strict request/response projections exclude hashes/internal identities. No SMTP delivery or new collaboration UI claim; management/landing UI followsTask7.
+
+Evidence:23native invitation+3actual PG handler+10pure boundary tests; whole89files1008nativePASS/0skip165.97s,1542regularPASS/878explicit native-disabled skips14.17s, root types/workspace lint/full production buildPASS, actual compiled3-cookie-session API journey1PASS1.9s and closing36PASS. Genuine unused-link and two real in-flight expiry failures were closed with atomic rollback and stable private errors. Task1 exact17d1406 push CI42339097557 actuallySUCCESS; new Task2 remote CI follows publication. Private source/evidence retained in the Phase09 workspace; existing DraftPR only, no application merge/deployment, real customers, other apps/stores or automation.
+
+Task2 implementation is recorded complete under inline execution; independent whole-phase review followsTask7. Respecting the master review/persistence rule, both P09 checkboxes stay unchecked and reviewed total remains48/91. Next:Task3 explicit granular sharing, expiry/PIN and default private-field exclusions.
+
+
+## 07 November 2026 — Phase09 Task3 implementation verified, whole-phase review pending
+
+Explicit Owner-issued read-only grants now target a collection, selected node subtree or individual item, independently of membership.32-byte public tokens are stored only as SHA256; verified registered recipients are checked afresh. Default excludes private notes, storage locations, insurance/policies, purchase receipts, images, values, documents and export. Selected private fields use explicit projections; original financial bits and evidenced units remain exact, no authors/evidence/fact tokens or storage keys leak. A subtree never reveals its parent's policy or other siblings. Ownership transfer permanently revokes old grants even on a round trip.
+
+Optional6–12digit PIN uses salted async scrypt outside SQL, persistent5-attempt/15min budget and reusable10min hash-only access sessions. Selected document/image bytes use real current authorization and asset-identity checks before/after storage I/O; a revocation during the actual read refuses returned bytes. Images never authorize private PDFs. Explicit grant export is bounded JSON, same selected fields,1000items/2MiB. New no-store/noindex/referrer-protected REST routes and responsive DE/EN/share viewer provide PIN entry, read-only item details, optional image preview, selected proof downloads, export and stable100-item pages.
+
+Evidence: frozen043000 forward migration applied to both retained guarded test DBs; eight previous hashes unchanged, exact schema diff empty. Whole functional code:91native files1029PASS/0skip168.41s;1542regularPASS/899native-disabled skips14.97s; full production build, workspace lint and web-specific strict typesPASS. Final focused22PASS includes an additional actual image-byte test after the full native checkpoint.7actual compiled browser/cookie-session casesPASS6.8s cover DE/EN desktop/mobile, PIN, selected JSON bytes, personal receiver/current cookies, no membership, immediate revocation and collection-insurance display. Actual PNG views retained, not physical-device proof. Genuine failures and test-precondition corrections retained; an existing PDF test needed its documented local Python reader, and combined credential fixtures needed isolated synthetic addresses to respect the unchanged real login limiter. No test disables that limiter or clears general counters.
+
+Task2 exact5914a7c CI42342569290 is now verified SUCCESS. Task3 source/evidence publication follows to the existing DraftPR1 only. No application merge, deployment, live provider/mail/customer operation, other app/store work or automation. Task3 is implementation-complete under inline execution; all three P09 review checkboxes remain unchecked and reviewed total48/91 until the independent whole-phase review afterTask7. Next:Task4 append-only audit history; member/share management UI and full core audited mutation integration remain assigned toTasks5/7.
+
+
+## 07 November 2026 — Phase09 Task4 implementation verified, whole-phase review pending
+
+AuditEvent now stores exact original actor/source, database-UTC time, bigint sequence and explicit action-specific before/after snapshots. The internal caller-transaction writer never starts a nested transaction; a real inventory update and its audit append roll back together. Public domain facade is Owner-only and no audit-write HTTP route exists. Internal USER contexts still check actual current edit membership and preserve the Editor's true ID; SYSTEM/IMPORT/AI/MARKET_SYNC/MODERATION metadata requires a genuine immutable server context, never a copied JSON/prototype/spread object. Initial definitions cover item/collection visibility and location details; other core action definitions and mutation producers are explicitlyTask5 work, not yet claimed complete.
+
+Stable item anchors preserve history after item moves, ownership transfer and old-collection/account deletion. Current ownership controls reading; the former Owner/Admin cannot read the new owner's private history. Personal location deletion retains namespace history; actual namespace/account or resource hard erasure may remove its rows. SQL rejects arbitrary event rewriting/deletion; actor identity can clear only once that exact old account is really gone. Strict snapshots reject auth/session/document-byte row dumps. Bigint cursor paging remains numeric across55real events; locked foreign resources return private404 rather than exposing their lock state.
+
+Additive050000 migration frozen and applied to both retained guarded databases; previous nine migration hashes unchanged, generated Prisma client and exact schema diff empty.12focused native cases pass. Whole92files1042nativePASS/0skip168.98s,1542regularPASS/912explicit native-disabled skips15.57s, root types/workspace lint/full production buildPASS;7actual-built sharing/invitation cookie-session browser regression casesPASS7.7s. Genuine context-copy, text-alias sort and foreign-lock failures retained and corrected. Original fixture errors were corrected without weakening guards. Exact priorTask3 head40f771f CI42346201723 nowSUCCESS.
+
+Task4 implementation complete under inline execution, independent whole-phase review followsTask7. Reviewed48/91 remains unchanged with four implemented tasks explicitly pending that review. No main application merge/deployment, providers, real customer data, other apps/stores or automation. NextTask5 connects real core mutations in their original transactions, followed by restoration and collaboration management UI.
+
+
+## 07 November 2026 — Phase09 Task5 actual mutation audit verified
+
+Real item/collection/node changes now append strict history in their actual transactions: creation, metadata/visibility, condition/category, grading CRUD, exact per-unit valuation, location creation/move/assignment, tags, typed fields, image/document linking/sort/category/unlink, catalogue assignment, split/archive/disposal/trash, role management/owner transfer and invitation/share grant/revocation. Explicit purchase authoring/classification/revocation and legacy raw changes preserve real generations, exact digits and evidence-derived units; unknown units stay unknown. Import batches retain actual IMPORT source and original job actor with retry-idempotent receipts. No bearer tokens, receipt/evidence text, invite email, storage keys or private note bodies are copied into snapshots. Text digests are not reversible note backups.
+
+Additive060000 provides a separate subject-user FK; real account erasure may clear actual actor/subject identities while arbitrary changes remain rejected. Viewer self-removal and invitation acceptance use narrow actual DB membership/accepted-receipt checks; they do not authorize generic edits. Audit failure rolls actual condition/location/grading/role/money writes back, including original immutable money assertions. Maximum valid100-tag/100-option and long Unicode notes remain accepted within16KiB per-event limits.
+
+Task5 source3e156ec: closing1415PASS/116files/0skip185.79s includes entire domain with native enabled plus every remaining native CI selection. Regular1542PASS/936explicit native-disabled skips16.50s; strict root/web types, workspace lint and full production buildPASS. Seven real compiled DE/EN desktop/mobile cookie/browser journeysPASS7.7s. Eleven frozen forward migration receipts unchanged; both guarded local DB schema diffs empty. One old CI certificate-race fixture was corrected to an actual native late writer because app writers now serialize at the earlier actor fence; real uniqueness/rollback assertions remain. No current-CI success is inferred.
+
+Task5 implementation complete; independent whole-phase review still followsTask7. Reviewed48/91 remains unchanged, now five implementations explicitly pending review. No main application merge/deployment, live providers/mail/customer data, other apps/stores or automation. Continue immediately withTask6 safe conflict-aware restoration, thenTask7 collaboration management UI.
+
+
+## 07 November 2026 — Phase09 Task6 restoration locally verified
+
+Source f755430 adds Owner-only supported field restore with exact observed updatedAt/latest audit sequence, actual current values and later same-field/ABA rejection. New immutable original-actor events record each restoration in the same transaction; unrelated newer edits survive. Current ownership governs access after transfer. Metadata, condition, physical location and archive/trash are supported without reconstructing private note digests, money provenance or old grants. Physical location rollback appends a genuine movement record; inactive condition options and new grading constraints reject restore. Trash/archive restore never silently reactivates sales offers.
+
+Forward070000 permanently retires old shares through immutable revocation markers compatible with guest locks, and pending invitations on trash/historical restore. Actual paused guest read/trash/restore and parent erasure cases verify no deadlock, no old capability revival and immutable receipts. Eleven earlier hashes unchanged; new migration frozen and applied both guarded DBs with empty actual schema diffs. Private HTTP preview/restore requires current server sessions, strict bounded same-origin requests,404 foreign scopes and409 stale confirmations.
+
+Validation:65focused audit/HTTP casesPASS, whole native1435PASS/118files/0skip185.94s, regular1553PASS/956native-disabled16.24s; strict root/web types, lint and full production buildPASS. Seven actual compiled cookie/browser journeysPASS8.0s. PreviousTask5 exact9b81b9f CI42354620531 verifiedSUCCESS. Whole-phase review pending, reviewed48/91 unchanged with six implementations pending review. No main application merge/deployment, live providers/mail/customer data, other apps/stores or automation. Continue immediatelyTask7 management UI and genuine current-member authoring.
+
+
+## 07 November 2026 — Phase09 Task7 implemented and locally verified; whole-phase review active
+
+Source68e09b7 provides responsive DE/EN member management, invitation issuance/revocation/recipient acceptance with bounded authentication return, Owner granular share/PIN/expiry/selected-document management, current-Owner global/resource audit history and explicit conflict-aware restore comparison. Share access remains separate from membership. Role-inappropriate controls are hidden, with actual server authority required on every mutation. Actual current-member inventory discovery/metadata editing preserves Owner identity separately from original Editor/Admin actor; private notes, financial data/evidence and protected documents remain outside that shared workspace. Current Admin also edits collection metadata and hierarchy through the original actual-actor writer, with fresh post-lock role/scope and parent timestamp/audit-sequence confirmations. Owner deletion/transfer remain separately protected. Source and internal shared writer contracts both reject private/monetary injection; real original raw money/generation remains unchanged.
+
+Native current-role withdrawal, stale confirmations, original-actor/provenance and HTTP checksPASS. Entire current domain plus all remaining native CI selections1446PASS/122files/0skip187.07s; regular1559PASS/967native-disabled16.54s (overlap). Strict root/web types, whole lint and full production buildPASS. Complete actual compiled49cookie/browser casesPASS56.0s:20new management/restore/current-role journeys,7prior sharing/invitation and22old Owner collector paths. Closing20new UI casesPASS24.9s on committed source. Both guarded schema diffs empty;12frozen migration hashes unchanged. Actual screenshots inspected and retained, not physical-device or production-capacity proof. Existing old collector fixtures now use exact owned synthetic credential counters rather than global resets; a response-body-after-navigation test race was corrected without weakening original refresh/no-duplicate/archive assertions. Correct authoring flag is confined to the guarded test browser server; production defaults remain unchanged.
+
+All seven Phase09 implementations are now locally verified. Single fresh whole-phase read-only review is active against82a1f0f..68e09b7; master reviewed48/91 and all Phase09 review checkboxes remain pending. Previous exactTask6 head3806d4c CI42357381299 verifiedSUCCESS; new Task7 CI awaits publication. Source/tests/existing DraftPR only, no application merge/deploy, provider/mail/customer data, other apps/stores, devices or stopped automation changes. Root continues with review adjudication and Phase10 preflight.
+
+
+## 07 November 2026 — Single Phase09 review, consolidated correction active
+
+Independent source review of82a1f0f..68e09b7 completed:0Critical,3Important,1Minor; not merge-ready as reviewed. Root accepted the three concrete integration failures and reproduced them before correction: two distinct-actor native lock cycles, valid multilingual requests above16KiB rejected, and a compiled browser stale node draft that silently acquired fresh confirmation and overwrote another administrator. Evidence:Phase09 review-fix-native-red.log/review-fix-browser-red.log and phase-review-findings.md.
+
+I1 root ruling: consistent parent-before-item fences across actual producers (metadata, tags/identifiers, condition/grading/custom fields, media/cleanup and direct money). A smaller collaborative SHARE-only approach was considered and rejected after inspecting later money lock upgrades. Original actor/ownership distinction, post-lock role checks and frozen schema remain. Native regression observes actual PostgreSQL lock waits, not guessed timing. I2 captures each form's original parent confirmation with its unsaved draft, including across item-triggered workspace refresh. I3 bounds only inventory requests at64KiB in both byte reader and fixed lexical scanner, keeping other routes at16KiB; tested9000CJK and10000escaped characters plus duplicate-key/oversized rejection. UI character limits are aligned with the same item contracts as part of that valid-input boundary.
+
+Final: Ruling: production capacity/physical devices — no production/device assurance follows from local source tests; outside current authorization; cost if wrong is load/device failure, retained for release hardening.
+Final: Ruling: live mail/providers/deployment/purchases — no live activation is performed or inferred; cost if wrong is unintended external side effects, avoided by scope restriction.
+Final: Ruling: unchanged unrelated earlier phases — retain prior independent reviews; changed integration edges are covered here; cost if wrong is legacy regression, checked through the full existing native and browser cohorts.
+Final: Ruling: legal sufficiency of retention — technical erasure/retention is tested, not a legal compliance opinion; cost if wrong requires policy/legal assessment before release.
+
+Current targeted9native regressions and root/web strict types pass. Full native/current compiled-browser/build/lint gates are running; no final review acceptance/master credit yet. Original Task7 source and evidence are already pushed at68e09b7/a4d748e; existing DraftPR1 updated honestly. No main merge/deployment, other app/store, provider or automation changes.
+
+### Phase10 read-only interface preflight
+
+Read the complete frozen eight-task plan and relevant product sections. Wishlist/community/notification modules do not yet exist. Reuse existing real application moderator/admin grants rather than inventing a second authority model; existing collection roles are not application moderation. Wishlist and duplicate ownership must remain private and current; separate exemplar IDs/condition/grading are never merged. Canonical UUID pair uniqueness, deletion/ownership-transfer retirement and bounded actual-owner queries need native witnesses. New target prices require an explicit prospective currency/unit declaration, not reinterpretation of historical raw money. Optional catalog/variant references must be coherent/current. Existing search/dashboard duplicate/wishlist placeholders need actual integration at their assigned later steps; do not label placeholders complete.
+
+Ruling: frozen plan commands mentioning prisma migrate dev are adapted to new additive migrations plus migrate deploy on the two guarded owned PostgreSQL17.11 databases. No migration reset or rewriting of the12 frozen Phase09 files. Existing test helper already applies new migrations to isolated native schemas. No new Phase10 runtime/source implementation is started while Phase09's final source gates run.
+
+
+Phase09 final local acceptance: root completed the single consolidated correction with actual RED→GREEN witnesses for all3Important findings. Full native1449/1449, regular1559PASS/970native-disabled, build/types/lintPASS,53real compiled browser casesPASS; explicit reopening after stale draft rejection is verified. Both guarded schema comparisons empty and12frozen migration hashes preserved. Full report/rulings/raw evidence in Phase09 workspace. Existing remote Task7 evidence a4d748e CI remains in progress on latest actual query; new corrected source will be pushed to the same DraftPR1, not merged or deployed. Canonical reviewed48remains unchanged until required new-head remote checks are actually accepted. Next independent implementation:Phase10Task1 wishlists and separate-specimen duplicate relations, using the frozen plan and prepared failing-native-test draft.
+
+
+## 07 November 2026 — Actual remote CI finding closed locally; Phase10 Task1 active
+
+Exact Phase09c63f920 run42365262882 failed the existing concurrent classification case: one writer returned SEARCH_UNAVAILABLE rather than the required genuine MONEY_CONFLICT. This supersedes the earlier local-only acceptance pending remote confirmation. Root reproduced the two actual parent SHARE locks and their later exclusive upgrades in a deterministic native witness (phase09-money-upgrade-red.log). Correction1760cd2 acquires the exclusive parent lock at the start of the direct money subject path; no event/token/conflict assertion is weakened. All37money+6current-member+9wishlist-native+6contract casesPASS; current whole native1459/1459PASS/123files190.37s. Correction pushed/readback verified to the same DraftPR1; new-head remote CI remains pending. This continues the existing consolidated correction; no second reviewer and no blind rerun. Master reviewed48unchanged.
+
+Phase10Task1 source now implements private wishlist create/list/fulfill/remove with declared prospective target-price scale, coherent optional catalog/variant, canonical separate-specimen duplicate mark/unmark/candidates, owner-transfer retirement and account erasure. Nine native and six pure contract tests verify privacy, grading preservation, actual owner transfer, direct SQL guards, concurrent idempotency, pagination and safe malformed-money rejection. The one additive20261107080000 migration is applied/frozen only on both guarded local test DBs with empty actual schema diffs. Current regular/lint/build/53browser gates are still running; Task1 is not yet complete/committed/reviewed. No new public screens or production activation claimed from this domain checkpoint.
+
+
+Phase10Task1 sourcea73d14b is implementation-complete under inline execution; task-done closing15PASS1.41s recorded exactc63f920..a73d14b. Current whole1459native/123files190.37s,1565regular/980native-disabled57.13s, types/lint/full build and53compiled browser casesPASS; both final schema diffs empty,13frozen migration bytes unchanged. Actual regenerated PDF/browser artifacts retained in Phase10 and exact historical files restored. Source/evidence publication goes to existing DraftPR1 only. No whole-Phase10 review credit yet; canonical48unchanged while corrected Phase09 CI is still pending. NextTask2 actual follows/favorites with current public visibility and bidirectional block policy.
+
+
+## 07 November 2026 — Phase09 accepted after exact corrected-source CI SUCCESS
+
+Official run42366151094 for exact1760cd29f9239f83c92d37be22055c78d96467ed is actually completed SUCCESS. Full persisted run/jobs evidence in Phase10 phase09-correction-ci-closing.json and phase09-correction-ci-success-jobs.json. This closes the real concurrent-classification CI failure atc63f920; no failed assertion or timeout was waived. The one independent whole-Phase09 review plus its single consolidated root TDD correction is now accepted. All7Phase09 checklist entries checked and canonical reviewed55/91 (not an effort percentage). CurrentPhase10Task1/Task2 remain separate implementation/review-pending work. No application merge/deployment, live providers/mail/payments, other apps/stores or automations.
+
+
+Phase10Task2 implemented at2b863ea with actual follow/favorite HTTP and cookie-session binding, current-public ancestor policy, bidirectional blocks/atomic retirement and current-owner recheck. Native interleaving verifies a real late block denies an in-flight favorite. Full1466native/125files191.20s,1572regular/987native-disabled57.30s, types/lint/full production build and54compiled-browser casesPASS; closing14PASS via task-done. Both final guarded schema diffs empty;14frozen migrations unchanged; historical fixture bytes restored with fresh proofs retained. Whole-Phase10 review followsTask8, so reviewed55/91 unchanged. NextTask3 comments, actual block/report workflows. No application main merge/deploy or live provider/customer action.
+
+### 7Nov Phase10Task3 implementation closed
+
+Source e8b76c3 adds public comment/reply threads, owner comment policies/hides, author deletion, directional block management and private canonical-ID reports. Broad1478native/128files/zero skips and1579regular/999native-disabled pass; source-specific final26tests and54compiled browsers pass after an actually reproduced empty-DELETE transport correction. Final web production build passes; package/worker builds and lint passed. Previous15 recorded migration hashes unchanged; both owned test schema diffs empty. Historical PDF/PNG bytes individually retained/restored. Closing task-done26PASS. One whole-Phase10 independent review remains afterTask8; reviewed55/91 unchanged. NextTask4 platform moderation. No merge/deploy/live provider action.
+
+### 7Nov Phase10Task4 implementation closed
+
+Source08451c2 adds authoritative platform-only report review/hide/restore/resolution and private append-only reasoned MODERATION events. Focused38 native/HTTP checks, shared root types, formatting and actual web production build pass; compiled real-cookie flow passes including ordinary-user denial and current grant revocation. Both owned schema diffs empty,16 recorded migration hashes unchanged. Exact prior Task2 evidence CI42368933320 completedSUCCESS; Task3 evidence CI42372269966 was stillin_progress when queried, not assumed successful. Whole-Phase10 review remains afterTask8; reviewed55/91 unchanged. NextTask5 notifications/preferences. No application merge/deployment/live-provider action.
+
+### 7Nov Phase10Task5 implementation closed
+
+Source3ef1a91 adds stable typed event-key notifications, current-public target projection, per-category/channel DE/EN preferences and recipient-only REST reads/mark-read.6native notification cases and affected36case cohort pass; root types, precise format and actual web production build pass. Compiled real-cookie API flowPASS2.4s, including foreign-recipient denial/security-email override. Both owned schema diffs empty;17 recorded frozen migration hashes unchanged. SMTP/provider activation remainsOFF. One whole-Phase10 review afterTask8, reviewed55/91 unchanged. NextTask6 durable email delivery.
+
+### 7Nov Phase10Task6 implementation closed
+
+Source91426d1 adds DE/EN private notification SMTP abstraction, durable outbox/leases, safe retry/acceptance receipts and cancellable worker/dispatcher integration.71focused tests across8files pass, including7actual-PG transport lifecycle cases, pre-cancelRED→GREEN, unknown-acceptance suppression, acknowledgement-only retries, preference revocation and no-transaction-over-I/O. Root types, exact format, final worker bundles, web production build and compiled current-cookie journeyPASS. Both owned schema diffs empty,18 recorded frozen migration hashes unchanged. No real email/provider activation; NOTIFICATION_EMAIL_ENABLED defaultsfalse. Runbook explains plain-SMTP uncertainty and operator reconciliation rather than claiming universal exactly-once. Whole-Phase10 review remains afterTask8; reviewed55/91 unchanged. NextTask7 visible community/wishlist/notifications UI.
+
+### 7Nov Phase10Task7 implementation closed
+
+Sourcef7bb4af adds responsive DE/EN community, private wishlist/duplicate comparison, notifications/preferences and actual-role platform moderation. Query-time feed all/following/saved filters public/current-ancestor/block policy; UI covers follow/favorite/comment/reply/report/block and persisted owner comment settings. Distinct specimens remain separate. Actual browser journey includes22 blocked entries/pagination. Shared malformed query500 corrected across five route families (15RED→GREEN), controlled-checkbox feedback corrected after real compiledRED, skip-link visual clipping preserves keyboard access.16current real UI screenshots inspected/hashed; original fixture bytes restored individually, current regenerated proofs retained. Final1631regular PASS/1023native-disabled;96affected native/API/price PASS; root types/whole lint/web buildPASS;58current/prior compiled browser casesPASS1.3m. Closing task-done96PASS. Exact prior Tasks3/4/5 CIgreen; Task6's old run-wiring mock failure reproduced/fixed (defaultOFF/explicitON tests plus full regulargreen), new remote CI not yet claimed. No application merge/deployment/providers. Whole-Phase10 review afterTask8, reviewed55/91 unchanged. NextTask8 public profile URLs, stable slugs, source-event notifications and real dashboard metrics.
+
+### 7Nov Phase10Task8 implementation closed, whole-phase review pending
+
+Source372334a adds stable anonymous DE/EN public collector/profile/collection/item routes, effective ancestry privacy and single-decoded @handles; actual follow/favorite/comment/reply/moderation/import/export notifications share the source transaction and stable occurrence keys. Current public/job links redact unavailable targets. Dashboard now reads real own wishes/fulfilled wishes/current live explicit duplicate pairs and informational milestones with explicit full-own selection bases. Final local1547native/139files/0skip211.79s,1631regular/1032native-disabled,218compiled-browser4.8m, final types/lint and worker/web buildsPASS. Both guarded schema diffs empty;18frozen migrations unchanged. Actual encoded-handle404, mobile hero composition, old unread expectation and invalid immutable expiry fixture witnesses retained and corrected; original historical proof bytes restored while fresh variants retained. All8Phase10tasks implemented/locally verified; no Phase10 independent review credit yet. Canonical accepted count55/91 remains unchanged until the ONE whole-phase review and any consolidated root corrections close.
+
+### 7Nov Phase10 single review and consolidated correction locally closed
+
+Original372334a independent review:With fixes,0Critical/1Important/2Minor. Root accepted all3 and corrected them together, without rereview: export lease renewals never emit completion; only successful READY can do so; depth33 replies now reject before rows/notices and deepest accepted response disables further replies; owner-only hidden-comment management survives reload and restores owner-hidden content without bypassing public/default/platform-hide/deletion/block boundaries. Real negative/native and old-compiled browser RED witnesses retained. Final1550native/139files0skip205.29s,1631regular/1035native-disabled61.87s,9affected compiledbrowser25.1s, types/lint and both buildsPASS; broader218browser baseline fromTask8 remains retained. All18frozen migration files unchanged; original screenshots/PDFs restored exactly and current variants separately retained. Original reviewer report remains unchanged; root final receipt/disposition records closure. Canonical55/91 remains until exact corrected-head CI completes. Continue Phase07 remaining search/smart/dashboard review debt; no live providers/deployment, other apps/stores/devices or automation.
+
+### 7Nov Phase10 accepted after exact corrected CI
+
+Actual corrected evidence d69f78f54fb80b729865a636a0c69acf564e2fca run42387013995 completedSUCCESS. Its source4709d23 closes all3 original single-review findings via the retained root consolidated TDD pass. All8Phase10tasks now reviewed/locally verified/committed/pushed and exactCI-green; canonical count63/91, no effort percentage inferred. Current Phase07market prerequisite is separate and unfinished: rights Task1 source0b9a6ea local142tests/typesPASS, Task2 native eligibility/caps active; no market/fullPhase07 checkoff, live activation or production claim from this count.
+
+### 7Nov market prerequisite accepted; duplicate integration active
+
+Exact617aa5cbea0584905563a731ff0c2d1c371f164c run42393762009 completedSUCCESS, including actual native and remaining workflow gates. The one market-prerequisite review and consolidated193336e correction are closed; Tasks1–5 accepted. Local baseline1653regular/1626native plus corrected90affected checks, types/lint/worker+web builds and160compiled DE/EN desktop/mobile search/dashboard casesPASS. Eighteen frozen migrations unchanged, historical proofs preserved. No fullPhase07 count added: real duplicate filtering and shared bulk authorization remain separate. Independent duplicate Task1 locally implemented with201affected native/pure checks and typesPASS; UI/saved/dashboard tests and its one final review remain pending. Canonical63/91.
+
+### 8Nov duplicate integration locally reviewed and verified
+
+Source183c83a/ca0ec3f/301c9dd plus consolidated test-only correction846cbfa. Explicit current-owned duplicate facts now execute in actual search, saved definitions, dashboard selection and localized Boolean controls. Native529related checks/28files0skip,1655regular checks/1107native-disabled, types/lint, both production builds and8compiled browser casesPASS. Actual bounded1/50/500plans retained with existing indexes. One fresh review found only a stale old unavailable test; original preserved, root correction green. New exact-CI evidence remains pending; canonical63/91 and originalPhase07 shared-scope gate stay open. No application main merge/deployment.
+
+### 8Nov duplicate prerequisite accepted; shared integration continues locally
+
+Exact616cc29451129e3d8cb1c3f4a505ad01a9a9b0a2 run42424946639 completedSUCCESS, including native and all compiled browser gates. Earlierd331run42423667733 failed only the whole-test5000ms budget of the guarded6500-observation measurement; test-only616correction gives its setup/two bounded operations/separateEXPLAIN runs30000ms, with all production/query budgets unchanged. Original one review and root correction remain preserved. All3duplicate integration tasks accepted; no originalPhase07 count increase.
+
+Shared prerequisite Tasks1–4 locally implemented/verified in0445506/afb0cbb/d46592a/63b27d4: canonical reusable membership/share ports, callback-scoped boundedRepeatableRead relation, whole-tree field authorization and ID-only pagination, symbolic scoped v2 saved views and permitted summaries, actual protected routes/discovery. Focused126/138/95/41native regression gates and typesPASS, no auth/service bypass. Real immutable original saved guard disproved no-migration assumption: separate additive20261108010000 permits exact credential-free v2 while all18frozenmigration hashes stay unchanged. Task5responsiveDE/EN interfaces/capability hints/compiled browser checks are active; not yet accepted. Shared prerequisite whole-plan review/exactCI and originalPhase07 final acceptance remain open. Canonical63/91; Phase11–14 not started. Local later shared source is not covered by duplicateCI and not pushed as accepted work. No main merge/deployment/providers/live mail/payments/customers/devices/automations.
+
+### 8Nov shared search final local correction; exact draftCI pending
+
+Original single whole-plan review81e170c found0Critical/5Important/2Minor. Root accepted all5, regraded bothMinor as explicit saved-view management requirements, and closed all7 in one consolidated TDD correction0ec1415 plus test-onlyda0d7fb/c181642; no rereview. Current sourcec18164290372f32d91006ce60016c33fff467fc2: executable trusted market filter controls (default grants remain empty), private normalized literal wishlist search, late-response draft generations, fresh saved scope validation, explicit create/update/delete and safe scope labels. Actual full1659regular/1173native-disabled,2832native/253files0skip250.55s, types/lint/bothbuilds and234compiledbrowser4.7minPASS. PriorUTC00-only skip closed at realUTC01; no clock manipulation. Eighteen old migration hashes and applied scoped migration unchanged; freshhistorical43browservariants plusregular/native variants retained, originals restored,16current screenshotreceipts. Source/proof not yet exactCI-green; canonical63/91 and originalPhase07Tasks2–5 remainpending. Phase11 preflight recorded, no AI/provider activation or implementation credit. No main merge/deployment/live providers/mail/payments/customerdata/devices/stores/automations.
+
+### 8Nov original Phase07 completed — canonical67/91
+
+Exact77b69f9478e06db09d04df173b7b6b9df6535354 run42433316774completedSUCCESS; actual verifyjob128586743495 and all required steps successful, including native/build/production browser/Docker gates. Existing DraftPR1 remains open/unmerged. One independent shared review81e170c and single consolidated root correction0ec1415/testonly successors close all7findings; no rereview. Complete local1659regular,2832native0skip,234compiledbrowser plusbothbuilds/types/lint retained with hashreceipts. All originalPhase07Tasks2–5 now separately accepted, increasing63→67/91. No implicitshared/Publicunion, ungrantedfieldenablement, providerlicense activation or fake totals. Phase11Task1 source5347ba8 locally implemented/verified110affected+18completionchecks, immutable advisory result/ownedsource/quota models, no item mutation or realprovider calls. Phase11Task2 active; neither Phase11 whole-review nor acceptance credit yet. Later local AI source not part of77CI and not pushed. Otherapps/stores/devices/automations unchanged; no main merge/deployment/live mail/payments/customerdata.
+
+### 8Nov AI phase accepted — canonical72/91
+
+Exact source8957121f7698067415c8271514c6aff09be89c64, run42443172217/job128616510919 completedSUCCESS. Fresh direct final job log confirms the required32compiled AI journeys35.6s; partial cached CLI log/step snapshots were not accepted as proof. Root local corrected1689regular/2899actualPostgreSQLzeroSkip, types/lint/worker+webbuild,32compiledAI plus preceding46AI/adjacent inventory journeys, preserved prior migration bytes and one independent whole-phase review/four consolidatedRED→GREEN corrections retained. No deferred minors, no second review. Explicit source ownership/consent, durable bounded worker/nullable usage, immutable advisory results and atomic field-by-field decisions. No real provider calls or paid activation.
+
+
+Billing local Task1e8300e7 and Task2be72786 are separately tested but not included in the AI candidate's source/CI acceptance. Task3 canonical signed-event sync in progress. Canonical accepted progress72/91, original scope91 unchanged. Source/DraftPR1 only; no main merge/deployment, live payments/providers/customer data, other apps/devices/stores/automations.
+
+### 8Nov Billing local Tasks1–4 complete; Task5 whole gates running
+
+Billing Task4 source3c93994 follows local Task1e8300e7, Task2be72786 and Task3
+825a0a5. Actual current whole-native2994/2994 and final domain1455/1455, root types, CI-required recursive lint and additive-migration parity passed. Native restricted-policy witnesses cover atomic inventory/media/AI/profile admissions, actual collaborator authorship/owner quota, ownership-transfer recipient budgets, restoration, Free CSV/basic dashboard/manual reads and non-destructive downgrade. No paid provider activation or customer payment occurred.
+
+Task5 current source adds DE/EN public pricing and private current-plan/usage UI, fresh-session local status API, bounded closed official-SDK price projection/cache, retained-data/cancellation/return messaging, and responsive comparison. Local focused25 and compiled12 Billing +4 adjacent existing inventory/search journeys pass; full current-source gates are running. New strict Billing native and guarded offline compiled browser stages are wired into CI. The source has not yet passed its single whole-phase fresh review or exact remote CI; canonical accepted progress remains72/91. Main/deployment/live provider/payment actions remain unchanged.
+
+Billing final local Task5 source25f4d50:3019nativezeroSkip,279files,273.79s; compiled12Billing17.5s plus4adjacent9.1s, actual bounded Free dashboard and20own QA images retained. Roottypes/lint/worker+optimizedwebbuild and75prior migrationfiles unchanged. All5local task contracts complete; one independent whole-phase review begins. Canonicalaccepted72/91 remains unchanged until corrected exactCI; no main/deploy/provider activation.
+
+
+### Phase12 single whole-review correction — exact CI pending
+
+One fresh whole-phase review on e1b5810 found0Critical/4Important/0Minor. Root verified and closed all4 in source38745a551e1ebab1f63592a3e70e662fbdf65622, one consolidated RED→GREEN pass, no rereview: invoice-line service-period refunds; revision-protected quota-stopped imports; pre-enqueue advanced-filter checks with durable exact owner/request/query admission across downgrade; immutable generated-artifact origin excluded consistently from uploaded-original usage and incoming ownership capacity. Current ownership/source/freshness checks remain intact.
+
+Final local3030native/279files/zeroSkip278.25s, types/lint, both production builds and12compiledBilling16.8s+32compiledAI35.1sPASS. Broadsearch/shared196passed with4environment failures from omitted MONEY_AUTHORING_ENABLED=true; all4 affected cases pass9.2s on unchanged source with the intended flag. Exact CI uses the flag and must pass the complete suite; no local200green claim.75oldmigrationfiles unchanged, one additive frozen migration (76currentfiles);20own QA hashes retained and unrelated historical images restored exactly after preserving current variants. Existing DraftPR1 only; no merge/deployment/provider/payment/mail/customer/device/store/automation actions. Canonical accepted72/91 remains unchanged until exact CI.
+
+### Phase12 accepted — canonical77/91
+
+Exact7289140d8fd422cc0561e03cf5e5f33a75d683f4 run42458240201/job128661743488 completedSUCCESS. Fresh direct final logs confirm all mandatory stages, including complete232search/shared,32compiledAI and12compiledBilling; all job steps successful. Original one whole-review and four consolidated root corrections closed, no rereview. All5Billingtasks accepted; canonical77/91. LocalPhase13Task1(84cookie permission checks) andTask2(four complete DE/EN desktop/mobile flows) remain independent whole-review/exactCI pending; no extra acceptance credit. DraftPR1 stays unmerged; no production/live provider/payment activation.
+
+### Phase13 single whole-review consolidated correction — final CI pending
+
+Immutable06cab579 review found0Critical/2Important/1Minor. Root211f9b9 closes source gaps in one consolidated pass: actual reviewed web image consumes separately restored DB/uploads with preserved own session/protected original+variant checks; public smoke validates owned final URL, locale and localized page identity; permission guard targets PostgreSQL17major. Non-root private restore roots are restricted0700. Actual older CI0b83dd8/run42463679266 reached container migration and exposed incorrect Prisma main resolution; installed bin-manifest resolution is fixed and the real runner locally applied all75migrations to a fresh own scratch DB. Earlier stages passed; failed CI is not acceptance. Current local3058native/282files/zeroSkip, recovery9, types/lint/both builds,84compiled permission +4complete locale/viewport flowsPASS. Final actual corrected-container/fullCI still required. Canonical77/91, source/DraftPR1 only; Phase13 live smoke still fails predeployment TLS and remains unchecked. Phase14 only preflight prepared; no scope reduction.
+
+### Phase14 source progress — no new acceptance credit
+
+T1 f8f88fc adds canonical bilingual marketing pages and runtime-origin metadata (8requiredunit, earlier11focused,4compiledDEENdesktop/mobile). T3 248dbfa adds explicit default-off owner indexing consent/publiclocale/revisionCAS, private same-origin fresh-session API, responsive controls;31native/identity/API+4compiledownerjourneysPASS. T2 adds privacy-safe dynamic XML sitemap index/robots/marketing/community files, stable bounded hash ranges/indexes and fresh effective visibility;30native/unit including10001-record split+1compiledprotocolPASS. Types/lint/buildPASS. These are local source proofs pending one whole-phase review and exact CI; canonical accepted77/91 unchanged. Phase13 corrected frozen3762e56/run42467819313 remainsrunning with no observed failures; never marklive smoke/DNS ownership from source.
+
+### Phase13 exact-source acceptance — canonical83/91
+
+Reviewed corrected3762e564b3f1416fec02a98267fccfb70e0d6ede run42467819313/job128691305247 completedSUCCESS2026-11-08T10:27:29Z. Fresh final raw logs and exported validateGate both confirm all mandatory executed stages:3058native/zeroSkip;232compiledshared-search,32AI,12Billing;84permissionmatrix and4completeDEENdesktop/mobile journeys;9realPostgreSQL/mediarecovery checks; all75frozen migrations in actual non-root containers; actual same reviewed web image reads restored DB/private originals+variants with preserved authenticated session and denies anonymous access. All workflow steps successful. The one whole review and consolidated correction are closed, no rereview. Accept only originalP13Tasks1–6. T7actual authorized Portainer deployment/live smoke is still unchecked; source CI is not proof of public availability. Phase14 local work receives no additional acceptance credit yet.
+
+### Phase14 whole source ready for regression/review
+
+OriginalTask1,3,2,4,5,6 local contracts completed (execution order respects consent dependency). Source2343c99 includes measured18actualLighthouse runs on6URLs, all SEO/A11y/BestPractices1.0 and Performancemin.87/median1.0, safe1200x630PNG/model/JSON-LD and strict private default-off indexing. Task7 adds a bounded GET-only owned HTTPS verifier,6realHTTPadverse-protocol tests and actualcompiled application23-check proof, shared documented owner-only consent DTO and SearchConsole operational guide. Actualproductionprobe stillfailsTLS; no deployment, DNSownership, processing or real provider readiness claimed. One wholePhase14review and exact final CI remain mandatory, so accepted83/91 unchanged. No Task7complete line from local source-only proof. Existing repository ispublic; only sanitized synthetic public-page PNG/Lighthouse evidence may enter its artifact, no private logs/manifests/tokens.
+
+### Phase14 exact-source acceptance — canonical89/91
+
+Reviewed application source9e2554353b73ba305f8ab53183c3823734bf3d07, run42476496370/job128718905006 completed SUCCESS with57successful steps. Direct final job log confirms3114native passed,0skipped,0failed; coordinator validates all18mandatory stages including compiled browser, real Lighthouse, images, migration and actual restored application. Single whole review and consolidated correction already closed. Accept originalPhase14Tasks1–6 only. P13T7 deployment and P14T7 live Search Console remain incomplete. Application source remains pinned9e25543; later documentation commits do not constitute newly tested application source. Private raw log/hash receipt stays outside tracked public evidence.
