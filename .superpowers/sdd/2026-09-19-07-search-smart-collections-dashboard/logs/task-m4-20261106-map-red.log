@@ -1,0 +1,94 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/catalog/catalog-money-map.test.ts (3 tests | 3 failed) 435ms
+   × native coherent catalog money map > matches exact single-fact reads and observes revocation without leaking evidence 99ms
+     → LEGACY_MONEY_INVALID
+   × native coherent catalog money map > keeps all 10100 supported snapshot paths with bounded database round trips 166ms
+     → LEGACY_MONEY_INVALID
+   × native coherent catalog money map > distinguishes an empty existing map from a nonexistent revision 4ms
+     → LEGACY_MONEY_INVALID
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/catalog/catalog-money-map.test.ts > native coherent catalog money map
+PrismaClientKnownRequestError: 
+Invalid `db.catalogRevision.deleteMany()` invocation in
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/domain/src/catalog/catalog-money-map.test.ts:28:30
+
+  25 afterAll(async () => {
+  26   if (!db) return;
+  27   const scope = { categoryTemplate: { key: { startsWith: prefix } } };
+→ 28   await db.catalogRevision.deleteMany(
+Foreign key constraint violated on the constraint: `CatalogMoneyInterpretationEvent_revision_fkey`
+ ❯ vn.handleRequestError node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:238:13
+ ❯ vn.handleAndLogRequestError node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:184:12
+ ❯ vn.request node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:153:12
+ ❯ a node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:1014:24
+ ❯ packages/domain/src/catalog/catalog-money-map.test.ts:28:5
+     26|     if (!db) return;
+     27|     const scope = { categoryTemplate: { key: { startsWith: prefix } } …
+     28|     await db.catalogRevision.deleteMany({ where: { entry: scope } });
+       |     ^
+     29|     await db.catalogAttributeValue.deleteMany({ where: { entry: scope …
+     30|     await db.catalogVariant.deleteMany({ where: { entry: scope } });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/catalog/catalog-money-map.test.ts > native coherent catalog money map > matches exact single-fact reads and observes revocation without leaking evidence
+LegacyMoneyError: LEGACY_MONEY_INVALID
+ ❯ legacyMoneyFail packages/contracts/src/legacy-money.ts:27:9
+     25| }
+     26| export function legacyMoneyFail(code: LegacyMoneyError["code"]): never…
+     27|   throw new LegacyMoneyError(code);
+       |         ^
+     28| }
+     29| export const LegacyMoneyIdSchema = z
+ ❯ readCatalogMoneyMap packages/domain/src/money/legacy-money-store.ts:381:10
+ ❯ callback packages/domain/src/catalog/catalog-money-map.test.ts:50:45
+ ❯ Proxy._transactionWithCallback node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:861:24
+ ❯ packages/domain/src/catalog/catalog-money-map.test.ts:51:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  |workspace| packages/domain/src/catalog/catalog-money-map.test.ts > native coherent catalog money map > keeps all 10100 supported snapshot paths with bounded database round trips
+LegacyMoneyError: LEGACY_MONEY_INVALID
+ ❯ legacyMoneyFail packages/contracts/src/legacy-money.ts:27:9
+     25| }
+     26| export function legacyMoneyFail(code: LegacyMoneyError["code"]): never…
+     27|   throw new LegacyMoneyError(code);
+       |         ^
+     28| }
+     29| export const LegacyMoneyIdSchema = z
+ ❯ readCatalogMoneyMap packages/domain/src/money/legacy-money-store.ts:381:10
+ ❯ callback packages/domain/src/catalog/catalog-money-map.test.ts:74:14
+ ❯ Proxy._transactionWithCallback node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:861:24
+ ❯ packages/domain/src/catalog/catalog-money-map.test.ts:72:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  |workspace| packages/domain/src/catalog/catalog-money-map.test.ts > native coherent catalog money map > distinguishes an empty existing map from a nonexistent revision
+LegacyMoneyError: LEGACY_MONEY_INVALID
+ ❯ legacyMoneyFail packages/contracts/src/legacy-money.ts:27:9
+     25| }
+     26| export function legacyMoneyFail(code: LegacyMoneyError["code"]): never…
+     27|   throw new LegacyMoneyError(code);
+       |         ^
+     28| }
+     29| export const LegacyMoneyIdSchema = z
+ ❯ readCatalogMoneyMap packages/domain/src/money/legacy-money-store.ts:381:10
+ ❯ callback packages/domain/src/catalog/catalog-money-map.test.ts:82:40
+ ❯ Proxy._transactionWithCallback node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:861:24
+ ❯ packages/domain/src/catalog/catalog-money-map.test.ts:82:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed (3)
+   Start at  05:16:03
+   Duration  860ms (transform 120ms, setup 7ms, collect 225ms, tests 435ms, environment 0ms, prepare 58ms)
+

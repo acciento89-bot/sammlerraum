@@ -1,0 +1,91 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/collaboration/membership-service.test.ts (33 tests | 2 failed) 1685ms
+   ✓ strict membership inputs > rejects malformed Unicode user IDs instead of normalizing into another identity 2ms
+   ✓ actual collection membership and atomic ownership > transfers ownership atomically and leaves exactly one derived owner 158ms
+   ✓ actual collection membership and atomic ownership > never accepts a second OWNER through membership creation or role editing 11ms
+   ✓ actual collection membership and atomic ownership > checks real membership and limits an Admin below Owner authority 17ms
+   ✓ actual collection membership and atomic ownership > rejects stale role decisions and a transfer without explicit private-data confirmation 9ms
+   ✓ actual collection membership and atomic ownership > allows member self-removal but never removes the sole owner 10ms
+   ✓ actual collection membership and atomic ownership > serializes simultaneous transfers so only one current owner decision wins 25ms
+   ✓ actual collection membership and atomic ownership > transfers a populated collection without changing item IDs, quantities or raw price digits 31ms
+   ✓ actual collection membership and atomic ownership > preserves private collection and item insurance through an explicitly confirmed transfer 36ms
+   ✓ actual collection membership and atomic ownership > retains a completed transfer and collection when the previous owner erases their account 24ms
+   ✓ actual collection membership and atomic ownership > prevents arbitrary database owner changes and a duplicate owner membership 26ms
+   ✓ actual collection membership and atomic ownership > cannot persist a claimed completed ownership transition without actually changing the owner 13ms
+   ✓ actual collection membership and atomic ownership > feeds current database roles into the policy and withdraws access after member removal 11ms
+   ✓ actual collection membership and atomic ownership > preserves immutable manual valuation amounts and their real author through ownership transfer and author erasure 47ms
+   ✓ actual collection membership and atomic ownership > does not leave a concurrent real tag writer's private tag attached under the wrong owner 68ms
+   ✓ actual collection membership and atomic ownership > rejects a former owner's tag write that waited behind the actual ownership transfer 42ms
+   ✓ actual collection membership and atomic ownership > rejects a former owner's identifier write that waited behind the actual ownership transfer 37ms
+   ✓ actual collection membership and atomic ownership > copies private tags to the recipient without changing either owner's other collections 73ms
+   ✓ actual collection membership and atomic ownership > preserves exact grading certificates, quantity and timestamps during ownership transfer 36ms
+   ✓ actual collection membership and atomic ownership > rolls back the entire transfer on a recipient certificate conflict 22ms
+   ✓ actual collection membership and atomic ownership > transfers an actual private PDF upload without changing its bytes, identity, links or access boundary 180ms
+   ✓ actual collection membership and atomic ownership > does not transfer an asset also referenced by another collection 17ms
+   ✓ actual collection membership and atomic ownership > preserves real image originals and variants shared only inside the transferred collection 73ms
+   ✓ actual collection membership and atomic ownership > blocks the transfer while the actual shared media advisory lock is held 38ms
+   ✓ actual collection membership and atomic ownership > copies only the needed location hierarchy with fresh QR identities and preserves real move history 45ms
+   ✓ actual collection membership and atomic ownership > rejects cyclic source locations atomically rather than losing their path 19ms
+   ✓ actual collection membership and atomic ownership > does not invent a move author or mutate historical timestamps 8ms
+   ✓ actual collection membership and atomic ownership > retains the known source manifest and safely erases cancelled private imports across transfer 83ms
+   ✓ actual collection membership and atomic ownership > preserves exact purchase and custom-money COPY meaning and real authors within a whole transferred scope 111ms
+   ✓ actual collection membership and atomic ownership > blocks a cross-collection money lineage when transferring its origin 31ms
+   ✓ actual collection membership and atomic ownership > blocks a cross-collection money lineage when transferring its copy 30ms
+   × actual collection membership and atomic ownership > fences a real raw COPY insert racing after the transfer's closed-scope check 63ms
+     → expected true to be false // Object.is equality
+   × actual collection membership and atomic ownership > reports a controlled conflict when a recipient adds the same certificate after preflight 25ms
+     → expected MembershipError: MEMBERSHIP_INTEGRITY { code: '…' } to match object { code: 'MEMBERSHIP_CONFLICT' }
+(1 matching property omitted from actual)
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/collaboration/membership-service.test.ts > actual collection membership and atomic ownership > fences a real raw COPY insert racing after the transfer's closed-scope check
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ packages/domain/src/collaboration/membership-service.test.ts:1275:27
+    1273|         release(); await transfer;
+    1274|         const result = await outcome;
+    1275|         expect(result.ok).toBe(false);
+       |                           ^
+    1276|         if (!result.ok) expect(result.error).toMatchObject({ meta: { d…
+    1277|         expect(await db.purchaseMoneyInterpretationEvent.count({ where…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |workspace| packages/domain/src/collaboration/membership-service.test.ts > actual collection membership and atomic ownership > reports a controlled conflict when a recipient adds the same certificate after preflight
+AssertionError: expected MembershipError: MEMBERSHIP_INTEGRITY { code: '…' } to match object { code: 'MEMBERSHIP_CONFLICT' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+- {
+-   "code": "MEMBERSHIP_CONFLICT",
++ MembershipError {
++   "code": "MEMBERSHIP_INTEGRITY",
+  }
+
+ ❯ packages/domain/src/collaboration/membership-service.test.ts:1305:47
+    1303|         const outcome=await result;
+    1304|         expect(outcome.ok).toBe(false);
+    1305|         if(!outcome.ok) expect(outcome.error).toMatchObject({code:"MEM…
+       |                                               ^
+    1306|         expect((await db.collectibleItem.findUniqueOrThrow({where:{id:…
+    1307|         expect(await db.collectionOwnershipTransfer.count({where:{coll…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 31 passed (33)
+   Start at  05:20:47
+   Duration  2.39s (transform 295ms, setup 7ms, collect 539ms, tests 1.69s, environment 0ms, prepare 34ms)
+

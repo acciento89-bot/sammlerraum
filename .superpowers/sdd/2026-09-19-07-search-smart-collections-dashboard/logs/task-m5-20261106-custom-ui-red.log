@@ -1,0 +1,107 @@
+[WebServer] (node:89259) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 4 tests using 1 worker
+
+(node:89260) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [money-ui-desktop] › e2e/legacy-money.spec.ts:316:3 › de: title-only save preserves a custom MONEY field's historical receipt (2.1s)
+(node:89276) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  2 [money-ui-desktop] › e2e/legacy-money.spec.ts:316:3 › en: title-only save preserves a custom MONEY field's historical receipt (821ms)
+(node:89288) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  3 [money-ui-mobile] › e2e/legacy-money.spec.ts:316:3 › de: title-only save preserves a custom MONEY field's historical receipt (725ms)
+(node:89297) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  4 [money-ui-mobile] › e2e/legacy-money.spec.ts:316:3 › en: title-only save preserves a custom MONEY field's historical receipt (699ms)
+
+
+  1) [money-ui-desktop] › e2e/legacy-money.spec.ts:316:3 › de: title-only save preserves a custom MONEY field's historical receipt 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: "eyJ2IjoxLCJzdWJqZWN0Ijp7ImZhbWlseSI6IkNVU1RPTSIsIml0ZW1JZCI6IjA2OTAzNjZkLWYxYjgtNDg1NC1hMTNjLTYwOWExNzcxNzAzZiIsImZpZWxkRGVmaW5pdGlvbklkIjoiOTc1ZjAxOTgtOGM0MC00MzdiLTgyNzAtZTU0NDE5ZGUwZjg1In0sImdlbmVyYXRpb24iOiI4Y2JhZjBkNC05YjZlLTRmYTUtOTM3Mi00ZmIwNDBjYzQzYzUiLCJzZXF1ZW5jZSI6IjIiLCJyYXciOnsiYW1vdW50TWlub3IiOiIxMDAiLCJjdXJyZW5jeSI6IkFGTiJ9LCJlZmZlY3RpdmVFdmVudElkIjoiNGUxNDM3MDAtMDcyYy00MDcxLWE0OTktMmFlNjE4OGZhOWM0Iiwib3JpZ2luSWQiOiI0ZTE0MzcwMC0wNzJjLTQwNzEtYTQ5OS0yYWU2MTg4ZmE5YzQiLCJvcmlnaW5FdmlkZW5jZUVyYXNlZEF0IjpudWxsLCJyZXZvY2F0aW9uSWQiOm51bGx9"
+    Received: "eyJ2IjoxLCJzdWJqZWN0Ijp7ImZhbWlseSI6IkNVU1RPTSIsIml0ZW1JZCI6IjA2OTAzNjZkLWYxYjgtNDg1NC1hMTNjLTYwOWExNzcxNzAzZiIsImZpZWxkRGVmaW5pdGlvbklkIjoiOTc1ZjAxOTgtOGM0MC00MzdiLTgyNzAtZTU0NDE5ZGUwZjg1In0sImdlbmVyYXRpb24iOiJiYzE3ZjNmNC00ZTFjLTQ0MjItYTMyMi1lMWJhYzVkMDEzMTYiLCJzZXF1ZW5jZSI6IjMiLCJyYXciOnsiYW1vdW50TWlub3IiOiIxMDAiLCJjdXJyZW5jeSI6IkFGTiJ9LCJlZmZlY3RpdmVFdmVudElkIjoiYjg4YmUyYTktZTk0MS00YjI1LThjNTAtOTRlYjhiZTU1NWM3Iiwib3JpZ2luSWQiOm51bGwsIm9yaWdpbkV2aWRlbmNlRXJhc2VkQXQiOm51bGwsInJldm9jYXRpb25JZCI6bnVsbH0"
+
+      334 |       const response = page.waitForResponse(r => r.request().method() === "PATCH" && new URL(r.url()).pathname.endsWith(`/items/${f.itemId}`));
+      335 |       await save.click(); expect((await response).status()).toBe(200); await expect(save).toBeEnabled();
+    > 336 |       expect((await money.getMoney(subject)).factToken).toBe(before.factToken);
+          |                                                         ^
+      337 |       await expect(page.getByRole("region", { name: field.name, exact: true }).getByRole("status").first()).toContainText("100 AFN");
+      338 |     } finally { await cleanupSearchFixture(f); }
+      339 |   });
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/legacy-money.spec.ts:336:57
+
+    Error Context: test-results/legacy-money-de-title-only-20985--field-s-historical-receipt-money-ui-desktop/error-context.md
+
+    Error Context: test-results/legacy-money-de-title-only-20985--field-s-historical-receipt-money-ui-desktop/error-context.md
+
+  2) [money-ui-desktop] › e2e/legacy-money.spec.ts:316:3 › en: title-only save preserves a custom MONEY field's historical receipt 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: "eyJ2IjoxLCJzdWJqZWN0Ijp7ImZhbWlseSI6IkNVU1RPTSIsIml0ZW1JZCI6IjQ5M2VhZDI2LTk0MjgtNDg3OS1hNmUxLWQ3MGE4MTFmMjM2YyIsImZpZWxkRGVmaW5pdGlvbklkIjoiOWE0MjczZjUtZGJjZS00Y2U4LWE0OTMtZjM1OTllMjdiMDU4In0sImdlbmVyYXRpb24iOiI4ZjMwYWEzMi0yMTQ0LTRkYjMtOTRkYi04OWVjMGMwNTEyYjciLCJzZXF1ZW5jZSI6IjIiLCJyYXciOnsiYW1vdW50TWlub3IiOiIxMDAiLCJjdXJyZW5jeSI6IkFGTiJ9LCJlZmZlY3RpdmVFdmVudElkIjoiNDQ2YmVkNmUtMmZjMi00MGI1LWEwN2EtNDYzMzhiMWFiMzFlIiwib3JpZ2luSWQiOiI0NDZiZWQ2ZS0yZmMyLTQwYjUtYTA3YS00NjMzOGIxYWIzMWUiLCJvcmlnaW5FdmlkZW5jZUVyYXNlZEF0IjpudWxsLCJyZXZvY2F0aW9uSWQiOm51bGx9"
+    Received: "eyJ2IjoxLCJzdWJqZWN0Ijp7ImZhbWlseSI6IkNVU1RPTSIsIml0ZW1JZCI6IjQ5M2VhZDI2LTk0MjgtNDg3OS1hNmUxLWQ3MGE4MTFmMjM2YyIsImZpZWxkRGVmaW5pdGlvbklkIjoiOWE0MjczZjUtZGJjZS00Y2U4LWE0OTMtZjM1OTllMjdiMDU4In0sImdlbmVyYXRpb24iOiIyMDk1MWI5MC02M2IzLTRiZGItODg2My0yNDQ4NmE4ZjYxMWYiLCJzZXF1ZW5jZSI6IjMiLCJyYXciOnsiYW1vdW50TWlub3IiOiIxMDAiLCJjdXJyZW5jeSI6IkFGTiJ9LCJlZmZlY3RpdmVFdmVudElkIjoiMjIxNTQ3YTAtYTNiNi00M2FiLTgwZjQtYjE4ZDJjNDU4MzNjIiwib3JpZ2luSWQiOm51bGwsIm9yaWdpbkV2aWRlbmNlRXJhc2VkQXQiOm51bGwsInJldm9jYXRpb25JZCI6bnVsbH0"
+
+      334 |       const response = page.waitForResponse(r => r.request().method() === "PATCH" && new URL(r.url()).pathname.endsWith(`/items/${f.itemId}`));
+      335 |       await save.click(); expect((await response).status()).toBe(200); await expect(save).toBeEnabled();
+    > 336 |       expect((await money.getMoney(subject)).factToken).toBe(before.factToken);
+          |                                                         ^
+      337 |       await expect(page.getByRole("region", { name: field.name, exact: true }).getByRole("status").first()).toContainText("100 AFN");
+      338 |     } finally { await cleanupSearchFixture(f); }
+      339 |   });
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/legacy-money.spec.ts:336:57
+
+    Error Context: test-results/legacy-money-en-title-only-51b33--field-s-historical-receipt-money-ui-desktop/error-context.md
+
+    Error Context: test-results/legacy-money-en-title-only-51b33--field-s-historical-receipt-money-ui-desktop/error-context.md
+
+  3) [money-ui-mobile] › e2e/legacy-money.spec.ts:316:3 › de: title-only save preserves a custom MONEY field's historical receipt 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: "eyJ2IjoxLCJzdWJqZWN0Ijp7ImZhbWlseSI6IkNVU1RPTSIsIml0ZW1JZCI6IjdlMGU0MTZkLTEyNjAtNGYwZS05YjBlLTY1ZjUyY2Y1OTdkMCIsImZpZWxkRGVmaW5pdGlvbklkIjoiOTIwYmMwYjMtYzZiZi00OTlhLTk5MGItZmMzYjc3MjJhY2EyIn0sImdlbmVyYXRpb24iOiI2YmZlZTgzMC0zMTYwLTQ4MTMtOGEzNC1lN2I4ZGRkMWNhNDYiLCJzZXF1ZW5jZSI6IjIiLCJyYXciOnsiYW1vdW50TWlub3IiOiIxMDAiLCJjdXJyZW5jeSI6IkFGTiJ9LCJlZmZlY3RpdmVFdmVudElkIjoiMWVmYzRhNzUtODUwNC00OWJmLTgxNmUtNmMzMmI1Mjc1M2ZjIiwib3JpZ2luSWQiOiIxZWZjNGE3NS04NTA0LTQ5YmYtODE2ZS02YzMyYjUyNzUzZmMiLCJvcmlnaW5FdmlkZW5jZUVyYXNlZEF0IjpudWxsLCJyZXZvY2F0aW9uSWQiOm51bGx9"
+    Received: "eyJ2IjoxLCJzdWJqZWN0Ijp7ImZhbWlseSI6IkNVU1RPTSIsIml0ZW1JZCI6IjdlMGU0MTZkLTEyNjAtNGYwZS05YjBlLTY1ZjUyY2Y1OTdkMCIsImZpZWxkRGVmaW5pdGlvbklkIjoiOTIwYmMwYjMtYzZiZi00OTlhLTk5MGItZmMzYjc3MjJhY2EyIn0sImdlbmVyYXRpb24iOiIzZGYzYTFmMy1mZGNmLTRiM2ItODIyOC1iNjU3OTIxODlkMDAiLCJzZXF1ZW5jZSI6IjMiLCJyYXciOnsiYW1vdW50TWlub3IiOiIxMDAiLCJjdXJyZW5jeSI6IkFGTiJ9LCJlZmZlY3RpdmVFdmVudElkIjoiMDk3MTk2YjgtMDA2YS00ZTliLWIwNGUtMzE5NDI5OTczMzU4Iiwib3JpZ2luSWQiOm51bGwsIm9yaWdpbkV2aWRlbmNlRXJhc2VkQXQiOm51bGwsInJldm9jYXRpb25JZCI6bnVsbH0"
+
+      334 |       const response = page.waitForResponse(r => r.request().method() === "PATCH" && new URL(r.url()).pathname.endsWith(`/items/${f.itemId}`));
+      335 |       await save.click(); expect((await response).status()).toBe(200); await expect(save).toBeEnabled();
+    > 336 |       expect((await money.getMoney(subject)).factToken).toBe(before.factToken);
+          |                                                         ^
+      337 |       await expect(page.getByRole("region", { name: field.name, exact: true }).getByRole("status").first()).toContainText("100 AFN");
+      338 |     } finally { await cleanupSearchFixture(f); }
+      339 |   });
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/legacy-money.spec.ts:336:57
+
+    Error Context: test-results/legacy-money-de-title-only-20985--field-s-historical-receipt-money-ui-mobile/error-context.md
+
+    Error Context: test-results/legacy-money-de-title-only-20985--field-s-historical-receipt-money-ui-mobile/error-context.md
+
+  4) [money-ui-mobile] › e2e/legacy-money.spec.ts:316:3 › en: title-only save preserves a custom MONEY field's historical receipt 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: "eyJ2IjoxLCJzdWJqZWN0Ijp7ImZhbWlseSI6IkNVU1RPTSIsIml0ZW1JZCI6IjljMzQyNzQxLWFhMTktNDdkYy1iYmMwLTM5Mjg4ZTNkNGVhNyIsImZpZWxkRGVmaW5pdGlvbklkIjoiY2JmYjI2NjQtYmZjZC00NzlkLTk1MGItZWVjOWM4ZTQ1NTZjIn0sImdlbmVyYXRpb24iOiIxY2Y4Yjg4OC1iNjRmLTRmNzEtOGY1YS03NWM4OWU1NTRiNTAiLCJzZXF1ZW5jZSI6IjIiLCJyYXciOnsiYW1vdW50TWlub3IiOiIxMDAiLCJjdXJyZW5jeSI6IkFGTiJ9LCJlZmZlY3RpdmVFdmVudElkIjoiNzgyZmUzMWMtYzgzMC00NmZmLTk2ZjAtZDk1MjEwMDNhZWM2Iiwib3JpZ2luSWQiOiI3ODJmZTMxYy1jODMwLTQ2ZmYtOTZmMC1kOTUyMTAwM2FlYzYiLCJvcmlnaW5FdmlkZW5jZUVyYXNlZEF0IjpudWxsLCJyZXZvY2F0aW9uSWQiOm51bGx9"
+    Received: "eyJ2IjoxLCJzdWJqZWN0Ijp7ImZhbWlseSI6IkNVU1RPTSIsIml0ZW1JZCI6IjljMzQyNzQxLWFhMTktNDdkYy1iYmMwLTM5Mjg4ZTNkNGVhNyIsImZpZWxkRGVmaW5pdGlvbklkIjoiY2JmYjI2NjQtYmZjZC00NzlkLTk1MGItZWVjOWM4ZTQ1NTZjIn0sImdlbmVyYXRpb24iOiJiZDcxYzU3Ny1kODRiLTQ3Y2YtOGNkZi1jYWYzODY2ZmM0N2QiLCJzZXF1ZW5jZSI6IjMiLCJyYXciOnsiYW1vdW50TWlub3IiOiIxMDAiLCJjdXJyZW5jeSI6IkFGTiJ9LCJlZmZlY3RpdmVFdmVudElkIjoiMWRkMGEyYmUtN2Y1MC00NTM1LWE1MDEtYjlkMmZlZDQ0NDZiIiwib3JpZ2luSWQiOm51bGwsIm9yaWdpbkV2aWRlbmNlRXJhc2VkQXQiOm51bGwsInJldm9jYXRpb25JZCI6bnVsbH0"
+
+      334 |       const response = page.waitForResponse(r => r.request().method() === "PATCH" && new URL(r.url()).pathname.endsWith(`/items/${f.itemId}`));
+      335 |       await save.click(); expect((await response).status()).toBe(200); await expect(save).toBeEnabled();
+    > 336 |       expect((await money.getMoney(subject)).factToken).toBe(before.factToken);
+          |                                                         ^
+      337 |       await expect(page.getByRole("region", { name: field.name, exact: true }).getByRole("status").first()).toContainText("100 AFN");
+      338 |     } finally { await cleanupSearchFixture(f); }
+      339 |   });
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/legacy-money.spec.ts:336:57
+
+    Error Context: test-results/legacy-money-en-title-only-51b33--field-s-historical-receipt-money-ui-mobile/error-context.md
+
+    Error Context: test-results/legacy-money-en-title-only-51b33--field-s-historical-receipt-money-ui-mobile/error-context.md
+
+  4 failed
+    [money-ui-desktop] › e2e/legacy-money.spec.ts:316:3 › de: title-only save preserves a custom MONEY field's historical receipt 
+    [money-ui-desktop] › e2e/legacy-money.spec.ts:316:3 › en: title-only save preserves a custom MONEY field's historical receipt 
+    [money-ui-mobile] › e2e/legacy-money.spec.ts:316:3 › de: title-only save preserves a custom MONEY field's historical receipt 
+    [money-ui-mobile] › e2e/legacy-money.spec.ts:316:3 › en: title-only save preserves a custom MONEY field's historical receipt 
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/legacy-money.spec.ts --workers=1 --grep custom MONEY

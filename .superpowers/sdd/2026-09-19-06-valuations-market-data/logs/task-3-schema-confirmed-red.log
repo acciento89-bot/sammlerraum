@@ -1,0 +1,137 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| apps/worker/src/jobs/market-sync.integration.test.ts (5 tests | 5 failed) 213ms
+   × market sync PostgreSQL > atomically receipts exact bigint observations and skips committed retry before catalog validation 48ms
+     → MARKET_SYNC_RETRY
+   × market sync PostgreSQL > receipts empty success and rejects divergent same-poll request 13ms
+     → 
+Invalid `prisma.$queryRaw()` invocation:
+
+
+Raw query failed. Code: `42P01`. Message: `relation "MarketSyncReceipt" does not exist`
+   × market sync PostgreSQL > serializes equal concurrent polls to one receipt and one observation 11ms
+     → 
+Invalid `prisma.$queryRaw()` invocation:
+
+
+Raw query failed. Code: `42P01`. Message: `relation "MarketSyncReceipt" does not exist`
+   × market sync PostgreSQL > rolls back newly ingested observations when receipt insertion fails 14ms
+     → expected [Function] to throw error including 'injected' but got '\nInvalid `prisma.$queryRaw()` invoca…'
+   × market sync PostgreSQL > rejects native UPDATE and malformed receipt while allowing scoped fixture deletion 10ms
+     → 
+Invalid `prisma.$queryRaw()` invocation:
+
+
+Raw query failed. Code: `42P01`. Message: `relation "MarketSyncReceipt" does not exist`
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/worker/src/jobs/market-sync.integration.test.ts > market sync PostgreSQL > atomically receipts exact bigint observations and skips committed retry before catalog validation
+Error: MARKET_SYNC_RETRY
+ ❯ apps/worker/src/jobs/sync-market-data.ts:46:10
+     44|    }
+     45|    // pg-boss persists thrown errors. Never propagate a provider URL/b…
+     46|    throw new Error(signal.aborted ? "MARKET_SYNC_INTERRUPTED" : "MARKE…
+       |          ^
+     47|   } finally {clearTimeout(timer);}
+     48|  };
+ ❯ apps/worker/src/jobs/market-sync.integration.test.ts:23:322
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ FAIL  |workspace| apps/worker/src/jobs/market-sync.integration.test.ts > market sync PostgreSQL > receipts empty success and rejects divergent same-poll request
+PrismaClientKnownRequestError: 
+Invalid `prisma.$queryRaw()` invocation:
+
+
+Raw query failed. Code: `42P01`. Message: `relation "MarketSyncReceipt" does not exist`
+ ❯ vn.handleRequestError node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:238:13
+ ❯ vn.handleAndLogRequestError node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:184:12
+ ❯ vn.request node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:153:12
+ ❯ a node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:1014:24
+ ❯ find apps/worker/src/jobs/market-sync-repository.ts:12:14
+     10|  },{isolationLevel:"ReadCommitted"});
+     11|  const find=async(tx:MarketTransaction,p:MarketSyncPayload)=>{
+     12|   const rows=await tx.$queryRaw<MarketSyncReceipt[]>`SELECT request FR…
+       |              ^
+     13|   return rows[0]??null;
+     14|  };
+ ❯ apps/worker/src/jobs/market-sync-repository.ts:20:19
+ ❯ Proxy._transactionWithCallback node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:861:18
+ ❯ Object.commit apps/worker/src/jobs/market-sync-repository.ts:18:44
+ ❯ apps/worker/src/jobs/market-sync.integration.test.ts:24:122
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+ FAIL  |workspace| apps/worker/src/jobs/market-sync.integration.test.ts > market sync PostgreSQL > serializes equal concurrent polls to one receipt and one observation
+PrismaClientKnownRequestError: 
+Invalid `prisma.$queryRaw()` invocation:
+
+
+Raw query failed. Code: `42P01`. Message: `relation "MarketSyncReceipt" does not exist`
+ ❯ vn.handleRequestError node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:238:13
+ ❯ vn.handleAndLogRequestError node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:184:12
+ ❯ vn.request node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:153:12
+ ❯ a node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:1014:24
+ ❯ find apps/worker/src/jobs/market-sync-repository.ts:12:14
+     10|  },{isolationLevel:"ReadCommitted"});
+     11|  const find=async(tx:MarketTransaction,p:MarketSyncPayload)=>{
+     12|   const rows=await tx.$queryRaw<MarketSyncReceipt[]>`SELECT request FR…
+       |              ^
+     13|   return rows[0]??null;
+     14|  };
+ ❯ apps/worker/src/jobs/market-sync-repository.ts:20:19
+ ❯ Proxy._transactionWithCallback node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:861:18
+ ❯ Object.commit apps/worker/src/jobs/market-sync-repository.ts:18:44
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+
+ FAIL  |workspace| apps/worker/src/jobs/market-sync.integration.test.ts > market sync PostgreSQL > rolls back newly ingested observations when receipt insertion fails
+AssertionError: expected [Function] to throw error including 'injected' but got '\nInvalid `prisma.$queryRaw()` invoca…'
+
+- Expected
++ Received
+
+- injected
++
++ Invalid `prisma.$queryRaw()` invocation:
++
++
++ Raw query failed. Code: `42P01`. Message: `relation "MarketSyncReceipt" does not exist`
+
+ ❯ apps/worker/src/jobs/market-sync.integration.test.ts:26:387
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯
+
+ FAIL  |workspace| apps/worker/src/jobs/market-sync.integration.test.ts > market sync PostgreSQL > rejects native UPDATE and malformed receipt while allowing scoped fixture deletion
+PrismaClientKnownRequestError: 
+Invalid `prisma.$queryRaw()` invocation:
+
+
+Raw query failed. Code: `42P01`. Message: `relation "MarketSyncReceipt" does not exist`
+ ❯ vn.handleRequestError node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:238:13
+ ❯ vn.handleAndLogRequestError node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:184:12
+ ❯ vn.request node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:153:12
+ ❯ a node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:1014:24
+ ❯ find apps/worker/src/jobs/market-sync-repository.ts:12:14
+     10|  },{isolationLevel:"ReadCommitted"});
+     11|  const find=async(tx:MarketTransaction,p:MarketSyncPayload)=>{
+     12|   const rows=await tx.$queryRaw<MarketSyncReceipt[]>`SELECT request FR…
+       |              ^
+     13|   return rows[0]??null;
+     14|  };
+ ❯ apps/worker/src/jobs/market-sync-repository.ts:20:19
+ ❯ Proxy._transactionWithCallback node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:861:18
+ ❯ Object.commit apps/worker/src/jobs/market-sync-repository.ts:18:44
+ ❯ apps/worker/src/jobs/market-sync.integration.test.ts:27:124
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/5]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  5 failed (5)
+   Start at  04:50:05
+   Duration  560ms (transform 87ms, setup 6ms, collect 186ms, tests 213ms, environment 0ms, prepare 37ms)
+

@@ -1,0 +1,49 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/contracts/src/legacy-money.test.ts (15 tests | 1 failed | 14 skipped) 5ms
+   ↓ legacy money bounded contracts > historical_codes_survive_current_list
+   ↓ legacy money bounded contracts > strict_envelopes_bound_tokens_and_evidence
+   ↓ legacy money structural boundaries > rejects malformed decimal syntax at the authoring wire boundary
+   ↓ legacy money structural boundaries > binds interpreted units and evidence basis to the actual raw currency
+   ↓ legacy money structural boundaries > has fixed typed subject identities without arbitrary paths {"family":"CUSTOM","itemId":"b42572c3-dbf8-4c64-9203-593c5f181a41","fieldDefinitionId":"b42572c3-dbf8-4c64-9203-593c5f181a41"}
+   ↓ legacy money structural boundaries > has fixed typed subject identities without arbitrary paths {"family":"CATALOG","entryId":"b42572c3-dbf8-4c64-9203-593c5f181a41","revision":1,"target":{"kind":"ENTRY"},"definitionId":"b42572c3-dbf8-4c64-9203-593c5f181a41"}
+   ↓ legacy money structural boundaries > has fixed typed subject identities without arbitrary paths {"family":"CATALOG","entryId":"b42572c3-dbf8-4c64-9203-593c5f181a41","revision":2147483647,"target":{"kind":"VARIANT","variantId":"b42572c3-dbf8-4c64-9203-593c5f181a41"},"definitionId":"b42572c3-dbf8-4c64-9203-593c5f181a41"}
+   ↓ legacy money structural boundaries > rejects noncanonical identities and undeclared subjects
+   ↓ legacy money structural boundaries > accepts only canonical exact raw integer strings and bounded durable sequences
+   ↓ legacy money structural boundaries > requires canonical assertion-erasure timestamps and closed revocation shapes
+   ↓ legacy money structural boundaries > keeps missing, unknown and interpreted zero distinct without fabricated scale
+   ↓ legacy money structural boundaries > retains independently evidenced scale for supported and ineligible unsupported units
+   ↓ legacy money structural boundaries > validates receipt bindings without treating a parsed receipt as client authority
+   ↓ legacy money structural boundaries > normalizes bounded private evidence without accepting controls or surrogate damage
+   × reports out-of-range receipt/view input as validation failure without throwing 4ms
+     → LEGACY_MONEY_INTERPRETATION_UNSUPPORTED
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/contracts/src/legacy-money.test.ts > reports out-of-range receipt/view input as validation failure without throwing
+LegacyMoneyError: LEGACY_MONEY_INTERPRETATION_UNSUPPORTED
+ ❯ legacyMoneyFail packages/contracts/src/legacy-money.ts:18:9
+     16| }
+     17| export function legacyMoneyFail(code: LegacyMoneyError["code"]): never…
+     18|   throw new LegacyMoneyError(code);
+       |         ^
+     19| }
+     20| const id = z
+ ❯ formatLegacyMinorUnits packages/contracts/src/legacy-money.ts:194:12
+ ❯ Object.fn packages/contracts/src/legacy-money.ts:218:35
+ ❯ Object.inst._zod.check ../../../../SSK%20SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/node_modules/.pnpm/zod@4.1.11/node_modules/zod/v4/core/schemas.js:1933:23
+ ❯ runChecks ../../../../SSK%20SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/node_modules/.pnpm/zod@4.1.11/node_modules/zod/v4/core/schemas.js:46:35
+ ❯ Object.inst._zod.run ../../../../SSK%20SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/node_modules/.pnpm/zod@4.1.11/node_modules/zod/v4/core/schemas.js:122:20
+ ❯ Module.<anonymous> ../../../../SSK%20SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/node_modules/.pnpm/zod@4.1.11/node_modules/zod/v4/core/parse.js:33:32
+ ❯ _.inst.safeParse ../../../../SSK%20SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/node_modules/.pnpm/zod@4.1.11/node_modules/zod/v4/classic/schemas.js:28:46
+ ❯ packages/contracts/src/legacy-money.test.ts:176:35
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 14 skipped (15)
+   Start at  01:22:57
+   Duration  343ms (transform 50ms, setup 6ms, collect 102ms, tests 5ms, environment 0ms, prepare 47ms)
+

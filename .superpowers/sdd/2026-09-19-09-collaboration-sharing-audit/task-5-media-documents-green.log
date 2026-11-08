@@ -1,0 +1,84 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/audit/core-audit-integration.test.ts (12 tests | 1 failed) 837ms
+   ✓ actual core mutations append their real audit in the same transaction > records actual condition and location changes with the real user and before/after values 156ms
+   ✓ actual core mutations append their real audit in the same transaction > a genuine default audit INSERT failure rolls the actual condition write back 57ms
+   ✓ actual core mutations append their real audit in the same transaction > records category changes and condition clearing without inventing a second unchanged event 23ms
+   ✓ actual core mutations append their real audit in the same transaction > audits grading create/update/delete with selected authored facts and excludes verification URLs/source text 22ms
+   ✓ actual core mutations append their real audit in the same transaction > keeps a manual valuation's exact bigint, stored scale, basis and true author in audit 17ms
+   ✓ actual core mutations append their real audit in the same transaction > records private location creation and hierarchy moves without duplicating QR access tokens 43ms
+   ✓ actual core mutations append their real audit in the same transaction > rolls back grading, valuations and location history together when their audit append fails 25ms
+   ✓ actual core mutations append their real audit in the same transaction > tracks collection and node creation, rename, visibility, move and soft deletion 33ms
+   ✓ actual core mutations append their real audit in the same transaction > audits real item create, meaningful edits, split, archive and soft delete without storing private note text 40ms
+   ✓ actual core mutations append their real audit in the same transaction > audits attached and detached tags exactly once and rolls back actual tag replacement on audit failure 41ms
+   ✓ actual core mutations append their real audit in the same transaction > records typed custom-field values and clearing with exact stored decimals and private text fingerprints 40ms
+   × actual core mutations append their real audit in the same transaction > audits actual media/document linking, reordering, metadata and unlink without copying storage keys 66ms
+     → expected [ 'ITEM_DOCUMENT_CHANGED', …(7) ] to deeply equal ArrayContaining{…}
+ ✓ |workspace| packages/domain/src/media/media-service.test.ts (20 tests) 241ms
+ ❯ |workspace| packages/domain/src/media/cleanup-service.test.ts (11 tests | 1 failed) 850ms
+   ✓ media cleanup > exposes the cleanup service 1ms
+   × retention on real PostgreSQL > does not delete bytes while another media, private document, or avatar reference exists 188ms
+     → Cannot access 'audit' before initialization
+   ✓ retention on real PostgreSQL > serializes a reference introduced after candidate discovery and blocks relinking during deletion 87ms
+   ✓ retention on real PostgreSQL > serializes simultaneous final unlinks and maintains orphan state after rollback 66ms
+   ✓ retention on real PostgreSQL > serializes the actual concurrent reference-first reference/deletion race 89ms
+   ✓ retention on real PostgreSQL > serializes the actual concurrent cleanup-first reference/deletion race 86ms
+   ✓ retention on real PostgreSQL > retains soft-deleted references and starts retention when a hard item cascade removes them 48ms
+   ✓ retention on real PostgreSQL > keeps delayed upload publication unreadable after rows were removed and reconciles it 67ms
+   ✓ retention on real PostgreSQL > rotates failed cleanup assets and permanent reconciliation keys through bounded batches 53ms
+   ✓ retention on real PostgreSQL > reconciles a real image processor derivative completing after asset and variant rows were deleted 95ms
+   ✓ retention on real PostgreSQL > retains media shared by a quantity split after the original item is unlinked 71ms
+ ✓ |workspace| packages/domain/src/media/media-management.integration.test.ts (1 test) 189ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/audit/core-audit-integration.test.ts > actual core mutations append their real audit in the same transaction > audits actual media/document linking, reordering, metadata and unlink without copying storage keys
+AssertionError: expected [ 'ITEM_DOCUMENT_CHANGED', …(7) ] to deeply equal ArrayContaining{…}
+
+- Expected
++ Received
+
+- ArrayContaining [
+-   "ITEM_MEDIA_LINKED",
+-   "ITEM_MEDIA_REORDERED",
+-   "ITEM_DOCUMENT_LINKED",
++ [
+    "ITEM_DOCUMENT_CHANGED",
+-   "ITEM_MEDIA_UNLINKED",
+-   "ITEM_DOCUMENT_UNLINKED",
++   "ITEM_DOCUMENT_LINKED",
++   "ITEM_MEDIA_REORDERED",
++   "ITEM_MEDIA_REORDERED",
++   "ITEM_MEDIA_LINKED",
++   "ITEM_MEDIA_LINKED",
++   "ITEM_CATEGORY_CHANGED",
++   "ITEM_CREATED",
+  ]
+
+ ❯ packages/domain/src/audit/core-audit-integration.test.ts:461:35
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |workspace| packages/domain/src/media/cleanup-service.test.ts > retention on real PostgreSQL > does not delete bytes while another media, private document, or avatar reference exists
+ReferenceError: Cannot access 'audit' before initialization
+ ❯ packages/domain/src/media/cleanup-service.ts:43:35
+     41|           });
+     42|           if (!result.count) throw new MediaCleanupError();
+     43|         await auditPort.append(tx,audit,{resourceType:"ITEM",resourceI…
+       |                                   ^
+     44|           return;
+     45|         }
+ ❯ Proxy._transactionWithCallback node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:861:18
+ ❯ Object.unlinkAsset packages/domain/src/media/cleanup-service.ts:35:7
+ ❯ packages/domain/src/media/cleanup-service.test.ts:96:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  2 failed | 2 passed (4)
+      Tests  2 failed | 42 passed (44)
+   Start at  08:34:49
+   Duration  3.60s (transform 254ms, setup 8ms, collect 904ms, tests 2.12s, environment 0ms, prepare 148ms)
+

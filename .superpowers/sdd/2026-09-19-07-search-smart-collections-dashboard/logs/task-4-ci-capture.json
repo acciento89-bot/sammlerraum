@@ -1,0 +1,31 @@
+{
+  "headRevision": "6d4fe74b3d0b1e15f5196aaf02edd81a58529e1c",
+  "sourceApplication": "91ae759a0465530d7ddb8b01fd38f635a16991b2",
+  "observedAt": "2026-10-18 10:12:48 UTC",
+  "runs": [
+    {
+      "runId": 39117402899,
+      "jobId": 117645875575,
+      "conclusion": "success",
+      "steps": {
+        "success": 29,
+        "skipped": 1
+      },
+      "primaryLogChars": 120000,
+      "primaryLogTruncated": true
+    },
+    {
+      "runId": 39117399604,
+      "jobId": 117645866554,
+      "conclusion": "success",
+      "steps": {
+        "success": 29,
+        "skipped": 1
+      },
+      "primaryLogChars": 120000,
+      "primaryLogTruncated": true
+    }
+  ],
+  "remoteNumericTestTotalsInferred": false,
+  "scope": "Owned Task4A milestone exact candidate; original full Task4/Phase07/Phase13 remain open"
+}

@@ -1,0 +1,30 @@
+
+> @sammlerraum/db@ prisma /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/db
+> prisma migrate deploy
+
+Loaded Prisma config from prisma.config.ts.
+
+Prisma schema loaded from prisma/schema.prisma.
+Datasource "db": PostgreSQL database "sammlerraum_test", schema "public" at "localhost:5432"
+
+22 migrations found in prisma/migrations
+
+Applying migration `20261018015303_manual_valuations`
+
+┌─────────────────────────────────────────────────────────┐
+│  Update available 7.10.0 -> 8.0.0-rc.23                 │
+│                                                         │
+│  This is a major update - please follow the guide at    │
+│  https://pris.ly/d/major-version-upgrade                │
+│                                                         │
+│  Run the following to update                            │
+│    npm i --save-dev prisma@latest                       │
+│    npm i @prisma/client@latest                          │
+└─────────────────────────────────────────────────────────┘
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20261018015303_manual_valuations/
+    └─ migration.sql
+
+All migrations have been successfully applied.

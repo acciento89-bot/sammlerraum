@@ -1,0 +1,49 @@
+.github/workflows/ci.yml 19ms (unchanged)
+apps/web/e2e/money-consumers.spec.ts 50ms
+apps/web/messages/de.json 33ms (unchanged)
+apps/web/messages/en.json 13ms (unchanged)
+apps/web/playwright.config.ts 5ms
+apps/web/src/app/[locale]/(app)/dashboard/page.tsx 5ms
+apps/web/src/app/[locale]/(app)/search/page.tsx 3ms
+apps/web/src/app/[locale]/(app)/smart-collections/[id]/page.tsx 3ms
+apps/web/src/app/api/v1/money/capabilities/route.ts 2ms (unchanged)
+apps/web/src/components/search/dashboard-results.tsx 28ms
+apps/web/src/components/search/filter-draft.test.ts 14ms
+apps/web/src/components/search/filter-draft.ts 10ms
+apps/web/src/components/search/filter-leaf-editor.tsx 28ms
+apps/web/src/components/search/filter-predicate-editor.tsx 22ms
+apps/web/src/components/search/money-consumer-context.tsx 2ms
+apps/web/src/components/search/purchase-costs.tsx 4ms
+apps/web/src/components/search/saved-search-detail.tsx 24ms
+apps/web/src/components/search/search-page.tsx 28ms
+apps/web/src/lib/dashboard-route-dependencies.ts 2ms (unchanged)
+apps/web/src/lib/dashboard-routes.ts 3ms (unchanged)
+apps/web/src/lib/item-search-route-dependencies.ts 2ms (unchanged)
+apps/web/src/lib/item-search-routes.ts 6ms (unchanged)
+apps/web/src/lib/legacy-money-query-routes.integration.test.ts 6ms
+apps/web/src/lib/money-capabilities-routes.test.ts 3ms
+apps/web/src/lib/money-capabilities-routes.ts 2ms (unchanged)
+apps/web/src/lib/smart-collection-route-dependencies.ts 1ms (unchanged)
+apps/web/src/lib/smart-collection-routes.ts 5ms (unchanged)
+packages/config/src/server.test.ts 6ms
+packages/config/src/server.ts 8ms (unchanged)
+packages/contracts/package.json 1ms (unchanged)
+packages/contracts/src/dashboard.ts 10ms
+packages/contracts/src/money-coverage.test.ts 5ms (unchanged)
+packages/contracts/src/money-coverage.ts 9ms (unchanged)
+packages/contracts/src/search-parser.ts 9ms (unchanged)
+packages/domain/src/dashboard/dashboard-service.ts 4ms
+packages/domain/src/money/legacy-money-store.ts 49ms
+packages/domain/src/money/money.test.ts 3ms
+packages/domain/src/money/money.ts 2ms
+packages/domain/src/money/purchase-cost.test.ts 6ms
+packages/domain/src/money/purchase-cost.ts 5ms
+packages/domain/src/search/filter-ast.ts 2ms
+packages/domain/src/search/item-search-service.ts 5ms
+packages/domain/src/search/legacy-money-query.integration.test.ts 20ms
+packages/domain/src/search/legacy-money-query.test.ts 7ms (unchanged)
+packages/domain/src/search/legacy-money-query.ts 8ms
+packages/domain/src/search/search-compiler.ts 13ms
+packages/domain/src/search/search-cursor.ts 2ms (unchanged)
+packages/domain/src/search/search-selection.ts 3ms
+packages/domain/src/search/smart-collection-service.ts 8ms

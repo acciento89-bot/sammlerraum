@@ -1,0 +1,10 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ✓ |workspace| apps/web/src/lib/social-routes.test.ts (7 tests) 14ms
+
+ Test Files  1 passed (1)
+      Tests  7 passed (7)
+   Start at  12:15:33
+   Duration  706ms (transform 245ms, setup 7ms, collect 504ms, tests 14ms, environment 0ms, prepare 51ms)
+

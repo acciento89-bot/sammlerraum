@@ -1,0 +1,13 @@
+[WebServer] (node:76461) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 1 worker
+
+(node:76462) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [catalog-money-desktop] › e2e/catalog-money-api.spec.ts:25:1 › actual built Next catalog monetary proposal and moderator lifecycle (1.0s)
+(node:76470) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 [catalog-money-mobile] › e2e/catalog-money-api.spec.ts:25:1 › actual built Next catalog monetary proposal and moderator lifecycle (403ms)
+
+  2 passed (3.6s)

@@ -1,0 +1,16 @@
+packages/contracts/src/community.ts 35ms (unchanged)
+packages/domain/src/community/feed-service.test.ts 23ms
+packages/domain/src/community/feed-service.ts 8ms
+apps/web/src/components/community/comment-thread.tsx 19ms (unchanged)
+apps/web/src/components/community/community-feed.tsx 27ms
+apps/web/src/components/community/community-navigation.tsx 4ms (unchanged)
+apps/web/src/components/community/community-request.ts 4ms (unchanged)
+apps/web/src/components/community/moderation-center.tsx 11ms (unchanged)
+apps/web/src/components/community/notification-center.tsx 15ms (unchanged)
+apps/web/src/components/community/report-dialog.tsx 4ms (unchanged)
+apps/web/src/components/community/wish-price.test.ts 2ms (unchanged)
+apps/web/src/components/community/wish-price.ts 3ms (unchanged)
+apps/web/src/components/community/wishlist-workspace.tsx 16ms
+apps/web/e2e/community.spec.ts 21ms
+apps/web/messages/de.json 36ms (unchanged)
+apps/web/messages/en.json 12ms (unchanged)

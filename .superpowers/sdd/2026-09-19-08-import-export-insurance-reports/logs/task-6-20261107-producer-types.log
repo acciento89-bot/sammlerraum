@@ -1,0 +1,1 @@
+apps/worker/src/jobs/insurance-report-runtime.ts(149,15): error TS2367: This comparison appears to be unintentional because the types '"MONEY_TRANSFER_INVALID" | "MONEY_TRANSFER_CONFLICT" | "MONEY_EXPORT_LIMIT_EXCEEDED" | "MONEY_EXPORT_INCOMPLETE"' and '"MONEY_REPORT_LIMIT_EXCEEDED"' have no overlap.

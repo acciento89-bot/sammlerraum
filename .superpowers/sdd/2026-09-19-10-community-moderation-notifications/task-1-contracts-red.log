@@ -1,0 +1,59 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/contracts/src/wishlist.test.ts (6 tests | 2 failed) 13ms
+   × bounded private wishlist inputs > rejects malformed amounts without throwing or parsing arbitrary big integers 4ms
+     → expected [Function result] to not throw an error but 'SyntaxError: Cannot convert not-money…' was thrown
+   ✓ bounded private wishlist inputs > rejects malformed amounts without throwing or parsing arbitrary big integers 1ms
+   × bounded private wishlist inputs > rejects malformed amounts without throwing or parsing arbitrary big integers 0ms
+     → expected [Function result] to not throw an error but 'SyntaxError: Cannot convert 1.5 to a …' was thrown
+   ✓ bounded private wishlist inputs > rejects malformed amounts without throwing or parsing arbitrary big integers 0ms
+   ✓ bounded private wishlist inputs > rejects malformed amounts without throwing or parsing arbitrary big integers 7ms
+   ✓ bounded private wishlist inputs > requires a coherent optional catalog reference and bounded private text 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/contracts/src/wishlist.test.ts > bounded private wishlist inputs > rejects malformed amounts without throwing or parsing arbitrary big integers
+AssertionError: expected [Function result] to not throw an error but 'SyntaxError: Cannot convert not-money…' was thrown
+
+- Expected: 
+undefined
+
++ Received: 
+"SyntaxError: Cannot convert not-money to a BigInt"
+
+ ❯ packages/contracts/src/wishlist.test.ts:6:24
+      4|   it.each(["not-money", "-1", "1.5", "01", "9".repeat(100000)])("rejec…
+      5|     const result = () => WishlistTargetPriceSchema.safeParse({ amountM…
+      6|     expect(result).not.toThrow(); expect(result().success).toBe(false);
+       |                        ^
+      7|   });
+      8|   it("requires a coherent optional catalog reference and bounded priva…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |workspace| packages/contracts/src/wishlist.test.ts > bounded private wishlist inputs > rejects malformed amounts without throwing or parsing arbitrary big integers
+AssertionError: expected [Function result] to not throw an error but 'SyntaxError: Cannot convert 1.5 to a …' was thrown
+
+- Expected: 
+undefined
+
++ Received: 
+"SyntaxError: Cannot convert 1.5 to a BigInt"
+
+ ❯ packages/contracts/src/wishlist.test.ts:6:24
+      4|   it.each(["not-money", "-1", "1.5", "01", "9".repeat(100000)])("rejec…
+      5|     const result = () => WishlistTargetPriceSchema.safeParse({ amountM…
+      6|     expect(result).not.toThrow(); expect(result().success).toBe(false);
+       |                        ^
+      7|   });
+      8|   it("requires a coherent optional catalog reference and bounded priva…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 4 passed (6)
+   Start at  11:51:57
+   Duration  209ms (transform 26ms, setup 6ms, collect 43ms, tests 13ms, environment 0ms, prepare 35ms)
+

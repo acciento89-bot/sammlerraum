@@ -1,0 +1,17 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+stdout | packages/domain/src/search/legacy-money-query.integration.test.ts > complete owned legacy money scope > keeps complete-scope reads at a fixed statement count above one thousand prices
+M6_COMPLETE_SCOPE_MEASUREMENT {"smallRead":{"calls":13,"elapsedMs":7,"total":1},"largeRead":{"calls":13,"elapsedMs":771,"total":1250}}
+
+ ✓ |workspace| packages/domain/src/search/legacy-money-query.integration.test.ts (22 tests) 3016ms
+   ✓ complete owned legacy money scope > keeps complete-scope reads at a fixed statement count above one thousand prices  1984ms
+ ✓ |workspace| apps/web/src/lib/smart-collection-routes.integration.test.ts (4 tests) 417ms
+ ✓ |workspace| apps/web/src/lib/item-search-routes.integration.test.ts (12 tests) 280ms
+ ✓ |workspace| apps/web/src/lib/item-search-routes.test.ts (11 tests) 4ms
+
+ Test Files  4 passed (4)
+      Tests  49 passed (49)
+   Start at  17:25:42
+   Duration  5.01s (transform 264ms, setup 7ms, collect 721ms, tests 3.72s, environment 0ms, prepare 139ms)
+

@@ -1,0 +1,52 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ✓ |workspace| packages/domain/src/imports/import-workflow.integration.test.ts (8 tests) 549ms
+ ❯ |workspace| apps/worker/src/jobs/import-parser.integration.test.ts (8 tests | 1 failed) 514ms
+   ✓ actual source-to-PostgreSQL import parser > verifies actual bytes and persists over100 rows without touching inventory 127ms
+   ✓ actual source-to-PostgreSQL import parser > rejects mismatched source checksums and late row-limit failures 50ms
+   × actual source-to-PostgreSQL import parser > fences expired claims and verifies rather than replacing a persisted retry prefix 15ms
+     → expected true to be false // Object.is equality
+   ✓ actual source-to-PostgreSQL import parser > refuses jobs whose target is deleted and pins claimed parser options 29ms
+   ✓ actual source-to-PostgreSQL import parser > rejects divergent retry rows and missing membership before finishing 15ms
+   ✓ actual source-to-PostgreSQL import parser > persists exact cached workbook cells through actual storage and database 26ms
+   ✓ actual source-to-PostgreSQL import parser > releases transient failures for a real retry and eventually closes exhausted attempts 38ms
+   ✓ actual source-to-PostgreSQL import parser > normalizes UUID aliases before deriving durable row keys 13ms
+ ✓ |workspace| apps/web/src/lib/import-routes.integration.test.ts (3 tests) 359ms
+ ✓ |workspace| apps/worker/src/jobs/market-request-permit.integration.test.ts (15 tests) 13561ms
+   ✓ durable market gate on separate PostgreSQL clients > holds a paused admitted sender beyond one second, then enforces physical settlement plus cooldown  3139ms
+   ✓ durable market gate on separate PostgreSQL clients > racing first-row permits start exactly one physical callback  1063ms
+   ✓ durable market gate on separate PostgreSQL clients > keeps distinct tokens independent and never refunds failure or pre-send abort  2033ms
+   ✓ durable market gate on separate PostgreSQL clients > enforces hourly/daily budgets, non-regressing DB windows and policy consistency  2052ms
+   ✓ durable market gate on separate PostgreSQL clients > allows safe successor after clear committed/lost ACK while old local stop fails  2030ms
+   ✓ durable market gate on separate PostgreSQL clients > holds claim when clear fails before commit and never forgets settled handler uncertainty  1017ms
+   ✓ durable market gate on separate PostgreSQL clients > standalone stop aborts physical transport and waits settlement, cooldown and own clear  1017ms
+   ✓ durable market gate on separate PostgreSQL clients > keeps an ignored abort claimed until actual settlement rather than treating timeout as cancellation  1046ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/worker/src/jobs/import-parser.integration.test.ts > actual source-to-PostgreSQL import parser > fences expired claims and verifies rather than replacing a persisted retry prefix
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ apps/worker/src/jobs/import-parser.integration.test.ts:111:40
+    109|       const second = await repo.claim(f.id);
+    110|       expect(second?.token).not.toBe(first?.token);
+    111|       expect(await repo.renew(first!)).toBe(false);
+       |                                        ^
+    112|       await expect(
+    113|         repo.append(first!, [{ rowNumber: 2, sourceRowNumber: 3, cells…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 3 passed (4)
+      Tests  1 failed | 33 passed (34)
+   Start at  02:04:19
+   Duration  16.37s (transform 304ms, setup 8ms, collect 834ms, tests 14.98s, environment 0ms, prepare 144ms)
+

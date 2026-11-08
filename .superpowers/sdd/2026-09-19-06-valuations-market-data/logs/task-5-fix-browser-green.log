@@ -1,0 +1,15 @@
+[WebServer] (node:20544) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 4 tests using 1 worker
+
+(node:20546) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [desktop] › e2e/valuations.spec.ts:362:5 › private valuation history › external UI transport rendering from real ingestion and query (de) (3.2s)
+  ✓  2 [desktop] › e2e/valuations.spec.ts:362:5 › private valuation history › external UI transport rendering from real ingestion and query (en) (2.2s)
+(node:20564) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  3 [mobile] › e2e/valuations.spec.ts:362:5 › private valuation history › external UI transport rendering from real ingestion and query (de) (2.2s)
+  ✓  4 [mobile] › e2e/valuations.spec.ts:362:5 › private valuation history › external UI transport rendering from real ingestion and query (en) (2.8s)
+
+  4 passed (12.8s)

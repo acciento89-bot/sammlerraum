@@ -1,0 +1,125 @@
+{
+  "scope": "Root moved 24 tracked B1-only evidence files into their plan workspace after completed review; no source or evidence-content changes. Historical commands were executed with original paths.",
+  "files": [
+    {
+      "originalPath": "logs/task-5b1-behavioral-red.log",
+      "path": ".superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-5b1-behavioral-red.log",
+      "sha256": "236e5fcf46bc739fbdc7e2ee3d3073f041c12dd6c74df9ff4e6787c1362df492"
+    },
+    {
+      "originalPath": "logs/task-5b1-contract-startup-red.log",
+      "path": ".superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-5b1-contract-startup-red.log",
+      "sha256": "e52af27d54e7e7adaae5d906adf7ef987ed1af40e56ae62f22423df3d0291d73"
+    },
+    {
+      "originalPath": "logs/task-5b1-final-integrity.log",
+      "path": ".superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-5b1-final-integrity.log",
+      "sha256": "576bc6c1a768c9ca1ec2403aec3b844cfdb157d0734b4a90c0f7d86e2ae3fb10"
+    },
+    {
+      "originalPath": "logs/task-5b1-fix1-frozen-affected.log",
+      "path": ".superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-5b1-fix1-frozen-affected.log",
+      "sha256": "d30e6b4c36c518d2b9113eb655ccad25eede6a6ff319012b1189d569b43f206f"
+    },
+    {
+      "originalPath": "logs/task-5b1-fix1-frozen-build.log",
+      "path": ".superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-5b1-fix1-frozen-build.log",
+      "sha256": "be12c7f07f4a075092a9348b1d7b4b69d2eaf2bbc1c100814ba70a5fdc572e4c"
+    },
+    {
+      "originalPath": "logs/task-5b1-fix1-frozen-commands.txt",
+      "path": ".superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-5b1-fix1-frozen-commands.txt",
+      "sha256": "aa823be362596627078a5bd59f5b1ecb0030650f5d7092d32fe485a8f1793943"
+    },
+    {
+      "originalPath": "logs/task-5b1-fix1-frozen-gates.json",
+      "path": ".superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-5b1-fix1-frozen-gates.json",
+      "sha256": "a7f808e5e9a9a8bad309d79c9f4adfca4e16bd98ab6b6597d06eebfe70a482e3"
+    },
+    {
+      "originalPath": "logs/task-5b1-fix1-frozen-lint.log",
+      "path": ".superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-5b1-fix1-frozen-lint.log",
+      "sha256": "96891d0c696ba3411bea9b4992cc998e30008ded9ebdd2d94f6bf94c66e70d0f"
+    },
+    {
+      "originalPath": "logs/task-5b1-fix1-frozen-types.log",
+      "path": ".superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-5b1-fix1-frozen-types.log",
+      "sha256": "9a2706ce0fc10a0d4f7f8dc0dbab7f35351979146d2e36f6b6e9b59a6af45ffb"
+    },
+    {
+      "originalPath": "logs/task-5b1-focused-expanded.log",
+      "path": ".superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-5b1-focused-expanded.log",
+      "sha256": "1cbcad08c0bdca57b8c90099c3a8a6ccff7a8b5613fc0cf03682872622f29bae"
+    },
+    {
+      "originalPath": "logs/task-5b1-focused-green.log",
+      "path": ".superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-5b1-focused-green.log",
+      "sha256": "f238035178e6a16010be97d57c003448a238126f780603f39fc00038639ea9a1"
+    },
+    {
+      "originalPath": "logs/task-5b1-format-types-fix.log",
+      "path": ".superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-5b1-format-types-fix.log",
+      "sha256": "76c0a884400e54f86cf8017da8a4dc0845c7257df54837ffcc6e040c5d5c6d13"
+    },
+    {
+      "originalPath": "logs/task-5b1-format.log",
+      "path": ".superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-5b1-format.log",
+      "sha256": "ff0c73b738466a3d26f96c209f3414b34367f74d7eb2826439bf3f53fb438258"
+    },
+    {
+      "originalPath": "logs/task-5b1-frozen-commands.txt",
+      "path": ".superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-5b1-frozen-commands.txt",
+      "sha256": "d95e973ff3dc030656011a3f9f1b5f594e600d255d787b0478b3b8ec84c3e4fc"
+    },
+    {
+      "originalPath": "logs/task-5b1-frozen-gates.json",
+      "path": ".superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-5b1-frozen-gates.json",
+      "sha256": "62d5f6d4252676a34301695172bea90c7432c6c1eea199ea8b9275852921632d"
+    },
+    {
+      "originalPath": "logs/task-5b1-frozen-native.log",
+      "path": ".superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-5b1-frozen-native.log",
+      "sha256": "9e24ece6e1bdc109fa921c664407b1e9431c9868a2cea2fc195949ec786ddb9a"
+    },
+    {
+      "originalPath": "logs/task-5b1-frozen-regular.log",
+      "path": ".superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-5b1-frozen-regular.log",
+      "sha256": "037226be1a1e9c34159e88ebf7db1e96cac4636b6f2699bd8e2157c041367cdb"
+    },
+    {
+      "originalPath": "logs/task-5b1-frozen-types.log",
+      "path": ".superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-5b1-frozen-types.log",
+      "sha256": "63bc815b45fc0a120db009d044fbd414173823e1a466f009ec74ccbf69b3518a"
+    },
+    {
+      "originalPath": "logs/task-5b1-native-errors.log",
+      "path": ".superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-5b1-native-errors.log",
+      "sha256": "e85a0a1eee8b04f5d2a9643b2c595b025ee2a1e79e4147dbd56300819ff290e1"
+    },
+    {
+      "originalPath": "logs/task-5b1-runtime.log",
+      "path": ".superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-5b1-runtime.log",
+      "sha256": "0713ebb2d3b7476e47b0bd649d0a68a5b4b2bdbd4ff66ed7c4b6d6d80f0bcfd6"
+    },
+    {
+      "originalPath": "logs/task-5b1-source-manifest-72b023c.sha256",
+      "path": ".superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-5b1-source-manifest-72b023c.sha256",
+      "sha256": "9cb42850f63708b71e8d4f7cede0491cd26ff1e1ce7537910b48932049145260"
+    },
+    {
+      "originalPath": "logs/task-5b1-source-manifest.sha256",
+      "path": ".superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-5b1-source-manifest.sha256",
+      "sha256": "7a7b2e9d60c75c489c47334da35606a0f07e4ce88dbca01ae5636e7f7416e9a9"
+    },
+    {
+      "originalPath": "logs/task-5b1-source-precheck.log",
+      "path": ".superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-5b1-source-precheck.log",
+      "sha256": "d9fdd612f4aa188a431a672a267bd0c788cf858538788c2bbcd5b5160346fe43"
+    },
+    {
+      "originalPath": "logs/task-5b1-types-fix-precheck.log",
+      "path": ".superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-5b1-types-fix-precheck.log",
+      "sha256": "25bcb54f7fd7a8dde18e48a1f865e84164cc024a9aab3a3a653510cacd8bd5c1"
+    }
+  ]
+}

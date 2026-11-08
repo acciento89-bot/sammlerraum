@@ -1,0 +1,10 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ✓ |workspace| packages/domain/src/market-data/market-batch.integration.test.ts (40 tests | 34 skipped) 749ms
+
+ Test Files  1 passed (1)
+      Tests  6 passed | 34 skipped (40)
+   Start at  17:45:46
+   Duration  1.50s (transform 318ms, setup 7ms, collect 559ms, tests 749ms, environment 0ms, prepare 56ms)
+

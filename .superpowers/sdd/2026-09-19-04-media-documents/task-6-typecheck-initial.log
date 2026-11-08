@@ -1,0 +1,18 @@
+
+> @sammlerraum/web@ typecheck /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web
+> tsc --noEmit --project tsconfig.json
+
+src/components/media/media-upload.tsx(12,37): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(input: string | URL | Request, init?: RequestInit | undefined): Promise<Response>', gave the following error.
+    Argument of type '{ method: string; headers: { "content-type": string; } | undefined; body: string | undefined; }' is not assignable to parameter of type 'RequestInit' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+      Types of property 'body' are incompatible.
+        Type 'string | undefined' is not assignable to type 'BodyInit | null'.
+          Type 'undefined' is not assignable to type 'BodyInit | null'.
+  Overload 2 of 2, '(input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>', gave the following error.
+    Argument of type '{ method: string; headers: { "content-type": string; } | undefined; body: string | undefined; }' is not assignable to parameter of type 'RequestInit' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+      Types of property 'body' are incompatible.
+        Type 'string | undefined' is not assignable to type 'BodyInit | null'.
+          Type 'undefined' is not assignable to type 'BodyInit | null'.
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @sammlerraum/web@ typecheck: `tsc --noEmit --project tsconfig.json`
+Exit status 2

@@ -1,0 +1,11 @@
+{
+  "source": "8957121f7698067415c8271514c6aff09be89c64",
+  "runId": 42443172217,
+  "jobId": 128616510919,
+  "conclusion": "success",
+  "directJobLogSha256": "f8decccf2a69531318971fef46f815fc5e1ae4fed35bd83dfc3ec6270d8014ee",
+  "directLogLastTimestamp": "2026-11-08T04:06:12.7149053Z",
+  "compiledAI": "32 passed (35.6s)",
+  "accepted": true,
+  "note": "Run/job summary complete success confirmed; cached gh run view and step snapshots were incomplete. Direct fresh job log contains final required AI results; no acceptance inferred from partial cached output."
+}

@@ -1,0 +1,22 @@
+{
+  "name": "@sammlerraum/email",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./types": "./src/types.ts",
+    "./smtp-provider": "./src/smtp-provider.ts",
+    "./templates": "./src/templates.ts"
+  },
+  "scripts": {
+    "build": "pnpm typecheck",
+    "lint": "prettier --check .",
+    "typecheck": "tsc --noEmit --project ../../tsconfig.base.json"
+  },
+  "dependencies": {
+    "@sammlerraum/contracts": "workspace:*",
+    "nodemailer": "10.0.10"
+  },
+  "devDependencies": {
+    "@types/nodemailer": "8.0.2"
+  }
+}

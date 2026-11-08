@@ -1,0 +1,38 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/audit/core-audit-integration.test.ts (10 tests | 1 failed) 732ms
+   ✓ actual core mutations append their real audit in the same transaction > records actual condition and location changes with the real user and before/after values 169ms
+   ✓ actual core mutations append their real audit in the same transaction > a genuine default audit INSERT failure rolls the actual condition write back 56ms
+   ✓ actual core mutations append their real audit in the same transaction > records category changes and condition clearing without inventing a second unchanged event 24ms
+   ✓ actual core mutations append their real audit in the same transaction > audits grading create/update/delete with selected authored facts and excludes verification URLs/source text 27ms
+   ✓ actual core mutations append their real audit in the same transaction > keeps a manual valuation's exact bigint, stored scale, basis and true author in audit 20ms
+   ✓ actual core mutations append their real audit in the same transaction > records private location creation and hierarchy moves without duplicating QR access tokens 27ms
+   ✓ actual core mutations append their real audit in the same transaction > rolls back grading, valuations and location history together when their audit append fails 29ms
+   ✓ actual core mutations append their real audit in the same transaction > tracks collection and node creation, rename, visibility, move and soft deletion 36ms
+   ✓ actual core mutations append their real audit in the same transaction > audits real item create, meaningful edits, split, archive and soft delete without storing private note text 40ms
+   × actual core mutations append their real audit in the same transaction > audits attached and detached tags exactly once and rolls back actual tag replacement on audit failure 24ms
+     → expected [] to have a length of 3 but got +0
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/audit/core-audit-integration.test.ts > actual core mutations append their real audit in the same transaction > audits attached and detached tags exactly once and rolls back actual tag replacement on audit failure
+AssertionError: expected [] to have a length of 3 but got +0
+
+- Expected
++ Received
+
+- 3
++ 0
+
+ ❯ packages/domain/src/audit/core-audit-integration.test.ts:432:62
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 9 passed (10)
+   Start at  08:29:47
+   Duration  1.23s (transform 173ms, setup 6ms, collect 339ms, tests 732ms, environment 0ms, prepare 36ms)
+

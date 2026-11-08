@@ -1,0 +1,58 @@
+.github/workflows/ci.yml 21ms (unchanged)
+apps/web/e2e/collaboration-management.spec.ts 71ms
+apps/web/e2e/collaboration-sharing.spec.ts 10ms (unchanged)
+apps/web/e2e/collections-items.spec.ts 81ms
+apps/web/messages/de.json 34ms (unchanged)
+apps/web/messages/en.json 11ms (unchanged)
+apps/web/playwright.config.ts 4ms (unchanged)
+apps/web/src/app/[locale]/(app)/audit/page.tsx 3ms (unchanged)
+apps/web/src/app/[locale]/(app)/collections/[collectionId]/members/page.tsx 2ms (unchanged)
+apps/web/src/app/[locale]/(app)/collections/[collectionId]/sharing/page.tsx 2ms (unchanged)
+apps/web/src/app/[locale]/(app)/collections/[collectionId]/workspace/page.tsx 2ms (unchanged)
+apps/web/src/app/[locale]/invite/[token]/page.tsx 2ms (unchanged)
+apps/web/src/app/[locale]/login/page.tsx 2ms (unchanged)
+apps/web/src/app/api/v1/audit/route.ts 1ms (unchanged)
+apps/web/src/app/api/v1/collaboration/collections/route.ts 1ms (unchanged)
+apps/web/src/app/api/v1/collections/[collectionId]/members/route.ts 1ms (unchanged)
+apps/web/src/app/api/v1/collections/[collectionId]/sharing/route.ts 1ms (unchanged)
+apps/web/src/app/api/v1/collections/[collectionId]/workspace/items/[itemId]/route.ts 1ms (unchanged)
+apps/web/src/app/api/v1/collections/[collectionId]/workspace/items/route.ts 1ms (unchanged)
+apps/web/src/app/api/v1/collections/[collectionId]/workspace/nodes/[nodeId]/route.ts 1ms
+apps/web/src/app/api/v1/collections/[collectionId]/workspace/nodes/route.ts 1ms
+apps/web/src/app/api/v1/collections/[collectionId]/workspace/route.ts 1ms (unchanged)
+apps/web/src/app/api/v1/collections/[collectionId]/workspace/settings/route.ts 1ms
+apps/web/src/app/globals.css 58ms (unchanged)
+apps/web/src/components/auth/auth-panel.tsx 9ms (unchanged)
+apps/web/src/components/auth/invitation-return-path.test.ts 1ms (unchanged)
+apps/web/src/components/auth/invitation-return-path.ts 1ms (unchanged)
+apps/web/src/components/collections/collection-detail.tsx 21ms (unchanged)
+apps/web/src/components/collections/collections-manager.tsx 10ms (unchanged)
+apps/web/src/components/search/collector-navigation.tsx 2ms (unchanged)
+apps/web/src/components/sharing/audit-manager.tsx 12ms (unchanged)
+apps/web/src/components/sharing/collaboration-navigation.tsx 2ms (unchanged)
+apps/web/src/components/sharing/collaborative-workspace.tsx 10ms
+apps/web/src/components/sharing/collection-settings.tsx 6ms
+apps/web/src/components/sharing/invitation-acceptance.tsx 2ms (unchanged)
+apps/web/src/components/sharing/management-request.ts 2ms (unchanged)
+apps/web/src/components/sharing/members-manager.tsx 12ms (unchanged)
+apps/web/src/components/sharing/share-permissions-editor.tsx 3ms (unchanged)
+apps/web/src/components/sharing/shared-collections.tsx 3ms (unchanged)
+apps/web/src/components/sharing/sharing-manager.tsx 10ms (unchanged)
+apps/web/src/lib/collaboration-management-dependencies.ts 1ms (unchanged)
+apps/web/src/lib/collaboration-management-routes.integration.test.ts 9ms (unchanged)
+apps/web/src/lib/collaboration-management-routes.test.ts 4ms (unchanged)
+apps/web/src/lib/collaboration-management-routes.ts 8ms
+packages/contracts/src/collaboration.ts 5ms (unchanged)
+packages/contracts/src/collections.ts 4ms
+packages/contracts/src/items.ts 12ms (unchanged)
+packages/contracts/src/restore.ts 3ms (unchanged)
+packages/domain/package.json 1ms (unchanged)
+packages/domain/src/audit/restore-service.ts 15ms (unchanged)
+packages/domain/src/collaboration/collection-authoring-service.test.ts 4ms
+packages/domain/src/collaboration/collection-authoring-service.ts 2ms
+packages/domain/src/collaboration/item-authoring-service.test.ts 9ms (unchanged)
+packages/domain/src/collaboration/item-authoring-service.ts 3ms (unchanged)
+packages/domain/src/collaboration/management-service.test.ts 7ms (unchanged)
+packages/domain/src/collaboration/management-service.ts 13ms
+packages/domain/src/collections/collection-service.ts 16ms
+packages/domain/src/items/item-service.ts 46ms (unchanged)

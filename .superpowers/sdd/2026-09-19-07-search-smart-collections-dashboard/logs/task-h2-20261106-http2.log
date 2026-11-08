@@ -1,0 +1,13 @@
+[WebServer] (node:33456) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 1 worker
+
+(node:33469) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [desktop] › e2e/personal-milestone-api.spec.ts:10:1 › actual Next milestone HTTP routes enforce private cookie-authenticated CRUD (688ms)
+(node:33478) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 [mobile] › e2e/personal-milestone-api.spec.ts:10:1 › actual Next milestone HTTP routes enforce private cookie-authenticated CRUD (460ms)
+
+  2 passed (3.0s)

@@ -1,0 +1,49 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/collaboration/membership-service.test.ts (16 tests | 1 failed) 721ms
+   ✓ strict membership inputs > rejects malformed Unicode user IDs instead of normalizing into another identity 2ms
+   ✓ actual collection membership and atomic ownership > transfers ownership atomically and leaves exactly one derived owner 133ms
+   ✓ actual collection membership and atomic ownership > never accepts a second OWNER through membership creation or role editing 11ms
+   ✓ actual collection membership and atomic ownership > checks real membership and limits an Admin below Owner authority 17ms
+   ✓ actual collection membership and atomic ownership > rejects stale role decisions and a transfer without explicit private-data confirmation 8ms
+   ✓ actual collection membership and atomic ownership > allows member self-removal but never removes the sole owner 12ms
+   ✓ actual collection membership and atomic ownership > serializes simultaneous transfers so only one current owner decision wins 19ms
+   ✓ actual collection membership and atomic ownership > transfers a populated collection without changing item IDs, quantities or raw price digits 22ms
+   ✓ actual collection membership and atomic ownership > preserves private collection and item insurance through an explicitly confirmed transfer 29ms
+   ✓ actual collection membership and atomic ownership > retains a completed transfer and collection when the previous owner erases their account 18ms
+   ✓ actual collection membership and atomic ownership > prevents arbitrary database owner changes and a duplicate owner membership 24ms
+   ✓ actual collection membership and atomic ownership > cannot persist a claimed completed ownership transition without actually changing the owner 13ms
+   ✓ actual collection membership and atomic ownership > feeds current database roles into the policy and withdraws access after member removal 13ms
+   ✓ actual collection membership and atomic ownership > preserves immutable manual valuation amounts and their real author through ownership transfer and author erasure 38ms
+   ✓ actual collection membership and atomic ownership > does not leave a concurrent real tag writer's private tag attached under the wrong owner 56ms
+   × actual collection membership and atomic ownership > rejects a former owner's tag write that waited behind the actual ownership transfer 51ms
+     → expected true to be false // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/collaboration/membership-service.test.ts > actual collection membership and atomic ownership > rejects a former owner's tag write that waited behind the actual ownership transfer
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ packages/domain/src/collaboration/membership-service.test.ts:573:27
+    571|         await transfer;
+    572|         const result = await outcome;
+    573|         expect(result.ok).toBe(false);
+       |                           ^
+    574|         if (!result.ok) expect(result.error).toMatchObject({ code: "IT…
+    575|         expect(await db.itemTag.count({ where: { itemId: item.id } }))…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 15 passed (16)
+   Start at  04:55:27
+   Duration  1.26s (transform 164ms, setup 6ms, collect 339ms, tests 721ms, environment 0ms, prepare 50ms)
+

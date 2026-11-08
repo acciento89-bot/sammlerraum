@@ -1,0 +1,92 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| apps/web/src/lib/catalog-link-routes.integration.test.ts (4 tests | 4 failed) 174ms
+   × catalog link and canonical read routes PostgreSQL > persists owner links, fresh sessions and actual item reads/splits; unlink retains category 13ms
+     → expected 501 to be 200 // Object.is equality
+   × catalog link and canonical read routes PostgreSQL > authenticates all canonical reads while returning only canonical bounded projections 3ms
+     → expected 501 to be 200 // Object.is equality
+   × catalog link and canonical read routes PostgreSQL > rejects foreign/deleted/inactive mutations and forged Origin without consuming input 2ms
+     → expected 501 to be 403 // Object.is equality
+   × catalog link and canonical read routes PostgreSQL > strictly bounds streamed JSON, rejects malformed IDs, unexpected DELETE bodies and query ambiguity 3ms
+     → expected 501 to be 400 // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/web/src/lib/catalog-link-routes.integration.test.ts > catalog link and canonical read routes PostgreSQL > persists owner links, fresh sessions and actual item reads/splits; unlink retains category
+AssertionError: expected 501 to be 200 // Object.is equality
+
+- Expected
++ Received
+
+- 200
++ 501
+
+ ❯ apps/web/src/lib/catalog-link-routes.integration.test.ts:56:27
+     54|     const api = handlers();
+     55|     const linked = await api.PUT_LINK(request("PUT", { entryId: entryI…
+     56|     expect(linked.status).toBe(200);
+       |                           ^
+     57|     expect(linked.headers.get("cache-control")).toBe("no-store");
+     58|     expect(await linked.json()).toMatchObject({ item: { id: itemId, ca…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  |workspace| apps/web/src/lib/catalog-link-routes.integration.test.ts > catalog link and canonical read routes PostgreSQL > authenticates all canonical reads while returning only canonical bounded projections
+AssertionError: expected 501 to be 200 // Object.is equality
+
+- Expected
++ Received
+
+- 200
++ 501
+
+ ❯ apps/web/src/lib/catalog-link-routes.integration.test.ts:75:27
+     73|     const api = handlers();
+     74|     const search = await api.SEARCH(request("GET", undefined, `/api/v1…
+     75|     expect(search.status).toBe(200);
+       |                           ^
+     76|     expect(search.headers.get("cache-control")).toBe("no-store");
+     77|     expect(await search.json()).toMatchObject({ results: [{ id: entryI…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  |workspace| apps/web/src/lib/catalog-link-routes.integration.test.ts > catalog link and canonical read routes PostgreSQL > rejects foreign/deleted/inactive mutations and forged Origin without consuming input
+AssertionError: expected 501 to be 403 // Object.is equality
+
+- Expected
++ Received
+
+- 403
++ 501
+
+ ❯ apps/web/src/lib/catalog-link-routes.integration.test.ts:88:110
+     86|   it("rejects foreign/deleted/inactive mutations and forged Origin wit…
+     87|     const api = handlers();
+     88|     expect((await api.PUT_LINK(request("PUT", { entryId }, "/", "https…
+       |                                                                                                              ^
+     89|     expect((await api.DELETE_LINK(request("DELETE", undefined, "/", nu…
+     90|     session.mockResolvedValue({ user: { id: ownerId.toLowerCase() } });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  |workspace| apps/web/src/lib/catalog-link-routes.integration.test.ts > catalog link and canonical read routes PostgreSQL > strictly bounds streamed JSON, rejects malformed IDs, unexpected DELETE bodies and query ambiguity
+AssertionError: expected 501 to be 400 // Object.is equality
+
+- Expected
++ Received
+
+- 400
++ 501
+
+ ❯ apps/web/src/lib/catalog-link-routes.integration.test.ts:102:194
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  4 failed (4)
+   Start at  00:31:28
+   Duration  651ms (transform 126ms, setup 5ms, collect 268ms, tests 174ms, environment 0ms, prepare 46ms)
+

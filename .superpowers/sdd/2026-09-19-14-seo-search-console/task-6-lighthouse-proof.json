@@ -1,0 +1,271 @@
+{
+  "scope": "actual serial local production-build mobile audits, no public upload or live deployment",
+  "actualRuns": 18,
+  "allAssertionsPassed": true,
+  "groups": [
+    {
+      "url": "http://localhost:3017/de",
+      "medianScores": {
+        "performance": 1,
+        "accessibility": 1,
+        "best-practices": 1,
+        "seo": 1
+      },
+      "runs": [
+        {
+          "path": ".lighthouseci/lhr-1794134407420-14250.json",
+          "sha256": "1ab931b79c382404911db31385977728e935bf061bf33511a76f47d9069ad29c",
+          "scores": {
+            "performance": 0.87,
+            "accessibility": 1,
+            "best-practices": 1,
+            "seo": 1
+          },
+          "runtimeError": null
+        },
+        {
+          "path": ".lighthouseci/lhr-1794134418177-205125.json",
+          "sha256": "6d7039fea1ab71d38c52a482e6e7e7dbf459d6a4fcf24589b67d2ec221ac5829",
+          "scores": {
+            "performance": 1,
+            "accessibility": 1,
+            "best-practices": 1,
+            "seo": 1
+          },
+          "runtimeError": null
+        },
+        {
+          "path": ".lighthouseci/lhr-1794134428499-267833.json",
+          "sha256": "7a57855817783dd4d4a8c5fe2135c28d296429d1d9ecf6847b5bd87544892598",
+          "scores": {
+            "performance": 1,
+            "accessibility": 1,
+            "best-practices": 1,
+            "seo": 1
+          },
+          "runtimeError": null
+        }
+      ]
+    },
+    {
+      "url": "http://localhost:3017/de/funktionen",
+      "medianScores": {
+        "performance": 1,
+        "accessibility": 1,
+        "best-practices": 1,
+        "seo": 1
+      },
+      "runs": [
+        {
+          "path": ".lighthouseci/lhr-1794134469838-565416.json",
+          "sha256": "b848fcd16e6268af68c23cd29eb598ab6568614efa4f0e7431416b02be009688",
+          "scores": {
+            "performance": 1,
+            "accessibility": 1,
+            "best-practices": 1,
+            "seo": 1
+          },
+          "runtimeError": null
+        },
+        {
+          "path": ".lighthouseci/lhr-1794134480028-303250.json",
+          "sha256": "1f906642ed9c37e1e0152cd470744bbbe3b20dcf1aedacad6782741aeb2bdff3",
+          "scores": {
+            "performance": 1,
+            "accessibility": 1,
+            "best-practices": 1,
+            "seo": 1
+          },
+          "runtimeError": null
+        },
+        {
+          "path": ".lighthouseci/lhr-1794134490321-638416.json",
+          "sha256": "6ab93ed778355e08a4f0e81c704fcd8fc5971e645b641772097913d5a4282573",
+          "scores": {
+            "performance": 1,
+            "accessibility": 1,
+            "best-practices": 1,
+            "seo": 1
+          },
+          "runtimeError": null
+        }
+      ]
+    },
+    {
+      "url": "http://localhost:3017/de/preise",
+      "medianScores": {
+        "performance": 1,
+        "accessibility": 1,
+        "best-practices": 1,
+        "seo": 1
+      },
+      "runs": [
+        {
+          "path": ".lighthouseci/lhr-1794134500613-622625.json",
+          "sha256": "ec266bc2bfaf19a4927c9c59a3aaa7aade2ddfa60cc6c5ff33cf615092377631",
+          "scores": {
+            "performance": 1,
+            "accessibility": 1,
+            "best-practices": 1,
+            "seo": 1
+          },
+          "runtimeError": null
+        },
+        {
+          "path": ".lighthouseci/lhr-1794134510882-320250.json",
+          "sha256": "fd4e3c57b7b6f00a35e8f0026a3f46ba1107c63ad826bdb7fc29d5eedacc36f9",
+          "scores": {
+            "performance": 1,
+            "accessibility": 1,
+            "best-practices": 1,
+            "seo": 1
+          },
+          "runtimeError": null
+        },
+        {
+          "path": ".lighthouseci/lhr-1794134521167-645708.json",
+          "sha256": "57477d9c11a5131615a10a14f34cfc051f532a940db991155a9a51a5fb869f64",
+          "scores": {
+            "performance": 1,
+            "accessibility": 1,
+            "best-practices": 1,
+            "seo": 1
+          },
+          "runtimeError": null
+        }
+      ]
+    },
+    {
+      "url": "http://localhost:3017/de/sammeln/muenzen",
+      "medianScores": {
+        "performance": 1,
+        "accessibility": 1,
+        "best-practices": 1,
+        "seo": 1
+      },
+      "runs": [
+        {
+          "path": ".lighthouseci/lhr-1794134531362-227750.json",
+          "sha256": "09997b850133c7826f2cdca67c1e3a23234aea2cd5ad84d70c1f5aab8cfab4b7",
+          "scores": {
+            "performance": 1,
+            "accessibility": 1,
+            "best-practices": 1,
+            "seo": 1
+          },
+          "runtimeError": null
+        },
+        {
+          "path": ".lighthouseci/lhr-1794134541649-342416.json",
+          "sha256": "9492b239a975a064d0b41ff4f14e135b80524ec4ca160901820829531c3f5552",
+          "scores": {
+            "performance": 1,
+            "accessibility": 1,
+            "best-practices": 1,
+            "seo": 1
+          },
+          "runtimeError": null
+        },
+        {
+          "path": ".lighthouseci/lhr-1794134551906-299500.json",
+          "sha256": "aed9fe2c2f81dbe46cf8a6fb7dcf8a91f278ff93c7a36c35b2c192ee8cfaef95",
+          "scores": {
+            "performance": 1,
+            "accessibility": 1,
+            "best-practices": 1,
+            "seo": 1
+          },
+          "runtimeError": null
+        }
+      ]
+    },
+    {
+      "url": "http://localhost:3017/en",
+      "medianScores": {
+        "performance": 1,
+        "accessibility": 1,
+        "best-practices": 1,
+        "seo": 1
+      },
+      "runs": [
+        {
+          "path": ".lighthouseci/lhr-1794134438824-420125.json",
+          "sha256": "fac45edefae29d2bb13de878995db849dafc0aeb23fab108936ee14ebae493ce",
+          "scores": {
+            "performance": 1,
+            "accessibility": 1,
+            "best-practices": 1,
+            "seo": 1
+          },
+          "runtimeError": null
+        },
+        {
+          "path": ".lighthouseci/lhr-1794134449123-615375.json",
+          "sha256": "50c4ccf42410e08b70f8ead1a5612257486afe9848b82608c22f3470200c2f56",
+          "scores": {
+            "performance": 1,
+            "accessibility": 1,
+            "best-practices": 1,
+            "seo": 1
+          },
+          "runtimeError": null
+        },
+        {
+          "path": ".lighthouseci/lhr-1794134459430-388208.json",
+          "sha256": "bc6fff06a6c1deb2419c93a55fe19b3438260e1cf4d221b1cd91910678b4df63",
+          "scores": {
+            "performance": 1,
+            "accessibility": 1,
+            "best-practices": 1,
+            "seo": 1
+          },
+          "runtimeError": null
+        }
+      ]
+    },
+    {
+      "url": "http://localhost:3017/en/collecting/coins",
+      "medianScores": {
+        "performance": 1,
+        "accessibility": 1,
+        "best-practices": 1,
+        "seo": 1
+      },
+      "runs": [
+        {
+          "path": ".lighthouseci/lhr-1794134562236-304833.json",
+          "sha256": "6925550855b30cd08e04c9cad27627a804059845a1813252e771b463259da1cc",
+          "scores": {
+            "performance": 1,
+            "accessibility": 1,
+            "best-practices": 1,
+            "seo": 1
+          },
+          "runtimeError": null
+        },
+        {
+          "path": ".lighthouseci/lhr-1794134572616-114750.json",
+          "sha256": "6730f53f7ba592728f42aa231a9de00792068c394eda15677b7e95f8f354c33e",
+          "scores": {
+            "performance": 1,
+            "accessibility": 1,
+            "best-practices": 1,
+            "seo": 1
+          },
+          "runtimeError": null
+        },
+        {
+          "path": ".lighthouseci/lhr-1794134582921-903041.json",
+          "sha256": "c5d03f6f0f6e7203707fcebc9176aeaffb18344ef5d8df30dec4ccc159f4b611",
+          "scores": {
+            "performance": 1,
+            "accessibility": 1,
+            "best-practices": 1,
+            "seo": 1
+          },
+          "runtimeError": null
+        }
+      ]
+    }
+  ]
+}

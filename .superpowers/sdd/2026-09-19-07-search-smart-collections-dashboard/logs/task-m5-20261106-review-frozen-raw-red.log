@@ -1,0 +1,33 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| apps/web/src/components/money/money-review-draft.test.ts (3 tests | 1 failed) 8ms
+   ✓ explicit evidenced historical-money review draft > requires explicit scale, unit, evidence and acknowledgment without clamping or changing raw 5ms
+   ✓ explicit evidenced historical-money review draft > keeps private evidence and original precondition through locale remount, scoped by actual account 0ms
+   × explicit evidenced historical-money review draft > previews the exact raw fact captured when review began, never a newer raw pair after remount 3ms
+     → expected '999' to be '100' // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/web/src/components/money/money-review-draft.test.ts > explicit evidenced historical-money review draft > previews the exact raw fact captured when review began, never a newer raw pair after remount
+AssertionError: expected '999' to be '100' // Object.is equality
+
+Expected: "100"
+Received: "999"
+
+ ❯ apps/web/src/components/money/money-review-draft.test.ts:69:46
+     67|     const draft = { ...initialReviewDraft(view), exponent: "0", unitKi…
+     68|     const newer = { ...view, factToken: "newer_token", raw: { amountMi…
+     69|     expect(reviewDraftPreview(newer, draft)).toBe("100");
+       |                                              ^
+     70|     expect(reviewDraftPreview(view, { ...draft, unitKind: "" })).toBeN…
+     71|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 2 passed (3)
+   Start at  10:35:35
+   Duration  379ms (transform 51ms, setup 6ms, collect 132ms, tests 8ms, environment 0ms, prepare 51ms)
+

@@ -1,0 +1,52 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/collaboration/item-authoring-service.test.ts (3 tests | 1 failed) 638ms
+   ✓ real current-member inventory authorship > lets an Editor create and edit real Owner inventory while preserving ownership, private data and original audit actor 158ms
+   × real current-member inventory authorship > refuses private or monetary writes even through the internal shared writer seam 173ms
+     → promise resolved "{ …(19) }" instead of rejecting
+   ✓ real current-member inventory authorship > rechecks actual membership after the collection lock rather than trusting an earlier Editor lookup 68ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/collaboration/item-authoring-service.test.ts > real current-member inventory authorship > refuses private or monetary writes even through the internal shared writer seam
+AssertionError: promise resolved "{ …(19) }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "acquisitionDate": null,
++   "acquisitionType": "OTHER",
++   "archivedAt": null,
++   "catalogEntryId": null,
++   "catalogVariantId": null,
++   "categoryTemplateId": null,
++   "collectionId": "5ff67a05-e114-4080-8f62-6caa38ec587f",
++   "conditionOptionId": null,
++   "disposedAt": null,
++   "id": "2802dceb-33b3-4df5-91e9-bb15d823a21f",
++   "nodeId": null,
++   "privateNotes": "Must never be written",
++   "publicDescription": null,
++   "purchaseAmountMinor": null,
++   "purchaseCurrency": null,
++   "quantity": 1,
++   "title": "Protected original",
++   "tradeStatus": "NOT_FOR_TRADE",
++   "visibility": "PRIVATE",
+  }
+
+ ❯ packages/domain/src/collaboration/item-authoring-service.test.ts:15:794
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 2 passed (3)
+   Start at  10:20:16
+   Duration  1.16s (transform 199ms, setup 5ms, collect 366ms, tests 638ms, environment 0ms, prepare 36ms)
+

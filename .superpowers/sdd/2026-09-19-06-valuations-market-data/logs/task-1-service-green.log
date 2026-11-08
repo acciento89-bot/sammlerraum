@@ -1,0 +1,55 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| packages/domain/src/valuations/valuation-service.test.ts (7 tests | 2 failed) 473ms
+   ✓ private manual valuation PostgreSQL > appends exact per-unit amounts without overwriting and preserves case-sensitive authors 22ms
+   × private manual valuation PostgreSQL > orders latest by observed time and resolves equal-millisecond ties with createdAt then UUID 21ms
+     → expected [ Array(1) ] to deeply equal [ Array(1) ]
+   × private manual valuation PostgreSQL > bounds pages and validates strict cursor/time/input without caller-authored identity 8ms
+     → Invalid time value
+   ✓ private manual valuation PostgreSQL > hides foreign/deleted rows but permits inactive reads and retains soft-deleted history 52ms
+   ✓ private manual valuation PostgreSQL > keeps per-unit history through actual quantity changes and leaves a split unauthored 23ms
+   ✓ private manual valuation PostgreSQL > enforces native ownership, actor, basis, amount, scale, note and finite timestamp guards 84ms
+   ✓ private manual valuation PostgreSQL > serializes the append quota and rejects the 10001st estimate without pruning 160ms
+ ✓ |workspace| packages/domain/src/money/money.test.ts (50 tests) 4ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/valuations/valuation-service.test.ts > private manual valuation PostgreSQL > orders latest by observed time and resolves equal-millisecond ties with createdAt then UUID
+AssertionError: expected [ Array(1) ] to deeply equal [ Array(1) ]
+
+- Expected
++ Received
+
+  [
+-   "00000000-0000-4000-8000-000000000001",
++   "00000000-0000-4000-8000-000000000002",
+  ]
+
+ ❯ packages/domain/src/valuations/valuation-service.test.ts:52:59
+     50|     expect(first.records.map((r: {id: string}) => r.id)).toEqual([ids[…
+     51|     const second = await service().listManualValuations(target.id, { l…
+     52|     expect(second.records.map((r: {id: string}) => r.id)).toEqual([ids…
+       |                                                           ^
+     53|     const rest = await service().listManualValuations(target.id, { lim…
+     54|     expect(rest.records.map((r: {amountMinor: bigint}) => r.amountMino…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |workspace| packages/domain/src/valuations/valuation-service.test.ts > private manual valuation PostgreSQL > bounds pages and validates strict cursor/time/input without caller-authored identity
+RangeError: Invalid time value
+ ❯ packages/domain/src/valuations/valuation-service.test.ts:73:27
+     71|     await expect(service().addManualValuation("not-uuid", base)).rejec…
+     72|     const max = await service().addManualValuation(target.id, { amount…
+     73|     expect(max.observedAt.toISOString()).toBe("0001-01-01T00:00:00.000…
+       |                           ^
+     74|     expect(max).toMatchObject({ amountMinor: 9223372036854775807n, min…
+     75|     expect((await service().addManualValuation(target.id, {...base, no…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  2 failed | 55 passed (57)
+   Start at  03:54:08
+   Duration  917ms (transform 78ms, setup 7ms, collect 161ms, tests 477ms, environment 0ms, prepare 65ms)

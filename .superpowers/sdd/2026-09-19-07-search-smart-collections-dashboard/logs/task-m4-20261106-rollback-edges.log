@@ -1,0 +1,84 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/catalog/catalog-money-mutation.test.ts (14 tests | 2 failed | 10 skipped) 605ms
+   ↓ actual canonical catalog money mutation integration > authors exact money and carries it through a text-only revision without rewriting old snapshots
+   ↓ actual canonical catalog money mutation integration > invalidates an explicit legacy same-pair write even if the snapshot revision does not advance
+   ↓ actual canonical catalog money mutation integration > applies a deliberate same-pair replacement and preserves its captured precondition
+   ↓ actual canonical catalog money mutation integration > rejects mismatched frozen patch digests without creating a partial entry
+   ↓ actual canonical catalog money mutation integration > authors and retains exact variant money independently of entry money
+   ↓ actual canonical catalog money mutation integration > carries direct evidence through identifier add, correction and removal
+   ↓ actual canonical catalog money mutation integration > does not invent an operator for actorless maintenance of known interpretation
+   ↓ actual canonical catalog money mutation integration > rolls back target meaning and saves selected evidence even when the complete raw snapshot is identical
+   ↓ actual canonical catalog money mutation integration > retains historical raw codes without current-list reinterpretation and permits explicit replacement
+   × actual canonical catalog money mutation integration > restores a historical unsupported raw code without borrowing the current authored unit 83ms
+     → 
+Invalid `tx.catalogRevision.create()` invocation in
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/domain/src/catalog/catalog-service.ts:250:28
+
+  247     authored: json({ text: state.text, sources: state.sources }),
+  248   },
+  249 });
+→ 250 await tx.catalogRevision.create(
+Unique constraint failed on the constraint: `CatalogRevision_pkey`
+   × actual canonical catalog money mutation integration > reactivates the same retired variant UUID and restores its exact direct evidence 79ms
+     → expected undefined to be null
+   ✓ actual canonical catalog money mutation integration > records revoked target evidence and never revives its copied interpretation 54ms
+   ✓ actual canonical catalog money mutation integration > rolls back equal-snapshot financial changes if the immutable rollback audit fails 56ms
+   ↓ actual canonical catalog money mutation integration > carries all 10100 interpreted paths through the actual bounded canonical maintenance wrapper
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/catalog/catalog-money-mutation.test.ts > actual canonical catalog money mutation integration > restores a historical unsupported raw code without borrowing the current authored unit
+PrismaClientKnownRequestError: 
+Invalid `tx.catalogRevision.create()` invocation in
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/domain/src/catalog/catalog-service.ts:250:28
+
+  247     authored: json({ text: state.text, sources: state.sources }),
+  248   },
+  249 });
+→ 250 await tx.catalogRevision.create(
+Unique constraint failed on the constraint: `CatalogRevision_pkey`
+ ❯ vn.handleRequestError node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:238:13
+ ❯ vn.handleAndLogRequestError node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:184:12
+ ❯ vn.request node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:153:12
+ ❯ a node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:1014:24
+ ❯ persistState packages/domain/src/catalog/catalog-service.ts:250:3
+    248|     },
+    249|   });
+    250|   await tx.catalogRevision.create({
+       |   ^
+    251|     data: {
+    252|       entryId: state.id,
+ ❯ Object.rollbackCatalogEntryWithMoneyAudit packages/domain/src/catalog/catalog-service.ts:552:16
+ ❯ Object.rollbackCatalogEntry packages/domain/src/catalog/proposal-service.ts:336:45
+ ❯ Proxy._transactionWithCallback node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:861:18
+ ❯ packages/domain/src/catalog/catalog-money-mutation.test.ts:429:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |workspace| packages/domain/src/catalog/catalog-money-mutation.test.ts > actual canonical catalog money mutation integration > reactivates the same retired variant UUID and restores its exact direct evidence
+AssertionError: expected undefined to be null
+
+- Expected: 
+null
+
++ Received: 
+undefined
+
+ ❯ packages/domain/src/catalog/catalog-money-mutation.test.ts:444:98
+    442|     const restored = await rollbacks.rollbackCatalogEntry(entry.state.…
+    443|     expect(restored.state.variants[0]!.id).toBe(variant.id);
+    444|     expect((await db.catalogVariant.findUniqueOrThrow({ where: { id: v…
+       |                                                                                                  ^
+    445|     expect((await read(entry.state.id, restored.revision)).find(v => v…
+    446|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 2 passed | 10 skipped (14)
+   Start at  07:31:30
+   Duration  1.07s (transform 138ms, setup 5ms, collect 275ms, tests 605ms, environment 0ms, prepare 52ms)
+

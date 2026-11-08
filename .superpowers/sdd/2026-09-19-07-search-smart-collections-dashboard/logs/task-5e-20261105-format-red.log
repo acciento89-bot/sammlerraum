@@ -1,0 +1,26 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/web/src/components/search/dashboard-format.test.ts [ apps/web/src/components/search/dashboard-format.test.ts ]
+Error: Cannot find module './dashboard-format' imported from '/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/src/components/search/dashboard-format.test.ts'
+ ❯ apps/web/src/components/search/dashboard-format.test.ts:2:1
+      1| import { describe, expect, it } from "vitest";
+      2| import { formatDashboardInteger, formatDashboardMoney } from "./dashbo…
+       | ^
+      3| for(const locale of ["de","en"] as const){
+      4|   describe(`${locale} exact stored-unit formatting`,()=>{
+
+Caused by: Error: Failed to load url ./dashboard-format (resolved id: ./dashboard-format) in /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/src/components/search/dashboard-format.test.ts. Does the file exist?
+ ❯ loadAndTransform ../../../../SSK%20SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/node_modules/.pnpm/vite@7.3.6_@types+node@24.5.2_jiti@2.7.0/node_modules/vite/dist/node/chunks/config.js:22739:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  no tests
+   Start at  22:30:50
+   Duration  292ms (transform 35ms, setup 6ms, collect 0ms, tests 0ms, environment 0ms, prepare 61ms)
+

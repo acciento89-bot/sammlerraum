@@ -1,0 +1,18 @@
+
+> @sammlerraum/db@ prisma /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/db
+> prisma format
+
+Loaded Prisma config from prisma.config.ts.
+
+Prisma schema loaded from prisma/schema.prisma.
+Formatted prisma/schema.prisma in 35ms 🚀
+
+> @sammlerraum/db@ prisma /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/db
+> prisma migrate diff --from-config-datasource --to-schema packages/db/prisma/schema.prisma --script
+
+Loaded Prisma config from prisma.config.ts.
+
+Error: Could not load `--to-schema` from provided path `packages/db/prisma/schema.prisma`: file or directory not found
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/db:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @sammlerraum/db@ prisma: `prisma migrate diff --from-config-datasource --to-schema packages/db/prisma/schema.prisma --script`
+Exit status 1

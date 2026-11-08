@@ -1,0 +1,3 @@
+apps/worker/src/jobs/build-insurance-report.ts(9,14): error TS2305: Module '"@sammlerraum/storage"' has no exported member 'StorageReadOptions'.
+apps/worker/src/jobs/build-insurance-report.ts(32,55): error TS2454: Variable 'page' is used before being assigned.
+apps/worker/src/jobs/build-insurance-report.ts(33,512): error TS2454: Variable 'page' is used before being assigned.

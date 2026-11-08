@@ -1,0 +1,34 @@
+2026-11-06T20:24:46.6933692Z   1) [money-ui-mobile] › e2e/catalog-money-ui.spec.ts:90:5 › de: a text-only catalog proposal retains known historical money using its exact frozen source 
+2026-11-06T20:24:46.6934409Z 
+2026-11-06T20:24:46.6935036Z     Error: response.json: Protocol error (Network.getResponseBody): No data found for resource with given identifier
+2026-11-06T20:24:46.6936018Z     Response body is not available for a response that was navigated away from. Read response.body() before triggering any navigation.
+2026-11-06T20:24:46.6936557Z 
+2026-11-06T20:24:46.6936733Z       114 |       expect(submitted.status()).toBe(201);
+2026-11-06T20:24:46.6937634Z       115 |       expect(new URL(submitted.url()).pathname).toBe("/api/v1/catalog/money-proposals");
+2026-11-06T20:24:46.6937992Z     > 116 |       const body = await submitted.json();
+2026-11-06T20:24:46.6938217Z           |                                    ^
+2026-11-06T20:24:46.6938532Z       117 |       expect(body.proposal.moneyInterpretation.paths).toEqual([
+2026-11-06T20:24:46.6938982Z       118 |         {
+2026-11-06T20:24:46.6939131Z       119 |           target: "ENTRY",
+2026-11-06T20:24:46.6939463Z         at /home/runner/work/sammlerraum/sammlerraum/apps/web/e2e/catalog-money-ui.spec.ts:116:36
+2026-11-06T20:24:46.6939723Z 
+2026-11-06T20:24:46.6940078Z     Error Context: test-results/catalog-money-ui-de-a-text-33b2c-ing-its-exact-frozen-source-money-ui-mobile/error-context.md
+2026-11-06T20:24:46.6940435Z 
+2026-11-06T20:24:46.6940760Z     Error Context: test-results/catalog-money-ui-de-a-text-33b2c-ing-its-exact-frozen-source-money-ui-mobile/error-context.md
+2026-11-06T20:24:46.6941071Z 
+2026-11-06T20:24:46.6941132Z   1 failed
+2026-11-06T20:24:46.6941716Z     [money-ui-mobile] › e2e/catalog-money-ui.spec.ts:90:5 › de: a text-only catalog proposal retains known historical money using its exact frozen source 
+2026-11-06T20:24:46.6942130Z   153 passed (2.9m)
+2026-11-06T20:24:46.7357418Z undefined
+2026-11-06T20:24:46.7363245Z /home/runner/work/sammlerraum/sammlerraum/apps/web:
+2026-11-06T20:24:46.7366282Z  ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/catalog-money-api.spec.ts e2e/catalog-money-ui.spec.ts e2e/legacy-money.spec.ts --workers=1
+2026-11-06T20:24:46.9308640Z ##[error]Process completed with exit code 1.
+2026-11-06T20:24:46.9399745Z Post job cleanup.
+2026-11-06T20:24:47.0329694Z Pruning is unnecessary.
+2026-11-06T20:24:47.0459754Z Post job cleanup.
+2026-11-06T20:24:47.1084205Z [command]/usr/bin/git version
+2026-11-06T20:24:47.1141921Z git version 2.56.0
+2026-11-06T20:24:47.1165013Z Temporarily overriding HOME='/home/runner/work/_temp/f3bc27ce-8b9b-4cd6-b2ff-09bc5119cdbc' before making global git config changes
+2026-11-06T20:24:47.1165841Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-06T20:24:47.1167867Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/sammlerraum/sammlerraum
+2026-11-06T20:24:47.1202088Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand

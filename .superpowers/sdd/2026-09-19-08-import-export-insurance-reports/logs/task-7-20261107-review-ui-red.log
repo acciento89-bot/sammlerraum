@@ -1,0 +1,91 @@
+[WebServer] (node:95115) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:95116) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 3 tests using 1 worker
+
+(node:95128) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [desktop] › e2e/import-report.spec.ts:514:3 › real import, export and private report flow › review: a named worksheet imports the intended sheet from a real multi-sheet XLSX (15.0s)
+(node:95165) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  2 [desktop] › e2e/import-report.spec.ts:541:3 › real import, export and private report flow › review: actual filtered search exports all matching rows without unrelated inventory (15.0s)
+(node:95199) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  3 [desktop] › e2e/import-report.spec.ts:564:3 › real import, export and private report flow › review: an actual collection subtree export includes descendants and excludes siblings (15.0s)
+
+
+  1) [desktop] › e2e/import-report.spec.ts:514:3 › real import, export and private report flow › review: a named worksheet imports the intended sheet from a real multi-sheet XLSX 
+
+    Test timeout of 15000ms exceeded.
+
+    Error: locator.fill: Test timeout of 15000ms exceeded.
+    Call log:
+      - waiting for getByLabel('Arbeitsblatt (XLSX)', { exact: true })
+
+
+      525 |       await page.getByLabel("Zielsammlung",{exact:true}).selectOption(f.collection.id);
+      526 |       await page.getByLabel("Dateiformat").selectOption("XLSX");
+    > 527 |       await page.getByLabel("Arbeitsblatt (XLSX)",{exact:true}).fill("Inventory");
+          |                                                                 ^
+      528 |       await page.getByLabel("Datei auswählen",{exact:true}).setInputFiles({name:"multi-sheet.xlsx",mimeType:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",buffer:Buffer.from(file)});
+      529 |       await page.getByRole("button",{name:"Datei hochladen",exact:true}).click();
+      530 |       await expect(page.getByLabel("Titelspalte",{exact:true})).toBeVisible({timeout:30000});
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/import-report.spec.ts:527:65
+
+    Error Context: test-results/import-report-real-import--06f00-rom-a-real-multi-sheet-XLSX-desktop/error-context.md
+
+    Error Context: test-results/import-report-real-import--06f00-rom-a-real-multi-sheet-XLSX-desktop/error-context.md
+
+  2) [desktop] › e2e/import-report.spec.ts:541:3 › real import, export and private report flow › review: actual filtered search exports all matching rows without unrelated inventory 
+
+    Test timeout of 15000ms exceeded.
+
+    Error: locator.click: Test timeout of 15000ms exceeded.
+    Call log:
+      - waiting for getByRole('button', { name: 'Suchergebnis exportieren', exact: true })
+
+
+      549 |       await page.getByRole("button",{name:"Anwenden",exact:true}).click();
+      550 |       await expect(page.getByTestId("search-total")).toContainText("1");
+    > 551 |       await page.getByRole("button",{name:"Suchergebnis exportieren",exact:true}).click();
+          |                                                                                   ^
+      552 |       await expect(page.getByText("Angewendete Suche: Needle",{exact:false})).toBeVisible();
+      553 |       await page.getByRole("button",{name:"Auswahl exportieren",exact:true}).click();
+      554 |       await expect(page).toHaveURL(/\/de\/exports$/u);
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/import-report.spec.ts:551:83
+
+    Error Context: test-results/import-report-real-import--2ef6c-without-unrelated-inventory-desktop/error-context.md
+
+    Error Context: test-results/import-report-real-import--2ef6c-without-unrelated-inventory-desktop/error-context.md
+
+  3) [desktop] › e2e/import-report.spec.ts:564:3 › real import, export and private report flow › review: an actual collection subtree export includes descendants and excludes siblings 
+
+    Test timeout of 15000ms exceeded.
+
+    Error: locator.click: Test timeout of 15000ms exceeded.
+    Call log:
+      - waiting for locator('details').filter({ has: locator('summary').filter({ hasText: '/^Selected branch$/u' }) }).getByRole('button', { name: 'Teilbaum exportieren', exact: true })
+
+
+      570 |       const selected=page.locator("details").filter({has:page.locator("summary").filter({hasText:/^Selected branch$/u})});
+      571 |       await selected.locator("summary").first().click();
+    > 572 |       await selected.getByRole("button",{name:"Teilbaum exportieren",exact:true}).click();
+          |                                                                                   ^
+      573 |       await expect(selected.getByText("Teilbaum: Selected branch",{exact:false})).toBeVisible();
+      574 |       await selected.getByRole("button",{name:"Auswahl exportieren",exact:true}).click();
+      575 |       await expect(page).toHaveURL(/\/de\/exports$/u);
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/import-report.spec.ts:572:83
+
+    Error Context: test-results/import-report-real-import--63899-dants-and-excludes-siblings-desktop/error-context.md
+
+    Error Context: test-results/import-report-real-import--63899-dants-and-excludes-siblings-desktop/error-context.md
+
+  3 failed
+    [desktop] › e2e/import-report.spec.ts:514:3 › real import, export and private report flow › review: a named worksheet imports the intended sheet from a real multi-sheet XLSX 
+    [desktop] › e2e/import-report.spec.ts:541:3 › real import, export and private report flow › review: actual filtered search exports all matching rows without unrelated inventory 
+    [desktop] › e2e/import-report.spec.ts:564:3 › real import, export and private report flow › review: an actual collection subtree export includes descendants and excludes siblings 
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/import-report.spec.ts --project=desktop --workers=1 --grep review: --timeout=15000

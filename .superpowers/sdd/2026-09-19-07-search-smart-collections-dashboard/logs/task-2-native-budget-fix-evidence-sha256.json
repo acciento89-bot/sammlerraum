@@ -1,0 +1,20 @@
+{
+  "logs/task-2-native-budget-fix-final-verification.json": "23e5f18ab425c322bfe495166cef1e8a5944d9e2a4d1ad8bb508656fb571b561",
+  "logs/task-2-native-budget-fix-generated-types-inspection.json": "c096768b916864672cd13087b85c9ac43e7746f85f0ab538cfee3f1649c19e4c",
+  "logs/task-2-native-budget-fix-generated-types-quarantine.json": "95cb29380983f90820cd7dd842e95cff226ede39ab3611e36b9dcfb1bf24ad2e",
+  "logs/task-2-native-budget-fix-lint.log": "28cb881fa4eab10b1147e98528b3e04d49fa7f858522f8b9bcfca8f7fb263024",
+  "logs/task-2-native-budget-fix-native-order.json": "ec84a12170e247efa3f6e97cfc7518cc1403a3f590fc2172f414eecceb5f40de",
+  "logs/task-2-native-budget-fix-native.log": "9172dd7cb977ab34b5a1ab908c303164896035e9fee50beed68e3421edff9e1e",
+  "logs/task-2-native-budget-fix-owned-format.log": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20",
+  "logs/task-2-native-budget-fix-recovery-runner.py": "77ab778c24a3c3df20df7cbff393d86d1cfbc0de66c93cb35d805162c0e0a429",
+  "logs/task-2-native-budget-fix-recovery-runs.json": "dc0f18707215e1d56450655cd76f37c200dcf8ae6585463139b08ba94f60df94",
+  "logs/task-2-native-budget-fix-runner.py": "0a2bcebbad81b1102bfb2773822b6377f745269e38946d9796d966df1458390c",
+  "logs/task-2-native-budget-fix-runs.json": "62be88a3dc472e1e06d1387ef6ea7c6997deb6acec018ebd0f3d881c8fe61eb8",
+  "logs/task-2-native-budget-fix-runtime.json": "099334df026f3e8613ac8f9fccfea2a6e2a645778bfd7bfd3204238b0072e68c",
+  "logs/task-2-native-budget-fix-source-commit.log": "68d876b423ee7e7ba3ae93d392fb5452c14bad0fdf38f40af81202de094817dd",
+  "logs/task-2-native-budget-fix-source.json": "c7d150a23eb3eb761a0f7f8c2a8feb4f207a8811aae2ba8633eb86a675e4a8e5",
+  "logs/task-2-native-budget-fix-typegen.log": "adba4af9194e10e47dda75ff0fd0f8c2b756474896d0eba5612799c527ff372a",
+  "logs/task-2-native-budget-fix-types-recovered.log": "fb91684c84b0fa2b487c9968e76a655a0af7aff6248ca54bb2dc1ea3035ac558",
+  "logs/task-2-native-budget-fix-types.log": "44fba8a25385becce55e2795d05b05e0265bae75f31e71560f0f21c1be1b5a3e",
+  "task-2-native-budget-report.md": "774a82a5f749f5d965eb171e45fc4fd1f050eb3752fd900c4d877d5897e3bd33"
+}

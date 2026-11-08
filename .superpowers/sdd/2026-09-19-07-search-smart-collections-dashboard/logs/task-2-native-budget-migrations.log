@@ -1,0 +1,98 @@
+
+> @sammlerraum/db@ prisma /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/db
+> prisma migrate deploy
+
+Loaded Prisma config from prisma.config.ts.
+
+Prisma schema loaded from prisma/schema.prisma.
+Datasource "db": PostgreSQL database "sammlerraum_budget_20261018_test", schema "public" at "localhost:5432"
+
+27 migrations found in prisma/migrations
+
+Applying migration `20260920151500_init`
+Applying migration `20260920162000_identity_profile`
+Applying migration `20260920164000_better_auth`
+Applying migration `20260920195000_collections_hierarchy`
+Applying migration `20260920204000_collectible_items`
+Applying migration `20260920213000_item_identifiers_tags`
+Applying migration `20260920223000_custom_fields`
+Applying migration `20260920233000_storage_locations`
+Applying migration `20260920234500_collection_item_soft_delete`
+Applying migration `20260927140000_media_documents`
+Applying migration `20260927160000_media_image_processing`
+Applying migration `20261017120000_media_cleanup`
+Applying migration `20261017201618_catalog_templates`
+Applying migration `20261017225000_global_catalog`
+Applying migration `20261017225200_catalog_revision_guard`
+Applying migration `20261017225201_catalog_proposals`
+Applying migration `20261017225202_catalog_rollback_audit_target`
+Applying migration `20261017225203_condition_schemes`
+Applying migration `20261017225204_grading_records`
+Applying migration `20261017225205_grading_finite_comparable`
+Applying migration `20261017225206_item_catalog_links`
+Applying migration `20261018015303_manual_valuations`
+Applying migration `20261018022132_market_observations`
+Applying migration `20261018025000_market_sync`
+Applying migration `20261018033424_valuation_source_history`
+Applying migration `20261018051900_market_request_gate`
+Applying migration `20261018090000_smart_collections`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260920151500_init/
+    └─ migration.sql
+  └─ 20260920162000_identity_profile/
+    └─ migration.sql
+  └─ 20260920164000_better_auth/
+    └─ migration.sql
+  └─ 20260920195000_collections_hierarchy/
+    └─ migration.sql
+  └─ 20260920204000_collectible_items/
+    └─ migration.sql
+  └─ 20260920213000_item_identifiers_tags/
+    └─ migration.sql
+  └─ 20260920223000_custom_fields/
+    └─ migration.sql
+  └─ 20260920233000_storage_locations/
+    └─ migration.sql
+  └─ 20260920234500_collection_item_soft_delete/
+    └─ migration.sql
+  └─ 20260927140000_media_documents/
+    └─ migration.sql
+  └─ 20260927160000_media_image_processing/
+    └─ migration.sql
+  └─ 20261017120000_media_cleanup/
+    └─ migration.sql
+  └─ 20261017201618_catalog_templates/
+    └─ migration.sql
+  └─ 20261017225000_global_catalog/
+    └─ migration.sql
+  └─ 20261017225200_catalog_revision_guard/
+    └─ migration.sql
+  └─ 20261017225201_catalog_proposals/
+    └─ migration.sql
+  └─ 20261017225202_catalog_rollback_audit_target/
+    └─ migration.sql
+  └─ 20261017225203_condition_schemes/
+    └─ migration.sql
+  └─ 20261017225204_grading_records/
+    └─ migration.sql
+  └─ 20261017225205_grading_finite_comparable/
+    └─ migration.sql
+  └─ 20261017225206_item_catalog_links/
+    └─ migration.sql
+  └─ 20261018015303_manual_valuations/
+    └─ migration.sql
+  └─ 20261018022132_market_observations/
+    └─ migration.sql
+  └─ 20261018025000_market_sync/
+    └─ migration.sql
+  └─ 20261018033424_valuation_source_history/
+    └─ migration.sql
+  └─ 20261018051900_market_request_gate/
+    └─ migration.sql
+  └─ 20261018090000_smart_collections/
+    └─ migration.sql
+
+All migrations have been successfully applied.

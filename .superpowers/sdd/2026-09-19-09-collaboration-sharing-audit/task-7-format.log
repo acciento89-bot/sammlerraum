@@ -1,0 +1,36 @@
+.github/workflows/ci.yml 20ms (unchanged)
+apps/web/e2e/collaboration-sharing.spec.ts 41ms
+apps/web/messages/de.json 34ms (unchanged)
+apps/web/messages/en.json 14ms (unchanged)
+apps/web/playwright.config.ts 6ms
+apps/web/src/app/[locale]/(app)/audit/page.tsx 5ms
+apps/web/src/app/[locale]/(app)/collections/[collectionId]/members/page.tsx 2ms
+apps/web/src/app/[locale]/(app)/collections/[collectionId]/sharing/page.tsx 2ms
+apps/web/src/app/[locale]/invite/[token]/page.tsx 2ms
+apps/web/src/app/[locale]/login/page.tsx 3ms
+apps/web/src/app/api/v1/audit/route.ts 1ms
+apps/web/src/app/api/v1/collections/[collectionId]/members/route.ts 2ms
+apps/web/src/app/api/v1/collections/[collectionId]/sharing/route.ts 1ms
+apps/web/src/app/globals.css 56ms
+apps/web/src/components/auth/auth-panel.tsx 11ms
+apps/web/src/components/auth/invitation-return-path.test.ts 2ms
+apps/web/src/components/auth/invitation-return-path.ts 2ms
+apps/web/src/components/collections/collection-detail.tsx 25ms
+apps/web/src/components/search/collector-navigation.tsx 2ms (unchanged)
+apps/web/src/components/sharing/audit-manager.tsx 12ms
+apps/web/src/components/sharing/collaboration-navigation.tsx 2ms
+apps/web/src/components/sharing/invitation-acceptance.tsx 3ms
+apps/web/src/components/sharing/management-request.ts 3ms
+apps/web/src/components/sharing/members-manager.tsx 12ms
+apps/web/src/components/sharing/share-permissions-editor.tsx 3ms
+apps/web/src/components/sharing/sharing-manager.tsx 11ms
+apps/web/src/lib/collaboration-management-dependencies.ts 1ms
+apps/web/src/lib/collaboration-management-routes.integration.test.ts 6ms
+apps/web/src/lib/collaboration-management-routes.test.ts 4ms
+apps/web/src/lib/collaboration-management-routes.ts 5ms
+packages/contracts/src/collaboration.ts 7ms
+packages/contracts/src/restore.ts 4ms (unchanged)
+packages/domain/package.json 1ms (unchanged)
+packages/domain/src/audit/restore-service.ts 21ms (unchanged)
+packages/domain/src/collaboration/management-service.test.ts 6ms
+packages/domain/src/collaboration/management-service.ts 9ms

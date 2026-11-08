@@ -1,0 +1,13 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ✓ |workspace| packages/domain/src/money/money-transfer.integration.test.ts (9 tests) 4010ms
+   ✓ bounded same-snapshot money transfer > counts before metadata/facts: 1000 owned rows succeed, 1001 closes the export  577ms
+   ✓ bounded same-snapshot money transfer > captures many current entry and selected variant paths under one catalogue item  485ms
+   ✓ bounded same-snapshot money transfer > honors the actual statement timeout without producing a snapshot  2043ms
+
+ Test Files  1 passed (1)
+      Tests  9 passed (9)
+   Start at  19:37:53
+   Duration  4.75s (transform 248ms, setup 11ms, collect 478ms, tests 4.01s, environment 0ms, prepare 65ms)
+

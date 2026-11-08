@@ -1,0 +1,73 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/contracts/src/catalog-money-proposals.test.ts (5 tests | 3 failed) 5ms
+   × catalog money proposal structural boundary (no producer authority) > accepts explicit authoring without taking a client receipt or generated variant UUID 4ms
+     → expected false to be true // Object.is equality
+   ✓ catalog money proposal structural boundary (no producer authority) > bounds and deduplicates exact target/definition paths 0ms
+   × catalog money proposal structural boundary (no producer authority) > accepts empty money intents for nonmoney proposals and enforces the total byte cap 0ms
+     → expected false to be true // Object.is equality
+   ✓ catalog money proposal structural boundary (no producer authority) > rejects CLEAR for a still-present submitted path and per-path human notes instead of dropping them 0ms
+   × catalog money proposal structural boundary (no producer authority) > retains bounded server receipts only in a separate strict stored envelope 0ms
+     → expected false to be true // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/contracts/src/catalog-money-proposals.test.ts > catalog money proposal structural boundary (no producer authority) > accepts explicit authoring without taking a client receipt or generated variant UUID
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ packages/contracts/src/catalog-money-proposals.test.ts:11:74
+      9| describe("catalog money proposal structural boundary (no producer auth…
+     10|  it("accepts explicit authoring without taking a client receipt or gen…
+     11|   expect(SubmitCatalogMoneyProposalInputSchema.safeParse(input).succes…
+       |                                                                          ^
+     12|   expect(SubmitCatalogMoneyProposalInputSchema.safeParse({...input,mon…
+     13|   expect(SubmitCatalogMoneyProposalInputSchema.safeParse({...input,mon…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  |workspace| packages/contracts/src/catalog-money-proposals.test.ts > catalog money proposal structural boundary (no producer authority) > accepts empty money intents for nonmoney proposals and enforces the total byte cap
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ packages/contracts/src/catalog-money-proposals.test.ts:20:132
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  |workspace| packages/contracts/src/catalog-money-proposals.test.ts > catalog money proposal structural boundary (no producer authority) > retains bounded server receipts only in a separate strict stored envelope
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ packages/contracts/src/catalog-money-proposals.test.ts:29:71
+     27|   const good={...receipt,authorityHash:"33139b438657d1cee116ba737807ea…
+     28|   const stored={schemaVersion:1,baseRevision:null,patchDigest:"a".repe…
+     29|   expect(StoredProposalMoneyEnvelopeSchema.safeParse(stored).success).…
+       |                                                                       ^
+     30|   expect(StoredProposalMoneyEnvelopeSchema.safeParse({...stored,patchD…
+     31|   expect(StoredProposalMoneyEnvelopeSchema.safeParse({...stored,actorI…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 2 passed (5)
+   Start at  04:47:03
+   Duration  337ms (transform 56ms, setup 6ms, collect 91ms, tests 5ms, environment 0ms, prepare 51ms)
+

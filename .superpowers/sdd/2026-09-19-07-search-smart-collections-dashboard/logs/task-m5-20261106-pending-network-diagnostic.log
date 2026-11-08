@@ -1,0 +1,46 @@
+[WebServer] (node:93708) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:93709) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [money-ui-desktop] › e2e/legacy-money.spec.ts:533:3 › de: a pending committed core write cannot be abandoned by a locale click (4.6s)
+Testing stopped early after 1 maximum allowed failures.
+
+
+  1) [money-ui-desktop] › e2e/legacy-money.spec.ts:533:3 › de: a pending committed core write cannot be abandoned by a locale click 
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 4
+
+    - Array []
+    + Array [
+    +   "PUT http://localhost:3000/api/v1/items/b88aa2b9-11c1-49c7-aebb-c79864d41c0d/identifiers",
+    +   "PUT http://localhost:3000/api/v1/items/b88aa2b9-11c1-49c7-aebb-c79864d41c0d/tags",
+    + ]
+
+    Call Log:
+    - Timeout 2500ms exceeded while waiting on the predicate
+
+      577 |       release();
+      578 |       await expect(page.getByRole("button", { name: h.t.save, exact: true })).toBeEnabled();
+    > 579 |       await expect.poll(() => [...activeRequests], { timeout: 2500 }).toEqual([]);
+          |                                                                       ^
+      580 |     } finally {
+      581 |       release();
+      582 |       await cleanupSearchFixture(h.f);
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/legacy-money.spec.ts:579:71
+
+    Error Context: test-results/legacy-money-de-a-pending--4f964-abandoned-by-a-locale-click-money-ui-desktop/error-context.md
+
+    Error Context: test-results/legacy-money-de-a-pending--4f964-abandoned-by-a-locale-click-money-ui-desktop/error-context.md
+
+  1 failed
+    [money-ui-desktop] › e2e/legacy-money.spec.ts:533:3 › de: a pending committed core write cannot be abandoned by a locale click 
+  1 error was not a part of any test, see above for details
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/legacy-money.spec.ts --workers=1 --project money-ui-desktop --grep de: a pending committed --max-failures=1

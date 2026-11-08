@@ -1,0 +1,41 @@
+[WebServer] (node:55533) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+(node:55534) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+F
+Testing stopped early after 1 maximum allowed failures.
+
+
+  1) [collaboration-ui-desktop] › e2e/collaboration-management.spec.ts:399:3 › en stale node draft keeps its original confirmation after an item refresh 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('main').getByRole('alert')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('main').getByRole('alert') with timeout 5000ms
+      - waiting for getByRole('main').getByRole('alert')
+
+
+      417 |       await expect(name).toHaveValue("Unsaved old draft");
+      418 |       await page.getByRole("button", { name: locale === "de" ? "Teilbereich speichern" : "Save subtree", exact: true }).click();
+    > 419 |       await expect(page.getByRole("main").getByRole("alert")).toBeVisible();
+          |                                                               ^
+      420 |       expect((await db.collectionNode.findUniqueOrThrow({ where: { id: node.id } })).name).toBe("Newer other administrator fact");
+      421 |       await expect(name).toHaveValue("Unsaved old draft");
+      422 |     } finally { await admin.cleanup(); await db.user.deleteMany({ where: { id: owner } }); await db.$disconnect(); }
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/collaboration-management.spec.ts:419:63
+
+    Error Context: test-results/collaboration-management-e-23770-ation-after-an-item-refresh-collaboration-ui-desktop/error-context.md
+
+  1 failed
+    [collaboration-ui-desktop] › e2e/collaboration-management.spec.ts:399:3 › en stale node draft keeps its original confirmation after an item refresh 
+  1 error was not a part of any test, see above for details
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/collaboration-management.spec.ts --project=collaboration-ui-desktop --grep en stale node --workers=1 --max-failures=1

@@ -1,0 +1,60 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/collaboration/invitation-service.test.ts (19 tests | 2 failed) 658ms
+   ✓ actual recipient-bound invitations > does not allow a different verified account to accept an email-bound invite 118ms
+   ✓ actual recipient-bound invitations > accepts the intended verified recipient atomically and derives exactly one owner 20ms
+   ✓ actual recipient-bound invitations > requires current verified identity instead of trusting possession of the token 16ms
+   ✓ actual recipient-bound invitations > does not re-add membership when a consumed invitation is replayed after removal 17ms
+   ✓ actual recipient-bound invitations > stores only the token hash and hides tokens from the authorized pending list 13ms
+   ✓ actual recipient-bound invitations > revokes a link without changing membership and rejects its later use 10ms
+   ✓ actual recipient-bound invitations > serializes simultaneous acceptance without duplicating membership or revisions 16ms
+   ✓ actual recipient-bound invitations > checks current inviter authority after demotion rather than trusting an issued role 18ms
+   ✓ actual recipient-bound invitations > rejects an actual expired stored invitation using the database clock 5ms
+   ✓ actual recipient-bound invitations > never overwrites a different existing membership through an invitation 12ms
+   ✓ actual recipient-bound invitations > erases pending email invitations when the intended account is deleted 13ms
+   ✓ actual recipient-bound invitations > rejects owner-role injection and stale membership decisions 9ms
+   ✓ actual recipient-bound invitations > bounds pending invitations and rejects duplicate active targets 52ms
+   ✓ actual recipient-bound invitations > retains the exact maximum lifetime from one database-issued UTC anchor 5ms
+   ✓ actual recipient-bound invitations > rejects raw consumption without the actual resulting membership 8ms
+   ✓ actual recipient-bound invitations > rejects a changed email and preserves immutable recipient, role and token identity 29ms
+   ✓ actual recipient-bound invitations > does not preserve an old Owner's Admin grant after ownership transfer 33ms
+   × actual recipient-bound invitations > revokes an unconsumed EMAIL invitation when the member is explicitly removed 14ms
+     → promise resolved "{ …(4) }" instead of rejecting
+   × actual recipient-bound invitations > revokes an unconsumed USER invitation when the member is explicitly removed 12ms
+     → promise resolved "{ …(4) }" instead of rejecting
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/collaboration/invitation-service.test.ts > actual recipient-bound invitations > revokes an unconsumed EMAIL invitation when the member is explicitly removed
+ FAIL  |workspace| packages/domain/src/collaboration/invitation-service.test.ts > actual recipient-bound invitations > revokes an unconsumed USER invitation when the member is explicitly removed
+AssertionError: promise resolved "{ …(4) }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "acceptedAt": "2026-11-07T04:52:33.417Z",
++   "alreadyAccepted": false,
++   "collectionId": "bff5ef06-249f-4f78-a997-f0d86006f165",
++   "role": "VIEWER",
+  }
+
+ ❯ packages/domain/src/collaboration/invitation-service.test.ts:165:88
+    163|     await members.addMember(f.actor,{collectionId:f.collection,userId:…
+    164|     await members.removeMember(f.actor,{collectionId:f.collection,user…
+    165|     await expect(f.service.acceptInvitation({userId:f.recipient},{toke…
+       |                                                                                        ^
+    166|     expect(await db.collectionMember.count({where:{collectionId:f.coll…
+    167|     expect((await members.getMembershipState(f.actor,f.collection)).re…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 17 passed (19)
+   Start at  05:52:32
+   Duration  1.09s (transform 136ms, setup 6ms, collect 270ms, tests 658ms, environment 0ms, prepare 36ms)
+

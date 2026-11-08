@@ -1,0 +1,315 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| packages/domain/src/dashboard/dashboard-service.test.ts (25 tests | 4 failed | 21 skipped) 233ms
+   ↓ owned dashboard PostgreSQL > weights latest own estimates without leaking foreign money and includes empty owned collections
+   × dashboard actual observations and filters > rejects unsupported latest currency before returning monetary groups or noncomparable history 166ms
+     → promise resolved "{ …(19) }" instead of rejecting
+   × dashboard actual observations and filters > rejects mismatched latest exponent before returning monetary groups or noncomparable history 21ms
+     → promise resolved "{ …(19) }" instead of rejecting
+   × dashboard actual observations and filters > rejects unsupported immediate prior currency before returning monetary groups or noncomparable history 28ms
+     → promise resolved "{ …(19) }" instead of rejecting
+   × dashboard actual observations and filters > rejects mismatched immediate prior exponent before returning monetary groups or noncomparable history 17ms
+     → promise resolved "{ …(19) }" instead of rejecting
+   ↓ dashboard actual observations and filters > selects latest before denomination and never turns absent or incomparable history into zero
+   ↓ dashboard actual observations and filters > requires distinct observation times and uses exact large current-quantity sums
+   ↓ dashboard actual observations and filters > uses disjoint lifecycles and excludes deleted parents while keeping collection counts independent
+   ↓ dashboard actual observations and filters > counts grading records separately, retains retired conditions and distinguishes usable media
+   ↓ dashboard actual observations and filters > keeps unavailable producer metrics explicit and rejects unsupported leaves even for empty matches
+   ↓ dashboard bounded sets and consistency > matches actual search selection and does not use a limited page as inventory
+   ↓ dashboard bounded sets and consistency > caps per-denomination value rankings and recency with stable ties
+   ↓ dashboard bounded sets and consistency > uses createdAt then id to resolve equal observed times and does not copy history on a real split
+   ↓ dashboard bounded sets and consistency > holds one snapshot through summary, values and rankings and next read sees changes
+   ↓ dashboard bounded sets and consistency > returns all 128 grading groups and rejects 129 instead of truncating
+   ↓ dashboard bounded sets and consistency > returns all 128 condition groups and rejects 129 before group transfer
+   ↓ dashboard bounded sets and consistency > settles a real dashboard SQL timeout with closed installed-driver mapping
+   ↓ dashboard actual cost evidence > keeps fixed query count and records real plans for 1 owned rows
+   ↓ dashboard actual cost evidence > keeps fixed query count and records real plans for 50 owned rows
+   ↓ dashboard actual cost evidence > keeps fixed query count and records real plans for 500 owned rows
+   ↓ dashboard actual cost evidence > uses the same bounded URL manifest and independent retained-fact guard
+   ↓ dashboard complete selected facts > requires usable IMAGE assets instead of a link or pending/failed asset
+   ↓ dashboard complete selected facts > requires usable DOCUMENT assets instead of a link or pending/failed asset
+   ↓ dashboard complete selected facts > ranks largest selected collections by units then rows, retaining all live collection count
+   ↓ dashboard complete selected facts > retains native currency scales and separates all authored trade statuses
+ ❯ |workspace| packages/domain/src/dashboard/dashboard-input.test.ts (9 tests | 4 failed | 5 skipped) 49ms
+   ↓ dashboard request and result bounds > normalizes exactly the shared query fields and rejects pagination/owner overrides before acquiring DB
+   ↓ dashboard request and result bounds > rejects numeric output overflow as unavailable and malformed/rounded driver values as invariant
+   × dashboard request and result bounds > rejects invalid manualValues output denomination ZZZ/2 22ms
+     → expected [Function] to throw an error
+   × dashboard request and result bounds > rejects invalid manualValues output denomination EUR/9 9ms
+     → expected [Function] to throw an error
+   × dashboard request and result bounds > rejects invalid manualChange output denomination ZZZ/2 9ms
+     → expected [Function] to throw an error
+   × dashboard request and result bounds > rejects invalid manualChange output denomination EUR/9 9ms
+     → expected [Function] to throw an error
+   ↓ dashboard request and result bounds > bounds complete monetary groups at 256 without treating oversized output as partial
+   ↓ dashboard request and result bounds > accepts exactly 1MiB and rejects one byte more, including UTF8 content
+   ↓ dashboard request and result bounds > checks CPU budget after validation and serialization rather than returning late output
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 8 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/dashboard/dashboard-input.test.ts > dashboard request and result bounds > rejects invalid manualValues output denomination ZZZ/2
+ FAIL  |workspace| packages/domain/src/dashboard/dashboard-input.test.ts > dashboard request and result bounds > rejects invalid manualValues output denomination EUR/9
+ FAIL  |workspace| packages/domain/src/dashboard/dashboard-input.test.ts > dashboard request and result bounds > rejects invalid manualChange output denomination ZZZ/2
+ FAIL  |workspace| packages/domain/src/dashboard/dashboard-input.test.ts > dashboard request and result bounds > rejects invalid manualChange output denomination EUR/9
+AssertionError: expected [Function] to throw an error
+
+- Expected: 
+null
+
++ Received: 
+undefined
+
+ ❯ packages/domain/src/dashboard/dashboard-input.test.ts:131:53
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/8]⎯
+
+ FAIL  |workspace| packages/domain/src/dashboard/dashboard-service.test.ts > dashboard actual observations and filters > rejects unsupported latest currency before returning monetary groups or noncomparable history
+ FAIL  |workspace| packages/domain/src/dashboard/dashboard-service.test.ts > dashboard actual observations and filters > rejects mismatched latest exponent before returning monetary groups or noncomparable history
+ FAIL  |workspace| packages/domain/src/dashboard/dashboard-service.test.ts > dashboard actual observations and filters > rejects unsupported immediate prior currency before returning monetary groups or noncomparable history
+ FAIL  |workspace| packages/domain/src/dashboard/dashboard-service.test.ts > dashboard actual observations and filters > rejects mismatched immediate prior exponent before returning monetary groups or noncomparable history
+AssertionError: promise resolved "{ …(19) }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "collections": {
++     "ownedLiveCount": 1,
++   },
++   "condition": {
++     "groups": [],
++     "missing": {
++       "itemCount": 1,
++       "unitCount": "2",
++     },
++   },
++   "duplicates": {
++     "count": null,
++     "reason": "DUPLICATE_NOT_IMPLEMENTED",
++     "state": "UNAVAILABLE",
++   },
++   "grading": {
++     "gradedItemCount": 0,
++     "gradingRecordCount": 0,
++     "groups": [],
++   },
++   "lifecycle": "ACTIVE",
++   "manualChange": {
++     "comparable": {
++       "itemCount": 0,
++       "unitCount": "0",
++     },
++     "excluded": {
++       "INSUFFICIENT_HISTORY": {
++         "itemCount": 0,
++         "unitCount": "0",
++       },
++       "NONCOMPARABLE_DENOMINATION": {
++         "itemCount": 1,
++         "unitCount": "2",
++       },
++       "NO_ESTIMATE": {
++         "itemCount": 0,
++         "unitCount": "0",
++       },
++     },
++     "groups": null,
++     "mode": "LATEST_VS_PREVIOUS_OBSERVATION",
++     "quantityBasis": "CURRENT_QUANTITY",
++     "state": "INSUFFICIENT_DATA",
++   },
++   "manualValues": {
++     "contributors": {
++       "itemCount": 1,
++       "unitCount": "2",
++     },
++     "groups": [
++       {
++         "basis": "PER_UNIT",
++         "contributors": {
++           "itemCount": 1,
++           "unitCount": "2",
++         },
++         "currency": "ZZZ",
++         "minorUnitExponent": 2,
++         "observedAtFrom": "2025-03-01T00:00:00.000Z",
++         "observedAtTo": "2025-03-01T00:00:00.000Z",
++         "otherDenomination": {
++           "itemCount": 0,
++           "unitCount": "0",
++         },
++         "source": "MANUAL",
++         "topItems": {
++           "eligibleCount": 1,
++           "hasMore": false,
++           "items": [
++             {
++               "collectionId": "07b23905-7dd8-483e-94e0-386eccc96010",
++               "id": "87190d4e-0e84-40da-92d0-3d76e220f9ae",
++               "observedAt": "2025-03-01T00:00:00.000Z",
++               "perUnitMinor": "100",
++               "quantity": 2,
++               "title": "Chosen denomination integrity",
++               "valuationId": "c70b5f61-05ae-435d-8323-d8ddc88b87f4",
++               "weightedMinor": "200",
++             },
++           ],
++           "limit": 10,
++           "quantityBasis": "CURRENT_QUANTITY",
++         },
++         "totalMinor": "200",
++       },
++     ],
++     "missing": {
++       "itemCount": 0,
++       "unitCount": "0",
++     },
++     "quantityBasis": "CURRENT_QUANTITY",
++     "state": "COMPLETE",
++   },
++   "marketValues": {
++     "groups": null,
++     "reason": "MARKET_AGGREGATION_UNAVAILABLE",
++     "state": "UNAVAILABLE",
++   },
++   "missing": {
++     "acquisitionDate": {
++       "itemCount": 1,
++       "unitCount": "2",
++     },
++     "catalogLink": {
++       "itemCount": 1,
++       "unitCount": "2",
++     },
++     "category": {
++       "itemCount": 1,
++       "unitCount": "2",
++     },
++     "condition": {
++       "itemCount": 1,
++       "unitCount": "2",
++     },
++     "document": {
++       "itemCount": 1,
++       "unitCount": "2",
++     },
++     "grading": {
++       "itemCount": 1,
++       "unitCount": "2",
++     },
++     "image": {
++       "itemCount": 1,
++       "unitCount": "2",
++     },
++     "ownEstimate": {
++       "itemCount": 0,
++       "unitCount": "0",
++     },
++     "purchaseAmount": {
++       "itemCount": 1,
++       "unitCount": "2",
++     },
++   },
++   "purchaseTotals": {
++     "groups": null,
++     "reason": "LEGACY_MONEY_INTERPRETATION_UNAVAILABLE",
++     "state": "UNAVAILABLE",
++   },
++   "readAt": "2026-10-18T09:49:25.065Z",
++   "recentAdditions": {
++     "basis": "INVENTORY_CREATED_AT",
++     "eligibleCount": 1,
++     "hasMore": false,
++     "items": [
++       {
++         "archivedAt": null,
++         "categoryTemplateId": null,
++         "collectionId": "07b23905-7dd8-483e-94e0-386eccc96010",
++         "conditionOptionId": null,
++         "createdAt": "2026-10-18T09:49:25.043Z",
++         "disposedAt": null,
++         "id": "87190d4e-0e84-40da-92d0-3d76e220f9ae",
++         "quantity": 2,
++         "title": "Chosen denomination integrity",
++         "tradeStatus": "NOT_FOR_TRADE",
++         "updatedAt": "2026-10-18T09:49:25.043Z",
++         "visibility": "PRIVATE",
++       },
++     ],
++     "limit": 10,
++   },
++   "scope": "OWNED",
++   "selection": {
++     "itemCount": 1,
++     "matchedCollectionCount": 1,
++     "unitCount": "2",
++   },
++   "topCollections": {
++     "basis": "SELECTED_PHYSICAL_UNITS",
++     "eligibleCount": 1,
++     "hasMore": false,
++     "items": [
++       {
++         "id": "07b23905-7dd8-483e-94e0-386eccc96010",
++         "itemCount": 1,
++         "name": "Case",
++         "unitCount": "2",
++       },
++     ],
++     "limit": 10,
++   },
++   "trade": [
++     {
++       "itemCount": 0,
++       "tradeStatus": "FOR_SALE",
++       "unitCount": "0",
++     },
++     {
++       "itemCount": 1,
++       "tradeStatus": "NOT_FOR_TRADE",
++       "unitCount": "2",
++     },
++     {
++       "itemCount": 0,
++       "tradeStatus": "OPEN_TO_TRADE",
++       "unitCount": "0",
++     },
++     {
++       "itemCount": 0,
++       "tradeStatus": "RESERVED",
++       "unitCount": "0",
++     },
++   ],
++   "tradeReady": {
++     "itemCount": 0,
++     "unitCount": "0",
++   },
++   "version": 1,
++   "wishlist": {
++     "count": null,
++     "reason": "WISHLIST_NOT_IMPLEMENTED",
++     "state": "UNAVAILABLE",
++   },
+  }
+
+ ❯ packages/domain/src/dashboard/dashboard-service.test.ts:133:89
+    131|         }), options),
+    132|       };
+    133|       await expect(createDashboardService(wrapped).getDashboard({ user…
+       |                                                                                         ^
+    134|       expect(interceptions).toBe(1);
+    135|       expect(manualRows).toEqual([{ denominationsValid: false, overflo…
+ ❯ fixture packages/domain/src/dashboard/dashboard-service.test.ts:89:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/8]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  8 failed | 26 skipped (34)
+   Start at  11:49:24
+   Duration  997ms (transform 164ms, setup 6ms, collect 397ms, tests 282ms, environment 0ms, prepare 81ms)
+

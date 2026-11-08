@@ -1,0 +1,34 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/catalog/catalog-money-mutation.test.ts (9 tests | 1 failed | 8 skipped) 409ms
+   ↓ actual canonical catalog money mutation integration > authors exact money and carries it through a text-only revision without rewriting old snapshots
+   ↓ actual canonical catalog money mutation integration > invalidates an explicit legacy same-pair write even if the snapshot revision does not advance
+   ↓ actual canonical catalog money mutation integration > applies a deliberate same-pair replacement and preserves its captured precondition
+   ↓ actual canonical catalog money mutation integration > rejects mismatched frozen patch digests without creating a partial entry
+   ↓ actual canonical catalog money mutation integration > authors and retains exact variant money independently of entry money
+   ↓ actual canonical catalog money mutation integration > carries direct evidence through identifier add, correction and removal
+   ↓ actual canonical catalog money mutation integration > does not invent an operator for actorless maintenance of known interpretation
+   × actual canonical catalog money mutation integration > rolls back target meaning and saves selected evidence even when the complete raw snapshot is identical 95ms
+     → expected 'INTERPRETED' to be 'UNKNOWN' // Object.is equality
+   ↓ actual canonical catalog money mutation integration > retains historical raw codes without current-list reinterpretation and permits explicit replacement
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/catalog/catalog-money-mutation.test.ts > actual canonical catalog money mutation integration > rolls back target meaning and saves selected evidence even when the complete raw snapshot is identical
+AssertionError: expected 'INTERPRETED' to be 'UNKNOWN' // Object.is equality
+
+Expected: "UNKNOWN"
+Received: "INTERPRETED"
+
+ ❯ packages/domain/src/catalog/catalog-money-mutation.test.ts:286:83
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 8 skipped (9)
+   Start at  06:30:18
+   Duration  852ms (transform 132ms, setup 6ms, collect 248ms, tests 409ms, environment 0ms, prepare 55ms)
+

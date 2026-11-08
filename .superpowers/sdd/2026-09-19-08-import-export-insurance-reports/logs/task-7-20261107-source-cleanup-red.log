@@ -1,0 +1,22 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/worker/src/jobs/import-source-cleanup.integration.test.ts [ apps/worker/src/jobs/import-source-cleanup.integration.test.ts ]
+Error: Cannot find module './import-source-cleanup' imported from '/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/worker/src/jobs/import-source-cleanup.integration.test.ts'
+ ❯ apps/worker/src/jobs/import-source-cleanup.integration.test.ts:3:1
+
+
+Caused by: Error: Failed to load url ./import-source-cleanup (resolved id: ./import-source-cleanup) in /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/worker/src/jobs/import-source-cleanup.integration.test.ts. Does the file exist?
+ ❯ loadAndTransform ../../../../SSK%20SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/node_modules/.pnpm/vite@7.3.6_@types+node@24.5.2_jiti@2.7.0/node_modules/vite/dist/node/chunks/config.js:22739:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  no tests
+   Start at  02:42:32
+   Duration  552ms (transform 180ms, setup 7ms, collect 0ms, tests 0ms, environment 0ms, prepare 50ms)
+

@@ -1,0 +1,91 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/imports/import-service.integration.test.ts (11 tests | 1 failed | 10 skipped) 347ms
+   ↓ persisted owned import preview > creates only an owned pending source intent and conceals foreign jobs/collections
+   ↓ persisted owned import preview > persists duplicate decisions while leaving real existing inventory unchanged
+   ↓ resumable frozen import generations > resumes bounded batches and updates duplicates from earlier batches before complete review
+   ↓ resumable frozen import generations > freezes a selected profile revision across edits and rejects a changed mapping
+   ↓ resumable frozen import generations > keeps foreign profiles hidden even when the requested name collides with an own profile
+   ↓ resumable frozen import generations > serializes actual concurrent profile creation on separate PostgreSQL clients
+   ↓ resumable frozen import generations > rolls back row previews and progress after an actual final statement timeout
+   ↓ resumable frozen import generations > refuses an unverified source and completes a genuinely empty parsed selection
+   ↓ resumable frozen import generations > does not use matching identifiers in foreign, other-collection or deleted inventory
+   × resumable frozen import generations > closes a corrupted complete generation before pagination instead of presenting partial rows 114ms
+     → promise resolved "{ job: { …(13) }, rows: [], …(1) }" instead of rejecting
+   ↓ resumable frozen import generations > persists invalid rows as skippable errors while leaving inventory empty
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/imports/import-service.integration.test.ts > resumable frozen import generations > closes a corrupted complete generation before pagination instead of presenting partial rows
+AssertionError: promise resolved "{ job: { …(13) }, rows: [], …(1) }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "complete": true,
++   "job": {
++     "collectionId": "f72f9f6a-6ce2-4ede-9f97-d0f4396c94df",
++     "createdAt": "2026-11-06T19:50:37.516Z",
++     "id": "596879d2-e693-4ef9-97ac-4be3643c3a48",
++     "locale": "de",
++     "mapping": {
++       "columns": {
++         "identifier": {
++           "column": 2,
++           "type": "ISBN",
++         },
++         "purchaseMoney": {
++           "amountColumn": 3,
++           "fixedCurrency": "EUR",
++           "profileId": "legacy-money-iso-2026-09-17-v1",
++           "sourceKind": "DECIMAL",
++         },
++         "quantity": 1,
++         "title": 0,
++       },
++       "locale": "de",
++       "schemaVersion": 1,
++     },
++     "mappingHash": "c089746d17cb779aeb5f4607696f3919f25ff8be3a89f8924e1a6f1ecc777981",
++     "mappingProfile": null,
++     "previewGeneration": 1,
++     "progress": {
++       "committedRows": 0,
++       "parsedRows": 2,
++       "previewedRows": 2,
++       "totalRows": 2,
++     },
++     "revision": 2,
++     "source": {
++       "byteSize": "1000",
++       "checksumSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
++       "fileName": "synthetic.csv",
++       "format": "CSV",
++       "verified": true,
++     },
++     "status": "REVIEW_READY",
++     "updatedAt": "2026-11-06T19:50:37.547Z",
++   },
++   "rows": [],
+  }
+
+ ❯ packages/domain/src/imports/import-service.integration.test.ts:397:7
+    395|     await expect(service.buildImportPreview(f.actor, {
+    396|       jobId: job.id, expectedRevision: complete.job.revision, mapping,
+    397|     })).rejects.toMatchObject({ code: "SEARCH_INVARIANT" });
+       |       ^
+    398| 
+    399|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 10 skipped (11)
+   Start at  20:50:36
+   Duration  825ms (transform 167ms, setup 6ms, collect 303ms, tests 347ms, environment 0ms, prepare 52ms)
+

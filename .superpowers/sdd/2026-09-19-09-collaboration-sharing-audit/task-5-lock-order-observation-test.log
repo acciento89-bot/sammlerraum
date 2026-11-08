@@ -1,0 +1,44 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/valuations/valuation-service.test.ts (17 tests | 1 failed | 16 skipped) 3175ms
+   ↓ private manual valuation PostgreSQL > appends exact per-unit amounts without overwriting and preserves case-sensitive authors
+   ↓ private manual valuation PostgreSQL > orders latest by observed time and resolves equal-millisecond ties with createdAt then UUID
+   ↓ private manual valuation PostgreSQL > bounds pages and validates strict cursor/time/input without caller-authored identity
+   ↓ private manual valuation PostgreSQL > hides foreign/deleted rows but permits inactive reads and retains soft-deleted history
+   ↓ private manual valuation PostgreSQL > keeps per-unit history through actual quantity changes and leaves a split unauthored
+   ↓ private manual valuation PostgreSQL > enforces native ownership, actor, basis, amount, scale, note and finite timestamp guards
+   ↓ private manual valuation PostgreSQL > serializes the append quota and rejects the 10001st estimate without pruning
+   ↓ private manual valuation PostgreSQL > uses UTC only inside its transaction and preserves canonical instants in non-UTC sessions
+   × private manual valuation PostgreSQL > serializes actual quantity mutation behind an append and captures clock after waiting 3029ms
+     → Expected PostgreSQL to observe a blocked lock
+   ↓ private manual valuation PostgreSQL > serializes actual split mutation behind an append and captures clock after waiting
+   ↓ private manual valuation PostgreSQL > serializes actual archive mutation behind an append and captures clock after waiting
+   ↓ private manual valuation PostgreSQL > serializes actual dispose mutation behind an append and captures clock after waiting
+   ↓ private manual valuation PostgreSQL > serializes actual delete mutation behind an append and captures clock after waiting
+   ↓ private manual valuation PostgreSQL > serializes actual collection-delete mutation behind an append and captures clock after waiting
+   ↓ private manual valuation PostgreSQL > revalidates the live parent after actual collection deletion wins the parent lock
+   ↓ private manual valuation PostgreSQL > revalidates item lifecycle after a committed archive wins the item lock
+   ↓ private manual valuation PostgreSQL > omits private valuation facts from the actual public item projection
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/valuations/valuation-service.test.ts > private manual valuation PostgreSQL > serializes actual quantity mutation behind an append and captures clock after waiting
+Error: Expected PostgreSQL to observe a blocked lock
+ ❯ expectDatabaseWait packages/domain/src/valuations/valuation-service.test.ts:541:9
+    539|     if (row!.waiting) return;
+    540|   }
+    541|   throw new Error("Expected PostgreSQL to observe a blocked lock");
+       |         ^
+    542| }
+    543| 
+ ❯ packages/domain/src/valuations/valuation-service.test.ts:374:9
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 16 skipped (17)
+   Start at  08:24:26
+   Duration  3.72s (transform 172ms, setup 6ms, collect 338ms, tests 3.17s, environment 0ms, prepare 58ms)
+

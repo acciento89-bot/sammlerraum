@@ -1,0 +1,9 @@
+{
+  "base": "1ab352edf29ac6b5b7b839d4105d345f5451c673",
+  "temporarySource": {
+    "packages/domain/src/search/search-retained-integrity.integration.test.ts": "2cbef5c84c56cbff80e1cac76c01568a562873857e3d042b058f02ef043615cf",
+    "packages/domain/src/search/search-native-budget-diagnostic.ts": "e4a63d338500caf3f84b99bf0b6627af0567c41dbf65ff3809594fccb0c58270"
+  },
+  "baseRetainedHash": "f7238099ba2d473d9990e2497d7bc9ca25d32fe796523326330107c90867bb87",
+  "sequencer": "165538e3acab4b23bc983f47f0e80e47294ef5c1b6c89e6efeb60490c3518de6"
+}

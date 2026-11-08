@@ -1,0 +1,74 @@
+[
+  {
+    "file": "scoped-member-de-desktop.png",
+    "width": 1440,
+    "height": 2299,
+    "sha256": "488e23bd56cfedeaece3aec779a549b18f4a9f1dd0cebe4f29b03a60c77c88f0"
+  },
+  {
+    "file": "scoped-member-de-mobile.png",
+    "width": 1082,
+    "height": 7248,
+    "sha256": "4458a6d7c8b787c65c40cdfd80cd3912df31f8bf3bc83704559cde3eec78c297"
+  },
+  {
+    "file": "scoped-member-en-desktop.png",
+    "width": 1440,
+    "height": 2225,
+    "sha256": "4db3cce2bbf8f19c62f0d1c723c8a3918f905148f73cc2bea12a391dc6716e22"
+  },
+  {
+    "file": "scoped-member-en-mobile.png",
+    "width": 1082,
+    "height": 6720,
+    "sha256": "0e76892b6e38a334160c392f0f24c37262a4cca63fc4f1cd5cee4128298c8894"
+  },
+  {
+    "file": "scoped-repaired-de-desktop.png",
+    "width": 1440,
+    "height": 1963,
+    "sha256": "fdfda3990fc2a6e70d8aed2643826a96d7670c6fbbbd7a9078e19e0061e0240e"
+  },
+  {
+    "file": "scoped-repaired-de-mobile.png",
+    "width": 1082,
+    "height": 6161,
+    "sha256": "d2457c8e45b51fa2479538d2418cf7bbd0ae7ebf1e195e427e05a2c5511e6b87"
+  },
+  {
+    "file": "scoped-repaired-en-desktop.png",
+    "width": 1440,
+    "height": 1890,
+    "sha256": "3269fec69b41dc44e3c7b801ad13259dbb99f477a893b4ef84c2e24e303d152c"
+  },
+  {
+    "file": "scoped-repaired-en-mobile.png",
+    "width": 1082,
+    "height": 5699,
+    "sha256": "1b02093e7b43750668937e1b391e8728f807abaaa2eb2765976642df3cb64d63"
+  },
+  {
+    "file": "scoped-share-de-desktop.png",
+    "width": 1440,
+    "height": 1397,
+    "sha256": "2108e51e04333bdd2339881cd668ce58ebe469d5bedb23963d698f0052abaacd"
+  },
+  {
+    "file": "scoped-share-de-mobile.png",
+    "width": 1082,
+    "height": 4258,
+    "sha256": "326dd7a474fcf2bb33ebf71396f7ec01d44aa1b3719ae7435ed34485d544443b"
+  },
+  {
+    "file": "scoped-share-en-desktop.png",
+    "width": 1440,
+    "height": 1397,
+    "sha256": "4e856bba77375843ebaeca1bf9b71e3274ee4e9438a5796d0e304962f4c1a0e1"
+  },
+  {
+    "file": "scoped-share-en-mobile.png",
+    "width": 1082,
+    "height": 4106,
+    "sha256": "bde60966969bd83b3f84b5bb396fe8da4f2b1c76ee6601cec49f013e18cc4ecd"
+  }
+]

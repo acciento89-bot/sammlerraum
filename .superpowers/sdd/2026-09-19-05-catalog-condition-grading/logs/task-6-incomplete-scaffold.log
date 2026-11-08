@@ -1,0 +1,6 @@
+  // Dedicated incomplete scaffold for the original persisted-unlink behavioral RED.
+  async function unlinkItemFromCatalog(itemId: string): Promise<CollectibleItem> {
+    return database.$transaction(async (tx) => toItem(await lockOwnedItem(tx, itemId, actorUserId)), { isolationLevel: "ReadCommitted" });
+  }
+  return { createItem, updateItem, archiveItem, deleteItem, splitQuantityItem, unlinkItemFromCatalog };
+}

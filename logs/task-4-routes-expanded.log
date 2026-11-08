@@ -1,0 +1,27 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/web/src/lib/valuation-routes.integration.test.ts [ apps/web/src/lib/valuation-routes.integration.test.ts ]
+Error: Cannot find package '@sammlerraum/market-data/provider-registry' imported from '/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/src/lib/valuation-routes.integration.test.ts'
+ ❯ apps/web/src/lib/valuation-routes.integration.test.ts:4:1
+      2| import * as productionDependencies from './valuation-route-dependencie…
+      3| import { createItemQuery } from '@sammlerraum/domain/items/item-query';
+      4| import { ProviderRegistry } from '@sammlerraum/market-data/provider-re…
+       | ^
+      5| import { createMarketDataService } from '@sammlerraum/domain/market-da…
+      6| import { createCatalogMaintenanceService } from '@sammlerraum/domain/c…
+
+Caused by: Error: Failed to load url @sammlerraum/market-data/provider-registry (resolved id: @sammlerraum/market-data/provider-registry) in /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/src/lib/valuation-routes.integration.test.ts. Does the file exist?
+ ❯ loadAndTransform node_modules/.pnpm/vite@7.3.6_@types+node@24.5.2_jiti@2.7.0/node_modules/vite/dist/node/chunks/config.js:22739:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  no tests
+   Start at  05:38:21
+   Duration  324ms (transform 89ms, setup 6ms, collect 0ms, tests 0ms, environment 0ms, prepare 34ms)
+

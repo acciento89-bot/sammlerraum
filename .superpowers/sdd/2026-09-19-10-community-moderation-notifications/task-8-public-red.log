@@ -1,0 +1,27 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/community/public-profile-service.test.ts [ packages/domain/src/community/public-profile-service.test.ts ]
+Error: Cannot find module './public-profile-service' imported from '/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/domain/src/community/public-profile-service.test.ts'
+ ❯ packages/domain/src/community/public-profile-service.test.ts:6:1
+      4| import { createTestDatabaseClient } from "@sammlerraum/db/test-databas…
+      5| import { createItemService } from "../items/item-service";
+      6| import { createPublicProfileService, publicCollectionSlug } from "./pu…
+       | ^
+      7| let db: ReturnType<typeof createTestDatabaseClient>;
+      8| let isolated: Awaited<ReturnType<typeof createLegacyMoneyTestSchema>>;
+
+Caused by: Error: Failed to load url ./public-profile-service (resolved id: ./public-profile-service) in /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/domain/src/community/public-profile-service.test.ts. Does the file exist?
+ ❯ loadAndTransform ../../../../SSK%20SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/node_modules/.pnpm/vite@7.3.6_@types+node@24.5.2_jiti@2.7.0/node_modules/vite/dist/node/chunks/config.js:22739:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  no tests
+   Start at  15:21:44
+   Duration  489ms (transform 159ms, setup 6ms, collect 0ms, tests 0ms, environment 0ms, prepare 49ms)
+

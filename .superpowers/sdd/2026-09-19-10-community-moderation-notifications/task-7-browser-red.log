@@ -1,0 +1,42 @@
+[WebServer] (node:80716) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 1 worker
+(node:80718) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+F
+Testing stopped early after 1 maximum allowed failures.
+
+
+  1) [community-ui-desktop] › e2e/community.spec.ts:12:42 › de: complete community, private wishes, notifications and moderator journey 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('heading', { name: 'Gemeinsam mehr entdecken.', exact: true })
+    Expected: visible
+    Timeout: 3000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('heading', { name: 'Gemeinsam mehr entdecken.', exact: true }) with timeout 3000ms
+      - waiting for getByRole('heading', { name: 'Gemeinsam mehr entdecken.', exact: true })
+
+
+      27 |   expect((await page.request.post("/api/auth/sign-in/email",{headers:{origin,"x-forwarded-for":address.ip},data:{email:`${viewer}@example.invalid`,password}})).status()).toBe(200);
+      28 |   await page.goto(`/${locale}/community`);
+    > 29 |   await expect(page.getByRole("heading",{name:labels.heading,exact:true})).toBeVisible({timeout:3000});
+         |                                                                            ^
+      30 |   const card=page.getByTestId(`feed-${foreignItem.id}`);
+      31 |   await expect(card).toBeVisible();await expect(page.locator("body")).not.toContainText("never-community-ui-private");
+      32 |   await card.getByRole("button",{name:labels.follow,exact:true}).click();await expect(card.getByRole("button",{name:labels.following,exact:true})).toBeVisible();
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/community.spec.ts:29:76
+
+    Error Context: test-results/community-de-complete-comm-75641-tions-and-moderator-journey-community-ui-desktop/error-context.md
+
+  1 failed
+    [community-ui-desktop] › e2e/community.spec.ts:12:42 › de: complete community, private wishes, notifications and moderator journey 
+  1 did not run
+  1 error was not a part of any test, see above for details
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/community.spec.ts --project=community-ui-desktop --workers=1 --max-failures=1

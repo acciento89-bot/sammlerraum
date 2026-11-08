@@ -1,0 +1,11 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ✓ |workspace| packages/domain/src/exports/artifact-access.integration.test.ts (13 tests) 1183ms
+   ✓ protected generated artifact history and downloads > revokes a real PDF download when its selected private proof is unlinked  463ms
+
+ Test Files  1 passed (1)
+      Tests  13 passed (13)
+   Start at  03:49:52
+   Duration  1.85s (transform 207ms, setup 5ms, collect 507ms, tests 1.18s, environment 0ms, prepare 42ms)
+

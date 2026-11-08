@@ -1,0 +1,92 @@
+{
+  "createdAt": "2026-11-07T10:42:30.575663+00:00",
+  "reviewBase": "82a1f0fd27ceefc6b75b8b3e6361fc14ddfd03f9",
+  "reviewedHead": "68e09b7f0bd4f9367d38ba2c7cd929b4fb44a8e9",
+  "currentBase": "a4d748ecfc2cb9eda8fc13be6721c73aa6eb3289",
+  "files": [
+    {
+      "path": "apps/web/e2e/collaboration-management.spec.ts",
+      "sha256": "06a4224c51f4506b2028fa8ce7c54e434b7e0c5e36bed6a5b450674ecd755c4d"
+    },
+    {
+      "path": "apps/web/src/components/sharing/collaborative-workspace.tsx",
+      "sha256": "c0af5648111f7a1282897406e8ce6fed61c5046a080e78f6257925b387b3e976"
+    },
+    {
+      "path": "apps/web/src/components/sharing/collection-settings.tsx",
+      "sha256": "56bac0154baa70ded988545c66e0424833b16f251d8b0f56b8e74c985d751cd9"
+    },
+    {
+      "path": "apps/web/src/lib/api/read-private-json.ts",
+      "sha256": "a0edf59ae29f677022a872d6b8d0dcaeff3c5c1598de05d78f45201d3d40b7e6"
+    },
+    {
+      "path": "apps/web/src/lib/collaboration-management-routes.integration.test.ts",
+      "sha256": "66fed4bad362560189917328d38d9dac8d3d5ffda0f46205be5a9133e45ac67a"
+    },
+    {
+      "path": "apps/web/src/lib/collaboration-management-routes.ts",
+      "sha256": "603b5c08defaed2435de013984faef47a40056dc6ff89435760e856013937a9f"
+    },
+    {
+      "path": "packages/contracts/src/items.ts",
+      "sha256": "b193dc3ebbf79c334129d8944ee31cbc7bfd1bdce1ac6b34b3e517f4d41ffabc"
+    },
+    {
+      "path": "packages/contracts/src/search-parser.ts",
+      "sha256": "83aa5871b1cde4f7570229717b4644a2ffa920b372b36cba3d3cf7bf94f8a32f"
+    },
+    {
+      "path": "packages/domain/src/audit/mutation-audit.ts",
+      "sha256": "b3ec5c920c6d63094bf04a33f4921c33f1b5c69c7b1953cd9334d7ee469c0f4c"
+    },
+    {
+      "path": "packages/domain/src/collaboration/item-authoring-service.test.ts",
+      "sha256": "b0cc824d245874e5f4afb9fa19539bedc4dc7721462432f039afacb9b9ab0ef0"
+    },
+    {
+      "path": "packages/domain/src/condition/condition-service.ts",
+      "sha256": "8c3ed0cd6c5b01eb176a5c559182e89e2d10d5da3a9b67f80f1b0e3417d538ed"
+    },
+    {
+      "path": "packages/domain/src/custom-fields/custom-field-service.ts",
+      "sha256": "8933e17a4d63f43025ccc8edcef305d5b403001941305d0454f22601b68ca23e"
+    },
+    {
+      "path": "packages/domain/src/grading/grading-service.ts",
+      "sha256": "69de773b2084a5428fd4ff934b22d08d0635ba6f3182b75377f207e544f1a991"
+    },
+    {
+      "path": "packages/domain/src/items/identifier-service.test.ts",
+      "sha256": "5bfb5104b2dddaeb592229d95495ab854484bd262d7c367b72819ed0ef5d2d71"
+    },
+    {
+      "path": "packages/domain/src/items/identifier-service.ts",
+      "sha256": "6905cc93602ec0b03d74b9f1b1d3bafa86ebd9f004f2682a03fdf205c86d94e6"
+    },
+    {
+      "path": "packages/domain/src/items/item-service.ts",
+      "sha256": "a6b838d43fd51e044bd87ad3a628459fd00dbe090bdba4438c1f5c99b373aa84"
+    },
+    {
+      "path": "packages/domain/src/items/tag-service.ts",
+      "sha256": "246beda063ab4182011fdb89b0fc0bd0b76d114cff952db8a3a49c9a0a5626be"
+    },
+    {
+      "path": "packages/domain/src/media/cleanup-service.ts",
+      "sha256": "b17c3fe94e2d97cd476ec4e5139a24fc34e14c0629cd9599f202e1aaa741e4bf"
+    },
+    {
+      "path": "packages/domain/src/media/media-service.test.ts",
+      "sha256": "6c4ed8706b5cb9cf09a100898700cc6509fc19171d903b7d90f43c3097b46ded"
+    },
+    {
+      "path": "packages/domain/src/media/media-service.ts",
+      "sha256": "36c0c3b8dbcfbf9e5f89d4b3af9d8f5ef1a641a6d597a57ea5162553eb50f474"
+    },
+    {
+      "path": "packages/domain/src/money/legacy-money-store.ts",
+      "sha256": "d83094b24d7b9ca761c472c0a250b0f91b6c8b298f1641824812baef27d711b7"
+    }
+  ]
+}

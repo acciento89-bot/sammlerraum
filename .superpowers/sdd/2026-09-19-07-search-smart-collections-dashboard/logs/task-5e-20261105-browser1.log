@@ -1,0 +1,292 @@
+[WebServer] (node:21957) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 124 tests using 1 worker
+
+(node:21958) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓    1 [desktop] › e2e/search-dashboard.spec.ts:19:3 › de: authenticated collector can discover search and filter actual owned inventory (1.8s)
+  ✓    2 [desktop] › e2e/search-dashboard.spec.ts:19:3 › en: authenticated collector can discover search and filter actual owned inventory (918ms)
+  ✓    3 [desktop] › e2e/search-dashboard.spec.ts:154:3 › de: real Next history, item Back, locale and reload keep private query tokens (1.9s)
+  ✓    4 [desktop] › e2e/search-dashboard.spec.ts:216:3 › de: unauthenticated and malformed query locations never run all-owned (1.0s)
+  ✓    5 [desktop] › e2e/search-dashboard.spec.ts:249:3 › de: bounded tab eviction, blocked storage and actor replacement are honest (2.4s)
+  ✓    6 [desktop] › e2e/search-dashboard.spec.ts:295:3 › de: actual delayed response, failure/stale states and 401 clearing (1.2s)
+  ✓    7 [desktop] › e2e/search-dashboard.spec.ts:383:3 › de: keyboard nesting, discard, drawer focus and 320px/200% overflow (992ms)
+  ✓    8 [desktop] › e2e/search-dashboard.spec.ts:463:3 › de: actual lifecycle and reference selectors with typed family matrix (7.0s)
+  ✓    9 [desktop] › e2e/search-dashboard.spec.ts:154:3 › en: real Next history, item Back, locale and reload keep private query tokens (1.3s)
+  ✓   10 [desktop] › e2e/search-dashboard.spec.ts:216:3 › en: unauthenticated and malformed query locations never run all-owned (1.1s)
+  ✓   11 [desktop] › e2e/search-dashboard.spec.ts:249:3 › en: bounded tab eviction, blocked storage and actor replacement are honest (2.3s)
+  ✓   12 [desktop] › e2e/search-dashboard.spec.ts:295:3 › en: actual delayed response, failure/stale states and 401 clearing (1.1s)
+  ✓   13 [desktop] › e2e/search-dashboard.spec.ts:383:3 › en: keyboard nesting, discard, drawer focus and 320px/200% overflow (1.2s)
+  ✓   14 [desktop] › e2e/search-dashboard.spec.ts:463:3 › en: actual lifecycle and reference selectors with typed family matrix (6.8s)
+  ✓   15 [desktop] › e2e/search-dashboard.spec.ts:640:3 › de: Back requires deliberate discard of a meaningful draft (704ms)
+  ✓   16 [desktop] › e2e/search-dashboard.spec.ts:640:3 › en: Back requires deliberate discard of a meaningful draft (602ms)
+  ✓   17 [desktop] › e2e/search-dashboard.spec.ts:669:3 › de: real pagination replaces rows and query edits reset the cursor (1.0s)
+  ✓   18 [desktop] › e2e/search-dashboard.spec.ts:735:3 › de: unavailable full tree remains repairable and metadata retries stay bounded (863ms)
+  ✓   19 [desktop] › e2e/search-dashboard.spec.ts:669:3 › en: real pagination replaces rows and query edits reset the cursor (1.0s)
+  ✓   20 [desktop] › e2e/search-dashboard.spec.ts:735:3 › en: unavailable full tree remains repairable and metadata retries stay bounded (955ms)
+  ✓   21 [desktop] › e2e/search-dashboard.spec.ts:812:3 › de: saved search follows real ItemForm tag changes without copying items (1.7s)
+  ✓   22 [desktop] › e2e/search-dashboard.spec.ts:812:3 › en: saved search follows real ItemForm tag changes without copying items (1.4s)
+  ✓   23 [desktop] › e2e/search-dashboard.spec.ts:880:3 › de: saved search full replacement rename copy and confirmed delete retain items (1.2s)
+  ✓   24 [desktop] › e2e/search-dashboard.spec.ts:953:3 › de: two-tab stale revision preserves input and requires explicit latest adoption (1.0s)
+  ✘   25 [desktop] › e2e/search-dashboard.spec.ts:1005:5 › de: lost create acknowledgement never retries or silently changes expected revision (5.6s)
+(node:22042) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   26 [desktop] › e2e/search-dashboard.spec.ts:1005:5 › de: lost update acknowledgement never retries or silently changes expected revision (711ms)
+  ✓   27 [desktop] › e2e/search-dashboard.spec.ts:1005:5 › de: lost delete acknowledgement never retries or silently changes expected revision (642ms)
+  ✓   28 [desktop] › e2e/search-dashboard.spec.ts:1079:3 › de: acknowledged update survives failed member refresh and exact revision is retained (577ms)
+  ✓   29 [desktop] › e2e/search-dashboard.spec.ts:880:3 › en: saved search full replacement rename copy and confirmed delete retain items (1.2s)
+  ✓   30 [desktop] › e2e/search-dashboard.spec.ts:953:3 › en: two-tab stale revision preserves input and requires explicit latest adoption (1.1s)
+  ✘   31 [desktop] › e2e/search-dashboard.spec.ts:1005:5 › en: lost create acknowledgement never retries or silently changes expected revision (5.6s)
+(node:22069) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   32 [desktop] › e2e/search-dashboard.spec.ts:1005:5 › en: lost update acknowledgement never retries or silently changes expected revision (697ms)
+  ✓   33 [desktop] › e2e/search-dashboard.spec.ts:1005:5 › en: lost delete acknowledgement never retries or silently changes expected revision (554ms)
+  ✓   34 [desktop] › e2e/search-dashboard.spec.ts:1079:3 › en: acknowledged update survives failed member refresh and exact revision is retained (586ms)
+  ✓   35 [desktop] › e2e/search-dashboard.spec.ts:1117:3 › de: late acknowledged-refresh response cannot replace a newer member read (650ms)
+  ✓   36 [desktop] › e2e/search-dashboard.spec.ts:1117:3 › en: late acknowledged-refresh response cannot replace a newer member read (573ms)
+  ✓   37 [desktop] › e2e/search-dashboard.spec.ts:1183:3 › de: unavailable references permit explicit repair while malformed definitions expose only list recovery (809ms)
+  ✓   38 [desktop] › e2e/search-dashboard.spec.ts:1238:3 › de: saved list paginates actual rows and foreign missing deleted details stay indistinguishable (1.0s)
+  ✓   39 [desktop] › e2e/search-dashboard.spec.ts:1282:3 › de: saved editor confirms locale history and clears private draft undo on 401 (794ms)
+  ✓   40 [desktop] › e2e/search-dashboard.spec.ts:1341:3 › de: create acknowledgement remains readable when subsequent detail fetch fails (587ms)
+  ✓   41 [desktop] › e2e/search-dashboard.spec.ts:1367:3 › de: saved definition over fifty references survives cache eviction and replacement intact (1.3s)
+  ✓   42 [desktop] › e2e/search-dashboard.spec.ts:1183:3 › en: unavailable references permit explicit repair while malformed definitions expose only list recovery (800ms)
+  ✓   43 [desktop] › e2e/search-dashboard.spec.ts:1238:3 › en: saved list paginates actual rows and foreign missing deleted details stay indistinguishable (959ms)
+  ✓   44 [desktop] › e2e/search-dashboard.spec.ts:1282:3 › en: saved editor confirms locale history and clears private draft undo on 401 (788ms)
+  ✓   45 [desktop] › e2e/search-dashboard.spec.ts:1341:3 › en: create acknowledgement remains readable when subsequent detail fetch fails (486ms)
+  ✓   46 [desktop] › e2e/search-dashboard.spec.ts:1367:3 › en: saved definition over fifty references survives cache eviction and replacement intact (1.3s)
+  ✓   47 [desktop] › e2e/search-dashboard.spec.ts:1426:3 › de: saved pages and dialogs fit 320px and 200 percent zoom with keyboard focus (671ms)
+  ✓   48 [desktop] › e2e/search-dashboard.spec.ts:1426:3 › en: saved pages and dialogs fit 320px and 200 percent zoom with keyboard focus (640ms)
+  ✓   49 [desktop] › e2e/search-dashboard.spec.ts:1480:3 › de: refreshed saved membership is bound to displayed definition across concurrent tabs (884ms)
+  ✓   50 [desktop] › e2e/search-dashboard.spec.ts:1520:3 › de: confirmed ordinary and locale navigation leave no phantom Back steps (983ms)
+  ✓   51 [desktop] › e2e/search-dashboard.spec.ts:1557:3 › de: unknown save-as-new recovery suspends its dialog and preserves input on cancellation (727ms)
+  ✓   52 [desktop] › e2e/search-dashboard.spec.ts:1480:3 › en: refreshed saved membership is bound to displayed definition across concurrent tabs (904ms)
+  ✓   53 [desktop] › e2e/search-dashboard.spec.ts:1520:3 › en: confirmed ordinary and locale navigation leave no phantom Back steps (995ms)
+  ✓   54 [desktop] › e2e/search-dashboard.spec.ts:1557:3 › en: unknown save-as-new recovery suspends its dialog and preserves input on cancellation (750ms)
+  ✓   55 [desktop] › e2e/search-dashboard.spec.ts:1617:5 › de: initial member resolution rejects a definition change before publication (761ms)
+  ✓   56 [desktop] › e2e/search-dashboard.spec.ts:1617:5 › de: acknowledged member resolution rejects a definition change before publication (967ms)
+  ✓   57 [desktop] › e2e/search-dashboard.spec.ts:1686:3 › de: pending save-as-new stays in one modal and successful navigation removes its history guard (710ms)
+  ✓   58 [desktop] › e2e/search-dashboard.spec.ts:1617:5 › en: initial member resolution rejects a definition change before publication (800ms)
+  ✓   59 [desktop] › e2e/search-dashboard.spec.ts:1617:5 › en: acknowledged member resolution rejects a definition change before publication (942ms)
+  ✓   60 [desktop] › e2e/search-dashboard.spec.ts:1686:3 › en: pending save-as-new stays in one modal and successful navigation removes its history guard (685ms)
+  ✓   61 [desktop] › e2e/search-dashboard.spec.ts:1750:3 › de: collector opens a real same-selection dashboard with exact own-estimate totals (523ms)
+  ✓   62 [desktop] › e2e/search-dashboard.spec.ts:1750:3 › en: collector opens a real same-selection dashboard with exact own-estimate totals (480ms)
+(node:22126) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   63 [mobile] › e2e/search-dashboard.spec.ts:19:3 › de: authenticated collector can discover search and filter actual owned inventory (1.2s)
+  ✓   64 [mobile] › e2e/search-dashboard.spec.ts:19:3 › en: authenticated collector can discover search and filter actual owned inventory (1.0s)
+  ✓   65 [mobile] › e2e/search-dashboard.spec.ts:154:3 › de: real Next history, item Back, locale and reload keep private query tokens (1.0s)
+  ✓   66 [mobile] › e2e/search-dashboard.spec.ts:216:3 › de: unauthenticated and malformed query locations never run all-owned (1.0s)
+  ✓   67 [mobile] › e2e/search-dashboard.spec.ts:249:3 › de: bounded tab eviction, blocked storage and actor replacement are honest (2.9s)
+  ✓   68 [mobile] › e2e/search-dashboard.spec.ts:295:3 › de: actual delayed response, failure/stale states and 401 clearing (1.2s)
+  ✓   69 [mobile] › e2e/search-dashboard.spec.ts:383:3 › de: keyboard nesting, discard, drawer focus and 320px/200% overflow (1.6s)
+  ✓   70 [mobile] › e2e/search-dashboard.spec.ts:463:3 › de: actual lifecycle and reference selectors with typed family matrix (7.5s)
+  ✓   71 [mobile] › e2e/search-dashboard.spec.ts:154:3 › en: real Next history, item Back, locale and reload keep private query tokens (1.1s)
+  ✓   72 [mobile] › e2e/search-dashboard.spec.ts:216:3 › en: unauthenticated and malformed query locations never run all-owned (984ms)
+  ✓   73 [mobile] › e2e/search-dashboard.spec.ts:249:3 › en: bounded tab eviction, blocked storage and actor replacement are honest (2.9s)
+  ✓   74 [mobile] › e2e/search-dashboard.spec.ts:295:3 › en: actual delayed response, failure/stale states and 401 clearing (1.2s)
+  ✓   75 [mobile] › e2e/search-dashboard.spec.ts:383:3 › en: keyboard nesting, discard, drawer focus and 320px/200% overflow (1.8s)
+  ✓   76 [mobile] › e2e/search-dashboard.spec.ts:463:3 › en: actual lifecycle and reference selectors with typed family matrix (7.3s)
+  ✓   77 [mobile] › e2e/search-dashboard.spec.ts:640:3 › de: Back requires deliberate discard of a meaningful draft (643ms)
+  ✓   78 [mobile] › e2e/search-dashboard.spec.ts:640:3 › en: Back requires deliberate discard of a meaningful draft (641ms)
+  ✓   79 [mobile] › e2e/search-dashboard.spec.ts:669:3 › de: real pagination replaces rows and query edits reset the cursor (1.5s)
+  ✓   80 [mobile] › e2e/search-dashboard.spec.ts:735:3 › de: unavailable full tree remains repairable and metadata retries stay bounded (974ms)
+  ✓   81 [mobile] › e2e/search-dashboard.spec.ts:669:3 › en: real pagination replaces rows and query edits reset the cursor (1.5s)
+  ✓   82 [mobile] › e2e/search-dashboard.spec.ts:735:3 › en: unavailable full tree remains repairable and metadata retries stay bounded (944ms)
+  ✓   83 [mobile] › e2e/search-dashboard.spec.ts:812:3 › de: saved search follows real ItemForm tag changes without copying items (1.2s)
+  ✓   84 [mobile] › e2e/search-dashboard.spec.ts:812:3 › en: saved search follows real ItemForm tag changes without copying items (1.2s)
+  ✓   85 [mobile] › e2e/search-dashboard.spec.ts:880:3 › de: saved search full replacement rename copy and confirmed delete retain items (1.4s)
+  ✓   86 [mobile] › e2e/search-dashboard.spec.ts:953:3 › de: two-tab stale revision preserves input and requires explicit latest adoption (980ms)
+  ✘   87 [mobile] › e2e/search-dashboard.spec.ts:1005:5 › de: lost create acknowledgement never retries or silently changes expected revision (5.6s)
+(node:22191) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   88 [mobile] › e2e/search-dashboard.spec.ts:1005:5 › de: lost update acknowledgement never retries or silently changes expected revision (743ms)
+  ✓   89 [mobile] › e2e/search-dashboard.spec.ts:1005:5 › de: lost delete acknowledgement never retries or silently changes expected revision (553ms)
+  ✓   90 [mobile] › e2e/search-dashboard.spec.ts:1079:3 › de: acknowledged update survives failed member refresh and exact revision is retained (554ms)
+  ✓   91 [mobile] › e2e/search-dashboard.spec.ts:880:3 › en: saved search full replacement rename copy and confirmed delete retain items (1.4s)
+  ✓   92 [mobile] › e2e/search-dashboard.spec.ts:953:3 › en: two-tab stale revision preserves input and requires explicit latest adoption (965ms)
+  ✘   93 [mobile] › e2e/search-dashboard.spec.ts:1005:5 › en: lost create acknowledgement never retries or silently changes expected revision (5.7s)
+(node:22236) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   94 [mobile] › e2e/search-dashboard.spec.ts:1005:5 › en: lost update acknowledgement never retries or silently changes expected revision (712ms)
+  ✓   95 [mobile] › e2e/search-dashboard.spec.ts:1005:5 › en: lost delete acknowledgement never retries or silently changes expected revision (539ms)
+  ✓   96 [mobile] › e2e/search-dashboard.spec.ts:1079:3 › en: acknowledged update survives failed member refresh and exact revision is retained (567ms)
+  ✓   97 [mobile] › e2e/search-dashboard.spec.ts:1117:3 › de: late acknowledged-refresh response cannot replace a newer member read (572ms)
+  ✓   98 [mobile] › e2e/search-dashboard.spec.ts:1117:3 › en: late acknowledged-refresh response cannot replace a newer member read (563ms)
+  ✓   99 [mobile] › e2e/search-dashboard.spec.ts:1183:3 › de: unavailable references permit explicit repair while malformed definitions expose only list recovery (816ms)
+  ✓  100 [mobile] › e2e/search-dashboard.spec.ts:1238:3 › de: saved list paginates actual rows and foreign missing deleted details stay indistinguishable (950ms)
+  ✓  101 [mobile] › e2e/search-dashboard.spec.ts:1282:3 › de: saved editor confirms locale history and clears private draft undo on 401 (773ms)
+  ✓  102 [mobile] › e2e/search-dashboard.spec.ts:1341:3 › de: create acknowledgement remains readable when subsequent detail fetch fails (523ms)
+  ✓  103 [mobile] › e2e/search-dashboard.spec.ts:1367:3 › de: saved definition over fifty references survives cache eviction and replacement intact (1.2s)
+  ✓  104 [mobile] › e2e/search-dashboard.spec.ts:1183:3 › en: unavailable references permit explicit repair while malformed definitions expose only list recovery (821ms)
+  ✓  105 [mobile] › e2e/search-dashboard.spec.ts:1238:3 › en: saved list paginates actual rows and foreign missing deleted details stay indistinguishable (963ms)
+  ✓  106 [mobile] › e2e/search-dashboard.spec.ts:1282:3 › en: saved editor confirms locale history and clears private draft undo on 401 (773ms)
+  ✓  107 [mobile] › e2e/search-dashboard.spec.ts:1341:3 › en: create acknowledgement remains readable when subsequent detail fetch fails (513ms)
+  ✓  108 [mobile] › e2e/search-dashboard.spec.ts:1367:3 › en: saved definition over fifty references survives cache eviction and replacement intact (1.2s)
+  ✓  109 [mobile] › e2e/search-dashboard.spec.ts:1426:3 › de: saved pages and dialogs fit 320px and 200 percent zoom with keyboard focus (754ms)
+  ✓  110 [mobile] › e2e/search-dashboard.spec.ts:1426:3 › en: saved pages and dialogs fit 320px and 200 percent zoom with keyboard focus (754ms)
+  ✓  111 [mobile] › e2e/search-dashboard.spec.ts:1480:3 › de: refreshed saved membership is bound to displayed definition across concurrent tabs (850ms)
+  ✓  112 [mobile] › e2e/search-dashboard.spec.ts:1520:3 › de: confirmed ordinary and locale navigation leave no phantom Back steps (976ms)
+  ✓  113 [mobile] › e2e/search-dashboard.spec.ts:1557:3 › de: unknown save-as-new recovery suspends its dialog and preserves input on cancellation (711ms)
+  ✓  114 [mobile] › e2e/search-dashboard.spec.ts:1480:3 › en: refreshed saved membership is bound to displayed definition across concurrent tabs (867ms)
+  ✓  115 [mobile] › e2e/search-dashboard.spec.ts:1520:3 › en: confirmed ordinary and locale navigation leave no phantom Back steps (949ms)
+  ✓  116 [mobile] › e2e/search-dashboard.spec.ts:1557:3 › en: unknown save-as-new recovery suspends its dialog and preserves input on cancellation (667ms)
+  ✓  117 [mobile] › e2e/search-dashboard.spec.ts:1617:5 › de: initial member resolution rejects a definition change before publication (720ms)
+  ✓  118 [mobile] › e2e/search-dashboard.spec.ts:1617:5 › de: acknowledged member resolution rejects a definition change before publication (890ms)
+  ✓  119 [mobile] › e2e/search-dashboard.spec.ts:1686:3 › de: pending save-as-new stays in one modal and successful navigation removes its history guard (686ms)
+  ✓  120 [mobile] › e2e/search-dashboard.spec.ts:1617:5 › en: initial member resolution rejects a definition change before publication (709ms)
+  ✓  121 [mobile] › e2e/search-dashboard.spec.ts:1617:5 › en: acknowledged member resolution rejects a definition change before publication (945ms)
+  ✓  122 [mobile] › e2e/search-dashboard.spec.ts:1686:3 › en: pending save-as-new stays in one modal and successful navigation removes its history guard (639ms)
+  ✓  123 [mobile] › e2e/search-dashboard.spec.ts:1750:3 › de: collector opens a real same-selection dashboard with exact own-estimate totals (487ms)
+  ✓  124 [mobile] › e2e/search-dashboard.spec.ts:1750:3 › en: collector opens a real same-selection dashboard with exact own-estimate totals (484ms)
+
+
+  1) [desktop] › e2e/search-dashboard.spec.ts:1005:5 › de: lost create acknowledgement never retries or silently changes expected revision 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('link', { name: 'Unknown created', exact: true })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('link', { name: 'Unknown created', exact: true }) with timeout 5000ms
+      - waiting for getByRole('link', { name: 'Unknown created', exact: true })
+
+
+      1045 |           await expect(
+      1046 |             page.getByRole("link", { name: "Unknown created", exact: true }),
+    > 1047 |           ).toBeVisible();
+           |             ^
+      1048 |         } else if (operation === "update") {
+      1049 |           await page.getByRole("textbox", { name: c.name, exact: true }).fill("Unknown updated");
+      1050 |           await page.getByRole("button", { name: c.saveChanges, exact: true }).click();
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/search-dashboard.spec.ts:1047:13
+
+    Error Context: test-results/search-dashboard-de-lost-c-de289-y-changes-expected-revision-desktop/error-context.md
+
+    Error Context: test-results/search-dashboard-de-lost-c-de289-y-changes-expected-revision-desktop/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/search-dashboard-de-lost-c-de289-y-changes-expected-revision-desktop/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/search-dashboard-de-lost-c-de289-y-changes-expected-revision-desktop/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [desktop] › e2e/search-dashboard.spec.ts:1005:5 › en: lost create acknowledgement never retries or silently changes expected revision 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('link', { name: 'Unknown created', exact: true })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('link', { name: 'Unknown created', exact: true }) with timeout 5000ms
+      - waiting for getByRole('link', { name: 'Unknown created', exact: true })
+
+
+      1045 |           await expect(
+      1046 |             page.getByRole("link", { name: "Unknown created", exact: true }),
+    > 1047 |           ).toBeVisible();
+           |             ^
+      1048 |         } else if (operation === "update") {
+      1049 |           await page.getByRole("textbox", { name: c.name, exact: true }).fill("Unknown updated");
+      1050 |           await page.getByRole("button", { name: c.saveChanges, exact: true }).click();
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/search-dashboard.spec.ts:1047:13
+
+    Error Context: test-results/search-dashboard-en-lost-c-85e1d-y-changes-expected-revision-desktop/error-context.md
+
+    Error Context: test-results/search-dashboard-en-lost-c-85e1d-y-changes-expected-revision-desktop/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/search-dashboard-en-lost-c-85e1d-y-changes-expected-revision-desktop/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/search-dashboard-en-lost-c-85e1d-y-changes-expected-revision-desktop/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [mobile] › e2e/search-dashboard.spec.ts:1005:5 › de: lost create acknowledgement never retries or silently changes expected revision 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('link', { name: 'Unknown created', exact: true })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('link', { name: 'Unknown created', exact: true }) with timeout 5000ms
+      - waiting for getByRole('link', { name: 'Unknown created', exact: true })
+
+
+      1045 |           await expect(
+      1046 |             page.getByRole("link", { name: "Unknown created", exact: true }),
+    > 1047 |           ).toBeVisible();
+           |             ^
+      1048 |         } else if (operation === "update") {
+      1049 |           await page.getByRole("textbox", { name: c.name, exact: true }).fill("Unknown updated");
+      1050 |           await page.getByRole("button", { name: c.saveChanges, exact: true }).click();
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/search-dashboard.spec.ts:1047:13
+
+    Error Context: test-results/search-dashboard-de-lost-c-de289-y-changes-expected-revision-mobile/error-context.md
+
+    Error Context: test-results/search-dashboard-de-lost-c-de289-y-changes-expected-revision-mobile/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/search-dashboard-de-lost-c-de289-y-changes-expected-revision-mobile/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/search-dashboard-de-lost-c-de289-y-changes-expected-revision-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4) [mobile] › e2e/search-dashboard.spec.ts:1005:5 › en: lost create acknowledgement never retries or silently changes expected revision 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('link', { name: 'Unknown created', exact: true })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('link', { name: 'Unknown created', exact: true }) with timeout 5000ms
+      - waiting for getByRole('link', { name: 'Unknown created', exact: true })
+
+
+      1045 |           await expect(
+      1046 |             page.getByRole("link", { name: "Unknown created", exact: true }),
+    > 1047 |           ).toBeVisible();
+           |             ^
+      1048 |         } else if (operation === "update") {
+      1049 |           await page.getByRole("textbox", { name: c.name, exact: true }).fill("Unknown updated");
+      1050 |           await page.getByRole("button", { name: c.saveChanges, exact: true }).click();
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/search-dashboard.spec.ts:1047:13
+
+    Error Context: test-results/search-dashboard-en-lost-c-85e1d-y-changes-expected-revision-mobile/error-context.md
+
+    Error Context: test-results/search-dashboard-en-lost-c-85e1d-y-changes-expected-revision-mobile/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/search-dashboard-en-lost-c-85e1d-y-changes-expected-revision-mobile/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/search-dashboard-en-lost-c-85e1d-y-changes-expected-revision-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4 failed
+    [desktop] › e2e/search-dashboard.spec.ts:1005:5 › de: lost create acknowledgement never retries or silently changes expected revision 
+    [desktop] › e2e/search-dashboard.spec.ts:1005:5 › en: lost create acknowledgement never retries or silently changes expected revision 
+    [mobile] › e2e/search-dashboard.spec.ts:1005:5 › de: lost create acknowledgement never retries or silently changes expected revision 
+    [mobile] › e2e/search-dashboard.spec.ts:1005:5 › en: lost create acknowledgement never retries or silently changes expected revision 
+  120 passed (2.8m)
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/search-dashboard.spec.ts --workers=1 --trace=retain-on-failure

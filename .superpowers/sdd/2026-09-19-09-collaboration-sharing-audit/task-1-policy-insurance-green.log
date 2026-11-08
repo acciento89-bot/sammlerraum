@@ -1,0 +1,12 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ✓ |workspace| packages/domain/src/collaboration/membership-service.test.ts (13 tests) 544ms
+ ✓ |workspace| packages/domain/src/insurance/insurance-service.test.ts (19 tests) 488ms
+ ✓ |workspace| packages/domain/src/authz/policy.test.ts (25 tests) 4ms
+
+ Test Files  3 passed (3)
+      Tests  57 passed (57)
+   Start at  04:32:19
+   Duration  1.91s (transform 198ms, setup 6ms, collect 464ms, tests 1.04s, environment 0ms, prepare 95ms)
+

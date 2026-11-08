@@ -1,0 +1,27 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/notifications/notification-service.test.ts [ packages/domain/src/notifications/notification-service.test.ts ]
+Error: Cannot find module './notification-service' imported from '/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/domain/src/notifications/notification-service.test.ts'
+ ❯ packages/domain/src/notifications/notification-service.test.ts:7:1
+      5| import { createItemService } from "../items/item-service";
+      6| import { createBlockReportService } from "../moderation/block-report-s…
+      7| import { createNotificationService } from "./notification-service";
+       | ^
+      8| let db:ReturnType<typeof createTestDatabaseClient>,isolated:Awaited<Re…
+      9| describe.runIf(process.env.RUN_DATABASE_INTEGRATION==="1")("actual cha…
+
+Caused by: Error: Failed to load url ./notification-service (resolved id: ./notification-service) in /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/domain/src/notifications/notification-service.test.ts. Does the file exist?
+ ❯ loadAndTransform ../../../../SSK%20SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/node_modules/.pnpm/vite@7.3.6_@types+node@24.5.2_jiti@2.7.0/node_modules/vite/dist/node/chunks/config.js:22739:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  no tests
+   Start at  13:35:54
+   Duration  435ms (transform 150ms, setup 5ms, collect 0ms, tests 0ms, environment 0ms, prepare 35ms)
+

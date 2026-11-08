@@ -1,0 +1,64 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| apps/worker/src/jobs/parse-import.test.ts (23 tests | 2 failed) 67ms
+   ✓ preserves quoted CSV values and original addresses without numeric coercion 5ms
+   ✓ closes an over-limit source instead of returning a truncated success 2ms
+   ✓ keeps formula-looking CSV text inert and exact 1ms
+   ✓ reads only stored XLSX formula values and preserves exact numeric lexemes 9ms
+   ✓ rejects an oversized workbook rather than claiming a partial parse 2ms
+   ✓ rejects unsafe XLSX macro content 1ms
+   ✓ rejects unsafe XLSX macro binary 1ms
+   ✓ rejects unsafe XLSX path traversal 1ms
+   ✓ rejects unsafe XLSX DTD 1ms
+   ✓ rejects unsafe XLSX external relation 1ms
+   ✓ preserves shared/inline Unicode strings, sparse addresses and explicit headers 2ms
+   ✓ rejects malformed cell or row coordinates <row r="1"><c r="A1" t="s"><v>99</v></c></row> 1ms
+   ✓ rejects malformed cell or row coordinates <row r="1"><c r="IW1"><v>1</v></c></row> 1ms
+   ✓ rejects malformed cell or row coordinates <row r="1"><c r="A2"><v>1</v></c></row> 1ms
+   ✓ rejects malformed cell or row coordinates <row r="1"/><row r="1"/> 1ms
+   ✓ rejects invalid UTF-8, oversized cells and cancelled CSV reads 15ms
+   ✓ rejects missing or ambiguous worksheet data instead of claiming an empty import 1ms
+   ✓ rejects missing or ambiguous worksheet data instead of claiming an empty import 1ms
+   ✓ decodes SpreadsheetML escaped strings once while retaining literal escape-looking text 1ms
+   ✓ decodes escaped UTF-16 pairs in shared strings without evaluating anything 1ms
+   ✓ preserves the decoded cell boundary after SpreadsheetML transport expansion 10ms
+   × rejects decoded invalid Unicode _x0000_ instead of trusting escaped source text 5ms
+     → expected ImportParseError: IMPORT_ROW_TOO_LARGE { code: '…' } to match object { code: 'IMPORT_XLSX_INVALID' }
+(1 matching property omitted from actual)
+   × rejects decoded invalid Unicode _xD83E_ instead of trusting escaped source text 2ms
+     → expected ImportParseError: IMPORT_ROW_TOO_LARGE { code: '…' } to match object { code: 'IMPORT_XLSX_INVALID' }
+(1 matching property omitted from actual)
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/worker/src/jobs/parse-import.test.ts > rejects decoded invalid Unicode _x0000_ instead of trusting escaped source text
+ FAIL  |workspace| apps/worker/src/jobs/parse-import.test.ts > rejects decoded invalid Unicode _xD83E_ instead of trusting escaped source text
+AssertionError: expected ImportParseError: IMPORT_ROW_TOO_LARGE { code: '…' } to match object { code: 'IMPORT_XLSX_INVALID' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+- {
+-   "code": "IMPORT_XLSX_INVALID",
++ ImportParseError {
++   "code": "IMPORT_ROW_TOO_LARGE",
+  }
+
+ ❯ apps/worker/src/jobs/parse-import.test.ts:232:5
+    230|   async (value) => {
+    231|     const { workbookFixture } = await import("./import-xlsx-fixture.te…
+    232|     await expect(
+       |     ^
+    233|       (async () => {
+    234|         for await (const row of parseImportSource(
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 21 passed (23)
+   Start at  23:35:44
+   Duration  420ms (transform 69ms, setup 6ms, collect 122ms, tests 67ms, environment 0ms, prepare 39ms)
+

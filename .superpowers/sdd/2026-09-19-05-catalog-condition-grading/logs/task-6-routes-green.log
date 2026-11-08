@@ -1,0 +1,52 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| apps/web/src/lib/catalog-link-routes.integration.test.ts (4 tests | 2 failed) 210ms
+   × catalog link and canonical read routes PostgreSQL > persists owner links, fresh sessions and actual item reads/splits; unlink retains category 49ms
+     → expected 400 to be 200 // Object.is equality
+   ✓ catalog link and canonical read routes PostgreSQL > authenticates all canonical reads while returning only canonical bounded projections 7ms
+   × catalog link and canonical read routes PostgreSQL > rejects foreign/deleted/inactive mutations and forged Origin without consuming input 4ms
+     → expected 400 to be 404 // Object.is equality
+   ✓ catalog link and canonical read routes PostgreSQL > strictly bounds streamed JSON, rejects malformed IDs, unexpected DELETE bodies and query ambiguity 3ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/web/src/lib/catalog-link-routes.integration.test.ts > catalog link and canonical read routes PostgreSQL > persists owner links, fresh sessions and actual item reads/splits; unlink retains category
+AssertionError: expected 400 to be 200 // Object.is equality
+
+- Expected
++ Received
+
+- 200
++ 400
+
+ ❯ apps/web/src/lib/catalog-link-routes.integration.test.ts:69:29
+     67|     expect(changedCategory.status).toBe(409);
+     68|     const unlinked = await api.DELETE_LINK(request("DELETE"), itemId);
+     69|     expect(unlinked.status).toBe(200);
+       |                             ^
+     70|     expect(await unlinked.json()).toMatchObject({ item: { catalogEntry…
+     71|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |workspace| apps/web/src/lib/catalog-link-routes.integration.test.ts > catalog link and canonical read routes PostgreSQL > rejects foreign/deleted/inactive mutations and forged Origin without consuming input
+AssertionError: expected 400 to be 404 // Object.is equality
+
+- Expected
++ Received
+
+- 404
++ 400
+
+ ❯ apps/web/src/lib/catalog-link-routes.integration.test.ts:91:200
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 2 passed (4)
+   Start at  00:32:08
+   Duration  750ms (transform 138ms, setup 5ms, collect 304ms, tests 210ms, environment 0ms, prepare 46ms)
+

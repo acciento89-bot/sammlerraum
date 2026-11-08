@@ -1,0 +1,54 @@
+[
+  {
+    "name": "baseline",
+    "shellPrefix": "source ../sammlerraum-test-env.sh",
+    "command": "RUN_MEDIA_E2E=1 RUN_AUTH_E2E=1 RUN_PRODUCTION_E2E=1 npm exec --yes --package=node@24.19.0 --package=pnpm@10.17.1 -- pnpm --filter @sammlerraum/web exec playwright test e2e/media-documents.spec.ts --project=desktop --grep 'remains private \\(de\\)' --workers=1",
+    "exitCode": 0,
+    "note": "Reviewed unchanged source;1passed43.9s,notRED; see preflight.txt",
+    "log": "media-cancellation-r1-baseline.log"
+  },
+  {
+    "name": "red",
+    "shellPrefix": "source ../sammlerraum-test-env.sh",
+    "command": "RUN_MEDIA_E2E=1 RUN_AUTH_E2E=1 RUN_PRODUCTION_E2E=1 npm exec --yes --package=node@24.19.0 --package=pnpm@10.17.1 -- pnpm --filter @sammlerraum/web exec playwright test e2e/media-documents.spec.ts --project=desktop --grep 'remains private \\(de\\)' --workers=1",
+    "exitCode": 1,
+    "note": "Real post-link statuses READY,READY,PENDING;39.6s test",
+    "log": "media-cancellation-r1-red.log"
+  },
+  {
+    "name": "no-poll-green",
+    "shellPrefix": "source ../sammlerraum-test-env.sh",
+    "command": "RUN_MEDIA_E2E=1 RUN_AUTH_E2E=1 RUN_PRODUCTION_E2E=1 npm exec --yes --package=node@24.19.0 --package=pnpm@10.17.1 -- pnpm --filter @sammlerraum/web exec playwright test e2e/media-documents.spec.ts --project=desktop --grep 'remains private \\(de\\)' --workers=1",
+    "exitCode": 0,
+    "note": "Fixed all-READY probe;2GETs before/after4001ms clock advance,1passed51.2s",
+    "log": "media-cancellation-r1-no-poll-green.log"
+  },
+  {
+    "name": "typecheck",
+    "command": "npm exec --yes --package=node@24.19.0 --package=pnpm@10.17.1 -- pnpm --filter @sammlerraum/web typecheck",
+    "exitCode": 0,
+    "log": "media-cancellation-r1-typecheck.log",
+    "shellPrefix": "source ../sammlerraum-test-env.sh"
+  },
+  {
+    "name": "lint",
+    "command": "npm exec --yes --package=node@24.19.0 --package=pnpm@10.17.1 -- pnpm --filter @sammlerraum/web lint",
+    "exitCode": 0,
+    "log": "media-cancellation-r1-lint.log"
+  },
+  {
+    "name": "protected-production",
+    "shellPrefix": "source ../sammlerraum-test-env.sh",
+    "command": "RUN_MEDIA_E2E=1 RUN_AUTH_E2E=1 RUN_PRODUCTION_E2E=1 npm exec --yes --package=node@24.19.0 --package=pnpm@10.17.1 -- pnpm --filter @sammlerraum/web exec playwright test e2e/media-read.spec.ts e2e/media-documents.spec.ts --workers=1",
+    "exitCode": 0,
+    "log": "media-cancellation-r1-protected-production.log",
+    "note": "All7originalproductioncasespassed3.7m;desktop/mobileDE/EN;finalsource902ad24e,temporaryclockprobeabsent"
+  },
+  {
+    "name": "raw-evidence-whitespace-audit",
+    "command": "git diff --cached --check",
+    "exitCode": 2,
+    "note": "Raw runner outputs/context retain original whitespace. Source and report checks pass separately.",
+    "log": "media-cancellation-r1-evidence-whitespace.log"
+  }
+]

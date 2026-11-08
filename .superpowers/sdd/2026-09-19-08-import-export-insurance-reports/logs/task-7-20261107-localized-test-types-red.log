@@ -1,0 +1,24 @@
+
+> @sammlerraum/web@ build /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web
+> next build
+
+▲ Next.js 16.3.5 (Turbopack)
+✓ Running next.config.ts took 165ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 5.6s
+  Running TypeScript ...
+e2e/import-report.spec.ts(324,20): error TS7022: 'label' implicitly has type 'any' because it does not have a type annotation and is referenced directly or indirectly in its own initializer.
+e2e/import-report.spec.ts(325,11): error TS2448: Block-scoped variable 'label' used before its declaration.
+e2e/import-report.spec.ts(326,11): error TS2448: Block-scoped variable 'label' used before its declaration.
+e2e/import-report.spec.ts(327,11): error TS2448: Block-scoped variable 'label' used before its declaration.
+e2e/import-report.spec.ts(328,11): error TS2448: Block-scoped variable 'label' used before its declaration.
+e2e/import-report.spec.ts(329,11): error TS2448: Block-scoped variable 'label' used before its declaration.
+e2e/import-report.spec.ts(330,11): error TS2448: Block-scoped variable 'label' used before its declaration.
+e2e/import-report.spec.ts(331,11): error TS2448: Block-scoped variable 'label' used before its declaration.
+e2e/import-report.spec.ts(332,11): error TS2448: Block-scoped variable 'label' used before its declaration.
+Failed to type check.
+
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @sammlerraum/web@ build: `next build`
+Exit status 1

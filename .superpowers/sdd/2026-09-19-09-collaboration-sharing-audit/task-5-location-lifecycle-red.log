@@ -1,0 +1,58 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/audit/core-audit-integration.test.ts (7 tests | 1 failed) 611ms
+   ✓ actual core mutations append their real audit in the same transaction > records actual condition and location changes with the real user and before/after values 165ms
+   ✓ actual core mutations append their real audit in the same transaction > a genuine default audit INSERT failure rolls the actual condition write back 52ms
+   ✓ actual core mutations append their real audit in the same transaction > records category changes and condition clearing without inventing a second unchanged event 24ms
+   ✓ actual core mutations append their real audit in the same transaction > audits grading create/update/delete with selected authored facts and excludes verification URLs/source text 21ms
+   ✓ actual core mutations append their real audit in the same transaction > keeps a manual valuation's exact bigint, stored scale, basis and true author in audit 18ms
+   × actual core mutations append their real audit in the same transaction > records private location creation and hierarchy moves without duplicating QR access tokens 19ms
+     → expected [] to deeply equal ArrayContaining{…}
+   ✓ actual core mutations append their real audit in the same transaction > rolls back grading, valuations and location history together when their audit append fails 26ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/audit/core-audit-integration.test.ts > actual core mutations append their real audit in the same transaction > records private location creation and hierarchy moves without duplicating QR access tokens
+AssertionError: expected [] to deeply equal ArrayContaining{…}
+
+- Expected
++ Received
+
+- ArrayContaining [
+-   ObjectContaining {
+-     "action": "LOCATION_CREATED",
+-     "after": {
+-       "name": "Audit shelf",
+-       "parentId": null,
+-       "type": "SHELF",
+-     },
+-     "before": null,
+-   },
+-   ObjectContaining {
+-     "action": "LOCATION_DETAILS_CHANGED",
+-     "after": {
+-       "name": "Audit shelf",
+-       "parentId": "0feef0e0-dba1-4e3f-bf0b-5765bfe9d296",
+-       "type": "SHELF",
+-     },
+-     "before": {
+-       "name": "Audit shelf",
+-       "parentId": null,
+-       "type": "SHELF",
+-     },
+-   },
+- ]
++ []
+
+ ❯ packages/domain/src/audit/core-audit-integration.test.ts:61:18
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 6 passed (7)
+   Start at  08:16:34
+   Duration  1.15s (transform 171ms, setup 6ms, collect 325ms, tests 611ms, environment 0ms, prepare 58ms)
+

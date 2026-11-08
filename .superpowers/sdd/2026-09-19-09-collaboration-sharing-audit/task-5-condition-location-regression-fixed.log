@@ -1,0 +1,79 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ✓ |workspace| packages/domain/src/condition/condition-service.test.ts (10 tests) 521ms
+ ❯ |workspace| packages/domain/src/locations/location-service.test.ts (17 tests | 2 failed) 231ms
+   ✓ location service > creates a private owner-scoped location with a stable cryptographic token 3ms
+   ✓ location service > rejects a storage location hierarchy cycle 1ms
+   × location service > assigns a location and appends movement history in one transaction 5ms
+     → promise rejected "AuditError: AUDIT_NOT_FOUND { …(1) }" instead of resolving
+   ✓ location service > rejects reassignment to the current location without writing false history 0ms
+   × location service > records real movement and unassignment with their previous location 1ms
+     → promise rejected "AuditError: AUDIT_NOT_FOUND { …(1) }" instead of resolving
+   ✓ location service > rolls back the item assignment when history persistence fails 1ms
+   ✓ location service > returns only direct contents of an owned location 1ms
+   ✓ public item query > keeps protected item and storage data out of the public item DTO 1ms
+   ✓ public item query > fails closed for a private item 0ms
+   ✓ public item query > fails closed for a unlisted collection 0ms
+   ✓ public item query > fails closed for a missing item node 0ms
+   ✓ public item query > fails closed for a private ancestor 0ms
+   ✓ public item query > fails closed for a missing ancestor 0ms
+   ✓ public item query > fails closed for a cyclic ancestry 0ms
+   ✓ location PostgreSQL integration > rejects cycles, cross-owner parents, and concurrent inverse moves 104ms
+   ✓ location PostgreSQL integration > enforces ownership and atomically records assignment history 61ms
+   ✓ location PostgreSQL integration > filters public projections through the complete collection-node ancestry 10ms
+ ✓ |workspace| packages/domain/src/audit/audit-service.test.ts (12 tests) 778ms
+ ✓ |workspace| packages/domain/src/audit/core-audit-integration.test.ts (2 tests) 442ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/locations/location-service.test.ts > location service > assigns a location and appends movement history in one transaction
+AssertionError: promise rejected "AuditError: AUDIT_NOT_FOUND { …(1) }" instead of resolving
+ ❯ packages/domain/src/locations/location-service.test.ts:121:64
+    119|     );
+    120| 
+    121|     await expect(service.assignItemLocation(itemId, locationId)).resol…
+       |                                                                ^
+    122|       itemId,
+    123|       fromLocationId: null,
+
+Caused by: AuditError: AUDIT_NOT_FOUND
+ ❯ missing packages/domain/src/audit/audit-scope.ts:11:9
+ ❯ resolveAuditScope packages/domain/src/audit/audit-scope.ts:74:29
+ ❯ recordAuditEventInTransaction packages/domain/src/audit/audit-service.ts:55:17
+ ❯ Object.appendMutationAudit [as append] packages/domain/src/audit/mutation-audit.ts:15:105
+ ❯ database.$transaction.isolationLevel packages/domain/src/locations/location-service.ts:290:9
+ ❯ packages/domain/src/locations/location-service.test.ts:121:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { code: 'AUDIT_NOT_FOUND' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |workspace| packages/domain/src/locations/location-service.test.ts > location service > records real movement and unassignment with their previous location
+AssertionError: promise rejected "AuditError: AUDIT_NOT_FOUND { …(1) }" instead of resolving
+ ❯ packages/domain/src/locations/location-service.test.ts:194:61
+    192|     );
+    193| 
+    194|     await expect(service.assignItemLocation(itemId, childId)).resolves…
+       |                                                             ^
+    195|       fromLocationId: locationId,
+    196|       toLocationId: childId,
+
+Caused by: AuditError: AUDIT_NOT_FOUND
+ ❯ missing packages/domain/src/audit/audit-scope.ts:11:9
+ ❯ resolveAuditScope packages/domain/src/audit/audit-scope.ts:74:29
+ ❯ recordAuditEventInTransaction packages/domain/src/audit/audit-service.ts:55:17
+ ❯ Object.appendMutationAudit [as append] packages/domain/src/audit/mutation-audit.ts:15:105
+ ❯ database.$transaction.isolationLevel packages/domain/src/locations/location-service.ts:290:9
+ ❯ packages/domain/src/locations/location-service.test.ts:194:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { code: 'AUDIT_NOT_FOUND' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed | 3 passed (4)
+      Tests  2 failed | 39 passed (41)
+   Start at  08:06:00
+   Duration  3.29s (transform 258ms, setup 9ms, collect 726ms, tests 1.97s, environment 0ms, prepare 147ms)
+

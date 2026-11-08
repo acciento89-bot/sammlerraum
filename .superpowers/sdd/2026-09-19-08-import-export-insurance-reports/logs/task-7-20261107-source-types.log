@@ -1,0 +1,8 @@
+apps/web/src/lib/artifact-routes.ts(11,87): error TS2379: Argument of type '{ canonicalMoneyEnabled: boolean | undefined; }' is not assignable to parameter of type '{ canonicalMoneyEnabled?: boolean; }' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+  Types of property 'canonicalMoneyEnabled' are incompatible.
+    Type 'boolean | undefined' is not assignable to type 'boolean'.
+      Type 'undefined' is not assignable to type 'boolean'.
+apps/web/src/lib/artifact-routes.ts(14,50): error TS2379: Argument of type '{ canonicalMoneyEnabled: boolean | undefined; }' is not assignable to parameter of type '{ canonicalMoneyEnabled?: boolean; }' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+  Types of property 'canonicalMoneyEnabled' are incompatible.
+    Type 'boolean | undefined' is not assignable to type 'boolean'.
+      Type 'undefined' is not assignable to type 'boolean'.

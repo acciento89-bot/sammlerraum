@@ -1,0 +1,27 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/market-data/market-aggregate.integration.test.ts [ packages/domain/src/market-data/market-aggregate.integration.test.ts ]
+Error: Cannot find module './market-aggregate' imported from '/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/domain/src/market-data/market-aggregate.integration.test.ts'
+ ❯ packages/domain/src/market-data/market-aggregate.integration.test.ts:14:1
+     12| import { runSearchRead } from "../search/search-read";
+     13| import { withMarketBatch, type MarketSelector, type MarketAggregateBas…
+     14| import { aggregateMarketBatch } from "./market-aggregate";
+       | ^
+     15| import { createDashboardService } from "../dashboard/dashboard-service…
+     16| let db:ReturnType<typeof createTestDatabaseClient>, isolated:Awaited<R…
+
+Caused by: Error: Failed to load url ./market-aggregate (resolved id: ./market-aggregate) in /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/domain/src/market-data/market-aggregate.integration.test.ts. Does the file exist?
+ ❯ loadAndTransform ../../../../SSK%20SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/node_modules/.pnpm/vite@7.3.6_@types+node@24.5.2_jiti@2.7.0/node_modules/vite/dist/node/chunks/config.js:22739:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  no tests
+   Start at  17:27:32
+   Duration  585ms (transform 236ms, setup 5ms, collect 0ms, tests 0ms, environment 0ms, prepare 35ms)
+

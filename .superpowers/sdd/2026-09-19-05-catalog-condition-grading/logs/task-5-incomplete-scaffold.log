@@ -1,0 +1,17 @@
+import { randomUUID } from "node:crypto";
+type Query = { $queryRaw<T>(query: TemplateStringsArray, ...values: unknown[]): Promise<T> };
+export type GradingDatabase = Query & { $transaction<T>(work: (tx: Query) => Promise<T>, options: { isolationLevel: "ReadCommitted" }): Promise<T> };
+// Initial runnable new-service scaffold: certificate scope is intentionally incomplete.
+export function createGradingService(database: GradingDatabase, actorUserId: string) {
+  async function addGrading(itemId: string, input: { provider: string; grade: string; certificateNo: string }) {
+    return database.$transaction(async tx => {
+      const [item] = await tx.$queryRaw<Array<{id:string}>>`SELECT id FROM "CollectibleItem" WHERE id=${itemId}::uuid AND "ownerId"=${actorUserId} FOR UPDATE`;
+      if (!item) throw new Error("ITEM_NOT_FOUND");
+      const previous = await tx.$queryRaw<Array<{id:string}>>`SELECT id FROM "Grading" WHERE "ownerId"=${actorUserId} AND "certificateKey"=${input.certificateNo}`;
+      if (previous.length) throw new Error("GRADING_CERTIFICATE_CONFLICT");
+      const [row] = await tx.$queryRaw<Array<{id:string;itemId:string}>>`INSERT INTO "Grading" (id,"itemId","ownerId",provider,"providerKey",grade,"certificateNo","certificateKey","updatedAt") VALUES (${randomUUID()}::uuid,${itemId}::uuid,${actorUserId},${input.provider},${input.provider.toLowerCase()},${input.grade},${input.certificateNo},${input.certificateNo},now()) RETURNING *`;
+      return row!;
+    },{isolationLevel:"ReadCommitted"});
+  }
+  return {addGrading};
+}

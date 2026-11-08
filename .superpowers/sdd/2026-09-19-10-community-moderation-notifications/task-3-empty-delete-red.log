@@ -1,0 +1,63 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| apps/web/src/lib/comment-routes.test.ts (8 tests | 1 failed) 16ms
+   ✓ authenticated comment/block/report HTTP boundary > rejects cross-origin writes before a session or private database lookup 4ms
+   ✓ authenticated comment/block/report HTTP boundary > requires current authentication for creation and all private control endpoints 1ms
+   ✓ authenticated comment/block/report HTTP boundary > rejects author/source/document injection before the producer 5ms
+   ✓ authenticated comment/block/report HTTP boundary > rejects author/source/document injection before the producer 1ms
+   ✓ authenticated comment/block/report HTTP boundary > rejects author/source/document injection before the producer 1ms
+   × authenticated comment/block/report HTTP boundary > accepts an empty transport stream but rejects actual delete payload bytes before the producer 2ms
+     → expected 400 to be 500 // Object.is equality
+   ✓ authenticated comment/block/report HTTP boundary > does not accept moderator flags on an owner-only hide operation 1ms
+   ✓ authenticated comment/block/report HTTP boundary > rejects injected reporter identity and never exposes diagnostics 1ms
+ ❯ |workspace| apps/web/src/lib/comment-routes.integration.test.ts (1 test | 1 failed) 657ms
+   × comment/report Request and Response with PostgreSQL > handles valid escaped multibyte content and binds actual author, owner controls and reporter 154ms
+     → expected 400 to be 200 // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/web/src/lib/comment-routes.integration.test.ts > comment/report Request and Response with PostgreSQL > handles valid escaped multibyte content and binds actual author, owner controls and reporter
+AssertionError: expected 400 to be 200 // Object.is equality
+
+- Expected
++ Received
+
+- 200
++ 400
+
+ ❯ apps/web/src/lib/comment-routes.integration.test.ts:135:9
+    133|           )
+    134|         ).status,
+    135|       ).toBe(200);
+       |         ^
+    136|     });
+    137|   },
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |workspace| apps/web/src/lib/comment-routes.test.ts > authenticated comment/block/report HTTP boundary > accepts an empty transport stream but rejects actual delete payload bytes before the producer
+AssertionError: expected 400 to be 500 // Object.is equality
+
+- Expected
++ Received
+
+- 500
++ 400
+
+ ❯ apps/web/src/lib/comment-routes.test.ts:76:26
+     74|     });
+     75|     const empty = await f.handlers.DELETE_COMMENT(make(""), id);
+     76|     expect(empty.status).toBe(500);
+       |                          ^
+     77|     expect(f.transaction).toHaveBeenCalledOnce();
+     78|     f.transaction.mockClear();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  2 failed | 7 passed (9)
+   Start at  13:18:57
+   Duration  1.69s (transform 255ms, setup 6ms, collect 625ms, tests 673ms, environment 0ms, prepare 79ms)
+

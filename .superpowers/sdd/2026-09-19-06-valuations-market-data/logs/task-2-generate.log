@@ -1,0 +1,13 @@
+
+> @sammlerraum/db@ prisma /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/db
+> prisma generate
+
+Loaded Prisma config from prisma.config.ts.
+
+Prisma schema loaded from prisma/schema.prisma.
+
+✔ Generated Prisma Client (v7.10.0) to ./../../node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client in 256ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+

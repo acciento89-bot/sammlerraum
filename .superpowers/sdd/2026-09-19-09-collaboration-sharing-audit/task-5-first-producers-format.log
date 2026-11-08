@@ -1,0 +1,14 @@
+packages/domain/src/audit/audit-event-definitions.ts 54ms
+packages/domain/src/audit/mutation-audit.ts 6ms
+packages/domain/src/audit/core-audit-integration.test.ts 30ms
+packages/domain/src/condition/condition-service.ts 22ms
+packages/domain/src/locations/location-service.ts 15ms
+packages/domain/src/locations/location-service.test.ts 34ms
+packages/domain/src/grading/grading-service.ts 10ms
+packages/domain/src/grading/grading-service.test.ts 41ms (unchanged)
+packages/domain/src/valuations/valuation-service.ts 10ms
+packages/domain/src/valuations/valuation-service.test.ts 25ms (unchanged)
+packages/domain/src/collections/collection-service.ts 14ms
+packages/domain/src/collections/collection-service.test.ts 17ms
+packages/domain/src/items/item-service.ts 31ms
+packages/domain/src/items/item-service.test.ts 31ms

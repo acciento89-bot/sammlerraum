@@ -1,0 +1,31 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| apps/web/src/components/catalog/catalog-money-client.test.ts (3 tests | 1 failed) 309ms
+   ✓ exact immutable-revision money map browser read > rejects missing, duplicate, foreign revision/target and raw-mismatched fields as a whole read 10ms
+   ✓ exact immutable-revision money map browser read > reads the full supported 10100-field snapshot rather than silently truncating or applying a personal-response size cap 194ms
+   × accepts only an own pending proposal acknowledgment bound to the actual patch and captured receipts 104ms
+     → expected Error: stub to match object { code: 'ACKNOWLEDGED_UNREADABLE' }
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/web/src/components/catalog/catalog-money-client.test.ts > accepts only an own pending proposal acknowledgment bound to the actual patch and captured receipts
+AssertionError: expected Error: stub to match object { code: 'ACKNOWLEDGED_UNREADABLE' }
+
+- Expected
++ Received
+
+- {
+-   "code": "ACKNOWLEDGED_UNREADABLE",
++ Error {
++   "message": "stub",
+  }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 2 passed (3)
+   Start at  11:17:08
+   Duration  732ms (transform 109ms, setup 6ms, collect 138ms, tests 309ms, environment 0ms, prepare 61ms)
+

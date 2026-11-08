@@ -1,0 +1,1172 @@
+am, by visiting the following URL:
+2026-10-17T20:57:48.2518610Z apps/web build: https://nextjs.org/telemetry
+2026-10-17T20:57:48.3076286Z apps/web build:   Creating an optimized production build ...
+2026-10-17T20:58:01.1960314Z apps/web build: ✓ Compiled successfully in 12.1s
+2026-10-17T20:58:01.2019705Z apps/web build:   Running TypeScript ...
+2026-10-17T20:58:07.9281265Z apps/web build:   Finished TypeScript in 6.7s ...
+2026-10-17T20:58:07.9302624Z apps/web build:   Collecting page data using 3 workers ...
+2026-10-17T20:58:09.3342786Z apps/web build:   Generating static pages using 3 workers (0/17) ...
+2026-10-17T20:58:09.4735992Z apps/web build:   Generating static pages using 3 workers (4/17) 
+2026-10-17T20:58:09.5063492Z apps/web build:   Generating static pages using 3 workers (8/17) 
+2026-10-17T20:58:09.5216229Z apps/web build:   Generating static pages using 3 workers (12/17) 
+2026-10-17T20:58:09.5966285Z apps/web build: ✓ Generating static pages using 3 workers (17/17) in 263ms
+2026-10-17T20:58:09.6019752Z apps/web build:   Finalizing page optimization ...
+2026-10-17T20:58:09.9035005Z apps/web build: Route (app)
+2026-10-17T20:58:09.9039780Z apps/web build: ┌ ○ /_not-found
+2026-10-17T20:58:09.9040167Z apps/web build: ├   /[locale]
+2026-10-17T20:58:09.9059717Z apps/web build: │ ├ ● /de
+2026-10-17T20:58:09.9085907Z apps/web build: │ └ ● /en
+2026-10-17T20:58:09.9109624Z apps/web build: ├ ƒ /[locale]/account/profile
+2026-10-17T20:58:09.9115846Z apps/web build: ├ ƒ /[locale]/account/security
+2026-10-17T20:58:09.9116871Z apps/web build: ├ ƒ /[locale]/collections
+2026-10-17T20:58:09.9117810Z apps/web build: ├ ƒ /[locale]/collections/[collectionId]
+2026-10-17T20:58:09.9118838Z apps/web build: ├ ƒ /[locale]/items/[itemId]
+2026-10-17T20:58:09.9119583Z apps/web build: ├ ƒ /[locale]/items/new
+2026-10-17T20:58:09.9120262Z apps/web build: ├ ƒ /[locale]/locations/[locationId]
+2026-10-17T20:58:09.9121036Z apps/web build: ├ ƒ /[locale]/locations/[locationId]/label
+2026-10-17T20:58:09.9121487Z apps/web build: ├ ƒ /[locale]/login
+2026-10-17T20:58:09.9121847Z apps/web build: ├ ƒ /[locale]/register
+2026-10-17T20:58:09.9122211Z apps/web build: ├ ƒ /api/auth/[...all]
+2026-10-17T20:58:09.9122553Z apps/web build: ├ ƒ /api/health
+2026-10-17T20:58:09.9122898Z apps/web build: ├ ƒ /api/openapi.json
+2026-10-17T20:58:09.9123540Z apps/web build: ├ ƒ /api/v1/account/profile
+2026-10-17T20:58:09.9123983Z apps/web build: ├ ƒ /api/v1/account/recovery-methods
+2026-10-17T20:58:09.9124396Z apps/web build: ├ ƒ /api/v1/account/sessions
+2026-10-17T20:58:09.9124768Z apps/web build: ├ ƒ /api/v1/collections
+2026-10-17T20:58:09.9125195Z apps/web build: ├ ƒ /api/v1/collections/[collectionId]
+2026-10-17T20:58:09.9125720Z apps/web build: ├ ƒ /api/v1/collections/[collectionId]/custom-fields
+2026-10-17T20:58:09.9126263Z apps/web build: ├ ƒ /api/v1/collections/[collectionId]/nodes
+2026-10-17T20:58:09.9126798Z apps/web build: ├ ƒ /api/v1/collections/[collectionId]/nodes/[nodeId]
+2026-10-17T20:58:09.9127245Z apps/web build: ├ ƒ /api/v1/items
+2026-10-17T20:58:09.9127603Z apps/web build: ├ ƒ /api/v1/items/[itemId]
+2026-10-17T20:58:09.9128011Z apps/web build: ├ ƒ /api/v1/items/[itemId]/archive
+2026-10-17T20:58:09.9128689Z apps/web build: ├ ƒ /api/v1/items/[itemId]/custom-fields/[fieldId]
+2026-10-17T20:58:09.9129198Z apps/web build: ├ ƒ /api/v1/items/[itemId]/documents
+2026-10-17T20:58:09.9129681Z apps/web build: ├ ƒ /api/v1/items/[itemId]/documents/[linkId]
+2026-10-17T20:58:09.9130152Z apps/web build: ├ ƒ /api/v1/items/[itemId]/identifiers
+2026-10-17T20:58:09.9130584Z apps/web build: ├ ƒ /api/v1/items/[itemId]/location
+2026-10-17T20:58:09.9131012Z apps/web build: ├ ƒ /api/v1/items/[itemId]/media
+2026-10-17T20:58:09.9131446Z apps/web build: ├ ƒ /api/v1/items/[itemId]/media/[linkId]
+2026-10-17T20:58:09.9131902Z apps/web build: ├ ƒ /api/v1/items/[itemId]/split
+2026-10-17T20:58:09.9132312Z apps/web build: ├ ƒ /api/v1/items/[itemId]/tags
+2026-10-17T20:58:09.9132688Z apps/web build: ├ ƒ /api/v1/locations
+2026-10-17T20:58:09.9133233Z apps/web build: ├ ƒ /api/v1/locations/[locationId]
+2026-10-17T20:58:09.9133677Z apps/web build: ├ ƒ /api/v1/media/[assetId]/[variant]
+2026-10-17T20:58:09.9134072Z apps/web build: ├ ƒ /api/v1/media/avatar
+2026-10-17T20:58:09.9134435Z apps/web build: ├ ƒ /api/v1/media/documents
+2026-10-17T20:58:09.9134810Z apps/web build: ├ ƒ /api/v1/media/images
+2026-10-17T20:58:09.9135156Z apps/web build: └ ƒ /l/[token]
+2026-10-17T20:58:09.9135491Z apps/web build: ƒ Proxy (Middleware)
+2026-10-17T20:58:09.9135916Z apps/web build: ○  (Static)   prerendered as static content
+2026-10-17T20:58:09.9136502Z apps/web build: ●  (SSG)      prerendered as static HTML (uses generateStaticParams)
+2026-10-17T20:58:09.9137045Z apps/web build: ƒ  (Dynamic)  server-rendered on demand
+2026-10-17T20:58:10.1251119Z apps/web build: Done
+2026-10-17T20:58:10.1441718Z ##[group]Run RUN_DATABASE_INTEGRATION=1 pnpm vitest run packages/db/src/postgres.integration.test.ts packages/db/src/media-migration.integration.test.ts packages/db/src/media-lock.integration.test.ts packages/queue/src/postgres.integration.test.ts apps/worker/src/jobs/image-repository.integration.test.ts packages/domain/src/identity/profile-service.test.ts packages/domain/src/identity/security-service.test.ts packages/domain/src/collections/collection-service.test.ts packages/domain/src/items/item-service.test.ts packages/domain/src/media/media-service.test.ts packages/domain/src/media/cleanup-service.test.ts packages/storage/src/staging-lock.integration.test.ts packages/domain/src/media/media-read.integration.test.ts packages/domain/src/media/media-management.integration.test.ts packages/domain/src/items/identifier-service.test.ts packages/domain/src/custom-fields/custom-field-service.test.ts packages/domain/src/catalog/category-template-service.integration.test.ts packages/domain/src/catalog/catalog-service.integration.test.ts packages/domain/src/locations/location-service.test.ts apps/web/src/lib/security-service.integration.test.ts apps/web/src/app/api/v1/items/resource-route.integration.test.ts
+2026-10-17T20:58:10.1450394Z [36;1mRUN_DATABASE_INTEGRATION=1 pnpm vitest run packages/db/src/postgres.integration.test.ts packages/db/src/media-migration.integration.test.ts packages/db/src/media-lock.integration.test.ts packages/queue/src/postgres.integration.test.ts apps/worker/src/jobs/image-repository.integration.test.ts packages/domain/src/identity/profile-service.test.ts packages/domain/src/identity/security-service.test.ts packages/domain/src/collections/collection-service.test.ts packages/domain/src/items/item-service.test.ts packages/domain/src/media/media-service.test.ts packages/domain/src/media/cleanup-service.test.ts packages/storage/src/staging-lock.integration.test.ts packages/domain/src/media/media-read.integration.test.ts packages/domain/src/media/media-management.integration.test.ts packages/domain/src/items/identifier-service.test.ts packages/domain/src/custom-fields/custom-field-service.test.ts packages/domain/src/catalog/category-template-service.integration.test.ts packages/domain/src/catalog/catalog-service.integration.test.ts packages/domain/src/locations/location-service.test.ts apps/web/src/lib/security-service.integration.test.ts apps/web/src/app/api/v1/items/resource-route.integration.test.ts[0m
+2026-10-17T20:58:10.1491129Z shell: /usr/bin/bash -e {0}
+2026-10-17T20:58:10.1491393Z env:
+2026-10-17T20:58:10.1491595Z   NODE_ENV: test
+2026-10-17T20:58:10.1492109Z   DATABASE_URL: ***localhost:5432/sammlerraum_test
+2026-10-17T20:58:10.1492445Z   APP_ORIGIN: http://localhost:3000
+2026-10-17T20:58:10.1492763Z   NEXT_PUBLIC_APP_ORIGIN: https://example.invalid
+2026-10-17T20:58:10.1493108Z   UPLOADS_DIR: /tmp/sammlerraum-test-uploads
+2026-10-17T20:58:10.1493392Z   LOG_LEVEL: info
+2026-10-17T20:58:10.1493609Z   WORKER_HEALTH_PORT: 3001
+2026-10-17T20:58:10.1494002Z   BETTER_AUTH_SECRET: test-only-secret-that-is-at-least-thirty-two-characters
+2026-10-17T20:58:10.1494439Z   GOOGLE_CLIENT_ID: test-google-client-id
+2026-10-17T20:58:10.1494798Z   GOOGLE_CLIENT_SECRET: test-google-client-secret
+2026-10-17T20:58:10.1495277Z   APPLE_CLIENT_ID: test-apple-client-id
+2026-10-17T20:58:10.1495586Z   APPLE_CLIENT_SECRET: test-apple-client-secret
+2026-10-17T20:58:10.1495910Z   SMTP_HOST: smtp.example.invalid
+2026-10-17T20:58:10.1496176Z   SMTP_PORT: 587
+2026-10-17T20:58:10.1496387Z   SMTP_SECURE: false
+2026-10-17T20:58:10.1496613Z   SMTP_USER: test-smtp-user
+2026-10-17T20:58:10.1496879Z   SMTP_PASSWORD: test-smtp-password
+2026-10-17T20:58:10.1497150Z   SMTP_FROM: noreply@example.invalid
+2026-10-17T20:58:10.1497418Z   POSTGRES_DB: sammlerraum_test
+2026-10-17T20:58:10.1497660Z   POSTGRES_USER: test
+2026-10-17T20:58:10.1497888Z   POSTGRES_PASSWORD: test
+2026-10-17T20:58:10.1498163Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+2026-10-17T20:58:10.1498629Z ##[endgroup]
+2026-10-17T20:58:10.6978415Z 
+2026-10-17T20:58:10.6980801Z [1m[46m RUN [49m[22m [36mv3.2.7 [39m[90m/home/runner/work/sammlerraum/sammlerraum[39m
+2026-10-17T20:58:10.6981510Z 
+2026-10-17T20:58:12.2367567Z  [32m✓[39m [30m[45m workspace [49m[39m packages/domain/src/locations/location-service.test.ts [2m([22m[2m17 tests[22m[2m)[22m[33m 895[2mms[22m[39m
+2026-10-17T20:58:12.2370306Z    [33m[2m✓[22m[39m location PostgreSQL integration[2m > [22mrejects cycles, cross-owner parents, and concurrent inverse moves [33m 519[2mms[22m[39m
+2026-10-17T20:58:12.3161057Z  [32m✓[39m [30m[45m workspace [49m[39m packages/domain/src/custom-fields/custom-field-service.test.ts [2m([22m[2m36 tests[22m[2m)[22m[33m 1007[2mms[22m[39m
+2026-10-17T20:58:12.3163783Z    [33m[2m✓[22m[39m custom field PostgreSQL integration[2m > [22mround-trips every typed column and enforces owner and same-collection boundaries [33m 860[2mms[22m[39m
+2026-10-17T20:58:12.3405376Z  [32m✓[39m [30m[45m workspace [49m[39m packages/domain/src/media/media-service.test.ts [2m([22m[2m20 tests[22m[2m)[22m[33m 915[2mms[22m[39m
+2026-10-17T20:58:12.3420366Z    [33m[2m✓[22m[39m media PostgreSQL integration[2m > [22menforces owned item and avatar references on real rows [33m 722[2mms[22m[39m
+2026-10-17T20:58:13.4780691Z  [32m✓[39m [30m[45m workspace [49m[39m packages/domain/src/collections/collection-service.test.ts [2m([22m[2m14 tests[22m[2m)[22m[33m 751[2mms[22m[39m
+2026-10-17T20:58:13.4811000Z    [33m[2m✓[22m[39m collection service PostgreSQL integration[2m > [22mexecutes the recursive descendant CTE and rejects a real hierarchy cycle [33m 346[2mms[22m[39m
+2026-10-17T20:58:13.5702544Z  [32m✓[39m [30m[45m workspace [49m[39m packages/domain/src/items/identifier-service.test.ts [2m([22m[2m11 tests[22m[2m)[22m[33m 742[2mms[22m[39m
+2026-10-17T20:58:13.5752469Z    [33m[2m✓[22m[39m identifier and tag PostgreSQL integration[2m > [22mscopes identifier uniqueness to an item and tags to an owner [33m 459[2mms[22m[39m
+2026-10-17T20:58:13.7950912Z  [32m✓[39m [30m[45m workspace [49m[39m packages/domain/src/items/item-service.test.ts [2m([22m[2m15 tests[22m[2m)[22m[33m 1005[2mms[22m[39m
+2026-10-17T20:58:13.7977975Z    [33m[2m✓[22m[39m item service PostgreSQL integration[2m > [22menforces same-collection nodes and owner-only item mutations [33m 625[2mms[22m[39m
+2026-10-17T20:58:14.2083405Z  [32m✓[39m [30m[45m workspace [49m[39m packages/domain/src/identity/profile-service.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 255[2mms[22m[39m
+2026-10-17T20:58:14.3374991Z  [32m✓[39m [30m[45m workspace [49m[39m packages/storage/src/staging-lock.integration.test.ts [2m([22m[2m3 tests[22m[2m)[22m[33m 452[2mms[22m[39m
+2026-10-17T20:58:14.3414427Z    [33m[2m✓[22m[39m lost staging session[2m > [22mfails an ancient writer rename after the lost session permits cleanup [33m 370[2mms[22m[39m
+2026-10-17T20:58:14.6950130Z  [32m✓[39m [30m[45m workspace [49m[39m packages/domain/src/identity/security-service.test.ts [2m([22m[2m7 tests[22m[2m)[22m[33m 425[2mms[22m[39m
+2026-10-17T20:58:14.7941261Z  [32m✓[39m [30m[45m workspace [49m[39m packages/db/src/media-lock.integration.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 65[2mms[22m[39m
+2026-10-17T20:58:15.2080751Z  [32m✓[39m [30m[45m workspace [49m[39m packages/db/src/media-migration.integration.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 203[2mms[22m[39m
+2026-10-17T20:58:15.5480932Z  [32m✓[39m [30m[45m workspace [49m[39m packages/db/src/postgres.integration.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 288[2mms[22m[39m
+2026-10-17T20:58:15.8391186Z  [32m✓[39m [30m[45m workspace [49m[39m packages/queue/src/postgres.integration.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 156[2mms[22m[39m
+2026-10-17T20:58:16.9235724Z  [32m✓[39m [30m[45m workspace [49m[39m packages/domain/src/media/cleanup-service.test.ts [2m([22m[2m11 tests[22m[2m)[22m[33m 2010[2mms[22m[39m
+2026-10-17T20:58:16.9245478Z    [33m[2m✓[22m[39m retention on real PostgreSQL[2m > [22mdoes not delete bytes while another media, private document, or avatar reference exists [33m 564[2mms[22m[39m
+2026-10-17T20:58:16.9914330Z  [32m✓[39m [30m[45m workspace [49m[39m apps/worker/src/jobs/image-repository.integration.test.ts [2m([22m[2m2 tests[22m[2m)[22m[33m 741[2mms[22m[39m
+2026-10-17T20:58:16.9922254Z    [33m[2m✓[22m[39m durable image claims[2m > [22mrecovers expired claims, rejects stale tokens, and tracks a key before bytes [33m 513[2mms[22m[39m
+2026-10-17T20:58:17.5856375Z  [32m✓[39m [30m[45m workspace [49m[39m apps/web/src/lib/security-service.integration.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 618[2mms[22m[39m
+2026-10-17T20:58:17.5865980Z    [33m[2m✓[22m[39m security service Better Auth adapter integration[2m > [22mmakes a revoked stable session id fail the next getSession call [33m 440[2mms[22m[39m
+2026-10-17T20:58:18.2687284Z  [32m✓[39m [30m[45m workspace [49m[39m packages/domain/src/catalog/category-template-service.integration.test.ts [2m([22m[2m4 tests[22m[2m)[22m[33m 682[2mms[22m[39m
+2026-10-17T20:58:18.2721758Z    [33m[2m✓[22m[39m category templates PostgreSQL[2m > [22matomically creates and reads ordered localized definitions with stable keys [33m 449[2mms[22m[39m
+2026-10-17T20:58:18.8653895Z  [32m✓[39m [30m[45m workspace [49m[39m packages/domain/src/media/media-management.integration.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 520[2mms[22m[39m
+2026-10-17T20:58:18.8656314Z    [33m[2m✓[22m[39m owner media management PostgreSQL[2m > [22morders a complete gallery atomically, hides foreign links and sanitizes list DTOs [33m 519[2mms[22m[39m
+2026-10-17T20:58:19.4121891Z  [32m✓[39m [30m[45m workspace [49m[39m packages/domain/src/media/media-read.integration.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 553[2mms[22m[39m
+2026-10-17T20:58:19.4126379Z    [33m[2m✓[22m[39m media read PostgreSQL authorization[2m > [22mresolves actual ancestor and document links, then revokes stale public URLs [33m 550[2mms[22m[39m
+2026-10-17T20:58:19.4420401Z  [32m✓[39m [30m[45m workspace [49m[39m packages/domain/src/catalog/catalog-service.integration.test.ts [2m([22m[2m11 tests[22m[2m)[22m[33m 1889[2mms[22m[39m
+2026-10-17T20:58:20.0289479Z  [32m✓[39m [30m[45m workspace [49m[39m apps/web/src/app/api/v1/items/resource-route.integration.test.ts [2m([22m[2m2 tests[22m[2m)[22m[33m 481[2mms[22m[39m
+2026-10-17T20:58:20.0438559Z 
+2026-10-17T20:58:20.0450445Z [2m Test Files [22m [1m[32m21 passed[39m[22m[90m (21)[39m
+2026-10-17T20:58:20.0459861Z [2m      Tests [22m [1m[32m166 passed[39m[22m[90m (166)[39m
+2026-10-17T20:58:20.0461084Z [2m   Start at [22m 20:58:10
+2026-10-17T20:58:20.0462441Z [2m   Duration [22m 9.34s[2m (transform 908ms, setup 68ms, collect 5.78s, tests 14.65s, environment 4ms, prepare 1.84s)[22m
+2026-10-17T20:58:20.0463424Z 
+2026-10-17T20:58:20.1655291Z ##[group]Run pnpm --filter @sammlerraum/web exec playwright install --with-deps chromium
+2026-10-17T20:58:20.1656402Z [36;1mpnpm --filter @sammlerraum/web exec playwright install --with-deps chromium[0m
+2026-10-17T20:58:20.1713705Z shell: /usr/bin/bash -e {0}
+2026-10-17T20:58:20.1714130Z env:
+2026-10-17T20:58:20.1714457Z   NODE_ENV: test
+2026-10-17T20:58:20.1715247Z   DATABASE_URL: ***localhost:5432/sammlerraum_test
+2026-10-17T20:58:20.1715782Z   APP_ORIGIN: http://localhost:3000
+2026-10-17T20:58:20.1716289Z   NEXT_PUBLIC_APP_ORIGIN: https://example.invalid
+2026-10-17T20:58:20.1716712Z   UPLOADS_DIR: /tmp/sammlerraum-test-uploads
+2026-10-17T20:58:20.1716995Z   LOG_LEVEL: info
+2026-10-17T20:58:20.1717208Z   WORKER_HEALTH_PORT: 3001
+2026-10-17T20:58:20.1717599Z   BETTER_AUTH_SECRET: test-only-secret-that-is-at-least-thirty-two-characters
+2026-10-17T20:58:20.1718030Z   GOOGLE_CLIENT_ID: test-google-client-id
+2026-10-17T20:58:20.1718395Z   GOOGLE_CLIENT_SECRET: test-google-client-secret
+2026-10-17T20:58:20.1719021Z   APPLE_CLIENT_ID: test-apple-client-id
+2026-10-17T20:58:20.1719330Z   APPLE_CLIENT_SECRET: test-apple-client-secret
+2026-10-17T20:58:20.1719662Z   SMTP_HOST: smtp.example.invalid
+2026-10-17T20:58:20.1719916Z   SMTP_PORT: 587
+2026-10-17T20:58:20.1720126Z   SMTP_SECURE: false
+2026-10-17T20:58:20.1720356Z   SMTP_USER: test-smtp-user
+2026-10-17T20:58:20.1720620Z   SMTP_PASSWORD: test-smtp-password
+2026-10-17T20:58:20.1720902Z   SMTP_FROM: noreply@example.invalid
+2026-10-17T20:58:20.1721176Z   POSTGRES_DB: sammlerraum_test
+2026-10-17T20:58:20.1721420Z   POSTGRES_USER: test
+2026-10-17T20:58:20.1721642Z   POSTGRES_PASSWORD: test
+2026-10-17T20:58:20.1721929Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+2026-10-17T20:58:20.1722234Z ##[endgroup]
+2026-10-17T20:58:20.9238988Z Installing dependencies...
+2026-10-17T20:58:20.9326071Z Switching to root user to install dependencies...
+2026-10-17T20:58:21.0151691Z Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]
+2026-10-17T20:58:21.0483758Z Hit:2 http://azure.archive.ubuntu.com/ubuntu noble InRelease
+2026-10-17T20:58:21.0498872Z Get:6 https://packages.microsoft.com/ubuntu/24.04/prod noble InRelease [3600 B]
+2026-10-17T20:58:21.0528754Z Get:3 http://azure.archive.ubuntu.com/ubuntu noble-updates InRelease [126 kB]
+2026-10-17T20:58:21.0564393Z Get:4 http://azure.archive.ubuntu.com/ubuntu noble-backports InRelease [126 kB]
+2026-10-17T20:58:21.0587393Z Get:5 http://azure.archive.ubuntu.com/ubuntu noble-security InRelease [126 kB]
+2026-10-17T20:58:21.1553511Z Get:7 https://packages.microsoft.com/ubuntu/24.04/prod noble/main armhf Packages [12.4 kB]
+2026-10-17T20:58:21.1646331Z Get:8 https://packages.microsoft.com/ubuntu/24.04/prod noble/main arm64 Packages [557 kB]
+2026-10-17T20:58:21.1713927Z Get:9 https://packages.microsoft.com/ubuntu/24.04/prod noble/main amd64 Packages [618 kB]
+2026-10-17T20:58:21.1960690Z Get:10 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 Packages [1397 kB]
+2026-10-17T20:58:21.2035380Z Get:11 http://azure.archive.ubuntu.com/ubuntu noble-updates/main Translation-en [308 kB]
+2026-10-17T20:58:21.2143832Z Get:12 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe amd64 Packages [1704 kB]
+2026-10-17T20:58:21.2244623Z Get:13 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe Translation-en [342 kB]
+2026-10-17T20:58:21.2270835Z Get:14 http://azure.archive.ubuntu.com/ubuntu noble-updates/restricted amd64 Packages [1805 kB]
+2026-10-17T20:58:21.2361943Z Get:15 http://azure.archive.ubuntu.com/ubuntu noble-updates/restricted Translation-en [411 kB]
+2026-10-17T20:58:21.2930482Z Get:16 http://azure.archive.ubuntu.com/ubuntu noble-security/main amd64 Packages [1144 kB]
+2026-10-17T20:58:21.2958432Z Get:17 http://azure.archive.ubuntu.com/ubuntu noble-security/main Translation-en [231 kB]
+2026-10-17T20:58:21.2976007Z Get:18 http://azure.archive.ubuntu.com/ubuntu noble-security/universe amd64 Packages [1222 kB]
+2026-10-17T20:58:21.3034464Z Get:19 http://azure.archive.ubuntu.com/ubuntu noble-security/universe Translation-en [246 kB]
+2026-10-17T20:58:21.3460738Z Get:20 http://azure.archive.ubuntu.com/ubuntu noble-security/restricted amd64 Packages [1713 kB]
+2026-10-17T20:58:21.3537128Z Get:21 http://azure.archive.ubuntu.com/ubuntu noble-security/restricted Translation-en [392 kB]
+2026-10-17T20:58:24.4425328Z Fetched 12.5 MB in 1s (10.1 MB/s)
+2026-10-17T20:58:25.4445501Z Reading package lists...
+2026-10-17T20:58:25.4709178Z Reading package lists...
+2026-10-17T20:58:25.6840439Z Building dependency tree...
+2026-10-17T20:58:25.6845015Z Reading state information...
+2026-10-17T20:58:25.8406894Z libasound2t64 is already the newest version (1.2.11-1ubuntu0.3).
+2026-10-17T20:58:25.8407517Z libasound2t64 set to manually installed.
+2026-10-17T20:58:25.8408063Z libatk-bridge2.0-0t64 is already the newest version (2.52.0-1build1).
+2026-10-17T20:58:25.8408878Z libatk-bridge2.0-0t64 set to manually installed.
+2026-10-17T20:58:25.8409759Z libatk1.0-0t64 is already the newest version (2.52.0-1build1).
+2026-10-17T20:58:25.8410289Z libatk1.0-0t64 set to manually installed.
+2026-10-17T20:58:25.8410796Z libatspi2.0-0t64 is already the newest version (2.52.0-1build1).
+2026-10-17T20:58:25.8411638Z libatspi2.0-0t64 set to manually installed.
+2026-10-17T20:58:25.8412295Z libcairo2 is already the newest version (1.18.0-3build1).
+2026-10-17T20:58:25.8412752Z libcairo2 set to manually installed.
+2026-10-17T20:58:25.8413233Z libcups2t64 is already the newest version (2.4.7-1.2ubuntu7.14).
+2026-10-17T20:58:25.8413704Z libcups2t64 set to manually installed.
+2026-10-17T20:58:25.8414192Z libdbus-1-3 is already the newest version (1.14.10-4ubuntu4.1).
+2026-10-17T20:58:25.8414667Z libdbus-1-3 set to manually installed.
+2026-10-17T20:58:25.8415157Z libdrm2 is already the newest version (2.4.125-1ubuntu0.1~24.04.2).
+2026-10-17T20:58:25.8415623Z libdrm2 set to manually installed.
+2026-10-17T20:58:25.8416096Z libgbm1 is already the newest version (25.2.8-0ubuntu0.24.04.4).
+2026-10-17T20:58:25.8416547Z libgbm1 set to manually installed.
+2026-10-17T20:58:25.8417023Z libglib2.0-0t64 is already the newest version (2.80.0-6ubuntu3.9).
+2026-10-17T20:58:25.8417513Z libglib2.0-0t64 set to manually installed.
+2026-10-17T20:58:25.8418001Z libnspr4 is already the newest version (2:4.35-1.1build1).
+2026-10-17T20:58:25.8418446Z libnspr4 set to manually installed.
+2026-10-17T20:58:25.8419009Z libnss3 is already the newest version (2:3.98-1ubuntu0.2).
+2026-10-17T20:58:25.8419447Z libnss3 set to manually installed.
+2026-10-17T20:58:25.8419922Z libpango-1.0-0 is already the newest version (1.52.1+ds-1build1).
+2026-10-17T20:58:25.8420415Z libpango-1.0-0 set to manually installed.
+2026-10-17T20:58:25.8420888Z libx11-6 is already the newest version (2:1.8.7-1ubuntu0.1).
+2026-10-17T20:58:25.8421334Z libx11-6 set to manually installed.
+2026-10-17T20:58:25.8421769Z libxcb1 is already the newest version (1.15-1ubuntu2).
+2026-10-17T20:58:25.8422208Z libxcb1 set to manually installed.
+2026-10-17T20:58:25.8422688Z libxcomposite1 is already the newest version (1:0.4.5-1build3).
+2026-10-17T20:58:25.8423168Z libxcomposite1 set to manually installed.
+2026-10-17T20:58:25.8423662Z libxdamage1 is already the newest version (1:1.1.6-1build1).
+2026-10-17T20:58:25.8424466Z libxdamage1 set to manually installed.
+2026-10-17T20:58:25.8424917Z libxext6 is already the newest version (2:1.3.4-1build2).
+2026-10-17T20:58:25.8425365Z libxext6 set to manually installed.
+2026-10-17T20:58:25.8425822Z libxfixes3 is already the newest version (1:6.0.0-2build1).
+2026-10-17T20:58:25.8426272Z libxfixes3 set to manually installed.
+2026-10-17T20:58:25.8426751Z libxkbcommon0 is already the newest version (1.6.0-1build1).
+2026-10-17T20:58:25.8427217Z libxkbcommon0 set to manually installed.
+2026-10-17T20:58:25.8427695Z libxrandr2 is already the newest version (2:1.5.2-2build1).
+2026-10-17T20:58:25.8428148Z libxrandr2 set to manually installed.
+2026-10-17T20:58:25.8428694Z xvfb is already the newest version (2:21.1.12-1ubuntu1.8).
+2026-10-17T20:58:25.8429482Z fonts-noto-color-emoji is already the newest version (2.047-0ubuntu0.24.04.1).
+2026-10-17T20:58:25.8430148Z libfontconfig1 is already the newest version (2.15.0-1.1ubuntu2).
+2026-10-17T20:58:25.8430630Z libfontconfig1 set to manually installed.
+2026-10-17T20:58:25.8431153Z libfreetype6 is already the newest version (2.13.2+dfsg-1ubuntu0.2).
+2026-10-17T20:58:25.8431644Z libfreetype6 set to manually installed.
+2026-10-17T20:58:25.8432132Z fonts-liberation is already the newest version (1:2.1.5-3).
+2026-10-17T20:58:25.8432606Z fonts-liberation set to manually installed.
+2026-10-17T20:58:25.8433076Z The following additional packages will be installed:
+2026-10-17T20:58:25.8433510Z   xfonts-encodings xfonts-utils
+2026-10-17T20:58:25.8433857Z Recommended packages:
+2026-10-17T20:58:25.8434182Z   fonts-ipafont-mincho fonts-tlwg-loma
+2026-10-17T20:58:25.8596305Z The following NEW packages will be installed:
+2026-10-17T20:58:25.8597254Z   fonts-freefont-ttf fonts-ipafont-gothic fonts-tlwg-loma-otf fonts-unifont
+2026-10-17T20:58:25.8607809Z   fonts-wqy-zenhei xfonts-cyrillic xfonts-encodings xfonts-scalable
+2026-10-17T20:58:25.8608590Z   xfonts-utils
+2026-10-17T20:58:25.8770461Z 0 upgraded, 9 newly installed, 0 to remove and 44 not upgraded.
+2026-10-17T20:58:25.8771323Z Need to get 21.1 MB of archives.
+2026-10-17T20:58:25.8771831Z After this operation, 79.5 MB of additional disk space will be used.
+2026-10-17T20:58:25.8772316Z Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]
+2026-10-17T20:58:25.9579526Z Get:2 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 fonts-ipafont-gothic all 00303-21ubuntu1 [3513 kB]
+2026-10-17T20:58:26.0891496Z Get:3 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 fonts-freefont-ttf all 20211204+svn4273-2 [5641 kB]
+2026-10-17T20:58:26.2350638Z Get:4 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 fonts-tlwg-loma-otf all 1:0.7.3-1 [107 kB]
+2026-10-17T20:58:26.3015535Z Get:5 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 fonts-unifont all 1:15.1.01-1build1 [2993 kB]
+2026-10-17T20:58:26.4263590Z Get:6 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 fonts-wqy-zenhei all 0.9.45-8 [7472 kB]
+2026-10-17T20:58:26.6430948Z Get:7 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 xfonts-encodings all 1:1.0.5-0ubuntu2 [578 kB]
+2026-10-17T20:58:26.7187431Z Get:8 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 xfonts-utils amd64 1:7.7+6build3 [94.4 kB]
+2026-10-17T20:58:26.7846072Z Get:9 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 xfonts-cyrillic all 1:1.0.5+nmu1 [384 kB]
+2026-10-17T20:58:26.8560826Z Get:10 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 xfonts-scalable all 1:1.0.3-1.3 [304 kB]
+2026-10-17T20:58:27.1093288Z Fetched 21.1 MB in 1s (21.2 MB/s)
+2026-10-17T20:58:27.1307823Z Selecting previously unselected package fonts-ipafont-gothic.
+2026-10-17T20:58:27.1517122Z (Reading database ... 
+2026-10-17T20:58:27.1517556Z (Reading database ... 5%
+2026-10-17T20:58:27.1517833Z (Reading database ... 10%
+2026-10-17T20:58:27.1518095Z (Reading database ... 15%
+2026-10-17T20:58:27.1518382Z (Reading database ... 20%
+2026-10-17T20:58:27.1518783Z (Reading database ... 25%
+2026-10-17T20:58:27.1519105Z (Reading database ... 30%
+2026-10-17T20:58:27.1519760Z (Reading database ... 35%
+2026-10-17T20:58:27.1520146Z (Reading database ... 40%
+2026-10-17T20:58:27.1520518Z (Reading database ... 45%
+2026-10-17T20:58:27.1520762Z (Reading database ... 50%
+2026-10-17T20:58:27.1556143Z (Reading database ... 55%
+2026-10-17T20:58:27.2602165Z (Reading database ... 60%
+2026-10-17T20:58:27.4517927Z (Reading database ... 65%
+2026-10-17T20:58:27.6584182Z (Reading database ... 70%
+2026-10-17T20:58:27.8571397Z (Reading database ... 75%
+2026-10-17T20:58:27.9597442Z (Reading database ... 80%
+2026-10-17T20:58:28.0950217Z (Reading database ... 85%
+2026-10-17T20:58:28.2033796Z (Reading database ... 90%
+2026-10-17T20:58:28.3102932Z (Reading database ... 95%
+2026-10-17T20:58:28.3103506Z (Reading database ... 100%
+2026-10-17T20:58:28.3104229Z (Reading database ... 203540 files and directories currently installed.)
+2026-10-17T20:58:28.3149093Z Preparing to unpack .../0-fonts-ipafont-gothic_00303-21ubuntu1_all.deb ...
+2026-10-17T20:58:28.3230227Z Unpacking fonts-ipafont-gothic (00303-21ubuntu1) ...
+2026-10-17T20:58:28.5539642Z Selecting previously unselected package fonts-freefont-ttf.
+2026-10-17T20:58:28.5656574Z Preparing to unpack .../1-fonts-freefont-ttf_20211204+svn4273-2_all.deb ...
+2026-10-17T20:58:28.5667055Z Unpacking fonts-freefont-ttf (20211204+svn4273-2) ...
+2026-10-17T20:58:28.6422190Z Selecting previously unselected package fonts-tlwg-loma-otf.
+2026-10-17T20:58:28.6535156Z Preparing to unpack .../2-fonts-tlwg-loma-otf_1%3a0.7.3-1_all.deb ...
+2026-10-17T20:58:28.6544740Z Unpacking fonts-tlwg-loma-otf (1:0.7.3-1) ...
+2026-10-17T20:58:28.6717754Z Selecting previously unselected package fonts-unifont.
+2026-10-17T20:58:28.6831275Z Preparing to unpack .../3-fonts-unifont_1%3a15.1.01-1build1_all.deb ...
+2026-10-17T20:58:28.6841556Z Unpacking fonts-unifont (1:15.1.01-1build1) ...
+2026-10-17T20:58:28.7775866Z Selecting previously unselected package fonts-wqy-zenhei.
+2026-10-17T20:58:28.7889183Z Preparing to unpack .../4-fonts-wqy-zenhei_0.9.45-8_all.deb ...
+2026-10-17T20:58:28.7973751Z Unpacking fonts-wqy-zenhei (0.9.45-8) ...
+2026-10-17T20:58:29.2729157Z Selecting previously unselected package xfonts-encodings.
+2026-10-17T20:58:29.2842057Z Preparing to unpack .../5-xfonts-encodings_1%3a1.0.5-0ubuntu2_all.deb ...
+2026-10-17T20:58:29.2847612Z Unpacking xfonts-encodings (1:1.0.5-0ubuntu2) ...
+2026-10-17T20:58:29.3054585Z Selecting previously unselected package xfonts-utils.
+2026-10-17T20:58:29.3166856Z Preparing to unpack .../6-xfonts-utils_1%3a7.7+6build3_amd64.deb ...
+2026-10-17T20:58:29.3172277Z Unpacking xfonts-utils (1:7.7+6build3) ...
+2026-10-17T20:58:29.3442727Z Selecting previously unselected package xfonts-cyrillic.
+2026-10-17T20:58:29.3555803Z Preparing to unpack .../7-xfonts-cyrillic_1%3a1.0.5+nmu1_all.deb ...
+2026-10-17T20:58:29.3563720Z Unpacking xfonts-cyrillic (1:1.0.5+nmu1) ...
+2026-10-17T20:58:29.3799176Z Selecting previously unselected package xfonts-scalable.
+2026-10-17T20:58:29.3913256Z Preparing to unpack .../8-xfonts-scalable_1%3a1.0.3-1.3_all.deb ...
+2026-10-17T20:58:29.3921708Z Unpacking xfonts-scalable (1:1.0.3-1.3) ...
+2026-10-17T20:58:29.4267894Z Setting up fonts-wqy-zenhei (0.9.45-8) ...
+2026-10-17T20:58:29.4368203Z Setting up fonts-freefont-ttf (20211204+svn4273-2) ...
+2026-10-17T20:58:29.4381872Z Setting up fonts-tlwg-loma-otf (1:0.7.3-1) ...
+2026-10-17T20:58:29.4396757Z Setting up xfonts-encodings (1:1.0.5-0ubuntu2) ...
+2026-10-17T20:58:29.4409981Z Setting up fonts-ipafont-gothic (00303-21ubuntu1) ...
+2026-10-17T20:58:29.4460789Z update-alternatives: using /usr/share/fonts/opentype/ipafont-gothic/ipag.ttf to provide /usr/share/fonts/truetype/fonts-japanese-gothic.ttf (fonts-japanese-gothic.ttf) in auto mode
+2026-10-17T20:58:29.4472565Z Setting up fonts-unifont (1:15.1.01-1build1) ...
+2026-10-17T20:58:29.4487513Z Setting up xfonts-utils (1:7.7+6build3) ...
+2026-10-17T20:58:29.4523931Z Setting up xfonts-cyrillic (1:1.0.5+nmu1) ...
+2026-10-17T20:58:29.5003227Z Setting up xfonts-scalable (1:1.0.3-1.3) ...
+2026-10-17T20:58:29.5252052Z Processing triggers for man-db (2.12.0-4build2) ...
+2026-10-17T20:58:29.5270001Z Not building database; man-db/auto-update is not 'true'.
+2026-10-17T20:58:29.5281711Z Processing triggers for fontconfig (2.15.0-1.1ubuntu2) ...
+2026-10-17T20:58:30.2154041Z 
+2026-10-17T20:58:30.2156244Z Running kernel seems to be up-to-date.
+2026-10-17T20:58:30.2156544Z 
+2026-10-17T20:58:30.2156715Z No services need to be restarted.
+2026-10-17T20:58:30.2156898Z 
+2026-10-17T20:58:30.2157052Z No containers need to be restarted.
+2026-10-17T20:58:30.2157238Z 
+2026-10-17T20:58:30.2157412Z No user sessions are running outdated binaries.
+2026-10-17T20:58:30.2157637Z 
+2026-10-17T20:58:30.2157918Z No VM guests are running outdated hypervisor (qemu) binaries on this host.
+2026-10-17T20:58:31.2204188Z Downloading Chrome for Testing 153.0.8010.12 (playwright chromium v1243) from https://cdn.playwright.dev/builds/cft/153.0.8010.12/linux64/chrome-linux64.zip
+2026-10-17T20:58:31.6389125Z |                                                                                |   0% of 186.8 MiB
+2026-10-17T20:58:31.8582631Z |■■■■■■■■                                                                        |  10% of 186.8 MiB
+2026-10-17T20:58:31.9554835Z |■■■■■■■■■■■■■■■■                                                                |  20% of 186.8 MiB
+2026-10-17T20:58:32.0461414Z |■■■■■■■■■■■■■■■■■■■■■■■■                                                        |  30% of 186.8 MiB
+2026-10-17T20:58:32.1664513Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                                |  40% of 186.8 MiB
+2026-10-17T20:58:32.2489946Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                        |  50% of 186.8 MiB
+2026-10-17T20:58:32.3582435Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                |  60% of 186.8 MiB
+2026-10-17T20:58:32.4795191Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                        |  70% of 186.8 MiB
+2026-10-17T20:58:32.5886667Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                |  80% of 186.8 MiB
+2026-10-17T20:58:32.6710155Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■        |  90% of 186.8 MiB
+2026-10-17T20:58:32.8190442Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■| 100% of 186.8 MiB
+2026-10-17T20:58:35.6511532Z Chrome for Testing 153.0.8010.12 (playwright chromium v1243) downloaded to /home/runner/.cache/ms-playwright/chromium-1243
+2026-10-17T20:58:35.6515363Z Downloading FFmpeg (playwright ffmpeg v1011) from https://cdn.playwright.dev/dbazure/download/playwright/builds/ffmpeg/1011/ffmpeg-linux.zip
+2026-10-17T20:58:36.0304981Z |                                                                                |   0% of 2.3 MiB
+2026-10-17T20:58:36.0337903Z |■■■■■■■■                                                                        |  10% of 2.3 MiB
+2026-10-17T20:58:36.0374648Z |■■■■■■■■■■■■■■■■                                                                |  20% of 2.3 MiB
+2026-10-17T20:58:36.0397331Z |■■■■■■■■■■■■■■■■■■■■■■■■                                                        |  30% of 2.3 MiB
+2026-10-17T20:58:36.0412659Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                                |  40% of 2.3 MiB
+2026-10-17T20:58:36.0430866Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                        |  50% of 2.3 MiB
+2026-10-17T20:58:36.0438354Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                |  60% of 2.3 MiB
+2026-10-17T20:58:36.0449956Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                        |  70% of 2.3 MiB
+2026-10-17T20:58:36.0481127Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                |  80% of 2.3 MiB
+2026-10-17T20:58:36.0496441Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■        |  90% of 2.3 MiB
+2026-10-17T20:58:36.0506777Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■| 100% of 2.3 MiB
+2026-10-17T20:58:36.1052318Z FFmpeg (playwright ffmpeg v1011) downloaded to /home/runner/.cache/ms-playwright/ffmpeg-1011
+2026-10-17T20:58:36.1054735Z Downloading Chrome Headless Shell 153.0.8010.12 (playwright chromium-headless-shell v1243) from https://cdn.playwright.dev/builds/cft/153.0.8010.12/linux64/chrome-headless-shell-linux64.zip
+2026-10-17T20:58:36.5205762Z |                                                                                |   0% of 114.3 MiB
+2026-10-17T20:58:36.6707464Z |■■■■■■■■                                                                        |  10% of 114.3 MiB
+2026-10-17T20:58:36.7523555Z |■■■■■■■■■■■■■■■■                                                                |  20% of 114.3 MiB
+2026-10-17T20:58:36.8770849Z |■■■■■■■■■■■■■■■■■■■■■■■■                                                        |  30% of 114.3 MiB
+2026-10-17T20:58:36.9493331Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                                |  40% of 114.3 MiB
+2026-10-17T20:58:37.0136338Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                        |  50% of 114.3 MiB
+2026-10-17T20:58:37.0662781Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                |  60% of 114.3 MiB
+2026-10-17T20:58:37.1591048Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                        |  70% of 114.3 MiB
+2026-10-17T20:58:37.2122183Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                |  80% of 114.3 MiB
+2026-10-17T20:58:37.2878158Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■        |  90% of 114.3 MiB
+2026-10-17T20:58:37.3868326Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■| 100% of 114.3 MiB
+2026-10-17T20:58:39.4761795Z Chrome Headless Shell 153.0.8010.12 (playwright chromium-headless-shell v1243) downloaded to /home/runner/.cache/ms-playwright/chromium_headless_shell-1243
+2026-10-17T20:58:39.5022461Z ##[group]Run RUN_AUTH_E2E=1 RUN_PRODUCTION_E2E=1 pnpm --filter @sammlerraum/web exec playwright test e2e/location-labels.spec.ts --workers=1
+2026-10-17T20:58:39.5023537Z [36;1mRUN_AUTH_E2E=1 RUN_PRODUCTION_E2E=1 pnpm --filter @sammlerraum/web exec playwright test e2e/location-labels.spec.ts --workers=1[0m
+2026-10-17T20:58:39.5061015Z shell: /usr/bin/bash -e {0}
+2026-10-17T20:58:39.5061304Z env:
+2026-10-17T20:58:39.5061508Z   NODE_ENV: test
+2026-10-17T20:58:39.5061981Z   DATABASE_URL: ***localhost:5432/sammlerraum_test
+2026-10-17T20:58:39.5062321Z   APP_ORIGIN: http://localhost:3000
+2026-10-17T20:58:39.5062645Z   NEXT_PUBLIC_APP_ORIGIN: https://example.invalid
+2026-10-17T20:58:39.5063002Z   UPLOADS_DIR: /tmp/sammlerraum-test-uploads
+2026-10-17T20:58:39.5063290Z   LOG_LEVEL: info
+2026-10-17T20:58:39.5063523Z   WORKER_HEALTH_PORT: 3001
+2026-10-17T20:58:39.5063915Z   BETTER_AUTH_SECRET: test-only-secret-that-is-at-least-thirty-two-characters
+2026-10-17T20:58:39.5064397Z   GOOGLE_CLIENT_ID: test-google-client-id
+2026-10-17T20:58:39.5064715Z   GOOGLE_CLIENT_SECRET: test-google-client-secret
+2026-10-17T20:58:39.5065043Z   APPLE_CLIENT_ID: test-apple-client-id
+2026-10-17T20:58:39.5065346Z   APPLE_CLIENT_SECRET: test-apple-client-secret
+2026-10-17T20:58:39.5065651Z   SMTP_HOST: smtp.example.invalid
+2026-10-17T20:58:39.5065911Z   SMTP_PORT: 587
+2026-10-17T20:58:39.5066113Z   SMTP_SECURE: false
+2026-10-17T20:58:39.5066335Z   SMTP_USER: test-smtp-user
+2026-10-17T20:58:39.5066593Z   SMTP_PASSWORD: test-smtp-password
+2026-10-17T20:58:39.5066878Z   SMTP_FROM: noreply@example.invalid
+2026-10-17T20:58:39.5067149Z   POSTGRES_DB: sammlerraum_test
+2026-10-17T20:58:39.5067389Z   POSTGRES_USER: test
+2026-10-17T20:58:39.5067608Z   POSTGRES_PASSWORD: test
+2026-10-17T20:58:39.5067897Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+2026-10-17T20:58:39.5068201Z ##[endgroup]
+2026-10-17T20:58:41.9888173Z 
+2026-10-17T20:58:41.9889455Z Running 2 tests using 1 worker
+2026-10-17T20:58:49.2766063Z ··
+2026-10-17T20:58:49.2780139Z   2 passed (8.9s)
+2026-10-17T20:58:49.3032822Z ##[group]Run RUN_MEDIA_E2E=1 RUN_AUTH_E2E=1 RUN_PRODUCTION_E2E=1 pnpm --filter @sammlerraum/web exec playwright test e2e/media-read.spec.ts e2e/media-documents.spec.ts --workers=1
+2026-10-17T20:58:49.3034144Z [36;1mRUN_MEDIA_E2E=1 RUN_AUTH_E2E=1 RUN_PRODUCTION_E2E=1 pnpm --filter @sammlerraum/web exec playwright test e2e/media-read.spec.ts e2e/media-documents.spec.ts --workers=1[0m
+2026-10-17T20:58:49.3071127Z shell: /usr/bin/bash -e {0}
+2026-10-17T20:58:49.3071405Z env:
+2026-10-17T20:58:49.3071623Z   NODE_ENV: test
+2026-10-17T20:58:49.3072063Z   DATABASE_URL: ***localhost:5432/sammlerraum_test
+2026-10-17T20:58:49.3072408Z   APP_ORIGIN: http://localhost:3000
+2026-10-17T20:58:49.3072724Z   NEXT_PUBLIC_APP_ORIGIN: https://example.invalid
+2026-10-17T20:58:49.3073063Z   UPLOADS_DIR: /tmp/sammlerraum-test-uploads
+2026-10-17T20:58:49.3073349Z   LOG_LEVEL: info
+2026-10-17T20:58:49.3073578Z   WORKER_HEALTH_PORT: 3001
+2026-10-17T20:58:49.3074018Z   BETTER_AUTH_SECRET: test-only-secret-that-is-at-least-thirty-two-characters
+2026-10-17T20:58:49.3074443Z   GOOGLE_CLIENT_ID: test-google-client-id
+2026-10-17T20:58:49.3074772Z   GOOGLE_CLIENT_SECRET: test-google-client-secret
+2026-10-17T20:58:49.3075085Z   APPLE_CLIENT_ID: test-apple-client-id
+2026-10-17T20:58:49.3075402Z   APPLE_CLIENT_SECRET: test-apple-client-secret
+2026-10-17T20:58:49.3075713Z   SMTP_HOST: smtp.example.invalid
+2026-10-17T20:58:49.3075967Z   SMTP_PORT: 587
+2026-10-17T20:58:49.3076175Z   SMTP_SECURE: false
+2026-10-17T20:58:49.3076401Z   SMTP_USER: test-smtp-user
+2026-10-17T20:58:49.3076650Z   SMTP_PASSWORD: test-smtp-password
+2026-10-17T20:58:49.3076929Z   SMTP_FROM: noreply@example.invalid
+2026-10-17T20:58:49.3077198Z   POSTGRES_DB: sammlerraum_test
+2026-10-17T20:58:49.3077449Z   POSTGRES_USER: test
+2026-10-17T20:58:49.3077672Z   POSTGRES_PASSWORD: test
+2026-10-17T20:58:49.3077952Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+2026-10-17T20:58:49.3078258Z ##[endgroup]
+2026-10-17T20:58:51.4389013Z 
+2026-10-17T20:58:51.4389875Z Running 7 tests using 1 worker
+2026-10-17T21:01:45.2111100Z ·······
+2026-10-17T21:01:45.2112381Z   7 passed (2.9m)
+2026-10-17T21:01:45.2339740Z ##[group]Run RUN_AUTH_E2E=1 pnpm --filter @sammlerraum/web exec playwright test e2e/auth.spec.ts
+2026-10-17T21:01:45.2340421Z [36;1mRUN_AUTH_E2E=1 pnpm --filter @sammlerraum/web exec playwright test e2e/auth.spec.ts[0m
+2026-10-17T21:01:45.2376702Z shell: /usr/bin/bash -e {0}
+2026-10-17T21:01:45.2376974Z env:
+2026-10-17T21:01:45.2377165Z   NODE_ENV: test
+2026-10-17T21:01:45.2377633Z   DATABASE_URL: ***localhost:5432/sammlerraum_test
+2026-10-17T21:01:45.2377970Z   APP_ORIGIN: http://localhost:3000
+2026-10-17T21:01:45.2378293Z   NEXT_PUBLIC_APP_ORIGIN: https://example.invalid
+2026-10-17T21:01:45.2378795Z   UPLOADS_DIR: /tmp/sammlerraum-test-uploads
+2026-10-17T21:01:45.2379091Z   LOG_LEVEL: info
+2026-10-17T21:01:45.2379310Z   WORKER_HEALTH_PORT: 3001
+2026-10-17T21:01:45.2379701Z   BETTER_AUTH_SECRET: test-only-secret-that-is-at-least-thirty-two-characters
+2026-10-17T21:01:45.2380138Z   GOOGLE_CLIENT_ID: test-google-client-id
+2026-10-17T21:01:45.2380515Z   GOOGLE_CLIENT_SECRET: test-google-client-secret
+2026-10-17T21:01:45.2380829Z   APPLE_CLIENT_ID: test-apple-client-id
+2026-10-17T21:01:45.2381133Z   APPLE_CLIENT_SECRET: test-apple-client-secret
+2026-10-17T21:01:45.2381440Z   SMTP_HOST: smtp.example.invalid
+2026-10-17T21:01:45.2381694Z   SMTP_PORT: 587
+2026-10-17T21:01:45.2381903Z   SMTP_SECURE: false
+2026-10-17T21:01:45.2382129Z   SMTP_USER: test-smtp-user
+2026-10-17T21:01:45.2382390Z   SMTP_PASSWORD: test-smtp-password
+2026-10-17T21:01:45.2382678Z   SMTP_FROM: noreply@example.invalid
+2026-10-17T21:01:45.2382951Z   POSTGRES_DB: sammlerraum_test
+2026-10-17T21:01:45.2383202Z   POSTGRES_USER: test
+2026-10-17T21:01:45.2383424Z   POSTGRES_PASSWORD: test
+2026-10-17T21:01:45.2383722Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+2026-10-17T21:01:45.2384026Z ##[endgroup]
+2026-10-17T21:01:46.7019376Z [WebServer] npm warn Unknown env config "verify-deps-before-run". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+2026-10-17T21:01:52.9049230Z 
+2026-10-17T21:01:52.9069809Z Running 4 tests using 1 worker
+2026-10-17T21:02:18.0743568Z [WebServer] ⨯ Error: The destination stream closed early.
+2026-10-17T21:02:18.0747230Z [WebServer]     at ignore-listed frames {
+2026-10-17T21:02:18.0748130Z [WebServer]   digest: '614447502'
+2026-10-17T21:02:18.0749223Z [WebServer] }
+2026-10-17T21:02:19.0479040Z ····
+2026-10-17T21:02:19.0479333Z   4 passed (33.0s)
+2026-10-17T21:02:19.0745712Z ##[group]Run RUN_AUTH_E2E=1 pnpm --filter @sammlerraum/web exec playwright test e2e/collections-items.spec.ts --workers=1
+2026-10-17T21:02:19.0746517Z [36;1mRUN_AUTH_E2E=1 pnpm --filter @sammlerraum/web exec playwright test e2e/collections-items.spec.ts --workers=1[0m
+2026-10-17T21:02:19.0783113Z shell: /usr/bin/bash -e {0}
+2026-10-17T21:02:19.0783383Z env:
+2026-10-17T21:02:19.0783591Z   NODE_ENV: test
+2026-10-17T21:02:19.0784030Z   DATABASE_URL: ***localhost:5432/sammlerraum_test
+2026-10-17T21:02:19.0784370Z   APP_ORIGIN: http://localhost:3000
+2026-10-17T21:02:19.0784703Z   NEXT_PUBLIC_APP_ORIGIN: https://example.invalid
+2026-10-17T21:02:19.0785041Z   UPLOADS_DIR: /tmp/sammlerraum-test-uploads
+2026-10-17T21:02:19.0785325Z   LOG_LEVEL: info
+2026-10-17T21:02:19.0785546Z   WORKER_HEALTH_PORT: 3001
+2026-10-17T21:02:19.0785925Z   BETTER_AUTH_SECRET: test-only-secret-that-is-at-least-thirty-two-characters
+2026-10-17T21:02:19.0786350Z   GOOGLE_CLIENT_ID: test-google-client-id
+2026-10-17T21:02:19.0786703Z   GOOGLE_CLIENT_SECRET: test-google-client-secret
+2026-10-17T21:02:19.0787011Z   APPLE_CLIENT_ID: test-apple-client-id
+2026-10-17T21:02:19.0787312Z   APPLE_CLIENT_SECRET: test-apple-client-secret
+2026-10-17T21:02:19.0787623Z   SMTP_HOST: smtp.example.invalid
+2026-10-17T21:02:19.0787915Z   SMTP_PORT: 587
+2026-10-17T21:02:19.0788121Z   SMTP_SECURE: false
+2026-10-17T21:02:19.0788345Z   SMTP_USER: test-smtp-user
+2026-10-17T21:02:19.0788822Z   SMTP_PASSWORD: test-smtp-password
+2026-10-17T21:02:19.0789191Z   SMTP_FROM: noreply@example.invalid
+2026-10-17T21:02:19.0789628Z   POSTGRES_DB: sammlerraum_test
+2026-10-17T21:02:19.0789878Z   POSTGRES_USER: test
+2026-10-17T21:02:19.0790108Z   POSTGRES_PASSWORD: test
+2026-10-17T21:02:19.0790391Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+2026-10-17T21:02:19.0790697Z ##[endgroup]
+2026-10-17T21:02:20.4544228Z [WebServer] npm warn Unknown env config "verify-deps-before-run". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+2026-10-17T21:02:25.2909153Z 
+2026-10-17T21:02:25.2939421Z Running 16 tests using 1 worker
+2026-10-17T21:03:00.3212413Z [WebServer] ⨯ Error: The destination stream closed early.
+2026-10-17T21:03:00.3213517Z [WebServer]     at ignore-listed frames {
+2026-10-17T21:03:00.3214275Z [WebServer]   digest: '614447502'
+2026-10-17T21:03:00.3214849Z [WebServer] }
+2026-10-17T21:03:00.3231907Z [WebServer] ⨯ Error: The destination stream closed early.
+2026-10-17T21:03:00.3233861Z [WebServer]     at ignore-listed frames {
+2026-10-17T21:03:00.3235857Z [WebServer]   digest: '614447502'
+2026-10-17T21:03:00.3236574Z [WebServer] }
+2026-10-17T21:03:03.9136738Z [WebServer] ⨯ Error: The destination stream closed early.
+2026-10-17T21:03:03.9159662Z [WebServer]     at ignore-listed frames {
+2026-10-17T21:03:03.9179621Z [WebServer]   digest: '614447502'
+2026-10-17T21:03:03.9191891Z [WebServer] }
+2026-10-17T21:03:27.7373244Z [WebServer] ⨯ Error: The destination stream closed early.
+2026-10-17T21:03:27.7403899Z [WebServer]     at ignore-listed frames {
+2026-10-17T21:03:27.7433542Z [WebServer]   digest: '614447502'
+2026-10-17T21:03:27.7474305Z [WebServer] }
+2026-10-17T21:03:27.7561373Z [WebServer] ⨯ Error: The destination stream closed early.
+2026-10-17T21:03:27.7601783Z [WebServer]     at ignore-listed frames {
+2026-10-17T21:03:27.7679624Z [WebServer]   digest: '614447502'
+2026-10-17T21:03:27.7709487Z [WebServer] }
+2026-10-17T21:03:32.4393477Z [WebServer] ⨯ Error: The destination stream closed early.
+2026-10-17T21:03:32.4424277Z [WebServer]     at ignore-listed frames {
+2026-10-17T21:03:32.4429352Z [WebServer]   digest: '614447502'
+2026-10-17T21:03:32.4472240Z [WebServer] }
+2026-10-17T21:03:50.9817248Z ················
+2026-10-17T21:03:50.9821911Z   16 passed (1.5m)
+2026-10-17T21:03:51.0098018Z ##[group]Run bash scripts/verify-compose.sh
+2026-10-17T21:03:51.0098377Z [36;1mbash scripts/verify-compose.sh[0m
+2026-10-17T21:03:51.0135459Z shell: /usr/bin/bash -e {0}
+2026-10-17T21:03:51.0135730Z env:
+2026-10-17T21:03:51.0135939Z   NODE_ENV: test
+2026-10-17T21:03:51.0136409Z   DATABASE_URL: ***localhost:5432/sammlerraum_test
+2026-10-17T21:03:51.0136741Z   APP_ORIGIN: http://localhost:3000
+2026-10-17T21:03:51.0137056Z   NEXT_PUBLIC_APP_ORIGIN: https://example.invalid
+2026-10-17T21:03:51.0137416Z   UPLOADS_DIR: /tmp/sammlerraum-test-uploads
+2026-10-17T21:03:51.0137700Z   LOG_LEVEL: info
+2026-10-17T21:03:51.0137916Z   WORKER_HEALTH_PORT: 3001
+2026-10-17T21:03:51.0138298Z   BETTER_AUTH_SECRET: test-only-secret-that-is-at-least-thirty-two-characters
+2026-10-17T21:03:51.0139027Z   GOOGLE_CLIENT_ID: test-google-client-id
+2026-10-17T21:03:51.0139342Z   GOOGLE_CLIENT_SECRET: test-google-client-secret
+2026-10-17T21:03:51.0139660Z   APPLE_CLIENT_ID: test-apple-client-id
+2026-10-17T21:03:51.0140003Z   APPLE_CLIENT_SECRET: test-apple-client-secret
+2026-10-17T21:03:51.0140309Z   SMTP_HOST: smtp.example.invalid
+2026-10-17T21:03:51.0140560Z   SMTP_PORT: 587
+2026-10-17T21:03:51.0140765Z   SMTP_SECURE: false
+2026-10-17T21:03:51.0140993Z   SMTP_USER: test-smtp-user
+2026-10-17T21:03:51.0141243Z   SMTP_PASSWORD: test-smtp-password
+2026-10-17T21:03:51.0141514Z   SMTP_FROM: noreply@example.invalid
+2026-10-17T21:03:51.0141781Z   POSTGRES_DB: sammlerraum_test
+2026-10-17T21:03:51.0142032Z   POSTGRES_USER: test
+2026-10-17T21:03:51.0142250Z   POSTGRES_PASSWORD: test
+2026-10-17T21:03:51.0142531Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+2026-10-17T21:03:51.0142836Z ##[endgroup]
+2026-10-17T21:03:51.2602926Z ##[group]Run docker build -f Dockerfile.web --build-arg NEXT_PUBLIC_APP_ORIGIN=https://example.invalid .
+2026-10-17T21:03:51.2604368Z [36;1mdocker build -f Dockerfile.web --build-arg NEXT_PUBLIC_APP_ORIGIN=https://example.invalid .[0m
+2026-10-17T21:03:51.2662260Z shell: /usr/bin/bash -e {0}
+2026-10-17T21:03:51.2662700Z env:
+2026-10-17T21:03:51.2663025Z   NODE_ENV: test
+2026-10-17T21:03:51.2663795Z   DATABASE_URL: ***localhost:5432/sammlerraum_test
+2026-10-17T21:03:51.2664375Z   APP_ORIGIN: http://localhost:3000
+2026-10-17T21:03:51.2664844Z   NEXT_PUBLIC_APP_ORIGIN: https://example.invalid
+2026-10-17T21:03:51.2665438Z   UPLOADS_DIR: /tmp/sammlerraum-test-uploads
+2026-10-17T21:03:51.2665941Z   LOG_LEVEL: info
+2026-10-17T21:03:51.2666299Z   WORKER_HEALTH_PORT: 3001
+2026-10-17T21:03:51.2666922Z   BETTER_AUTH_SECRET: test-only-secret-that-is-at-least-thirty-two-characters
+2026-10-17T21:03:51.2667707Z   GOOGLE_CLIENT_ID: test-google-client-id
+2026-10-17T21:03:51.2668316Z   GOOGLE_CLIENT_SECRET: test-google-client-secret
+2026-10-17T21:03:51.2669147Z   APPLE_CLIENT_ID: test-apple-client-id
+2026-10-17T21:03:51.2669663Z   APPLE_CLIENT_SECRET: test-apple-client-secret
+2026-10-17T21:03:51.2670189Z   SMTP_HOST: smtp.example.invalid
+2026-10-17T21:03:51.2670551Z   SMTP_PORT: 587
+2026-10-17T21:03:51.2670856Z   SMTP_SECURE: false
+2026-10-17T21:03:51.2671178Z   SMTP_USER: test-smtp-user
+2026-10-17T21:03:51.2671596Z   SMTP_PASSWORD: test-smtp-password
+2026-10-17T21:03:51.2672018Z   SMTP_FROM: noreply@example.invalid
+2026-10-17T21:03:51.2672303Z   POSTGRES_DB: sammlerraum_test
+2026-10-17T21:03:51.2672551Z   POSTGRES_USER: test
+2026-10-17T21:03:51.2672773Z   POSTGRES_PASSWORD: test
+2026-10-17T21:03:51.2673058Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+2026-10-17T21:03:51.2673364Z ##[endgroup]
+2026-10-17T21:03:51.8435623Z #0 building with "default" instance using docker driver
+2026-10-17T21:03:51.8435987Z 
+2026-10-17T21:03:51.8436242Z #1 [internal] load build definition from Dockerfile.web
+2026-10-17T21:03:51.8436758Z #1 transferring dockerfile: 1.61kB 0.0s done
+2026-10-17T21:03:51.8437120Z #1 DONE 0.0s
+2026-10-17T21:03:51.8437271Z 
+2026-10-17T21:03:51.8437616Z #2 [internal] load metadata for docker.io/library/node:24.19.0-bookworm-slim
+2026-10-17T21:03:52.0252105Z #2 ...
+2026-10-17T21:03:52.0252485Z 
+2026-10-17T21:03:52.0261195Z #3 [auth] library/node:pull token for registry-1.docker.io
+2026-10-17T21:03:52.0344329Z #3 DONE 0.0s
+2026-10-17T21:03:52.1701749Z 
+2026-10-17T21:03:52.1702691Z #2 [internal] load metadata for docker.io/library/node:24.19.0-bookworm-slim
+2026-10-17T21:03:52.5452832Z #2 DONE 0.9s
+2026-10-17T21:03:52.6791797Z 
+2026-10-17T21:03:52.6792422Z #4 [internal] load .dockerignore
+2026-10-17T21:03:52.6794602Z #4 transferring context: 237B done
+2026-10-17T21:03:52.6795106Z #4 DONE 0.0s
+2026-10-17T21:03:52.6795323Z 
+2026-10-17T21:03:52.6795577Z #5 [internal] load build context
+2026-10-17T21:03:52.6796135Z #5 transferring context: 1.62MB 0.0s done
+2026-10-17T21:03:52.6796655Z #5 DONE 0.0s
+2026-10-17T21:03:52.6796862Z 
+2026-10-17T21:03:52.6797865Z #6 [base 1/3] FROM docker.io/library/node:24.19.0-bookworm-slim@sha256:a9f5f7c91a432850b2a8a7797adf5eadb6c733ceed61167806cee7ea7fbc29df
+2026-10-17T21:03:52.6799727Z #6 resolve docker.io/library/node:24.19.0-bookworm-slim@sha256:a9f5f7c91a432850b2a8a7797adf5eadb6c733ceed61167806cee7ea7fbc29df done
+2026-10-17T21:03:52.6801185Z #6 sha256:622f209f6c16ba5af4d9a337cae6577d096f17174b904cfc6a5b0c81a2679c24 6.76kB / 6.76kB done
+2026-10-17T21:03:52.6802852Z #6 sha256:a8ac7f6c67abc236e4c745052c404112b8fab6fe8ac3a329d1ef3b867ad67c71 20.97MB / 28.23MB 0.1s
+2026-10-17T21:03:52.6804276Z #6 sha256:990581063f5c8a03a57db7a0d116679ea6e6e335d4ac48ef457f26f82d917eba 0B / 3.32kB 0.1s
+2026-10-17T21:03:52.6805630Z #6 sha256:4996e33358abd29e5daf56cdda6681efb4db3bd55b5ab63a7d3d44f8400195a4 0B / 50.50MB 0.1s
+2026-10-17T21:03:52.6806998Z #6 sha256:a9f5f7c91a432850b2a8a7797adf5eadb6c733ceed61167806cee7ea7fbc29df 3.93kB / 3.93kB done
+2026-10-17T21:03:52.6808957Z #6 sha256:e5a8dee7bc1e6a215d224a7ef8206f7e77271bc3cabd5febf2beafac0674f174 1.93kB / 1.93kB done
+2026-10-17T21:03:52.8255590Z #6 sha256:a8ac7f6c67abc236e4c745052c404112b8fab6fe8ac3a329d1ef3b867ad67c71 28.23MB / 28.23MB 0.1s done
+2026-10-17T21:03:52.8257021Z #6 sha256:990581063f5c8a03a57db7a0d116679ea6e6e335d4ac48ef457f26f82d917eba 3.32kB / 3.32kB 0.1s done
+2026-10-17T21:03:52.8258270Z #6 sha256:4996e33358abd29e5daf56cdda6681efb4db3bd55b5ab63a7d3d44f8400195a4 11.53MB / 50.50MB 0.2s
+2026-10-17T21:03:52.8260279Z #6 extracting sha256:a8ac7f6c67abc236e4c745052c404112b8fab6fe8ac3a329d1ef3b867ad67c71 0.1s
+2026-10-17T21:03:52.8261678Z #6 sha256:f95897c2a1fb7bce26b018dd74b2845f816f7b86d5adff2939c6482b1d5b474c 0B / 1.71MB 0.2s
+2026-10-17T21:03:52.8263037Z #6 sha256:c35748eaa5ecc949b0f7cc349a9f7c4a5417dc008e2d9bebd53678d87238fcbf 450B / 450B 0.2s done
+2026-10-17T21:03:52.9274970Z #6 sha256:4996e33358abd29e5daf56cdda6681efb4db3bd55b5ab63a7d3d44f8400195a4 50.50MB / 50.50MB 0.3s
+2026-10-17T21:03:52.9276865Z #6 sha256:f95897c2a1fb7bce26b018dd74b2845f816f7b86d5adff2939c6482b1d5b474c 1.71MB / 1.71MB 0.2s done
+2026-10-17T21:03:53.0276170Z #6 sha256:4996e33358abd29e5daf56cdda6681efb4db3bd55b5ab63a7d3d44f8400195a4 50.50MB / 50.50MB 0.3s done
+2026-10-17T21:03:53.6157783Z #6 extracting sha256:a8ac7f6c67abc236e4c745052c404112b8fab6fe8ac3a329d1ef3b867ad67c71 0.9s done
+2026-10-17T21:03:53.6159145Z #6 extracting sha256:990581063f5c8a03a57db7a0d116679ea6e6e335d4ac48ef457f26f82d917eba
+2026-10-17T21:03:53.7874313Z #6 extracting sha256:990581063f5c8a03a57db7a0d116679ea6e6e335d4ac48ef457f26f82d917eba done
+2026-10-17T21:03:53.7875246Z #6 extracting sha256:4996e33358abd29e5daf56cdda6681efb4db3bd55b5ab63a7d3d44f8400195a4 0.1s
+2026-10-17T21:03:54.8715057Z #6 extracting sha256:4996e33358abd29e5daf56cdda6681efb4db3bd55b5ab63a7d3d44f8400195a4 1.1s done
+2026-10-17T21:03:54.8716258Z #6 extracting sha256:f95897c2a1fb7bce26b018dd74b2845f816f7b86d5adff2939c6482b1d5b474c
+2026-10-17T21:03:55.0820480Z #6 extracting sha256:f95897c2a1fb7bce26b018dd74b2845f816f7b86d5adff2939c6482b1d5b474c 0.0s done
+2026-10-17T21:03:55.0821542Z #6 extracting sha256:c35748eaa5ecc949b0f7cc349a9f7c4a5417dc008e2d9bebd53678d87238fcbf done
+2026-10-17T21:03:55.0822276Z #6 DONE 2.4s
+2026-10-17T21:03:55.0822467Z 
+2026-10-17T21:03:55.0822666Z #7 [runtime 2/5] WORKDIR /app
+2026-10-17T21:03:55.0823086Z #7 DONE 0.0s
+2026-10-17T21:03:55.0823303Z 
+2026-10-17T21:03:55.0823841Z #8 [runtime 3/5] RUN mkdir -p /data/uploads && chown node:node /data/uploads
+2026-10-17T21:03:55.0824510Z #8 DONE 0.1s
+2026-10-17T21:03:55.0824711Z 
+2026-10-17T21:03:55.0825245Z #9 [base 2/3] RUN corepack enable && corepack prepare pnpm@10.17.1 --activate
+2026-10-17T21:03:55.3254414Z #9 0.241 Preparing pnpm@10.17.1 for immediate activation...
+2026-10-17T21:03:55.9756514Z #9 DONE 1.0s
+2026-10-17T21:03:56.1719772Z 
+2026-10-17T21:03:56.1720247Z #10 [base 3/3] WORKDIR /app
+2026-10-17T21:03:56.1720571Z #10 DONE 0.0s
+2026-10-17T21:03:56.1720783Z 
+2026-10-17T21:03:56.1721166Z #11 [build 1/5] COPY . .
+2026-10-17T21:03:56.1721517Z #11 DONE 0.0s
+2026-10-17T21:03:56.1721727Z 
+2026-10-17T21:03:56.1722007Z #12 [build 2/5] RUN pnpm install --frozen-lockfile
+2026-10-17T21:03:56.5041355Z #12 0.483 Scope: all 10 workspace projects
+2026-10-17T21:03:56.6215543Z #12 0.561 Lockfile is up to date, resolution step is skipped
+2026-10-17T21:03:56.6216275Z #12 0.600 Progress: resolved 1, reused 0, downloaded 0, added 0
+2026-10-17T21:03:56.8194269Z #12 0.648 Packages: +339
+2026-10-17T21:03:56.8195186Z #12 0.648 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+2026-10-17T21:03:56.8934001Z #12 0.872 
+2026-10-17T21:03:56.8934697Z #12 0.872    ╭───────────────────────────────────────────────╮
+2026-10-17T21:03:56.8935180Z #12 0.872    │                                               │
+2026-10-17T21:03:56.8935647Z #12 0.872    │     Update available! 10.17.1 → 12.14.0.      │
+2026-10-17T21:03:56.8936136Z #12 0.872    │     Changelog: https://pnpm.io/v/12.14.0      │
+2026-10-17T21:03:56.8937004Z #12 0.872    │   To update, run: corepack use pnpm@12.14.0   │
+2026-10-17T21:03:56.8937469Z #12 0.872    │                                               │
+2026-10-17T21:03:56.8938048Z #12 0.872    ╰───────────────────────────────────────────────╯
+2026-10-17T21:03:56.8938342Z #12 0.872 
+2026-10-17T21:03:57.6222552Z #12 1.601 Progress: resolved 339, reused 0, downloaded 127, added 111
+2026-10-17T21:03:58.6277285Z #12 2.606 Progress: resolved 339, reused 0, downloaded 190, added 142
+2026-10-17T21:03:59.6600926Z #12 3.639 Progress: resolved 339, reused 0, downloaded 280, added 197
+2026-10-17T21:04:00.6598410Z #12 4.639 Progress: resolved 339, reused 0, downloaded 312, added 210
+2026-10-17T21:04:01.6607558Z #12 5.640 Progress: resolved 339, reused 0, downloaded 327, added 338
+2026-10-17T21:04:01.8603666Z #12 5.838 Progress: resolved 339, reused 0, downloaded 328, added 339, done
+2026-10-17T21:04:02.0182933Z #12 5.997 .../node_modules/@prisma/engines postinstall$ node scripts/postinstall.js
+2026-10-17T21:04:02.1394773Z #12 6.027 .../esbuild@0.28.2/node_modules/esbuild postinstall$ node install.js
+2026-10-17T21:04:02.1395505Z #12 6.118 .../esbuild@0.28.2/node_modules/esbuild postinstall: Done
+2026-10-17T21:04:02.3597940Z #12 6.188 .../node_modules/@prisma/engines postinstall: prisma:warn Prisma failed to detect the libssl/openssl version to use, and may not work as expected. Defaulting to "openssl-1.1.x".
+2026-10-17T21:04:02.3600503Z #12 6.188 .../node_modules/@prisma/engines postinstall: Please manually install OpenSSL via `apt-get update -y && apt-get install -y openssl` and try installing Prisma again. If you're running Prisma on Docker, add this command to your Dockerfile, or switch to an image that already has OpenSSL installed.
+2026-10-17T21:04:02.6114332Z #12 6.590 .../node_modules/@prisma/engines postinstall: Done
+2026-10-17T21:04:02.7481129Z #12 6.670 .../node_modules/prisma preinstall$ node scripts/preinstall-entry.js
+2026-10-17T21:04:02.7481865Z #12 6.671 .../node_modules/prisma preinstall$ node scripts/preinstall-entry.js
+2026-10-17T21:04:02.7482515Z #12 6.727 .../node_modules/prisma preinstall: Done
+2026-10-17T21:04:02.9128120Z #12 6.741 .../node_modules/prisma preinstall: Done
+2026-10-17T21:04:03.0795986Z #12 7.058 
+2026-10-17T21:04:03.0796427Z #12 7.058 devDependencies:
+2026-10-17T21:04:03.0796939Z #12 7.058 + @types/node 24.5.2
+2026-10-17T21:04:03.0797413Z #12 7.058 + prettier 3.6.2
+2026-10-17T21:04:03.0797801Z #12 7.058 + typescript 5.9.2
+2026-10-17T21:04:03.0798192Z #12 7.058 + vitest 3.2.7
+2026-10-17T21:04:03.0798668Z #12 7.058 
+2026-10-17T21:04:03.0799445Z #12 7.058 ╭ Warning ─────────────────────────────────────────────────────────────────────╮
+2026-10-17T21:04:03.0800033Z #12 7.058 │                                                                              │
+2026-10-17T21:04:03.0800654Z #12 7.058 │   Ignored build scripts: @parcel/watcher, @swc/core.                         │
+2026-10-17T21:04:03.0801345Z #12 7.058 │   Run "pnpm approve-builds" to pick which dependencies should be allowed     │
+2026-10-17T21:04:03.0802018Z #12 7.058 │   to run scripts.                                                            │
+2026-10-17T21:04:03.0802800Z #12 7.058 │                                                                              │
+2026-10-17T21:04:03.0803384Z #12 7.058 ╰──────────────────────────────────────────────────────────────────────────────╯
+2026-10-17T21:04:03.0803720Z #12 7.058 
+2026-10-17T21:04:03.2087225Z #12 7.188 Done in 7s using pnpm v10.17.1
+2026-10-17T21:04:05.2059788Z #12 DONE 9.2s
+2026-10-17T21:04:05.3570506Z 
+2026-10-17T21:04:05.3572201Z #13 [build 3/5] RUN DATABASE_URL=***127.0.0.1:5432/sammlerraum_build     pnpm --filter @sammlerraum/db prisma generate
+2026-10-17T21:04:05.6000213Z #13 0.393 
+2026-10-17T21:04:05.6001391Z #13 0.393 > @sammlerraum/db@ prisma /app/packages/db
+2026-10-17T21:04:05.6002041Z #13 0.393 > prisma generate
+2026-10-17T21:04:05.6002464Z #13 0.393 
+2026-10-17T21:04:06.4225183Z #13 1.216 Loaded Prisma config from prisma.config.ts.
+2026-10-17T21:04:06.4226198Z #13 1.216 
+2026-10-17T21:04:06.5666490Z #13 1.256 prisma:warn Prisma failed to detect the libssl/openssl version to use, and may not work as expected. Defaulting to "openssl-1.1.x".
+2026-10-17T21:04:06.5669749Z #13 1.256 Please manually install OpenSSL via `apt-get update -y && apt-get install -y openssl` and try installing Prisma again. If you're running Prisma on Docker, add this command to your Dockerfile, or switch to an image that already has OpenSSL installed.
+2026-10-17T21:04:06.5672339Z #13 1.261 prisma:warn Prisma failed to detect the libssl/openssl version to use, and may not work as expected. Defaulting to "openssl-1.1.x".
+2026-10-17T21:04:06.5675311Z #13 1.261 Please manually install OpenSSL via `apt-get update -y && apt-get install -y openssl` and try installing Prisma again. If you're running Prisma on Docker, add this command to your Dockerfile, or switch to an image that already has OpenSSL installed.
+2026-10-17T21:04:06.5677460Z #13 1.360 Prisma schema loaded from prisma/schema.prisma.
+2026-10-17T21:04:07.0896965Z #13 1.883 
+2026-10-17T21:04:07.0899009Z #13 1.883 ✔ Generated Prisma Client (v7.10.0) to ./../../node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client in 348ms
+2026-10-17T21:04:07.0899873Z #13 1.883 
+2026-10-17T21:04:07.0900398Z #13 1.883 Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+2026-10-17T21:04:07.0900817Z #13 1.883 
+2026-10-17T21:04:07.0901009Z #13 1.883 
+2026-10-17T21:04:07.2911652Z #13 DONE 1.9s
+2026-10-17T21:04:07.2912088Z 
+2026-10-17T21:04:07.2912717Z #14 [build 4/5] RUN test -n "https://example.invalid"
+2026-10-17T21:04:07.2927136Z #14 DONE 0.2s
+2026-10-17T21:04:07.4437645Z 
+2026-10-17T21:04:07.4441881Z #15 [build 5/5] RUN DATABASE_URL=***127.0.0.1:5432/sammlerraum_build     APP_ORIGIN=http://127.0.0.1:3000     NEXT_PUBLIC_APP_ORIGIN=https://example.invalid     UPLOADS_DIR=/tmp/sammlerraum-build-uploads     BETTER_AUTH_SECRET=build-only-secret-that-is-at-least-thirty-two-characters     GOOGLE_CLIENT_ID=build-only-google-client-id     GOOGLE_CLIENT_SECRET=build-only-google-client-secret     APPLE_CLIENT_ID=build-only-apple-client-id     APPLE_CLIENT_SECRET=build-only-apple-client-secret     SMTP_HOST=smtp.example.invalid     SMTP_PORT=587     SMTP_SECURE=false     SMTP_USER=build-only-smtp-user     SMTP_PASSWORD=build-only-smtp-password     SMTP_FROM=noreply@example.invalid     pnpm --filter @sammlerraum/web build
+2026-10-17T21:04:07.6878407Z #15 0.394 
+2026-10-17T21:04:07.6879093Z #15 0.394 > @sammlerraum/web@ build /app/apps/web
+2026-10-17T21:04:07.6879640Z #15 0.394 > next build
+2026-10-17T21:04:07.6879871Z #15 0.394 
+2026-10-17T21:04:08.0426976Z #15 0.749 ▲ Next.js 16.3.5 (Turbopack)
+2026-10-17T21:04:08.1532178Z #15 0.796 ✓ Running next.config.ts took 46ms
+2026-10-17T21:04:08.1534703Z #15 0.802 Attention: Next.js now collects completely anonymous telemetry regarding usage.
+2026-10-17T21:04:08.1536226Z #15 0.802 This information is used to shape Next.js' roadmap and prioritize features.
+2026-10-17T21:04:08.1537881Z #15 0.802 You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+2026-10-17T21:04:08.1539775Z #15 0.802 https://nextjs.org/telemetry
+2026-10-17T21:04:08.1540363Z #15 0.802 
+2026-10-17T21:04:08.1540865Z #15 0.817 
+2026-10-17T21:04:08.1541559Z #15 0.860   Creating an optimized production build ...
+2026-10-17T21:04:21.1631841Z #15 13.87 ✓ Compiled successfully in 12.3s
+2026-10-17T21:04:21.3262282Z #15 13.88   Running TypeScript ...
+2026-10-17T21:04:28.1206046Z #15 20.83   Finished TypeScript in 6.9s ...
+2026-10-17T21:04:28.2730523Z #15 20.83   Collecting page data using 3 workers ...
+2026-10-17T21:04:29.6126641Z #15 22.32   Generating static pages using 3 workers (0/17) ...
+2026-10-17T21:04:29.7204436Z #15 22.40   Generating static pages using 3 workers (4/17) 
+2026-10-17T21:04:29.7205269Z #15 22.43   Generating static pages using 3 workers (8/17) 
+2026-10-17T21:04:29.9654042Z #15 22.44   Generating static pages using 3 workers (12/17) 
+2026-10-17T21:04:29.9654838Z #15 22.52 ✓ Generating static pages using 3 workers (17/17) in 198ms
+2026-10-17T21:04:29.9655280Z #15 22.52   Finalizing page optimization ...
+2026-10-17T21:04:30.1132140Z #15 22.82 
+2026-10-17T21:04:30.2663923Z #15 22.82 Route (app)
+2026-10-17T21:04:30.2664657Z #15 22.82 ┌ ○ /_not-found
+2026-10-17T21:04:30.2665053Z #15 22.82 ├   /[locale]
+2026-10-17T21:04:30.2665382Z #15 22.82 │ ├ ● /de
+2026-10-17T21:04:30.2665672Z #15 22.82 │ └ ● /en
+2026-10-17T21:04:30.2666047Z #15 22.82 ├ ƒ /[locale]/account/profile
+2026-10-17T21:04:30.2666498Z #15 22.82 ├ ƒ /[locale]/account/security
+2026-10-17T21:04:30.2666923Z #15 22.82 ├ ƒ /[locale]/collections
+2026-10-17T21:04:30.2667399Z #15 22.82 ├ ƒ /[locale]/collections/[collectionId]
+2026-10-17T21:04:30.2667862Z #15 22.82 ├ ƒ /[locale]/items/[itemId]
+2026-10-17T21:04:30.2668274Z #15 22.82 ├ ƒ /[locale]/items/new
+2026-10-17T21:04:30.2668924Z #15 22.82 ├ ƒ /[locale]/locations/[locationId]
+2026-10-17T21:04:30.2669471Z #15 22.82 ├ ƒ /[locale]/locations/[locationId]/label
+2026-10-17T21:04:30.2669899Z #15 22.82 ├ ƒ /[locale]/login
+2026-10-17T21:04:30.2670296Z #15 22.82 ├ ƒ /[locale]/register
+2026-10-17T21:04:30.2670680Z #15 22.82 ├ ƒ /api/auth/[...all]
+2026-10-17T21:04:30.2671046Z #15 22.82 ├ ƒ /api/health
+2026-10-17T21:04:30.2671407Z #15 22.82 ├ ƒ /api/openapi.json
+2026-10-17T21:04:30.2671806Z #15 22.82 ├ ƒ /api/v1/account/profile
+2026-10-17T21:04:30.2672254Z #15 22.82 ├ ƒ /api/v1/account/recovery-methods
+2026-10-17T21:04:30.2672706Z #15 22.82 ├ ƒ /api/v1/account/sessions
+2026-10-17T21:04:30.2673105Z #15 22.82 ├ ƒ /api/v1/collections
+2026-10-17T21:04:30.2673547Z #15 22.82 ├ ƒ /api/v1/collections/[collectionId]
+2026-10-17T21:04:30.2674105Z #15 22.82 ├ ƒ /api/v1/collections/[collectionId]/custom-fields
+2026-10-17T21:04:30.2674654Z #15 22.82 ├ ƒ /api/v1/collections/[collectionId]/nodes
+2026-10-17T21:04:30.2675203Z #15 22.82 ├ ƒ /api/v1/collections/[collectionId]/nodes/[nodeId]
+2026-10-17T21:04:30.2675663Z #15 22.82 ├ ƒ /api/v1/items
+2026-10-17T21:04:30.2676043Z #15 22.82 ├ ƒ /api/v1/items/[itemId]
+2026-10-17T21:04:30.2676491Z #15 22.82 ├ ƒ /api/v1/items/[itemId]/archive
+2026-10-17T21:04:30.2677063Z #15 22.82 ├ ƒ /api/v1/items/[itemId]/custom-fields/[fieldId]
+2026-10-17T21:04:30.2677570Z #15 22.82 ├ ƒ /api/v1/items/[itemId]/documents
+2026-10-17T21:04:30.2678070Z #15 22.82 ├ ƒ /api/v1/items/[itemId]/documents/[linkId]
+2026-10-17T21:04:30.2678686Z #15 22.82 ├ ƒ /api/v1/items/[itemId]/identifiers
+2026-10-17T21:04:30.2679155Z #15 22.82 ├ ƒ /api/v1/items/[itemId]/location
+2026-10-17T21:04:30.2679601Z #15 22.82 ├ ƒ /api/v1/items/[itemId]/media
+2026-10-17T21:04:30.2680072Z #15 22.82 ├ ƒ /api/v1/items/[itemId]/media/[linkId]
+2026-10-17T21:04:30.2680540Z #15 22.82 ├ ƒ /api/v1/items/[itemId]/split
+2026-10-17T21:04:30.2680978Z #15 22.82 ├ ƒ /api/v1/items/[itemId]/tags
+2026-10-17T21:04:30.2681394Z #15 22.82 ├ ƒ /api/v1/locations
+2026-10-17T21:04:30.2681828Z #15 22.82 ├ ƒ /api/v1/locations/[locationId]
+2026-10-17T21:04:30.2682315Z #15 22.82 ├ ƒ /api/v1/media/[assetId]/[variant]
+2026-10-17T21:04:30.2682751Z #15 22.82 ├ ƒ /api/v1/media/avatar
+2026-10-17T21:04:30.2683572Z #15 22.82 ├ ƒ /api/v1/media/documents
+2026-10-17T21:04:30.2683970Z #15 22.82 ├ ƒ /api/v1/media/images
+2026-10-17T21:04:30.2684321Z #15 22.82 └ ƒ /l/[token]
+2026-10-17T21:04:30.2684606Z #15 22.82 
+2026-10-17T21:04:30.2684827Z #15 22.82 
+2026-10-17T21:04:30.2685148Z #15 22.82 ƒ Proxy (Middleware)
+2026-10-17T21:04:30.2685436Z #15 22.82 
+2026-10-17T21:04:30.2685838Z #15 22.82 ○  (Static)   prerendered as static content
+2026-10-17T21:04:30.2686491Z #15 22.82 ●  (SSG)      prerendered as static HTML (uses generateStaticParams)
+2026-10-17T21:04:30.2687071Z #15 22.82 ƒ  (Dynamic)  server-rendered on demand
+2026-10-17T21:04:30.2687422Z #15 22.82 
+2026-10-17T21:04:30.4047509Z #15 DONE 23.1s
+2026-10-17T21:04:30.5966104Z 
+2026-10-17T21:04:30.5967057Z #16 [runtime 4/5] COPY --from=build --chown=node:node /app/apps/web/.next/standalone ./
+2026-10-17T21:04:30.7837838Z #16 DONE 0.2s
+2026-10-17T21:04:30.9499444Z 
+2026-10-17T21:04:30.9500913Z #17 [runtime 5/5] COPY --from=build --chown=node:node /app/apps/web/.next/static ./apps/web/.next/static
+2026-10-17T21:04:30.9502023Z #17 DONE 0.0s
+2026-10-17T21:04:30.9502512Z 
+2026-10-17T21:04:30.9502969Z #18 exporting to image
+2026-10-17T21:04:30.9503455Z #18 exporting layers
+2026-10-17T21:04:31.3692998Z #18 exporting layers 0.6s done
+2026-10-17T21:04:31.3694328Z #18 writing image sha256:895ffbee067082e64a6a0272c8261e7e2060b30e9a02e391d165b8eacd037835
+2026-10-17T21:04:31.3826128Z #18 writing image sha256:895ffbee067082e64a6a0272c8261e7e2060b30e9a02e391d165b8eacd037835 done
+2026-10-17T21:04:31.3826805Z #18 DONE 0.6s
+2026-10-17T21:04:31.3894038Z ##[group]Run docker build -f Dockerfile.worker -t sammlerraum-worker-ci .
+2026-10-17T21:04:31.3894559Z [36;1mdocker build -f Dockerfile.worker -t sammlerraum-worker-ci .[0m
+2026-10-17T21:04:31.3930851Z shell: /usr/bin/bash -e {0}
+2026-10-17T21:04:31.3931113Z env:
+2026-10-17T21:04:31.3931312Z   NODE_ENV: test
+2026-10-17T21:04:31.3931766Z   DATABASE_URL: ***localhost:5432/sammlerraum_test
+2026-10-17T21:04:31.3932098Z   APP_ORIGIN: http://localhost:3000
+2026-10-17T21:04:31.3932441Z   NEXT_PUBLIC_APP_ORIGIN: https://example.invalid
+2026-10-17T21:04:31.3932797Z   UPLOADS_DIR: /tmp/sammlerraum-test-uploads
+2026-10-17T21:04:31.3933086Z   LOG_LEVEL: info
+2026-10-17T21:04:31.3933306Z   WORKER_HEALTH_PORT: 3001
+2026-10-17T21:04:31.3933690Z   BETTER_AUTH_SECRET: test-only-secret-that-is-at-least-thirty-two-characters
+2026-10-17T21:04:31.3934129Z   GOOGLE_CLIENT_ID: test-google-client-id
+2026-10-17T21:04:31.3934436Z   GOOGLE_CLIENT_SECRET: test-google-client-secret
+2026-10-17T21:04:31.3934789Z   APPLE_CLIENT_ID: test-apple-client-id
+2026-10-17T21:04:31.3935092Z   APPLE_CLIENT_SECRET: test-apple-client-secret
+2026-10-17T21:04:31.3935398Z   SMTP_HOST: smtp.example.invalid
+2026-10-17T21:04:31.3935654Z   SMTP_PORT: 587
+2026-10-17T21:04:31.3935870Z   SMTP_SECURE: false
+2026-10-17T21:04:31.3936092Z   SMTP_USER: test-smtp-user
+2026-10-17T21:04:31.3936345Z   SMTP_PASSWORD: test-smtp-password
+2026-10-17T21:04:31.3936621Z   SMTP_FROM: noreply@example.invalid
+2026-10-17T21:04:31.3936901Z   POSTGRES_DB: sammlerraum_test
+2026-10-17T21:04:31.3937151Z   POSTGRES_USER: test
+2026-10-17T21:04:31.3937371Z   POSTGRES_PASSWORD: test
+2026-10-17T21:04:31.3937657Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+2026-10-17T21:04:31.3937968Z ##[endgroup]
+2026-10-17T21:04:31.6594773Z #0 building with "default" instance using docker driver
+2026-10-17T21:04:31.6595098Z 
+2026-10-17T21:04:31.6595333Z #1 [internal] load build definition from Dockerfile.worker
+2026-10-17T21:04:31.6595776Z #1 transferring dockerfile: 891B done
+2026-10-17T21:04:31.6596046Z #1 DONE 0.0s
+2026-10-17T21:04:31.6596172Z 
+2026-10-17T21:04:31.6596473Z #2 [internal] load metadata for docker.io/library/node:24.19.0-bookworm-slim
+2026-10-17T21:04:31.7321480Z #2 DONE 0.2s
+2026-10-17T21:04:31.8671251Z 
+2026-10-17T21:04:31.8672223Z #3 [internal] load .dockerignore
+2026-10-17T21:04:31.8673001Z #3 transferring context: 237B done
+2026-10-17T21:04:31.8673545Z #3 DONE 0.0s
+2026-10-17T21:04:31.8674206Z 
+2026-10-17T21:04:31.8675368Z #4 [base 1/3] FROM docker.io/library/node:24.19.0-bookworm-slim@sha256:a9f5f7c91a432850b2a8a7797adf5eadb6c733ceed61167806cee7ea7fbc29df
+2026-10-17T21:04:31.8676547Z #4 DONE 0.0s
+2026-10-17T21:04:31.8676894Z 
+2026-10-17T21:04:31.8677250Z #5 [runtime 2/5] WORKDIR /app
+2026-10-17T21:04:31.8677818Z #5 CACHED
+2026-10-17T21:04:31.8678169Z 
+2026-10-17T21:04:31.8678825Z #6 [internal] load build context
+2026-10-17T21:04:31.8679710Z #6 transferring context: 23.60kB 0.0s done
+2026-10-17T21:04:31.8680392Z #6 DONE 0.0s
+2026-10-17T21:04:31.8680770Z 
+2026-10-17T21:04:31.8681115Z #7 [base 3/3] WORKDIR /app
+2026-10-17T21:04:31.8681674Z #7 CACHED
+2026-10-17T21:04:31.8682008Z 
+2026-10-17T21:04:31.8682692Z #8 [base 2/3] RUN corepack enable && corepack prepare pnpm@10.17.1 --activate
+2026-10-17T21:04:31.8683539Z #8 CACHED
+2026-10-17T21:04:31.8683854Z 
+2026-10-17T21:04:31.8684184Z #9 [build 1/5] COPY . .
+2026-10-17T21:04:31.8684673Z #9 CACHED
+2026-10-17T21:04:31.8684967Z 
+2026-10-17T21:04:31.8685549Z #10 [runtime 3/5] RUN mkdir -p /data/uploads && chown node:node /data/uploads
+2026-10-17T21:04:31.8686303Z #10 DONE 0.1s
+2026-10-17T21:04:31.8686634Z 
+2026-10-17T21:04:31.8687053Z #11 [build 2/5] RUN pnpm install --frozen-lockfile
+2026-10-17T21:04:32.2630340Z #11 0.495 Scope: all 10 workspace projects
+2026-10-17T21:04:32.3784741Z #11 0.571 Lockfile is up to date, resolution step is skipped
+2026-10-17T21:04:32.3785319Z #11 0.611 Progress: resolved 1, reused 0, downloaded 0, added 0
+2026-10-17T21:04:32.5786657Z #11 0.660 Packages: +339
+2026-10-17T21:04:32.5788186Z #11 0.660 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+2026-10-17T21:04:32.6949090Z #11 0.927 
+2026-10-17T21:04:32.6951052Z #11 0.927    ╭───────────────────────────────────────────────╮
+2026-10-17T21:04:32.6951974Z #11 0.927    │                                               │
+2026-10-17T21:04:32.6952763Z #11 0.927    │     Update available! 10.17.1 → 12.14.0.      │
+2026-10-17T21:04:32.6953465Z #11 0.927    │     Changelog: https://pnpm.io/v/12.14.0      │
+2026-10-17T21:04:32.6954240Z #11 0.927    │   To update, run: corepack use pnpm@12.14.0   │
+2026-10-17T21:04:32.6955046Z #11 0.927    │                                               │
+2026-10-17T21:04:32.6955950Z #11 0.927    ╰───────────────────────────────────────────────╯
+2026-10-17T21:04:32.6956417Z #11 0.927 
+2026-10-17T21:04:33.3805334Z #11 1.612 Progress: resolved 339, reused 0, downloaded 125, added 83
+2026-10-17T21:04:34.3790938Z #11 2.611 Progress: resolved 339, reused 0, downloaded 237, added 146
+2026-10-17T21:04:35.3857136Z #11 3.618 Progress: resolved 339, reused 0, downloaded 297, added 181
+2026-10-17T21:04:36.3864384Z #11 4.619 Progress: resolved 339, reused 0, downloaded 327, added 338
+2026-10-17T21:04:37.1251993Z #11 5.356 Progress: resolved 339, reused 0, downloaded 328, added 339, done
+2026-10-17T21:04:37.2605893Z #11 5.493 .../node_modules/@prisma/engines postinstall$ node scripts/postinstall.js
+2026-10-17T21:04:37.4144237Z #11 5.514 .../esbuild@0.28.2/node_modules/esbuild postinstall$ node install.js
+2026-10-17T21:04:37.4146102Z #11 5.576 .../esbuild@0.28.2/node_modules/esbuild postinstall: Done
+2026-10-17T21:04:37.4148054Z #11 5.647 .../node_modules/@prisma/engines postinstall: prisma:warn Prisma failed to detect the libssl/openssl version to use, and may not work as expected. Defaulting to "openssl-1.1.x".
+2026-10-17T21:04:37.5656570Z #11 5.647 .../node_modules/@prisma/engines postinstall: Please manually install OpenSSL via `apt-get update -y && apt-get install -y openssl` and try installing Prisma again. If you're running Prisma on Docker, add this command to your Dockerfile, or switch to an image that already has OpenSSL installed.
+2026-10-17T21:04:37.8406827Z #11 6.073 .../node_modules/@prisma/engines postinstall: Done
+2026-10-17T21:04:37.9761882Z #11 6.149 .../node_modules/prisma preinstall$ node scripts/preinstall-entry.js
+2026-10-17T21:04:37.9763041Z #11 6.150 .../node_modules/prisma preinstall$ node scripts/preinstall-entry.js
+2026-10-17T21:04:37.9764328Z #11 6.208 .../node_modules/prisma preinstall: Done
+2026-10-17T21:04:38.1395559Z #11 6.221 .../node_modules/prisma preinstall: Done
+2026-10-17T21:04:38.3038009Z #11 6.536 
+2026-10-17T21:04:38.3038324Z #11 6.536 devDependencies:
+2026-10-17T21:04:38.3038797Z #11 6.536 + @types/node 24.5.2
+2026-10-17T21:04:38.3039127Z #11 6.536 + prettier 3.6.2
+2026-10-17T21:04:38.3039524Z #11 6.536 + typescript 5.9.2
+2026-10-17T21:04:38.3039959Z #11 6.536 + vitest 3.2.7
+2026-10-17T21:04:38.3040258Z #11 6.536 
+2026-10-17T21:04:38.3040971Z #11 6.536 ╭ Warning ─────────────────────────────────────────────────────────────────────╮
+2026-10-17T21:04:38.3041564Z #11 6.536 │                                                                              │
+2026-10-17T21:04:38.3042164Z #11 6.536 │   Ignored build scripts: @parcel/watcher, @swc/core.                         │
+2026-10-17T21:04:38.3042847Z #11 6.536 │   Run "pnpm approve-builds" to pick which dependencies should be allowed     │
+2026-10-17T21:04:38.3043788Z #11 6.536 │   to run scripts.                                                            │
+2026-10-17T21:04:38.3044338Z #11 6.536 │                                                                              │
+2026-10-17T21:04:38.3044910Z #11 6.536 ╰──────────────────────────────────────────────────────────────────────────────╯
+2026-10-17T21:04:38.3045260Z #11 6.536 
+2026-10-17T21:04:38.4234991Z #11 6.656 Done in 6.4s using pnpm v10.17.1
+2026-10-17T21:04:40.3010939Z #11 DONE 8.5s
+2026-10-17T21:04:40.4520280Z 
+2026-10-17T21:04:40.4521980Z #12 [build 3/5] RUN DATABASE_URL=***127.0.0.1:5432/sammlerraum_build     pnpm --filter @sammlerraum/db prisma generate
+2026-10-17T21:04:40.6950773Z #12 0.393 
+2026-10-17T21:04:40.6951190Z #12 0.393 > @sammlerraum/db@ prisma /app/packages/db
+2026-10-17T21:04:40.6951558Z #12 0.393 > prisma generate
+2026-10-17T21:04:40.6951800Z #12 0.393 
+2026-10-17T21:04:41.5398330Z #12 1.238 Loaded Prisma config from prisma.config.ts.
+2026-10-17T21:04:41.5399083Z #12 1.238 
+2026-10-17T21:04:41.6735401Z #12 1.278 prisma:warn Prisma failed to detect the libssl/openssl version to use, and may not work as expected. Defaulting to "openssl-1.1.x".
+2026-10-17T21:04:41.6738125Z #12 1.278 Please manually install OpenSSL via `apt-get update -y && apt-get install -y openssl` and try installing Prisma again. If you're running Prisma on Docker, add this command to your Dockerfile, or switch to an image that already has OpenSSL installed.
+2026-10-17T21:04:41.6741084Z #12 1.282 prisma:warn Prisma failed to detect the libssl/openssl version to use, and may not work as expected. Defaulting to "openssl-1.1.x".
+2026-10-17T21:04:41.6744172Z #12 1.282 Please manually install OpenSSL via `apt-get update -y && apt-get install -y openssl` and try installing Prisma again. If you're running Prisma on Docker, add this command to your Dockerfile, or switch to an image that already has OpenSSL installed.
+2026-10-17T21:04:41.6746339Z #12 1.372 Prisma schema loaded from prisma/schema.prisma.
+2026-10-17T21:04:42.2226483Z #12 1.921 
+2026-10-17T21:04:42.2227996Z #12 1.921 ✔ Generated Prisma Client (v7.10.0) to ./../../node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client in 369ms
+2026-10-17T21:04:42.2229135Z #12 1.921 
+2026-10-17T21:04:42.2229611Z #12 1.921 Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+2026-10-17T21:04:42.2230036Z #12 1.921 
+2026-10-17T21:04:42.2230243Z #12 1.921 
+2026-10-17T21:04:42.4233890Z #12 DONE 2.0s
+2026-10-17T21:04:42.4234214Z 
+2026-10-17T21:04:42.4234609Z #13 [build 4/5] RUN pnpm --filter @sammlerraum/worker build
+2026-10-17T21:04:42.8063268Z #13 0.536 
+2026-10-17T21:04:42.8064131Z #13 0.536 > @sammlerraum/worker@ build /app/apps/worker
+2026-10-17T21:04:42.8066304Z #13 0.536 > esbuild src/run.ts --bundle --platform=node --format=cjs --external:sharp --outfile=dist/worker.cjs && esbuild src/main.ts --bundle --platform=node --format=cjs --outfile=dist/main.cjs
+2026-10-17T21:04:42.8068300Z #13 0.536 
+2026-10-17T21:04:42.9542249Z #13 0.684 
+2026-10-17T21:04:42.9543137Z #13 0.684   dist/worker.cjs  6.8mb ⚠️
+2026-10-17T21:04:42.9543726Z #13 0.684 
+2026-10-17T21:04:42.9544348Z #13 0.684 ⚡ Done in 140ms
+2026-10-17T21:04:43.1282676Z #13 0.691 
+2026-10-17T21:04:43.1283197Z #13 0.691   dist/main.cjs  4.0kb
+2026-10-17T21:04:43.1283649Z #13 0.691 
+2026-10-17T21:04:43.1284263Z #13 0.691 ⚡ Done in 2ms
+2026-10-17T21:04:43.1284671Z #13 DONE 0.7s
+2026-10-17T21:04:43.1284881Z 
+2026-10-17T21:04:43.1285650Z #14 [build 5/5] RUN pnpm --filter @sammlerraum/worker deploy --prod --legacy /app/worker-runtime
+2026-10-17T21:04:43.3947787Z #14 0.416  WARN  Shared workspace lockfile detected but configuration forces legacy deploy implementation.
+2026-10-17T21:04:43.6085668Z #14 0.451 Packages are copied from the content-addressable store to the virtual store.
+2026-10-17T21:04:43.6086793Z #14 0.451   Content-addressable store is at: /pnpm/store/v10
+2026-10-17T21:04:43.6087767Z #14 0.451   Virtual store is at:             worker-runtime/node_modules/.pnpm
+2026-10-17T21:04:43.6088905Z #14 0.480 Progress: resolved 1, reused 0, downloaded 0, added 0
+2026-10-17T21:04:44.5059094Z #14 1.527 Progress: resolved 33, reused 0, downloaded 0, added 0
+2026-10-17T21:04:45.5045209Z #14 2.526 Progress: resolved 125, reused 0, downloaded 0, added 0
+2026-10-17T21:04:46.5048013Z #14 3.526 Progress: resolved 258, reused 0, downloaded 0, added 0
+2026-10-17T21:04:47.5792689Z #14 4.601 Progress: resolved 404, reused 0, downloaded 0, added 0
+2026-10-17T21:04:48.1955787Z #14 5.217 Progress: resolved 432, reused 0, downloaded 0, added 0, done
+2026-10-17T21:04:48.4126556Z #14 5.284 .                                        | +195 ++++++++++++++++++++
+2026-10-17T21:04:51.2153414Z #14 DONE 8.2s
+2026-10-17T21:04:52.1475622Z 
+2026-10-17T21:04:52.3158212Z #15 [runtime 4/5] COPY --from=build --chown=node:node /app/apps/worker/dist/worker.cjs ./dist/worker.cjs
+2026-10-17T21:04:52.3159335Z #15 DONE 0.0s
+2026-10-17T21:04:52.3159561Z 
+2026-10-17T21:04:52.3160291Z #16 [runtime 5/5] COPY --from=build --chown=node:node /app/worker-runtime/node_modules ./node_modules
+2026-10-17T21:04:53.7748016Z #16 DONE 1.6s
+2026-10-17T21:04:53.9261958Z 
+2026-10-17T21:04:53.9262838Z #17 exporting to image
+2026-10-17T21:04:53.9263349Z #17 exporting layers
+2026-10-17T21:04:55.7390978Z #17 exporting layers 2.0s done
+2026-10-17T21:04:55.7525789Z #17 writing image sha256:a07128a9043d524bf8f3ac01dff77a17441c6eea0150f485ad507bd8ba155a96 done
+2026-10-17T21:04:55.7526544Z #17 naming to docker.io/library/sammlerraum-worker-ci done
+2026-10-17T21:04:55.7526920Z #17 DONE 2.0s
+2026-10-17T21:04:55.7589316Z ##[group]Run docker run --rm --entrypoint node sammlerraum-worker-ci -e "const sharp=require('sharp'); sharp({create:{width:3,height:2,channels:3,background:'red'}}).webp().toBuffer().then(bytes=>sharp(bytes).raw().toBuffer({resolveWithObject:true})).then(({info})=>{if(info.width!==3||info.height!==2)process.exit(1)}).catch(()=>process.exit(1))"
+2026-10-17T21:04:55.7591391Z [36;1mdocker run --rm --entrypoint node sammlerraum-worker-ci -e "const sharp=require('sharp'); sharp({create:{width:3,height:2,channels:3,background:'red'}}).webp().toBuffer().then(bytes=>sharp(bytes).raw().toBuffer({resolveWithObject:true})).then(({info})=>{if(info.width!==3||info.height!==2)process.exit(1)}).catch(()=>process.exit(1))"[0m
+2026-10-17T21:04:55.7628856Z shell: /usr/bin/bash -e {0}
+2026-10-17T21:04:55.7629128Z env:
+2026-10-17T21:04:55.7629318Z   NODE_ENV: test
+2026-10-17T21:04:55.7629778Z   DATABASE_URL: ***localhost:5432/sammlerraum_test
+2026-10-17T21:04:55.7630146Z   APP_ORIGIN: http://localhost:3000
+2026-10-17T21:04:55.7630458Z   NEXT_PUBLIC_APP_ORIGIN: https://example.invalid
+2026-10-17T21:04:55.7630791Z   UPLOADS_DIR: /tmp/sammlerraum-test-uploads
+2026-10-17T21:04:55.7631069Z   LOG_LEVEL: info
+2026-10-17T21:04:55.7631294Z   WORKER_HEALTH_PORT: 3001
+2026-10-17T21:04:55.7631673Z   BETTER_AUTH_SECRET: test-only-secret-that-is-at-least-thirty-two-characters
+2026-10-17T21:04:55.7632198Z   GOOGLE_CLIENT_ID: test-google-client-id
+2026-10-17T21:04:55.7632654Z   GOOGLE_CLIENT_SECRET: test-google-client-secret
+2026-10-17T21:04:55.7633007Z   APPLE_CLIENT_ID: test-apple-client-id
+2026-10-17T21:04:55.7633315Z   APPLE_CLIENT_SECRET: test-apple-client-secret
+2026-10-17T21:04:55.7633621Z   SMTP_HOST: smtp.example.invalid
+2026-10-17T21:04:55.7633871Z   SMTP_PORT: 587
+2026-10-17T21:04:55.7634089Z   SMTP_SECURE: false
+2026-10-17T21:04:55.7634310Z   SMTP_USER: test-smtp-user
+2026-10-17T21:04:55.7634564Z   SMTP_PASSWORD: test-smtp-password
+2026-10-17T21:04:55.7634838Z   SMTP_FROM: noreply@example.invalid
+2026-10-17T21:04:55.7635117Z   POSTGRES_DB: sammlerraum_test
+2026-10-17T21:04:55.7635363Z   POSTGRES_USER: test
+2026-10-17T21:04:55.7635582Z   POSTGRES_PASSWORD: test
+2026-10-17T21:04:55.7635859Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+2026-10-17T21:04:55.7636168Z ##[endgroup]
+2026-10-17T21:04:56.0123252Z Post job cleanup.
+2026-10-17T21:04:56.1317378Z (node:12242) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-17T21:04:56.1318167Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-17T21:04:56.1322086Z Cache hit occurred on the primary key node-cache-Linux-x64-pnpm-a26c67511c64fcfb677366424b5d7991d4d67b801215505b2125479178c23344, not saving cache.
+2026-10-17T21:04:56.1409947Z Post job cleanup.
+2026-10-17T21:04:56.2798120Z Pruning is unnecessary.
+2026-10-17T21:04:56.2935183Z Post job cleanup.
+2026-10-17T21:04:56.3843620Z [command]/usr/bin/git version
+2026-10-17T21:04:56.3882076Z git version 2.55.0
+2026-10-17T21:04:56.3920140Z Temporarily overriding HOME='/home/runner/work/_temp/dbdfb3fb-70b4-4051-bdbf-2758ae051841' before making global git config changes
+2026-10-17T21:04:56.3921827Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-17T21:04:56.3927193Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/sammlerraum/sammlerraum
+2026-10-17T21:04:56.3963424Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-17T21:04:56.3995159Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-17T21:04:56.4203814Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-17T21:04:56.4243478Z http.https://github.com/.extraheader
+2026-10-17T21:04:56.4255392Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-10-17T21:04:56.4291078Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-17T21:04:56.4510675Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-17T21:04:56.4549508Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-17T21:04:56.4854820Z Print service container logs: 6b5cbba69e5a4c738b51b957f00aceac_postgres17bookworm_88e146
+2026-10-17T21:04:56.4859737Z ##[command]/usr/bin/docker logs --details b2e8ce63366c60966d583f008552b997afa06d39580d727959d3ee5be0405634
+2026-10-17T21:04:56.4986975Z  initdb: warning: enabling "trust" authentication for local connections
+2026-10-17T21:04:56.4987909Z  The files belonging to this database system will be owned by user "postgres".
+2026-10-17T21:04:56.4989807Z  initdb: hint: You can change this by editing pg_hba.conf or using the option -A, or --auth-local and --auth-host, the next time you run initdb.
+2026-10-17T21:04:56.4990861Z  This user must also own the server process.
+2026-10-17T21:04:56.4992156Z  2026-10-17 20:55:47.218 UTC [1] LOG:  starting PostgreSQL 17.11 (Debian 17.11-1.pgdg12+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14+deb12u1) 12.2.0, 64-bit
+2026-10-17T21:04:56.4993501Z  
+2026-10-17T21:04:56.4994284Z  2026-10-17 20:55:47.218 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+2026-10-17T21:04:56.4995035Z  The database cluster will be initialized with locale "en_US.utf8".
+2026-10-17T21:04:56.4996047Z  2026-10-17 20:55:47.218 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+2026-10-17T21:04:56.4996860Z  The default database encoding has accordingly been set to "UTF8".
+2026-10-17T21:04:56.4997942Z  2026-10-17 20:55:47.219 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+2026-10-17T21:04:56.4998791Z  The default text search configuration will be set to "english".
+2026-10-17T21:04:56.4999783Z  2026-10-17 20:55:47.221 UTC [64] LOG:  database system was shut down at 2026-10-17 20:55:47 UTC
+2026-10-17T21:04:56.5000349Z  
+2026-10-17T21:04:56.5000934Z  2026-10-17 20:55:47.225 UTC [1] LOG:  database system is ready to accept connections
+2026-10-17T21:04:56.5001498Z  Data page checksums are disabled.
+2026-10-17T21:04:56.5002575Z  2026-10-17 20:58:11.855 UTC [190] ERROR:  insert or update on table "StorageLocation" violates foreign key constraint "StorageLocation_parentId_ownerId_fkey"
+2026-10-17T21:04:56.5003165Z  
+2026-10-17T21:04:56.5004249Z  2026-10-17 20:58:11.855 UTC [190] DETAIL:  Key (parentId, ownerId)=(243c2028-e721-471e-9fc4-f72a8ebf115d, 43c04970-180e-4272-a79a-5653c202ab08) is not present in table "StorageLocation".
+2026-10-17T21:04:56.5005039Z  fixing permissions on existing directory /var/lib/postgresql/data ... ok
+2026-10-17T21:04:56.5007265Z  2026-10-17 20:58:11.855 UTC [190] STATEMENT:  UPDATE "public"."StorageLocation" SET "parentId" = $1, "updatedAt" = $2 WHERE ("public"."StorageLocation"."id" = $3 AND 1=1) RETURNING "public"."StorageLocation"."id", "public"."StorageLocation"."ownerId", "public"."StorageLocation"."parentId", "public"."StorageLocation"."name", "public"."StorageLocation"."type"::text, "public"."StorageLocation"."visibility"::text, "public"."StorageLocation"."qrToken", "public"."StorageLocation"."createdAt", "public"."StorageLocation"."updatedAt"
+2026-10-17T21:04:56.5009394Z  creating subdirectories ... ok
+2026-10-17T21:04:56.5009903Z  selecting dynamic shared memory implementation ... posix
+2026-10-17T21:04:56.5010255Z  selecting default "max_connections" ... 100
+2026-10-17T21:04:56.5010742Z  selecting default "shared_buffers" ... 128MB
+2026-10-17T21:04:56.5011188Z  selecting default time zone ... Etc/UTC
+2026-10-17T21:04:56.5011640Z  creating configuration files ... ok
+2026-10-17T21:04:56.5012083Z  running bootstrap script ... ok
+2026-10-17T21:04:56.5012587Z  performing post-bootstrap initialization ... ok
+2026-10-17T21:04:56.5013116Z  syncing data to disk ... ok
+2026-10-17T21:04:56.5013512Z  
+2026-10-17T21:04:56.5013797Z  
+2026-10-17T21:04:56.5014095Z  Success. You can now start the database server using:
+2026-10-17T21:04:56.5014392Z  
+2026-10-17T21:04:56.5014638Z      pg_ctl -D /var/lib/postgresql/data -l logfile start
+2026-10-17T21:04:56.5014937Z  
+2026-10-17T21:04:56.5015783Z  waiting for server to start....2026-10-17 20:55:46.931 UTC [48] LOG:  starting PostgreSQL 17.11 (Debian 17.11-1.pgdg12+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14+deb12u1) 12.2.0, 64-bit
+2026-10-17T21:04:56.5016676Z  2026-10-17 20:55:46.932 UTC [48] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+2026-10-17T21:04:56.5017225Z  2026-10-17 20:55:46.934 UTC [51] LOG:  database system was shut down at 2026-10-17 20:55:46 UTC
+2026-10-17T21:04:56.5017741Z  2026-10-17 20:55:46.937 UTC [48] LOG:  database system is ready to accept connections
+2026-10-17T21:04:56.5018128Z   done
+2026-10-17T21:04:56.5018322Z  server started
+2026-10-17T21:04:56.5018692Z  CREATE DATABASE
+2026-10-17T21:04:56.5018908Z  
+2026-10-17T21:04:56.5019080Z  
+2026-10-17T21:04:56.5019400Z  /usr/local/bin/docker-entrypoint.sh: ignoring /docker-entrypoint-initdb.d/*
+2026-10-17T21:04:56.5019783Z  
+2026-10-17T21:04:56.5020139Z  waiting for server to shut down....2026-10-17 20:55:47.100 UTC [48] LOG:  received fast shutdown request
+2026-10-17T21:04:56.5020739Z  2026-10-17 20:55:47.100 UTC [48] LOG:  aborting any active transactions
+2026-10-17T21:04:56.5021289Z  2026-10-17 20:55:47.103 UTC [48] LOG:  background worker "logical replication launcher" (PID 54) exited with exit code 1
+2026-10-17T21:04:56.5021805Z  2026-10-17 20:55:47.103 UTC [49] LOG:  shutting down
+2026-10-17T21:04:56.5022178Z  2026-10-17 20:55:47.103 UTC [49] LOG:  checkpoint starting: shutdown immediate
+2026-10-17T21:04:56.5023186Z  2026-10-17 20:55:47.115 UTC [49] LOG:  checkpoint complete: wrote 921 buffers (5.6%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.008 s, sync=0.004 s, total=0.012 s; sync files=301, longest=0.002 s, average=0.001 s; distance=4238 kB, estimate=4238 kB; lsn=0/190A9C8, redo lsn=0/190A9C8
+2026-10-17T21:04:56.5024181Z  2026-10-17 20:55:47.119 UTC [48] LOG:  database system is shut down
+2026-10-17T21:04:56.5024493Z   done
+2026-10-17T21:04:56.5024678Z  server stopped
+2026-10-17T21:04:56.5024881Z  
+2026-10-17T21:04:56.5025120Z  PostgreSQL init process complete; ready for start up.
+2026-10-17T21:04:56.5025413Z  
+2026-10-17T21:04:56.5026483Z  2026-10-17 20:58:12.145 UTC [202] ERROR:  update or delete on table "user" violates foreign key constraint "MediaAsset_ownerId_fkey" on table "MediaAsset"
+2026-10-17T21:04:56.5027696Z  2026-10-17 20:58:12.145 UTC [202] DETAIL:  Key (id)=(4ac6698f-e3f8-47d3-af93-0b6932b62e70) is still referenced from table "MediaAsset".
+2026-10-17T21:04:56.5029557Z  2026-10-17 20:58:12.145 UTC [202] STATEMENT:  DELETE FROM "public"."user" WHERE ("public"."user"."id" = $1 AND 1=1) RETURNING "public"."user"."id", "public"."user"."name", "public"."user"."email", "public"."user"."emailVerified", "public"."user"."image", "public"."user"."createdAt", "public"."user"."updatedAt"
+2026-10-17T21:04:56.5031738Z  2026-10-17 20:58:12.147 UTC [201] ERROR:  insert or update on table "CollectibleItem" violates foreign key constraint "CollectibleItem_storageLocationId_ownerId_fkey"
+2026-10-17T21:04:56.5033015Z  2026-10-17 20:58:12.147 UTC [201] DETAIL:  Key (storageLocationId, ownerId)=(1a880a6f-6013-4e7e-ab28-db26cf26497a, 3aa18547-0a17-435c-9c32-9c49a6a52162) is not present in table "StorageLocation".
+2026-10-17T21:04:56.5036921Z  2026-10-17 20:58:12.147 UTC [201] STATEMENT:  UPDATE "public"."CollectibleItem" SET "storageLocationId" = $1, "updatedAt" = $2 WHERE ("public"."CollectibleItem"."id" = $3 AND 1=1) RETURNING "public"."CollectibleItem"."id", "public"."CollectibleItem"."collectionId", "public"."CollectibleItem"."ownerId", "public"."CollectibleItem"."nodeId", "public"."CollectibleItem"."storageLocationId", "public"."CollectibleItem"."title", "public"."CollectibleItem"."publicDescription", "public"."CollectibleItem"."privateNotes", "public"."CollectibleItem"."quantity", "public"."CollectibleItem"."acquisitionType"::text, "public"."CollectibleItem"."acquisitionDate", "public"."CollectibleItem"."purchaseAmountMinor", "public"."CollectibleItem"."purchaseCurrency", "public"."CollectibleItem"."visibility"::text, "public"."CollectibleItem"."tradeStatus"::text, "public"."CollectibleItem"."archivedAt", "public"."CollectibleItem"."disposedAt", "public"."CollectibleItem"."createdAt", "public"."CollectibleItem"."updatedAt", "public"."CollectibleItem"."deletedAt"
+2026-10-17T21:04:56.5042554Z  2026-10-17 20:58:12.219 UTC [196] ERROR:  insert or update on table "CustomFieldValue" violates foreign key constraint "CustomFieldValue_itemId_collectionId_fkey"
+2026-10-17T21:04:56.5044475Z  2026-10-17 20:58:12.219 UTC [196] DETAIL:  Key (itemId, collectionId)=(bd83ac5a-f344-43e6-86bb-1362e5301456, 913b141a-acb2-4090-a4de-b599a17a7cc3) is not present in table "CollectibleItem".
+2026-10-17T21:04:56.5047912Z  2026-10-17 20:58:12.219 UTC [196] STATEMENT:  INSERT INTO "public"."CustomFieldValue" ("itemId","fieldDefinitionId","collectionId","fieldType","shortTextValue","createdAt","updatedAt") VALUES ($1,$2,$3,CAST($4::text AS "public"."CustomFieldType"),$5,$6,$7) RETURNING "public"."CustomFieldValue"."itemId", "public"."CustomFieldValue"."fieldDefinitionId", "public"."CustomFieldValue"."collectionId", "public"."CustomFieldValue"."fieldType"::text, "public"."CustomFieldValue"."shortTextValue", "public"."CustomFieldValue"."longTextValue", "public"."CustomFieldValue"."integerValue", "public"."CustomFieldValue"."decimalValue", "public"."CustomFieldValue"."dateValue", "public"."CustomFieldValue"."booleanValue", "public"."CustomFieldValue"."singleSelectOptionId", "public"."CustomFieldValue"."urlValue", "public"."CustomFieldValue"."moneyAmountMinor", "public"."CustomFieldValue"."moneyCurrency", "public"."CustomFieldValue"."createdAt", "public"."CustomFieldValue"."updatedAt"
+2026-10-17T21:04:56.5051470Z  2026-10-17 20:58:12.246 UTC [203] ERROR:  insert or update on table "MediaLink" violates foreign key constraint "MediaLink_assetId_ownerId_fkey"
+2026-10-17T21:04:56.5052423Z  2026-10-17 20:58:12.246 UTC [203] DETAIL:  Key (assetId, ownerId)=(1e9b2961-f146-432a-bb31-5d914d17a80f, c1ea7647-c3b7-4f53-be62-2e7d32b8f6ac) is not present in table "MediaAsset".
+2026-10-17T21:04:56.5054261Z  2026-10-17 20:58:12.246 UTC [203] STATEMENT:  INSERT INTO "public"."MediaLink" ("id","assetId","ownerId","itemId","purpose","position","createdAt") VALUES ($1,$2,$3,$4,CAST($5::text AS "public"."MediaPurpose"),$6,$7) RETURNING "public"."MediaLink"."id", "public"."MediaLink"."assetId", "public"."MediaLink"."ownerId", "public"."MediaLink"."itemId", "public"."MediaLink"."purpose"::text, "public"."MediaLink"."position", "public"."MediaLink"."title", "public"."MediaLink"."createdAt"
+2026-10-17T21:04:56.5056000Z  2026-10-17 20:58:12.286 UTC [204] ERROR:  insert or update on table "UserProfile" violates foreign key constraint "UserProfile_avatarAssetId_userId_fkey"
+2026-10-17T21:04:56.5056984Z  2026-10-17 20:58:12.286 UTC [204] DETAIL:  Key (avatarAssetId, userId)=(1e9b2961-f146-432a-bb31-5d914d17a80f, c1ea7647-c3b7-4f53-be62-2e7d32b8f6ac) is not present in table "MediaAsset".
+2026-10-17T21:04:56.5058865Z  2026-10-17 20:58:12.286 UTC [204] STATEMENT:  INSERT INTO "public"."UserProfile" ("userId","handle","displayName","avatarAssetId","createdAt","updatedAt") VALUES ($1,$2,$3,$4,$5,$6) RETURNING "public"."UserProfile"."userId", "public"."UserProfile"."handle", "public"."UserProfile"."displayName", "public"."UserProfile"."bio", "public"."UserProfile"."avatarAssetId", "public"."UserProfile"."createdAt", "public"."UserProfile"."updatedAt"
+2026-10-17T21:04:56.5060483Z  2026-10-17 20:58:12.293 UTC [192] ERROR:  new row for relation "CustomFieldValue" violates check constraint "CustomFieldValue_typedShape_check"
+2026-10-17T21:04:56.5061760Z  2026-10-17 20:58:12.293 UTC [192] DETAIL:  Failing row contains (bd83ac5a-f344-43e6-86bb-1362e5301456, bee0fbe1-d8b8-4b93-90b6-b07705f9f8ec, a4af6fa7-5d26-45b1-97bd-9e6b8389db8a, SHORT_TEXT, null, null, 12, null, null, null, null, null, null, null, 2026-10-17 20:58:12.292, 2026-10-17 20:58:12.292).
+2026-10-17T21:04:56.5065602Z  2026-10-17 20:58:12.293 UTC [192] STATEMENT:  INSERT INTO "public"."CustomFieldValue" ("itemId","fieldDefinitionId","collectionId","fieldType","integerValue","createdAt","updatedAt") VALUES ($1,$2,$3,CAST($4::text AS "public"."CustomFieldType"),$5,$6,$7) RETURNING "public"."CustomFieldValue"."itemId", "public"."CustomFieldValue"."fieldDefinitionId", "public"."CustomFieldValue"."collectionId", "public"."CustomFieldValue"."fieldType"::text, "public"."CustomFieldValue"."shortTextValue", "public"."CustomFieldValue"."longTextValue", "public"."CustomFieldValue"."integerValue", "public"."CustomFieldValue"."decimalValue", "public"."CustomFieldValue"."dateValue", "public"."CustomFieldValue"."booleanValue", "public"."CustomFieldValue"."singleSelectOptionId", "public"."CustomFieldValue"."urlValue", "public"."CustomFieldValue"."moneyAmountMinor", "public"."CustomFieldValue"."moneyCurrency", "public"."CustomFieldValue"."createdAt", "public"."CustomFieldValue"."updatedAt"
+2026-10-17T21:04:56.5069069Z  2026-10-17 20:58:13.284 UTC [206] ERROR:  insert or update on table "CollectionNode" violates foreign key constraint "CollectionNode_parentId_collectionId_fkey"
+2026-10-17T21:04:56.5070171Z  2026-10-17 20:58:13.284 UTC [206] DETAIL:  Key (parentId, collectionId)=(b26d92f3-1638-40f7-9eed-33507c94bfa4, cb293040-c231-4280-a27a-6ebda51ac902) is not present in table "CollectionNode".
+2026-10-17T21:04:56.5072155Z  2026-10-17 20:58:13.284 UTC [206] STATEMENT:  INSERT INTO "public"."CollectionNode" ("id","collectionId","parentId","name","visibility","createdAt","updatedAt") VALUES ($1,$2,$3,$4,CAST($5::text AS "public"."Visibility"),$6,$7) RETURNING "public"."CollectionNode"."id", "public"."CollectionNode"."collectionId", "public"."CollectionNode"."parentId", "public"."CollectionNode"."name", "public"."CollectionNode"."visibility"::text, "public"."CollectionNode"."createdAt", "public"."CollectionNode"."updatedAt"
+2026-10-17T21:04:56.5074023Z  2026-10-17 20:58:13.315 UTC [207] ERROR:  insert or update on table "CollectibleItem" violates foreign key constraint "CollectibleItem_nodeId_collectionId_fkey"
+2026-10-17T21:04:56.5075086Z  2026-10-17 20:58:13.315 UTC [207] DETAIL:  Key (nodeId, collectionId)=(fe755afb-c22e-4bbe-bb9c-69749bca7b04, c65f8d97-9084-41dd-bf46-b042134ba45a) is not present in table "CollectionNode".
+2026-10-17T21:04:56.5078756Z  2026-10-17 20:58:13.315 UTC [207] STATEMENT:  UPDATE "public"."CollectibleItem" SET "nodeId" = $1, "updatedAt" = $2 WHERE ("public"."CollectibleItem"."id" = $3 AND 1=1) RETURNING "public"."CollectibleItem"."id", "public"."CollectibleItem"."collectionId", "public"."CollectibleItem"."ownerId", "public"."CollectibleItem"."nodeId", "public"."CollectibleItem"."storageLocationId", "public"."CollectibleItem"."title", "public"."CollectibleItem"."publicDescription", "public"."CollectibleItem"."privateNotes", "public"."CollectibleItem"."quantity", "public"."CollectibleItem"."acquisitionType"::text, "public"."CollectibleItem"."acquisitionDate", "public"."CollectibleItem"."purchaseAmountMinor", "public"."CollectibleItem"."purchaseCurrency", "public"."CollectibleItem"."visibility"::text, "public"."CollectibleItem"."tradeStatus"::text, "public"."CollectibleItem"."archivedAt", "public"."CollectibleItem"."disposedAt", "public"."CollectibleItem"."createdAt", "public"."CollectibleItem"."updatedAt", "public"."CollectibleItem"."deletedAt"
+2026-10-17T21:04:56.5082353Z  2026-10-17 20:58:13.553 UTC [210] ERROR:  new row for relation "CollectibleItem" violates check constraint "CollectibleItem_quantity_check"
+2026-10-17T21:04:56.5083674Z  2026-10-17 20:58:13.553 UTC [210] DETAIL:  Failing row contains (e68d6073-9f38-4821-966d-be7cdecdfbd9, c65f8d97-9084-41dd-bf46-b042134ba45a, null, Zero, null, null, 0, OTHER, null, null, null, PRIVATE, NOT_FOR_TRADE, null, null, 2026-10-17 20:58:13.552, 2026-10-17 20:58:13.552, b5a5d945-84ed-4e48-b598-dd5f4e94e433, null, null).
+2026-10-17T21:04:56.5088132Z  2026-10-17 20:58:13.553 UTC [210] STATEMENT:  INSERT INTO "public"."CollectibleItem" ("id","collectionId","ownerId","title","quantity","acquisitionType","visibility","tradeStatus","createdAt","updatedAt") VALUES ($1,$2,$3,$4,$5,CAST($6::text AS "public"."AcquisitionType"),CAST($7::text AS "public"."Visibility"),CAST($8::text AS "public"."TradeStatus"),$9,$10) RETURNING "public"."CollectibleItem"."id", "public"."CollectibleItem"."collectionId", "public"."CollectibleItem"."ownerId", "public"."CollectibleItem"."nodeId", "public"."CollectibleItem"."storageLocationId", "public"."CollectibleItem"."title", "public"."CollectibleItem"."publicDescription", "public"."CollectibleItem"."privateNotes", "public"."CollectibleItem"."quantity", "public"."CollectibleItem"."acquisitionType"::text, "public"."CollectibleItem"."acquisitionDate", "public"."CollectibleItem"."purchaseAmountMinor", "public"."CollectibleItem"."purchaseCurrency", "public"."CollectibleItem"."visibility"::text, "public"."CollectibleItem"."tradeStatus"::text, "public"."CollectibleItem"."archivedAt", "public"."CollectibleItem"."disposedAt", "public"."CollectibleItem"."createdAt", "public"."CollectibleItem"."updatedAt", "public"."CollectibleItem"."deletedAt"
+2026-10-17T21:04:56.5092415Z  2026-10-17 20:58:13.577 UTC [213] ERROR:  new row for relation "CollectibleItem" violates check constraint "CollectibleItem_purchaseMoneyPair_check"
+2026-10-17T21:04:56.5093864Z  2026-10-17 20:58:13.577 UTC [213] DETAIL:  Failing row contains (6dab8c3b-c59c-4c96-b819-5307ea92f037, c65f8d97-9084-41dd-bf46-b042134ba45a, null, Incomplete money, null, null, 1, OTHER, null, 100, null, PRIVATE, NOT_FOR_TRADE, null, null, 2026-10-17 20:58:13.564, 2026-10-17 20:58:13.564, b5a5d945-84ed-4e48-b598-dd5f4e94e433, null, null).
+2026-10-17T21:04:56.5098418Z  2026-10-17 20:58:13.577 UTC [213] STATEMENT:  INSERT INTO "public"."CollectibleItem" ("id","collectionId","ownerId","title","quantity","acquisitionType","purchaseAmountMinor","visibility","tradeStatus","createdAt","updatedAt") VALUES ($1,$2,$3,$4,$5,CAST($6::text AS "public"."AcquisitionType"),$7,CAST($8::text AS "public"."Visibility"),CAST($9::text AS "public"."TradeStatus"),$10,$11) RETURNING "public"."CollectibleItem"."id", "public"."CollectibleItem"."collectionId", "public"."CollectibleItem"."ownerId", "public"."CollectibleItem"."nodeId", "public"."CollectibleItem"."storageLocationId", "public"."CollectibleItem"."title", "public"."CollectibleItem"."publicDescription", "public"."CollectibleItem"."privateNotes", "public"."CollectibleItem"."quantity", "public"."CollectibleItem"."acquisitionType"::text, "public"."CollectibleItem"."acquisitionDate", "public"."CollectibleItem"."purchaseAmountMinor", "public"."CollectibleItem"."purchaseCurrency", "public"."CollectibleItem"."visibility"::text, "public"."CollectibleItem"."tradeStatus"::text, "public"."CollectibleItem"."archivedAt", "public"."CollectibleItem"."disposedAt", "public"."CollectibleItem"."createdAt", "public"."CollectibleItem"."updatedAt", "public"."CollectibleItem"."deletedAt"
+2026-10-17T21:04:56.5102600Z  2026-10-17 20:58:14.245 UTC [219] FATAL:  terminating connection due to administrator command
+2026-10-17T21:04:56.5103321Z  2026-10-17 20:58:15.189 UTC [228] ERROR:  insert or update on table "UserProfile" violates foreign key constraint "UserProfile_avatarAssetId_userId_fkey"
+2026-10-17T21:04:56.5104320Z  2026-10-17 20:58:15.189 UTC [228] DETAIL:  Key (avatarAssetId, userId)=(b9e133a8-2b62-410d-a350-32a1b23a6d6d, 8d6b2a76-405d-450a-bbad-ecd0967bc518) is not present in table "MediaAsset".
+2026-10-17T21:04:56.5105186Z  2026-10-17 20:58:15.189 UTC [228] STATEMENT:  UPDATE "UserProfile" SET "avatarAssetId" = $1 WHERE "userId" = $2
+2026-10-17T21:04:56.5105705Z  2026-10-17 20:58:15.618 UTC [231] ERROR:  Media asset unavailable
+2026-10-17T21:04:56.5106187Z  2026-10-17 20:58:15.618 UTC [231] CONTEXT:  PL/pgSQL function media_reference_guard() line 14 at RAISE
+2026-10-17T21:04:56.5107787Z  2026-10-17 20:58:15.618 UTC [231] STATEMENT:  INSERT INTO "public"."MediaLink" ("id","assetId","ownerId","itemId","purpose","position","createdAt") VALUES ($1,$2,$3,$4,CAST($5::text AS "public"."MediaPurpose"),$6,$7) RETURNING "public"."MediaLink"."id", "public"."MediaLink"."assetId", "public"."MediaLink"."ownerId", "public"."MediaLink"."itemId", "public"."MediaLink"."purpose"::text, "public"."MediaLink"."position", "public"."MediaLink"."title", "public"."MediaLink"."createdAt"
+2026-10-17T21:04:56.5109490Z  2026-10-17 20:58:15.696 UTC [232] ERROR:  Media asset unavailable
+2026-10-17T21:04:56.5109968Z  2026-10-17 20:58:15.696 UTC [232] CONTEXT:  PL/pgSQL function media_reference_guard() line 14 at RAISE
+2026-10-17T21:04:56.5111459Z  2026-10-17 20:58:15.696 UTC [232] STATEMENT:  INSERT INTO "public"."UserProfile" ("userId","handle","displayName","avatarAssetId","createdAt","updatedAt") VALUES ($1,$2,$3,$4,$5,$6) RETURNING "public"."UserProfile"."userId", "public"."UserProfile"."handle", "public"."UserProfile"."displayName", "public"."UserProfile"."bio", "public"."UserProfile"."avatarAssetId", "public"."UserProfile"."createdAt", "public"."UserProfile"."updatedAt"
+2026-10-17T21:04:56.5112864Z  2026-10-17 20:58:16.111 UTC [247] ERROR:  Media asset unavailable
+2026-10-17T21:04:56.5113333Z  2026-10-17 20:58:16.111 UTC [247] CONTEXT:  PL/pgSQL function media_reference_guard() line 14 at RAISE
+2026-10-17T21:04:56.5114961Z  2026-10-17 20:58:16.111 UTC [247] STATEMENT:  INSERT INTO "public"."MediaLink" ("id","assetId","ownerId","itemId","purpose","position","createdAt") VALUES ($1,$2,$3,$4,CAST($5::text AS "public"."MediaPurpose"),$6,$7) RETURNING "public"."MediaLink"."id", "public"."MediaLink"."assetId", "public"."MediaLink"."ownerId", "public"."MediaLink"."itemId", "public"."MediaLink"."purpose"::text, "public"."MediaLink"."position", "public"."MediaLink"."title", "public"."MediaLink"."createdAt"
+2026-10-17T21:04:56.5116607Z  2026-10-17 20:58:18.075 UTC [268] ERROR:  duplicate key value violates unique constraint "CategoryTemplate_key_key"
+2026-10-17T21:04:56.5117264Z  2026-10-17 20:58:18.075 UTC [268] DETAIL:  Key (key)=(fixture_6dbc07076df946eeb871bd9119f69a40_race) already exists.
+2026-10-17T21:04:56.5118075Z  2026-10-17 20:58:18.075 UTC [268] STATEMENT:  INSERT INTO "public"."CategoryTemplate" ("id","key","createdAt") VALUES ($1,$2,$3) RETURNING "public"."CategoryTemplate"."id"
+2026-10-17T21:04:56.5119128Z  2026-10-17 20:58:18.171 UTC [268] ERROR:  duplicate key value violates unique constraint "CatalogAttributeDefinition_categoryTemplateId_key_key"
+2026-10-17T21:04:56.5119939Z  2026-10-17 20:58:18.171 UTC [268] DETAIL:  Key ("categoryTemplateId", key)=(31591337-02a5-428b-bb32-d4dfd638bf7f, year) already exists.
+2026-10-17T21:04:56.5121712Z  2026-10-17 20:58:18.171 UTC [268] STATEMENT:  INSERT INTO "public"."CatalogAttributeDefinition" ("id","categoryTemplateId","key","type","position") VALUES ($1,$2,$3,CAST($4::text AS "public"."CustomFieldType"),$5) RETURNING "public"."CatalogAttributeDefinition"."id", "public"."CatalogAttributeDefinition"."categoryTemplateId", "public"."CatalogAttributeDefinition"."key", "public"."CatalogAttributeDefinition"."type"::text, "public"."CatalogAttributeDefinition"."position"
+2026-10-17T21:04:56.5123552Z  2026-10-17 20:58:18.183 UTC [266] ERROR:  duplicate key value violates unique constraint "CatalogAttributeDefinition_categoryTemplateId_position_key"
+2026-10-17T21:04:56.5124407Z  2026-10-17 20:58:18.183 UTC [266] DETAIL:  Key ("categoryTemplateId", "position")=(31591337-02a5-428b-bb32-d4dfd638bf7f, 0) already exists.
+2026-10-17T21:04:56.5126171Z  2026-10-17 20:58:18.183 UTC [266] STATEMENT:  INSERT INTO "public"."CatalogAttributeDefinition" ("id","categoryTemplateId","key","type","position") VALUES ($1,$2,$3,CAST($4::text AS "public"."CustomFieldType"),$5) RETURNING "public"."CatalogAttributeDefinition"."id", "public"."CatalogAttributeDefinition"."categoryTemplateId", "public"."CatalogAttributeDefinition"."key", "public"."CatalogAttributeDefinition"."type"::text, "public"."CatalogAttributeDefinition"."position"
+2026-10-17T21:04:56.5127955Z  2026-10-17 20:58:18.200 UTC [269] ERROR:  duplicate key value violates unique constraint "CatalogAttributeOption_definitionId_key_key"
+2026-10-17T21:04:56.5128853Z  2026-10-17 20:58:18.200 UTC [269] DETAIL:  Key ("definitionId", key)=(88d2fa2a-67f1-4d39-8b0a-248a2d6c7f54, silver) already exists.
+2026-10-17T21:04:56.5130289Z  2026-10-17 20:58:18.200 UTC [269] STATEMENT:  INSERT INTO "public"."CatalogAttributeOption" ("id","definitionId","key","position") VALUES ($1,$2,$3,$4) RETURNING "public"."CatalogAttributeOption"."id", "public"."CatalogAttributeOption"."definitionId", "public"."CatalogAttributeOption"."key", "public"."CatalogAttributeOption"."position"
+2026-10-17T21:04:56.5131672Z  2026-10-17 20:58:18.216 UTC [270] ERROR:  duplicate key value violates unique constraint "CatalogAttributeOption_definitionId_position_key"
+2026-10-17T21:04:56.5132448Z  2026-10-17 20:58:18.216 UTC [270] DETAIL:  Key ("definitionId", "position")=(88d2fa2a-67f1-4d39-8b0a-248a2d6c7f54, 0) already exists.
+2026-10-17T21:04:56.5133789Z  2026-10-17 20:58:18.216 UTC [270] STATEMENT:  INSERT INTO "public"."CatalogAttributeOption" ("id","definitionId","key","position") VALUES ($1,$2,$3,$4) RETURNING "public"."CatalogAttributeOption"."id", "public"."CatalogAttributeOption"."definitionId", "public"."CatalogAttributeOption"."key", "public"."CatalogAttributeOption"."position"
+2026-10-17T21:04:56.5135253Z  2026-10-17 20:58:18.231 UTC [271] ERROR:  duplicate key value violates unique constraint "CatalogAttributeDefinition_categoryTemplateId_key_key"
+2026-10-17T21:04:56.5136086Z  2026-10-17 20:58:18.231 UTC [271] DETAIL:  Key ("categoryTemplateId", key)=(8b0c6a8f-4f5c-498e-b772-fe7db8755a89, duplicate) already exists.
+2026-10-17T21:04:56.5137226Z  2026-10-17 20:58:18.231 UTC [271] STATEMENT:  INSERT INTO "public"."CatalogAttributeDefinition" ("id","categoryTemplateId","key","type","position") VALUES ($1,$2,$3,CAST($4::text AS "public"."CustomFieldType"),$5), ($6,$7,$8,CAST($9::text AS "public"."CustomFieldType"),$10)
+2026-10-17T21:04:56.5138205Z  2026-10-17 20:58:18.553 UTC [267] ERROR:  Catalog revision snapshots are immutable
+2026-10-17T21:04:56.5138903Z  2026-10-17 20:58:18.553 UTC [267] CONTEXT:  PL/pgSQL function reject_catalog_revision_update() line 3 at RAISE
+2026-10-17T21:04:56.5140434Z  2026-10-17 20:58:18.553 UTC [267] STATEMENT:  UPDATE "public"."CatalogRevision" SET "snapshot" = $1 WHERE (("public"."CatalogRevision"."entryId" = $2 AND "public"."CatalogRevision"."revision" = $3) AND 1=1) RETURNING "public"."CatalogRevision"."entryId", "public"."CatalogRevision"."revision", "public"."CatalogRevision"."snapshot", "public"."CatalogRevision"."rollbackFromRevision", "public"."CatalogRevision"."createdAt"
+2026-10-17T21:04:56.5142199Z  2026-10-17 20:58:18.886 UTC [273] ERROR:  insert or update on table "CatalogAttributeValue" violates foreign key constraint "CatalogAttributeValue_definitionId_categoryTemplateId_fkey"
+2026-10-17T21:04:56.5143412Z  2026-10-17 20:58:18.886 UTC [273] DETAIL:  Key (definitionId, categoryTemplateId)=(a43d9f72-25e2-4f92-a3ea-f9fce1e4afc5, 73e4640c-3466-468a-b52f-66982abf1675) is not present in table "CatalogAttributeDefinition".
+2026-10-17T21:04:56.5145622Z  2026-10-17 20:58:18.886 UTC [273] STATEMENT:  INSERT INTO "public"."CatalogAttributeValue" ("id","entryId","categoryTemplateId","targetKey","definitionId","value") VALUES ($1,$2,$3,$4,$5,$6) RETURNING "public"."CatalogAttributeValue"."id", "public"."CatalogAttributeValue"."entryId", "public"."CatalogAttributeValue"."categoryTemplateId", "public"."CatalogAttributeValue"."variantId", "public"."CatalogAttributeValue"."targetKey", "public"."CatalogAttributeValue"."definitionId", "public"."CatalogAttributeValue"."value"
+2026-10-17T21:04:56.5147674Z  2026-10-17 20:58:18.905 UTC [274] ERROR:  insert or update on table "CatalogAttributeValue" violates foreign key constraint "CatalogAttributeValue_entryId_categoryTemplateId_fkey"
+2026-10-17T21:04:56.5148927Z  2026-10-17 20:58:18.905 UTC [274] DETAIL:  Key (entryId, categoryTemplateId)=(03244c28-b05c-4d0a-a826-7cc56b731fd7, c8173d5f-80d3-4833-8107-f11f105be07a) is not present in table "CatalogEntry".
+2026-10-17T21:04:56.5151120Z  2026-10-17 20:58:18.905 UTC [274] STATEMENT:  INSERT INTO "public"."CatalogAttributeValue" ("id","entryId","categoryTemplateId","targetKey","definitionId","value") VALUES ($1,$2,$3,$4,$5,$6) RETURNING "public"."CatalogAttributeValue"."id", "public"."CatalogAttributeValue"."entryId", "public"."CatalogAttributeValue"."categoryTemplateId", "public"."CatalogAttributeValue"."variantId", "public"."CatalogAttributeValue"."targetKey", "public"."CatalogAttributeValue"."definitionId", "public"."CatalogAttributeValue"."value"
+2026-10-17T21:04:56.5152845Z  2026-10-17 21:00:47.243 UTC [62] LOG:  checkpoint starting: time
+2026-10-17T21:04:56.5153841Z  2026-10-17 21:01:50.599 UTC [62] LOG:  checkpoint complete: wrote 636 buffers (3.9%); 1 WAL file(s) added, 0 removed, 0 recycled; write=63.342 s, sync=0.002 s, total=63.357 s; sync files=494, longest=0.001 s, average=0.001 s; distance=4101 kB, estimate=4101 kB; lsn=0/1D72238, redo lsn=0/1D0BFD8
+2026-10-17T21:04:56.5154955Z  2026-10-17 21:02:02.990 UTC [687] ERROR:  duplicate key value violates unique constraint "rateLimit_key_key"
+2026-10-17T21:04:56.5155612Z  2026-10-17 21:02:02.990 UTC [687] DETAIL:  Key (key)=(0000:0000:0000:0000:0000:0000:0000:0000|/sign-in/social) already exists.
+2026-10-17T21:04:56.5156651Z  2026-10-17 21:02:02.990 UTC [687] STATEMENT:  INSERT INTO "public"."rateLimit" ("id","key","count","lastRequest") VALUES ($1,$2,$3,$4) RETURNING "public"."rateLimit"."id", "public"."rateLimit"."key", "public"."rateLimit"."count", "public"."rateLimit"."lastRequest"
+2026-10-17T21:04:56.5164479Z Stop and remove container: 6b5cbba69e5a4c738b51b957f00aceac_postgres17bookworm_88e146
+2026-10-17T21:04:56.5169525Z ##[command]/usr/bin/docker rm --force b2e8ce63366c60966d583f008552b997afa06d39580d727959d3ee5be0405634
+2026-10-17T21:04:56.6356217Z b2e8ce63366c60966d583f008552b997afa06d39580d727959d3ee5be0405634
+2026-10-17T21:04:56.6378228Z Remove container network: github_network_543dc849961b4dec868ecde1923a7e54
+2026-10-17T21:04:56.6382747Z ##[command]/usr/bin/docker network rm github_network_543dc849961b4dec868ecde1923a7e54
+2026-10-17T21:04:56.7261511Z github_network_543dc849961b4dec868ecde1923a7e54
+2026-10-17T21:04:56.7329456Z Cleaning up orphan processes
+2026-10-17T21:04:56.7705602Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-node@v4, pnpm/action-setup@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+

@@ -1,0 +1,106 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| apps/web/src/components/money/legacy-money-draft.test.ts (6 tests | 6 failed) 7ms
+   × deliberate monetary draft semantics > never parses or authors an untouched historical pair on an ordinary save 5ms
+     → expected 'EUR' to be 'ZZZ' // Object.is equality
+   × deliberate monetary draft semantics > requires explicit acknowledgment and audit note before replacing old AFN with the pinned new decimal 1ms
+     → pending draft behavior
+   × deliberate monetary draft semantics > separates explicit clear from blank/invalid replacement and never fabricates a missing token 0ms
+     → pending draft behavior
+   × deliberate monetary draft semantics > authors a new decimal only through the pinned explicit profile and rejects unsupported codes/grouping 0ms
+     → pending draft behavior
+   × deliberate monetary draft semantics > displays stored scale independently of locale and the current ISO exponent 0ms
+     → pending display behavior
+   × deliberate monetary draft semantics > preserves exact typed draft through locale remount but separates accounts and clears on logout 0ms
+     → pending private draft
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/web/src/components/money/legacy-money-draft.test.ts > deliberate monetary draft semantics > never parses or authors an untouched historical pair on an ordinary save
+AssertionError: expected 'EUR' to be 'ZZZ' // Object.is equality
+
+Expected: "ZZZ"
+Received: "EUR"
+
+ ❯ apps/web/src/components/money/legacy-money-draft.test.ts:9:26
+      7|  it("never parses or authors an untouched historical pair on an ordina…
+      8|   const historical = view("ZZZ"); const draft = initialMoneyDraft(hist…
+      9|   expect(draft.currency).toBe("ZZZ"); expect(draft.decimal).toBe(""); …
+       |                          ^
+     10|  });
+     11|  it("requires explicit acknowledgment and audit note before replacing …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  |workspace| apps/web/src/components/money/legacy-money-draft.test.ts > deliberate monetary draft semantics > requires explicit acknowledgment and audit note before replacing old AFN with the pinned new decimal
+Error: pending draft behavior
+ ❯ moneyDraftIntent apps/web/src/components/money/legacy-money-draft.ts:4:116
+      2| export type MoneyDraft = { mode: "KEEP" | "REPLACE" | "CLEAR"; decimal…
+      3| export function initialMoneyDraft(_view: MoneyView | null): MoneyDraft…
+      4| export function moneyDraftIntent(_draft: MoneyDraft, _view: MoneyView …
+       |                                                                                                                    ^
+      5| export function displayStoredMoney(_view: MoneyView, _locale: "de" | "…
+      6| export function rememberMoneyDraft(_owner: string, _key: string, _draf…
+ ❯ apps/web/src/components/money/legacy-money-draft.test.ts:15:10
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  |workspace| apps/web/src/components/money/legacy-money-draft.test.ts > deliberate monetary draft semantics > separates explicit clear from blank/invalid replacement and never fabricates a missing token
+Error: pending draft behavior
+ ❯ moneyDraftIntent apps/web/src/components/money/legacy-money-draft.ts:4:116
+      2| export type MoneyDraft = { mode: "KEEP" | "REPLACE" | "CLEAR"; decimal…
+      3| export function initialMoneyDraft(_view: MoneyView | null): MoneyDraft…
+      4| export function moneyDraftIntent(_draft: MoneyDraft, _view: MoneyView …
+       |                                                                                                                    ^
+      5| export function displayStoredMoney(_view: MoneyView, _locale: "de" | "…
+      6| export function rememberMoneyDraft(_owner: string, _key: string, _draf…
+ ❯ apps/web/src/components/money/legacy-money-draft.test.ts:21:10
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+ FAIL  |workspace| apps/web/src/components/money/legacy-money-draft.test.ts > deliberate monetary draft semantics > authors a new decimal only through the pinned explicit profile and rejects unsupported codes/grouping
+Error: pending draft behavior
+ ❯ moneyDraftIntent apps/web/src/components/money/legacy-money-draft.ts:4:116
+      2| export type MoneyDraft = { mode: "KEEP" | "REPLACE" | "CLEAR"; decimal…
+      3| export function initialMoneyDraft(_view: MoneyView | null): MoneyDraft…
+      4| export function moneyDraftIntent(_draft: MoneyDraft, _view: MoneyView …
+       |                                                                                                                    ^
+      5| export function displayStoredMoney(_view: MoneyView, _locale: "de" | "…
+      6| export function rememberMoneyDraft(_owner: string, _key: string, _draf…
+ ❯ apps/web/src/components/money/legacy-money-draft.test.ts:26:10
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯
+
+ FAIL  |workspace| apps/web/src/components/money/legacy-money-draft.test.ts > deliberate monetary draft semantics > displays stored scale independently of locale and the current ISO exponent
+Error: pending display behavior
+ ❯ displayStoredMoney apps/web/src/components/money/legacy-money-draft.ts:5:93
+      3| export function initialMoneyDraft(_view: MoneyView | null): MoneyDraft…
+      4| export function moneyDraftIntent(_draft: MoneyDraft, _view: MoneyView …
+      5| export function displayStoredMoney(_view: MoneyView, _locale: "de" | "…
+       |                                                                                             ^
+      6| export function rememberMoneyDraft(_owner: string, _key: string, _draf…
+      7| export function recallMoneyDraft(_owner: string, _key: string): MoneyD…
+ ❯ apps/web/src/components/money/legacy-money-draft.test.ts:32:10
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/6]⎯
+
+ FAIL  |workspace| apps/web/src/components/money/legacy-money-draft.test.ts > deliberate monetary draft semantics > preserves exact typed draft through locale remount but separates accounts and clears on logout
+Error: pending private draft
+ ❯ rememberMoneyDraft apps/web/src/components/money/legacy-money-draft.ts:6:100
+      4| export function moneyDraftIntent(_draft: MoneyDraft, _view: MoneyView …
+      5| export function displayStoredMoney(_view: MoneyView, _locale: "de" | "…
+      6| export function rememberMoneyDraft(_owner: string, _key: string, _draf…
+       |                                                                                                    ^
+      7| export function recallMoneyDraft(_owner: string, _key: string): MoneyD…
+      8| export function clearMoneyDrafts(): void {}
+ ❯ apps/web/src/components/money/legacy-money-draft.test.ts:38:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/6]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  6 failed (6)
+   Start at  07:57:36
+   Duration  322ms (transform 38ms, setup 6ms, collect 76ms, tests 7ms, environment 0ms, prepare 53ms)
+

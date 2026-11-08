@@ -1,0 +1,26 @@
+{
+  "FREE": {
+    "ITEM_CREATE": 1,
+    "MEDIA_COUNT": 2,
+    "MEDIA_BYTES": 2000000,
+    "AI_MONTHLY": 2,
+    "IMPORT_PROFILES": 1,
+    "MARKET_DATA": false,
+    "EXTENDED_HISTORY": false,
+    "ADVANCED_ANALYTICS": false,
+    "XLSX": false,
+    "ADVANCED_FILTERS": false
+  },
+  "PREMIUM": {
+    "ITEM_CREATE": 10,
+    "MEDIA_COUNT": 20,
+    "MEDIA_BYTES": 20000000,
+    "AI_MONTHLY": 20,
+    "IMPORT_PROFILES": 10,
+    "MARKET_DATA": true,
+    "EXTENDED_HISTORY": true,
+    "ADVANCED_ANALYTICS": true,
+    "XLSX": true,
+    "ADVANCED_FILTERS": true
+  }
+}

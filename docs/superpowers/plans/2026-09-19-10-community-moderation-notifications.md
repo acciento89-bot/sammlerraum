@@ -39,7 +39,7 @@
 **Interfaces:**
 - Produces: `createWishlistEntry`, `fulfillWishlistEntry`, `markDuplicateRelation`, `listDuplicateCandidates`.
 
-- [ ] **Step 1: Write failing separate-exemplar test**
+- [x] **Step 1: Write failing separate-exemplar test**
 
 ```ts
 it("marks two distinct exemplars as duplicates without merging their grading", async () => {
@@ -49,16 +49,16 @@ it("marks two distinct exemplars as duplicates without merging their grading", a
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run packages/domain/src/wishlist/wishlist-service.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement wishlist/duplicate models**
+- [x] **Step 3: Implement wishlist/duplicate models**
 
 Wishlist supports optional catalog entry/variant, free title, desired condition, target price, currency, priority, notes, fulfillment timestamp. `DuplicateRelation` links two item IDs canonically ordered to prevent duplicate pair rows.
 
-- [ ] **Step 4: Migrate and test**
+- [x] **Step 4: Migrate and test**
 
 Run:
 ```bash
@@ -68,7 +68,7 @@ pnpm vitest run packages/domain/src/wishlist
 
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/db packages/domain/src/wishlist packages/contracts/src/wishlist.ts
@@ -89,7 +89,7 @@ git commit -m "feat: add wishlists and duplicate relations"
 **Interfaces:**
 - Produces: `followUser`, `unfollowUser`, `favoriteTarget`, `unfavoriteTarget`.
 
-- [ ] **Step 1: Write failing visibility/block tests**
+- [x] **Step 1: Write failing visibility/block tests**
 
 ```ts
 it("cannot favorite a private item the actor cannot view", async () => {
@@ -103,21 +103,21 @@ it("blocked users cannot follow each other", async () => {
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run packages/domain/src/community/social-service.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement social relationships**
+- [x] **Step 3: Implement social relationships**
 
 Unique follow pair and favorite target constraints. Self-follow rejected. Favorite supports public collection/item targets only when policy allows current read.
 
-- [ ] **Step 4: Run tests**
+- [x] **Step 4: Run tests**
 
 Run: `pnpm vitest run packages/domain/src/community/social-service.test.ts`  
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/db packages/domain/src/community apps/web/src/app/api/v1/community
@@ -138,7 +138,7 @@ git commit -m "feat: add follows and favorites"
 **Interfaces:**
 - Produces: `createComment`, `deleteOwnComment`, `moderateOwnContentComment`, `blockUser`, `reportUser`, `reportComment`.
 
-- [ ] **Step 1: Write failing comment disable/block tests**
+- [x] **Step 1: Write failing comment disable/block tests**
 
 ```ts
 it("rejects comments when the item owner disabled them", async () => {
@@ -153,21 +153,21 @@ it("a block removes direct comment permission", async () => {
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run packages/domain/src/community/comment-service.test.ts packages/domain/src/moderation/block-report-service.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement models/services**
+- [x] **Step 3: Implement models/services**
 
 Comment target is collection or item, supports optional parent comment for reply, soft-delete/hide state. Reports retain reason/category, reporter, target snapshot IDs, moderation status. Blocks are directional but policy treats either relevant direction as disabling direct interaction.
 
-- [ ] **Step 4: Run tests**
+- [x] **Step 4: Run tests**
 
 Run: `pnpm vitest run packages/domain/src/community packages/domain/src/moderation`  
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/db packages/domain/src/community packages/domain/src/moderation
@@ -186,7 +186,7 @@ git commit -m "feat: add comments blocks and reports"
 **Interfaces:**
 - Produces: `listReports`, `resolveReport`, `hideContent`, `restoreContent`.
 
-- [ ] **Step 1: Write failing moderator-access test**
+- [x] **Step 1: Write failing moderator-access test**
 
 ```ts
 it("keeps reported hidden comment available to authorized moderators", async () => {
@@ -196,21 +196,21 @@ it("keeps reported hidden comment available to authorized moderators", async () 
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run packages/domain/src/moderation/moderation-service.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement moderation status and roles**
+- [x] **Step 3: Implement moderation status and roles**
 
 Introduce application moderator/admin role separate from collection roles. Actions require reason and emit audit events with source `MODERATION`.
 
-- [ ] **Step 4: Run tests**
+- [x] **Step 4: Run tests**
 
 Run: `pnpm vitest run packages/domain/src/moderation`  
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/domain/src/moderation apps/web/src/app/api/v1/moderation
@@ -230,7 +230,7 @@ git commit -m "feat: add community moderation workflow"
 **Interfaces:**
 - Produces: `createNotificationOnce`, `markRead`, `markAllRead`, `updatePreferences`.
 
-- [ ] **Step 1: Write failing dedupe test**
+- [x] **Step 1: Write failing dedupe test**
 
 ```ts
 it("creates one in-app notification for the same event key", async () => {
@@ -240,16 +240,16 @@ it("creates one in-app notification for the same event key", async () => {
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run packages/domain/src/notifications/notification-service.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement notification models**
+- [x] **Step 3: Implement notification models**
 
 Notification includes recipient, event key, type, safe target reference, readAt, createdAt. Preferences are per category/channel. Security categories ignore disable requests for required email delivery.
 
-- [ ] **Step 4: Migrate and test**
+- [x] **Step 4: Migrate and test**
 
 Run:
 ```bash
@@ -259,7 +259,7 @@ pnpm vitest run packages/domain/src/notifications
 
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/db packages/domain/src/notifications packages/contracts/src/notifications.ts
@@ -281,7 +281,7 @@ git commit -m "feat: add in-app notifications and preferences"
 **Interfaces:**
 - Produces: `EmailProvider.send(message)`, job `notification.send-email`.
 
-- [ ] **Step 1: Write failing retry-dedupe test**
+- [x] **Step 1: Write failing retry-dedupe test**
 
 ```ts
 it("does not send the same delivery record twice after successful retry acknowledgement", async () => {
@@ -291,21 +291,21 @@ it("does not send the same delivery record twice after successful retry acknowle
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run apps/worker/src/jobs/send-email.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement SMTP adapter and delivery records**
+- [x] **Step 3: Implement SMTP adapter and delivery records**
 
 Use required production SMTP env config. Persist delivery status and provider message ID. Render DE/EN templates from stable notification type data; never embed sensitive private content in generic community email subjects.
 
-- [ ] **Step 4: Run tests**
+- [x] **Step 4: Run tests**
 
 Run: `pnpm vitest run packages/email apps/worker/src/jobs/send-email.test.ts`  
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/email apps/worker/src/jobs/send-email* packages/config
@@ -329,7 +329,7 @@ git commit -m "feat: deliver localized notification emails"
 **Interfaces:**
 - Produces: authorized feed and complete community/wishlist/notification user flows.
 
-- [ ] **Step 1: Write failing feed privacy test**
+- [x] **Step 1: Write failing feed privacy test**
 
 ```ts
 it("drops content that became private after the feed event was created", async () => {
@@ -338,16 +338,16 @@ it("drops content that became private after the feed event was created", async (
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run packages/domain/src/community/feed-service.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement feed and UI**
+- [x] **Step 3: Implement feed and UI**
 
 Feed is query-time policy filtered. UI supports follow, favorite, comment/reply, block/report, wishlist create/fulfill, duplicate marking, trade status display, notification read state, and comment-disable controls for owners.
 
-- [ ] **Step 4: Run E2E/build**
+- [x] **Step 4: Run E2E/build**
 
 Run:
 ```bash
@@ -358,7 +358,7 @@ pnpm --filter @sammlerraum/web build
 
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/domain/src/community apps/web
@@ -383,7 +383,7 @@ git commit -m "feat: add community wishlist and notification UI"
 - Consumes: public profile, collection visibility, follow/favorite/comment/wishlist events, dashboard service.
 - Produces: stable public profile/collection/item URLs, idempotent community notifications, wishlist/duplicate dashboard metrics and milestone inputs.
 
-- [ ] **Step 1: Write failing event-deduplication and privacy tests**
+- [x] **Step 1: Write failing event-deduplication and privacy tests**
 
 ```ts
 it("creates one notification for one favorite event and removes target details when the target becomes private", async () => {
@@ -397,18 +397,18 @@ it("creates one notification for one favorite event and removes target details w
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run packages/domain/src/notifications/community-event-handlers.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement handlers and public routes**
+- [x] **Step 3: Implement handlers and public routes**
 
 Emit notifications for follow, favorite, comment/reply, moderation status, import/export completion, and later billing/security hooks through stable event keys. Public profile routes expose only public collections/items, never login email or private statistics. Public collection URLs use owner handle + stable collection slug with collision-safe suffix generation. Add a stable public item route under `/<locale>/@<handle>/<collectionSlug>/items/<itemId>` that resolves only effectively PUBLIC items and returns 404 for private/unlisted/inaccessible descendants.
 
 Extend dashboard data with wishlist progress, duplicate count, and milestone candidates such as item-count thresholds and completed collections; milestones remain informational only.
 
-- [ ] **Step 4: Run unit/E2E/build**
+- [x] **Step 4: Run unit/E2E/build**
 
 Run:
 ```bash
@@ -419,7 +419,7 @@ pnpm --filter @sammlerraum/web build
 
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/domain/src/notifications packages/domain/src/dashboard apps/web

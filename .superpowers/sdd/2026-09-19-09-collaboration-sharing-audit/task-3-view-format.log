@@ -1,0 +1,14 @@
+packages/contracts/src/sharing.ts 49ms
+packages/domain/src/sharing/share-pin.ts 7ms (unchanged)
+packages/domain/src/sharing/share-projection.ts 16ms (unchanged)
+packages/domain/src/sharing/share-scope.ts 2ms (unchanged)
+packages/domain/src/sharing/share-service.test.ts 40ms
+packages/domain/src/sharing/share-service.ts 20ms (unchanged)
+apps/web/src/lib/share-routes.integration.test.ts 7ms (unchanged)
+apps/web/e2e/sharing.spec.ts 7ms
+apps/web/playwright.config.ts 3ms
+apps/web/next.config.ts 2ms (unchanged)
+apps/web/src/app/share/[token]/page.tsx 3ms
+apps/web/src/app/share/layout.tsx 2ms
+apps/web/src/components/sharing/share-viewer.tsx 23ms
+apps/web/src/app/globals.css 53ms

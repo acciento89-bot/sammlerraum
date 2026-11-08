@@ -1,0 +1,107 @@
+[WebServer] (node:90753) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 4 tests using 1 worker
+
+(node:90754) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [money-ui-desktop] › e2e/legacy-money.spec.ts:424:3 › de: a pending committed core write cannot be abandoned by a locale click (1.3s)
+(node:90770) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  2 [money-ui-desktop] › e2e/legacy-money.spec.ts:424:3 › en: a pending committed core write cannot be abandoned by a locale click (723ms)
+(node:90777) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  3 [money-ui-mobile] › e2e/legacy-money.spec.ts:424:3 › de: a pending committed core write cannot be abandoned by a locale click (711ms)
+(node:90783) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  4 [money-ui-mobile] › e2e/legacy-money.spec.ts:424:3 › en: a pending committed core write cannot be abandoned by a locale click (673ms)
+
+
+  1) [money-ui-desktop] › e2e/legacy-money.spec.ts:424:3 › de: a pending committed core write cannot be abandoned by a locale click 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: false
+    Received: true
+
+      441 |       // Observe the entire held-response interval, rather than an immediate old-route assertion.
+      442 |       const escaped = await page.waitForURL(new RegExp(`/${locale === "de" ? "en" : "de"}/items/${h.f.itemId}$`), { timeout: 1200 }).then(() => true, () => false);
+    > 443 |       expect(escaped).toBe(false);
+          |                       ^
+      444 |       await expect(page).toHaveURL(new RegExp(`/${locale}/items/${h.f.itemId}$`));
+      445 |       await expect(page.getByRole("button", { name: h.t.saving, exact: true })).toBeDisabled();
+      446 |       release();
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/legacy-money.spec.ts:443:23
+
+    Error Context: test-results/legacy-money-de-a-pending--4f964-abandoned-by-a-locale-click-money-ui-desktop/error-context.md
+
+    Error Context: test-results/legacy-money-de-a-pending--4f964-abandoned-by-a-locale-click-money-ui-desktop/error-context.md
+
+  2) [money-ui-desktop] › e2e/legacy-money.spec.ts:424:3 › en: a pending committed core write cannot be abandoned by a locale click 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: false
+    Received: true
+
+      441 |       // Observe the entire held-response interval, rather than an immediate old-route assertion.
+      442 |       const escaped = await page.waitForURL(new RegExp(`/${locale === "de" ? "en" : "de"}/items/${h.f.itemId}$`), { timeout: 1200 }).then(() => true, () => false);
+    > 443 |       expect(escaped).toBe(false);
+          |                       ^
+      444 |       await expect(page).toHaveURL(new RegExp(`/${locale}/items/${h.f.itemId}$`));
+      445 |       await expect(page.getByRole("button", { name: h.t.saving, exact: true })).toBeDisabled();
+      446 |       release();
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/legacy-money.spec.ts:443:23
+
+    Error Context: test-results/legacy-money-en-a-pending--1d6d1-abandoned-by-a-locale-click-money-ui-desktop/error-context.md
+
+    Error Context: test-results/legacy-money-en-a-pending--1d6d1-abandoned-by-a-locale-click-money-ui-desktop/error-context.md
+
+  3) [money-ui-mobile] › e2e/legacy-money.spec.ts:424:3 › de: a pending committed core write cannot be abandoned by a locale click 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: false
+    Received: true
+
+      441 |       // Observe the entire held-response interval, rather than an immediate old-route assertion.
+      442 |       const escaped = await page.waitForURL(new RegExp(`/${locale === "de" ? "en" : "de"}/items/${h.f.itemId}$`), { timeout: 1200 }).then(() => true, () => false);
+    > 443 |       expect(escaped).toBe(false);
+          |                       ^
+      444 |       await expect(page).toHaveURL(new RegExp(`/${locale}/items/${h.f.itemId}$`));
+      445 |       await expect(page.getByRole("button", { name: h.t.saving, exact: true })).toBeDisabled();
+      446 |       release();
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/legacy-money.spec.ts:443:23
+
+    Error Context: test-results/legacy-money-de-a-pending--4f964-abandoned-by-a-locale-click-money-ui-mobile/error-context.md
+
+    Error Context: test-results/legacy-money-de-a-pending--4f964-abandoned-by-a-locale-click-money-ui-mobile/error-context.md
+
+  4) [money-ui-mobile] › e2e/legacy-money.spec.ts:424:3 › en: a pending committed core write cannot be abandoned by a locale click 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: false
+    Received: true
+
+      441 |       // Observe the entire held-response interval, rather than an immediate old-route assertion.
+      442 |       const escaped = await page.waitForURL(new RegExp(`/${locale === "de" ? "en" : "de"}/items/${h.f.itemId}$`), { timeout: 1200 }).then(() => true, () => false);
+    > 443 |       expect(escaped).toBe(false);
+          |                       ^
+      444 |       await expect(page).toHaveURL(new RegExp(`/${locale}/items/${h.f.itemId}$`));
+      445 |       await expect(page.getByRole("button", { name: h.t.saving, exact: true })).toBeDisabled();
+      446 |       release();
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/legacy-money.spec.ts:443:23
+
+    Error Context: test-results/legacy-money-en-a-pending--1d6d1-abandoned-by-a-locale-click-money-ui-mobile/error-context.md
+
+    Error Context: test-results/legacy-money-en-a-pending--1d6d1-abandoned-by-a-locale-click-money-ui-mobile/error-context.md
+
+  4 failed
+    [money-ui-desktop] › e2e/legacy-money.spec.ts:424:3 › de: a pending committed core write cannot be abandoned by a locale click 
+    [money-ui-desktop] › e2e/legacy-money.spec.ts:424:3 › en: a pending committed core write cannot be abandoned by a locale click 
+    [money-ui-mobile] › e2e/legacy-money.spec.ts:424:3 › de: a pending committed core write cannot be abandoned by a locale click 
+    [money-ui-mobile] › e2e/legacy-money.spec.ts:424:3 › en: a pending committed core write cannot be abandoned by a locale click 
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/legacy-money.spec.ts --workers=1 --grep pending committed

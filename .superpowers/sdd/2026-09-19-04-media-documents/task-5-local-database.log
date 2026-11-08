@@ -1,0 +1,450 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| packages/domain/src/media/cleanup-service.test.ts (11 tests | 10 failed) 192ms
+   ✓ media cleanup > exposes the cleanup service 1ms
+   × retention on real PostgreSQL > does not delete bytes while another media, private document, or avatar reference exists 96ms
+     → 
+Invalid `db.user.create()` invocation in
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/media/cleanup-service.test.ts:29:19
+
+  26 const db = createTestDatabaseClient({ databaseUrl: url.href });
+  27 const ownerId = randomUUID();
+  28 const root = await mkdtemp(join(tmpdir(), "retention-"));
+→ 29 await db.user.create(
+
+   × retention on real PostgreSQL > serializes a reference introduced after candidate discovery and blocks relinking during deletion 22ms
+     → 
+Invalid `db.user.create()` invocation in
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/media/cleanup-service.test.ts:29:19
+
+  26 const db = createTestDatabaseClient({ databaseUrl: url.href });
+  27 const ownerId = randomUUID();
+  28 const root = await mkdtemp(join(tmpdir(), "retention-"));
+→ 29 await db.user.create(
+
+   × retention on real PostgreSQL > serializes simultaneous final unlinks and maintains orphan state after rollback 8ms
+     → 
+Invalid `db.user.create()` invocation in
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/media/cleanup-service.test.ts:29:19
+
+  26 const db = createTestDatabaseClient({ databaseUrl: url.href });
+  27 const ownerId = randomUUID();
+  28 const root = await mkdtemp(join(tmpdir(), "retention-"));
+→ 29 await db.user.create(
+
+   × retention on real PostgreSQL > serializes the actual concurrent reference-first reference/deletion race 8ms
+     → 
+Invalid `db.user.create()` invocation in
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/media/cleanup-service.test.ts:29:19
+
+  26 const db = createTestDatabaseClient({ databaseUrl: url.href });
+  27 const ownerId = randomUUID();
+  28 const root = await mkdtemp(join(tmpdir(), "retention-"));
+→ 29 await db.user.create(
+
+   × retention on real PostgreSQL > serializes the actual concurrent cleanup-first reference/deletion race 8ms
+     → 
+Invalid `db.user.create()` invocation in
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/media/cleanup-service.test.ts:29:19
+
+  26 const db = createTestDatabaseClient({ databaseUrl: url.href });
+  27 const ownerId = randomUUID();
+  28 const root = await mkdtemp(join(tmpdir(), "retention-"));
+→ 29 await db.user.create(
+
+   × retention on real PostgreSQL > retains soft-deleted references and starts retention when a hard item cascade removes them 20ms
+     → 
+Invalid `db.user.create()` invocation in
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/media/cleanup-service.test.ts:29:19
+
+  26 const db = createTestDatabaseClient({ databaseUrl: url.href });
+  27 const ownerId = randomUUID();
+  28 const root = await mkdtemp(join(tmpdir(), "retention-"));
+→ 29 await db.user.create(
+
+   × retention on real PostgreSQL > keeps delayed upload publication unreadable after rows were removed and reconciles it 7ms
+     → 
+Invalid `db.user.create()` invocation in
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/media/cleanup-service.test.ts:29:19
+
+  26 const db = createTestDatabaseClient({ databaseUrl: url.href });
+  27 const ownerId = randomUUID();
+  28 const root = await mkdtemp(join(tmpdir(), "retention-"));
+→ 29 await db.user.create(
+
+   × retention on real PostgreSQL > rotates failed cleanup assets and permanent reconciliation keys through bounded batches 6ms
+     → 
+Invalid `db.user.create()` invocation in
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/media/cleanup-service.test.ts:29:19
+
+  26 const db = createTestDatabaseClient({ databaseUrl: url.href });
+  27 const ownerId = randomUUID();
+  28 const root = await mkdtemp(join(tmpdir(), "retention-"));
+→ 29 await db.user.create(
+
+   × retention on real PostgreSQL > reconciles a real image processor derivative completing after asset and variant rows were deleted 5ms
+     → 
+Invalid `db.user.create()` invocation in
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/media/cleanup-service.test.ts:29:19
+
+  26 const db = createTestDatabaseClient({ databaseUrl: url.href });
+  27 const ownerId = randomUUID();
+  28 const root = await mkdtemp(join(tmpdir(), "retention-"));
+→ 29 await db.user.create(
+
+   × retention on real PostgreSQL > retains media shared by a quantity split after the original item is unlinked 12ms
+     → 
+Invalid `db.user.create()` invocation in
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/media/cleanup-service.test.ts:29:19
+
+  26 const db = createTestDatabaseClient({ databaseUrl: url.href });
+  27 const ownerId = randomUUID();
+  28 const root = await mkdtemp(join(tmpdir(), "retention-"));
+→ 29 await db.user.create(
+
+ ❯ |workspace| packages/storage/src/staging-lock.integration.test.ts (3 tests | 2 failed) 10027ms
+   × staging cross-session exclusion > skips an ancient active file and removes it after writer session crash/release 5010ms
+     → Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+   ✓ does not follow symlinks or remove fresh/nonreserved staging objects 11ms
+   × lost staging session > fails an ancient writer rename after the lost session permits cleanup 5004ms
+     → Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 12 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/storage/src/staging-lock.integration.test.ts > staging cross-session exclusion > skips an ancient active file and removes it after writer session crash/release
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ packages/storage/src/staging-lock.integration.test.ts:12:5
+     10|   "staging cross-session exclusion",
+     11|   () => {
+     12|     it("skips an ancient active file and removes it after writer sessi…
+       |     ^
+     13|       const root = await mkdtemp(join(tmpdir(), "staging-lock-"));
+     14|       const id = randomUUID();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/12]⎯
+
+ FAIL  |workspace| packages/storage/src/staging-lock.integration.test.ts > lost staging session > fails an ancient writer rename after the lost session permits cleanup
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ packages/storage/src/staging-lock.integration.test.ts:77:3
+     75| 
+     76| describe.runIf(process.env.RUN_DATABASE_INTEGRATION === "1")("lost sta…
+     77|   it("fails an ancient writer rename after the lost session permits cl…
+       |   ^
+     78|     const { rename } = await import("node:fs/promises");
+     79|     const { createTestDatabaseClient } = await import("../../db/src/te…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/12]⎯
+
+ FAIL  |workspace| packages/domain/src/media/cleanup-service.test.ts > retention on real PostgreSQL > does not delete bytes while another media, private document, or avatar reference exists
+PrismaClientKnownRequestError: 
+Invalid `db.user.create()` invocation in
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/media/cleanup-service.test.ts:29:19
+
+  26 const db = createTestDatabaseClient({ databaseUrl: url.href });
+  27 const ownerId = randomUUID();
+  28 const root = await mkdtemp(join(tmpdir(), "retention-"));
+→ 29 await db.user.create(
+
+ ❯ vn.handleRequestError node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:238:13
+ ❯ vn.handleAndLogRequestError node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:184:12
+ ❯ vn.request node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:153:12
+ ❯ a node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:1014:24
+ ❯ fixture packages/domain/src/media/cleanup-service.test.ts:29:5
+     27|     const ownerId = randomUUID();
+     28|     const root = await mkdtemp(join(tmpdir(), "retention-"));
+     29|     await db.user.create({
+       |     ^
+     30|       data: { id: ownerId, name: "Owner", email: `${ownerId}@example.t…
+     31|     });
+ ❯ packages/domain/src/media/cleanup-service.test.ts:71:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/12]⎯
+
+ FAIL  |workspace| packages/domain/src/media/cleanup-service.test.ts > retention on real PostgreSQL > serializes a reference introduced after candidate discovery and blocks relinking during deletion
+PrismaClientKnownRequestError: 
+Invalid `db.user.create()` invocation in
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/media/cleanup-service.test.ts:29:19
+
+  26 const db = createTestDatabaseClient({ databaseUrl: url.href });
+  27 const ownerId = randomUUID();
+  28 const root = await mkdtemp(join(tmpdir(), "retention-"));
+→ 29 await db.user.create(
+
+ ❯ vn.handleRequestError node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:238:13
+ ❯ vn.handleAndLogRequestError node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:184:12
+ ❯ vn.request node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:153:12
+ ❯ a node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:1014:24
+ ❯ fixture packages/domain/src/media/cleanup-service.test.ts:29:5
+     27|     const ownerId = randomUUID();
+     28|     const root = await mkdtemp(join(tmpdir(), "retention-"));
+     29|     await db.user.create({
+       |     ^
+     30|       data: { id: ownerId, name: "Owner", email: `${ownerId}@example.t…
+     31|     });
+ ❯ packages/domain/src/media/cleanup-service.test.ts:112:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/12]⎯
+
+ FAIL  |workspace| packages/domain/src/media/cleanup-service.test.ts > retention on real PostgreSQL > serializes simultaneous final unlinks and maintains orphan state after rollback
+PrismaClientKnownRequestError: 
+Invalid `db.user.create()` invocation in
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/media/cleanup-service.test.ts:29:19
+
+  26 const db = createTestDatabaseClient({ databaseUrl: url.href });
+  27 const ownerId = randomUUID();
+  28 const root = await mkdtemp(join(tmpdir(), "retention-"));
+→ 29 await db.user.create(
+
+ ❯ vn.handleRequestError node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:238:13
+ ❯ vn.handleAndLogRequestError node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:184:12
+ ❯ vn.request node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:153:12
+ ❯ a node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:1014:24
+ ❯ fixture packages/domain/src/media/cleanup-service.test.ts:29:5
+     27|     const ownerId = randomUUID();
+     28|     const root = await mkdtemp(join(tmpdir(), "retention-"));
+     29|     await db.user.create({
+       |     ^
+     30|       data: { id: ownerId, name: "Owner", email: `${ownerId}@example.t…
+     31|     });
+ ❯ packages/domain/src/media/cleanup-service.test.ts:154:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/12]⎯
+
+ FAIL  |workspace| packages/domain/src/media/cleanup-service.test.ts > retention on real PostgreSQL > serializes the actual concurrent reference-first reference/deletion race
+ FAIL  |workspace| packages/domain/src/media/cleanup-service.test.ts > retention on real PostgreSQL > serializes the actual concurrent cleanup-first reference/deletion race
+PrismaClientKnownRequestError: 
+Invalid `db.user.create()` invocation in
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/media/cleanup-service.test.ts:29:19
+
+  26 const db = createTestDatabaseClient({ databaseUrl: url.href });
+  27 const ownerId = randomUUID();
+  28 const root = await mkdtemp(join(tmpdir(), "retention-"));
+→ 29 await db.user.create(
+
+ ❯ vn.handleRequestError node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:238:13
+ ❯ vn.handleAndLogRequestError node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:184:12
+ ❯ vn.request node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:153:12
+ ❯ a node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:1014:24
+ ❯ fixture packages/domain/src/media/cleanup-service.test.ts:29:5
+     27|     const ownerId = randomUUID();
+     28|     const root = await mkdtemp(join(tmpdir(), "retention-"));
+     29|     await db.user.create({
+       |     ^
+     30|       data: { id: ownerId, name: "Owner", email: `${ownerId}@example.t…
+     31|     });
+ ❯ packages/domain/src/media/cleanup-service.test.ts:192:17
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/12]⎯
+
+ FAIL  |workspace| packages/domain/src/media/cleanup-service.test.ts > retention on real PostgreSQL > retains soft-deleted references and starts retention when a hard item cascade removes them
+PrismaClientKnownRequestError: 
+Invalid `db.user.create()` invocation in
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/media/cleanup-service.test.ts:29:19
+
+  26 const db = createTestDatabaseClient({ databaseUrl: url.href });
+  27 const ownerId = randomUUID();
+  28 const root = await mkdtemp(join(tmpdir(), "retention-"));
+→ 29 await db.user.create(
+
+ ❯ vn.handleRequestError node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:238:13
+ ❯ vn.handleAndLogRequestError node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:184:12
+ ❯ vn.request node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:153:12
+ ❯ a node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:1014:24
+ ❯ fixture packages/domain/src/media/cleanup-service.test.ts:29:5
+     27|     const ownerId = randomUUID();
+     28|     const root = await mkdtemp(join(tmpdir(), "retention-"));
+     29|     await db.user.create({
+       |     ^
+     30|       data: { id: ownerId, name: "Owner", email: `${ownerId}@example.t…
+     31|     });
+ ❯ packages/domain/src/media/cleanup-service.test.ts:269:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/12]⎯
+
+ FAIL  |workspace| packages/domain/src/media/cleanup-service.test.ts > retention on real PostgreSQL > keeps delayed upload publication unreadable after rows were removed and reconciles it
+PrismaClientKnownRequestError: 
+Invalid `db.user.create()` invocation in
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/media/cleanup-service.test.ts:29:19
+
+  26 const db = createTestDatabaseClient({ databaseUrl: url.href });
+  27 const ownerId = randomUUID();
+  28 const root = await mkdtemp(join(tmpdir(), "retention-"));
+→ 29 await db.user.create(
+
+ ❯ vn.handleRequestError node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:238:13
+ ❯ vn.handleAndLogRequestError node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:184:12
+ ❯ vn.request node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:153:12
+ ❯ a node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:1014:24
+ ❯ fixture packages/domain/src/media/cleanup-service.test.ts:29:5
+     27|     const ownerId = randomUUID();
+     28|     const root = await mkdtemp(join(tmpdir(), "retention-"));
+     29|     await db.user.create({
+       |     ^
+     30|       data: { id: ownerId, name: "Owner", email: `${ownerId}@example.t…
+     31|     });
+ ❯ packages/domain/src/media/cleanup-service.test.ts:293:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/12]⎯
+
+ FAIL  |workspace| packages/domain/src/media/cleanup-service.test.ts > retention on real PostgreSQL > rotates failed cleanup assets and permanent reconciliation keys through bounded batches
+PrismaClientKnownRequestError: 
+Invalid `db.user.create()` invocation in
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/media/cleanup-service.test.ts:29:19
+
+  26 const db = createTestDatabaseClient({ databaseUrl: url.href });
+  27 const ownerId = randomUUID();
+  28 const root = await mkdtemp(join(tmpdir(), "retention-"));
+→ 29 await db.user.create(
+
+ ❯ vn.handleRequestError node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:238:13
+ ❯ vn.handleAndLogRequestError node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:184:12
+ ❯ vn.request node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:153:12
+ ❯ a node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:1014:24
+ ❯ fixture packages/domain/src/media/cleanup-service.test.ts:29:5
+     27|     const ownerId = randomUUID();
+     28|     const root = await mkdtemp(join(tmpdir(), "retention-"));
+     29|     await db.user.create({
+       |     ^
+     30|       data: { id: ownerId, name: "Owner", email: `${ownerId}@example.t…
+     31|     });
+ ❯ packages/domain/src/media/cleanup-service.test.ts:349:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/12]⎯
+
+ FAIL  |workspace| packages/domain/src/media/cleanup-service.test.ts > retention on real PostgreSQL > reconciles a real image processor derivative completing after asset and variant rows were deleted
+PrismaClientKnownRequestError: 
+Invalid `db.user.create()` invocation in
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/media/cleanup-service.test.ts:29:19
+
+  26 const db = createTestDatabaseClient({ databaseUrl: url.href });
+  27 const ownerId = randomUUID();
+  28 const root = await mkdtemp(join(tmpdir(), "retention-"));
+→ 29 await db.user.create(
+
+ ❯ vn.handleRequestError node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:238:13
+ ❯ vn.handleAndLogRequestError node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:184:12
+ ❯ vn.request node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:153:12
+ ❯ a node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:1014:24
+ ❯ fixture packages/domain/src/media/cleanup-service.test.ts:29:5
+     27|     const ownerId = randomUUID();
+     28|     const root = await mkdtemp(join(tmpdir(), "retention-"));
+     29|     await db.user.create({
+       |     ^
+     30|       data: { id: ownerId, name: "Owner", email: `${ownerId}@example.t…
+     31|     });
+ ❯ packages/domain/src/media/cleanup-service.test.ts:388:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/12]⎯
+
+ FAIL  |workspace| packages/domain/src/media/cleanup-service.test.ts > retention on real PostgreSQL > retains media shared by a quantity split after the original item is unlinked
+PrismaClientKnownRequestError: 
+Invalid `db.user.create()` invocation in
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain/src/media/cleanup-service.test.ts:29:19
+
+  26 const db = createTestDatabaseClient({ databaseUrl: url.href });
+  27 const ownerId = randomUUID();
+  28 const root = await mkdtemp(join(tmpdir(), "retention-"));
+→ 29 await db.user.create(
+
+ ❯ vn.handleRequestError node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:238:13
+ ❯ vn.handleAndLogRequestError node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:184:12
+ ❯ vn.request node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:153:12
+ ❯ a node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:1014:24
+ ❯ fixture packages/domain/src/media/cleanup-service.test.ts:29:5
+     27|     const ownerId = randomUUID();
+     28|     const root = await mkdtemp(join(tmpdir(), "retention-"));
+     29|     await db.user.create({
+       |     ^
+     30|       data: { id: ownerId, name: "Owner", email: `${ownerId}@example.t…
+     31|     });
+ ❯ packages/domain/src/media/cleanup-service.test.ts:451:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/12]⎯
+
+⎯⎯⎯⎯⎯⎯ Unhandled Errors ⎯⎯⎯⎯⎯⎯
+
+Vitest caught 1 unhandled error during the test run.
+This might cause false positive tests. Resolve unhandled errors to make sure your tests are not affected.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+{
+  stack: 'AggregateError: \n' +
+    '    at internalConnectMultiple (node:net:1430:18)\n' +
+    '    at afterConnectMultiple (node:net:2099:7)',
+  errors: [
+    {
+      stack: 'Error: connect ECONNREFUSED ::1:5432\n' +
+        '    at createConnectionError (node:net:2062:14)\n' +
+        '    at afterConnectMultiple (node:net:2092:16)',
+      message: 'connect ECONNREFUSED ::1:5432',
+      errno: -61,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    },
+    {
+      stack: 'Error: connect ECONNREFUSED 127.0.0.1:5432\n' +
+        '    at createConnectionError (node:net:2062:14)\n' +
+        '    at afterConnectMultiple (node:net:2092:16)',
+      message: 'connect ECONNREFUSED 127.0.0.1:5432',
+      errno: -61,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    }
+  ],
+  code: 'ECONNREFUSED',
+  message: '',
+  constructor: 'Function<AggregateError>',
+  name: 'AggregateError',
+  toString: 'Function<toString>',
+  VITEST_TEST_NAME: 'skips an ancient active file and removes it after writer session crash/release',
+  VITEST_TEST_PATH: '/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/storage/src/staging-lock.integration.test.ts',
+  VITEST_AFTER_ENV_TEARDOWN: undefined,
+  type: 'Unhandled Rejection',
+  stacks: [
+    {
+      method: 'internalConnectMultiple',
+      file: 'node:net',
+      line: 1430,
+      column: 18
+    },
+    {
+      method: 'afterConnectMultiple',
+      file: 'node:net',
+      line: 2099,
+      column: 7
+    }
+  ]
+}
+ ❯ internalConnectMultiple node:net:1430:18
+ ❯ afterConnectMultiple node:net:2099:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { errors: [ { stack: 'Error: connect ECONNREFUSED ::1:5432\n    at createConnectionError (node:net:2062:14)\n    at afterConnectMultiple (node:net:2092:16)', message: 'connect ECONNREFUSED ::1:5432', errno: -61, code: 'ECONNREFUSED', syscall: 'connect', address: '::1', port: 5432, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' }, { stack: 'Error: connect ECONNREFUSED 127.0.0.1:5432\n    at createConnectionError (node:net:2062:14)\n    at afterConnectMultiple (node:net:2092:16)', message: 'connect ECONNREFUSED 127.0.0.1:5432', errno: -61, code: 'ECONNREFUSED', syscall: 'connect', address: '127.0.0.1', port: 5432, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' } ], code: 'ECONNREFUSED' }
+This error originated in "packages/storage/src/staging-lock.integration.test.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The latest test that might've caused the error is "skips an ancient active file and removes it after writer session crash/release". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+
+
+ Test Files  2 failed (2)
+      Tests  12 failed | 2 passed (14)
+     Errors  1 error
+   Start at  21:16:09
+   Duration  10.32s (transform 124ms, setup 10ms, collect 313ms, tests 10.22s, environment 0ms, prepare 89ms)
+

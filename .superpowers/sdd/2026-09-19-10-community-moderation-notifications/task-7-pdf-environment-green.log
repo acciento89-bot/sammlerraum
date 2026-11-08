@@ -1,0 +1,13 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ✓ |workspace| apps/worker/src/jobs/build-insurance-report.test.ts (6 tests) 3085ms
+   ✓ creates a complete readable A4 PDF from the explicitly selected model  378ms
+   ✓ renders a real multipage Unicode/image preview and verifies it with independent PDF tools  2318ms
+   ✓ refuses wrong selected asset bytes and over-budget PDFs without returning a partial document  380ms
+
+ Test Files  1 passed (1)
+      Tests  6 passed (6)
+   Start at  15:01:20
+   Duration  3.78s (transform 152ms, setup 6ms, collect 517ms, tests 3.08s, environment 0ms, prepare 37ms)
+

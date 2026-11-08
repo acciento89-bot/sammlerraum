@@ -1,0 +1,108 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/ai/ai-analysis-service.test.ts (5 tests | 5 failed) 442ms
+   × provider-neutral owned photo analysis > stores one immutable suggestion without changing the actual item 107ms
+     → real analysis service must exist: expected undefined to be type of 'function'
+   × provider-neutral owned photo analysis > binds the request nonce to its selected sources and reserves quota only once 7ms
+     → real analysis service must exist: expected undefined to be type of 'function'
+   × provider-neutral owned photo analysis > never accepts another owner's item, an unlinked photo or a document source 5ms
+     → real analysis service must exist: expected undefined to be type of 'function'
+   × provider-neutral owned photo analysis > rejects untrusted response fields and revoked sources before result persistence 5ms
+     → real analysis service must exist: expected undefined to be type of 'function'
+   × provider-neutral owned photo analysis > serializes concurrent quota reservations for the same actual owner 10ms
+     → real analysis service must exist: expected undefined to be type of 'function'
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/ai/ai-analysis-service.test.ts > provider-neutral owned photo analysis > stores one immutable suggestion without changing the actual item
+AssertionError: real analysis service must exist: expected undefined to be type of 'function'
+
+Expected: "function"
+Received: "undefined"
+
+ ❯ fixture packages/domain/src/ai/ai-analysis-service.test.ts:28:80
+     26|     const path = "./ai-analysis-service";
+     27|     const module = await import(path).catch(() => null);
+     28|     expect(module?.createAIAnalysisService,"real analysis service must…
+       |                                                                                ^
+     29|     const service = module!.createAIAnalysisService(db,{providerId:"fi…
+     30|     return {owner,foreign,actor:{userId:owner},collection,item,image,l…
+ ❯ packages/domain/src/ai/ai-analysis-service.test.ts:34:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ FAIL  |workspace| packages/domain/src/ai/ai-analysis-service.test.ts > provider-neutral owned photo analysis > binds the request nonce to its selected sources and reserves quota only once
+AssertionError: real analysis service must exist: expected undefined to be type of 'function'
+
+Expected: "function"
+Received: "undefined"
+
+ ❯ fixture packages/domain/src/ai/ai-analysis-service.test.ts:28:80
+     26|     const path = "./ai-analysis-service";
+     27|     const module = await import(path).catch(() => null);
+     28|     expect(module?.createAIAnalysisService,"real analysis service must…
+       |                                                                                ^
+     29|     const service = module!.createAIAnalysisService(db,{providerId:"fi…
+     30|     return {owner,foreign,actor:{userId:owner},collection,item,image,l…
+ ❯ packages/domain/src/ai/ai-analysis-service.test.ts:50:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+ FAIL  |workspace| packages/domain/src/ai/ai-analysis-service.test.ts > provider-neutral owned photo analysis > never accepts another owner's item, an unlinked photo or a document source
+AssertionError: real analysis service must exist: expected undefined to be type of 'function'
+
+Expected: "function"
+Received: "undefined"
+
+ ❯ fixture packages/domain/src/ai/ai-analysis-service.test.ts:28:80
+     26|     const path = "./ai-analysis-service";
+     27|     const module = await import(path).catch(() => null);
+     28|     expect(module?.createAIAnalysisService,"real analysis service must…
+       |                                                                                ^
+     29|     const service = module!.createAIAnalysisService(db,{providerId:"fi…
+     30|     return {owner,foreign,actor:{userId:owner},collection,item,image,l…
+ ❯ packages/domain/src/ai/ai-analysis-service.test.ts:61:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+
+ FAIL  |workspace| packages/domain/src/ai/ai-analysis-service.test.ts > provider-neutral owned photo analysis > rejects untrusted response fields and revoked sources before result persistence
+AssertionError: real analysis service must exist: expected undefined to be type of 'function'
+
+Expected: "function"
+Received: "undefined"
+
+ ❯ fixture packages/domain/src/ai/ai-analysis-service.test.ts:28:80
+     26|     const path = "./ai-analysis-service";
+     27|     const module = await import(path).catch(() => null);
+     28|     expect(module?.createAIAnalysisService,"real analysis service must…
+       |                                                                                ^
+     29|     const service = module!.createAIAnalysisService(db,{providerId:"fi…
+     30|     return {owner,foreign,actor:{userId:owner},collection,item,image,l…
+ ❯ packages/domain/src/ai/ai-analysis-service.test.ts:68:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯
+
+ FAIL  |workspace| packages/domain/src/ai/ai-analysis-service.test.ts > provider-neutral owned photo analysis > serializes concurrent quota reservations for the same actual owner
+AssertionError: real analysis service must exist: expected undefined to be type of 'function'
+
+Expected: "function"
+Received: "undefined"
+
+ ❯ fixture packages/domain/src/ai/ai-analysis-service.test.ts:28:80
+     26|     const path = "./ai-analysis-service";
+     27|     const module = await import(path).catch(() => null);
+     28|     expect(module?.createAIAnalysisService,"real analysis service must…
+       |                                                                                ^
+     29|     const service = module!.createAIAnalysisService(db,{providerId:"fi…
+     30|     return {owner,foreign,actor:{userId:owner},collection,item,image,l…
+ ❯ packages/domain/src/ai/ai-analysis-service.test.ts:78:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/5]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  5 failed (5)
+   Start at  02:17:34
+   Duration  695ms (transform 42ms, setup 5ms, collect 80ms, tests 442ms, environment 0ms, prepare 48ms)
+

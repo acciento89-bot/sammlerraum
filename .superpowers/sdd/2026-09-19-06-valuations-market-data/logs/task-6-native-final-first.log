@@ -1,0 +1,31 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ✓ |workspace| apps/worker/src/jobs/market-request-permit.integration.test.ts (15 tests) 13598ms
+   ✓ durable market gate on separate PostgreSQL clients > holds a paused admitted sender beyond one second, then enforces physical settlement plus cooldown  3174ms
+   ✓ durable market gate on separate PostgreSQL clients > racing first-row permits start exactly one physical callback  1064ms
+   ✓ durable market gate on separate PostgreSQL clients > keeps distinct tokens independent and never refunds failure or pre-send abort  2033ms
+   ✓ durable market gate on separate PostgreSQL clients > enforces hourly/daily budgets, non-regressing DB windows and policy consistency  2049ms
+   ✓ durable market gate on separate PostgreSQL clients > allows safe successor after clear committed/lost ACK while old local stop fails  2016ms
+   ✓ durable market gate on separate PostgreSQL clients > holds claim when clear fails before commit and never forgets settled handler uncertainty  1013ms
+   ✓ durable market gate on separate PostgreSQL clients > standalone stop aborts physical transport and waits settlement, cooldown and own clear  1018ms
+   ✓ durable market gate on separate PostgreSQL clients > keeps an ignored abort claimed until actual settlement rather than treating timeout as cancellation  1048ms
+ ✓ |workspace| apps/worker/src/jobs/production-market.integration.test.ts (4 tests) 15469ms
+   ✓ real production composition with fake HTTP and PostgreSQL > actual composed handler ingests exact zero/bigint with receipt time before cooldown and skips same-poll replay  1393ms
+   ✓ real production composition with fake HTTP and PostgreSQL > real pg-boss retry reuses receipt; raw provider errors never reach persisted broker output  11114ms
+   ✓ real production composition with fake HTTP and PostgreSQL > earlier completed handler cleanup failure remains latched through real composition/main shutdown  1085ms
+   ✓ real production composition with fake HTTP and PostgreSQL > standalone permit stop reaches the real adapter body signal and releases only after settlement/cooldown  1101ms
+ ✓ |workspace| packages/domain/src/market-data/market-data-service.test.ts (13 tests) 3350ms
+   ✓ global market observations PostgreSQL > enforces native constraints and identity uniqueness even when service validation is bypassed  704ms
+ ✓ |workspace| apps/worker/src/jobs/market-sync.integration.test.ts (16 tests) 9810ms
+   ✓ market sync PostgreSQL > retries persisted queue data after ACK failure without refetching committed observations  2096ms
+   ✓ market sync PostgreSQL > runs the composed producer and cancels an in-flight fake provider before teardown without catalog HTTP locks  2060ms
+   ✓ forwards pg-boss active-expiry cancellation through the real runtime  3577ms
+
+ Test Files  4 passed (4)
+      Tests  48 passed (48)
+   Start at  07:31:22
+   Duration  44.56s (transform 351ms, setup 18ms, collect 1.25s, tests 42.23s, environment 1ms, prepare 292ms)
+
+
+EXIT=0

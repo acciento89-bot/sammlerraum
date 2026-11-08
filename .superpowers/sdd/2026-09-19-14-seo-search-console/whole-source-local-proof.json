@@ -1,0 +1,92 @@
+{
+  "scope": "whole Phase14 local source proof before independent review; live tasks are unaccepted",
+  "fullNativeBaseline": {
+    "source": "912b83693f24c4791c795ef6a93115ea209c4dfd",
+    "passed": 3111,
+    "files": 295,
+    "failed": 0,
+    "skipped": 0,
+    "durationSeconds": 284.52,
+    "predatesCountDiscoveryPrivacyCorrection": true
+  },
+  "postBaselinePrivacyCorrection": {
+    "reproducedFailure": true,
+    "focusedPassed": 56,
+    "compiledCurrentPassed": 27,
+    "includesRealAppReleaseChecks": 23
+  },
+  "browsers": {
+    "marketing": 4,
+    "seo": 18,
+    "releaseAgainstRealApp": 1,
+    "legacyPublic": 4
+  },
+  "lighthouse": {
+    "actualRuns": 18,
+    "allIndividualThresholdsPassed": true,
+    "allUrlCategoryMedians": 1.0
+  },
+  "oldProofVariantsRetained": {
+    "native": 2,
+    "legacyBrowser": 12
+  },
+  "productionAndSearchConsoleReady": false,
+  "artifacts": [
+    {
+      "path": "whole-native.log",
+      "sha256": "af5955dada3e0f81c12d73508d652396bfca0244896412682be086ddcaba45fd"
+    },
+    {
+      "path": "whole-native.json",
+      "sha256": "d56e7db904ea57be42707c83b3848568bd2b978253eb06699990d731b081b44a"
+    },
+    {
+      "path": "whole-root-types.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "whole-lint.log",
+      "sha256": "153e7da54db1e2c58cb4fff9aa1a8793d49c6f4e84434a5e84da181672634902"
+    },
+    {
+      "path": "whole-worker-build.log",
+      "sha256": "2e4348e53bef09dd384270564f002601545dcbb461dbef3ecd348c4adc03a577"
+    },
+    {
+      "path": "whole-web-build-count-corrected.log",
+      "sha256": "5f33a7e44aaa3c2022fbcbb0b15555ca1ac20787e58dcfcc7f96fc0b097b684d"
+    },
+    {
+      "path": "whole-marketing-browser.log",
+      "sha256": "5960ed632840ab5a060ded94f1d99df93bc1e3932ac40639db1b83107071f85e"
+    },
+    {
+      "path": "whole-seo-browser.log",
+      "sha256": "d69daa98f1a6d193f530363878873e5870c9db36f2e29df3a0da782c3daf501c"
+    },
+    {
+      "path": "whole-seo-release.log",
+      "sha256": "f80e2813aa38301eabcf4b2d61f06b8c60fdef0c1110092674482935adf966b2"
+    },
+    {
+      "path": "whole-legacy-public-browser.log",
+      "sha256": "acf2a23dd91835f9e8e05c46334e230b449d28f9a16e2230a04b46628294df7f"
+    },
+    {
+      "path": "pre-review-bucket-privacy-red.log",
+      "sha256": "fd74a46aa9a417a1fc7060c881b75b10c2f22d7894ab6ef92fa8b7c88deffddf"
+    },
+    {
+      "path": "pre-review-count-green.log",
+      "sha256": "b3cb62c37b53299202fd04bd89fbfd8bcff329d0c4132de3ee78f2622591b883"
+    },
+    {
+      "path": "native-variant-retention.json",
+      "sha256": "aa51ac8a931a5c097604a1294eaa9b57f496a9ce8d88cd6a683aad47811627d8"
+    },
+    {
+      "path": "browser-variant-retention.json",
+      "sha256": "e2cd1462bb99f4960eaa4c2b515b41ea3f5017f975d74768f12d231730893e0d"
+    }
+  ]
+}

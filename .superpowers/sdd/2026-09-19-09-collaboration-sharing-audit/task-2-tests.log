@@ -1,0 +1,14 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ✓ |workspace| packages/domain/src/collaboration/invitation-service.test.ts (23 tests) 1722ms
+   ✓ actual recipient-bound invitations > rolls back a token that expires during the real acceptance transaction with a closed expiry result  512ms
+   ✓ actual recipient-bound invitations > maps the actual database expiry guard even when expiry happens inside the consuming SQL statement  376ms
+ ✓ |workspace| apps/web/src/lib/invitation-routes.integration.test.ts (3 tests) 397ms
+ ✓ |workspace| apps/web/src/lib/invitation-routes.test.ts (10 tests) 20ms
+
+ Test Files  3 passed (3)
+      Tests  36 passed (36)
+   Start at  06:21:28
+   Duration  3.25s (transform 222ms, setup 7ms, collect 684ms, tests 2.14s, environment 0ms, prepare 96ms)
+

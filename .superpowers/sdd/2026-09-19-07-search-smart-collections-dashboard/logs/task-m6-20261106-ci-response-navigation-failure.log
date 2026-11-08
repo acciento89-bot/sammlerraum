@@ -1,0 +1,39 @@
+2026-11-06T18:28:59.3831026Z   1) [money-ui-desktop] › e2e/legacy-money.spec.ts:497:3 › de: a new item binds its custom amount to actual absence without duplicate creation 
+2026-11-06T18:28:59.3838537Z 
+2026-11-06T18:28:59.3845119Z     Error: response.json: Protocol error (Network.getResponseBody): No data found for resource with given identifier
+2026-11-06T18:28:59.3848576Z     Response body is not available for a response that was navigated away from. Read response.body() before triggering any navigation.
+2026-11-06T18:28:59.3849822Z 
+2026-11-06T18:28:59.3850280Z       512 |       const created = await response;
+2026-11-06T18:28:59.3851161Z       513 |       expect(created.status()).toBe(201);
+2026-11-06T18:28:59.3852055Z     > 514 |       const result = await created.json();
+2026-11-06T18:28:59.3852822Z           |                                    ^
+2026-11-06T18:28:59.3853880Z       515 |       await expect(page).toHaveURL(new RegExp(`/${locale}/items/${result.item.id}$`));
+2026-11-06T18:28:59.3855156Z       516 |       await expect(save).toBeEnabled();
+2026-11-06T18:28:59.3857194Z       517 |       const actual = await money.getMoney({
+2026-11-06T18:28:59.3858473Z         at /home/runner/work/sammlerraum/sammlerraum/apps/web/e2e/legacy-money.spec.ts:514:36
+2026-11-06T18:28:59.3859407Z 
+2026-11-06T18:28:59.3860649Z     Error Context: test-results/legacy-money-de-a-new-item-7a5f0--without-duplicate-creation-money-ui-desktop/error-context.md
+2026-11-06T18:28:59.3861821Z 
+2026-11-06T18:28:59.3862899Z     Error Context: test-results/legacy-money-de-a-new-item-7a5f0--without-duplicate-creation-money-ui-desktop/error-context.md
+2026-11-06T18:28:59.3863975Z 
+2026-11-06T18:28:59.3864594Z   1 failed
+2026-11-06T18:28:59.3866172Z     [money-ui-desktop] › e2e/legacy-money.spec.ts:497:3 › de: a new item binds its custom amount to actual absence without duplicate creation 
+2026-11-06T18:28:59.3867740Z   153 passed (4.0m)
+2026-11-06T18:28:59.4239871Z undefined
+2026-11-06T18:28:59.4250101Z /home/runner/work/sammlerraum/sammlerraum/apps/web:
+2026-11-06T18:28:59.4252563Z  ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/catalog-money-api.spec.ts e2e/catalog-money-ui.spec.ts e2e/legacy-money.spec.ts --workers=1
+2026-11-06T18:28:59.5662621Z ##[error]Process completed with exit code 1.
+2026-11-06T18:28:59.5785030Z Post job cleanup.
+2026-11-06T18:28:59.7369697Z Pruning is unnecessary.
+2026-11-06T18:28:59.7580534Z Post job cleanup.
+2026-11-06T18:28:59.8570831Z [command]/usr/bin/git version
+2026-11-06T18:28:59.8620403Z git version 2.56.0
+2026-11-06T18:28:59.8664563Z Temporarily overriding HOME='/home/runner/work/_temp/b19fe2a1-82c6-49a3-864e-be0cd9785ee1' before making global git config changes
+2026-11-06T18:28:59.8668657Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-06T18:28:59.8672257Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/sammlerraum/sammlerraum
+2026-11-06T18:28:59.8718891Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-06T18:28:59.8804793Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-06T18:28:59.9104548Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-06T18:28:59.9134388Z http.https://github.com/.extraheader
+2026-11-06T18:28:59.9148179Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-11-06T18:28:59.9207113Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"

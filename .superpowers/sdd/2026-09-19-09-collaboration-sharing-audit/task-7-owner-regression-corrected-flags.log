@@ -1,0 +1,44 @@
+[WebServer] (node:50560) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 22 tests using 1 worker
+(node:50576) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+··········F
+Testing stopped early after 1 maximum allowed failures.
+
+
+  1) [desktop] › e2e/collections-items.spec.ts:1009:3 › localized collection and item management › acknowledged creation and archive survive snapshot refresh failures 
+
+    Error: response.json: Protocol error (Network.getResponseBody): No data found for resource with given identifier
+    Response body is not available for a response that was navigated away from. Read response.body() before triggering any navigation.
+
+      1049 |       const createdResponse = await created;
+      1050 |       expect(createdResponse.status()).toBe(201);
+    > 1051 |       const { item } = await createdResponse.json();
+           |                                              ^
+      1052 |       const path = `/api/v1/items/${item.id}`;
+      1053 |       await expect(page.getByRole("alert").filter({ hasText: refreshError })).toHaveText(
+      1054 |         refreshError,
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/collections-items.spec.ts:1051:46
+
+    Error Context: test-results/collections-items-localize-f9a95-e-snapshot-refresh-failures-desktop/error-context.md
+
+    Error Context: test-results/collections-items-localize-f9a95-e-snapshot-refresh-failures-desktop/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/collections-items-localize-f9a95-e-snapshot-refresh-failures-desktop/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/collections-items-localize-f9a95-e-snapshot-refresh-failures-desktop/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [desktop] › e2e/collections-items.spec.ts:1009:3 › localized collection and item management › acknowledged creation and archive survive snapshot refresh failures 
+  11 did not run
+  10 passed (15.7s)
+  1 error was not a part of any test, see above for details
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/collections-items.spec.ts --project=desktop --project=mobile --workers=1 --max-failures=1 --trace=retain-on-failure

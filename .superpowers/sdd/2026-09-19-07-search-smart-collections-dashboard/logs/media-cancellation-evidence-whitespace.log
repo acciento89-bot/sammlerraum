@@ -1,0 +1,15 @@
+.superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/media-cancellation-controlled-red.log:54: trailing whitespace.
++  1) [desktop] › e2e/media-documents.spec.ts:143:5 › item media and private documents › public item can have a purchase receipt that remains private (de) 
+.superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/media-cancellation-controlled-red.log:72: trailing whitespace.
++    [desktop] › e2e/media-documents.spec.ts:143:5 › item media and private documents › public item can have a purchase receipt that remains private (de) 
+.superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/media-cancellation-failure-path-context-0.md:24: trailing whitespace.
++  272 | 
+.superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/media-cancellation-failure-path.log:15: trailing whitespace.
++  1) [desktop] › e2e/media-documents.spec.ts:164:5 › item media and private documents › public item can have a purchase receipt that remains private (de) 
+.superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/media-cancellation-failure-path.log:33: trailing whitespace.
++    [desktop] › e2e/media-documents.spec.ts:164:5 › item media and private documents › public item can have a purchase receipt that remains private (de) 
+.superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/media-cancellation-typecheck.log:4: new blank line at EOF.
+.superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/media-cancellation-unchanged-desktop-de.log:13: trailing whitespace.
++  1) [desktop] › e2e/media-documents.spec.ts:143:5 › item media and private documents › public item can have a purchase receipt that remains private (de) 
+.superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/media-cancellation-unchanged-desktop-de.log:31: trailing whitespace.
++    [desktop] › e2e/media-documents.spec.ts:143:5 › item media and private documents › public item can have a purchase receipt that remains private (de) 

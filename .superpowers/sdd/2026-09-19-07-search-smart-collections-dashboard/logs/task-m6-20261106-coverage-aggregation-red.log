@@ -1,0 +1,137 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/money/purchase-cost.test.ts (24 tests | 14 failed) 130ms
+   ✓ gates the independent whole scope unknownPaths before loading any matched selection 2ms
+   ✓ gates the independent whole scope ineligiblePaths before loading any matched selection 0ms
+   ✓ keeps a narrowed matched subtotal separately labelled after whole-scope eligibility 1ms
+   ✓ keeps known zero, empty and complete states distinct 1ms
+   ✓ refuses inconsistent grouping or a selection escaping outer coverage 0 0ms
+   ✓ refuses inconsistent grouping or a selection escaping outer coverage 1 0ms
+   ✓ refuses inconsistent grouping or a selection escaping outer coverage 2 0ms
+   ✓ refuses inconsistent grouping or a selection escaping outer coverage 3 0ms
+   ✓ native quantity-weighted purchase grouping > sums two maximum-raw times intmax quantities beyond bigint without rounding 78ms
+   ✓ native quantity-weighted purchase grouping > groups different evidenced scales separately and preserves exact zero 3ms
+   × native complete resolved purchase coverage aggregation > counts the whole relation and quantity buckets, including missing, zero and unresolved facts 5ms
+     → SEARCH_INVARIANT
+   × native complete resolved purchase coverage aggregation > retains an empty relation as exact zero coverage 2ms
+     → SEARCH_INVARIANT
+   × native complete resolved purchase coverage aggregation > retains intmax quantities and maximum raw without bigint sum casts 2ms
+     → SEARCH_INVARIANT
+   × native complete resolved purchase coverage aggregation > refuses a malformed resolved relation rather than dropping rows 0 10ms
+     → expected ItemSearchError: SEARCH_INVARIANT { code: '…' } to match object { code: 'MONEY_DATA_INTEGRITY' }
+(1 matching property omitted from actual)
+   × native complete resolved purchase coverage aggregation > refuses a malformed resolved relation rather than dropping rows 1 2ms
+     → expected ItemSearchError: SEARCH_INVARIANT { code: '…' } to match object { code: 'MONEY_DATA_INTEGRITY' }
+(1 matching property omitted from actual)
+   × native complete resolved purchase coverage aggregation > refuses a malformed resolved relation rather than dropping rows 2 2ms
+     → expected ItemSearchError: SEARCH_INVARIANT { code: '…' } to match object { code: 'MONEY_DATA_INTEGRITY' }
+(1 matching property omitted from actual)
+   × native complete resolved purchase coverage aggregation > refuses a malformed resolved relation rather than dropping rows 3 9ms
+     → expected ItemSearchError: SEARCH_INVARIANT { code: '…' } to match object { code: 'MONEY_DATA_INTEGRITY' }
+(1 matching property omitted from actual)
+   × native complete resolved purchase coverage aggregation > refuses a malformed resolved relation rather than dropping rows 4 2ms
+     → expected ItemSearchError: SEARCH_INVARIANT { code: '…' } to match object { code: 'MONEY_DATA_INTEGRITY' }
+(1 matching property omitted from actual)
+   × native complete resolved purchase coverage aggregation > refuses a malformed resolved relation rather than dropping rows 5 1ms
+     → expected ItemSearchError: SEARCH_INVARIANT { code: '…' } to match object { code: 'MONEY_DATA_INTEGRITY' }
+(1 matching property omitted from actual)
+   × native complete resolved purchase coverage aggregation > refuses a malformed resolved relation rather than dropping rows 6 1ms
+     → expected ItemSearchError: SEARCH_INVARIANT { code: '…' } to match object { code: 'MONEY_DATA_INTEGRITY' }
+(1 matching property omitted from actual)
+   × native complete resolved purchase coverage aggregation > refuses a malformed resolved relation rather than dropping rows 7 1ms
+     → expected ItemSearchError: SEARCH_INVARIANT { code: '…' } to match object { code: 'MONEY_DATA_INTEGRITY' }
+(1 matching property omitted from actual)
+   × native complete resolved purchase coverage aggregation > refuses a malformed resolved relation rather than dropping rows 8 1ms
+     → expected ItemSearchError: SEARCH_INVARIANT { code: '…' } to match object { code: 'MONEY_DATA_INTEGRITY' }
+(1 matching property omitted from actual)
+   × native complete resolved purchase coverage aggregation > refuses a malformed resolved relation rather than dropping rows 9 2ms
+     → expected ItemSearchError: SEARCH_INVARIANT { code: '…' } to match object { code: 'MONEY_DATA_INTEGRITY' }
+(1 matching property omitted from actual)
+   × native complete resolved purchase coverage aggregation > refuses a malformed resolved relation rather than dropping rows 10 1ms
+     → expected ItemSearchError: SEARCH_INVARIANT { code: '…' } to match object { code: 'MONEY_DATA_INTEGRITY' }
+(1 matching property omitted from actual)
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 14 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/money/purchase-cost.test.ts > native complete resolved purchase coverage aggregation > counts the whole relation and quantity buckets, including missing, zero and unresolved facts
+ItemSearchError: SEARCH_INVARIANT
+ ❯ searchFail packages/contracts/src/item-search.ts:24:9
+     22| }
+     23| export function searchFail(code: ItemSearchError["code"]): never {
+     24|   throw new ItemSearchError(code);
+       |         ^
+     25| }
+     26| const textValid = (v: string) =>
+ ❯ runSearchTransaction packages/domain/src/search/search-read.ts:80:14
+ ❯ packages/domain/src/money/purchase-cost.test.ts:135:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/14]⎯
+
+ FAIL  |workspace| packages/domain/src/money/purchase-cost.test.ts > native complete resolved purchase coverage aggregation > retains an empty relation as exact zero coverage
+ItemSearchError: SEARCH_INVARIANT
+ ❯ searchFail packages/contracts/src/item-search.ts:24:9
+     22| }
+     23| export function searchFail(code: ItemSearchError["code"]): never {
+     24|   throw new ItemSearchError(code);
+       |         ^
+     25| }
+     26| const textValid = (v: string) =>
+ ❯ runSearchTransaction packages/domain/src/search/search-read.ts:80:14
+ ❯ packages/domain/src/money/purchase-cost.test.ts:142:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/14]⎯
+
+ FAIL  |workspace| packages/domain/src/money/purchase-cost.test.ts > native complete resolved purchase coverage aggregation > retains intmax quantities and maximum raw without bigint sum casts
+ItemSearchError: SEARCH_INVARIANT
+ ❯ searchFail packages/contracts/src/item-search.ts:24:9
+     22| }
+     23| export function searchFail(code: ItemSearchError["code"]): never {
+     24|   throw new ItemSearchError(code);
+       |         ^
+     25| }
+     26| const textValid = (v: string) =>
+ ❯ runSearchTransaction packages/domain/src/search/search-read.ts:80:14
+ ❯ packages/domain/src/money/purchase-cost.test.ts:146:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/14]⎯
+
+ FAIL  |workspace| packages/domain/src/money/purchase-cost.test.ts > native complete resolved purchase coverage aggregation > refuses a malformed resolved relation rather than dropping rows 0
+ FAIL  |workspace| packages/domain/src/money/purchase-cost.test.ts > native complete resolved purchase coverage aggregation > refuses a malformed resolved relation rather than dropping rows 1
+ FAIL  |workspace| packages/domain/src/money/purchase-cost.test.ts > native complete resolved purchase coverage aggregation > refuses a malformed resolved relation rather than dropping rows 2
+ FAIL  |workspace| packages/domain/src/money/purchase-cost.test.ts > native complete resolved purchase coverage aggregation > refuses a malformed resolved relation rather than dropping rows 3
+ FAIL  |workspace| packages/domain/src/money/purchase-cost.test.ts > native complete resolved purchase coverage aggregation > refuses a malformed resolved relation rather than dropping rows 4
+ FAIL  |workspace| packages/domain/src/money/purchase-cost.test.ts > native complete resolved purchase coverage aggregation > refuses a malformed resolved relation rather than dropping rows 5
+ FAIL  |workspace| packages/domain/src/money/purchase-cost.test.ts > native complete resolved purchase coverage aggregation > refuses a malformed resolved relation rather than dropping rows 6
+ FAIL  |workspace| packages/domain/src/money/purchase-cost.test.ts > native complete resolved purchase coverage aggregation > refuses a malformed resolved relation rather than dropping rows 7
+ FAIL  |workspace| packages/domain/src/money/purchase-cost.test.ts > native complete resolved purchase coverage aggregation > refuses a malformed resolved relation rather than dropping rows 8
+ FAIL  |workspace| packages/domain/src/money/purchase-cost.test.ts > native complete resolved purchase coverage aggregation > refuses a malformed resolved relation rather than dropping rows 9
+ FAIL  |workspace| packages/domain/src/money/purchase-cost.test.ts > native complete resolved purchase coverage aggregation > refuses a malformed resolved relation rather than dropping rows 10
+AssertionError: expected ItemSearchError: SEARCH_INVARIANT { code: '…' } to match object { code: 'MONEY_DATA_INTEGRITY' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+- {
+-   "code": "MONEY_DATA_INTEGRITY",
++ ItemSearchError {
++   "code": "SEARCH_INVARIANT",
+  }
+
+ ❯ packages/domain/src/money/purchase-cost.test.ts:162:5
+    160|     Prisma.sql`VALUES (1,0::numeric,1::numeric,'ELIGIBLE'::text),(1,0:…
+    161|   ])("refuses a malformed resolved relation rather than dropping rows …
+    162|     await expect(runSearchRead(db!, (tx) => readResolvedPurchaseCovera…
+       |     ^
+    163|       .rejects.toMatchObject({ code: "MONEY_DATA_INTEGRITY" });
+    164|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/14]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  14 failed | 10 passed (24)
+   Start at  14:39:40
+   Duration  695ms (transform 111ms, setup 6ms, collect 268ms, tests 130ms, environment 0ms, prepare 59ms)
+

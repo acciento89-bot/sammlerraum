@@ -1,0 +1,74 @@
+[
+  {
+    "ownedItems": 1,
+    "kind": "MEMBER",
+    "searchMs": 7.473124999999982,
+    "dashboardMs": 6.127124999999978,
+    "searchRawCallsIncludingConfiguration": 17,
+    "dashboardRawCallsIncludingConfiguration": 17
+  },
+  {
+    "ownedItems": 1,
+    "kind": "SHARE_COLLECTION",
+    "searchMs": 8.521834000000013,
+    "dashboardMs": 7.528165999999942,
+    "searchRawCallsIncludingConfiguration": 28,
+    "dashboardRawCallsIncludingConfiguration": 26
+  },
+  {
+    "ownedItems": 1,
+    "kind": "SHARE_NODE",
+    "searchMs": 9.531542000000059,
+    "dashboardMs": 7.240125000000035,
+    "searchRawCallsIncludingConfiguration": 32,
+    "dashboardRawCallsIncludingConfiguration": 30
+  },
+  {
+    "ownedItems": 50,
+    "kind": "MEMBER",
+    "searchMs": 3.923958000000084,
+    "dashboardMs": 3.7144160000000284,
+    "searchRawCallsIncludingConfiguration": 17,
+    "dashboardRawCallsIncludingConfiguration": 17
+  },
+  {
+    "ownedItems": 50,
+    "kind": "SHARE_COLLECTION",
+    "searchMs": 6.397667000000183,
+    "dashboardMs": 6.625667000000021,
+    "searchRawCallsIncludingConfiguration": 28,
+    "dashboardRawCallsIncludingConfiguration": 26
+  },
+  {
+    "ownedItems": 50,
+    "kind": "SHARE_NODE",
+    "searchMs": 6.916791999999987,
+    "dashboardMs": 6.465499999999793,
+    "searchRawCallsIncludingConfiguration": 32,
+    "dashboardRawCallsIncludingConfiguration": 30
+  },
+  {
+    "ownedItems": 500,
+    "kind": "MEMBER",
+    "searchMs": 4.507666999999856,
+    "dashboardMs": 4.604291000000103,
+    "searchRawCallsIncludingConfiguration": 17,
+    "dashboardRawCallsIncludingConfiguration": 17
+  },
+  {
+    "ownedItems": 500,
+    "kind": "SHARE_COLLECTION",
+    "searchMs": 6.876499999999851,
+    "dashboardMs": 5.796084000000064,
+    "searchRawCallsIncludingConfiguration": 28,
+    "dashboardRawCallsIncludingConfiguration": 26
+  },
+  {
+    "ownedItems": 500,
+    "kind": "SHARE_NODE",
+    "searchMs": 10.684332999999924,
+    "dashboardMs": 6.561332999999877,
+    "searchRawCallsIncludingConfiguration": 32,
+    "dashboardRawCallsIncludingConfiguration": 30
+  }
+]

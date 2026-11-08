@@ -1,0 +1,85 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| apps/worker/src/jobs/import-parser.integration.test.ts (7 tests | 1 failed) 507ms
+   ✓ actual source-to-PostgreSQL import parser > verifies actual bytes and persists over100 rows without touching inventory 139ms
+   ✓ actual source-to-PostgreSQL import parser > rejects mismatched source checksums and late row-limit failures 50ms
+   ✓ actual source-to-PostgreSQL import parser > fences expired claims and verifies rather than replacing a persisted retry prefix 20ms
+   ✓ actual source-to-PostgreSQL import parser > refuses jobs whose target is deleted and pins claimed parser options 31ms
+   ✓ actual source-to-PostgreSQL import parser > rejects divergent retry rows and missing membership before finishing 15ms
+   ✓ actual source-to-PostgreSQL import parser > persists exact cached workbook cells through actual storage and database 24ms
+   × actual source-to-PostgreSQL import parser > releases transient failures for a real retry and eventually closes exhausted attempts 8ms
+     → promise resolved "undefined" instead of rejecting
+ ❯ |workspace| apps/worker/src/jobs/import-parser-runtime.test.ts (3 tests | 2 failed) 10ms
+   × keeps ownership until a storage read that ignores cancellation has really settled 5ms
+     → promise resolved "undefined" instead of rejecting
+   ✓ does not accept payload-provided owners, paths or source replacements 0ms
+   × does not complete a partially consumed source after persistence fails 4ms
+     → promise resolved "undefined" instead of rejecting
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/worker/src/jobs/import-parser-runtime.test.ts > keeps ownership until a storage read that ignores cancellation has really settled
+AssertionError: promise resolved "undefined" instead of rejecting
+
+- Expected: 
+Error {
+  "message": "rejected promise",
+}
+
++ Received: 
+undefined
+
+ ❯ apps/worker/src/jobs/import-parser-runtime.test.ts:58:23
+     56|   expect(f.repo.finish).not.toHaveBeenCalled();
+     57|   release(f.bytes);
+     58|   await expect(running).rejects.toMatchObject({code:"IMPORT_PARSE_CANC…
+       |                       ^
+     59|   expect(f.repo.fail).toHaveBeenCalledWith(f.claim, "IMPORT_PARSE_CANC…
+     60|   expect(f.repo.verified).not.toHaveBeenCalled();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  |workspace| apps/worker/src/jobs/import-parser-runtime.test.ts > does not complete a partially consumed source after persistence fails
+AssertionError: promise resolved "undefined" instead of rejecting
+
+- Expected: 
+Error {
+  "message": "rejected promise",
+}
+
++ Received: 
+undefined
+
+ ❯ apps/worker/src/jobs/import-parser-runtime.test.ts:72:70
+     70|     throw new Error("synthetic transient");
+     71|   });
+     72|   await expect(createImportParser(f.repo, f.storage)({ jobId: f.id }))…
+       |                                                                      ^
+     73|   expect(f.repo.finish).not.toHaveBeenCalled();
+     74|   expect(f.repo.fail).toHaveBeenCalledOnce();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  |workspace| apps/worker/src/jobs/import-parser.integration.test.ts > actual source-to-PostgreSQL import parser > releases transient failures for a real retry and eventually closes exhausted attempts
+AssertionError: promise resolved "undefined" instead of rejecting
+
+- Expected: 
+Error {
+  "message": "rejected promise",
+}
+
++ Received: 
+undefined
+
+ ❯ apps/worker/src/jobs/import-parser.integration.test.ts:167:41
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  3 failed | 7 passed (10)
+   Start at  21:56:00
+   Duration  1.13s (transform 123ms, setup 7ms, collect 299ms, tests 517ms, environment 0ms, prepare 87ms)
+

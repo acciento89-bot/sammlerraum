@@ -1,0 +1,6 @@
+
+> @sammlerraum/storage@ lint /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/storage
+> prettier --check .
+
+Checking formatting...
+All matched files use Prettier code style!

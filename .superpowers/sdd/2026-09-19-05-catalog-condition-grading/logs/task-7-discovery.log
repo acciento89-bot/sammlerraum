@@ -1,0 +1,6 @@
+Listing tests:
+  [desktop] › catalog-grading.spec.ts:8:5 › catalog, personal condition and external grading › changing own condition preserves external grading (de)
+  [desktop] › catalog-grading.spec.ts:8:5 › catalog, personal condition and external grading › changing own condition preserves external grading (en)
+  [mobile] › catalog-grading.spec.ts:8:5 › catalog, personal condition and external grading › changing own condition preserves external grading (de)
+  [mobile] › catalog-grading.spec.ts:8:5 › catalog, personal condition and external grading › changing own condition preserves external grading (en)
+Total: 4 tests in 1 file

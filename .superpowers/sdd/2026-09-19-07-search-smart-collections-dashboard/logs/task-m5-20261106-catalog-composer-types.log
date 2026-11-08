@@ -1,0 +1,51 @@
+
+> sammlerraum@ typecheck /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+> pnpm -r typecheck
+
+Scope: 10 of 11 workspace projects
+packages/config typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+packages/contracts typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+packages/queue typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+packages/market-data typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+packages/contracts typecheck: Done
+packages/storage typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+packages/config typecheck: Done
+packages/testing typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+packages/market-data typecheck: Done
+packages/queue typecheck: Done
+packages/testing typecheck: Done
+packages/storage typecheck: Done
+packages/db typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+packages/db typecheck: Done
+packages/domain typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+packages/domain typecheck: Done
+apps/worker typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+apps/web typecheck$ tsc --noEmit --project tsconfig.json
+apps/worker typecheck: Done
+apps/web typecheck: src/components/catalog/catalog-money-model.ts(77,9): error TS18048: 'draft' is possibly 'undefined'.
+apps/web typecheck: src/components/catalog/catalog-money-model.ts(78,9): error TS18048: 'draft' is possibly 'undefined'.
+apps/web typecheck: src/components/catalog/catalog-money-model.ts(80,14): error TS18048: 'draft' is possibly 'undefined'.
+apps/web typecheck: src/components/catalog/catalog-money-model.ts(85,35): error TS2322: Type 'string | null' is not assignable to type 'string'.
+apps/web typecheck:   Type 'null' is not assignable to type 'string'.
+apps/web typecheck: src/components/catalog/catalog-money-model.ts(85,54): error TS18048: 'draft' is possibly 'undefined'.
+apps/web typecheck: src/components/catalog/catalog-money-model.ts(92,7): error TS2345: Argument of type '{ correctionReason: string; outcome?: "READY" | "CONFLICT" | "UNKNOWN" | "ACKNOWLEDGED_UNREADABLE"; expectedFactToken?: string | null; mode?: "CLEAR" | "REPLACE" | "KEEP"; decimal?: string; currency?: string; acknowledged?: boolean; }' is not assignable to parameter of type '{ outcome: "READY" | "CONFLICT" | "UNKNOWN" | "ACKNOWLEDGED_UNREADABLE"; expectedFactToken: string | null; mode: "CLEAR" | "REPLACE" | "KEEP"; decimal: string; currency: string; acknowledged: boolean; correctionReason: string; }'.
+apps/web typecheck:   Property 'outcome' is optional in type '{ correctionReason: string; outcome?: "READY" | "CONFLICT" | "UNKNOWN" | "ACKNOWLEDGED_UNREADABLE"; expectedFactToken?: string | null; mode?: "CLEAR" | "REPLACE" | "KEEP"; decimal?: string; currency?: string; acknowledged?: boolean; }' but required in type '{ outcome: "READY" | "CONFLICT" | "UNKNOWN" | "ACKNOWLEDGED_UNREADABLE"; expectedFactToken: string | null; mode: "CLEAR" | "REPLACE" | "KEEP"; decimal: string; currency: string; acknowledged: boolean; correctionReason: string; }'.
+apps/web typecheck: src/components/catalog/catalog-money-model.ts(97,9): error TS18048: 'intent' is possibly 'undefined'.
+apps/web typecheck: src/components/catalog/catalog-money-model.ts(98,9): error TS18048: 'intent' is possibly 'undefined'.
+apps/web typecheck: src/components/catalog/catalog-money-model.ts(99,47): error TS18048: 'intent' is possibly 'undefined'.
+apps/web typecheck: src/components/catalog/catalog-money-model.ts(99,54): error TS2339: Property 'authoring' does not exist on type '{ op: "RETAIN"; expectedFactToken: string; } | { op: "CLEAR"; expectedFactToken: string; } | { op: "REPLACE"; expectedFactToken: string; authoring: { kind: "DECIMAL"; profileId: "legacy-money-iso-2026-09-17-v1"; currency: string; decimal: string; } | { ...; }; correctionReason?: string | undefined; } | { ...; }'.
+apps/web typecheck:   Property 'authoring' does not exist on type '{ op: "RETAIN"; expectedFactToken: string; }'.
+apps/web typecheck: src/components/catalog/catalog-money-model.ts(105,7): error TS18048: 'intent' is possibly 'undefined'.
+apps/web typecheck: src/components/catalog/catalog-money-model.ts(108,32): error TS18048: 'intent' is possibly 'undefined'.
+apps/web typecheck: src/components/catalog/catalog-money-model.ts(108,39): error TS2339: Property 'expectedFactToken' does not exist on type '{ op: "RETAIN"; expectedFactToken: string; } | { op: "CLEAR"; expectedFactToken: string; } | { op: "REPLACE"; expectedFactToken: string; authoring: { kind: "DECIMAL"; profileId: "legacy-money-iso-2026-09-17-v1"; currency: string; decimal: string; } | { ...; }; correctionReason?: string | undefined; } | { ...; }'.
+apps/web typecheck:   Property 'expectedFactToken' does not exist on type '{ op: "NEW"; authoring: { kind: "DECIMAL"; profileId: "legacy-money-iso-2026-09-17-v1"; currency: string; decimal: string; } | { kind: "RAW"; profileId: "legacy-money-iso-2026-09-17-v1"; currency: string; amountMinor: string; exponent: number; unitKey: string; }; }'.
+apps/web typecheck: src/components/catalog/catalog-money-model.ts(109,24): error TS18048: 'intent' is possibly 'undefined'.
+apps/web typecheck: src/components/catalog/catalog-money-model.ts(109,31): error TS2339: Property 'authoring' does not exist on type '{ op: "RETAIN"; expectedFactToken: string; } | { op: "CLEAR"; expectedFactToken: string; } | { op: "REPLACE"; expectedFactToken: string; authoring: { kind: "DECIMAL"; profileId: "legacy-money-iso-2026-09-17-v1"; currency: string; decimal: string; } | { ...; }; correctionReason?: string | undefined; } | { ...; }'.
+apps/web typecheck:   Property 'authoring' does not exist on type '{ op: "RETAIN"; expectedFactToken: string; }'.
+apps/web typecheck: src/components/catalog/catalog-money-model.ts(112,59): error TS2322: Type '{ op: "RETAIN"; expectedFactToken: string; } | { op: "CLEAR"; expectedFactToken: string; } | { op: "REPLACE"; expectedFactToken: string; authoring: { kind: "DECIMAL"; profileId: "legacy-money-iso-2026-09-17-v1"; currency: string; decimal: string; } | { ...; }; correctionReason?: string | undefined; } | { ...; } | { ...' is not assignable to type '{ op: "RETAIN"; expectedFactToken: string; } | { op: "NEW"; authoring: { kind: "DECIMAL"; profileId: "legacy-money-iso-2026-09-17-v1"; currency: string; decimal: string; } | { kind: "RAW"; profileId: "legacy-money-iso-2026-09-17-v1"; currency: string; amountMinor: string; exponent: number; unitKey: string; }; } | { ...'.
+apps/web typecheck:   Type 'undefined' is not assignable to type '{ op: "RETAIN"; expectedFactToken: string; } | { op: "NEW"; authoring: { kind: "DECIMAL"; profileId: "legacy-money-iso-2026-09-17-v1"; currency: string; decimal: string; } | { kind: "RAW"; profileId: "legacy-money-iso-2026-09-17-v1"; currency: string; amountMinor: string; exponent: number; unitKey: string; }; } | { ...'.
+apps/web typecheck: Failed
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @sammlerraum/web@ typecheck: `tsc --noEmit --project tsconfig.json`
+Exit status 2
+ ELIFECYCLE  Command failed with exit code 2.

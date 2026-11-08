@@ -1,0 +1,13 @@
+apps/web/e2e/search-dashboard.spec.ts 241ms
+apps/web/messages/de.json 37ms (unchanged)
+apps/web/messages/en.json 15ms (unchanged)
+apps/web/src/components/search/filter-draft.test.ts 12ms
+apps/web/src/components/search/filter-draft.ts 8ms (unchanged)
+apps/web/src/components/search/filter-leaf-editor.tsx 29ms
+apps/web/src/lib/dashboard-routes.integration.test.ts 7ms
+apps/web/src/lib/item-search-routes.integration.test.ts 8ms
+apps/web/src/lib/private-search-routes.integration.test.ts 28ms
+apps/web/src/lib/smart-collection-routes.integration.test.ts 12ms
+packages/domain/src/dashboard/dashboard-service.test.ts 42ms
+packages/domain/src/search/duplicate-filter.integration.test.ts 10ms
+packages/domain/src/search/smart-collection-service.test.ts 41ms

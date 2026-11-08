@@ -1,0 +1,30 @@
+{
+  "base": "48c1a3c",
+  "nativeAffected": {
+    "passed": 162,
+    "files": 14,
+    "skipped": 0,
+    "seconds": 15.73,
+    "log": "task-4-native-final.log"
+  },
+  "types": "task-4-types-final.log",
+  "recursiveLint": "task-4-lint.log",
+  "workerProductionBuild": "task-4-worker-build.log",
+  "redEvidence": [
+    "task-4-red.log",
+    "task-4-shutdown-red.log",
+    "task-4-storage-classification-red.log"
+  ],
+  "actualDatabaseReceipts": [
+    "import",
+    "image READY",
+    "AI immutable result",
+    "market poll",
+    "SMTP uncertainty",
+    "broker expiry cancellation"
+  ],
+  "externalCalls": false,
+  "wholePhaseReview": "pending",
+  "exactCI": "pending",
+  "acceptedTaskCredit": false
+}

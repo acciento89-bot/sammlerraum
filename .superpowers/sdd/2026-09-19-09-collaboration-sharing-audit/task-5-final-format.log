@@ -1,0 +1,8 @@
+packages/domain/src/audit/audit-event-definitions.ts 69ms
+packages/domain/src/audit/core-audit-integration.test.ts 76ms
+packages/domain/src/catalog/item-catalog-link.test.ts 37ms
+packages/domain/src/collaboration/invitation-service.ts 21ms
+packages/domain/src/items/item-service.test.ts 44ms
+packages/domain/src/items/item-service.ts 52ms
+packages/domain/src/money/personal-money-service.ts 14ms
+packages/domain/src/sharing/share-service.ts 20ms

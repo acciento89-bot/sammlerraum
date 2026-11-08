@@ -1,0 +1,6 @@
+
+> @sammlerraum/web@ lint /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web
+> prettier --check src e2e messages package.json next.config.ts playwright.config.ts tsconfig.json
+
+Checking formatting...
+All matched files use Prettier code style!

@@ -1,0 +1,11 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ✓ |workspace| apps/worker/src/run-wiring.test.ts (1 test) 378ms
+   ✓ passes the production-composed market lifecycle to startWorker and registers market.sync  377ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  22:19:31
+   Duration  618ms (transform 138ms, setup 5ms, collect 16ms, tests 378ms, environment 0ms, prepare 43ms)
+

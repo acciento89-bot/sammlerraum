@@ -1,0 +1,45 @@
+[WebServer] (node:99820) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 8 tests using 1 worker
+
+(node:99822) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [money-ui-desktop] › e2e/catalog-money-ui.spec.ts:193:5 › de: frozen authored proposal facts never borrow a newer source meaning (4.2s)
+Testing stopped early after 1 maximum allowed failures.
+
+
+  1) [money-ui-desktop] › e2e/catalog-money-ui.spec.ts:193:5 › de: frozen authored proposal facts never borrow a newer source meaning 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('region', { name: 'Vorschlagsdetails', exact: true }).getByText('Im Vorschlag festgehaltene Bedeutung', { exact: true }).first()
+    Expected: visible
+    Timeout: 3000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('region', { name: 'Vorschlagsdetails', exact: true }).getByText('Im Vorschlag festgehaltene Bedeutung', { exact: true }).first() with timeout 3000ms
+      - waiting for getByRole('region', { name: 'Vorschlagsdetails', exact: true }).getByText('Im Vorschlag festgehaltene Bedeutung', { exact: true }).first()
+
+
+      263 |           .getByText(retained ? m.proposalSourceChanged : m.capturedProposal, { exact: true })
+      264 |           .first(),
+    > 265 |       ).toBeVisible({ timeout: 3000 });
+          |         ^
+      266 |       await detail.locator("summary").filter({ hasText: t.beforeChange }).click();
+      267 |       const amounts = detail.getByRole("status", {
+      268 |         name: `${h.category.definitions[0]!.labels[locale]} · ${m.storedValue}`,
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/catalog-money-ui.spec.ts:265:9
+
+    Error Context: test-results/catalog-money-ui-de-frozen-6a941-rrow-a-newer-source-meaning-money-ui-desktop/error-context.md
+
+    Error Context: test-results/catalog-money-ui-de-frozen-6a941-rrow-a-newer-source-meaning-money-ui-desktop/error-context.md
+
+  1 failed
+    [money-ui-desktop] › e2e/catalog-money-ui.spec.ts:193:5 › de: frozen authored proposal facts never borrow a newer source meaning 
+  7 did not run
+  1 error was not a part of any test, see above for details
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/catalog-money-ui.spec.ts --workers=1 --grep frozen .* proposal facts --max-failures=1

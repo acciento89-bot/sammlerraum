@@ -1,0 +1,38 @@
+[WebServer] (node:96481) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 8 tests using 1 worker
+
+(node:96482) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [money-ui-desktop] › e2e/catalog-money-ui.spec.ts:90:5 › de: a text-only catalog proposal retains unresolved money using its exact frozen source (1.2s)
+Testing stopped early after 1 maximum allowed failures.
+
+
+  1) [money-ui-desktop] › e2e/catalog-money-ui.spec.ts:90:5 › de: a text-only catalog proposal retains unresolved money using its exact frozen source 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: "/api/v1/catalog/money-proposals"
+    Received: "/api/v1/catalog/proposals"
+
+      113 |       const submitted = await response;
+      114 |       expect(submitted.status()).toBe(201);
+    > 115 |       expect(new URL(submitted.url()).pathname).toBe("/api/v1/catalog/money-proposals");
+          |                                                 ^
+      116 |       const body = await submitted.json();
+      117 |       expect(body.proposal.moneyInterpretation.paths).toEqual([
+      118 |         {
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/catalog-money-ui.spec.ts:115:49
+
+    Error Context: test-results/catalog-money-ui-de-a-text-9bf40-ing-its-exact-frozen-source-money-ui-desktop/error-context.md
+
+    Error Context: test-results/catalog-money-ui-de-a-text-9bf40-ing-its-exact-frozen-source-money-ui-desktop/error-context.md
+
+  1 failed
+    [money-ui-desktop] › e2e/catalog-money-ui.spec.ts:90:5 › de: a text-only catalog proposal retains unresolved money using its exact frozen source 
+  7 did not run
+  1 error was not a part of any test, see above for details
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/catalog-money-ui.spec.ts --workers=1 --max-failures=1

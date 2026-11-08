@@ -1,0 +1,129 @@
+import { utf8Length, scanScopedSearchJson } from "./search-parser";
+import { z } from "zod";
+import {
+  parseItemSearchQuery,
+  searchFail,
+  SEARCH_MAX_QUERY_BYTES,
+  SearchLifecycleSchema,
+} from "./item-search";
+import { CanonicalTimestampSchema } from "./items";
+
+/** Symbolic saved/discovery target only; never a bearer credential. */
+export const ScopedSearchReferenceSchema = z.discriminatedUnion("kind", [
+  z
+    .object({
+      kind: z.literal("MEMBER_COLLECTION"),
+      collectionId: z.uuid().transform((value) => value.toLowerCase()),
+    })
+    .strict(),
+  z
+    .object({
+      kind: z.literal("SHARE"),
+      shareId: z.uuid().transform((value) => value.toLowerCase()),
+    })
+    .strict(),
+]);
+export type ScopedSearchReference = z.infer<typeof ScopedSearchReferenceSchema>;
+export function parseScopedSearchQuery(input: unknown) {
+  try {
+    if (utf8Length(JSON.stringify(input)) > SEARCH_MAX_QUERY_BYTES)
+      return searchFail("SEARCH_INVALID");
+  } catch {
+    return searchFail("SEARCH_INVALID");
+  }
+  if (input === null || typeof input !== "object" || Array.isArray(input))
+    return searchFail("SEARCH_INVALID");
+  const query = parseItemSearchQuery(input);
+  if (!("lifecycle" in input) || input.lifecycle === undefined) query.lifecycle = "ALL";
+  return query;
+}
+export const ScopedSearchItemSchema = z
+  .object({
+    id: z.uuid(),
+    title: z.string().min(1).max(2000),
+    quantity: z.number().int().positive().safe(),
+  })
+  .strict();
+export const ScopedSearchPageSchema = z
+  .object({
+    items: z.array(ScopedSearchItemSchema).max(50),
+    total: z.number().int().nonnegative().safe(),
+    nextCursor: z.string().max(2048).nullable(),
+    scope: z.enum(["OWNER_COLLECTION", "MEMBER_COLLECTION", "SHARE"]),
+    lifecycle: SearchLifecycleSchema,
+    readAt: CanonicalTimestampSchema,
+  })
+  .strict();
+export type ScopedSearchPage = z.infer<typeof ScopedSearchPageSchema>;
+
+/** Strict lexical boundary before nested target/query schemas, including duplicate JSON keys. */
+export function parseScopedSearchRequestJson(raw: string): unknown {
+  scanScopedSearchJson(raw);
+  return JSON.parse(raw) as unknown;
+}
+export const ScopedDiscoveryInputSchema = z
+  .object({
+    family: z.enum(["MEMBER_COLLECTION", "SHARE"]),
+    limit: z.number().int().min(1).max(50).default(20),
+    cursor: z
+      .string()
+      .regex(/^[A-Za-z0-9_-]{1,2048}$/u)
+      .optional(),
+  })
+  .strict();
+export const ScopedDiscoveryPageSchema = z
+  .object({
+    items: z
+      .array(
+        z.discriminatedUnion("kind", [
+          z
+            .object({
+              kind: z.literal("MEMBER_COLLECTION"),
+              collectionId: z.uuid().transform((value) => value.toLowerCase()),
+              name: z.string().min(1).max(200),
+            })
+            .strict(),
+          z
+            .object({
+              kind: z.literal("SHARE"),
+              shareId: z.uuid().transform((value) => value.toLowerCase()),
+              pinRequired: z.boolean(),
+            })
+            .strict(),
+        ]),
+      )
+      .max(50),
+    nextCursor: z.string().max(2048).nullable(),
+  })
+  .strict();
+
+export const ScopedFilterFamilySchema = z.enum([
+  "collection",
+  "category",
+  "condition",
+  "grading",
+  "purchaseMoney",
+  "manualMoney",
+  "marketMoney",
+  "tags",
+  "duplicate",
+  "tradeStatus",
+  "visibility",
+  "media",
+  "createdAt",
+  "updatedAt",
+  "acquisitionDate",
+  "customField",
+  "catalogAttribute",
+]);
+export const ScopedSearchCapabilitiesSchema = z
+  .object({
+    scope: z.enum(["OWNER_COLLECTION", "MEMBER_COLLECTION", "SHARE"]),
+    reference: ScopedSearchReferenceSchema,
+    families: z.array(ScopedFilterFamilySchema).max(17),
+    mediaKinds: z.array(z.enum(["IMAGE", "DOCUMENT"])).max(2),
+    receiptCategories: z.boolean(),
+    canonicalMoneyEnabled: z.boolean(),
+  })
+  .strict();
+export type ScopedSearchCapabilities = z.infer<typeof ScopedSearchCapabilitiesSchema>;

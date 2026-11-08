@@ -1,0 +1,33 @@
+
+> sammlerraum@ typecheck /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+> pnpm -r typecheck
+
+Scope: 9 of 10 workspace projects
+packages/config typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+packages/queue typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+packages/contracts typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+packages/storage typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+packages/queue typecheck: Done
+packages/testing typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+packages/config typecheck: Done
+packages/contracts typecheck: Done
+packages/storage typecheck: Done
+packages/testing typecheck: Done
+packages/db typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+packages/db typecheck: Done
+packages/domain typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+packages/domain typecheck: Done
+apps/web typecheck$ tsc --noEmit --project tsconfig.json
+apps/worker typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+apps/worker typecheck: Done
+apps/web typecheck: .next/types/cache-life.d 2.ts(3,1): error TS6200: Definitions of the following identifiers conflict with those in another file: unstable_cache, updateTag, revalidateTag, revalidatePath, refresh, unstable_noStore, io, cacheTag, unstable_cacheTag, unstable_cacheLife
+apps/web typecheck: .next/types/routes.d 2.ts(86,5): error TS2717: Subsequent property declarations must have the same type.  Property 'params' must be of type 'Promise<ParamMap[AppRoute]>', but here has type 'Promise<ParamMap[AppRoute]>'.
+apps/web typecheck: .next/types/routes.d 2.ts(99,8): error TS2300: Duplicate identifier 'LayoutProps'.
+apps/web typecheck: .next/types/routes.d 2.ts(116,13): error TS2428: All declarations of 'RouteContext' must have identical type parameters.
+apps/web typecheck: .next/types/routes.d 2.ts(117,5): error TS2717: Subsequent property declarations must have the same type.  Property 'params' must be of type 'Promise<ParamMap[AppRouteHandlerRoute]>', but here has type 'Promise<ParamMap[AppRouteHandlerRoute]>'.
+apps/web typecheck: .next/types/routes.d 2.ts(117,21): error TS2536: Type 'AppRouteHandlerRoute' cannot be used to index type 'ParamMap'.
+apps/web typecheck: Failed
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @sammlerraum/web@ typecheck: `tsc --noEmit --project tsconfig.json`
+Exit status 2
+ ELIFECYCLE  Command failed with exit code 2.

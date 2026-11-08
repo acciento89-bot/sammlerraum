@@ -1,0 +1,27 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/community/social-service.test.ts [ packages/domain/src/community/social-service.test.ts ]
+Error: Cannot find module './social-service' imported from '/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/domain/src/community/social-service.test.ts'
+ ❯ packages/domain/src/community/social-service.test.ts:7:1
+      5| import {createMembershipService} from "../collaboration/membership-ser…
+      6| import {createItemService} from "../items/item-service";
+      7| import {createSocialService} from "./social-service";
+       | ^
+      8| let db:ReturnType<typeof createTestDatabaseClient>,isolated:Awaited<Re…
+      9| describe.runIf(process.env.RUN_DATABASE_INTEGRATION==="1")("actual cur…
+
+Caused by: Error: Failed to load url ./social-service (resolved id: ./social-service) in /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/domain/src/community/social-service.test.ts. Does the file exist?
+ ❯ loadAndTransform ../../../../SSK%20SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/node_modules/.pnpm/vite@7.3.6_@types+node@24.5.2_jiti@2.7.0/node_modules/vite/dist/node/chunks/config.js:22739:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  no tests
+   Start at  12:07:36
+   Duration  514ms (transform 194ms, setup 6ms, collect 0ms, tests 0ms, environment 0ms, prepare 35ms)
+

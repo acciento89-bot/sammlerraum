@@ -1,0 +1,15 @@
+{
+  "base": "cd375bca31a70f13cbc31734b345c31cd8385dba",
+  "productSource": "eda7248973550623fe50f10714be0fc4ea199109",
+  "time": "2026-10-18T08:43:54.529727+00:00",
+  "beforeSpecSHA256": "723196995b8aa967fa5c4549b206786ab29a4e93b8a8c5bce9e813a3eb1c65fa",
+  "unchangedProductAndBuildHashes": {
+    "apps/web/src/components/media/media-upload.tsx": true,
+    "apps/web/src/components/media/item-gallery-editor.tsx": true,
+    "apps/web/.next/BUILD_ID": true,
+    "apps/web/.next/standalone/apps/web/server.js": true,
+    "apps/worker/dist/worker.cjs": true
+  },
+  "phase": "after-focused-clock-probe-ports-free",
+  "listeners": []
+}

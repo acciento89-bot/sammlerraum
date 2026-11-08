@@ -1,0 +1,68 @@
+{
+  "scope": "local source, no live search submissions",
+  "unitAndTranslationPassed": 20,
+  "compiledBrowserPassed": 4,
+  "actualCuratedLocalePages": 12,
+  "artifacts": [
+    {
+      "path": "task-5-lint.log",
+      "sha256": "5a9c918ea19393b3a506325a64d17b4ab2f33f421a24cf2714212f5e515ab6dd"
+    },
+    {
+      "path": "task-5-format.log",
+      "sha256": "49088895f1b67927ca4cb4982bbd047b3db779c8978d3eded27f2daa64b7fc66"
+    },
+    {
+      "path": "task-5-web-types.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "task-5-format-final.log",
+      "sha256": "9564a1984651c15b560d5e962a8bba519b501b7998ac5646f79e6c6af00bf4df"
+    },
+    {
+      "path": "task-5-focused.log",
+      "sha256": "135a7424639730621b7739495163221af0b713e36e6340c3e872f737b5e04f65"
+    },
+    {
+      "path": "task-5-root-types.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "task-5-unit.log",
+      "sha256": "20f3913565b915911bf3c5df1062d8e1feeb916bc0a2f974ffe04aa100f14446"
+    },
+    {
+      "path": "task-5-build.log",
+      "sha256": "9186253511c6e0e66ef424c41799ac030a9a6ee874445131dee6a292565af2f4"
+    },
+    {
+      "path": "task-5-browser.log",
+      "sha256": "02cc705f5203c90620fc316faab54463caf59f5097fe5c07c59bdf41f74696b1"
+    },
+    {
+      "path": "task-5-red.log",
+      "sha256": "c94469ddd7b5ea2ad8dcefca92c5a67000e676d3c45747265b1282925f40e33b"
+    },
+    {
+      "path": "task-5-category-sitemap-red.log",
+      "sha256": "8eb3e38d39602a739e11c4b3f448a178f8fabefba81f382be8440c6b19f2b2cb"
+    },
+    {
+      "path": "screenshots/task5-en-seo-desktop-coins.png",
+      "sha256": "127ec9ec0b4165493baaeb805d5e146c72597abb0823f83a936b4742122e4e61"
+    },
+    {
+      "path": "screenshots/task5-de-seo-mobile-coins.png",
+      "sha256": "11e5375330f748cfcf4493c8c7633c3c187f94a64be66302c35a5ee5947b49c9"
+    },
+    {
+      "path": "screenshots/task5-en-seo-mobile-coins.png",
+      "sha256": "4d93016b667a2b5eb94502f121df03c000be09dba99b2df11f035b96d296df3f"
+    },
+    {
+      "path": "screenshots/task5-de-seo-desktop-coins.png",
+      "sha256": "4787475650387782fa800127c6d10ea842ec3e1b8040baf552306b2c55bc06de"
+    }
+  ]
+}

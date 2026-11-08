@@ -1,0 +1,353 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| apps/web/src/components/valuations/valuation-money.test.ts (26 tests | 26 failed) 12ms
+   × stored valuation scale and exact digits > preserves 0 EUR at stored exponent 2 4ms
+     → expected '' to contain '0.00'
+   × stored valuation scale and exact digits > preserves 100 AFN at stored exponent 2 0ms
+     → expected '' to contain '1.00'
+   × stored valuation scale and exact digits > preserves 1001 IQD at stored exponent 3 0ms
+     → expected '' to contain '1.001'
+   × stored valuation scale and exact digits > preserves 1 CLF at stored exponent 4 0ms
+     → expected '' to contain '0.0001'
+   × stored valuation scale and exact digits > preserves 1 UYW at stored exponent 4 0ms
+     → expected '' to contain '0.0001'
+   × stored valuation scale and exact digits > preserves 9223372036854775807 JPY at stored exponent 0 0ms
+     → expected '' to contain '9,223,372,036,854,775,807'
+   × stored valuation scale and exact digits > preserves 9223372036854775807 EUR at stored exponent 2 0ms
+     → expected '' to contain '92,233,720,368,547,758.07'
+   × stored valuation scale and exact digits > preserves 9223372036854775807 KWD at stored exponent 3 0ms
+     → expected '' to contain '9,223,372,036,854,775.807'
+   × stored valuation scale and exact digits > preserves 9223372036854775807 CLF at stored exponent 4 0ms
+     → expected '' to contain '922,337,203,685,477.5807'
+   × stored valuation scale and exact digits > preserves 1230 ANG at stored exponent 3 0ms
+     → expected '' to contain '1.230'
+   × stored valuation scale and exact digits > preserves 100 EUR at stored exponent 0 0ms
+     → expected '' to contain '100'
+   × stored valuation scale and exact digits > rejects missing/invalid stored facts rather than treating them as zero 1ms
+     → expected [Function] to throw an error
+   × manual draft interpretation > keeps input locale, UTC year 0001 and trimmed codepoints 2ms
+     → expected { amountMinor: '', currency: '', …(1) } to deeply equal { amountMinor: '123450', …(3) }
+   × manual draft interpretation > rejects invalid draft 0 0ms
+     → expected [Function] to throw an error
+   × manual draft interpretation > rejects invalid draft 1 0ms
+     → expected [Function] to throw an error
+   × manual draft interpretation > rejects invalid draft 2 0ms
+     → expected [Function] to throw an error
+   × manual draft interpretation > rejects invalid draft 3 0ms
+     → expected [Function] to throw an error
+   × manual draft interpretation > rejects invalid draft 4 0ms
+     → expected [Function] to throw an error
+   × manual draft interpretation > rejects invalid draft 5 0ms
+     → expected [Function] to throw an error
+   × manual draft interpretation > rejects invalid draft 6 0ms
+     → expected [Function] to throw an error
+   × manual draft interpretation > rejects invalid draft 7 0ms
+     → expected [Function] to throw an error
+   × manual draft interpretation > rejects invalid draft 8 0ms
+     → expected [Function] to throw an error
+   × manual draft interpretation > rejects invalid draft 9 0ms
+     → expected [Function] to throw an error
+   × manual draft interpretation > revalidates selected currency without rounding 0ms
+     → expected [Function] to throw an error
+   × manual draft interpretation > respects stated observation precision 0ms
+     → expected '' to contain '.006'
+   × catalog display keeps exact safe-number digits with existing legacy scale 0ms
+     → expected '' to be '90,071,992,547,409.91 EUR' // Object.is equality
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 26 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/web/src/components/valuations/valuation-money.test.ts > stored valuation scale and exact digits > preserves 0 EUR at stored exponent 2
+AssertionError: expected '' to contain '0.00'
+
+- Expected
++ Received
+
+- 0.00
+
+ ❯ apps/web/src/components/valuations/valuation-money.test.ts:20:47
+     18|   ])("preserves %s %s at stored exponent %s", (amountMinor, currency, …
+     19|     const money = { amountMinor, currency, minorUnitExponent };
+     20|     expect(formatValuationMoney(money, "en")).toContain(en);
+       |                                               ^
+     21|     expect(formatValuationMoney(money, "de")).toContain(de);
+     22|     expect(formatValuationMoney(money, "en")).toContain(currency);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/26]⎯
+
+ FAIL  |workspace| apps/web/src/components/valuations/valuation-money.test.ts > stored valuation scale and exact digits > preserves 100 AFN at stored exponent 2
+AssertionError: expected '' to contain '1.00'
+
+- Expected
++ Received
+
+- 1.00
+
+ ❯ apps/web/src/components/valuations/valuation-money.test.ts:20:47
+     18|   ])("preserves %s %s at stored exponent %s", (amountMinor, currency, …
+     19|     const money = { amountMinor, currency, minorUnitExponent };
+     20|     expect(formatValuationMoney(money, "en")).toContain(en);
+       |                                               ^
+     21|     expect(formatValuationMoney(money, "de")).toContain(de);
+     22|     expect(formatValuationMoney(money, "en")).toContain(currency);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/26]⎯
+
+ FAIL  |workspace| apps/web/src/components/valuations/valuation-money.test.ts > stored valuation scale and exact digits > preserves 1001 IQD at stored exponent 3
+AssertionError: expected '' to contain '1.001'
+
+- Expected
++ Received
+
+- 1.001
+
+ ❯ apps/web/src/components/valuations/valuation-money.test.ts:20:47
+     18|   ])("preserves %s %s at stored exponent %s", (amountMinor, currency, …
+     19|     const money = { amountMinor, currency, minorUnitExponent };
+     20|     expect(formatValuationMoney(money, "en")).toContain(en);
+       |                                               ^
+     21|     expect(formatValuationMoney(money, "de")).toContain(de);
+     22|     expect(formatValuationMoney(money, "en")).toContain(currency);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/26]⎯
+
+ FAIL  |workspace| apps/web/src/components/valuations/valuation-money.test.ts > stored valuation scale and exact digits > preserves 1 CLF at stored exponent 4
+ FAIL  |workspace| apps/web/src/components/valuations/valuation-money.test.ts > stored valuation scale and exact digits > preserves 1 UYW at stored exponent 4
+AssertionError: expected '' to contain '0.0001'
+
+- Expected
++ Received
+
+- 0.0001
+
+ ❯ apps/web/src/components/valuations/valuation-money.test.ts:20:47
+     18|   ])("preserves %s %s at stored exponent %s", (amountMinor, currency, …
+     19|     const money = { amountMinor, currency, minorUnitExponent };
+     20|     expect(formatValuationMoney(money, "en")).toContain(en);
+       |                                               ^
+     21|     expect(formatValuationMoney(money, "de")).toContain(de);
+     22|     expect(formatValuationMoney(money, "en")).toContain(currency);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/26]⎯
+
+ FAIL  |workspace| apps/web/src/components/valuations/valuation-money.test.ts > stored valuation scale and exact digits > preserves 9223372036854775807 JPY at stored exponent 0
+AssertionError: expected '' to contain '9,223,372,036,854,775,807'
+
+- Expected
++ Received
+
+- 9,223,372,036,854,775,807
+
+ ❯ apps/web/src/components/valuations/valuation-money.test.ts:20:47
+     18|   ])("preserves %s %s at stored exponent %s", (amountMinor, currency, …
+     19|     const money = { amountMinor, currency, minorUnitExponent };
+     20|     expect(formatValuationMoney(money, "en")).toContain(en);
+       |                                               ^
+     21|     expect(formatValuationMoney(money, "de")).toContain(de);
+     22|     expect(formatValuationMoney(money, "en")).toContain(currency);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/26]⎯
+
+ FAIL  |workspace| apps/web/src/components/valuations/valuation-money.test.ts > stored valuation scale and exact digits > preserves 9223372036854775807 EUR at stored exponent 2
+AssertionError: expected '' to contain '92,233,720,368,547,758.07'
+
+- Expected
++ Received
+
+- 92,233,720,368,547,758.07
+
+ ❯ apps/web/src/components/valuations/valuation-money.test.ts:20:47
+     18|   ])("preserves %s %s at stored exponent %s", (amountMinor, currency, …
+     19|     const money = { amountMinor, currency, minorUnitExponent };
+     20|     expect(formatValuationMoney(money, "en")).toContain(en);
+       |                                               ^
+     21|     expect(formatValuationMoney(money, "de")).toContain(de);
+     22|     expect(formatValuationMoney(money, "en")).toContain(currency);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/26]⎯
+
+ FAIL  |workspace| apps/web/src/components/valuations/valuation-money.test.ts > stored valuation scale and exact digits > preserves 9223372036854775807 KWD at stored exponent 3
+AssertionError: expected '' to contain '9,223,372,036,854,775.807'
+
+- Expected
++ Received
+
+- 9,223,372,036,854,775.807
+
+ ❯ apps/web/src/components/valuations/valuation-money.test.ts:20:47
+     18|   ])("preserves %s %s at stored exponent %s", (amountMinor, currency, …
+     19|     const money = { amountMinor, currency, minorUnitExponent };
+     20|     expect(formatValuationMoney(money, "en")).toContain(en);
+       |                                               ^
+     21|     expect(formatValuationMoney(money, "de")).toContain(de);
+     22|     expect(formatValuationMoney(money, "en")).toContain(currency);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/26]⎯
+
+ FAIL  |workspace| apps/web/src/components/valuations/valuation-money.test.ts > stored valuation scale and exact digits > preserves 9223372036854775807 CLF at stored exponent 4
+AssertionError: expected '' to contain '922,337,203,685,477.5807'
+
+- Expected
++ Received
+
+- 922,337,203,685,477.5807
+
+ ❯ apps/web/src/components/valuations/valuation-money.test.ts:20:47
+     18|   ])("preserves %s %s at stored exponent %s", (amountMinor, currency, …
+     19|     const money = { amountMinor, currency, minorUnitExponent };
+     20|     expect(formatValuationMoney(money, "en")).toContain(en);
+       |                                               ^
+     21|     expect(formatValuationMoney(money, "de")).toContain(de);
+     22|     expect(formatValuationMoney(money, "en")).toContain(currency);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/26]⎯
+
+ FAIL  |workspace| apps/web/src/components/valuations/valuation-money.test.ts > stored valuation scale and exact digits > preserves 1230 ANG at stored exponent 3
+AssertionError: expected '' to contain '1.230'
+
+- Expected
++ Received
+
+- 1.230
+
+ ❯ apps/web/src/components/valuations/valuation-money.test.ts:20:47
+     18|   ])("preserves %s %s at stored exponent %s", (amountMinor, currency, …
+     19|     const money = { amountMinor, currency, minorUnitExponent };
+     20|     expect(formatValuationMoney(money, "en")).toContain(en);
+       |                                               ^
+     21|     expect(formatValuationMoney(money, "de")).toContain(de);
+     22|     expect(formatValuationMoney(money, "en")).toContain(currency);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/26]⎯
+
+ FAIL  |workspace| apps/web/src/components/valuations/valuation-money.test.ts > stored valuation scale and exact digits > preserves 100 EUR at stored exponent 0
+AssertionError: expected '' to contain '100'
+
+- Expected
++ Received
+
+- 100
+
+ ❯ apps/web/src/components/valuations/valuation-money.test.ts:20:47
+     18|   ])("preserves %s %s at stored exponent %s", (amountMinor, currency, …
+     19|     const money = { amountMinor, currency, minorUnitExponent };
+     20|     expect(formatValuationMoney(money, "en")).toContain(en);
+       |                                               ^
+     21|     expect(formatValuationMoney(money, "de")).toContain(de);
+     22|     expect(formatValuationMoney(money, "en")).toContain(currency);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/26]⎯
+
+ FAIL  |workspace| apps/web/src/components/valuations/valuation-money.test.ts > stored valuation scale and exact digits > rejects missing/invalid stored facts rather than treating them as zero
+AssertionError: expected [Function] to throw an error
+ ❯ apps/web/src/components/valuations/valuation-money.test.ts:25:94
+     23|   });
+     24|   it("rejects missing/invalid stored facts rather than treating them a…
+     25|     expect(() => formatValuationMoney({ amountMinor: "1", currency: "E…
+       |                                                                                              ^
+     26|     expect(() => formatValuationMoney({ amountMinor: "9223372036854775…
+     27|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/26]⎯
+
+ FAIL  |workspace| apps/web/src/components/valuations/valuation-money.test.ts > manual draft interpretation > keeps input locale, UTC year 0001 and trimmed codepoints
+AssertionError: expected { amountMinor: '', currency: '', …(1) } to deeply equal { amountMinor: '123450', …(3) }
+
+- Expected
++ Received
+
+  {
+-   "amountMinor": "123450",
+-   "currency": "EUR",
+-   "note": "private 😀",
+-   "observedAt": "0001-01-02T03:04:05.006Z",
++   "amountMinor": "",
++   "currency": "",
++   "note": null,
+  }
+
+ ❯ apps/web/src/components/valuations/valuation-money.test.ts:33:38
+     31|   const draft = { amount: "1.234,50", currency: "EUR", note: "  privat…
+     32|   it("keeps input locale, UTC year 0001 and trimmed codepoints", () =>…
+     33|     expect(manualInput(draft, "de")).toEqual({ amountMinor: "123450", …
+       |                                      ^
+     34|     expect(() => manualInput(draft, "en")).toThrow();
+     35|     expect(manualInput({ ...draft, amount: "0", earlier: false, note: …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/26]⎯
+
+ FAIL  |workspace| apps/web/src/components/valuations/valuation-money.test.ts > manual draft interpretation > rejects invalid draft 0
+ FAIL  |workspace| apps/web/src/components/valuations/valuation-money.test.ts > manual draft interpretation > rejects invalid draft 1
+ FAIL  |workspace| apps/web/src/components/valuations/valuation-money.test.ts > manual draft interpretation > rejects invalid draft 2
+ FAIL  |workspace| apps/web/src/components/valuations/valuation-money.test.ts > manual draft interpretation > rejects invalid draft 3
+ FAIL  |workspace| apps/web/src/components/valuations/valuation-money.test.ts > manual draft interpretation > rejects invalid draft 4
+ FAIL  |workspace| apps/web/src/components/valuations/valuation-money.test.ts > manual draft interpretation > rejects invalid draft 5
+ FAIL  |workspace| apps/web/src/components/valuations/valuation-money.test.ts > manual draft interpretation > rejects invalid draft 6
+ FAIL  |workspace| apps/web/src/components/valuations/valuation-money.test.ts > manual draft interpretation > rejects invalid draft 7
+ FAIL  |workspace| apps/web/src/components/valuations/valuation-money.test.ts > manual draft interpretation > rejects invalid draft 8
+ FAIL  |workspace| apps/web/src/components/valuations/valuation-money.test.ts > manual draft interpretation > rejects invalid draft 9
+AssertionError: expected [Function] to throw an error
+ ❯ apps/web/src/components/valuations/valuation-money.test.ts:41:103
+     39|     { amount: "92.233.720.368.547.758,08" }, { date: "2025-02-30" }, {…
+     40|     { note: "😀".repeat(2001) }, { note: "\uD800" }, { note: "\0" },
+     41|   ])("rejects invalid draft %#", (change) => expect(() => manualInput(…
+       |                                                                                                       ^
+     42|   it("revalidates selected currency without rounding", () => {
+     43|     expect(() => manualInput({ ...draft, amount: "1,01", currency: "JP…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/26]⎯
+
+ FAIL  |workspace| apps/web/src/components/valuations/valuation-money.test.ts > manual draft interpretation > revalidates selected currency without rounding
+AssertionError: expected [Function] to throw an error
+ ❯ apps/web/src/components/valuations/valuation-money.test.ts:43:84
+     41|   ])("rejects invalid draft %#", (change) => expect(() => manualInput(…
+     42|   it("revalidates selected currency without rounding", () => {
+     43|     expect(() => manualInput({ ...draft, amount: "1,01", currency: "JP…
+       |                                                                                    ^
+     44|     expect(manualInput({ ...draft, amount: "0,0001", currency: "UYW" }…
+     45|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/26]⎯
+
+ FAIL  |workspace| apps/web/src/components/valuations/valuation-money.test.ts > manual draft interpretation > respects stated observation precision
+AssertionError: expected '' to contain '.006'
+
+- Expected
++ Received
+
+- .006
+
+ ❯ apps/web/src/components/valuations/valuation-money.test.ts:48:78
+     46|   it("respects stated observation precision", () => {
+     47|     expect(observationTime("2025-01-02T00:00:00.000Z", "DAY", "en")).n…
+     48|     expect(observationTime("2025-01-02T03:04:05.006Z", "MILLISECOND", …
+       |                                                                              ^
+     49|     expect(observationTime("2025-01-02T03:04:05.000Z", "SECOND", "de")…
+     50|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/26]⎯
+
+ FAIL  |workspace| apps/web/src/components/valuations/valuation-money.test.ts > catalog display keeps exact safe-number digits with existing legacy scale
+AssertionError: expected '' to be '90,071,992,547,409.91 EUR' // Object.is equality
+
+- Expected
++ Received
+
+- 90,071,992,547,409.91 EUR
+
+ ❯ apps/web/src/components/valuations/valuation-money.test.ts:54:89
+     52| 
+     53| it("catalog display keeps exact safe-number digits with existing legac…
+     54|   expect(displayCatalogMoney({ amountMinor: 9007199254740991, currency…
+       |                                                                                         ^
+     55|   expect(displayCatalogMoney({ amountMinor: 9007199254740991, currency…
+     56|   expect(displayCatalogMoney({ amountMinor: 0, currency: "EUR" }, "de"…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/26]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  26 failed (26)
+   Start at  06:14:46
+   Duration  377ms (transform 41ms, setup 10ms, collect 40ms, tests 12ms, environment 0ms, prepare 76ms)
+

@@ -1,0 +1,25 @@
+{
+  "sourceHead": "c18164290372f32d91006ce60016c33fff467fc2",
+  "productionSourceCommit": "0ec1415fd357fb5b2a99b379f05dc18fdcb47dbb",
+  "at": "2026-11-08T01:12:58.223655+00:00",
+  "regularPassed": 1659,
+  "regularNativeDisabled": 1173,
+  "nativePassed": 2832,
+  "nativeSkipped": 0,
+  "browserPassed": 234,
+  "originalReview": "81e170c, With fixes, 0Critical/5Important/2Minor",
+  "rootDisposition": "all7closed in single consolidated correction; no rereview",
+  "oldFrozenMigrationsUnchanged": 18,
+  "newAppliedMigrationUnchanged": "b950632e1cd1cb4970f28677e918495e0a737cccd4b8d851fc1d0b22ed11fed4",
+  "logs": {
+    "task-6-corrected-regular-final.log": "91f20cf473f2fa6fb5ea167d60ec2c5d1913f9b3cfc86af16bb1e60f90c70bfd",
+    "task-6-corrected-native.log": "c97507f6a796a8400ed843e8f3bc3b7e075d02f6c63b6707551da7a1951b6cce",
+    "task-6-corrected-types.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "task-6-corrected-lint.log": "2a0216fda27e07d4a63da86d90ac820cf6d6d42e79a7f5b965784038395ad271",
+    "task-6-corrected-worker-build.log": "b10fc455e442727a5ed8fc4eb361a5eda4c39970e09c6beba9fb726ee75a4169",
+    "task-6-corrected-web-build.log": "d161b82a06bfda9a63d4e6d7d8dbca9574bd76c4365f1a6a2b88a85217f0110a",
+    "task-6-corrected-browser.log": "186942adb26ad508a910cfbb56a7d903a9d3b8422100422be25f7b4a05719cea"
+  },
+  "screenshots": 16,
+  "exactCandidateCI": "pending push"
+}

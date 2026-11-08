@@ -1,0 +1,43 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| apps/web/src/lib/money-capabilities-routes.test.ts (3 tests | 1 failed) 10ms
+   × private monetary capability response > never caches compatibility and keeps canonical consumers disabled independently of authoring 9ms
+     → expected { schemaVersion: 1, …(4) } to match object { actorId: 'synthetic', …(2) }
+(3 matching properties omitted from actual)
+   ✓ private monetary capability response > denies foreign origin before session access and requires a live session 1ms
+   ✓ private monetary capability response > does not accept client selection of supported profile or activation 0ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/web/src/lib/money-capabilities-routes.test.ts > private monetary capability response > never caches compatibility and keeps canonical consumers disabled independently of authoring
+AssertionError: expected { schemaVersion: 1, …(4) } to match object { actorId: 'synthetic', …(2) }
+(3 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "actorId": "synthetic",
+    "authoringProfiles": [
+      Anything,
+    ],
+    "canonicalConsumers": false,
+  }
+
+ ❯ apps/web/src/lib/money-capabilities-routes.test.ts:21:68
+     19|       expect(response.headers.get("cache-control")).toBe("no-store");
+     20|       expect(response.headers.get("x-request-id")).toBeTruthy();
+     21|       expect(MoneyCapabilitiesSchema.parse(await response.json())).toM…
+       |                                                                    ^
+     22|         actorId: "synthetic",
+     23|         canonicalConsumers: false,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 2 passed (3)
+   Start at  08:46:53
+   Duration  406ms (transform 54ms, setup 5ms, collect 134ms, tests 10ms, environment 0ms, prepare 58ms)
+

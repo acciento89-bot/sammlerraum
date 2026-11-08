@@ -1,0 +1,10 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ✓ |workspace| packages/domain/src/wishlist/wishlist-service.test.ts (3 tests) 455ms
+
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+   Start at  11:49:07
+   Duration  868ms (transform 139ms, setup 6ms, collect 256ms, tests 455ms, environment 0ms, prepare 34ms)
+

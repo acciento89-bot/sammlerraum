@@ -1,0 +1,62 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| apps/web/src/lib/media-routes.test.ts (10 tests | 3 failed) 14ms
+   ✓ media routes > authenticates before consuming a streamed body 5ms
+   ✓ media routes > rejects an absent content length when streamed bytes exceed the limit 4ms
+   ✓ media routes > stops pulling a stream as soon as the bound is crossed 1ms
+   ✓ media routes > rejects a lying small content length after counting bytes 0ms
+   ✓ media routes > rejects cross-origin mutation before reading bytes 0ms
+   ✓ media routes > uploads a bounded image using the trusted actor and exposes no storage path 2ms
+   ✓ media routes > links only for a trusted actor with the path item id 1ms
+   × owner unlink routes > authenticates and checks same origin before unlinking 0ms
+     → routes.DELETE_ITEM_IMAGE is not a function
+   × owner unlink routes > unlinks only the authenticated owner's requested item link 0ms
+     → routes.DELETE_ITEM_DOCUMENT is not a function
+   × owner unlink routes > rejects cross-origin deletion and malformed identifiers 0ms
+     → routes.DELETE_ITEM_IMAGE is not a function
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/web/src/lib/media-routes.test.ts > owner unlink routes > authenticates and checks same origin before unlinking
+TypeError: routes.DELETE_ITEM_IMAGE is not a function
+ ❯ apps/web/src/lib/media-routes.test.ts:144:35
+    142|   it("authenticates and checks same origin before unlinking", async ()…
+    143|     const { routes } = fixture(null);
+    144|     const response = await routes.DELETE_ITEM_IMAGE(new Request("https…
+       |                                   ^
+    145|     expect(response.status).toBe(401);
+    146|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  |workspace| apps/web/src/lib/media-routes.test.ts > owner unlink routes > unlinks only the authenticated owner's requested item link
+TypeError: routes.DELETE_ITEM_DOCUMENT is not a function
+ ❯ apps/web/src/lib/media-routes.test.ts:150:35
+    148|     const { routes, cleanup } = fixture();
+    149|     const itemId = randomUUID(), linkId = randomUUID();
+    150|     const response = await routes.DELETE_ITEM_DOCUMENT(new Request("ht…
+       |                                   ^
+    151|     expect(response.status).toBe(204);
+    152|     expect(response.headers.get("cache-control")).toBe("no-store");
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  |workspace| apps/web/src/lib/media-routes.test.ts > owner unlink routes > rejects cross-origin deletion and malformed identifiers
+TypeError: routes.DELETE_ITEM_IMAGE is not a function
+ ❯ apps/web/src/lib/media-routes.test.ts:158:26
+    156|     const { routes, cleanup } = fixture();
+    157|     const request = new Request("https://example.test/api", { method: …
+    158|     expect((await routes.DELETE_ITEM_IMAGE(request, randomUUID(), rand…
+       |                          ^
+    159|     expect((await routes.DELETE_ITEM_IMAGE(new Request("https://exampl…
+    160|     expect(cleanup.unlinkAsset).not.toHaveBeenCalled();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 7 passed (10)
+   Start at  20:56:33
+   Duration  854ms (transform 48ms, setup 5ms, collect 629ms, tests 14ms, environment 0ms, prepare 46ms)
+

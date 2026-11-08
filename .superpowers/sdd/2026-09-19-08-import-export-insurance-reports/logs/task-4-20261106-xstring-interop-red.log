@@ -1,0 +1,77 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| apps/worker/src/jobs/parse-import.test.ts (20 tests | 2 failed) 56ms
+   ✓ preserves quoted CSV values and original addresses without numeric coercion 5ms
+   ✓ closes an over-limit source instead of returning a truncated success 2ms
+   ✓ keeps formula-looking CSV text inert and exact 1ms
+   ✓ reads only stored XLSX formula values and preserves exact numeric lexemes 9ms
+   ✓ rejects an oversized workbook rather than claiming a partial parse 2ms
+   ✓ rejects unsafe XLSX macro content 1ms
+   ✓ rejects unsafe XLSX macro binary 1ms
+   ✓ rejects unsafe XLSX path traversal 1ms
+   ✓ rejects unsafe XLSX DTD 1ms
+   ✓ rejects unsafe XLSX external relation 1ms
+   ✓ preserves shared/inline Unicode strings, sparse addresses and explicit headers 2ms
+   ✓ rejects malformed cell or row coordinates <row r="1"><c r="A1" t="s"><v>99</v></c></row> 2ms
+   ✓ rejects malformed cell or row coordinates <row r="1"><c r="IW1"><v>1</v></c></row> 1ms
+   ✓ rejects malformed cell or row coordinates <row r="1"><c r="A2"><v>1</v></c></row> 1ms
+   ✓ rejects malformed cell or row coordinates <row r="1"/><row r="1"/> 2ms
+   ✓ rejects invalid UTF-8, oversized cells and cancelled CSV reads 17ms
+   ✓ rejects missing or ambiguous worksheet data instead of claiming an empty import 1ms
+   ✓ rejects missing or ambiguous worksheet data instead of claiming an empty import 1ms
+   × decodes SpreadsheetML escaped strings once while retaining literal escape-looking text 4ms
+     → expected [ 'First_x000D_Second _x005F_x0041_' ] to deeply equal [ 'First\rSecond _x0041_' ]
+   × decodes escaped UTF-16 pairs in shared strings without evaluating anything 2ms
+     → expected [ 'Fox _xD83E__xDD8A_' ] to deeply equal [ 'Fox 🦊' ]
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/worker/src/jobs/parse-import.test.ts > decodes SpreadsheetML escaped strings once while retaining literal escape-looking text
+AssertionError: expected [ 'First_x000D_Second _x005F_x0041_' ] to deeply equal [ 'First\rSecond _x0041_' ]
+
+- Expected
++ Received
+
+  [
+-   "FirstSecond _x0041_",
++   "First_x000D_Second _x005F_x0041_",
+  ]
+
+ ❯ apps/worker/src/jobs/parse-import.test.ts:189:25
+    187|  const bytes=workbookFixture('<row r="1"><c r="A1" t="inlineStr"><is><…
+    188|  const rows=[];for await(const row of parseImportSource(bytes,{format:…
+    189|  expect(rows[0]?.cells).toEqual(['First\rSecond _x0041_']);
+       |                         ^
+    190| });
+    191| it('decodes escaped UTF-16 pairs in shared strings without evaluating …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |workspace| apps/worker/src/jobs/parse-import.test.ts > decodes escaped UTF-16 pairs in shared strings without evaluating anything
+AssertionError: expected [ 'Fox _xD83E__xDD8A_' ] to deeply equal [ 'Fox 🦊' ]
+
+- Expected
++ Received
+
+  [
+-   "Fox 🦊",
++   "Fox _xD83E__xDD8A_",
+  ]
+
+ ❯ apps/worker/src/jobs/parse-import.test.ts:197:134
+    195|  'xl/sharedStrings.xml':'<sst xmlns="http://schemas.openxmlformats.org…
+    196|  });
+    197|  const rows=[];for await(const row of parseImportSource(bytes,{format:…
+       |                                                                                                                                      ^
+    198| });
+    199| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 18 passed (20)
+   Start at  22:54:07
+   Duration  397ms (transform 69ms, setup 5ms, collect 125ms, tests 56ms, environment 0ms, prepare 51ms)
+

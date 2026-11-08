@@ -1,0 +1,27 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/collaboration/membership-service.test.ts [ packages/domain/src/collaboration/membership-service.test.ts ]
+Error: Cannot find package 'pdf-lib' imported from '/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/domain/src/collaboration/membership-service.test.ts'
+ ❯ packages/domain/src/collaboration/membership-service.test.ts:6:1
+      4| import { tmpdir } from "node:os";
+      5| import { LocalPersistentStorage } from "@sammlerraum/storage";
+      6| import { PDFDocument } from "pdf-lib";
+       | ^
+      7| import { createMediaService } from "../media/media-service";
+      8| import { createMediaReadService } from "../media/media-read";
+
+Caused by: Error: Failed to load url pdf-lib (resolved id: pdf-lib) in /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/domain/src/collaboration/membership-service.test.ts. Does the file exist?
+ ❯ loadAndTransform ../../../../SSK%20SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/node_modules/.pnpm/vite@7.3.6_@types+node@24.5.2_jiti@2.7.0/node_modules/vite/dist/node/chunks/config.js:22739:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  no tests
+   Start at  05:02:31
+   Duration  203ms (transform 49ms, setup 6ms, collect 0ms, tests 0ms, environment 0ms, prepare 36ms)
+

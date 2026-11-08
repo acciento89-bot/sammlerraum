@@ -1,0 +1,271 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ✓ |workspace| packages/domain/src/search/duplicate-filter.integration.test.ts (8 tests) 802ms
+ ❯ |workspace| apps/web/src/components/search/filter-draft.test.ts (235 tests | 2 failed) 38ms
+   ✓ all available typed operator families preserve operands > 'CUSTOM SHORT_TEXT {"op":"eq","value":…' 3ms
+   ✓ all available typed operator families preserve operands > 'ENTRY SHORT_TEXT {"op":"eq","value":"…' 1ms
+   ✓ all available typed operator families preserve operands > 'SELECTED_VARIANT SHORT_TEXT {"op":"eq…' 0ms
+   ✓ all available typed operator families preserve operands > 'CUSTOM SHORT_TEXT {"op":"in","values"…' 0ms
+   ✓ all available typed operator families preserve operands > 'ENTRY SHORT_TEXT {"op":"in","values":…' 0ms
+   ✓ all available typed operator families preserve operands > 'SELECTED_VARIANT SHORT_TEXT {"op":"in…' 0ms
+   ✓ all available typed operator families preserve operands > 'CUSTOM SHORT_TEXT {"op":"contains","v…' 0ms
+   ✓ all available typed operator families preserve operands > 'ENTRY SHORT_TEXT {"op":"contains","va…' 0ms
+   ✓ all available typed operator families preserve operands > 'SELECTED_VARIANT SHORT_TEXT {"op":"co…' 0ms
+   ✓ all available typed operator families preserve operands > 'CUSTOM SHORT_TEXT {"op":"startsWith",…' 0ms
+   ✓ all available typed operator families preserve operands > 'ENTRY SHORT_TEXT {"op":"startsWith","…' 0ms
+   ✓ all available typed operator families preserve operands > 'SELECTED_VARIANT SHORT_TEXT {"op":"st…' 0ms
+   ✓ all available typed operator families preserve operands > 'CUSTOM SHORT_TEXT {"op":"present"}' 0ms
+   ✓ all available typed operator families preserve operands > 'ENTRY SHORT_TEXT {"op":"present"}' 0ms
+   ✓ all available typed operator families preserve operands > 'SELECTED_VARIANT SHORT_TEXT {"op":"pr…' 0ms
+   ✓ all available typed operator families preserve operands > 'CUSTOM SHORT_TEXT {"op":"missing"}' 0ms
+   ✓ all available typed operator families preserve operands > 'ENTRY SHORT_TEXT {"op":"missing"}' 0ms
+   ✓ all available typed operator families preserve operands > 'SELECTED_VARIANT SHORT_TEXT {"op":"mi…' 0ms
+   ✓ all available typed operator families preserve operands > 'CUSTOM LONG_TEXT {"op":"eq","value":"…' 0ms
+   ✓ all available typed operator families preserve operands > 'ENTRY LONG_TEXT {"op":"eq","value":"a…' 0ms
+   ✓ all available typed operator families preserve operands > 'SELECTED_VARIANT LONG_TEXT {"op":"eq"…' 0ms
+   ✓ all available typed operator families preserve operands > 'CUSTOM LONG_TEXT {"op":"in","values":…' 0ms
+   ✓ all available typed operator families preserve operands > 'ENTRY LONG_TEXT {"op":"in","values":[…' 0ms
+   ✓ all available typed operator families preserve operands > 'SELECTED_VARIANT LONG_TEXT {"op":"in"…' 0ms
+   ✓ all available typed operator families preserve operands > 'CUSTOM LONG_TEXT {"op":"contains","va…' 0ms
+   ✓ all available typed operator families preserve operands > 'ENTRY LONG_TEXT {"op":"contains","val…' 0ms
+   ✓ all available typed operator families preserve operands > 'SELECTED_VARIANT LONG_TEXT {"op":"con…' 0ms
+   ✓ all available typed operator families preserve operands > 'CUSTOM LONG_TEXT {"op":"startsWith","…' 0ms
+   ✓ all available typed operator families preserve operands > 'ENTRY LONG_TEXT {"op":"startsWith","v…' 0ms
+   ✓ all available typed operator families preserve operands > 'SELECTED_VARIANT LONG_TEXT {"op":"sta…' 0ms
+   ✓ all available typed operator families preserve operands > 'CUSTOM LONG_TEXT {"op":"present"}' 0ms
+   ✓ all available typed operator families preserve operands > 'ENTRY LONG_TEXT {"op":"present"}' 0ms
+   ✓ all available typed operator families preserve operands > 'SELECTED_VARIANT LONG_TEXT {"op":"pre…' 0ms
+   ✓ all available typed operator families preserve operands > 'CUSTOM LONG_TEXT {"op":"missing"}' 0ms
+   ✓ all available typed operator families preserve operands > 'ENTRY LONG_TEXT {"op":"missing"}' 0ms
+   ✓ all available typed operator families preserve operands > 'SELECTED_VARIANT LONG_TEXT {"op":"mis…' 0ms
+   ✓ all available typed operator families preserve operands > 'CUSTOM INTEGER {"op":"eq","value":0}' 0ms
+   ✓ all available typed operator families preserve operands > 'ENTRY INTEGER {"op":"eq","value":0}' 0ms
+   ✓ all available typed operator families preserve operands > 'SELECTED_VARIANT INTEGER {"op":"eq","…' 0ms
+   ✓ all available typed operator families preserve operands > 'CUSTOM INTEGER {"op":"in","values":[0…' 0ms
+   ✓ all available typed operator families preserve operands > 'ENTRY INTEGER {"op":"in","values":[0,…' 0ms
+   ✓ all available typed operator families preserve operands > 'SELECTED_VARIANT INTEGER {"op":"in","…' 0ms
+   ✓ all available typed operator families preserve operands > 'CUSTOM INTEGER {"op":"lt","value":0}' 0ms
+   ✓ all available typed operator families preserve operands > 'ENTRY INTEGER {"op":"lt","value":0}' 0ms
+   ✓ all available typed operator families preserve operands > 'SELECTED_VARIANT INTEGER {"op":"lt","…' 0ms
+   ✓ all available typed operator families preserve operands > 'CUSTOM INTEGER {"op":"lte","value":0}' 0ms
+   ✓ all available typed operator families preserve operands > 'ENTRY INTEGER {"op":"lte","value":0}' 0ms
+   ✓ all available typed operator families preserve operands > 'SELECTED_VARIANT INTEGER {"op":"lte",…' 0ms
+   ✓ all available typed operator families preserve operands > 'CUSTOM INTEGER {"op":"gt","value":0}' 0ms
+   ✓ all available typed operator families preserve operands > 'ENTRY INTEGER {"op":"gt","value":0}' 0ms
+   ✓ all available typed operator families preserve operands > 'SELECTED_VARIANT INTEGER {"op":"gt","…' 0ms
+   ✓ all available typed operator families preserve operands > 'CUSTOM INTEGER {"op":"gte","value":0}' 0ms
+   ✓ all available typed operator families preserve operands > 'ENTRY INTEGER {"op":"gte","value":0}' 0ms
+   ✓ all available typed operator families preserve operands > 'SELECTED_VARIANT INTEGER {"op":"gte",…' 0ms
+   ✓ all available typed operator families preserve operands > 'CUSTOM INTEGER {"op":"between","min":…' 0ms
+   ✓ all available typed operator families preserve operands > 'ENTRY INTEGER {"op":"between","min":0…' 0ms
+   ✓ all available typed operator families preserve operands > 'SELECTED_VARIANT INTEGER {"op":"betwe…' 0ms
+   ✓ all available typed operator families preserve operands > 'CUSTOM INTEGER {"op":"present"}' 0ms
+   ✓ all available typed operator families preserve operands > 'ENTRY INTEGER {"op":"present"}' 0ms
+   ✓ all available typed operator families preserve operands > 'SELECTED_VARIANT INTEGER {"op":"prese…' 0ms
+   ✓ all available typed operator families preserve operands > 'CUSTOM INTEGER {"op":"missing"}' 0ms
+   ✓ all available typed operator families preserve operands > 'ENTRY INTEGER {"op":"missing"}' 0ms
+   ✓ all available typed operator families preserve operands > 'SELECTED_VARIANT INTEGER {"op":"missi…' 0ms
+   ✓ all available typed operator families preserve operands > 'CUSTOM DECIMAL {"op":"eq","value":"0"}' 0ms
+   ✓ all available typed operator families preserve operands > 'ENTRY DECIMAL {"op":"eq","value":"0"}' 0ms
+   ✓ all available typed operator families preserve operands > 'SELECTED_VARIANT DECIMAL {"op":"eq","…' 0ms
+   ✓ all available typed operator families preserve operands > 'CUSTOM DECIMAL {"op":"in","values":["…' 0ms
+   ✓ all available typed operator families preserve operands > 'ENTRY DECIMAL {"op":"in","values":["0…' 0ms
+   ✓ all available typed operator families preserve operands > 'SELECTED_VARIANT DECIMAL {"op":"in","…' 0ms
+   ✓ all available typed operator families preserve operands > 'CUSTOM DECIMAL {"op":"lt","value":"0"}' 0ms
+   ✓ all available typed operator families preserve operands > 'ENTRY DECIMAL {"op":"lt","value":"0"}' 0ms
+   ✓ all available typed operator families preserve operands > 'SELECTED_VARIANT DECIMAL {"op":"lt","…' 0ms
+   ✓ all available typed operator families preserve operands > 'CUSTOM DECIMAL {"op":"lte","value":"0…' 0ms
+   ✓ all available typed operator families preserve operands > 'ENTRY DECIMAL {"op":"lte","value":"0"}' 0ms
+   ✓ all available typed operator families preserve operands > 'SELECTED_VARIANT DECIMAL {"op":"lte",…' 0ms
+   ✓ all available typed operator families preserve operands > 'CUSTOM DECIMAL {"op":"gt","value":"0"}' 0ms
+   ✓ all available typed operator families preserve operands > 'ENTRY DECIMAL {"op":"gt","value":"0"}' 0ms
+   ✓ all available typed operator families preserve operands > 'SELECTED_VARIANT DECIMAL {"op":"gt","…' 0ms
+   ✓ all available typed operator families preserve operands > 'CUSTOM DECIMAL {"op":"gte","value":"0…' 0ms
+   ✓ all available typed operator families preserve operands > 'ENTRY DECIMAL {"op":"gte","value":"0"}' 0ms
+   ✓ all available typed operator families preserve operands > 'SELECTED_VARIANT DECIMAL {"op":"gte",…' 0ms
+   ✓ all available typed operator families preserve operands > 'CUSTOM DECIMAL {"op":"between","min":…' 0ms
+   ✓ all available typed operator families preserve operands > 'ENTRY DECIMAL {"op":"between","min":"…' 0ms
+   ✓ all available typed operator families preserve operands > 'SELECTED_VARIANT DECIMAL {"op":"betwe…' 2ms
+   ✓ all available typed operator families preserve operands > 'CUSTOM DECIMAL {"op":"present"}' 0ms
+   ✓ all available typed operator families preserve operands > 'ENTRY DECIMAL {"op":"present"}' 0ms
+   ✓ all available typed operator families preserve operands > 'SELECTED_VARIANT DECIMAL {"op":"prese…' 0ms
+   ✓ all available typed operator families preserve operands > 'CUSTOM DECIMAL {"op":"missing"}' 0ms
+   ✓ all available typed operator families preserve operands > 'ENTRY DECIMAL {"op":"missing"}' 0ms
+   ✓ all available typed operator families preserve operands > 'SELECTED_VARIANT DECIMAL {"op":"missi…' 0ms
+   ✓ all available typed operator families preserve operands > 'CUSTOM DATE {"op":"eq","value":"2025-…' 1ms
+   ✓ all available typed operator families preserve operands > 'ENTRY DATE {"op":"eq","value":"2025-0…' 0ms
+   ✓ all available typed operator families preserve operands > 'SELECTED_VARIANT DATE {"op":"eq","val…' 0ms
+   ✓ all available typed operator families preserve operands > 'CUSTOM DATE {"op":"in","values":["202…' 0ms
+   ✓ all available typed operator families preserve operands > 'ENTRY DATE {"op":"in","values":["2025…' 0ms
+   ✓ all available typed operator families preserve operands > 'SELECTED_VARIANT DATE {"op":"in","val…' 0ms
+   ✓ all available typed operator families preserve operands > 'CUSTOM DATE {"op":"lt","value":"2025-…' 0ms
+   ✓ all available typed operator families preserve operands > 'ENTRY DATE {"op":"lt","value":"2025-0…' 0ms
+   ✓ all available typed operator families preserve operands > 'SELECTED_VARIANT DATE {"op":"lt","val…' 0ms
+   ✓ all available typed operator families preserve operands > 'CUSTOM DATE {"op":"lte","value":"2025…' 0ms
+   ✓ all available typed operator families preserve operands > 'ENTRY DATE {"op":"lte","value":"2025-…' 0ms
+   ✓ all available typed operator families preserve operands > 'SELECTED_VARIANT DATE {"op":"lte","va…' 0ms
+   ✓ all available typed operator families preserve operands > 'CUSTOM DATE {"op":"gt","value":"2025-…' 0ms
+   ✓ all available typed operator families preserve operands > 'ENTRY DATE {"op":"gt","value":"2025-0…' 0ms
+   ✓ all available typed operator families preserve operands > 'SELECTED_VARIANT DATE {"op":"gt","val…' 0ms
+   ✓ all available typed operator families preserve operands > 'CUSTOM DATE {"op":"gte","value":"2025…' 0ms
+   ✓ all available typed operator families preserve operands > 'ENTRY DATE {"op":"gte","value":"2025-…' 0ms
+   ✓ all available typed operator families preserve operands > 'SELECTED_VARIANT DATE {"op":"gte","va…' 0ms
+   ✓ all available typed operator families preserve operands > 'CUSTOM DATE {"op":"between","min":"20…' 0ms
+   ✓ all available typed operator families preserve operands > 'ENTRY DATE {"op":"between","min":"202…' 0ms
+   ✓ all available typed operator families preserve operands > 'SELECTED_VARIANT DATE {"op":"between"…' 0ms
+   ✓ all available typed operator families preserve operands > 'CUSTOM DATE {"op":"present"}' 0ms
+   ✓ all available typed operator families preserve operands > 'ENTRY DATE {"op":"present"}' 0ms
+   ✓ all available typed operator families preserve operands > 'SELECTED_VARIANT DATE {"op":"present"}' 0ms
+   ✓ all available typed operator families preserve operands > 'CUSTOM DATE {"op":"missing"}' 0ms
+   ✓ all available typed operator families preserve operands > 'ENTRY DATE {"op":"missing"}' 0ms
+   ✓ all available typed operator families preserve operands > 'SELECTED_VARIANT DATE {"op":"missing"}' 0ms
+   ✓ all available typed operator families preserve operands > 'CUSTOM BOOLEAN {"op":"eq","value":fal…' 0ms
+   ✓ all available typed operator families preserve operands > 'ENTRY BOOLEAN {"op":"eq","value":fals…' 0ms
+   ✓ all available typed operator families preserve operands > 'SELECTED_VARIANT BOOLEAN {"op":"eq","…' 0ms
+   ✓ all available typed operator families preserve operands > 'CUSTOM BOOLEAN {"op":"eq","value":tru…' 0ms
+   ✓ all available typed operator families preserve operands > 'ENTRY BOOLEAN {"op":"eq","value":true}' 0ms
+   ✓ all available typed operator families preserve operands > 'SELECTED_VARIANT BOOLEAN {"op":"eq","…' 0ms
+   ✓ all available typed operator families preserve operands > 'CUSTOM BOOLEAN {"op":"present"}' 0ms
+   ✓ all available typed operator families preserve operands > 'ENTRY BOOLEAN {"op":"present"}' 0ms
+   ✓ all available typed operator families preserve operands > 'SELECTED_VARIANT BOOLEAN {"op":"prese…' 0ms
+   ✓ all available typed operator families preserve operands > 'CUSTOM BOOLEAN {"op":"missing"}' 0ms
+   ✓ all available typed operator families preserve operands > 'ENTRY BOOLEAN {"op":"missing"}' 0ms
+   ✓ all available typed operator families preserve operands > 'SELECTED_VARIANT BOOLEAN {"op":"missi…' 0ms
+   ✓ all available typed operator families preserve operands > 'CUSTOM SINGLE_SELECT {"op":"eq","valu…' 1ms
+   ✓ all available typed operator families preserve operands > 'ENTRY SINGLE_SELECT {"op":"eq","value…' 0ms
+   ✓ all available typed operator families preserve operands > 'SELECTED_VARIANT SINGLE_SELECT {"op":…' 0ms
+   ✓ all available typed operator families preserve operands > 'CUSTOM SINGLE_SELECT {"op":"in","valu…' 0ms
+   ✓ all available typed operator families preserve operands > 'ENTRY SINGLE_SELECT {"op":"in","value…' 0ms
+   ✓ all available typed operator families preserve operands > 'SELECTED_VARIANT SINGLE_SELECT {"op":…' 0ms
+   ✓ all available typed operator families preserve operands > 'CUSTOM SINGLE_SELECT {"op":"present"}' 0ms
+   ✓ all available typed operator families preserve operands > 'ENTRY SINGLE_SELECT {"op":"present"}' 0ms
+   ✓ all available typed operator families preserve operands > 'SELECTED_VARIANT SINGLE_SELECT {"op":…' 0ms
+   ✓ all available typed operator families preserve operands > 'CUSTOM SINGLE_SELECT {"op":"missing"}' 0ms
+   ✓ all available typed operator families preserve operands > 'ENTRY SINGLE_SELECT {"op":"missing"}' 0ms
+   ✓ all available typed operator families preserve operands > 'SELECTED_VARIANT SINGLE_SELECT {"op":…' 0ms
+   ✓ all available typed operator families preserve operands > 'CUSTOM MULTI_SELECT {"op":"hasAny","v…' 0ms
+   ✓ all available typed operator families preserve operands > 'ENTRY MULTI_SELECT {"op":"hasAny","va…' 0ms
+   ✓ all available typed operator families preserve operands > 'SELECTED_VARIANT MULTI_SELECT {"op":"…' 0ms
+   ✓ all available typed operator families preserve operands > 'CUSTOM MULTI_SELECT {"op":"hasAll","v…' 0ms
+   ✓ all available typed operator families preserve operands > 'ENTRY MULTI_SELECT {"op":"hasAll","va…' 0ms
+   ✓ all available typed operator families preserve operands > 'SELECTED_VARIANT MULTI_SELECT {"op":"…' 0ms
+   ✓ all available typed operator families preserve operands > 'CUSTOM MULTI_SELECT {"op":"present"}' 0ms
+   ✓ all available typed operator families preserve operands > 'ENTRY MULTI_SELECT {"op":"present"}' 0ms
+   ✓ all available typed operator families preserve operands > 'SELECTED_VARIANT MULTI_SELECT {"op":"…' 0ms
+   ✓ all available typed operator families preserve operands > 'CUSTOM MULTI_SELECT {"op":"missing"}' 0ms
+   ✓ all available typed operator families preserve operands > 'ENTRY MULTI_SELECT {"op":"missing"}' 0ms
+   ✓ all available typed operator families preserve operands > 'SELECTED_VARIANT MULTI_SELECT {"op":"…' 0ms
+   ✓ all available typed operator families preserve operands > 'CUSTOM URL {"op":"eq","value":"https:…' 0ms
+   ✓ all available typed operator families preserve operands > 'ENTRY URL {"op":"eq","value":"https:/…' 0ms
+   ✓ all available typed operator families preserve operands > 'SELECTED_VARIANT URL {"op":"eq","valu…' 0ms
+   ✓ all available typed operator families preserve operands > 'CUSTOM URL {"op":"in","values":["http…' 0ms
+   ✓ all available typed operator families preserve operands > 'ENTRY URL {"op":"in","values":["https…' 0ms
+   ✓ all available typed operator families preserve operands > 'SELECTED_VARIANT URL {"op":"in","valu…' 0ms
+   ✓ all available typed operator families preserve operands > 'CUSTOM URL {"op":"present"}' 0ms
+   ✓ all available typed operator families preserve operands > 'ENTRY URL {"op":"present"}' 0ms
+   ✓ all available typed operator families preserve operands > 'SELECTED_VARIANT URL {"op":"present"}' 0ms
+   ✓ all available typed operator families preserve operands > 'CUSTOM URL {"op":"missing"}' 0ms
+   ✓ all available typed operator families preserve operands > 'ENTRY URL {"op":"missing"}' 0ms
+   ✓ all available typed operator families preserve operands > 'SELECTED_VARIANT URL {"op":"missing"}' 0ms
+   ✓ all available typed operator families preserve operands > 'CUSTOM MONEY {"op":"present"}' 0ms
+   ✓ all available typed operator families preserve operands > 'ENTRY MONEY {"op":"present"}' 0ms
+   ✓ all available typed operator families preserve operands > 'SELECTED_VARIANT MONEY {"op":"present…' 0ms
+   ✓ all available typed operator families preserve operands > 'CUSTOM MONEY {"op":"missing"}' 0ms
+   ✓ all available typed operator families preserve operands > 'ENTRY MONEY {"op":"missing"}' 0ms
+   ✓ all available typed operator families preserve operands > 'SELECTED_VARIANT MONEY {"op":"missing…' 0ms
+   ✓ all available typed operator families preserve operands > 'collection eq' 0ms
+   ✓ all available typed operator families preserve operands > 'collection in' 0ms
+   ✓ all available typed operator families preserve operands > 'category eq' 0ms
+   ✓ all available typed operator families preserve operands > 'category in' 0ms
+   ✓ all available typed operator families preserve operands > 'category present' 0ms
+   ✓ all available typed operator families preserve operands > 'category missing' 0ms
+   ✓ all available typed operator families preserve operands > 'condition eq' 0ms
+   ✓ all available typed operator families preserve operands > 'condition in' 0ms
+   ✓ all available typed operator families preserve operands > 'condition present' 0ms
+   ✓ all available typed operator families preserve operands > 'condition missing' 0ms
+   ✓ all available typed operator families preserve operands > 'createdAt eq' 0ms
+   ✓ all available typed operator families preserve operands > 'createdAt in' 0ms
+   ✓ all available typed operator families preserve operands > 'createdAt lt' 0ms
+   ✓ all available typed operator families preserve operands > 'createdAt lte' 0ms
+   ✓ all available typed operator families preserve operands > 'createdAt gt' 0ms
+   ✓ all available typed operator families preserve operands > 'createdAt gte' 0ms
+   ✓ all available typed operator families preserve operands > 'createdAt between' 0ms
+   ✓ all available typed operator families preserve operands > 'updatedAt eq' 0ms
+   ✓ all available typed operator families preserve operands > 'updatedAt in' 0ms
+   ✓ all available typed operator families preserve operands > 'updatedAt lt' 0ms
+   ✓ all available typed operator families preserve operands > 'updatedAt lte' 0ms
+   ✓ all available typed operator families preserve operands > 'updatedAt gt' 0ms
+   ✓ all available typed operator families preserve operands > 'updatedAt gte' 0ms
+   ✓ all available typed operator families preserve operands > 'updatedAt between' 0ms
+   ✓ all available typed operator families preserve operands > 'acquisitionDate eq' 0ms
+   ✓ all available typed operator families preserve operands > 'acquisitionDate in' 0ms
+   ✓ all available typed operator families preserve operands > 'acquisitionDate lt' 0ms
+   ✓ all available typed operator families preserve operands > 'acquisitionDate lte' 0ms
+   ✓ all available typed operator families preserve operands > 'acquisitionDate gt' 0ms
+   ✓ all available typed operator families preserve operands > 'acquisitionDate gte' 0ms
+   ✓ all available typed operator families preserve operands > 'acquisitionDate between' 0ms
+   ✓ all available typed operator families preserve operands > 'acquisitionDate present' 0ms
+   ✓ all available typed operator families preserve operands > 'acquisitionDate missing' 0ms
+   ✓ all available typed operator families preserve operands > 'grading present' 0ms
+   ✓ all available typed operator families preserve operands > 'grading missing' 0ms
+   ✓ all available typed operator families preserve operands > 'purchaseMoney present' 0ms
+   ✓ all available typed operator families preserve operands > 'purchaseMoney missing' 0ms
+   ✓ all available typed operator families preserve operands > 'manualMoney present' 0ms
+   ✓ all available typed operator families preserve operands > 'manualMoney missing' 0ms
+   ✓ all available typed operator families preserve operands > 'tags present' 0ms
+   ✓ all available typed operator families preserve operands > 'tags missing' 0ms
+   ✓ all available typed operator families preserve operands > 'media present' 0ms
+   ✓ all available typed operator families preserve operands > 'media missing' 0ms
+   ✓ all available typed operator families preserve operands > 'grading authored certificate' 0ms
+   ✓ all available typed operator families preserve operands > 'grading comparable eq' 0ms
+   ✓ all available typed operator families preserve operands > 'grading comparable in' 0ms
+   ✓ all available typed operator families preserve operands > 'grading comparable lt' 0ms
+   ✓ all available typed operator families preserve operands > 'grading comparable lte' 0ms
+   ✓ all available typed operator families preserve operands > 'grading comparable gt' 0ms
+   ✓ all available typed operator families preserve operands > 'grading comparable gte' 0ms
+   ✓ all available typed operator families preserve operands > 'grading comparable between' 0ms
+   ✓ all available typed operator families preserve operands > 'tradeStatus eq' 0ms
+   ✓ all available typed operator families preserve operands > 'tradeStatus in' 0ms
+   ✓ all available typed operator families preserve operands > 'visibility eq' 0ms
+   ✓ all available typed operator families preserve operands > 'visibility in' 0ms
+   ✓ all available typed operator families preserve operands > 'tags hasAny' 0ms
+   ✓ all available typed operator families preserve operands > 'tags hasAll' 0ms
+   ✓ all available typed operator families preserve operands > 'manual zero lower bound' 0ms
+   ✓ all available typed operator families preserve operands > 'manual upper bound only' 0ms
+   ✓ all available typed operator families preserve operands > 'document category' 0ms
+   ✓ supports repair/removal without discarding neighbouring NOT/OR operands 0ms
+   ✓ enables supported legacy ranges only with affirmative consumer rollout 0ms
+   × makes the actual duplicate family available while preserving its Boolean operand: true 3ms
+     → expected false to be true // Object.is equality
+   × makes the actual duplicate family available while preserving its Boolean operand: false 0ms
+     → expected false to be true // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/web/src/components/search/filter-draft.test.ts > makes the actual duplicate family available while preserving its Boolean operand: true
+ FAIL  |workspace| apps/web/src/components/search/filter-draft.test.ts > makes the actual duplicate family available while preserving its Boolean operand: false
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ apps/web/src/components/search/filter-draft.test.ts:210:26
+    208| it.each([true,false])("makes the actual duplicate family available whi…
+    209|  const leaf={kind:"duplicate" as const,value};
+    210|  expect(available(leaf)).toBe(true);
+       |                          ^
+    211|  expect(fromDraft(toDraft({version:1,root:leaf}))).toEqual({version:1,…
+    212|  expect(available({kind:"not",child:leaf})).toBe(true);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  2 failed | 241 passed (243)
+   Start at  23:45:51
+   Duration  1.79s (transform 307ms, setup 6ms, collect 618ms, tests 840ms, environment 0ms, prepare 68ms)
+

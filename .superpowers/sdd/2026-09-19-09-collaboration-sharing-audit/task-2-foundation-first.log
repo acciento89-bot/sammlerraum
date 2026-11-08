@@ -1,0 +1,10 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ✓ |workspace| packages/domain/src/collaboration/invitation-service.test.ts (12 tests) 493ms
+
+ Test Files  1 passed (1)
+      Tests  12 passed (12)
+   Start at  05:45:02
+   Duration  913ms (transform 136ms, setup 6ms, collect 259ms, tests 493ms, environment 0ms, prepare 36ms)
+

@@ -1,0 +1,134 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| apps/worker/src/main.test.ts (4 tests | 1 failed) 7ms
+   × startWorker > starts durable dispatch after queue startup and stops it before queue teardown 5ms
+     → expected [ 'queue-start', …(5) ] to deeply equal [ 'queue-start', …(7) ]
+   ✓ startWorker > installs the queue error listener before startup and keeps an emitted error unhealthy 1ms
+   ✓ startWorker > rolls back queue, endpoint, and database resources in reverse lifecycle order 0ms
+   ✓ runWorkerMain > returns exit code 1 and logs a generic startup configuration error 0ms
+ ❯ |workspace| packages/config/src/server.test.ts (26 tests | 2 failed) 13ms
+   ✓ parseServerEnv > rejects missing database configuration 1ms
+   × parseServerEnv > accepts the required foundation environment 5ms
+     → expected { …(9) } to deeply equal { NODE_ENV: 'test', …(12) }
+   ✓ parseServerEnv > rejects invalid WORKER_HEALTH_PORT 0 0ms
+   ✓ parseServerEnv > rejects invalid WORKER_HEALTH_PORT 65536 0ms
+   ✓ parseServerEnv > rejects invalid WORKER_HEALTH_PORT 3.5 0ms
+   ✓ parseServerEnv > rejects invalid WORKER_HEALTH_PORT not-a-port 0ms
+   ✓ parseServerEnv > rejects an invalid NODE_ENV value 0ms
+   ✓ parseServerEnv > rejects an invalid DATABASE_URL value 0ms
+   ✓ parseServerEnv > rejects an invalid DATABASE_URL value 0ms
+   ✓ parseServerEnv > rejects an invalid APP_ORIGIN value 0ms
+   ✓ parseServerEnv > rejects an invalid APP_ORIGIN value 0ms
+   ✓ parseServerEnv > rejects an invalid APP_ORIGIN value 0ms
+   ✓ parseServerEnv > rejects an invalid APP_ORIGIN value 0ms
+   ✓ parseServerEnv > rejects an invalid APP_ORIGIN value 0ms
+   ✓ parseServerEnv > rejects an invalid UPLOADS_DIR value 0ms
+   ✓ parseServerEnv > rejects an invalid LOG_LEVEL value 0ms
+   ✓ parseServerEnv > normalizes APP_ORIGIN to its origin 0ms
+   ✓ parseServerEnv > reports invalid variable names without exposing values 1ms
+   ✓ parseAuthEnv > requires provider, auth-secret, and SMTP delivery configuration 2ms
+   ✓ parseAuthEnv > never exposes auth or SMTP secret values in validation errors 0ms
+   × media configuration > uses explicit bounded upload defaults 1ms
+     → expected { …(9) } to match object { …(7) }
+(6 matching properties omitted from actual)
+   ✓ media configuration > rejects unsafe byte limit 0 0ms
+   ✓ media configuration > rejects unsafe byte limit -1 0ms
+   ✓ media configuration > rejects unsafe byte limit 1.5 0ms
+   ✓ media configuration > rejects unsafe byte limit 9007199254740992 0ms
+   ✓ media configuration > rejects unsafe byte limit NaN 0ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/worker/src/main.test.ts > startWorker > starts durable dispatch after queue startup and stops it before queue teardown
+AssertionError: expected [ 'queue-start', …(5) ] to deeply equal [ 'queue-start', …(7) ]
+
+- Expected
++ Received
+
+  [
+    "queue-start",
+    "dispatch-start",
+-   "cleanup-start",
+    "health-stop",
+-   "cleanup-stop",
+    "dispatch-stop",
+    "queue-stop",
+    "database-stop",
+  ]
+
+ ❯ apps/worker/src/main.test.ts:50:19
+     48|     });
+     49|     await worker.stop();
+     50|     expect(calls).toEqual([
+       |                   ^
+     51|       "queue-start",
+     52|       "dispatch-start",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  |workspace| packages/config/src/server.test.ts > parseServerEnv > accepts the required foundation environment
+AssertionError: expected { …(9) } to deeply equal { NODE_ENV: 'test', …(12) }
+
+- Expected
++ Received
+
+  {
+    "APP_ORIGIN": "http://localhost:3000",
+    "DATABASE_URL": "postgresql://user:pass@localhost:5432/sammlerraum",
+    "LOG_LEVEL": "info",
+-   "MEDIA_CLEANUP_BATCH_SIZE": 100,
+-   "MEDIA_CLEANUP_INTERVAL_MS": 60000,
+    "MEDIA_MAX_DOCUMENT_BYTES": 26214400,
+    "MEDIA_MAX_IMAGE_BYTES": 20971520,
+    "MEDIA_MAX_IMAGE_PIXELS": 40000000,
+-   "MEDIA_RETENTION_HOURS": 168,
+    "NODE_ENV": "test",
+-   "STORAGE_TEMP_MAX_AGE_HOURS": 24,
+    "UPLOADS_DIR": "/tmp/sammlerraum-uploads",
+    "WORKER_HEALTH_PORT": 3001,
+  }
+
+ ❯ packages/config/src/server.test.ts:18:46
+     16| 
+     17|   it("accepts the required foundation environment", () => {
+     18|     expect(parseServerEnv(validEnvironment)).toEqual({
+       |                                              ^
+     19|       ...validEnvironment,
+     20|       LOG_LEVEL: "info",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  |workspace| packages/config/src/server.test.ts > media configuration > uses explicit bounded upload defaults
+AssertionError: expected { …(9) } to match object { …(7) }
+(6 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "MEDIA_CLEANUP_BATCH_SIZE": 100,
+-   "MEDIA_CLEANUP_INTERVAL_MS": 60000,
+    "MEDIA_MAX_DOCUMENT_BYTES": 26214400,
+    "MEDIA_MAX_IMAGE_BYTES": 20971520,
+    "MEDIA_MAX_IMAGE_PIXELS": 40000000,
+-   "MEDIA_RETENTION_HOURS": 168,
+-   "STORAGE_TEMP_MAX_AGE_HOURS": 24,
+  }
+
+ ❯ packages/config/src/server.test.ts:119:46
+    117| describe("media configuration", () => {
+    118|   it("uses explicit bounded upload defaults", () => {
+    119|     expect(parseServerEnv(validEnvironment)).toMatchObject({
+       |                                              ^
+    120|       MEDIA_MAX_IMAGE_BYTES: 20 * 1024 * 1024,
+    121|       MEDIA_MAX_DOCUMENT_BYTES: 25 * 1024 * 1024,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  3 failed | 27 passed (30)
+   Start at  20:55:58
+   Duration  321ms (transform 49ms, setup 11ms, collect 94ms, tests 20ms, environment 0ms, prepare 93ms)
+

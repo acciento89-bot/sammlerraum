@@ -1,0 +1,4 @@
+ERROR:  insert or update on table "AuditEvent" violates foreign key constraint "AuditEvent_collectionId_fkey"
+DETAIL:  Key (collectionId)=(00ea0ab6-2f14-4c86-a38b-8546fd1a67c3) is not present in table "Collection".
+CONTEXT:  SQL statement "DELETE FROM "user" WHERE id='f3ccacb9-3cb7-4e3a-9836-04672128f743' AND name='Foreign search collector' AND email='f3ccacb9-3cb7-4e3a-9836-04672128f743@example.test'"
+PL/pgSQL function inline_code_block line 1 at SQL statement

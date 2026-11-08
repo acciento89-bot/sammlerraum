@@ -1,0 +1,9 @@
+# Task2 preflight while Task1 full gates run
+
+Existing public-profile contract is an explicit separate profile (handle/displayName/bio/avatar); login email never becomes public. Reuse it; do not invent a second profile identity or turn a bare login account into a community profile. Community remains optional and all inventory private by default.
+
+Task2's explicit blocked-follow test precedes Task3's block service: introduce only the UserBlock persistence/pair policy seam here, then implement actual block/report workflows in Task3; record the ordering ruling rather than pretending blocks are implemented. Follows/favorites use actual user-pair locks in sorted C order, and either block direction denies both interactions. No email/provider/notification side effects until their actual durable handlers exist.
+
+Favorites are limited to currently effectively PUBLIC collection/item targets, even when membership or Owner status allows a private read. Public child under private node/ancestor/collection must remain unavailable. Current generic resource-query returns trusted facts but reads private item columns and hardcodes moderation; do not spread its DTO into public responses or relabel it a full community policy. Build minimal public projections/current ancestry validation and reusable current block/moderation gate; actual moderation persistence belongs Task4. Re-check current owner after locks/transfer, not the initial discovery owner. Lists must re-check current visibility/blocks rather than trust stale favorite creation.
+
+No Task2 implementation, migration, task-start or runtime yet. Task1's current full native/build/browser source is not changed during its gate. Prepared next tests should cover private ancestor, role/share not broadening favorite access, bidirectional blocks, self-follow, idempotent follow/favorite, hard deletion and policy change after favorite creation.

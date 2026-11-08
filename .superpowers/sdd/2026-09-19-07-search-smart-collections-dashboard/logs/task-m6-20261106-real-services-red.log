@@ -1,0 +1,113 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/search/legacy-money-query.integration.test.ts (10 tests | 4 failed) 518ms
+   ✓ complete owned legacy money scope > rejects a known-price query while any outer candidate remains unknown 122ms
+   ✓ complete owned legacy money scope > excludes other owners and lifecycle states from the independent gate 15ms
+   ✓ complete owned legacy money scope > keeps missing prices and known zero distinct in quantity-weighted costs 20ms
+   ✓ complete owned legacy money scope > does not let a matched selection hide unresolved outer purchase evidence 12ms
+   ✓ complete owned legacy money scope > sums actual maximum raw values times intmax quantities beyond int64 23ms
+   ✓ complete owned legacy money scope > real search checks unknown candidates outside matching text before count/page 10ms
+   × complete owned legacy money scope > real search returns both exact cross-exponent matches and the NOT complement of missing prices 16ms
+     → FILTER_UNAVAILABLE
+   × complete owned legacy money scope > repeats complete coverage on cursor pages after a same-pair legacy write 14ms
+     → FILTER_UNAVAILABLE
+   × complete owned legacy money scope > real saved search revalidates monetary evidence rather than retaining an executable permit 22ms
+     → FILTER_UNAVAILABLE
+   × complete owned legacy money scope > real dashboard labels quantity-weighted partial costs and separate evidenced scales 39ms
+     → expected { state: 'UNAVAILABLE', …(2) } to match object { state: 'PARTIAL', …(3) }
+(1 matching property omitted from actual)
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/search/legacy-money-query.integration.test.ts > complete owned legacy money scope > real search returns both exact cross-exponent matches and the NOT complement of missing prices
+FilterValidationError: FILTER_UNAVAILABLE
+ ❯ validateCurrentFilterAvailability packages/domain/src/search/filter-ast.ts:36:13
+     34|         node.predicate.test.op === "range")
+     35|     ) {
+     36|       throw new FilterValidationError(
+       |             ^
+     37|         "FILTER_UNAVAILABLE",
+     38|         "LEGACY_MONEY_INTERPRETATION_UNAVAILABLE",
+ ❯ Object.searchItems packages/domain/src/search/item-search-service.ts:106:25
+ ❯ packages/domain/src/search/legacy-money-query.integration.test.ts:77:28
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  |workspace| packages/domain/src/search/legacy-money-query.integration.test.ts > complete owned legacy money scope > repeats complete coverage on cursor pages after a same-pair legacy write
+FilterValidationError: FILTER_UNAVAILABLE
+ ❯ validateCurrentFilterAvailability packages/domain/src/search/filter-ast.ts:36:13
+     34|         node.predicate.test.op === "range")
+     35|     ) {
+     36|       throw new FilterValidationError(
+       |             ^
+     37|         "FILTER_UNAVAILABLE",
+     38|         "LEGACY_MONEY_INTERPRETATION_UNAVAILABLE",
+ ❯ Object.searchItems packages/domain/src/search/item-search-service.ts:106:25
+ ❯ packages/domain/src/search/legacy-money-query.integration.test.ts:86:28
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  |workspace| packages/domain/src/search/legacy-money-query.integration.test.ts > complete owned legacy money scope > real saved search revalidates monetary evidence rather than retaining an executable permit
+FilterValidationError: FILTER_UNAVAILABLE
+ ❯ validateCurrentFilterAvailability packages/domain/src/search/filter-ast.ts:36:13
+     34|         node.predicate.test.op === "range")
+     35|     ) {
+     36|       throw new FilterValidationError(
+       |             ^
+     37|         "FILTER_UNAVAILABLE",
+     38|         "LEGACY_MONEY_INTERPRETATION_UNAVAILABLE",
+ ❯ executeItemSearch packages/domain/src/search/item-search-service.ts:54:21
+ ❯ validateDefinition packages/domain/src/search/smart-collection-service.ts:82:9
+ ❯ packages/domain/src/search/smart-collection-service.ts:105:15
+ ❯ database.$transaction.isolationLevel packages/domain/src/search/search-read.ts:54:32
+ ❯ Proxy._transactionWithCallback node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:861:18
+ ❯ runSearchTransaction packages/domain/src/search/search-read.ts:26:22
+ ❯ packages/domain/src/search/legacy-money-query.integration.test.ts:93:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  |workspace| packages/domain/src/search/legacy-money-query.integration.test.ts > complete owned legacy money scope > real dashboard labels quantity-weighted partial costs and separate evidenced scales
+AssertionError: expected { state: 'UNAVAILABLE', …(2) } to match object { state: 'PARTIAL', …(3) }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "coverage": {
+-     "missingUnits": "4",
+-     "selectedItems": 3,
+-     "selectedUnits": "9",
+-   },
+-   "groups": [
+-     {
+-       "currency": "AFN",
+-       "exponent": 0,
+-       "totalMinor": "2",
+-     },
+-     {
+-       "currency": "AFN",
+-       "exponent": 2,
+-       "totalMinor": "300",
+-     },
+-   ],
+-   "selectionCoverage": {
+-     "selectedItems": 3,
+-   },
+-   "state": "PARTIAL",
++   "groups": null,
++   "state": "UNAVAILABLE",
+  }
+
+ ❯ packages/domain/src/search/legacy-money-query.integration.test.ts:100:31
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  4 failed | 6 passed (10)
+   Start at  18:19:20
+   Duration  1.18s (transform 193ms, setup 6ms, collect 363ms, tests 518ms, environment 0ms, prepare 68ms)
+

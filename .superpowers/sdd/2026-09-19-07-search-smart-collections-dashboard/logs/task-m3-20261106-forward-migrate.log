@@ -1,0 +1,20 @@
+
+> @sammlerraum/db@ prisma /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/db
+> prisma migrate deploy
+
+Loaded Prisma config from prisma.config.ts.
+
+Prisma schema loaded from prisma/schema.prisma.
+Datasource "db": PostgreSQL database "sammlerraum_test", schema "public" at "localhost:5432"
+
+30 migrations found in prisma/migrations
+
+Applying migration `20261106043000_author_correction_audit`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20261106043000_author_correction_audit/
+    └─ migration.sql
+
+All migrations have been successfully applied.

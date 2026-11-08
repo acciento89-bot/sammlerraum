@@ -1,0 +1,54 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ✓ |workspace| packages/domain/src/audit/core-audit-integration.test.ts (17 tests) 1025ms
+ ❯ |workspace| packages/domain/src/items/item-service.test.ts (15 tests | 1 failed) 355ms
+   ✓ item service > splits a quantity item without changing total quantity 3ms
+   ✓ item service > copies populated metadata in the locked split transaction 1ms
+   × item service > creates a private item for the trusted owner in a node from the same collection 7ms
+     → promise rejected "LegacyMoneyError: MONEY_NOT_FOUND { code: '…' }" instead of resolving
+   ✓ item service > rejects non-canonical dates and invalid or incomplete money before persistence 1ms
+   ✓ item service > does not create for another owner's collection or a node from another collection 0ms
+   ✓ item service > rejects moving an item to a node in another collection before mutation 1ms
+   ✓ item service > archives an active item at the service clock and rejects later mutations 0ms
+   ✓ item service > allows a disposed item to be archived while retaining both lifecycle timestamps 0ms
+   ✓ item service > rejects invalid split counts against the freshly locked quantity 0ms
+   ✓ item service > preserves total acquisition value by copying a per-unit purchase amount 2ms
+   ✓ item service PostgreSQL integration > enforces same-collection nodes and owner-only item mutations 170ms
+   ✓ item service PostgreSQL integration > serializes simultaneous splits against the fresh row quantity 56ms
+   ✓ item service PostgreSQL integration > keeps image and document links on both portions with shared asset IDs 36ms
+   ✓ item service PostgreSQL integration > rolls back the source decrement when creating the split row fails 13ms
+   ✓ item service PostgreSQL integration > rolls back the source and new row when copying metadata fails 13ms
+ ✓ |workspace| packages/domain/src/money/personal-money-service.test.ts (13 tests) 859ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/items/item-service.test.ts > item service > creates a private item for the trusted owner in a node from the same collection
+AssertionError: promise rejected "LegacyMoneyError: MONEY_NOT_FOUND { code: '…' }" instead of resolving
+ ❯ packages/domain/src/items/item-service.test.ts:238:5
+    236|         tradeStatus: "FOR_SALE",
+    237|       }),
+    238|     ).resolves.toMatchObject({
+       |     ^
+    239|       id: createdItemId,
+    240|       title: "Penny Black",
+
+Caused by: LegacyMoneyError: MONEY_NOT_FOUND
+ ❯ legacyMoneyFail packages/contracts/src/legacy-money.ts:27:9
+ ❯ resolvedRow packages/domain/src/money/legacy-money-store.ts:334:33
+ ❯ resolveFact packages/domain/src/money/legacy-money-store.ts:324:10
+ ❯ readMoneyFact packages/domain/src/money/legacy-money-store.ts:513:11
+ ❯ captureMoneyAuditSnapshot packages/domain/src/audit/money-audit.ts:11:12
+ ❯ database.$transaction.isolationLevel packages/domain/src/items/item-service.ts:610:55
+ ❯ packages/domain/src/items/item-service.test.ts:224:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { code: 'MONEY_NOT_FOUND' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 2 passed (3)
+      Tests  1 failed | 44 passed (45)
+   Start at  08:55:31
+   Duration  3.60s (transform 307ms, setup 8ms, collect 893ms, tests 2.24s, environment 0ms, prepare 116ms)
+

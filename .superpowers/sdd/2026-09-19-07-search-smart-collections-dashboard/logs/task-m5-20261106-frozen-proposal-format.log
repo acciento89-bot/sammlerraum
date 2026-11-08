@@ -1,0 +1,26 @@
+apps/web/src/components/catalog/canonical-catalog-facts.tsx 32ms (unchanged)
+apps/web/src/components/catalog/catalog-client.ts 10ms (unchanged)
+apps/web/src/components/catalog/catalog-entry.tsx 11ms (unchanged)
+apps/web/src/components/catalog/catalog-facts.tsx 24ms
+apps/web/src/components/catalog/catalog-fields.tsx 17ms (unchanged)
+apps/web/src/components/catalog/catalog-form-values.test.ts 6ms (unchanged)
+apps/web/src/components/catalog/catalog-form-values.ts 4ms (unchanged)
+apps/web/src/components/catalog/catalog-frozen-proposal.test.ts 7ms
+apps/web/src/components/catalog/catalog-frozen-proposal.ts 6ms
+apps/web/src/components/catalog/catalog-history.tsx 9ms (unchanged)
+apps/web/src/components/catalog/catalog-index.tsx 3ms (unchanged)
+apps/web/src/components/catalog/catalog-linker.tsx 7ms (unchanged)
+apps/web/src/components/catalog/catalog-money-client.test.ts 7ms (unchanged)
+apps/web/src/components/catalog/catalog-money-client.ts 8ms (unchanged)
+apps/web/src/components/catalog/catalog-money-model.test.ts 6ms (unchanged)
+apps/web/src/components/catalog/catalog-money-model.ts 7ms (unchanged)
+apps/web/src/components/catalog/catalog-money-session.test.ts 1ms (unchanged)
+apps/web/src/components/catalog/catalog-money-session.ts 3ms (unchanged)
+apps/web/src/components/catalog/catalog-money.ts 1ms (unchanged)
+apps/web/src/components/catalog/catalog-navigation.tsx 2ms (unchanged)
+apps/web/src/components/catalog/catalog-search.tsx 7ms (unchanged)
+apps/web/src/components/catalog/category-picker.tsx 5ms (unchanged)
+apps/web/src/components/catalog/proposal-composer.tsx 24ms (unchanged)
+apps/web/src/components/catalog/proposal-facts.tsx 5ms
+apps/web/src/components/catalog/proposal-manager.tsx 14ms (unchanged)
+apps/web/e2e/catalog-money-ui.spec.ts 12ms (unchanged)

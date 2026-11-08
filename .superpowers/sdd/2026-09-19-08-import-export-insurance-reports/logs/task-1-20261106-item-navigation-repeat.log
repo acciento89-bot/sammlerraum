@@ -1,0 +1,25 @@
+[WebServer] (node:53720) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 6 tests using 1 worker
+
+(node:53721) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [desktop] › e2e/collections-items.spec.ts:239:3 › localized collection and item management › collector creates a nested collection and item with custom field and location (2.7s)
+(node:53738) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 [desktop] › e2e/collections-items.spec.ts:239:3 › localized collection and item management › collector creates a nested collection and item with custom field and location (2.0s)
+(node:53744) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  3 [desktop] › e2e/collections-items.spec.ts:239:3 › localized collection and item management › collector creates a nested collection and item with custom field and location (1.9s)
+(node:53751) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  4 [mobile] › e2e/collections-items.spec.ts:239:3 › localized collection and item management › collector creates a nested collection and item with custom field and location (1.8s)
+(node:53757) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  5 [mobile] › e2e/collections-items.spec.ts:239:3 › localized collection and item management › collector creates a nested collection and item with custom field and location (1.8s)
+(node:53763) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  6 [mobile] › e2e/collections-items.spec.ts:239:3 › localized collection and item management › collector creates a nested collection and item with custom field and location (1.8s)
+
+  6 passed (15.9s)

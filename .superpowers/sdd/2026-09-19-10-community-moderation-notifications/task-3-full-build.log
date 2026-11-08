@@ -1,0 +1,61 @@
+
+> sammlerraum@ build /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+> pnpm -r build
+
+Scope: 10 of 11 workspace projects
+packages/config build$ pnpm typecheck
+packages/contracts build$ pnpm typecheck
+packages/market-data build$ pnpm typecheck
+packages/queue build$ pnpm typecheck
+packages/market-data build: > @sammlerraum/market-data@ typecheck /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/market-data
+packages/market-data build: > tsc --noEmit --project ../../tsconfig.base.json
+packages/config build: > @sammlerraum/config@ typecheck /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/config
+packages/config build: > tsc --noEmit --project ../../tsconfig.base.json
+packages/contracts build: > @sammlerraum/contracts@ typecheck /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/contracts
+packages/contracts build: > tsc --noEmit --project ../../tsconfig.base.json
+packages/queue build: > @sammlerraum/queue@ typecheck /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/queue
+packages/queue build: > tsc --noEmit --project ../../tsconfig.base.json
+packages/contracts build: Done
+packages/storage build$ pnpm typecheck
+packages/storage build: > @sammlerraum/storage@ typecheck /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/storage
+packages/storage build: > tsc --noEmit --project ../../tsconfig.base.json
+packages/queue build: Done
+packages/testing build$ pnpm typecheck
+packages/config build: Done
+packages/market-data build: Done
+packages/testing build: > @sammlerraum/testing@ typecheck /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/testing
+packages/testing build: > tsc --noEmit --project ../../tsconfig.base.json
+packages/storage build: Done
+packages/testing build: Done
+packages/db build$ pnpm typecheck
+packages/db build: > @sammlerraum/db@ typecheck /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/db
+packages/db build: > tsc --noEmit --project ../../tsconfig.base.json
+packages/db build: Done
+packages/domain build$ pnpm typecheck
+packages/domain build: > @sammlerraum/domain@ typecheck /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/domain
+packages/domain build: > tsc --noEmit --project ../../tsconfig.base.json
+packages/domain build: Done
+apps/worker build$ esbuild src/run.ts --bundle --platform=node --format=cjs --external:sharp --outfile=dist/worker.cjs && esbuild src/main.ts --bundle --platform=node --format=cjs --outfile=dist/main.cjs && esbuild src/maintenance/initialize-catalog.ts --bundle --platform=node --format=cjs --outfile=dist/initialize-catalog.cjs && cp ../../docs/licenses/import-parser.txt dist/IMPORT-PARSER-LICENSES.txt && mkdir -p dist/report-fonts && cp assets/report-fonts/* dist/report-fonts/ && cp ../../docs/licenses/pdf-report.txt dist/PDF-REPORT-LICENSES.txt
+apps/web build$ next build
+apps/worker build:   dist/worker.cjs  10.5mb ⚠️
+apps/worker build: ⚡ Done in 179ms
+apps/worker build:   dist/main.cjs  5.1kb
+apps/worker build: ⚡ Done in 2ms
+apps/worker build:   dist/initialize-catalog.cjs  6.2mb ⚠️
+apps/worker build: ⚡ Done in 76ms
+apps/worker build: Done
+apps/web build: ▲ Next.js 16.3.5 (Turbopack)
+apps/web build: ✓ Running next.config.ts took 184ms
+apps/web build:   Creating an optimized production build ...
+apps/web build: ✓ Compiled successfully in 6.9s
+apps/web build:   Running TypeScript ...
+apps/web build: e2e/community-api.spec.ts(177,39): error TS2375: Type '{ blockerId: `${string}-${string}-${string}-${string}-${string}` | undefined; blockedId: `${string}-${string}-${string}-${string}-${string}` | undefined; }' is not assignable to type 'UserBlockWhereInput' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+apps/web build:   Types of property 'blockerId' are incompatible.
+apps/web build:     Type '`${string}-${string}-${string}-${string}-${string}` | undefined' is not assignable to type 'string | StringFilter<"UserBlock">'.
+apps/web build:       Type 'undefined' is not assignable to type 'string | StringFilter<"UserBlock">'.
+apps/web build: Failed to type check.
+apps/web build: Failed
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @sammlerraum/web@ build: `next build`
+Exit status 1
+ ELIFECYCLE  Command failed with exit code 1.

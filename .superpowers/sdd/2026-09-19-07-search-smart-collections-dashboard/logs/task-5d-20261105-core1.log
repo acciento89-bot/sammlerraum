@@ -1,0 +1,584 @@
+[WebServer] (node:12076) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 28 tests using 1 worker
+
+(node:12077) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [desktop] › e2e/search-dashboard.spec.ts:812:3 › de: saved search follows real ItemForm tag changes without copying items (2.4s)
+  ✓   2 [desktop] › e2e/search-dashboard.spec.ts:812:3 › en: saved search follows real ItemForm tag changes without copying items (1.3s)
+  ✘   3 [desktop] › e2e/search-dashboard.spec.ts:880:3 › de: saved search full replacement rename copy and confirmed delete retain items (405ms)
+(node:12096) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘   4 [desktop] › e2e/search-dashboard.spec.ts:953:3 › de: two-tab stale revision preserves input and requires explicit latest adoption (700ms)
+(node:12103) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   5 [desktop] › e2e/search-dashboard.spec.ts:997:5 › de: lost create acknowledgement never retries or silently changes expected revision (788ms)
+  ✘   6 [desktop] › e2e/search-dashboard.spec.ts:997:5 › de: lost update acknowledgement never retries or silently changes expected revision (404ms)
+(node:12111) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   7 [desktop] › e2e/search-dashboard.spec.ts:997:5 › de: lost delete acknowledgement never retries or silently changes expected revision (727ms)
+  ✘   8 [desktop] › e2e/search-dashboard.spec.ts:1069:3 › de: acknowledged update survives failed member refresh and exact revision is retained (412ms)
+(node:12131) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘   9 [desktop] › e2e/search-dashboard.spec.ts:880:3 › en: saved search full replacement rename copy and confirmed delete retain items (546ms)
+(node:12137) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  10 [desktop] › e2e/search-dashboard.spec.ts:953:3 › en: two-tab stale revision preserves input and requires explicit latest adoption (693ms)
+(node:12144) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  11 [desktop] › e2e/search-dashboard.spec.ts:997:5 › en: lost create acknowledgement never retries or silently changes expected revision (815ms)
+  ✘  12 [desktop] › e2e/search-dashboard.spec.ts:997:5 › en: lost update acknowledgement never retries or silently changes expected revision (401ms)
+(node:12152) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  13 [desktop] › e2e/search-dashboard.spec.ts:997:5 › en: lost delete acknowledgement never retries or silently changes expected revision (699ms)
+  ✘  14 [desktop] › e2e/search-dashboard.spec.ts:1069:3 › en: acknowledged update survives failed member refresh and exact revision is retained (416ms)
+(node:12181) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  15 [mobile] › e2e/search-dashboard.spec.ts:812:3 › de: saved search follows real ItemForm tag changes without copying items (1.4s)
+  ✓  16 [mobile] › e2e/search-dashboard.spec.ts:812:3 › en: saved search follows real ItemForm tag changes without copying items (1.3s)
+  ✘  17 [mobile] › e2e/search-dashboard.spec.ts:880:3 › de: saved search full replacement rename copy and confirmed delete retain items (435ms)
+(node:12197) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  18 [mobile] › e2e/search-dashboard.spec.ts:953:3 › de: two-tab stale revision preserves input and requires explicit latest adoption (678ms)
+(node:12204) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  19 [mobile] › e2e/search-dashboard.spec.ts:997:5 › de: lost create acknowledgement never retries or silently changes expected revision (828ms)
+  ✘  20 [mobile] › e2e/search-dashboard.spec.ts:997:5 › de: lost update acknowledgement never retries or silently changes expected revision (391ms)
+(node:12211) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  21 [mobile] › e2e/search-dashboard.spec.ts:997:5 › de: lost delete acknowledgement never retries or silently changes expected revision (700ms)
+  ✘  22 [mobile] › e2e/search-dashboard.spec.ts:1069:3 › de: acknowledged update survives failed member refresh and exact revision is retained (406ms)
+(node:12218) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  23 [mobile] › e2e/search-dashboard.spec.ts:880:3 › en: saved search full replacement rename copy and confirmed delete retain items (544ms)
+(node:12224) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  24 [mobile] › e2e/search-dashboard.spec.ts:953:3 › en: two-tab stale revision preserves input and requires explicit latest adoption (682ms)
+(node:12231) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  25 [mobile] › e2e/search-dashboard.spec.ts:997:5 › en: lost create acknowledgement never retries or silently changes expected revision (751ms)
+  ✘  26 [mobile] › e2e/search-dashboard.spec.ts:997:5 › en: lost update acknowledgement never retries or silently changes expected revision (404ms)
+(node:12249) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  27 [mobile] › e2e/search-dashboard.spec.ts:997:5 › en: lost delete acknowledgement never retries or silently changes expected revision (703ms)
+  ✘  28 [mobile] › e2e/search-dashboard.spec.ts:1069:3 › en: acknowledged update survives failed member refresh and exact revision is retained (395ms)
+
+
+  1) [desktop] › e2e/search-dashboard.spec.ts:880:3 › de: saved search full replacement rename copy and confirmed delete retain items 
+
+    Error: locator.fill: Error: strict mode violation: getByLabel('Name der Suche', { exact: true }) resolved to 2 elements:
+        1) <input id="_r_0_" required="" maxlength="100" value="Initial search"/> aka getByRole('textbox', { name: 'Name der Suche' })
+        2) <input id="_r_3_" required="" maxlength="100" value="Initial search"/> aka getByLabel('Suche speichern').getByLabel('Name der Suche')
+
+    Call log:
+      - waiting for getByLabel('Name der Suche', { exact: true })
+
+
+      888 |       await page.goto(`/${locale}/smart-collections/${saved.id}`);
+      889 |       await expect(page.getByTestId("search-total")).toContainText("1");
+    > 890 |       await page.getByLabel(c.name, { exact: true }).fill("Revised search");
+          |                                                      ^
+      891 |       await page.getByLabel(copies[locale].text, { exact: true }).fill("No matching title");
+      892 |       await page.getByLabel(copies[locale].lifecycle, { exact: true }).selectOption("ARCHIVED");
+      893 |       const changed = page.waitForResponse(
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/search-dashboard.spec.ts:890:54
+
+    Error Context: test-results/search-dashboard-de-saved--f2c3e-nfirmed-delete-retain-items-desktop/error-context.md
+
+    Error Context: test-results/search-dashboard-de-saved--f2c3e-nfirmed-delete-retain-items-desktop/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/search-dashboard-de-saved--f2c3e-nfirmed-delete-retain-items-desktop/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/search-dashboard-de-saved--f2c3e-nfirmed-delete-retain-items-desktop/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [desktop] › e2e/search-dashboard.spec.ts:953:3 › de: two-tab stale revision preserves input and requires explicit latest adoption 
+
+    Error: locator.fill: Error: strict mode violation: getByLabel('Name der Suche', { exact: true }) resolved to 2 elements:
+        1) <input id="_r_0_" required="" maxlength="100" value="Before both tabs"/> aka getByRole('textbox', { name: 'Name der Suche' })
+        2) <input id="_r_3_" required="" maxlength="100" value="Before both tabs"/> aka getByLabel('Suche speichern').getByLabel('Name der Suche')
+
+    Call log:
+      - waiting for getByLabel('Name der Suche', { exact: true })
+
+
+      966 |       await expect(page.getByTestId("search-total")).toBeVisible();
+      967 |       await expect(other.getByTestId("search-total")).toBeVisible();
+    > 968 |       await page.getByLabel(c.name, { exact: true }).fill("First writer");
+          |                                                      ^
+      969 |       await page.getByRole("button", { name: c.saveChanges, exact: true }).click();
+      970 |       await expect(page.getByRole("heading", { name: "First writer", exact: true })).toBeVisible();
+      971 |       await other.getByLabel(c.name, { exact: true }).fill("Second private draft");
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/search-dashboard.spec.ts:968:54
+
+    Error Context: test-results/search-dashboard-de-two-ta-d16b9-es-explicit-latest-adoption-desktop/error-context.md
+
+    Error Context: test-results/search-dashboard-de-two-ta-d16b9-es-explicit-latest-adoption-desktop/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/search-dashboard-de-two-ta-d16b9-es-explicit-latest-adoption-desktop/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/search-dashboard-de-two-ta-d16b9-es-explicit-latest-adoption-desktop/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [desktop] › e2e/search-dashboard.spec.ts:997:5 › de: lost update acknowledgement never retries or silently changes expected revision 
+
+    Error: locator.fill: Error: strict mode violation: getByLabel('Name der Suche', { exact: true }) resolved to 2 elements:
+        1) <input id="_r_0_" required="" maxlength="100" value="Unknown original"/> aka getByRole('textbox', { name: 'Name der Suche' })
+        2) <input id="_r_3_" required="" maxlength="100" value="Unknown original"/> aka getByLabel('Suche speichern').getByLabel('Name der Suche')
+
+    Call log:
+      - waiting for getByLabel('Name der Suche', { exact: true })
+
+
+      1039 |           ).toBeVisible();
+      1040 |         } else if (operation === "update") {
+    > 1041 |           await page.getByLabel(c.name, { exact: true }).fill("Unknown updated");
+           |                                                          ^
+      1042 |           await page.getByRole("button", { name: c.saveChanges, exact: true }).click();
+      1043 |           await expect(page.getByText(c.unknownUpdate, { exact: true })).toBeVisible();
+      1044 |           await page.getByRole("button", { name: c.inspect, exact: true }).click();
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/search-dashboard.spec.ts:1041:58
+
+    Error Context: test-results/search-dashboard-de-lost-u-be5c1-y-changes-expected-revision-desktop/error-context.md
+
+    Error Context: test-results/search-dashboard-de-lost-u-be5c1-y-changes-expected-revision-desktop/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/search-dashboard-de-lost-u-be5c1-y-changes-expected-revision-desktop/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/search-dashboard-de-lost-u-be5c1-y-changes-expected-revision-desktop/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4) [desktop] › e2e/search-dashboard.spec.ts:1069:3 › de: acknowledged update survives failed member refresh and exact revision is retained 
+
+    Error: locator.fill: Error: strict mode violation: getByLabel('Name der Suche', { exact: true }) resolved to 2 elements:
+        1) <input id="_r_0_" required="" maxlength="100" value="Before acknowledged"/> aka getByRole('textbox', { name: 'Name der Suche' })
+        2) <input id="_r_3_" required="" maxlength="100" value="Before acknowledged"/> aka getByLabel('Suche speichern').getByLabel('Name der Suche')
+
+    Call log:
+      - waiting for getByLabel('Name der Suche', { exact: true })
+
+
+      1084 |       );
+      1085 |       fail = true;
+    > 1086 |       await page.getByLabel(c.name, { exact: true }).fill("Acknowledged retained");
+           |                                                      ^
+      1087 |       await page.getByRole("button", { name: c.saveChanges, exact: true }).click();
+      1088 |       await expect(page.getByText(c.membersFailed, { exact: true })).toBeVisible();
+      1089 |       await expect(
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/search-dashboard.spec.ts:1086:54
+
+    Error Context: test-results/search-dashboard-de-acknow-6a3bc--exact-revision-is-retained-desktop/error-context.md
+
+    Error Context: test-results/search-dashboard-de-acknow-6a3bc--exact-revision-is-retained-desktop/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/search-dashboard-de-acknow-6a3bc--exact-revision-is-retained-desktop/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/search-dashboard-de-acknow-6a3bc--exact-revision-is-retained-desktop/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  5) [desktop] › e2e/search-dashboard.spec.ts:880:3 › en: saved search full replacement rename copy and confirmed delete retain items 
+
+    Error: locator.fill: Error: strict mode violation: getByLabel('Search name', { exact: true }) resolved to 2 elements:
+        1) <input id="_r_0_" required="" maxlength="100" value="Initial search"/> aka getByRole('textbox', { name: 'Search name' })
+        2) <input id="_r_3_" required="" maxlength="100" value="Initial search"/> aka getByLabel('Save search').getByLabel('Search name')
+
+    Call log:
+      - waiting for getByLabel('Search name', { exact: true })
+
+
+      888 |       await page.goto(`/${locale}/smart-collections/${saved.id}`);
+      889 |       await expect(page.getByTestId("search-total")).toContainText("1");
+    > 890 |       await page.getByLabel(c.name, { exact: true }).fill("Revised search");
+          |                                                      ^
+      891 |       await page.getByLabel(copies[locale].text, { exact: true }).fill("No matching title");
+      892 |       await page.getByLabel(copies[locale].lifecycle, { exact: true }).selectOption("ARCHIVED");
+      893 |       const changed = page.waitForResponse(
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/search-dashboard.spec.ts:890:54
+
+    Error Context: test-results/search-dashboard-en-saved--e807f-nfirmed-delete-retain-items-desktop/error-context.md
+
+    Error Context: test-results/search-dashboard-en-saved--e807f-nfirmed-delete-retain-items-desktop/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/search-dashboard-en-saved--e807f-nfirmed-delete-retain-items-desktop/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/search-dashboard-en-saved--e807f-nfirmed-delete-retain-items-desktop/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  6) [desktop] › e2e/search-dashboard.spec.ts:953:3 › en: two-tab stale revision preserves input and requires explicit latest adoption 
+
+    Error: locator.fill: Error: strict mode violation: getByLabel('Search name', { exact: true }) resolved to 2 elements:
+        1) <input id="_r_0_" required="" maxlength="100" value="Before both tabs"/> aka getByRole('textbox', { name: 'Search name' })
+        2) <input id="_r_3_" required="" maxlength="100" value="Before both tabs"/> aka getByLabel('Save search').getByLabel('Search name')
+
+    Call log:
+      - waiting for getByLabel('Search name', { exact: true })
+
+
+      966 |       await expect(page.getByTestId("search-total")).toBeVisible();
+      967 |       await expect(other.getByTestId("search-total")).toBeVisible();
+    > 968 |       await page.getByLabel(c.name, { exact: true }).fill("First writer");
+          |                                                      ^
+      969 |       await page.getByRole("button", { name: c.saveChanges, exact: true }).click();
+      970 |       await expect(page.getByRole("heading", { name: "First writer", exact: true })).toBeVisible();
+      971 |       await other.getByLabel(c.name, { exact: true }).fill("Second private draft");
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/search-dashboard.spec.ts:968:54
+
+    Error Context: test-results/search-dashboard-en-two-ta-37c0d-es-explicit-latest-adoption-desktop/error-context.md
+
+    Error Context: test-results/search-dashboard-en-two-ta-37c0d-es-explicit-latest-adoption-desktop/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/search-dashboard-en-two-ta-37c0d-es-explicit-latest-adoption-desktop/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/search-dashboard-en-two-ta-37c0d-es-explicit-latest-adoption-desktop/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  7) [desktop] › e2e/search-dashboard.spec.ts:997:5 › en: lost update acknowledgement never retries or silently changes expected revision 
+
+    Error: locator.fill: Error: strict mode violation: getByLabel('Search name', { exact: true }) resolved to 2 elements:
+        1) <input id="_r_0_" required="" maxlength="100" value="Unknown original"/> aka getByRole('textbox', { name: 'Search name' })
+        2) <input id="_r_3_" required="" maxlength="100" value="Unknown original"/> aka getByLabel('Save search').getByLabel('Search name')
+
+    Call log:
+      - waiting for getByLabel('Search name', { exact: true })
+
+
+      1039 |           ).toBeVisible();
+      1040 |         } else if (operation === "update") {
+    > 1041 |           await page.getByLabel(c.name, { exact: true }).fill("Unknown updated");
+           |                                                          ^
+      1042 |           await page.getByRole("button", { name: c.saveChanges, exact: true }).click();
+      1043 |           await expect(page.getByText(c.unknownUpdate, { exact: true })).toBeVisible();
+      1044 |           await page.getByRole("button", { name: c.inspect, exact: true }).click();
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/search-dashboard.spec.ts:1041:58
+
+    Error Context: test-results/search-dashboard-en-lost-u-9260c-y-changes-expected-revision-desktop/error-context.md
+
+    Error Context: test-results/search-dashboard-en-lost-u-9260c-y-changes-expected-revision-desktop/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/search-dashboard-en-lost-u-9260c-y-changes-expected-revision-desktop/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/search-dashboard-en-lost-u-9260c-y-changes-expected-revision-desktop/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  8) [desktop] › e2e/search-dashboard.spec.ts:1069:3 › en: acknowledged update survives failed member refresh and exact revision is retained 
+
+    Error: locator.fill: Error: strict mode violation: getByLabel('Search name', { exact: true }) resolved to 2 elements:
+        1) <input id="_r_0_" required="" maxlength="100" value="Before acknowledged"/> aka getByRole('textbox', { name: 'Search name' })
+        2) <input id="_r_3_" required="" maxlength="100" value="Before acknowledged"/> aka getByLabel('Save search').getByLabel('Search name')
+
+    Call log:
+      - waiting for getByLabel('Search name', { exact: true })
+
+
+      1084 |       );
+      1085 |       fail = true;
+    > 1086 |       await page.getByLabel(c.name, { exact: true }).fill("Acknowledged retained");
+           |                                                      ^
+      1087 |       await page.getByRole("button", { name: c.saveChanges, exact: true }).click();
+      1088 |       await expect(page.getByText(c.membersFailed, { exact: true })).toBeVisible();
+      1089 |       await expect(
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/search-dashboard.spec.ts:1086:54
+
+    Error Context: test-results/search-dashboard-en-acknow-9aabc--exact-revision-is-retained-desktop/error-context.md
+
+    Error Context: test-results/search-dashboard-en-acknow-9aabc--exact-revision-is-retained-desktop/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/search-dashboard-en-acknow-9aabc--exact-revision-is-retained-desktop/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/search-dashboard-en-acknow-9aabc--exact-revision-is-retained-desktop/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  9) [mobile] › e2e/search-dashboard.spec.ts:880:3 › de: saved search full replacement rename copy and confirmed delete retain items 
+
+    Error: locator.fill: Error: strict mode violation: getByLabel('Name der Suche', { exact: true }) resolved to 2 elements:
+        1) <input id="_r_0_" required="" maxlength="100" value="Initial search"/> aka getByRole('textbox', { name: 'Name der Suche' })
+        2) <input id="_r_3_" required="" maxlength="100" value="Initial search"/> aka getByLabel('Suche speichern').getByLabel('Name der Suche')
+
+    Call log:
+      - waiting for getByLabel('Name der Suche', { exact: true })
+
+
+      888 |       await page.goto(`/${locale}/smart-collections/${saved.id}`);
+      889 |       await expect(page.getByTestId("search-total")).toContainText("1");
+    > 890 |       await page.getByLabel(c.name, { exact: true }).fill("Revised search");
+          |                                                      ^
+      891 |       await page.getByLabel(copies[locale].text, { exact: true }).fill("No matching title");
+      892 |       await page.getByLabel(copies[locale].lifecycle, { exact: true }).selectOption("ARCHIVED");
+      893 |       const changed = page.waitForResponse(
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/search-dashboard.spec.ts:890:54
+
+    Error Context: test-results/search-dashboard-de-saved--f2c3e-nfirmed-delete-retain-items-mobile/error-context.md
+
+    Error Context: test-results/search-dashboard-de-saved--f2c3e-nfirmed-delete-retain-items-mobile/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/search-dashboard-de-saved--f2c3e-nfirmed-delete-retain-items-mobile/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/search-dashboard-de-saved--f2c3e-nfirmed-delete-retain-items-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  10) [mobile] › e2e/search-dashboard.spec.ts:953:3 › de: two-tab stale revision preserves input and requires explicit latest adoption 
+
+    Error: locator.fill: Error: strict mode violation: getByLabel('Name der Suche', { exact: true }) resolved to 2 elements:
+        1) <input id="_r_0_" required="" maxlength="100" value="Before both tabs"/> aka getByRole('textbox', { name: 'Name der Suche' })
+        2) <input id="_r_3_" required="" maxlength="100" value="Before both tabs"/> aka getByLabel('Suche speichern').getByLabel('Name der Suche')
+
+    Call log:
+      - waiting for getByLabel('Name der Suche', { exact: true })
+
+
+      966 |       await expect(page.getByTestId("search-total")).toBeVisible();
+      967 |       await expect(other.getByTestId("search-total")).toBeVisible();
+    > 968 |       await page.getByLabel(c.name, { exact: true }).fill("First writer");
+          |                                                      ^
+      969 |       await page.getByRole("button", { name: c.saveChanges, exact: true }).click();
+      970 |       await expect(page.getByRole("heading", { name: "First writer", exact: true })).toBeVisible();
+      971 |       await other.getByLabel(c.name, { exact: true }).fill("Second private draft");
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/search-dashboard.spec.ts:968:54
+
+    Error Context: test-results/search-dashboard-de-two-ta-d16b9-es-explicit-latest-adoption-mobile/error-context.md
+
+    Error Context: test-results/search-dashboard-de-two-ta-d16b9-es-explicit-latest-adoption-mobile/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/search-dashboard-de-two-ta-d16b9-es-explicit-latest-adoption-mobile/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/search-dashboard-de-two-ta-d16b9-es-explicit-latest-adoption-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  11) [mobile] › e2e/search-dashboard.spec.ts:997:5 › de: lost update acknowledgement never retries or silently changes expected revision 
+
+    Error: locator.fill: Error: strict mode violation: getByLabel('Name der Suche', { exact: true }) resolved to 2 elements:
+        1) <input id="_r_0_" required="" maxlength="100" value="Unknown original"/> aka getByRole('textbox', { name: 'Name der Suche' })
+        2) <input id="_r_3_" required="" maxlength="100" value="Unknown original"/> aka getByLabel('Suche speichern').getByLabel('Name der Suche')
+
+    Call log:
+      - waiting for getByLabel('Name der Suche', { exact: true })
+
+
+      1039 |           ).toBeVisible();
+      1040 |         } else if (operation === "update") {
+    > 1041 |           await page.getByLabel(c.name, { exact: true }).fill("Unknown updated");
+           |                                                          ^
+      1042 |           await page.getByRole("button", { name: c.saveChanges, exact: true }).click();
+      1043 |           await expect(page.getByText(c.unknownUpdate, { exact: true })).toBeVisible();
+      1044 |           await page.getByRole("button", { name: c.inspect, exact: true }).click();
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/search-dashboard.spec.ts:1041:58
+
+    Error Context: test-results/search-dashboard-de-lost-u-be5c1-y-changes-expected-revision-mobile/error-context.md
+
+    Error Context: test-results/search-dashboard-de-lost-u-be5c1-y-changes-expected-revision-mobile/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/search-dashboard-de-lost-u-be5c1-y-changes-expected-revision-mobile/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/search-dashboard-de-lost-u-be5c1-y-changes-expected-revision-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  12) [mobile] › e2e/search-dashboard.spec.ts:1069:3 › de: acknowledged update survives failed member refresh and exact revision is retained 
+
+    Error: locator.fill: Error: strict mode violation: getByLabel('Name der Suche', { exact: true }) resolved to 2 elements:
+        1) <input id="_r_0_" required="" maxlength="100" value="Before acknowledged"/> aka getByRole('textbox', { name: 'Name der Suche' })
+        2) <input id="_r_3_" required="" maxlength="100" value="Before acknowledged"/> aka getByLabel('Suche speichern').getByLabel('Name der Suche')
+
+    Call log:
+      - waiting for getByLabel('Name der Suche', { exact: true })
+
+
+      1084 |       );
+      1085 |       fail = true;
+    > 1086 |       await page.getByLabel(c.name, { exact: true }).fill("Acknowledged retained");
+           |                                                      ^
+      1087 |       await page.getByRole("button", { name: c.saveChanges, exact: true }).click();
+      1088 |       await expect(page.getByText(c.membersFailed, { exact: true })).toBeVisible();
+      1089 |       await expect(
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/search-dashboard.spec.ts:1086:54
+
+    Error Context: test-results/search-dashboard-de-acknow-6a3bc--exact-revision-is-retained-mobile/error-context.md
+
+    Error Context: test-results/search-dashboard-de-acknow-6a3bc--exact-revision-is-retained-mobile/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/search-dashboard-de-acknow-6a3bc--exact-revision-is-retained-mobile/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/search-dashboard-de-acknow-6a3bc--exact-revision-is-retained-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  13) [mobile] › e2e/search-dashboard.spec.ts:880:3 › en: saved search full replacement rename copy and confirmed delete retain items 
+
+    Error: locator.fill: Error: strict mode violation: getByLabel('Search name', { exact: true }) resolved to 2 elements:
+        1) <input id="_r_0_" required="" maxlength="100" value="Initial search"/> aka getByRole('textbox', { name: 'Search name' })
+        2) <input id="_r_3_" required="" maxlength="100" value="Initial search"/> aka getByLabel('Save search').getByLabel('Search name')
+
+    Call log:
+      - waiting for getByLabel('Search name', { exact: true })
+
+
+      888 |       await page.goto(`/${locale}/smart-collections/${saved.id}`);
+      889 |       await expect(page.getByTestId("search-total")).toContainText("1");
+    > 890 |       await page.getByLabel(c.name, { exact: true }).fill("Revised search");
+          |                                                      ^
+      891 |       await page.getByLabel(copies[locale].text, { exact: true }).fill("No matching title");
+      892 |       await page.getByLabel(copies[locale].lifecycle, { exact: true }).selectOption("ARCHIVED");
+      893 |       const changed = page.waitForResponse(
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/search-dashboard.spec.ts:890:54
+
+    Error Context: test-results/search-dashboard-en-saved--e807f-nfirmed-delete-retain-items-mobile/error-context.md
+
+    Error Context: test-results/search-dashboard-en-saved--e807f-nfirmed-delete-retain-items-mobile/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/search-dashboard-en-saved--e807f-nfirmed-delete-retain-items-mobile/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/search-dashboard-en-saved--e807f-nfirmed-delete-retain-items-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  14) [mobile] › e2e/search-dashboard.spec.ts:953:3 › en: two-tab stale revision preserves input and requires explicit latest adoption 
+
+    Error: locator.fill: Error: strict mode violation: getByLabel('Search name', { exact: true }) resolved to 2 elements:
+        1) <input id="_r_0_" required="" maxlength="100" value="Before both tabs"/> aka getByRole('textbox', { name: 'Search name' })
+        2) <input id="_r_3_" required="" maxlength="100" value="Before both tabs"/> aka getByLabel('Save search').getByLabel('Search name')
+
+    Call log:
+      - waiting for getByLabel('Search name', { exact: true })
+
+
+      966 |       await expect(page.getByTestId("search-total")).toBeVisible();
+      967 |       await expect(other.getByTestId("search-total")).toBeVisible();
+    > 968 |       await page.getByLabel(c.name, { exact: true }).fill("First writer");
+          |                                                      ^
+      969 |       await page.getByRole("button", { name: c.saveChanges, exact: true }).click();
+      970 |       await expect(page.getByRole("heading", { name: "First writer", exact: true })).toBeVisible();
+      971 |       await other.getByLabel(c.name, { exact: true }).fill("Second private draft");
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/search-dashboard.spec.ts:968:54
+
+    Error Context: test-results/search-dashboard-en-two-ta-37c0d-es-explicit-latest-adoption-mobile/error-context.md
+
+    Error Context: test-results/search-dashboard-en-two-ta-37c0d-es-explicit-latest-adoption-mobile/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/search-dashboard-en-two-ta-37c0d-es-explicit-latest-adoption-mobile/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/search-dashboard-en-two-ta-37c0d-es-explicit-latest-adoption-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  15) [mobile] › e2e/search-dashboard.spec.ts:997:5 › en: lost update acknowledgement never retries or silently changes expected revision 
+
+    Error: locator.fill: Error: strict mode violation: getByLabel('Search name', { exact: true }) resolved to 2 elements:
+        1) <input id="_r_0_" required="" maxlength="100" value="Unknown original"/> aka getByRole('textbox', { name: 'Search name' })
+        2) <input id="_r_3_" required="" maxlength="100" value="Unknown original"/> aka getByLabel('Save search').getByLabel('Search name')
+
+    Call log:
+      - waiting for getByLabel('Search name', { exact: true })
+
+
+      1039 |           ).toBeVisible();
+      1040 |         } else if (operation === "update") {
+    > 1041 |           await page.getByRole("textbox", { name: c.name, exact: true }).fill("Unknown updated");
+           |                                                          ^
+      1042 |           await page.getByRole("button", { name: c.saveChanges, exact: true }).click();
+      1043 |           await expect(page.getByText(c.unknownUpdate, { exact: true })).toBeVisible();
+      1044 |           await page.getByRole("button", { name: c.inspect, exact: true }).click();
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/search-dashboard.spec.ts:1041:58
+
+    Error Context: test-results/search-dashboard-en-lost-u-9260c-y-changes-expected-revision-mobile/error-context.md
+
+    Error Context: test-results/search-dashboard-en-lost-u-9260c-y-changes-expected-revision-mobile/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/search-dashboard-en-lost-u-9260c-y-changes-expected-revision-mobile/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/search-dashboard-en-lost-u-9260c-y-changes-expected-revision-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  16) [mobile] › e2e/search-dashboard.spec.ts:1069:3 › en: acknowledged update survives failed member refresh and exact revision is retained 
+
+    Error: locator.fill: Error: strict mode violation: getByLabel('Search name', { exact: true }) resolved to 2 elements:
+        1) <input id="_r_0_" required="" maxlength="100" value="Before acknowledged"/> aka getByRole('textbox', { name: 'Search name' })
+        2) <input id="_r_3_" required="" maxlength="100" value="Before acknowledged"/> aka getByLabel('Save search').getByLabel('Search name')
+
+    Call log:
+      - waiting for getByLabel('Search name', { exact: true })
+
+
+      1084 |       );
+      1085 |       fail = true;
+    > 1086 |       await page.getByRole("textbox", { name: c.name, exact: true }).fill("Acknowledged retained");
+           |                                                      ^
+      1087 |       await page.getByRole("button", { name: c.saveChanges, exact: true }).click();
+      1088 |       await expect(page.getByText(c.membersFailed, { exact: true })).toBeVisible();
+      1089 |       await expect(
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/search-dashboard.spec.ts:1086:54
+
+    Error Context: test-results/search-dashboard-en-acknow-9aabc--exact-revision-is-retained-mobile/error-context.md
+
+    Error Context: test-results/search-dashboard-en-acknow-9aabc--exact-revision-is-retained-mobile/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/search-dashboard-en-acknow-9aabc--exact-revision-is-retained-mobile/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/search-dashboard-en-acknow-9aabc--exact-revision-is-retained-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  16 failed
+    [desktop] › e2e/search-dashboard.spec.ts:880:3 › de: saved search full replacement rename copy and confirmed delete retain items 
+    [desktop] › e2e/search-dashboard.spec.ts:953:3 › de: two-tab stale revision preserves input and requires explicit latest adoption 
+    [desktop] › e2e/search-dashboard.spec.ts:997:5 › de: lost update acknowledgement never retries or silently changes expected revision 
+    [desktop] › e2e/search-dashboard.spec.ts:1069:3 › de: acknowledged update survives failed member refresh and exact revision is retained 
+    [desktop] › e2e/search-dashboard.spec.ts:880:3 › en: saved search full replacement rename copy and confirmed delete retain items 
+    [desktop] › e2e/search-dashboard.spec.ts:953:3 › en: two-tab stale revision preserves input and requires explicit latest adoption 
+    [desktop] › e2e/search-dashboard.spec.ts:997:5 › en: lost update acknowledgement never retries or silently changes expected revision 
+    [desktop] › e2e/search-dashboard.spec.ts:1069:3 › en: acknowledged update survives failed member refresh and exact revision is retained 
+    [mobile] › e2e/search-dashboard.spec.ts:880:3 › de: saved search full replacement rename copy and confirmed delete retain items 
+    [mobile] › e2e/search-dashboard.spec.ts:953:3 › de: two-tab stale revision preserves input and requires explicit latest adoption 
+    [mobile] › e2e/search-dashboard.spec.ts:997:5 › de: lost update acknowledgement never retries or silently changes expected revision 
+    [mobile] › e2e/search-dashboard.spec.ts:1069:3 › de: acknowledged update survives failed member refresh and exact revision is retained 
+    [mobile] › e2e/search-dashboard.spec.ts:880:3 › en: saved search full replacement rename copy and confirmed delete retain items 
+    [mobile] › e2e/search-dashboard.spec.ts:953:3 › en: two-tab stale revision preserves input and requires explicit latest adoption 
+    [mobile] › e2e/search-dashboard.spec.ts:997:5 › en: lost update acknowledgement never retries or silently changes expected revision 
+    [mobile] › e2e/search-dashboard.spec.ts:1069:3 › en: acknowledged update survives failed member refresh and exact revision is retained 
+  12 passed (29.6s)
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/search-dashboard.spec.ts --grep saved search follows|saved search full replacement|two-tab stale|lost .* acknowledgement|acknowledged update --workers=1 --trace=retain-on-failure

@@ -1,0 +1,11 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ✓ |workspace| packages/domain/src/money/money-transfer.test.ts (15 tests) 719ms
+   ✓ counts actual UTF-8 envelope and multiple paths: exactly 8 MiB succeeds, one byte more fails  667ms
+
+ Test Files  1 passed (1)
+      Tests  15 passed (15)
+   Start at  19:49:29
+   Duration  1.17s (transform 118ms, setup 5ms, collect 216ms, tests 719ms, environment 0ms, prepare 41ms)
+

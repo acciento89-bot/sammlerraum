@@ -1,0 +1,80 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/market-data/market-batch.integration.test.ts (11 tests | 2 failed) 1160ms
+   ✓ bounded exact market relation on real PostgreSQL > selects exact latest eligible values without displacing them with a newer wrong metric, qualifier or denomination 231ms
+   ✓ bounded exact market relation on real PostgreSQL > omits foreign/deleted parent and retired exact identifiers instead of exposing stale values 48ms
+   ✓ bounded exact market relation on real PostgreSQL > prepares with three data queries for 1 owned items sharing one target 41ms
+   ✓ bounded exact market relation on real PostgreSQL > prepares with three data queries for 50 owned items sharing one target 57ms
+   ✓ bounded exact market relation on real PostgreSQL > prepares with three data queries for 500 owned items sharing one target 145ms
+   ✓ bounded exact market relation on real PostgreSQL > keeps old observations when a current identifier is replaced by a new row with the same value 52ms
+   × bounded exact market relation on real PostgreSQL > rejects two qualifying semantic identities across the whole outer scope, but not an identifier lacking the requested metric 77ms
+     → expected ItemSearchError: SEARCH_INVARIANT { code: '…' } to match object { …(2) }
+(1 matching property omitted from actual)
+   ✓ bounded exact market relation on real PostgreSQL > excludes foreign ambiguity and deleted own parents from the independent owned candidate scope 102ms
+   ✓ bounded exact market relation on real PostgreSQL > never falls back from a variant-linked item to an entry-only observation 49ms
+   × bounded exact market relation on real PostgreSQL > rejects malformed driver counts instead of interpreting a noncanonical envelope 39ms
+     → promise resolved "[ { …(5) } ]" instead of rejecting
+   ✓ bounded exact market relation on real PostgreSQL > checks budget and revoked rights after async consumption and expires callback-scoped handles 32ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/market-data/market-batch.integration.test.ts > bounded exact market relation on real PostgreSQL > rejects two qualifying semantic identities across the whole outer scope, but not an identifier lacking the requested metric
+AssertionError: expected ItemSearchError: SEARCH_INVARIANT { code: '…' } to match object { …(2) }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+- {
+-   "code": "MARKET_BATCH_UNAVAILABLE",
+-   "reason": "MAPPING_AMBIGUOUS",
++ ItemSearchError {
++   "code": "SEARCH_INVARIANT",
+  }
+
+ ❯ packages/domain/src/market-data/market-batch.integration.test.ts:73:5
+     71|     expect(await rows(f)).toHaveLength(1);
+     72|     await record(f,{},second.id);
+     73|     await expect(rows(f)).rejects.toMatchObject({code:"MARKET_BATCH_UN…
+       |     ^
+     74|   });
+     75|   it("excludes foreign ambiguity and deleted own parents from the inde…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |workspace| packages/domain/src/market-data/market-batch.integration.test.ts > bounded exact market relation on real PostgreSQL > rejects malformed driver counts instead of interpreting a noncanonical envelope
+AssertionError: promise resolved "[ { …(5) } ]" instead of rejecting
+
+- Expected: 
+Error {
+  "message": "rejected promise",
+}
+
++ Received: 
+[
+  {
+    "amountMinor": "9007199254740993",
+    "currentIdentifierId": "18ec3dac-3b96-46a4-83d6-76d0f1aeb20d",
+    "itemId": "585726a3-03f4-4e14-bf7d-b46a460ebd6c",
+    "observedIdentifierId": "18ec3dac-3b96-46a4-83d6-76d0f1aeb20d",
+    "sourceMetric": "market",
+  },
+]
+
+ ❯ packages/domain/src/market-data/market-batch.integration.test.ts:93:10
+     91|     await expect(rows(f,ctx=>{const raw=ctx.tx.$queryRaw.bind(ctx.tx);…
+     92|       const result=await raw<T>(sql);return (sql.text.includes("market…
+     93|     }};})).rejects.toMatchObject({code:"MARKET_BATCH_INVARIANT"});
+       |          ^
+     94|   });
+     95|   it("checks budget and revoked rights after async consumption and exp…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 9 passed (11)
+   Start at  16:59:19
+   Duration  1.84s (transform 241ms, setup 6ms, collect 468ms, tests 1.16s, environment 0ms, prepare 51ms)
+

@@ -1,0 +1,58 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| packages/domain/src/valuations/valuation-query.test.ts (27 tests | 1 failed | 23 skipped) 459ms
+   ↓ owner valuation comparison PostgreSQL > does not calculate a combined total across mixed currencies, including groups outside the first page
+   ↓ owner valuation comparison PostgreSQL > keeps all same-currency kinds separate, preserving zero ranges and source metadata
+   ↓ owner valuation comparison PostgreSQL > refreshes latest independently of old manual pages and never multiplies by quantity
+   ↓ owner valuation comparison PostgreSQL > pages source histories with timestamp ties and retains availability beyond the last group
+   ↓ owner valuation comparison PostgreSQL > keeps current semantic mapping across title edits and identifier replacement, with original provenance
+   ↓ owner valuation comparison PostgreSQL > excludes changed mappings from current scope and shows explicitly permitted historical provenance
+   ↓ owner valuation comparison PostgreSQL > keeps entry-only and exact variants isolated; retired variant history is explicit
+   ↓ owner valuation comparison PostgreSQL > never leaks stored external existence under the default empty policy, including history
+   ↓ owner valuation comparison PostgreSQL > hides foreign/deleted-parent items but permits archived and disposed reads
+   ↓ owner valuation comparison PostgreSQL > invalidates source selectors after catalog edits or relinking and rejects cross-item cursors
+   ↓ owner valuation comparison PostgreSQL > reports source availability independently of a group cursor beyond the final group
+   ↓ owner valuation comparison PostgreSQL > validates hidden historical candidates before allowing them to affect currency diversity
+   ↓ owner valuation comparison PostgreSQL > retains one MVCC view while an independent catalog edit and ingestion commit between reads
+   ↓ owner valuation comparison PostgreSQL > serves representative populated reads with index-seeking plans
+   ↓ owner valuation comparison PostgreSQL > holds parent/item locks while append waits and returns a coherent pre-append view
+   ↓ owner valuation comparison PostgreSQL > fails a real lock-budget timeout as unavailability rather than empty data
+   ↓ owner valuation comparison PostgreSQL > retries only serialization failures with a fresh complete transaction and stops after three
+   ✓ owner valuation comparison PostgreSQL > deducts acquisition from remaining transaction and statement limits after retries 53ms
+   ✓ owner valuation comparison PostgreSQL > cancels native SQL within the remaining acquired budget and settles before returning 197ms
+   ✓ owner valuation comparison PostgreSQL > rejects exhausted summary immediately after awaited SQL, including an empty final page 53ms
+   × owner valuation comparison PostgreSQL > rejects exhausted source history immediately after awaited SQL, including an empty final page 30ms
+     → expected ValuationQueryError: VALUATION_INVALID { code: '…' } to match object { code: 'VALUATION_UNAVAILABLE' }
+(1 matching property omitted from actual)
+   ↓ owner valuation comparison PostgreSQL > restores session timezone and preserves year0001 native manual and external instants
+   ↓ owner valuation comparison PostgreSQL > rejects malformed/cross-context tokens and inconsistent display grants before database acquisition
+   ↓ owner valuation comparison PostgreSQL > fits maximum manual and source-group pages with escaped notes and large metadata
+   ↓ owner valuation comparison PostgreSQL > fails closed on structurally valid but incoherent historical identifier snapshots
+   ↓ owner valuation comparison PostgreSQL > retries a real item-move serialization race with a fresh parent and snapshot
+   ↓ owner valuation comparison PostgreSQL > retries a committed parent deletion race then hides the deleted item
+ ✓ |workspace| apps/web/src/lib/valuation-routes.integration.test.ts (10 tests | 8 skipped) 112ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/valuations/valuation-query.test.ts > owner valuation comparison PostgreSQL > rejects exhausted source history immediately after awaited SQL, including an empty final page
+AssertionError: expected ValuationQueryError: VALUATION_INVALID { code: '…' } to match object { code: 'VALUATION_UNAVAILABLE' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+- {
+-   "code": "VALUATION_UNAVAILABLE",
++ ValuationQueryError {
++   "code": "VALUATION_INVALID",
+  }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  1 failed | 5 passed | 31 skipped (37)
+   Start at  05:58:53
+   Duration  1.24s (transform 156ms, setup 6ms, collect 384ms, tests 571ms, environment 0ms, prepare 76ms)
+

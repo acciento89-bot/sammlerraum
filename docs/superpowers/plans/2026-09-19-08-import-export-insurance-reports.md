@@ -39,7 +39,7 @@
 **Interfaces:**
 - Produces: `createImportJob`, `buildImportPreview`, `saveImportProfile`.
 
-- [ ] **Step 1: Write failing overwrite-protection test**
+- [x] **Step 1: Write failing overwrite-protection test**
 
 ```ts
 it("marks an existing-match row for a user decision instead of overwriting", async () => {
@@ -51,16 +51,16 @@ it("marks an existing-match row for a user decision instead of overwriting", asy
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run packages/domain/src/imports/import-service.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement models**
+- [x] **Step 3: Implement models**
 
 Add `ImportJob`, `ImportRow`, `ImportMappingProfile`, source checksum, locale, status, progress, row errors, conflict resolution. Persist source row number and stable row idempotency key.
 
-- [ ] **Step 4: Migrate and test**
+- [x] **Step 4: Migrate and test**
 
 Run:
 ```bash
@@ -70,7 +70,7 @@ pnpm vitest run packages/domain/src/imports
 
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/db packages/domain/src/imports packages/contracts/src/imports.ts
@@ -90,7 +90,7 @@ git commit -m "feat: add staged import jobs and profiles"
 - Consumes: uploaded source asset + import job.
 - Produces: parsed preview rows/errors.
 
-- [ ] **Step 1: Write failing row-limit and formula tests**
+- [x] **Step 1: Write failing row-limit and formula tests**
 
 ```ts
 it("fails a workbook over the configured row limit", async () => {
@@ -104,21 +104,21 @@ it("reads formula cells as stored values and never evaluates them", async () => 
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run apps/worker/src/jobs/parse-import.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement bounded parser**
+- [x] **Step 3: Implement bounded parser**
 
 Add `IMPORT_MAX_BYTES` and `IMPORT_MAX_ROWS` config. Stream CSV. For XLSX, reject macro-enabled formats, ignore formulas as executable logic, and persist preview rows in chunks.
 
-- [ ] **Step 4: Run tests**
+- [x] **Step 4: Run tests**
 
 Run: `pnpm vitest run apps/worker/src/jobs/parse-import.test.ts`  
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add apps/worker/src/jobs/parse-import.ts apps/worker/src/jobs/parse-import.test.ts packages/config
@@ -137,7 +137,7 @@ git commit -m "feat: parse bounded CSV and XLSX imports"
 - Consumes: approved preview + row resolutions.
 - Produces: created/merged/skipped item results.
 
-- [ ] **Step 1: Write failing retry test**
+- [x] **Step 1: Write failing retry test**
 
 ```ts
 it("does not create a second item when the same commit job is retried", async () => {
@@ -147,21 +147,21 @@ it("does not create a second item when the same commit job is retried", async ()
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run apps/worker/src/jobs/commit-import.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement transaction/chunk commit**
+- [x] **Step 3: Implement transaction/chunk commit**
 
 Each row has stable idempotency identity. Apply `CREATE`, `SKIP`, `MERGE`, or `CREATE_SEPARATE`. Update job progress after each chunk and retain row-level result.
 
-- [ ] **Step 4: Run tests**
+- [x] **Step 4: Run tests**
 
 Run: `pnpm vitest run apps/worker/src/jobs/commit-import.test.ts`  
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add apps/worker/src/jobs/commit-import.ts apps/worker/src/jobs/commit-import.test.ts
@@ -181,7 +181,7 @@ git commit -m "feat: commit imports idempotently"
 **Interfaces:**
 - Produces: `requestExport(actor, scope, format)`, output media asset.
 
-- [ ] **Step 1: Write failing scope/privacy test**
+- [x] **Step 1: Write failing scope/privacy test**
 
 ```ts
 it("does not export inaccessible items or private document bytes", async () => {
@@ -191,21 +191,21 @@ it("does not export inaccessible items or private document bytes", async () => {
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run apps/worker/src/jobs/build-tabular-export.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement export**
+- [x] **Step 3: Implement export**
 
 Support collection, subtree, filtered search, full authorized inventory, and wishlist later when model exists. CSV and XLSX use localized display labels but canonical raw data values.
 
-- [ ] **Step 4: Run tests**
+- [x] **Step 4: Run tests**
 
 Run: `pnpm vitest run packages/domain/src/exports apps/worker/src/jobs/build-tabular-export.test.ts`  
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/domain/src/exports packages/contracts/src/exports.ts apps/worker/src/jobs/build-tabular-export*
@@ -224,7 +224,7 @@ git commit -m "feat: add CSV and XLSX exports"
 **Interfaces:**
 - Produces: `setCollectionInsurance`, `setItemInsurance`, `getInsuranceData`.
 
-- [ ] **Step 1: Write failing privacy test**
+- [x] **Step 1: Write failing privacy test**
 
 ```ts
 it("does not expose policy reference in public item data", async () => {
@@ -233,16 +233,16 @@ it("does not expose policy reference in public item data", async () => {
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run packages/domain/src/insurance/insurance-service.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement insurance model**
+- [x] **Step 3: Implement insurance model**
 
 Store insured amount minor/currency, valuation date, insurer, policy reference, notes, collection/item linkage. Access requires explicit owner/editor policy as defined; public API projections exclude it.
 
-- [ ] **Step 4: Migrate and test**
+- [x] **Step 4: Migrate and test**
 
 Run:
 ```bash
@@ -252,7 +252,7 @@ pnpm vitest run packages/domain/src/insurance
 
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/db packages/domain/src/insurance
@@ -272,7 +272,7 @@ git commit -m "feat: add private insurance records"
 **Interfaces:**
 - Produces: `InsuranceReportOptions`, PDF asset.
 
-- [ ] **Step 1: Write failing default-exclusion test**
+- [x] **Step 1: Write failing default-exclusion test**
 
 ```ts
 it("excludes sensitive fields unless explicitly selected", async () => {
@@ -283,16 +283,16 @@ it("excludes sensitive fields unless explicitly selected", async () => {
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run apps/worker/src/jobs/build-insurance-report.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement report generation**
+- [x] **Step 3: Implement report generation**
 
 Generate snapshot metadata with `reportAsOf`, selected fields, item images, values, and explicitly selected proofs. Persist report as protected media asset.
 
-- [ ] **Step 4: Run tests/build**
+- [x] **Step 4: Run tests/build**
 
 Run:
 ```bash
@@ -302,7 +302,7 @@ pnpm --filter @sammlerraum/web build
 
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/domain/src/reports apps/worker/src/jobs/build-insurance-report* apps/web/src/app/api/v1/reports
@@ -328,7 +328,7 @@ git commit -m "feat: generate insurance inventory reports"
 - Consumes: import/export/insurance/report APIs and job progress.
 - Produces: preview/mapping/conflict-resolution flow, export request/history, insurance editor, explicit PDF field selector.
 
-- [ ] **Step 1: Write failing conflict-resolution E2E**
+- [x] **Step 1: Write failing conflict-resolution E2E**
 
 ```ts
 test("import conflict requires an explicit row decision before commit", async ({ page }) => {
@@ -340,16 +340,16 @@ test("import conflict requires an explicit row decision before commit", async ({
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm --filter @sammlerraum/web exec playwright test e2e/import-report.spec.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement UI**
+- [x] **Step 3: Implement UI**
 
 Show parser/job progress, row errors, mapping-profile save/load, conflict decisions, and export history. Insurance report selector defaults all sensitive switches off and shows the exact included fields before queueing a report.
 
-- [ ] **Step 4: Run E2E/build**
+- [x] **Step 4: Run E2E/build**
 
 Run:
 ```bash
@@ -359,7 +359,7 @@ pnpm --filter @sammlerraum/web build
 
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add apps/web

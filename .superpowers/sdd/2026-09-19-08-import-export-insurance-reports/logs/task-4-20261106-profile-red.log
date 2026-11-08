@@ -1,0 +1,31 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| apps/worker/src/jobs/build-tabular-export.test.ts (3 tests | 1 failed) 28ms
+   × writes explicit spreadsheet-safe CSV text encoding without changing generic CSV import 19ms
+     → IMPORT_PARSE_OPTIONS_INVALID
+   ✓ writes literal XLSX cells preserving escapes, CR, emoji and exact large raw values 8ms
+   ✓ fails a bounded artifact instead of returning partial output or omitted data 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/worker/src/jobs/build-tabular-export.test.ts > writes explicit spreadsheet-safe CSV text encoding without changing generic CSV import
+ImportParseError: IMPORT_PARSE_OPTIONS_INVALID
+ ❯ fail apps/worker/src/jobs/parse-import.ts:33:9
+     31| }
+     32| function fail(code: ImportParseCode): never {
+     33|   throw new ImportParseError(code);
+       |         ^
+     34| }
+     35| const optionsSchema = z
+ ❯ parseImportSource apps/worker/src/jobs/parse-import.ts:75:51
+ ❯ apps/worker/src/jobs/build-tabular-export.test.ts:18:35
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 2 passed (3)
+   Start at  23:08:13
+   Duration  564ms (transform 155ms, setup 6ms, collect 304ms, tests 28ms, environment 0ms, prepare 47ms)
+

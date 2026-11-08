@@ -1,0 +1,14 @@
+[WebServer] (node:59752) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:59751) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:59763) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+MEDIA_CANCELLATION {"cancelStage":"link","events":["target link response fetched","cancel clicked","target link response fulfilled","compensating DELETE response","canceled visible","callbacks drained before unroute completed","upload finished including catch refresh"]}
+MEDIA_CANCELLATION {"cancelStage":"reload","events":["target link response fetched","target link response fulfilled","real target worker READY","actual onChange GET held","cancel clicked","actual onChange GET fulfilled","compensating DELETE response","post-delete cleanup GET held","canceled visible","cleanup held while upload remains busy","4001ms timer advance: exactly onChange plus held cleanup, no poll GET","post-delete cleanup GET fulfilled","callbacks drained before unroute completed","upload finished including catch refresh"]}
+  ✓  1 [desktop] › e2e/media-documents.spec.ts:164:5 › item media and private documents › public item can have a purchase receipt that remains private (de) (49.3s)
+
+  1 passed (51.2s)

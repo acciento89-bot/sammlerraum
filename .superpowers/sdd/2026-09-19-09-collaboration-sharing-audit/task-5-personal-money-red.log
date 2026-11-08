@@ -1,0 +1,45 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/audit/core-audit-integration.test.ts (13 tests | 1 failed) 896ms
+   ✓ actual core mutations append their real audit in the same transaction > records actual condition and location changes with the real user and before/after values 163ms
+   ✓ actual core mutations append their real audit in the same transaction > a genuine default audit INSERT failure rolls the actual condition write back 57ms
+   ✓ actual core mutations append their real audit in the same transaction > records category changes and condition clearing without inventing a second unchanged event 23ms
+   ✓ actual core mutations append their real audit in the same transaction > audits grading create/update/delete with selected authored facts and excludes verification URLs/source text 23ms
+   ✓ actual core mutations append their real audit in the same transaction > keeps a manual valuation's exact bigint, stored scale, basis and true author in audit 25ms
+   ✓ actual core mutations append their real audit in the same transaction > records private location creation and hierarchy moves without duplicating QR access tokens 28ms
+   ✓ actual core mutations append their real audit in the same transaction > rolls back grading, valuations and location history together when their audit append fails 27ms
+   ✓ actual core mutations append their real audit in the same transaction > tracks collection and node creation, rename, visibility, move and soft deletion 33ms
+   ✓ actual core mutations append their real audit in the same transaction > audits real item create, meaningful edits, split, archive and soft delete without storing private note text 40ms
+   ✓ actual core mutations append their real audit in the same transaction > audits attached and detached tags exactly once and rolls back actual tag replacement on audit failure 40ms
+   ✓ actual core mutations append their real audit in the same transaction > records typed custom-field values and clearing with exact stored decimals and private text fingerprints 37ms
+   ✓ actual core mutations append their real audit in the same transaction > audits actual media/document linking, reordering, metadata and unlink without copying storage keys 66ms
+   × actual core mutations append their real audit in the same transaction > audits actual V2 item authoring and exact interpreted purchase changes without exposing fact tokens or receipts 45ms
+     → expected [] to deeply equal ArrayContaining{…}
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/audit/core-audit-integration.test.ts > actual core mutations append their real audit in the same transaction > audits actual V2 item authoring and exact interpreted purchase changes without exposing fact tokens or receipts
+AssertionError: expected [] to deeply equal ArrayContaining{…}
+
+- Expected
++ Received
+
+- ArrayContaining [
+-   "ITEM_CREATED",
+-   "ITEM_DETAILS_CHANGED",
+-   "ITEM_MONEY_CHANGED",
+- ]
++ []
+
+ ❯ packages/domain/src/audit/core-audit-integration.test.ts:472:35
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 12 passed (13)
+   Start at  08:37:27
+   Duration  1.63s (transform 221ms, setup 7ms, collect 510ms, tests 896ms, environment 0ms, prepare 59ms)
+

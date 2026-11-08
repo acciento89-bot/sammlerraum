@@ -1,0 +1,24 @@
+{
+  "base": "10506f4ea95495d4e424b1006de828c80a0a5dc3",
+  "compiledJourneys": {
+    "passed": 4,
+    "locales": [
+      "de",
+      "en"
+    ],
+    "viewports": [
+      "1440x900",
+      "390x844"
+    ],
+    "log": "task-2-full-four.log"
+  },
+  "recordedAPIResponses": 672,
+  "serverErrors": 0,
+  "webTypes": "task-2-web-types-final.log",
+  "rootTypes": "task-2-root-types.log",
+  "recursiveLint": "task-2-lint.log",
+  "providerHTTP": "closed offline synthetic fixtures only",
+  "wholePhaseReview": "pending",
+  "exactCI": "pending",
+  "acceptedTaskCredit": false
+}

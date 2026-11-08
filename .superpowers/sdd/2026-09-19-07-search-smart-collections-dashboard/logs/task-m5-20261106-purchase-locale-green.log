@@ -1,0 +1,156 @@
+[WebServer] (node:86904) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 20 tests using 1 worker
+
+(node:86931) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [money-ui-desktop] › e2e/legacy-money.spec.ts:20:5 › de: title-only save preserves unknown raw money (2.3s)
+  ✓   2 [money-ui-desktop] › e2e/legacy-money.spec.ts:20:5 › de: title-only save preserves known historical scale (551ms)
+  ✓   3 [money-ui-desktop] › e2e/legacy-money.spec.ts:20:5 › en: title-only save preserves unknown raw money (515ms)
+  ✓   4 [money-ui-desktop] › e2e/legacy-money.spec.ts:20:5 › en: title-only save preserves known historical scale (569ms)
+  ✓   5 [money-ui-desktop] › e2e/legacy-money.spec.ts:119:3 › de: deliberate AFN correction requires confirmation and stores its own receipt (648ms)
+  ✘   6 [money-ui-desktop] › e2e/legacy-money.spec.ts:163:3 › de: locale switch preserves exact monetary draft and original source token (5.6s)
+(node:86955) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   7 [money-ui-desktop] › e2e/legacy-money.spec.ts:191:3 › de: stale monetary draft reports conflict without rewriting the newer meaning (837ms)
+  ✓   8 [money-ui-desktop] › e2e/legacy-money.spec.ts:119:3 › en: deliberate AFN correction requires confirmation and stores its own receipt (741ms)
+  ✘   9 [money-ui-desktop] › e2e/legacy-money.spec.ts:163:3 › en: locale switch preserves exact monetary draft and original source token (5.6s)
+(node:86969) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  10 [money-ui-desktop] › e2e/legacy-money.spec.ts:191:3 › en: stale monetary draft reports conflict without rewriting the newer meaning (856ms)
+(node:86977) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  11 [money-ui-mobile] › e2e/legacy-money.spec.ts:20:5 › de: title-only save preserves unknown raw money (727ms)
+  ✓  12 [money-ui-mobile] › e2e/legacy-money.spec.ts:20:5 › de: title-only save preserves known historical scale (533ms)
+  ✓  13 [money-ui-mobile] › e2e/legacy-money.spec.ts:20:5 › en: title-only save preserves unknown raw money (512ms)
+  ✓  14 [money-ui-mobile] › e2e/legacy-money.spec.ts:20:5 › en: title-only save preserves known historical scale (514ms)
+  ✓  15 [money-ui-mobile] › e2e/legacy-money.spec.ts:119:3 › de: deliberate AFN correction requires confirmation and stores its own receipt (659ms)
+  ✘  16 [money-ui-mobile] › e2e/legacy-money.spec.ts:163:3 › de: locale switch preserves exact monetary draft and original source token (5.7s)
+(node:86991) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  17 [money-ui-mobile] › e2e/legacy-money.spec.ts:191:3 › de: stale monetary draft reports conflict without rewriting the newer meaning (825ms)
+  ✓  18 [money-ui-mobile] › e2e/legacy-money.spec.ts:119:3 › en: deliberate AFN correction requires confirmation and stores its own receipt (663ms)
+  ✘  19 [money-ui-mobile] › e2e/legacy-money.spec.ts:163:3 › en: locale switch preserves exact monetary draft and original source token (5.6s)
+(node:87002) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  20 [money-ui-mobile] › e2e/legacy-money.spec.ts:191:3 › en: stale monetary draft reports conflict without rewriting the newer meaning (838ms)
+
+
+  1) [money-ui-desktop] › e2e/legacy-money.spec.ts:163:3 › de: locale switch preserves exact monetary draft and original source token 
+
+    Error: expect(locator).toHaveValue(expected) failed
+
+    Locator: getByRole('region', { name: 'Purchase price per unit', exact: true }).getByLabel('Reason for correction', { exact: true })
+    Expected: "Private bilingual draft"
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toHaveValue" getByRole('region', { name: 'Purchase price per unit', exact: true }).getByLabel('Reason for correction', { exact: true }) with timeout 5000ms
+      - waiting for getByRole('region', { name: 'Purchase price per unit', exact: true }).getByLabel('Reason for correction', { exact: true })
+
+
+      180 |       const region = page.getByRole("region", { name: t.unitPrice, exact: true });
+      181 |       await expect(region.getByLabel(mt.newAmount, { exact: true })).toHaveValue("1,23");
+    > 182 |       await expect(region.getByLabel(mt.reason, { exact: true })).toHaveValue(
+          |                                                                   ^
+      183 |         "Private bilingual draft",
+      184 |       );
+      185 |       await expect(region.getByLabel(mt.replacementAck, { exact: true })).toBeChecked();
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/legacy-money.spec.ts:182:67
+
+    Error Context: test-results/legacy-money-de-locale-swi-082a7-t-and-original-source-token-money-ui-desktop/error-context.md
+
+    Error Context: test-results/legacy-money-de-locale-swi-082a7-t-and-original-source-token-money-ui-desktop/error-context.md
+
+  2) [money-ui-desktop] › e2e/legacy-money.spec.ts:163:3 › en: locale switch preserves exact monetary draft and original source token 
+
+    Error: expect(locator).toHaveValue(expected) failed
+
+    Locator: getByRole('region', { name: 'Kaufpreis pro Stück', exact: true }).getByLabel('Grund der Korrektur', { exact: true })
+    Expected: "Private bilingual draft"
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toHaveValue" getByRole('region', { name: 'Kaufpreis pro Stück', exact: true }).getByLabel('Grund der Korrektur', { exact: true }) with timeout 5000ms
+      - waiting for getByRole('region', { name: 'Kaufpreis pro Stück', exact: true }).getByLabel('Grund der Korrektur', { exact: true })
+
+
+      180 |       const region = page.getByRole("region", { name: t.unitPrice, exact: true });
+      181 |       await expect(region.getByLabel(mt.newAmount, { exact: true })).toHaveValue("1,23");
+    > 182 |       await expect(region.getByLabel(mt.reason, { exact: true })).toHaveValue(
+          |                                                                   ^
+      183 |         "Private bilingual draft",
+      184 |       );
+      185 |       await expect(region.getByLabel(mt.replacementAck, { exact: true })).toBeChecked();
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/legacy-money.spec.ts:182:67
+
+    Error Context: test-results/legacy-money-en-locale-swi-3086b-t-and-original-source-token-money-ui-desktop/error-context.md
+
+    Error Context: test-results/legacy-money-en-locale-swi-3086b-t-and-original-source-token-money-ui-desktop/error-context.md
+
+  3) [money-ui-mobile] › e2e/legacy-money.spec.ts:163:3 › de: locale switch preserves exact monetary draft and original source token 
+
+    Error: expect(locator).toHaveValue(expected) failed
+
+    Locator: getByRole('region', { name: 'Purchase price per unit', exact: true }).getByLabel('Reason for correction', { exact: true })
+    Expected: "Private bilingual draft"
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toHaveValue" getByRole('region', { name: 'Purchase price per unit', exact: true }).getByLabel('Reason for correction', { exact: true }) with timeout 5000ms
+      - waiting for getByRole('region', { name: 'Purchase price per unit', exact: true }).getByLabel('Reason for correction', { exact: true })
+
+
+      180 |       const region = page.getByRole("region", { name: t.unitPrice, exact: true });
+      181 |       await expect(region.getByLabel(mt.newAmount, { exact: true })).toHaveValue("1,23");
+    > 182 |       await expect(region.getByLabel(mt.reason, { exact: true })).toHaveValue(
+          |                                                                   ^
+      183 |         "Private bilingual draft",
+      184 |       );
+      185 |       await expect(region.getByLabel(mt.replacementAck, { exact: true })).toBeChecked();
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/legacy-money.spec.ts:182:67
+
+    Error Context: test-results/legacy-money-de-locale-swi-082a7-t-and-original-source-token-money-ui-mobile/error-context.md
+
+    Error Context: test-results/legacy-money-de-locale-swi-082a7-t-and-original-source-token-money-ui-mobile/error-context.md
+
+  4) [money-ui-mobile] › e2e/legacy-money.spec.ts:163:3 › en: locale switch preserves exact monetary draft and original source token 
+
+    Error: expect(locator).toHaveValue(expected) failed
+
+    Locator: getByRole('region', { name: 'Kaufpreis pro Stück', exact: true }).getByLabel('Grund der Korrektur', { exact: true })
+    Expected: "Private bilingual draft"
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toHaveValue" getByRole('region', { name: 'Kaufpreis pro Stück', exact: true }).getByLabel('Grund der Korrektur', { exact: true }) with timeout 5000ms
+      - waiting for getByRole('region', { name: 'Kaufpreis pro Stück', exact: true }).getByLabel('Grund der Korrektur', { exact: true })
+
+
+      180 |       const region = page.getByRole("region", { name: t.unitPrice, exact: true });
+      181 |       await expect(region.getByLabel(mt.newAmount, { exact: true })).toHaveValue("1,23");
+    > 182 |       await expect(region.getByLabel(mt.reason, { exact: true })).toHaveValue(
+          |                                                                   ^
+      183 |         "Private bilingual draft",
+      184 |       );
+      185 |       await expect(region.getByLabel(mt.replacementAck, { exact: true })).toBeChecked();
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/legacy-money.spec.ts:182:67
+
+    Error Context: test-results/legacy-money-en-locale-swi-3086b-t-and-original-source-token-money-ui-mobile/error-context.md
+
+    Error Context: test-results/legacy-money-en-locale-swi-3086b-t-and-original-source-token-money-ui-mobile/error-context.md
+
+  4 failed
+    [money-ui-desktop] › e2e/legacy-money.spec.ts:163:3 › de: locale switch preserves exact monetary draft and original source token 
+    [money-ui-desktop] › e2e/legacy-money.spec.ts:163:3 › en: locale switch preserves exact monetary draft and original source token 
+    [money-ui-mobile] › e2e/legacy-money.spec.ts:163:3 › de: locale switch preserves exact monetary draft and original source token 
+    [money-ui-mobile] › e2e/legacy-money.spec.ts:163:3 › en: locale switch preserves exact monetary draft and original source token 
+  16 passed (39.9s)
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/legacy-money.spec.ts --workers=1

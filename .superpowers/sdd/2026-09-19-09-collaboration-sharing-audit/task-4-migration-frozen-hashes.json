@@ -1,0 +1,7 @@
+[
+  {
+    "path": "packages/db/prisma/migrations/20261107050000_append_only_audit/migration.sql",
+    "sha256": "d72c9d1640678f0948ca538fbf10a16dfa2ef69e4ad378fdde910ac68b9cda09",
+    "bytes": 3053
+  }
+]

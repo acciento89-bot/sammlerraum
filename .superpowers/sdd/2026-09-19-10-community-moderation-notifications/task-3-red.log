@@ -1,0 +1,42 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/community/comment-service.test.ts [ packages/domain/src/community/comment-service.test.ts ]
+Error: Cannot find module './comment-service' imported from '/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/domain/src/community/comment-service.test.ts'
+ ❯ packages/domain/src/community/comment-service.test.ts:6:1
+      4| import {createTestDatabaseClient} from "@sammlerraum/db/test-database";
+      5| import {createItemService} from "../items/item-service";
+      6| import {createCommentService} from "./comment-service";
+       | ^
+      7| import {createBlockReportService} from "../moderation/block-report-ser…
+      8| let db:ReturnType<typeof createTestDatabaseClient>,isolated:Awaited<Re…
+
+Caused by: Error: Failed to load url ./comment-service (resolved id: ./comment-service) in /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/domain/src/community/comment-service.test.ts. Does the file exist?
+ ❯ loadAndTransform ../../../../SSK%20SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/node_modules/.pnpm/vite@7.3.6_@types+node@24.5.2_jiti@2.7.0/node_modules/vite/dist/node/chunks/config.js:22739:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |workspace| packages/domain/src/moderation/block-report-service.test.ts [ packages/domain/src/moderation/block-report-service.test.ts ]
+Error: Cannot find module '../community/comment-service' imported from '/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/domain/src/moderation/block-report-service.test.ts'
+ ❯ packages/domain/src/moderation/block-report-service.test.ts:7:1
+      5| import {createItemService} from "../items/item-service";
+      6| import {createSocialService} from "../community/social-service";
+      7| import {createCommentService} from "../community/comment-service";
+       | ^
+      8| import {createBlockReportService} from "./block-report-service";
+      9| let db:ReturnType<typeof createTestDatabaseClient>,isolated:Awaited<Re…
+
+Caused by: Error: Failed to load url ../community/comment-service (resolved id: ../community/comment-service) in /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/domain/src/moderation/block-report-service.test.ts. Does the file exist?
+ ❯ loadAndTransform ../../../../SSK%20SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/node_modules/.pnpm/vite@7.3.6_@types+node@24.5.2_jiti@2.7.0/node_modules/vite/dist/node/chunks/config.js:22739:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  no tests
+   Start at  12:39:38
+   Duration  627ms (transform 143ms, setup 6ms, collect 0ms, tests 0ms, environment 0ms, prepare 66ms)
+

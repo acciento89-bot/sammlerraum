@@ -1,0 +1,41 @@
+{
+  "reviewCandidate": "372334a6e59734f927e3a31aaa601befe32e244b",
+  "originalVerdict": "With fixes",
+  "critical": 0,
+  "important": 1,
+  "minor": 2,
+  "rootDisposition": "All3accepted and included in one consolidated correction pass; original review unchanged; no rereview",
+  "actualRedWitnesses": [
+    "review-correction-red.log",
+    "review-depth-affordance-red.log",
+    "review-owner-restore-browser-red.log"
+  ],
+  "focused": {
+    "pass": 36,
+    "files": 5,
+    "seconds": 4.71
+  },
+  "compiledBrowsers": {
+    "pass": 9,
+    "seconds": 25.1,
+    "covers": "DE/EN desktop/mobile owner hide/reload/restore, real-cookie nonowner hidden-view denial and malformed query, public profile privacy"
+  },
+  "regular": {
+    "pass": 1631,
+    "nativeDisabled": 1035,
+    "seconds": 61.87
+  },
+  "native": {
+    "pass": 1550,
+    "files": 139,
+    "skipped": 0,
+    "seconds": 205.29
+  },
+  "types": "PASS",
+  "webBuild": "PASS",
+  "workerBuild": "PASS",
+  "lint": "PASS",
+  "state": "all-local-correction-gates-pass-exact-CI-pending",
+  "originalReviewSha256": "49da93596e3ff7707b04dc42365dd4e6d26e0d6fc2970f05fd95fcf622e697b8",
+  "schema": "No schema changes;18frozen migration hashes intact; both guarded schema diffs empty before correction"
+}

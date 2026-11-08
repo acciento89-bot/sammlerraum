@@ -1,0 +1,12 @@
+[
+  {
+    "source": ".superpowers/sdd/2026-09-19-08-import-export-insurance-reports/reports/task-6-preview.pdf",
+    "retained": ".superpowers/sdd/2026-09-19-09-collaboration-sharing-audit/reports/task-4-existing-report-regression.pdf",
+    "sha256": "22bd3b7aadeb73fd641b024a8c98834be16b56eb55af4f3ae5c1a4566981442a"
+  },
+  {
+    "source": ".superpowers/sdd/2026-09-19-08-import-export-insurance-reports/reports/task-6-preview-1.png",
+    "retained": ".superpowers/sdd/2026-09-19-09-collaboration-sharing-audit/reports/task-4-existing-report-regression.png",
+    "sha256": "7eade5078d069fea19e7bae881ca5bdeaef65f27bcaa32727de5d86f361876bf"
+  }
+]

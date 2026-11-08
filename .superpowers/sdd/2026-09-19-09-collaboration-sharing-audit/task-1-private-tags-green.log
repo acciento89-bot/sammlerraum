@@ -1,0 +1,13 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ✓ |workspace| packages/domain/src/collaboration/membership-service.test.ts (18 tests) 770ms
+ ✓ |workspace| packages/domain/src/search/smart-collection-service.test.ts (18 tests) 2504ms
+   ✓ owned dynamic saved queries PostgreSQL > rolls back timed-out mutation and retains dependency503 outside definition conflicts  2017ms
+ ✓ |workspace| packages/domain/src/items/identifier-service.test.ts (11 tests) 171ms
+
+ Test Files  3 passed (3)
+      Tests  47 passed (47)
+   Start at  04:58:25
+   Duration  4.44s (transform 217ms, setup 6ms, collect 560ms, tests 3.45s, environment 0ms, prepare 94ms)
+

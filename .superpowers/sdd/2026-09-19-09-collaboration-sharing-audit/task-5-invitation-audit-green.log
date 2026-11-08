@@ -1,0 +1,50 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/collaboration/invitation-service.test.ts (25 tests | 2 failed) 1820ms
+   ✓ actual recipient-bound invitations > does not allow a different verified account to accept an email-bound invite 123ms
+   ✓ actual recipient-bound invitations > accepts the intended verified recipient atomically and derives exactly one owner 33ms
+   × actual recipient-bound invitations > records actual VIEWER invitation membership exactly once with the accepting user 21ms
+     → Do not know how to serialize a BigInt
+   × actual recipient-bound invitations > records actual EDITOR invitation membership exactly once with the accepting user 15ms
+     → Do not know how to serialize a BigInt
+   ✓ actual recipient-bound invitations > requires current verified identity instead of trusting possession of the token 23ms
+   ✓ actual recipient-bound invitations > does not re-add membership when a consumed invitation is replayed after removal 20ms
+   ✓ actual recipient-bound invitations > stores only the token hash and hides tokens from the authorized pending list 9ms
+   ✓ actual recipient-bound invitations > revokes a link without changing membership and rejects its later use 9ms
+   ✓ actual recipient-bound invitations > serializes simultaneous acceptance without duplicating membership or revisions 18ms
+   ✓ actual recipient-bound invitations > checks current inviter authority after demotion rather than trusting an issued role 28ms
+   ✓ actual recipient-bound invitations > rejects an actual expired stored invitation using the database clock 5ms
+   ✓ actual recipient-bound invitations > never overwrites a different existing membership through an invitation 13ms
+   ✓ actual recipient-bound invitations > erases pending email invitations when the intended account is deleted 13ms
+   ✓ actual recipient-bound invitations > rejects owner-role injection and stale membership decisions 9ms
+   ✓ actual recipient-bound invitations > bounds pending invitations and rejects duplicate active targets 51ms
+   ✓ actual recipient-bound invitations > retains the exact maximum lifetime from one database-issued UTC anchor 4ms
+   ✓ actual recipient-bound invitations > rejects raw consumption without the actual resulting membership 7ms
+   ✓ actual recipient-bound invitations > rejects a changed email and preserves immutable recipient, role and token identity 22ms
+   ✓ actual recipient-bound invitations > does not preserve an old Owner's Admin grant after ownership transfer 43ms
+   ✓ actual recipient-bound invitations > revokes an unconsumed EMAIL invitation when the member is explicitly removed 12ms
+   ✓ actual recipient-bound invitations > revokes an unconsumed USER invitation when the member is explicitly removed 13ms
+   ✓ actual recipient-bound invitations > keeps the pending-invitation cap under concurrent Owner/Admin creation 53ms
+   ✓ actual recipient-bound invitations > does not consume a token at membership capacity and can accept after a genuine slot is freed 76ms
+   ✓ actual recipient-bound invitations > rolls back a token that expires during the real acceptance transaction with a closed expiry result  519ms
+   ✓ actual recipient-bound invitations > maps the actual database expiry guard even when expiry happens inside the consuming SQL statement  378ms
+ ✓ |workspace| packages/domain/src/audit/core-audit-integration.test.ts (14 tests) 874ms
+ ✓ |workspace| packages/domain/src/audit/audit-service.test.ts (12 tests) 1119ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/collaboration/invitation-service.test.ts > actual recipient-bound invitations > records actual VIEWER invitation membership exactly once with the accepting user
+ FAIL  |workspace| packages/domain/src/collaboration/invitation-service.test.ts > actual recipient-bound invitations > records actual EDITOR invitation membership exactly once with the accepting user
+TypeError: Do not know how to serialize a BigInt
+ ❯ packages/domain/src/collaboration/invitation-service.test.ts:99:247
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+
+ Test Files  1 failed | 2 passed (3)
+      Tests  2 failed | 49 passed (51)
+   Start at  08:46:23
+   Duration  5.11s (transform 293ms, setup 7ms, collect 869ms, tests 3.81s, environment 0ms, prepare 98ms)
+

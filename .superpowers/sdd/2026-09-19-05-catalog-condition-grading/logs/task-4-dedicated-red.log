@@ -1,0 +1,34 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| packages/domain/src/condition/condition-service.test.ts (1 test | 1 failed) 122ms
+   × category conditions PostgreSQL > stores exact condition label and optional normalized band separately 19ms
+     → expected undefined to be 'vinyl.vg_plus' // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/condition/condition-service.test.ts > category conditions PostgreSQL > stores exact condition label and optional normalized band separately
+AssertionError: expected undefined to be 'vinyl.vg_plus' // Object.is equality
+
+- Expected: 
+"vinyl.vg_plus"
+
++ Received: 
+undefined
+
+ ❯ packages/domain/src/condition/condition-service.test.ts:38:45
+     36|     await db!.collectibleItem.update({ where: { id: item.id }, data: {…
+     37|     const saved = await createConditionService(db!, ownerId).setItemCo…
+     38|     expect(saved.conditionOption?.labelKey).toBe("vinyl.vg_plus");
+       |                                             ^
+     39|     expect(saved.normalizedBand).toBe(4);
+     40|     const reread = await db!.collectibleItem.findUniqueOrThrow({ where…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+   Start at  23:37:00
+   Duration  481ms (transform 49ms, setup 5ms, collect 118ms, tests 122ms, environment 0ms, prepare 49ms)
+

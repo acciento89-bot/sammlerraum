@@ -1,0 +1,44 @@
+[WebServer] (node:58909) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:58910) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [desktop] › e2e/catalog-grading.spec.ts:976:2 › proposal read cancellation › changing proposal state filter releases a superseded detail request (6.0s)
+
+
+  1) [desktop] › e2e/catalog-grading.spec.ts:976:2 › proposal read cancellation › changing proposal state filter releases a superseded detail request 
+
+    Error: expect(locator).toBeEnabled() failed
+
+    Locator:  getByRole('button', { name: 'Delayed detail', exact: true })
+    Expected: enabled
+    Received: disabled
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toBeEnabled" getByRole('button', { name: 'Delayed detail', exact: true }) with timeout 5000ms
+      - waiting for getByRole('button', { name: 'Delayed detail', exact: true })
+        14 × locator resolved to <button disabled type="button" class="text-button">Delayed detail</button>
+           - unexpected value "disabled"
+
+
+      984 |    await page.route(`**/api/v1/catalog/proposals/${proposal.id}`,async route=>{started();await gate;await route.continue();});
+      985 |    await button.click();await began;await page.getByLabel("Proposal status",{exact:true}).selectOption("PENDING");release();
+    > 986 |    await expect(button).toBeEnabled();await page.unrouteAll({behavior:"wait"});await button.click();await expect(page.getByRole("region",{name:"Proposal details",exact:true})).toBeVisible();
+          |                         ^
+      987 |   }finally{release();await page.unrouteAll({behavior:"wait"});await cleanupCatalog(owner);}
+      988 |  });
+      989 | });
+        at /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/catalog-grading.spec.ts:986:25
+
+    Error Context: test-results/catalog-grading-proposal-r-1007a-a-superseded-detail-request-desktop/error-context.md
+
+    Error Context: test-results/catalog-grading-proposal-r-1007a-a-superseded-detail-request-desktop/error-context.md
+
+  1 failed
+    [desktop] › e2e/catalog-grading.spec.ts:976:2 › proposal read cancellation › changing proposal state filter releases a superseded detail request 
+undefined
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/catalog-grading.spec.ts --project=desktop --grep changing proposal state filter --workers=1

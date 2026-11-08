@@ -1,0 +1,64 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| apps/web/src/components/catalog/catalog-money-model.test.ts (6 tests | 5 failed) 5ms
+   × exact canonical monetary form and frozen display > retains unresolved historical raw with its frozen fact token, without authoring it 2ms
+     → stub
+   × exact canonical monetary form and frozen display > requires deliberate replacement acknowledgment and derives the patch only from its pinned receipt 1ms
+     → stub
+   × exact canonical monetary form and frozen display > separates removal from a present-path intent and uses NEW for a genuinely absent attribute 0ms
+     → stub
+   ✓ exact canonical monetary form and frozen display > rejects missing or foreign exact-revision/target facts instead of borrowing a token 0ms
+   × exact canonical monetary form and frozen display > uses captured authored receipts and never borrows a newer scale for a frozen retained source 1ms
+     → stub
+   × exact canonical monetary form and frozen display > computes the same immutable patch digest in the browser as the accepted server serializer 0ms
+     → stub
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/web/src/components/catalog/catalog-money-model.test.ts > exact canonical monetary form and frozen display > retains unresolved historical raw with its frozen fact token, without authoring it
+Error: stub
+ ❯ buildCatalogMoneyFields apps/web/src/components/catalog/catalog-money-model.ts:7:462
+
+ ❯ apps/web/src/components/catalog/catalog-money-model.test.ts:15:16
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ FAIL  |workspace| apps/web/src/components/catalog/catalog-money-model.test.ts > exact canonical monetary form and frozen display > requires deliberate replacement acknowledgment and derives the patch only from its pinned receipt
+Error: stub
+ ❯ buildCatalogMoneyFields apps/web/src/components/catalog/catalog-money-model.ts:7:462
+
+ ❯ apps/web/src/components/catalog/catalog-money-model.test.ts:21:16
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+ FAIL  |workspace| apps/web/src/components/catalog/catalog-money-model.test.ts > exact canonical monetary form and frozen display > separates removal from a present-path intent and uses NEW for a genuinely absent attribute
+Error: stub
+ ❯ buildCatalogMoneyFields apps/web/src/components/catalog/catalog-money-model.ts:7:462
+
+ ❯ apps/web/src/components/catalog/catalog-money-model.test.ts:26:10
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+
+ FAIL  |workspace| apps/web/src/components/catalog/catalog-money-model.test.ts > exact canonical monetary form and frozen display > uses captured authored receipts and never borrows a newer scale for a frozen retained source
+Error: stub
+ ❯ proposalMoneyPreview apps/web/src/components/catalog/catalog-money-model.ts:8:220
+
+ ❯ apps/web/src/components/catalog/catalog-money-model.test.ts:38:10
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯
+
+ FAIL  |workspace| apps/web/src/components/catalog/catalog-money-model.test.ts > exact canonical monetary form and frozen display > computes the same immutable patch digest in the browser as the accepted server serializer
+Error: stub
+ ❯ digestCatalogPatch apps/web/src/components/catalog/catalog-money-model.ts:9:84
+
+ ❯ apps/web/src/components/catalog/catalog-money-model.test.ts:47:16
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/5]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  5 failed | 1 passed (6)
+   Start at  10:57:08
+   Duration  484ms (transform 86ms, setup 7ms, collect 201ms, tests 5ms, environment 0ms, prepare 71ms)
+

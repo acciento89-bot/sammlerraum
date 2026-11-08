@@ -1,0 +1,30 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| apps/web/src/lib/smart-collection-routes.integration.test.ts (2 tests | 2 failed) 147ms
+   × native saved-query authorized routes > creates/lists/details/replaces/resolves/deletes actual saved definitions 8ms
+     → Cannot find module './smart-collection-routes' imported from '/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/src/lib/smart-collection-routes.integration.test.ts'
+   × native saved-query authorized routes > enforces auth/origin/raw filter/body/query boundaries and closed errors 1ms
+     → Cannot find module './smart-collection-routes' imported from '/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/src/lib/smart-collection-routes.integration.test.ts'
+ ✓ |workspace| apps/web/src/lib/smart-collection-routes.test.ts (11 tests) 6ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/web/src/lib/smart-collection-routes.integration.test.ts > native saved-query authorized routes > creates/lists/details/replaces/resolves/deletes actual saved definitions
+ FAIL  |workspace| apps/web/src/lib/smart-collection-routes.integration.test.ts > native saved-query authorized routes > enforces auth/origin/raw filter/body/query boundaries and closed errors
+Error: Cannot find module './smart-collection-routes' imported from '/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/src/lib/smart-collection-routes.integration.test.ts'
+ ❯ handlers apps/web/src/lib/smart-collection-routes.integration.test.ts:11:93
+
+ ❯ apps/web/src/lib/smart-collection-routes.integration.test.ts:14:32
+
+Caused by: Error: Failed to load url ./smart-collection-routes (resolved id: ./smart-collection-routes). Does the file exist?
+ ❯ loadAndTransform node_modules/.pnpm/vite@7.3.6_@types+node@24.5.2_jiti@2.7.0/node_modules/vite/dist/node/chunks/config.js:22739:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  2 failed | 11 passed (13)
+   Start at  10:05:15
+   Duration  710ms (transform 95ms, setup 8ms, collect 218ms, tests 153ms, environment 0ms, prepare 86ms)
+

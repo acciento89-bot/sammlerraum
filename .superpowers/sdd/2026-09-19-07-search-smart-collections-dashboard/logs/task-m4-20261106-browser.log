@@ -1,0 +1,57 @@
+[WebServer] (node:75551) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 1 worker
+
+(node:75552) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [catalog-money-desktop] › e2e/catalog-money-api.spec.ts:25:1 › actual built Next catalog monetary proposal and moderator lifecycle (866ms)
+(node:75563) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  2 [catalog-money-mobile] › e2e/catalog-money-api.spec.ts:25:1 › actual built Next catalog monetary proposal and moderator lifecycle (422ms)
+
+
+  1) [catalog-money-desktop] › e2e/catalog-money-api.spec.ts:25:1 › actual built Next catalog monetary proposal and moderator lifecycle 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 401
+    Received: 200
+
+      176 |   expect(bad.status()).toBe(400);
+      177 |   await page.request.post("/api/auth/sign-out", { headers: { origin } });
+    > 178 |   expect((await page.request.get(base)).status()).toBe(401);
+          |                                                   ^
+      179 | });
+      180 |
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/catalog-money-api.spec.ts:178:51
+
+    Error Context: test-results/catalog-money-api-actual-b-7a06f-sal-and-moderator-lifecycle-catalog-money-desktop/error-context.md
+
+    Error Context: test-results/catalog-money-api-actual-b-7a06f-sal-and-moderator-lifecycle-catalog-money-desktop/error-context.md
+
+  2) [catalog-money-mobile] › e2e/catalog-money-api.spec.ts:25:1 › actual built Next catalog monetary proposal and moderator lifecycle 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 401
+    Received: 200
+
+      176 |   expect(bad.status()).toBe(400);
+      177 |   await page.request.post("/api/auth/sign-out", { headers: { origin } });
+    > 178 |   expect((await page.request.get(base)).status()).toBe(401);
+          |                                                   ^
+      179 | });
+      180 |
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/catalog-money-api.spec.ts:178:51
+
+    Error Context: test-results/catalog-money-api-actual-b-7a06f-sal-and-moderator-lifecycle-catalog-money-mobile/error-context.md
+
+    Error Context: test-results/catalog-money-api-actual-b-7a06f-sal-and-moderator-lifecycle-catalog-money-mobile/error-context.md
+
+  2 failed
+    [catalog-money-desktop] › e2e/catalog-money-api.spec.ts:25:1 › actual built Next catalog monetary proposal and moderator lifecycle 
+    [catalog-money-mobile] › e2e/catalog-money-api.spec.ts:25:1 › actual built Next catalog monetary proposal and moderator lifecycle 
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/catalog-money-api.spec.ts --workers=1

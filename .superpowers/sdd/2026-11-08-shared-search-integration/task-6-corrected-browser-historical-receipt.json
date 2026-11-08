@@ -1,0 +1,260 @@
+[
+  {
+    "originalPath": ".superpowers/sdd/2026-09-19-09-collaboration-sharing-audit/reports/task-3-sharing-de-sharing-desktop.png",
+    "retainedVariant": "historical-variants/corrected-browser/.superpowers/sdd/2026-09-19-09-collaboration-sharing-audit/reports/task-3-sharing-de-sharing-desktop.png",
+    "variantSha256": "918ee347b328cd59c4650ce14376f3d6ef2c1054d635723ab12cd37f7a5d23da",
+    "restoredSha256": "9dde68c40b0d6c70f9bba3dc788d6597a6030fdecd7b08ec7c1425e3cd700a31"
+  },
+  {
+    "originalPath": ".superpowers/sdd/2026-09-19-09-collaboration-sharing-audit/reports/task-3-sharing-de-sharing-mobile.png",
+    "retainedVariant": "historical-variants/corrected-browser/.superpowers/sdd/2026-09-19-09-collaboration-sharing-audit/reports/task-3-sharing-de-sharing-mobile.png",
+    "variantSha256": "7e7ff470d2299f26e96503cde08896a39d2f01f45b8a79587c8851aac0251bf9",
+    "restoredSha256": "3dd3db7a99621e3fbc4b01af7ebf73cd03bcc59a5cf6924d5df564daa7248627"
+  },
+  {
+    "originalPath": ".superpowers/sdd/2026-09-19-09-collaboration-sharing-audit/reports/task-3-sharing-en-sharing-desktop.png",
+    "retainedVariant": "historical-variants/corrected-browser/.superpowers/sdd/2026-09-19-09-collaboration-sharing-audit/reports/task-3-sharing-en-sharing-desktop.png",
+    "variantSha256": "465fc85cee6b3a7a4014d4e656bcc1ed8fd9deaf4ce34c58f1389cdcefaf2221",
+    "restoredSha256": "74477e1e3937fd4ade7bbb7c13bf51d1bdb0b5ef757e32a452f8e9f07944e765"
+  },
+  {
+    "originalPath": ".superpowers/sdd/2026-09-19-09-collaboration-sharing-audit/reports/task-3-sharing-en-sharing-mobile.png",
+    "retainedVariant": "historical-variants/corrected-browser/.superpowers/sdd/2026-09-19-09-collaboration-sharing-audit/reports/task-3-sharing-en-sharing-mobile.png",
+    "variantSha256": "135f9f18263fb2f23d1599042a9b13fc73c49004a3b380c07a192a20c8e76c41",
+    "restoredSha256": "53428e805afd5fa53c7c8f41c3559b1bc71c45714315786a417603172c7c0801"
+  },
+  {
+    "originalPath": ".superpowers/sdd/2026-09-19-09-collaboration-sharing-audit/reports/task-7-admin-de-collaboration-ui-desktop.png",
+    "retainedVariant": "historical-variants/corrected-browser/.superpowers/sdd/2026-09-19-09-collaboration-sharing-audit/reports/task-7-admin-de-collaboration-ui-desktop.png",
+    "variantSha256": "5c0153839f3a7d99197b3321a5d3fea3295ed608b29a126f9aaff7d6285216f2",
+    "restoredSha256": "f34c61cdcd9bfb29262d6b4c0a0259e646b62536c962aad76d4f714c76d193c9"
+  },
+  {
+    "originalPath": ".superpowers/sdd/2026-09-19-09-collaboration-sharing-audit/reports/task-7-admin-de-collaboration-ui-mobile.png",
+    "retainedVariant": "historical-variants/corrected-browser/.superpowers/sdd/2026-09-19-09-collaboration-sharing-audit/reports/task-7-admin-de-collaboration-ui-mobile.png",
+    "variantSha256": "4eb1f22e6f97c87c52948f1e57ccedb18af562a6c61755a54808cc0fe4f7a040",
+    "restoredSha256": "cb50c283d2f27e58c89bbf7838de59ed17ab45d310963dab3ceea24ef4c18070"
+  },
+  {
+    "originalPath": ".superpowers/sdd/2026-09-19-09-collaboration-sharing-audit/reports/task-7-admin-en-collaboration-ui-desktop.png",
+    "retainedVariant": "historical-variants/corrected-browser/.superpowers/sdd/2026-09-19-09-collaboration-sharing-audit/reports/task-7-admin-en-collaboration-ui-desktop.png",
+    "variantSha256": "3f9ff83a86dbc2cd4fba3e2d853a79fc071829e9f1a71c289bc1ce64a2d0dc5c",
+    "restoredSha256": "f4913ed6f80ba9f73c862c6561fc68aff37e7d8ee08e7bce4874947692039ecb"
+  },
+  {
+    "originalPath": ".superpowers/sdd/2026-09-19-09-collaboration-sharing-audit/reports/task-7-admin-en-collaboration-ui-mobile.png",
+    "retainedVariant": "historical-variants/corrected-browser/.superpowers/sdd/2026-09-19-09-collaboration-sharing-audit/reports/task-7-admin-en-collaboration-ui-mobile.png",
+    "variantSha256": "6c0f41f67a2d0d7d58278f7b71760b7940ec89f5dc64968b523b868765f15241",
+    "restoredSha256": "6f1b63e0f3559b1032a7feffb60cabc5e0f0ef362fd6513062b0cf8e54590a52"
+  },
+  {
+    "originalPath": ".superpowers/sdd/2026-09-19-09-collaboration-sharing-audit/reports/task-7-audit-de-collaboration-ui-desktop.png",
+    "retainedVariant": "historical-variants/corrected-browser/.superpowers/sdd/2026-09-19-09-collaboration-sharing-audit/reports/task-7-audit-de-collaboration-ui-desktop.png",
+    "variantSha256": "4b69f50acd2a04d634642d145ab8ed37e73d68f1d38088380fb280d8f22a6f4a",
+    "restoredSha256": "9244eccb5c77320cf595e6e002af225bef4d4e33d2298fb9df5caef8e77d3f26"
+  },
+  {
+    "originalPath": ".superpowers/sdd/2026-09-19-09-collaboration-sharing-audit/reports/task-7-audit-de-collaboration-ui-mobile.png",
+    "retainedVariant": "historical-variants/corrected-browser/.superpowers/sdd/2026-09-19-09-collaboration-sharing-audit/reports/task-7-audit-de-collaboration-ui-mobile.png",
+    "variantSha256": "5da0bd09d2fe8b3c3cc3aa831662d5df5cde2ba7d0955d2d3de84d46af8b92d3",
+    "restoredSha256": "270e581c10bc74343cc1ce6ebdadf837bd1cb391a09278c332c1e5ab08acbd26"
+  },
+  {
+    "originalPath": ".superpowers/sdd/2026-09-19-09-collaboration-sharing-audit/reports/task-7-audit-en-collaboration-ui-desktop.png",
+    "retainedVariant": "historical-variants/corrected-browser/.superpowers/sdd/2026-09-19-09-collaboration-sharing-audit/reports/task-7-audit-en-collaboration-ui-desktop.png",
+    "variantSha256": "c9d9aab868e88e33f0a44b22528027c7466cf360c8fa4d2c9b2cd4858740ff6e",
+    "restoredSha256": "a67f7a20feb9b87b012abe7d38761611baae402d02b8c5721861ac8e959552f2"
+  },
+  {
+    "originalPath": ".superpowers/sdd/2026-09-19-09-collaboration-sharing-audit/reports/task-7-audit-en-collaboration-ui-mobile.png",
+    "retainedVariant": "historical-variants/corrected-browser/.superpowers/sdd/2026-09-19-09-collaboration-sharing-audit/reports/task-7-audit-en-collaboration-ui-mobile.png",
+    "variantSha256": "81a46c1524c437da7be24841b50ddd67e1e93d6c341e88de83df8e76fcde0a36",
+    "restoredSha256": "e21e2d90dabfaeaddb513a9df184c43c6ada7752423b50748a4608ebfb576213"
+  },
+  {
+    "originalPath": ".superpowers/sdd/2026-09-19-09-collaboration-sharing-audit/reports/task-7-members-de-collaboration-ui-desktop.png",
+    "retainedVariant": "historical-variants/corrected-browser/.superpowers/sdd/2026-09-19-09-collaboration-sharing-audit/reports/task-7-members-de-collaboration-ui-desktop.png",
+    "variantSha256": "9c4718312a47386bcb7341200a13cb4c9fb2f94738c487eb3fee797cbf38f6f9",
+    "restoredSha256": "48e38716bc39f353ffba53d370e69a596919a0dbee08b932f0a366afd5434c3c"
+  },
+  {
+    "originalPath": ".superpowers/sdd/2026-09-19-09-collaboration-sharing-audit/reports/task-7-members-de-collaboration-ui-mobile.png",
+    "retainedVariant": "historical-variants/corrected-browser/.superpowers/sdd/2026-09-19-09-collaboration-sharing-audit/reports/task-7-members-de-collaboration-ui-mobile.png",
+    "variantSha256": "82f188ab33ca6df5579e42cd76f6c26bf9339b020f79507b0a208c219b579daa",
+    "restoredSha256": "4e91c7d81a273e74287b75a10b2268b5cf14bc8f7d939e53ef577488b3bd17f5"
+  },
+  {
+    "originalPath": ".superpowers/sdd/2026-09-19-09-collaboration-sharing-audit/reports/task-7-members-en-collaboration-ui-desktop.png",
+    "retainedVariant": "historical-variants/corrected-browser/.superpowers/sdd/2026-09-19-09-collaboration-sharing-audit/reports/task-7-members-en-collaboration-ui-desktop.png",
+    "variantSha256": "cf1c933b44fb968a5d6d8992abb1cc59266cffb4c134321cc84cfbd4a99cb8d8",
+    "restoredSha256": "fbcf0f88c68c8f34a840a739d61ba8d1a1a6c1ffa135a7ec708012ad6657335a"
+  },
+  {
+    "originalPath": ".superpowers/sdd/2026-09-19-09-collaboration-sharing-audit/reports/task-7-members-en-collaboration-ui-mobile.png",
+    "retainedVariant": "historical-variants/corrected-browser/.superpowers/sdd/2026-09-19-09-collaboration-sharing-audit/reports/task-7-members-en-collaboration-ui-mobile.png",
+    "variantSha256": "671aef5372e008908beee652d9faedf822f74783f997d7f63ad7d4b88fb416bc",
+    "restoredSha256": "a384979a6cde638b91b50694e38aee9799394375e4b28fa83e4ef3afa06273f4"
+  },
+  {
+    "originalPath": ".superpowers/sdd/2026-09-19-09-collaboration-sharing-audit/reports/task-7-sharing-de-collaboration-ui-desktop.png",
+    "retainedVariant": "historical-variants/corrected-browser/.superpowers/sdd/2026-09-19-09-collaboration-sharing-audit/reports/task-7-sharing-de-collaboration-ui-desktop.png",
+    "variantSha256": "eb923d90a5f8f5bb8b1ca32c345ea217a30a33d63ff4c888ea7a508c9e4184a4",
+    "restoredSha256": "dda9036a09f85e2cde6113785df2ed6f848768bd381e2b14ae8d901e43d515b4"
+  },
+  {
+    "originalPath": ".superpowers/sdd/2026-09-19-09-collaboration-sharing-audit/reports/task-7-sharing-de-collaboration-ui-mobile.png",
+    "retainedVariant": "historical-variants/corrected-browser/.superpowers/sdd/2026-09-19-09-collaboration-sharing-audit/reports/task-7-sharing-de-collaboration-ui-mobile.png",
+    "variantSha256": "66a5862057561538e1e98afda969ca971e5debe774d07b6bc0b2b02480e164b6",
+    "restoredSha256": "75a0ef93e6a337d2d5bf17193de73a1ec282f7f8f1852686851129e26724c761"
+  },
+  {
+    "originalPath": ".superpowers/sdd/2026-09-19-09-collaboration-sharing-audit/reports/task-7-sharing-en-collaboration-ui-desktop.png",
+    "retainedVariant": "historical-variants/corrected-browser/.superpowers/sdd/2026-09-19-09-collaboration-sharing-audit/reports/task-7-sharing-en-collaboration-ui-desktop.png",
+    "variantSha256": "8caa9f6d9d96392792560e23d8cd01423bdfd7e7d080314a266f88d61fea4f34",
+    "restoredSha256": "ce4cf234723068d1931e6f85d65b9436bf7e1ce329f1565a29c6b519d9ae5517"
+  },
+  {
+    "originalPath": ".superpowers/sdd/2026-09-19-09-collaboration-sharing-audit/reports/task-7-sharing-en-collaboration-ui-mobile.png",
+    "retainedVariant": "historical-variants/corrected-browser/.superpowers/sdd/2026-09-19-09-collaboration-sharing-audit/reports/task-7-sharing-en-collaboration-ui-mobile.png",
+    "variantSha256": "fb38b5f0bad531f879049d14dd0f2fed81890a5a7b6ffd4b6601abf20de56111",
+    "restoredSha256": "121f7ad3dfb7657d547394da72b3032d497e7cc5422a690c3dc361d82c7f8f20"
+  },
+  {
+    "originalPath": ".superpowers/sdd/2026-09-19-09-collaboration-sharing-audit/reports/task-7-workspace-de-collaboration-ui-desktop.png",
+    "retainedVariant": "historical-variants/corrected-browser/.superpowers/sdd/2026-09-19-09-collaboration-sharing-audit/reports/task-7-workspace-de-collaboration-ui-desktop.png",
+    "variantSha256": "a6e8602b9b803d2105cdd6a4ee8a586594e89c87863f6dae13977b68e79216cb",
+    "restoredSha256": "842e50159e791df1ba0c3b144bd373abf7b38c5502387338d1157c91460cfd12"
+  },
+  {
+    "originalPath": ".superpowers/sdd/2026-09-19-09-collaboration-sharing-audit/reports/task-7-workspace-de-collaboration-ui-mobile.png",
+    "retainedVariant": "historical-variants/corrected-browser/.superpowers/sdd/2026-09-19-09-collaboration-sharing-audit/reports/task-7-workspace-de-collaboration-ui-mobile.png",
+    "variantSha256": "26adebf62b615a684e9af02e1f3b97d9bf8b949db628b7af8a85126e408f98b6",
+    "restoredSha256": "5b63da7b4b26ec9f8bf7b43425792a8ffb4cb9779980a7349263c9cea2d81444"
+  },
+  {
+    "originalPath": ".superpowers/sdd/2026-09-19-09-collaboration-sharing-audit/reports/task-7-workspace-en-collaboration-ui-desktop.png",
+    "retainedVariant": "historical-variants/corrected-browser/.superpowers/sdd/2026-09-19-09-collaboration-sharing-audit/reports/task-7-workspace-en-collaboration-ui-desktop.png",
+    "variantSha256": "93b6801d7bc69c9ba13742ea86595ae79b852afbef9a9232c5a79f9066922726",
+    "restoredSha256": "1768bd7ea5be51c6bb2756eefe790a5ce88dacedd0b49b47c11f008676d14470"
+  },
+  {
+    "originalPath": ".superpowers/sdd/2026-09-19-09-collaboration-sharing-audit/reports/task-7-workspace-en-collaboration-ui-mobile.png",
+    "retainedVariant": "historical-variants/corrected-browser/.superpowers/sdd/2026-09-19-09-collaboration-sharing-audit/reports/task-7-workspace-en-collaboration-ui-mobile.png",
+    "variantSha256": "f6aa7d759ae4a04d77aa39039ed9c57709a710374c1b24625d160a79e89e4ab4",
+    "restoredSha256": "e1a4938f37ba707bd9bfc7da5be9d9c2bea229948ad807b4d6d8d554e76fa763"
+  },
+  {
+    "originalPath": ".superpowers/sdd/2026-09-19-10-community-moderation-notifications/reports/task-7-community-de-community-ui-desktop.png",
+    "retainedVariant": "historical-variants/corrected-browser/.superpowers/sdd/2026-09-19-10-community-moderation-notifications/reports/task-7-community-de-community-ui-desktop.png",
+    "variantSha256": "3116def3d2fa1f1339e28886cb8f3f6c0c427f20fd2bb5d495bcbf2b9b5b5057",
+    "restoredSha256": "fc7d1908d45f33f71ba86ee03fd8f6aee29afc914f528927de23958dd08fcd96"
+  },
+  {
+    "originalPath": ".superpowers/sdd/2026-09-19-10-community-moderation-notifications/reports/task-7-community-de-community-ui-mobile.png",
+    "retainedVariant": "historical-variants/corrected-browser/.superpowers/sdd/2026-09-19-10-community-moderation-notifications/reports/task-7-community-de-community-ui-mobile.png",
+    "variantSha256": "249ca4d7541d931be8a71ccadab267e156f6a139eb808cc20d252cca49ca222c",
+    "restoredSha256": "b20b6019090f982b0e9820b4546fffe70296fa6bad1c13bb1d6c8be6450423e8"
+  },
+  {
+    "originalPath": ".superpowers/sdd/2026-09-19-10-community-moderation-notifications/reports/task-7-community-en-community-ui-desktop.png",
+    "retainedVariant": "historical-variants/corrected-browser/.superpowers/sdd/2026-09-19-10-community-moderation-notifications/reports/task-7-community-en-community-ui-desktop.png",
+    "variantSha256": "9ae033bc7239847ba7b7b581d794cccc76b316554b2304133a7c77f3329632ec",
+    "restoredSha256": "72209b94509ad6a909fc506ed29e4bd12672661b3e2733108c13e2b279b9d2b0"
+  },
+  {
+    "originalPath": ".superpowers/sdd/2026-09-19-10-community-moderation-notifications/reports/task-7-community-en-community-ui-mobile.png",
+    "retainedVariant": "historical-variants/corrected-browser/.superpowers/sdd/2026-09-19-10-community-moderation-notifications/reports/task-7-community-en-community-ui-mobile.png",
+    "variantSha256": "ebe8c209b23451ab3ff4cd3af52f8dc0173e82f484d7e5d47ab8164ac4777ca3",
+    "restoredSha256": "e91de3e14b4b5e733383157f8141a7a5e1e6f071d4ab1a235b613ff8b72f0cb7"
+  },
+  {
+    "originalPath": ".superpowers/sdd/2026-09-19-10-community-moderation-notifications/reports/task-7-notifications-de-community-ui-desktop.png",
+    "retainedVariant": "historical-variants/corrected-browser/.superpowers/sdd/2026-09-19-10-community-moderation-notifications/reports/task-7-notifications-de-community-ui-desktop.png",
+    "variantSha256": "7345fb4e3ca08facdf4d28fe4b33f741405074ddaf281d6eac080df18d1a6c41",
+    "restoredSha256": "e8a2bc0b9e2d92925a35fad0b9dbd6607973d2013047f16b32018b4d928d04c7"
+  },
+  {
+    "originalPath": ".superpowers/sdd/2026-09-19-10-community-moderation-notifications/reports/task-7-notifications-de-community-ui-mobile.png",
+    "retainedVariant": "historical-variants/corrected-browser/.superpowers/sdd/2026-09-19-10-community-moderation-notifications/reports/task-7-notifications-de-community-ui-mobile.png",
+    "variantSha256": "c6a6e06c1d5c290db8e371bf1c7cc9032a9a0e1566e5f73aa4738ee324a181ff",
+    "restoredSha256": "368f4c4dec95363ce42bb27289a01659fd07a224fd6836e2a702597850183663"
+  },
+  {
+    "originalPath": ".superpowers/sdd/2026-09-19-10-community-moderation-notifications/reports/task-7-notifications-en-community-ui-desktop.png",
+    "retainedVariant": "historical-variants/corrected-browser/.superpowers/sdd/2026-09-19-10-community-moderation-notifications/reports/task-7-notifications-en-community-ui-desktop.png",
+    "variantSha256": "e5ae762d7f2a942774377b1a3278d34d32ba5bc0c9aab9e8d204604f2e45e2ce",
+    "restoredSha256": "c14efa4bcd64fa219aa8611d0b5d6bdbf38f4fa878d2f10ba9f523cf32c2c118"
+  },
+  {
+    "originalPath": ".superpowers/sdd/2026-09-19-10-community-moderation-notifications/reports/task-7-notifications-en-community-ui-mobile.png",
+    "retainedVariant": "historical-variants/corrected-browser/.superpowers/sdd/2026-09-19-10-community-moderation-notifications/reports/task-7-notifications-en-community-ui-mobile.png",
+    "variantSha256": "b6cb6661929e5db197fe0e51ea58f98ad3f6e588836e8180b76709ca9c20f493",
+    "restoredSha256": "4f344ce4caa14154fa30fbda7fd0127c3c36ca61920f9a493aba82694fae2a1a"
+  },
+  {
+    "originalPath": ".superpowers/sdd/2026-09-19-10-community-moderation-notifications/reports/task-7-wishlist-de-community-ui-desktop.png",
+    "retainedVariant": "historical-variants/corrected-browser/.superpowers/sdd/2026-09-19-10-community-moderation-notifications/reports/task-7-wishlist-de-community-ui-desktop.png",
+    "variantSha256": "9ba5649a9862c5b144bc33c447c69e2eeb413adc87ea8e0f235d60ec347605ee",
+    "restoredSha256": "d83b6cb8ed29dabff2b536ca4f51ccd7ac3decd45f4914d8ef7f8b8812f8a22c"
+  },
+  {
+    "originalPath": ".superpowers/sdd/2026-09-19-10-community-moderation-notifications/reports/task-7-wishlist-de-community-ui-mobile.png",
+    "retainedVariant": "historical-variants/corrected-browser/.superpowers/sdd/2026-09-19-10-community-moderation-notifications/reports/task-7-wishlist-de-community-ui-mobile.png",
+    "variantSha256": "3ddc23f2c6be79f1dda9c8e1d51fced53bf5030d0b8a205e2fa661f906dfb51d",
+    "restoredSha256": "5226e43340cd14f76a673d94070d6b0861e0b6ce12cc0f1ef1afc7ca7282dcf6"
+  },
+  {
+    "originalPath": ".superpowers/sdd/2026-09-19-10-community-moderation-notifications/reports/task-7-wishlist-en-community-ui-desktop.png",
+    "retainedVariant": "historical-variants/corrected-browser/.superpowers/sdd/2026-09-19-10-community-moderation-notifications/reports/task-7-wishlist-en-community-ui-desktop.png",
+    "variantSha256": "3a2941eaeafa5674a7d996e122fcc3ae77a982e3cdeaab1330734ab2dcb71f40",
+    "restoredSha256": "bef36183cb3f4aadebfc509e7625fc69f1d346fdc417902911af5acb49d28189"
+  },
+  {
+    "originalPath": ".superpowers/sdd/2026-09-19-10-community-moderation-notifications/reports/task-7-wishlist-en-community-ui-mobile.png",
+    "retainedVariant": "historical-variants/corrected-browser/.superpowers/sdd/2026-09-19-10-community-moderation-notifications/reports/task-7-wishlist-en-community-ui-mobile.png",
+    "variantSha256": "02d0d9fe5319d35f343624bd572ef8fc392cdc2d3bdf1fac65afcee9c0ee72bf",
+    "restoredSha256": "0465caa82d9723ed7a06ec4266d133a738ba2166aed59c35b9342b6138ac34b9"
+  },
+  {
+    "originalPath": ".superpowers/sdd/2026-11-07-duplicate-filter-integration/duplicate-de-desktop.png",
+    "retainedVariant": "historical-variants/corrected-browser/.superpowers/sdd/2026-11-07-duplicate-filter-integration/duplicate-de-desktop.png",
+    "variantSha256": "f7a762861de954818a1d48f4c7b625697f1b5c7bc30fd071e5b2ab310d2a037d",
+    "restoredSha256": "fec20e282a8ab4d2686cddccf992ba576f1371ad04006999a52f47fa58233154"
+  },
+  {
+    "originalPath": ".superpowers/sdd/2026-11-07-duplicate-filter-integration/duplicate-de-mobile.png",
+    "retainedVariant": "historical-variants/corrected-browser/.superpowers/sdd/2026-11-07-duplicate-filter-integration/duplicate-de-mobile.png",
+    "variantSha256": "eb07f2e7c28f57bf9672061d932f8466073b47ce735bbfc353ac8ba0d2429d32",
+    "restoredSha256": "bc254496016f4dfd2270682cd783f73d16bfc86cb8730f4b51e85d79f17623d3"
+  },
+  {
+    "originalPath": ".superpowers/sdd/2026-11-07-duplicate-filter-integration/duplicate-en-desktop.png",
+    "retainedVariant": "historical-variants/corrected-browser/.superpowers/sdd/2026-11-07-duplicate-filter-integration/duplicate-en-desktop.png",
+    "variantSha256": "082fdc05eb810b73f15b57aaaaee8037779f985f6cab47e6e18827724a3b15c0",
+    "restoredSha256": "7c5a1a5095f22251b72b270b875ca9ec9306be9ba447ab8c470af8d1c86a5315"
+  },
+  {
+    "originalPath": ".superpowers/sdd/2026-11-07-duplicate-filter-integration/duplicate-en-mobile.png",
+    "retainedVariant": "historical-variants/corrected-browser/.superpowers/sdd/2026-11-07-duplicate-filter-integration/duplicate-en-mobile.png",
+    "variantSha256": "575752a9eb6c558232f0b8ebaa60e44d8ab8fa90e465ed86fa63ce6861986f0b",
+    "restoredSha256": "86d3d213580f157f8970ade8c11711ef3c7a622ab40475bb6e126cb35f27ed76"
+  },
+  {
+    "originalPath": ".superpowers/sdd/2026-11-07-market-batch-integration/market-de-mobile.png",
+    "retainedVariant": "historical-variants/corrected-browser/.superpowers/sdd/2026-11-07-market-batch-integration/market-de-mobile.png",
+    "variantSha256": "7fc95b9f5f64b011304f98545b67a894000ebac1efca4e94f8ae5e6fa527fa9d",
+    "restoredSha256": "615feb0208088089b27989ea8d4e443a3903824db443189dd063324190e4a00f"
+  },
+  {
+    "originalPath": ".superpowers/sdd/2026-11-07-market-batch-integration/market-en-desktop.png",
+    "retainedVariant": "historical-variants/corrected-browser/.superpowers/sdd/2026-11-07-market-batch-integration/market-en-desktop.png",
+    "variantSha256": "ba6c5329a441e71d40ac2da3886b1997704056fecefe0a821e17ae06823fde04",
+    "restoredSha256": "bcc263e37702cceb8c9a46408c6271c8ab5a3016bae7094037c1986e05460e9e"
+  },
+  {
+    "originalPath": ".superpowers/sdd/2026-11-07-market-batch-integration/market-en-mobile.png",
+    "retainedVariant": "historical-variants/corrected-browser/.superpowers/sdd/2026-11-07-market-batch-integration/market-en-mobile.png",
+    "variantSha256": "a5a3c638d23c2fb0c7a2ac7221e03ff41eff2ba637eff7cd24830cd074eedf96",
+    "restoredSha256": "cfa2f5ec4baf76ba8e4244c5877b09fbe32a50d6ca65488f66993ae24ae131d2"
+  }
+]

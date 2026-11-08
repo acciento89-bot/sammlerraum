@@ -1,0 +1,26 @@
+[WebServer] (node:14876) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:14875) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 7 tests using 1 worker
+
+(node:14895) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [media] › e2e/media-read.spec.ts:18:3 › production media read headers and revocation › public derivative revalidates after revocation while private receipts never disclose bytes (392ms)
+(node:14901) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 [desktop] › e2e/location-labels.spec.ts:85:3 › storage QR labels › owner prints a private label and scans to localized contents; anonymous and other owner cannot see it (1.6s)
+  ✓  3 [desktop] › e2e/media-documents.spec.ts:105:5 › item media and private documents › public item can have a purchase receipt that remains private (de) (36.8s)
+  ✓  4 [desktop] › e2e/media-documents.spec.ts:105:5 › item media and private documents › public item can have a purchase receipt that remains private (en) (35.0s)
+(node:15092) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] ⨯ Error: The destination stream closed early.
+[WebServer]     at ignore-listed frames {
+[WebServer]   digest: '2721222846'
+[WebServer] }
+  ✓  5 [mobile] › e2e/location-labels.spec.ts:85:3 › storage QR labels › owner prints a private label and scans to localized contents; anonymous and other owner cannot see it (1.3s)
+  ✓  6 [mobile] › e2e/media-documents.spec.ts:105:5 › item media and private documents › public item can have a purchase receipt that remains private (de) (35.0s)
+  ✓  7 [mobile] › e2e/media-documents.spec.ts:105:5 › item media and private documents › public item can have a purchase receipt that remains private (en) (35.0s)
+
+  7 passed (2.5m)

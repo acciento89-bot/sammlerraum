@@ -43,7 +43,7 @@
   - `AIProvider.analyzeCollectible(input): Promise<CollectibleAnalysis>`
   - `requestItemAnalysis(actor, itemId, assetIds): Promise<AIAnalysisJob>`.
 
-- [ ] **Step 1: Write failing no-auto-mutation test**
+- [x] **Step 1: Write failing no-auto-mutation test**
 
 ```ts
 it("stores suggestions without changing the item", async () => {
@@ -55,12 +55,12 @@ it("stores suggestions without changing the item", async () => {
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run packages/domain/src/ai/ai-analysis-service.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement canonical analysis schema**
+- [x] **Step 3: Implement canonical analysis schema**
 
 ```ts
 export const CollectibleAnalysisSchema = z.object({
@@ -82,7 +82,7 @@ export const CollectibleAnalysisSchema = z.object({
 
 Persist `AIAnalysisJob`, usage metadata, status, provider/model, and immutable suggestion payload.
 
-- [ ] **Step 4: Migrate and test**
+- [x] **Step 4: Migrate and test**
 
 Run:
 ```bash
@@ -92,7 +92,7 @@ pnpm vitest run packages/domain/src/ai
 
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/ai packages/contracts/src/ai.ts packages/db packages/domain/src/ai
@@ -113,7 +113,7 @@ git commit -m "feat: add provider-neutral AI analysis model"
 - Consumes: `AI_OPENAI_API_KEY`, `AI_OPENAI_MODEL`.
 - Produces: `OpenAICollectibleProvider` implementing `AIProvider`.
 
-- [ ] **Step 1: Write failing schema-validation test**
+- [x] **Step 1: Write failing schema-validation test**
 
 ```ts
 it("rejects provider output that does not satisfy the canonical schema", async () => {
@@ -123,21 +123,21 @@ it("rejects provider output that does not satisfy the canonical schema", async (
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run packages/ai/src/openai-provider.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement adapter**
+- [x] **Step 3: Implement adapter**
 
 Use the official SDK response API with a system instruction that explicitly forbids asserting authenticity/value/grading/provenance as facts and requires structured JSON conforming to `CollectibleAnalysisSchema`. Convert only authorized image bytes to provider input. Parse and validate the final output through Zod before returning it.
 
-- [ ] **Step 4: Run tests**
+- [x] **Step 4: Run tests**
 
 Run: `pnpm vitest run packages/ai/src/openai-provider.test.ts`  
 Expected: PASS using a fake SDK client; no real API request in CI.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/ai packages/config .env.example
@@ -157,7 +157,7 @@ git commit -m "feat: add initial AI vision provider"
 - Consumes: `ai.analyze-item { analysisJobId }`.
 - Produces: validated persisted suggestion set + usage metrics.
 
-- [ ] **Step 1: Write failing retry/private-media tests**
+- [x] **Step 1: Write failing retry/private-media tests**
 
 ```ts
 it("does not create a second suggestion set on retry", async () => {
@@ -173,21 +173,21 @@ it("fails if a referenced asset is no longer authorized for the requesting user"
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run apps/worker/src/jobs/analyze-item.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement handler**
+- [x] **Step 3: Implement handler**
 
 Re-check current media policy before provider call. Accept image-purpose assets only; never follow arbitrary document links. Record provider/model/input image count and provider-reported usage if available.
 
-- [ ] **Step 4: Run tests**
+- [x] **Step 4: Run tests**
 
 Run: `pnpm vitest run apps/worker/src/jobs/analyze-item.test.ts`  
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add apps/worker/src/jobs/analyze-item* apps/worker/src/main.ts
@@ -206,7 +206,7 @@ git commit -m "feat: process AI item analysis jobs"
 **Interfaces:**
 - Produces: `applySuggestions(actor, analysisId, selections)`.
 
-- [ ] **Step 1: Write failing rejection/partial-acceptance test**
+- [x] **Step 1: Write failing rejection/partial-acceptance test**
 
 ```ts
 it("applies selected title but leaves rejected manufacturer untouched", async () => {
@@ -220,21 +220,21 @@ it("applies selected title but leaves rejected manufacturer untouched", async ()
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run packages/domain/src/ai/suggestion-apply-service.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement explicit selections**
+- [x] **Step 3: Implement explicit selections**
 
 Only whitelisted fields can be applied. Catalog candidate linking requires a separate explicit candidate selection. Condition/grading/value/authenticity/provenance remain outside automatic apply.
 
-- [ ] **Step 4: Run tests**
+- [x] **Step 4: Run tests**
 
 Run: `pnpm vitest run packages/domain/src/ai`  
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/domain/src/ai apps/web/src/app/api/v1/ai
@@ -256,7 +256,7 @@ git commit -m "feat: require confirmation for AI suggestions"
 **Interfaces:**
 - Produces: photo selection → queued analysis → progress → review → apply flow; `getAIUsage(userId, period)`.
 
-- [ ] **Step 1: Write failing E2E confirmation test**
+- [x] **Step 1: Write failing E2E confirmation test**
 
 ```ts
 test("AI suggestions do not change the item until the user confirms them", async ({ page }) => {
@@ -267,16 +267,16 @@ test("AI suggestions do not change the item until the user confirms them", async
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm --filter @sammlerraum/web exec playwright test e2e/ai-capture.spec.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement UI**
+- [x] **Step 3: Implement UI**
 
 Show warnings prominently, confidence only as provider evidence aid, never as authenticity score. Poll job status with bounded backoff. Display usage count through usage service so billing plan can enforce quotas later.
 
-- [ ] **Step 4: Run E2E/build**
+- [x] **Step 4: Run E2E/build**
 
 Run:
 ```bash
@@ -286,7 +286,7 @@ pnpm --filter @sammlerraum/web build
 
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add apps/web packages/domain/src/ai/usage-service.ts

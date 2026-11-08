@@ -1,0 +1,129 @@
+{
+  "scope": "Single consolidated whole-phase review correction; complete local source verification. Remote exact-source CI and actual production/Search Console gates still required.",
+  "baseReviewedSource": "9253e5cdd2c9bdba74e80cc2210be35d12bac4dd",
+  "reviewFindings": {
+    "critical": 0,
+    "important": 3,
+    "minor": 1,
+    "addressed": 4,
+    "rereviewPerformed": false
+  },
+  "native": {
+    "passed": 3114,
+    "files": 297,
+    "failed": 0,
+    "skipped": 0,
+    "todo": 0,
+    "durationSeconds": 331.89
+  },
+  "compiledBrowser": {
+    "seo": 22,
+    "marketing": 4,
+    "actualReleaseVerifier": 1,
+    "releaseChecks": 23,
+    "legacyPublic": 4,
+    "total": 31
+  },
+  "largeHierarchy": {
+    "items": 10001,
+    "ancestorDepth": 8,
+    "discoveryMs": 325.197416,
+    "thresholdProbeExecutionMs": 165.424,
+    "rootPlan": "Limit",
+    "probeResultRows": 10001,
+    "capacityClaim": "Measured owned test fixture only; sparse eligibility still checked under unchanged query deadlines."
+  },
+  "rootAndWebTypesPassed": true,
+  "recursiveLintPassed": true,
+  "workerAndWebBuildPassed": true,
+  "realHttpProtocolContracts": 6,
+  "previousLighthouseBaseline": "18 real runs retained in task-6-lighthouse-proof.json; final exact-source CI must rerun Lighthouse",
+  "productionPassed": false,
+  "searchConsoleVerified": false,
+  "artifacts": [
+    {
+      "path": "whole-phase-review.md",
+      "sha256": "8e3f15efa71093a718711374ff7b27c65a405553f649f841a5069925064461ed"
+    },
+    {
+      "path": "review-fix-red.log",
+      "sha256": "b0e4b932857735eb3881b2a4807c2d6ae9b33ac0aff8c3587c1401fb5a1b742e"
+    },
+    {
+      "path": "review-browser-red.log",
+      "sha256": "e8aa31fb09193274e3c0bb1489b757cd87682fd8b825cb508579c008c5457015"
+    },
+    {
+      "path": "review-images-red.log",
+      "sha256": "3836634c620f644cdc991aacb2c98a2d06dea591a5d3aa7b2987481c70ca4196"
+    },
+    {
+      "path": "review-fix-focused.log",
+      "sha256": "d453da9c9fc96ec3d8a09f3a897e3db68643a878f4797b471d0935ff5b550c28"
+    },
+    {
+      "path": "review-root-types-final.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "review-web-types-final.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "review-lint.log",
+      "sha256": "86b006ef6e6351f9c37d0702460f3e754539dd427d418b1ccdf4c851fec8965a"
+    },
+    {
+      "path": "review-worker-build.log",
+      "sha256": "917e742a8487553b3b76406c534b4f2359b2612f264b5770cd4fbd525670485a"
+    },
+    {
+      "path": "review-web-build.log",
+      "sha256": "86cc47ed7116f3915bced991609658330aa92ccf5d567c21a22917d10be5b7b0"
+    },
+    {
+      "path": "review-seo-browser.log",
+      "sha256": "1c406a9d41b8be800aa246bf4395b73b1e0e128c53a29b87a226357e247a1bee"
+    },
+    {
+      "path": "review-marketing-browser.log",
+      "sha256": "3820e27b9ef78d9adac2de32a8b846c8d2adcfe752baf8636ee2c315895c22e5"
+    },
+    {
+      "path": "review-seo-release.log",
+      "sha256": "fbbe3f6f7efb69de7fdddb28abcd9f04285fa644a51c46893da11f0db7dcc5af"
+    },
+    {
+      "path": "review-legacy-public-browser.log",
+      "sha256": "0c754b9818cd97743087d55973cb3e472072649e1bf84f1a109237f30cab170a"
+    },
+    {
+      "path": "review-whole-native.json",
+      "sha256": "25b3b2a420f392605e00dacfd331b5a08342f1f669181c6fd9abb159fb0845da"
+    },
+    {
+      "path": "review-whole-native.log",
+      "sha256": "7182b925a864b5819a6ff94c004a2c9a738723a97427f9acb7040aaff2878295"
+    },
+    {
+      "path": "review-native-variant-retention.json",
+      "sha256": "321a48f0096ecbbe8b4d53a332358c64f3cdb17bee0d2c79e52ef4c23c6d7d38"
+    },
+    {
+      "path": "review-browser-variant-retention.json",
+      "sha256": "ced7095ec2a7e8df42edc997d565c5d879d0c16630730ea17a123521de50f38a"
+    },
+    {
+      "path": "review-sitemap-scale-latest.json",
+      "sha256": "91d2880e761fc5e15d92bee2da43dd7e79f5511865e1972f3928897ab85abbb3"
+    },
+    {
+      "path": "review-coordinator-contracts.log",
+      "sha256": "02a5f8caf25ee985ad1f930288961e1f750873d13561686436efd163fbfa10c3"
+    },
+    {
+      "path": "review-http-contracts.log",
+      "sha256": "e34d58e1e628ee34c015a2b9ac898db2a77884c7acb4057fdf5375ceba600f32"
+    }
+  ]
+}

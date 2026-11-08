@@ -1,0 +1,22 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/worker/src/jobs/insurance-report.integration.test.ts [ apps/worker/src/jobs/insurance-report.integration.test.ts ]
+Error: Cannot find module './insurance-report-repository' imported from '/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/worker/src/jobs/insurance-report.integration.test.ts'
+ ❯ apps/worker/src/jobs/insurance-report.integration.test.ts:5:92
+
+
+Caused by: Error: Failed to load url ./insurance-report-repository (resolved id: ./insurance-report-repository) in /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/worker/src/jobs/insurance-report.integration.test.ts. Does the file exist?
+ ❯ loadAndTransform ../../../../SSK%20SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/node_modules/.pnpm/vite@7.3.6_@types+node@24.5.2_jiti@2.7.0/node_modules/vite/dist/node/chunks/config.js:22739:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  no tests
+   Start at  00:23:02
+   Duration  621ms (transform 201ms, setup 6ms, collect 0ms, tests 0ms, environment 0ms, prepare 53ms)
+

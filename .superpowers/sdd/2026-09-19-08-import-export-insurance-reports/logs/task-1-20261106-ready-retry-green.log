@@ -1,0 +1,13 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ✓ |workspace| packages/domain/src/imports/import-service.integration.test.ts (11 tests) 2736ms
+   ✓ resumable frozen import generations > rolls back row previews and progress after an actual final statement timeout  2024ms
+ ✓ |workspace| packages/domain/src/imports/import-service.test.ts (10 tests) 16ms
+ ✓ |workspace| packages/db/src/import-jobs.integration.test.ts (4 tests) 334ms
+
+ Test Files  3 passed (3)
+      Tests  25 passed (25)
+   Start at  20:51:25
+   Duration  3.90s (transform 159ms, setup 7ms, collect 418ms, tests 3.09s, environment 0ms, prepare 94ms)
+

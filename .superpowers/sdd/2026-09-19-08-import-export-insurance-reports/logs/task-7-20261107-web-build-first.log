@@ -1,0 +1,19 @@
+
+> @sammlerraum/web@ build /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web
+> next build
+
+▲ Next.js 16.3.5 (Turbopack)
+✓ Running next.config.ts took 156ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 5.2s
+  Running TypeScript ...
+src/components/imports/import-detail.tsx(19,256): error TS2322: Type 'string' is not assignable to type 'number'.
+src/components/imports/import-detail.tsx(27,987): error TS2322: Type 'string' is not assignable to type 'number'.
+src/lib/import-routes.ts(24,113): error TS2322: Type 'Uint8Array<ArrayBufferLike>' is not assignable to type 'BodyInit | null | undefined'.
+  Type 'Uint8Array<ArrayBufferLike>' is missing the following properties from type 'URLSearchParams': size, append, delete, get, and 2 more.
+Failed to type check.
+
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @sammlerraum/web@ build: `next build`
+Exit status 1

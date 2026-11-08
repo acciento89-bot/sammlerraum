@@ -1,0 +1,88 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+stdout | packages/domain/src/catalog/catalog-money-mutation.test.ts > actual canonical catalog money mutation integration > carries all 10100 interpreted paths through the actual bounded canonical maintenance wrapper
+{"check":"M4_CANONICAL_MAX_CARRY_SOURCE_READY","paths":10100}
+
+stdout | packages/domain/src/catalog/catalog-money-mutation.test.ts > actual canonical catalog money mutation integration > carries all 10100 interpreted paths through the actual bounded canonical maintenance wrapper
+{"check":"M4_CANONICAL_MAX_CARRY","paths":10100,"elapsedMs":29171,"revision":2}
+
+ ✓ |workspace| packages/domain/src/catalog/catalog-money-mutation.test.ts (14 tests) 54996ms
+   ✓ actual canonical catalog money mutation integration > carries all 10100 interpreted paths through the actual bounded canonical maintenance wrapper  54152ms
+ ❯ |workspace| packages/domain/src/money/legacy-money-store.test.ts (29 tests | 2 failed) 751ms
+   ✓ legacy money real Prisma transaction store > reads actual present raw money as unknown rather than inventing absence 21ms
+   × legacy money real Prisma transaction store > native strict catalog lookup still rejects duplicate ENTRY paths without an event 28ms
+     → expected PrismaClientKnownRequestError{ …(7) } to match object { meta: { code: '23514' } }
+(6 matching properties omitted from actual)
+   × legacy money real Prisma transaction store > native strict catalog lookup still rejects duplicate VARIANT paths without an event 20ms
+     → expected PrismaClientKnownRequestError{ …(7) } to match object { meta: { code: '23514' } }
+(6 matching properties omitted from actual)
+   ✓ legacy money real Prisma transaction store > rejects malformed selected catalog money rather than turning it into missing 18ms
+   ✓ legacy money real Prisma transaction store > rejects oversized selected variant arrays rather than reporting an absent target 7ms
+   ✓ legacy money real Prisma transaction store > reads real missing and valid historical catalog values without current-unit inference 10ms
+   ✓ legacy money real Prisma transaction store > authorizes before decoding foreign tokens and compares every actual fact field 11ms
+   ✓ legacy money real Prisma transaction store > classifies the actual raw generation without changing its amount or generation 12ms
+   ✓ legacy money real Prisma transaction store > copies ineligible declared units using the original assertion identity 20ms
+   ✓ legacy money real Prisma transaction store > origin revocation makes dependent copies unknown and invalidates stale retain 27ms
+   ✓ legacy money real Prisma transaction store > evidence erasure invalidates the old token without inventing revocation 26ms
+   ✓ legacy money real Prisma transaction store > authoring receipts survive actor-only redaction 14ms
+   ✓ legacy money real Prisma transaction store > detects equal-value ABA raw writes and serializes concurrent classifications 19ms
+   ✓ legacy money real Prisma transaction store > revokes an old assertion after a raw generation replacement without reinterpreting the new raw 36ms
+   ✓ legacy money real Prisma transaction store > origin deletion produces unknown copies and invalidates the previous token 25ms
+   ✓ legacy money real Prisma transaction store > rejects database receipts that satisfy shape but contradict the pinned authoring scale 4ms
+   ✓ legacy money real Prisma transaction store > does not mark an unsupported historical currency as eligible from a shaped database assertion 4ms
+   ✓ legacy money real Prisma transaction store > requires persisted operator authority and forbids catalog owner attestations 21ms
+   ✓ legacy money real Prisma transaction store > never gives a moderator access to somebody else's private money 4ms
+   ✓ legacy money real Prisma transaction store > resolved facts cannot cross transactions or survive another assertion in the same transaction 12ms
+   ✓ legacy money real Prisma transaction store > custom money deletion creates a durable missing token and reinsertion cannot pass its ABA precondition 17ms
+   ✓ legacy money real Prisma transaction store > supports actual outer ReadCommitted writers without opening a nested transaction 6ms
+   ✓ legacy money real Prisma transaction store > cannot silently retain independently interpreted destination meaning when copying an unknown source 15ms
+   ✓ legacy money real Prisma transaction store > deleting an intermediate copy preserves the flattened original evidence 28ms
+   ✓ legacy money real Prisma transaction store > authoritative custom assertions use the actual definition/generation and erase idempotently 19ms
+   ✓ legacy money real Prisma transaction store > preserves actual pre-migration zero values as unknown in both personal families 3ms
+   ✓ legacy money real Prisma transaction store > requires the actual numeric catalog snapshot version rather than a string lookalike 5ms
+   ✓ legacy money real Prisma transaction store > closes ReadCommitted COPY origin ERASE races without partial copy 29ms
+   ✓ legacy money real Prisma transaction store > closes ReadCommitted COPY origin REVOKE races without partial copy 30ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/money/legacy-money-store.test.ts > legacy money real Prisma transaction store > native strict catalog lookup still rejects duplicate ENTRY paths without an event
+ FAIL  |workspace| packages/domain/src/money/legacy-money-store.test.ts > legacy money real Prisma transaction store > native strict catalog lookup still rejects duplicate VARIANT paths without an event
+AssertionError: expected PrismaClientKnownRequestError{ …(7) } to match object { meta: { code: '23514' } }
+(6 matching properties omitted from actual)
+
+- Expected
++ Received
+
+- {
++ PrismaClientKnownRequestError {
+    "meta": {
++     "driverAdapterError": DriverAdapterError {
++       "message": "Invalid catalog money path",
++       "cause": {
+          "code": "23514",
++         "column": undefined,
++         "detail": undefined,
++         "hint": undefined,
++         "kind": "postgres",
++         "message": "Invalid catalog money path",
++         "originalCode": "23514",
++         "originalMessage": "Invalid catalog money path",
++         "severity": "ERROR",
++       },
++       "name": "DriverAdapterError",
++     },
+    },
+  }
+
+ ❯ packages/domain/src/money/legacy-money-store.test.ts:174:7
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  2 failed | 41 passed (43)
+   Start at  14:00:29
+   Duration  56.61s (transform 193ms, setup 6ms, collect 490ms, tests 55.75s, environment 0ms, prepare 92ms)
+

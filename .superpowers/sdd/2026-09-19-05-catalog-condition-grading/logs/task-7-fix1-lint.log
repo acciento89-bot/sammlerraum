@@ -1,0 +1,41 @@
+
+> sammlerraum@ lint /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+> pnpm -r lint
+
+Scope: 9 of 10 workspace projects
+packages/config lint$ prettier --check .
+packages/contracts lint$ prettier --check .
+packages/queue lint$ prettier --check .
+packages/storage lint$ prettier --check .
+packages/contracts lint: Checking formatting...
+packages/config lint: Checking formatting...
+packages/queue lint: Checking formatting...
+packages/storage lint: Checking formatting...
+packages/config lint: All matched files use Prettier code style!
+packages/config lint: Done
+packages/testing lint$ prettier --check .
+packages/storage lint: All matched files use Prettier code style!
+packages/queue lint: All matched files use Prettier code style!
+packages/queue lint: Done
+packages/storage lint: Done
+packages/testing lint: Checking formatting...
+packages/contracts lint: All matched files use Prettier code style!
+packages/contracts lint: Done
+packages/testing lint: All matched files use Prettier code style!
+packages/testing lint: Done
+packages/db lint$ prettier --check .
+packages/db lint: Checking formatting...
+packages/db lint: All matched files use Prettier code style!
+packages/db lint: Done
+packages/domain lint$ prettier --check .
+packages/domain lint: Checking formatting...
+packages/domain lint: All matched files use Prettier code style!
+packages/domain lint: Done
+apps/web lint$ prettier --check src e2e messages package.json next.config.ts playwright.config.ts tsconfig.json
+apps/worker lint$ prettier --check src package.json
+apps/worker lint: Checking formatting...
+apps/web lint: Checking formatting...
+apps/worker lint: All matched files use Prettier code style!
+apps/worker lint: Done
+apps/web lint: All matched files use Prettier code style!
+apps/web lint: Done

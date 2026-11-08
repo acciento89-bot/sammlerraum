@@ -1,0 +1,40 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ✓ |workspace| apps/worker/src/jobs/cleanup-media.test.ts (5 tests) 27ms
+ ❯ |workspace| apps/worker/src/jobs/private-artifact-expiry.integration.test.ts (4 tests | 1 failed) 713ms
+   ✓ actual private artifact expiry through known media manifests > erases expired job snapshots and only their known unlinked output files 259ms
+   ✓ actual private artifact expiry through known media manifests > preserves an active generation lease even if its request has just expired 50ms
+   ✓ actual private artifact expiry through known media manifests > keeps file deletion behind actual output I/O ownership and reconciles after settlement 119ms
+   × actual private artifact expiry through known media manifests > preserves a document explicitly retained by a live own item while expiring its job 32ms
+     → 
+Invalid `prisma.$executeRaw()` invocation:
+
+
+Raw query failed. Code: `23502`. Message: `null value in column "position" of relation "DocumentLink" violates not-null constraint`
+ ✓ |workspace| apps/worker/src/jobs/import-source-cleanup.integration.test.ts (4 tests) 496ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/worker/src/jobs/private-artifact-expiry.integration.test.ts > actual private artifact expiry through known media manifests > preserves a document explicitly retained by a live own item while expiring its job
+PrismaClientKnownRequestError: 
+Invalid `prisma.$executeRaw()` invocation:
+
+
+Raw query failed. Code: `23502`. Message: `null value in column "position" of relation "DocumentLink" violates not-null constraint`
+ ❯ vn.handleRequestError node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:238:13
+ ❯ vn.handleAndLogRequestError node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:184:12
+ ❯ vn.request node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:153:12
+ ❯ a node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:1014:24
+ ❯ fixture apps/worker/src/jobs/private-artifact-expiry.integration.test.ts:7:11
+
+ ❯ apps/worker/src/jobs/private-artifact-expiry.integration.test.ts:15:108
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 2 passed (3)
+      Tests  1 failed | 12 passed (13)
+   Start at  02:48:00
+   Duration  2.20s (transform 231ms, setup 8ms, collect 525ms, tests 1.24s, environment 0ms, prepare 119ms)
+

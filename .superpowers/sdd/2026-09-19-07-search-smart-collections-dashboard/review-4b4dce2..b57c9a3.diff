@@ -1,0 +1,3092 @@
+# Review package: 4b4dce2d0eefc5d4ec85139efbbf2de71d50dd6d..b57c9a371a566030eac31d74c0c7df3de85dc83b
+
+## Commits
+b57c9a3 feat: add authorized owned item search milestone
+
+## Files changed
+ .github/workflows/ci.yml                           |    3 +
+ apps/web/src/app/api/v1/search/items/route.ts      |    4 +
+ apps/web/src/lib/item-search-route-dependencies.ts |   21 +
+ .../src/lib/item-search-routes.integration.test.ts |  154 +++
+ apps/web/src/lib/item-search-routes.test.ts        |   38 +
+ apps/web/src/lib/item-search-routes.ts             |  108 ++
+ docs/search/owned-item-search.md                   |   17 +
+ packages/contracts/package.json                    |    3 +-
+ packages/contracts/src/item-search.ts              |  121 ++
+ packages/db/package.json                           |    3 +-
+ packages/db/src/search-sql.ts                      |    2 +
+ packages/domain/package.json                       |    3 +-
+ packages/domain/src/api/read-dependency-errors.ts  |   44 +
+ .../domain/src/search/item-search-service.test.ts  | 1205 ++++++++++++++++++++
+ packages/domain/src/search/item-search-service.ts  |  133 +++
+ packages/domain/src/search/search-compiler.ts      |  347 ++++++
+ packages/domain/src/search/search-cursor.ts        |   64 ++
+ packages/domain/src/search/search-input.test.ts    |   54 +
+ .../src/search/search-read.integration.test.ts     |  174 +++
+ packages/domain/src/search/search-read.test.ts     |  116 ++
+ packages/domain/src/search/search-read.ts          |   70 ++
+ packages/domain/src/search/search-text.ts          |   41 +
+ packages/domain/src/search/search-typed-guards.ts  |   52 +
+ packages/domain/src/valuations/valuation-query.ts  |   43 +-
+ 24 files changed, 2776 insertions(+), 44 deletions(-)
+
+## Diff
+diff --git a/.github/workflows/ci.yml b/.github/workflows/ci.yml
+index 9276454..6faea80 100644
+--- a/.github/workflows/ci.yml
++++ b/.github/workflows/ci.yml
+@@ -143,20 +143,23 @@ jobs:
+           packages/domain/src/catalog/catalog-read-service.test.ts
+           packages/domain/src/catalog/catalog-history-service.test.ts
+           packages/domain/src/catalog/initialize-catalog.test.ts
+           apps/web/src/lib/catalog-history-routes.integration.test.ts
+           apps/web/src/lib/catalog-link-routes.integration.test.ts
+           packages/domain/src/catalog/proposal-service.test.ts
+           packages/domain/src/condition/condition-service.test.ts
+           packages/domain/src/grading/grading-service.test.ts
+           packages/domain/src/valuations/valuation-service.test.ts
+           packages/domain/src/valuations/valuation-query.test.ts
++          packages/domain/src/search/item-search-service.test.ts
++          packages/domain/src/search/search-read.integration.test.ts
++          apps/web/src/lib/item-search-routes.integration.test.ts
+           apps/web/src/lib/valuation-routes.integration.test.ts
+           packages/domain/src/market-data/market-data-service.test.ts apps/worker/src/jobs/market-sync.integration.test.ts
+           apps/worker/src/jobs/market-request-permit.integration.test.ts
+           apps/worker/src/jobs/production-market.integration.test.ts
+           apps/web/src/lib/grading-routes.integration.test.ts
+           apps/web/src/lib/condition-routes.integration.test.ts
+           apps/web/src/lib/catalog-proposal-routes.integration.test.ts
+           packages/domain/src/locations/location-service.test.ts
+           apps/web/src/lib/security-service.integration.test.ts
+           apps/web/src/app/api/v1/items/resource-route.integration.test.ts
+diff --git a/apps/web/src/app/api/v1/search/items/route.ts b/apps/web/src/app/api/v1/search/items/route.ts
+new file mode 100644
+index 0000000..2cfb9c0
+--- /dev/null
++++ b/apps/web/src/app/api/v1/search/items/route.ts
+@@ -0,0 +1,4 @@
++import { itemSearchRouteHandlers } from "../../../../../lib/item-search-route-dependencies";
++export async function GET(request: Request) {
++  return (await itemSearchRouteHandlers()).GET(request);
++}
+diff --git a/apps/web/src/lib/item-search-route-dependencies.ts b/apps/web/src/lib/item-search-route-dependencies.ts
+new file mode 100644
+index 0000000..7f2e9c5
+--- /dev/null
++++ b/apps/web/src/lib/item-search-route-dependencies.ts
+@@ -0,0 +1,21 @@
++import {
++  createItemSearchRouteDependencies,
++  createItemSearchRouteHandlers,
++} from "./item-search-routes";
++const dependencies = async () => {
++  const [{ auth }, { createPrismaClient }, { serverEnv }] = await Promise.all([
++    import("./auth"),
++    import("@sammlerraum/db/create-client"),
++    import("@sammlerraum/config/server"),
++  ]);
++  return createItemSearchRouteHandlers(
++    createItemSearchRouteDependencies(
++      createPrismaClient(serverEnv.DATABASE_URL, { bounded: true }),
++      auth,
++    ),
++  );
++};
++let handlers: ReturnType<typeof dependencies> | undefined;
++export function itemSearchRouteHandlers() {
++  return (handlers ??= dependencies());
++}
+diff --git a/apps/web/src/lib/item-search-routes.integration.test.ts b/apps/web/src/lib/item-search-routes.integration.test.ts
+new file mode 100644
+index 0000000..82de6be
+--- /dev/null
++++ b/apps/web/src/lib/item-search-routes.integration.test.ts
+@@ -0,0 +1,154 @@
++import { randomUUID } from "node:crypto";
++import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
++import { createTestDatabaseClient } from "@sammlerraum/db/test-database";
++const enabled = process.env.RUN_DATABASE_INTEGRATION === "1";
++const db = enabled ? createTestDatabaseClient() : undefined;
++const owner = `searchroute_${randomUUID()}`;
++describe.runIf(enabled)("native authorized item search route", () => {
++  beforeAll(async () => {
++    await db!.user.create({
++      data: { id: owner, name: "Search", email: `${owner}@example.invalid` },
++    });
++    const c = await db!.collection.create({ data: { ownerId: owner, name: "Search" } });
++    await db!.collectibleItem.create({
++      data: { ownerId: owner, collectionId: c.id, title: "Route watch" },
++    });
++  });
++  afterAll(async () => {
++    await db?.user.delete({ where: { id: owner } });
++    await db?.$disconnect();
++  });
++  async function handlers(authenticated = true) {
++    const path = "./item-search-routes";
++    const m = await import(path).catch(() => null);
++    expect(m?.createItemSearchRouteHandlers, "native search route must exist").toBeTypeOf(
++      "function",
++    );
++    const getSession = vi.fn(async () => (authenticated ? { user: { id: owner } } : null));
++    return {
++      getSession,
++      handler: m!.createItemSearchRouteHandlers(
++        m!.createItemSearchRouteDependencies(db!, { api: { getSession } }),
++      ),
++    };
++  }
++  it("returns only owned summaries with fresh authentication and no-store/request ID", async () => {
++    const { handler, getSession } = await handlers();
++    const r = await handler.GET(
++      new Request("https://example.invalid/api/v1/search/items?text=watch"),
++    );
++    expect(r.status).toBe(200);
++    expect(r.headers.get("cache-control")).toBe("no-store");
++    expect(r.headers.get("x-request-id")).toBeTruthy();
++    expect(getSession).toHaveBeenCalledWith(
++      expect.objectContaining({ query: { disableCookieCache: true, disableRefresh: true } }),
++    );
++    const body = await r.json();
++    expect(body.total).toBe(1);
++    expect(body.items[0].title).toBe("Route watch");
++    expect(Object.keys(body.items[0]).sort()).toEqual(
++      [
++        "id",
++        "title",
++        "collectionId",
++        "categoryTemplateId",
++        "conditionOptionId",
++        "quantity",
++        "visibility",
++        "tradeStatus",
++        "archivedAt",
++        "disposedAt",
++        "createdAt",
++        "updatedAt",
++      ].sort(),
++    );
++  });
++  it.each([
++    "f=null",
++    "text=%FF",
++    "text=%",
++    "text=a&%74ext=b",
++    "unknown=secret",
++    "limit=01",
++    "limit=+1",
++    "f=%7B%22version%22%3A1%2C%22version%22%3A1%7D",
++  ])("rejects malformed query %s", async (q) => {
++    const { handler } = await handlers();
++    const r = await handler.GET(new Request(`https://example.invalid/api/v1/search/items?${q}`));
++    expect(r.status).toBe(400);
++    const text = await r.text();
++    expect(text).not.toContain("secret");
++    expect(r.headers.get("cache-control")).toBe("no-store");
++  });
++  it("rejects encoded query size before parsing and missing authentication", async () => {
++    const { handler } = await handlers();
++    expect(
++      (await handler.GET(new Request(`https://example.invalid/?text=${"x".repeat(32769)}`))).status,
++    ).toBe(414);
++    const unauth = await handlers(false);
++    expect((await unauth.handler.GET(new Request("https://example.invalid/"))).status).toBe(401);
++  });
++  it("keeps unavailable and reference errors closed", async () => {
++    const { handler } = await handlers();
++    for (const [root, code] of [
++      [{ kind: "not", child: { kind: "duplicate", value: true } }, "FILTER_UNAVAILABLE"],
++      [{ kind: "collection", test: { op: "eq", value: randomUUID() } }, "FILTER_REFERENCE_INVALID"],
++    ]) {
++      const r = await handler.GET(
++        new Request(
++          `https://example.invalid/?f=${encodeURIComponent(JSON.stringify({ version: 1, root }))}`,
++        ),
++      );
++      expect(r.status).toBe(422);
++      const body = await r.json();
++      expect(body.error.code).toBe(code);
++      expect(Object.keys(body.error).sort()).toEqual(["code", "message", "requestId"]);
++    }
++  });
++  it("preserves specific filter codes and generic safe dependency/invariant responses", async () => {
++    const { handler } = await handlers();
++    for (const [raw, code] of [
++      [
++        JSON.stringify({ version: 2, root: { kind: "duplicate", value: true } }),
++        "FILTER_VERSION_UNSUPPORTED",
++      ],
++      [
++        JSON.stringify({
++          version: 1,
++          root: {
++            kind: "and",
++            children: Array.from({ length: 51 }, () => ({ kind: "duplicate", value: true })),
++          },
++        }),
++        "FILTER_TOO_COMPLEX",
++      ],
++    ]) {
++      const response = await handler.GET(
++        new Request(`https://example.invalid/?f=${encodeURIComponent(raw!)}`),
++      );
++      expect(response.status).toBe(400);
++      expect((await response.json()).error.code).toBe(code);
++    }
++    const path = "./item-search-routes";
++    const m = await import(path);
++    const { ItemSearchError } = await import("@sammlerraum/contracts/item-search");
++    for (const [code, status] of [
++      ["SEARCH_UNAVAILABLE", 503],
++      ["SEARCH_INVARIANT", 500],
++    ] as const) {
++      const dependencies = m.createItemSearchRouteDependencies(db!, {
++        api: { getSession: async () => ({ user: { id: owner } }) },
++      });
++      dependencies.service.searchItems = async () => {
++        throw new ItemSearchError(code);
++      };
++      const response = await m
++        .createItemSearchRouteHandlers(dependencies)
++        .GET(new Request("https://example.invalid/?text=secret"));
++      expect(response.status).toBe(status);
++      const body = await response.json();
++      expect(body.error.code).toBe(code);
++      expect(JSON.stringify(body)).not.toContain("secret");
++    }
++  });
++});
+diff --git a/apps/web/src/lib/item-search-routes.test.ts b/apps/web/src/lib/item-search-routes.test.ts
+new file mode 100644
+index 0000000..1562ef8
+--- /dev/null
++++ b/apps/web/src/lib/item-search-routes.test.ts
+@@ -0,0 +1,38 @@
++import { describe, expect, it } from "vitest";
++import { readItemSearchQuery } from "./item-search-routes";
++import { SEARCH_MAX_QUERY_BYTES } from "@sammlerraum/contracts/item-search";
++describe("encoded item search query boundary", () => {
++  it("retains literal question marks in query values", () => {
++    expect(readItemSearchQuery(new Request("https://example.invalid/?text=what?now"))).toEqual({
++      text: "what?now",
++    });
++  });
++  it("counts the entire encoded query before any percent decoding", () => {
++    expect(() =>
++      readItemSearchQuery(
++        new Request(`https://example.invalid/?text=x?${"a".repeat(SEARCH_MAX_QUERY_BYTES)}`),
++      ),
++    ).toThrow("Search query is too large");
++  });
++  it("includes the query marker in the 32KiB encoded budget", () => {
++    expect(() =>
++      readItemSearchQuery(
++        new Request(`https://example.invalid/?text=${"a".repeat(SEARCH_MAX_QUERY_BYTES - 5)}`),
++      ),
++    ).toThrow("Search query is too large");
++  });
++  it.each([
++    "text=%C0%AF",
++    "text=%ED%A0%80",
++    "%ZZ=x",
++    "text=a&text=b",
++    "constructor=x",
++    "limit=1e1",
++    "limit=1.0",
++    "text=x&&limit=1",
++  ])("rejects malformed bytes/duplicate/unknown/decimal grammar %s", (q) => {
++    expect(() => readItemSearchQuery(new Request(`https://example.invalid/?${q}`))).toThrow(
++      "SEARCH_INVALID",
++    );
++  });
++});
+diff --git a/apps/web/src/lib/item-search-routes.ts b/apps/web/src/lib/item-search-routes.ts
+new file mode 100644
+index 0000000..4a103d1
+--- /dev/null
++++ b/apps/web/src/lib/item-search-routes.ts
+@@ -0,0 +1,108 @@
++import { ApiError } from "@sammlerraum/contracts/errors";
++import { parseItemFilterJson, FilterValidationError } from "@sammlerraum/contracts/search";
++import { ItemSearchError, SEARCH_MAX_QUERY_BYTES } from "@sammlerraum/contracts/item-search";
++import {
++  createItemSearchService,
++  type SearchDatabase,
++} from "@sammlerraum/domain/search/item-search-service";
++import { apiRoute } from "./api/route-handler";
++type Authentication = {
++  api: {
++    getSession(input: {
++      headers: Headers;
++      query: { disableCookieCache: true; disableRefresh: true };
++    }): Promise<{ user: { id: string } } | null>;
++  };
++};
++export function createItemSearchRouteDependencies(database: SearchDatabase, auth: Authentication) {
++  return {
++    getSession: (headers: Headers) =>
++      auth.api.getSession({ headers, query: { disableCookieCache: true, disableRefresh: true } }),
++    service: createItemSearchService(database),
++  };
++}
++export function readItemSearchQuery(request: Request) {
++  const marker = request.url.indexOf("?");
++  const encoded = marker < 0 ? "" : request.url.slice(marker).split("#", 1)[0]!;
++  if (Buffer.byteLength(encoded) > SEARCH_MAX_QUERY_BYTES)
++    throw new ApiError("SEARCH_QUERY_TOO_LARGE", 414, "Search query is too large");
++  const raw = encoded.slice(1);
++  const values: Record<string, string> = Object.create(null);
++  try {
++    for (const segment of raw ? raw.split("&") : []) {
++      if (!segment) throw Error();
++      const separator = segment.indexOf("=");
++      const key = decodeURIComponent(
++        (separator < 0 ? segment : segment.slice(0, separator)).replaceAll("+", " "),
++      );
++      const value = decodeURIComponent(
++        (separator < 0 ? "" : segment.slice(separator + 1)).replaceAll("+", " "),
++      );
++      if (
++        !["text", "f", "lifecycle", "limit", "cursor"].includes(key) ||
++        Object.hasOwn(values, key)
++      )
++        throw Error();
++      values[key] = value;
++    }
++  } catch {
++    throw new ItemSearchError("SEARCH_INVALID");
++  }
++  if (values.limit !== undefined && !/^[1-9][0-9]*$/u.test(values.limit))
++    throw new ItemSearchError("SEARCH_INVALID");
++  return {
++    ...(values.text !== undefined ? { text: values.text } : {}),
++    ...(values.f !== undefined ? { filter: parseItemFilterJson(values.f) } : {}),
++    ...(values.lifecycle !== undefined ? { lifecycle: values.lifecycle } : {}),
++    ...(values.limit !== undefined ? { limit: Number(values.limit) } : {}),
++    ...(values.cursor !== undefined ? { cursor: values.cursor } : {}),
++  };
++}
++function mapped(error: unknown): never {
++  if (error instanceof FilterValidationError)
++    throw new ApiError(
++      error.code,
++      error.code === "FILTER_UNAVAILABLE" ? 422 : 400,
++      error.code === "FILTER_UNAVAILABLE" ? "Filter is unavailable" : "Invalid search filter",
++    );
++  if (error instanceof ItemSearchError) {
++    const code = error.code;
++    throw new ApiError(
++      code,
++      code === "SEARCH_INVALID"
++        ? 400
++        : code === "FILTER_REFERENCE_INVALID"
++          ? 422
++          : code === "SEARCH_UNAVAILABLE"
++            ? 503
++            : 500,
++      code === "FILTER_REFERENCE_INVALID"
++        ? "Filter reference is unavailable"
++        : code === "SEARCH_INVALID"
++          ? "Invalid search request"
++          : code === "SEARCH_UNAVAILABLE"
++            ? "Search is temporarily unavailable"
++            : "An unexpected error occurred",
++    );
++  }
++  throw error;
++}
++export function createItemSearchRouteHandlers(
++  dependencies: ReturnType<typeof createItemSearchRouteDependencies>,
++) {
++  return {
++    GET: apiRoute(async (request) => {
++      try {
++        const session = await dependencies.getSession(request.headers);
++        if (!session) throw new ApiError("UNAUTHORIZED", 401, "Authentication required");
++        const result = await dependencies.service.searchItems(
++          { userId: session.user.id },
++          readItemSearchQuery(request),
++        );
++        return Response.json(result, { headers: { "cache-control": "no-store" } });
++      } catch (error) {
++        return mapped(error);
++      }
++    }),
++  };
++}
+diff --git a/docs/search/owned-item-search.md b/docs/search/owned-item-search.md
+new file mode 100644
+index 0000000..e064368
+--- /dev/null
++++ b/docs/search/owned-item-search.md
+@@ -0,0 +1,17 @@
++# Owned item search (Phase07 Task2A)
++
++`GET /api/v1/search/items` searches the fresh authenticated user's live items under live owned collections. It supports `text`, raw versioned filter JSON in `f`, `lifecycle` (`ACTIVE` default, `ARCHIVED`, `DISPOSED`, `ALL`), `limit` (20 default, 50 maximum), and `cursor`. Unknown or repeated keys, malformed percent/UTF-8 sequences, and nondecimal limits are rejected. The encoded query is bounded to 32 KiB before decoding; filters retain their separate 16 KiB raw/canonical and structural limits. Text is bounded to 200 codepoints/800 UTF-8 bytes both before and after NFKC normalization and trimming. JSON `f=null` is invalid; omission means no filter.
++
++Every response contains a whitelisted item summary, an exact safe-integer total before the cursor, `nextCursor`, fixed `scope: OWNED`, lifecycle, and `readAt`. Stored visibility is a fact to filter; it does not authorize access to another owner's items. Disposed items take precedence over archived items when both timestamps exist. Private notes, prices, document names, storage identifiers and valuation history never enter the summary.
++
++One RepeatableRead transaction resolves references, checks relevant retained typed facts, counts matches, and fetches the limited page. Search uses fixed parameterized SQL and EXISTS relations; there is no client SQL, column, JSON path or sort interpolation. Invalid references and unavailable families reject the entire filter even under NOT/OR or on an empty result. Missing scoped custom/catalog values only match the selected collection/category. NOT complements the resulting nonnull boolean, including outside that selector scope.
++
++Exact typed string comparisons use deterministic `C` collation and are case-sensitive. Substring/prefix operands and broad text treat percent, underscore, backslash and quotes literally. Broad text uses PostgreSQL NFKC plus `ILIKE COLLATE "und-x-icu"` over title/public description, tag identity, item identifiers, grading text, custom text/selected options, exact linked catalog entry/selected variant titles and explicit translations, retained text/selected option keys and labels, and DE/EN category labels. Private notes and other variants/unselected options are excluded. Tag and custom-selection identity comparisons retain their JavaScript producer folding. Broad matching does not promise Unicode case-fold equivalence or German ß=ss equivalence.
++
++Deployment requires PostgreSQL17 with the deterministic ICU root collation `pg_catalog."und-x-icu"`. Missing collation fails closed as `SEARCH_UNAVAILABLE`; no database-default collation fallback is used. Native tests exercise DE/EN, composed/decomposed accents, uppercase umlauts/ẞ and literal wildcard characters. ICU upgrades require rerunning these regressions. The CI postgres17-bookworm service runs the same tests.
++
++Each read has a 12-second total processing/acquisition/retry budget, at most three attempts for recognized SQLSTATE40001 serialization failures, a maximum 5-second transaction and 2-second acquisition, per-statement 2-second and lock-wait 500-ms limits, recomputed from remaining time with post-await checks. These bound processing, not authentication or network response transfer. LIMIT bounds returned rows, not count/scans/guards. Timeout/dependency failures return no partial page. HTTP uses closed 400 syntax/complexity/version/cursor, 401 authentication, 414 encoded size, 422 reference/unavailable, 503 dependency/budget, and 500 invariant errors with no submitted values or database causes. Responses are no-store and include request IDs.
++
++Cursors use canonical bounded base64url JSON and bind actor, normalized query/filter, lifecycle, limit, fixed sort, compiler/text versions and optional trusted saved-query id/revision. They are unsigned replay-context checks, not authorization or a retained snapshot. Every later request revalidates live definitions and facts; edits, inserts and deletions may change subsequent page membership and totals. `readAt` labels only that response's snapshot.
++
++This is a partial Task2A milestone. Legacy monetary ranges, all market leaves, duplicates and shared discovery remain unavailable pending their actual interpretation/eligibility/authorization/relation producers. Raw purchase/custom/catalog money presence and latest manual per-unit comparisons are supported. Manual denomination matches the latest stored row before applying range criteria; older matching currencies cannot reappear. The native producer currently admits stored exponents 0,2,3,4; a syntactically valid exponent1 query matches no current manual row. No migration, provider activation, classification or full Task2/Phase07 completion is implied.
+diff --git a/packages/contracts/package.json b/packages/contracts/package.json
+index c64574f..f6d0281 100644
+--- a/packages/contracts/package.json
++++ b/packages/contracts/package.json
+@@ -10,21 +10,22 @@
+     "./items": "./src/items.ts",
+     "./locations": "./src/locations.ts",
+     "./openapi": "./src/openapi.ts",
+     "./profile": "./src/profile.ts",
+     "./catalog": "./src/catalog.ts",
+     "./catalog-proposals": "./src/catalog-proposals.ts",
+     "./condition": "./src/condition.ts",
+     "./grading": "./src/grading.ts",
+     "./catalog-reads": "./src/catalog-reads.ts",
+     "./valuations": "./src/valuations.ts",
+-    "./search": "./src/search.ts"
++    "./search": "./src/search.ts",
++    "./item-search": "./src/item-search.ts"
+   },
+   "scripts": {
+     "build": "pnpm typecheck",
+     "lint": "prettier --check .",
+     "typecheck": "tsc --noEmit --project ../../tsconfig.base.json"
+   },
+   "dependencies": {
+     "zod": "4.1.11"
+   }
+ }
+diff --git a/packages/contracts/src/item-search.ts b/packages/contracts/src/item-search.ts
+new file mode 100644
+index 0000000..0df3b41
+--- /dev/null
++++ b/packages/contracts/src/item-search.ts
+@@ -0,0 +1,121 @@
++import { z } from "zod";
++import { validUnicode, utf8Length } from "./search-parser";
++import { parseItemFilter, type ItemFilter } from "./search";
++import { VisibilitySchema } from "./collections";
++import { TradeStatusSchema, CanonicalTimestampSchema } from "./items";
++
++export const SEARCH_MAX_QUERY_BYTES = 32768;
++export const SEARCH_MAX_RESPONSE_BYTES = 1048576;
++export const SearchLifecycleSchema = z.enum(["ACTIVE", "ARCHIVED", "DISPOSED", "ALL"]);
++export type SearchLifecycle = z.infer<typeof SearchLifecycleSchema>;
++export class ItemSearchError extends Error {
++  constructor(
++    readonly code:
++      | "SEARCH_INVALID"
++      | "SEARCH_UNAVAILABLE"
++      | "SEARCH_INVARIANT"
++      | "FILTER_REFERENCE_INVALID",
++  ) {
++    super(code);
++    this.name = "ItemSearchError";
++  }
++}
++export function searchFail(code: ItemSearchError["code"]): never {
++  throw new ItemSearchError(code);
++}
++const textValid = (v: string) =>
++  validUnicode(v) && !v.includes("\0") && [...v].length <= 200 && utf8Length(v) <= 800;
++const querySchema = z
++  .object({
++    text: z
++      .string()
++      .refine(textValid)
++      .transform((v) => v.normalize("NFKC").trim())
++      .refine(textValid)
++      .default(""),
++    filter: z.unknown().optional(),
++    lifecycle: SearchLifecycleSchema.default("ACTIVE"),
++    limit: z.number().int().min(1).max(50).default(20),
++    cursor: z
++      .string()
++      .min(1)
++      .max(2048)
++      .regex(/^[A-Za-z0-9_-]+$/u)
++      .optional(),
++  })
++  .strict();
++export type ItemSearchQuery = {
++  text?: string;
++  filter?: ItemFilter | null;
++  lifecycle?: SearchLifecycle;
++  limit?: number;
++  cursor?: string | undefined;
++};
++export type NormalizedItemSearchQuery = {
++  text: string;
++  filter: ItemFilter | null;
++  lifecycle: SearchLifecycle;
++  limit: number;
++  cursor?: string | undefined;
++};
++export function parseItemSearchQuery(input: unknown): NormalizedItemSearchQuery {
++  const result = querySchema.safeParse(input);
++  if (!result.success) return searchFail("SEARCH_INVALID");
++  const { filter, ...query } = result.data;
++  return {
++    ...query,
++    filter: filter === undefined || filter === null ? null : parseItemFilter(filter),
++  };
++}
++export const ItemSummarySchema = z
++  .object({
++    id: z.string().uuid(),
++    title: z.string().min(1).max(200),
++    collectionId: z.string().uuid(),
++    categoryTemplateId: z.string().uuid().nullable(),
++    conditionOptionId: z.string().uuid().nullable(),
++    quantity: z.number().int().positive().safe(),
++    visibility: VisibilitySchema,
++    tradeStatus: TradeStatusSchema,
++    archivedAt: CanonicalTimestampSchema.nullable(),
++    disposedAt: CanonicalTimestampSchema.nullable(),
++    createdAt: CanonicalTimestampSchema,
++    updatedAt: CanonicalTimestampSchema,
++  })
++  .strict();
++export type ItemSummary = z.infer<typeof ItemSummarySchema>;
++export type SearchPage<T> = {
++  items: T[];
++  total: number;
++  nextCursor: string | null;
++  scope: "OWNED";
++  lifecycle: SearchLifecycle;
++  readAt: string;
++};
++export const ItemSearchPageSchema = z
++  .object({
++    items: z.array(ItemSummarySchema).max(50),
++    total: z.number().int().nonnegative().safe(),
++    nextCursor: z.string().max(2048).nullable(),
++    scope: z.literal("OWNED"),
++    lifecycle: SearchLifecycleSchema,
++    readAt: CanonicalTimestampSchema,
++  })
++  .strict();
++
++export const SearchCursorSchema = z
++  .object({
++    v: z.literal(1),
++    contextHash: z.string().regex(/^[0-9a-f]{64}$/u),
++    after: z
++      .object({
++        createdAt: CanonicalTimestampSchema,
++        id: z
++          .string()
++          .uuid()
++          .regex(/^[0-9a-f-]+$/u),
++      })
++      .strict(),
++  })
++  .strict();
++export type SearchCursor = z.infer<typeof SearchCursorSchema>;
+diff --git a/packages/db/package.json b/packages/db/package.json
+index a4f9083..6e4e9da 100644
+--- a/packages/db/package.json
++++ b/packages/db/package.json
+@@ -1,21 +1,22 @@
+ {
+   "name": "@sammlerraum/db",
+   "private": true,
+   "type": "module",
+   "exports": {
+     "./client": "./src/client.ts",
+     "./create-client": "./src/create-client.ts",
+     "./health": "./src/health.ts",
+     "./media-lock": "./src/media-lock.ts",
+     "./test-database": "./src/test-database.ts",
+-    "./catalog-types": "./src/catalog-types.ts"
++    "./catalog-types": "./src/catalog-types.ts",
++    "./search-sql": "./src/search-sql.ts"
+   },
+   "scripts": {
+     "build": "pnpm typecheck",
+     "lint": "prettier --check .",
+     "prisma": "prisma",
+     "typecheck": "tsc --noEmit --project ../../tsconfig.base.json"
+   },
+   "dependencies": {
+     "@prisma/adapter-pg": "7.10.0",
+     "@prisma/client": "7.10.0",
+diff --git a/packages/db/src/search-sql.ts b/packages/db/src/search-sql.ts
+new file mode 100644
+index 0000000..898752c
+--- /dev/null
++++ b/packages/db/src/search-sql.ts
+@@ -0,0 +1,2 @@
++/** Parameter-bound SQL construction for the owned search compiler. */
++export { Prisma } from "@prisma/client";
+diff --git a/packages/domain/package.json b/packages/domain/package.json
+index f57c62d..8b03ba9 100644
+--- a/packages/domain/package.json
++++ b/packages/domain/package.json
+@@ -26,21 +26,22 @@
+     "./condition/condition-service": "./src/condition/condition-service.ts",
+     "./grading/grading-service": "./src/grading/grading-service.ts",
+     "./catalog/catalog-read-service": "./src/catalog/catalog-read-service.ts",
+     "./catalog/initialize-catalog": "./src/catalog/initialize-catalog.ts",
+     "./money/money": "./src/money/money.ts",
+     "./valuations/valuation-service": "./src/valuations/valuation-service.ts",
+     "./market-data/market-data-service": "./src/market-data/market-data-service.ts",
+     "./valuations/valuation-query": "./src/valuations/valuation-query.ts",
+     "./valuations/market-display-policy": "./src/valuations/market-display-policy.ts",
+     "./money/currencies": "./src/money/currencies.ts",
+-    "./search/filter-ast": "./src/search/filter-ast.ts"
++    "./search/filter-ast": "./src/search/filter-ast.ts",
++    "./search/item-search-service": "./src/search/item-search-service.ts"
+   },
+   "scripts": {
+     "build": "pnpm typecheck",
+     "lint": "prettier --check .",
+     "typecheck": "tsc --noEmit --project ../../tsconfig.base.json"
+   },
+   "dependencies": {
+     "@sammlerraum/contracts": "workspace:*",
+     "@sammlerraum/storage": "workspace:*",
+     "file-type": "21.3.4",
+diff --git a/packages/domain/src/api/read-dependency-errors.ts b/packages/domain/src/api/read-dependency-errors.ts
+new file mode 100644
+index 0000000..b2321f5
+--- /dev/null
++++ b/packages/domain/src/api/read-dependency-errors.ts
+@@ -0,0 +1,44 @@
++export function errorCode(error: unknown, depth = 0): string | undefined {
++  if (!error || typeof error !== "object" || depth > 5) return;
++  const e = error as Record<string, unknown>;
++  for (const key of ["code", "originalCode"])
++    if (
++      typeof e[key] === "string" &&
++      [
++        "40001",
++        "40P01",
++        "57014",
++        "55P03",
++        "P1001",
++        "P1002",
++        "P1008",
++        "P1017",
++        "P2028",
++        "P2024",
++        "P2034",
++        "ETIMEDOUT",
++        "ECONNREFUSED",
++        "ECONNRESET",
++        "ENOTFOUND",
++        "08006",
++        "25P04",
++      ].includes(e[key])
++    )
++      return e[key];
++  // These are the connection causes emitted by the installed PostgreSQL adapter.
++  if (
++    typeof e.kind === "string" &&
++    ["DatabaseNotReachable", "ConnectionClosed", "SocketTimeout"].includes(e.kind)
++  )
++    return e.kind;
++  for (const key of ["meta", "cause", "driverAdapterError"]) {
++    const code = errorCode(e[key], depth + 1);
++    if (code) return code;
++  }
++}
++export function isReadDependencyFailure(error: unknown): boolean {
++  return errorCode(error) !== undefined;
++}
++export function isReadSerializationFailure(error: unknown): boolean {
++  return errorCode(error) === "40001";
++}
+diff --git a/packages/domain/src/search/item-search-service.test.ts b/packages/domain/src/search/item-search-service.test.ts
+new file mode 100644
+index 0000000..d41c752
+--- /dev/null
++++ b/packages/domain/src/search/item-search-service.test.ts
+@@ -0,0 +1,1205 @@
++import { randomUUID } from "node:crypto";
++import { afterAll, beforeAll, describe, expect, it } from "vitest";
++import { createTestDatabaseClient } from "@sammlerraum/db/test-database";
++import { Prisma } from "@sammlerraum/db/search-sql";
++import { createItemSearchService, type SearchDatabase } from "./item-search-service";
++import type { ItemFilterNode } from "@sammlerraum/contracts/search";
++import type { CustomFieldType } from "@sammlerraum/contracts/custom-fields";
++import { parseItemSearchQuery } from "@sammlerraum/contracts/item-search";
++import { encodeSearchCursor, searchContextHash } from "./search-cursor";
++const enabled = process.env.RUN_DATABASE_INTEGRATION === "1";
++const db = enabled ? createTestDatabaseClient() : undefined;
++const owner = `search_${randomUUID()}`,
++  foreign = `search_${randomUUID()}`;
++let collection: string,
++  otherCollection: string,
++  category: string,
++  condition: string,
++  item: string,
++  empty: string,
++  hidden: string,
++  entry: string,
++  variant: string;
++const custom = new Map<CustomFieldType, string>(),
++  catalog = new Map<CustomFieldType, string>();
++const instant = "2026-01-02T03:04:05.000Z";
++const values: Record<CustomFieldType, Prisma.InputJsonValue> = {
++  SHORT_TEXT: "Literal % _ \\ ' Café",
++  LONG_TEXT: "Long authored",
++  INTEGER: -9007199254740991,
++  DECIMAL: "2.000000000000000001",
++  DATE: "2024-02-29",
++  BOOLEAN: false,
++  URL: "https://example.invalid/path?q=1",
++  SINGLE_SELECT: "selected",
++  MULTI_SELECT: [],
++  MONEY: { amountMinor: 0, currency: "EUR" },
++};
++const typedTests: Record<CustomFieldType, unknown> = {
++  SHORT_TEXT: { op: "contains", value: "% _ \\ '" },
++  LONG_TEXT: { op: "startsWith", value: "Long" },
++  INTEGER: { op: "eq", value: -9007199254740991 },
++  DECIMAL: { op: "between", min: "2.000000000000000001", max: "2.000000000000000002" },
++  DATE: { op: "eq", value: "2024-02-29" },
++  BOOLEAN: { op: "eq", value: false },
++  URL: { op: "eq", value: "https://example.invalid/path?q=1" },
++  SINGLE_SELECT: { op: "eq", value: "selected" },
++  MULTI_SELECT: { op: "present" },
++  MONEY: { op: "present" },
++};
++const query = (database: SearchDatabase = db!) => createItemSearchService(database);
++async function search(root?: unknown, extra: object = {}) {
++  return query().searchItems(
++    { userId: owner },
++    {
++      filter: root
++        ? {
++            version: 1,
++            root: {
++              kind: "and",
++              children: [{ kind: "collection", test: { op: "eq", value: collection } }, root],
++            },
++          }
++        : null,
++      ...extra,
++    },
++  );
++}
++function typed(
++  kind: "customField" | "catalogAttribute",
++  type: CustomFieldType,
++  test: unknown,
++  target = "ENTRY",
++) {
++  return {
++    kind,
++    selector:
++      kind === "customField"
++        ? { source: "CUSTOM", collectionId: collection, definitionId: custom.get(type) }
++        : {
++            source: "CATALOG",
++            categoryTemplateId: category,
++            definitionId: catalog.get(type),
++            target,
++          },
++    predicate: { valueType: type, test },
++  };
++}
++async function ids(root: unknown) {
++  return (await search(root)).items.map((x) => x.id);
++}
++async function makeItem(data: Partial<Prisma.CollectibleItemUncheckedCreateInput> = {}) {
++  return db!.collectibleItem.create({
++    data: {
++      ownerId: owner,
++      collectionId: collection,
++      title: "Fixture",
++      createdAt: new Date(instant),
++      ...data,
++    },
++  });
++}
++describe.runIf(enabled)("owned item search PostgreSQL", () => {
++  beforeAll(async () => {
++    const [guard] = await db!.$queryRaw<
++      Array<{ name: string; version: string }>
++    >`SELECT current_database() AS name,current_setting('server_version') AS version`;
++    expect(guard!.name.endsWith("_test")).toBe(true);
++    expect(guard!.version.startsWith("17.")).toBe(true);
++    await db!.user.createMany({
++      data: [owner, foreign].map((id) => ({ id, name: "Search", email: `${id}@example.invalid` })),
++    });
++    collection = (await db!.collection.create({ data: { ownerId: owner, name: "Search" } })).id;
++    otherCollection = (await db!.collection.create({ data: { ownerId: foreign, name: "Search" } }))
++      .id;
++    category = (
++      await db!.categoryTemplate.create({
++        data: {
++          key: `search_${randomUUID().replaceAll("-", "")}`,
++          labels: {
++            create: [
++              { locale: "de", label: "Uhrenkategorie" },
++              { locale: "en", label: "Clock category" },
++            ],
++          },
++        },
++      })
++    ).id;
++    const scheme = await db!.conditionScheme.create({
++      data: {
++        categoryTemplateId: category,
++        key: `s_${randomUUID().replaceAll("-", "")}`,
++        labelDe: "Zustand",
++        labelEn: "Condition",
++      },
++    });
++    condition = (
++      await db!.conditionOption.create({
++        data: {
++          schemeId: scheme.id,
++          categoryTemplateId: category,
++          labelKey: "retained",
++          labelDe: "Alt",
++          labelEn: "Old",
++          position: 0,
++          active: false,
++        },
++      })
++    ).id;
++    entry = (
++      await db!.catalogEntry.create({
++        data: {
++          categoryTemplateId: category,
++          authored: {
++            text: {
++              language: "en",
++              title: "Linked title",
++              translations: [{ language: "de", title: "Katalogübersetzung" }],
++            },
++          },
++        },
++      })
++    ).id;
++    variant = (
++      await db!.catalogVariant.create({
++        data: {
++          entryId: entry,
++          active: false,
++          authored: { text: { title: "Retired selected variant" } },
++        },
++      })
++    ).id;
++    await db!.catalogVariant.create({
++      data: { entryId: entry, authored: { text: { title: "Secret other variant" } } },
++    });
++    item = (
++      await makeItem({
++        title: "Watch ÄÖÜẞ Cafe\u0301 100%_\\'",
++        categoryTemplateId: category,
++        conditionOptionId: condition,
++        catalogEntryId: entry,
++        catalogVariantId: variant,
++        publicDescription: "Public phrase",
++        privateNotes: "Private secret phrase",
++        purchaseAmountMinor: 0n,
++        purchaseCurrency: "EUR",
++        acquisitionDate: new Date("2024-02-29"),
++        visibility: "PUBLIC",
++        tradeStatus: "FOR_SALE",
++      })
++    ).id;
++    empty = (await makeItem({ title: "Empty" })).id;
++    hidden = (
++      await makeItem({ ownerId: foreign, collectionId: otherCollection, title: "Watch hidden" })
++    ).id;
++    await makeItem({
++      ownerId: foreign,
++      collectionId: otherCollection,
++      title: "Watch public foreign",
++      visibility: "PUBLIC",
++    });
++    const tag = await db!.tag.create({
++      data: { ownerId: owner, name: "İ TAG", normalizedName: "i\u0307 tag" },
++    });
++    await db!.itemTag.create({ data: { itemId: item, tagId: tag.id } });
++    await db!.itemIdentifier.create({
++      data: { itemId: item, type: "OTHER", value: "ID-literal", normalizedValue: "ID-LITERAL" },
++    });
++    await db!.grading.createMany({
++      data: [
++        {
++          itemId: item,
++          ownerId: owner,
++          provider: "PSA",
++          providerKey: "psa",
++          grade: "Mint",
++          certificateNo: "certificate-one",
++          certificateKey: "certificate-one",
++          comparableScale: "ten",
++          comparableValue: "9.5000",
++        },
++        {
++          itemId: item,
++          ownerId: owner,
++          provider: "Other",
++          providerKey: "other",
++          grade: "Wrong",
++          certificateNo: "certificate-two",
++          certificateKey: "certificate-two",
++        },
++      ],
++    });
++    await db!.valuation.createMany({
++      data: [
++        {
++          itemId: item,
++          ownerId: owner,
++          actorUserId: owner,
++          amountMinor: 12n,
++          currency: "EUR",
++          minorUnitExponent: 2,
++          observedAt: new Date("2025-01-01"),
++        },
++        {
++          itemId: item,
++          ownerId: owner,
++          actorUserId: owner,
++          amountMinor: 9007199254740993n,
++          currency: "JPY",
++          minorUnitExponent: 0,
++          observedAt: new Date("2026-01-01"),
++        },
++      ],
++    });
++    for (const [index, type] of Object.keys(values).entries()) {
++      const t = type as CustomFieldType;
++      const def = await db!.customFieldDefinition.create({
++        data: { collectionId: collection, name: t, normalizedName: t.toLowerCase(), type: t },
++      });
++      custom.set(t, def.id);
++      let columns: Partial<Prisma.CustomFieldValueUncheckedCreateInput> = {};
++      switch (t) {
++        case "SHORT_TEXT":
++          columns = { shortTextValue: values[t] as string };
++          break;
++        case "LONG_TEXT":
++          columns = { longTextValue: values[t] as string };
++          break;
++        case "INTEGER":
++          columns = { integerValue: BigInt(values[t] as number) };
++          break;
++        case "DECIMAL":
++          columns = { decimalValue: values[t] as string };
++          break;
++        case "DATE":
++          columns = { dateValue: new Date(values[t] as string) };
++          break;
++        case "BOOLEAN":
++          columns = { booleanValue: false };
++          break;
++        case "URL":
++          columns = { urlValue: values[t] as string };
++          break;
++        case "MONEY":
++          columns = { moneyAmountMinor: 0n, moneyCurrency: "EUR" };
++          break;
++        case "SINGLE_SELECT":
++        case "MULTI_SELECT": {
++          const option = await db!.customFieldOption.create({
++            data: {
++              fieldDefinitionId: def.id,
++              value: "Selected",
++              normalizedValue: "selected",
++              position: 0,
++            },
++          });
++          if (t === "SINGLE_SELECT") columns = { singleSelectOptionId: option.id };
++          break;
++        }
++      }
++      await db!.customFieldValue.create({
++        data: {
++          itemId: item,
++          collectionId: collection,
++          fieldDefinitionId: def.id,
++          fieldType: t,
++          ...columns,
++        },
++      });
++      const ad = await db!.catalogAttributeDefinition.create({
++        data: { categoryTemplateId: category, key: t.toLowerCase(), type: t, position: index },
++      });
++      catalog.set(t, ad.id);
++      if (t === "SINGLE_SELECT" || t === "MULTI_SELECT")
++        await db!.catalogAttributeOption.create({
++          data: {
++            definitionId: ad.id,
++            key: "selected",
++            position: 0,
++            labels: {
++              create: [
++                { locale: "de", label: "Ausgewählte Option" },
++                { locale: "en", label: "Chosen option" },
++              ],
++            },
++          },
++        });
++      await db!.catalogAttributeValue.create({
++        data: {
++          entryId: entry,
++          categoryTemplateId: category,
++          definitionId: ad.id,
++          targetKey: "entry",
++          value: values[t],
++        },
++      });
++    }
++    await db!.catalogAttributeValue.create({
++      data: {
++        entryId: entry,
++        categoryTemplateId: category,
++        variantId: variant,
++        definitionId: catalog.get("SHORT_TEXT")!,
++        targetKey: variant,
++        value: "Variant fact",
++      },
++    });
++  });
++  afterAll(async () => {
++    await db?.user.deleteMany({ where: { id: { in: [owner, foreign] } } });
++    if (db && entry) {
++      await db.catalogAttributeValue.deleteMany({ where: { entryId: entry } });
++      await db.catalogVariant.deleteMany({ where: { entryId: entry } });
++      await db.catalogEntry.delete({ where: { id: entry } });
++    }
++    if (db && category) {
++      await db.conditionOption.deleteMany({ where: { categoryTemplateId: category } });
++      await db.conditionScheme.deleteMany({ where: { categoryTemplateId: category } });
++      await db.categoryTemplate.delete({ where: { id: category } });
++    }
++    await db?.$disconnect();
++  });
++  it("does not include inaccessible private/public items in rows or total count", async () => {
++    const r = await search(undefined, { text: "watch" });
++    expect(r.total).toBe(1);
++    expect(r.items.map((x) => x.id)).toEqual([item]);
++    expect(r.items.map((x) => x.id)).not.toContain(hidden);
++  });
++  it.each(Object.keys(values) as CustomFieldType[])(
++    "executes custom %s stored type",
++    async (type) => {
++      expect(await ids(typed("customField", type, typedTests[type]))).toEqual([item]);
++      expect(await ids(typed("customField", type, { op: "missing" }))).toEqual([empty]);
++    },
++  );
++  it.each(Object.keys(values) as CustomFieldType[])(
++    "executes catalog %s stored type and scoped absence",
++    async (type) => {
++      expect(await ids(typed("catalogAttribute", type, typedTests[type]))).toEqual([item]);
++      expect(await ids(typed("catalogAttribute", type, { op: "missing" }))).toEqual([]);
++      expect(
++        await ids({ kind: "not", child: typed("catalogAttribute", type, { op: "missing" }) }),
++      ).toContain(empty);
++    },
++  );
++  it("handles collection/category/condition and stored enums", async () => {
++    for (const root of [
++      { kind: "collection", test: { op: "in", values: [collection] } },
++      { kind: "category", test: { op: "eq", value: category } },
++      { kind: "category", test: { op: "in", values: [category] } },
++      { kind: "condition", categoryTemplateId: category, test: { op: "eq", value: condition } },
++      { kind: "condition", categoryTemplateId: category, test: { op: "in", values: [condition] } },
++      { kind: "condition", categoryTemplateId: category, test: { op: "present" } },
++      { kind: "tradeStatus", test: { op: "in", values: ["FOR_SALE"] } },
++      { kind: "visibility", test: { op: "eq", value: "PUBLIC" } },
++    ])
++      expect(await ids(root)).toContain(item);
++    expect(await ids({ kind: "category", test: { op: "missing" } })).toEqual([empty]);
++    expect(
++      await ids({ kind: "condition", categoryTemplateId: category, test: { op: "missing" } }),
++    ).toEqual([]);
++  });
++  it("uses two-valued mixed NOT/OR, tags identity and literal values", async () => {
++    expect(await ids({ kind: "tags", test: { op: "hasAll", values: [" İ  TAG "] } })).toEqual([
++      item,
++    ]);
++    expect(
++      await ids({ kind: "tags", test: { op: "hasAny", values: ["missing", "İ TAG"] } }),
++    ).toEqual([item]);
++    expect(await ids({ kind: "tags", test: { op: "missing" } })).toEqual([empty]);
++    expect(
++      await ids({
++        kind: "not",
++        child: {
++          kind: "or",
++          children: [
++            { kind: "tags", test: { op: "present" } },
++            { kind: "purchaseMoney", test: { op: "present" } },
++          ],
++        },
++      }),
++    ).toEqual([empty]);
++    expect(await ids(typed("customField", "SINGLE_SELECT", { op: "eq", value: "absent" }))).toEqual(
++      [],
++    );
++  });
++  it("matches every ordered operator exactly, preserving decimal precision", async () => {
++    for (const [op, extra] of [
++      ["eq", { value: instant }],
++      ["in", { values: [instant] }],
++      ["lt", { value: "2027-01-01T00:00:00.000Z" }],
++      ["lte", { value: instant }],
++      ["gt", { value: "2025-01-01T00:00:00.000Z" }],
++      ["gte", { value: instant }],
++      ["between", { min: instant, max: instant }],
++    ] as const)
++      expect(await ids({ kind: "createdAt", test: { op, ...extra } })).toContain(item);
++    expect(
++      await ids({ kind: "updatedAt", test: { op: "gt", value: "2025-01-01T00:00:00.000Z" } }),
++    ).toContain(item);
++    expect(await ids({ kind: "acquisitionDate", test: { op: "present" } })).toEqual([item]);
++    expect(await ids({ kind: "acquisitionDate", test: { op: "missing" } })).toEqual([empty]);
++    for (const kind of ["customField", "catalogAttribute"] as const) {
++      expect(await ids(typed(kind, "DECIMAL", { op: "lt", value: "10" }))).toEqual([item]);
++      expect(await ids(typed(kind, "DECIMAL", { op: "eq", value: "2" }))).toEqual([]);
++      expect(await ids(typed(kind, "SHORT_TEXT", { op: "contains", value: "literal" }))).toEqual(
++        [],
++      );
++    }
++  });
++  it("requires grading components from one row and folds only provider ASCII", async () => {
++    expect(
++      await ids({
++        kind: "grading",
++        test: { op: "authored", provider: "pSa", grade: "Mint", certificateNo: "certificate-one" },
++      }),
++    ).toEqual([item]);
++    expect(
++      await ids({ kind: "grading", test: { op: "authored", provider: "PSA", grade: "Wrong" } }),
++    ).toEqual([]);
++    expect(
++      await ids({
++        kind: "grading",
++        test: {
++          op: "comparable",
++          provider: "PSA",
++          scale: "ten",
++          value: { op: "gte", value: "9.5" },
++        },
++      }),
++    ).toEqual([item]);
++    expect(await ids({ kind: "grading", test: { op: "missing" } })).toEqual([empty]);
++  });
++  it("selects latest manual before denomination, keeps bigint/per-unit values", async () => {
++    expect(
++      await ids({
++        kind: "manualMoney",
++        test: { op: "range", unit: { currency: "EUR", minorUnitExponent: 2 }, minMinor: "0" },
++      }),
++    ).toEqual([]);
++    expect(
++      await ids({
++        kind: "manualMoney",
++        test: {
++          op: "range",
++          unit: { currency: "JPY", minorUnitExponent: 0 },
++          minMinor: "9007199254740993",
++          maxMinor: "9007199254740993",
++        },
++      }),
++    ).toEqual([item]);
++    expect(await ids({ kind: "manualMoney", test: { op: "present" } })).toEqual([item]);
++    expect(await ids({ kind: "manualMoney", test: { op: "missing" } })).toEqual([empty]);
++    expect(await ids({ kind: "purchaseMoney", test: { op: "present" } })).toEqual([item]);
++    expect(await ids({ kind: "purchaseMoney", test: { op: "missing" } })).toEqual([empty]);
++  });
++  it.each([
++    "äöüß",
++    "Café",
++    "Cafe\u0301",
++    "100%_\\'",
++    "Public phrase",
++    "i\u0307 tag",
++    "ID-literal",
++    "certificate-one",
++    "Long authored",
++    "Selected",
++    "Uhrenkategorie",
++    "Clock category",
++    "Katalogübersetzung",
++    "Retired selected variant",
++    "Chosen option",
++    "Ausgewählte Option",
++  ])("searches literal Unicode broad whitelist: %s", async (text) => {
++    expect((await search(undefined, { text })).items.map((x) => x.id)).toEqual([item]);
++  });
++  it.each(["Private secret phrase", "Secret other variant", "100ZZ", "unselected option"])(
++    "excludes non-whitelisted/unselected/literal mismatch: %s",
++    async (text) => {
++      expect((await search(undefined, { text })).total).toBe(0);
++    },
++  );
++  it("uses retained exact selected variant facts, no entry fallback after removal", async () => {
++    expect(
++      await ids(
++        typed(
++          "catalogAttribute",
++          "SHORT_TEXT",
++          { op: "eq", value: "Variant fact" },
++          "SELECTED_VARIANT",
++        ),
++      ),
++    ).toEqual([item]);
++    expect(
++      await ids(
++        typed(
++          "catalogAttribute",
++          "SHORT_TEXT",
++          { op: "eq", value: values.SHORT_TEXT },
++          "SELECTED_VARIANT",
++        ),
++      ),
++    ).toEqual([]);
++    await db!.catalogAttributeValue.deleteMany({ where: { entryId: entry, variantId: variant } });
++    expect(
++      await ids(typed("catalogAttribute", "SHORT_TEXT", { op: "missing" }, "SELECTED_VARIANT")),
++    ).toEqual([item]);
++  });
++  it("rejects all unavailable families below NOT/OR even on empty candidates", async () => {
++    const leaves = [
++      { kind: "duplicate", value: true },
++      {
++        kind: "purchaseMoney",
++        test: {
++          op: "range",
++          unit: { currency: "EUR", minorUnitExponent: 2, unitKey: "x" },
++          minMinor: "0",
++        },
++      },
++      typed("customField", "MONEY", {
++        op: "range",
++        unit: { currency: "EUR", minorUnitExponent: 2, unitKey: "x" },
++        minMinor: "0",
++      }),
++      typed("catalogAttribute", "MONEY", {
++        op: "range",
++        unit: { currency: "EUR", minorUnitExponent: 2, unitKey: "x" },
++        minMinor: "0",
++      }),
++      {
++        kind: "marketMoney",
++        selector: {
++          mode: "CURRENT_ITEM_MAPPING",
++          providerId: "fixture",
++          identifierNamespace: "fixture",
++          identifierType: "product",
++          kind: "LAST_SOLD",
++          currency: "EUR",
++          sourceMetric: "market",
++          qualifiers: {},
++          minorUnitExponent: 2,
++        },
++        test: { op: "missing" },
++      },
++    ];
++    for (const leaf of leaves)
++      for (const root of [
++        { kind: "not", child: leaf },
++        {
++          kind: "or",
++          children: [{ kind: "visibility", test: { op: "eq", value: "PUBLIC" } }, leaf],
++        },
++      ])
++        await expect(search(root, { text: "no matches" })).rejects.toMatchObject({
++          code: "FILTER_UNAVAILABLE",
++        });
++  });
++  it("validates private/nonexistent/type/option references independent of Boolean matches", async () => {
++    const roots = [
++      { kind: "collection", test: { op: "eq", value: otherCollection } },
++      { kind: "collection", test: { op: "eq", value: randomUUID() } },
++      { kind: "category", test: { op: "eq", value: randomUUID() } },
++      typed("customField", "INTEGER", { op: "present" }),
++      typed("catalogAttribute", "SINGLE_SELECT", { op: "eq", value: "unknown" }),
++    ];
++    (roots[3] as { selector: { definitionId: string } }).selector.definitionId =
++      custom.get("SHORT_TEXT")!;
++    for (const leaf of roots)
++      for (const root of [
++        { kind: "not", child: leaf },
++        {
++          kind: "or",
++          children: [{ kind: "visibility", test: { op: "eq", value: "PUBLIC" } }, leaf],
++        },
++      ])
++        await expect(search(root, { text: "no match" })).rejects.toMatchObject({
++          code: "FILTER_REFERENCE_INVALID",
++        });
++  });
++  it.each([
++    ["DECIMAL", 1],
++    ["DECIMAL", "1e3"],
++    ["DECIMAL", "999999999999999999999"],
++    ["DECIMAL", "NaN"],
++    ["DATE", "2024-02-30"],
++    ["DATE", "0000-01-01"],
++    ["INTEGER", 1.1],
++    ["INTEGER", 9007199254740992],
++    ["BOOLEAN", "false"],
++    ["MULTI_SELECT", {}],
++    ["MULTI_SELECT", ["unknown"]],
++    ["MULTI_SELECT", [1]],
++    ["MONEY", { amountMinor: -1, currency: "EUR" }],
++  ] as const)(
++    "rejects malformed relevant catalog %s under NOT independently of match",
++    async (type, value) => {
++      const definitionId = catalog.get(type)!;
++      await db!.catalogAttributeValue.update({
++        where: {
++          entryId_targetKey_definitionId: { entryId: entry, targetKey: "entry", definitionId },
++        },
++        data: { value: value as Prisma.InputJsonValue },
++      });
++      try {
++        await expect(
++          search(
++            { kind: "not", child: typed("catalogAttribute", type, { op: "missing" }) },
++            { text: "no match" },
++          ),
++        ).rejects.toMatchObject({ code: "SEARCH_INVARIANT" });
++      } finally {
++        await db!.catalogAttributeValue.update({
++          where: {
++            entryId_targetKey_definitionId: { entryId: entry, targetKey: "entry", definitionId },
++          },
++          data: { value: values[type] },
++        });
++      }
++    },
++  );
++  it("paginates tied keys, keeps pre-cursor total on exhausted pages and revalidates live state", async () => {
++    const first = await search(undefined, { limit: 1 });
++    expect(first.total).toBe(2);
++    expect(first.nextCursor).toBeTruthy();
++    const second = await search(undefined, { limit: 1, cursor: first.nextCursor! });
++    expect(second.total).toBe(2);
++    expect(second.items[0]!.id).not.toBe(first.items[0]!.id);
++    expect(second.nextCursor).toBeNull();
++    const normalized = parseItemSearchQuery({ limit: 1 });
++    const exhausted = encodeSearchCursor({
++      v: 1,
++      contextHash: searchContextHash(owner, normalized, null),
++      after: { createdAt: "2000-01-01T00:00:00.000Z", id: randomUUID() },
++    });
++    const last = await search(undefined, { limit: 1, cursor: exhausted });
++    expect(last.items).toEqual([]);
++    expect(last.total).toBe(2);
++    await expect(
++      query().searchItems({ userId: foreign }, { limit: 1, cursor: first.nextCursor! }),
++    ).rejects.toMatchObject({ code: "SEARCH_INVALID" });
++  });
++  it("enforces all lifecycle states, item deletion and deleted parent", async () => {
++    const archived = await makeItem({ archivedAt: new Date() }),
++      disposed = await makeItem({ disposedAt: new Date() }),
++      both = await makeItem({ archivedAt: new Date(), disposedAt: new Date() }),
++      deleted = await makeItem({ deletedAt: new Date() });
++    const parent = await db!.collection.create({
++      data: { ownerId: owner, name: "Deleted", deletedAt: new Date() },
++    });
++    const child = await makeItem({ collectionId: parent.id });
++    try {
++      expect((await search()).total).toBe(2);
++      expect((await search(undefined, { lifecycle: "ARCHIVED" })).items.map((x) => x.id)).toEqual([
++        archived.id,
++      ]);
++      expect(
++        (await search(undefined, { lifecycle: "DISPOSED" })).items.map((x) => x.id).sort(),
++      ).toEqual([disposed.id, both.id].sort());
++      expect((await search(undefined, { lifecycle: "ALL" })).total).toBe(5);
++      expect((await search(undefined, { lifecycle: "ALL" })).items.map((x) => x.id)).not.toContain(
++        child.id,
++      );
++    } finally {
++      await db!.collectibleItem.deleteMany({
++        where: { id: { in: [archived.id, disposed.id, both.id, deleted.id, child.id] } },
++      });
++      await db!.collection.delete({ where: { id: parent.id } });
++    }
++  });
++  it("keeps one MVCC snapshot between count and rows then sees the next edit", async () => {
++    let changed = false;
++    const wrapped: SearchDatabase = {
++      $transaction: (work, options) =>
++        db!.$transaction(
++          (tx) =>
++            work({
++              $queryRaw: async <T>(sql: Prisma.Sql) => {
++                const result = await tx.$queryRaw<T>(sql);
++                if (sql.text.startsWith("SELECT count(*)") && !changed) {
++                  changed = true;
++                  await db!.collectibleItem.update({
++                    where: { id: empty },
++                    data: { archivedAt: new Date() },
++                  });
++                }
++                return result;
++              },
++            }),
++          options,
++        ),
++    };
++    try {
++      const r = await query(wrapped).searchItems({ userId: owner }, {});
++      expect(r.total).toBe(2);
++      expect(r.items).toHaveLength(2);
++      expect((await search()).total).toBe(1);
++    } finally {
++      await db!.collectibleItem.update({ where: { id: empty }, data: { archivedAt: null } });
++    }
++  });
++  it("requires READY usable assets and exact document category/owner", async () => {
++    for (const kind of ["IMAGE", "DOCUMENT"] as const) {
++      const asset = await db!.mediaAsset.create({
++        data: {
++          ownerId: owner,
++          kind,
++          status: "PENDING",
++          storageKey: randomUUID(),
++          mimeType: kind === "IMAGE" ? "image/png" : "application/pdf",
++          byteSize: 1n,
++          checksumSha256: "a".repeat(64),
++          originalFileName: "fixture",
++        },
++      });
++      if (kind === "IMAGE")
++        await db!.mediaLink.create({
++          data: { assetId: asset.id, itemId: item, ownerId: owner, position: 0 },
++        });
++      else
++        await db!.documentLink.create({
++          data: {
++            assetId: asset.id,
++            itemId: item,
++            ownerId: owner,
++            position: 0,
++            category: "OTHER_PRIVATE",
++          },
++        });
++      const leaf = { kind: "media", mediaKind: kind, test: { op: "present" } };
++      try {
++        for (const status of ["PENDING", "PROCESSING", "FAILED"] as const) {
++          await db!.mediaAsset.update({ where: { id: asset.id }, data: { status } });
++          expect(await ids(leaf)).toEqual([]);
++        }
++        await db!.mediaAsset.update({ where: { id: asset.id }, data: { status: "READY" } });
++        expect(await ids(leaf)).toEqual([item]);
++        if (kind === "DOCUMENT")
++          expect(await ids({ ...leaf, documentCategory: "OTHER_PRIVATE" })).toEqual([item]);
++        await db!.mediaAsset.update({
++          where: { id: asset.id },
++          data: { cleanupStartedAt: new Date() },
++        });
++        expect(await ids(leaf)).toEqual([]);
++        expect(await ids({ ...leaf, test: { op: "missing" } })).toContain(item);
++      } finally {
++        await db!.mediaLink.deleteMany({ where: { assetId: asset.id } });
++        await db!.documentLink.deleteMany({ where: { assetId: asset.id } });
++        await db!.mediaAsset.delete({ where: { id: asset.id } });
++      }
++    }
++  });
++  it("rejects native nonfinite decimal and noncanonical date facts before NOT/filter narrowing", async () => {
++    await db!
++      .$executeRaw`UPDATE "CustomFieldValue" SET "decimalValue"='NaN'::numeric WHERE "itemId"=${item}::uuid AND "fieldDefinitionId"=${custom.get("DECIMAL")}::uuid`;
++    try {
++      await expect(
++        search(
++          { kind: "not", child: typed("customField", "DECIMAL", { op: "missing" }) },
++          { text: "no match" },
++        ),
++      ).rejects.toMatchObject({ code: "SEARCH_INVARIANT" });
++    } finally {
++      await db!.customFieldValue.update({
++        where: {
++          itemId_fieldDefinitionId: { itemId: item, fieldDefinitionId: custom.get("DECIMAL")! },
++        },
++        data: { decimalValue: values.DECIMAL as string },
++      });
++    }
++    await db!
++      .$executeRaw`UPDATE "CustomFieldValue" SET "dateValue"='0001-01-01 BC'::date WHERE "itemId"=${item}::uuid AND "fieldDefinitionId"=${custom.get("DATE")}::uuid`;
++    try {
++      await expect(search(typed("customField", "DATE", { op: "present" }))).rejects.toMatchObject({
++        code: "SEARCH_INVARIANT",
++      });
++    } finally {
++      await db!.customFieldValue.update({
++        where: {
++          itemId_fieldDefinitionId: { itemId: item, fieldDefinitionId: custom.get("DATE")! },
++        },
++        data: { dateValue: new Date("2024-02-29") },
++      });
++    }
++  });
++
++  it("matches multi-select subsets and normalized custom identities without matching unselected labels", async () => {
++    const def = custom.get("MULTI_SELECT")!,
++      ad = catalog.get("MULTI_SELECT")!;
++    const first = await db!.customFieldOption.findFirstOrThrow({
++      where: { fieldDefinitionId: def },
++    });
++    const second = await db!.customFieldOption.create({
++      data: {
++        fieldDefinitionId: def,
++        value: "İ Choice",
++        normalizedValue: "i\u0307 choice",
++        position: 1,
++      },
++    });
++    const option = await db!.catalogAttributeOption.create({
++      data: {
++        definitionId: ad,
++        key: "second",
++        position: 1,
++        labels: { create: { locale: "en", label: "Second chosen label" } },
++      },
++    });
++    const unselected = await db!.catalogAttributeOption.create({
++      data: {
++        definitionId: ad,
++        key: "unselected",
++        position: 2,
++        labels: { create: { locale: "en", label: "Never selected label" } },
++      },
++    });
++    await db!.customFieldMultiSelectValue.createMany({
++      data: [first, second].map((o, position) => ({
++        itemId: item,
++        fieldDefinitionId: def,
++        optionId: o.id,
++        position,
++      })),
++    });
++    await db!.catalogAttributeValue.update({
++      where: {
++        entryId_targetKey_definitionId: { entryId: entry, targetKey: "entry", definitionId: ad },
++      },
++      data: { value: ["selected", "second"] },
++    });
++    try {
++      for (const [kind, secondValue] of [
++        ["customField", " İ  Choice "],
++        ["catalogAttribute", "second"],
++      ] as const) {
++        expect(
++          await ids(
++            typed(kind, "MULTI_SELECT", { op: "hasAll", values: ["selected", secondValue] }),
++          ),
++        ).toEqual([item]);
++        expect(
++          await ids(typed(kind, "MULTI_SELECT", { op: "hasAny", values: [secondValue] })),
++        ).toEqual([item]);
++        expect(
++          await ids(typed(kind, "MULTI_SELECT", { op: "hasAll", values: ["selected"] })),
++        ).toEqual([item]);
++      }
++      expect(
++        await ids(
++          typed("customField", "MULTI_SELECT", {
++            op: "hasAll",
++            values: ["selected", "nonexistent"],
++          }),
++        ),
++      ).toEqual([]);
++      expect((await search(undefined, { text: "Second chosen label" })).total).toBe(1);
++      expect((await search(undefined, { text: "Never selected label" })).total).toBe(0);
++    } finally {
++      await db!.customFieldMultiSelectValue.deleteMany({
++        where: { itemId: item, fieldDefinitionId: def },
++      });
++      await db!.customFieldOption.delete({ where: { id: second.id } });
++      await db!.catalogAttributeValue.update({
++        where: {
++          entryId_targetKey_definitionId: { entryId: entry, targetKey: "entry", definitionId: ad },
++        },
++        data: { value: [] },
++      });
++      await db!.catalogAttributeOption.deleteMany({
++        where: { id: { in: [option.id, unselected.id] } },
++      });
++    }
++  });
++  it("orders latest manual timestamp/id ties and supports zero/int64/exponents 0 through 4", async () => {
++    const made = await makeItem({ quantity: 7 });
++    try {
++      for (const [exponent, currency] of [
++        [0, "JPY"],
++        [2, "EUR"],
++        [3, "KWD"],
++        [4, "CLF"],
++      ] as const) {
++        const observedAt = new Date(Date.UTC(2027, 0, exponent + 1)),
++          createdAt = new Date("2027-02-01");
++        const low = `00000000-0000-4000-8000-${String(exponent * 2 + 1).padStart(12, "0")}`,
++          high = `00000000-0000-4000-8000-${String(exponent * 2 + 2).padStart(12, "0")}`;
++        await db!.valuation.createMany({
++          data: [
++            {
++              id: low,
++              itemId: made.id,
++              ownerId: owner,
++              actorUserId: owner,
++              amountMinor: 9223372036854775807n,
++              currency,
++              minorUnitExponent: exponent,
++              observedAt,
++              createdAt,
++            },
++            {
++              id: high,
++              itemId: made.id,
++              ownerId: owner,
++              actorUserId: owner,
++              amountMinor: 0n,
++              currency,
++              minorUnitExponent: exponent,
++              observedAt,
++              createdAt,
++            },
++          ],
++        });
++        expect(
++          await ids({
++            kind: "manualMoney",
++            test: {
++              op: "range",
++              unit: { currency, minorUnitExponent: exponent },
++              minMinor: "0",
++              maxMinor: "0",
++            },
++          }),
++        ).toContain(made.id);
++        expect(
++          await ids({
++            kind: "manualMoney",
++            test: {
++              op: "range",
++              unit: { currency, minorUnitExponent: exponent },
++              minMinor: "9223372036854775807",
++            },
++          }),
++        ).not.toContain(made.id);
++        expect(
++          await ids({
++            kind: "manualMoney",
++            test: { op: "range", unit: { currency, minorUnitExponent: 1 }, minMinor: "0" },
++          }),
++        ).not.toContain(made.id);
++        await db!.valuation.delete({ where: { id: high } });
++        expect(
++          await ids({
++            kind: "manualMoney",
++            test: {
++              op: "range",
++              unit: { currency, minorUnitExponent: exponent },
++              minMinor: "9223372036854775807",
++              maxMinor: "9223372036854775807",
++            },
++          }),
++        ).toContain(made.id);
++      }
++    } finally {
++      await db!.collectibleItem.delete({ where: { id: made.id } });
++    }
++  });
++  it.each(["delete", "parent", "tag", "custom", "catalog"])(
++    "keeps count/rows on one snapshot during concurrent %s change",
++    async (change) => {
++      const tag = await db!.itemTag.findFirstOrThrow({ where: { itemId: item } });
++      const customKey = {
++        itemId_fieldDefinitionId: { itemId: item, fieldDefinitionId: custom.get("SHORT_TEXT")! },
++      };
++      const catalogKey = {
++        entryId_targetKey_definitionId: {
++          entryId: entry,
++          targetKey: "entry",
++          definitionId: catalog.get("DECIMAL")!,
++        },
++      };
++      const root =
++        change === "tag"
++          ? { kind: "tags", test: { op: "present" } }
++          : change === "custom"
++            ? typed("customField", "SHORT_TEXT", { op: "eq", value: values.SHORT_TEXT })
++            : change === "catalog"
++              ? typed("catalogAttribute", "DECIMAL", { op: "lt", value: "3" })
++              : { kind: "visibility", test: { op: "eq", value: "PUBLIC" } };
++      const mutate = async () => {
++        if (change === "delete")
++          await db!.collectibleItem.update({
++            where: { id: item },
++            data: { deletedAt: new Date() },
++          });
++        if (change === "parent")
++          await db!.collection.update({
++            where: { id: collection },
++            data: { deletedAt: new Date() },
++          });
++        if (change === "tag") await db!.itemTag.delete({ where: { itemId_tagId: tag } });
++        if (change === "custom")
++          await db!.customFieldValue.update({
++            where: customKey,
++            data: { shortTextValue: "Changed" },
++          });
++        if (change === "catalog")
++          await db!.catalogAttributeValue.update({ where: catalogKey, data: { value: "10" } });
++      };
++      let changed = false;
++      const wrapped: SearchDatabase = {
++        $transaction: (work, options) =>
++          db!.$transaction(
++            (tx) =>
++              work({
++                $queryRaw: async <T>(sql: Prisma.Sql) => {
++                  const result = await tx.$queryRaw<T>(sql);
++                  if (sql.text.startsWith("SELECT count(*)") && !changed) {
++                    changed = true;
++                    await mutate();
++                  }
++                  return result;
++                },
++              }),
++            options,
++          ),
++      };
++      try {
++        const input = { filter: { version: 1, root } };
++        const result = await query(wrapped).searchItems({ userId: owner }, input);
++        expect(result.total).toBe(1);
++        expect(result.items.map((x) => x.id)).toEqual([item]);
++        expect((await query().searchItems({ userId: owner }, input)).total).toBe(0);
++      } finally {
++        if (change === "delete")
++          await db!.collectibleItem.update({ where: { id: item }, data: { deletedAt: null } });
++        if (change === "parent")
++          await db!.collection.update({ where: { id: collection }, data: { deletedAt: null } });
++        if (change === "tag") await db!.itemTag.create({ data: tag });
++        if (change === "custom")
++          await db!.customFieldValue.update({
++            where: customKey,
++            data: { shortTextValue: values.SHORT_TEXT as string },
++          });
++        if (change === "catalog")
++          await db!.catalogAttributeValue.update({
++            where: catalogKey,
++            data: { value: values.DECIMAL },
++          });
++      }
++    },
++  );
++  it("handles a missing required ICU dependency without issuing the text query", async () => {
++    let queries = 0;
++    const wrapped: SearchDatabase = {
++      $transaction: (work, options) =>
++        db!.$transaction(
++          (tx) =>
++            work({
++              $queryRaw: async <T>(sql: Prisma.Sql) => {
++                queries++;
++                if (sql.text.includes("AS collation"))
++                  return [{ now: new Date(), collation: false }] as T;
++                return tx.$queryRaw<T>(sql);
++              },
++            }),
++          options,
++        ),
++    };
++    await expect(
++      query(wrapped).searchItems({ userId: owner }, { text: "watch" }),
++    ).rejects.toMatchObject({ code: "SEARCH_UNAVAILABLE" });
++    expect(queries).toBe(3);
++  });
++  it("measures actual owned synthetic count/rows plans without speculative indexes", async () => {
++    const { candidateFrom, ownedCandidates, compileFilter } = await import("./search-compiler");
++    const { compileBroadText } = await import("./search-text");
++    const bulk = await db!.collectibleItem.createManyAndReturn({
++      data: Array.from({ length: 1000 }, (_, index) => ({
++        ownerId: owner,
++        collectionId: collection,
++        title: `Plan fixture ${index}`,
++        createdAt: new Date(instant),
++      })),
++      select: { id: true },
++    });
++    try {
++      for (const [name, predicate] of [
++        ["owned", Prisma.sql`TRUE`],
++        ["broad", compileBroadText("fixture", owner)],
++        [
++          "typed",
++          compileFilter(
++            typed("customField", "DECIMAL", { op: "lt", value: "10" }) as ItemFilterNode,
++            owner,
++          ),
++        ],
++      ] as const) {
++        const plan = await db!.$queryRaw(
++          Prisma.sql`EXPLAIN (ANALYZE,BUFFERS,FORMAT JSON) SELECT count(*) ${candidateFrom} WHERE ${ownedCandidates(owner, "ACTIVE")} AND ${predicate}`,
++        );
++        console.info(`search plan ${name}`, JSON.stringify(plan));
++        const rowPlan = await db!.$queryRaw(
++          Prisma.sql`EXPLAIN (ANALYZE,BUFFERS,FORMAT JSON) SELECT i.id,i.title ${candidateFrom} WHERE ${ownedCandidates(owner, "ACTIVE")} AND ${predicate} ORDER BY i."createdAt" DESC,i.id DESC LIMIT 21`,
++        );
++        console.info(`search rows plan ${name}`, JSON.stringify(rowPlan));
++      }
++    } finally {
++      await db!.collectibleItem.deleteMany({ where: { id: { in: bulk.map((x) => x.id) } } });
++    }
++  });
++
++  it("executes typed eq/in/order/prefix operators across both storage families", async () => {
++    for (const kind of ["customField", "catalogAttribute"] as const) {
++      for (const type of ["SHORT_TEXT", "LONG_TEXT", "URL", "SINGLE_SELECT"] as const) {
++        const value =
++          kind === "customField" && type === "SINGLE_SELECT" ? " SELECTED " : values[type];
++        expect(await ids(typed(kind, type, { op: "eq", value }))).toEqual([item]);
++        expect(await ids(typed(kind, type, { op: "in", values: [value] }))).toEqual([item]);
++      }
++      for (const [type, exact, below, above] of [
++        ["DECIMAL", "2.000000000000000001", "-10", "10"],
++        ["DATE", "2024-02-29", "2023-01-01", "2025-01-01"],
++      ] as const) {
++        for (const test of [
++          { op: "eq", value: exact },
++          { op: "in", values: [exact] },
++          { op: "lt", value: above },
++          { op: "lte", value: exact },
++          { op: "gt", value: below },
++          { op: "gte", value: exact },
++          { op: "between", min: exact, max: exact },
++        ])
++          expect(await ids(typed(kind, type, test))).toEqual([item]);
++      }
++      expect(
++        await ids(typed(kind, "SHORT_TEXT", { op: "startsWith", value: "Literal %" })),
++      ).toEqual([item]);
++    }
++    expect(await ids({ kind: "tradeStatus", test: { op: "eq", value: "FOR_SALE" } })).toEqual([
++      item,
++    ]);
++    expect(await ids({ kind: "visibility", test: { op: "in", values: ["PUBLIC"] } })).toEqual([
++      item,
++    ]);
++    expect(await ids({ kind: "category", test: { op: "present" } })).toEqual([item]);
++  });
++  it("does not inspect corrupt catalog facts reachable only through foreign inventory", async () => {
++    const remote = await db!.catalogEntry.create({
++      data: { categoryTemplateId: category, authored: {} },
++    });
++    await db!.catalogAttributeValue.create({
++      data: {
++        entryId: remote.id,
++        categoryTemplateId: category,
++        definitionId: catalog.get("DECIMAL")!,
++        targetKey: "entry",
++        value: "NaN",
++      },
++    });
++    await db!.collectibleItem.update({
++      where: { id: hidden },
++      data: { categoryTemplateId: category, catalogEntryId: remote.id },
++    });
++    try {
++      expect(await ids(typed("catalogAttribute", "DECIMAL", { op: "lt", value: "10" }))).toEqual([
++        item,
++      ]);
++    } finally {
++      await db!.collectibleItem.update({
++        where: { id: hidden },
++        data: { catalogEntryId: null, categoryTemplateId: null },
++      });
++      await db!.catalogAttributeValue.deleteMany({ where: { entryId: remote.id } });
++      await db!.catalogEntry.delete({ where: { id: remote.id } });
++    }
++  });
++});
+diff --git a/packages/domain/src/search/item-search-service.ts b/packages/domain/src/search/item-search-service.ts
+new file mode 100644
+index 0000000..4aaf62d
+--- /dev/null
++++ b/packages/domain/src/search/item-search-service.ts
+@@ -0,0 +1,133 @@
++import { Prisma } from "@sammlerraum/db/search-sql";
++import {
++  parseItemSearchQuery,
++  ItemSearchPageSchema,
++  SEARCH_MAX_RESPONSE_BYTES,
++  searchFail,
++  type NormalizedItemSearchQuery,
++  type ItemSummary,
++  type SearchPage,
++} from "@sammlerraum/contracts/item-search";
++import { validateCurrentFilterAvailability } from "./filter-ast";
++import {
++  and,
++  or,
++  TRUE,
++  candidateFrom,
++  ownedCandidates,
++  compileFilter,
++  leaves,
++  referencePredicate,
++  invalidFacts,
++} from "./search-compiler";
++import { compileBroadText, invalidBroadFacts } from "./search-text";
++import {
++  searchContextHash,
++  decodeSearchCursor,
++  encodeSearchCursor,
++  type SearchResolutionContext,
++} from "./search-cursor";
++import { runSearchRead, type SearchDatabase, type SearchReadTransaction } from "./search-read";
++export { ItemSearchError } from "@sammlerraum/contracts/item-search";
++export type { SearchDatabase, SearchReadTransaction } from "./search-read";
++export { runSearchRead } from "./search-read";
++export type SearchActor = { userId: string };
++type Row = Omit<ItemSummary, "createdAt" | "updatedAt" | "archivedAt" | "disposedAt"> & {
++  createdAt: Date;
++  updatedAt: Date;
++  archivedAt: Date | null;
++  disposedAt: Date | null;
++};
++export function checkedSearchTotal(value: bigint): number {
++  if (typeof value !== "bigint" || value < 0n || value > BigInt(Number.MAX_SAFE_INTEGER))
++    return searchFail("SEARCH_INVARIANT");
++  return Number(value);
++}
++/** Internal composition seam: callers load an owned saved query in this bounded tx,
++ * then pass its trusted id/revision. Public query parsing never accepts this context. */
++export async function executeItemSearch(
++  tx: SearchReadTransaction,
++  actor: SearchActor,
++  query: NormalizedItemSearchQuery,
++  context: SearchResolutionContext = null,
++): Promise<SearchPage<ItemSummary>> {
++  if (!actor || typeof actor.userId !== "string" || !actor.userId || actor.userId.includes("\0"))
++    return searchFail("SEARCH_INVALID");
++  if (query.filter) validateCurrentFilterAvailability(query.filter);
++  const hash = searchContextHash(actor.userId, query, context);
++  const cursor = query.cursor ? decodeSearchCursor(query.cursor, hash) : null;
++  const [clock] = await tx.$queryRaw<{ now: Date; collation: boolean }[]>(
++    Prisma.sql`SELECT date_trunc('milliseconds',transaction_timestamp()) AS now,EXISTS(SELECT 1 FROM pg_collation WHERE collname='und-x-icu' AND collprovider='i' AND collisdeterministic AND collnamespace='pg_catalog'::regnamespace) AS collation`,
++  );
++  if (!clock?.collation) return searchFail("SEARCH_UNAVAILABLE");
++  const nodes = leaves(query.filter?.root ?? null);
++  const [refs] = await tx.$queryRaw<{ valid: boolean }[]>(
++    Prisma.sql`SELECT ${referencePredicate(nodes, actor.userId)} AS valid`,
++  );
++  if (!refs?.valid) return searchFail("FILTER_REFERENCE_INVALID");
++  const outer = ownedCandidates(actor.userId, query.lifecycle);
++  const [integrity] = await tx.$queryRaw<{ invalid: boolean }[]>(
++    Prisma.sql`SELECT EXISTS(SELECT 1 ${candidateFrom} WHERE ${outer} AND ${or([invalidFacts(nodes), query.text ? invalidBroadFacts : Prisma.sql`FALSE`])}) AS invalid`,
++  );
++  if (integrity?.invalid) return searchFail("SEARCH_INVARIANT");
++  const predicate = and([
++    outer,
++    query.filter ? compileFilter(query.filter.root, actor.userId) : TRUE,
++    query.text ? compileBroadText(query.text, actor.userId) : TRUE,
++  ]);
++  const [count] = await tx.$queryRaw<{ total: bigint }[]>(
++    Prisma.sql`SELECT count(*) AS total ${candidateFrom} WHERE ${predicate}`,
++  );
++  const total = checkedSearchTotal(count!.total);
++  const after = cursor
++    ? Prisma.sql`(i."createdAt",i.id)<(${cursor.after.createdAt}::timestamp,${cursor.after.id}::uuid)`
++    : TRUE;
++  const rows = await tx.$queryRaw<Row[]>(
++    Prisma.sql`SELECT i.id,i.title,i."collectionId",i."categoryTemplateId",i."conditionOptionId",i.quantity,i.visibility,i."tradeStatus",i."archivedAt",i."disposedAt",i."createdAt",i."updatedAt" ${candidateFrom} WHERE ${predicate} AND ${after} ORDER BY i."createdAt" DESC,i.id DESC LIMIT ${query.limit + 1}`,
++  );
++  const page = rows.slice(0, query.limit);
++  const last = page.at(-1);
++  const result = ItemSearchPageSchema.safeParse({
++    items: page.map((row) => ({
++      ...row,
++      createdAt: row.createdAt.toISOString(),
++      updatedAt: row.updatedAt.toISOString(),
++      archivedAt: row.archivedAt?.toISOString() ?? null,
++      disposedAt: row.disposedAt?.toISOString() ?? null,
++    })),
++    total,
++    nextCursor:
++      rows.length > query.limit && last
++        ? encodeSearchCursor({
++            v: 1,
++            contextHash: hash,
++            after: { createdAt: last.createdAt.toISOString(), id: last.id },
++          })
++        : null,
++    scope: "OWNED",
++    lifecycle: query.lifecycle,
++    readAt: clock.now.toISOString(),
++  });
++  if (!result.success || Buffer.byteLength(JSON.stringify(result.data)) > SEARCH_MAX_RESPONSE_BYTES)
++    return searchFail("SEARCH_INVARIANT");
++  return result.data;
++}
++export function createItemSearchService(database: SearchDatabase) {
++  return {
++    searchItems: async (actor: SearchActor, input: unknown): Promise<SearchPage<ItemSummary>> => {
++      if (
++        !actor ||
++        typeof actor.userId !== "string" ||
++        !actor.userId ||
++        actor.userId.includes("\0")
++      )
++        return searchFail("SEARCH_INVALID");
++      const query = parseItemSearchQuery(input);
++      if (query.filter) validateCurrentFilterAvailability(query.filter);
++      // Reject replay and syntax before acquiring a database connection.
++      if (query.cursor)
++        decodeSearchCursor(query.cursor, searchContextHash(actor.userId, query, null));
++      return runSearchRead(database, (tx) => executeItemSearch(tx, actor, query));
++    },
++  };
++}
+diff --git a/packages/domain/src/search/search-compiler.ts b/packages/domain/src/search/search-compiler.ts
+new file mode 100644
+index 0000000..53789c8
+--- /dev/null
++++ b/packages/domain/src/search/search-compiler.ts
+@@ -0,0 +1,347 @@
++import { Prisma } from "@sammlerraum/db/search-sql";
++import type { ItemFilterLeaf, ItemFilterNode } from "@sammlerraum/contracts/search";
++import { searchFail, type SearchLifecycle } from "@sammlerraum/contracts/item-search";
++import { catalogGuard, catalogScalar, customGuard } from "./search-typed-guards";
++export const TRUE = Prisma.sql`TRUE`;
++export const and = (values: Prisma.Sql[]) =>
++  values.length ? Prisma.sql`(${Prisma.join(values, " AND ")})` : TRUE;
++export const or = (values: Prisma.Sql[]) =>
++  values.length ? Prisma.sql`(${Prisma.join(values, " OR ")})` : Prisma.sql`FALSE`;
++type Scalar = string | number | boolean;
++type Test =
++  | { op: "present" | "missing" }
++  | { op: "eq" | "lt" | "lte" | "gt" | "gte" | "contains" | "startsWith"; value: Scalar }
++  | { op: "in" | "hasAny" | "hasAll"; values: Scalar[] }
++  | { op: "between"; min: Scalar; max: Scalar };
++type Cast = "text" | "uuid" | "numeric" | "date" | "timestamp" | "boolean";
++export function operand(value: Scalar, cast: Cast): Prisma.Sql {
++  switch (cast) {
++    case "uuid":
++      return Prisma.sql`${value}::uuid`;
++    case "numeric":
++      return Prisma.sql`${value}::numeric`;
++    case "date":
++      return Prisma.sql`${value}::date`;
++    case "timestamp":
++      return Prisma.sql`${value}::timestamp`;
++    case "boolean":
++      return Prisma.sql`${value}::boolean`;
++    case "text":
++      return Prisma.sql`${value}::text COLLATE pg_catalog."C"`;
++  }
++}
++export function comparison(column: Prisma.Sql, test: Test, cast: Cast = "text"): Prisma.Sql {
++  const c = cast === "text" ? Prisma.sql`(${column})::text COLLATE pg_catalog."C"` : column;
++  const v = (value: Scalar) => operand(value, cast);
++  let predicate: Prisma.Sql;
++  switch (test.op) {
++    case "present":
++      return Prisma.sql`${c} IS NOT NULL`;
++    case "missing":
++      return Prisma.sql`${c} IS NULL`;
++    case "eq":
++      predicate = Prisma.sql`${c}=${v(test.value)}`;
++      break;
++    case "in":
++      predicate = Prisma.sql`${c} IN (${Prisma.join(test.values.map(v))})`;
++      break;
++    case "lt":
++      predicate = Prisma.sql`${c}<${v(test.value)}`;
++      break;
++    case "lte":
++      predicate = Prisma.sql`${c}<=${v(test.value)}`;
++      break;
++    case "gt":
++      predicate = Prisma.sql`${c}>${v(test.value)}`;
++      break;
++    case "gte":
++      predicate = Prisma.sql`${c}>=${v(test.value)}`;
++      break;
++    case "between":
++      predicate = Prisma.sql`${c} BETWEEN ${v(test.min)} AND ${v(test.max)}`;
++      break;
++    case "contains":
++      predicate = Prisma.sql`strpos(${c},${v(test.value)})>0`;
++      break;
++    case "startsWith":
++      predicate = Prisma.sql`left(${c},char_length(${v(test.value)}))=${v(test.value)}`;
++      break;
++    case "hasAny":
++    case "hasAll":
++      return searchFail("SEARCH_INVARIANT");
++  }
++  return Prisma.sql`COALESCE((${predicate}),FALSE)`;
++}
++export function leaves(node: ItemFilterNode | null): ItemFilterLeaf[] {
++  if (!node) return [];
++  if ("children" in node) return node.children.flatMap(leaves);
++  if (node.kind === "not") return leaves(node.child);
++  return [node];
++}
++export function ownedCandidates(owner: string, lifecycle: SearchLifecycle): Prisma.Sql {
++  const life =
++    lifecycle === "ACTIVE"
++      ? Prisma.sql`i."archivedAt" IS NULL AND i."disposedAt" IS NULL`
++      : lifecycle === "ARCHIVED"
++        ? Prisma.sql`i."archivedAt" IS NOT NULL AND i."disposedAt" IS NULL`
++        : lifecycle === "DISPOSED"
++          ? Prisma.sql`i."disposedAt" IS NOT NULL`
++          : TRUE;
++  return and([
++    Prisma.sql`i."ownerId"=${owner} AND c."ownerId"=${owner} AND i."deletedAt" IS NULL AND c."deletedAt" IS NULL`,
++    life,
++  ]);
++}
++export const candidateFrom = Prisma.sql`FROM "CollectibleItem" i JOIN "Collection" c ON c.id=i."collectionId" AND c."ownerId"=i."ownerId"`;
++function presence(exists: Prisma.Sql, test: { op: string }) {
++  return test.op === "missing" ? Prisma.sql`NOT (${exists})` : exists;
++}
++const customColumn = {
++  SHORT_TEXT: Prisma.sql`v."shortTextValue"`,
++  LONG_TEXT: Prisma.sql`v."longTextValue"`,
++  INTEGER: Prisma.sql`v."integerValue"`,
++  DECIMAL: Prisma.sql`v."decimalValue"`,
++  DATE: Prisma.sql`v."dateValue"`,
++  BOOLEAN: Prisma.sql`v."booleanValue"`,
++  URL: Prisma.sql`v."urlValue"`,
++  MONEY: Prisma.sql`v."moneyAmountMinor"`,
++  SINGLE_SELECT: Prisma.sql`o."normalizedValue"`,
++  MULTI_SELECT: Prisma.sql`o."normalizedValue"`,
++};
++const fieldCast = (type: string): Cast =>
++  type === "INTEGER" || type === "DECIMAL"
++    ? "numeric"
++    : type === "DATE"
++      ? "date"
++      : type === "BOOLEAN"
++        ? "boolean"
++        : "text";
++export function catalogTarget(target: "ENTRY" | "SELECTED_VARIANT"): Prisma.Sql {
++  return target === "ENTRY"
++    ? Prisma.sql`a."variantId" IS NULL AND a."targetKey"='entry'`
++    : Prisma.sql`a."variantId"=i."catalogVariantId" AND a."targetKey"=i."catalogVariantId"::text`;
++}
++export function exactCatalog(
++  leaf: Extract<ItemFilterLeaf, { kind: "catalogAttribute" }>,
++): Prisma.Sql {
++  return and([
++    Prisma.sql`a."entryId"=i."catalogEntryId" AND a."categoryTemplateId"=i."categoryTemplateId" AND a."definitionId"=${leaf.selector.definitionId}::uuid`,
++    catalogTarget(leaf.selector.target),
++  ]);
++}
++export function compileFilter(node: ItemFilterNode, owner: string): Prisma.Sql {
++  if ("children" in node)
++    return (node.kind === "and" ? and : or)(node.children.map((n) => compileFilter(n, owner)));
++  if (node.kind === "not") return Prisma.sql`NOT (${compileFilter(node.child, owner)})`;
++  switch (node.kind) {
++    case "collection":
++      return comparison(Prisma.sql`i."collectionId"`, node.test, "uuid");
++    case "category":
++      return comparison(Prisma.sql`i."categoryTemplateId"`, node.test, "uuid");
++    case "condition":
++      return and([
++        Prisma.sql`COALESCE(i."categoryTemplateId"=${node.categoryTemplateId}::uuid,FALSE)`,
++        comparison(Prisma.sql`i."conditionOptionId"`, node.test, "uuid"),
++      ]);
++    case "visibility":
++      return comparison(Prisma.sql`i.visibility`, node.test);
++    case "tradeStatus":
++      return comparison(Prisma.sql`i."tradeStatus"`, node.test);
++    case "createdAt":
++      return comparison(Prisma.sql`i."createdAt"`, node.test, "timestamp");
++    case "updatedAt":
++      return comparison(Prisma.sql`i."updatedAt"`, node.test, "timestamp");
++    case "acquisitionDate":
++      return comparison(Prisma.sql`i."acquisitionDate"`, node.test, "date");
++    case "purchaseMoney":
++      if (node.test.op === "range") return searchFail("SEARCH_INVARIANT");
++      return presence(
++        Prisma.sql`i."purchaseAmountMinor" IS NOT NULL AND i."purchaseCurrency" IS NOT NULL`,
++        node.test,
++      );
++    case "grading": {
++      const clauses = [Prisma.sql`g."itemId"=i.id AND g."ownerId"=${owner}`];
++      const t = node.test;
++      if (t.op === "authored" || t.op === "comparable") {
++        clauses.push(
++          comparison(Prisma.sql`g."providerKey"`, {
++            op: "eq",
++            value: t.provider.replace(/[A-Z]/gu, (x) => x.toLowerCase()),
++          }),
++        );
++        if (t.op === "authored") {
++          if (t.grade !== undefined)
++            clauses.push(comparison(Prisma.sql`g.grade`, { op: "eq", value: t.grade }));
++          if (t.certificateNo !== undefined)
++            clauses.push(
++              comparison(Prisma.sql`g."certificateNo"`, { op: "eq", value: t.certificateNo }),
++            );
++        } else
++          clauses.push(
++            comparison(Prisma.sql`g."comparableScale"`, { op: "eq", value: t.scale }),
++            comparison(Prisma.sql`g."comparableValue"`, t.value, "numeric"),
++          );
++      }
++      return presence(Prisma.sql`EXISTS(SELECT 1 FROM "Grading" g WHERE ${and(clauses)})`, t);
++    }
++    case "manualMoney": {
++      const latest = Prisma.sql`SELECT v."amountMinor",v.currency,v."minorUnitExponent" FROM "Valuation" v WHERE v."itemId"=i.id AND v."ownerId"=${owner} AND v.type='MANUAL' AND v.basis='PER_UNIT' ORDER BY v."observedAt" DESC,v."createdAt" DESC,v.id DESC LIMIT 1`;
++      const t = node.test;
++      if (t.op !== "range") return presence(Prisma.sql`EXISTS(${latest})`, t);
++      const clauses = [
++        Prisma.sql`m.currency=${t.unit.currency} AND m."minorUnitExponent"=${t.unit.minorUnitExponent}`,
++      ];
++      if (t.minMinor !== undefined)
++        clauses.push(Prisma.sql`m."amountMinor">=${t.minMinor}::bigint`);
++      if (t.maxMinor !== undefined)
++        clauses.push(Prisma.sql`m."amountMinor"<=${t.maxMinor}::bigint`);
++      return Prisma.sql`EXISTS(SELECT 1 FROM (${latest}) m WHERE ${and(clauses)})`;
++    }
++    case "tags": {
++      const base = Prisma.sql`FROM "ItemTag" it JOIN "Tag" t ON t.id=it."tagId" WHERE it."itemId"=i.id AND t."ownerId"=${owner}`;
++      const t = node.test;
++      if (t.op === "present" || t.op === "missing")
++        return presence(Prisma.sql`EXISTS(SELECT 1 ${base})`, t);
++      return (t.op === "hasAll" ? and : or)(
++        t.values.map(
++          (value) =>
++            Prisma.sql`EXISTS(SELECT 1 ${base} AND t."normalizedName" COLLATE pg_catalog."C"=${value})`,
++        ),
++      );
++    }
++    case "media": {
++      const link =
++        node.mediaKind === "IMAGE" ? Prisma.sql`"MediaLink"` : Prisma.sql`"DocumentLink"`;
++      return presence(
++        Prisma.sql`EXISTS(SELECT 1 FROM ${link} l JOIN "MediaAsset" m ON m.id=l."assetId" AND m."ownerId"=l."ownerId" WHERE l."itemId"=i.id AND l."ownerId"=${owner} AND m."ownerId"=${owner} AND m.kind::text=${node.mediaKind} AND m.status='READY' AND m."cleanupStartedAt" IS NULL ${node.documentCategory ? Prisma.sql`AND l.category::text=${node.documentCategory}` : Prisma.empty})`,
++        node.test,
++      );
++    }
++    case "customField": {
++      const scope = Prisma.sql`i."collectionId"=${node.selector.collectionId}::uuid`;
++      const base = Prisma.sql`v."itemId"=i.id AND v."collectionId"=i."collectionId" AND v."fieldDefinitionId"=${node.selector.definitionId}::uuid AND v."fieldType"::text=${node.predicate.valueType}`;
++      const t = node.predicate.test;
++      if (t.op === "present" || t.op === "missing")
++        return and([
++          scope,
++          presence(Prisma.sql`EXISTS(SELECT 1 FROM "CustomFieldValue" v WHERE ${base})`, t),
++        ]);
++      if (t.op === "range") return searchFail("SEARCH_INVARIANT");
++      let match: Prisma.Sql;
++      if (node.predicate.valueType === "MULTI_SELECT" && (t.op === "hasAny" || t.op === "hasAll"))
++        match = (t.op === "hasAll" ? and : or)(
++          t.values.map(
++            (value) =>
++              Prisma.sql`EXISTS(SELECT 1 FROM "CustomFieldMultiSelectValue" mv JOIN "CustomFieldOption" o ON o.id=mv."optionId" AND o."fieldDefinitionId"=mv."fieldDefinitionId" WHERE mv."itemId"=v."itemId" AND mv."fieldDefinitionId"=v."fieldDefinitionId" AND o."normalizedValue" COLLATE pg_catalog."C"=${value})`,
++          ),
++        );
++      else if (node.predicate.valueType === "SINGLE_SELECT")
++        match = Prisma.sql`EXISTS(SELECT 1 FROM "CustomFieldOption" o WHERE o.id=v."singleSelectOptionId" AND o."fieldDefinitionId"=v."fieldDefinitionId" AND ${comparison(customColumn.SINGLE_SELECT, t)})`;
++      else
++        match = comparison(
++          customColumn[node.predicate.valueType],
++          t,
++          fieldCast(node.predicate.valueType),
++        );
++      return and([
++        scope,
++        Prisma.sql`EXISTS(SELECT 1 FROM "CustomFieldValue" v WHERE ${base} AND ${match})`,
++      ]);
++    }
++    case "catalogAttribute": {
++      const scope = Prisma.sql`COALESCE(i."categoryTemplateId"=${node.selector.categoryTemplateId}::uuid,FALSE)`;
++      const base = exactCatalog(node);
++      const t = node.predicate.test;
++      if (t.op === "present" || t.op === "missing")
++        return and([
++          scope,
++          presence(Prisma.sql`EXISTS(SELECT 1 FROM "CatalogAttributeValue" a WHERE ${base})`, t),
++        ]);
++      if (t.op === "range") return searchFail("SEARCH_INVARIANT");
++      const match =
++        t.op === "hasAll" || t.op === "hasAny"
++          ? (t.op === "hasAll" ? and : or)(
++              t.values.map((v) => Prisma.sql`a.value @> ${JSON.stringify([v])}::jsonb`),
++            )
++          : comparison(
++              catalogScalar(node.predicate.valueType),
++              t,
++              fieldCast(node.predicate.valueType),
++            );
++      return and([
++        scope,
++        Prisma.sql`EXISTS(SELECT 1 FROM "CatalogAttributeValue" a WHERE ${base} AND ${match})`,
++      ]);
++    }
++    case "duplicate":
++    case "marketMoney":
++      return searchFail("SEARCH_INVARIANT");
++  }
++  const exhaustive: never = node;
++  return exhaustive;
++}
++/** One bounded boolean reference query; no per-leaf network round trips. */
++export function referencePredicate(nodes: ItemFilterLeaf[], owner: string): Prisma.Sql {
++  const checks: Prisma.Sql[] = [];
++  const category = (id: string) =>
++    checks.push(Prisma.sql`EXISTS(SELECT 1 FROM "CategoryTemplate" r WHERE r.id=${id}::uuid)`);
++  const collection = (id: string) =>
++    checks.push(
++      Prisma.sql`EXISTS(SELECT 1 FROM "Collection" r WHERE r.id=${id}::uuid AND r."ownerId"=${owner} AND r."deletedAt" IS NULL)`,
++    );
++  for (const node of nodes) {
++    if (node.kind === "collection" || node.kind === "category") {
++      const t = node.test;
++      if (t.op === "eq") (node.kind === "collection" ? collection : category)(t.value);
++      if (t.op === "in") t.values.forEach(node.kind === "collection" ? collection : category);
++    }
++    if (node.kind === "condition") {
++      category(node.categoryTemplateId);
++      const t = node.test;
++      const ids = t.op === "eq" ? [t.value] : t.op === "in" ? t.values : [];
++      for (const id of ids)
++        checks.push(
++          Prisma.sql`EXISTS(SELECT 1 FROM "ConditionOption" r WHERE r.id=${id}::uuid AND r."categoryTemplateId"=${node.categoryTemplateId}::uuid)`,
++        );
++    }
++    if (node.kind === "customField") {
++      collection(node.selector.collectionId);
++      checks.push(
++        Prisma.sql`EXISTS(SELECT 1 FROM "CustomFieldDefinition" r WHERE r.id=${node.selector.definitionId}::uuid AND r."collectionId"=${node.selector.collectionId}::uuid AND r.type::text=${node.predicate.valueType})`,
++      );
++    }
++    if (node.kind === "catalogAttribute") {
++      category(node.selector.categoryTemplateId);
++      checks.push(
++        Prisma.sql`EXISTS(SELECT 1 FROM "CatalogAttributeDefinition" r WHERE r.id=${node.selector.definitionId}::uuid AND r."categoryTemplateId"=${node.selector.categoryTemplateId}::uuid AND r.type::text=${node.predicate.valueType})`,
++      );
++      if (
++        node.predicate.valueType === "SINGLE_SELECT" ||
++        node.predicate.valueType === "MULTI_SELECT"
++      ) {
++        const t = node.predicate.test;
++        const keys = t.op === "eq" ? [t.value] : "values" in t ? t.values : [];
++        for (const key of keys)
++          checks.push(
++            Prisma.sql`EXISTS(SELECT 1 FROM "CatalogAttributeOption" r WHERE r."definitionId"=${node.selector.definitionId}::uuid AND r.key COLLATE pg_catalog."C"=${key})`,
++          );
++      }
++    }
++  }
++  return and(checks);
++}
++export function invalidFacts(nodes: ItemFilterLeaf[]): Prisma.Sql {
++  return or(
++    nodes.flatMap((n) =>
++      n.kind === "catalogAttribute"
++        ? [
++            Prisma.sql`EXISTS(SELECT 1 FROM "CatalogAttributeValue" a WHERE i."categoryTemplateId"=${n.selector.categoryTemplateId}::uuid AND ${exactCatalog(n)} AND NOT COALESCE((${catalogGuard(n.predicate.valueType)}),FALSE))`,
++          ]
++        : n.kind === "customField"
++          ? [
++              Prisma.sql`EXISTS(SELECT 1 FROM "CustomFieldValue" v WHERE i."collectionId"=${n.selector.collectionId}::uuid AND v."itemId"=i.id AND v."collectionId"=i."collectionId" AND v."fieldDefinitionId"=${n.selector.definitionId}::uuid AND NOT COALESCE((${customGuard(n.predicate.valueType)}),FALSE))`,
++            ]
++          : [],
++    ),
++  );
++}
+diff --git a/packages/domain/src/search/search-cursor.ts b/packages/domain/src/search/search-cursor.ts
+new file mode 100644
+index 0000000..0aaef3a
+--- /dev/null
++++ b/packages/domain/src/search/search-cursor.ts
+@@ -0,0 +1,64 @@
++import { createHash } from "node:crypto";
++import { searchFail, type NormalizedItemSearchQuery } from "@sammlerraum/contracts/item-search";
++export type SearchResolutionContext = { smartCollectionId: string; revision: number } | null;
++import {
++  SearchCursorSchema as schema,
++  type SearchCursor,
++} from "@sammlerraum/contracts/item-search";
++export type { SearchCursor } from "@sammlerraum/contracts/item-search";
++function stable(value: unknown): unknown {
++  if (Array.isArray(value)) return value.map(stable);
++  if (value && typeof value === "object")
++    return Object.fromEntries(
++      Object.entries(value)
++        .sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0))
++        .map(([k, v]) => [k, stable(v)]),
++    );
++  return value;
++}
++export function searchContextHash(
++  actor: string,
++  query: NormalizedItemSearchQuery,
++  context: SearchResolutionContext,
++): string {
++  return createHash("sha256")
++    .update(
++      JSON.stringify(
++        stable([
++          "item-search",
++          1,
++          actor,
++          "OWNED",
++          1,
++          query.text,
++          query.filter,
++          query.lifecycle,
++          "CREATED_DESC_ID_DESC",
++          query.limit,
++          context,
++        ]),
++      ),
++    )
++    .digest("hex");
++}
++export const encodeSearchCursor = (value: SearchCursor) =>
++  Buffer.from(JSON.stringify(value)).toString("base64url");
++export function decodeSearchCursor(token: string, contextHash: string): SearchCursor {
++  try {
++    if (!/^[A-Za-z0-9_-]{1,2048}$/u.test(token)) throw Error();
++    const bytes = Buffer.from(token, "base64url");
++    if (bytes.length > 1536 || bytes.toString("base64url") !== token) throw Error();
++    const parsed = schema.safeParse(
++      JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(bytes)),
++    );
++    if (
++      !parsed.success ||
++      parsed.data.contextHash !== contextHash ||
++      encodeSearchCursor(parsed.data) !== token
++    )
++      throw Error();
++    return parsed.data;
++  } catch {
++    return searchFail("SEARCH_INVALID");
++  }
++}
+diff --git a/packages/domain/src/search/search-input.test.ts b/packages/domain/src/search/search-input.test.ts
+new file mode 100644
+index 0000000..b7ee8f9
+--- /dev/null
++++ b/packages/domain/src/search/search-input.test.ts
+@@ -0,0 +1,54 @@
++import { describe, expect, it } from "vitest";
++import { parseItemSearchQuery } from "@sammlerraum/contracts/item-search";
++import { decodeSearchCursor, encodeSearchCursor, searchContextHash } from "./search-cursor";
++
++describe("strict owned search input and cursor", () => {
++  it("normalizes bounded text and keeps explicit null filter", () => {
++    expect(parseItemSearchQuery({ text: "  Ａ  ", filter: null })).toEqual({
++      text: "A",
++      filter: null,
++      lifecycle: "ACTIVE",
++      limit: 20,
++    });
++  });
++  it.each([
++    { ownerId: "foreign" },
++    { scope: "PUBLIC" },
++    { sort: "title" },
++    { limit: "2" },
++    { limit: 0 },
++    { limit: 51 },
++    { text: "x".repeat(201) },
++    { text: "\ud800" },
++    { text: "\0" },
++    { text: "ﷺ".repeat(200) },
++  ])("rejects invalid query %# without payload", (input) => {
++    expect(() => parseItemSearchQuery(input)).toThrow("SEARCH_INVALID");
++  });
++  it("binds canonical cursor to actor, filter, lifecycle, size and saved revision", () => {
++    const query = parseItemSearchQuery({});
++    const hash = searchContextHash("a", query, null);
++    const cursor = {
++      v: 1 as const,
++      contextHash: hash,
++      after: { createdAt: "2026-01-01T00:00:00.000Z", id: "00000000-0000-4000-8000-000000000001" },
++    };
++    const token = encodeSearchCursor(cursor);
++    expect(decodeSearchCursor(token, hash)).toEqual(cursor);
++    for (const next of [
++      searchContextHash("b", query, null),
++      searchContextHash("a", { ...query, text: "x" }, null),
++      searchContextHash("a", { ...query, lifecycle: "ALL" }, null),
++      searchContextHash("a", { ...query, limit: 1 }, null),
++      searchContextHash("a", query, { smartCollectionId: cursor.after.id, revision: 1 }),
++    ])
++      expect(() => decodeSearchCursor(token, next)).toThrow("SEARCH_INVALID");
++    for (const invalid of [
++      token + "=",
++      "_w",
++      Buffer.from(JSON.stringify({ ...cursor, extra: 1 })).toString("base64url"),
++      Buffer.from(JSON.stringify(cursor, null, 2)).toString("base64url"),
++    ])
++      expect(() => decodeSearchCursor(invalid, hash)).toThrow("SEARCH_INVALID");
++  });
++});
+diff --git a/packages/domain/src/search/search-read.integration.test.ts b/packages/domain/src/search/search-read.integration.test.ts
+new file mode 100644
+index 0000000..6e741b3
+--- /dev/null
++++ b/packages/domain/src/search/search-read.integration.test.ts
+@@ -0,0 +1,174 @@
++import { afterAll, describe, expect, it } from "vitest";
++import { createPrismaClient } from "@sammlerraum/db/create-client";
++import { createTestDatabaseClient } from "@sammlerraum/db/test-database";
++import { Prisma } from "@sammlerraum/db/search-sql";
++import { runSearchRead, type SearchDatabase } from "./search-read";
++import { errorCode, isReadDependencyFailure } from "../api/read-dependency-errors";
++const enabled = process.env.RUN_DATABASE_INTEGRATION === "1";
++const db = enabled ? createTestDatabaseClient() : undefined;
++afterAll(async () => db?.$disconnect());
++describe.runIf(enabled)("native search transaction dependency behavior", () => {
++  it("configures actual RepeatableRead/UTC/statement/lock/transaction budgets", async () => {
++    const rows = await runSearchRead(db!, (tx) =>
++      tx.$queryRaw<
++        {
++          isolation: string;
++          timezone: string;
++          statement: string;
++          lock: string;
++          transaction: string;
++        }[]
++      >(
++        Prisma.sql`SELECT current_setting('transaction_isolation') AS isolation,current_setting('TimeZone') AS timezone,current_setting('statement_timeout') AS statement,current_setting('lock_timeout') AS lock,current_setting('transaction_timeout') AS transaction`,
++      ),
++    );
++    expect(rows[0]).toMatchObject({
++      isolation: "repeatable read",
++      timezone: "UTC",
++      statement: "2s",
++      lock: "500ms",
++    });
++    expect(rows[0]!.transaction).toMatch(/^(?:[1-4][0-9]{3}ms|5s)$/u);
++  });
++  it("settles a real statement timeout and maps captured installed-driver error", async () => {
++    let captured: unknown;
++    const wrapped: SearchDatabase = {
++      $transaction: (work, options) =>
++        db!.$transaction(
++          (tx) =>
++            work({
++              $queryRaw: async <T>(sql: Prisma.Sql) => {
++                try {
++                  return await tx.$queryRaw<T>(sql);
++                } catch (error) {
++                  captured = error;
++                  throw error;
++                }
++              },
++            }),
++          options,
++        ),
++    };
++    const start = performance.now();
++    await expect(
++      runSearchRead(wrapped, (tx) => tx.$queryRaw(Prisma.sql`SELECT pg_sleep(3)`)),
++    ).rejects.toMatchObject({ code: "SEARCH_UNAVAILABLE" });
++    expect(performance.now() - start).toBeLessThan(5000);
++    expect(errorCode(captured)).toBe("57014");
++    expect(isReadDependencyFailure(captured)).toBe(true);
++    console.info(
++      "native search timeout mapping",
++      JSON.stringify({
++        outerCode: (captured as { code: string }).code,
++        recognizedCode: errorCode(captured),
++      }),
++    );
++  }, 7000);
++  it("recognizes real serialization errors and retries exactly three transactions", async () => {
++    let attempts = 0,
++      captured: unknown;
++    const wrapped: SearchDatabase = {
++      $transaction: async (work, options) => {
++        attempts++;
++        return db!.$transaction(async (tx) => {
++          try {
++            return await work(tx);
++          } catch (error) {
++            captured = error;
++            throw error;
++          }
++        }, options);
++      },
++    };
++    await expect(
++      runSearchRead(wrapped, (tx) =>
++        tx.$queryRaw(
++          Prisma.sql`DO $$ BEGIN RAISE EXCEPTION 'synthetic search serialization' USING ERRCODE='40001'; END $$`,
++        ),
++      ),
++    ).rejects.toMatchObject({ code: "SEARCH_UNAVAILABLE" });
++    expect(attempts).toBe(3);
++    expect(errorCode(captured)).toBe("40001");
++    console.info(
++      "native search serialization mapping",
++      JSON.stringify({
++        outerCode: (captured as { code: string }).code,
++        recognizedCode: errorCode(captured),
++        attempts,
++      }),
++    );
++  });
++  it("maps actual lock timeout without returning a partial result", async () => {
++    let release!: () => void, locked!: () => void;
++    const held = new Promise<void>((resolve) => (release = resolve)),
++      ready = new Promise<void>((resolve) => (locked = resolve));
++    const locker = db!.$transaction(
++      async (tx) => {
++        await tx.$queryRaw`SELECT pg_advisory_xact_lock(780714)::text`;
++        locked();
++        await held;
++      },
++      { timeout: 5000 },
++    );
++    await ready;
++    try {
++      await expect(
++        runSearchRead(db!, (tx) =>
++          tx.$queryRaw(Prisma.sql`SELECT pg_advisory_xact_lock(780714)::text`),
++        ),
++      ).rejects.toMatchObject({ code: "SEARCH_UNAVAILABLE" });
++    } finally {
++      release();
++      await locker;
++    }
++  });
++  it("bounds real exhausted pool acquisition and closes the installed driver failure", async () => {
++    const pool = createPrismaClient(process.env.DATABASE_URL!, { bounded: true });
++    let release!: () => void;
++    const held = new Promise<void>((resolve) => (release = resolve));
++    let acquired = 0,
++      ready!: () => void;
++    const allReady = new Promise<void>((resolve) => (ready = resolve));
++    const lockers = Array.from({ length: 10 }, () =>
++      pool.$transaction(
++        async (tx) => {
++          await tx.$queryRaw`SELECT 1`;
++          if (++acquired === 10) ready();
++          await held;
++        },
++        { maxWait: 2000, timeout: 10000 },
++      ),
++    );
++    await allReady;
++    let captured: unknown;
++    const wrapped: SearchDatabase = {
++      $transaction: async (work, options) => {
++        try {
++          return await pool.$transaction(work, options);
++        } catch (error) {
++          captured = error;
++          throw error;
++        }
++      },
++    };
++    const start = performance.now();
++    try {
++      await expect(
++        runSearchRead(wrapped, (tx) => tx.$queryRaw(Prisma.sql`SELECT 1`)),
++      ).rejects.toMatchObject({ code: "SEARCH_UNAVAILABLE" });
++      expect(performance.now() - start).toBeLessThan(5000);
++      expect(isReadDependencyFailure(captured)).toBe(true);
++      console.info(
++        "native search pool mapping",
++        JSON.stringify({
++          outerCode: (captured as { code?: string }).code,
++          recognizedCode: errorCode(captured),
++        }),
++      );
++    } finally {
++      release();
++      await Promise.all(lockers);
++      await pool.$disconnect();
++    }
++  }, 10000);
++});
+diff --git a/packages/domain/src/search/search-read.test.ts b/packages/domain/src/search/search-read.test.ts
+new file mode 100644
+index 0000000..51c2e30
+--- /dev/null
++++ b/packages/domain/src/search/search-read.test.ts
+@@ -0,0 +1,116 @@
++import { afterEach, describe, expect, it, vi } from "vitest";
++import { Prisma } from "@sammlerraum/db/search-sql";
++import { runSearchRead, type SearchDatabase } from "./search-read";
++import { checkedSearchTotal } from "./item-search-service";
++import { isReadDependencyFailure } from "../api/read-dependency-errors";
++afterEach(() => vi.restoreAllMocks());
++describe("search read processing budgets", () => {
++  it("rejects count overflow without rounding", () => {
++    expect(checkedSearchTotal(9007199254740991n)).toBe(Number.MAX_SAFE_INTEGER);
++    for (const value of [-1n, 9007199254740992n])
++      expect(() => checkedSearchTotal(value)).toThrow("SEARCH_INVARIANT");
++  });
++  it("does not return work after the transaction's budget expired", async () => {
++    let time = 0;
++    vi.spyOn(performance, "now").mockImplementation(() => time);
++    const database: SearchDatabase = {
++      $transaction: async (work) => work({ $queryRaw: async <T>() => [] as T }),
++    };
++    await expect(
++      runSearchRead(database, async () => {
++        time = 5001;
++        return "late";
++      }),
++    ).rejects.toMatchObject({ code: "SEARCH_UNAVAILABLE" });
++  });
++  it("accounts for acquisition against the total budget", async () => {
++    let time = 0;
++    vi.spyOn(performance, "now").mockImplementation(() => time);
++    let calls = 0;
++    const database: SearchDatabase = {
++      $transaction: async (work, options) => {
++        expect(options.maxWait).toBe(2000);
++        time = 11999;
++        return work({
++          $queryRaw: async <T>() => {
++            calls++;
++            time = 12001;
++            return [] as T;
++          },
++        });
++      },
++    };
++    await expect(runSearchRead(database, async () => "partial")).rejects.toMatchObject({
++      code: "SEARCH_UNAVAILABLE",
++    });
++    expect(calls).toBe(1);
++  });
++  it("restarts the entire transaction for at most three recognized serialization failures", async () => {
++    let attempts = 0,
++      works = 0;
++    const database: SearchDatabase = {
++      $transaction: async (work) => {
++        attempts++;
++        await work({ $queryRaw: async <T>() => [] as T });
++        throw { code: "P2010", meta: { driverAdapterError: { cause: { originalCode: "40001" } } } };
++      },
++    };
++    await expect(
++      runSearchRead(database, async () => {
++        works++;
++        return "uncommitted";
++      }),
++    ).rejects.toMatchObject({ code: "SEARCH_UNAVAILABLE" });
++    expect(attempts).toBe(3);
++    expect(works).toBe(3);
++  });
++  it("does not retry once overall time is spent, or retry arbitrary database errors", async () => {
++    let time = 0,
++      attempts = 0;
++    vi.spyOn(performance, "now").mockImplementation(() => time);
++    const database: SearchDatabase = {
++      $transaction: async () => {
++        attempts++;
++        time = 12001;
++        throw { code: "40001" };
++      },
++    };
++    await expect(runSearchRead(database, async () => "partial")).rejects.toMatchObject({
++      code: "SEARCH_UNAVAILABLE",
++    });
++    expect(attempts).toBe(1);
++    expect(isReadDependencyFailure({ message: "57014 fake secret" })).toBe(false);
++    await expect(
++      runSearchRead(
++        {
++          $transaction: async () => {
++            throw { message: "secret" };
++          },
++        },
++        async () => "partial",
++      ),
++    ).rejects.toMatchObject({ code: "SEARCH_INVARIANT" });
++  });
++  it("checks remaining budget after SQL and before subsequent SQL", async () => {
++    let time = 0,
++      statements = 0;
++    vi.spyOn(performance, "now").mockImplementation(() => time);
++    const database: SearchDatabase = {
++      $transaction: async (work) =>
++        work({
++          $queryRaw: async <T>(sql: Prisma.Sql) => {
++            statements++;
++            if (sql.text === "SELECT 1") time = 5001;
++            return [] as T;
++          },
++        }),
++    };
++    await expect(
++      runSearchRead(database, async (tx) => {
++        await tx.$queryRaw(Prisma.sql`SELECT 1`);
++        return tx.$queryRaw(Prisma.sql`SELECT 2`);
++      }),
++    ).rejects.toMatchObject({ code: "SEARCH_UNAVAILABLE" });
++    expect(statements).toBe(3);
++  });
++});
+diff --git a/packages/domain/src/search/search-read.ts b/packages/domain/src/search/search-read.ts
+new file mode 100644
+index 0000000..4c30b61
+--- /dev/null
++++ b/packages/domain/src/search/search-read.ts
+@@ -0,0 +1,70 @@
++import { Prisma } from "@sammlerraum/db/search-sql";
++import { ItemSearchError, searchFail } from "@sammlerraum/contracts/item-search";
++import { FilterValidationError } from "@sammlerraum/contracts/search";
++import { isReadDependencyFailure, isReadSerializationFailure } from "../api/read-dependency-errors";
++export type SearchReadTransaction = { $queryRaw<T>(sql: Prisma.Sql): Promise<T> };
++export type SearchDatabase = {
++  $transaction<T>(
++    work: (tx: SearchReadTransaction) => Promise<T>,
++    options: { isolationLevel: "RepeatableRead"; maxWait: number; timeout: number },
++  ): Promise<T>;
++};
++/** Entire read retries within 12s; no locks or snapshot survive a response. */
++export async function runSearchRead<T>(
++  database: SearchDatabase,
++  work: (tx: SearchReadTransaction) => Promise<T>,
++): Promise<T> {
++  const stop = performance.now() + 12000;
++  for (let attempt = 0; attempt < 3; attempt++) {
++    const remaining = Math.floor(stop - performance.now());
++    if (remaining < 1) return searchFail("SEARCH_UNAVAILABLE");
++    try {
++      const result = await database.$transaction(
++        async (raw) => {
++          const txStop = Math.min(stop, performance.now() + 5000);
++          const budget = () => {
++            const left = Math.floor(txStop - performance.now());
++            if (left < 1) return searchFail("SEARCH_UNAVAILABLE");
++            return left;
++          };
++          const first = budget();
++          await raw.$queryRaw(
++            Prisma.sql`SELECT set_config('TimeZone','UTC',true),set_config('statement_timeout',${`${Math.min(2000, first)}ms`},true),set_config('lock_timeout',${`${Math.min(500, first)}ms`},true),set_config('transaction_timeout',${`${first}ms`},true)`,
++          );
++          budget();
++          const tx: SearchReadTransaction = {
++            $queryRaw: async <T>(query: Prisma.Sql) => {
++              const left = budget();
++              await raw.$queryRaw(
++                Prisma.sql`SELECT set_config('statement_timeout',${`${Math.min(2000, left)}ms`},true),set_config('lock_timeout',${`${Math.min(500, left)}ms`},true)`,
++              );
++              budget();
++              const rows = await raw.$queryRaw<T>(query);
++              budget();
++              return rows;
++            },
++          };
++          const result = await work(tx);
++          budget();
++          return result;
++        },
++        {
++          isolationLevel: "RepeatableRead",
++          maxWait: Math.min(2000, remaining),
++          timeout: Math.min(5000, remaining),
++        },
++      );
++      if (performance.now() >= stop) return searchFail("SEARCH_UNAVAILABLE");
++      return result;
++    } catch (error) {
++      if (error instanceof ItemSearchError || error instanceof FilterValidationError) throw error;
++      if (isReadSerializationFailure(error) && attempt < 2 && performance.now() < stop) continue;
++      if (isReadDependencyFailure(error)) return searchFail("SEARCH_UNAVAILABLE");
++      // This compiler's only named collation is a deployment dependency. Never expose SQL.
++      const code = (error as { meta?: { code?: unknown } } | null)?.meta?.code;
++      if (code === "42704") return searchFail("SEARCH_UNAVAILABLE");
++      return searchFail("SEARCH_INVARIANT");
++    }
++  }
++  return searchFail("SEARCH_UNAVAILABLE");
++}
+diff --git a/packages/domain/src/search/search-text.ts b/packages/domain/src/search/search-text.ts
+new file mode 100644
+index 0000000..0815e79
+--- /dev/null
++++ b/packages/domain/src/search/search-text.ts
+@@ -0,0 +1,41 @@
++import { Prisma } from "@sammlerraum/db/search-sql";
++import { catalogGuard } from "./search-typed-guards";
++import { or } from "./search-compiler";
++const selected = Prisma.sql`a."entryId"=i."catalogEntryId" AND a."categoryTemplateId"=i."categoryTemplateId" AND ((a."variantId" IS NULL AND a."targetKey"='entry') OR (a."variantId"=i."catalogVariantId" AND a."targetKey"=i."catalogVariantId"::text))`;
++const catalogFrom = Prisma.sql`FROM "CatalogAttributeValue" a JOIN "CatalogAttributeDefinition" d ON d.id=a."definitionId" AND d."categoryTemplateId"=a."categoryTemplateId"`;
++const relevant = Prisma.sql`d.type IN ('SHORT_TEXT','LONG_TEXT','SINGLE_SELECT','MULTI_SELECT')`;
++const guards = Prisma.sql`CASE d.type WHEN 'SHORT_TEXT' THEN ${catalogGuard("SHORT_TEXT")} WHEN 'LONG_TEXT' THEN ${catalogGuard("LONG_TEXT")} WHEN 'SINGLE_SELECT' THEN ${catalogGuard("SINGLE_SELECT")} WHEN 'MULTI_SELECT' THEN ${catalogGuard("MULTI_SELECT")} ELSE TRUE END`;
++export const invalidBroadFacts = Prisma.sql`EXISTS(SELECT 1 ${catalogFrom} WHERE ${selected} AND ${relevant} AND NOT COALESCE((${guards}),FALSE))`;
++/** Broad text is literal NFKC/ILIKE with the fixed deterministic root ICU collation. */
++export function compileBroadText(query: string, owner: string): Prisma.Sql {
++  const pattern = `%${query.replace(/[\\%_]/gu, (c) => `\\${c}`)}%`;
++  const matches = (column: Prisma.Sql) =>
++    Prisma.sql`COALESCE(normalize(${column},NFKC) COLLATE pg_catalog."und-x-icu" ILIKE ${pattern} ESCAPE ${"\\"},FALSE)`;
++  const title = (column: Prisma.Sql) =>
++    or([
++      Prisma.sql`CASE WHEN jsonb_typeof(${column}->'text'->'title')='string' THEN ${matches(Prisma.sql`${column}->'text'->>'title'`)} ELSE FALSE END`,
++      Prisma.sql`EXISTS(SELECT 1 FROM jsonb_array_elements(CASE WHEN jsonb_typeof(${column}->'text'->'translations')='array' THEN ${column}->'text'->'translations' ELSE '[]'::jsonb END) tr WHERE jsonb_typeof(tr->'title')='string' AND ${matches(Prisma.sql`tr->>'title'`)})`,
++    ]);
++  return or([
++    matches(Prisma.sql`i.title`),
++    matches(Prisma.sql`i."publicDescription"`),
++    Prisma.sql`EXISTS(SELECT 1 FROM "ItemTag" it JOIN "Tag" t ON t.id=it."tagId" WHERE it."itemId"=i.id AND t."ownerId"=${owner} AND ${matches(Prisma.sql`t."normalizedName"`)})`,
++    Prisma.sql`EXISTS(SELECT 1 FROM "ItemIdentifier" x WHERE x."itemId"=i.id AND ${matches(Prisma.sql`x.value`)})`,
++    Prisma.sql`EXISTS(SELECT 1 FROM "Grading" g WHERE g."itemId"=i.id AND g."ownerId"=${owner} AND ${or([matches(Prisma.sql`g.provider`), matches(Prisma.sql`g.grade`), matches(Prisma.sql`g."certificateNo"`)])})`,
++    Prisma.sql`EXISTS(SELECT 1 FROM "CustomFieldValue" v WHERE v."itemId"=i.id AND v."collectionId"=i."collectionId" AND ${or(
++      [
++        Prisma.sql`v."fieldType"='SHORT_TEXT' AND ${matches(Prisma.sql`v."shortTextValue"`)}`,
++        Prisma.sql`v."fieldType"='LONG_TEXT' AND ${matches(Prisma.sql`v."longTextValue"`)}`,
++        Prisma.sql`v."fieldType"='SINGLE_SELECT' AND EXISTS(SELECT 1 FROM "CustomFieldOption" o WHERE o.id=v."singleSelectOptionId" AND o."fieldDefinitionId"=v."fieldDefinitionId" AND ${matches(Prisma.sql`o.value`)})`,
++        Prisma.sql`v."fieldType"='MULTI_SELECT' AND EXISTS(SELECT 1 FROM "CustomFieldMultiSelectValue" mv JOIN "CustomFieldOption" o ON o.id=mv."optionId" AND o."fieldDefinitionId"=mv."fieldDefinitionId" WHERE mv."itemId"=v."itemId" AND mv."fieldDefinitionId"=v."fieldDefinitionId" AND ${matches(Prisma.sql`o.value`)})`,
++      ],
++    )})`,
++    Prisma.sql`EXISTS(SELECT 1 FROM "CategoryTemplateLabel" l WHERE l."categoryTemplateId"=i."categoryTemplateId" AND l.locale IN ('de','en') AND ${matches(Prisma.sql`l.label`)})`,
++    Prisma.sql`EXISTS(SELECT 1 FROM "CatalogEntry" e WHERE e.id=i."catalogEntryId" AND e."categoryTemplateId"=i."categoryTemplateId" AND ${title(Prisma.sql`e.authored`)})`,
++    Prisma.sql`EXISTS(SELECT 1 FROM "CatalogVariant" e WHERE e.id=i."catalogVariantId" AND e."entryId"=i."catalogEntryId" AND ${title(Prisma.sql`e.authored`)})`,
++    Prisma.sql`EXISTS(SELECT 1 ${catalogFrom} WHERE ${selected} AND ${relevant} AND ${or([
++      Prisma.sql`d.type IN ('SHORT_TEXT','LONG_TEXT','SINGLE_SELECT') AND ${matches(Prisma.sql`a.value #>> '{}'`)}`,
++      Prisma.sql`d.type IN ('SINGLE_SELECT','MULTI_SELECT') AND EXISTS(SELECT 1 FROM "CatalogAttributeOption" o LEFT JOIN "CatalogAttributeOptionLabel" l ON l."optionId"=o.id AND l.locale IN ('de','en') WHERE o."definitionId"=a."definitionId" AND ((d.type='SINGLE_SELECT' AND o.key COLLATE pg_catalog."C"=(a.value #>> '{}')) OR (d.type='MULTI_SELECT' AND a.value @> jsonb_build_array(o.key))) AND ${or([matches(Prisma.sql`o.key`), matches(Prisma.sql`l.label`)])})`,
++    ])})`,
++  ]);
++}
+diff --git a/packages/domain/src/search/search-typed-guards.ts b/packages/domain/src/search/search-typed-guards.ts
+new file mode 100644
+index 0000000..1a875ed
+--- /dev/null
++++ b/packages/domain/src/search/search-typed-guards.ts
+@@ -0,0 +1,52 @@
++import { Prisma } from "@sammlerraum/db/search-sql";
++import type { CustomFieldType } from "@sammlerraum/contracts/custom-fields";
++const text = Prisma.sql`(a.value #>> '{}')`;
++const string = Prisma.sql`jsonb_typeof(a.value)='string'`;
++const array = Prisma.sql`CASE WHEN jsonb_typeof(a.value)='array' THEN a.value ELSE '[]'::jsonb END`;
++export function catalogGuard(type: CustomFieldType): Prisma.Sql {
++  switch (type) {
++    case "SHORT_TEXT":
++    case "LONG_TEXT":
++      return Prisma.sql`${string} AND char_length(${text}) BETWEEN 1 AND ${type === "SHORT_TEXT" ? 255 : 10000} AND ${text}=normalize(btrim(${text}),NFKC) COLLATE pg_catalog."C"`;
++    case "URL":
++      return Prisma.sql`${string} AND char_length(${text})<=2048 AND ${text} ~ '^https?://[^/@[:space:]]+[^[:space:]]*$'`;
++    case "INTEGER":
++      return Prisma.sql`CASE WHEN jsonb_typeof(a.value)='number' AND ${text} ~ '^-?(0|[1-9][0-9]*)$' AND char_length(${text})<=17 THEN ${text}::numeric BETWEEN -9007199254740991 AND 9007199254740991 ELSE FALSE END`;
++    case "DECIMAL":
++      return Prisma.sql`${string} AND ${text} ~ '^-?(0|[1-9][0-9]{0,19})([.][0-9]{0,17}[1-9])?$' AND ${text}<>'-0'`;
++    case "DATE":
++      return Prisma.sql`CASE WHEN ${string} AND ${text} ~ '^[0-9]{4}-[0-9]{2}-[0-9]{2}$' AND left(${text},4)<>'0000' AND pg_input_is_valid(${text},'date') THEN to_char(${text}::date,'YYYY-MM-DD')=${text} ELSE FALSE END`;
++    case "BOOLEAN":
++      return Prisma.sql`jsonb_typeof(a.value)='boolean'`;
++    case "SINGLE_SELECT":
++      return Prisma.sql`${string} AND EXISTS(SELECT 1 FROM "CatalogAttributeOption" o WHERE o."definitionId"=a."definitionId" AND o.key COLLATE pg_catalog."C"=${text})`;
++    case "MULTI_SELECT":
++      return Prisma.sql`jsonb_typeof(a.value)='array' AND jsonb_array_length(${array})<=100 AND NOT EXISTS(SELECT 1 FROM jsonb_array_elements(${array}) e(value) WHERE jsonb_typeof(e.value)<>'string' OR NOT EXISTS(SELECT 1 FROM "CatalogAttributeOption" o WHERE o."definitionId"=a."definitionId" AND o.key COLLATE pg_catalog."C"=(e.value #>> '{}'))) AND (SELECT count(*)=count(DISTINCT e.value) FROM jsonb_array_elements(${array}) e(value))`;
++    case "MONEY":
++      return Prisma.sql`CASE WHEN jsonb_typeof(a.value)='object' AND jsonb_typeof(a.value->'amountMinor')='number' AND (a.value->>'amountMinor') ~ '^(0|[1-9][0-9]{0,15})$' AND jsonb_typeof(a.value->'currency')='string' AND (a.value->>'currency') ~ '^[A-Z]{3}$' AND (CASE WHEN jsonb_typeof(a.value)='object' THEN a.value ELSE '{}'::jsonb END) - 'amountMinor' - 'currency' = '{}'::jsonb THEN (a.value->>'amountMinor')::numeric BETWEEN 0 AND 9007199254740991 ELSE FALSE END`;
++  }
++}
++export function catalogScalar(type: CustomFieldType): Prisma.Sql {
++  const valid = catalogGuard(type);
++  if (type === "INTEGER" || type === "DECIMAL")
++    return Prisma.sql`CASE WHEN ${valid} THEN ${text}::numeric ELSE NULL END`;
++  if (type === "DATE") return Prisma.sql`CASE WHEN ${valid} THEN ${text}::date ELSE NULL END`;
++  if (type === "BOOLEAN") return Prisma.sql`CASE WHEN ${valid} THEN ${text}::boolean ELSE NULL END`;
++  return Prisma.sql`CASE WHEN ${valid} THEN ${text} ELSE NULL END`;
++}
++/** SQL constraints protect native discriminants and paired columns. These guards
++ * cover values the native date/numeric/text types can hold outside producer bounds. */
++export function customGuard(type: CustomFieldType): Prisma.Sql {
++  switch (type) {
++    case "DECIMAL":
++      return Prisma.sql`v."decimalValue" IS NOT NULL AND v."decimalValue"::text NOT IN ('NaN','Infinity','-Infinity')`;
++    case "DATE":
++      return Prisma.sql`v."dateValue" BETWEEN DATE '0001-01-01' AND DATE '9999-12-31'`;
++    case "SHORT_TEXT":
++      return Prisma.sql`v."shortTextValue"=normalize(btrim(v."shortTextValue"),NFKC) COLLATE pg_catalog."C"`;
++    case "LONG_TEXT":
++      return Prisma.sql`v."longTextValue"=normalize(btrim(v."longTextValue"),NFKC) COLLATE pg_catalog."C"`;
++    default:
++      return Prisma.sql`TRUE`;
++  }
++}
+diff --git a/packages/domain/src/valuations/valuation-query.ts b/packages/domain/src/valuations/valuation-query.ts
+index c45420f..bd240b0 100644
+--- a/packages/domain/src/valuations/valuation-query.ts
++++ b/packages/domain/src/valuations/valuation-query.ts
+@@ -82,61 +82,22 @@ const sameKey = (a: SourceKey, b: SourceKey) =>
+   a.identifierNamespace === b.identifierNamespace &&
+   a.identifierType === b.identifierType &&
+   a.externalId === b.externalId &&
+   a.kind === b.kind &&
+   a.currency === b.currency;
+ const sameContext = (a: ItemContext, b: ItemContext) =>
+   a.itemId === b.itemId &&
+   a.entryId === b.entryId &&
+   a.variantId === b.variantId &&
+   a.revision === b.revision;
+-function errorCode(error: unknown, depth = 0): string | undefined {
+-  if (!error || typeof error !== "object" || depth > 5) return;
+-  const e = error as Record<string, unknown>;
+-  for (const key of ["code", "originalCode"])
+-    if (
+-      typeof e[key] === "string" &&
+-      [
+-        "40001",
+-        "40P01",
+-        "57014",
+-        "55P03",
+-        "P1001",
+-        "P1002",
+-        "P1008",
+-        "P1017",
+-        "P2028",
+-        "P2024",
+-        "P2034",
+-        "ETIMEDOUT",
+-        "ECONNREFUSED",
+-        "ECONNRESET",
+-        "ENOTFOUND",
+-        "08006",
+-        "25P04",
+-      ].includes(e[key])
+-    )
+-      return e[key];
+-  // These are the connection causes emitted by the installed PostgreSQL adapter.
+-  if (
+-    typeof e.kind === "string" &&
+-    ["DatabaseNotReachable", "ConnectionClosed", "SocketTimeout"].includes(e.kind)
+-  )
+-    return e.kind;
+-  for (const key of ["meta", "cause", "driverAdapterError"]) {
+-    const code = errorCode(e[key], depth + 1);
+-    if (code) return code;
+-  }
+-}
+-export function isValuationDependencyFailure(error: unknown): boolean {
+-  return errorCode(error) !== undefined;
+-}
++export { isReadDependencyFailure as isValuationDependencyFailure } from "../api/read-dependency-errors";
++import { errorCode } from "../api/read-dependency-errors";
+ function checkedDto<T>(
+   value: unknown,
+   schema: { safeParse(v: unknown): { success: true; data: T } | { success: false } },
+ ): T {
+   const parsed = schema.safeParse(value);
+   if (
+     !parsed.success ||
+     Buffer.byteLength(JSON.stringify(parsed.data)) > VALUATION_MAX_RESPONSE_BYTES
+   )
+     return fail("VALUATION_INVARIANT");

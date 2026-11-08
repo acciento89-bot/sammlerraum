@@ -1,0 +1,90 @@
+[WebServer] (node:6915) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 1 worker
+
+(node:6916) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [desktop] › e2e/search-dashboard.spec.ts:295:3 › de: actual delayed response, failure/stale states and 401 clearing (28.8s)
+(node:6970) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  2 [desktop] › e2e/search-dashboard.spec.ts:659:3 › de: real pagination replaces rows and query edits reset the cursor (31.8s)
+
+
+  1) [desktop] › e2e/search-dashboard.spec.ts:295:3 › de: actual delayed response, failure/stale states and 401 clearing 
+
+    PrismaClientKnownRequestError: 
+    Invalid `prisma.user.deleteMany()` invocation:
+
+
+    Database error. Code: `XX000`. Message: `could not read blocks 0..0 in file "base/16384/6113": Operation canceled`
+
+       at support/search-fixture.ts:80
+
+      78 | export async function cleanupSearchFixture(f: { ownerId: string; foreignId: string; ip: string }) {
+      79 |   if (!db) return;
+    > 80 |   await db.user.deleteMany({ where: { id: { in: [f.ownerId, f.foreignId] } } });
+         |   ^
+      81 |   await db.rateLimit.deleteMany({ where: { key: `${f.ip}|/sign-in/email` } });
+      82 | }
+      83 |
+        at vn.handleRequestError (/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:238:13)
+        at vn.handleAndLogRequestError (/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:184:12)
+        at vn.request (/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:153:12)
+        at a (/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:1014:24)
+        at cleanupSearchFixture (/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/support/search-fixture.ts:80:3)
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/search-dashboard.spec.ts:373:7
+
+    Error Context: test-results/search-dashboard-de-actual-3a2a4-ale-states-and-401-clearing-desktop/error-context.md
+
+    Error Context: test-results/search-dashboard-de-actual-3a2a4-ale-states-and-401-clearing-desktop/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/search-dashboard-de-actual-3a2a4-ale-states-and-401-clearing-desktop/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/search-dashboard-de-actual-3a2a4-ale-states-and-401-clearing-desktop/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [desktop] › e2e/search-dashboard.spec.ts:659:3 › de: real pagination replaces rows and query edits reset the cursor 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByText('Ungespeicherter Entwurf. Anwenden aktualisiert die Ergebnisse.', { exact: true })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByText('Ungespeicherter Entwurf. Anwenden aktualisiert die Ergebnisse.', { exact: true }) with timeout 5000ms
+      - waiting for getByText('Ungespeicherter Entwurf. Anwenden aktualisiert die Ergebnisse.', { exact: true })
+
+
+      697 |       await panel(page, locale);
+      698 |       await expect(page.getByLabel(c.text, { exact: true })).toHaveValue("Unapplied private draft");
+    > 699 |       await expect(page.getByText(c.draftPending, { exact: true })).toBeVisible();
+          |                                                                     ^
+      700 |       await page.getByRole("button", { name: c.discard, exact: true }).click();
+      701 |       await page.getByRole("button", { name: c.discardConfirm, exact: true }).click();
+      702 |       await page.goBack();
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/search-dashboard.spec.ts:699:69
+
+    Error Context: test-results/search-dashboard-de-real-p-f8af6-uery-edits-reset-the-cursor-desktop/error-context.md
+
+    Error Context: test-results/search-dashboard-de-real-p-f8af6-uery-edits-reset-the-cursor-desktop/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/search-dashboard-de-real-p-f8af6-uery-edits-reset-the-cursor-desktop/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/search-dashboard-de-real-p-f8af6-uery-edits-reset-the-cursor-desktop/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2 failed
+    [desktop] › e2e/search-dashboard.spec.ts:295:3 › de: actual delayed response, failure/stale states and 401 clearing 
+    [desktop] › e2e/search-dashboard.spec.ts:659:3 › de: real pagination replaces rows and query edits reset the cursor 
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/search-dashboard.spec.ts --project=desktop --grep de: (actual delayed|real pagination) --workers=1 --trace=retain-on-failure

@@ -1,0 +1,4 @@
+packages/contracts/src/collaboration.ts 35ms (unchanged)
+packages/domain/src/collaboration/membership-service.ts 29ms
+packages/domain/src/collaboration/membership-service.test.ts 44ms
+packages/domain/src/collaboration/transfer-transaction.ts 6ms

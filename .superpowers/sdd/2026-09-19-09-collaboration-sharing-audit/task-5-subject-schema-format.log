@@ -1,0 +1,20 @@
+Loaded Prisma config from prisma.config.ts.
+
+Prisma schema loaded from prisma/schema.prisma.
+
+Error: Prisma schema validation - (validate wasm)
+Error code: P1012
+error: Error validating model "PurchaseMoneyInterpretationEvent": The index definition refers to the unknown fields: subjectUserId.
+  -->  prisma/schema.prisma:1058
+   | 
+1057 |   @@index([actorId])
+1058 |   @@index([subjectUserId])
+   | 
+
+Validation Error Count: 1
+[Context: validate]
+
+Prisma CLI Version : 7.10.0
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/db:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: prisma format

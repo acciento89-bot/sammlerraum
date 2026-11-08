@@ -1,0 +1,9 @@
+{
+  "privateLocalTraceSha256": "51813befd09b75b44d301ee77e6435ee21e3722e2511ff65b5ae023e8fd2f3d9",
+  "rawVerboseTraceCommitted": false,
+  "safeFindings": [
+    "screenshot completed146ms; fonts loaded",
+    "test waited for block action in different thread collapsed by deliberate reload",
+    "journey now explicitly opens that thread; final9browser PASS25.1s"
+  ]
+}

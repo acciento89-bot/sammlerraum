@@ -1,0 +1,30 @@
+{
+  "actualRecovery": "PostgreSQL17.11 custom dump to distinct empty owned scratch database",
+  "passed": 8,
+  "seconds": 7.04,
+  "log": "task-3-drill-final.log",
+  "syntheticObjects": [
+    "original",
+    "variant",
+    "privateDocument",
+    "importSource"
+  ],
+  "snapshot": "one exported REPEATABLE READ SQL snapshot for dump/counts/references",
+  "negativeCases": [
+    "missing/corrupt restored bytes",
+    "missing/changed source bytes",
+    "corrupt dump",
+    "table count mismatch",
+    "unsafe/duplicate/link tar entries",
+    "missing/unhealthy/degraded health",
+    "wrong/existing restore target",
+    "inflight uploads",
+    "uploads symlink"
+  ],
+  "health": "real recovered DB checked by local test HTTP fixture; full recovered application not claimed",
+  "docker": "not locally installed; same drill configured for CI in PostgreSQL17 test container",
+  "productionTouched": false,
+  "wholePhaseReview": "pending",
+  "exactCI": "pending",
+  "acceptedTaskCredit": false
+}

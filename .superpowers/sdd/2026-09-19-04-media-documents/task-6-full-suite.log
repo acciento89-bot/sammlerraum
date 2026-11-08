@@ -1,0 +1,64 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ✓ |workspace| packages/domain/src/media/cleanup-service.test.ts (11 tests) 800ms
+ ✓ |workspace| apps/worker/src/jobs/process-image.test.ts (8 tests) 300ms
+ ✓ |workspace| packages/domain/src/media/media-service.test.ts (20 tests) 266ms
+ ✓ |workspace| packages/domain/src/media/media-management.integration.test.ts (1 test) 253ms
+ ✓ |workspace| packages/storage/src/staging-lock.integration.test.ts (3 tests) 148ms
+ ✓ |workspace| packages/storage/src/local-storage.test.ts (23 tests) 38ms
+ ✓ |workspace| packages/config/src/client.test.ts (6 tests) 26ms
+ ✓ |workspace| packages/db/src/test-database.test.ts (4 tests) 28ms
+ ✓ |workspace| apps/worker/src/jobs/cleanup-media.test.ts (4 tests) 21ms
+ ✓ |workspace| apps/web/src/components/items/item-form-values.test.ts (13 tests) 30ms
+ ✓ |workspace| apps/worker/src/health.test.ts (2 tests) 16ms
+ ✓ |workspace| apps/web/src/lib/api/route-handler.test.ts (5 tests) 9ms
+ ✓ |workspace| apps/web/src/lib/media-routes.test.ts (12 tests) 17ms
+ ✓ |workspace| apps/web/src/app/api/v1/items/item-api.test.ts (10 tests) 11ms
+ ✓ |workspace| packages/queue/src/pg-boss-queue.test.ts (10 tests) 6ms
+ ✓ |workspace| packages/config/src/server.test.ts (26 tests) 7ms
+ ✓ |workspace| apps/web/src/app/api/v1/collections/collection-api.test.ts (5 tests) 8ms
+ ✓ |workspace| apps/web/src/app/api/v1/account/recovery-methods/route.test.ts (3 tests) 6ms
+ ✓ |workspace| packages/domain/src/locations/location-service.test.ts (17 tests) 199ms
+ ✓ |workspace| apps/web/src/lib/auth.test.ts (3 tests) 6ms
+ ✓ |workspace| apps/worker/src/jobs/image-dispatcher.test.ts (2 tests) 4ms
+ ✓ |workspace| packages/domain/src/custom-fields/custom-field-service.test.ts (36 tests) 220ms
+ ✓ |workspace| packages/domain/src/collections/collection-service.test.ts (14 tests) 157ms
+ ✓ |workspace| apps/web/src/lib/auth-api-server-setup.test.ts (1 test) 7ms
+ ✓ |workspace| packages/domain/src/identity/profile-service.test.ts (6 tests) 95ms
+ ✓ |workspace| packages/domain/src/items/item-service.test.ts (15 tests) 227ms
+ ✓ |workspace| apps/web/src/app/api/openapi.json/route.test.ts (1 test) 4ms
+ ✓ |workspace| apps/web/src/components/auth/account-ui-state.test.ts (9 tests) 3ms
+ ✓ |workspace| packages/domain/src/items/identifier-service.test.ts (11 tests) 151ms
+ ✓ |workspace| packages/domain/src/media/media-read.test.ts (8 tests) 4ms
+ ✓ |workspace| packages/testing/src/production-config.test.ts (5 tests) 5ms
+ ✓ |workspace| apps/web/src/lib/email.test.ts (2 tests) 3ms
+ ✓ |workspace| packages/domain/src/locations/label-service.test.ts (2 tests) 4ms
+ ✓ |workspace| apps/web/src/lib/account-profile-routes.test.ts (2 tests) 6ms
+ ✓ |workspace| packages/domain/src/authz/policy.test.ts (25 tests) 4ms
+ ✓ |workspace| apps/web/src/app/api/v1/media/media-read.test.ts (5 tests) 6ms
+ ✓ |workspace| packages/domain/src/identity/security-service.test.ts (7 tests) 109ms
+ ✓ |workspace| apps/web/src/proxy.test.ts (3 tests) 4ms
+ ✓ |workspace| apps/web/src/app/api/v1/account/sessions/route.test.ts (4 tests) 5ms
+ ✓ |workspace| apps/worker/src/main.test.ts (4 tests) 3ms
+ ✓ |workspace| packages/contracts/src/openapi.test.ts (3 tests) 4ms
+ ✓ |workspace| packages/domain/src/api/resource-query.test.ts (2 tests) 2ms
+ ✓ |workspace| packages/db/src/health.test.ts (1 test) 2ms
+ ✓ |workspace| packages/testing/src/workspace.test.ts (1 test) 1ms
+ ✓ |workspace| apps/web/src/lib/request-id.test.ts (5 tests) 3ms
+ ✓ |workspace| apps/web/src/app/api/health/route.test.ts (2 tests) 1ms
+ ✓ |workspace| apps/web/src/i18n/routing.test.ts (3 tests) 1ms
+ ✓ |workspace| packages/queue/src/postgres.integration.test.ts (1 test) 42ms
+ ✓ |workspace| packages/db/src/media-lock.integration.test.ts (1 test) 17ms
+ ✓ |workspace| packages/db/src/media-migration.integration.test.ts (1 test) 84ms
+ ✓ |workspace| packages/db/src/postgres.integration.test.ts (1 test) 69ms
+ ✓ |workspace| apps/web/src/lib/security-service.integration.test.ts (1 test) 259ms
+ ✓ |workspace| packages/domain/src/media/media-read.integration.test.ts (1 test) 155ms
+ ✓ |workspace| apps/worker/src/jobs/image-repository.integration.test.ts (2 tests) 193ms
+ ✓ |workspace| apps/web/src/app/api/v1/items/resource-route.integration.test.ts (2 tests) 236ms
+
+ Test Files  55 passed (55)
+      Tests  375 passed (375)
+   Start at  21:35:15
+   Duration  14.16s (transform 383ms, setup 31ms, collect 3.28s, tests 4.29s, environment 4ms, prepare 1.63s)
+

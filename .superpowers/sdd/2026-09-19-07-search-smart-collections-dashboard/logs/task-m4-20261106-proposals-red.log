@@ -1,0 +1,72 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/catalog/catalog-money-proposals.test.ts (4 tests | 4 failed) 423ms
+   × actual catalog monetary proposal lifecycle > freezes server receipts at submission but authors nothing until a real moderator approves 5ms
+     → service(...).submitMoneyProposal is not a function
+   × actual catalog monetary proposal lifecycle > carries untouched known facts through an old null-envelope proposal 86ms
+     → MONEY_FORBIDDEN
+   × actual catalog monetary proposal lifecycle > commits CONFLICT and rolls back raw revisions when a replacement's same-raw source meaning changed 14ms
+     → service(...).submitMoneyProposal is not a function
+   × actual catalog monetary proposal lifecycle > never persists incomplete money paths or permits editing a submitted envelope 1ms
+     → service(...).submitMoneyProposal is not a function
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/catalog/catalog-money-proposals.test.ts > actual catalog monetary proposal lifecycle > freezes server receipts at submission but authors nothing until a real moderator approves
+TypeError: service(...).submitMoneyProposal is not a function
+ ❯ packages/domain/src/catalog/catalog-money-proposals.test.ts:39:37
+     37|   it("freezes server receipts at submission but authors nothing until …
+     38|     const before = await db.catalogEntry.count();
+     39|     const pending = await service().submitMoneyProposal(proposer, body…
+       |                                     ^
+     40|     expect(pending.state).toBe("PENDING");
+     41|     expect(await db.catalogEntry.count()).toBe(before);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  |workspace| packages/domain/src/catalog/catalog-money-proposals.test.ts > actual catalog monetary proposal lifecycle > carries untouched known facts through an old null-envelope proposal
+LegacyMoneyError: MONEY_FORBIDDEN
+ ❯ legacyMoneyFail packages/contracts/src/legacy-money.ts:27:9
+     25| }
+     26| export function legacyMoneyFail(code: LegacyMoneyError["code"]): never…
+     27|   throw new LegacyMoneyError(code);
+       |         ^
+     28| }
+     29| export const LegacyMoneyIdSchema = z
+ ❯ applyCatalogMoneyRevision packages/domain/src/money/legacy-money-store.ts:501:14
+ ❯ finishCatalogMoneyMutation packages/domain/src/catalog/catalog-money-mutation.ts:219:11
+ ❯ mutate packages/domain/src/catalog/catalog-service.ts:291:5
+ ❯ apply packages/domain/src/catalog/proposal-service.ts:178:22
+ ❯ decide packages/domain/src/catalog/proposal-service.ts:265:20
+ ❯ Proxy._transactionWithCallback node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:861:18
+ ❯ decision packages/domain/src/catalog/proposal-service.ts:322:20
+ ❯ packages/domain/src/catalog/catalog-money-proposals.test.ts:56:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  |workspace| packages/domain/src/catalog/catalog-money-proposals.test.ts > actual catalog monetary proposal lifecycle > commits CONFLICT and rolls back raw revisions when a replacement's same-raw source meaning changed
+TypeError: service(...).submitMoneyProposal is not a function
+ ❯ packages/domain/src/catalog/catalog-money-proposals.test.ts:62:37
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  |workspace| packages/domain/src/catalog/catalog-money-proposals.test.ts > actual catalog monetary proposal lifecycle > never persists incomplete money paths or permits editing a submitted envelope
+TypeError: service(...).submitMoneyProposal is not a function
+ ❯ packages/domain/src/catalog/catalog-money-proposals.test.ts:76:28
+     74|   it("never persists incomplete money paths or permits editing a submi…
+     75|     const before = await db.catalogProposal.count();
+     76|     await expect(service().submitMoneyProposal(proposer, { ...body(), …
+       |                            ^
+     77|     expect(await db.catalogProposal.count()).toBe(before);
+     78|     const pending = await service().submitMoneyProposal(proposer, body…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  4 failed (4)
+   Start at  06:38:28
+   Duration  867ms (transform 144ms, setup 7ms, collect 261ms, tests 423ms, environment 0ms, prepare 56ms)
+

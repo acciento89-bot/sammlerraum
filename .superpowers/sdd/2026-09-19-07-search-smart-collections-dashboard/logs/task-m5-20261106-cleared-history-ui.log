@@ -1,0 +1,15 @@
+[WebServer] (node:9968) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 4 tests using 1 worker
+
+(node:9970) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [money-ui-desktop] › e2e/legacy-money.spec.ts:1012:3 › de: a cleared purchase retains the private entry point for withdrawing its historical assertion (2.8s)
+  ✓  2 [money-ui-desktop] › e2e/legacy-money.spec.ts:1012:3 › en: a cleared purchase retains the private entry point for withdrawing its historical assertion (1.4s)
+(node:10008) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  3 [money-ui-mobile] › e2e/legacy-money.spec.ts:1012:3 › de: a cleared purchase retains the private entry point for withdrawing its historical assertion (1.5s)
+  ✓  4 [money-ui-mobile] › e2e/legacy-money.spec.ts:1012:3 › en: a cleared purchase retains the private entry point for withdrawing its historical assertion (1.4s)
+
+  4 passed (9.5s)

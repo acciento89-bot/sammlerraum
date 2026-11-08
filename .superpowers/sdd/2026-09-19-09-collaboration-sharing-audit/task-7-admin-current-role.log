@@ -1,0 +1,12 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ✓ |workspace| packages/domain/src/collaboration/collection-authoring-service.test.ts (2 tests) 450ms
+ ✓ |workspace| packages/domain/src/collections/collection-service.test.ts (14 tests) 234ms
+ ✓ |workspace| apps/web/src/lib/collaboration-management-routes.integration.test.ts (2 tests) 449ms
+
+ Test Files  3 passed (3)
+      Tests  18 passed (18)
+   Start at  10:56:22
+   Duration  2.38s (transform 301ms, setup 7ms, collect 818ms, tests 1.13s, environment 0ms, prepare 108ms)
+

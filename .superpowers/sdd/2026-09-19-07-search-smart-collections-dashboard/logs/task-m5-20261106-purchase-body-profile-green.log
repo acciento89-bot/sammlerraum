@@ -1,0 +1,43 @@
+[WebServer] (node:88773) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 32 tests using 1 worker
+
+(node:88776) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [money-ui-desktop] › e2e/legacy-money.spec.ts:20:5 › de: title-only save preserves unknown raw money (2.2s)
+  ✓   2 [money-ui-desktop] › e2e/legacy-money.spec.ts:20:5 › de: title-only save preserves known historical scale (542ms)
+  ✓   3 [money-ui-desktop] › e2e/legacy-money.spec.ts:20:5 › en: title-only save preserves unknown raw money (526ms)
+  ✓   4 [money-ui-desktop] › e2e/legacy-money.spec.ts:20:5 › en: title-only save preserves known historical scale (531ms)
+  ✓   5 [money-ui-desktop] › e2e/legacy-money.spec.ts:127:3 › de: deliberate AFN correction requires confirmation and stores its own receipt (671ms)
+  ✓   6 [money-ui-desktop] › e2e/legacy-money.spec.ts:173:3 › de: locale switch preserves exact monetary draft and original source token (598ms)
+  ✓   7 [money-ui-desktop] › e2e/legacy-money.spec.ts:203:3 › de: stale monetary draft reports conflict without rewriting the newer meaning (672ms)
+  ✓   8 [money-ui-desktop] › e2e/legacy-money.spec.ts:127:3 › en: deliberate AFN correction requires confirmation and stores its own receipt (647ms)
+  ✓   9 [money-ui-desktop] › e2e/legacy-money.spec.ts:173:3 › en: locale switch preserves exact monetary draft and original source token (585ms)
+  ✓  10 [money-ui-desktop] › e2e/legacy-money.spec.ts:203:3 › en: stale monetary draft reports conflict without rewriting the newer meaning (635ms)
+  ✓  11 [money-ui-desktop] › e2e/legacy-money.spec.ts:244:3 › de: legal long existing texts do not block a title-only monetary form save (533ms)
+  ✓  12 [money-ui-desktop] › e2e/legacy-money.spec.ts:268:3 › de: disabled authoring profile explains read-only state and retains the stored display (481ms)
+  ✓  13 [money-ui-desktop] › e2e/legacy-money.spec.ts:291:3 › de: metadata-only save still commits tags while retaining the purchase receipt (619ms)
+  ✓  14 [money-ui-desktop] › e2e/legacy-money.spec.ts:244:3 › en: legal long existing texts do not block a title-only monetary form save (535ms)
+  ✓  15 [money-ui-desktop] › e2e/legacy-money.spec.ts:268:3 › en: disabled authoring profile explains read-only state and retains the stored display (482ms)
+  ✓  16 [money-ui-desktop] › e2e/legacy-money.spec.ts:291:3 › en: metadata-only save still commits tags while retaining the purchase receipt (459ms)
+(node:88808) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  17 [money-ui-mobile] › e2e/legacy-money.spec.ts:20:5 › de: title-only save preserves unknown raw money (692ms)
+  ✓  18 [money-ui-mobile] › e2e/legacy-money.spec.ts:20:5 › de: title-only save preserves known historical scale (519ms)
+  ✓  19 [money-ui-mobile] › e2e/legacy-money.spec.ts:20:5 › en: title-only save preserves unknown raw money (536ms)
+  ✓  20 [money-ui-mobile] › e2e/legacy-money.spec.ts:20:5 › en: title-only save preserves known historical scale (523ms)
+  ✓  21 [money-ui-mobile] › e2e/legacy-money.spec.ts:127:3 › de: deliberate AFN correction requires confirmation and stores its own receipt (664ms)
+  ✓  22 [money-ui-mobile] › e2e/legacy-money.spec.ts:173:3 › de: locale switch preserves exact monetary draft and original source token (568ms)
+  ✓  23 [money-ui-mobile] › e2e/legacy-money.spec.ts:203:3 › de: stale monetary draft reports conflict without rewriting the newer meaning (641ms)
+  ✓  24 [money-ui-mobile] › e2e/legacy-money.spec.ts:127:3 › en: deliberate AFN correction requires confirmation and stores its own receipt (648ms)
+  ✓  25 [money-ui-mobile] › e2e/legacy-money.spec.ts:173:3 › en: locale switch preserves exact monetary draft and original source token (544ms)
+  ✓  26 [money-ui-mobile] › e2e/legacy-money.spec.ts:203:3 › en: stale monetary draft reports conflict without rewriting the newer meaning (632ms)
+  ✓  27 [money-ui-mobile] › e2e/legacy-money.spec.ts:244:3 › de: legal long existing texts do not block a title-only monetary form save (521ms)
+  ✓  28 [money-ui-mobile] › e2e/legacy-money.spec.ts:268:3 › de: disabled authoring profile explains read-only state and retains the stored display (475ms)
+  ✓  29 [money-ui-mobile] › e2e/legacy-money.spec.ts:291:3 › de: metadata-only save still commits tags while retaining the purchase receipt (452ms)
+  ✓  30 [money-ui-mobile] › e2e/legacy-money.spec.ts:244:3 › en: legal long existing texts do not block a title-only monetary form save (472ms)
+  ✓  31 [money-ui-mobile] › e2e/legacy-money.spec.ts:268:3 › en: disabled authoring profile explains read-only state and retains the stored display (464ms)
+  ✓  32 [money-ui-mobile] › e2e/legacy-money.spec.ts:291:3 › en: metadata-only save still commits tags while retaining the purchase receipt (441ms)
+
+  32 passed (22.1s)

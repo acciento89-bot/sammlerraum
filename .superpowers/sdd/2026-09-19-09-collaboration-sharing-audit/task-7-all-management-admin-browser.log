@@ -1,0 +1,38 @@
+[WebServer] (node:51427) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 49 tests using 1 worker
+(node:51428) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+···T
+Testing stopped early after 1 maximum allowed failures.
+
+
+  1) [collaboration-ui-desktop] › e2e/collaboration-management.spec.ts:398:3 › de Admin changes collection and hierarchy with original authorship and loses those controls after demotion 
+
+    Test timeout of 60000ms exceeded.
+
+    Error: locator.selectOption: Test timeout of 60000ms exceeded.
+    Call log:
+      - waiting for getByLabel('Teilbereich auswählen', { exact: true })
+
+
+      457 |       await page
+      458 |         .getByLabel(locale === "de" ? "Teilbereich auswählen" : "Choose subtree", { exact: true })
+    > 459 |         .selectOption(node.id);
+          |          ^
+      460 |       await page
+      461 |         .getByLabel(locale === "de" ? "Name des Teilbereichs" : "Subtree name", { exact: true })
+      462 |         .fill("Admin renamed shelf");
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/collaboration-management.spec.ts:459:10
+
+    Error Context: test-results/collaboration-management-d-f01ed-ose-controls-after-demotion-collaboration-ui-desktop/error-context.md
+
+  1 failed
+    [collaboration-ui-desktop] › e2e/collaboration-management.spec.ts:398:3 › de Admin changes collection and hierarchy with original authorship and loses those controls after demotion 
+  45 did not run
+  3 passed (1.1m)
+  1 error was not a part of any test, see above for details
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/collaboration-sharing.spec.ts e2e/collaboration-management.spec.ts e2e/sharing.spec.ts e2e/collaboration-api.spec.ts e2e/collections-items.spec.ts --project=collaboration-ui-desktop --project=collaboration-ui-mobile --project=sharing-desktop --project=sharing-mobile --project=collaboration-api --project=desktop --project=mobile --workers=1 --max-failures=1

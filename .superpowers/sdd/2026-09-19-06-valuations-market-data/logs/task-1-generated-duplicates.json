@@ -1,0 +1,30 @@
+[
+  {
+    "file": "apps/web/.next/types/routes.d 2.ts",
+    "canonical": "apps/web/.next/types/routes.d.ts",
+    "sha256": "a5de843291ff393f573c1f0090cd2f68000efc7c8cd9ad41ebb025ae39e90e84",
+    "mtime": 1792286528.0,
+    "preserved": "/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/phase06-task1-generated-duplicates/routes.d 2.ts"
+  },
+  {
+    "file": "apps/web/.next/types/cache-life.d 2.ts",
+    "canonical": "apps/web/.next/types/cache-life.d.ts",
+    "sha256": "4f984436b10cfb43ccf7fc3114dcb851cbefa4d58b7d8ae741aaae0f6e330129",
+    "mtime": 1792286528.0,
+    "preserved": "/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/phase06-task1-generated-duplicates/cache-life.d 2.ts"
+  },
+  {
+    "file": "apps/web/.next/types/root-params.d 2.ts",
+    "canonical": "apps/web/.next/types/root-params.d.ts",
+    "sha256": "a3b8114c44f8d8de4e8ff75f349eab771c145a3e4ed7b95fd141dbdfbcbe06d8",
+    "mtime": 1792286528.0,
+    "preserved": "/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/phase06-task1-generated-duplicates/root-params.d 2.ts"
+  },
+  {
+    "file": "apps/web/.next/types/validator 2.ts",
+    "canonical": "apps/web/.next/types/validator.ts",
+    "sha256": "e6d87fb59d29543c73332468e1f40310ceebacdbf90a32ee14023bf6aa4ec80b",
+    "mtime": 1792286528.0,
+    "preserved": "/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/phase06-task1-generated-duplicates/validator 2.ts"
+  }
+]

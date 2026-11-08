@@ -1,0 +1,43 @@
+[WebServer] (node:19618) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 36 tests using 1 worker
+(node:19619) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+········F
+Testing stopped early after 1 maximum allowed failures.
+
+
+  1) [desktop] › e2e/scoped-search.spec.ts:521:3 › de: collector search discovers private literal wishlist search and safe market-source controls 
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 0
+    + Received  + 1
+
+      Array [
+    +   "Different wish",
+        "Ceramic 100%_wish",
+      ]
+
+      584 |       expect(
+      585 |         (await (await response).json()).entries.map((entry: { title: string }) => entry.title),
+    > 586 |       ).toEqual(["Ceramic 100%_wish"]);
+          |         ^
+      587 |       await expect(page.getByText("Ceramic 100%_wish", { exact: true })).toBeVisible();
+      588 |       await expect(page.getByText("Foreign private wish", { exact: true })).toHaveCount(0);
+      589 |       await expect(page.getByText("Different wish", { exact: true })).toHaveCount(0);
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/scoped-search.spec.ts:586:9
+
+    Error Context: test-results/scoped-search-de-collector-066d1-safe-market-source-controls-desktop/error-context.md
+
+    Error Context: test-results/scoped-search-de-collector-066d1-safe-market-source-controls-desktop/error-context.md
+
+  1 failed
+    [desktop] › e2e/scoped-search.spec.ts:521:3 › de: collector search discovers private literal wishlist search and safe market-source controls 
+  27 did not run
+  8 passed (9.5s)
+  1 error was not a part of any test, see above for details
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/scoped-search.spec.ts --workers=1 --max-failures=1

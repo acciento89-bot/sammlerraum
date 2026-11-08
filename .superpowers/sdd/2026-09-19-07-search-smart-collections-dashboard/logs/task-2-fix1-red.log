@@ -1,0 +1,139 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| packages/domain/src/search/search-retained-integrity.integration.test.ts (11 tests | 8 failed) 315ms
+   × retained search integrity producer parity > rejects non-NFKC native SHORT_TEXT under broad-only and independently nonmatching predicates 38ms
+     → promise resolved "{ items: [ { …(12) } ], total: 1, …(4) }" instead of rejecting
+   × retained search integrity producer parity > rejects non-NFKC native LONG_TEXT under broad-only and independently nonmatching predicates 8ms
+     → promise resolved "{ items: [ { …(12) } ], total: 1, …(4) }" instead of rejecting
+   × retained search integrity producer parity > rejects every ECMAScript boundary whitespace in retained customField text 11ms
+     → promise resolved "{ items: [], total: +0, …(4) }" instead of rejecting
+   × retained search integrity producer parity > rejects every ECMAScript boundary whitespace in retained catalogAttribute text 9ms
+     → promise resolved "{ items: [], total: +0, …(4) }" instead of rejecting
+   × retained search integrity producer parity > uses producer UTF16 bounds and accepts legitimate Unicode for customField 12ms
+     → promise resolved "{ items: [], total: +0, …(4) }" instead of rejecting
+   × retained search integrity producer parity > uses producer UTF16 bounds and accepts legitimate Unicode for catalogAttribute 13ms
+     → promise resolved "{ items: [], total: +0, …(4) }" instead of rejecting
+   × retained search integrity producer parity > rejects invalid/noncanonical customField URLs under presence/NOT and no-match text 9ms
+     → promise resolved "{ items: [], total: +0, …(4) }" instead of rejecting
+   × retained search integrity producer parity > rejects invalid/noncanonical catalogAttribute URLs under presence/NOT and no-match text 8ms
+     → promise resolved "{ items: [], total: +0, …(4) }" instead of rejecting
+   ✓ retained search integrity producer parity > accepts producer-canonical customField URLs with IPv6, path/query/fragment @ and percent escapes 16ms
+   ✓ retained search integrity producer parity > accepts producer-canonical catalogAttribute URLs with IPv6, path/query/fragment @ and percent escapes 15ms
+   ✓ retained search integrity producer parity > ignores foreign, unselected definition/variant URL corruption and does no URL work without a URL leaf 20ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 8 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/search/search-retained-integrity.integration.test.ts > retained search integrity producer parity > rejects non-NFKC native SHORT_TEXT under broad-only and independently nonmatching predicates
+ FAIL  |workspace| packages/domain/src/search/search-retained-integrity.integration.test.ts > retained search integrity producer parity > rejects non-NFKC native LONG_TEXT under broad-only and independently nonmatching predicates
+AssertionError: promise resolved "{ items: [ { …(12) } ], total: 1, …(4) }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "items": [
++     {
++       "archivedAt": null,
++       "categoryTemplateId": "f1f5edef-1c69-4bb6-a8f4-cd142ab02680",
++       "collectionId": "04e650fb-96d3-45db-9977-133b5735f30e",
++       "conditionOptionId": null,
++       "createdAt": "2026-10-18T07:39:51.107Z",
++       "disposedAt": null,
++       "id": "a9d8b7d9-b1a6-4893-a66d-8979bd118b28",
++       "quantity": 1,
++       "title": "Neutral",
++       "tradeStatus": "NOT_FOR_TRADE",
++       "updatedAt": "2026-10-18T07:39:51.107Z",
++       "visibility": "PRIVATE",
++     },
++   ],
++   "lifecycle": "ACTIVE",
++   "nextCursor": null,
++   "readAt": "2026-10-18T07:39:51.144Z",
++   "scope": "OWNED",
++   "total": 1,
+  }
+
+ ❯ packages/domain/src/search/search-retained-integrity.integration.test.ts:52:163
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/8]⎯
+
+ FAIL  |workspace| packages/domain/src/search/search-retained-integrity.integration.test.ts > retained search integrity producer parity > rejects every ECMAScript boundary whitespace in retained customField text
+ FAIL  |workspace| packages/domain/src/search/search-retained-integrity.integration.test.ts > retained search integrity producer parity > rejects every ECMAScript boundary whitespace in retained catalogAttribute text
+AssertionError: promise resolved "{ items: [], total: +0, …(4) }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "items": [],
++   "lifecycle": "ACTIVE",
++   "nextCursor": null,
++   "readAt": "2026-10-18T07:39:51.183Z",
++   "scope": "OWNED",
++   "total": 0,
+  }
+
+ ❯ packages/domain/src/search/search-retained-integrity.integration.test.ts:58:135
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/8]⎯
+
+ FAIL  |workspace| packages/domain/src/search/search-retained-integrity.integration.test.ts > retained search integrity producer parity > uses producer UTF16 bounds and accepts legitimate Unicode for customField
+ FAIL  |workspace| packages/domain/src/search/search-retained-integrity.integration.test.ts > retained search integrity producer parity > uses producer UTF16 bounds and accepts legitimate Unicode for catalogAttribute
+AssertionError: promise resolved "{ items: [], total: +0, …(4) }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "items": [],
++   "lifecycle": "ACTIVE",
++   "nextCursor": null,
++   "readAt": "2026-10-18T07:39:51.206Z",
++   "scope": "OWNED",
++   "total": 0,
+  }
+
+ ❯ packages/domain/src/search/search-retained-integrity.integration.test.ts:65:84
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/8]⎯
+
+ FAIL  |workspace| packages/domain/src/search/search-retained-integrity.integration.test.ts > retained search integrity producer parity > rejects invalid/noncanonical customField URLs under presence/NOT and no-match text
+ FAIL  |workspace| packages/domain/src/search/search-retained-integrity.integration.test.ts > retained search integrity producer parity > rejects invalid/noncanonical catalogAttribute URLs under presence/NOT and no-match text
+AssertionError: promise resolved "{ items: [], total: +0, …(4) }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "items": [],
++   "lifecycle": "ACTIVE",
++   "nextCursor": null,
++   "readAt": "2026-10-18T07:39:51.228Z",
++   "scope": "OWNED",
++   "total": 0,
+  }
+
+ ❯ packages/domain/src/search/search-retained-integrity.integration.test.ts:72:218
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/8]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  8 failed | 3 passed (11)
+   Start at  09:39:50
+   Duration  826ms (transform 117ms, setup 6ms, collect 243ms, tests 315ms, environment 0ms, prepare 59ms)
+

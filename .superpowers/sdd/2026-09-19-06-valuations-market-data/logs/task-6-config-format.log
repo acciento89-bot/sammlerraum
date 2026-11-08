@@ -1,0 +1,4 @@
+packages/config/src/server.test.ts 40ms (unchanged)
+apps/worker/src/jobs/market-provider-composition.test.ts 8ms
+
+EXIT=0

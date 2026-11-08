@@ -1,0 +1,45 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/money/personal-money-service.test.ts (2 tests | 2 failed) 103ms
+   × personal money authoring real transactions > authors AFN decimal units explicitly and never infers them from an old raw write 83ms
+     → LEGACY_MONEY_INVALID
+   × personal money authoring real transactions > preserves nonmoney updates but invalidates equal-value explicit replacement tokens 2ms
+     → LEGACY_MONEY_INVALID
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/money/personal-money-service.test.ts > personal money authoring real transactions > authors AFN decimal units explicitly and never infers them from an old raw write
+LegacyMoneyError: LEGACY_MONEY_INVALID
+ ❯ legacyMoneyFail packages/contracts/src/legacy-money.ts:26:9
+     24| }
+     25| export function legacyMoneyFail(code: LegacyMoneyError["code"]): never…
+     26|   throw new LegacyMoneyError(code);
+       |         ^
+     27| }
+     28| export const LegacyMoneyIdSchema = z
+ ❯ Object.createItemV2 packages/domain/src/money/personal-money-service.ts:5:52
+ ❯ packages/domain/src/money/personal-money-service.test.ts:22:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |workspace| packages/domain/src/money/personal-money-service.test.ts > personal money authoring real transactions > preserves nonmoney updates but invalidates equal-value explicit replacement tokens
+LegacyMoneyError: LEGACY_MONEY_INVALID
+ ❯ legacyMoneyFail packages/contracts/src/legacy-money.ts:26:9
+     24| }
+     25| export function legacyMoneyFail(code: LegacyMoneyError["code"]): never…
+     26|   throw new LegacyMoneyError(code);
+       |         ^
+     27| }
+     28| export const LegacyMoneyIdSchema = z
+ ❯ Object.createItemV2 packages/domain/src/money/personal-money-service.ts:5:52
+ ❯ packages/domain/src/money/personal-money-service.test.ts:28:51
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed (2)
+   Start at  03:58:44
+   Duration  515ms (transform 121ms, setup 6ms, collect 247ms, tests 103ms, environment 0ms, prepare 47ms)
+

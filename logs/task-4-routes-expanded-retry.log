@@ -1,0 +1,48 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| apps/web/src/lib/valuation-routes.integration.test.ts (7 tests | 1 failed) 288ms
+   ✓ valuation HTTP routes PostgreSQL > appends exact private manual values and reads the real owner query with no-store responses 30ms
+   ✓ valuation HTTP routes PostgreSQL > rejects unknown, duplicate, malformed and excessive query inputs before domain reading 4ms
+   ✓ valuation HTTP routes PostgreSQL > requires authentication, correct origin, owner scope and active writes 19ms
+   ✓ valuation HTTP routes PostgreSQL > rejects unsafe money, injected authors, unsupported new currencies and malformed Unicode 5ms
+   ✓ valuation HTTP routes PostgreSQL > uses thin route exports with actual dependencies and preserves the anonymous public projection 12ms
+   ✓ valuation HTTP routes PostgreSQL > rejects streamed over-limit and invalid UTF8 bodies, while allowing 2000 astral codepoints 6ms
+   × valuation HTTP routes PostgreSQL > returns real ingested external facts and continuation, with disabled production display independently empty 110ms
+     → 
+Invalid `db!.categoryTemplate.delete()` invocation in
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/src/lib/valuation-routes.integration.test.ts:85:45
+
+  82 }finally{
+  83  await createItemService(db!,ownerId).unlinkItemFromCatalog(itemId);
+  84  if(entryId){await db!.$executeRaw`DELETE FROM "MarketObservation" WHERE "entryId"=${entryId}::uuid`;await db!.catalogExternalIdentifier.deleteMany({where:{entryId}});await db!.catalogRevision.deleteMany({where:{entryId}});await db!.catalogEntry.delete({where:{id:entryId}});}
+→ 85  if(categoryId)await db!.categoryTemplate.delete(
+Foreign key constraint violated on the constraint: `CollectibleItem_categoryTemplateId_fkey`
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/web/src/lib/valuation-routes.integration.test.ts > valuation HTTP routes PostgreSQL > returns real ingested external facts and continuation, with disabled production display independently empty
+PrismaClientKnownRequestError: 
+Invalid `db!.categoryTemplate.delete()` invocation in
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/src/lib/valuation-routes.integration.test.ts:85:45
+
+  82 }finally{
+  83  await createItemService(db!,ownerId).unlinkItemFromCatalog(itemId);
+  84  if(entryId){await db!.$executeRaw`DELETE FROM "MarketObservation" WHERE "entryId"=${entryId}::uuid`;await db!.catalogExternalIdentifier.deleteMany({where:{entryId}});await db!.catalogRevision.deleteMany({where:{entryId}});await db!.catalogEntry.delete({where:{id:entryId}});}
+→ 85  if(categoryId)await db!.categoryTemplate.delete(
+Foreign key constraint violated on the constraint: `CollectibleItem_categoryTemplateId_fkey`
+ ❯ vn.handleRequestError node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:238:13
+ ❯ vn.handleAndLogRequestError node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:184:12
+ ❯ vn.request node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:153:12
+ ❯ a node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:1014:24
+ ❯ apps/web/src/lib/valuation-routes.integration.test.ts:85:18
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 6 passed (7)
+   Start at  05:38:34
+   Duration  747ms (transform 142ms, setup 5ms, collect 294ms, tests 288ms, environment 0ms, prepare 45ms)
+

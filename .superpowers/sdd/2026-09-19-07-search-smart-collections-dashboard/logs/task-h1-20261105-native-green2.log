@@ -1,0 +1,59 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+stdout | packages/domain/src/dashboard/personal-milestone-service.test.ts > private authored milestones PostgreSQL > keeps bounded pages for large owners and captures real1/50/500-row plans
+personal-milestone-plan {"size":1,"plan":[{"QUERY PLAN":[{"Plan":{"Node Type":"Limit","Parallel Aware":false,"Async Capable":false,"Startup Cost":2.8,"Total Cost":2.8,"Plan Rows":1,"Plan Width":53,"Actual Startup Time":0.013,"Actual Total Time":0.013,"Actual Rows":1,"Actual Loops":1,"Shared Hit Blocks":2,"Shared Read Blocks":0,"Shared Dirtied Blocks":0,"Shared Written Blocks":0,"Local Hit Blocks":0,"Local Read Blocks":0,"Local Dirtied Blocks":0,"Local Written Blocks":0,"Temp Read Blocks":0,"Temp Written Blocks":0,"Plans":[{"Node Type":"Sort","Parent Relationship":"Outer","Parallel Aware":false,"Async Capable":false,"Startup Cost":2.8,"Total Cost":2.8,"Plan Rows":1,"Plan Width":53,"Actual Startup Time":0.012,"Actual Total Time":0.013,"Actual Rows":1,"Actual Loops":1,"Sort Key":["\"milestoneDate\" DESC","\"createdAt\" DESC","id DESC"],"Sort Method":"quicksort","Sort Space Used":26,"Sort Space Type":"Memory","Shared Hit Blocks":2,"Shared Read Blocks":0,"Shared Dirtied Blocks":0,"Shared Written Blocks":0,"Local Hit Blocks":0,"Local Read Blocks":0,"Local Dirtied Blocks":0,"Local Written Blocks":0,"Temp Read Blocks":0,"Temp Written Blocks":0,"Plans":[{"Node Type":"Seq Scan","Parent Relationship":"Outer","Parallel Aware":false,"Async Capable":false,"Relation Name":"PersonalMilestone","Alias":"PersonalMilestone","Startup Cost":0,"Total Cost":2.79,"Plan Rows":1,"Plan Width":53,"Actual Startup Time":0.01,"Actual Total Time":0.01,"Actual Rows":1,"Actual Loops":1,"Filter":"(\"ownerId\" = 'milestone_b642ee72-3dda-440e-89fd-3df305ee2e3d'::text)","Rows Removed by Filter":62,"Shared Hit Blocks":2,"Shared Read Blocks":0,"Shared Dirtied Blocks":0,"Shared Written Blocks":0,"Local Hit Blocks":0,"Local Read Blocks":0,"Local Dirtied Blocks":0,"Local Written Blocks":0,"Temp Read Blocks":0,"Temp Written Blocks":0}]}]},"Planning":{"Shared Hit Blocks":5,"Shared Read Blocks":0,"Shared Dirtied Blocks":0,"Shared Written Blocks":0,"Local Hit Blocks":0,"Local Read Blocks":0,"Local Dirtied Blocks":0,"Local Written Blocks":0,"Temp Read Blocks":0,"Temp Written Blocks":0},"Planning Time":0.04,"Triggers":[],"Execution Time":0.024}]}]}
+
+stdout | packages/domain/src/dashboard/personal-milestone-service.test.ts > private authored milestones PostgreSQL > keeps bounded pages for large owners and captures real1/50/500-row plans
+personal-milestone-plan {"size":50,"plan":[{"QUERY PLAN":[{"Plan":{"Node Type":"Limit","Parallel Aware":false,"Async Capable":false,"Startup Cost":7.81,"Total Cost":7.94,"Plan Rows":50,"Plan Width":253,"Actual Startup Time":0.045,"Actual Total Time":0.051,"Actual Rows":50,"Actual Loops":1,"Shared Hit Blocks":5,"Shared Read Blocks":0,"Shared Dirtied Blocks":0,"Shared Written Blocks":0,"Local Hit Blocks":0,"Local Read Blocks":0,"Local Dirtied Blocks":0,"Local Written Blocks":0,"Temp Read Blocks":0,"Temp Written Blocks":0,"Plans":[{"Node Type":"Sort","Parent Relationship":"Outer","Parallel Aware":false,"Async Capable":false,"Startup Cost":7.81,"Total Cost":7.94,"Plan Rows":50,"Plan Width":253,"Actual Startup Time":0.045,"Actual Total Time":0.047,"Actual Rows":50,"Actual Loops":1,"Sort Key":["\"milestoneDate\" DESC","\"createdAt\" DESC","id DESC"],"Sort Method":"quicksort","Sort Space Used":75,"Sort Space Type":"Memory","Shared Hit Blocks":5,"Shared Read Blocks":0,"Shared Dirtied Blocks":0,"Shared Written Blocks":0,"Local Hit Blocks":0,"Local Read Blocks":0,"Local Dirtied Blocks":0,"Local Written Blocks":0,"Temp Read Blocks":0,"Temp Written Blocks":0,"Plans":[{"Node Type":"Seq Scan","Parent Relationship":"Outer","Parallel Aware":false,"Async Capable":false,"Relation Name":"PersonalMilestone","Alias":"PersonalMilestone","Startup Cost":0,"Total Cost":6.4,"Plan Rows":50,"Plan Width":253,"Actual Startup Time":0.009,"Actual Total Time":0.017,"Actual Rows":50,"Actual Loops":1,"Filter":"(\"ownerId\" = 'milestone_b642ee72-3dda-440e-89fd-3df305ee2e3d'::text)","Rows Removed by Filter":62,"Shared Hit Blocks":5,"Shared Read Blocks":0,"Shared Dirtied Blocks":0,"Shared Written Blocks":0,"Local Hit Blocks":0,"Local Read Blocks":0,"Local Dirtied Blocks":0,"Local Written Blocks":0,"Temp Read Blocks":0,"Temp Written Blocks":0}]}]},"Planning":{"Shared Hit Blocks":0,"Shared Read Blocks":0,"Shared Dirtied Blocks":0,"Shared Written Blocks":0,"Local Hit Blocks":0,"Local Read Blocks":0,"Local Dirtied Blocks":0,"Local Written Blocks":0,"Temp Read Blocks":0,"Temp Written Blocks":0},"Planning Time":0.037,"Triggers":[],"Execution Time":0.059}]}]}
+
+stdout | packages/domain/src/dashboard/personal-milestone-service.test.ts > private authored milestones PostgreSQL > keeps bounded pages for large owners and captures real1/50/500-row plans
+personal-milestone-plan {"size":500,"plan":[{"QUERY PLAN":[{"Plan":{"Node Type":"Limit","Parallel Aware":false,"Async Capable":false,"Startup Cost":0.28,"Total Cost":47.24,"Plan Rows":51,"Plan Width":460,"Actual Startup Time":0.009,"Actual Total Time":0.026,"Actual Rows":51,"Actual Loops":1,"Shared Hit Blocks":51,"Shared Read Blocks":0,"Shared Dirtied Blocks":0,"Shared Written Blocks":0,"Local Hit Blocks":0,"Local Read Blocks":0,"Local Dirtied Blocks":0,"Local Written Blocks":0,"Temp Read Blocks":0,"Temp Written Blocks":0,"Plans":[{"Node Type":"Index Scan","Parent Relationship":"Outer","Parallel Aware":false,"Async Capable":false,"Scan Direction":"Forward","Index Name":"PersonalMilestone_owner_date_created_id_idx","Relation Name":"PersonalMilestone","Alias":"PersonalMilestone","Startup Cost":0.28,"Total Cost":460.74,"Plan Rows":500,"Plan Width":460,"Actual Startup Time":0.009,"Actual Total Time":0.023,"Actual Rows":51,"Actual Loops":1,"Index Cond":"(\"ownerId\" = 'milestone_b642ee72-3dda-440e-89fd-3df305ee2e3d'::text)","Rows Removed by Index Recheck":0,"Shared Hit Blocks":51,"Shared Read Blocks":0,"Shared Dirtied Blocks":0,"Shared Written Blocks":0,"Local Hit Blocks":0,"Local Read Blocks":0,"Local Dirtied Blocks":0,"Local Written Blocks":0,"Temp Read Blocks":0,"Temp Written Blocks":0}]},"Planning":{"Shared Hit Blocks":0,"Shared Read Blocks":0,"Shared Dirtied Blocks":0,"Shared Written Blocks":0,"Local Hit Blocks":0,"Local Read Blocks":0,"Local Dirtied Blocks":0,"Local Written Blocks":0,"Temp Read Blocks":0,"Temp Written Blocks":0},"Planning Time":0.04,"Triggers":[],"Execution Time":0.031}]}]}
+
+ ❯ |workspace| packages/domain/src/dashboard/personal-milestone-service.test.ts (13 tests | 1 failed) 1408ms
+   ✓ private authored milestones PostgreSQL > has an additive authored-record table rather than inventing inventory history 1ms
+   ✓ private authored milestones PostgreSQL > authors a real private record and lists its entered date separately from recording time 36ms
+   ✓ private authored milestones PostgreSQL > hides foreign and missing records for reads, edits and deletion 13ms
+   ✓ private authored milestones PostgreSQL > increments same-value CAS updates, rejects stale/max revisions and really deletes 37ms
+   ✓ private authored milestones PostgreSQL > paginates all retained dates with the exact three-column keyset and tied timestamps 29ms
+   ✓ private authored milestones PostgreSQL > allows exactly one concurrent edit and does not overwrite the newer revision 13ms
+   ✓ private authored milestones PostgreSQL > serializes edit/delete without resurrecting a permanently deleted record 23ms
+   ✓ private authored milestones PostgreSQL > keeps clock/count/page in one native snapshot while another writer commits 8ms
+   ✓ private authored milestones PostgreSQL > measures fixed wrapper calls and rejects malformed inputs before opening a transaction 8ms
+   ✓ private authored milestones PostgreSQL > enforces canonical title, revision and finite-date rules directly in PostgreSQL 39ms
+   × private authored milestones PostgreSQL > records successful edit time after an actual unmodified row-lock wait 41ms
+     → expected false to be true // Object.is equality
+   ✓ private authored milestones PostgreSQL > maps a genuine row-lock timeout to unavailable without committing an edit  514ms
+   ✓ private authored milestones PostgreSQL > keeps bounded pages for large owners and captures real1/50/500-row plans  573ms
+ ✓ |workspace| packages/contracts/src/personal-milestones.test.ts (35 tests) 12ms
+ ✓ |workspace| packages/domain/src/dashboard/personal-milestone-unit.test.ts (5 tests) 8ms
+ ✓ |workspace| packages/domain/src/dashboard/personal-milestone-cursor.test.ts (3 tests) 5ms
+ ✓ |workspace| packages/domain/src/search/search-read.test.ts (7 tests) 4ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/dashboard/personal-milestone-service.test.ts > private authored milestones PostgreSQL > records successful edit time after an actual unmodified row-lock wait
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ packages/domain/src/dashboard/personal-milestone-service.test.ts:339:61
+    337|       await locker;
+    338|       const updated = await edit;
+    339|       expect(updated.updatedAt >= clock!.now.toISOString()).toBe(true);
+       |                                                             ^
+    340|     } finally {
+    341|       release();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 4 passed (5)
+      Tests  1 failed | 62 passed (63)
+   Start at  23:42:27
+   Duration  2.54s (transform 126ms, setup 8ms, collect 452ms, tests 1.44s, environment 0ms, prepare 156ms)
+

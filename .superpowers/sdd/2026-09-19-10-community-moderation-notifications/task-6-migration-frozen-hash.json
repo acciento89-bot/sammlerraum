@@ -1,0 +1,5 @@
+{
+  "path": "packages/db/prisma/migrations/20261107130000_notification_email_delivery/migration.sql",
+  "sha256": "83c1a64f7b8fd8549f976e4a6f8d33d026b5e500eeab7278374ec70b493fc550",
+  "bytes": 1722
+}

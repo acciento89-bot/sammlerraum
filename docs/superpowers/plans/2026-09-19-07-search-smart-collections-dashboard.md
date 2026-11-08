@@ -38,7 +38,7 @@
 **Interfaces:**
 - Produces: `ItemFilterSchema`, `validateFilterComplexity(filter)`.
 
-- [ ] **Step 1: Write failing complexity tests**
+- [x] **Step 1: Write failing complexity tests**
 
 ```ts
 it("rejects filter trees deeper than five logical levels", () => {
@@ -52,21 +52,21 @@ it("rejects more than fifty leaf clauses", () => {
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run packages/domain/src/search/filter-ast.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement discriminated union**
+- [x] **Step 3: Implement discriminated union**
 
 Support logical `and/or/not` and field predicates for category, manufacturer, year, condition, grading, money ranges, tags, duplicate flag, trade status, visibility, media/doc presence, created/updated dates, and custom fields.
 
-- [ ] **Step 4: Run tests**
+- [x] **Step 4: Run tests**
 
 Run: `pnpm vitest run packages/domain/src/search/filter-ast.test.ts`  
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/contracts/src/search.ts packages/domain/src/search
@@ -85,7 +85,7 @@ git commit -m "feat: define typed item filter language"
 **Interfaces:**
 - Produces: `searchItems(actor, query): Promise<SearchPage<ItemSummary>>`.
 
-- [ ] **Step 1: Write failing hidden-count test**
+- [x] **Step 1: Write failing hidden-count test**
 
 ```ts
 it("does not include private inaccessible items in rows or total count", async () => {
@@ -95,21 +95,21 @@ it("does not include private inaccessible items in rows or total count", async (
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run packages/domain/src/search/item-search-service.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement query compilation**
+- [x] **Step 3: Implement query compilation**
 
 Compile validated AST to Prisma predicates and safe raw SQL only where required for recursive visibility/text search. No client string is concatenated into SQL. Use cursor pagination.
 
-- [ ] **Step 4: Run tests**
+- [x] **Step 4: Run tests**
 
 Run: `pnpm vitest run packages/domain/src/search`  
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/domain/src/search apps/web/src/app/api/v1/search
@@ -129,7 +129,7 @@ git commit -m "feat: add authorized item search"
 **Interfaces:**
 - Produces: `createSmartCollection`, `updateSmartCollection`, `resolveSmartCollectionItems`.
 
-- [ ] **Step 1: Write failing dynamic-membership test**
+- [x] **Step 1: Write failing dynamic-membership test**
 
 ```ts
 it("reflects item changes without storing membership rows", async () => {
@@ -140,16 +140,16 @@ it("reflects item changes without storing membership rows", async () => {
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run packages/domain/src/search/smart-collection-service.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement versioned saved AST**
+- [x] **Step 3: Implement versioned saved AST**
 
 Persist `filterVersion` and validated JSON representation of the typed AST. Do not create item membership join rows.
 
-- [ ] **Step 4: Migrate and test**
+- [x] **Step 4: Migrate and test**
 
 Run:
 ```bash
@@ -159,7 +159,7 @@ pnpm vitest run packages/domain/src/search
 
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/db packages/domain/src/search apps/web/src/app/api/v1/smart-collections
@@ -178,7 +178,7 @@ git commit -m "feat: add dynamic smart collections"
 **Interfaces:**
 - Produces: `getDashboard(actor, scope): Promise<DashboardData>`.
 
-- [ ] **Step 1: Write failing currency/privacy tests**
+- [x] **Step 1: Write failing currency/privacy tests**
 
 ```ts
 it("groups monetary totals by currency instead of mixing them", async () => {
@@ -195,21 +195,21 @@ it("excludes inaccessible shared/private items", async () => {
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm vitest run packages/domain/src/dashboard/dashboard-service.test.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement dashboard metrics**
+- [x] **Step 3: Implement dashboard metrics**
 
 Return item/collection counts, purchase totals by currency, latest manual/external values by currency/source, duplicates, wishlist counts when available later, trade statuses, top collections/items, recent additions, condition/grading distribution, missing-data counts.
 
-- [ ] **Step 4: Run tests**
+- [x] **Step 4: Run tests**
 
 Run: `pnpm vitest run packages/domain/src/dashboard`  
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/domain/src/dashboard packages/contracts/src/dashboard.ts
@@ -232,7 +232,7 @@ git commit -m "feat: add collector dashboard queries"
 - Consumes: search/smart/dashboard APIs.
 - Produces: responsive collector search/filter/dashboard flows.
 
-- [ ] **Step 1: Write failing E2E scenario**
+- [x] **Step 1: Write failing E2E scenario**
 
 ```ts
 test("saved smart collection updates after an item is tagged", async ({ page }) => {
@@ -244,16 +244,16 @@ test("saved smart collection updates after an item is tagged", async ({ page }) 
 });
 ```
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `pnpm --filter @sammlerraum/web exec playwright test e2e/search-dashboard.spec.ts`  
 Expected: FAIL.
 
-- [ ] **Step 3: Implement UI**
+- [x] **Step 3: Implement UI**
 
 Use URL state for active filters, accessible controls, mobile responsive filter drawer, locale-aware money/date rendering, and no hard-coded German text in components.
 
-- [ ] **Step 4: Run tests/build**
+- [x] **Step 4: Run tests/build**
 
 Run:
 ```bash
@@ -263,9 +263,11 @@ pnpm --filter @sammlerraum/web build
 
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add apps/web
 git commit -m "feat: add search smart collection and dashboard UI"
 ```
+
+Full original Tasks2–5 accepted against corrected candidate77b69f9478e06db09d04df173b7b6b9df6535354, actualCI42433316774SUCCESS, one shared whole-plan review+consolidated correction. Market/duplicate/shared prerequisite evidence and wishlist search/market authoring included; no live activation implied.

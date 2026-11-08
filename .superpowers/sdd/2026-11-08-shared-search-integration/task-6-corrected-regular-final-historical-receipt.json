@@ -1,0 +1,14 @@
+[
+  {
+    "originalPath": ".superpowers/sdd/2026-09-19-08-import-export-insurance-reports/reports/task-6-preview-1.png",
+    "retainedVariant": "historical-variants/corrected-regular-final/.superpowers/sdd/2026-09-19-08-import-export-insurance-reports/reports/task-6-preview-1.png",
+    "variantSha256": "8056365c038174a0c392695adad44ce6688c22d7005a32ee7960331acfa0a31a",
+    "restoredSha256": "ad486b489794b159d8093d90871a1cbb0a5db300cdbd80d106c0df9f20adc3fc"
+  },
+  {
+    "originalPath": ".superpowers/sdd/2026-09-19-08-import-export-insurance-reports/reports/task-6-preview.pdf",
+    "retainedVariant": "historical-variants/corrected-regular-final/.superpowers/sdd/2026-09-19-08-import-export-insurance-reports/reports/task-6-preview.pdf",
+    "variantSha256": "3dd57d2735751ea31b0c47e0abfffbcb75afcbfff830351567afb2f06bcb497a",
+    "restoredSha256": "cd6e0ea78c43cba5ed188e18575f5c9d12c78d8e36876a6c5abf03a3a73ada0d"
+  }
+]

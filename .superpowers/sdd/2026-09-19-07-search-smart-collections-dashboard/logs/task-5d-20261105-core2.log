@@ -1,0 +1,39 @@
+[WebServer] (node:12332) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 28 tests using 1 worker
+
+(node:12333) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [desktop] › e2e/search-dashboard.spec.ts:812:3 › de: saved search follows real ItemForm tag changes without copying items (2.3s)
+  ✓   2 [desktop] › e2e/search-dashboard.spec.ts:812:3 › en: saved search follows real ItemForm tag changes without copying items (1.3s)
+  ✓   3 [desktop] › e2e/search-dashboard.spec.ts:880:3 › de: saved search full replacement rename copy and confirmed delete retain items (1.2s)
+  ✓   4 [desktop] › e2e/search-dashboard.spec.ts:953:3 › de: two-tab stale revision preserves input and requires explicit latest adoption (974ms)
+  ✓   5 [desktop] › e2e/search-dashboard.spec.ts:997:5 › de: lost create acknowledgement never retries or silently changes expected revision (667ms)
+  ✓   6 [desktop] › e2e/search-dashboard.spec.ts:997:5 › de: lost update acknowledgement never retries or silently changes expected revision (588ms)
+  ✓   7 [desktop] › e2e/search-dashboard.spec.ts:997:5 › de: lost delete acknowledgement never retries or silently changes expected revision (527ms)
+  ✓   8 [desktop] › e2e/search-dashboard.spec.ts:1069:3 › de: acknowledged update survives failed member refresh and exact revision is retained (568ms)
+  ✓   9 [desktop] › e2e/search-dashboard.spec.ts:880:3 › en: saved search full replacement rename copy and confirmed delete retain items (1.2s)
+  ✓  10 [desktop] › e2e/search-dashboard.spec.ts:953:3 › en: two-tab stale revision preserves input and requires explicit latest adoption (959ms)
+  ✓  11 [desktop] › e2e/search-dashboard.spec.ts:997:5 › en: lost create acknowledgement never retries or silently changes expected revision (665ms)
+  ✓  12 [desktop] › e2e/search-dashboard.spec.ts:997:5 › en: lost update acknowledgement never retries or silently changes expected revision (582ms)
+  ✓  13 [desktop] › e2e/search-dashboard.spec.ts:997:5 › en: lost delete acknowledgement never retries or silently changes expected revision (577ms)
+  ✓  14 [desktop] › e2e/search-dashboard.spec.ts:1069:3 › en: acknowledged update survives failed member refresh and exact revision is retained (566ms)
+(node:12366) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  15 [mobile] › e2e/search-dashboard.spec.ts:812:3 › de: saved search follows real ItemForm tag changes without copying items (1.4s)
+  ✓  16 [mobile] › e2e/search-dashboard.spec.ts:812:3 › en: saved search follows real ItemForm tag changes without copying items (1.3s)
+  ✓  17 [mobile] › e2e/search-dashboard.spec.ts:880:3 › de: saved search full replacement rename copy and confirmed delete retain items (1.3s)
+  ✓  18 [mobile] › e2e/search-dashboard.spec.ts:953:3 › de: two-tab stale revision preserves input and requires explicit latest adoption (997ms)
+  ✓  19 [mobile] › e2e/search-dashboard.spec.ts:997:5 › de: lost create acknowledgement never retries or silently changes expected revision (649ms)
+  ✓  20 [mobile] › e2e/search-dashboard.spec.ts:997:5 › de: lost update acknowledgement never retries or silently changes expected revision (551ms)
+  ✓  21 [mobile] › e2e/search-dashboard.spec.ts:997:5 › de: lost delete acknowledgement never retries or silently changes expected revision (554ms)
+  ✓  22 [mobile] › e2e/search-dashboard.spec.ts:1069:3 › de: acknowledged update survives failed member refresh and exact revision is retained (568ms)
+  ✓  23 [mobile] › e2e/search-dashboard.spec.ts:880:3 › en: saved search full replacement rename copy and confirmed delete retain items (1.4s)
+  ✓  24 [mobile] › e2e/search-dashboard.spec.ts:953:3 › en: two-tab stale revision preserves input and requires explicit latest adoption (1.0s)
+  ✓  25 [mobile] › e2e/search-dashboard.spec.ts:997:5 › en: lost create acknowledgement never retries or silently changes expected revision (631ms)
+  ✓  26 [mobile] › e2e/search-dashboard.spec.ts:997:5 › en: lost update acknowledgement never retries or silently changes expected revision (577ms)
+  ✓  27 [mobile] › e2e/search-dashboard.spec.ts:997:5 › en: lost delete acknowledgement never retries or silently changes expected revision (563ms)
+  ✓  28 [mobile] › e2e/search-dashboard.spec.ts:1069:3 › en: acknowledged update survives failed member refresh and exact revision is retained (543ms)
+
+  28 passed (27.3s)

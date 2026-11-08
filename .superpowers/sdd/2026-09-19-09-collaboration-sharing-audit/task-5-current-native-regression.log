@@ -1,0 +1,105 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ✓ |workspace| packages/domain/src/items/item-service.test.ts (15 tests) 360ms
+ ❯ |workspace| packages/domain/src/valuations/valuation-service.test.ts (17 tests | 7 failed) 22351ms
+   ✓ private manual valuation PostgreSQL > appends exact per-unit amounts without overwriting and preserves case-sensitive authors 40ms
+   ✓ private manual valuation PostgreSQL > orders latest by observed time and resolves equal-millisecond ties with createdAt then UUID 24ms
+   ✓ private manual valuation PostgreSQL > bounds pages and validates strict cursor/time/input without caller-authored identity 272ms
+   ✓ private manual valuation PostgreSQL > hides foreign/deleted rows but permits inactive reads and retains soft-deleted history 59ms
+   ✓ private manual valuation PostgreSQL > keeps per-unit history through actual quantity changes and leaves a split unauthored 24ms
+   ✓ private manual valuation PostgreSQL > enforces native ownership, actor, basis, amount, scale, note and finite timestamp guards 101ms
+   ✓ private manual valuation PostgreSQL > serializes the append quota and rejects the 10001st estimate without pruning 218ms
+   ✓ private manual valuation PostgreSQL > uses UTC only inside its transaction and preserves canonical instants in non-UTC sessions 42ms
+   × private manual valuation PostgreSQL > serializes actual quantity mutation behind an append and captures clock after waiting 3006ms
+     → Expected PostgreSQL to observe a blocked lock
+   × private manual valuation PostgreSQL > serializes actual split mutation behind an append and captures clock after waiting 3017ms
+     → Expected PostgreSQL to observe a blocked lock
+   × private manual valuation PostgreSQL > serializes actual archive mutation behind an append and captures clock after waiting 3012ms
+     → Expected PostgreSQL to observe a blocked lock
+   × private manual valuation PostgreSQL > serializes actual dispose mutation behind an append and captures clock after waiting 3008ms
+     → Expected PostgreSQL to observe a blocked lock
+   × private manual valuation PostgreSQL > serializes actual delete mutation behind an append and captures clock after waiting 3007ms
+     → Expected PostgreSQL to observe a blocked lock
+   × private manual valuation PostgreSQL > serializes actual collection-delete mutation behind an append and captures clock after waiting 3009ms
+     → Expected PostgreSQL to observe a blocked lock
+   × private manual valuation PostgreSQL > revalidates the live parent after actual collection deletion wins the parent lock 3008ms
+     → Expected PostgreSQL to observe a blocked lock
+   ✓ private manual valuation PostgreSQL > revalidates item lifecycle after a committed archive wins the item lock 9ms
+   ✓ private manual valuation PostgreSQL > omits private valuation facts from the actual public item projection 11ms
+ ✓ |workspace| packages/domain/src/audit/audit-service.test.ts (12 tests) 1041ms
+   ✓ native append-only audit history > pages actual committed events with exact bigint cursors and bounded resource-local results  381ms
+ ❯ |workspace| packages/domain/src/grading/grading-service.test.ts (15 tests | 1 failed) 3729ms
+   ✓ personal grading PostgreSQL > allows equal certificate numbers across different providers 46ms
+   ✓ personal grading PostgreSQL > preserves authored facts, leading zeros and exact optional decimal strings 17ms
+   ✓ personal grading PostgreSQL > scopes certificate conflicts to one owner and provider without guessing number equivalence 49ms
+   ✓ personal grading PostgreSQL > supports multiple uncertified records and full replacement/removal releasing a certificate 25ms
+   ✓ personal grading PostgreSQL > hides foreign and mismatched grading IDs on reads and all mutations 18ms
+   ✓ personal grading PostgreSQL > retains inactive item reads but rejects lifecycle mutations and deleted parents 42ms
+   ✓ personal grading PostgreSQL > requires split before grading and enforces the shared item quantity mutation path 40ms
+   ✓ personal grading PostgreSQL > rejects malformed authored facts and never rounds or synthesizes comparable values 7ms
+   ✓ personal grading PostgreSQL > caps records under the shared item lock and handles racing certificate additions 224ms
+   ✓ personal grading PostgreSQL > enforces owner, single-specimen, paired scale and provider identity in PostgreSQL 56ms
+   ✓ personal grading PostgreSQL > keeps exact condition and grading independent through condition edits and grading removal 40ms
+   × personal grading PostgreSQL > serializes actual item quantity updates behind grading's item lock 3004ms
+     → Expected PostgreSQL to observe a blocked lock
+   ✓ personal grading PostgreSQL > rechecks quantity after waiting for a concurrent committed change 18ms
+   ✓ personal grading PostgreSQL > uses native FK locking to reject a racing direct SQL quantity change 12ms
+   ✓ personal grading PostgreSQL > retains owner-scoped certificate reservations on item soft deletion 21ms
+ ✓ |workspace| packages/domain/src/audit/core-audit-integration.test.ts (9 tests) 646ms
+ ✓ |workspace| packages/domain/src/condition/condition-service.test.ts (10 tests) 513ms
+ ✓ |workspace| packages/domain/src/locations/location-service.test.ts (17 tests) 251ms
+ ✓ |workspace| packages/domain/src/collections/collection-service.test.ts (14 tests) 219ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 8 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/grading/grading-service.test.ts > personal grading PostgreSQL > serializes actual item quantity updates behind grading's item lock
+Error: Expected PostgreSQL to observe a blocked lock
+ ❯ expectDatabaseWait packages/domain/src/grading/grading-service.test.ts:558:9
+    556|     if (row!.waiting) return;
+    557|   }
+    558|   throw new Error("Expected PostgreSQL to observe a blocked lock");
+       |         ^
+    559| }
+    560| 
+ ❯ packages/domain/src/grading/grading-service.test.ts:432:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/8]⎯
+
+ FAIL  |workspace| packages/domain/src/valuations/valuation-service.test.ts > private manual valuation PostgreSQL > serializes actual quantity mutation behind an append and captures clock after waiting
+ FAIL  |workspace| packages/domain/src/valuations/valuation-service.test.ts > private manual valuation PostgreSQL > serializes actual split mutation behind an append and captures clock after waiting
+ FAIL  |workspace| packages/domain/src/valuations/valuation-service.test.ts > private manual valuation PostgreSQL > serializes actual archive mutation behind an append and captures clock after waiting
+ FAIL  |workspace| packages/domain/src/valuations/valuation-service.test.ts > private manual valuation PostgreSQL > serializes actual dispose mutation behind an append and captures clock after waiting
+ FAIL  |workspace| packages/domain/src/valuations/valuation-service.test.ts > private manual valuation PostgreSQL > serializes actual delete mutation behind an append and captures clock after waiting
+ FAIL  |workspace| packages/domain/src/valuations/valuation-service.test.ts > private manual valuation PostgreSQL > serializes actual collection-delete mutation behind an append and captures clock after waiting
+Error: Expected PostgreSQL to observe a blocked lock
+ ❯ expectDatabaseWait packages/domain/src/valuations/valuation-service.test.ts:541:9
+    539|     if (row!.waiting) return;
+    540|   }
+    541|   throw new Error("Expected PostgreSQL to observe a blocked lock");
+       |         ^
+    542| }
+    543| 
+ ❯ packages/domain/src/valuations/valuation-service.test.ts:374:9
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/8]⎯
+
+ FAIL  |workspace| packages/domain/src/valuations/valuation-service.test.ts > private manual valuation PostgreSQL > revalidates the live parent after actual collection deletion wins the parent lock
+Error: Expected PostgreSQL to observe a blocked lock
+ ❯ expectDatabaseWait packages/domain/src/valuations/valuation-service.test.ts:541:9
+    539|     if (row!.waiting) return;
+    540|   }
+    541|   throw new Error("Expected PostgreSQL to observe a blocked lock");
+       |         ^
+    542| }
+    543| 
+ ❯ packages/domain/src/valuations/valuation-service.test.ts:439:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/8]⎯
+
+
+ Test Files  2 failed | 6 passed (8)
+      Tests  8 failed | 101 passed (109)
+   Start at  08:23:06
+   Duration  31.50s (transform 325ms, setup 11ms, collect 1.24s, tests 29.11s, environment 1ms, prepare 277ms)
+

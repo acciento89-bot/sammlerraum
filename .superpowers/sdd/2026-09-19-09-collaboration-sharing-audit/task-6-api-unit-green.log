@@ -1,0 +1,40 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| apps/web/src/lib/restore-routes.test.ts (11 tests | 1 failed) 18ms
+   ✓ private restoration HTTP boundary > rejects cross-origin writes before reading a session or database 5ms
+   ✓ private restoration HTTP boundary > requires a fresh real server session 2ms
+   ✓ private restoration HTTP boundary > rejects forged or structurally ambiguous input before domain access 6ms
+   ✓ private restoration HTTP boundary > rejects forged or structurally ambiguous input before domain access 1ms
+   ✓ private restoration HTTP boundary > rejects forged or structurally ambiguous input before domain access 0ms
+   ✓ private restoration HTTP boundary > rejects forged or structurally ambiguous input before domain access 0ms
+   ✓ private restoration HTTP boundary > rejects forged or structurally ambiguous input before domain access 0ms
+   ✓ private restoration HTTP boundary > rejects forged or structurally ambiguous input before domain access 0ms
+   × private restoration HTTP boundary > bounds the body and requires JSON 2ms
+     → expected 400 to be 415 // Object.is equality
+   ✓ private restoration HTTP boundary > rejects unknown URL parameters before private access 0ms
+   ✓ private restoration HTTP boundary > closes unexpected backend errors and does not cache private responses 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/web/src/lib/restore-routes.test.ts > private restoration HTTP boundary > bounds the body and requires JSON
+AssertionError: expected 400 to be 415 // Object.is equality
+
+- Expected
++ Received
+
+- 415
++ 400
+
+ ❯ closed apps/web/src/lib/restore-routes.test.ts:6:80
+
+ ❯ apps/web/src/lib/restore-routes.test.ts:11:148
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 10 passed (11)
+   Start at  09:36:07
+   Duration  601ms (transform 207ms, setup 7ms, collect 421ms, tests 18ms, environment 0ms, prepare 39ms)
+

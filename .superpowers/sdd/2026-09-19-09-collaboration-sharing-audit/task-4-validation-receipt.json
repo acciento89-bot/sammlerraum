@@ -1,0 +1,69 @@
+{
+  "capturedAt": "2026-11-07T06:55:36.749949+00:00",
+  "base": "40f771f5e3600697576a5e9e135ba96ba8a19ddb",
+  "sourceCommit": "9ed6da7d9977badf49a3ff51f5a45693c07de875",
+  "checks": {
+    "native": {
+      "log": "task-4-full-native.log",
+      "sha256": "e753423ba36901fb67ee99cda8271492ed239e532fdc5e23ac12cabd6c5a1348",
+      "result": "PASS"
+    },
+    "regular": {
+      "log": "task-4-full-regular.log",
+      "sha256": "cb3bba5b9f0ed67504cb404d0bb7240c9031335c9aad6b64b29424cc7fb35103",
+      "result": "PASS"
+    },
+    "build": {
+      "log": "task-4-full-build.log",
+      "sha256": "740a4bb0d41be90894dd3d94ef48a8fca4252e3f12f4bb0a833b9a7c8d9de648",
+      "result": "PASS"
+    },
+    "types": {
+      "log": "task-4-final-types.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "result": "PASS"
+    },
+    "lint": {
+      "log": "task-4-all-lint.log",
+      "sha256": "1d322d1a2ad4fc3363166e0ca62e230798a147a5406e3f7be394be3aa5c5b09c",
+      "result": "PASS"
+    },
+    "browser": {
+      "log": "task-4-browser-regression.log",
+      "sha256": "cb5aedc244766156e6d5f914349425671358d5409fcba748c1477cae0997e9fa",
+      "result": "PASS"
+    },
+    "closing": {
+      "log": "task-4-tests.log",
+      "sha256": "9ec2d437f9c537110715a60941d5c1412480c7ad477621b4224b156061f6ee4b",
+      "result": "PASS"
+    },
+    "schemaDiff": {
+      "log": "task-4-schema-diff.log",
+      "sha256": "851cb03656537c316e47f338a03d698c900be51b4e437beb434434f7e05c5917",
+      "result": "PASS"
+    }
+  },
+  "native": {
+    "files": 92,
+    "passed": 1042,
+    "skipped": 0,
+    "durationSeconds": 168.98
+  },
+  "regular": {
+    "passed": 1542,
+    "nativeDisabledSkipped": 912,
+    "durationSeconds": 15.57
+  },
+  "actualCompiledBrowserCookieJourneys": 7,
+  "closingNative": 12,
+  "priorTaskCi": {
+    "runId": 42346201723,
+    "head": "40f771f5e3600697576a5e9e135ba96ba8a19ddb",
+    "conclusion": "success"
+  },
+  "independentReview": "Pending one whole-Phase09 review afterTask7",
+  "reviewedMasterCount": 48,
+  "noDeployment": true,
+  "coverageBoundary": "Append-only audit foundation; three event definitions and internal same-transaction emission. Full actual core mutation producers areTask5."
+}

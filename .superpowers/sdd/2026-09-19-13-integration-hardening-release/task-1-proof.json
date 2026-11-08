@@ -1,0 +1,22 @@
+{
+  "base": "7289140d8fd422cc0561e03cf5e5f33a75d683f4",
+  "compiledMatrix": {
+    "passed": 84,
+    "skipped": 0,
+    "seconds": 3.7,
+    "log": "task-1-matrix-final.log"
+  },
+  "actualCookieSessions": true,
+  "actors": 8,
+  "resources": 10,
+  "additionalShareAndBlockCases": 4,
+  "privateOriginalBytesVerified": true,
+  "deniedWriteSideEffectsVerified": true,
+  "applicationPolicyChanges": false,
+  "testPolicy": "packages/testing/fixtures/security-billing-policy.json",
+  "webTypes": "task-1-web-types-final.log",
+  "phaseReview": "pending until whole Phase13",
+  "exactCI": "pending",
+  "priorBillingCI": 42458240201,
+  "acceptedTaskCredit": false
+}

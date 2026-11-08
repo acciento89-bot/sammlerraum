@@ -1,0 +1,45 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/audit/audit-service.test.ts (12 tests | 1 failed) 1355ms
+   ✓ native append-only audit history > records original actor, source, exact before/after and database time 139ms
+   ✓ native append-only audit history > rejects auth/session/byte dumps and forged user/source identity before appending 6ms
+   ✓ native append-only audit history > blocks arbitrary SQL rewriting/deletion and foreign-owner reads/writes 58ms
+   ✓ native append-only audit history > retains an item's history after moving it and deleting the old collection 23ms
+   ✓ native append-only audit history > follows current ownership, preserves the true original actor and permits actual actor/account erasure 64ms
+   ✓ native append-only audit history > records all declared sources only through genuine server contexts and rejects copied context objects 20ms
+   ✓ native append-only audit history > rolls audit and the actual inventory mutation back together in the caller's transaction 11ms
+   ✓ native append-only audit history > pages actual committed events with exact bigint cursors and bounded resource-local results 161ms
+   ✓ native append-only audit history > anchors collection events to the current collection and never accepts an incomplete SQL scope 6ms
+   ✓ native append-only audit history > retains a deleted personal location's history but removes it with the actual namespace account 31ms
+   ✓ native append-only audit history > binds an internal USER emission to current database edit membership and keeps the true editor actor 13ms
+   × native append-only audit history > hides a foreign resource even while its actual owner holds a write lock 530ms
+     → expected AuditError: AUDIT_UNAVAILABLE { …(1) } to match object { code: 'AUDIT_NOT_FOUND' }
+(1 matching property omitted from actual)
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/audit/audit-service.test.ts > native append-only audit history > hides a foreign resource even while its actual owner holds a write lock
+AssertionError: expected AuditError: AUDIT_UNAVAILABLE { …(1) } to match object { code: 'AUDIT_NOT_FOUND' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+- {
+-   "code": "AUDIT_NOT_FOUND",
++ AuditError {
++   "code": "AUDIT_UNAVAILABLE",
+  }
+
+ ❯ packages/domain/src/audit/audit-service.test.ts:387:23
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 11 passed (12)
+   Start at  07:37:18
+   Duration  1.87s (transform 159ms, setup 5ms, collect 334ms, tests 1.35s, environment 0ms, prepare 41ms)
+

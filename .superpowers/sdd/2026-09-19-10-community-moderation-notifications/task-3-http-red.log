@@ -1,0 +1,37 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/web/src/lib/comment-routes.integration.test.ts [ apps/web/src/lib/comment-routes.integration.test.ts ]
+Error: Cannot find module './comment-routes' imported from '/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/src/lib/comment-routes.integration.test.ts'
+ ❯ apps/web/src/lib/comment-routes.integration.test.ts:6:1
+      4| import {createTestDatabaseClient} from "@sammlerraum/db/test-database";
+      5| import {createItemService} from "@sammlerraum/domain/items/item-servic…
+      6| import {createCommentDependencies,createCommentHandlers} from "./comme…
+       | ^
+      7| let db:ReturnType<typeof createTestDatabaseClient>,isolated:Awaited<Re…
+      8| const origin="https://example.invalid";
+
+Caused by: Error: Failed to load url ./comment-routes (resolved id: ./comment-routes) in /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/src/lib/comment-routes.integration.test.ts. Does the file exist?
+ ❯ loadAndTransform ../../../../SSK%20SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/node_modules/.pnpm/vite@7.3.6_@types+node@24.5.2_jiti@2.7.0/node_modules/vite/dist/node/chunks/config.js:22739:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |workspace| apps/web/src/lib/comment-routes.test.ts [ apps/web/src/lib/comment-routes.test.ts ]
+Error: Cannot find module './comment-routes' imported from '/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/src/lib/comment-routes.test.ts'
+ ❯ apps/web/src/lib/comment-routes.test.ts:2:1
+
+
+Caused by: Error: Failed to load url ./comment-routes (resolved id: ./comment-routes) in /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/src/lib/comment-routes.integration.test.ts. Does the file exist?
+ ❯ loadAndTransform ../../../../SSK%20SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/node_modules/.pnpm/vite@7.3.6_@types+node@24.5.2_jiti@2.7.0/node_modules/vite/dist/node/chunks/config.js:22739:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  no tests
+   Start at  13:01:49
+   Duration  618ms (transform 153ms, setup 6ms, collect 0ms, tests 0ms, environment 0ms, prepare 73ms)
+

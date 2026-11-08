@@ -1,0 +1,109 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| packages/domain/src/catalog/catalog-service.integration.test.ts (11 tests | 3 failed | 8 skipped) 207ms
+   × revisioned global catalog PostgreSQL > canonicalizes uppercase category UUIDs through rollback and no-op commands 39ms
+     → CATALOG_INPUT_INVALID
+   × revisioned global catalog PostgreSQL > canonicalizes uppercase definition and variant references without weakening category or entry guards 13ms
+     → CATALOG_ATTRIBUTE_CATEGORY_MISMATCH
+   × revisioned global catalog PostgreSQL > normalizes legacy snapshot UUIDs on read and rollback without rewriting stored history 14ms
+     → expected { schemaVersion: 1, …(7) } to match object { …(5) }
+(23 matching properties omitted from actual)
+   ↓ revisioned global catalog PostgreSQL > guards persisted revision snapshots against database UPDATE
+   ↓ revisioned global catalog PostgreSQL > keeps same-title language and edition variants separate and preserves authored text
+   ↓ revisioned global catalog PostgreSQL > stores typed entry and variant attributes canonically and rejects foreign definitions atomically
+   ↓ revisioned global catalog PostgreSQL > retains original identifier values, namespaces, target and provenance in past snapshots
+   ↓ revisioned global catalog PostgreSQL > serializes concurrent writes with expected-revision conflicts and checks stale no-ops
+   ↓ revisioned global catalog PostgreSQL > shares the caller transaction so failed approval work rolls back state and snapshots
+   ↓ revisioned global catalog PostgreSQL > records rollback as a new revision while retaining inactive UUID identities and old snapshots
+   ↓ revisioned global catalog PostgreSQL > strictly bounds maintenance inputs and does not write personal data or unsafe provenance
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/catalog/catalog-service.integration.test.ts > revisioned global catalog PostgreSQL > canonicalizes uppercase category UUIDs through rollback and no-op commands
+CatalogServiceError: CATALOG_INPUT_INVALID
+ ❯ invalid packages/domain/src/catalog/catalog-service.ts:35:9
+     33| }
+     34| function invalid(): never {
+     35|   throw new CatalogServiceError("CATALOG_INPUT_INVALID");
+       |         ^
+     36| }
+     37| function validId(id: string): void {
+ ❯ packages/domain/src/catalog/catalog-service.ts:387:11
+ ❯ mutate packages/domain/src/catalog/catalog-service.ts:258:5
+ ❯ Proxy._transactionWithCallback node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:861:18
+ ❯ packages/domain/src/catalog/catalog-service.integration.test.ts:105:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  |workspace| packages/domain/src/catalog/catalog-service.integration.test.ts > revisioned global catalog PostgreSQL > canonicalizes uppercase definition and variant references without weakening category or entry guards
+CatalogServiceError: CATALOG_ATTRIBUTE_CATEGORY_MISMATCH
+ ❯ attributes packages/domain/src/catalog/catalog-service.ts:91:13
+     89|     const definition = byId.get(value.definitionId);
+     90|     if (!definition || definition.categoryTemplateId !== categoryTempl…
+     91|       throw new CatalogServiceError("CATALOG_ATTRIBUTE_CATEGORY_MISMAT…
+       |             ^
+     92|     }
+     93|     const canonical = await validateAttributeValue(
+ ❯ Object.createCatalogEntry packages/domain/src/catalog/catalog-service.ts:279:21
+ ❯ Proxy._transactionWithCallback node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:861:18
+ ❯ packages/domain/src/catalog/catalog-service.integration.test.ts:113:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  |workspace| packages/domain/src/catalog/catalog-service.integration.test.ts > revisioned global catalog PostgreSQL > normalizes legacy snapshot UUIDs on read and rollback without rewriting stored history
+AssertionError: expected { schemaVersion: 1, …(7) } to match object { …(5) }
+(23 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "attributes": [
+      {
+-       "definitionId": "d2d786f6-e6a6-4533-9f5d-d31da3cecd0a",
++       "definitionId": "D2D786F6-E6A6-4533-9F5D-D31DA3CECD0A",
+      },
+    ],
+-   "categoryTemplateId": "c2a39925-41ea-4ea9-a92e-1eb833ae16b9",
+-   "id": "c9fe5f34-6c19-46f5-98c4-e410d7a24d27",
++   "categoryTemplateId": "C2A39925-41EA-4EA9-A92E-1EB833AE16B9",
++   "id": "C9FE5F34-6C19-46F5-98C4-E410D7A24D27",
+    "identifiers": [
+      {
+-       "id": "78a9c61e-242e-4d07-b47f-3fe186a8fb2f",
+-       "variantId": "bd3ac94e-f5bd-4622-b06f-759a26ba1159",
++       "id": "78A9C61E-242E-4D07-B47F-3FE186A8FB2F",
++       "variantId": "BD3AC94E-F5BD-4622-B06F-759A26BA1159",
+      },
+    ],
+    "variants": [
+      {
+        "attributes": [
+          {
+-           "definitionId": "d2d786f6-e6a6-4533-9f5d-d31da3cecd0a",
++           "definitionId": "D2D786F6-E6A6-4533-9F5D-D31DA3CECD0A",
+          },
+        ],
+-       "id": "bd3ac94e-f5bd-4622-b06f-759a26ba1159",
++       "id": "BD3AC94E-F5BD-4622-B06F-759A26BA1159",
+      },
+    ],
+  }
+
+ ❯ packages/domain/src/catalog/catalog-service.integration.test.ts:173:31
+    171|     });
+    172|     const historical = await service().getCatalogEntryAtRevision(entry…
+    173|     expect(historical!.state).toMatchObject({ id: entryId, categoryTem…
+       |                               ^
+    174|       attributes: [{ definitionId: yearId }],
+    175|       variants: [{ id: variantId, attributes: [{ definitionId: yearId …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 8 skipped (11)
+   Start at  22:53:34
+   Duration  641ms (transform 78ms, setup 6ms, collect 175ms, tests 207ms, environment 0ms, prepare 54ms)
+

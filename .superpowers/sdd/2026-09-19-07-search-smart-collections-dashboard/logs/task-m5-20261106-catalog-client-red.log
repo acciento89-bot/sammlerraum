@@ -1,0 +1,30 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/web/src/components/catalog/catalog-money-client.test.ts [ apps/web/src/components/catalog/catalog-money-client.test.ts ]
+ZodError: [
+  {
+    "expected": "string",
+    "code": "invalid_type",
+    "path": [
+      "attributes",
+      0,
+      "key"
+    ],
+    "message": "Invalid input: expected string, received undefined"
+  }
+]
+ ❯ apps/web/src/components/catalog/catalog-money-client.test.ts:6:35
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  no tests
+   Start at  11:09:10
+   Duration  338ms (transform 55ms, setup 6ms, collect 0ms, tests 0ms, environment 0ms, prepare 65ms)
+

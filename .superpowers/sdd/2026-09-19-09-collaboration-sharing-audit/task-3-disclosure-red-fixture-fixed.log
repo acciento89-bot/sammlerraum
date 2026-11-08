@@ -1,0 +1,68 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/sharing/share-service.test.ts (10 tests | 2 failed) 851ms
+   ✓ actual explicit granular read shares > excludes private notes, location, insurance, receipt and money data by default and stores only a token hash 139ms
+   ✓ actual explicit granular read shares > stops a known token immediately after revocation 15ms
+   ✓ actual explicit granular read shares > binds registered-user grants without adding membership or broadening a Viewer's edit rights 26ms
+   ✓ actual explicit granular read shares > resolves the selected node subtree without exposing siblings or other private ancestors 19ms
+   ✓ actual explicit granular read shares > permanently revokes the old owner's token during transfer, including a later ownership round trip 51ms
+   ✓ actual explicit granular read shares > rejects a genuinely expired stored grant using the database clock 6ms
+   ✓ actual explicit granular read shares > stores a salted PIN hash and persists a bounded attempt budget before expensive checking 216ms
+   × actual explicit granular read shares > discloses only explicitly selected location, policy, values and document metadata 43ms
+     → 
+Invalid `db.insuranceRecord.create()` invocation in
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/domain/src/sharing/share-service.test.ts:93:28
+
+  90 const f=await fixture();
+  91 const location=await db.storageLocation.create({data:{ownerId:f.owner,name:"Selected private cabinet",type:"CABINET",qrToken:randomBytes(32).toString("base64url")}});
+  92 await db.collectibleItem.update({where:{id:f.item.id},data:{storageLocationId:location.id}});
+→ 93 await db.insuranceRecord.create(
+Database error. Code: `23514`. Message: `new row for relation "InsuranceRecord" violates check constraint "InsuranceRecord_payload"`
+   × actual explicit granular read shares > cannot select a document belonging to a different item or a sibling outside the chosen subtree 20ms
+     → expected ShareError: SHARE_INVALID { code: 'S…' } to match object { code: 'SHARE_NOT_FOUND' }
+(1 matching property omitted from actual)
+   ✓ actual explicit granular read shares > pages collections with stable bounded cursors and no duplicate or missing item 39ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/sharing/share-service.test.ts > actual explicit granular read shares > discloses only explicitly selected location, policy, values and document metadata
+PrismaClientKnownRequestError: 
+Invalid `db.insuranceRecord.create()` invocation in
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/domain/src/sharing/share-service.test.ts:93:28
+
+  90 const f=await fixture();
+  91 const location=await db.storageLocation.create({data:{ownerId:f.owner,name:"Selected private cabinet",type:"CABINET",qrToken:randomBytes(32).toString("base64url")}});
+  92 await db.collectibleItem.update({where:{id:f.item.id},data:{storageLocationId:location.id}});
+→ 93 await db.insuranceRecord.create(
+Database error. Code: `23514`. Message: `new row for relation "InsuranceRecord" violates check constraint "InsuranceRecord_payload"`
+ ❯ vn.handleRequestError node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:238:13
+ ❯ vn.handleAndLogRequestError node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:184:12
+ ❯ vn.request node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:153:12
+ ❯ a node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:1014:24
+ ❯ packages/domain/src/sharing/share-service.test.ts:93:3
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |workspace| packages/domain/src/sharing/share-service.test.ts > actual explicit granular read shares > cannot select a document belonging to a different item or a sibling outside the chosen subtree
+AssertionError: expected ShareError: SHARE_INVALID { code: 'S…' } to match object { code: 'SHARE_NOT_FOUND' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+- {
+-   "code": "SHARE_NOT_FOUND",
++ ShareError {
++   "code": "SHARE_INVALID",
+  }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 8 passed (10)
+   Start at  06:36:07
+   Duration  1.29s (transform 140ms, setup 5ms, collect 280ms, tests 851ms, environment 0ms, prepare 35ms)
+

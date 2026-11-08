@@ -1,0 +1,6 @@
+packages/contracts/src/money-coverage.ts 50ms
+packages/contracts/src/money-coverage.test.ts 10ms
+packages/domain/src/money/purchase-cost.ts 7ms (unchanged)
+packages/domain/src/money/purchase-cost.test.ts 8ms (unchanged)
+packages/domain/src/search/legacy-money-query.ts 8ms (unchanged)
+packages/domain/src/search/legacy-money-query.test.ts 8ms (unchanged)

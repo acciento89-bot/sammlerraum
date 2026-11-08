@@ -1,0 +1,34 @@
+
+> @sammlerraum/db@ prisma /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/db
+> prisma migrate deploy
+
+Loaded Prisma config from prisma.config.ts.
+
+Prisma schema loaded from prisma/schema.prisma.
+Datasource "db": PostgreSQL database "sammlerraum_test", schema "public" at "localhost:5432"
+
+14 migrations found in prisma/migrations
+
+Applying migration `20261017225000_global_catalog`
+Error: P3018
+
+A migration failed to apply. New migrations cannot be applied before the error is recovered from. Read more about how to resolve migration issues in a production database: https://pris.ly/d/migrate-resolve
+
+Migration name: 20261017225000_global_catalog
+
+Database error code: 42601
+
+Database error:
+ERROR: syntax error at or near ">"
+
+Position:
+[1m  0[0m
+[1m  1[0m
+[1m  2[1;31m > @sammlerraum/db@ prisma /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/db[0m
+
+DbError { severity: "ERROR", parsed_severity: Some(Error), code: SqlState(E42601), message: "syntax error at or near \">\"", detail: None, hint: None, position: Some(Original(2)), where_: None, schema: None, table: None, column: None, datatype: None, constraint: None, file: Some("scan.l"), line: Some(1248), routine: Some("scanner_yyerror") }
+
+
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/db:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @sammlerraum/db@ prisma: `prisma migrate deploy`
+Exit status 1

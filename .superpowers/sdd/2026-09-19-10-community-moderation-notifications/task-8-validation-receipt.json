@@ -1,0 +1,42 @@
+{
+  "state": "all-local-gates-pass-review-pending",
+  "base": "cb150ee140c47d65d68294d48c8a0ba53d7308ec",
+  "regular": {
+    "pass": 1631,
+    "nativeDisabled": 1032,
+    "seconds": 61.9
+  },
+  "compiledBrowsers": {
+    "pass": 218,
+    "minutes": 4.8,
+    "includes": [
+      "public-profile",
+      "community UI/API",
+      "collaboration UI/API",
+      "sharing",
+      "inventory",
+      "search-dashboard"
+    ]
+  },
+  "publicScreenshots": 12,
+  "newSchemaChanges": false,
+  "frozenMigrationHashesIntact": 18,
+  "workerBuild": "PASS",
+  "webBuild": "PASS",
+  "types": "PASS at final source",
+  "lint": "PASS at final source",
+  "review": "single independent whole-phase review active",
+  "native": {
+    "pass": 1547,
+    "files": 139,
+    "skipped": 0,
+    "seconds": 211.79
+  },
+  "schema": "both exact guarded DB diffs empty;18frozen migration files unchanged",
+  "source": "372334a6e59734f927e3a31aaa601befe32e244b",
+  "closing": {
+    "pass": 69,
+    "files": 8,
+    "seconds": 9.3
+  }
+}

@@ -1,0 +1,3 @@
+packages/domain/src/dashboard/dashboard-service.test.ts(814,13): error TS2322: Type '{ itemId: string; ownerId: string; assetId: string; }' is not assignable to type '((Without<DocumentLinkCreateInput, DocumentLinkUncheckedCreateInput> & DocumentLinkUncheckedCreateInput) | (Without<...> & DocumentLinkCreateInput)) & object'.
+  Type '{ itemId: string; ownerId: string; assetId: string; }' is not assignable to type 'Without<DocumentLinkCreateInput, DocumentLinkUncheckedCreateInput> & DocumentLinkUncheckedCreateInput & object'.
+    Property 'position' is missing in type '{ itemId: string; ownerId: string; assetId: string; }' but required in type 'DocumentLinkUncheckedCreateInput'.

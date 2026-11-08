@@ -1,0 +1,34 @@
+[WebServer] (node:10424) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:10425) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [desktop] › e2e/valuations.spec.ts:7:5 › private valuation history › production manual journey (en) (1.0m)
+
+
+  1) [desktop] › e2e/valuations.spec.ts:7:5 › private valuation history › production manual journey (en) 
+
+    Test timeout of 60000ms exceeded.
+
+    Error: page.unrouteAll: Target page, context or browser has been closed
+
+      12 |         await page.getByRole("link",{name:locale==="de"?"Wertverlauf":"Valuation history",exact:true}).click();
+      13 |         await expect(page.getByRole("heading",{name:locale==="de"?"Wertverlauf":"Valuation history",exact:true})).toBeVisible();
+    > 14 |       } finally {try{await page.unrouteAll({behavior:"wait"})}finally{await cleanupValuationFixture(f)}}
+         |                      ^
+      15 |     });
+      16 |   }
+      17 | });
+        at /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/valuations.spec.ts:14:22
+
+    Error Context: test-results/valuations-private-valuati-7d031-oduction-manual-journey-en--desktop/error-context.md
+
+    Error Context: test-results/valuations-private-valuati-7d031-oduction-manual-journey-en--desktop/error-context.md
+
+  1 failed
+    [desktop] › e2e/valuations.spec.ts:7:5 › private valuation history › production manual journey (en) 
+undefined
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/valuations.spec.ts --project=desktop --grep production manual journey \(en\) --workers=1

@@ -1,0 +1,19 @@
+{
+  "base": "e8300e7bb863a4d6c4a55a9e62d90bbc33940f83",
+  "officialSDK": "stripe23.1.0",
+  "apiVersion": "2026-10-28.endive",
+  "focusedPassed": 39,
+  "regularPassed": 1711,
+  "regularNativeDisabled": 1227,
+  "nativePassed": 2938,
+  "nativeSkipped": 0,
+  "files": 268,
+  "nativeSeconds": 276.9,
+  "types": "PASS",
+  "workspaceFormatting": "PASS",
+  "workerBuild": "PASS",
+  "optimizedWebBuild": "PASS",
+  "frozenPriorMigrationFiles": 71,
+  "providerActivated": false,
+  "accepted": false
+}

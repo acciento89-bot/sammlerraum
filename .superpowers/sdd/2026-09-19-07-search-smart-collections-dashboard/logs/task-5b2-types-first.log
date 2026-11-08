@@ -1,0 +1,15 @@
+apps/web/src/app/api/v1/search/references/collections/route.ts(1,46): error TS2307: Cannot find module '@/lib/search-reference-route-dependencies' or its corresponding type declarations.
+apps/web/src/app/api/v1/search/references/conditions/route.ts(1,46): error TS2307: Cannot find module '@/lib/search-reference-route-dependencies' or its corresponding type declarations.
+apps/web/src/app/api/v1/search/references/custom-fields/route.ts(1,46): error TS2307: Cannot find module '@/lib/search-reference-route-dependencies' or its corresponding type declarations.
+packages/domain/src/search/search-reference-service.ts(37,148): error TS2379: Argument of type '{ limit: number; cursor?: string | undefined; }' is not assignable to parameter of type '{ limit: number; cursor?: string; }' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+  Types of property 'cursor' are incompatible.
+    Type 'string | undefined' is not assignable to type 'string'.
+      Type 'undefined' is not assignable to type 'string'.
+packages/domain/src/search/search-reference-service.ts(45,170): error TS2379: Argument of type '{ limit: number; collectionId: string; cursor?: string | undefined; }' is not assignable to parameter of type '{ limit: number; cursor?: string; }' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+  Types of property 'cursor' are incompatible.
+    Type 'string | undefined' is not assignable to type 'string'.
+      Type 'undefined' is not assignable to type 'string'.
+packages/domain/src/search/search-reference-service.ts(68,168): error TS2379: Argument of type '{ limit: number; categoryId: string; cursor?: string | undefined; }' is not assignable to parameter of type '{ limit: number; cursor?: string; }' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+  Types of property 'cursor' are incompatible.
+    Type 'string | undefined' is not assignable to type 'string'.
+      Type 'undefined' is not assignable to type 'string'.

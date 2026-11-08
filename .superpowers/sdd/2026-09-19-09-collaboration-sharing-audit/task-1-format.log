@@ -1,0 +1,6 @@
+packages/contracts/src/collaboration.ts 35ms
+packages/contracts/package.json 11ms (unchanged)
+packages/domain/package.json 1ms (unchanged)
+packages/domain/src/search/search-read.ts 16ms (unchanged)
+packages/domain/src/collaboration/membership-service.ts 19ms
+packages/domain/src/collaboration/membership-service.test.ts 16ms

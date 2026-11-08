@@ -1,0 +1,36 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/sharing/share-read-access.test.ts (3 tests | 1 failed) 627ms
+   ✓ canonical reusable share read access > reuses actual token authorization and rejects unknown capabilities 139ms
+   ✓ canonical reusable share read access > commits failed PIN attempts and accepts the existing source session 135ms
+   × canonical reusable share read access > uses actual verified named recipients rather than supplied owner identities 26ms
+     → SHARE_CONFLICT
+ ✓ |workspace| packages/domain/src/sharing/share-service.test.ts (19 tests) 1345ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/sharing/share-read-access.test.ts > canonical reusable share read access > uses actual verified named recipients rather than supplied owner identities
+ShareError: SHARE_CONFLICT
+ ❯ fail packages/domain/src/sharing/share-service.ts:40:9
+     38| const hash = (value: string) => createHash("sha256").update(value).dig…
+     39| function fail(code: ShareError["code"]): never {
+     40|   throw new ShareError(code);
+       |         ^
+     41| }
+     42| function parse<T>(schema: z.ZodType<T>, value: unknown): T {
+ ❯ packages/domain/src/sharing/share-service.ts:169:72
+ ❯ database.$transaction.isolationLevel packages/domain/src/collaboration/transfer-transaction.ts:64:26
+ ❯ Proxy._transactionWithCallback node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:861:18
+ ❯ runTransferTransaction packages/domain/src/collaboration/transfer-transaction.ts:37:14
+ ❯ within packages/domain/src/sharing/share-read-access.ts:31:14
+ ❯ packages/domain/src/sharing/share-read-access.test.ts:47:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  1 failed | 21 passed (22)
+   Start at  00:18:36
+   Duration  2.82s (transform 237ms, setup 7ms, collect 539ms, tests 1.97s, environment 0ms, prepare 75ms)
+

@@ -1,0 +1,35 @@
+
+> sammlerraum@ typecheck /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+> pnpm -r typecheck
+
+Scope: 10 of 11 workspace projects
+packages/config typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+packages/contracts typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+packages/market-data typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+packages/queue typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+packages/queue typecheck: ../../apps/web/e2e/valuations.spec.ts(479,37): error TS2584: Cannot find name 'document'. Do you need to change your target library? Try changing the 'lib' compiler option to include 'dom'.
+packages/queue typecheck: ../../apps/web/e2e/valuations.spec.ts(479,77): error TS2304: Cannot find name 'window'.
+packages/queue typecheck: ../../apps/web/e2e/valuations.spec.ts(511,60): error TS2339: Property 'getAttribute' does not exist on type 'SVGElement | HTMLElement'.
+packages/queue typecheck:   Property 'getAttribute' does not exist on type 'SVGElement'.
+packages/queue typecheck: ../../apps/web/e2e/valuations.spec.ts(638,37): error TS2584: Cannot find name 'document'. Do you need to change your target library? Try changing the 'lib' compiler option to include 'dom'.
+packages/queue typecheck: ../../apps/web/e2e/valuations.spec.ts(638,77): error TS2304: Cannot find name 'window'.
+packages/market-data typecheck: ../../apps/web/e2e/valuations.spec.ts(479,37): error TS2584: Cannot find name 'document'. Do you need to change your target library? Try changing the 'lib' compiler option to include 'dom'.
+packages/market-data typecheck: ../../apps/web/e2e/valuations.spec.ts(479,77): error TS2304: Cannot find name 'window'.
+packages/market-data typecheck: ../../apps/web/e2e/valuations.spec.ts(511,60): error TS2339: Property 'getAttribute' does not exist on type 'SVGElement | HTMLElement'.
+packages/market-data typecheck:   Property 'getAttribute' does not exist on type 'SVGElement'.
+packages/market-data typecheck: ../../apps/web/e2e/valuations.spec.ts(638,37): error TS2584: Cannot find name 'document'. Do you need to change your target library? Try changing the 'lib' compiler option to include 'dom'.
+packages/market-data typecheck: ../../apps/web/e2e/valuations.spec.ts(638,77): error TS2304: Cannot find name 'window'.
+packages/contracts typecheck: ../../apps/web/e2e/valuations.spec.ts(479,37): error TS2584: Cannot find name 'document'. Do you need to change your target library? Try changing the 'lib' compiler option to include 'dom'.
+packages/contracts typecheck: ../../apps/web/e2e/valuations.spec.ts(479,77): error TS2304: Cannot find name 'window'.
+packages/contracts typecheck: ../../apps/web/e2e/valuations.spec.ts(511,60): error TS2339: Property 'getAttribute' does not exist on type 'SVGElement | HTMLElement'.
+packages/contracts typecheck:   Property 'getAttribute' does not exist on type 'SVGElement'.
+packages/contracts typecheck: ../../apps/web/e2e/valuations.spec.ts(638,37): error TS2584: Cannot find name 'document'. Do you need to change your target library? Try changing the 'lib' compiler option to include 'dom'.
+packages/contracts typecheck: ../../apps/web/e2e/valuations.spec.ts(638,77): error TS2304: Cannot find name 'window'.
+packages/queue typecheck: Failed
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/queue:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @sammlerraum/queue@ typecheck: `tsc --noEmit --project ../../tsconfig.base.json`
+Exit status 2
+packages/storage typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+packages/market-data typecheck: Failed
+packages/testing typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+ ELIFECYCLE  Command failed with exit code 2.

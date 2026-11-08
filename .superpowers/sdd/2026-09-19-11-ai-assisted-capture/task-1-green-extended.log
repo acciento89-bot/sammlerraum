@@ -1,0 +1,23 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+stdout | packages/domain/src/ai/ai-analysis-service.test.ts > provider-neutral owned photo analysis > round-trips a near-limit valid payload without confusing compact JSON and JSONB formatting
+AI_BOUNDARY_BYTES { compact: 65498, jsonb: 65611 }
+
+ ✓ |workspace| packages/domain/src/ai/ai-analysis-service.test.ts (8 tests) 963ms
+ ✓ |workspace| packages/domain/src/collaboration/membership-service.test.ts (34 tests) 2069ms
+ ✓ |workspace| packages/domain/src/collaboration/invitation-service.test.ts (25 tests) 1902ms
+   ✓ actual recipient-bound invitations > rolls back a token that expires during the real acceptance transaction with a closed expiry result  517ms
+   ✓ actual recipient-bound invitations > maps the actual database expiry guard even when expiry happens inside the consuming SQL statement  380ms
+ ✓ |workspace| packages/domain/src/sharing/share-service.test.ts (19 tests) 1327ms
+ ✓ |workspace| packages/domain/src/collaboration/item-authoring-service.test.ts (6 tests) 601ms
+ ✓ |workspace| packages/domain/src/sharing/share-read-access.test.ts (3 tests) 586ms
+ ✓ |workspace| packages/domain/src/collaboration/management-service.test.ts (3 tests) 518ms
+ ✓ |workspace| packages/domain/src/collaboration/collection-authoring-service.test.ts (2 tests) 485ms
+ ✓ |workspace| packages/contracts/src/ai.test.ts (10 tests) 6ms
+
+ Test Files  9 passed (9)
+      Tests  110 passed (110)
+   Start at  02:43:45
+   Duration  11.21s (transform 452ms, setup 10ms, collect 1.60s, tests 8.46s, environment 1ms, prepare 282ms)
+

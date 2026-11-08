@@ -1,0 +1,10 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ✓ |workspace| apps/web/src/lib/valuation-routes.integration.test.ts (8 tests | 7 skipped) 117ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 7 skipped (8)
+   Start at  05:46:13
+   Duration  574ms (transform 136ms, setup 5ms, collect 301ms, tests 117ms, environment 0ms, prepare 43ms)
+

@@ -1,0 +1,150 @@
+# Review package: cd375bca31a70f13cbc31734b345c31cd8385dba..137ea615cf4c138a552b780a9db25d68b5294d64
+
+## Commits
+137ea61 test: keep media cancellation cleanup free of polling
+
+## Files changed
+ apps/web/e2e/media-documents.spec.ts | 37 +++++++++++++++++++++++++++++++++---
+ 1 file changed, 34 insertions(+), 3 deletions(-)
+
+## Diff
+diff --git a/apps/web/e2e/media-documents.spec.ts b/apps/web/e2e/media-documents.spec.ts
+index cd3a82d..b6c342e 100644
+--- a/apps/web/e2e/media-documents.spec.ts
++++ b/apps/web/e2e/media-documents.spec.ts
+@@ -273,33 +273,48 @@ test.describe("item media and private documents", () => {
+           const atStage = gate(`${cancelStage} stage was not reached`);
+           const releaseStage = gate(`${cancelStage} stage was not released`);
+           const atCleanup = gate("post-delete cleanup GET was not reached");
+           const releaseCleanup = gate("post-delete cleanup GET was not released");
+           const failures: unknown[] = [];
+           const events: string[] = [];
+           let linkId: string | undefined;
+           let linkReleased = false;
+           let stageCaptured = false;
+           let cleanupCaptured = false;
++          let reloadListingStates: string[] = [];
+           let compensated = false;
+           const name = `cancel-${cancelStage}.png`;
+           const targetAsset = page
+             .waitForResponse(
+               (response) =>
+                 response.url() === origin + "/api/v1/media/images" &&
+                 response.request().method() === "POST",
+               { timeout: 10_000 },
+             )
+             .then(async (response) => {
+               expect(response.status()).toBe(201);
+               return (await response.json()).asset as { id: string };
+             });
++          // Worker processing has its existing 50-second allowance. Await it separately
++          // from the ten-second route latches; no pending asset is delivered to the gallery.
++          const stageAsset = targetAsset.then(async (asset) => {
++            if (cancelStage === "reload") {
++              await expect
++                .poll(
++                  async () => (await db.mediaAsset.findUnique({ where: { id: asset.id } }))?.status,
++                  { timeout: 50_000 },
++                )
++                .toBe("READY");
++              events.push("real target worker READY");
++            }
++            return asset;
++          });
+           const onResponse = (response: Response) => {
+             if (
+               linkId &&
+               response.url() === origin + `${base}/media/${linkId}` &&
+               response.request().method() === "DELETE"
+             ) {
+               expect(response.ok()).toBe(true);
+               compensated = true;
+               events.push("compensating DELETE response");
+             }
+@@ -323,67 +338,83 @@ test.describe("item media and private documents", () => {
+               await route.fulfill({ response });
+               events.push("target link response fulfilled");
+             } else if (
+               method === "GET" &&
+               linkReleased &&
+               cancelStage === "reload" &&
+               !stageCaptured
+             ) {
+               // Reserve exactly one request before any await; later GETs cannot satisfy atStage.
+               stageCaptured = true;
++              await stageAsset;
+               const response = await route.fetch({ timeout: 10_000 });
+               const listing = await response.json();
+               expect(listing.images.some((link: { id: string }) => link.id === linkId)).toBe(true);
++              reloadListingStates = [...listing.images, ...listing.documents].map(
++                (link: { asset: { status: string } }) => link.asset.status,
++              );
+               events.push("actual onChange GET held");
+               atStage.release();
+               await releaseStage.wait();
+               await route.fulfill({ response });
+               events.push("actual onChange GET fulfilled");
+             } else if (
+               method === "GET" &&
+               compensated &&
+               cancelStage === "reload" &&
+               !cleanupCaptured
+             ) {
+               // Keep the demonstrated late-cleanup schedule in the regression: canceled UI
+               // appears while this real refresh is held, and removal must wait for its fulfill.
+               cleanupCaptured = true;
+               const response = await route.fetch({ timeout: 10_000 });
+               const listing = await response.json();
+               expect(listing.images).toHaveLength(2);
++              expect(
++                [...listing.images, ...listing.documents].map(
++                  (link: { asset: { status: string } }) => link.asset.status,
++                ),
++              ).toEqual(["READY", "READY"]);
+               expect(listing.images.some((link: { id: string }) => link.id === linkId)).toBe(false);
+               events.push("post-delete cleanup GET held");
+               atCleanup.release();
+               await releaseCleanup.wait();
+               await route.fulfill({ response });
+               events.push("post-delete cleanup GET fulfilled");
+             } else await route.continue();
+           };
+           page.on("response", onResponse);
+           await page.route(`**${base}/media`, handle);
+           try {
+             await Promise.all([
+-              targetAsset,
++              stageAsset,
+               upload.setInputFiles({ name, mimeType: "image/png", buffer: png }),
+             ]);
+             await atStage.wait();
++            if (cancelStage === "reload") {
++              expect(reloadListingStates, "post-link listing must not start polling").toEqual([
++                "READY",
++                "READY",
++                "READY",
++              ]);
++            }
+             await page.getByRole("button", { name: t.cancel, exact: true }).click();
+             events.push("cancel clicked");
+             releaseStage.release();
+             await expect(page.getByText(t.canceled, { exact: true })).toBeVisible();
+             events.push("canceled visible");
+             await expect(page.getByText(t.uploaded, { exact: true })).toHaveCount(0);
+             await expect.poll(() => db.mediaLink.count({ where: { itemId: item.id } })).toBe(2);
+             if (cancelStage === "reload") {
+               await atCleanup.wait();
+-              // A polling GET cannot stand in for the awaited catch refresh: holding it
+-              // would let the upload finish and this assertion would fail.
++              // Initial and real post-link listings are all READY, so polling never starts.
++              // This busy check observes completion; request identity follows from no poll source.
+               await expect(upload).toBeDisabled();
+               events.push("cleanup held while upload remains busy");
+             }
+             const canceledAsset = await db.mediaAsset.findUnique({
+               where: { id: (await targetAsset).id },
+             });
+             expect(canceledAsset?.originalFileName).toBe(name);
+             expect(canceledAsset?.orphanedAt).not.toBeNull();
+           } catch (error) {
+             failures.push(error);

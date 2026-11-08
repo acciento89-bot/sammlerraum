@@ -1,0 +1,50 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ✓ |workspace| apps/worker/src/main.test.ts (5 tests) 5ms
+ ✓ |workspace| packages/queue/src/pg-boss-queue.test.ts (11 tests) 7ms
+ ✓ |workspace| apps/worker/src/jobs/sync-market-data.test.ts (7 tests) 8ms
+ ✓ |workspace| apps/worker/src/run.test.ts (2 tests) 3ms
+ ❯ |workspace| apps/worker/src/run-wiring.test.ts (1 test | 1 failed) 1306ms
+   × passes the production-composed market lifecycle to startWorker and registers market.sync 1305ms
+     → expected "spy" to be called once, but got 0 times
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/worker/src/run-wiring.test.ts > passes the production-composed market lifecycle to startWorker and registers market.sync
+AssertionError: expected "spy" to be called once, but got 0 times
+ ❯ apps/worker/src/run-wiring.test.ts:12:72
+     10| vi.mock("@sammlerraum/storage",()=>({LocalPersistentStorage:class {},c…
+     11| it("passes the production-composed market lifecycle to startWorker and…
+     12|  await import("./run");await vi.waitFor(()=>expect(wiring.startWorker)…
+       |                                                                        ^
+     13|  expect(wiring.registerCancellable).toHaveBeenCalledWith("market.sync"…
+     14|  const options=wiring.startWorker.mock.calls[0]![0] as unknown as {mar…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+⎯⎯⎯⎯⎯⎯ Unhandled Errors ⎯⎯⎯⎯⎯⎯
+
+Vitest caught 1 unhandled error during the test run.
+This might cause false positive tests. Resolve unhandled errors to make sure your tests are not affected.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+RangeError: Invalid media cleanup policy
+ ❯ createMediaCleanupService packages/domain/src/media/cleanup-service.ts:22:11
+ ❯ startProductionWorker apps/worker/src/run.ts:37:5
+ ❯ processTicksAndRejections node:internal/process/task_queues:104:5
+ ❯ runWorkerMain apps/worker/src/run-wiring.test.ts:3:71
+
+This error originated in "apps/worker/src/run-wiring.test.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The latest test that might've caused the error is "passes the production-composed market lifecycle to startWorker and registers market.sync". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+
+
+ Test Files  1 failed | 4 passed (5)
+      Tests  1 failed | 25 passed (26)
+     Errors  1 error
+   Start at  04:55:23
+   Duration  1.59s (transform 282ms, setup 27ms, collect 506ms, tests 1.33s, environment 1ms, prepare 259ms)
+

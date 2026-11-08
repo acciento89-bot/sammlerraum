@@ -1,0 +1,50 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/audit/core-audit-integration.test.ts (19 tests | 1 failed) 1095ms
+   ✓ actual core mutations append their real audit in the same transaction > records actual condition and location changes with the real user and before/after values 184ms
+   ✓ actual core mutations append their real audit in the same transaction > a genuine default audit INSERT failure rolls the actual condition write back 55ms
+   ✓ actual core mutations append their real audit in the same transaction > records category changes and condition clearing without inventing a second unchanged event 23ms
+   ✓ actual core mutations append their real audit in the same transaction > audits grading create/update/delete with selected authored facts and excludes verification URLs/source text 23ms
+   ✓ actual core mutations append their real audit in the same transaction > keeps a manual valuation's exact bigint, stored scale, basis and true author in audit 17ms
+   ✓ actual core mutations append their real audit in the same transaction > records private location creation and hierarchy moves without duplicating QR access tokens 27ms
+   ✓ actual core mutations append their real audit in the same transaction > rolls back grading, valuations and location history together when their audit append fails 28ms
+   ✓ actual core mutations append their real audit in the same transaction > tracks collection and node creation, rename, visibility, move and soft deletion 35ms
+   ✓ actual core mutations append their real audit in the same transaction > audits real item create, meaningful edits, split, archive and soft delete without storing private note text 46ms
+   ✓ actual core mutations append their real audit in the same transaction > audits attached and detached tags exactly once and rolls back actual tag replacement on audit failure 42ms
+   ✓ actual core mutations append their real audit in the same transaction > records typed custom-field values and clearing with exact stored decimals and private text fingerprints 36ms
+   ✓ actual core mutations append their real audit in the same transaction > audits actual media/document linking, reordering, metadata and unlink without copying storage keys 66ms
+   ✓ actual core mutations append their real audit in the same transaction > audits actual V2 item authoring and exact interpreted purchase changes without exposing fact tokens or receipts 67ms
+   ✓ actual core mutations append their real audit in the same transaction > retains the real membership manager, separate erasable subject and before/after roles including Viewer self-removal 39ms
+   ✓ actual core mutations append their real audit in the same transaction > keeps legacy raw purchase creation and replacement unknown while auditing exact changed raw digits 29ms
+   ✓ actual core mutations append their real audit in the same transaction > audits explicit money classification and revocation without persisting private evidence text 38ms
+   ✓ actual core mutations append their real audit in the same transaction > records disposal even when the item was already not offered for trade 13ms
+   ✓ actual core mutations append their real audit in the same transaction > records actual catalog linking and unlinking with the existing category constraint 27ms
+   × actual core mutations append their real audit in the same transaction > records share and invitation creation/revocation without retaining bearer tokens or invite emails 20ms
+     → expected [] to deeply equal ArrayContaining{…}
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/audit/core-audit-integration.test.ts > actual core mutations append their real audit in the same transaction > records share and invitation creation/revocation without retaining bearer tokens or invite emails
+AssertionError: expected [] to deeply equal ArrayContaining{…}
+
+- Expected
++ Received
+
+- ArrayContaining [
+-   "SHARE_CREATED",
+-   "SHARE_REVOKED",
+- ]
++ []
+
+ ❯ packages/domain/src/audit/core-audit-integration.test.ts:827:44
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 18 passed (19)
+   Start at  09:00:02
+   Duration  1.94s (transform 312ms, setup 6ms, collect 676ms, tests 1.09s, environment 0ms, prepare 43ms)
+

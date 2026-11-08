@@ -1,0 +1,68 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| apps/worker/src/jobs/commit-import.test.ts (8 tests | 2 failed) 559ms
+   ✓ actual approved import commit > does not create another item when the same approved commit is retried 139ms
+   ✓ actual approved import commit > merges only explicitly chosen mapped fields and preserves private data 46ms
+   × actual approved import commit > writes CANONICAL money through the existing exact authority 42ms
+     → expected undefined to be 'KNOWN' // Object.is equality
+   × actual approved import commit > writes UNKNOWN money through the existing exact authority 30ms
+     → [
+  {
+    "code": "custom",
+    "path": [
+      "purchaseCurrency"
+    ],
+    "message": "Expected a supported ISO 4217 currency"
+  }
+]
+   ✓ actual approved import commit > requires complete decisions and skips invalid rows without inventing inventory 20ms
+   ✓ actual approved import commit > resumes after a committed chunk without creating duplicates 44ms
+   ✓ actual approved import commit > creates explicitly separate source duplicates and refuses corrupted completed membership 27ms
+   ✓ actual approved import commit > rejects foreign actors and target changes after explicit merge approval 24ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/worker/src/jobs/commit-import.test.ts > actual approved import commit > writes CANONICAL money through the existing exact authority
+AssertionError: expected undefined to be 'KNOWN' // Object.is equality
+
+- Expected: 
+"KNOWN"
+
++ Received: 
+undefined
+
+ ❯ apps/worker/src/jobs/commit-import.test.ts:54:75
+     52|   const item=(await db.collectibleItem.findMany({where:{ownerId:f.owne…
+     53|   const view=await db.$transaction(tx=>readMoneyFact(moneyTransaction(…
+     54|   expect(view.raw).toEqual({amountMinor:raw,currency});expect(view.sta…
+       |                                                                           ^
+     55|  });
+     56|  it('requires complete decisions and skips invalid rows without invent…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |workspace| apps/worker/src/jobs/commit-import.test.ts > actual approved import commit > writes UNKNOWN money through the existing exact authority
+ZodError: [
+  {
+    "code": "custom",
+    "path": [
+      "purchaseCurrency"
+    ],
+    "message": "Expected a supported ISO 4217 currency"
+  }
+]
+ ❯ packages/domain/src/imports/import-commit-service.ts:110:82
+
+ ❯ Proxy._transactionWithCallback node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:861:18
+ ❯ apps/worker/src/jobs/commit-import.ts:10:17
+ ❯ apps/worker/src/jobs/commit-import.test.ts:51:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 6 passed (8)
+   Start at  22:15:12
+   Duration  1.11s (transform 182ms, setup 6ms, collect 324ms, tests 559ms, environment 0ms, prepare 44ms)
+

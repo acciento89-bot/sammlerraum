@@ -1,0 +1,72 @@
+
+> @sammlerraum/web@ build /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web
+> next build
+
+▲ Next.js 16.3.5 (Turbopack)
+✓ Running next.config.ts took 92ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 949ms
+  Running TypeScript ...
+  Finished TypeScript in 3.5s ...
+  Collecting page data using 7 workers ...
+  Generating static pages using 7 workers (0/17) ...
+  Generating static pages using 7 workers (4/17) 
+  Generating static pages using 7 workers (8/17) 
+  Generating static pages using 7 workers (12/17) 
+✓ Generating static pages using 7 workers (17/17) in 192ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ○ /_not-found
+├   /[locale]
+│ ├ ● /de
+│ └ ● /en
+├ ƒ /[locale]/account/profile
+├ ƒ /[locale]/account/security
+├ ƒ /[locale]/collections
+├ ƒ /[locale]/collections/[collectionId]
+├ ƒ /[locale]/items/[itemId]
+├ ƒ /[locale]/items/new
+├ ƒ /[locale]/locations/[locationId]
+├ ƒ /[locale]/locations/[locationId]/label
+├ ƒ /[locale]/login
+├ ƒ /[locale]/register
+├ ƒ /api/auth/[...all]
+├ ƒ /api/health
+├ ƒ /api/openapi.json
+├ ƒ /api/v1/account/profile
+├ ƒ /api/v1/account/recovery-methods
+├ ƒ /api/v1/account/sessions
+├ ƒ /api/v1/collections
+├ ƒ /api/v1/collections/[collectionId]
+├ ƒ /api/v1/collections/[collectionId]/custom-fields
+├ ƒ /api/v1/collections/[collectionId]/nodes
+├ ƒ /api/v1/collections/[collectionId]/nodes/[nodeId]
+├ ƒ /api/v1/items
+├ ƒ /api/v1/items/[itemId]
+├ ƒ /api/v1/items/[itemId]/archive
+├ ƒ /api/v1/items/[itemId]/custom-fields/[fieldId]
+├ ƒ /api/v1/items/[itemId]/documents
+├ ƒ /api/v1/items/[itemId]/documents/[linkId]
+├ ƒ /api/v1/items/[itemId]/identifiers
+├ ƒ /api/v1/items/[itemId]/location
+├ ƒ /api/v1/items/[itemId]/media
+├ ƒ /api/v1/items/[itemId]/media/[linkId]
+├ ƒ /api/v1/items/[itemId]/split
+├ ƒ /api/v1/items/[itemId]/tags
+├ ƒ /api/v1/locations
+├ ƒ /api/v1/locations/[locationId]
+├ ƒ /api/v1/media/[assetId]/[variant]
+├ ƒ /api/v1/media/avatar
+├ ƒ /api/v1/media/documents
+├ ƒ /api/v1/media/images
+└ ƒ /l/[token]
+
+
+ƒ Proxy (Middleware)
+
+○  (Static)   prerendered as static content
+●  (SSG)      prerendered as static HTML (uses generateStaticParams)
+ƒ  (Dynamic)  server-rendered on demand
+

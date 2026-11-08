@@ -1,0 +1,42 @@
+[WebServer] (node:72943) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:72946) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [desktop] › e2e/catalog-grading.spec.ts:1744:5 › phase context requests en › slow and stale enrichment cannot hide rejection, replace selection or unlock decisions (6.6s)
+
+
+  1) [desktop] › e2e/catalog-grading.spec.ts:1744:5 › phase context requests en › slow and stale enrichment cannot hide rejection, replace selection or unlock decisions 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('region', { name: 'Proposal details', exact: true }).getByRole('heading', { name: 'Slow first proposal', exact: true }).first()
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('region', { name: 'Proposal details', exact: true }).getByRole('heading', { name: 'Slow first proposal', exact: true }).first() with timeout 5000ms
+      - waiting for getByRole('region', { name: 'Proposal details', exact: true }).getByRole('heading', { name: 'Slow first proposal', exact: true }).first()
+
+
+      1832 |         await expect(
+      1833 |           detail.getByRole("heading", { name: "Slow first proposal", exact: true }).first(),
+    > 1834 |         ).toBeVisible();
+           |           ^
+      1835 |         await expect(reject).toBeEnabled();
+      1836 |         await expect(approve).toBeDisabled();
+      1837 |         await reviewer
+        at /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/catalog-grading.spec.ts:1834:11
+
+    Error Context: test-results/catalog-grading-phase-cont-986e5-lection-or-unlock-decisions-desktop/error-context.md
+
+    Error Context: test-results/catalog-grading-phase-cont-986e5-lection-or-unlock-decisions-desktop/error-context.md
+
+  1 failed
+    [desktop] › e2e/catalog-grading.spec.ts:1744:5 › phase context requests en › slow and stale enrichment cannot hide rejection, replace selection or unlock decisions 
+undefined
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test catalog-grading.spec.ts --project=desktop --grep phase context requests en --workers=1

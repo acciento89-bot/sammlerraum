@@ -1,0 +1,11 @@
+Scope: all 10 workspace projects
+ WARN  `node_modules` is present. Lockfile only installation will make it out-of-date
+Progress: resolved 1, reused 0, downloaded 0, added 0
+Progress: resolved 28, reused 0, downloaded 0, added 0
+Progress: resolved 113, reused 0, downloaded 0, added 0
+Progress: resolved 213, reused 0, downloaded 0, added 0
+Progress: resolved 294, reused 0, downloaded 0, added 0
+Progress: resolved 408, reused 0, downloaded 0, added 0
+Progress: resolved 426, reused 0, downloaded 0, added 0, done
+
+Done in 5.9s using pnpm v10.17.1

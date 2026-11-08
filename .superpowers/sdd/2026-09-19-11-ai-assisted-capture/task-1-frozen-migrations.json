@@ -1,0 +1,266 @@
+[
+  {
+    "path": "packages/db/prisma/migrations/20260920151500_init/migration.sql",
+    "sha256": "f77222d8456d1f508a902429c2411ef40c5873126f58fee69e7769e3879ad779"
+  },
+  {
+    "path": "packages/db/prisma/migrations/20260920162000_identity_profile/migration.sql",
+    "sha256": "d9ecf32e95386b988d00003518b42076d1c6d06965c47d59629185988755a7b8"
+  },
+  {
+    "path": "packages/db/prisma/migrations/20260920164000_better_auth/migration.sql",
+    "sha256": "75f5f446a5f4efe0f088b972d4350bca6a8fcca970360a079eec77673582216c"
+  },
+  {
+    "path": "packages/db/prisma/migrations/20260920195000_collections_hierarchy/migration.sql",
+    "sha256": "e6cb4687e831a808e9ef161d907fa4a906c4ce8410dd5403d90c79c547199651"
+  },
+  {
+    "path": "packages/db/prisma/migrations/20260920204000_collectible_items/migration.sql",
+    "sha256": "e155271a4a5d0b4b147056c2263862d7d804b198ab3e26506e3868da14887f3c"
+  },
+  {
+    "path": "packages/db/prisma/migrations/20260920213000_item_identifiers_tags/migration.sql",
+    "sha256": "5a5f7330ab5f57d8c1a733443fd140f4fb55f81c603d2d5e7340a8c842df761d"
+  },
+  {
+    "path": "packages/db/prisma/migrations/20260920223000_custom_fields/migration.sql",
+    "sha256": "244830eb4e848ea7443fabad3918a47140269017bc16956891d1fdf206316450"
+  },
+  {
+    "path": "packages/db/prisma/migrations/20260920233000_storage_locations/migration.sql",
+    "sha256": "078b36ddcd11fe341e9a5f82f626f8e802eefbb9401d0059b4dc47c117cdc6d6"
+  },
+  {
+    "path": "packages/db/prisma/migrations/20260920234500_collection_item_soft_delete/migration.sql",
+    "sha256": "18c1128b829ce611f75a4970eccbb508a60d886d54099873935a0e0600d6fe0a"
+  },
+  {
+    "path": "packages/db/prisma/migrations/20260927140000_media_documents/migration.sql",
+    "sha256": "a736b70678a6d5f9d15f2a2e1d01df1198f91c214197e5bfd65b2191aa9cf6b3"
+  },
+  {
+    "path": "packages/db/prisma/migrations/20260927160000_media_image_processing/migration.sql",
+    "sha256": "943c6f3049bb00cda467407218d344a623fe6d41eb663346602d2d15fa5a8532"
+  },
+  {
+    "path": "packages/db/prisma/migrations/20261017120000_media_cleanup/migration.sql",
+    "sha256": "46cfe92c9032fa916a2e89105ac1dfa45183cc7208ba5db4c7bac8bcdabd4e78"
+  },
+  {
+    "path": "packages/db/prisma/migrations/20261017201618_catalog_templates/migration.sql",
+    "sha256": "b5fd69513aab39a106dd1d68c8c0abd3702fdfecf42843657a62a65e5bc60d86"
+  },
+  {
+    "path": "packages/db/prisma/migrations/20261017225000_global_catalog/migration.sql",
+    "sha256": "40c7f6bff235fafdced9c1db5ad8c1fcac9c0c51e51cc0feb6ec862ed917c995"
+  },
+  {
+    "path": "packages/db/prisma/migrations/20261017225200_catalog_revision_guard/migration.sql",
+    "sha256": "f3efe2753f36082c47b051e3e6fc076f2ebc5588da8e92f98109ea1fe07d1425"
+  },
+  {
+    "path": "packages/db/prisma/migrations/20261017225201_catalog_proposals/migration.sql",
+    "sha256": "a07e65b5a9d5b14005dc06e2a7840e5ba45949591b2cabf0a7d5ebe14fee7328"
+  },
+  {
+    "path": "packages/db/prisma/migrations/20261017225202_catalog_rollback_audit_target/migration.sql",
+    "sha256": "49ab3149f49bd37c70cb90ac507c358dd117714add0e93fe818715b5b1b98d73"
+  },
+  {
+    "path": "packages/db/prisma/migrations/20261017225203_condition_schemes/migration.sql",
+    "sha256": "54541a5c4ae9e67a896435d8151d2b934ad1ee403b1905a3ed110ba0bd234f9e"
+  },
+  {
+    "path": "packages/db/prisma/migrations/20261017225204_grading_records/migration.sql",
+    "sha256": "832310244f96ccaa0bc96493f7cfe256d16b50b62b2a4c7d22c8f9c698bd7a7e"
+  },
+  {
+    "path": "packages/db/prisma/migrations/20261017225205_grading_finite_comparable/migration.sql",
+    "sha256": "0b29e2d3ec801dc7afa48fbee0c1039e954cb95bf4b6a75340a8b22749c7caac"
+  },
+  {
+    "path": "packages/db/prisma/migrations/20261017225206_item_catalog_links/migration.sql",
+    "sha256": "79adf8aa3df71c1e587305b93e582947ab22e521701cf48de2fb3399a59bcedb"
+  },
+  {
+    "path": "packages/db/prisma/migrations/20261018015303_manual_valuations/migration.sql",
+    "sha256": "acb697945d3a6e181a843a4033b25c256b09728fd625e551f8147d25c9464f51"
+  },
+  {
+    "path": "packages/db/prisma/migrations/20261018022132_market_observations/migration.sql",
+    "sha256": "74814f6148462c8f925bd1cf8538bfbc513d6ad668d4dd6990c45f1cd470f540"
+  },
+  {
+    "path": "packages/db/prisma/migrations/20261018025000_market_sync/migration.sql",
+    "sha256": "88694340c04d99ae039eff1a91f4084fa165af813cd623debae36d6f8feae895"
+  },
+  {
+    "path": "packages/db/prisma/migrations/20261018033424_valuation_source_history/migration.sql",
+    "sha256": "d8d6436ab57889651366c505c8ba8bb4042afd608991a74de00d07c2aa8b9737"
+  },
+  {
+    "path": "packages/db/prisma/migrations/20261018051900_market_request_gate/migration.sql",
+    "sha256": "0a578a010cecd393555a2b70775f0fd25746c43d96447fc9cc3615a9c3e84cff"
+  },
+  {
+    "path": "packages/db/prisma/migrations/20261018090000_smart_collections/migration.sql",
+    "sha256": "fa16293a2d3fde0c7116126546b96ab87b113bb0ee375ed48f7a99c5f5a53680"
+  },
+  {
+    "path": "packages/db/prisma/migrations/20261105223300_personal_milestones/migration.sql",
+    "sha256": "269badf42314ae2949a3f901c38e08df381435738f7c1b69ac7e340aea183217"
+  },
+  {
+    "path": "packages/db/prisma/migrations/20261106004500_legacy_money_provenance/migration.sql",
+    "sha256": "f1488b864ed9fcc1e47d8de5ac43b132c9f85157eec36ff309d1e4cb5e8f3d01"
+  },
+  {
+    "path": "packages/db/prisma/migrations/20261106043000_author_correction_audit/migration.sql",
+    "sha256": "eadfe5bae3acf80029b63a23fa0e3b099544cf7f9abd5f9ef0093ca12d3c135f"
+  },
+  {
+    "path": "packages/db/prisma/migrations/20261106130000_catalog_money_path_lookup/migration.sql",
+    "sha256": "b097b479416b2ef79fbaedda7105346a318c95ccc09e8090ab097b27817a1989"
+  },
+  {
+    "path": "packages/db/prisma/migrations/20261106131500_catalog_money_guard_compat/migration.sql",
+    "sha256": "c9a2bc1cc686c5d0b76e23e20fd020b32427b00b905e90b59b6a638dca677afa"
+  },
+  {
+    "path": "packages/db/prisma/migrations/20261106135500_catalog_money_statement_raw_guard/migration.sql",
+    "sha256": "93743fa1577789fe485ea9258b3551b1bae884c04c729040b3c4a37ce24ba573"
+  },
+  {
+    "path": "packages/db/prisma/migrations/20261106201000_staged_import_jobs/migration.sql",
+    "sha256": "3c99ea2ec77da31291d84301c96fa535c654cc7abbd806984eaf1906393f0404"
+  },
+  {
+    "path": "packages/db/prisma/migrations/20261106202500_import_index_name_alignment/migration.sql",
+    "sha256": "b6bbaa17a9b77ed30509c7564b1d1c8d64dd16b5204cc45abf39e458d2641af3"
+  },
+  {
+    "path": "packages/db/prisma/migrations/20261106215500_import_parser_claims/migration.sql",
+    "sha256": "fb97d094615488fc4fd5bcfa06ff2aacd401c659f965489ba53ffb351e5874f4"
+  },
+  {
+    "path": "packages/db/prisma/migrations/20261106221500_import_commit_approval/migration.sql",
+    "sha256": "2cf48c086f881223d110f442d7f63ed1c90e559b1ef33794f1bc12df46ba4edb"
+  },
+  {
+    "path": "packages/db/prisma/migrations/20261106221700_import_decision_scope/migration.sql",
+    "sha256": "5090f60be32ed11fc6b2895a6f361c0f018fc2ed85054a4339ca178fd2d2b627"
+  },
+  {
+    "path": "packages/db/prisma/migrations/20261106225500_tabular_export_jobs/migration.sql",
+    "sha256": "9afc0d2fabbad2513150dd432be1b7cbdffd7cdfe1577296244fa65a61336843"
+  },
+  {
+    "path": "packages/db/prisma/migrations/20261106232000_export_dispatch/migration.sql",
+    "sha256": "b046f10967da907e9f66ab67890118ad129fa5e9b2196a25f39590b728e5ed7c"
+  },
+  {
+    "path": "packages/db/prisma/migrations/20261106235000_private_insurance/migration.sql",
+    "sha256": "258d6ac77a9651bac5fdab0a30713f47649ea018ff30acef5dee352a3bc16089"
+  },
+  {
+    "path": "packages/db/prisma/migrations/20261107001500_private_report_jobs/migration.sql",
+    "sha256": "e494bc89ab207ed28ae19dc1b41fcbeeee0725596378b7a9b039179741dc0e5d"
+  },
+  {
+    "path": "packages/db/prisma/migrations/20261107010000_import_upload_lifecycle/migration.sql",
+    "sha256": "a03bcf91c3ad0c723d472afbd33f20b9eebeac19d775c3403291363a62e0ae5d"
+  },
+  {
+    "path": "packages/db/prisma/migrations/20261107011000_import_source_utc/migration.sql",
+    "sha256": "9572060a4c195c7a737743acf318b48a6c4837b0b103077aba7a0486e8cad337"
+  },
+  {
+    "path": "packages/db/prisma/migrations/20261107020000_import_source_objects/migration.sql",
+    "sha256": "b2a5cd99827107a6a51f1d36ec456dbe3de679bd2e6b0bd058d93c0b48715aec"
+  },
+  {
+    "path": "packages/db/prisma/migrations/20261107030000_collection_memberships/migration.sql",
+    "sha256": "e0227c325e59a5c2c028825fd12d16f80650b967a9bc502fe5bd4b223613c5e7"
+  },
+  {
+    "path": "packages/db/prisma/migrations/20261107031000_private_ownership_transition_guards/migration.sql",
+    "sha256": "d2cc81175b1100d3a83ad175d1a1f1a03e68b690b1398fbfbd7b2ca3279c5d0f"
+  },
+  {
+    "path": "packages/db/prisma/migrations/20261107032000_transferred_valuation_authorship/migration.sql",
+    "sha256": "a4844bab4daaaad3eed954f2a116ccf5f7b3d4d87649a5ebad3b8c18a9c24c32"
+  },
+  {
+    "path": "packages/db/prisma/migrations/20261107033000_transferred_grading_identity/migration.sql",
+    "sha256": "4f2fbaa44d7c1a60de6460aba610ecda86690dd9ad70a6077cf776359fb172ab"
+  },
+  {
+    "path": "packages/db/prisma/migrations/20261107034000_transferred_private_media/migration.sql",
+    "sha256": "ebaccd668e64c74e65cabea92d65229c7e1af628373b7a89d887ef6039a5bb6f"
+  },
+  {
+    "path": "packages/db/prisma/migrations/20261107035000_transferred_location_history/migration.sql",
+    "sha256": "1a779b8989073c18395298c9653410e4a1b17715077f7c5c397b103b1b46326d"
+  },
+  {
+    "path": "packages/db/prisma/migrations/20261107036000_money_copy_ownership_fence/migration.sql",
+    "sha256": "b8d60a06b443ead82ea49b38abaefed8c0fe36616026bc85fcd40f0dd4981324"
+  },
+  {
+    "path": "packages/db/prisma/migrations/20261107040000_collection_invitations/migration.sql",
+    "sha256": "f63547b2adb8c21b8e3af148508eee74dbab23ae3a693ef16a2930f1301741c3"
+  },
+  {
+    "path": "packages/db/prisma/migrations/20261107043000_granular_shares/migration.sql",
+    "sha256": "e4860c3f1fa72a09a32639cce78c57bd346392cfe92d7bc1163d59d2b874622b"
+  },
+  {
+    "path": "packages/db/prisma/migrations/20261107050000_append_only_audit/migration.sql",
+    "sha256": "d72c9d1640678f0948ca538fbf10a16dfa2ef69e4ad378fdde910ac68b9cda09"
+  },
+  {
+    "path": "packages/db/prisma/migrations/20261107060000_audit_subject_erasure/migration.sql",
+    "sha256": "daa4ebce031d5a8e2fa013bd87aacf7fc123e3e709953969f26b334fc77f1d6a"
+  },
+  {
+    "path": "packages/db/prisma/migrations/20261107070000_restore_safe_capability_retirement/migration.sql",
+    "sha256": "9b5d86310b40a6d68ef2af9d5fb3475d7f09143ca47f3921160a06ae56288dff"
+  },
+  {
+    "path": "packages/db/prisma/migrations/20261107080000_wishlist_duplicates/migration.sql",
+    "sha256": "1dff2861e8ddfd50f196e12da51961d163fbeab0924401bf9c33ef53178eea85"
+  },
+  {
+    "path": "packages/db/prisma/migrations/20261107090000_follows_favorites_blocks/migration.sql",
+    "sha256": "e106fb95411b0a7b8193692d682ffaf6cd4bfd4428ec1ebdfa250608f154ed4b"
+  },
+  {
+    "path": "packages/db/prisma/migrations/20261107100000_comments_reports_policies/migration.sql",
+    "sha256": "9f88cd42d8acd41313e32cf02de1f2107b9ed0f4daeee83821ed4d9f312489f0"
+  },
+  {
+    "path": "packages/db/prisma/migrations/20261107110000_platform_moderation_history/migration.sql",
+    "sha256": "cb809887a73a0da6d94db669255a81acb86ebd12954a0c915a2498e86f089662"
+  },
+  {
+    "path": "packages/db/prisma/migrations/20261107120000_notification_events_preferences/migration.sql",
+    "sha256": "fb2bbb8bd76a3cb5a48312075034c7049ccd696533c534f6b4c35a843f7746c0"
+  },
+  {
+    "path": "packages/db/prisma/migrations/20261107130000_notification_email_delivery/migration.sql",
+    "sha256": "83c1a64f7b8fd8549f976e4a6f8d33d026b5e500eeab7278374ec70b493fc550"
+  },
+  {
+    "path": "packages/db/prisma/migrations/20261108010000_scoped_saved_searches/migration.sql",
+    "sha256": "b950632e1cd1cb4970f28677e918495e0a737cccd4b8d851fc1d0b22ed11fed4"
+  },
+  {
+    "path": "packages/db/prisma/migrations/20261108020000_ai_analysis/migration.sql",
+    "sha256": "93107dd736669da8f9fac4e5b799140627455a4bc179058c4ee860f28fda95bb"
+  },
+  {
+    "path": "packages/db/prisma/migrations/20261108021000_ai_payload_representation/migration.sql",
+    "sha256": "dcdecde2b22d91f3f7cc19aa5475b9b231c794d6bdbb5d855859adbc87e7890f"
+  }
+]

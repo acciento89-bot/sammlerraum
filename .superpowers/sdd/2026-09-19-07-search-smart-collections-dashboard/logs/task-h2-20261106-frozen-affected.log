@@ -1,0 +1,22 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ✓ |workspace| apps/web/src/lib/api/read-search-body.test.ts (51 tests) 877ms
+   ✓ private scalar search body boundary > retains raw f above 10000 chars instead of applying filter guards to its envelope  842ms
+ ✓ |workspace| apps/web/src/lib/personal-milestone-routes.integration.test.ts (6 tests) 549ms
+ ✓ |workspace| apps/web/src/lib/personal-milestone-routes.test.ts (17 tests) 62ms
+ ✓ |workspace| apps/web/src/lib/api/read-milestone-body.test.ts (24 tests) 20ms
+ ✓ |workspace| apps/web/src/lib/dashboard-routes.integration.test.ts (12 tests) 633ms
+   ✓ native owned dashboard route > returns matched units and collections with fresh session/no-store/request ID  450ms
+ ✓ |workspace| apps/web/src/lib/private-search-routes.integration.test.ts (15 tests) 6489ms
+   ✓ native private query POST transport > accepts valid raw f beyond 10000 characters through the real service  770ms
+   ✓ native private query POST transport > preserves native dependency and output invariant failures for items  2125ms
+   ✓ native private query POST transport > preserves native dependency and output invariant failures for dashboard  2055ms
+ ✓ |workspace| apps/web/src/lib/search-reference-routes.integration.test.ts (29 tests) 209ms
+ ✓ |workspace| apps/web/src/lib/smart-collection-routes.integration.test.ts (4 tests) 292ms
+
+ Test Files  8 passed (8)
+      Tests  158 passed (158)
+   Start at  00:01:18
+   Duration  13.64s (transform 731ms, setup 21ms, collect 2.51s, tests 9.13s, environment 1ms, prepare 455ms)
+

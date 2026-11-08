@@ -1,0 +1,30 @@
+{
+  "base": "27b51c8a3615e87eb95494246880df793d4383ae",
+  "frozenPriorMigrationFiles": 69,
+  "allPriorMigrationBytesUnchanged": true,
+  "additiveMigration": "20261108050000_ai_catalog_title_lookup",
+  "regular": {
+    "passed": 1689,
+    "nativeDisabled": 1210,
+    "files": 262,
+    "seconds": 68.04
+  },
+  "native": {
+    "passed": 2899,
+    "skipped": 0,
+    "files": 262,
+    "seconds": 262.55
+  },
+  "compiledAIJourneys": {
+    "passed": 32,
+    "seconds": 36.2,
+    "log": "review-browser-full.log"
+  },
+  "providerActivated": false,
+  "phaseAccepted": false,
+  "remoteExactCI": "pending after source push",
+  "rootTypes": "PASS",
+  "workspaceFormatting": "PASS",
+  "workerBuild": "PASS",
+  "optimizedWebBuild": "PASS"
+}

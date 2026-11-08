@@ -1,0 +1,114 @@
+{
+  "scope": "local source proof, not deployment or full-phase acceptance",
+  "browser": {
+    "passed": 4,
+    "skipped": 0
+  },
+  "focusedChecks": 11,
+  "artifacts": [
+    {
+      "path": "task-1-browser-format.log",
+      "sha256": "6a2e9b9de53a5d02ff3343de4cd986c679237c0f2b799a45d4ee43079145934d"
+    },
+    {
+      "path": "task-1-json-format.log",
+      "sha256": "549a50c4558a1b24f724ce687caeaf22302ae844561e0af75a975e2371d5b097"
+    },
+    {
+      "path": "task-1-red.log",
+      "sha256": "76097521d444418364e98f26e3d3a9605c45335eabda0ccbe0fe488d44db8e37"
+    },
+    {
+      "path": "task-1-web-types-final.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "task-1-build.log",
+      "sha256": "fba1e44bf7300a6143b1502e0a815464d75c6eeec1b713348ae6ebfb58c746dc"
+    },
+    {
+      "path": "task-1-browser.log",
+      "sha256": "8463fa0179d3da72d5d646519ee420f4c4f8d6dbd00a5d27ffc27d64b92c90ce"
+    },
+    {
+      "path": "task-1-browser-second.log",
+      "sha256": "935ccbe57dae2c08833f8741a34747fdb11bf9f6f381a027cdad8e666eb46392"
+    },
+    {
+      "path": "task-1-web-types.log",
+      "sha256": "38ef1ef01d47785334cd323d11c753a55d2a7445844549d9cae2eeeacbfd9bf8"
+    },
+    {
+      "path": "task-1-unit.log",
+      "sha256": "cf0d1095b3ede07575f794361cc278fad13801dd359cfb08f2bfb4cf8c876b92"
+    },
+    {
+      "path": "task-1-browser-types.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "task-1-format.log",
+      "sha256": "482913bda4e65598276e5b68f844bb4bad1cc65dc992f62f84dd2ad053236948"
+    },
+    {
+      "path": "task-1-unit-final.log",
+      "sha256": "e54d88a139ef4b7115b3908b0f8e3b7a4c1893b034f3af99c28ab616f24f8f88"
+    },
+    {
+      "path": "task-1-assertion-format.log",
+      "sha256": "3ab3e28a3d1bd333b83bc0ecdbfaec79a7cf9cb8f338681be06e159494f2276f"
+    },
+    {
+      "path": "task-1-lint.log",
+      "sha256": "7fb6516d47dd9ad5a23f3912fc707c99c1ea6b0ec85fb9dd1feaa057ce842859"
+    },
+    {
+      "path": "screenshots/task1-en-marketing-desktop-features.png",
+      "sha256": "516051128dbdd5ae464a54cee9bcaf3ba6b15aa8ac9fd10313aaaf5f000805aa"
+    },
+    {
+      "path": "screenshots/task1-de-marketing-desktop-home.png",
+      "sha256": "5a7fb1f21af24d209c78e1394382cf0dc88efb9cdf7d3a056b5f615e17681d1d"
+    },
+    {
+      "path": "screenshots/task1-en-marketing-mobile-pricing.png",
+      "sha256": "70b7c0126c1913f30c8ebf3de544438cd7fa1ff8147ee68959f0bb618fbf303b"
+    },
+    {
+      "path": "screenshots/task1-de-marketing-mobile-pricing.png",
+      "sha256": "bf20653b7edf752c02927ac040d3aa77ab4ae08977595aac8aa4f195819ec153"
+    },
+    {
+      "path": "screenshots/task1-de-marketing-mobile-features.png",
+      "sha256": "1d09e7e04a8f3fb86110c0ea0bfe22dd8857fd07a14aa888ad9a73bc4b2be626"
+    },
+    {
+      "path": "screenshots/task1-de-marketing-mobile-home.png",
+      "sha256": "10b5f7d15464d5392a81e9119731f29b39b03fca815adf961847fdf271eb3372"
+    },
+    {
+      "path": "screenshots/task1-en-marketing-desktop-home.png",
+      "sha256": "eaaf71083cc5cd585f0c1ad6c0979b7dbed2b10e4cf142058bfd96696a93ed53"
+    },
+    {
+      "path": "screenshots/task1-en-marketing-desktop-pricing.png",
+      "sha256": "9e89be2eb8775a3941cdfc5b424f36740bde8a635d295e6332a3ca2fb5887505"
+    },
+    {
+      "path": "screenshots/task1-en-marketing-mobile-home.png",
+      "sha256": "fae8483ab55ec9cda11f3925937f8b6fbacfb4feefc6d6527b9e7df83115e0b0"
+    },
+    {
+      "path": "screenshots/task1-de-marketing-desktop-features.png",
+      "sha256": "2da7f83fcf7d0fa73117c6e638a2489c4e23be33a82e46b12ea7812a940edca3"
+    },
+    {
+      "path": "screenshots/task1-en-marketing-mobile-features.png",
+      "sha256": "b1a0e5b16de0ae3494e32827b8d6c02df6f269552353670d8455b406dc611b1a"
+    },
+    {
+      "path": "screenshots/task1-de-marketing-desktop-pricing.png",
+      "sha256": "1c28b5c96ca048e143495b9d2136ad294b4345e5f7edaeee79bc4ba967e67f17"
+    }
+  ]
+}

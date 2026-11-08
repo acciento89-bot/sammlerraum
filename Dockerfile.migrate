@@ -1,0 +1,10 @@
+FROM node:24.19.0-bookworm-slim
+ENV PNPM_HOME=/pnpm
+ENV PATH=$PNPM_HOME:$PATH
+RUN apt-get update && apt-get install -y --no-install-recommends openssl && rm -rf /var/lib/apt/lists/* \
+    && corepack enable && corepack prepare pnpm@10.17.1 --activate
+WORKDIR /app
+COPY . .
+RUN pnpm install --frozen-lockfile
+USER node
+CMD ["bash", "scripts/migrate-production.sh"]

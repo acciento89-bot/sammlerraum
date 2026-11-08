@@ -1,0 +1,26 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| apps/web/src/components/money/money-review-client.test.ts (4 tests | 1 failed) 9ms
+   ✓ private one-fact review browser receipts > accepts only the exact subject, unchanged raw pair, evidenced scale/unit/category and a new fact token 1ms
+   ✓ private one-fact review browser receipts > treats a schema-valid wrong classification acknowledgment as uncertain instead of adopting it 6ms
+   ✓ private one-fact review browser receipts > binds bounded private history and revocation receipts to the exact requested scope and assertion 1ms
+   × routes one canonical evidence review through its exact immutable scope and binds private history/revocation receipts 1ms
+     → stub
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/web/src/components/money/money-review-client.test.ts > routes one canonical evidence review through its exact immutable scope and binds private history/revocation receipts
+Error: stub
+ ❯ classifyReviewedMoney apps/web/src/components/money/money-review-client.ts:128:164
+
+ ❯ apps/web/src/components/money/money-review-client.test.ts:137:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 3 passed (4)
+   Start at  11:46:24
+   Duration  326ms (transform 53ms, setup 6ms, collect 87ms, tests 9ms, environment 0ms, prepare 34ms)
+

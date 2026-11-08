@@ -1,0 +1,46 @@
+apps/web/src/components/catalog/catalog-client.ts 32ms
+apps/web/src/components/catalog/catalog-entry.tsx 13ms
+apps/web/src/components/catalog/catalog-facts.tsx 17ms
+apps/web/src/components/catalog/catalog-fields.tsx 59ms
+apps/web/src/components/catalog/catalog-history.tsx 11ms
+apps/web/src/components/catalog/catalog-index.tsx 6ms
+apps/web/src/components/catalog/catalog-linker.tsx 12ms
+apps/web/src/components/catalog/catalog-navigation.tsx 4ms
+apps/web/src/components/catalog/catalog-search.tsx 13ms
+apps/web/src/components/catalog/category-picker.tsx 12ms
+apps/web/src/components/catalog/proposal-composer.tsx 42ms
+apps/web/src/components/catalog/proposal-facts.tsx 4ms
+apps/web/src/components/catalog/proposal-manager.tsx 44ms
+apps/web/src/components/items/condition-editor.tsx 18ms
+apps/web/src/components/items/grading-editor.tsx 9ms
+apps/web/src/components/items/condition-grading-editor.tsx 5ms
+apps/web/src/components/items/item-form.tsx 77ms
+apps/web/src/components/collections/collections-manager.tsx 32ms (unchanged)
+apps/web/src/app/[locale]/(app)/catalog/[entryId]/page.tsx 2ms
+apps/web/src/app/[locale]/(app)/catalog/moderation/page.tsx 2ms
+apps/web/src/app/[locale]/(app)/catalog/page.tsx 2ms
+apps/web/src/app/[locale]/(app)/catalog/proposals/page.tsx 3ms
+apps/web/src/app/api/v1/catalog/capabilities/route.ts 1ms
+apps/web/src/app/api/v1/catalog/entries/[entryId]/revisions/[revision]/route.ts 1ms
+apps/web/src/app/api/v1/catalog/entries/[entryId]/revisions/route.ts 1ms
+apps/web/src/lib/catalog-link-routes.ts 21ms
+apps/web/src/lib/grading-routes.ts 7ms
+apps/web/src/lib/catalog-history-routes.integration.test.ts 20ms
+apps/web/src/lib/catalog-link-routes.integration.test.ts 36ms
+apps/web/src/lib/grading-routes.integration.test.ts 33ms
+apps/web/e2e/catalog-grading.spec.ts 68ms
+apps/web/e2e/support/catalog-fixture.ts 5ms
+apps/web/playwright.config.ts 2ms (unchanged)
+apps/web/messages/de.json 22ms (unchanged)
+apps/web/messages/en.json 6ms (unchanged)
+apps/web/src/app/globals.css 44ms
+apps/worker/src/maintenance/initialize-catalog.ts 2ms
+apps/worker/package.json 1ms (unchanged)
+packages/domain/src/catalog/initialize-catalog.ts 17ms
+packages/domain/src/catalog/initialize-catalog.test.ts 6ms
+packages/domain/src/catalog/catalog-history-service.test.ts 4ms
+packages/domain/src/catalog/catalog-read-service.ts 13ms
+packages/domain/src/authz/application-role.ts 2ms (unchanged)
+packages/domain/package.json 0ms (unchanged)
+packages/contracts/src/catalog-reads.ts 15ms
+.github/workflows/ci.yml 30ms (unchanged)

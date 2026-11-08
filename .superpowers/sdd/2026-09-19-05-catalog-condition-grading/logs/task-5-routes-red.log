@@ -1,0 +1,140 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| apps/web/src/lib/grading-routes.integration.test.ts (7 tests | 7 failed) 147ms
+   × grading routes PostgreSQL > persists owner CRUD through the adapter with full replacement and private no-store DTOs 14ms
+     → expected 501 to be 201 // Object.is equality
+   × grading routes PostgreSQL > requires fresh authentication and hides foreign, mismatched and invalid resource IDs 10ms
+     → expected 501 to be 401 // Object.is equality
+   × grading routes PostgreSQL > enforces exact Origin on every mutation 4ms
+     → expected 501 to be 403 // Object.is equality
+   × grading routes PostgreSQL > rejects strict malformed facts and never accepts trusted verification or cross-scale numbers 3ms
+     → expected 501 to be 400 // Object.is equality
+   × grading routes PostgreSQL > bounds actual UTF-8 streams independently of absent or false Content-Length 4ms
+     → expected 501 to be 413 // Object.is equality
+   × grading routes PostgreSQL > returns stable conflicts for duplicate certificates, lifecycle and shared item quantity writes 4ms
+     → expected 501 to be 409 // Object.is equality
+   × grading routes PostgreSQL > does not leak grading or private provenance through anonymous or other-user public item reads 9ms
+     → expected 501 to be 404 // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 7 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/web/src/lib/grading-routes.integration.test.ts > grading routes PostgreSQL > persists owner CRUD through the adapter with full replacement and private no-store DTOs
+AssertionError: expected 501 to be 201 // Object.is equality
+
+- Expected
++ Received
+
+- 201
++ 501
+
+ ❯ apps/web/src/lib/grading-routes.integration.test.ts:37:28
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/7]⎯
+
+ FAIL  |workspace| apps/web/src/lib/grading-routes.integration.test.ts > grading routes PostgreSQL > requires fresh authentication and hides foreign, mismatched and invalid resource IDs
+AssertionError: expected 501 to be 401 // Object.is equality
+
+- Expected
++ Received
+
+- 401
++ 501
+
+ ❯ apps/web/src/lib/grading-routes.integration.test.ts:58:341
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/7]⎯
+
+ FAIL  |workspace| apps/web/src/lib/grading-routes.integration.test.ts > grading routes PostgreSQL > enforces exact Origin on every mutation
+AssertionError: expected 501 to be 403 // Object.is equality
+
+- Expected
++ Received
+
+- 403
++ 501
+
+ ❯ apps/web/src/lib/grading-routes.integration.test.ts:72:102
+     70|     const api=handlers();
+     71|     for(const value of [null,"https://evil.example",`${origin}/`,`${or…
+     72|       expect((await api.POST_GRADING(request("POST",{provider:"X",grad…
+       |                                                                                                      ^
+     73|       expect((await api.PUT_GRADING(request("PUT",{provider:"X",grade:…
+     74|       expect((await api.DELETE_GRADING(request("DELETE",undefined,valu…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/7]⎯
+
+ FAIL  |workspace| apps/web/src/lib/grading-routes.integration.test.ts > grading routes PostgreSQL > rejects strict malformed facts and never accepts trusted verification or cross-scale numbers
+AssertionError: expected 501 to be 400 // Object.is equality
+
+- Expected
++ Received
+
+- 400
++ 501
+
+ ❯ apps/web/src/lib/grading-routes.integration.test.ts:82:76
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/7]⎯
+
+ FAIL  |workspace| apps/web/src/lib/grading-routes.integration.test.ts > grading routes PostgreSQL > bounds actual UTF-8 streams independently of absent or false Content-Length
+AssertionError: expected 501 to be 413 // Object.is equality
+
+- Expected
++ Received
+
+- 413
++ 501
+
+ ❯ apps/web/src/lib/grading-routes.integration.test.ts:100:122
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/7]⎯
+
+ FAIL  |workspace| apps/web/src/lib/grading-routes.integration.test.ts > grading routes PostgreSQL > returns stable conflicts for duplicate certificates, lifecycle and shared item quantity writes
+AssertionError: expected 501 to be 409 // Object.is equality
+
+- Expected
++ Received
+
+- 409
++ 501
+
+ ❯ apps/web/src/lib/grading-routes.integration.test.ts:109:30
+    107|     const api=handlers();const row=await service().addGrading(itemId,{…
+    108|     const duplicate=await api.POST_GRADING(request("POST",{provider:"c…
+    109|     expect(duplicate.status).toBe(409);expect(await duplicate.json()).…
+       |                              ^
+    110|     const itemApi=createItemRouteHandlers(createManagementRouteDepende…
+    111|     expect((await itemApi.PATCH_ITEM(request("PATCH",{quantity:2}),ite…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/7]⎯
+
+ FAIL  |workspace| apps/web/src/lib/grading-routes.integration.test.ts > grading routes PostgreSQL > does not leak grading or private provenance through anonymous or other-user public item reads
+AssertionError: expected 501 to be 404 // Object.is equality
+
+- Expected
++ Received
+
+- 404
++ 501
+
+ ❯ apps/web/src/lib/grading-routes.integration.test.ts:128:70
+    126|       const body=await response.json();expect(body).toEqual({item:{id:…
+    127|     }
+    128|     expect((await handlers().GET_GRADINGS(request(),itemId)).status).t…
+       |                                                                      ^
+    129|   });
+    130| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/7]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  7 failed (7)
+   Start at  00:01:37
+   Duration  539ms (transform 102ms, setup 6ms, collect 237ms, tests 147ms, environment 0ms, prepare 35ms)
+

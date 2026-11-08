@@ -1,0 +1,48 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/search/scoped-consumers.test.ts (13 tests | 1 failed) 825ms
+   ✓ live scoped saved definitions and dashboard parity > stores only a symbolic v2 reference and resolves current rows without retaining credentials 172ms
+   ✓ live scoped saved definitions and dashboard parity > never falls back to owned inventory after revocation or the wrong valid token 36ms
+   ✓ live scoped saved definitions and dashboard parity > rejects credentials embedded in a persisted definition and keeps original v1 behavior 15ms
+   ✓ live scoped saved definitions and dashboard parity > counts the same selected items and units and marks undisclosed summaries unavailable 20ms
+   ✓ live scoped saved definitions and dashboard parity > executes granted value summaries and preserves empty versus missing states 15ms
+   ✓ live scoped saved definitions and dashboard parity > rejects malformed or credential-bearing v2 rows at the actual database boundary: topSecret 27ms
+   ✓ live scoped saved definitions and dashboard parity > rejects malformed or credential-bearing v2 rows at the actual database boundary: scopeSecret 19ms
+   ✓ live scoped saved definitions and dashboard parity > rejects malformed or credential-bearing v2 rows at the actual database boundary: nullKind 17ms
+   ✓ live scoped saved definitions and dashboard parity > rejects malformed or credential-bearing v2 rows at the actual database boundary: nullLifecycle 18ms
+   ✓ live scoped saved definitions and dashboard parity > binds saved cursors to revisions and preserves explicit update conflicts 57ms
+   ✓ live scoped saved definitions and dashboard parity > sums actual granted latest manual points exactly, including zero and missing estimates 33ms
+   ✓ live scoped saved definitions and dashboard parity > stores membership queries without secrets and reauthorizes after actual membership removal 37ms
+   × live scoped saved definitions and dashboard parity > keeps owned saved discovery separate from explicitly scoped definitions 20ms
+     → expected [ …(2) ] to deeply equal [ Array(1) ]
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/search/scoped-consumers.test.ts > live scoped saved definitions and dashboard parity > keeps owned saved discovery separate from explicitly scoped definitions
+AssertionError: expected [ …(2) ] to deeply equal [ Array(1) ]
+
+- Expected
++ Received
+
+  [
+    "606ee737-1e9f-4032-bbf3-87b5f1b0788e",
++   "20cd2668-e49f-442c-a5b4-3ad4a56f27c2",
+  ]
+
+ ❯ packages/domain/src/search/scoped-consumers.test.ts:296:113
+    294|       const shared = await f.saved.create(f.actor, { name: "Shared vie…
+    295|       const owned = await createSmartCollectionService(db).createSmart…
+    296|       expect((await createSmartCollectionService(db).listSmartCollecti…
+       |                                                                                                                 ^
+    297|       expect((await f.saved.list(f.actor)).items.map(item => item.id))…
+    298|     });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 12 passed (13)
+   Start at  00:58:57
+   Duration  1.58s (transform 284ms, setup 5ms, collect 551ms, tests 825ms, environment 0ms, prepare 48ms)
+

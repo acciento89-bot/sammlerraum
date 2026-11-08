@@ -1,0 +1,99 @@
+{
+  "checkedAt": "2026-11-08T08:40:36.386739+00:00",
+  "baseURL": "https://sammlerraum.de",
+  "scope": "anonymous public release smoke; no production changes",
+  "passed": false,
+  "checks": [
+    {
+      "path": "/api/health",
+      "method": "GET",
+      "status": null,
+      "passed": false,
+      "reason": "TLS, network or response contract failed"
+    },
+    {
+      "path": "/de",
+      "method": "GET",
+      "status": null,
+      "passed": false,
+      "reason": "TLS, network or response contract failed"
+    },
+    {
+      "path": "/de/login",
+      "method": "GET",
+      "status": null,
+      "passed": false,
+      "reason": "TLS, network or response contract failed"
+    },
+    {
+      "path": "/de/pricing",
+      "method": "GET",
+      "status": null,
+      "passed": false,
+      "reason": "TLS, network or response contract failed"
+    },
+    {
+      "path": "/en",
+      "method": "GET",
+      "status": null,
+      "passed": false,
+      "reason": "TLS, network or response contract failed"
+    },
+    {
+      "path": "/en/login",
+      "method": "GET",
+      "status": null,
+      "passed": false,
+      "reason": "TLS, network or response contract failed"
+    },
+    {
+      "path": "/en/pricing",
+      "method": "GET",
+      "status": null,
+      "passed": false,
+      "reason": "TLS, network or response contract failed"
+    },
+    {
+      "path": "/api/openapi.json",
+      "method": "GET",
+      "status": null,
+      "passed": false,
+      "reason": "TLS, network or response contract failed"
+    },
+    {
+      "path": "/api/v1/billing/webhook",
+      "method": "POST",
+      "status": null,
+      "passed": false,
+      "reason": "TLS, network or response contract failed"
+    },
+    {
+      "path": "/api/v1/media/b042d771-c8a0-451d-bf76-1ad0194d20d7/original",
+      "method": "GET",
+      "status": null,
+      "passed": false,
+      "reason": "TLS, network or response contract failed"
+    },
+    {
+      "path": "/api/v1/marketplace/checkout",
+      "method": "GET",
+      "status": null,
+      "passed": false,
+      "reason": "TLS, network or response contract failed"
+    },
+    {
+      "path": "/api/v1/payouts",
+      "method": "GET",
+      "status": null,
+      "passed": false,
+      "reason": "TLS, network or response contract failed"
+    },
+    {
+      "path": "/api/v1/escrow",
+      "method": "GET",
+      "status": null,
+      "passed": false,
+      "reason": "TLS, network or response contract failed"
+    }
+  ]
+}

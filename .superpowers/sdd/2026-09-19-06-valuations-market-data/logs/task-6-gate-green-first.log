@@ -1,0 +1,19 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ✓ |workspace| apps/worker/src/jobs/market-request-permit.integration.test.ts (11 tests) 12499ms
+   ✓ durable market gate on separate PostgreSQL clients > holds a paused admitted sender beyond one second, then enforces physical settlement plus cooldown  3137ms
+   ✓ durable market gate on separate PostgreSQL clients > keeps distinct tokens independent and never refunds failure or pre-send abort  2030ms
+   ✓ durable market gate on separate PostgreSQL clients > enforces hourly/daily budgets, non-regressing DB windows and policy consistency  2052ms
+   ✓ durable market gate on separate PostgreSQL clients > allows safe successor after clear committed/lost ACK while old local stop fails  2028ms
+   ✓ durable market gate on separate PostgreSQL clients > holds claim when clear fails before commit and never forgets settled handler uncertainty  1016ms
+   ✓ durable market gate on separate PostgreSQL clients > standalone stop aborts physical transport and waits settlement, cooldown and own clear  1018ms
+   ✓ durable market gate on separate PostgreSQL clients > keeps an ignored abort claimed until actual settlement rather than treating timeout as cancellation  1051ms
+
+ Test Files  1 passed (1)
+      Tests  11 passed (11)
+   Start at  07:19:20
+   Duration  12.80s (transform 63ms, setup 5ms, collect 121ms, tests 12.50s, environment 0ms, prepare 45ms)
+
+
+EXIT=0

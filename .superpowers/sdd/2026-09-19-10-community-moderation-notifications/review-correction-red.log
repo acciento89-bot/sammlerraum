@@ -1,0 +1,103 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| apps/worker/src/jobs/tabular-export.integration.test.ts (11 tests | 1 failed) 915ms
+   × real tabular export source, assets and bytes > never reports completion from claim, lease renewal or failure 131ms
+     → expected 1 to be +0 // Object.is equality
+   ✓ real tabular export source, assets and bytes > publishes one complete owned CSV artifact and reuses successful delivery 112ms
+   ✓ real tabular export source, assets and bytes > publishes one complete owned XLSX artifact and reuses successful delivery 56ms
+   ✓ real tabular export source, assets and bytes > retains every attempt manifest and retries storage failure using the immutable source 46ms
+   ✓ real tabular export source, assets and bytes > refuses stale data instead of silently replacing the saved export source 46ms
+   ✓ real tabular export source, assets and bytes > fences expired claims, tracks abandoned outputs and closes exhausted attempts 12ms
+   ✓ real tabular export source, assets and bytes > does not publish after owner access disappears while file storage is in flight 31ms
+   ✓ real tabular export source, assets and bytes > keeps the actual asset lock until ignored cancellation settles and never marks its bytes ready 31ms
+   ✓ real tabular export source, assets and bytes > does not retain a job permission or source after its owned artifact is deleted 39ms
+   ✓ real tabular export source, assets and bytes > closes a whole-source export limit permanently instead of retrying an impossible build 28ms
+   ✓ real tabular export source, assets and bytes > retries a busy cleanup lock rather than waiting through an unbounded foreign hold 24ms
+ ❯ |workspace| packages/domain/src/community/comment-service.test.ts (9 tests | 2 failed) 830ms
+   × actual public comment creation and owner controls > keeps the deepest accepted reply readable and rejects the next without rows or notices 345ms
+     → promise resolved "{ …(5) }" instead of rejecting
+   × actual public comment creation and owner controls > lets only the actual owner inspect and restore owner-hidden content while preserving platform/deletion boundaries 22ms
+     → expected CommunityError: COMMUNITY_INVALID { code: '…' } to match object { code: 'NOT_FOUND' }
+(1 matching property omitted from actual)
+   ✓ actual public comment creation and owner controls > creates bounded public replies with actual author identity and no private projection fields 21ms
+   ✓ actual public comment creation and owner controls > requires all actual owner comment switches at global, collection and item levels 27ms
+   ✓ actual public comment creation and owner controls > rejects cross-target replies and private targets even for the Owner 26ms
+   ✓ actual public comment creation and owner controls > permits only original-author deletion or actual content-owner hiding and retains reported bodies privately 28ms
+   ✓ actual public comment creation and owner controls > blocks direct comments and replies in either direction using actual persisted block state 19ms
+   ✓ actual public comment creation and owner controls > observes an owner switch disabled after discovery but before actual participant locks 14ms
+   ✓ actual public comment creation and owner controls > hides descendants of an owner-hidden parent and clears unreported deleted bodies 28ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/worker/src/jobs/tabular-export.integration.test.ts > real tabular export source, assets and bytes > never reports completion from claim, lease renewal or failure
+AssertionError: expected 1 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ apps/worker/src/jobs/tabular-export.integration.test.ts:80:74
+     78|       expect(await db.notification.count({where:{recipientId:f.owner}}…
+     79|       expect(await f.repo.renew(claim!)).toBe(true);
+     80|       expect(await db.notification.count({where:{recipientId:f.owner}}…
+       |                                                                          ^
+     81|       await f.repo.fail(claim!,"EXPORT_BUILD_FAILED",false);
+     82|       expect((await state(f.job.id)).status).toBe("FAILED");
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  |workspace| packages/domain/src/community/comment-service.test.ts > actual public comment creation and owner controls > keeps the deepest accepted reply readable and rejects the next without rows or notices
+AssertionError: promise resolved "{ …(5) }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "author": {
++     "avatarAssetId": null,
++     "displayName": "Public comment display",
++     "handle": "u_43233e14255f49e0abe9",
++     "userId": "43233e14-255f-49e0-abe9-f35f51f15db0",
++   },
++   "body": "Never invisible success",
++   "createdAt": "2026-11-07T15:13:13.539Z",
++   "id": "09ce6c98-34bb-44dd-bfe6-d73df4d007af",
++   "parentId": "d643943e-5dfb-41f0-9cd6-a5d588ba2362",
+  }
+
+ ❯ packages/domain/src/community/comment-service.test.ts:60:108
+     58|       expect((await f.service.listComments(f.outsider,{target,limit:50…
+     59|       const before=await db.communityComment.count({where:{collectionI…
+     60|       await expect(f.service.createComment(f.peer,{target,parentId:las…
+       |                                                                                                            ^
+     61|       expect(await db.communityComment.count({where:{collectionId:f.co…
+     62|       expect(await db.notification.count({where:{recipientId:f.owner.u…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  |workspace| packages/domain/src/community/comment-service.test.ts > actual public comment creation and owner controls > lets only the actual owner inspect and restore owner-hidden content while preserving platform/deletion boundaries
+AssertionError: expected CommunityError: COMMUNITY_INVALID { code: '…' } to match object { code: 'NOT_FOUND' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+- {
+-   "code": "NOT_FOUND",
++ CommunityError {
++   "code": "COMMUNITY_INVALID",
+  }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  3 failed | 17 passed (20)
+   Start at  16:13:10
+   Duration  2.82s (transform 336ms, setup 7ms, collect 719ms, tests 1.74s, environment 0ms, prepare 90ms)
+

@@ -1,0 +1,41 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/sharing/share-service.test.ts (15 tests | 1 failed) 1083ms
+   ✓ actual explicit granular read shares > excludes private notes, location, insurance, receipt and money data by default and stores only a token hash 138ms
+   ✓ actual explicit granular read shares > stops a known token immediately after revocation 14ms
+   ✓ actual explicit granular read shares > binds registered-user grants without adding membership or broadening a Viewer's edit rights 24ms
+   ✓ actual explicit granular read shares > resolves the selected node subtree without exposing siblings or other private ancestors 20ms
+   ✓ actual explicit granular read shares > permanently revokes the old owner's token during transfer, including a later ownership round trip 51ms
+   ✓ actual explicit granular read shares > rejects a genuinely expired stored grant using the database clock 6ms
+   ✓ actual explicit granular read shares > stores a salted PIN hash and persists a bounded attempt budget before expensive checking 218ms
+   ✓ actual explicit granular read shares > discloses only explicitly selected location, policy, values and document metadata 36ms
+   ✓ actual explicit granular read shares > cannot select a document belonging to a different item or a sibling outside the chosen subtree 9ms
+   ✓ actual explicit granular read shares > pages collections with stable bounded cursors and no duplicate or missing item 37ms
+   ✓ actual explicit granular read shares > reuses a short-lived PIN session for selected proof bytes without repeated PIN attempts 126ms
+   ✓ actual explicit granular read shares > reauthorizes after actual storage I/O and refuses bytes if the share was revoked during the read 16ms
+   ✓ actual explicit granular read shares > does not turn an image permission into a private document download 14ms
+   × actual explicit granular read shares > exports the same minimal selected fields only when explicitly enabled 6ms
+     → f.service.exportShare is not a function
+   ✓ actual explicit granular read shares > does not reuse a PIN session for a different grant and rejects an expired session 110ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/sharing/share-service.test.ts > actual explicit granular read shares > exports the same minimal selected fields only when explicitly enabled
+TypeError: f.service.exportShare is not a function
+ ❯ packages/domain/src/sharing/share-service.test.ts:152:26
+    150|  it("exports the same minimal selected fields only when explicitly ena…
+    151|   const f=await fixture(),closed=await f.service.createShare(f.actor,{…
+    152|   await expect(f.service.exportShare(null,{token:closed.token})).rejec…
+       |                          ^
+    153|   const enabled=await f.service.createShare(f.actor,{target:{kind:"ITE…
+    154|   const result=await f.service.exportShare(null,{token:enabled.token});
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 14 passed (15)
+   Start at  06:42:13
+   Duration  1.56s (transform 175ms, setup 6ms, collect 325ms, tests 1.08s, environment 0ms, prepare 37ms)
+

@@ -1,0 +1,8 @@
+
+> @sammlerraum/db@ prisma /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/db
+> prisma migrate diff --from-config-datasource --to-schema prisma/schema.prisma --script
+
+Loaded Prisma config from prisma.config.ts.
+
+-- This is an empty migration.
+

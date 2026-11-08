@@ -1,0 +1,75 @@
+[WebServer] (node:57313) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:57314) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:57322) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+MEDIA_CAUSAL {"cancelStage":"link","event":"POST-entered","routeId":1,"ms":40}
+MEDIA_CAUSAL {"cancelStage":"link","event":"POST-fetch-done","routeId":1,"ms":49}
+MEDIA_CAUSAL {"cancelStage":"link","event":"stage-reached","routeId":0,"ms":49}
+MEDIA_CAUSAL {"cancelStage":"link","event":"cancel-clicked","routeId":0,"ms":87}
+MEDIA_CAUSAL {"cancelStage":"link","event":"stage-released","routeId":0,"ms":87}
+MEDIA_CAUSAL {"cancelStage":"link","event":"POST-fulfill-start","routeId":1,"ms":88}
+MEDIA_CAUSAL {"cancelStage":"link","event":"POST-fulfill-done","routeId":1,"ms":91}
+MEDIA_CAUSAL {"cancelStage":"link","event":"handler-settled","routeId":1,"ms":91}
+MEDIA_CAUSAL {"cancelStage":"link","event":"compensating-delete-response","routeId":0,"ms":139}
+MEDIA_CAUSAL {"cancelStage":"link","event":"GET-entered-cleanup","routeId":2,"ms":140}
+MEDIA_CAUSAL {"cancelStage":"link","event":"handler-settled","routeId":2,"ms":141}
+MEDIA_CAUSAL {"cancelStage":"link","event":"canceled-visible","routeId":0,"ms":191}
+MEDIA_CAUSAL {"cancelStage":"link","event":"original-link-count-restored","routeId":0,"ms":202}
+MEDIA_CAUSAL {"cancelStage":"link","event":"unroute-start","routeId":0,"ms":202}
+MEDIA_CAUSAL {"cancelStage":"link","event":"unroute-done","routeId":0,"ms":203}
+MEDIA_CAUSAL {"cancelStage":"link","event":"cleanup-released-after-unroute","routeId":0,"ms":203}
+MEDIA_CAUSAL {"cancelStage":"reload","event":"POST-entered","routeId":1,"ms":30}
+MEDIA_CAUSAL {"cancelStage":"reload","event":"POST-fetch-done","routeId":1,"ms":37}
+MEDIA_CAUSAL {"cancelStage":"reload","event":"POST-fulfill-start","routeId":1,"ms":37}
+MEDIA_CAUSAL {"cancelStage":"reload","event":"POST-fulfill-done","routeId":1,"ms":38}
+MEDIA_CAUSAL {"cancelStage":"reload","event":"handler-settled","routeId":1,"ms":38}
+MEDIA_CAUSAL {"cancelStage":"reload","event":"GET-entered","routeId":2,"ms":39}
+MEDIA_CAUSAL {"cancelStage":"reload","event":"GET-fetch-done","routeId":2,"ms":45}
+MEDIA_CAUSAL {"cancelStage":"reload","event":"stage-reached","routeId":0,"ms":45}
+MEDIA_CAUSAL {"cancelStage":"reload","event":"cancel-clicked","routeId":0,"ms":67}
+MEDIA_CAUSAL {"cancelStage":"reload","event":"stage-released","routeId":0,"ms":67}
+MEDIA_CAUSAL {"cancelStage":"reload","event":"GET-fulfill-start","routeId":2,"ms":68}
+MEDIA_CAUSAL {"cancelStage":"reload","event":"GET-fulfill-done","routeId":2,"ms":69}
+MEDIA_CAUSAL {"cancelStage":"reload","event":"handler-settled","routeId":2,"ms":69}
+MEDIA_CAUSAL {"cancelStage":"reload","event":"compensating-delete-response","routeId":0,"ms":90}
+MEDIA_CAUSAL {"cancelStage":"reload","event":"GET-entered-cleanup","routeId":3,"ms":90}
+MEDIA_CAUSAL {"cancelStage":"reload","event":"GET-fetch-done","routeId":3,"ms":96}
+MEDIA_CAUSAL {"cancelStage":"reload","event":"cleanup-real-listing-has-original-two","routeId":3,"ms":96}
+MEDIA_CAUSAL {"cancelStage":"reload","event":"canceled-visible","routeId":0,"ms":107}
+MEDIA_CAUSAL {"cancelStage":"reload","event":"original-link-count-restored","routeId":0,"ms":124}
+MEDIA_CAUSAL {"cancelStage":"reload","event":"cleanup-held-input-still-disabled","routeId":0,"ms":128}
+MEDIA_CAUSAL {"cancelStage":"reload","event":"unroute-start","routeId":0,"ms":128}
+MEDIA_CAUSAL {"cancelStage":"reload","event":"unroute-done","routeId":0,"ms":132}
+MEDIA_CAUSAL {"cancelStage":"reload","event":"cleanup-released-after-unroute","routeId":0,"ms":133}
+MEDIA_CAUSAL {"cancelStage":"reload","event":"GET-fulfill-start","routeId":3,"ms":133}
+MEDIA_CAUSAL {"cancelStage":"reload","event":"handler-settled","routeId":3,"ms":136}
+  ✘  1 [desktop] › e2e/media-documents.spec.ts:143:5 › item media and private documents › public item can have a purchase receipt that remains private (de) (24.7s)
+
+
+  1) [desktop] › e2e/media-documents.spec.ts:143:5 › item media and private documents › public item can have a purchase receipt that remains private (de) 
+
+    Error: route.fulfill: Route is already handled!
+
+      280 |                 await release;
+      281 |                 trace("GET-fulfill-start", routeId);
+    > 282 |                 await route.fulfill({ response });
+          |                             ^
+      283 |                 trace("GET-fulfill-done", routeId);
+      284 |               } else await route.continue();
+      285 |             })().finally(() => { trace("handler-settled", routeId); active.delete(task); });
+        at /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/media-documents.spec.ts:282:29
+
+    Error Context: test-results/media-documents-item-media-7f0c3-pt-that-remains-private-de--desktop/error-context.md
+
+    Error Context: test-results/media-documents-item-media-7f0c3-pt-that-remains-private-de--desktop/error-context.md
+
+  1 failed
+    [desktop] › e2e/media-documents.spec.ts:143:5 › item media and private documents › public item can have a purchase receipt that remains private (de) 
+undefined
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/media-documents.spec.ts --project=desktop --grep remains private \(de\) --workers=1

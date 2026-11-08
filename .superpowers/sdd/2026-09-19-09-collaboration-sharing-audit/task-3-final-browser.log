@@ -1,0 +1,36 @@
+[WebServer] (node:21355) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 7 tests using 1 worker
+(node:21356) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+···(node:21369) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+···(node:21379) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+F
+
+  1) [collaboration-api] › e2e/collaboration-api.spec.ts:11:1 › compiled invitation routes use real isolated cookie sessions and current database roles 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 429
+
+      42 |         data: { email: `${id}@example.invalid`, password },
+      43 |       });
+    > 44 |       expect(signed.status()).toBe(200);
+         |                               ^
+      45 |     }
+      46 |     const owner = contexts[0]!,
+      47 |       recipient = contexts[1]!,
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/collaboration-api.spec.ts:44:31
+
+    Error Context: test-results/collaboration-api-compiled-87742--and-current-database-roles-collaboration-api/error-context.md
+
+  1 failed
+    [collaboration-api] › e2e/collaboration-api.spec.ts:11:1 › compiled invitation routes use real isolated cookie sessions and current database roles 
+  6 passed (7.2s)
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/sharing.spec.ts e2e/collaboration-api.spec.ts --project=sharing-desktop --project=sharing-mobile --project=collaboration-api --workers=1

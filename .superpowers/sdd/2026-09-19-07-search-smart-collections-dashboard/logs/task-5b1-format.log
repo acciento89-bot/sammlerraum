@@ -1,0 +1,15 @@
+packages/contracts/src/private-search-query.ts 33ms
+packages/contracts/src/private-search-query.test.ts 21ms
+packages/contracts/package.json 10ms (unchanged)
+apps/web/src/lib/api/read-search-body.ts 8ms (unchanged)
+apps/web/src/lib/api/read-search-body.test.ts 12ms
+apps/web/src/lib/private-search-routes.integration.test.ts 38ms
+apps/web/src/lib/item-search-routes.ts 8ms (unchanged)
+apps/web/src/lib/item-search-routes.integration.test.ts 9ms
+apps/web/src/lib/dashboard-routes.ts 4ms (unchanged)
+apps/web/src/lib/dashboard-routes.integration.test.ts 6ms (unchanged)
+apps/web/src/lib/item-search-route-dependencies.ts 2ms (unchanged)
+apps/web/src/lib/dashboard-route-dependencies.ts 1ms (unchanged)
+apps/web/src/app/api/v1/search/items/route.ts 1ms (unchanged)
+apps/web/src/app/api/v1/dashboard/route.ts 1ms (unchanged)
+.github/workflows/ci.yml 15ms (unchanged)

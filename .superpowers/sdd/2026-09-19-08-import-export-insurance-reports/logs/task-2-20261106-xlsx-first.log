@@ -1,0 +1,59 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| apps/worker/src/jobs/parse-import.test.ts (5 tests | 2 failed) 21ms
+   ✓ preserves quoted CSV values and original addresses without numeric coercion 5ms
+   ✓ closes an over-limit source instead of returning a truncated success 2ms
+   ✓ keeps formula-looking CSV text inert and exact 1ms
+   × reads only stored XLSX formula values and preserves exact numeric lexemes 9ms
+     → IMPORT_XLSX_INVALID
+   × rejects an oversized workbook rather than claiming a partial parse 5ms
+     → expected ImportParseError: IMPORT_XLSX_INVALID { code: '…' } to match object { code: 'IMPORT_ROW_LIMIT_EXCEEDED' }
+(1 matching property omitted from actual)
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/worker/src/jobs/parse-import.test.ts > reads only stored XLSX formula values and preserves exact numeric lexemes
+ImportParseError: IMPORT_XLSX_INVALID
+ ❯ invalid apps/worker/src/jobs/parse-xlsx.ts:10:35
+      8| const REL = "http://schemas.openxmlformats.org/package/2006/relationsh…
+      9| const DOCREL = "http://schemas.openxmlformats.org/officeDocument/2006/…
+     10| function invalid(): never { throw new ImportParseError("IMPORT_XLSX_IN…
+       |                                   ^
+     11| function attr(tag: SaxesTagNS, name: string): string | undefined {
+     12|   const value = tag.attributes[name]; return value?.value;
+ ❯ readXlsx apps/worker/src/jobs/parse-xlsx.ts:151:72
+ ❯ parseImportSource apps/worker/src/jobs/parse-import.ts:78:18
+ ❯ apps/worker/src/jobs/parse-import.test.ts:39:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |workspace| apps/worker/src/jobs/parse-import.test.ts > rejects an oversized workbook rather than claiming a partial parse
+AssertionError: expected ImportParseError: IMPORT_XLSX_INVALID { code: '…' } to match object { code: 'IMPORT_ROW_LIMIT_EXCEEDED' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+- {
+-   "code": "IMPORT_ROW_LIMIT_EXCEEDED",
++ ImportParseError {
++   "code": "IMPORT_XLSX_INVALID",
+  }
+
+ ❯ apps/worker/src/jobs/parse-import.test.ts:45:3
+     43|   const { workbookFixture } = await import("./import-xlsx-fixture.test…
+     44|   const bytes = workbookFixture('<row r="1"><c r="A1"><v>1</v></c></ro…
+     45|   await expect((async () => { for await (const row of parseImportSourc…
+       |   ^
+     46| });
+     47| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 3 passed (5)
+   Start at  21:44:02
+   Duration  367ms (transform 65ms, setup 6ms, collect 118ms, tests 21ms, environment 0ms, prepare 37ms)
+

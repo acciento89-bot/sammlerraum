@@ -1,0 +1,90 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| apps/web/src/lib/item-search-routes.integration.test.ts (11 tests | 11 failed) 128ms
+   × native authorized item search route > returns only owned summaries with fresh authentication and no-store/request ID 8ms
+     → native search route must exist: expected undefined to be type of 'function'
+   × native authorized item search route > rejects malformed query f=null 1ms
+     → native search route must exist: expected undefined to be type of 'function'
+   × native authorized item search route > rejects malformed query text=%FF 0ms
+     → native search route must exist: expected undefined to be type of 'function'
+   × native authorized item search route > rejects malformed query text=% 0ms
+     → native search route must exist: expected undefined to be type of 'function'
+   × native authorized item search route > rejects malformed query text=a&%74ext=b 0ms
+     → native search route must exist: expected undefined to be type of 'function'
+   × native authorized item search route > rejects malformed query unknown=secret 0ms
+     → native search route must exist: expected undefined to be type of 'function'
+   × native authorized item search route > rejects malformed query limit=01 0ms
+     → native search route must exist: expected undefined to be type of 'function'
+   × native authorized item search route > rejects malformed query limit=+1 0ms
+     → native search route must exist: expected undefined to be type of 'function'
+   × native authorized item search route > rejects malformed query f=%7B%22version%22%3A1%2C%22version%22%3A1%7D 0ms
+     → native search route must exist: expected undefined to be type of 'function'
+   × native authorized item search route > rejects encoded query size before parsing and missing authentication 0ms
+     → native search route must exist: expected undefined to be type of 'function'
+   × native authorized item search route > keeps unavailable and reference errors closed 0ms
+     → native search route must exist: expected undefined to be type of 'function'
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 11 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/web/src/lib/item-search-routes.integration.test.ts > native authorized item search route > returns only owned summaries with fresh authentication and no-store/request ID
+AssertionError: native search route must exist: expected undefined to be type of 'function'
+
+Expected: "function"
+Received: "undefined"
+
+ ❯ handlers apps/web/src/lib/item-search-routes.integration.test.ts:10:197
+
+ ❯ apps/web/src/lib/item-search-routes.integration.test.ts:11:123
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/11]⎯
+
+ FAIL  |workspace| apps/web/src/lib/item-search-routes.integration.test.ts > native authorized item search route > rejects malformed query f=null
+ FAIL  |workspace| apps/web/src/lib/item-search-routes.integration.test.ts > native authorized item search route > rejects malformed query text=%FF
+ FAIL  |workspace| apps/web/src/lib/item-search-routes.integration.test.ts > native authorized item search route > rejects malformed query text=%
+ FAIL  |workspace| apps/web/src/lib/item-search-routes.integration.test.ts > native authorized item search route > rejects malformed query text=a&%74ext=b
+ FAIL  |workspace| apps/web/src/lib/item-search-routes.integration.test.ts > native authorized item search route > rejects malformed query unknown=secret
+ FAIL  |workspace| apps/web/src/lib/item-search-routes.integration.test.ts > native authorized item search route > rejects malformed query limit=01
+ FAIL  |workspace| apps/web/src/lib/item-search-routes.integration.test.ts > native authorized item search route > rejects malformed query limit=+1
+ FAIL  |workspace| apps/web/src/lib/item-search-routes.integration.test.ts > native authorized item search route > rejects malformed query f=%7B%22version%22%3A1%2C%22version%22%3A1%7D
+AssertionError: native search route must exist: expected undefined to be type of 'function'
+
+Expected: "function"
+Received: "undefined"
+
+ ❯ handlers apps/web/src/lib/item-search-routes.integration.test.ts:10:197
+
+ ❯ apps/web/src/lib/item-search-routes.integration.test.ts:12:202
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/11]⎯
+
+ FAIL  |workspace| apps/web/src/lib/item-search-routes.integration.test.ts > native authorized item search route > rejects encoded query size before parsing and missing authentication
+AssertionError: native search route must exist: expected undefined to be type of 'function'
+
+Expected: "function"
+Received: "undefined"
+
+ ❯ handlers apps/web/src/lib/item-search-routes.integration.test.ts:10:197
+
+ ❯ apps/web/src/lib/item-search-routes.integration.test.ts:13:102
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/11]⎯
+
+ FAIL  |workspace| apps/web/src/lib/item-search-routes.integration.test.ts > native authorized item search route > keeps unavailable and reference errors closed
+AssertionError: native search route must exist: expected undefined to be type of 'function'
+
+Expected: "function"
+Received: "undefined"
+
+ ❯ handlers apps/web/src/lib/item-search-routes.integration.test.ts:10:197
+
+ ❯ apps/web/src/lib/item-search-routes.integration.test.ts:14:79
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/11]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  11 failed (11)
+   Start at  09:08:43
+   Duration  483ms (transform 37ms, setup 5ms, collect 79ms, tests 128ms, environment 0ms, prepare 54ms)
+

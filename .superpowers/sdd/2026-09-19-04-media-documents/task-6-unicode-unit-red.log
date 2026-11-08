@@ -1,0 +1,74 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| apps/web/src/lib/media-routes.test.ts (14 tests | 2 failed) 21ms
+   ✓ media routes > authenticates before consuming a streamed body 3ms
+   ✓ media routes > rejects an absent content length when streamed bytes exceed the limit 4ms
+   ✓ media routes > stops pulling a stream as soon as the bound is crossed 1ms
+   ✓ media routes > rejects a lying small content length after counting bytes 0ms
+   ✓ media routes > rejects cross-origin mutation before reading bytes 0ms
+   ✓ media routes > uploads a bounded image using the trusted actor and exposes no storage path 2ms
+   ✓ media routes > links only for a trusted actor with the path item id 1ms
+   ✓ owner unlink routes > authenticates and checks same origin before unlinking 0ms
+   ✓ owner unlink routes > unlinks only the authenticated owner's requested item link 0ms
+   ✓ owner unlink routes > rejects cross-origin deletion and malformed identifiers 1ms
+   ✓ bounded media management routes > lists an authenticated owner's safe DTO with no-store without requiring an Origin on GET 0ms
+   ✓ bounded media management routes > validates origin, bounded complete order and explicit document visibility before mutation 4ms
+   × explicit filename header encoding > decodes percent-encoded UTF-8 exactly once while keeping legacy clients literal 3ms
+     → expected last "spy" call to have been called with [ 'owner', Any<Uint8Array>, { …(2) } ]
+   × explicit filename header encoding > rejects malformed UTF-8 escapes and unknown encoding markers before upload persistence 2ms
+     → expected 201 to be 400 // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/web/src/lib/media-routes.test.ts > explicit filename header encoding > decodes percent-encoded UTF-8 exactly once while keeping legacy clients literal
+AssertionError: expected last "spy" call to have been called with [ 'owner', Any<Uint8Array>, { …(2) } ]
+
+- Expected
++ Received
+
+  [
+    "owner",
+    Any<Uint8Array>,
+    {
+      "claimedMime": "image/jpeg",
+-     "fileName": "Łódź – coin 🪙 100%25.png",
++     "fileName": "%C5%81%C3%B3d%C5%BA%20%E2%80%93%20coin%20%F0%9F%AA%99%20100%2525.png",
+    },
+  ]
+
+ ❯ apps/web/src/lib/media-routes.test.ts:273:39
+    271|     const {routes,service}=fixture();
+    272|     expect((await routes.POST_IMAGE(request(new Uint8Array([1]),{"x-fi…
+    273|     expect(service.createImageUpload).toHaveBeenLastCalledWith("owner"…
+       |                                       ^
+    274|     expect((await routes.POST_IMAGE(request(new Uint8Array([1]),{"x-fi…
+    275|     expect(service.createImageUpload).toHaveBeenLastCalledWith("owner"…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |workspace| apps/web/src/lib/media-routes.test.ts > explicit filename header encoding > rejects malformed UTF-8 escapes and unknown encoding markers before upload persistence
+AssertionError: expected 201 to be 400 // Object.is equality
+
+- Expected
++ Received
+
+- 400
++ 201
+
+ ❯ apps/web/src/lib/media-routes.test.ts:280:133
+    278|     for(const [name,encoding] of [["bad%GG.jpg","percent-utf8"],["bad%…
+    279|       const {routes,service}=fixture();
+    280|       expect((await routes.POST_IMAGE(request(new Uint8Array([1]),{"x-…
+       |                                                                                                                                     ^
+    281|       expect(service.createImageUpload).not.toHaveBeenCalled();
+    282|     }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 12 passed (14)
+   Start at  21:42:54
+   Duration  435ms (transform 54ms, setup 5ms, collect 191ms, tests 21ms, environment 0ms, prepare 48ms)
+

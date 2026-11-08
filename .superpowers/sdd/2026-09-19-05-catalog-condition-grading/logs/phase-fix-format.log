@@ -1,0 +1,17 @@
+apps/web/src/components/catalog/proposal-manager.tsx 67ms
+apps/web/src/components/catalog/catalog-facts.tsx 18ms (unchanged)
+apps/web/src/components/catalog/catalog-linker.tsx 10ms (unchanged)
+apps/web/src/components/catalog/proposal-composer.tsx 17ms (unchanged)
+apps/web/src/components/items/condition-editor.tsx 9ms (unchanged)
+[error] No files matching the pattern were found: "apps/web/src/components/items/item-form-values.tsx".
+apps/web/src/components/items/item-form-values.ts 8ms (unchanged)
+apps/web/src/lib/catalog-proposal-routes.ts 8ms
+packages/contracts/src/grading.ts 4ms
+packages/contracts/src/grading.test.ts 4ms
+apps/web/src/components/items/item-form-values.test.ts 4ms
+apps/web/src/components/catalog/catalog-form-values.test.ts 5ms
+apps/web/src/lib/catalog-proposal-routes.integration.test.ts 15ms
+apps/web/src/lib/grading-routes.integration.test.ts 24ms
+apps/web/e2e/catalog-grading.spec.ts 76ms
+apps/web/messages/de.json 23ms (unchanged)
+apps/web/messages/en.json 8ms (unchanged)

@@ -1,0 +1,10 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ✓ |workspace| apps/web/src/components/search/dashboard-format.test.ts (25 tests) 56ms
+
+ Test Files  1 passed (1)
+      Tests  25 passed (25)
+   Start at  22:31:31
+   Duration  316ms (transform 29ms, setup 7ms, collect 21ms, tests 56ms, environment 0ms, prepare 52ms)
+

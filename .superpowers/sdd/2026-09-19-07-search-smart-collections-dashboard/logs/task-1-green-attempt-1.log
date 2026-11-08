@@ -1,0 +1,151 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| packages/domain/src/search/filter-ast.test.ts (81 tests | 2 failed) 43ms
+   × bounded item-filter foundation > accepts five logical ancestors and rejects six including NOT 8ms
+     → expected [Function] to throw error including 'FILTER_TOO_COMPLEX' but got 'FILTER_INVALID'
+   ✓ bounded item-filter foundation > accepts fifty leaves but rejects fifty-one before schema recursion 1ms
+   ✓ bounded item-filter foundation > rejects unknown/empty/extra structural branches 0 0ms
+   ✓ bounded item-filter foundation > rejects unknown/empty/extra structural branches 1 0ms
+   ✓ bounded item-filter foundation > rejects unknown/empty/extra structural branches 2 0ms
+   ✓ bounded item-filter foundation > rejects unknown/empty/extra structural branches 3 1ms
+   ✓ bounded item-filter foundation > rejects unknown/empty/extra structural branches 4 0ms
+   ✓ bounded item-filter foundation > rejects unknown/empty/extra structural branches 5 0ms
+   ✓ bounded item-filter foundation > rejects unknown/empty/extra structural branches 6 0ms
+   ✓ bounded item-filter foundation > rejects unknown/empty/extra structural branches 7 0ms
+   ✓ bounded item-filter foundation > distinguishes unsupported version and invalid envelopes without payload diagnostics 1ms
+   × bounded item-filter foundation > guards every exported schema path and does not expose raw Zod payloads 2ms
+     → expected ZodError: [
+  {
+    "code": "custom",
+   … { …(8) } to match object { code: 'FILTER_INVALID', …(1) }
+(1 matching property omitted from actual)
+   ✓ bounded item-filter foundation > rejects non-JSON objects and accessors without invoking them 1ms
+   ✓ bounded item-filter foundation > bounds JSON value/property scans at exactly 512 before typed parsing 2ms
+   ✓ bounded item-filter foundation > limits raw containers before JSON.parse and rejects duplicate decoded member keys 1ms
+   ✓ bounded item-filter foundation > enforces 16KiB UTF8 and rejects lone surrogates including escaped ones 1ms
+   ✓ closed typed filter language > accepts retained leaf family 0 0ms
+   ✓ closed typed filter language > accepts retained leaf family 1 0ms
+   ✓ closed typed filter language > accepts retained leaf family 2 0ms
+   ✓ closed typed filter language > accepts retained leaf family 3 0ms
+   ✓ closed typed filter language > accepts retained leaf family 4 0ms
+   ✓ closed typed filter language > accepts retained leaf family 5 0ms
+   ✓ closed typed filter language > accepts retained leaf family 6 0ms
+   ✓ closed typed filter language > accepts retained leaf family 7 0ms
+   ✓ closed typed filter language > accepts retained leaf family 8 0ms
+   ✓ closed typed filter language > accepts retained leaf family 9 0ms
+   ✓ closed typed filter language > accepts retained leaf family 10 1ms
+   ✓ closed typed filter language > accepts retained leaf family 11 0ms
+   ✓ closed typed filter language > accepts retained leaf family 12 0ms
+   ✓ closed typed filter language > accepts retained leaf family 13 0ms
+   ✓ closed typed filter language > accepts retained leaf family 14 1ms
+   ✓ closed typed filter language > accepts retained leaf family 15 0ms
+   ✓ closed typed filter language > accepts retained leaf family 16 0ms
+   ✓ closed typed filter language > accepts retained leaf family 17 0ms
+   ✓ closed typed filter language > accepts retained leaf family 18 0ms
+   ✓ closed typed filter language > accepts retained leaf family 19 0ms
+   ✓ closed typed filter language > accepts retained leaf family 20 1ms
+   ✓ closed typed filter language > accepts retained leaf family 21 0ms
+   ✓ closed typed filter language > accepts typed SHORT_TEXT custom/catalog fields including explicit maker/year selectors 1ms
+   ✓ closed typed filter language > accepts typed LONG_TEXT custom/catalog fields including explicit maker/year selectors 0ms
+   ✓ closed typed filter language > accepts typed INTEGER custom/catalog fields including explicit maker/year selectors 0ms
+   ✓ closed typed filter language > accepts typed DECIMAL custom/catalog fields including explicit maker/year selectors 0ms
+   ✓ closed typed filter language > accepts typed DATE custom/catalog fields including explicit maker/year selectors 0ms
+   ✓ closed typed filter language > accepts typed BOOLEAN custom/catalog fields including explicit maker/year selectors 0ms
+   ✓ closed typed filter language > accepts typed SINGLE_SELECT custom/catalog fields including explicit maker/year selectors 1ms
+   ✓ closed typed filter language > accepts typed MULTI_SELECT custom/catalog fields including explicit maker/year selectors 0ms
+   ✓ closed typed filter language > accepts typed URL custom/catalog fields including explicit maker/year selectors 2ms
+   ✓ closed typed filter language > accepts typed MONEY custom/catalog fields including explicit maker/year selectors 0ms
+   ✓ closed typed filter language > canonicalizes exact decimals/tags/UUIDs and rejects canonical list duplicates 2ms
+   ✓ closed typed filter language > rejects incompatible operator/value shape 0 0ms
+   ✓ closed typed filter language > rejects incompatible operator/value shape 1 0ms
+   ✓ closed typed filter language > rejects incompatible operator/value shape 2 0ms
+   ✓ closed typed filter language > rejects incompatible operator/value shape 3 0ms
+   ✓ closed typed filter language > rejects incompatible operator/value shape 4 0ms
+   ✓ closed typed filter language > rejects incompatible operator/value shape 5 0ms
+   ✓ closed typed filter language > rejects incompatible operator/value shape 6 0ms
+   ✓ closed typed filter language > rejects incompatible operator/value shape 7 0ms
+   ✓ closed typed filter language > rejects incompatible operator/value shape 8 0ms
+   ✓ closed typed filter language > rejects incompatible operator/value shape 9 0ms
+   ✓ closed typed filter language > rejects incompatible operator/value shape 10 0ms
+   ✓ closed typed filter language > rejects incompatible operator/value shape 11 0ms
+   ✓ closed typed filter language > rejects incompatible operator/value shape 12 0ms
+   ✓ closed typed filter language > rejects incompatible operator/value shape 13 0ms
+   ✓ closed typed filter language > rejects incompatible operator/value shape 14 0ms
+   ✓ closed typed filter language > rejects incompatible operator/value shape 15 0ms
+   ✓ closed typed filter language > rejects incompatible operator/value shape 16 0ms
+   ✓ closed typed filter language > rejects incompatible operator/value shape 17 0ms
+   ✓ closed typed filter language > rejects incompatible operator/value shape 18 0ms
+   ✓ closed typed filter language > rejects incompatible operator/value shape 19 0ms
+   ✓ closed typed filter language > rejects incompatible operator/value shape 20 0ms
+   ✓ closed typed filter language > rejects incompatible operator/value shape 21 0ms
+   ✓ closed typed filter language > rejects incompatible operator/value shape 22 0ms
+   ✓ closed typed filter language > keeps close exact decimals ordered without floating point 0ms
+   ✓ closed typed filter language > requires exact semantic market selectors and kind-coupled intervals 2ms
+   ✓ current availability is whole-tree and never a truth evaluator > rejects unavailable declarations under NOT/OR/AND 0 0ms
+   ✓ current availability is whole-tree and never a truth evaluator > rejects unavailable declarations under NOT/OR/AND 1 0ms
+   ✓ current availability is whole-tree and never a truth evaluator > rejects unavailable declarations under NOT/OR/AND 2 0ms
+   ✓ current availability is whole-tree and never a truth evaluator > rejects unavailable declarations under NOT/OR/AND 3 0ms
+   ✓ current availability is whole-tree and never a truth evaluator > rejects unavailable declarations under NOT/OR/AND 4 0ms
+   ✓ current availability is whole-tree and never a truth evaluator > rejects unavailable declarations under NOT/OR/AND 5 1ms
+   ✓ current availability is whole-tree and never a truth evaluator > permits structural manual/presence declarations without claiming runtime executability 0ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/search/filter-ast.test.ts > bounded item-filter foundation > accepts five logical ancestors and rejects six including NOT
+AssertionError: expected [Function] to throw error including 'FILTER_TOO_COMPLEX' but got 'FILTER_INVALID'
+
+Expected: "FILTER_TOO_COMPLEX"
+Received: "FILTER_INVALID"
+
+ ❯ fail packages/domain/src/search/filter-ast.test.ts:18:14
+     16|   levels === 0 ? category : { kind: "not", child: nested(levels - 1) };
+     17| const fail = (fn: () => unknown, code = "FILTER_INVALID") => {
+     18|   expect(fn).toThrowError(code);
+       |              ^
+     19|   try { fn(); } catch (error) {
+     20|     expect(error).toMatchObject({ code, message: code });
+ ❯ packages/domain/src/search/filter-ast.test.ts:46:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |workspace| packages/domain/src/search/filter-ast.test.ts > bounded item-filter foundation > guards every exported schema path and does not expose raw Zod payloads
+AssertionError: expected ZodError: [
+  {
+    "code": "custom",
+   … { …(8) } to match object { code: 'FILTER_INVALID', …(1) }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+- {
+-   "code": "FILTER_INVALID",
+-   "message": "FILTER_INVALID",
++ ZodError {
++   "message": "[
++   {
++     \"code\": \"custom\",
++     \"message\": \"FILTER_INVALID\",
++     \"path\": []
++   }
++ ]",
+  }
+
+ ❯ fail packages/domain/src/search/filter-ast.test.ts:20:19
+     18|   expect(fn).toThrowError(code);
+     19|   try { fn(); } catch (error) {
+     20|     expect(error).toMatchObject({ code, message: code });
+       |                   ^
+     21|     expect(JSON.stringify(error)).not.toContain("secret");
+     22|   }
+ ❯ packages/domain/src/search/filter-ast.test.ts:70:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 79 passed (81)
+   Start at  08:05:43
+   Duration  442ms (transform 76ms, setup 6ms, collect 136ms, tests 43ms, environment 0ms, prepare 49ms)
+

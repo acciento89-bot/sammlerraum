@@ -1,0 +1,13 @@
+Sammlerraum V1 remains an open draft. Main and production are unchanged.
+
+All eight Phase10 implementations are complete and locally verified: owner-only wishes/duplicates; public follows/favorites/comments; blocks and private reports; real-role moderation; recipient-only notifications/preferences; durable localized email delivery; responsive DE/EN community UI; stable public collector URLs with atomic source-event notifications and real private dashboard progress.
+
+Accepted baseline remains55/91 independently reviewed tasks. The single independent whole-Phase10 review returned With fixes (0Critical,1Important,2Minor). Root closed all3 in one consolidated TDD correction, source4709d23: no completion receipt on export renewal; readable reply-depth boundary; owner-only hidden-comment recovery after reload. Original review verdict is preserved. Exact corrected-head CI remains pending before canonical Phase10 review credit.
+
+Pre-review source372334a:1547native tests/139files/0skips passed;1631regular tests passed with1032explicit native-disabled cases;218actual compiled browser cases passed, covering DE/EN desktop/mobile public privacy/navigation and prior community, collaboration, sharing, inventory, search/dashboard workflows. Closing69affected checks, final types/lint, worker/web builds pass. Counts overlap and are not summed. Both guarded local DB schema diffs are empty;18frozen migration hashes are unchanged.12real public-page screenshots and regenerated prior-proof variants are retained separately from original historical evidence.
+
+Real initial failures and corrections are documented: encoded @handle404, incorrect mobile hero composition, stale zero-unread cookie expectation after source-event integration, and an invalid expiry fixture rejected by immutable DB guards. No guard was weakened. Prior exact Task7 evidence cb150ee CI42380699651 completed successfully; pending new-head CI is not treated as success.
+
+Scope: source, tests and this existing draft PR only. No merge/deployment, live provider/mail/payment activation, customer-data changes, device/store work or automations.
+
+Corrected4709d23 final gates:1550native/139files/0skips205.29s;1631regular/1035explicitnative-disabled61.87s;9affected actual compiled DE/EN desktop/mobile/API cases25.1s, including hide/reload/restore and forged owner-mode denial. Types/lint and worker/web builds pass. No schema changed;18frozen migration hashes remain intact. Counts overlap, not summed. Verbose private browser diagnostic remains local; safe failure summary and all correction witnesses retained.

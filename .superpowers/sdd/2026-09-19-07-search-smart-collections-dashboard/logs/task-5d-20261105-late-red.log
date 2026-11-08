@@ -1,0 +1,52 @@
+[WebServer] (node:12473) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:12475) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [desktop] › e2e/search-dashboard.spec.ts:1107:3 › de: late acknowledged-refresh response cannot replace a newer member read (6.3s)
+
+
+  1) [desktop] › e2e/search-dashboard.spec.ts:1107:3 › de: late acknowledged-refresh response cannot replace a newer member read 
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: getByTestId('search-total')
+    Expected substring: "2"
+    Received string:    "1 passendes Objekt"
+    Timeout: 5000ms
+
+    Call log:
+      - Expect "toContainText" getByTestId('search-total') with timeout 5000ms
+      - waiting for getByTestId('search-total')
+        14 × locator resolved to <p class="search-count" data-testid="search-total">1 passendes Objekt</p>
+           - unexpected value "1 passendes Objekt"
+
+
+      1116 |       await page.getByRole("button",{name:c.refresh,exact:true}).click();await expect(page.getByTestId("search-total")).toContainText("2");
+      1117 |       release();await page.evaluate(()=>new Promise<void>(resolve=>requestAnimationFrame(()=>requestAnimationFrame(()=>resolve()))));
+    > 1118 |       await expect(page.getByTestId("search-total")).toContainText("2");
+           |                                                      ^
+      1119 |     }finally{release();await cleanupSearchFixture(f);}
+      1120 |   });
+      1121 | }
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/search-dashboard.spec.ts:1118:54
+
+    Error Context: test-results/search-dashboard-de-late-a-bde0f-replace-a-newer-member-read-desktop/error-context.md
+
+    Error Context: test-results/search-dashboard-de-late-a-bde0f-replace-a-newer-member-read-desktop/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/search-dashboard-de-late-a-bde0f-replace-a-newer-member-read-desktop/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/search-dashboard-de-late-a-bde0f-replace-a-newer-member-read-desktop/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [desktop] › e2e/search-dashboard.spec.ts:1107:3 › de: late acknowledged-refresh response cannot replace a newer member read 
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/search-dashboard.spec.ts --grep de: late acknowledged-refresh --project desktop --workers=1 --trace=retain-on-failure

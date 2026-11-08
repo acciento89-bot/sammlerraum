@@ -1,0 +1,368 @@
+# Review package: bb2aaabd87b42ec1a97f3dd1f8591d9b5c1643a5..91ae759a0465530d7ddb8b01fd38f635a16991b2
+
+## Commits
+91ae759 fix: validate chosen dashboard manual denominations
+
+## Files changed
+ .../domain/src/dashboard/dashboard-input.test.ts   | 34 ++++++++++++-
+ packages/domain/src/dashboard/dashboard-result.ts  | 15 ++++++
+ .../domain/src/dashboard/dashboard-service.test.ts | 59 ++++++++++++++++++++++
+ packages/domain/src/dashboard/dashboard-service.ts |  8 ++-
+ packages/domain/src/dashboard/dashboard-sql.ts     | 22 ++++++--
+ 5 files changed, 130 insertions(+), 8 deletions(-)
+
+## Diff
+diff --git a/packages/domain/src/dashboard/dashboard-input.test.ts b/packages/domain/src/dashboard/dashboard-input.test.ts
+index e429f2f..099fa8f 100644
+--- a/packages/domain/src/dashboard/dashboard-input.test.ts
++++ b/packages/domain/src/dashboard/dashboard-input.test.ts
+@@ -109,20 +109,50 @@ describe("dashboard request and result bounds", () => {
+     data.selection.unitCount = "9".repeat(79);
+     expect(() => finalizeDashboard(data, () => {})).toThrow("SEARCH_UNAVAILABLE");
+     for (const units of ["01", "-0", "1e3", "NaN", "x".repeat(79)]) {
+       data.selection.unitCount = units;
+       expect(() => finalizeDashboard(data, () => {})).toThrow("SEARCH_INVARIANT");
+     }
+     data.selection.unitCount = "0";
+     data.selection.itemCount = 9007199254740992;
+     expect(() => finalizeDashboard(data, () => {})).toThrow("SEARCH_INVARIANT");
+   });
++  it.each([
++    ["manualValues", "ZZZ", 2],
++    ["manualValues", "EUR", 9],
++    ["manualChange", "ZZZ", 2],
++    ["manualChange", "EUR", 9],
++  ] as const)(
++    "rejects invalid %s output denomination %s/%s",
++    (section, currency, minorUnitExponent) => {
++      const data = large();
++      if (section === "manualValues") {
++        Object.assign(data.manualValues.groups![0]!, { currency, minorUnitExponent });
++      } else {
++        data.manualChange.groups = [
++          {
++            source: "MANUAL",
++            basis: "PER_UNIT",
++            currency,
++            minorUnitExponent,
++            deltaMinor: "0",
++            contributors: pair,
++            previousObservedAtFrom: timestamp,
++            previousObservedAtTo: timestamp,
++            latestObservedAtFrom: timestamp,
++            latestObservedAtTo: timestamp,
++          },
++        ];
++      }
++      expect(() => finalizeDashboard(data, () => {})).toThrow("SEARCH_INVARIANT");
++    },
++  );
+   it("bounds complete monetary groups at 256 without treating oversized output as partial", () => {
+     const data = large();
+     expect(finalizeDashboard(data, () => {}).manualValues.groups).toHaveLength(256);
+     data.manualValues.groups!.push(data.manualValues.groups![0]!);
+     expect(() => finalizeDashboard(data, () => {})).toThrow("SEARCH_UNAVAILABLE");
+   });
+   it("accepts exactly 1MiB and rejects one byte more, including UTF8 content", () => {
+     const data = large();
+     let remaining = 1048576 - Buffer.byteLength(JSON.stringify(data));
+     expect(remaining).toBeGreaterThan(0);
+@@ -147,24 +177,24 @@ describe("dashboard request and result bounds", () => {
+     expect(() =>
+       finalizeDashboard(empty(), () => {
+         if (++checks === 4) throw Error("expired");
+       }),
+     ).toThrow("expired");
+     expect(checks).toBe(4);
+   });
+ });
+ function large(): DashboardData {
+   const data = empty();
+-  data.manualValues.groups = Array.from({ length: 256 }, (_, n) => ({
++  data.manualValues.groups = Array.from({ length: 256 }, () => ({
+     source: "MANUAL",
+     basis: "PER_UNIT",
+-    currency: `A${String.fromCharCode(65 + Math.floor(n / 26))}${String.fromCharCode(65 + (n % 26))}`,
++    currency: "EUR",
+     minorUnitExponent: 2,
+     totalMinor: "10",
+     contributors: { itemCount: 10, unitCount: "10" },
+     otherDenomination: { itemCount: 2550, unitCount: "2550" },
+     observedAtFrom: timestamp,
+     observedAtTo: timestamp,
+     topItems: {
+       limit: 10,
+       eligibleCount: 10,
+       hasMore: false,
+diff --git a/packages/domain/src/dashboard/dashboard-result.ts b/packages/domain/src/dashboard/dashboard-result.ts
+index bbbec8e..3ff29d7 100644
+--- a/packages/domain/src/dashboard/dashboard-result.ts
++++ b/packages/domain/src/dashboard/dashboard-result.ts
+@@ -1,10 +1,11 @@
++import { currencyMinorUnitExponent } from "../money/currencies";
+ import { searchFail } from "@sammlerraum/contracts/item-search";
+ import {
+   DashboardDataSchema,
+   DASHBOARD_MAX_RESPONSE_BYTES,
+   type DashboardData,
+ } from "@sammlerraum/contracts/dashboard";
+ export type Schema<T> = {
+   safeParse(value: unknown):
+     | { success: true; data: T }
+     | {
+@@ -35,16 +36,30 @@ export function checkedDashboardPart<T>(
+       )
+     )
+       return searchFail("SEARCH_UNAVAILABLE");
+     return searchFail("SEARCH_INVARIANT");
+   }
+   return parsed.data;
+ }
+ /** Validate the bounded wire object while still inside the caller's transaction budget. */
+ export function finalizeDashboard(value: unknown, checkBudget: () => void): DashboardData {
+   const result = checkedDashboardPart(DashboardDataSchema, value, checkBudget);
++  // Shape validation alone does not establish a supported currency/exponent pair.
++  // SQL separately validates the chosen prior point, including excluded histories.
++  for (const group of [
++    ...(result.manualValues.groups ?? []),
++    ...(result.manualChange.groups ?? []),
++  ]) {
++    let exponent: number;
++    try {
++      exponent = currencyMinorUnitExponent(group.currency);
++    } catch {
++      return searchFail("SEARCH_INVARIANT");
++    }
++    if (exponent !== group.minorUnitExponent) return searchFail("SEARCH_INVARIANT");
++  }
+   checkBudget();
+   const bytes = Buffer.byteLength(JSON.stringify(result));
+   checkBudget();
+   if (bytes > DASHBOARD_MAX_RESPONSE_BYTES) return searchFail("SEARCH_UNAVAILABLE");
+   return result;
+ }
+diff --git a/packages/domain/src/dashboard/dashboard-service.test.ts b/packages/domain/src/dashboard/dashboard-service.test.ts
+index 20d00bb..f3fa0ba 100644
+--- a/packages/domain/src/dashboard/dashboard-service.test.ts
++++ b/packages/domain/src/dashboard/dashboard-service.test.ts
+@@ -95,20 +95,79 @@ async function fixture(
+         }),
+       read: (input = {}) => createDashboardService(db!).getDashboard({ userId: owner }, input),
+     });
+   } finally {
+     await db!.collectibleItem.deleteMany({ where: { ownerId: owner } });
+     await db!.mediaAsset.deleteMany({ where: { ownerId: owner } });
+     await db!.user.delete({ where: { id: owner } });
+   }
+ }
+ describe.runIf(enabled)("dashboard actual observations and filters", () => {
++  it.each([
++    ["unsupported latest currency", "v.currency,", "'ZZZ'::text AS currency,"],
++    ["mismatched latest exponent", 'v."minorUnitExponent" AS exponent', "9 AS exponent"],
++    [
++      "unsupported immediate prior currency",
++      "p.currency AS previous_currency",
++      "'ZZZ'::text AS previous_currency",
++    ],
++    [
++      "mismatched immediate prior exponent",
++      'p."minorUnitExponent" AS previous_exponent',
++      "9 AS previous_exponent",
++    ],
++  ])(
++    "rejects %s before returning monetary groups or noncomparable history",
++    async (_label, from, to) =>
++      fixture(async (f) => {
++        const item = await f.item("Chosen denomination integrity", 2);
++        const service = createValuationService(db!, f.owner);
++        for (const observedAt of ["2025-01-01", "2025-02-01", "2025-03-01"])
++          await service.addManualValuation(item.id, {
++            amountMinor: 100n,
++            currency: "EUR",
++            observedAt: new Date(observedAt).toISOString(),
++          });
++        let interceptions = 0;
++        let manualRows: unknown;
++        const wrapped: SearchDatabase = {
++          $transaction: (work, options) =>
++            db!.$transaction(
++              (tx) =>
++                work({
++                  $queryRaw: async <T>(sql: Prisma.Sql) => {
++                    if (!sql.text.includes("dashboard:manual")) return tx.$queryRaw<T>(sql);
++                    // Simulate corrupt selected points only; execute the rest of the actual query natively.
++                    // Native constraints remain enabled, and stored producer-written rows remain valid.
++                    const strings = sql.strings.map((part) => part.replace(from!, to!));
++                    expect(strings.join("")).not.toBe(sql.strings.join(""));
++                    interceptions++;
++                    const rows = await tx.$queryRaw<T>(Prisma.sql(strings, ...sql.values));
++                    manualRows = rows;
++                    return rows;
++                  },
++                }),
++              options,
++            ),
++        };
++        await expect(
++          createDashboardService(wrapped).getDashboard({ userId: f.owner }, {}),
++        ).rejects.toMatchObject({ code: "SEARCH_INVARIANT" });
++        expect(interceptions).toBe(1);
++        expect(manualRows).toEqual([{ denominationsValid: false, overflow: false, data: null }]);
++        expect(await f.read()).toMatchObject({
++          manualValues: { groups: [{ currency: "EUR", minorUnitExponent: 2, totalMinor: "200" }] },
++          manualChange: { state: "COMPLETE", groups: [{ deltaMinor: "0" }] },
++        });
++      }),
++  );
++
+   it("selects latest before denomination and never turns absent or incomparable history into zero", async () =>
+     fixture(async (f) => {
+       const a = await f.item("Changed", 3),
+         b = await f.item("Switched", 2),
+         c = await f.item("Single"),
+         d = await f.item("Absent");
+       const svc = createValuationService(db!, f.owner);
+       for (const [id, amount, currency, time] of [
+         [a.id, 200n, "EUR", "2025-01-01"],
+         [a.id, 150n, "EUR", "2025-02-01"],
+diff --git a/packages/domain/src/dashboard/dashboard-service.ts b/packages/domain/src/dashboard/dashboard-service.ts
+index 775b025..bbc6609 100644
+--- a/packages/domain/src/dashboard/dashboard-service.ts
++++ b/packages/domain/src/dashboard/dashboard-service.ts
+@@ -20,27 +20,31 @@ import {
+   dashboardManualSql,
+   dashboardDistributionsSql,
+   dashboardRankingsSql,
+ } from "./dashboard-sql";
+ import type { Prisma } from "@sammlerraum/db/search-sql";
+ 
+ async function read<T>(
+   tx: BoundedSearchReadTransaction,
+   sql: Prisma.Sql,
+   schema: Schema<T>,
++  requireValidDenominations = false,
+ ): Promise<T> {
+-  const rows = await tx.$queryRaw<{ data: unknown; overflow?: boolean }[]>(sql);
++  const rows =
++    await tx.$queryRaw<{ data: unknown; overflow?: boolean; denominationsValid?: unknown }[]>(sql);
+   if (
+     rows.length !== 1 ||
+     (rows[0]!.overflow !== undefined && typeof rows[0]!.overflow !== "boolean")
+   )
+     return searchFail("SEARCH_INVARIANT");
++  if (requireValidDenominations && rows[0]!.denominationsValid !== true)
++    return searchFail("SEARCH_INVARIANT");
+   if (rows[0]!.overflow) return searchFail("SEARCH_UNAVAILABLE");
+   return checkedDashboardPart(schema, rows[0]!.data, tx.checkBudget);
+ }
+ /** Partial owned milestone. Producer capability states are explicit, never numeric placeholders. */
+ export function createDashboardService(database: SearchDatabase) {
+   return {
+     getDashboard: async (actor: { userId: string }, input: unknown): Promise<DashboardData> => {
+       if (
+         !actor ||
+         typeof actor.userId !== "string" ||
+@@ -51,21 +55,21 @@ export function createDashboardService(database: SearchDatabase) {
+       const query = parseDashboardQuery(input);
+       if (query.filter) validateCurrentFilterAvailability(query.filter);
+       return runSearchRead(database, async (tx) => {
+         const selection = await prepareItemSelection(tx, actor, query),
+           predicate = selection.matchedPredicate;
+         const summary = await read(
+           tx,
+           dashboardSummarySql(actor.userId, predicate),
+           DashboardSummarySchema,
+         );
+-        const manual = await read(tx, dashboardManualSql(predicate), DashboardManualSchema);
++        const manual = await read(tx, dashboardManualSql(predicate), DashboardManualSchema, true);
+         const distributions = await read(
+           tx,
+           dashboardDistributionsSql(predicate),
+           DashboardDistributionsSchema,
+         );
+         const rankings = await read(tx, dashboardRankingsSql(predicate), DashboardRankingsSchema);
+         return finalizeDashboard(
+           {
+             version: 1,
+             scope: "OWNED",
+diff --git a/packages/domain/src/dashboard/dashboard-sql.ts b/packages/domain/src/dashboard/dashboard-sql.ts
+index 0667edb..f0a2b15 100644
+--- a/packages/domain/src/dashboard/dashboard-sql.ts
++++ b/packages/domain/src/dashboard/dashboard-sql.ts
+@@ -1,12 +1,20 @@
+ import { Prisma } from "@sammlerraum/db/search-sql";
+ import { candidateFrom, TRUE } from "../search/search-compiler";
++import { currencyMinorUnitExponent, valuationCurrencyCodes } from "../money/currencies";
++
++// Derive the bounded SQL guard from the same authority used by valuation writes.
++const manualDenominations = Prisma.join(
++  valuationCurrencyCodes.map(
++    (currency) => Prisma.sql`(${currency}::text,${currencyMinorUnitExponent(currency)}::integer)`,
++  ),
++);
+ 
+ /** Fixed internal JSON projections. Numeric sums leave PostgreSQL only as decimal strings. */
+ const measure = (where: Prisma.Sql = TRUE) =>
+   Prisma.sql`jsonb_build_object('itemCount',count(*) FILTER(WHERE ${where}),'unitCount',coalesce(sum(quantity::numeric) FILTER(WHERE ${where}),0)::text)`;
+ const date = (column: Prisma.Sql) => Prisma.sql`to_char(${column},'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"')`;
+ function matched(predicate: Prisma.Sql) {
+   return Prisma.sql`matched AS MATERIALIZED (SELECT i.id,i.title,i."ownerId",i."collectionId",i."categoryTemplateId",i."conditionOptionId",i.quantity,i.visibility,i."tradeStatus",i."archivedAt",i."disposedAt",i."createdAt",i."updatedAt",i."acquisitionDate",i."purchaseAmountMinor",i."purchaseCurrency",i."catalogEntryId" ${candidateFrom} WHERE ${predicate})`;
+ }
+ const hasManual = Prisma.sql`EXISTS(SELECT 1 FROM "Valuation" v WHERE v."itemId"=i.id AND v."ownerId"=i."ownerId" AND v.type='MANUAL' AND v.basis='PER_UNIT')`;
+ const hasGrading = Prisma.sql`EXISTS(SELECT 1 FROM "Grading" g WHERE g."itemId"=i.id AND g."ownerId"=i."ownerId")`;
+@@ -16,45 +24,51 @@ export function dashboardSummarySql(owner: string, predicate: Prisma.Sql) {
+   return Prisma.sql`/* dashboard:summary */ WITH ${matched(predicate)}, facts AS MATERIALIZED (
+  SELECT i.*,${hasManual} AS manual,${hasGrading} AS graded,${media(false)} AS image,${media(true)} AS document FROM matched i)
+  SELECT jsonb_build_object(
+  'selection',${measure()} || jsonb_build_object('matchedCollectionCount',count(DISTINCT "collectionId")),
+  'collections',jsonb_build_object('ownedLiveCount',(SELECT count(*) FROM "Collection" WHERE "ownerId"=${owner} AND "deletedAt" IS NULL)),
+  'trade',(SELECT jsonb_agg(bucket ORDER BY status COLLATE pg_catalog."C") FROM (SELECT status,(SELECT ${measure()} || jsonb_build_object('tradeStatus',status) FROM facts WHERE "tradeStatus"::text=status) AS bucket FROM (VALUES('NOT_FOR_TRADE'),('OPEN_TO_TRADE'),('FOR_SALE'),('RESERVED')) s(status)) buckets),
+  'tradeReady',${measure(Prisma.sql`"tradeStatus" IN ('OPEN_TO_TRADE','FOR_SALE')`)},
+  'missing',jsonb_build_object('category',${measure(Prisma.sql`"categoryTemplateId" IS NULL`)},'condition',${measure(Prisma.sql`"conditionOptionId" IS NULL`)},'acquisitionDate',${measure(Prisma.sql`"acquisitionDate" IS NULL`)},'purchaseAmount',${measure(Prisma.sql`"purchaseAmountMinor" IS NULL AND "purchaseCurrency" IS NULL`)},'ownEstimate',${measure(Prisma.sql`NOT manual`)},'grading',${measure(Prisma.sql`NOT graded`)},'catalogLink',${measure(Prisma.sql`"catalogEntryId" IS NULL`)},'image',${measure(Prisma.sql`NOT image`)},'document',${measure(Prisma.sql`NOT document`)})) AS data FROM facts`;
+ }
+ export function dashboardManualSql(predicate: Prisma.Sql) {
+-  return Prisma.sql`/* dashboard:manual */ WITH ${matched(predicate)}, points AS MATERIALIZED (
++  return Prisma.sql`/* dashboard:manual */ WITH ${matched(predicate)}, valid_denominations(currency,exponent) AS (VALUES ${manualDenominations}), selected_points AS MATERIALIZED (
+  SELECT i.id,i.title,i."collectionId",i.quantity,v.id AS valuation_id,v."amountMinor" AS amount,v.currency,v."minorUnitExponent" AS exponent,v."observedAt" AS observed,
+  p.id AS previous_id,p."amountMinor" AS previous_amount,p.currency AS previous_currency,p."minorUnitExponent" AS previous_exponent,p."observedAt" AS previous_observed
+  FROM matched i
+  LEFT JOIN LATERAL (SELECT v.* FROM "Valuation" v WHERE v."itemId"=i.id AND v."ownerId"=i."ownerId" AND v.type='MANUAL' AND v.basis='PER_UNIT' ORDER BY v."observedAt" DESC,v."createdAt" DESC,v.id DESC LIMIT 1) v ON true
+  LEFT JOIN LATERAL (SELECT p.* FROM "Valuation" p WHERE p."itemId"=i.id AND p."ownerId"=i."ownerId" AND p.type='MANUAL' AND p.basis='PER_UNIT' AND p."observedAt"<v."observedAt" ORDER BY p."observedAt" DESC,p."createdAt" DESC,p.id DESC LIMIT 1) p ON true
+- ), classified AS MATERIALIZED (SELECT *,valuation_id IS NOT NULL AND previous_id IS NOT NULL AND currency=previous_currency AND exponent=previous_exponent AS comparable FROM points),
++ ), integrity AS MATERIALIZED (SELECT NOT EXISTS (
++ SELECT 1 FROM selected_points p WHERE
++ (valuation_id IS NOT NULL AND NOT EXISTS (SELECT 1 FROM valid_denominations d WHERE d.currency=p.currency AND d.exponent=p.exponent)) OR
++ (previous_id IS NOT NULL AND NOT EXISTS (SELECT 1 FROM valid_denominations d WHERE d.currency=p.previous_currency AND d.exponent=p.previous_exponent))
++ ) AS valid),
++ points AS MATERIALIZED (SELECT * FROM selected_points WHERE (SELECT valid FROM integrity)),
++ classified AS MATERIALIZED (SELECT *,valuation_id IS NOT NULL AND previous_id IS NOT NULL AND currency=previous_currency AND exponent=previous_exponent AS comparable FROM points),
+  denominations AS MATERIALIZED (SELECT currency,exponent FROM points WHERE valuation_id IS NOT NULL GROUP BY currency,exponent LIMIT 257),
+  sizes AS (SELECT count(*) AS groups FROM denominations),
+  totals AS (SELECT count(*) AS selected,count(valuation_id) AS valued,count(*) FILTER(WHERE comparable) AS compared FROM classified),
+  ranked AS (SELECT *,row_number() OVER(PARTITION BY currency,exponent ORDER BY amount::numeric*quantity DESC,id DESC) AS rank FROM points WHERE valuation_id IS NOT NULL),
+  value_groups AS (SELECT d.currency,d.exponent,jsonb_build_object('source','MANUAL','basis','PER_UNIT','currency',d.currency,'minorUnitExponent',d.exponent,
+  'totalMinor',sum(amount::numeric*quantity)::text,'contributors',${measure()},
+  'otherDenomination',(SELECT ${measure(Prisma.sql`valuation_id IS NOT NULL AND (currency,exponent)<>(d.currency,d.exponent)`)} FROM points),
+  'observedAtFrom',${date(Prisma.sql`min(observed)`)},'observedAtTo',${date(Prisma.sql`max(observed)`)},
+  'topItems',jsonb_build_object('limit',10,'eligibleCount',count(*),'hasMore',count(*)>10,'quantityBasis','CURRENT_QUANTITY','items',jsonb_agg(jsonb_build_object('id',id,'title',title,'collectionId',"collectionId",'quantity',quantity,'valuationId',valuation_id,'perUnitMinor',amount::text,'weightedMinor',(amount::numeric*quantity)::text,'observedAt',${date(Prisma.sql`observed`)}) ORDER BY rank) FILTER(WHERE rank<=10))) AS data
+  FROM denominations d JOIN ranked r ON r.currency=d.currency AND r.exponent=d.exponent WHERE (SELECT groups FROM sizes)<=256 GROUP BY d.currency,d.exponent),
+  change_groups AS (SELECT currency,exponent,jsonb_build_object('source','MANUAL','basis','PER_UNIT','currency',currency,'minorUnitExponent',exponent,'deltaMinor',sum((amount::numeric-previous_amount::numeric)*quantity)::text,'contributors',${measure()},'previousObservedAtFrom',${date(Prisma.sql`min(previous_observed)`)},'previousObservedAtTo',${date(Prisma.sql`max(previous_observed)`)},'latestObservedAtFrom',${date(Prisma.sql`min(observed)`)},'latestObservedAtTo',${date(Prisma.sql`max(observed)`)}) AS data FROM classified WHERE comparable AND (SELECT groups FROM sizes)<=256 GROUP BY currency,exponent)
+- SELECT (SELECT groups>256 FROM sizes) AS overflow,jsonb_build_object(
++ SELECT (SELECT valid FROM integrity) AS "denominationsValid",(SELECT groups>256 FROM sizes) AS overflow,CASE WHEN (SELECT valid FROM integrity) THEN jsonb_build_object(
+  'manualValues',jsonb_build_object('state',CASE WHEN selected=0 THEN 'EMPTY' WHEN valued=0 THEN 'NO_ESTIMATES' WHEN valued<selected THEN 'PARTIAL' ELSE 'COMPLETE' END,'quantityBasis','CURRENT_QUANTITY',
+  'contributors',(SELECT ${measure(Prisma.sql`valuation_id IS NOT NULL`)} FROM points),'missing',(SELECT ${measure(Prisma.sql`valuation_id IS NULL`)} FROM points),
+  'groups',CASE WHEN selected>0 AND valued=0 THEN NULL ELSE coalesce((SELECT jsonb_agg(data ORDER BY currency COLLATE pg_catalog."C",exponent) FROM value_groups),'[]'::jsonb) END),
+  'manualChange',jsonb_build_object('state',CASE WHEN selected=0 THEN 'EMPTY' WHEN compared=0 THEN 'INSUFFICIENT_DATA' WHEN compared<selected THEN 'PARTIAL' ELSE 'COMPLETE' END,'mode','LATEST_VS_PREVIOUS_OBSERVATION','quantityBasis','CURRENT_QUANTITY','comparable',(SELECT ${measure(Prisma.sql`comparable`)} FROM classified),
+  'excluded',jsonb_build_object('NO_ESTIMATE',(SELECT ${measure(Prisma.sql`valuation_id IS NULL`)} FROM points),'INSUFFICIENT_HISTORY',(SELECT ${measure(Prisma.sql`valuation_id IS NOT NULL AND previous_id IS NULL`)} FROM points),'NONCOMPARABLE_DENOMINATION',(SELECT ${measure(Prisma.sql`previous_id IS NOT NULL AND (currency,exponent)<>(previous_currency,previous_exponent)`)} FROM points)),
+- 'groups',CASE WHEN selected>0 AND compared=0 THEN NULL ELSE coalesce((SELECT jsonb_agg(data ORDER BY currency COLLATE pg_catalog."C",exponent) FROM change_groups),'[]'::jsonb) END)) AS data FROM totals`;
++ 'groups',CASE WHEN selected>0 AND compared=0 THEN NULL ELSE coalesce((SELECT jsonb_agg(data ORDER BY currency COLLATE pg_catalog."C",exponent) FROM change_groups),'[]'::jsonb) END)) ELSE NULL END AS data FROM totals`;
+ }
+ export function dashboardDistributionsSql(predicate: Prisma.Sql) {
+   return Prisma.sql`/* dashboard:distributions */ WITH ${matched(predicate)},
+  conditions AS MATERIALIZED(SELECT i."categoryTemplateId",i."conditionOptionId",o."schemeId",o."labelKey",o."labelDe",o."labelEn",count(*) AS items,sum(i.quantity::numeric)::text AS units FROM matched i JOIN "ConditionOption" o ON o.id=i."conditionOptionId" AND o."categoryTemplateId"=i."categoryTemplateId" GROUP BY i."categoryTemplateId",i."conditionOptionId",o."schemeId",o."labelKey",o."labelDe",o."labelEn" LIMIT 129),
+  records AS MATERIALIZED(SELECT g.id,g."itemId",g."providerKey",g.grade FROM matched i JOIN "Grading" g ON g."itemId"=i.id AND g."ownerId"=i."ownerId"),
+  grades AS MATERIALIZED(SELECT "providerKey" COLLATE pg_catalog."C" AS provider,grade COLLATE pg_catalog."C" AS grade,count(*) AS records,count(DISTINCT "itemId") AS items FROM records GROUP BY "providerKey" COLLATE pg_catalog."C",grade COLLATE pg_catalog."C" LIMIT 129),
+  sizes AS (SELECT (SELECT count(*) FROM conditions)>128 OR (SELECT count(*) FROM grades)>128 AS overflow)
+  SELECT overflow,CASE WHEN NOT overflow THEN jsonb_build_object(
+  'condition',jsonb_build_object('missing',(SELECT ${measure(Prisma.sql`"conditionOptionId" IS NULL`)} FROM matched),'groups',coalesce((SELECT jsonb_agg(jsonb_build_object('categoryTemplateId',"categoryTemplateId",'conditionOptionId',"conditionOptionId",'schemeId',"schemeId",'labelKey',"labelKey",'labelDe',"labelDe",'labelEn',"labelEn",'itemCount',items,'unitCount',units) ORDER BY "categoryTemplateId","conditionOptionId") FROM conditions),'[]'::jsonb)),
+  'grading',jsonb_build_object('gradedItemCount',(SELECT count(DISTINCT "itemId") FROM records),'gradingRecordCount',(SELECT count(*) FROM records),'groups',coalesce((SELECT jsonb_agg(jsonb_build_object('providerKey',provider,'grade',grade,'recordCount',records,'itemCount',items) ORDER BY provider COLLATE pg_catalog."C",grade COLLATE pg_catalog."C") FROM grades),'[]'::jsonb))) ELSE NULL END AS data FROM sizes`;

@@ -1,0 +1,19 @@
+{
+  ".github/workflows/ci.yml": "44ed70f05381c44907a8512d6a1ca5a9ac8b971ad85071b03135e3e48c982d53",
+  "packages/contracts/package.json": "52019b5881a3af957a7537182ee30a85948eaa3455abd3bfe7596d1e60370159",
+  "packages/contracts/src/dashboard.ts": "f9f206598431f825e840ab517c40b483473be5dbd4504bdc3ecf60259bffda36",
+  "packages/domain/package.json": "821153aa68f0fddd36fac020584627ed7995dad5bf35b083f64c76680adba4a6",
+  "packages/domain/src/search/item-search-service.ts": "a2456c401c09058f30fe7c6c38e58cfe31c0d9f8456ec497ad3bb176646db3db",
+  "packages/domain/src/search/search-selection.ts": "ec5b80421e943e68dd271aa650487c074310db90ac16398187da0c4559d48837",
+  "apps/web/src/lib/item-search-routes.ts": "0a021ad678f7d0a5db8f0c9aaef1329b1b5c3c05c4be83c490a87d000bf44738",
+  "apps/web/src/lib/dashboard-routes.ts": "a1003aa078f70f92f9915d200430d87e1aecde42410c7f0113d021fee1410b39",
+  "apps/web/src/lib/dashboard-route-dependencies.ts": "550f6711381c5dbfc24dead164b0ee0e036b86076d23eb07f9a8022a07abdd83",
+  "apps/web/src/lib/dashboard-routes.integration.test.ts": "80dd5b5d63f1a521f99d44af6bdabbba63d12f81b79e560c4760d2c0f3395bce",
+  "apps/web/src/app/api/v1/dashboard/route.ts": "798c55764e33bccaac243e591807d8a65b8de0944584ef3494884eacc1128f26",
+  "docs/dashboard/owned-dashboard.md": "b433c84d4d79bd65ed626248b8cef44f6c81050fa3849769d14891cdf9ef6dad",
+  "packages/domain/src/dashboard/dashboard-input.test.ts": "1adc247c0f142339ca8c7992d53aeb30e4eec217b108b324c0e426d9f2f35892",
+  "packages/domain/src/dashboard/dashboard-result.ts": "e3f55934b810d5f914e2bafceea2aa53251226068788206c6ac2268d57b7c036",
+  "packages/domain/src/dashboard/dashboard-service.test.ts": "1b0470df324bd7c1bfb8d0df49d8c243d60b73bac6402c32f497bc12ec0b292f",
+  "packages/domain/src/dashboard/dashboard-service.ts": "332e82298985ac6f9d15fdce8b56a2cd5268d8a0181eb19466008a8190d77577",
+  "packages/domain/src/dashboard/dashboard-sql.ts": "d8b1e9a3165c6a9a6be100abf3f8e122d965efbad8d9952dec1db03b2c3ee447"
+}

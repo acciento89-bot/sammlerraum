@@ -1,0 +1,14 @@
+{
+  "name": "@sammlerraum/testing",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "pnpm typecheck",
+    "lint": "prettier --check .",
+    "typecheck": "tsc --noEmit --project ../../tsconfig.base.json"
+  },
+  "devDependencies": {
+    "@formatjs/icu-messageformat-parser": "3.5.20",
+    "sharp": "0.35.4"
+  }
+}

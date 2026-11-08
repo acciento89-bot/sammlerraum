@@ -1,0 +1,144 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| packages/domain/src/search/item-search-service.test.ts (66 tests | 4 failed) 883ms
+   ✓ owned item search PostgreSQL > does not include inaccessible private/public items in rows or total count 15ms
+   × owned item search PostgreSQL > executes custom SHORT_TEXT stored type 20ms
+     → SEARCH_INVARIANT
+   ✓ owned item search PostgreSQL > executes custom LONG_TEXT stored type 9ms
+   ✓ owned item search PostgreSQL > executes custom INTEGER stored type 8ms
+   ✓ owned item search PostgreSQL > executes custom DECIMAL stored type 8ms
+   ✓ owned item search PostgreSQL > executes custom DATE stored type 8ms
+   ✓ owned item search PostgreSQL > executes custom BOOLEAN stored type 7ms
+   ✓ owned item search PostgreSQL > executes custom URL stored type 10ms
+   ✓ owned item search PostgreSQL > executes custom SINGLE_SELECT stored type 8ms
+   ✓ owned item search PostgreSQL > executes custom MULTI_SELECT stored type 8ms
+   ✓ owned item search PostgreSQL > executes custom MONEY stored type 7ms
+   × owned item search PostgreSQL > executes catalog SHORT_TEXT stored type and scoped absence 4ms
+     → SEARCH_INVARIANT
+   ✓ owned item search PostgreSQL > executes catalog LONG_TEXT stored type and scoped absence 11ms
+   ✓ owned item search PostgreSQL > executes catalog INTEGER stored type and scoped absence 11ms
+   ✓ owned item search PostgreSQL > executes catalog DECIMAL stored type and scoped absence 11ms
+   ✓ owned item search PostgreSQL > executes catalog DATE stored type and scoped absence 16ms
+   ✓ owned item search PostgreSQL > executes catalog BOOLEAN stored type and scoped absence 9ms
+   ✓ owned item search PostgreSQL > executes catalog URL stored type and scoped absence 17ms
+   ✓ owned item search PostgreSQL > executes catalog SINGLE_SELECT stored type and scoped absence 11ms
+   ✓ owned item search PostgreSQL > executes catalog MULTI_SELECT stored type and scoped absence 11ms
+   ✓ owned item search PostgreSQL > executes catalog MONEY stored type and scoped absence 12ms
+   ✓ owned item search PostgreSQL > handles collection/category/condition and stored enums 29ms
+   ✓ owned item search PostgreSQL > uses two-valued mixed NOT/OR, tags identity and literal values 14ms
+   × owned item search PostgreSQL > matches every ordered operator exactly, preserving decimal precision 32ms
+     → SEARCH_INVARIANT
+   ✓ owned item search PostgreSQL > requires grading components from one row and folds only provider ASCII 10ms
+   ✓ owned item search PostgreSQL > selects latest manual before denomination, keeps bigint/per-unit values 14ms
+   ✓ owned item search PostgreSQL > searches literal Unicode broad whitelist: äöüß 5ms
+   ✓ owned item search PostgreSQL > searches literal Unicode broad whitelist: Café 5ms
+   ✓ owned item search PostgreSQL > searches literal Unicode broad whitelist: Café 4ms
+   × owned item search PostgreSQL > searches literal Unicode broad whitelist: 100%_\' 7ms
+     → expected [] to deeply equal [ Array(1) ]
+   ✓ owned item search PostgreSQL > searches literal Unicode broad whitelist: Public phrase 5ms
+   ✓ owned item search PostgreSQL > searches literal Unicode broad whitelist: i̇ tag 5ms
+   ✓ owned item search PostgreSQL > searches literal Unicode broad whitelist: ID-literal 5ms
+   ✓ owned item search PostgreSQL > searches literal Unicode broad whitelist: certificate-one 5ms
+   ✓ owned item search PostgreSQL > searches literal Unicode broad whitelist: Long authored 5ms
+   ✓ owned item search PostgreSQL > searches literal Unicode broad whitelist: Selected 6ms
+   ✓ owned item search PostgreSQL > searches literal Unicode broad whitelist: Uhrenkategorie 5ms
+   ✓ owned item search PostgreSQL > searches literal Unicode broad whitelist: Clock category 5ms
+   ✓ owned item search PostgreSQL > searches literal Unicode broad whitelist: Katalogübersetzung 5ms
+   ✓ owned item search PostgreSQL > searches literal Unicode broad whitelist: Retired selected variant 5ms
+   ✓ owned item search PostgreSQL > searches literal Unicode broad whitelist: Chosen option 5ms
+   ✓ owned item search PostgreSQL > searches literal Unicode broad whitelist: Ausgewählte Option 5ms
+   ✓ owned item search PostgreSQL > excludes non-whitelisted/unselected/literal mismatch: Private secret phrase 5ms
+   ✓ owned item search PostgreSQL > excludes non-whitelisted/unselected/literal mismatch: Secret other variant 5ms
+   ✓ owned item search PostgreSQL > excludes non-whitelisted/unselected/literal mismatch: 100ZZ 5ms
+   ✓ owned item search PostgreSQL > excludes non-whitelisted/unselected/literal mismatch: unselected option 5ms
+   ✓ owned item search PostgreSQL > uses retained exact selected variant facts, no entry fallback after removal 15ms
+   ✓ owned item search PostgreSQL > rejects all unavailable families below NOT/OR even on empty candidates 3ms
+   ✓ owned item search PostgreSQL > validates private/nonexistent/type/option references independent of Boolean matches 19ms
+   ✓ owned item search PostgreSQL > rejects malformed relevant catalog DECIMAL under NOT independently of match 6ms
+   ✓ owned item search PostgreSQL > rejects malformed relevant catalog DECIMAL under NOT independently of match 4ms
+   ✓ owned item search PostgreSQL > rejects malformed relevant catalog DECIMAL under NOT independently of match 3ms
+   ✓ owned item search PostgreSQL > rejects malformed relevant catalog DECIMAL under NOT independently of match 4ms
+   ✓ owned item search PostgreSQL > rejects malformed relevant catalog DATE under NOT independently of match 4ms
+   ✓ owned item search PostgreSQL > rejects malformed relevant catalog DATE under NOT independently of match 4ms
+   ✓ owned item search PostgreSQL > rejects malformed relevant catalog INTEGER under NOT independently of match 5ms
+   ✓ owned item search PostgreSQL > rejects malformed relevant catalog INTEGER under NOT independently of match 3ms
+   ✓ owned item search PostgreSQL > rejects malformed relevant catalog BOOLEAN under NOT independently of match 4ms
+   ✓ owned item search PostgreSQL > rejects malformed relevant catalog MULTI_SELECT under NOT independently of match 3ms
+   ✓ owned item search PostgreSQL > rejects malformed relevant catalog MULTI_SELECT under NOT independently of match 3ms
+   ✓ owned item search PostgreSQL > rejects malformed relevant catalog MULTI_SELECT under NOT independently of match 3ms
+   ✓ owned item search PostgreSQL > rejects malformed relevant catalog MONEY under NOT independently of match 3ms
+   ✓ owned item search PostgreSQL > paginates tied keys, keeps pre-cursor total on exhausted pages and revalidates live state 8ms
+   ✓ owned item search PostgreSQL > enforces all lifecycle states, item deletion and deleted parent 26ms
+   ✓ owned item search PostgreSQL > keeps one MVCC snapshot between count and rows then sees the next edit 15ms
+   ✓ owned item search PostgreSQL > requires READY usable assets and exact document category/owner 94ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/search/item-search-service.test.ts > owned item search PostgreSQL > executes custom SHORT_TEXT stored type
+ItemSearchError: SEARCH_INVARIANT
+ ❯ searchFail packages/contracts/src/item-search.ts:17:74
+     15|   }
+     16| }
+     17| export function searchFail(code: ItemSearchError["code"]): never { thr…
+       |                                                                          ^
+     18| const textValid = (v: string) => validUnicode(v) && !v.includes("\0") …
+     19| const querySchema = z.object({
+ ❯ runSearchRead packages/domain/src/search/search-read.ts:32:11
+ ❯ ids packages/domain/src/search/item-search-service.test.ts:21:42
+ ❯ packages/domain/src/search/item-search-service.test.ts:62:105
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  |workspace| packages/domain/src/search/item-search-service.test.ts > owned item search PostgreSQL > executes catalog SHORT_TEXT stored type and scoped absence
+ItemSearchError: SEARCH_INVARIANT
+ ❯ searchFail packages/contracts/src/item-search.ts:17:74
+     15|   }
+     16| }
+     17| export function searchFail(code: ItemSearchError["code"]): never { thr…
+       |                                                                          ^
+     18| const textValid = (v: string) => validUnicode(v) && !v.includes("\0") …
+     19| const querySchema = z.object({
+ ❯ runSearchRead packages/domain/src/search/search-read.ts:32:11
+ ❯ ids packages/domain/src/search/item-search-service.test.ts:21:42
+ ❯ packages/domain/src/search/item-search-service.test.ts:63:125
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  |workspace| packages/domain/src/search/item-search-service.test.ts > owned item search PostgreSQL > matches every ordered operator exactly, preserving decimal precision
+ItemSearchError: SEARCH_INVARIANT
+ ❯ searchFail packages/contracts/src/item-search.ts:17:74
+     15|   }
+     16| }
+     17| export function searchFail(code: ItemSearchError["code"]): never { thr…
+       |                                                                          ^
+     18| const textValid = (v: string) => validUnicode(v) && !v.includes("\0") …
+     19| const querySchema = z.object({
+ ❯ runSearchRead packages/domain/src/search/search-read.ts:32:11
+ ❯ ids packages/domain/src/search/item-search-service.test.ts:21:42
+ ❯ packages/domain/src/search/item-search-service.test.ts:76:223
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  |workspace| packages/domain/src/search/item-search-service.test.ts > owned item search PostgreSQL > searches literal Unicode broad whitelist: 100%_\'
+AssertionError: expected [] to deeply equal [ Array(1) ]
+
+- Expected
++ Received
+
+- [
+-   "bc3b5b56-3dc5-470b-8386-5a7b74ed571f",
+- ]
++ []
+
+ ❯ packages/domain/src/search/item-search-service.test.ts:80:378
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  4 failed | 62 passed (66)
+   Start at  09:14:26
+   Duration  1.40s (transform 111ms, setup 5ms, collect 234ms, tests 883ms, environment 0ms, prepare 61ms)
+

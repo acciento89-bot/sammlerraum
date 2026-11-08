@@ -1,0 +1,54 @@
+{
+  "implementationHead": "38745a551e1ebab1f63592a3e70e662fbdf65622",
+  "reviewedBase": "e1b58103d789381aab4dc1b45c00adaca252a16b",
+  "review": {
+    "critical": 0,
+    "important": 4,
+    "minor": 0,
+    "rootDisposition": "all four verified and closed in one consolidated correction; no rereview",
+    "report": "whole-review-final.md",
+    "disposition": "whole-review-disposition.md"
+  },
+  "wholeNative": {
+    "passed": 3030,
+    "files": 279,
+    "skipped": 0,
+    "seconds": 278.25,
+    "log": "review-fix-native-full-final.log"
+  },
+  "compiledBilling": {
+    "passed": 12,
+    "seconds": 16.8,
+    "log": "review-fix-compiled-billing.log"
+  },
+  "compiledAI": {
+    "passed": 32,
+    "seconds": 35.1,
+    "log": "review-fix-compiled-ai.log"
+  },
+  "compiledSearch": {
+    "originalPassed": 196,
+    "originalFailed": 4,
+    "originalLog": "review-fix-compiled-search.log",
+    "failureCause": "local invocation omitted MONEY_AUTHORING_ENABLED=true; existing item authoring correctly disabled",
+    "affectedRerunPassed": 4,
+    "affectedRerunSeconds": 9.2,
+    "affectedRerunLog": "review-fix-compiled-search-authoring-green.log",
+    "codeChangeForRerun": false,
+    "exactCIFullCorrectConfiguration": "pending"
+  },
+  "types": "review-fix-types-final.log",
+  "lint": "review-fix-lint.log",
+  "workerBuild": "review-fix-worker-build.log",
+  "webBuild": "review-fix-web-build.log",
+  "migrationFiles": {
+    "prior": 75,
+    "priorUnchanged": true,
+    "current": 76,
+    "receipt": "review-fix-migration-receipt.json"
+  },
+  "screenshots": 20,
+  "realProviderCallsOrPayments": false,
+  "mainMergeOrDeployment": false,
+  "exactRemoteCI": "pending"
+}

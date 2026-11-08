@@ -1,0 +1,68 @@
+2026-11-07T14:38:33.168Z pw:webserver HTTP GET: http://localhost:3000/de
+2026-11-07T14:38:33.180Z pw:webserver Error while checking if http://localhost:3000/de is available: connect ECONNREFUSED ::1:3000
+connect ECONNREFUSED 127.0.0.1:3000
+2026-11-07T14:38:33.180Z pw:webserver Starting WebServer process node e2e/support/browser-test-server.mjs...
+2026-11-07T14:38:33.181Z pw:webserver Process started
+2026-11-07T14:38:33.182Z pw:webserver Waiting for availability...
+2026-11-07T14:38:33.182Z pw:webserver HTTP GET: http://localhost:3000/de
+2026-11-07T14:38:33.183Z pw:webserver Error while checking if http://localhost:3000/de is available: connect ECONNREFUSED ::1:3000
+connect ECONNREFUSED 127.0.0.1:3000
+2026-11-07T14:38:33.183Z pw:webserver Waiting 100ms
+2026-11-07T14:38:33.284Z pw:webserver HTTP GET: http://localhost:3000/de
+2026-11-07T14:38:33.285Z pw:webserver Error while checking if http://localhost:3000/de is available: connect ECONNREFUSED ::1:3000
+connect ECONNREFUSED 127.0.0.1:3000
+2026-11-07T14:38:33.285Z pw:webserver Waiting 250ms
+[WebServer] (node:87293) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] ▲ Next.js 16.3.5
+[WebServer] - Local:         http://localhost:3000
+[WebServer] - Network:       http://localhost:3000
+[WebServer] ✓ Ready in 0ms
+[WebServer] ✓ Running next.config took 4ms
+2026-11-07T14:38:33.538Z pw:webserver HTTP GET: http://localhost:3000/de
+2026-11-07T14:38:33.733Z pw:webserver HTTP Status: 200
+2026-11-07T14:38:33.733Z pw:webserver WebServer available
+
+Running 1 test using 1 worker
+(node:87294) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] Owned public route diagnostic {"publicHandle":"%40collector-b3f15130-2738-4e7e-9036-b506f52facd9","exists":false}
+F
+Testing stopped early after 1 maximum allowed failures.
+2026-11-07T14:38:39.935Z pw:webserver Terminating the WebServer
+2026-11-07T14:38:39.951Z pw:webserver Terminated the WebServer
+
+
+  1) [community-ui-desktop] › e2e/public-profile.spec.ts:11:3 › de: anonymous public profile collection and item privacy 
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: getByRole('heading', { level: 1 })
+    Expected substring: "Lenas Münzkabinett"
+    Received string:    "404"
+    Timeout: 5000ms
+
+    Call log:
+      - Expect "toContainText" getByRole('heading', { level: 1 }) with timeout 5000ms
+      - waiting for getByRole('heading', { level: 1 })
+        14 × locator resolved to <h1 class="next-error-h1">404</h1>
+           - unexpected value "404"
+
+
+      77 |       await mkdir(reports, { recursive: true });
+      78 |       await page.goto(home);
+    > 79 |       await expect(page.getByRole("heading", { level: 1 })).toContainText(
+         |                                                             ^
+      80 |         locale === "de" ? "Lenas Münzkabinett" : "Lena's coin cabinet",
+      81 |       );
+      82 |       await expect(page.locator("body")).not.toContainText("Never expose");
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/public-profile.spec.ts:79:61
+
+    Error Context: test-results/public-profile-de-anonymou-a5410-collection-and-item-privacy-community-ui-desktop/error-context.md
+
+  1 failed
+    [community-ui-desktop] › e2e/public-profile.spec.ts:11:3 › de: anonymous public profile collection and item privacy 
+  1 error was not a part of any test, see above for details
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/public-profile.spec.ts --project=community-ui-desktop --grep de: --workers=1 --max-failures=1

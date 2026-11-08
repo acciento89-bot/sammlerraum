@@ -1,0 +1,27 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/money/money-transfer.test.ts [ packages/domain/src/money/money-transfer.test.ts ]
+Error: Cannot find module './money-transfer' imported from '/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/domain/src/money/money-transfer.test.ts'
+ ❯ packages/domain/src/money/money-transfer.test.ts:3:1
+      1| import { expect,it } from "vitest";
+      2| import { LEGACY_MONEY_PROFILE_ID } from "@sammlerraum/contracts/legacy…
+      3| import { validateMoneyImportRow,buildMoneyExportSnapshot } from "./mon…
+       | ^
+      4| import { encodeMoneyFactToken } from "./legacy-money-tokens";
+      5| const id="00000000-0000-4000-8000-000000000001",event="00000000-0000-4…
+
+Caused by: Error: Failed to load url ./money-transfer (resolved id: ./money-transfer) in /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/domain/src/money/money-transfer.test.ts. Does the file exist?
+ ❯ loadAndTransform ../../../../SSK%20SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/node_modules/.pnpm/vite@7.3.6_@types+node@24.5.2_jiti@2.7.0/node_modules/vite/dist/node/chunks/config.js:22739:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  no tests
+   Start at  19:17:21
+   Duration  371ms (transform 52ms, setup 7ms, collect 0ms, tests 0ms, environment 0ms, prepare 58ms)
+

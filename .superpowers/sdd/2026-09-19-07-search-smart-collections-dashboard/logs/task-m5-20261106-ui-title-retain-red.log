@@ -1,0 +1,259 @@
+[WebServer] (node:82940) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 8 tests using 1 worker
+
+(node:82941) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [money-ui-desktop] › e2e/legacy-money.spec.ts:11:2 › de: title-only save preserves unknown raw money (1.6s)
+(node:82956) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  2 [money-ui-desktop] › e2e/legacy-money.spec.ts:11:2 › de: title-only save preserves known historical scale (635ms)
+(node:82967) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  3 [money-ui-desktop] › e2e/legacy-money.spec.ts:11:2 › en: title-only save preserves unknown raw money (622ms)
+(node:82973) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  4 [money-ui-desktop] › e2e/legacy-money.spec.ts:11:2 › en: title-only save preserves known historical scale (618ms)
+(node:82979) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  5 [money-ui-mobile] › e2e/legacy-money.spec.ts:11:2 › de: title-only save preserves unknown raw money (597ms)
+(node:82985) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  6 [money-ui-mobile] › e2e/legacy-money.spec.ts:11:2 › de: title-only save preserves known historical scale (596ms)
+(node:82991) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  7 [money-ui-mobile] › e2e/legacy-money.spec.ts:11:2 › en: title-only save preserves unknown raw money (623ms)
+(node:82997) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  8 [money-ui-mobile] › e2e/legacy-money.spec.ts:11:2 › en: title-only save preserves known historical scale (605ms)
+
+
+  1) [money-ui-desktop] › e2e/legacy-money.spec.ts:11:2 › de: title-only save preserves unknown raw money 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: "eyJ2IjoxLCJzdWJqZWN0Ijp7ImZhbWlseSI6IlBVUkNIQVNFIiwiaXRlbUlkIjoiYWQ5MmI3ZjUtZGM3Yi00ZGY1LWFkNjEtZTNjYmU1OTU2NmMzIn0sImdlbmVyYXRpb24iOiJjOGY1MzY3YS01NGQzLTQwOGEtYjMwNi00ODNjZjhmMThhM2MiLCJzZXF1ZW5jZSI6IjEiLCJyYXciOnsiYW1vdW50TWlub3IiOiIxMDAiLCJjdXJyZW5jeSI6IkFGTiJ9LCJlZmZlY3RpdmVFdmVudElkIjoiMDU3ODgxZDEtNmUxNS00NzY3LWFhNjUtMDYwMTFiMDNlMjAwIiwib3JpZ2luSWQiOm51bGwsIm9yaWdpbkV2aWRlbmNlRXJhc2VkQXQiOm51bGwsInJldm9jYXRpb25JZCI6bnVsbH0"
+    Received: "eyJ2IjoxLCJzdWJqZWN0Ijp7ImZhbWlseSI6IlBVUkNIQVNFIiwiaXRlbUlkIjoiYWQ5MmI3ZjUtZGM3Yi00ZGY1LWFkNjEtZTNjYmU1OTU2NmMzIn0sImdlbmVyYXRpb24iOiIwOTg2NDE1Mi1mNDRmLTRlZDAtYmVkOC02NmRkZjcxNjExMzUiLCJzZXF1ZW5jZSI6IjIiLCJyYXciOnsiYW1vdW50TWlub3IiOiIxMDAiLCJjdXJyZW5jeSI6IkFGTiJ9LCJlZmZlY3RpdmVFdmVudElkIjoiNmMyMmU5ZTgtNzVlMi00NmIzLTk1ZTYtM2YzYmRmZGUyYzQyIiwib3JpZ2luSWQiOm51bGwsIm9yaWdpbkV2aWRlbmNlRXJhc2VkQXQiOm51bGwsInJldm9jYXRpb25JZCI6bnVsbH0"
+
+      28 |    expect(after.raw).toEqual(before.raw);
+      29 |    expect(after.interpretation).toEqual(before.interpretation);
+    > 30 |    expect(after.factToken).toBe(before.factToken);
+         |                            ^
+      31 |    expect((await db!.collectibleItem.findUniqueOrThrow({ where: { id: f.itemId } })).title).toBe("Only the title changed");
+      32 |   } finally { await cleanupSearchFixture(f); }
+      33 |  });
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/legacy-money.spec.ts:30:28
+
+    Error Context: test-results/legacy-money-de-title-only-save-preserves-unknown-raw-money-money-ui-desktop/error-context.md
+
+    Error Context: test-results/legacy-money-de-title-only-save-preserves-unknown-raw-money-money-ui-desktop/error-context.md
+
+  2) [money-ui-desktop] › e2e/legacy-money.spec.ts:11:2 › de: title-only save preserves known historical scale 
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 9
+    + Received  + 2
+
+      Object {
+    -   "assertionId": "be727c92-7619-4183-95d4-d8dc4c20ed19",
+    -   "basisId": "OWNER_ATTESTATION:v1",
+    -   "decimal": "100",
+    -   "eligibility": "ELIGIBLE",
+    -   "eventId": "be727c92-7619-4183-95d4-d8dc4c20ed19",
+    -   "evidenceCategory": "OWNER_ATTESTATION",
+    -   "exponent": 0,
+    -   "kind": "INTERPRETED",
+    -   "unitKey": "iso4217-2026-09-17:AFN",
+    +   "kind": "UNKNOWN",
+    +   "reason": "RAW_WRITER",
+      }
+
+      27 |    const after = await money.getMoney(subject);
+      28 |    expect(after.raw).toEqual(before.raw);
+    > 29 |    expect(after.interpretation).toEqual(before.interpretation);
+         |                                 ^
+      30 |    expect(after.factToken).toBe(before.factToken);
+      31 |    expect((await db!.collectibleItem.findUniqueOrThrow({ where: { id: f.itemId } })).title).toBe("Only the title changed");
+      32 |   } finally { await cleanupSearchFixture(f); }
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/legacy-money.spec.ts:29:33
+
+    Error Context: test-results/legacy-money-de-title-only-55624-rves-known-historical-scale-money-ui-desktop/error-context.md
+
+    Error Context: test-results/legacy-money-de-title-only-55624-rves-known-historical-scale-money-ui-desktop/error-context.md
+
+  3) [money-ui-desktop] › e2e/legacy-money.spec.ts:11:2 › en: title-only save preserves unknown raw money 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: "eyJ2IjoxLCJzdWJqZWN0Ijp7ImZhbWlseSI6IlBVUkNIQVNFIiwiaXRlbUlkIjoiMmY3MmY4YTktZmNhMi00MTUyLWFiN2EtYjBiOTZkY2VkNDg2In0sImdlbmVyYXRpb24iOiIzZjE0MTk5YS04Y2IxLTQyYTUtYWJjMS0yM2Q3ZTdmYjg4ZDMiLCJzZXF1ZW5jZSI6IjEiLCJyYXciOnsiYW1vdW50TWlub3IiOiIxMDAiLCJjdXJyZW5jeSI6IkFGTiJ9LCJlZmZlY3RpdmVFdmVudElkIjoiYjk0NzI0MWUtMDMyNS00YWNkLWI1MTgtYjhmMjViMDBjYTJiIiwib3JpZ2luSWQiOm51bGwsIm9yaWdpbkV2aWRlbmNlRXJhc2VkQXQiOm51bGwsInJldm9jYXRpb25JZCI6bnVsbH0"
+    Received: "eyJ2IjoxLCJzdWJqZWN0Ijp7ImZhbWlseSI6IlBVUkNIQVNFIiwiaXRlbUlkIjoiMmY3MmY4YTktZmNhMi00MTUyLWFiN2EtYjBiOTZkY2VkNDg2In0sImdlbmVyYXRpb24iOiJiZDUzYzQxYS1kYTRmLTQ0NDEtODc1MS01ZWIxNzJmOWMzZTEiLCJzZXF1ZW5jZSI6IjIiLCJyYXciOnsiYW1vdW50TWlub3IiOiIxMDAiLCJjdXJyZW5jeSI6IkFGTiJ9LCJlZmZlY3RpdmVFdmVudElkIjoiMmMxOGYyNTMtZjhlNC00ODJjLTgzOGYtNjJkOWY2YTBhNjgwIiwib3JpZ2luSWQiOm51bGwsIm9yaWdpbkV2aWRlbmNlRXJhc2VkQXQiOm51bGwsInJldm9jYXRpb25JZCI6bnVsbH0"
+
+      28 |    expect(after.raw).toEqual(before.raw);
+      29 |    expect(after.interpretation).toEqual(before.interpretation);
+    > 30 |    expect(after.factToken).toBe(before.factToken);
+         |                            ^
+      31 |    expect((await db!.collectibleItem.findUniqueOrThrow({ where: { id: f.itemId } })).title).toBe("Only the title changed");
+      32 |   } finally { await cleanupSearchFixture(f); }
+      33 |  });
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/legacy-money.spec.ts:30:28
+
+    Error Context: test-results/legacy-money-en-title-only-save-preserves-unknown-raw-money-money-ui-desktop/error-context.md
+
+    Error Context: test-results/legacy-money-en-title-only-save-preserves-unknown-raw-money-money-ui-desktop/error-context.md
+
+  4) [money-ui-desktop] › e2e/legacy-money.spec.ts:11:2 › en: title-only save preserves known historical scale 
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 9
+    + Received  + 2
+
+      Object {
+    -   "assertionId": "41b0a67c-0176-4d7c-a1c5-a2ad937086cc",
+    -   "basisId": "OWNER_ATTESTATION:v1",
+    -   "decimal": "100",
+    -   "eligibility": "ELIGIBLE",
+    -   "eventId": "41b0a67c-0176-4d7c-a1c5-a2ad937086cc",
+    -   "evidenceCategory": "OWNER_ATTESTATION",
+    -   "exponent": 0,
+    -   "kind": "INTERPRETED",
+    -   "unitKey": "iso4217-2026-09-17:AFN",
+    +   "kind": "UNKNOWN",
+    +   "reason": "RAW_WRITER",
+      }
+
+      27 |    const after = await money.getMoney(subject);
+      28 |    expect(after.raw).toEqual(before.raw);
+    > 29 |    expect(after.interpretation).toEqual(before.interpretation);
+         |                                 ^
+      30 |    expect(after.factToken).toBe(before.factToken);
+      31 |    expect((await db!.collectibleItem.findUniqueOrThrow({ where: { id: f.itemId } })).title).toBe("Only the title changed");
+      32 |   } finally { await cleanupSearchFixture(f); }
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/legacy-money.spec.ts:29:33
+
+    Error Context: test-results/legacy-money-en-title-only-01fd9-rves-known-historical-scale-money-ui-desktop/error-context.md
+
+    Error Context: test-results/legacy-money-en-title-only-01fd9-rves-known-historical-scale-money-ui-desktop/error-context.md
+
+  5) [money-ui-mobile] › e2e/legacy-money.spec.ts:11:2 › de: title-only save preserves unknown raw money 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: "eyJ2IjoxLCJzdWJqZWN0Ijp7ImZhbWlseSI6IlBVUkNIQVNFIiwiaXRlbUlkIjoiODYyOTkxYzQtMDlkYy00NzhiLWE4MWYtZjcwYTE0YTAxZmYzIn0sImdlbmVyYXRpb24iOiJiNTViYzdmMC0xNDBkLTQyNTAtYWY2OS02NzdkMjA0ODJjODIiLCJzZXF1ZW5jZSI6IjEiLCJyYXciOnsiYW1vdW50TWlub3IiOiIxMDAiLCJjdXJyZW5jeSI6IkFGTiJ9LCJlZmZlY3RpdmVFdmVudElkIjoiNTVmNTQxZDctOTBlMS00NDM2LWE4MzMtMTIyZDE1ZDE4ODg4Iiwib3JpZ2luSWQiOm51bGwsIm9yaWdpbkV2aWRlbmNlRXJhc2VkQXQiOm51bGwsInJldm9jYXRpb25JZCI6bnVsbH0"
+    Received: "eyJ2IjoxLCJzdWJqZWN0Ijp7ImZhbWlseSI6IlBVUkNIQVNFIiwiaXRlbUlkIjoiODYyOTkxYzQtMDlkYy00NzhiLWE4MWYtZjcwYTE0YTAxZmYzIn0sImdlbmVyYXRpb24iOiI1NjRlNGJhNi1kZWY4LTQ1ZDAtYTQxMC1mYzBiMTI1YzRmNDciLCJzZXF1ZW5jZSI6IjIiLCJyYXciOnsiYW1vdW50TWlub3IiOiIxMDAiLCJjdXJyZW5jeSI6IkFGTiJ9LCJlZmZlY3RpdmVFdmVudElkIjoiYmM4Njg2OTItZmVhYS00YmJmLWI0MmEtYzgxMWY0ZWI0NjNmIiwib3JpZ2luSWQiOm51bGwsIm9yaWdpbkV2aWRlbmNlRXJhc2VkQXQiOm51bGwsInJldm9jYXRpb25JZCI6bnVsbH0"
+
+      28 |    expect(after.raw).toEqual(before.raw);
+      29 |    expect(after.interpretation).toEqual(before.interpretation);
+    > 30 |    expect(after.factToken).toBe(before.factToken);
+         |                            ^
+      31 |    expect((await db!.collectibleItem.findUniqueOrThrow({ where: { id: f.itemId } })).title).toBe("Only the title changed");
+      32 |   } finally { await cleanupSearchFixture(f); }
+      33 |  });
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/legacy-money.spec.ts:30:28
+
+    Error Context: test-results/legacy-money-de-title-only-save-preserves-unknown-raw-money-money-ui-mobile/error-context.md
+
+    Error Context: test-results/legacy-money-de-title-only-save-preserves-unknown-raw-money-money-ui-mobile/error-context.md
+
+  6) [money-ui-mobile] › e2e/legacy-money.spec.ts:11:2 › de: title-only save preserves known historical scale 
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 9
+    + Received  + 2
+
+      Object {
+    -   "assertionId": "73f7ce28-baed-477c-babe-be3bf91b78de",
+    -   "basisId": "OWNER_ATTESTATION:v1",
+    -   "decimal": "100",
+    -   "eligibility": "ELIGIBLE",
+    -   "eventId": "73f7ce28-baed-477c-babe-be3bf91b78de",
+    -   "evidenceCategory": "OWNER_ATTESTATION",
+    -   "exponent": 0,
+    -   "kind": "INTERPRETED",
+    -   "unitKey": "iso4217-2026-09-17:AFN",
+    +   "kind": "UNKNOWN",
+    +   "reason": "RAW_WRITER",
+      }
+
+      27 |    const after = await money.getMoney(subject);
+      28 |    expect(after.raw).toEqual(before.raw);
+    > 29 |    expect(after.interpretation).toEqual(before.interpretation);
+         |                                 ^
+      30 |    expect(after.factToken).toBe(before.factToken);
+      31 |    expect((await db!.collectibleItem.findUniqueOrThrow({ where: { id: f.itemId } })).title).toBe("Only the title changed");
+      32 |   } finally { await cleanupSearchFixture(f); }
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/legacy-money.spec.ts:29:33
+
+    Error Context: test-results/legacy-money-de-title-only-55624-rves-known-historical-scale-money-ui-mobile/error-context.md
+
+    Error Context: test-results/legacy-money-de-title-only-55624-rves-known-historical-scale-money-ui-mobile/error-context.md
+
+  7) [money-ui-mobile] › e2e/legacy-money.spec.ts:11:2 › en: title-only save preserves unknown raw money 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: "eyJ2IjoxLCJzdWJqZWN0Ijp7ImZhbWlseSI6IlBVUkNIQVNFIiwiaXRlbUlkIjoiZjE2ZjJiODAtMGRkMC00YzkxLWEzZjItMTk3MjdmNzAyMjJmIn0sImdlbmVyYXRpb24iOiI0MTY4Yzg4Zi1lY2Q1LTQ2ZWEtOTY2Ni05MGZkZWVkZDQ0YTQiLCJzZXF1ZW5jZSI6IjEiLCJyYXciOnsiYW1vdW50TWlub3IiOiIxMDAiLCJjdXJyZW5jeSI6IkFGTiJ9LCJlZmZlY3RpdmVFdmVudElkIjoiNWQ1NTM1N2MtZDFiYy00NjNjLWI0ZTctNDEwZGE0NGViOWFiIiwib3JpZ2luSWQiOm51bGwsIm9yaWdpbkV2aWRlbmNlRXJhc2VkQXQiOm51bGwsInJldm9jYXRpb25JZCI6bnVsbH0"
+    Received: "eyJ2IjoxLCJzdWJqZWN0Ijp7ImZhbWlseSI6IlBVUkNIQVNFIiwiaXRlbUlkIjoiZjE2ZjJiODAtMGRkMC00YzkxLWEzZjItMTk3MjdmNzAyMjJmIn0sImdlbmVyYXRpb24iOiI5MjQxNGE2YS1mNWIyLTQ4OGYtOGY1Zi1lYjBjMGZkMGIxYzUiLCJzZXF1ZW5jZSI6IjIiLCJyYXciOnsiYW1vdW50TWlub3IiOiIxMDAiLCJjdXJyZW5jeSI6IkFGTiJ9LCJlZmZlY3RpdmVFdmVudElkIjoiYjc4MWRlNzctMzgwOS00MTk5LWE1ZmUtZTE1ZjljMzU0NDBkIiwib3JpZ2luSWQiOm51bGwsIm9yaWdpbkV2aWRlbmNlRXJhc2VkQXQiOm51bGwsInJldm9jYXRpb25JZCI6bnVsbH0"
+
+      28 |    expect(after.raw).toEqual(before.raw);
+      29 |    expect(after.interpretation).toEqual(before.interpretation);
+    > 30 |    expect(after.factToken).toBe(before.factToken);
+         |                            ^
+      31 |    expect((await db!.collectibleItem.findUniqueOrThrow({ where: { id: f.itemId } })).title).toBe("Only the title changed");
+      32 |   } finally { await cleanupSearchFixture(f); }
+      33 |  });
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/legacy-money.spec.ts:30:28
+
+    Error Context: test-results/legacy-money-en-title-only-save-preserves-unknown-raw-money-money-ui-mobile/error-context.md
+
+    Error Context: test-results/legacy-money-en-title-only-save-preserves-unknown-raw-money-money-ui-mobile/error-context.md
+
+  8) [money-ui-mobile] › e2e/legacy-money.spec.ts:11:2 › en: title-only save preserves known historical scale 
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 9
+    + Received  + 2
+
+      Object {
+    -   "assertionId": "eee5afab-38a6-49a8-b14c-878a97b3e9db",
+    -   "basisId": "OWNER_ATTESTATION:v1",
+    -   "decimal": "100",
+    -   "eligibility": "ELIGIBLE",
+    -   "eventId": "eee5afab-38a6-49a8-b14c-878a97b3e9db",
+    -   "evidenceCategory": "OWNER_ATTESTATION",
+    -   "exponent": 0,
+    -   "kind": "INTERPRETED",
+    -   "unitKey": "iso4217-2026-09-17:AFN",
+    +   "kind": "UNKNOWN",
+    +   "reason": "RAW_WRITER",
+      }
+
+      27 |    const after = await money.getMoney(subject);
+      28 |    expect(after.raw).toEqual(before.raw);
+    > 29 |    expect(after.interpretation).toEqual(before.interpretation);
+         |                                 ^
+      30 |    expect(after.factToken).toBe(before.factToken);
+      31 |    expect((await db!.collectibleItem.findUniqueOrThrow({ where: { id: f.itemId } })).title).toBe("Only the title changed");
+      32 |   } finally { await cleanupSearchFixture(f); }
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/legacy-money.spec.ts:29:33
+
+    Error Context: test-results/legacy-money-en-title-only-01fd9-rves-known-historical-scale-money-ui-mobile/error-context.md
+
+    Error Context: test-results/legacy-money-en-title-only-01fd9-rves-known-historical-scale-money-ui-mobile/error-context.md
+
+  8 failed
+    [money-ui-desktop] › e2e/legacy-money.spec.ts:11:2 › de: title-only save preserves unknown raw money 
+    [money-ui-desktop] › e2e/legacy-money.spec.ts:11:2 › de: title-only save preserves known historical scale 
+    [money-ui-desktop] › e2e/legacy-money.spec.ts:11:2 › en: title-only save preserves unknown raw money 
+    [money-ui-desktop] › e2e/legacy-money.spec.ts:11:2 › en: title-only save preserves known historical scale 
+    [money-ui-mobile] › e2e/legacy-money.spec.ts:11:2 › de: title-only save preserves unknown raw money 
+    [money-ui-mobile] › e2e/legacy-money.spec.ts:11:2 › de: title-only save preserves known historical scale 
+    [money-ui-mobile] › e2e/legacy-money.spec.ts:11:2 › en: title-only save preserves unknown raw money 
+    [money-ui-mobile] › e2e/legacy-money.spec.ts:11:2 › en: title-only save preserves known historical scale 
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/legacy-money.spec.ts --workers=1

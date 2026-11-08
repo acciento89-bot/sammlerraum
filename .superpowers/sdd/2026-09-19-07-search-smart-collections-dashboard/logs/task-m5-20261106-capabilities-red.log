@@ -1,0 +1,42 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/contracts/src/money-capabilities.test.ts (2 tests | 1 failed) 3ms
+   × explicit monetary capability contract > accepts only the actual pinned profile/hash and a separately disabled authoring deployment 2ms
+     → [
+  {
+    "expected": "never",
+    "code": "invalid_type",
+    "path": [],
+    "message": "Invalid input: expected never, received object"
+  }
+]
+   ✓ explicit monetary capability contract > rejects malformed/mismatched/duplicate capabilities rather than selecting a raw fallback 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/contracts/src/money-capabilities.test.ts > explicit monetary capability contract > accepts only the actual pinned profile/hash and a separately disabled authoring deployment
+ZodError: [
+  {
+    "expected": "never",
+    "code": "invalid_type",
+    "path": [],
+    "message": "Invalid input: expected never, received object"
+  }
+]
+ ❯ packages/contracts/src/money-capabilities.test.ts:7:34
+      5| describe("explicit monetary capability contract", () => {
+      6|  it("accepts only the actual pinned profile/hash and a separately disa…
+      7|   expect(MoneyCapabilitiesSchema.parse(supported)).toEqual(supported);
+       |                                  ^
+      8|   expect(MoneyCapabilitiesSchema.parse({ ...supported, authoringProfil…
+      9|  });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 1 passed (2)
+   Start at  07:53:12
+   Duration  376ms (transform 49ms, setup 7ms, collect 79ms, tests 3ms, environment 0ms, prepare 55ms)
+

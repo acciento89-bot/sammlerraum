@@ -1,0 +1,11 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ✓ |workspace| packages/domain/src/search/duplicate-filter.integration.test.ts (8 tests) 770ms
+ ✓ |workspace| apps/web/src/components/search/filter-draft.test.ts (235 tests) 34ms
+
+ Test Files  2 passed (2)
+      Tests  243 passed (243)
+   Start at  23:51:19
+   Duration  1.70s (transform 308ms, setup 7ms, collect 572ms, tests 804ms, environment 0ms, prepare 83ms)
+

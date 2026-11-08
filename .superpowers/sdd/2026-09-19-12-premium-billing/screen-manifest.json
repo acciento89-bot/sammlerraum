@@ -1,0 +1,102 @@
+[
+  {
+    "path": "screenshots/de-billing-desktop-downgrade.png",
+    "sha256": "e38acab9cdddddd46ef2509992fc985ca04ddb04e9b3fd062f6df07f3e60214f",
+    "syntheticOwnFixture": true
+  },
+  {
+    "path": "screenshots/de-billing-desktop-free-dashboard.png",
+    "sha256": "1f5e1f2ad5c76216d597475fbdbd094274f98cb783505a1551e74b32afb419a2",
+    "syntheticOwnFixture": true
+  },
+  {
+    "path": "screenshots/de-billing-desktop-premium.png",
+    "sha256": "144bc0450b6a22ac9c2812c7ee5dcdbce1b0296dfe9bc9ad747680961a403607",
+    "syntheticOwnFixture": true
+  },
+  {
+    "path": "screenshots/de-billing-desktop-pricing.png",
+    "sha256": "ec4562a0fa9a43344e99aba4f22a4733d98a57da676cab0180eeb309eaa46c20",
+    "syntheticOwnFixture": true
+  },
+  {
+    "path": "screenshots/de-billing-desktop-return.png",
+    "sha256": "50d3aa6f43828ce4b73e867efdc85a1f592f4f305d592552d10ca13386b40dc7",
+    "syntheticOwnFixture": true
+  },
+  {
+    "path": "screenshots/de-billing-mobile-downgrade.png",
+    "sha256": "bdf01eea0154ca1c7efce63a5cb4581869c5554ef6bc1f26ccb91b27bc796594",
+    "syntheticOwnFixture": true
+  },
+  {
+    "path": "screenshots/de-billing-mobile-free-dashboard.png",
+    "sha256": "c14bf30624e7fee861bdc9e6c43077732c5ba755b6cad7c7cd8bdcdef6533c96",
+    "syntheticOwnFixture": true
+  },
+  {
+    "path": "screenshots/de-billing-mobile-premium.png",
+    "sha256": "79a44c97732e1ad7028e3a0c53fc770b7543c5aec2f70942173ae354ee79768d",
+    "syntheticOwnFixture": true
+  },
+  {
+    "path": "screenshots/de-billing-mobile-pricing.png",
+    "sha256": "a6bc4630a70cf0eb492bfaed2bf6559bbbac951b7b6472dc4eac98c7a19cd721",
+    "syntheticOwnFixture": true
+  },
+  {
+    "path": "screenshots/de-billing-mobile-return.png",
+    "sha256": "ac41d85ee895bb270b419aba2c4461b3a0f550ca3f08c91162c5f067bedd1c63",
+    "syntheticOwnFixture": true
+  },
+  {
+    "path": "screenshots/en-billing-desktop-downgrade.png",
+    "sha256": "5d31d8f458afa12c080de065de741ee35a31f9c788b6f4eee2de3bd68adb6093",
+    "syntheticOwnFixture": true
+  },
+  {
+    "path": "screenshots/en-billing-desktop-free-dashboard.png",
+    "sha256": "33da61a3a30212a194f0f893e35a0d897b65b1345dc90c0c3163a8853550a4f2",
+    "syntheticOwnFixture": true
+  },
+  {
+    "path": "screenshots/en-billing-desktop-premium.png",
+    "sha256": "45ee8267cf80a46b1fec479cff5af12c15749b8159db683b8868d55434afad7a",
+    "syntheticOwnFixture": true
+  },
+  {
+    "path": "screenshots/en-billing-desktop-pricing.png",
+    "sha256": "cec221c33f537f6e3ebd9858db32af8c7b881f07c89c80de2e3b7e134ffd83fc",
+    "syntheticOwnFixture": true
+  },
+  {
+    "path": "screenshots/en-billing-desktop-return.png",
+    "sha256": "460d73464cf326388f8808ed4eac82a98abc689f83b076ba6d0da90d695402ec",
+    "syntheticOwnFixture": true
+  },
+  {
+    "path": "screenshots/en-billing-mobile-downgrade.png",
+    "sha256": "bdce6c82076eaecb737d2c019a834f00a7b8b6973a50d0f5ec3723105ef32724",
+    "syntheticOwnFixture": true
+  },
+  {
+    "path": "screenshots/en-billing-mobile-free-dashboard.png",
+    "sha256": "7a0f892e25ac7cf5e56a0661db22b926737f30819b38385f8d9071715a27c925",
+    "syntheticOwnFixture": true
+  },
+  {
+    "path": "screenshots/en-billing-mobile-premium.png",
+    "sha256": "a8b81a1b1718d157123b70ab9ac7ab37ebedfb00795b262d516e4c8047783073",
+    "syntheticOwnFixture": true
+  },
+  {
+    "path": "screenshots/en-billing-mobile-pricing.png",
+    "sha256": "0bec32347bc35e2897ab5d8e91804377b475c250942468a44dc770b225555c14",
+    "syntheticOwnFixture": true
+  },
+  {
+    "path": "screenshots/en-billing-mobile-return.png",
+    "sha256": "1c8e7cd63e2ff8fc9fd9997639b07d1209b6539c4e37bc04e642fed3d0814fdf",
+    "syntheticOwnFixture": true
+  }
+]

@@ -1,0 +1,52 @@
+[WebServer] (node:7215) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 1 worker
+
+(node:7216) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [desktop] › e2e/search-dashboard.spec.ts:295:3 › de: actual delayed response, failure/stale states and 401 clearing (2.2s)
+  ✘  2 [desktop] › e2e/search-dashboard.spec.ts:659:3 › de: real pagination replaces rows and query edits reset the cursor (5.7s)
+
+
+  1) [desktop] › e2e/search-dashboard.spec.ts:659:3 › de: real pagination replaces rows and query edits reset the cursor 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByText('Ungespeicherter Entwurf. Anwenden aktualisiert die Ergebnisse.', { exact: true })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByText('Ungespeicherter Entwurf. Anwenden aktualisiert die Ergebnisse.', { exact: true }) with timeout 5000ms
+      - waiting for getByText('Ungespeicherter Entwurf. Anwenden aktualisiert die Ergebnisse.', { exact: true })
+
+
+      697 |       await panel(page, locale);
+      698 |       await expect(page.getByLabel(c.text, { exact: true })).toHaveValue("Unapplied private draft");
+    > 699 |       await expect(page.getByText(c.draftPending, { exact: true })).toBeVisible();
+          |                                                                     ^
+      700 |       await page.getByRole("button", { name: c.discard, exact: true }).click();
+      701 |       await page.getByRole("button", { name: c.discardConfirm, exact: true }).click();
+      702 |       await page.goBack();
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/search-dashboard.spec.ts:699:69
+
+    Error Context: test-results/search-dashboard-de-real-p-f8af6-uery-edits-reset-the-cursor-desktop/error-context.md
+
+    Error Context: test-results/search-dashboard-de-real-p-f8af6-uery-edits-reset-the-cursor-desktop/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/search-dashboard-de-real-p-f8af6-uery-edits-reset-the-cursor-desktop/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/search-dashboard-de-real-p-f8af6-uery-edits-reset-the-cursor-desktop/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [desktop] › e2e/search-dashboard.spec.ts:659:3 › de: real pagination replaces rows and query edits reset the cursor 
+  1 passed (9.9s)
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/search-dashboard.spec.ts --project=desktop --grep de: (actual delayed|real pagination) --workers=1 --trace=retain-on-failure

@@ -1,0 +1,44 @@
+[WebServer] (node:15324) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:15325) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:15333) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [desktop] › e2e/media-documents.spec.ts:105:5 › item media and private documents › public item can have a purchase receipt that remains private (de) (37.7s)
+
+
+  1) [desktop] › e2e/media-documents.spec.ts:105:5 › item media and private documents › public item can have a purchase receipt that remains private (de) 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByText('Upload abgebrochen.', { exact: true })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByText('Upload abgebrochen.', { exact: true }) with timeout 5000ms
+      - waiting for getByText('Upload abgebrochen.', { exact: true })
+
+
+      216 |           await page.getByRole("button", {name:t.cancel,exact:true}).click();
+      217 |           releaseRequest();
+    > 218 |           await expect(page.getByText(t.canceled,{exact:true})).toBeVisible();
+          |                                                                 ^
+      219 |           await expect(page.getByText(t.uploaded,{exact:true})).toHaveCount(0);
+      220 |           await expect.poll(()=>db.mediaLink.count({where:{itemId:item.id}})).toBe(2);
+      221 |           await page.unroute(`**${base}/media`);
+        at /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/media-documents.spec.ts:218:65
+
+    Error Context: test-results/media-documents-item-media-7f0c3-pt-that-remains-private-de--desktop/error-context.md
+
+    Error Context: test-results/media-documents-item-media-7f0c3-pt-that-remains-private-de--desktop/error-context.md
+
+  1 failed
+    [desktop] › e2e/media-documents.spec.ts:105:5 › item media and private documents › public item can have a purchase receipt that remains private (de) 
+undefined
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/media-documents.spec.ts --project=desktop --grep=\(de\) --workers=1

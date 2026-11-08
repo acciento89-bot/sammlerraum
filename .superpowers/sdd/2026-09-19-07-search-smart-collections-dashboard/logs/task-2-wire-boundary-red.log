@@ -1,0 +1,71 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| apps/web/src/lib/item-search-routes.test.ts (11 tests | 3 failed) 11ms
+   × encoded item search query boundary > retains literal question marks in query values 7ms
+     → expected { text: 'what' } to deeply equal { text: 'what?now' }
+   × encoded item search query boundary > counts the entire encoded query before any percent decoding 2ms
+     → expected [Function] to throw an error
+   × encoded item search query boundary > includes the query marker in the 32KiB encoded budget 0ms
+     → expected [Function] to throw an error
+   ✓ encoded item search query boundary > rejects malformed bytes/duplicate/unknown/decimal grammar text=%C0%AF 0ms
+   ✓ encoded item search query boundary > rejects malformed bytes/duplicate/unknown/decimal grammar text=%ED%A0%80 0ms
+   ✓ encoded item search query boundary > rejects malformed bytes/duplicate/unknown/decimal grammar %ZZ=x 0ms
+   ✓ encoded item search query boundary > rejects malformed bytes/duplicate/unknown/decimal grammar text=a&text=b 0ms
+   ✓ encoded item search query boundary > rejects malformed bytes/duplicate/unknown/decimal grammar constructor=x 0ms
+   ✓ encoded item search query boundary > rejects malformed bytes/duplicate/unknown/decimal grammar limit=1e1 0ms
+   ✓ encoded item search query boundary > rejects malformed bytes/duplicate/unknown/decimal grammar limit=1.0 0ms
+   ✓ encoded item search query boundary > rejects malformed bytes/duplicate/unknown/decimal grammar text=x&&limit=1 0ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/web/src/lib/item-search-routes.test.ts > encoded item search query boundary > retains literal question marks in query values
+AssertionError: expected { text: 'what' } to deeply equal { text: 'what?now' }
+
+- Expected
++ Received
+
+  {
+-   "text": "what?now",
++   "text": "what",
+  }
+
+ ❯ apps/web/src/lib/item-search-routes.test.ts:5:142
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  |workspace| apps/web/src/lib/item-search-routes.test.ts > encoded item search query boundary > counts the entire encoded query before any percent decoding
+AssertionError: expected [Function] to throw an error
+
+- Expected: 
+null
+
++ Received: 
+undefined
+
+ ❯ apps/web/src/lib/item-search-routes.test.ts:6:190
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  |workspace| apps/web/src/lib/item-search-routes.test.ts > encoded item search query boundary > includes the query marker in the 32KiB encoded budget
+AssertionError: expected [Function] to throw an error
+
+- Expected: 
+null
+
++ Received: 
+undefined
+
+ ❯ apps/web/src/lib/item-search-routes.test.ts:7:184
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 8 passed (11)
+   Start at  09:21:58
+   Duration  489ms (transform 104ms, setup 6ms, collect 227ms, tests 11ms, environment 0ms, prepare 50ms)
+

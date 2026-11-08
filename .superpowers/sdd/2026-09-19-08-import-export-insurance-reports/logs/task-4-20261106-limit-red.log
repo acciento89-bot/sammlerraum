@@ -1,0 +1,68 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| apps/worker/src/jobs/tabular-export.integration.test.ts (9 tests | 1 failed) 621ms
+   ✓ real tabular export source, assets and bytes > publishes one complete owned CSV artifact and reuses successful delivery 157ms
+   ✓ real tabular export source, assets and bytes > publishes one complete owned XLSX artifact and reuses successful delivery 48ms
+   ✓ real tabular export source, assets and bytes > retains every attempt manifest and retries storage failure using the immutable source 45ms
+   ✓ real tabular export source, assets and bytes > refuses stale data instead of silently replacing the saved export source 48ms
+   ✓ real tabular export source, assets and bytes > fences expired claims, tracks abandoned outputs and closes exhausted attempts 11ms
+   ✓ real tabular export source, assets and bytes > does not publish after owner access disappears while file storage is in flight 25ms
+   ✓ real tabular export source, assets and bytes > keeps the actual asset lock until ignored cancellation settles and never marks its bytes ready 25ms
+   ✓ real tabular export source, assets and bytes > does not retain a job permission or source after its owned artifact is deleted 29ms
+   × real tabular export source, assets and bytes > closes a whole-source export limit permanently instead of retrying an impossible build 30ms
+     → promise rejected "Error: Export temporarily unavailable" instead of resolving
+ ❯ |workspace| apps/worker/src/jobs/build-tabular-export.test.ts (11 tests | 2 failed) 49ms
+   ✓ writes explicit spreadsheet-safe CSV text encoding without changing generic CSV import 18ms
+   ✓ writes literal XLSX cells preserving escapes, CR, emoji and exact large raw values 7ms
+   ✓ fails a bounded artifact instead of returning partial output or omitted data 1ms
+   ✓ creates a real ZIP-readable workbook with literal cells and no formula elements 13ms
+   ✓ round-trips encoded CSV text exactly for "'Literal" 1ms
+   ✓ round-trips encoded CSV text exactly for "＝SUM(1,2)" 1ms
+   ✓ round-trips encoded CSV text exactly for "line\nnext" 1ms
+   ✓ round-trips encoded CSV text exactly for "tabs\t and \"quotes\", comma" 1ms
+   ✓ refuses malformed encoding metadata rather than guessing a generic strip rule 2ms
+   × refuses an oversized literal CSV cell before producing an unreadable file 4ms
+     → expected [Function] to throw an error
+   × refuses an oversized literal XLSX cell before producing an unreadable file 1ms
+     → expected [Function] to throw an error
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/worker/src/jobs/build-tabular-export.test.ts > refuses an oversized literal CSV cell before producing an unreadable file
+ FAIL  |workspace| apps/worker/src/jobs/build-tabular-export.test.ts > refuses an oversized literal XLSX cell before producing an unreadable file
+AssertionError: expected [Function] to throw an error
+
+- Expected: 
+null
+
++ Received: 
+undefined
+
+ ❯ apps/worker/src/jobs/build-tabular-export.test.ts:154:43
+    152| it.each(['CSV','XLSX'] as const)('refuses an oversized literal %s cell…
+    153|  const snapshot=fixture(format);snapshot.metadata[0]!.publicDescriptio…
+    154|  expect(()=>buildTabularExport(snapshot)).toThrow('EXPORT_LIMIT_EXCEED…
+       |                                           ^
+    155| });
+    156| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  |workspace| apps/worker/src/jobs/tabular-export.integration.test.ts > real tabular export source, assets and bytes > closes a whole-source export limit permanently instead of retrying an impossible build
+AssertionError: promise rejected "Error: Export temporarily unavailable" instead of resolving
+ ❯ apps/worker/src/jobs/tabular-export.integration.test.ts:67:86
+
+
+Caused by: Error: Export temporarily unavailable
+ ❯ apps/worker/src/jobs/tabular-export-runtime.ts:41:24
+ ❯ apps/worker/src/jobs/tabular-export.integration.test.ts:67:2
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  3 failed | 17 passed (20)
+   Start at  23:32:56
+   Duration  1.42s (transform 197ms, setup 7ms, collect 459ms, tests 670ms, environment 0ms, prepare 65ms)
+

@@ -1,0 +1,104 @@
+{
+  "scope": "source preparation only; original Task7 live gates remain incomplete",
+  "offlineRealHttpContractsPassed": 6,
+  "actualCompiledApplicationGatePassed": true,
+  "realCompiledCheckCount": 23,
+  "sharedConsentApiContractChecksPassed": 16,
+  "productionHttpsGatePassed": false,
+  "productionProbeReason": "TLS_CERTIFICATE_ERROR; owned live fixture configuration absent",
+  "searchConsoleOwnershipProven": false,
+  "artifacts": [
+    {
+      "path": "task-7-lint-final.log",
+      "sha256": "1fb08daca202a001a343eef742565448d0473dad265e8afe995937f47ac84341"
+    },
+    {
+      "path": "task-7-http-final.log",
+      "sha256": "d9e07837f42d01554b754fda4a249dbdea76defaf53749b1bf4062c889e08da3"
+    },
+    {
+      "path": "task-7-consent-contract-green.log",
+      "sha256": "091ec23f7ab33e99def9bd4f993cfecbb890195dea0cea7462dce0b512bc8593"
+    },
+    {
+      "path": "task-7-real-app-first.log",
+      "sha256": "1ebea2dba094fe64bd7165a7f62af7c78fc80e3b52e460538da11bd664a763d9"
+    },
+    {
+      "path": "task-7-json400-contract-red.log",
+      "sha256": "f0efaacce07529981574fb2871b8707066fa54603e54ec9e32d038e640d62d39"
+    },
+    {
+      "path": "task-7-red.log",
+      "sha256": "d04c48b6f8046509b9ca95187dfd784f1986462d1f21bd7090fe3533eafc4652"
+    },
+    {
+      "path": "task-7-lint.log",
+      "sha256": "250f5bc00a4d33ad53688a0b7fcbab64d87f14cc5ccf5b7677255ed1a483212b"
+    },
+    {
+      "path": "task-7-format-web.log",
+      "sha256": "4395efe85bf42d60f3dd66e98c14a0b3d2af4a0290e3ec6f9d30b47d1aecdb3b"
+    },
+    {
+      "path": "task-7-fixture-heading-red.log",
+      "sha256": "25975aa8b5be30f566920015b39b0a33bb6364dc2a87c1058145b21417064b5a"
+    },
+    {
+      "path": "task-7-format-contracts.log",
+      "sha256": "a4bc6b809d47af26a63c6c58b04b506ddb52ea83e53fc96b85fc878b5c3a49db"
+    },
+    {
+      "path": "task-7-http-contract.log",
+      "sha256": "d8af9b2a6af62a8e73fbf8e4ef1084c7617f88fdb8ff37e40fedeec1a4f09860"
+    },
+    {
+      "path": "task-7-before-deployment.log",
+      "sha256": "870a472f2ca9633c09aa572cfcfda62a07c8f6a59bd55382a615558f35ece971"
+    },
+    {
+      "path": "task-7-root-types-final.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "task-7-consent-contract-final.log",
+      "sha256": "9acd8d1e86d9f7cda0ef5acf730555474d890cd38a2231df19c83bcfaefcba8e"
+    },
+    {
+      "path": "task-7-http-first.log",
+      "sha256": "87ff76e5ec015452a97c3e7ef5dcf841f42bd61862a399ca616648e685e7b126"
+    },
+    {
+      "path": "task-7-real-app-red.log",
+      "sha256": "834826e1b5b86779f111594b3fcf06ca298a6c94d86a777375e406d89fbd66e2"
+    },
+    {
+      "path": "task-7-node-contract.log",
+      "sha256": "17996c3880ded147b28d156c3921b37c8215d80a90f60bc73036a83687bdb07a"
+    },
+    {
+      "path": "task-7-consent-contract-red.log",
+      "sha256": "a7a430181e25d59ff8055195e1641472cd0e28a4a50143cd52fef52e317e3bae"
+    },
+    {
+      "path": "task-7-format-domain.log",
+      "sha256": "4278ab31496ebe4e58e7e1a10477630870fbe903d00598b5241f916f118e0d38"
+    },
+    {
+      "path": "task-7-types.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "task-7-format-root.log",
+      "sha256": "73d282b4d9d184e0f928de449d8d59246f1422cc834bd79f717def2864a7b118"
+    },
+    {
+      "path": "task-7-real-app-a36ddd01-60bf-429b-a1a3-1f75b2614680.json",
+      "sha256": "99a915bddae4e7f2e808c7d08531129d5cdf8b037b9b9e0f68462c4946da1d3b"
+    },
+    {
+      "path": "task-7-before-deployment.json",
+      "sha256": "f07f341706a6195b844326257a3f37dcf0e50e68f9155a698a84ce2d098246de"
+    }
+  ]
+}

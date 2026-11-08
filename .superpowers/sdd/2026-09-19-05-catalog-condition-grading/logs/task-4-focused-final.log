@@ -1,0 +1,11 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ✓ |workspace| packages/domain/src/condition/condition-service.test.ts (10 tests) 398ms
+ ✓ |workspace| apps/web/src/lib/condition-routes.integration.test.ts (5 tests) 152ms
+
+ Test Files  2 passed (2)
+      Tests  15 passed (15)
+   Start at  23:42:13
+   Duration  1.11s (transform 92ms, setup 5ms, collect 285ms, tests 550ms, environment 0ms, prepare 70ms)
+

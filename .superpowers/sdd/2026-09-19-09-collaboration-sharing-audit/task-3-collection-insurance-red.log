@@ -1,0 +1,68 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/sharing/share-service.test.ts (18 tests | 1 failed) 1196ms
+   ✓ actual explicit granular read shares > excludes private notes, location, insurance, receipt and money data by default and stores only a token hash 116ms
+   ✓ actual explicit granular read shares > stops a known token immediately after revocation 15ms
+   ✓ actual explicit granular read shares > binds registered-user grants without adding membership or broadening a Viewer's edit rights 28ms
+   ✓ actual explicit granular read shares > resolves the selected node subtree without exposing siblings or other private ancestors 25ms
+   ✓ actual explicit granular read shares > permanently revokes the old owner's token during transfer, including a later ownership round trip 49ms
+   ✓ actual explicit granular read shares > rejects a genuinely expired stored grant using the database clock 6ms
+   ✓ actual explicit granular read shares > stores a salted PIN hash and persists a bounded attempt budget before expensive checking 213ms
+   ✓ actual explicit granular read shares > discloses only explicitly selected location, policy, values and document metadata 37ms
+   ✓ actual explicit granular read shares > cannot select a document belonging to a different item or a sibling outside the chosen subtree 8ms
+   ✓ actual explicit granular read shares > pages collections with stable bounded cursors and no duplicate or missing item 38ms
+   ✓ actual explicit granular read shares > reuses a short-lived PIN session for selected proof bytes without repeated PIN attempts 134ms
+   ✓ actual explicit granular read shares > reauthorizes after actual storage I/O and refuses bytes if the share was revoked during the read 18ms
+   ✓ actual explicit granular read shares > does not turn an image permission into a private document download 14ms
+   ✓ actual explicit granular read shares > exports the same minimal selected fields only when explicitly enabled 11ms
+   ✓ actual explicit granular read shares > does not reuse a PIN session for a different grant and rejects an expired session 110ms
+   ✓ actual explicit granular read shares > serializes concurrent creation at the 100-active-grant boundary 15ms
+   ✓ actual explicit granular read shares > guards immutable disclosure permissions and prevents restoring a revoked grant through SQL 36ms
+   × actual explicit granular read shares > shares collection insurance only for an explicitly selected whole collection, never a child subtree 27ms
+     → expected { …(5) } to match object { insurance: { …(3) } }
+(7 matching properties omitted from actual)
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/sharing/share-service.test.ts > actual explicit granular read shares > shares collection insurance only for an explicitly selected whole collection, never a child subtree
+AssertionError: expected { …(5) } to match object { insurance: { …(3) } }
+(7 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "insurance": {
+-     "amountMinor": "45000",
+-     "basis": "COLLECTION_TOTAL",
+-     "policyReference": "selected-collection-policy",
++   "exportAllowed": true,
++   "items": [
++     {
++       "id": "90e78ece-1f19-4b46-bf60-7316d065e464",
++       "insurance": null,
++       "publicDescription": "Explicitly shared description",
++       "quantity": 1,
++       "title": "Selected shared item",
++     },
++   ],
++   "next": null,
++   "shareId": "38b08686-8d0f-4537-81fa-a7234dae6d92",
++   "target": {
++     "id": "a2bf2eab-5dd4-47f1-b16f-41209e1abfbd",
++     "kind": "COLLECTION",
+    },
+  }
+
+ ❯ packages/domain/src/sharing/share-service.test.ts:623:140
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 17 passed (18)
+   Start at  06:57:32
+   Duration  1.74s (transform 205ms, setup 6ms, collect 372ms, tests 1.20s, environment 0ms, prepare 51ms)
+

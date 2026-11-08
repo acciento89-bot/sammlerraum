@@ -1,0 +1,122 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/market-data/market-batch.integration.test.ts (13 tests | 4 failed) 1258ms
+   ✓ bounded exact market relation on real PostgreSQL > selects exact latest eligible values without displacing them with a newer wrong metric, qualifier or denomination 245ms
+   ✓ bounded exact market relation on real PostgreSQL > omits foreign/deleted parent and retired exact identifiers instead of exposing stale values 47ms
+   ✓ bounded exact market relation on real PostgreSQL > prepares with three data queries for 1 owned items sharing one target 43ms
+   ✓ bounded exact market relation on real PostgreSQL > prepares with three data queries for 50 owned items sharing one target 56ms
+   ✓ bounded exact market relation on real PostgreSQL > prepares with three data queries for 500 owned items sharing one target 144ms
+   ✓ bounded exact market relation on real PostgreSQL > keeps old observations when a current identifier is replaced by a new row with the same value 50ms
+   × bounded exact market relation on real PostgreSQL > rejects two qualifying semantic identities across the whole outer scope, but not an identifier lacking the requested metric 76ms
+     → expected ItemSearchError: SEARCH_INVARIANT { code: '…' } to match object { …(2) }
+(1 matching property omitted from actual)
+   ✓ bounded exact market relation on real PostgreSQL > excludes foreign ambiguity and deleted own parents from the independent owned candidate scope 99ms
+   ✓ bounded exact market relation on real PostgreSQL > never falls back from a variant-linked item to an entry-only observation 48ms
+   × bounded exact market relation on real PostgreSQL > rejects malformed driver counts instead of interpreting a noncanonical envelope 37ms
+     → promise resolved "[ { …(5) } ]" instead of rejecting
+   ✓ bounded exact market relation on real PostgreSQL > checks budget and revoked rights after async consumption and expires callback-scoped handles 31ms
+   × bounded exact market relation on real PostgreSQL > does not upgrade a FILTER handle when the caller mutates its purpose during preparation 30ms
+     → SEARCH_INVARIANT
+   × bounded exact market relation on real PostgreSQL > rejects scope mutation during awaited preparation instead of relabeling the prepared owner's data 36ms
+     → promise resolved "[ { …(5) } ]" instead of rejecting
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/market-data/market-batch.integration.test.ts > bounded exact market relation on real PostgreSQL > rejects two qualifying semantic identities across the whole outer scope, but not an identifier lacking the requested metric
+AssertionError: expected ItemSearchError: SEARCH_INVARIANT { code: '…' } to match object { …(2) }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+- {
+-   "code": "MARKET_BATCH_UNAVAILABLE",
+-   "reason": "MAPPING_AMBIGUOUS",
++ ItemSearchError {
++   "code": "SEARCH_INVARIANT",
+  }
+
+ ❯ packages/domain/src/market-data/market-batch.integration.test.ts:73:5
+     71|     expect(await rows(f)).toHaveLength(1);
+     72|     await record(f,{},second.id);
+     73|     await expect(rows(f)).rejects.toMatchObject({code:"MARKET_BATCH_UN…
+       |     ^
+     74|   });
+     75|   it("excludes foreign ambiguity and deleted own parents from the inde…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  |workspace| packages/domain/src/market-data/market-batch.integration.test.ts > bounded exact market relation on real PostgreSQL > rejects malformed driver counts instead of interpreting a noncanonical envelope
+AssertionError: promise resolved "[ { …(5) } ]" instead of rejecting
+
+- Expected: 
+Error {
+  "message": "rejected promise",
+}
+
++ Received: 
+[
+  {
+    "amountMinor": "9007199254740993",
+    "currentIdentifierId": "b7f78b49-3202-4266-8f65-e41f5004499f",
+    "itemId": "f2cee5bb-fa68-4cbe-9b9b-7b3eddd7a69e",
+    "observedIdentifierId": "b7f78b49-3202-4266-8f65-e41f5004499f",
+    "sourceMetric": "market",
+  },
+]
+
+ ❯ packages/domain/src/market-data/market-batch.integration.test.ts:93:10
+     91|     await expect(rows(f,ctx=>{const raw=ctx.tx.$queryRaw.bind(ctx.tx);…
+     92|       const result=await raw<T>(sql);return (sql.text.includes("market…
+     93|     }};})).rejects.toMatchObject({code:"MARKET_BATCH_INVARIANT"});
+       |          ^
+     94|   });
+     95|   it("checks budget and revoked rights after async consumption and exp…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  |workspace| packages/domain/src/market-data/market-batch.integration.test.ts > bounded exact market relation on real PostgreSQL > does not upgrade a FILTER handle when the caller mutates its purpose during preparation
+ItemSearchError: SEARCH_INVARIANT
+ ❯ searchFail packages/contracts/src/item-search.ts:24:9
+     22| }
+     23| export function searchFail(code: ItemSearchError["code"]): never {
+     24|   throw new ItemSearchError(code);
+       |         ^
+     25| }
+     26| const textValid = (v: string) =>
+ ❯ runSearchTransaction packages/domain/src/search/search-read.ts:92:14
+ ❯ packages/domain/src/market-data/market-batch.integration.test.ts:106:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  |workspace| packages/domain/src/market-data/market-batch.integration.test.ts > bounded exact market relation on real PostgreSQL > rejects scope mutation during awaited preparation instead of relabeling the prepared owner's data
+AssertionError: promise resolved "[ { …(5) } ]" instead of rejecting
+
+- Expected: 
+Error {
+  "message": "rejected promise",
+}
+
++ Received: 
+[
+  {
+    "amountMinor": "9007199254740993",
+    "currentIdentifierId": "420d003f-7ef3-44bc-94d7-24646b924706",
+    "itemId": "86b1ef34-56e9-44b2-9a94-7e9084e54eea",
+    "observedIdentifierId": "420d003f-7ef3-44bc-94d7-24646b924706",
+    "sourceMetric": "market",
+  },
+]
+
+ ❯ packages/domain/src/market-data/market-batch.integration.test.ts:114:270
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  4 failed | 9 passed (13)
+   Start at  17:01:30
+   Duration  1.96s (transform 282ms, setup 7ms, collect 506ms, tests 1.26s, environment 0ms, prepare 57ms)
+

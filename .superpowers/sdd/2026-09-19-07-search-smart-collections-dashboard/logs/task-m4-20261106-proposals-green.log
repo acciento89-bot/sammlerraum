@@ -1,0 +1,13 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ✓ |workspace| packages/domain/src/catalog/catalog-money-proposals.test.ts (4 tests) 461ms
+ ✓ |workspace| packages/domain/src/catalog/proposal-service.test.ts (16 tests) 1558ms
+   ✓ catalog proposal moderation PostgreSQL > atomically enforces pending, rolling daily and retained-history quotas without deleting audit rows  980ms
+ ✓ |workspace| packages/domain/src/catalog/catalog-money-mutation.test.ts (9 tests) 637ms
+
+ Test Files  3 passed (3)
+      Tests  29 passed (29)
+   Start at  06:41:57
+   Duration  3.47s (transform 134ms, setup 7ms, collect 396ms, tests 2.66s, environment 0ms, prepare 96ms)
+

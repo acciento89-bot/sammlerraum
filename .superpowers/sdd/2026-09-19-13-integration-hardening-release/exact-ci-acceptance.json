@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "source": "3762e564b3f1416fec02a98267fccfb70e0d6ede",
+  "runId": 42467819313,
+  "jobId": 128691305247,
+  "url": "https://github.com/acciento89-bot/sammlerraum/actions/runs/42467819313",
+  "conclusion": "success",
+  "allMandatoryStagesExecuted": true,
+  "native": {
+    "passed": 3058,
+    "skipped": 0
+  },
+  "compiledPermissions": 84,
+  "compiledCompleteFlows": 4,
+  "recoveryChecks": 9,
+  "realRecoveredApplication": true,
+  "liveDeploymentProven": false,
+  "acceptedTasks": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "unacceptedTasks": [
+    7
+  ],
+  "logSha256": "b40a8611bed979d46d9103bba20519c004dcd4e8a0b5485b2c3cbd6a607bdc27"
+}

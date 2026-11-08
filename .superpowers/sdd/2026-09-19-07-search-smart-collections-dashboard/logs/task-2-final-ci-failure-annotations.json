@@ -1,0 +1,58 @@
+{
+  "content": [],
+  "structuredContent": {
+    "headRevision": "c016c03b44958854e5a71f30b1d12b40cfdfbc36",
+    "checks": [
+      {
+        "id": 117622246524,
+        "name": "verify",
+        "head_sha": "c016c03b44958854e5a71f30b1d12b40cfdfbc36",
+        "status": "completed",
+        "conclusion": "failure",
+        "details_url": "https://github.com/acciento89-bot/sammlerraum/actions/runs/39109459988/job/117622246524",
+        "output": {
+          "title": null,
+          "summary": null,
+          "text": null,
+          "annotations_count": 3
+        }
+      }
+    ],
+    "statuses": [],
+    "annotations": [
+      {
+        "path": ".github",
+        "start_line": 2,
+        "end_line": 2,
+        "annotation_level": "warning",
+        "message": "Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-node@v4, pnpm/action-setup@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/",
+        "title": "",
+        "raw_details": ""
+      },
+      {
+        "path": ".github",
+        "start_line": 73,
+        "end_line": 73,
+        "annotation_level": "failure",
+        "message": "Process completed with exit code 1.",
+        "title": "",
+        "raw_details": ""
+      },
+      {
+        "path": ".github",
+        "start_line": 1,
+        "end_line": 1,
+        "annotation_level": "notice",
+        "message": "\"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748\"",
+        "title": "",
+        "raw_details": ""
+      }
+    ],
+    "hasMore": false,
+    "job": null,
+    "jobs": [],
+    "log": null,
+    "logTruncated": false,
+    "providerGuidance": "GitHub guidance for this response only: use checkRunId for output and annotations, runId from a GitHub Actions /runs/<id> link to list jobs, or jobId from a /jobs/<id> link for logs. page paginates checks, jobs or annotations. Keep the supplied account and returned headRevision on follow-up reads. Third-party CI exposes only the output reported to GitHub."
+  }
+}

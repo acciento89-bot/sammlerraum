@@ -1,0 +1,60 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/collaboration/invitation-service.test.ts (22 tests | 1 failed) 1319ms
+   ✓ actual recipient-bound invitations > does not allow a different verified account to accept an email-bound invite 107ms
+   ✓ actual recipient-bound invitations > accepts the intended verified recipient atomically and derives exactly one owner 30ms
+   ✓ actual recipient-bound invitations > requires current verified identity instead of trusting possession of the token 14ms
+   ✓ actual recipient-bound invitations > does not re-add membership when a consumed invitation is replayed after removal 18ms
+   ✓ actual recipient-bound invitations > stores only the token hash and hides tokens from the authorized pending list 10ms
+   ✓ actual recipient-bound invitations > revokes a link without changing membership and rejects its later use 10ms
+   ✓ actual recipient-bound invitations > serializes simultaneous acceptance without duplicating membership or revisions 18ms
+   ✓ actual recipient-bound invitations > checks current inviter authority after demotion rather than trusting an issued role 20ms
+   ✓ actual recipient-bound invitations > rejects an actual expired stored invitation using the database clock 5ms
+   ✓ actual recipient-bound invitations > never overwrites a different existing membership through an invitation 12ms
+   ✓ actual recipient-bound invitations > erases pending email invitations when the intended account is deleted 13ms
+   ✓ actual recipient-bound invitations > rejects owner-role injection and stale membership decisions 7ms
+   ✓ actual recipient-bound invitations > bounds pending invitations and rejects duplicate active targets 53ms
+   ✓ actual recipient-bound invitations > retains the exact maximum lifetime from one database-issued UTC anchor 4ms
+   ✓ actual recipient-bound invitations > rejects raw consumption without the actual resulting membership 8ms
+   ✓ actual recipient-bound invitations > rejects a changed email and preserves immutable recipient, role and token identity 20ms
+   ✓ actual recipient-bound invitations > does not preserve an old Owner's Admin grant after ownership transfer 38ms
+   ✓ actual recipient-bound invitations > revokes an unconsumed EMAIL invitation when the member is explicitly removed 10ms
+   ✓ actual recipient-bound invitations > revokes an unconsumed USER invitation when the member is explicitly removed 10ms
+   ✓ actual recipient-bound invitations > keeps the pending-invitation cap under concurrent Owner/Admin creation 48ms
+   ✓ actual recipient-bound invitations > does not consume a token at membership capacity and can accept after a genuine slot is freed 83ms
+   × actual recipient-bound invitations > rolls back a token that expires during the real acceptance transaction with a closed expiry result 525ms
+     → expected InvitationError: INVITATION_INTEGRITY { code: '…' } to match object { code: 'INVITATION_EXPIRED' }
+(1 matching property omitted from actual)
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/collaboration/invitation-service.test.ts > actual recipient-bound invitations > rolls back a token that expires during the real acceptance transaction with a closed expiry result
+AssertionError: expected InvitationError: INVITATION_INTEGRITY { code: '…' } to match object { code: 'INVITATION_EXPIRED' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+- {
+-   "code": "INVITATION_EXPIRED",
++ InvitationError {
++   "code": "INVITATION_INTEGRITY",
+  }
+
+ ❯ packages/domain/src/collaboration/invitation-service.test.ts:562:46
+    560|         },{timeout:1500,interval:20});
+    561|         release();const outcome=await result;expect(outcome.ok).toBe(f…
+    562|         if(!outcome.ok)expect(outcome.error).toMatchObject({code:"INVI…
+       |                                              ^
+    563|         expect(await db.collectionMember.count({where:{collectionId:f.…
+    564|         expect((await db.collection.findUniqueOrThrow({where:{id:f.col…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 21 passed (22)
+   Start at  06:06:40
+   Duration  1.75s (transform 141ms, setup 6ms, collect 271ms, tests 1.32s, environment 0ms, prepare 34ms)
+

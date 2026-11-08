@@ -1,0 +1,751 @@
+Exact-source Task1 CI run39088590979/job117560265003, sourced101e5964f967acb8b9979db2d0ce23496db4f76. Backend truncated tail retained below; no hidden count inferred. Parallel39088588582/job117560257740 also SUCCESS.
+4963700Z #6 sha256:c35748eaa5ecc949b0f7cc349a9f7c4a5417dc008e2d9bebd53678d87238fcbf 450B / 450B 0.4s done
+2026-10-18T02:09:04.5967437Z #6 sha256:4996e33358abd29e5daf56cdda6681efb4db3bd55b5ab63a7d3d44f8400195a4 50.50MB / 50.50MB 0.6s
+2026-10-18T02:09:04.9300248Z #6 sha256:4996e33358abd29e5daf56cdda6681efb4db3bd55b5ab63a7d3d44f8400195a4 50.50MB / 50.50MB 0.7s done
+2026-10-18T02:09:05.2049018Z #6 extracting sha256:a8ac7f6c67abc236e4c745052c404112b8fab6fe8ac3a329d1ef3b867ad67c71 0.6s done
+2026-10-18T02:09:05.2049477Z #6 extracting sha256:990581063f5c8a03a57db7a0d116679ea6e6e335d4ac48ef457f26f82d917eba done
+2026-10-18T02:09:05.5639876Z #6 extracting sha256:4996e33358abd29e5daf56cdda6681efb4db3bd55b5ab63a7d3d44f8400195a4
+2026-10-18T02:09:06.4864427Z #6 extracting sha256:4996e33358abd29e5daf56cdda6681efb4db3bd55b5ab63a7d3d44f8400195a4 0.8s done
+2026-10-18T02:09:07.1175721Z #6 extracting sha256:f95897c2a1fb7bce26b018dd74b2845f816f7b86d5adff2939c6482b1d5b474c
+2026-10-18T02:09:07.3279425Z #6 extracting sha256:f95897c2a1fb7bce26b018dd74b2845f816f7b86d5adff2939c6482b1d5b474c 0.0s done
+2026-10-18T02:09:07.3280153Z #6 extracting sha256:c35748eaa5ecc949b0f7cc349a9f7c4a5417dc008e2d9bebd53678d87238fcbf done
+2026-10-18T02:09:07.3280537Z #6 DONE 3.2s
+2026-10-18T02:09:07.3280643Z 
+2026-10-18T02:09:07.3280752Z #7 [runtime 2/5] WORKDIR /app
+2026-10-18T02:09:07.3280963Z #7 DONE 0.0s
+2026-10-18T02:09:07.3281059Z 
+2026-10-18T02:09:07.3281320Z #8 [runtime 3/5] RUN mkdir -p /data/uploads && chown node:node /data/uploads
+2026-10-18T02:09:07.3281633Z #8 DONE 0.1s
+2026-10-18T02:09:07.3281729Z 
+2026-10-18T02:09:07.3281974Z #9 [base 2/3] RUN corepack enable && corepack prepare pnpm@10.17.1 --activate
+2026-10-18T02:09:07.5530822Z #9 0.206 Preparing pnpm@10.17.1 for immediate activation...
+2026-10-18T02:09:08.0962030Z #9 DONE 0.9s
+2026-10-18T02:09:08.3455362Z 
+2026-10-18T02:09:08.3456099Z #10 [base 3/3] WORKDIR /app
+2026-10-18T02:09:08.3456433Z #10 DONE 0.0s
+2026-10-18T02:09:08.3456547Z 
+2026-10-18T02:09:08.3456680Z #11 [build 1/5] COPY . .
+2026-10-18T02:09:08.3456876Z #11 DONE 0.1s
+2026-10-18T02:09:08.3456973Z 
+2026-10-18T02:09:08.3457156Z #12 [build 2/5] RUN pnpm install --frozen-lockfile
+2026-10-18T02:09:08.5033753Z #12 0.308 Scope: all 10 workspace projects
+2026-10-18T02:09:08.6036969Z #12 0.361 Lockfile is up to date, resolution step is skipped
+2026-10-18T02:09:08.6037669Z #12 0.386 Progress: resolved 1, reused 0, downloaded 0, added 0
+2026-10-18T02:09:08.6038468Z #12 0.408 Packages: +339
+2026-10-18T02:09:08.6039412Z #12 0.408 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+2026-10-18T02:09:08.7849370Z #12 0.590 
+2026-10-18T02:09:08.7850153Z #12 0.590    ╭───────────────────────────────────────────────╮
+2026-10-18T02:09:08.7850614Z #12 0.590    │                                               │
+2026-10-18T02:09:08.7851073Z #12 0.590    │     Update available! 10.17.1 → 12.14.0.      │
+2026-10-18T02:09:08.7851594Z #12 0.590    │     Changelog: https://pnpm.io/v/12.14.0      │
+2026-10-18T02:09:08.7852336Z #12 0.590    │   To update, run: corepack use pnpm@12.14.0   │
+2026-10-18T02:09:08.7852899Z #12 0.590    │                                               │
+2026-10-18T02:09:08.7853326Z #12 0.590    ╰───────────────────────────────────────────────╯
+2026-10-18T02:09:08.7853600Z #12 0.590 
+2026-10-18T02:09:09.5826658Z #12 1.387 Progress: resolved 339, reused 0, downloaded 147, added 132
+2026-10-18T02:09:10.5839060Z #12 2.388 Progress: resolved 339, reused 0, downloaded 271, added 230
+2026-10-18T02:09:11.5844238Z #12 3.388 Progress: resolved 339, reused 0, downloaded 327, added 338
+2026-10-18T02:09:12.1653772Z #12 3.970 Progress: resolved 339, reused 0, downloaded 328, added 339, done
+2026-10-18T02:09:12.2909733Z #12 4.096 .../node_modules/@prisma/engines postinstall$ node scripts/postinstall.js
+2026-10-18T02:09:12.3942291Z #12 4.115 .../esbuild@0.28.2/node_modules/esbuild postinstall$ node install.js
+2026-10-18T02:09:12.3943897Z #12 4.195 .../node_modules/@prisma/engines postinstall: prisma:warn Prisma failed to detect the libssl/openssl version to use, and may not work as expected. Defaulting to "openssl-1.1.x".
+2026-10-18T02:09:12.3945628Z #12 4.195 .../node_modules/@prisma/engines postinstall: Please manually install OpenSSL via `apt-get update -y && apt-get install -y openssl` and try installing Prisma again. If you're running Prisma on Docker, add this command to your Dockerfile, or switch to an image that already has OpenSSL installed.
+2026-10-18T02:09:12.3946840Z #12 4.199 .../esbuild@0.28.2/node_modules/esbuild postinstall: Done
+2026-10-18T02:09:12.9143861Z #12 4.719 .../node_modules/@prisma/engines postinstall: Done
+2026-10-18T02:09:13.0231924Z #12 4.772 .../node_modules/prisma preinstall$ node scripts/preinstall-entry.js
+2026-10-18T02:09:13.0232807Z #12 4.773 .../node_modules/prisma preinstall$ node scripts/preinstall-entry.js
+2026-10-18T02:09:13.0233603Z #12 4.828 .../node_modules/prisma preinstall: Done
+2026-10-18T02:09:13.1844980Z #12 4.838 .../node_modules/prisma preinstall: Done
+2026-10-18T02:09:13.3170468Z #12 5.122 
+2026-10-18T02:09:13.4482146Z #12 5.122 devDependencies:
+2026-10-18T02:09:13.4482511Z #12 5.122 + @types/node 24.5.2
+2026-10-18T02:09:13.4483187Z #12 5.122 + prettier 3.6.2
+2026-10-18T02:09:13.4483555Z #12 5.122 + typescript 5.9.2
+2026-10-18T02:09:13.4483806Z #12 5.122 + vitest 3.2.7
+2026-10-18T02:09:13.4484008Z #12 5.122 
+2026-10-18T02:09:13.4484739Z #12 5.122 ╭ Warning ─────────────────────────────────────────────────────────────────────╮
+2026-10-18T02:09:13.4485306Z #12 5.122 │                                                                              │
+2026-10-18T02:09:13.4485910Z #12 5.122 │   Ignored build scripts: @parcel/watcher, @swc/core.                         │
+2026-10-18T02:09:13.4486573Z #12 5.122 │   Run "pnpm approve-builds" to pick which dependencies should be allowed     │
+2026-10-18T02:09:13.4487240Z #12 5.122 │   to run scripts.                                                            │
+2026-10-18T02:09:13.4487806Z #12 5.122 │                                                                              │
+2026-10-18T02:09:13.4488375Z #12 5.122 ╰──────────────────────────────────────────────────────────────────────────────╯
+2026-10-18T02:09:13.4488714Z #12 5.122 
+2026-10-18T02:09:13.4488949Z #12 5.197 Done in 5s using pnpm v10.17.1
+2026-10-18T02:09:13.4489198Z #12 DONE 5.3s
+2026-10-18T02:09:13.5981429Z 
+2026-10-18T02:09:13.5983051Z #13 [build 3/5] RUN DATABASE_URL=***127.0.0.1:5432/sammlerraum_build     pnpm --filter @sammlerraum/db prisma generate
+2026-10-18T02:09:13.7437367Z #13 0.296 
+2026-10-18T02:09:13.7437786Z #13 0.296 > @sammlerraum/db@ prisma /app/packages/db
+2026-10-18T02:09:13.7438185Z #13 0.296 > prisma generate
+2026-10-18T02:09:13.7438392Z #13 0.296 
+2026-10-18T02:09:14.2789740Z #13 0.832 Loaded Prisma config from prisma.config.ts.
+2026-10-18T02:09:14.2790104Z #13 0.832 
+2026-10-18T02:09:14.3916877Z #13 0.868 prisma:warn Prisma failed to detect the libssl/openssl version to use, and may not work as expected. Defaulting to "openssl-1.1.x".
+2026-10-18T02:09:14.3918690Z #13 0.868 Please manually install OpenSSL via `apt-get update -y && apt-get install -y openssl` and try installing Prisma again. If you're running Prisma on Docker, add this command to your Dockerfile, or switch to an image that already has OpenSSL installed.
+2026-10-18T02:09:14.3919944Z #13 0.873 prisma:warn Prisma failed to detect the libssl/openssl version to use, and may not work as expected. Defaulting to "openssl-1.1.x".
+2026-10-18T02:09:14.3921303Z #13 0.873 Please manually install OpenSSL via `apt-get update -y && apt-get install -y openssl` and try installing Prisma again. If you're running Prisma on Docker, add this command to your Dockerfile, or switch to an image that already has OpenSSL installed.
+2026-10-18T02:09:14.3921870Z #13 0.944 Prisma schema loaded from prisma/schema.prisma.
+2026-10-18T02:09:14.8899599Z #13 1.443 
+2026-10-18T02:09:14.8901581Z #13 1.443 ✔ Generated Prisma Client (v7.10.0) to ./../../node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client in 337ms
+2026-10-18T02:09:14.8902491Z #13 1.443 
+2026-10-18T02:09:14.8919712Z #13 1.443 Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+2026-10-18T02:09:14.8921633Z #13 1.443 
+2026-10-18T02:09:14.8921894Z #13 1.443 
+2026-10-18T02:09:19.6662853Z #13 DONE 6.2s
+2026-10-18T02:09:19.7665511Z 
+2026-10-18T02:09:19.7666291Z #14 [build 4/5] RUN test -n "https://example.invalid"
+2026-10-18T02:09:19.7666633Z #14 DONE 0.1s
+2026-10-18T02:09:19.9174819Z 
+2026-10-18T02:09:19.9178902Z #15 [build 5/5] RUN DATABASE_URL=***127.0.0.1:5432/sammlerraum_build     APP_ORIGIN=http://127.0.0.1:3000     NEXT_PUBLIC_APP_ORIGIN=https://example.invalid     UPLOADS_DIR=/tmp/sammlerraum-build-uploads     BETTER_AUTH_SECRET=build-only-secret-that-is-at-least-thirty-two-characters     GOOGLE_CLIENT_ID=build-only-google-client-id     GOOGLE_CLIENT_SECRET=build-only-google-client-secret     APPLE_CLIENT_ID=build-only-apple-client-id     APPLE_CLIENT_SECRET=build-only-apple-client-secret     SMTP_HOST=smtp.example.invalid     SMTP_PORT=587     SMTP_SECURE=false     SMTP_USER=build-only-smtp-user     SMTP_PASSWORD=build-only-smtp-password     SMTP_FROM=noreply@example.invalid     pnpm --filter @sammlerraum/web build
+2026-10-18T02:09:20.0387131Z #15 0.272 
+2026-10-18T02:09:20.0387741Z #15 0.272 > @sammlerraum/web@ build /app/apps/web
+2026-10-18T02:09:20.0388278Z #15 0.272 > next build
+2026-10-18T02:09:20.0388538Z #15 0.272 
+2026-10-18T02:09:20.2707046Z #15 0.503 ▲ Next.js 16.3.5 (Turbopack)
+2026-10-18T02:09:20.4936930Z #15 0.534 ✓ Running next.config.ts took 30ms
+2026-10-18T02:09:20.4937501Z #15 0.538 Attention: Next.js now collects completely anonymous telemetry regarding usage.
+2026-10-18T02:09:20.4938084Z #15 0.538 This information is used to shape Next.js' roadmap and prioritize features.
+2026-10-18T02:09:20.4938940Z #15 0.538 You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+2026-10-18T02:09:20.4939531Z #15 0.538 https://nextjs.org/telemetry
+2026-10-18T02:09:20.4939782Z #15 0.538 
+2026-10-18T02:09:20.4939945Z #15 0.550 
+2026-10-18T02:09:20.4940205Z #15 0.576   Creating an optimized production build ...
+2026-10-18T02:09:29.1347926Z #15 9.368 ✓ Compiled successfully in 8.1s
+2026-10-18T02:09:29.2956901Z #15 9.378   Running TypeScript ...
+2026-10-18T02:09:34.4658330Z #15 14.70   Finished TypeScript in 5.3s ...
+2026-10-18T02:09:34.6185875Z #15 14.70   Collecting page data using 3 workers ...
+2026-10-18T02:09:35.4250320Z #15 15.66   Generating static pages using 3 workers (0/24) ...
+2026-10-18T02:09:35.5685592Z #15 15.71   Generating static pages using 3 workers (6/24) 
+2026-10-18T02:09:35.5686056Z #15 15.74   Generating static pages using 3 workers (12/24) 
+2026-10-18T02:09:35.5686499Z #15 15.75   Generating static pages using 3 workers (18/24) 
+2026-10-18T02:09:35.5687323Z #15 15.80 ✓ Generating static pages using 3 workers (24/24) in 144ms
+2026-10-18T02:09:35.7264513Z #15 15.81   Finalizing page optimization ...
+2026-10-18T02:09:36.1280860Z #15 16.36 
+2026-10-18T02:09:36.2803408Z #15 16.36 Route (app)
+2026-10-18T02:09:36.2803980Z #15 16.36 ┌ ○ /_not-found
+2026-10-18T02:09:36.2804149Z #15 16.36 ├   /[locale]
+2026-10-18T02:09:36.2804308Z #15 16.36 │ ├ ● /de
+2026-10-18T02:09:36.2804450Z #15 16.36 │ └ ● /en
+2026-10-18T02:09:36.2804633Z #15 16.36 ├ ƒ /[locale]/account/profile
+2026-10-18T02:09:36.2804843Z #15 16.36 ├ ƒ /[locale]/account/security
+2026-10-18T02:09:36.2805058Z #15 16.36 ├ ƒ /[locale]/catalog
+2026-10-18T02:09:36.2805249Z #15 16.36 ├ ƒ /[locale]/catalog/[entryId]
+2026-10-18T02:09:36.2805457Z #15 16.36 ├ ƒ /[locale]/catalog/moderation
+2026-10-18T02:09:36.2805663Z #15 16.36 ├ ƒ /[locale]/catalog/proposals
+2026-10-18T02:09:36.2805857Z #15 16.36 ├ ƒ /[locale]/collections
+2026-10-18T02:09:36.2806366Z #15 16.36 ├ ƒ /[locale]/collections/[collectionId]
+2026-10-18T02:09:36.2806589Z #15 16.36 ├ ƒ /[locale]/items/[itemId]
+2026-10-18T02:09:36.2806788Z #15 16.36 ├ ƒ /[locale]/items/new
+2026-10-18T02:09:36.2806992Z #15 16.36 ├ ƒ /[locale]/locations/[locationId]
+2026-10-18T02:09:36.2807228Z #15 16.36 ├ ƒ /[locale]/locations/[locationId]/label
+2026-10-18T02:09:36.2807422Z #15 16.36 ├ ƒ /[locale]/login
+2026-10-18T02:09:36.2807597Z #15 16.36 ├ ƒ /[locale]/register
+2026-10-18T02:09:36.2807777Z #15 16.36 ├ ƒ /api/auth/[...all]
+2026-10-18T02:09:36.2807941Z #15 16.36 ├ ƒ /api/health
+2026-10-18T02:09:36.2808111Z #15 16.36 ├ ƒ /api/openapi.json
+2026-10-18T02:09:36.2808298Z #15 16.36 ├ ƒ /api/v1/account/profile
+2026-10-18T02:09:36.2808510Z #15 16.36 ├ ƒ /api/v1/account/recovery-methods
+2026-10-18T02:09:36.2808716Z #15 16.36 ├ ƒ /api/v1/account/sessions
+2026-10-18T02:09:36.2808914Z #15 16.36 ├ ƒ /api/v1/catalog/capabilities
+2026-10-18T02:09:36.2809132Z #15 16.36 ├ ƒ /api/v1/catalog/entries/[entryId]
+2026-10-18T02:09:36.2809395Z #15 16.36 ├ ƒ /api/v1/catalog/entries/[entryId]/revisions
+2026-10-18T02:09:36.2809688Z #15 16.36 ├ ƒ /api/v1/catalog/entries/[entryId]/revisions/[revision]
+2026-10-18T02:09:36.2809961Z #15 16.36 ├ ƒ /api/v1/catalog/entries/[entryId]/rollback
+2026-10-18T02:09:36.2810198Z #15 16.36 ├ ƒ /api/v1/catalog/moderation/proposals
+2026-10-18T02:09:36.2810460Z #15 16.36 ├ ƒ /api/v1/catalog/moderation/proposals/[proposalId]
+2026-10-18T02:09:36.2810694Z #15 16.36 ├ ƒ /api/v1/catalog/proposals
+2026-10-18T02:09:36.2810919Z #15 16.36 ├ ƒ /api/v1/catalog/proposals/[proposalId]
+2026-10-18T02:09:36.2811174Z #15 16.36 ├ ƒ /api/v1/catalog/proposals/[proposalId]/decision
+2026-10-18T02:09:36.2811396Z #15 16.36 ├ ƒ /api/v1/catalog/search
+2026-10-18T02:09:36.2811578Z #15 16.36 ├ ƒ /api/v1/categories
+2026-10-18T02:09:36.2811777Z #15 16.36 ├ ƒ /api/v1/categories/[categoryId]
+2026-10-18T02:09:36.2812029Z #15 16.36 ├ ƒ /api/v1/categories/[categoryId]/condition-scheme
+2026-10-18T02:09:36.2812247Z #15 16.36 ├ ƒ /api/v1/collections
+2026-10-18T02:09:36.2812462Z #15 16.36 ├ ƒ /api/v1/collections/[collectionId]
+2026-10-18T02:09:36.2812892Z #15 16.36 ├ ƒ /api/v1/collections/[collectionId]/custom-fields
+2026-10-18T02:09:36.2813150Z #15 16.36 ├ ƒ /api/v1/collections/[collectionId]/nodes
+2026-10-18T02:09:36.2813408Z #15 16.36 ├ ƒ /api/v1/collections/[collectionId]/nodes/[nodeId]
+2026-10-18T02:09:36.2813614Z #15 16.36 ├ ƒ /api/v1/items
+2026-10-18T02:09:36.2813792Z #15 16.36 ├ ƒ /api/v1/items/[itemId]
+2026-10-18T02:09:36.2813991Z #15 16.36 ├ ƒ /api/v1/items/[itemId]/archive
+2026-10-18T02:09:36.2814213Z #15 16.36 ├ ƒ /api/v1/items/[itemId]/catalog-link
+2026-10-18T02:09:36.2814436Z #15 16.36 ├ ƒ /api/v1/items/[itemId]/category
+2026-10-18T02:09:36.2814650Z #15 16.36 ├ ƒ /api/v1/items/[itemId]/condition
+2026-10-18T02:09:36.2814895Z #15 16.36 ├ ƒ /api/v1/items/[itemId]/custom-fields/[fieldId]
+2026-10-18T02:09:36.2815133Z #15 16.36 ├ ƒ /api/v1/items/[itemId]/documents
+2026-10-18T02:09:36.2815365Z #15 16.36 ├ ƒ /api/v1/items/[itemId]/documents/[linkId]
+2026-10-18T02:09:36.2815601Z #15 16.36 ├ ƒ /api/v1/items/[itemId]/gradings
+2026-10-18T02:09:36.2815971Z #15 16.36 ├ ƒ /api/v1/items/[itemId]/gradings/[gradingId]
+2026-10-18T02:09:36.2816206Z #15 16.36 ├ ƒ /api/v1/items/[itemId]/identifiers
+2026-10-18T02:09:36.2816423Z #15 16.36 ├ ƒ /api/v1/items/[itemId]/location
+2026-10-18T02:09:36.2816630Z #15 16.36 ├ ƒ /api/v1/items/[itemId]/media
+2026-10-18T02:09:36.2816851Z #15 16.36 ├ ƒ /api/v1/items/[itemId]/media/[linkId]
+2026-10-18T02:09:36.2817066Z #15 16.36 ├ ƒ /api/v1/items/[itemId]/split
+2026-10-18T02:09:36.2817269Z #15 16.36 ├ ƒ /api/v1/items/[itemId]/tags
+2026-10-18T02:09:36.2817459Z #15 16.36 ├ ƒ /api/v1/locations
+2026-10-18T02:09:36.2817653Z #15 16.36 ├ ƒ /api/v1/locations/[locationId]
+2026-10-18T02:09:36.2817870Z #15 16.36 ├ ƒ /api/v1/media/[assetId]/[variant]
+2026-10-18T02:09:36.2818074Z #15 16.36 ├ ƒ /api/v1/media/avatar
+2026-10-18T02:09:36.2818264Z #15 16.36 ├ ƒ /api/v1/media/documents
+2026-10-18T02:09:36.2818451Z #15 16.36 ├ ƒ /api/v1/media/images
+2026-10-18T02:09:36.2818710Z #15 16.36 └ ƒ /l/[token]
+2026-10-18T02:09:36.2818836Z #15 16.36 
+2026-10-18T02:09:36.2818942Z #15 16.36 
+2026-10-18T02:09:36.2819102Z #15 16.36 ƒ Proxy (Middleware)
+2026-10-18T02:09:36.2819236Z #15 16.36 
+2026-10-18T02:09:36.2819422Z #15 16.36 ○  (Static)   prerendered as static content
+2026-10-18T02:09:36.2819719Z #15 16.36 ●  (SSG)      prerendered as static HTML (uses generateStaticParams)
+2026-10-18T02:09:36.2819993Z #15 16.36 ƒ  (Dynamic)  server-rendered on demand
+2026-10-18T02:09:36.2820151Z #15 16.36 
+2026-10-18T02:09:36.5364167Z #15 DONE 16.8s
+2026-10-18T02:09:36.7046288Z 
+2026-10-18T02:09:36.7054024Z #16 [runtime 4/5] COPY --from=build --chown=node:node /app/apps/web/.next/standalone ./
+2026-10-18T02:09:37.3711590Z #16 DONE 0.7s
+2026-10-18T02:09:37.5386269Z 
+2026-10-18T02:09:37.5387216Z #17 [runtime 5/5] COPY --from=build --chown=node:node /app/apps/web/.next/static ./apps/web/.next/static
+2026-10-18T02:09:37.5387733Z #17 DONE 0.0s
+2026-10-18T02:09:37.5387942Z 
+2026-10-18T02:09:37.5388105Z #18 exporting to image
+2026-10-18T02:09:37.5388315Z #18 exporting layers
+2026-10-18T02:09:38.0097704Z #18 exporting layers 0.6s done
+2026-10-18T02:09:38.0221922Z #18 writing image sha256:af1e8232040770f33c4ac7385bcfd0358ae4ac2927032b1cc043b117370f4ff1 done
+2026-10-18T02:09:38.0222190Z #18 DONE 0.6s
+2026-10-18T02:09:38.0303931Z ##[group]Run docker build -f Dockerfile.worker -t sammlerraum-worker-ci .
+2026-10-18T02:09:38.0304431Z [36;1mdocker build -f Dockerfile.worker -t sammlerraum-worker-ci .[0m
+2026-10-18T02:09:38.0362246Z shell: /usr/bin/bash -e {0}
+2026-10-18T02:09:38.0362392Z env:
+2026-10-18T02:09:38.0362500Z   NODE_ENV: test
+2026-10-18T02:09:38.0362939Z   DATABASE_URL: ***localhost:5432/sammlerraum_test
+2026-10-18T02:09:38.0363126Z   APP_ORIGIN: http://localhost:3000
+2026-10-18T02:09:38.0363299Z   NEXT_PUBLIC_APP_ORIGIN: https://example.invalid
+2026-10-18T02:09:38.0363486Z   UPLOADS_DIR: /tmp/sammlerraum-test-uploads
+2026-10-18T02:09:38.0363640Z   LOG_LEVEL: info
+2026-10-18T02:09:38.0363773Z   WORKER_HEALTH_PORT: 3001
+2026-10-18T02:09:38.0363980Z   BETTER_AUTH_SECRET: test-only-secret-that-is-at-least-thirty-two-characters
+2026-10-18T02:09:38.0364213Z   GOOGLE_CLIENT_ID: test-google-client-id
+2026-10-18T02:09:38.0364383Z   GOOGLE_CLIENT_SECRET: test-google-client-secret
+2026-10-18T02:09:38.0364578Z   APPLE_CLIENT_ID: test-apple-client-id
+2026-10-18T02:09:38.0364745Z   APPLE_CLIENT_SECRET: test-apple-client-secret
+2026-10-18T02:09:38.0364912Z   SMTP_HOST: smtp.example.invalid
+2026-10-18T02:09:38.0365049Z   SMTP_PORT: 587
+2026-10-18T02:09:38.0365162Z   SMTP_SECURE: false
+2026-10-18T02:09:38.0365285Z   SMTP_USER: test-smtp-user
+2026-10-18T02:09:38.0365427Z   SMTP_PASSWORD: test-smtp-password
+2026-10-18T02:09:38.0365580Z   SMTP_FROM: noreply@example.invalid
+2026-10-18T02:09:38.0365728Z   POSTGRES_DB: sammlerraum_test
+2026-10-18T02:09:38.0365861Z   POSTGRES_USER: test
+2026-10-18T02:09:38.0365983Z   POSTGRES_PASSWORD: test
+2026-10-18T02:09:38.0366142Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+2026-10-18T02:09:38.0366310Z ##[endgroup]
+2026-10-18T02:09:38.1454980Z #0 building with "default" instance using docker driver
+2026-10-18T02:09:38.1455218Z 
+2026-10-18T02:09:38.1455351Z #1 [internal] load build definition from Dockerfile.worker
+2026-10-18T02:09:38.2999609Z #1 transferring dockerfile: 891B done
+2026-10-18T02:09:38.2999905Z #1 DONE 0.0s
+2026-10-18T02:09:38.2999984Z 
+2026-10-18T02:09:38.3000162Z #2 [internal] load metadata for docker.io/library/node:24.19.0-bookworm-slim
+2026-10-18T02:09:38.3238721Z #2 DONE 0.2s
+2026-10-18T02:09:38.4522110Z 
+2026-10-18T02:09:38.4522954Z #3 [internal] load .dockerignore
+2026-10-18T02:09:38.4523312Z #3 transferring context: 237B done
+2026-10-18T02:09:38.4523555Z #3 DONE 0.0s
+2026-10-18T02:09:38.4523655Z 
+2026-10-18T02:09:38.4524198Z #4 [base 1/3] FROM docker.io/library/node:24.19.0-bookworm-slim@sha256:a9f5f7c91a432850b2a8a7797adf5eadb6c733ceed61167806cee7ea7fbc29df
+2026-10-18T02:09:38.4524732Z #4 DONE 0.0s
+2026-10-18T02:09:38.4524840Z 
+2026-10-18T02:09:38.4525495Z #5 [runtime 2/5] WORKDIR /app
+2026-10-18T02:09:38.4525714Z #5 CACHED
+2026-10-18T02:09:38.4525815Z 
+2026-10-18T02:09:38.4526102Z #6 [internal] load build context
+2026-10-18T02:09:38.4526399Z #6 transferring context: 35.42kB 0.0s done
+2026-10-18T02:09:38.4526647Z #6 DONE 0.0s
+2026-10-18T02:09:38.4526871Z 
+2026-10-18T02:09:38.4527142Z #7 [base 2/3] RUN corepack enable && corepack prepare pnpm@10.17.1 --activate
+2026-10-18T02:09:38.4527477Z #7 CACHED
+2026-10-18T02:09:38.4527679Z 
+2026-10-18T02:09:38.4527780Z #8 [base 3/3] WORKDIR /app
+2026-10-18T02:09:38.4527981Z #8 CACHED
+2026-10-18T02:09:38.4528077Z 
+2026-10-18T02:09:38.4528171Z #9 [build 1/5] COPY . .
+2026-10-18T02:09:38.4528468Z #9 CACHED
+2026-10-18T02:09:38.4528562Z 
+2026-10-18T02:09:38.4528819Z #10 [runtime 3/5] RUN mkdir -p /data/uploads && chown node:node /data/uploads
+2026-10-18T02:09:38.4529264Z #10 DONE 0.1s
+2026-10-18T02:09:38.4529365Z 
+2026-10-18T02:09:38.4529535Z #11 [build 2/5] RUN pnpm install --frozen-lockfile
+2026-10-18T02:09:38.7038684Z #11 0.347 Scope: all 10 workspace projects
+2026-10-18T02:09:38.9525893Z #11 0.395 Lockfile is up to date, resolution step is skipped
+2026-10-18T02:09:38.9526406Z #11 0.417 Progress: resolved 1, reused 0, downloaded 0, added 0
+2026-10-18T02:09:38.9526739Z #11 0.445 Packages: +339
+2026-10-18T02:09:38.9528202Z #11 0.445 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+2026-10-18T02:09:39.0514145Z #11 0.694 
+2026-10-18T02:09:39.0515201Z #11 0.694    ╭───────────────────────────────────────────────╮
+2026-10-18T02:09:39.0515858Z #11 0.694    │                                               │
+2026-10-18T02:09:39.0516610Z #11 0.694    │     Update available! 10.17.1 → 12.14.0.      │
+2026-10-18T02:09:39.0517104Z #11 0.694    │     Changelog: https://pnpm.io/v/12.14.0      │
+2026-10-18T02:09:39.0517555Z #11 0.694    │   To update, run: corepack use pnpm@12.14.0   │
+2026-10-18T02:09:39.0517941Z #11 0.694    │                                               │
+2026-10-18T02:09:39.0518406Z #11 0.694    ╰───────────────────────────────────────────────╯
+2026-10-18T02:09:39.0518656Z #11 0.694 
+2026-10-18T02:09:39.7755154Z #11 1.418 Progress: resolved 339, reused 0, downloaded 146, added 133
+2026-10-18T02:09:40.7779900Z #11 2.421 Progress: resolved 339, reused 0, downloaded 257, added 224
+2026-10-18T02:09:41.7796229Z #11 3.422 Progress: resolved 339, reused 0, downloaded 327, added 338
+2026-10-18T02:09:42.2163913Z #11 3.858 Progress: resolved 339, reused 0, downloaded 328, added 339, done
+2026-10-18T02:09:42.3418778Z #11 3.985 .../node_modules/@prisma/engines postinstall$ node scripts/postinstall.js
+2026-10-18T02:09:42.4435901Z #11 4.005 .../esbuild@0.28.2/node_modules/esbuild postinstall$ node install.js
+2026-10-18T02:09:42.4436444Z #11 4.051 .../esbuild@0.28.2/node_modules/esbuild postinstall: Done
+2026-10-18T02:09:42.4437332Z #11 4.086 .../node_modules/@prisma/engines postinstall: prisma:warn Prisma failed to detect the libssl/openssl version to use, and may not work as expected. Defaulting to "openssl-1.1.x".
+2026-10-18T02:09:42.5939753Z #11 4.087 .../node_modules/@prisma/engines postinstall: Please manually install OpenSSL via `apt-get update -y && apt-get install -y openssl` and try installing Prisma again. If you're running Prisma on Docker, add this command to your Dockerfile, or switch to an image that already has OpenSSL installed.
+2026-10-18T02:09:43.0255450Z #11 4.668 .../node_modules/@prisma/engines postinstall: Done
+2026-10-18T02:09:43.1336326Z #11 4.713 .../node_modules/prisma preinstall$ node scripts/preinstall-entry.js
+2026-10-18T02:09:43.1336955Z #11 4.714 .../node_modules/prisma preinstall$ node scripts/preinstall-entry.js
+2026-10-18T02:09:43.1337412Z #11 4.764 .../node_modules/prisma preinstall: Done
+2026-10-18T02:09:43.1337751Z #11 4.777 .../node_modules/prisma preinstall: Done
+2026-10-18T02:09:43.3209193Z #11 4.963 
+2026-10-18T02:09:43.3209494Z #11 4.963 devDependencies:
+2026-10-18T02:09:43.3209710Z #11 4.963 + @types/node 24.5.2
+2026-10-18T02:09:43.3209862Z #11 4.963 + prettier 3.6.2
+2026-10-18T02:09:43.3210296Z #11 4.963 + typescript 5.9.2
+2026-10-18T02:09:43.3210441Z #11 4.963 + vitest 3.2.7
+2026-10-18T02:09:43.3210566Z #11 4.963 
+2026-10-18T02:09:43.3211103Z #11 4.963 ╭ Warning ─────────────────────────────────────────────────────────────────────╮
+2026-10-18T02:09:43.3211478Z #11 4.963 │                                                                              │
+2026-10-18T02:09:43.3211845Z #11 4.963 │   Ignored build scripts: @parcel/watcher, @swc/core.                         │
+2026-10-18T02:09:43.3212346Z #11 4.963 │   Run "pnpm approve-builds" to pick which dependencies should be allowed     │
+2026-10-18T02:09:43.3212925Z #11 4.963 │   to run scripts.                                                            │
+2026-10-18T02:09:43.3213426Z #11 4.963 │                                                                              │
+2026-10-18T02:09:43.3213920Z #11 4.963 ╰──────────────────────────────────────────────────────────────────────────────╯
+2026-10-18T02:09:43.3214130Z #11 4.963 
+2026-10-18T02:09:43.5465630Z #11 5.039 Done in 4.8s using pnpm v10.17.1
+2026-10-18T02:09:48.5777204Z #11 DONE 10.2s
+2026-10-18T02:09:48.7284944Z 
+2026-10-18T02:09:48.7285939Z #12 [build 3/5] RUN DATABASE_URL=***127.0.0.1:5432/sammlerraum_build     pnpm --filter @sammlerraum/db prisma generate
+2026-10-18T02:09:48.8354581Z #12 0.257 
+2026-10-18T02:09:48.8354896Z #12 0.257 > @sammlerraum/db@ prisma /app/packages/db
+2026-10-18T02:09:48.8355107Z #12 0.257 > prisma generate
+2026-10-18T02:09:48.8355315Z #12 0.257 
+2026-10-18T02:09:49.3436080Z #12 0.765 Loaded Prisma config from prisma.config.ts.
+2026-10-18T02:09:49.3436328Z #12 0.765 
+2026-10-18T02:09:49.5756544Z #12 0.793 prisma:warn Prisma failed to detect the libssl/openssl version to use, and may not work as expected. Defaulting to "openssl-1.1.x".
+2026-10-18T02:09:49.5757994Z #12 0.793 Please manually install OpenSSL via `apt-get update -y && apt-get install -y openssl` and try installing Prisma again. If you're running Prisma on Docker, add this command to your Dockerfile, or switch to an image that already has OpenSSL installed.
+2026-10-18T02:09:49.5759340Z #12 0.795 prisma:warn Prisma failed to detect the libssl/openssl version to use, and may not work as expected. Defaulting to "openssl-1.1.x".
+2026-10-18T02:09:49.5760714Z #12 0.795 Please manually install OpenSSL via `apt-get update -y && apt-get install -y openssl` and try installing Prisma again. If you're running Prisma on Docker, add this command to your Dockerfile, or switch to an image that already has OpenSSL installed.
+2026-10-18T02:09:49.5761674Z #12 0.847 Prisma schema loaded from prisma/schema.prisma.
+2026-10-18T02:09:49.8432823Z #12 1.265 
+2026-10-18T02:09:49.8434643Z #12 1.265 ✔ Generated Prisma Client (v7.10.0) to ./../../node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client in 286ms
+2026-10-18T02:09:49.8435603Z #12 1.265 
+2026-10-18T02:09:49.8436210Z #12 1.265 Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+2026-10-18T02:09:49.8436753Z #12 1.265 
+2026-10-18T02:09:49.8436862Z #12 1.265 
+2026-10-18T02:09:50.0848841Z #12 DONE 1.4s
+2026-10-18T02:09:50.0848995Z 
+2026-10-18T02:09:50.0849172Z #13 [build 4/5] RUN pnpm --filter @sammlerraum/worker build
+2026-10-18T02:09:50.2181472Z #13 0.284 
+2026-10-18T02:09:50.2181840Z #13 0.284 > @sammlerraum/worker@ build /app/apps/worker
+2026-10-18T02:09:50.2183025Z #13 0.284 > esbuild src/run.ts --bundle --platform=node --format=cjs --external:sharp --outfile=dist/worker.cjs && esbuild src/main.ts --bundle --platform=node --format=cjs --outfile=dist/main.cjs && esbuild src/maintenance/initialize-catalog.ts --bundle --platform=node --format=cjs --outfile=dist/initialize-catalog.cjs
+2026-10-18T02:09:50.2183966Z #13 0.284 
+2026-10-18T02:09:50.3778379Z #13 0.372 
+2026-10-18T02:09:50.3778888Z #13 0.372   dist/worker.cjs  6.9mb ⚠️
+2026-10-18T02:09:50.3779069Z #13 0.372 
+2026-10-18T02:09:50.3779211Z #13 0.372 ⚡ Done in 81ms
+2026-10-18T02:09:50.3779372Z #13 0.378 
+2026-10-18T02:09:50.3779502Z #13 0.378   dist/main.cjs  4.0kb
+2026-10-18T02:09:50.3779628Z #13 0.378 
+2026-10-18T02:09:50.3779755Z #13 0.378 ⚡ Done in 1ms
+2026-10-18T02:09:50.3779868Z #13 0.443 
+2026-10-18T02:09:50.3780070Z #13 0.443   dist/initialize-catalog.cjs  5.7mb ⚠️
+2026-10-18T02:09:50.3780228Z #13 0.443 
+2026-10-18T02:09:50.3780354Z #13 0.443 ⚡ Done in 60ms
+2026-10-18T02:09:50.6090769Z #13 DONE 0.5s
+2026-10-18T02:09:50.6090971Z 
+2026-10-18T02:09:50.6091391Z #14 [build 5/5] RUN pnpm --filter @sammlerraum/worker deploy --prod --legacy /app/worker-runtime
+2026-10-18T02:09:50.7958157Z #14 0.337  WARN  Shared workspace lockfile detected but configuration forces legacy deploy implementation.
+2026-10-18T02:09:50.9849097Z #14 0.357 Packages are copied from the content-addressable store to the virtual store.
+2026-10-18T02:09:50.9849641Z #14 0.357   Content-addressable store is at: /pnpm/store/v10
+2026-10-18T02:09:50.9850131Z #14 0.357   Virtual store is at:             worker-runtime/node_modules/.pnpm
+2026-10-18T02:09:50.9850622Z #14 0.375 Progress: resolved 1, reused 0, downloaded 0, added 0
+2026-10-18T02:09:51.9648309Z #14 1.506 Progress: resolved 35, reused 0, downloaded 0, added 0
+2026-10-18T02:09:52.9654092Z #14 2.506 Progress: resolved 244, reused 0, downloaded 0, added 0
+2026-10-18T02:09:53.9655992Z #14 3.506 Progress: resolved 427, reused 0, downloaded 0, added 0
+2026-10-18T02:09:54.1197767Z #14 3.661 Progress: resolved 432, reused 0, downloaded 0, added 0, done
+2026-10-18T02:09:54.3007838Z #14 3.690 .                                        | +195 ++++++++++++++++++++
+2026-10-18T02:09:59.3788929Z #14 DONE 8.9s
+2026-10-18T02:10:00.1202582Z 
+2026-10-18T02:10:00.1203614Z #15 [runtime 4/5] COPY --from=build --chown=node:node /app/apps/worker/dist/worker.cjs ./dist/worker.cjs
+2026-10-18T02:10:00.3294964Z #15 DONE 0.1s
+2026-10-18T02:10:00.3295158Z 
+2026-10-18T02:10:00.3295537Z #16 [runtime 5/5] COPY --from=build --chown=node:node /app/worker-runtime/node_modules ./node_modules
+2026-10-18T02:10:03.4463481Z #16 DONE 3.3s
+2026-10-18T02:10:03.5977061Z 
+2026-10-18T02:10:03.5977670Z #17 exporting to image
+2026-10-18T02:10:03.5978002Z #17 exporting layers
+2026-10-18T02:10:05.0275391Z #17 exporting layers 1.6s done
+2026-10-18T02:10:05.0452166Z #17 writing image sha256:d1bce8f6309e1aa8e846145ffeb670dd0184552048790f84cd1fc8b49de61e37 done
+2026-10-18T02:10:05.0453313Z #17 naming to docker.io/library/sammlerraum-worker-ci done
+2026-10-18T02:10:05.0453598Z #17 DONE 1.6s
+2026-10-18T02:10:05.0521759Z ##[group]Run docker run --rm --entrypoint node sammlerraum-worker-ci -e "const sharp=require('sharp'); sharp({create:{width:3,height:2,channels:3,background:'red'}}).webp().toBuffer().then(bytes=>sharp(bytes).raw().toBuffer({resolveWithObject:true})).then(({info})=>{if(info.width!==3||info.height!==2)process.exit(1)}).catch(()=>process.exit(1))"
+2026-10-18T02:10:05.0523452Z [36;1mdocker run --rm --entrypoint node sammlerraum-worker-ci -e "const sharp=require('sharp'); sharp({create:{width:3,height:2,channels:3,background:'red'}}).webp().toBuffer().then(bytes=>sharp(bytes).raw().toBuffer({resolveWithObject:true})).then(({info})=>{if(info.width!==3||info.height!==2)process.exit(1)}).catch(()=>process.exit(1))"[0m
+2026-10-18T02:10:05.0576619Z shell: /usr/bin/bash -e {0}
+2026-10-18T02:10:05.0576755Z env:
+2026-10-18T02:10:05.0576858Z   NODE_ENV: test
+2026-10-18T02:10:05.0577220Z   DATABASE_URL: ***localhost:5432/sammlerraum_test
+2026-10-18T02:10:05.0577425Z   APP_ORIGIN: http://localhost:3000
+2026-10-18T02:10:05.0577595Z   NEXT_PUBLIC_APP_ORIGIN: https://example.invalid
+2026-10-18T02:10:05.0577777Z   UPLOADS_DIR: /tmp/sammlerraum-test-uploads
+2026-10-18T02:10:05.0577931Z   LOG_LEVEL: info
+2026-10-18T02:10:05.0578046Z   WORKER_HEALTH_PORT: 3001
+2026-10-18T02:10:05.0578250Z   BETTER_AUTH_SECRET: test-only-secret-that-is-at-least-thirty-two-characters
+2026-10-18T02:10:05.0578481Z   GOOGLE_CLIENT_ID: test-google-client-id
+2026-10-18T02:10:05.0578651Z   GOOGLE_CLIENT_SECRET: test-google-client-secret
+2026-10-18T02:10:05.0578827Z   APPLE_CLIENT_ID: test-apple-client-id
+2026-10-18T02:10:05.0578991Z   APPLE_CLIENT_SECRET: test-apple-client-secret
+2026-10-18T02:10:05.0579156Z   SMTP_HOST: smtp.example.invalid
+2026-10-18T02:10:05.0579293Z   SMTP_PORT: 587
+2026-10-18T02:10:05.0579405Z   SMTP_SECURE: false
+2026-10-18T02:10:05.0579528Z   SMTP_USER: test-smtp-user
+2026-10-18T02:10:05.0579669Z   SMTP_PASSWORD: test-smtp-password
+2026-10-18T02:10:05.0579820Z   SMTP_FROM: noreply@example.invalid
+2026-10-18T02:10:05.0579970Z   POSTGRES_DB: sammlerraum_test
+2026-10-18T02:10:05.0580102Z   POSTGRES_USER: test
+2026-10-18T02:10:05.0580225Z   POSTGRES_PASSWORD: test
+2026-10-18T02:10:05.0580380Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+2026-10-18T02:10:05.0580549Z ##[endgroup]
+2026-10-18T02:10:05.2703408Z Post job cleanup.
+2026-10-18T02:10:05.3431513Z (node:12087) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-18T02:10:05.3432151Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-18T02:10:05.3433271Z Cache hit occurred on the primary key node-cache-Linux-x64-pnpm-a26c67511c64fcfb677366424b5d7991d4d67b801215505b2125479178c23344, not saving cache.
+2026-10-18T02:10:05.3524814Z Post job cleanup.
+2026-10-18T02:10:05.4353925Z Pruning is unnecessary.
+2026-10-18T02:10:05.4484934Z Post job cleanup.
+2026-10-18T02:10:05.5045278Z [command]/usr/bin/git version
+2026-10-18T02:10:05.5075897Z git version 2.55.0
+2026-10-18T02:10:05.5097037Z Temporarily overriding HOME='/home/runner/work/_temp/22f27528-1332-4c36-b15a-a85bb084ec19' before making global git config changes
+2026-10-18T02:10:05.5097835Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-18T02:10:05.5100184Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/sammlerraum/sammlerraum
+2026-10-18T02:10:05.5128568Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-18T02:10:05.5153272Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-18T02:10:05.5334217Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-18T02:10:05.5354299Z http.https://github.com/.extraheader
+2026-10-18T02:10:05.5375273Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-10-18T02:10:05.5395071Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-18T02:10:05.5586060Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-18T02:10:05.5618409Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-18T02:10:05.5882934Z Print service container logs: b75081262a6f41feb6b2358afb361ff3_postgres17bookworm_d38045
+2026-10-18T02:10:05.5885682Z ##[command]/usr/bin/docker logs --details 8560f546e7c6b5eeb55f79dcdae7db3eff17015ef8e8e893ec77e07de2e99d49
+2026-10-18T02:10:05.5976514Z  The files belonging to this database system will be owned by user "postgres".
+2026-10-18T02:10:05.5977825Z  initdb: warning: enabling "trust" authentication for local connections
+2026-10-18T02:10:05.5978631Z  initdb: hint: You can change this by editing pg_hba.conf or using the option -A, or --auth-local and --auth-host, the next time you run initdb.
+2026-10-18T02:10:05.5981981Z  2026-10-18 02:01:53.133 UTC [1] LOG:  starting PostgreSQL 17.11 (Debian 17.11-1.pgdg12+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14+deb12u1) 12.2.0, 64-bit
+2026-10-18T02:10:05.5983912Z  2026-10-18 02:01:53.133 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+2026-10-18T02:10:05.5984359Z  2026-10-18 02:01:53.133 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+2026-10-18T02:10:05.5984952Z  2026-10-18 02:01:53.134 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+2026-10-18T02:10:05.5985534Z  2026-10-18 02:01:53.136 UTC [64] LOG:  database system was shut down at 2026-10-18 02:01:53 UTC
+2026-10-18T02:10:05.5986085Z  2026-10-18 02:01:53.139 UTC [1] LOG:  database system is ready to accept connections
+2026-10-18T02:10:05.5986711Z  2026-10-18 02:03:46.928 UTC [164] ERROR:  update or delete on table "user" violates foreign key constraint "MediaAsset_ownerId_fkey" on table "MediaAsset"
+2026-10-18T02:10:05.5988123Z  2026-10-18 02:03:46.928 UTC [164] DETAIL:  Key (id)=(abbeb94f-6f8c-4328-873f-117a2b3eb218) is still referenced from table "MediaAsset".
+2026-10-18T02:10:05.5988859Z  2026-10-18 02:03:46.928 UTC [164] STATEMENT:  DELETE FROM "public"."user" WHERE ("public"."user"."id" = $1 AND 1=1) RETURNING "public"."user"."id", "public"."user"."name", "public"."user"."email", "public"."user"."emailVerified", "public"."user"."image", "public"."user"."createdAt", "public"."user"."updatedAt"
+2026-10-18T02:10:05.5989536Z  2026-10-18 02:03:46.974 UTC [165] ERROR:  insert or update on table "MediaLink" violates foreign key constraint "MediaLink_assetId_ownerId_fkey"
+2026-10-18T02:10:05.5990051Z  2026-10-18 02:03:46.974 UTC [165] DETAIL:  Key (assetId, ownerId)=(7a13a555-595d-4171-8259-8b6a07b931bf, 6efb3c8a-9e0b-4de0-8fd2-b80699902e9e) is not present in table "MediaAsset".
+2026-10-18T02:10:05.5991036Z  2026-10-18 02:03:46.974 UTC [165] STATEMENT:  INSERT INTO "public"."MediaLink" ("id","assetId","ownerId","itemId","purpose","position","createdAt") VALUES ($1,$2,$3,$4,CAST($5::text AS "public"."MediaPurpose"),$6,$7) RETURNING "public"."MediaLink"."id", "public"."MediaLink"."assetId", "public"."MediaLink"."ownerId", "public"."MediaLink"."itemId", "public"."MediaLink"."purpose"::text, "public"."MediaLink"."position", "public"."MediaLink"."title", "public"."MediaLink"."createdAt"
+2026-10-18T02:10:05.5991986Z  2026-10-18 02:03:46.993 UTC [166] ERROR:  insert or update on table "UserProfile" violates foreign key constraint "UserProfile_avatarAssetId_userId_fkey"
+2026-10-18T02:10:05.5992522Z  2026-10-18 02:03:46.993 UTC [166] DETAIL:  Key (avatarAssetId, userId)=(7a13a555-595d-4171-8259-8b6a07b931bf, 6efb3c8a-9e0b-4de0-8fd2-b80699902e9e) is not present in table "MediaAsset".
+2026-10-18T02:10:05.5993970Z  2026-10-18 02:03:46.993 UTC [166] STATEMENT:  INSERT INTO "public"."UserProfile" ("userId","handle","displayName","avatarAssetId","createdAt","updatedAt") VALUES ($1,$2,$3,$4,$5,$6) RETURNING "public"."UserProfile"."userId", "public"."UserProfile"."handle", "public"."UserProfile"."displayName", "public"."UserProfile"."bio", "public"."UserProfile"."avatarAssetId", "public"."UserProfile"."createdAt", "public"."UserProfile"."updatedAt"
+2026-10-18T02:10:05.5994705Z  This user must also own the server process.
+2026-10-18T02:10:05.5994852Z  
+2026-10-18T02:10:05.5995000Z  The database cluster will be initialized with locale "en_US.utf8".
+2026-10-18T02:10:05.5995560Z  The default database encoding has accordingly been set to "UTF8".
+2026-10-18T02:10:05.5995796Z  The default text search configuration will be set to "english".
+2026-10-18T02:10:05.5995967Z  
+2026-10-18T02:10:05.5996072Z  Data page checksums are disabled.
+2026-10-18T02:10:05.5996205Z  
+2026-10-18T02:10:05.5996360Z  fixing permissions on existing directory /var/lib/postgresql/data ... ok
+2026-10-18T02:10:05.5996566Z  creating subdirectories ... ok
+2026-10-18T02:10:05.5996737Z  selecting dynamic shared memory implementation ... posix
+2026-10-18T02:10:05.5996921Z  selecting default "max_connections" ... 100
+2026-10-18T02:10:05.5997081Z  selecting default "shared_buffers" ... 128MB
+2026-10-18T02:10:05.5997236Z  selecting default time zone ... Etc/UTC
+2026-10-18T02:10:05.5997388Z  creating configuration files ... ok
+2026-10-18T02:10:05.5997534Z  running bootstrap script ... ok
+2026-10-18T02:10:05.5997689Z  performing post-bootstrap initialization ... ok
+2026-10-18T02:10:05.5997857Z  syncing data to disk ... ok
+2026-10-18T02:10:05.5997976Z  
+2026-10-18T02:10:05.5998068Z  
+2026-10-18T02:10:05.5998191Z  Success. You can now start the database server using:
+2026-10-18T02:10:05.5998346Z  
+2026-10-18T02:10:05.5998474Z      pg_ctl -D /var/lib/postgresql/data -l logfile start
+2026-10-18T02:10:05.5998631Z  
+2026-10-18T02:10:05.5998973Z  waiting for server to start....2026-10-18 02:01:52.749 UTC [48] LOG:  starting PostgreSQL 17.11 (Debian 17.11-1.pgdg12+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14+deb12u1) 12.2.0, 64-bit
+2026-10-18T02:10:05.5999458Z  2026-10-18 02:01:52.750 UTC [48] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+2026-10-18T02:10:05.5999752Z  2026-10-18 02:01:52.752 UTC [51] LOG:  database system was shut down at 2026-10-18 02:01:52 UTC
+2026-10-18T02:10:05.6000018Z  2026-10-18 02:01:52.755 UTC [48] LOG:  database system is ready to accept connections
+2026-10-18T02:10:05.6000212Z   done
+2026-10-18T02:10:05.6000309Z  server started
+2026-10-18T02:10:05.6000424Z  CREATE DATABASE
+2026-10-18T02:10:05.6000526Z  
+2026-10-18T02:10:05.6000613Z  
+2026-10-18T02:10:05.6000780Z  /usr/local/bin/docker-entrypoint.sh: ignoring /docker-entrypoint-initdb.d/*
+2026-10-18T02:10:05.6000984Z  
+2026-10-18T02:10:05.6001173Z  waiting for server to shut down...2026-10-18 02:01:52.917 UTC [48] LOG:  received fast shutdown request
+2026-10-18T02:10:05.6001446Z  .2026-10-18 02:01:52.917 UTC [48] LOG:  aborting any active transactions
+2026-10-18T02:10:05.6002354Z  2026-10-18 02:01:52.919 UTC [48] LOG:  background worker "logical replication launcher" (PID 54) exited with exit code 1
+2026-10-18T02:10:05.6002931Z  2026-10-18 02:01:52.919 UTC [49] LOG:  shutting down
+2026-10-18T02:10:05.6003134Z  2026-10-18 02:01:52.919 UTC [49] LOG:  checkpoint starting: shutdown immediate
+2026-10-18T02:10:05.6003688Z  2026-10-18 02:01:53.015 UTC [49] LOG:  checkpoint complete: wrote 921 buffers (5.6%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.076 s, sync=0.019 s, total=0.096 s; sync files=301, longest=0.019 s, average=0.001 s; distance=4238 kB, estimate=4238 kB; lsn=0/190A9C8, redo lsn=0/190A9C8
+2026-10-18T02:10:05.6004216Z  2026-10-18 02:01:53.021 UTC [48] LOG:  database system is shut down
+2026-10-18T02:10:05.6004387Z   done
+2026-10-18T02:10:05.6004486Z  server stopped
+2026-10-18T02:10:05.6004590Z  
+2026-10-18T02:10:05.6004714Z  PostgreSQL init process complete; ready for start up.
+2026-10-18T02:10:05.6004871Z  
+2026-10-18T02:10:05.6005197Z  2026-10-18 02:03:47.498 UTC [173] ERROR:  insert or update on table "CustomFieldValue" violates foreign key constraint "CustomFieldValue_itemId_collectionId_fkey"
+2026-10-18T02:10:05.6005765Z  2026-10-18 02:03:47.498 UTC [173] DETAIL:  Key (itemId, collectionId)=(366a69bb-2dcf-44f1-9b75-c26eafb16fe7, 0d5fd6e6-2395-4a01-905b-6bb849ff602d) is not present in table "CollectibleItem".
+2026-10-18T02:10:05.6007690Z  2026-10-18 02:03:47.498 UTC [173] STATEMENT:  INSERT INTO "public"."CustomFieldValue" ("itemId","fieldDefinitionId","collectionId","fieldType","shortTextValue","createdAt","updatedAt") VALUES ($1,$2,$3,CAST($4::text AS "public"."CustomFieldType"),$5,$6,$7) RETURNING "public"."CustomFieldValue"."itemId", "public"."CustomFieldValue"."fieldDefinitionId", "public"."CustomFieldValue"."collectionId", "public"."CustomFieldValue"."fieldType"::text, "public"."CustomFieldValue"."shortTextValue", "public"."CustomFieldValue"."longTextValue", "public"."CustomFieldValue"."integerValue", "public"."CustomFieldValue"."decimalValue", "public"."CustomFieldValue"."dateValue", "public"."CustomFieldValue"."booleanValue", "public"."CustomFieldValue"."singleSelectOptionId", "public"."CustomFieldValue"."urlValue", "public"."CustomFieldValue"."moneyAmountMinor", "public"."CustomFieldValue"."moneyCurrency", "public"."CustomFieldValue"."createdAt", "public"."CustomFieldValue"."updatedAt"
+2026-10-18T02:10:05.6009489Z  2026-10-18 02:03:47.521 UTC [174] ERROR:  new row for relation "CustomFieldValue" violates check constraint "CustomFieldValue_typedShape_check"
+2026-10-18T02:10:05.6010187Z  2026-10-18 02:03:47.521 UTC [174] DETAIL:  Failing row contains (366a69bb-2dcf-44f1-9b75-c26eafb16fe7, 952b7b19-af85-49ca-b0a1-a3709ed990d4, 7c3a2bb3-8434-4f5e-a17e-d35b1c9c3279, SHORT_TEXT, null, null, 12, null, null, null, null, null, null, null, 2026-10-18 02:03:47.521, 2026-10-18 02:03:47.521).
+2026-10-18T02:10:05.6012126Z  2026-10-18 02:03:47.521 UTC [174] STATEMENT:  INSERT INTO "public"."CustomFieldValue" ("itemId","fieldDefinitionId","collectionId","fieldType","integerValue","createdAt","updatedAt") VALUES ($1,$2,$3,CAST($4::text AS "public"."CustomFieldType"),$5,$6,$7) RETURNING "public"."CustomFieldValue"."itemId", "public"."CustomFieldValue"."fieldDefinitionId", "public"."CustomFieldValue"."collectionId", "public"."CustomFieldValue"."fieldType"::text, "public"."CustomFieldValue"."shortTextValue", "public"."CustomFieldValue"."longTextValue", "public"."CustomFieldValue"."integerValue", "public"."CustomFieldValue"."decimalValue", "public"."CustomFieldValue"."dateValue", "public"."CustomFieldValue"."booleanValue", "public"."CustomFieldValue"."singleSelectOptionId", "public"."CustomFieldValue"."urlValue", "public"."CustomFieldValue"."moneyAmountMinor", "public"."CustomFieldValue"."moneyCurrency", "public"."CustomFieldValue"."createdAt", "public"."CustomFieldValue"."updatedAt"
+2026-10-18T02:10:05.6014279Z  2026-10-18 02:03:47.909 UTC [178] ERROR:  insert or update on table "StorageLocation" violates foreign key constraint "StorageLocation_parentId_ownerId_fkey"
+2026-10-18T02:10:05.6014837Z  2026-10-18 02:03:47.909 UTC [178] DETAIL:  Key (parentId, ownerId)=(aedcf5c6-ebd6-4a17-afbb-d11aa0fe0579, aa58403c-e234-4b81-b1b5-5a9fc02f849e) is not present in table "StorageLocation".
+2026-10-18T02:10:05.6015930Z  2026-10-18 02:03:47.909 UTC [178] STATEMENT:  UPDATE "public"."StorageLocation" SET "parentId" = $1, "updatedAt" = $2 WHERE ("public"."StorageLocation"."id" = $3 AND 1=1) RETURNING "public"."StorageLocation"."id", "public"."StorageLocation"."ownerId", "public"."StorageLocation"."parentId", "public"."StorageLocation"."name", "public"."StorageLocation"."type"::text, "public"."StorageLocation"."visibility"::text, "public"."StorageLocation"."qrToken", "public"."StorageLocation"."createdAt", "public"."StorageLocation"."updatedAt"
+2026-10-18T02:10:05.6016990Z  2026-10-18 02:03:47.981 UTC [180] ERROR:  insert or update on table "CollectibleItem" violates foreign key constraint "CollectibleItem_storageLocationId_ownerId_fkey"
+2026-10-18T02:10:05.6017572Z  2026-10-18 02:03:47.981 UTC [180] DETAIL:  Key (storageLocationId, ownerId)=(2d4b7cf1-f3ae-4bed-b1d5-c233c9e8d468, c045155b-cfd0-4d8c-8f70-e0593857c1c7) is not present in table "StorageLocation".
+2026-10-18T02:10:05.6019858Z  2026-10-18 02:03:47.981 UTC [180] STATEMENT:  UPDATE "public"."CollectibleItem" SET "storageLocationId" = $1, "updatedAt" = $2 WHERE ("public"."CollectibleItem"."id" = $3 AND 1=1) RETURNING "public"."CollectibleItem"."id", "public"."CollectibleItem"."collectionId", "public"."CollectibleItem"."ownerId", "public"."CollectibleItem"."nodeId", "public"."CollectibleItem"."storageLocationId", "public"."CollectibleItem"."categoryTemplateId", "public"."CollectibleItem"."conditionOptionId", "public"."CollectibleItem"."catalogEntryId", "public"."CollectibleItem"."catalogVariantId", "public"."CollectibleItem"."title", "public"."CollectibleItem"."publicDescription", "public"."CollectibleItem"."privateNotes", "public"."CollectibleItem"."quantity", "public"."CollectibleItem"."acquisitionType"::text, "public"."CollectibleItem"."acquisitionDate", "public"."CollectibleItem"."purchaseAmountMinor", "public"."CollectibleItem"."purchaseCurrency", "public"."CollectibleItem"."visibility"::text, "public"."CollectibleItem"."tradeStatus"::text, "public"."CollectibleItem"."archivedAt", "public"."CollectibleItem"."disposedAt", "public"."CollectibleItem"."createdAt", "public"."CollectibleItem"."updatedAt", "public"."CollectibleItem"."deletedAt"
+2026-10-18T02:10:05.6022191Z  2026-10-18 02:03:48.388 UTC [181] ERROR:  insert or update on table "CollectibleItem" violates foreign key constraint "CollectibleItem_nodeId_collectionId_fkey"
+2026-10-18T02:10:05.6022864Z  2026-10-18 02:03:48.388 UTC [181] DETAIL:  Key (nodeId, collectionId)=(5ecbaaef-6958-41a5-a9da-5accef12bc31, c4e3e094-45a5-425e-a30a-ae0f25269e8d) is not present in table "CollectionNode".
+2026-10-18T02:10:05.6025041Z  2026-10-18 02:03:48.388 UTC [181] STATEMENT:  UPDATE "public"."CollectibleItem" SET "nodeId" = $1, "updatedAt" = $2 WHERE ("public"."CollectibleItem"."id" = $3 AND 1=1) RETURNING "public"."CollectibleItem"."id", "public"."CollectibleItem"."collectionId", "public"."CollectibleItem"."ownerId", "public"."CollectibleItem"."nodeId", "public"."CollectibleItem"."storageLocationId", "public"."CollectibleItem"."categoryTemplateId", "public"."CollectibleItem"."conditionOptionId", "public"."CollectibleItem"."catalogEntryId", "public"."CollectibleItem"."catalogVariantId", "public"."CollectibleItem"."title", "public"."CollectibleItem"."publicDescription", "public"."CollectibleItem"."privateNotes", "public"."CollectibleItem"."quantity", "public"."CollectibleItem"."acquisitionType"::text, "public"."CollectibleItem"."acquisitionDate", "public"."CollectibleItem"."purchaseAmountMinor", "public"."CollectibleItem"."purchaseCurrency", "public"."CollectibleItem"."visibility"::text, "public"."CollectibleItem"."tradeStatus"::text, "public"."CollectibleItem"."archivedAt", "public"."CollectibleItem"."disposedAt", "public"."CollectibleItem"."createdAt", "public"."CollectibleItem"."updatedAt", "public"."CollectibleItem"."deletedAt"
+2026-10-18T02:10:05.6027232Z  2026-10-18 02:03:48.437 UTC [182] ERROR:  new row for relation "CollectibleItem" violates check constraint "CollectibleItem_quantity_check"
+2026-10-18T02:10:05.6027985Z  2026-10-18 02:03:48.437 UTC [182] DETAIL:  Failing row contains (8727de83-d610-4a0f-b654-e5080bf0d239, c4e3e094-45a5-425e-a30a-ae0f25269e8d, null, Zero, null, null, 0, OTHER, null, null, null, PRIVATE, NOT_FOR_TRADE, null, null, 2026-10-18 02:03:48.437, 2026-10-18 02:03:48.437, 5d89a264-61ed-4e5d-9760-c3e6bd46f822, null, null, null, null, null, null).
+2026-10-18T02:10:05.6030740Z  2026-10-18 02:03:48.437 UTC [182] STATEMENT:  INSERT INTO "public"."CollectibleItem" ("id","collectionId","ownerId","title","quantity","acquisitionType","visibility","tradeStatus","createdAt","updatedAt") VALUES ($1,$2,$3,$4,$5,CAST($6::text AS "public"."AcquisitionType"),CAST($7::text AS "public"."Visibility"),CAST($8::text AS "public"."TradeStatus"),$9,$10) RETURNING "public"."CollectibleItem"."id", "public"."CollectibleItem"."collectionId", "public"."CollectibleItem"."ownerId", "public"."CollectibleItem"."nodeId", "public"."CollectibleItem"."storageLocationId", "public"."CollectibleItem"."categoryTemplateId", "public"."CollectibleItem"."conditionOptionId", "public"."CollectibleItem"."catalogEntryId", "public"."CollectibleItem"."catalogVariantId", "public"."CollectibleItem"."title", "public"."CollectibleItem"."publicDescription", "public"."CollectibleItem"."privateNotes", "public"."CollectibleItem"."quantity", "public"."CollectibleItem"."acquisitionType"::text, "public"."CollectibleItem"."acquisitionDate", "public"."CollectibleItem"."purchaseAmountMinor", "public"."CollectibleItem"."purchaseCurrency", "public"."CollectibleItem"."visibility"::text, "public"."CollectibleItem"."tradeStatus"::text, "public"."CollectibleItem"."archivedAt", "public"."CollectibleItem"."disposedAt", "public"."CollectibleItem"."createdAt", "public"."CollectibleItem"."updatedAt", "public"."CollectibleItem"."deletedAt"
+2026-10-18T02:10:05.6033493Z  2026-10-18 02:03:48.450 UTC [183] ERROR:  new row for relation "CollectibleItem" violates check constraint "CollectibleItem_purchaseMoneyPair_check"
+2026-10-18T02:10:05.6034280Z  2026-10-18 02:03:48.450 UTC [183] DETAIL:  Failing row contains (1e9cd920-acda-4d7f-acd9-3e4c49983062, c4e3e094-45a5-425e-a30a-ae0f25269e8d, null, Incomplete money, null, null, 1, OTHER, null, 100, null, PRIVATE, NOT_FOR_TRADE, null, null, 2026-10-18 02:03:48.443, 2026-10-18 02:03:48.443, 5d89a264-61ed-4e5d-9760-c3e6bd46f822, null, null, null, null, null, null).
+2026-10-18T02:10:05.6037022Z  2026-10-18 02:03:48.450 UTC [183] STATEMENT:  INSERT INTO "public"."CollectibleItem" ("id","collectionId","ownerId","title","quantity","acquisitionType","purchaseAmountMinor","visibility","tradeStatus","createdAt","updatedAt") VALUES ($1,$2,$3,$4,$5,CAST($6::text AS "public"."AcquisitionType"),$7,CAST($8::text AS "public"."Visibility"),CAST($9::text AS "public"."TradeStatus"),$10,$11) RETURNING "public"."CollectibleItem"."id", "public"."CollectibleItem"."collectionId", "public"."CollectibleItem"."ownerId", "public"."CollectibleItem"."nodeId", "public"."CollectibleItem"."storageLocationId", "public"."CollectibleItem"."categoryTemplateId", "public"."CollectibleItem"."conditionOptionId", "public"."CollectibleItem"."catalogEntryId", "public"."CollectibleItem"."catalogVariantId", "public"."CollectibleItem"."title", "public"."CollectibleItem"."publicDescription", "public"."CollectibleItem"."privateNotes", "public"."CollectibleItem"."quantity", "public"."CollectibleItem"."acquisitionType"::text, "public"."CollectibleItem"."acquisitionDate", "public"."CollectibleItem"."purchaseAmountMinor", "public"."CollectibleItem"."purchaseCurrency", "public"."CollectibleItem"."visibility"::text, "public"."CollectibleItem"."tradeStatus"::text, "public"."CollectibleItem"."archivedAt", "public"."CollectibleItem"."disposedAt", "public"."CollectibleItem"."createdAt", "public"."CollectibleItem"."updatedAt", "public"."CollectibleItem"."deletedAt"
+2026-10-18T02:10:05.6039443Z  2026-10-18 02:03:49.605 UTC [192] FATAL:  terminating connection due to administrator command
+2026-10-18T02:10:05.6039839Z  2026-10-18 02:03:50.025 UTC [195] ERROR:  insert or update on table "CollectionNode" violates foreign key constraint "CollectionNode_parentId_collectionId_fkey"
+2026-10-18T02:10:05.6040401Z  2026-10-18 02:03:50.025 UTC [195] DETAIL:  Key (parentId, collectionId)=(caab2d18-9f5f-4b4f-a92d-5cf9ae0692c9, ad12248d-15be-40d0-b803-d5fdbb4602e2) is not present in table "CollectionNode".
+2026-10-18T02:10:05.6041464Z  2026-10-18 02:03:50.025 UTC [195] STATEMENT:  INSERT INTO "public"."CollectionNode" ("id","collectionId","parentId","name","visibility","createdAt","updatedAt") VALUES ($1,$2,$3,$4,CAST($5::text AS "public"."Visibility"),$6,$7) RETURNING "public"."CollectionNode"."id", "public"."CollectionNode"."collectionId", "public"."CollectionNode"."parentId", "public"."CollectionNode"."name", "public"."CollectionNode"."visibility"::text, "public"."CollectionNode"."createdAt", "public"."CollectionNode"."updatedAt"
+2026-10-18T02:10:05.6042325Z  2026-10-18 02:03:50.945 UTC [201] ERROR:  Media asset unavailable
+2026-10-18T02:10:05.6042590Z  2026-10-18 02:03:50.945 UTC [201] CONTEXT:  PL/pgSQL function media_reference_guard() line 14 at RAISE
+2026-10-18T02:10:05.6043670Z  2026-10-18 02:03:50.945 UTC [201] STATEMENT:  INSERT INTO "public"."MediaLink" ("id","assetId","ownerId","itemId","purpose","position","createdAt") VALUES ($1,$2,$3,$4,CAST($5::text AS "public"."MediaPurpose"),$6,$7) RETURNING "public"."MediaLink"."id", "public"."MediaLink"."assetId", "public"."MediaLink"."ownerId", "public"."MediaLink"."itemId", "public"."MediaLink"."purpose"::text, "public"."MediaLink"."position", "public"."MediaLink"."title", "public"."MediaLink"."createdAt"
+2026-10-18T02:10:05.6044540Z  2026-10-18 02:03:50.980 UTC [202] ERROR:  Media asset unavailable
+2026-10-18T02:10:05.6044800Z  2026-10-18 02:03:50.980 UTC [202] CONTEXT:  PL/pgSQL function media_reference_guard() line 14 at RAISE
+2026-10-18T02:10:05.6045596Z  2026-10-18 02:03:50.980 UTC [202] STATEMENT:  INSERT INTO "public"."UserProfile" ("userId","handle","displayName","avatarAssetId","createdAt","updatedAt") VALUES ($1,$2,$3,$4,$5,$6) RETURNING "public"."UserProfile"."userId", "public"."UserProfile"."handle", "public"."UserProfile"."displayName", "public"."UserProfile"."bio", "public"."UserProfile"."avatarAssetId", "public"."UserProfile"."createdAt", "public"."UserProfile"."updatedAt"
+2026-10-18T02:10:05.6046341Z  2026-10-18 02:03:51.160 UTC [212] ERROR:  Media asset unavailable
+2026-10-18T02:10:05.6046600Z  2026-10-18 02:03:51.160 UTC [212] CONTEXT:  PL/pgSQL function media_reference_guard() line 14 at RAISE
+2026-10-18T02:10:05.6047443Z  2026-10-18 02:03:51.160 UTC [212] STATEMENT:  INSERT INTO "public"."MediaLink" ("id","assetId","ownerId","itemId","purpose","position","createdAt") VALUES ($1,$2,$3,$4,CAST($5::text AS "public"."MediaPurpose"),$6,$7) RETURNING "public"."MediaLink"."id", "public"."MediaLink"."assetId", "public"."MediaLink"."ownerId", "public"."MediaLink"."itemId", "public"."MediaLink"."purpose"::text, "public"."MediaLink"."position", "public"."MediaLink"."title", "public"."MediaLink"."createdAt"
+2026-10-18T02:10:05.6048381Z  2026-10-18 02:03:51.799 UTC [222] ERROR:  insert or update on table "UserProfile" violates foreign key constraint "UserProfile_avatarAssetId_userId_fkey"
+2026-10-18T02:10:05.6048922Z  2026-10-18 02:03:51.799 UTC [222] DETAIL:  Key (avatarAssetId, userId)=(07b56ac1-14c6-4e07-b94d-61706d01370e, 0d4bdfb0-3994-4877-9643-481a59e7fbf5) is not present in table "MediaAsset".
+2026-10-18T02:10:05.6049389Z  2026-10-18 02:03:51.799 UTC [222] STATEMENT:  UPDATE "UserProfile" SET "avatarAssetId" = $1 WHERE "userId" = $2
+2026-10-18T02:10:05.6049777Z  2026-10-18 02:03:54.718 UTC [245] ERROR:  duplicate key value violates unique constraint "Grading_ownerId_providerKey_certificateKey_key"
+2026-10-18T02:10:05.6050288Z  2026-10-18 02:03:54.718 UTC [245] DETAIL:  Key ("ownerId", "providerKey", "certificateKey")=(GradingRouteOwner_ad692ad2-1486-44ad-8869-42f0e29a9d26, conflict, duplicate) already exists.
+2026-10-18T02:10:05.6050666Z  2026-10-18 02:03:54.718 UTC [245] STATEMENT:  
+2026-10-18T02:10:05.6051074Z  	          INSERT INTO "Grading" (id,"itemId","ownerId",provider,"providerKey",grade,"comparableValue","comparableScale","certificateNo","certificateKey","gradedAt","verificationUrl",source,"updatedAt")
+2026-10-18T02:10:05.6051545Z  	          VALUES ($1::uuid,$2::uuid,$3,$4,$5,$6,$7::numeric,$8,$9,$10,$11::date,$12,$13,now()) RETURNING id
+2026-10-18T02:10:05.6051758Z  	        
+2026-10-18T02:10:05.6051919Z  2026-10-18 02:03:57.618 UTC [252] ERROR:  Catalog revision snapshots are immutable
+2026-10-18T02:10:05.6052216Z  2026-10-18 02:03:57.618 UTC [252] CONTEXT:  PL/pgSQL function reject_catalog_revision_update() line 3 at RAISE
+2026-10-18T02:10:05.6053195Z  2026-10-18 02:03:57.618 UTC [252] STATEMENT:  UPDATE "public"."CatalogRevision" SET "snapshot" = $1 WHERE (("public"."CatalogRevision"."entryId" = $2 AND "public"."CatalogRevision"."revision" = $3) AND 1=1) RETURNING "public"."CatalogRevision"."entryId", "public"."CatalogRevision"."revision", "public"."CatalogRevision"."snapshot", "public"."CatalogRevision"."rollbackFromRevision", "public"."CatalogRevision"."createdAt"
+2026-10-18T02:10:05.6054138Z  2026-10-18 02:03:57.719 UTC [253] ERROR:  insert or update on table "CatalogAttributeValue" violates foreign key constraint "CatalogAttributeValue_definitionId_categoryTemplateId_fkey"
+2026-10-18T02:10:05.6054974Z  2026-10-18 02:03:57.719 UTC [253] DETAIL:  Key (definitionId, categoryTemplateId)=(d5750263-4198-4515-94f9-6430b1158fb6, aa36c20b-19b4-42fe-8ae3-aea99ab3e7ed) is not present in table "CatalogAttributeDefinition".
+2026-10-18T02:10:05.6056257Z  2026-10-18 02:03:57.719 UTC [253] STATEMENT:  INSERT INTO "public"."CatalogAttributeValue" ("id","entryId","categoryTemplateId","targetKey","definitionId","value") VALUES ($1,$2,$3,$4,$5,$6) RETURNING "public"."CatalogAttributeValue"."id", "public"."CatalogAttributeValue"."entryId", "public"."CatalogAttributeValue"."categoryTemplateId", "public"."CatalogAttributeValue"."variantId", "public"."CatalogAttributeValue"."targetKey", "public"."CatalogAttributeValue"."definitionId", "public"."CatalogAttributeValue"."value"
+2026-10-18T02:10:05.6057362Z  2026-10-18 02:03:57.725 UTC [254] ERROR:  insert or update on table "CatalogAttributeValue" violates foreign key constraint "CatalogAttributeValue_entryId_categoryTemplateId_fkey"
+2026-10-18T02:10:05.6057968Z  2026-10-18 02:03:57.725 UTC [254] DETAIL:  Key (entryId, categoryTemplateId)=(f68de7cb-1500-4d06-8da1-e0051417d017, 7f0a3329-c4e4-4a33-b9c8-80aa7eef1b58) is not present in table "CatalogEntry".
+2026-10-18T02:10:05.6059081Z  2026-10-18 02:03:57.725 UTC [254] STATEMENT:  INSERT INTO "public"."CatalogAttributeValue" ("id","entryId","categoryTemplateId","targetKey","definitionId","value") VALUES ($1,$2,$3,$4,$5,$6) RETURNING "public"."CatalogAttributeValue"."id", "public"."CatalogAttributeValue"."entryId", "public"."CatalogAttributeValue"."categoryTemplateId", "public"."CatalogAttributeValue"."variantId", "public"."CatalogAttributeValue"."targetKey", "public"."CatalogAttributeValue"."definitionId", "public"."CatalogAttributeValue"."value"
+2026-10-18T02:10:05.6060060Z  2026-10-18 02:03:58.262 UTC [258] ERROR:  duplicate key value violates unique constraint "CategoryTemplate_key_key"
+2026-10-18T02:10:05.6060416Z  2026-10-18 02:03:58.262 UTC [258] DETAIL:  Key (key)=(fixture_de0eb304071e46e28ad5f69c30e33e18_race) already exists.
+2026-10-18T02:10:05.6060845Z  2026-10-18 02:03:58.262 UTC [258] STATEMENT:  INSERT INTO "public"."CategoryTemplate" ("id","key","createdAt") VALUES ($1,$2,$3) RETURNING "public"."CategoryTemplate"."id"
+2026-10-18T02:10:05.6061335Z  2026-10-18 02:03:58.298 UTC [258] ERROR:  duplicate key value violates unique constraint "CatalogAttributeDefinition_categoryTemplateId_key_key"
+2026-10-18T02:10:05.6061793Z  2026-10-18 02:03:58.298 UTC [258] DETAIL:  Key ("categoryTemplateId", key)=(55133a87-c3f2-4c17-9091-65b65b21cde4, year) already exists.
+2026-10-18T02:10:05.6062860Z  2026-10-18 02:03:58.298 UTC [258] STATEMENT:  INSERT INTO "public"."CatalogAttributeDefinition" ("id","categoryTemplateId","key","type","position") VALUES ($1,$2,$3,CAST($4::text AS "public"."CustomFieldType"),$5) RETURNING "public"."CatalogAttributeDefinition"."id", "public"."CatalogAttributeDefinition"."categoryTemplateId", "public"."CatalogAttributeDefinition"."key", "public"."CatalogAttributeDefinition"."type"::text, "public"."CatalogAttributeDefinition"."position"
+2026-10-18T02:10:05.6063839Z  2026-10-18 02:03:58.300 UTC [257] ERROR:  duplicate key value violates unique constraint "CatalogAttributeDefinition_categoryTemplateId_position_key"
+2026-10-18T02:10:05.6064294Z  2026-10-18 02:03:58.300 UTC [257] DETAIL:  Key ("categoryTemplateId", "position")=(55133a87-c3f2-4c17-9091-65b65b21cde4, 0) already exists.
+2026-10-18T02:10:05.6065242Z  2026-10-18 02:03:58.300 UTC [257] STATEMENT:  INSERT INTO "public"."CatalogAttributeDefinition" ("id","categoryTemplateId","key","type","position") VALUES ($1,$2,$3,CAST($4::text AS "public"."CustomFieldType"),$5) RETURNING "public"."CatalogAttributeDefinition"."id", "public"."CatalogAttributeDefinition"."categoryTemplateId", "public"."CatalogAttributeDefinition"."key", "public"."CatalogAttributeDefinition"."type"::text, "public"."CatalogAttributeDefinition"."position"
+2026-10-18T02:10:05.6066194Z  2026-10-18 02:03:58.308 UTC [259] ERROR:  duplicate key value violates unique constraint "CatalogAttributeOption_definitionId_key_key"
+2026-10-18T02:10:05.6066765Z  2026-10-18 02:03:58.308 UTC [259] DETAIL:  Key ("definitionId", key)=(d58c28f4-6489-4083-9b18-06c1da8e683d, silver) already exists.
+2026-10-18T02:10:05.6067478Z  2026-10-18 02:03:58.308 UTC [259] STATEMENT:  INSERT INTO "public"."CatalogAttributeOption" ("id","definitionId","key","position") VALUES ($1,$2,$3,$4) RETURNING "public"."CatalogAttributeOption"."id", "public"."CatalogAttributeOption"."definitionId", "public"."CatalogAttributeOption"."key", "public"."CatalogAttributeOption"."position"
+2026-10-18T02:10:05.6068223Z  2026-10-18 02:03:58.314 UTC [260] ERROR:  duplicate key value violates unique constraint "CatalogAttributeOption_definitionId_position_key"
+2026-10-18T02:10:05.6068648Z  2026-10-18 02:03:58.314 UTC [260] DETAIL:  Key ("definitionId", "position")=(d58c28f4-6489-4083-9b18-06c1da8e683d, 0) already exists.
+2026-10-18T02:10:05.6069366Z  2026-10-18 02:03:58.314 UTC [260] STATEMENT:  INSERT INTO "public"."CatalogAttributeOption" ("id","definitionId","key","position") VALUES ($1,$2,$3,$4) RETURNING "public"."CatalogAttributeOption"."id", "public"."CatalogAttributeOption"."definitionId", "public"."CatalogAttributeOption"."key", "public"."CatalogAttributeOption"."position"
+2026-10-18T02:10:05.6070117Z  2026-10-18 02:03:58.321 UTC [261] ERROR:  duplicate key value violates unique constraint "CatalogAttributeDefinition_categoryTemplateId_key_key"
+2026-10-18T02:10:05.6070562Z  2026-10-18 02:03:58.321 UTC [261] DETAIL:  Key ("categoryTemplateId", key)=(f0b5b677-9892-4235-ad43-d848c3344e93, duplicate) already exists.
+2026-10-18T02:10:05.6071181Z  2026-10-18 02:03:58.321 UTC [261] STATEMENT:  INSERT INTO "public"."CatalogAttributeDefinition" ("id","categoryTemplateId","key","type","position") VALUES ($1,$2,$3,CAST($4::text AS "public"."CustomFieldType"),$5), ($6,$7,$8,CAST($9::text AS "public"."CustomFieldType"),$10)
+2026-10-18T02:10:05.6071810Z  2026-10-18 02:03:59.326 UTC [263] ERROR:  new row for relation "CollectibleItem" violates check constraint "item_catalog_entry_requires_category"
+2026-10-18T02:10:05.6072781Z  2026-10-18 02:03:59.326 UTC [263] DETAIL:  Failing row contains (950dc06b-e4b3-45f7-ba49-ac3e0b47185f, 29bd4233-bbb3-4150-bc67-9875124b2190, null, Database guards, null, null, 1, OTHER, null, null, null, PRIVATE, NOT_FOR_TRADE, null, null, 2026-10-18 02:03:59.325, 2026-10-18 02:03:59.325, CatalogOwner_323034d1-43e4-4dd3-a216-9ac72631f0c2, null, null, null, null, b3a8cbe9-d8bd-4244-9414-4e82191cfbd5, null).
+2026-10-18T02:10:05.6073581Z  2026-10-18 02:03:59.326 UTC [263] STATEMENT:  UPDATE "CollectibleItem" SET "catalogEntryId"=$1::uuid WHERE id=$2::uuid
+2026-10-18T02:10:05.6073993Z  2026-10-18 02:03:59.352 UTC [264] ERROR:  new row for relation "CollectibleItem" violates check constraint "item_catalog_variant_requires_entry"
+2026-10-18T02:10:05.6074828Z  2026-10-18 02:03:59.352 UTC [264] DETAIL:  Failing row contains (950dc06b-e4b3-45f7-ba49-ac3e0b47185f, 29bd4233-bbb3-4150-bc67-9875124b2190, null, Database guards, null, null, 1, OTHER, null, null, null, PRIVATE, NOT_FOR_TRADE, null, null, 2026-10-18 02:03:59.325, 2026-10-18 02:03:59.325, CatalogOwner_323034d1-43e4-4dd3-a216-9ac72631f0c2, null, null, null, null, null, 4c4924d6-5b1c-4a9b-a3b3-fc1d66d59fc8).
+2026-10-18T02:10:05.6075633Z  2026-10-18 02:03:59.352 UTC [264] STATEMENT:  UPDATE "CollectibleItem" SET "catalogVariantId"=$1::uuid WHERE id=$2::uuid
+2026-10-18T02:10:05.6076102Z  2026-10-18 02:03:59.359 UTC [265] ERROR:  insert or update on table "CollectibleItem" violates foreign key constraint "CollectibleItem_catalogEntryId_categoryTemplateId_fkey"
+2026-10-18T02:10:05.6076711Z  2026-10-18 02:03:59.359 UTC [265] DETAIL:  Key (catalogEntryId, categoryTemplateId)=(b3a8cbe9-d8bd-4244-9414-4e82191cfbd5, ec45cb35-f29d-429d-bb03-27dbc8306e7b) is not present in table "CatalogEntry".
+2026-10-18T02:10:05.6077269Z  2026-10-18 02:03:59.359 UTC [265] STATEMENT:  UPDATE "CollectibleItem" SET "catalogEntryId"=$1::uuid,"categoryTemplateId"=$2::uuid WHERE id=$3::uuid
+2026-10-18T02:10:05.6077854Z  2026-10-18 02:03:59.369 UTC [266] ERROR:  insert or update on table "CollectibleItem" violates foreign key constraint "CollectibleItem_catalogVariantId_catalogEntryId_fkey"
+2026-10-18T02:10:05.6078569Z  2026-10-18 02:03:59.369 UTC [266] DETAIL:  Key (catalogVariantId, catalogEntryId)=(4c4924d6-5b1c-4a9b-a3b3-fc1d66d59fc8, 11d99484-326b-4066-acba-5cd71a833ec7) is not present in table "CatalogVariant".
+2026-10-18T02:10:05.6079168Z  2026-10-18 02:03:59.369 UTC [266] STATEMENT:  UPDATE "CollectibleItem" SET "catalogEntryId"=$1::uuid,"categoryTemplateId"=$2::uuid,"catalogVariantId"=$3::uuid WHERE id=$4::uuid
+2026-10-18T02:10:05.6079707Z  2026-10-18 02:03:59.389 UTC [267] ERROR:  update or delete on table "CatalogEntry" violates foreign key constraint "CatalogVariant_entryId_fkey" on table "CatalogVariant"
+2026-10-18T02:10:05.6080198Z  2026-10-18 02:03:59.389 UTC [267] DETAIL:  Key (id)=(b3a8cbe9-d8bd-4244-9414-4e82191cfbd5) is still referenced from table "CatalogVariant".
+2026-10-18T02:10:05.6080860Z  2026-10-18 02:03:59.389 UTC [267] STATEMENT:  DELETE FROM "public"."CatalogEntry" WHERE ("public"."CatalogEntry"."id" = $1 AND 1=1) RETURNING "public"."CatalogEntry"."id", "public"."CatalogEntry"."categoryTemplateId", "public"."CatalogEntry"."revision", "public"."CatalogEntry"."authored"
+2026-10-18T02:10:05.6081566Z  2026-10-18 02:04:00.246 UTC [273] ERROR:  update or delete on table "user" violates foreign key constraint "CatalogProposal_moderatorId_fkey" on table "CatalogProposal"
+2026-10-18T02:10:05.6082071Z  2026-10-18 02:04:00.246 UTC [273] DETAIL:  Key (id)=(fixture_14c2c20830a04763a737a00833e6349e_revocable) is still referenced from table "CatalogProposal".
+2026-10-18T02:10:05.6082878Z  2026-10-18 02:04:00.246 UTC [273] STATEMENT:  DELETE FROM "public"."user" WHERE ("public"."user"."id" = $1 AND 1=1) RETURNING "public"."user"."id", "public"."user"."name", "public"."user"."email", "public"."user"."emailVerified", "public"."user"."image", "public"."user"."createdAt", "public"."user"."updatedAt"
+2026-10-18T02:10:05.6083607Z  2026-10-18 02:04:01.821 UTC [275] ERROR:  insert or update on table "CollectibleItem" violates foreign key constraint "CollectibleItem_conditionOptionId_categoryTemplateId_fkey"
+2026-10-18T02:10:05.6084232Z  2026-10-18 02:04:01.821 UTC [275] DETAIL:  Key (conditionOptionId, categoryTemplateId)=(2667499b-d6cb-4885-9638-6b447d72de5c, 6406ad45-e681-4c08-a1de-18989dc350b1) is not present in table "ConditionOption".
+2026-10-18T02:10:05.6086471Z  2026-10-18 02:04:01.821 UTC [275] STATEMENT:  UPDATE "public"."CollectibleItem" SET "conditionOptionId" = $1, "updatedAt" = $2 WHERE ("public"."CollectibleItem"."id" = $3 AND 1=1) RETURNING "public"."CollectibleItem"."id", "public"."CollectibleItem"."collectionId", "public"."CollectibleItem"."ownerId", "public"."CollectibleItem"."nodeId", "public"."CollectibleItem"."storageLocationId", "public"."CollectibleItem"."categoryTemplateId", "public"."CollectibleItem"."conditionOptionId", "public"."CollectibleItem"."catalogEntryId", "public"."CollectibleItem"."catalogVariantId", "public"."CollectibleItem"."title", "public"."CollectibleItem"."publicDescription", "public"."CollectibleItem"."privateNotes", "public"."CollectibleItem"."quantity", "public"."CollectibleItem"."acquisitionType"::text, "public"."CollectibleItem"."acquisitionDate", "public"."CollectibleItem"."purchaseAmountMinor", "public"."CollectibleItem"."purchaseCurrency", "public"."CollectibleItem"."visibility"::text, "public"."CollectibleItem"."tradeStatus"::text, "public"."CollectibleItem"."archivedAt", "public"."CollectibleItem"."disposedAt", "public"."CollectibleItem"."createdAt", "public"."CollectibleItem"."updatedAt", "public"."CollectibleItem"."deletedAt"
+2026-10-18T02:10:05.6088698Z  2026-10-18 02:04:01.843 UTC [276] ERROR:  new row for relation "CollectibleItem" violates check constraint "item_condition_requires_category"
+2026-10-18T02:10:05.6089633Z  2026-10-18 02:04:01.843 UTC [276] DETAIL:  Failing row contains (b4583acb-07b1-4ad6-a6b0-438db4a46332, b7e9003b-0a5c-4140-84cd-9423075d9665, null, Condition test, null, null, 3, OTHER, null, null, null, PRIVATE, NOT_FOR_TRADE, null, null, 2026-10-18 02:04:01.81, 2026-10-18 02:04:01.834, ConditionOwner_fb48d87a-b0ce-4315-b449-e82463b3a5e0, null, null, null, d2e20e5f-fcb4-4998-8ab6-ffed6e2dccbf, null, null).
+2026-10-18T02:10:05.6092220Z  2026-10-18 02:04:01.843 UTC [276] STATEMENT:  UPDATE "public"."CollectibleItem" SET "categoryTemplateId" = $1, "updatedAt" = $2 WHERE ("public"."CollectibleItem"."id" = $3 AND 1=1) RETURNING "public"."CollectibleItem"."id", "public"."CollectibleItem"."collectionId", "public"."CollectibleItem"."ownerId", "public"."CollectibleItem"."nodeId", "public"."CollectibleItem"."storageLocationId", "public"."CollectibleItem"."categoryTemplateId", "public"."CollectibleItem"."conditionOptionId", "public"."CollectibleItem"."catalogEntryId", "public"."CollectibleItem"."catalogVariantId", "public"."CollectibleItem"."title", "public"."CollectibleItem"."publicDescription", "public"."CollectibleItem"."privateNotes", "public"."CollectibleItem"."quantity", "public"."CollectibleItem"."acquisitionType"::text, "public"."CollectibleItem"."acquisitionDate", "public"."CollectibleItem"."purchaseAmountMinor", "public"."CollectibleItem"."purchaseCurrency", "public"."CollectibleItem"."visibility"::text, "public"."CollectibleItem"."tradeStatus"::text, "public"."CollectibleItem"."archivedAt", "public"."CollectibleItem"."disposedAt", "public"."CollectibleItem"."createdAt", "public"."CollectibleItem"."updatedAt", "public"."CollectibleItem"."deletedAt"
+2026-10-18T02:10:05.6094628Z  2026-10-18 02:04:01.850 UTC [277] ERROR:  insert or update on table "ConditionOption" violates foreign key constraint "ConditionOption_schemeId_categoryTemplateId_fkey"
+2026-10-18T02:10:05.6095216Z  2026-10-18 02:04:01.850 UTC [277] DETAIL:  Key (schemeId, categoryTemplateId)=(c9759b6c-c7bb-44d2-8634-ebf9a1ee3b13, 6406ad45-e681-4c08-a1de-18989dc350b1) is not present in table "ConditionScheme".
+2026-10-18T02:10:05.6096412Z  2026-10-18 02:04:01.850 UTC [277] STATEMENT:  INSERT INTO "public"."ConditionOption" ("id","schemeId","categoryTemplateId","labelKey","labelDe","labelEn","position","active") VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING "public"."ConditionOption"."id", "public"."ConditionOption"."schemeId", "public"."ConditionOption"."categoryTemplateId", "public"."ConditionOption"."labelKey", "public"."ConditionOption"."labelDe", "public"."ConditionOption"."labelEn", "public"."ConditionOption"."normalizedBand", "public"."ConditionOption"."position", "public"."ConditionOption"."active"
+2026-10-18T02:10:05.6097486Z  2026-10-18 02:04:01.856 UTC [278] ERROR:  new row for relation "ConditionOption" violates check constraint "condition_band_range"
+2026-10-18T02:10:05.6098032Z  2026-10-18 02:04:01.856 UTC [278] DETAIL:  Failing row contains (c52beb55-e8af-44e9-86f7-daeaac8ab402, c9759b6c-c7bb-44d2-8634-ebf9a1ee3b13, 60e7a722-8818-4e39-bf8a-71efacc28184, foreign.band, A, A, 6, 1, t).
+2026-10-18T02:10:05.6099262Z  2026-10-18 02:04:01.856 UTC [278] STATEMENT:  INSERT INTO "public"."ConditionOption" ("id","schemeId","categoryTemplateId","labelKey","labelDe","labelEn","normalizedBand","position","active") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING "public"."ConditionOption"."id", "public"."ConditionOption"."schemeId", "public"."ConditionOption"."categoryTemplateId", "public"."ConditionOption"."labelKey", "public"."ConditionOption"."labelDe", "public"."ConditionOption"."labelEn", "public"."ConditionOption"."normalizedBand", "public"."ConditionOption"."position", "public"."ConditionOption"."active"
+2026-10-18T02:10:05.6100285Z  2026-10-18 02:04:01.999 UTC [279] ERROR:  condition option semantics are immutable
+2026-10-18T02:10:05.6100593Z  2026-10-18 02:04:01.999 UTC [279] CONTEXT:  PL/pgSQL function guard_condition_option_semantics() line 5 at RAISE
+2026-10-18T02:10:05.6101633Z  2026-10-18 02:04:01.999 UTC [279] STATEMENT:  UPDATE "public"."ConditionOption" SET "labelKey" = $1 WHERE ("public"."ConditionOption"."id" = $2 AND 1=1) RETURNING "public"."ConditionOption"."id", "public"."ConditionOption"."schemeId", "public"."ConditionOption"."categoryTemplateId", "public"."ConditionOption"."labelKey", "public"."ConditionOption"."labelDe", "public"."ConditionOption"."labelEn", "public"."ConditionOption"."normalizedBand", "public"."ConditionOption"."position", "public"."ConditionOption"."active"
+2026-10-18T02:10:05.6102735Z  2026-10-18 02:04:02.005 UTC [280] ERROR:  condition option semantics are immutable
+2026-10-18T02:10:05.6103067Z  2026-10-18 02:04:02.005 UTC [280] CONTEXT:  PL/pgSQL function guard_condition_option_semantics() line 5 at RAISE
+2026-10-18T02:10:05.6104018Z  2026-10-18 02:04:02.005 UTC [280] STATEMENT:  UPDATE "public"."ConditionOption" SET "labelDe" = $1 WHERE ("public"."ConditionOption"."id" = $2 AND 1=1) RETURNING "public"."ConditionOption"."id", "public"."ConditionOption"."schemeId", "public"."ConditionOption"."categoryTemplateId", "public"."ConditionOption"."labelKey", "public"."ConditionOption"."labelDe", "public"."ConditionOption"."labelEn", "public"."ConditionOption"."normalizedBand", "public"."ConditionOption"."position", "public"."ConditionOption"."active"
+2026-10-18T02:10:05.6104935Z  2026-10-18 02:04:02.011 UTC [281] ERROR:  condition option semantics are immutable
+2026-10-18T02:10:05.6105228Z  2026-10-18 02:04:02.011 UTC [281] CONTEXT:  PL/pgSQL function guard_condition_option_semantics() line 5 at RAISE
+2026-10-18T02:10:05.6106187Z  2026-10-18 02:04:02.011 UTC [281] STATEMENT:  UPDATE "public"."ConditionOption" SET "labelEn" = $1 WHERE ("public"."ConditionOption"."id" = $2 AND 1=1) RETURNING "public"."ConditionOption"."id", "public"."ConditionOption"."schemeId", "public"."ConditionOption"."categoryTemplateId", "public"."ConditionOption"."labelKey", "public"."ConditionOption"."labelDe", "public"."ConditionOption"."labelEn", "public"."ConditionOption"."normalizedBand", "public"."ConditionOption"."position", "public"."ConditionOption"."active"
+2026-10-18T02:10:05.6107097Z  2026-10-18 02:04:02.017 UTC [282] ERROR:  condition option semantics are immutable
+2026-10-18T02:10:05.6107392Z  2026-10-18 02:04:02.017 UTC [282] CONTEXT:  PL/pgSQL function guard_condition_option_semantics() line 5 at RAISE
+2026-10-18T02:10:05.6108360Z  2026-10-18 02:04:02.017 UTC [282] STATEMENT:  UPDATE "public"."ConditionOption" SET "normalizedBand" = $1 WHERE ("public"."ConditionOption"."id" = $2 AND 1=1) RETURNING "public"."ConditionOption"."id", "public"."ConditionOption"."schemeId", "public"."ConditionOption"."categoryTemplateId", "public"."ConditionOption"."labelKey", "public"."ConditionOption"."labelDe", "public"."ConditionOption"."labelEn", "public"."ConditionOption"."normalizedBand", "public"."ConditionOption"."position", "public"."ConditionOption"."active"
+2026-10-18T02:10:05.6109278Z  2026-10-18 02:04:02.022 UTC [283] ERROR:  condition option semantics are immutable
+2026-10-18T02:10:05.6109572Z  2026-10-18 02:04:02.022 UTC [283] CONTEXT:  PL/pgSQL function guard_condition_option_semantics() line 5 at RAISE
+2026-10-18T02:10:05.6110545Z  2026-10-18 02:04:02.022 UTC [283] STATEMENT:  UPDATE "public"."ConditionOption" SET "categoryTemplateId" = $1 WHERE ("public"."ConditionOption"."id" = $2 AND 1=1) RETURNING "public"."ConditionOption"."id", "public"."ConditionOption"."schemeId", "public"."ConditionOption"."categoryTemplateId", "public"."ConditionOption"."labelKey", "public"."ConditionOption"."labelDe", "public"."ConditionOption"."labelEn", "public"."ConditionOption"."normalizedBand", "public"."ConditionOption"."position", "public"."ConditionOption"."active"
+2026-10-18T02:10:05.6111479Z  2026-10-18 02:04:02.028 UTC [284] ERROR:  condition option semantics are immutable
+2026-10-18T02:10:05.6111772Z  2026-10-18 02:04:02.028 UTC [284] CONTEXT:  PL/pgSQL function guard_condition_option_semantics() line 5 at RAISE
+2026-10-18T02:10:05.6112926Z  2026-10-18 02:04:02.028 UTC [284] STATEMENT:  UPDATE "public"."ConditionOption" SET "id" = $1 WHERE ("public"."ConditionOption"."id" = $2 AND 1=1) RETURNING "public"."ConditionOption"."id", "public"."ConditionOption"."schemeId", "public"."ConditionOption"."categoryTemplateId", "public"."ConditionOption"."labelKey", "public"."ConditionOption"."labelDe", "public"."ConditionOption"."labelEn", "public"."ConditionOption"."normalizedBand", "public"."ConditionOption"."position", "public"."ConditionOption"."active"
+2026-10-18T02:10:05.6113908Z  2026-10-18 02:04:02.033 UTC [285] ERROR:  condition scheme semantics are immutable
+2026-10-18T02:10:05.6114202Z  2026-10-18 02:04:02.033 UTC [285] CONTEXT:  PL/pgSQL function guard_condition_scheme_semantics() line 5 at RAISE
+2026-10-18T02:10:05.6114959Z  2026-10-18 02:04:02.033 UTC [285] STATEMENT:  UPDATE "public"."ConditionScheme" SET "labelDe" = $1 WHERE ("public"."ConditionScheme"."id" = $2 AND 1=1) RETURNING "public"."ConditionScheme"."id", "public"."ConditionScheme"."categoryTemplateId", "public"."ConditionScheme"."key", "public"."ConditionScheme"."labelDe", "public"."ConditionScheme"."labelEn", "public"."ConditionScheme"."active"
+2026-10-18T02:10:05.6115671Z  2026-10-18 02:04:02.038 UTC [286] ERROR:  condition scheme semantics are immutable
+2026-10-18T02:10:05.6115965Z  2026-10-18 02:04:02.038 UTC [286] CONTEXT:  PL/pgSQL function guard_condition_scheme_semantics() line 5 at RAISE
+2026-10-18T02:10:05.6116723Z  2026-10-18 02:04:02.038 UTC [286] STATEMENT:  UPDATE "public"."ConditionScheme" SET "labelEn" = $1 WHERE ("public"."ConditionScheme"."id" = $2 AND 1=1) RETURNING "public"."ConditionScheme"."id", "public"."ConditionScheme"."categoryTemplateId", "public"."ConditionScheme"."key", "public"."ConditionScheme"."labelDe", "public"."ConditionScheme"."labelEn", "public"."ConditionScheme"."active"
+2026-10-18T02:10:05.6117434Z  2026-10-18 02:04:02.043 UTC [287] ERROR:  condition scheme semantics are immutable
+2026-10-18T02:10:05.6117728Z  2026-10-18 02:04:02.043 UTC [287] CONTEXT:  PL/pgSQL function guard_condition_scheme_semantics() line 5 at RAISE
+2026-10-18T02:10:05.6118480Z  2026-10-18 02:04:02.043 UTC [287] STATEMENT:  UPDATE "public"."ConditionScheme" SET "key" = $1 WHERE ("public"."ConditionScheme"."id" = $2 AND 1=1) RETURNING "public"."ConditionScheme"."id", "public"."ConditionScheme"."categoryTemplateId", "public"."ConditionScheme"."key", "public"."ConditionScheme"."labelDe", "public"."ConditionScheme"."labelEn", "public"."ConditionScheme"."active"
+2026-10-18T02:10:05.6119400Z  2026-10-18 02:04:02.049 UTC [288] ERROR:  update or delete on table "ConditionOption" violates foreign key constraint "CollectibleItem_conditionOptionId_categoryTemplateId_fkey" on table "CollectibleItem"
+2026-10-18T02:10:05.6120057Z  2026-10-18 02:04:02.049 UTC [288] DETAIL:  Key (id, categoryTemplateId)=(c7a7f6a7-c3de-4d93-9a87-2bc9c8bb1f85, 8ad726a5-9909-48f6-b3f1-3386a97bd399) is still referenced from table "CollectibleItem".
+2026-10-18T02:10:05.6121158Z  2026-10-18 02:04:02.049 UTC [288] STATEMENT:  DELETE FROM "public"."ConditionOption" WHERE ("public"."ConditionOption"."id" = $1 AND 1=1) RETURNING "public"."ConditionOption"."id", "public"."ConditionOption"."schemeId", "public"."ConditionOption"."categoryTemplateId", "public"."ConditionOption"."labelKey", "public"."ConditionOption"."labelDe", "public"."ConditionOption"."labelEn", "public"."ConditionOption"."normalizedBand", "public"."ConditionOption"."position", "public"."ConditionOption"."active"
+2026-10-18T02:10:05.6122235Z  2026-10-18 02:04:02.054 UTC [289] ERROR:  update or delete on table "CategoryTemplate" violates foreign key constraint "CollectibleItem_categoryTemplateId_fkey" on table "CollectibleItem"
+2026-10-18T02:10:05.6122898Z  2026-10-18 02:04:02.054 UTC [289] DETAIL:  Key (id)=(8ad726a5-9909-48f6-b3f1-3386a97bd399) is still referenced from table "CollectibleItem".
+2026-10-18T02:10:05.6123513Z  2026-10-18 02:04:02.054 UTC [289] STATEMENT:  DELETE FROM "public"."CategoryTemplate" WHERE ("public"."CategoryTemplate"."id" = $1 AND 1=1) RETURNING "public"."CategoryTemplate"."id", "public"."CategoryTemplate"."key", "public"."CategoryTemplate"."createdAt"
+2026-10-18T02:10:05.6124110Z  2026-10-18 02:04:02.069 UTC [290] ERROR:  duplicate key value violates unique constraint "ConditionScheme_categoryTemplateId_key"
+2026-10-18T02:10:05.6124588Z  2026-10-18 02:04:02.069 UTC [290] DETAIL:  Key ("categoryTemplateId")=(aa987f13-fd54-4915-ad90-ea8ce33b5f4d) already exists.
+2026-10-18T02:10:05.6124941Z  2026-10-18 02:04:02.069 UTC [290] STATEMENT:  
+2026-10-18T02:10:05.6125184Z  	        INSERT INTO "ConditionScheme" (id, "categoryTemplateId", key, "labelDe", "labelEn", active)
+2026-10-18T02:10:05.6125441Z  	        VALUES ($1::uuid, $2::uuid, $3, $4, $5, $6) RETURNING *
+2026-10-18T02:10:05.6125606Z  	      
+2026-10-18T02:10:05.6125842Z  2026-10-18 02:04:02.071 UTC [290] ERROR:  duplicate key value violates unique constraint "ConditionOption_schemeId_labelKey_key"
+2026-10-18T02:10:05.6126261Z  2026-10-18 02:04:02.071 UTC [290] DETAIL:  Key ("schemeId", "labelKey")=(2ba044f5-bc8b-45a9-9f57-d1adcc839210, vinyl.vg_plus) already exists.
+2026-10-18T02:10:05.6126562Z  2026-10-18 02:04:02.071 UTC [290] STATEMENT:  
+2026-10-18T02:10:05.6126869Z  	    INSERT INTO "ConditionOption" (id, "schemeId", "categoryTemplateId", "labelKey", "labelDe", "labelEn", "normalizedBand", position, active)
+2026-10-18T02:10:05.6127212Z  	    VALUES ($1::uuid, $2::uuid, $3::uuid, $4, $5, $6, $7, $8, $9) RETURNING *
+2026-10-18T02:10:05.6127390Z  	  
+2026-10-18T02:10:05.6127639Z  2026-10-18 02:04:02.568 UTC [293] ERROR:  duplicate key value violates unique constraint "Grading_ownerId_providerKey_certificateKey_key"
+2026-10-18T02:10:05.6128117Z  2026-10-18 02:04:02.568 UTC [293] DETAIL:  Key ("ownerId", "providerKey", "certificateKey")=(GradingOwner_054544d0-b9a5-4392-b846-48f4a9c03516, psa, 000456) already exists.
+2026-10-18T02:10:05.6128466Z  2026-10-18 02:04:02.568 UTC [293] STATEMENT:  
+2026-10-18T02:10:05.6128867Z  	          INSERT INTO "Grading" (id,"itemId","ownerId",provider,"providerKey",grade,"comparableValue","comparableScale","certificateNo","certificateKey","gradedAt","verificationUrl",source,"updatedAt")
+2026-10-18T02:10:05.6129332Z  	          VALUES ($1::uuid,$2::uuid,$3,$4,$5,$6,$7::numeric,$8,$9,$10,$11::date,$12,$13,now()) RETURNING id
+2026-10-18T02:10:05.6129540Z  	        
+2026-10-18T02:10:05.6129790Z  2026-10-18 02:04:02.980 UTC [302] ERROR:  duplicate key value violates unique constraint "Grading_ownerId_providerKey_certificateKey_key"
+2026-10-18T02:10:05.6130266Z  2026-10-18 02:04:02.980 UTC [302] DETAIL:  Key ("ownerId", "providerKey", "certificateKey")=(GradingOwner_054544d0-b9a5-4392-b846-48f4a9c03516, race, same) already exists.
+2026-10-18T02:10:05.6130614Z  2026-10-18 02:04:02.980 UTC [302] STATEMENT:  
+2026-10-18T02:10:05.6131011Z  	          INSERT INTO "Grading" (id,"itemId","ownerId",provider,"providerKey",grade,"comparableValue","comparableScale","certificateNo","certificateKey","gradedAt","verificationUrl",source,"updatedAt")
+2026-10-18T02:10:05.6131469Z  	          VALUES ($1::uuid,$2::uuid,$3,$4,$5,$6,$7::numeric,$8,$9,$10,$11::date,$12,$13,now()) RETURNING id
+2026-10-18T02:10:05.6131675Z  	        
+2026-10-18T02:10:05.6131944Z  2026-10-18 02:04:02.986 UTC [302] ERROR:  insert or update on table "Grading" violates foreign key constraint "Grading_itemId_ownerId_itemQuantity_fkey"
+2026-10-18T02:10:05.6132543Z  2026-10-18 02:04:02.986 UTC [302] DETAIL:  Key (itemId, ownerId, itemQuantity)=(3814ae75-ec6e-4bd5-81f6-c89874c30e6f, ForeignGradingOwner_6e7886c3-03fa-48fa-9826-5bd3b6d3614c, 1) is not present in table "CollectibleItem".
+2026-10-18T02:10:05.6134179Z  2026-10-18 02:04:02.986 UTC [302] STATEMENT:  INSERT INTO "public"."Grading" ("id","itemId","ownerId","itemQuantity","provider","providerKey","grade","createdAt","updatedAt") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING "public"."Grading"."id", "public"."Grading"."itemId", "public"."Grading"."ownerId", "public"."Grading"."itemQuantity", "public"."Grading"."provider", "public"."Grading"."providerKey", "public"."Grading"."grade", "public"."Grading"."comparableValue", "public"."Grading"."comparableScale", "public"."Grading"."certificateNo", "public"."Grading"."certificateKey", "public"."Grading"."gradedAt", "public"."Grading"."verificationUrl", "public"."Grading"."source", "public"."Grading"."createdAt", "public"."Grading"."updatedAt"
+2026-10-18T02:10:05.6135673Z  2026-10-18 02:04:02.990 UTC [293] ERROR:  insert or update on table "Grading" violates foreign key constraint "Grading_itemId_ownerId_itemQuantity_fkey"
+2026-10-18T02:10:05.6136259Z  2026-10-18 02:04:02.990 UTC [293] DETAIL:  Key (itemId, ownerId, itemQuantity)=(01fdbf4a-8e45-4cb3-bf0e-59a5e28c2997, GradingOwner_054544d0-b9a5-4392-b846-48f4a9c03516, 1) is not present in table "CollectibleItem".
+2026-10-18T02:10:05.6138032Z  2026-10-18 02:04:02.990 UTC [293] STATEMENT:  INSERT INTO "public"."Grading" ("id","itemId","ownerId","itemQuantity","provider","providerKey","grade","createdAt","updatedAt") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING "public"."Grading"."id", "public"."Grading"."itemId", "public"."Grading"."ownerId", "public"."Grading"."itemQuantity", "public"."Grading"."provider", "public"."Grading"."providerKey", "public"."Grading"."grade", "public"."Grading"."comparableValue", "public"."Grading"."comparableScale", "public"."Grading"."certificateNo", "public"."Grading"."certificateKey", "public"."Grading"."gradedAt", "public"."Grading"."verificationUrl", "public"."Grading"."source", "public"."Grading"."createdAt", "public"."Grading"."updatedAt"
+2026-10-18T02:10:05.6139317Z  2026-10-18 02:04:02.997 UTC [303] ERROR:  new row for relation "Grading" violates check constraint "Grading_single_specimen_check"
+2026-10-18T02:10:05.6139979Z  2026-10-18 02:04:02.997 UTC [303] DETAIL:  Failing row contains (57006075-ff01-4ac5-bac7-ba897ecbde0c, 01fdbf4a-8e45-4cb3-bf0e-59a5e28c2997, GradingOwner_054544d0-b9a5-4392-b846-48f4a9c03516, 2, DB, db, A, null, null, null, null, null, null, null, 2026-10-18 02:04:02.992, 2026-10-18 02:04:02.992).
+2026-10-18T02:10:05.6141665Z  2026-10-18 02:04:02.997 UTC [303] STATEMENT:  INSERT INTO "public"."Grading" ("id","itemId","ownerId","itemQuantity","provider","providerKey","grade","createdAt","updatedAt") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING "public"."Grading"."id", "public"."Grading"."itemId", "public"."Grading"."ownerId", "public"."Grading"."itemQuantity", "public"."Grading"."provider", "public"."Grading"."providerKey", "public"."Grading"."grade", "public"."Grading"."comparableValue", "public"."Grading"."comparableScale", "public"."Grading"."certificateNo", "public"."Grading"."certificateKey", "public"."Grading"."gradedAt", "public"."Grading"."verificationUrl", "public"."Grading"."source", "public"."Grading"."createdAt", "public"."Grading"."updatedAt"
+2026-10-18T02:10:05.6143100Z  2026-10-18 02:04:03.004 UTC [304] ERROR:  new row for relation "Grading" violates check constraint "Grading_comparable_pair_check"
+2026-10-18T02:10:05.6143764Z  2026-10-18 02:04:03.004 UTC [304] DETAIL:  Failing row contains (d49ab153-c8fa-4440-af4b-dc954f801025, 3814ae75-ec6e-4bd5-81f6-c89874c30e6f, GradingOwner_054544d0-b9a5-4392-b846-48f4a9c03516, 1, DB, db, A, 1.0000, null, null, null, null, null, null, 2026-10-18 02:04:02.999, 2026-10-18 02:04:02.999).
+2026-10-18T02:10:05.6145347Z  2026-10-18 02:04:03.004 UTC [304] STATEMENT:  INSERT INTO "public"."Grading" ("id","itemId","ownerId","itemQuantity","provider","providerKey","grade","comparableValue","createdAt","updatedAt") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) RETURNING "public"."Grading"."id", "public"."Grading"."itemId", "public"."Grading"."ownerId", "public"."Grading"."itemQuantity", "public"."Grading"."provider", "public"."Grading"."providerKey", "public"."Grading"."grade", "public"."Grading"."comparableValue", "public"."Grading"."comparableScale", "public"."Grading"."certificateNo", "public"."Grading"."certificateKey", "public"."Grading"."gradedAt", "public"."Grading"."verificationUrl", "public"."Grading"."source", "public"."Grading"."createdAt", "public"."Grading"."updatedAt"
+2026-10-18T02:10:05.6146668Z  2026-10-18 02:04:03.009 UTC [305] ERROR:  new row for relation "Grading" violates check constraint "Grading_comparable_pair_check"
+2026-10-18T02:10:05.6147429Z  2026-10-18 02:04:03.009 UTC [305] DETAIL:  Failing row contains (e1f5f19f-045e-4227-809a-7546b0b8cf3b, 3814ae75-ec6e-4bd5-81f6-c89874c30e6f, GradingOwner_054544d0-b9a5-4392-b846-48f4a9c03516, 1, DB, db, A, -1.0000, scale, null, null, null, null, null, 2026-10-18 02:04:03.005, 2026-10-18 02:04:03.005).
+2026-10-18T02:10:05.6149104Z  2026-10-18 02:04:03.009 UTC [305] STATEMENT:  INSERT INTO "public"."Grading" ("id","itemId","ownerId","itemQuantity","provider","providerKey","grade","comparableValue","comparableScale","createdAt","updatedAt") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11) RETURNING "public"."Grading"."id", "public"."Grading"."itemId", "public"."Grading"."ownerId", "public"."Grading"."itemQuantity", "public"."Grading"."provider", "public"."Grading"."providerKey", "public"."Grading"."grade", "public"."Grading"."comparableValue", "public"."Grading"."comparableScale", "public"."Grading"."certificateNo", "public"."Grading"."certificateKey", "public"."Grading"."gradedAt", "public"."Grading"."verificationUrl", "public"."Grading"."source", "public"."Grading"."createdAt", "public"."Grading"."updatedAt"
+2026-10-18T02:10:05.6150460Z  2026-10-18 02:04:03.013 UTC [306] ERROR:  new row for relation "Grading" violates check constraint "Grading_certificate_identity_check"
+2026-10-18T02:10:05.6151279Z  2026-10-18 02:04:03.013 UTC [306] DETAIL:  Failing row contains (89c73af9-a38c-462e-a443-05ddf91ea546, 3814ae75-ec6e-4bd5-81f6-c89874c30e6f, GradingOwner_054544d0-b9a5-4392-b846-48f4a9c03516, 1, DB, db, A, null, null, x, y, null, null, null, 2026-10-18 02:04:03.01, 2026-10-18 02:04:03.01).
+2026-10-18T02:10:05.6153042Z  2026-10-18 02:04:03.013 UTC [306] STATEMENT:  INSERT INTO "public"."Grading" ("id","itemId","ownerId","itemQuantity","provider","providerKey","grade","certificateNo","certificateKey","createdAt","updatedAt") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11) RETURNING "public"."Grading"."id", "public"."Grading"."itemId", "public"."Grading"."ownerId", "public"."Grading"."itemQuantity", "public"."Grading"."provider", "public"."Grading"."providerKey", "public"."Grading"."grade", "public"."Grading"."comparableValue", "public"."Grading"."comparableScale", "public"."Grading"."certificateNo", "public"."Grading"."certificateKey", "public"."Grading"."gradedAt", "public"."Grading"."verificationUrl", "public"."Grading"."source", "public"."Grading"."createdAt", "public"."Grading"."updatedAt"
+2026-10-18T02:10:05.6154386Z  2026-10-18 02:04:03.019 UTC [307] ERROR:  new row for relation "Grading" violates check constraint "Grading_provider_identity_check"
+2026-10-18T02:10:05.6155040Z  2026-10-18 02:04:03.019 UTC [307] DETAIL:  Failing row contains (863bd607-7a0c-48d2-b015-1d43e9661497, 3814ae75-ec6e-4bd5-81f6-c89874c30e6f, GradingOwner_054544d0-b9a5-4392-b846-48f4a9c03516, 1, DB, DB, A, null, null, null, null, null, null, null, 2026-10-18 02:04:03.015, 2026-10-18 02:04:03.015).
+2026-10-18T02:10:05.6156560Z  2026-10-18 02:04:03.019 UTC [307] STATEMENT:  INSERT INTO "public"."Grading" ("id","itemId","ownerId","itemQuantity","provider","providerKey","grade","createdAt","updatedAt") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING "public"."Grading"."id", "public"."Grading"."itemId", "public"."Grading"."ownerId", "public"."Grading"."itemQuantity", "public"."Grading"."provider", "public"."Grading"."providerKey", "public"."Grading"."grade", "public"."Grading"."comparableValue", "public"."Grading"."comparableScale", "public"."Grading"."certificateNo", "public"."Grading"."certificateKey", "public"."Grading"."gradedAt", "public"."Grading"."verificationUrl", "public"."Grading"."source", "public"."Grading"."createdAt", "public"."Grading"."updatedAt"
+2026-10-18T02:10:05.6157840Z  2026-10-18 02:04:03.023 UTC [308] ERROR:  new row for relation "Grading" violates check constraint "Grading_comparable_finite_check"
+2026-10-18T02:10:05.6158491Z  2026-10-18 02:04:03.023 UTC [308] DETAIL:  Failing row contains (e09cf9f6-833f-4a03-99ea-5f863340688e, 3814ae75-ec6e-4bd5-81f6-c89874c30e6f, GradingOwner_054544d0-b9a5-4392-b846-48f4a9c03516, 1, DB, db, A, NaN, scale, null, null, null, null, null, 2026-10-18 02:04:03.023, 2026-10-18 02:04:03.023).
+2026-10-18T02:10:05.6159410Z  2026-10-18 02:04:03.023 UTC [308] STATEMENT:  INSERT INTO "Grading" (id,"itemId","ownerId",provider,"providerKey",grade,"comparableValue","comparableScale","updatedAt") VALUES ($1::uuid,$2::uuid,$3,'DB','db','A','NaN'::numeric,'scale',now()) RETURNING id
+2026-10-18T02:10:05.6160151Z  2026-10-18 02:04:03.033 UTC [309] ERROR:  update or delete on table "CollectibleItem" violates foreign key constraint "Grading_itemId_ownerId_itemQuantity_fkey" on table "Grading"
+2026-10-18T02:10:05.6160759Z  2026-10-18 02:04:03.033 UTC [309] DETAIL:  Key (id, ownerId, quantity)=(3814ae75-ec6e-4bd5-81f6-c89874c30e6f, GradingOwner_054544d0-b9a5-4392-b846-48f4a9c03516, 1) is still referenced from table "Grading".
+2026-10-18T02:10:05.6163099Z  2026-10-18 02:04:03.033 UTC [309] STATEMENT:  UPDATE "public"."CollectibleItem" SET "quantity" = $1, "updatedAt" = $2 WHERE ("public"."CollectibleItem"."id" = $3 AND 1=1) RETURNING "public"."CollectibleItem"."id", "public"."CollectibleItem"."collectionId", "public"."CollectibleItem"."ownerId", "public"."CollectibleItem"."nodeId", "public"."CollectibleItem"."storageLocationId", "public"."CollectibleItem"."categoryTemplateId", "public"."CollectibleItem"."conditionOptionId", "public"."CollectibleItem"."catalogEntryId", "public"."CollectibleItem"."catalogVariantId", "public"."CollectibleItem"."title", "public"."CollectibleItem"."publicDescription", "public"."CollectibleItem"."privateNotes", "public"."CollectibleItem"."quantity", "public"."CollectibleItem"."acquisitionType"::text, "public"."CollectibleItem"."acquisitionDate", "public"."CollectibleItem"."purchaseAmountMinor", "public"."CollectibleItem"."purchaseCurrency", "public"."CollectibleItem"."visibility"::text, "public"."CollectibleItem"."tradeStatus"::text, "public"."CollectibleItem"."archivedAt", "public"."CollectibleItem"."disposedAt", "public"."CollectibleItem"."createdAt", "public"."CollectibleItem"."updatedAt", "public"."CollectibleItem"."deletedAt"
+2026-10-18T02:10:05.6165371Z  2026-10-18 02:04:03.097 UTC [312] ERROR:  update or delete on table "CollectibleItem" violates foreign key constraint "Grading_itemId_ownerId_itemQuantity_fkey" on table "Grading"
+2026-10-18T02:10:05.6165982Z  2026-10-18 02:04:03.097 UTC [312] DETAIL:  Key (id, ownerId, quantity)=(8312f075-6f7f-4402-84c1-47ebe0667246, GradingOwner_054544d0-b9a5-4392-b846-48f4a9c03516, 1) is still referenced from table "Grading".
+2026-10-18T02:10:05.6168171Z  2026-10-18 02:04:03.097 UTC [312] STATEMENT:  UPDATE "public"."CollectibleItem" SET "quantity" = $1, "updatedAt" = $2 WHERE ("public"."CollectibleItem"."id" = $3 AND 1=1) RETURNING "public"."CollectibleItem"."id", "public"."CollectibleItem"."collectionId", "public"."CollectibleItem"."ownerId", "public"."CollectibleItem"."nodeId", "public"."CollectibleItem"."storageLocationId", "public"."CollectibleItem"."categoryTemplateId", "public"."CollectibleItem"."conditionOptionId", "public"."CollectibleItem"."catalogEntryId", "public"."CollectibleItem"."catalogVariantId", "public"."CollectibleItem"."title", "public"."CollectibleItem"."publicDescription", "public"."CollectibleItem"."privateNotes", "public"."CollectibleItem"."quantity", "public"."CollectibleItem"."acquisitionType"::text, "public"."CollectibleItem"."acquisitionDate", "public"."CollectibleItem"."purchaseAmountMinor", "public"."CollectibleItem"."purchaseCurrency", "public"."CollectibleItem"."visibility"::text, "public"."CollectibleItem"."tradeStatus"::text, "public"."CollectibleItem"."archivedAt", "public"."CollectibleItem"."disposedAt", "public"."CollectibleItem"."createdAt", "public"."CollectibleItem"."updatedAt", "public"."CollectibleItem"."deletedAt"
+2026-10-18T02:10:05.6170348Z  2026-10-18 02:04:03.109 UTC [310] ERROR:  duplicate key value violates unique constraint "Grading_ownerId_providerKey_certificateKey_key"
+2026-10-18T02:10:05.6170864Z  2026-10-18 02:04:03.109 UTC [310] DETAIL:  Key ("ownerId", "providerKey", "certificateKey")=(GradingOwner_054544d0-b9a5-4392-b846-48f4a9c03516, retained, retained-physical) already exists.
+2026-10-18T02:10:05.6171243Z  2026-10-18 02:04:03.109 UTC [310] STATEMENT:  
+2026-10-18T02:10:05.6171752Z  	          INSERT INTO "Grading" (id,"itemId","ownerId",provider,"providerKey",grade,"comparableValue","comparableScale","certificateNo","certificateKey","gradedAt","verificationUrl",source,"updatedAt")
+2026-10-18T02:10:05.6172292Z  	          VALUES ($1::uuid,$2::uuid,$3,$4,$5,$6,$7::numeric,$8,$9,$10,$11::date,$12,$13,now()) RETURNING id
+2026-10-18T02:10:05.6172501Z  	        
+2026-10-18T02:10:05.6172864Z  2026-10-18 02:04:04.801 UTC [318] ERROR:  new row for relation "Valuation" violates check constraint "Valuation_owner_actor_check"
+2026-10-18T02:10:05.6173623Z  2026-10-18 02:04:04.801 UTC [318] DETAIL:  Failing row contains (329d8d3d-2d15-4441-b043-cd0840ebda54, c9cdb456-9cbd-4b19-b064-eefd1972d5a5, ForeignValuationOwner_d8f53cf6-5442-4dfd-a5c7-17fa7935658a, ValuationOwner_f2d7095c-893b-4a2b-87ec-0c5c13bdc41c, MANUAL, PER_UNIT, 1, EUR, 2, null, 2025-01-01 00:00:00+00, 2026-10-18 02:04:04.801+00).
+2026-10-18T02:10:05.6175192Z  2026-10-18 02:04:04.801 UTC [318] STATEMENT:  INSERT INTO "public"."Valuation" ("id","itemId","ownerId","actorUserId","type","basis","amountMinor","currency","minorUnitExponent","observedAt","createdAt") VALUES ($1,$2,$3,$4,CAST($5::text AS "public"."ValuationType"),$6,$7,$8,$9,$10,$11) RETURNING "public"."Valuation"."id", "public"."Valuation"."itemId", "public"."Valuation"."ownerId", "public"."Valuation"."actorUserId", "public"."Valuation"."type"::text, "public"."Valuation"."basis", "public"."Valuation"."amountMinor", "public"."Valuation"."currency", "public"."Valuation"."minorUnitExponent", "public"."Valuation"."note", "public"."Valuation"."observedAt", "public"."Valuation"."createdAt"
+2026-10-18T02:10:05.6176417Z  2026-10-18 02:04:04.825 UTC [319] ERROR:  new row for relation "Valuation" violates check constraint "Valuation_owner_actor_check"
+2026-10-18T02:10:05.6177169Z  2026-10-18 02:04:04.825 UTC [319] DETAIL:  Failing row contains (fb6382d7-7b48-4280-a78c-5890af5d5b2c, c9cdb456-9cbd-4b19-b064-eefd1972d5a5, ValuationOwner_f2d7095c-893b-4a2b-87ec-0c5c13bdc41c, ForeignValuationOwner_d8f53cf6-5442-4dfd-a5c7-17fa7935658a, MANUAL, PER_UNIT, 1, EUR, 2, null, 2025-01-01 00:00:00+00, 2026-10-18 02:04:04.816+00).
+2026-10-18T02:10:05.6178715Z  2026-10-18 02:04:04.825 UTC [319] STATEMENT:  INSERT INTO "public"."Valuation" ("id","itemId","ownerId","actorUserId","type","basis","amountMinor","currency","minorUnitExponent","observedAt","createdAt") VALUES ($1,$2,$3,$4,CAST($5::text AS "public"."ValuationType"),$6,$7,$8,$9,$10,$11) RETURNING "public"."Valuation"."id", "public"."Valuation"."itemId", "public"."Valuation"."ownerId", "public"."Valuation"."actorUserId", "public"."Valuation"."type"::text, "public"."Valuation"."basis", "public"."Valuation"."amountMinor", "public"."Valuation"."currency", "public"."Valuation"."minorUnitExponent", "public"."Valuation"."note", "public"."Valuation"."observedAt", "public"."Valuation"."createdAt"
+2026-10-18T02:10:05.6179919Z  2026-10-18 02:04:04.832 UTC [320] ERROR:  new row for relation "Valuation" violates check constraint "Valuation_nonnegative_check"
+2026-10-18T02:10:05.6180659Z  2026-10-18 02:04:04.832 UTC [320] DETAIL:  Failing row contains (da9cec65-d1f8-4fe4-b610-8c35509e21b4, c9cdb456-9cbd-4b19-b064-eefd1972d5a5, ValuationOwner_f2d7095c-893b-4a2b-87ec-0c5c13bdc41c, ValuationOwner_f2d7095c-893b-4a2b-87ec-0c5c13bdc41c, MANUAL, PER_UNIT, -1, EUR, 2, null, 2025-01-01 00:00:00+00, 2026-10-18 02:04:04.827+00).
+2026-10-18T02:10:05.6182285Z  2026-10-18 02:04:04.832 UTC [320] STATEMENT:  INSERT INTO "public"."Valuation" ("id","itemId","ownerId","actorUserId","type","basis","amountMinor","currency","minorUnitExponent","observedAt","createdAt") VALUES ($1,$2,$3,$4,CAST($5::text AS "public"."ValuationType"),$6,$7,$8,$9,$10,$11) RETURNING "public"."Valuation"."id", "public"."Valuation"."itemId", "public"."Valuation"."ownerId", "public"."Valuation"."actorUserId", "public"."Valuation"."type"::text, "public"."Valuation"."basis", "public"."Valuation"."amountMinor", "public"."Valuation"."currency", "public"."Valuation"."minorUnitExponent", "public"."Valuation"."note", "public"."Valuation"."observedAt", "public"."Valuation"."createdAt"
+2026-10-18T02:10:05.6183648Z  2026-10-18 02:04:04.837 UTC [321] ERROR:  new row for relation "Valuation" violates check constraint "Valuation_currency_exponent_check"
+2026-10-18T02:10:05.6184401Z  2026-10-18 02:04:04.837 UTC [321] DETAIL:  Failing row contains (63bb53cc-ac52-4e4c-b735-79acde725e2c, c9cdb456-9cbd-4b19-b064-eefd1972d5a5, ValuationOwner_f2d7095c-893b-4a2b-87ec-0c5c13bdc41c, ValuationOwner_f2d7095c-893b-4a2b-87ec-0c5c13bdc41c, MANUAL, PER_UNIT, 1, eur, 2, null, 2025-01-01 00:00:00+00, 2026-10-18 02:04:04.833+00).
+2026-10-18T02:10:05.6185941Z  2026-10-18 02:04:04.837 UTC [321] STATEMENT:  INSERT INTO "public"."Valuation" ("id","itemId","ownerId","actorUserId","type","basis","amountMinor","currency","minorUnitExponent","observedAt","createdAt") VALUES ($1,$2,$3,$4,CAST($5::text AS "public"."ValuationType"),$6,$7,$8,$9,$10,$11) RETURNING "public"."Valuation"."id", "public"."Valuation"."itemId", "public"."Valuation"."ownerId", "public"."Valuation"."actorUserId", "public"."Valuation"."type"::text, "public"."Valuation"."basis", "public"."Valuation"."amountMinor", "public"."Valuation"."currency", "public"."Valuation"."minorUnitExponent", "public"."Valuation"."note", "public"."Valuation"."observedAt", "public"."Valuation"."createdAt"
+2026-10-18T02:10:05.6187162Z  2026-10-18 02:04:04.842 UTC [322] ERROR:  new row for relation "Valuation" violates check constraint "Valuation_currency_exponent_check"
+2026-10-18T02:10:05.6187902Z  2026-10-18 02:04:04.842 UTC [322] DETAIL:  Failing row contains (2cc0228e-e984-43d0-83ba-1983f1a7e60a, c9cdb456-9cbd-4b19-b064-eefd1972d5a5, ValuationOwner_f2d7095c-893b-4a2b-87ec-0c5c13bdc41c, ValuationOwner_f2d7095c-893b-4a2b-87ec-0c5c13bdc41c, MANUAL, PER_UNIT, 1, XXX, 2, null, 2025-01-01 00:00:00+00, 2026-10-18 02:04:04.838+00).
+2026-10-18T02:10:05.6189433Z  2026-10-18 02:04:04.842 UTC [322] STATEMENT:  INSERT INTO "public"."Valuation" ("id","itemId","ownerId","actorUserId","type","basis","amountMinor","currency","minorUnitExponent","observedAt","createdAt") VALUES ($1,$2,$3,$4,CAST($5::text AS "public"."ValuationType"),$6,$7,$8,$9,$10,$11) RETURNING "public"."Valuation"."id", "public"."Valuation"."itemId", "public"."Valuation"."ownerId", "public"."Valuation"."actorUserId", "public"."Valuation"."type"::text, "public"."Valuation"."basis", "public"."Valuation"."amountMinor", "public"."Valuation"."currency", "public"."Valuation"."minorUnitExponent", "public"."Valuation"."note", "public"."Valuation"."observedAt", "public"."Valuation"."createdAt"
+2026-10-18T02:10:05.6190654Z  2026-10-18 02:04:04.847 UTC [323] ERROR:  new row for relation "Valuation" violates check constraint "Valuation_currency_exponent_check"
+2026-10-18T02:10:05.6191393Z  2026-10-18 02:04:04.847 UTC [323] DETAIL:  Failing row contains (f55545d9-f6d3-42f9-a30a-961a5a0a8cd8, c9cdb456-9cbd-4b19-b064-eefd1972d5a5, ValuationOwner_f2d7095c-893b-4a2b-87ec-0c5c13bdc41c, ValuationOwner_f2d7095c-893b-4a2b-87ec-0c5c13bdc41c, MANUAL, PER_UNIT, 1, EUR, 3, null, 2025-01-01 00:00:00+00, 2026-10-18 02:04:04.843+00).
+2026-10-18T02:10:05.6193096Z  2026-10-18 02:04:04.847 UTC [323] STATEMENT:  INSERT INTO "public"."Valuation" ("id","itemId","ownerId","actorUserId","type","basis","amountMinor","currency","minorUnitExponent","observedAt","createdAt") VALUES ($1,$2,$3,$4,CAST($5::text AS "public"."ValuationType"),$6,$7,$8,$9,$10,$11) RETURNING "public"."Valuation"."id", "public"."Valuation"."itemId", "public"."Valuation"."ownerId", "public"."Valuation"."actorUserId", "public"."Valuation"."type"::text, "public"."Valuation"."basis", "public"."Valuation"."amountMinor", "public"."Valuation"."currency", "public"."Valuation"."minorUnitExponent", "public"."Valuation"."note", "public"."Valuation"."observedAt", "public"."Valuation"."createdAt"
+2026-10-18T02:10:05.6194304Z  2026-10-18 02:04:04.853 UTC [324] ERROR:  new row for relation "Valuation" violates check constraint "Valuation_per_unit_check"
+2026-10-18T02:10:05.6195112Z  2026-10-18 02:04:04.853 UTC [324] DETAIL:  Failing row contains (31f57218-7b84-4801-85fc-d87e7df6319b, c9cdb456-9cbd-4b19-b064-eefd1972d5a5, ValuationOwner_f2d7095c-893b-4a2b-87ec-0c5c13bdc41c, ValuationOwner_f2d7095c-893b-4a2b-87ec-0c5c13bdc41c, MANUAL, TOTAL, 1, EUR, 2, null, 2025-01-01 00:00:00+00, 2026-10-18 02:04:04.849+00).
+2026-10-18T02:10:05.6196711Z  2026-10-18 02:04:04.853 UTC [324] STATEMENT:  INSERT INTO "public"."Valuation" ("id","itemId","ownerId","actorUserId","type","basis","amountMinor","currency","minorUnitExponent","observedAt","createdAt") VALUES ($1,$2,$3,$4,CAST($5::text AS "public"."ValuationType"),$6,$7,$8,$9,$10,$11) RETURNING "public"."Valuation"."id", "public"."Valuation"."itemId", "public"."Valuation"."ownerId", "public"."Valuation"."actorUserId", "public"."Valuation"."type"::text, "public"."Valuation"."basis", "public"."Valuation"."amountMinor", "public"."Valuation"."currency", "public"."Valuation"."minorUnitExponent", "public"."Valuation"."note", "public"."Valuation"."observedAt", "public"."Valuation"."createdAt"
+2026-10-18T02:10:05.6197910Z  2026-10-18 02:04:04.857 UTC [325] ERROR:  new row for relation "Valuation" violates check constraint "Valuation_note_check"
+2026-10-18T02:10:05.6198643Z  2026-10-18 02:04:04.857 UTC [325] DETAIL:  Failing row contains (6dd269a4-bc1d-455e-8d98-7973efb4c807, c9cdb456-9cbd-4b19-b064-eefd1972d5a5, ValuationOwner_f2d7095c-893b-4a2b-87ec-0c5c13bdc41c, ValuationOwner_f2d7095c-893b-4a2b-87ec-0c5c13bdc41c, MANUAL, PER_UNIT, 1, EUR, 2,  untrimmed , 2025-01-01 00:00:00+00, 2026-10-18 02:04:04.854+00).
+2026-10-18T02:10:05.6200199Z  2026-10-18 02:04:04.857 UTC [325] STATEMENT:  INSERT INTO "public"."Valuation" ("id","itemId","ownerId","actorUserId","type","basis","amountMinor","currency","minorUnitExponent","note","observedAt","createdAt") VALUES ($1,$2,$3,$4,CAST($5::text AS "public"."ValuationType"),$6,$7,$8,$9,$10,$11,$12) RETURNING "public"."Valuation"."id", "public"."Valuation"."itemId", "public"."Valuation"."ownerId", "public"."Valuation"."actorUserId", "public"."Valuation"."type"::text, "public"."Valuation"."basis", "public"."Valuation"."amountMinor", "public"."Valuation"."currency", "public"."Valuation"."minorUnitExponent", "public"."Valuation"."note", "public"."Valuation"."observedAt", "public"."Valuation"."createdAt"
+2026-10-18T02:10:05.6201360Z  2026-10-18 02:04:04.862 UTC [326] ERROR:  value too long for type character varying(2000)
+2026-10-18T02:10:05.6202517Z  2026-10-18 02:04:04.862 UTC [326] STATEMENT:  INSERT INTO "public"."Valuation" ("id","itemId","ownerId","actorUserId","type","basis","amountMinor","currency","minorUnitExponent","note","observedAt","createdAt") VALUES ($1,$2,$3,$4,CAST($5::text AS "public"."ValuationType"),$6,$7,$8,$9,$10,$11,$12) RETURNING "public"."Valuation"."id", "public"."Valuation"."itemId", "public"."Valuation"."ownerId", "public"."Valuation"."actorUserId", "public"."Valuation"."type"::text, "public"."Valuation"."basis", "public"."Valuation"."amountMinor", "public"."Valuation"."currency", "public"."Valuation"."minorUnitExponent", "public"."Valuation"."note", "public"."Valuation"."observedAt", "public"."Valuation"."createdAt"
+2026-10-18T02:10:05.6203875Z  2026-10-18 02:04:04.867 UTC [327] ERROR:  new row for relation "Valuation" violates check constraint "Valuation_time_check"
+2026-10-18T02:10:05.6204594Z  2026-10-18 02:04:04.867 UTC [327] DETAIL:  Failing row contains (f4822175-7905-41e7-bb83-08c03c1b0c00, c9cdb456-9cbd-4b19-b064-eefd1972d5a5, ValuationOwner_f2d7095c-893b-4a2b-87ec-0c5c13bdc41c, ValuationOwner_f2d7095c-893b-4a2b-87ec-0c5c13bdc41c, MANUAL, PER_UNIT, 1, EUR, 2, null, 2025-01-02 00:00:00+00, 2025-01-01 00:00:00+00).
+2026-10-18T02:10:05.6206208Z  2026-10-18 02:04:04.867 UTC [327] STATEMENT:  INSERT INTO "public"."Valuation" ("id","itemId","ownerId","actorUserId","type","basis","amountMinor","currency","minorUnitExponent","observedAt","createdAt") VALUES ($1,$2,$3,$4,CAST($5::text AS "public"."ValuationType"),$6,$7,$8,$9,$10,$11) RETURNING "public"."Valuation"."id", "public"."Valuation"."itemId", "public"."Valuation"."ownerId", "public"."Valuation"."actorUserId", "public"."Valuation"."type"::text, "public"."Valuation"."basis", "public"."Valuation"."amountMinor", "public"."Valuation"."currency", "public"."Valuation"."minorUnitExponent", "public"."Valuation"."note", "public"."Valuation"."observedAt", "public"."Valuation"."createdAt"
+2026-10-18T02:10:05.6207483Z  2026-10-18 02:04:04.872 UTC [328] ERROR:  new row for relation "Valuation" violates check constraint "Valuation_time_check"
+2026-10-18T02:10:05.6208171Z  2026-10-18 02:04:04.872 UTC [328] DETAIL:  Failing row contains (303a0714-4e02-4460-bb70-81950fa93fe6, c9cdb456-9cbd-4b19-b064-eefd1972d5a5, ValuationOwner_f2d7095c-893b-4a2b-87ec-0c5c13bdc41c, ValuationOwner_f2d7095c-893b-4a2b-87ec-0c5c13bdc41c, MANUAL, PER_UNIT, 1, EUR, 2, null, infinity, infinity).
+2026-10-18T02:10:05.6209058Z  2026-10-18 02:04:04.872 UTC [328] STATEMENT:  INSERT INTO "Valuation" (id,"itemId","ownerId","actorUserId","amountMinor",currency,"minorUnitExponent","observedAt","createdAt") VALUES ($1::uuid,$2::uuid,$3,$4,1,'EUR',2,$5::timestamptz,$6::timestamptz) RETURNING id
+2026-10-18T02:10:05.6209644Z  2026-10-18 02:04:04.876 UTC [329] ERROR:  new row for relation "Valuation" violates check constraint "Valuation_time_check"
+2026-10-18T02:10:05.6210492Z  2026-10-18 02:04:04.876 UTC [329] DETAIL:  Failing row contains (be586e63-edd3-4fe6-9bff-959a3c62ba7b, c9cdb456-9cbd-4b19-b064-eefd1972d5a5, ValuationOwner_f2d7095c-893b-4a2b-87ec-0c5c13bdc41c, ValuationOwner_f2d7095c-893b-4a2b-87ec-0c5c13bdc41c, MANUAL, PER_UNIT, 1, EUR, 2, null, -infinity, -infinity).
+2026-10-18T02:10:05.6223899Z  2026-10-18 02:04:04.876 UTC [329] STATEMENT:  INSERT INTO "Valuation" (id,"itemId","ownerId","actorUserId","amountMinor",currency,"minorUnitExponent","observedAt","createdAt") VALUES ($1::uuid,$2::uuid,$3,$4,1,'EUR',2,$5::timestamptz,$6::timestamptz) RETURNING id
+2026-10-18T02:10:05.6224777Z  2026-10-18 02:04:04.881 UTC [330] ERROR:  new row for relation "Valuation" violates check constraint "Valuation_time_check"
+2026-10-18T02:10:05.6225526Z  2026-10-18 02:04:04.881 UTC [330] DETAIL:  Failing row contains (7d5c1c5e-c2c1-4a99-b900-ad2037a43218, c9cdb456-9cbd-4b19-b064-eefd1972d5a5, ValuationOwner_f2d7095c-893b-4a2b-87ec-0c5c13bdc41c, ValuationOwner_f2d7095c-893b-4a2b-87ec-0c5c13bdc41c, MANUAL, PER_UNIT, 1, EUR, 2, null, 10000-01-01 00:00:00+00, 10000-01-01 00:00:00+00).
+2026-10-18T02:10:05.6226454Z  2026-10-18 02:04:04.881 UTC [330] STATEMENT:  INSERT INTO "Valuation" (id,"itemId","ownerId","actorUserId","amountMinor",currency,"minorUnitExponent","observedAt","createdAt") VALUES ($1::uuid,$2::uuid,$3,$4,1,'EUR',2,$5::timestamptz,$6::timestamptz) RETURNING id
+2026-10-18T02:10:05.6227039Z  2026-10-18 02:04:04.885 UTC [331] ERROR:  new row for relation "Valuation" violates check constraint "Valuation_time_check"
+2026-10-18T02:10:05.6227768Z  2026-10-18 02:04:04.885 UTC [331] DETAIL:  Failing row contains (b56ee6b6-e95d-48b1-89e5-66c6684098b4, c9cdb456-9cbd-4b19-b064-eefd1972d5a5, ValuationOwner_f2d7095c-893b-4a2b-87ec-0c5c13bdc41c, ValuationOwner_f2d7095c-893b-4a2b-87ec-0c5c13bdc41c, MANUAL, PER_UNIT, 1, EUR, 2, null, 0001-01-01 00:00:00+00 BC, 0001-01-01 00:00:00+00 BC).
+2026-10-18T02:10:05.6228690Z  2026-10-18 02:04:04.885 UTC [331] STATEMENT:  INSERT INTO "Valuation" (id,"itemId","ownerId","actorUserId","amountMinor",currency,"minorUnitExponent","observedAt","createdAt") VALUES ($1::uuid,$2::uuid,$3,$4,1,'EUR',2,$5::timestamptz,$6::timestamptz) RETURNING id
+2026-10-18T02:10:05.6229204Z  2026-10-18 02:04:04.892 UTC [332] ERROR:  Valuation history is append-only
+2026-10-18T02:10:05.6229484Z  2026-10-18 02:04:04.892 UTC [332] CONTEXT:  PL/pgSQL function reject_valuation_update() line 3 at RAISE
+2026-10-18T02:10:05.6230579Z  2026-10-18 02:04:04.892 UTC [332] STATEMENT:  UPDATE "public"."Valuation" SET "amountMinor" = $1 WHERE ("public"."Valuation"."id" = $2 AND 1=1) RETURNING "public"."Valuation"."id", "public"."Valuation"."itemId", "public"."Valuation"."ownerId", "public"."Valuation"."actorUserId", "public"."Valuation"."type"::text, "public"."Valuation"."basis", "public"."Valuation"."amountMinor", "public"."Valuation"."currency", "public"."Valuation"."minorUnitExponent", "public"."Valuation"."note", "public"."Valuation"."observedAt", "public"."Valuation"."createdAt"
+2026-10-18T02:10:05.6231575Z  2026-10-18 02:04:04.897 UTC [333] ERROR:  Valuation history is append-only
+2026-10-18T02:10:05.6231849Z  2026-10-18 02:04:04.897 UTC [333] CONTEXT:  PL/pgSQL function reject_valuation_update() line 3 at RAISE
+2026-10-18T02:10:05.6232960Z  2026-10-18 02:04:04.897 UTC [333] STATEMENT:  UPDATE "public"."Valuation" SET "amountMinor" = $1 WHERE ("public"."Valuation"."id" = $2 AND 1=1) RETURNING "public"."Valuation"."id", "public"."Valuation"."itemId", "public"."Valuation"."ownerId", "public"."Valuation"."actorUserId", "public"."Valuation"."type"::text, "public"."Valuation"."basis", "public"."Valuation"."amountMinor", "public"."Valuation"."currency", "public"."Valuation"."minorUnitExponent", "public"."Valuation"."note", "public"."Valuation"."observedAt", "public"."Valuation"."createdAt"
+2026-10-18T02:10:05.6233892Z  2026-10-18 02:06:53.199 UTC [62] LOG:  checkpoint starting: time
+2026-10-18T02:10:05.6234451Z  2026-10-18 02:09:02.638 UTC [62] LOG:  checkpoint complete: wrote 1297 buffers (7.9%); 0 WAL file(s) added, 0 removed, 1 recycled; write=129.429 s, sync=0.006 s, total=129.440 s; sync files=580, longest=0.001 s, average=0.001 s; distance=22648 kB, estimate=22648 kB; lsn=0/3147A08, redo lsn=0/2F28AA8
+2026-10-18T02:10:05.6238350Z Stop and remove container: b75081262a6f41feb6b2358afb361ff3_postgres17bookworm_d38045
+2026-10-18T02:10:05.6241389Z ##[command]/usr/bin/docker rm --force 8560f546e7c6b5eeb55f79dcdae7db3eff17015ef8e8e893ec77e07de2e99d49
+2026-10-18T02:10:05.7318676Z 8560f546e7c6b5eeb55f79dcdae7db3eff17015ef8e8e893ec77e07de2e99d49
+2026-10-18T02:10:05.7343164Z Remove container network: github_network_00cddcffd2e14cc5ad6e9cc8cbe1ee74
+2026-10-18T02:10:05.7346122Z ##[command]/usr/bin/docker network rm github_network_00cddcffd2e14cc5ad6e9cc8cbe1ee74
+2026-10-18T02:10:05.8238682Z github_network_00cddcffd2e14cc5ad6e9cc8cbe1ee74
+2026-10-18T02:10:05.8291013Z Cleaning up orphan processes
+2026-10-18T02:10:05.8529083Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-node@v4, pnpm/action-setup@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+

@@ -1,0 +1,46 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/wishlist/wishlist-service.test.ts (7 tests | 2 failed) 519ms
+   ✓ owned wishlist and distinct specimen duplicates > marks canonical duplicate specimens idempotently without merging their grading or item data 146ms
+   ✓ owned wishlist and distinct specimen duplicates > keeps wishlists private and preserves declared prospective money independently of historical amounts 15ms
+   ✓ owned wishlist and distinct specimen duplicates > refuses self-pairs, foreign specimens and trashed items without partial relation writes 33ms
+   × owned wishlist and distinct specimen duplicates > supports explicit unmarking and wishlist removal without foreign delete permission 11ms
+     → service.removeWishlistEntry is not a function
+   × owned wishlist and distinct specimen duplicates > retires old duplicate declarations on actual ownership transfer while retaining both specimens 28ms
+     → MEMBERSHIP_NOT_FOUND
+   ✓ owned wishlist and distinct specimen duplicates > bounds private pages and suggestions and filters trashed and foreign specimens 29ms
+   ✓ owned wishlist and distinct specimen duplicates > serializes opposite-order concurrent marking into one canonical pair 14ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/wishlist/wishlist-service.test.ts > owned wishlist and distinct specimen duplicates > supports explicit unmarking and wishlist removal without foreign delete permission
+TypeError: service.removeWishlistEntry is not a function
+ ❯ packages/domain/src/wishlist/wishlist-service.test.ts:141:28
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |workspace| packages/domain/src/wishlist/wishlist-service.test.ts > owned wishlist and distinct specimen duplicates > retires old duplicate declarations on actual ownership transfer while retaining both specimens
+MembershipError: MEMBERSHIP_NOT_FOUND
+ ❯ fail packages/domain/src/collaboration/membership-service.ts:33:9
+     31| type Member = { userId: string; role: Role };
+     32| function fail(code: MembershipError["code"]): never {
+     33|   throw new MembershipError(code);
+       |         ^
+     34| }
+     35| function parse<T>(schema: z.ZodType<T>, input: unknown): T {
+ ❯ packages/domain/src/collaboration/membership-service.ts:235:32
+ ❯ database.$transaction.isolationLevel packages/domain/src/collaboration/transfer-transaction.ts:64:26
+ ❯ Proxy._transactionWithCallback node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:861:18
+ ❯ runTransferTransaction packages/domain/src/collaboration/transfer-transaction.ts:37:14
+ ❯ packages/domain/src/wishlist/wishlist-service.test.ts:146:60
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 5 passed (7)
+   Start at  11:51:15
+   Duration  1.06s (transform 210ms, setup 6ms, collect 385ms, tests 519ms, environment 0ms, prepare 34ms)
+

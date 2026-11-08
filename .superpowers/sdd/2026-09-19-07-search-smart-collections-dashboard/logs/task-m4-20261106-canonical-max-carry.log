@@ -1,0 +1,19 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+(node:72014) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+stdout | packages/domain/src/catalog/catalog-money-mutation.test.ts > actual canonical catalog money mutation integration > carries all 10100 interpreted paths through the actual bounded canonical maintenance wrapper
+{"check":"M4_CANONICAL_MAX_CARRY_SOURCE_READY","paths":10100}
+
+stdout | packages/domain/src/catalog/catalog-money-mutation.test.ts > actual canonical catalog money mutation integration > carries all 10100 interpreted paths through the actual bounded canonical maintenance wrapper
+{"check":"M4_CANONICAL_MAX_CARRY","paths":10100,"elapsedMs":31330,"revision":2}
+
+ ✓ |workspace| packages/domain/src/catalog/catalog-money-mutation.test.ts (10 tests | 9 skipped) 59275ms
+   ✓ actual canonical catalog money mutation integration > carries all 10100 interpreted paths through the actual bounded canonical maintenance wrapper  58951ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 9 skipped (10)
+   Start at  06:57:59
+   Duration  59.73s (transform 127ms, setup 5ms, collect 256ms, tests 59.27s, environment 0ms, prepare 50ms)
+

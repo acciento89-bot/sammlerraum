@@ -1,0 +1,81 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/collaboration/invitation-service.test.ts (23 tests | 2 failed | 21 skipped) 1277ms
+   ↓ actual recipient-bound invitations > does not allow a different verified account to accept an email-bound invite
+   ↓ actual recipient-bound invitations > accepts the intended verified recipient atomically and derives exactly one owner
+   ↓ actual recipient-bound invitations > requires current verified identity instead of trusting possession of the token
+   ↓ actual recipient-bound invitations > does not re-add membership when a consumed invitation is replayed after removal
+   ↓ actual recipient-bound invitations > stores only the token hash and hides tokens from the authorized pending list
+   ↓ actual recipient-bound invitations > revokes a link without changing membership and rejects its later use
+   ↓ actual recipient-bound invitations > serializes simultaneous acceptance without duplicating membership or revisions
+   ↓ actual recipient-bound invitations > checks current inviter authority after demotion rather than trusting an issued role
+   ↓ actual recipient-bound invitations > rejects an actual expired stored invitation using the database clock
+   ↓ actual recipient-bound invitations > never overwrites a different existing membership through an invitation
+   ↓ actual recipient-bound invitations > erases pending email invitations when the intended account is deleted
+   ↓ actual recipient-bound invitations > rejects owner-role injection and stale membership decisions
+   ↓ actual recipient-bound invitations > bounds pending invitations and rejects duplicate active targets
+   ↓ actual recipient-bound invitations > retains the exact maximum lifetime from one database-issued UTC anchor
+   ↓ actual recipient-bound invitations > rejects raw consumption without the actual resulting membership
+   ↓ actual recipient-bound invitations > rejects a changed email and preserves immutable recipient, role and token identity
+   ↓ actual recipient-bound invitations > does not preserve an old Owner's Admin grant after ownership transfer
+   ↓ actual recipient-bound invitations > revokes an unconsumed EMAIL invitation when the member is explicitly removed
+   ↓ actual recipient-bound invitations > revokes an unconsumed USER invitation when the member is explicitly removed
+   ↓ actual recipient-bound invitations > keeps the pending-invitation cap under concurrent Owner/Admin creation
+   ↓ actual recipient-bound invitations > does not consume a token at membership capacity and can accept after a genuine slot is freed
+   × actual recipient-bound invitations > rolls back a token that expires during the real acceptance transaction with a closed expiry result 641ms
+     → expected InvitationError: INVITATION_INTEGRITY { code: '…' } to match object { code: 'INVITATION_EXPIRED' }
+(1 matching property omitted from actual)
+   × actual recipient-bound invitations > maps the actual database expiry guard even when expiry happens inside the consuming SQL statement 376ms
+     → expected InvitationError: INVITATION_INTEGRITY { code: '…' } to match object { code: 'INVITATION_EXPIRED' }
+(1 matching property omitted from actual)
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/collaboration/invitation-service.test.ts > actual recipient-bound invitations > rolls back a token that expires during the real acceptance transaction with a closed expiry result
+AssertionError: expected InvitationError: INVITATION_INTEGRITY { code: '…' } to match object { code: 'INVITATION_EXPIRED' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+- {
+-   "code": "INVITATION_EXPIRED",
++ InvitationError {
++   "code": "INVITATION_INTEGRITY",
+  }
+
+ ❯ packages/domain/src/collaboration/invitation-service.test.ts:562:46
+    560|         },{timeout:1500,interval:20});
+    561|         release();const outcome=await result;expect(outcome.ok).toBe(f…
+    562|         if(!outcome.ok)expect(outcome.error).toMatchObject({code:"INVI…
+       |                                              ^
+    563|         expect(await db.collectionMember.count({where:{collectionId:f.…
+    564|         expect((await db.collection.findUniqueOrThrow({where:{id:f.col…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |workspace| packages/domain/src/collaboration/invitation-service.test.ts > actual recipient-bound invitations > maps the actual database expiry guard even when expiry happens inside the consuming SQL statement
+AssertionError: expected InvitationError: INVITATION_INTEGRITY { code: '…' } to match object { code: 'INVITATION_EXPIRED' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+- {
+-   "code": "INVITATION_EXPIRED",
++ InvitationError {
++   "code": "INVITATION_INTEGRITY",
+  }
+
+ ❯ packages/domain/src/collaboration/invitation-service.test.ts:574:9
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 21 skipped (23)
+   Start at  06:09:38
+   Duration  1.71s (transform 141ms, setup 6ms, collect 274ms, tests 1.28s, environment 0ms, prepare 35ms)
+

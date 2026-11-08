@@ -1,0 +1,10 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ✓ |workspace| apps/worker/src/jobs/market-sync.integration.test.ts (5 tests) 247ms
+
+ Test Files  1 passed (1)
+      Tests  5 passed (5)
+   Start at  04:50:09
+   Duration  594ms (transform 88ms, setup 6ms, collect 184ms, tests 247ms, environment 0ms, prepare 39ms)
+

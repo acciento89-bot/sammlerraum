@@ -1,0 +1,46 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/collaboration/item-authoring-service.test.ts (4 tests | 1 failed) 506ms
+   ✓ real current-member inventory authorship > lets an Editor create and edit real Owner inventory while preserving ownership, private data and original audit actor 170ms
+   ✓ real current-member inventory authorship > refuses private or monetary writes even through the internal shared writer seam 15ms
+   ✓ real current-member inventory authorship > rechecks actual membership after the collection lock rather than trusting an earlier Editor lookup 40ms
+   × real current-member inventory authorship > refuses a stale collaborative edit confirmation instead of overwriting newer metadata 19ms
+     → promise resolved "{ …(12) }" instead of rejecting
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/collaboration/item-authoring-service.test.ts > real current-member inventory authorship > refuses a stale collaborative edit confirmation instead of overwriting newer metadata
+AssertionError: promise resolved "{ …(12) }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "acquisitionDate": null,
++   "acquisitionType": "OTHER",
++   "archivedAt": null,
++   "collectionId": "59664b8b-ad33-48eb-8778-65654f7cffa8",
++   "disposedAt": null,
++   "id": "d35408db-f161-41a0-8a67-cd6cb74418c8",
++   "nodeId": null,
++   "publicDescription": null,
++   "quantity": 1,
++   "title": "Stale overwrite",
++   "tradeStatus": "NOT_FOR_TRADE",
++   "visibility": "PRIVATE",
+  }
+
+ ❯ packages/domain/src/collaboration/item-authoring-service.test.ts:18:886
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 3 passed (4)
+   Start at  10:25:17
+   Duration  1.17s (transform 237ms, setup 7ms, collect 444ms, tests 506ms, environment 0ms, prepare 58ms)
+

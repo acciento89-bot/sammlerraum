@@ -1,0 +1,23 @@
+
+> @sammlerraum/db@ prisma /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/db
+> prisma migrate deploy
+
+Loaded Prisma config from prisma.config.ts.
+
+Prisma schema loaded from prisma/schema.prisma.
+Datasource "db": PostgreSQL database "sammlerraum_test", schema "public" at "localhost:5432"
+
+35 migrations found in prisma/migrations
+
+Applying migration `20261106201000_staged_import_jobs`
+Applying migration `20261106202500_import_index_name_alignment`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20261106201000_staged_import_jobs/
+    └─ migration.sql
+  └─ 20261106202500_import_index_name_alignment/
+    └─ migration.sql
+
+All migrations have been successfully applied.

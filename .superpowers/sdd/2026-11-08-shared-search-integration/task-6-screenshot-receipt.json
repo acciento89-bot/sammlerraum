@@ -1,0 +1,98 @@
+[
+  {
+    "path": ".superpowers/sdd/2026-11-08-shared-search-integration/scoped-member-de-desktop.png",
+    "width": 1440,
+    "height": 2723,
+    "sha256": "63066bda5a5f9e85a8bef439b4eaa76a85752312d2c879848a8926e53c725453"
+  },
+  {
+    "path": ".superpowers/sdd/2026-11-08-shared-search-integration/scoped-member-de-mobile.png",
+    "width": 1082,
+    "height": 8752,
+    "sha256": "b56bac8111678e516a1b85b01b79bdadd9c9cabb9cd038786a95ac856edd3bb8"
+  },
+  {
+    "path": ".superpowers/sdd/2026-11-08-shared-search-integration/scoped-member-en-desktop.png",
+    "width": 1440,
+    "height": 2649,
+    "sha256": "631d4aef0bfc5ee444941165280c8d9877eb84bfe6099a4d5b8aa13bc93806cc"
+  },
+  {
+    "path": ".superpowers/sdd/2026-11-08-shared-search-integration/scoped-member-en-mobile.png",
+    "width": 1082,
+    "height": 8122,
+    "sha256": "bf64f51b4d54163a29db70ba1d01e657d92caf3c6dc111015824519029990e0f"
+  },
+  {
+    "path": ".superpowers/sdd/2026-11-08-shared-search-integration/scoped-repaired-de-desktop.png",
+    "width": 1440,
+    "height": 2387,
+    "sha256": "864aa06141475cd9b68d33b135aa82af5783838ba30b950afed9c68f9b50a46e"
+  },
+  {
+    "path": ".superpowers/sdd/2026-11-08-shared-search-integration/scoped-repaired-de-mobile.png",
+    "width": 1082,
+    "height": 7665,
+    "sha256": "4f55829063e558ca183e1b183106dd34047c9d850b4ec684f78018ecfb8bf609"
+  },
+  {
+    "path": ".superpowers/sdd/2026-11-08-shared-search-integration/scoped-repaired-en-desktop.png",
+    "width": 1440,
+    "height": 2314,
+    "sha256": "d593ec79508d2491d1ef3da20d02469522847af6228297acd2e50c52e93ff951"
+  },
+  {
+    "path": ".superpowers/sdd/2026-11-08-shared-search-integration/scoped-repaired-en-mobile.png",
+    "width": 1082,
+    "height": 7103,
+    "sha256": "689fc3a1f08e4b500e4acd61897fde00e664cf024bd2225f517b7651209cafd9"
+  },
+  {
+    "path": ".superpowers/sdd/2026-11-08-shared-search-integration/scoped-share-de-desktop.png",
+    "width": 1440,
+    "height": 1397,
+    "sha256": "2108e51e04333bdd2339881cd668ce58ebe469d5bedb23963d698f0052abaacd"
+  },
+  {
+    "path": ".superpowers/sdd/2026-11-08-shared-search-integration/scoped-share-de-mobile.png",
+    "width": 1082,
+    "height": 4258,
+    "sha256": "326dd7a474fcf2bb33ebf71396f7ec01d44aa1b3719ae7435ed34485d544443b"
+  },
+  {
+    "path": ".superpowers/sdd/2026-11-08-shared-search-integration/scoped-share-en-desktop.png",
+    "width": 1440,
+    "height": 1397,
+    "sha256": "4e856bba77375843ebaeca1bf9b71e3274ee4e9438a5796d0e304962f4c1a0e1"
+  },
+  {
+    "path": ".superpowers/sdd/2026-11-08-shared-search-integration/scoped-share-en-mobile.png",
+    "width": 1082,
+    "height": 4106,
+    "sha256": "bde60966969bd83b3f84b5bb396fe8da4f2b1c76ee6601cec49f013e18cc4ecd"
+  },
+  {
+    "path": ".superpowers/sdd/2026-11-08-shared-search-integration/scoped-values-de-desktop.png",
+    "width": 1440,
+    "height": 2059,
+    "sha256": "67ff5fe02f82dd75ac3ead777cbb9a003123a48d2b742094bf4d43ff0071bfcb"
+  },
+  {
+    "path": ".superpowers/sdd/2026-11-08-shared-search-integration/scoped-values-de-mobile.png",
+    "width": 1082,
+    "height": 6568,
+    "sha256": "7238d54d00812c8b387074286005c6f2eb7b9e6605a944afb7d34b73d41d8d64"
+  },
+  {
+    "path": ".superpowers/sdd/2026-11-08-shared-search-integration/scoped-values-en-desktop.png",
+    "width": 1440,
+    "height": 2059,
+    "sha256": "001c68aa2a5e45ed798beed853b6353163034845e6625e7745326af22fde3113"
+  },
+  {
+    "path": ".superpowers/sdd/2026-11-08-shared-search-integration/scoped-values-en-mobile.png",
+    "width": 1082,
+    "height": 6347,
+    "sha256": "fc15cf3ef223e895a733b8e1b7fc8b2b89134556d913d9abd57208936601bbf8"
+  }
+]

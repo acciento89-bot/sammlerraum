@@ -1,0 +1,57 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| apps/web/src/components/money/legacy-money-acknowledgement.test.ts (4 tests | 2 failed) 8ms
+   × money acknowledgment identity and meaning > accepts the exact newly authored raw pair, pinned scale and new token 6ms
+     → expected false to be true // Object.is equality
+   ✓ money acknowledgment identity and meaning > rejects a valid response for another subject and a stale successful same-pair response 0ms
+   ✓ money acknowledgment identity and meaning > rejects valid historical meaning or a different new amount as an acknowledgment of replacement 0ms
+   × money acknowledgment identity and meaning > requires exact absence and a changed token for clear, and exact token for explicit retention 0ms
+     → expected false to be true // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/web/src/components/money/legacy-money-acknowledgement.test.ts > money acknowledgment identity and meaning > accepts the exact newly authored raw pair, pinned scale and new token
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ apps/web/src/components/money/legacy-money-acknowledgement.test.ts:8:151
+      6| const intent: ExistingMoneyIntent = { op: "REPLACE", expectedFactToken…
+      7| describe("money acknowledgment identity and meaning", () => {
+      8|  it("accepts the exact newly authored raw pair, pinned scale and new t…
+       |                                                                                                                                                       ^
+      9|  it("rejects a valid response for another subject and a stale successf…
+     10|   expect(acceptsMoneyAcknowledgement({ ...authored(), subject: { famil…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |workspace| apps/web/src/components/money/legacy-money-acknowledgement.test.ts > money acknowledgment identity and meaning > requires exact absence and a changed token for clear, and exact token for explicit retention
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ apps/web/src/components/money/legacy-money-acknowledgement.test.ts:22:105
+     20|  it("requires exact absence and a changed token for clear, and exact t…
+     21|   const missing = MoneyViewSchema.parse({ schemaVersion: 1, subject, r…
+     22|   expect(acceptsMoneyAcknowledgement(missing, subject, { op: "CLEAR", …
+       |                                                                                                         ^
+     23|   expect(acceptsMoneyAcknowledgement(authored(), subject, { op: "CLEAR…
+     24|   expect(acceptsMoneyAcknowledgement(authored(), subject, { op: "RETAI…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 2 passed (4)
+   Start at  08:32:06
+   Duration  370ms (transform 64ms, setup 7ms, collect 100ms, tests 8ms, environment 0ms, prepare 53ms)
+

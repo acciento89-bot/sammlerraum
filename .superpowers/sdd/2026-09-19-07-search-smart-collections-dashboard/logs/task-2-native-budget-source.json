@@ -1,0 +1,12 @@
+{
+  "base": "1ab352edf29ac6b5b7b839d4105d345f5451c673",
+  "temporarySource": {
+    "packages/domain/src/search/search-retained-integrity.integration.test.ts": "2cbef5c84c56cbff80e1cac76c01568a562873857e3d042b058f02ef043615cf",
+    "packages/domain/src/search/search-native-budget-diagnostic.ts": "c0f8afcfbbf3c834d624b0d81e024e67530154ee829608fb81214fbc3bf73570",
+    "packages/domain/src/search/search-native-budget-preflight.test.ts": "37df52b3856b0430381168c80ef6d666562ecb087966b20092e30483391fccb3",
+    ".superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-2-native-budget-sequencer.ts": "57b38e62039f7d15a36a88cb58f47f077b94074a183b512cd8ddea632b61c317",
+    ".superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-2-native-budget-setup.ts": "c4418d9b641e66ec382d77b128a01016886a250cf4d273f1cd6286bf63d08d7c",
+    ".superpowers/sdd/2026-09-19-07-search-smart-collections-dashboard/logs/task-2-native-budget-vitest.config.ts": "44609c2467064f5e3ba0c68be16d07ab09eeb3cf39a6106732bb711d7e61ea2e"
+  },
+  "baseRetainedHash": "f7238099ba2d473d9990e2497d7bc9ca25d32fe796523326330107c90867bb87"
+}

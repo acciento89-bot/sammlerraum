@@ -1,0 +1,43 @@
+[WebServer] (node:87129) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+(node:87130) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+F
+Testing stopped early after 1 maximum allowed failures.
+
+
+  1) [community-ui-desktop] › e2e/public-profile.spec.ts:11:3 › de: anonymous public profile collection and item privacy 
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: getByRole('heading', { level: 1 })
+    Expected substring: "Lenas Münzkabinett"
+    Received string:    "404"
+    Timeout: 5000ms
+
+    Call log:
+      - Expect "toContainText" getByRole('heading', { level: 1 }) with timeout 5000ms
+      - waiting for getByRole('heading', { level: 1 })
+        14 × locator resolved to <h1 class="next-error-h1">404</h1>
+           - unexpected value "404"
+
+
+      77 |       await mkdir(reports, { recursive: true });
+      78 |       await page.goto(home);
+    > 79 |       await expect(page.getByRole("heading", { level: 1 })).toContainText(
+         |                                                             ^
+      80 |         locale === "de" ? "Lenas Münzkabinett" : "Lena's coin cabinet",
+      81 |       );
+      82 |       await expect(page.locator("body")).not.toContainText("Never expose");
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/public-profile.spec.ts:79:61
+
+    Error Context: test-results/public-profile-de-anonymou-a5410-collection-and-item-privacy-community-ui-desktop/error-context.md
+
+  1 failed
+    [community-ui-desktop] › e2e/public-profile.spec.ts:11:3 › de: anonymous public profile collection and item privacy 
+  1 error was not a part of any test, see above for details
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/public-profile.spec.ts --project=community-ui-desktop --grep de: --workers=1 --max-failures=1

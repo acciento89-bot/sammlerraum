@@ -1,0 +1,69 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/catalog/catalog-money-submission.test.ts (5 tests | 3 failed) 340ms
+   × catalog money submission selected from actual definitions and revisions > freezes the server's exact pinned authoring receipt 19ms
+     → LEGACY_MONEY_INVALID
+   ✓ catalog money submission selected from actual definitions and revisions > rejects missing, extraneous, foreign and unknown-definition intents 8ms
+   ✓ catalog money submission selected from actual definitions and revisions > rejects authoring whose exact raw patch amount or currency differs 2ms
+   × catalog money submission selected from actual definitions and revisions > preserves a historical raw path only with its exact current fact token 11ms
+     → CATALOG_ATTRIBUTE_VALUE_INVALID
+   × catalog money submission selected from actual definitions and revisions > does not demand intents for untouched fields or removed fields 16ms
+     → LEGACY_MONEY_INVALID
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/catalog/catalog-money-submission.test.ts > catalog money submission selected from actual definitions and revisions > freezes the server's exact pinned authoring receipt
+LegacyMoneyError: LEGACY_MONEY_INVALID
+ ❯ legacyMoneyFail packages/contracts/src/legacy-money.ts:27:9
+     25| }
+     26| export function legacyMoneyFail(code: LegacyMoneyError["code"]): never…
+     27|   throw new LegacyMoneyError(code);
+       |         ^
+     28| }
+     29| export const LegacyMoneyIdSchema = z
+ ❯ prepareCatalogMoneySubmission packages/domain/src/catalog/catalog-money-submission.ts:11:10
+ ❯ callback packages/domain/src/catalog/catalog-money-submission.test.ts:24:59
+ ❯ Proxy._transactionWithCallback node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:861:24
+ ❯ packages/domain/src/catalog/catalog-money-submission.test.ts:43:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  |workspace| packages/domain/src/catalog/catalog-money-submission.test.ts > catalog money submission selected from actual definitions and revisions > preserves a historical raw path only with its exact current fact token
+CategoryTemplateServiceError: CATALOG_ATTRIBUTE_VALUE_INVALID
+ ❯ validateAttributeValue packages/domain/src/catalog/category-template-service.ts:70:13
+     68|   } catch (error) {
+     69|     if (error instanceof CustomFieldServiceError) {
+     70|       throw new CategoryTemplateServiceError(
+       |             ^
+     71|         error.code === "CUSTOM_FIELD_TYPE_MISMATCH"
+     72|           ? "CATALOG_ATTRIBUTE_TYPE_MISMATCH"
+ ❯ attributes packages/domain/src/catalog/catalog-service.ts:96:29
+ ❯ Object.createCatalogEntry packages/domain/src/catalog/catalog-service.ts:282:21
+ ❯ Proxy._transactionWithCallback node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:861:18
+ ❯ packages/domain/src/catalog/catalog-money-submission.test.ts:60:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  |workspace| packages/domain/src/catalog/catalog-money-submission.test.ts > catalog money submission selected from actual definitions and revisions > does not demand intents for untouched fields or removed fields
+LegacyMoneyError: LEGACY_MONEY_INVALID
+ ❯ legacyMoneyFail packages/contracts/src/legacy-money.ts:27:9
+     25| }
+     26| export function legacyMoneyFail(code: LegacyMoneyError["code"]): never…
+     27|   throw new LegacyMoneyError(code);
+       |         ^
+     28| }
+     29| export const LegacyMoneyIdSchema = z
+ ❯ prepareCatalogMoneySubmission packages/domain/src/catalog/catalog-money-submission.ts:11:10
+ ❯ callback packages/domain/src/catalog/catalog-money-submission.test.ts:24:59
+ ❯ Proxy._transactionWithCallback node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:861:24
+ ❯ packages/domain/src/catalog/catalog-money-submission.test.ts:72:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 2 passed (5)
+   Start at  05:01:47
+   Duration  676ms (transform 98ms, setup 6ms, collect 185ms, tests 340ms, environment 0ms, prepare 35ms)
+

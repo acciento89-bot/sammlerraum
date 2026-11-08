@@ -1,0 +1,95 @@
+
+> @sammlerraum/web@ build /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web
+> next build
+
+▲ Next.js 16.3.5 (Turbopack)
+✓ Running next.config.ts took 121ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 1368ms
+  Running TypeScript ...
+  Finished TypeScript in 5.1s ...
+  Collecting page data using 7 workers ...
+  Generating static pages using 7 workers (0/24) ...
+  Generating static pages using 7 workers (6/24) 
+  Generating static pages using 7 workers (12/24) 
+  Generating static pages using 7 workers (18/24) 
+✓ Generating static pages using 7 workers (24/24) in 149ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ○ /_not-found
+├   /[locale]
+│ ├ ● /de
+│ └ ● /en
+├ ƒ /[locale]/account/profile
+├ ƒ /[locale]/account/security
+├ ƒ /[locale]/catalog
+├ ƒ /[locale]/catalog/[entryId]
+├ ƒ /[locale]/catalog/moderation
+├ ƒ /[locale]/catalog/proposals
+├ ƒ /[locale]/collections
+├ ƒ /[locale]/collections/[collectionId]
+├ ƒ /[locale]/items/[itemId]
+├ ƒ /[locale]/items/new
+├ ƒ /[locale]/locations/[locationId]
+├ ƒ /[locale]/locations/[locationId]/label
+├ ƒ /[locale]/login
+├ ƒ /[locale]/register
+├ ƒ /api/auth/[...all]
+├ ƒ /api/health
+├ ƒ /api/openapi.json
+├ ƒ /api/v1/account/profile
+├ ƒ /api/v1/account/recovery-methods
+├ ƒ /api/v1/account/sessions
+├ ƒ /api/v1/catalog/capabilities
+├ ƒ /api/v1/catalog/entries/[entryId]
+├ ƒ /api/v1/catalog/entries/[entryId]/revisions
+├ ƒ /api/v1/catalog/entries/[entryId]/revisions/[revision]
+├ ƒ /api/v1/catalog/entries/[entryId]/rollback
+├ ƒ /api/v1/catalog/moderation/proposals
+├ ƒ /api/v1/catalog/moderation/proposals/[proposalId]
+├ ƒ /api/v1/catalog/proposals
+├ ƒ /api/v1/catalog/proposals/[proposalId]
+├ ƒ /api/v1/catalog/proposals/[proposalId]/decision
+├ ƒ /api/v1/catalog/search
+├ ƒ /api/v1/categories
+├ ƒ /api/v1/categories/[categoryId]
+├ ƒ /api/v1/categories/[categoryId]/condition-scheme
+├ ƒ /api/v1/collections
+├ ƒ /api/v1/collections/[collectionId]
+├ ƒ /api/v1/collections/[collectionId]/custom-fields
+├ ƒ /api/v1/collections/[collectionId]/nodes
+├ ƒ /api/v1/collections/[collectionId]/nodes/[nodeId]
+├ ƒ /api/v1/items
+├ ƒ /api/v1/items/[itemId]
+├ ƒ /api/v1/items/[itemId]/archive
+├ ƒ /api/v1/items/[itemId]/catalog-link
+├ ƒ /api/v1/items/[itemId]/category
+├ ƒ /api/v1/items/[itemId]/condition
+├ ƒ /api/v1/items/[itemId]/custom-fields/[fieldId]
+├ ƒ /api/v1/items/[itemId]/documents
+├ ƒ /api/v1/items/[itemId]/documents/[linkId]
+├ ƒ /api/v1/items/[itemId]/gradings
+├ ƒ /api/v1/items/[itemId]/gradings/[gradingId]
+├ ƒ /api/v1/items/[itemId]/identifiers
+├ ƒ /api/v1/items/[itemId]/location
+├ ƒ /api/v1/items/[itemId]/media
+├ ƒ /api/v1/items/[itemId]/media/[linkId]
+├ ƒ /api/v1/items/[itemId]/split
+├ ƒ /api/v1/items/[itemId]/tags
+├ ƒ /api/v1/locations
+├ ƒ /api/v1/locations/[locationId]
+├ ƒ /api/v1/media/[assetId]/[variant]
+├ ƒ /api/v1/media/avatar
+├ ƒ /api/v1/media/documents
+├ ƒ /api/v1/media/images
+└ ƒ /l/[token]
+
+
+ƒ Proxy (Middleware)
+
+○  (Static)   prerendered as static content
+●  (SSG)      prerendered as static HTML (uses generateStaticParams)
+ƒ  (Dynamic)  server-rendered on demand
+

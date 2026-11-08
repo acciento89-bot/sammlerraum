@@ -1,0 +1,23 @@
+
+> sammlerraum@ typecheck /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+> pnpm -r typecheck
+
+Scope: 10 of 11 workspace projects
+packages/config typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+packages/market-data typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+packages/queue typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+packages/contracts typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+packages/queue typecheck: ../domain/src/money/money-transfer.ts(59,20): error TS2564: Property 'options' has no initializer and is not definitely assigned in the constructor.
+packages/queue typecheck: ../domain/src/money/money-transfer.ts(60,20): error TS2564: Property 'complete' has no initializer and is not definitely assigned in the constructor.
+packages/queue typecheck: ../domain/src/money/money-transfer.ts(180,53): error TS2322: Type '{ kind: "customField"; selector: { source: "CUSTOM"; collectionId: string; definitionId: string; }; predicate: { valueType: "MONEY"; test: { op: "exists"; }; }; }[] | { kind: "catalogAttribute"; selector: { ...; }; predicate: { ...; }; }[]' is not assignable to type '{ kind: "customField"; selector: { source: "CUSTOM"; collectionId: string; definitionId: string; }; predicate: { valueType: "MONEY"; test: { op: "exists"; }; }; } | readonly { kind: "customField"; selector: { ...; }; predicate: { ...; }; }[]'.
+packages/queue typecheck:   Type '{ kind: "catalogAttribute"; selector: { source: "CATALOG"; categoryTemplateId: string; definitionId: string; target: "ENTRY" | "SELECTED_VARIANT"; }; predicate: { valueType: "MONEY"; test: { ...; }; }; }[]' is not assignable to type '{ kind: "customField"; selector: { source: "CUSTOM"; collectionId: string; definitionId: string; }; predicate: { valueType: "MONEY"; test: { op: "exists"; }; }; } | readonly { kind: "customField"; selector: { ...; }; predicate: { ...; }; }[]'.
+packages/queue typecheck:     Type '{ kind: "catalogAttribute"; selector: { source: "CATALOG"; categoryTemplateId: string; definitionId: string; target: "ENTRY" | "SELECTED_VARIANT"; }; predicate: { valueType: "MONEY"; test: { ...; }; }; }[]' is not assignable to type 'readonly { kind: "customField"; selector: { source: "CUSTOM"; collectionId: string; definitionId: string; }; predicate: { valueType: "MONEY"; test: { op: "exists"; }; }; }[]'.
+packages/queue typecheck:       Type '{ kind: "catalogAttribute"; selector: { source: "CATALOG"; categoryTemplateId: string; definitionId: string; target: "ENTRY" | "SELECTED_VARIANT"; }; predicate: { valueType: "MONEY"; test: { ...; }; }; }' is not assignable to type '{ kind: "customField"; selector: { source: "CUSTOM"; collectionId: string; definitionId: string; }; predicate: { valueType: "MONEY"; test: { op: "exists"; }; }; }'.
+packages/queue typecheck:         Types of property 'kind' are incompatible.
+packages/queue typecheck:           Type '"catalogAttribute"' is not assignable to type '"customField"'.
+packages/queue typecheck: Failed
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/queue:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @sammlerraum/queue@ typecheck: `tsc --noEmit --project ../../tsconfig.base.json`
+Exit status 2
+packages/storage typecheck$ tsc --noEmit --project ../../tsconfig.base.json
+ ELIFECYCLE  Command failed with exit code 2.

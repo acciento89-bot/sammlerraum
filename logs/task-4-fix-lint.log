@@ -1,0 +1,9 @@
+Scope: 2 of 11 workspace projects
+packages/domain lint$ prettier --check .
+packages/domain lint: Checking formatting...
+packages/domain lint: All matched files use Prettier code style!
+packages/domain lint: Done
+apps/web lint$ prettier --check src e2e messages package.json next.config.ts playwright.config.ts tsconfig.json
+apps/web lint: Checking formatting...
+apps/web lint: All matched files use Prettier code style!
+apps/web lint: Done

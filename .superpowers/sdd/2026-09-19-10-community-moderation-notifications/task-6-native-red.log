@@ -1,0 +1,27 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/worker/src/jobs/send-email.integration.test.ts [ apps/worker/src/jobs/send-email.integration.test.ts ]
+Error: Cannot find module './notification-email-repository' imported from '/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/worker/src/jobs/send-email.integration.test.ts'
+ ❯ apps/worker/src/jobs/send-email.integration.test.ts:6:1
+      4| import {createTestDatabaseClient} from "@sammlerraum/db/test-database";
+      5| import {createNotificationService} from "@sammlerraum/domain/notificat…
+      6| import {createNotificationEmailRepository} from "./notification-email-…
+       | ^
+      7| import {createSendEmailJob} from "./send-email";
+      8| import {EmailSendError} from "@sammlerraum/email/types";
+
+Caused by: Error: Failed to load url ./notification-email-repository (resolved id: ./notification-email-repository) in /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/worker/src/jobs/send-email.integration.test.ts. Does the file exist?
+ ❯ loadAndTransform ../../../../SSK%20SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/node_modules/.pnpm/vite@7.3.6_@types+node@24.5.2_jiti@2.7.0/node_modules/vite/dist/node/chunks/config.js:22739:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  no tests
+   Start at  13:50:46
+   Duration  362ms (transform 81ms, setup 6ms, collect 0ms, tests 0ms, environment 0ms, prepare 55ms)
+

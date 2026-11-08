@@ -1,0 +1,103 @@
+
+> sammlerraum@ build /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+> pnpm -r build
+
+Scope: 9 of 10 workspace projects
+packages/config build$ pnpm typecheck
+packages/queue build$ pnpm typecheck
+packages/contracts build$ pnpm typecheck
+packages/storage build$ pnpm typecheck
+packages/storage build: > @sammlerraum/storage@ typecheck /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/storage
+packages/storage build: > tsc --noEmit --project ../../tsconfig.base.json
+packages/contracts build: > @sammlerraum/contracts@ typecheck /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/contracts
+packages/contracts build: > tsc --noEmit --project ../../tsconfig.base.json
+packages/config build: > @sammlerraum/config@ typecheck /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/config
+packages/config build: > tsc --noEmit --project ../../tsconfig.base.json
+packages/queue build: > @sammlerraum/queue@ typecheck /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/queue
+packages/queue build: > tsc --noEmit --project ../../tsconfig.base.json
+packages/config build: Done
+packages/testing build$ pnpm typecheck
+packages/queue build: Done
+packages/storage build: Done
+packages/contracts build: Done
+packages/testing build: > @sammlerraum/testing@ typecheck /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/testing
+packages/testing build: > tsc --noEmit --project ../../tsconfig.base.json
+packages/testing build: Done
+packages/db build$ pnpm typecheck
+packages/db build: > @sammlerraum/db@ typecheck /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/db
+packages/db build: > tsc --noEmit --project ../../tsconfig.base.json
+packages/db build: Done
+packages/domain build$ pnpm typecheck
+packages/domain build: > @sammlerraum/domain@ typecheck /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain
+packages/domain build: > tsc --noEmit --project ../../tsconfig.base.json
+packages/domain build: Done
+apps/web build$ next build
+apps/worker build$ esbuild src/run.ts --bundle --platform=node --format=cjs --external:sharp --outfile=dist/worker.cjs && esbuild src/main.ts --bundle --platform=node --format=cjs --outfile=dist/main.cjs
+apps/worker build:   dist/worker.cjs  6.8mb ⚠️
+apps/worker build: ⚡ Done in 113ms
+apps/worker build:   dist/main.cjs  4.0kb
+apps/worker build: ⚡ Done in 1ms
+apps/worker build: Done
+apps/web build: ▲ Next.js 16.3.5 (Turbopack)
+apps/web build: ✓ Running next.config.ts took 1023ms
+apps/web build:   Creating an optimized production build ...
+apps/web build: ✓ Compiled successfully in 927ms
+apps/web build:   Running TypeScript ...
+apps/web build:   Finished TypeScript in 3.4s ...
+apps/web build:   Collecting page data using 7 workers ...
+apps/web build:   Generating static pages using 7 workers (0/17) ...
+apps/web build:   Generating static pages using 7 workers (4/17) 
+apps/web build:   Generating static pages using 7 workers (8/17) 
+apps/web build:   Generating static pages using 7 workers (12/17) 
+apps/web build: ✓ Generating static pages using 7 workers (17/17) in 154ms
+apps/web build:   Finalizing page optimization ...
+apps/web build: Route (app)
+apps/web build: ┌ ○ /_not-found
+apps/web build: ├   /[locale]
+apps/web build: │ ├ ● /de
+apps/web build: │ └ ● /en
+apps/web build: ├ ƒ /[locale]/account/profile
+apps/web build: ├ ƒ /[locale]/account/security
+apps/web build: ├ ƒ /[locale]/collections
+apps/web build: ├ ƒ /[locale]/collections/[collectionId]
+apps/web build: ├ ƒ /[locale]/items/[itemId]
+apps/web build: ├ ƒ /[locale]/items/new
+apps/web build: ├ ƒ /[locale]/locations/[locationId]
+apps/web build: ├ ƒ /[locale]/locations/[locationId]/label
+apps/web build: ├ ƒ /[locale]/login
+apps/web build: ├ ƒ /[locale]/register
+apps/web build: ├ ƒ /api/auth/[...all]
+apps/web build: ├ ƒ /api/health
+apps/web build: ├ ƒ /api/openapi.json
+apps/web build: ├ ƒ /api/v1/account/profile
+apps/web build: ├ ƒ /api/v1/account/recovery-methods
+apps/web build: ├ ƒ /api/v1/account/sessions
+apps/web build: ├ ƒ /api/v1/collections
+apps/web build: ├ ƒ /api/v1/collections/[collectionId]
+apps/web build: ├ ƒ /api/v1/collections/[collectionId]/custom-fields
+apps/web build: ├ ƒ /api/v1/collections/[collectionId]/nodes
+apps/web build: ├ ƒ /api/v1/collections/[collectionId]/nodes/[nodeId]
+apps/web build: ├ ƒ /api/v1/items
+apps/web build: ├ ƒ /api/v1/items/[itemId]
+apps/web build: ├ ƒ /api/v1/items/[itemId]/archive
+apps/web build: ├ ƒ /api/v1/items/[itemId]/custom-fields/[fieldId]
+apps/web build: ├ ƒ /api/v1/items/[itemId]/documents
+apps/web build: ├ ƒ /api/v1/items/[itemId]/documents/[linkId]
+apps/web build: ├ ƒ /api/v1/items/[itemId]/identifiers
+apps/web build: ├ ƒ /api/v1/items/[itemId]/location
+apps/web build: ├ ƒ /api/v1/items/[itemId]/media
+apps/web build: ├ ƒ /api/v1/items/[itemId]/media/[linkId]
+apps/web build: ├ ƒ /api/v1/items/[itemId]/split
+apps/web build: ├ ƒ /api/v1/items/[itemId]/tags
+apps/web build: ├ ƒ /api/v1/locations
+apps/web build: ├ ƒ /api/v1/locations/[locationId]
+apps/web build: ├ ƒ /api/v1/media/[assetId]/[variant]
+apps/web build: ├ ƒ /api/v1/media/avatar
+apps/web build: ├ ƒ /api/v1/media/documents
+apps/web build: ├ ƒ /api/v1/media/images
+apps/web build: └ ƒ /l/[token]
+apps/web build: ƒ Proxy (Middleware)
+apps/web build: ○  (Static)   prerendered as static content
+apps/web build: ●  (SSG)      prerendered as static HTML (uses generateStaticParams)
+apps/web build: ƒ  (Dynamic)  server-rendered on demand
+apps/web build: Done

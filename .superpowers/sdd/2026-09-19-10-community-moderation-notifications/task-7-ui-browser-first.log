@@ -1,0 +1,45 @@
+[WebServer] (node:81797) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 4 tests using 1 worker
+(node:81798) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+F
+Testing stopped early after 1 maximum allowed failures.
+
+
+  1) [community-ui-desktop] › e2e/community.spec.ts:16:3 › de: complete community, private wishes, notifications and moderator journey 
+
+    Error: locator.uncheck: Clicking the checkbox did not change its state
+    Call log:
+      - waiting for getByTestId('feed-caa76920-c5e6-48f9-b69a-479a3473eba1').getByLabel('Für dieses Objekt', { exact: true })
+        - locator resolved to <input checked type="checkbox"/>
+      - attempting click action
+        - waiting for element to be visible, enabled and stable
+        - element is visible, enabled and stable
+        - scrolling into view if needed
+        - done scrolling
+        - performing click action
+        - click action done
+        - waiting for scheduled navigations to finish
+        - navigations have finished
+
+
+      223 |       await mine.getByLabel(labels.commentBody, { exact: true }).fill("Owned policy draft");
+      224 |       await expect(mine.getByRole("button", { name: labels.send, exact: true })).toBeEnabled();
+    > 225 |       await mine.getByLabel(labels.itemPolicy, { exact: true }).uncheck();
+          |                                                                 ^
+      226 |       await expect(mine.getByRole("button", { name: labels.send, exact: true })).toBeDisabled();
+      227 |       await mine.getByLabel(labels.itemPolicy, { exact: true }).check();
+      228 |       await expect(mine.getByRole("button", { name: labels.send, exact: true })).toBeEnabled();
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/community.spec.ts:225:65
+
+    Error Context: test-results/community-de-complete-comm-75641-tions-and-moderator-journey-community-ui-desktop/error-context.md
+
+  1 failed
+    [community-ui-desktop] › e2e/community.spec.ts:16:3 › de: complete community, private wishes, notifications and moderator journey 
+  3 did not run
+  1 error was not a part of any test, see above for details
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/community.spec.ts --project=community-ui-desktop --project=community-ui-mobile --workers=1 --max-failures=1

@@ -1,0 +1,267 @@
+2026-10-17T23:52:50.181Z pw:webserver HTTP GET: http://localhost:3000/de
+2026-10-17T23:52:50.189Z pw:webserver Error while checking if http://localhost:3000/de is available: connect ECONNREFUSED ::1:3000
+connect ECONNREFUSED 127.0.0.1:3000
+2026-10-17T23:52:50.189Z pw:webserver Starting WebServer process node e2e/support/browser-test-server.mjs...
+2026-10-17T23:52:50.191Z pw:webserver Process started
+2026-10-17T23:52:50.191Z pw:webserver Waiting for availability...
+2026-10-17T23:52:50.191Z pw:webserver HTTP GET: http://localhost:3000/de
+2026-10-17T23:52:50.192Z pw:webserver Error while checking if http://localhost:3000/de is available: connect ECONNREFUSED ::1:3000
+connect ECONNREFUSED 127.0.0.1:3000
+2026-10-17T23:52:50.192Z pw:webserver Waiting 100ms
+2026-10-17T23:52:50.294Z pw:webserver HTTP GET: http://localhost:3000/de
+2026-10-17T23:52:50.295Z pw:webserver Error while checking if http://localhost:3000/de is available: connect ECONNREFUSED ::1:3000
+connect ECONNREFUSED 127.0.0.1:3000
+2026-10-17T23:52:50.295Z pw:webserver Waiting 250ms
+2026-10-17T23:52:50.547Z pw:webserver HTTP GET: http://localhost:3000/de
+2026-10-17T23:52:50.548Z pw:webserver Error while checking if http://localhost:3000/de is available: connect ECONNREFUSED ::1:3000
+connect ECONNREFUSED 127.0.0.1:3000
+2026-10-17T23:52:50.548Z pw:webserver Waiting 500ms
+[WebServer] npm warn Unknown env config "verify-deps-before-run". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+[WebServer] (node:64998) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-17T23:52:51.050Z pw:webserver HTTP GET: http://localhost:3000/de
+2026-10-17T23:52:51.052Z pw:webserver Error while checking if http://localhost:3000/de is available: connect ECONNREFUSED ::1:3000
+connect ECONNREFUSED 127.0.0.1:3000
+2026-10-17T23:52:51.052Z pw:webserver Waiting 1000ms
+[WebServer] (node:65032) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] 
+[WebServer] > @sammlerraum/web@ dev /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web
+[WebServer] > next dev --hostname localhost
+[WebServer] 
+[WebServer] (node:65067) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:65073) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] ▲ Next.js 16.3.5 (Turbopack)
+[WebServer] - Local:         http://localhost:3000
+[WebServer] - Network:       http://localhost:3000
+[WebServer] ✓ Ready in 285ms
+[WebServer] ✓ Running next.config.ts took 83ms
+[WebServer] Creating turbopack project {
+[WebServer]   dir: '/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web',
+[WebServer]   testMode: true
+[WebServer] }
+2026-10-17T23:52:52.055Z pw:webserver HTTP GET: http://localhost:3000/de
+[WebServer] 
+[WebServer] (node:65076) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-17T23:52:53.602Z pw:webserver HTTP Status: 200
+2026-10-17T23:52:53.602Z pw:webserver WebServer available
+[WebServer]  GET /de 200 in 1176ms (next.js: 727ms, proxy.ts: 103ms, generate-params: 206ms, application-code: 140ms)
+
+Running 1 test using 1 worker
+
+(node:65077) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:65083) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer]  GET /de/login 200 in 1614ms (next.js: 1072ms, generate-params: 398ms, application-code: 144ms)
+[WebServer] (node:65084) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer]  POST /api/auth/sign-in/email 200 in 1929ms (next.js: 1712ms, application-code: 217ms)
+[WebServer] (node:65108) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer]  GET /de/account/profile 200 in 918ms (next.js: 412ms, generate-params: 435ms, application-code: 71ms)
+[WebServer]  GET /de/account/profile 200 in 928ms (next.js: 399ms, generate-params: 447ms, application-code: 82ms)
+[WebServer] (node:65111) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer]  GET /de/collections 200 in 765ms (next.js: 293ms, generate-params: 434ms, application-code: 38ms)
+[WebServer]  POST /api/v1/collections 201 in 404ms (next.js: 317ms, application-code: 87ms)
+[WebServer]  GET /api/v1/collections 200 in 467ms (next.js: 447ms, application-code: 19ms)
+[WebServer]  GET /api/v1/collections 200 in 472ms (next.js: 449ms, application-code: 23ms)
+[WebServer]  GET /api/v1/collections 200 in 13ms (next.js: 5ms, application-code: 8ms)
+[WebServer] (node:65114) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer]  GET /de/collections/7db37359-8de0-47f4-80bd-3085e4cd06ff 200 in 861ms (next.js: 838ms, application-code: 23ms)
+[WebServer]  GET /api/v1/locations 200 in 788ms (next.js: 770ms, application-code: 18ms)
+[WebServer]  GET /api/v1/items?collectionId=7db37359-8de0-47f4-80bd-3085e4cd06ff 200 in 790ms (next.js: 732ms, application-code: 58ms)
+[WebServer] (node:65115) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:65116) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:65117) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer]  GET /api/v1/collections/7db37359-8de0-47f4-80bd-3085e4cd06ff/nodes 200 in 372ms (next.js: 354ms, application-code: 18ms)
+[WebServer]  GET /api/v1/collections/7db37359-8de0-47f4-80bd-3085e4cd06ff/nodes 200 in 1168ms (next.js: 1148ms, application-code: 20ms)
+[WebServer]  GET /api/v1/locations 200 in 9ms (next.js: 4ms, application-code: 5ms)
+[WebServer]  GET /api/v1/items?collectionId=7db37359-8de0-47f4-80bd-3085e4cd06ff 200 in 10ms (next.js: 1.1ms, application-code: 9ms)
+[WebServer]  GET /api/v1/collections/7db37359-8de0-47f4-80bd-3085e4cd06ff 200 in 1196ms (next.js: 1185ms, application-code: 11ms)
+[WebServer]  GET /api/v1/collections/7db37359-8de0-47f4-80bd-3085e4cd06ff 200 in 1211ms (next.js: 1198ms, application-code: 13ms)
+[WebServer]  GET /api/v1/collections/7db37359-8de0-47f4-80bd-3085e4cd06ff/custom-fields 200 in 452ms (next.js: 438ms, application-code: 14ms)
+[WebServer]  GET /api/v1/collections/7db37359-8de0-47f4-80bd-3085e4cd06ff/custom-fields 200 in 1248ms (next.js: 1233ms, application-code: 15ms)
+[WebServer]  POST /api/v1/collections/7db37359-8de0-47f4-80bd-3085e4cd06ff/nodes 201 in 12ms (next.js: 3ms, application-code: 9ms)
+[WebServer]  GET /api/v1/locations 200 in 23ms (next.js: 3ms, application-code: 20ms)
+[WebServer]  GET /api/v1/collections/7db37359-8de0-47f4-80bd-3085e4cd06ff 200 in 18ms (next.js: 3ms, application-code: 15ms)
+[WebServer]  GET /api/v1/items?collectionId=7db37359-8de0-47f4-80bd-3085e4cd06ff 200 in 29ms (next.js: 6ms, application-code: 23ms)
+[WebServer]  GET /api/v1/collections/7db37359-8de0-47f4-80bd-3085e4cd06ff/nodes 200 in 27ms (next.js: 5ms, application-code: 22ms)
+[WebServer]  GET /api/v1/collections/7db37359-8de0-47f4-80bd-3085e4cd06ff/custom-fields 200 in 29ms (next.js: 8ms, application-code: 20ms)
+[WebServer] (node:65118) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:65120) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:65119) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer]  POST /api/v1/collections/7db37359-8de0-47f4-80bd-3085e4cd06ff/custom-fields 201 in 33ms (next.js: 1.3ms, application-code: 32ms)
+[WebServer]  GET /api/v1/locations 200 in 17ms (next.js: 2.0ms, application-code: 15ms)
+[WebServer]  GET /api/v1/items?collectionId=7db37359-8de0-47f4-80bd-3085e4cd06ff 200 in 18ms (next.js: 4ms, application-code: 14ms)
+[WebServer]  GET /api/v1/collections/7db37359-8de0-47f4-80bd-3085e4cd06ff/nodes 200 in 12ms (next.js: 4ms, application-code: 8ms)
+[WebServer]  GET /api/v1/collections/7db37359-8de0-47f4-80bd-3085e4cd06ff 200 in 13ms (next.js: 6ms, application-code: 7ms)
+[WebServer]  GET /api/v1/collections/7db37359-8de0-47f4-80bd-3085e4cd06ff/custom-fields 200 in 15ms (next.js: 1.5ms, application-code: 13ms)
+[WebServer]  POST /api/v1/locations 201 in 10ms (next.js: 1.1ms, application-code: 9ms)
+[WebServer]  GET /api/v1/locations 200 in 20ms (next.js: 5ms, application-code: 15ms)
+[WebServer]  GET /api/v1/items?collectionId=7db37359-8de0-47f4-80bd-3085e4cd06ff 200 in 21ms (next.js: 7ms, application-code: 14ms)
+[WebServer]  GET /api/v1/collections/7db37359-8de0-47f4-80bd-3085e4cd06ff/nodes 200 in 14ms (next.js: 4ms, application-code: 10ms)
+[WebServer]  GET /api/v1/collections/7db37359-8de0-47f4-80bd-3085e4cd06ff 200 in 15ms (next.js: 2ms, application-code: 13ms)
+[WebServer]  GET /api/v1/collections/7db37359-8de0-47f4-80bd-3085e4cd06ff/custom-fields 200 in 16ms (next.js: 6ms, application-code: 10ms)
+[WebServer]  POST /api/v1/locations 201 in 23ms (next.js: 1.7ms, application-code: 21ms)
+[WebServer]  GET /api/v1/locations 200 in 18ms (next.js: 4ms, application-code: 14ms)
+[WebServer]  GET /api/v1/items?collectionId=7db37359-8de0-47f4-80bd-3085e4cd06ff 200 in 31ms (next.js: 11ms, application-code: 20ms)
+[WebServer]  GET /api/v1/collections/7db37359-8de0-47f4-80bd-3085e4cd06ff 200 in 18ms (next.js: 3ms, application-code: 15ms)
+[WebServer]  GET /api/v1/collections/7db37359-8de0-47f4-80bd-3085e4cd06ff/nodes 200 in 21ms (next.js: 6ms, application-code: 14ms)
+[WebServer]  GET /api/v1/collections/7db37359-8de0-47f4-80bd-3085e4cd06ff/custom-fields 200 in 22ms (next.js: 9ms, application-code: 14ms)
+[WebServer]  POST /api/v1/locations 201 in 11ms (next.js: 1.1ms, application-code: 10ms)
+[WebServer] (node:65128) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer]  GET /api/v1/locations 200 in 22ms (next.js: 1.4ms, application-code: 20ms)
+[WebServer]  GET /api/v1/items?collectionId=7db37359-8de0-47f4-80bd-3085e4cd06ff 200 in 25ms (next.js: 4ms, application-code: 21ms)
+[WebServer]  GET /api/v1/collections/7db37359-8de0-47f4-80bd-3085e4cd06ff 200 in 19ms (next.js: 3ms, application-code: 16ms)
+[WebServer]  GET /api/v1/collections/7db37359-8de0-47f4-80bd-3085e4cd06ff/custom-fields 200 in 21ms (next.js: 8ms, application-code: 13ms)
+[WebServer]  GET /api/v1/collections/7db37359-8de0-47f4-80bd-3085e4cd06ff/nodes 200 in 23ms (next.js: 5ms, application-code: 18ms)
+[WebServer] (node:65142) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:65143) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:65144) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer]  GET /de/items/new?collectionId=7db37359-8de0-47f4-80bd-3085e4cd06ff 200 in 1160ms (next.js: 685ms, generate-params: 450ms, application-code: 25ms)
+[WebServer]  GET /api/v1/collections 200 in 21ms (next.js: 5ms, application-code: 17ms)
+[WebServer]  GET /api/v1/locations 200 in 22ms (next.js: 7ms, application-code: 14ms)
+[WebServer]  GET /api/v1/collections 200 in 24ms (next.js: 3ms, application-code: 22ms)
+[WebServer]  GET /api/v1/locations 200 in 25ms (next.js: 6ms, application-code: 19ms)
+[WebServer]  GET /api/v1/collections/7db37359-8de0-47f4-80bd-3085e4cd06ff/custom-fields 200 in 23ms (next.js: 10ms, application-code: 13ms)
+[WebServer]  GET /api/v1/collections/7db37359-8de0-47f4-80bd-3085e4cd06ff/nodes 200 in 24ms (next.js: 6ms, application-code: 18ms)
+[WebServer]  GET /api/v1/collections/7db37359-8de0-47f4-80bd-3085e4cd06ff/nodes 200 in 11ms (next.js: 1.8ms, application-code: 9ms)
+[WebServer]  GET /api/v1/collections/7db37359-8de0-47f4-80bd-3085e4cd06ff/custom-fields 200 in 11ms (next.js: 4ms, application-code: 7ms)
+[WebServer] (node:65145) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:65146) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer]  POST /api/v1/items 201 in 28ms (next.js: 2ms, application-code: 26ms)
+[WebServer] (node:65147) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:65148) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:65150) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:65149) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:65151) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer]  PUT /api/v1/items/475a2a6d-5709-4077-8645-1463640fa699/identifiers 200 in 1337ms (next.js: 1300ms, application-code: 37ms)
+[WebServer] (node:65153) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer]  PUT /api/v1/items/475a2a6d-5709-4077-8645-1463640fa699/tags 200 in 1487ms (next.js: 1441ms, application-code: 46ms)
+[WebServer]  GET /api/v1/items/475a2a6d-5709-4077-8645-1463640fa699/condition 200 in 1545ms (next.js: 1520ms, application-code: 25ms)
+[WebServer]  PUT /api/v1/items/475a2a6d-5709-4077-8645-1463640fa699/location 200 in 1587ms (next.js: 1542ms, application-code: 44ms)
+[WebServer]  GET /api/v1/items/475a2a6d-5709-4077-8645-1463640fa699/condition 200 in 18ms (next.js: 5ms, application-code: 13ms)
+[WebServer]  PUT /api/v1/items/475a2a6d-5709-4077-8645-1463640fa699/custom-fields/e8d752ac-58cb-4f9a-b5f2-95c7190aeeef 200 in 1680ms (next.js: 1621ms, application-code: 59ms)
+[WebServer] (node:65155) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer]  GET /api/v1/items/475a2a6d-5709-4077-8645-1463640fa699/gradings 200 in 1776ms (next.js: 1747ms, application-code: 28ms)
+[WebServer]  GET /api/v1/items/475a2a6d-5709-4077-8645-1463640fa699/gradings 200 in 205ms (next.js: 169ms, application-code: 36ms)
+[WebServer] (node:65156) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:65157) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer]  GET /api/v1/items/475a2a6d-5709-4077-8645-1463640fa699/catalog-link 200 in 1129ms (next.js: 1108ms, application-code: 21ms)
+[WebServer]  GET /api/v1/items/475a2a6d-5709-4077-8645-1463640fa699/catalog-link 200 in 867ms (next.js: 844ms, application-code: 23ms)
+[WebServer] (node:65158) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer]  GET /api/v1/categories?limit=50 200 in 334ms (next.js: 313ms, application-code: 21ms)
+[WebServer]  GET /api/v1/categories?limit=50 200 in 337ms (next.js: 321ms, application-code: 16ms)
+[WebServer]  GET /api/v1/items/475a2a6d-5709-4077-8645-1463640fa699/media 200 in 1237ms (next.js: 1179ms, application-code: 58ms)
+[WebServer]  GET /api/v1/items/475a2a6d-5709-4077-8645-1463640fa699/media 200 in 1436ms (next.js: 1373ms, application-code: 63ms)
+[WebServer]  GET /de/items/475a2a6d-5709-4077-8645-1463640fa699 200 in 1269ms (next.js: 1205ms, application-code: 64ms)
+[WebServer]  GET /de/items/475a2a6d-5709-4077-8645-1463640fa699 200 in 32ms (next.js: 6ms, application-code: 26ms)
+[WebServer]  GET /api/v1/collections 200 in 17ms (next.js: 7ms, application-code: 11ms)
+[WebServer]  GET /api/v1/collections 200 in 21ms (next.js: 4ms, application-code: 17ms)
+[WebServer]  GET /api/v1/locations 200 in 22ms (next.js: 5ms, application-code: 17ms)
+[WebServer]  GET /api/v1/locations 200 in 23ms (next.js: 8ms, application-code: 15ms)
+[WebServer] (node:65159) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:65160) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer]  GET /api/v1/items/475a2a6d-5709-4077-8645-1463640fa699 200 in 731ms (next.js: 711ms, application-code: 20ms)
+[WebServer]  GET /api/v1/items/475a2a6d-5709-4077-8645-1463640fa699 200 in 728ms (next.js: 704ms, application-code: 24ms)
+[WebServer]  GET /api/v1/items/475a2a6d-5709-4077-8645-1463640fa699/condition 200 in 63ms (next.js: 9ms, application-code: 54ms)
+[WebServer]  GET /api/v1/items/475a2a6d-5709-4077-8645-1463640fa699/catalog-link 200 in 72ms (next.js: 28ms, application-code: 44ms)
+[WebServer]  GET /api/v1/items/475a2a6d-5709-4077-8645-1463640fa699/gradings 200 in 84ms (next.js: 23ms, application-code: 62ms)
+[WebServer]  GET /api/v1/collections/7db37359-8de0-47f4-80bd-3085e4cd06ff/custom-fields 200 in 51ms (next.js: 8ms, application-code: 43ms)
+[WebServer]  GET /api/v1/collections/7db37359-8de0-47f4-80bd-3085e4cd06ff/nodes 200 in 63ms (next.js: 25ms, application-code: 39ms)
+[WebServer]  GET /api/v1/items/475a2a6d-5709-4077-8645-1463640fa699/media 200 in 162ms (next.js: 23ms, application-code: 139ms)
+[WebServer]  GET /api/v1/items/475a2a6d-5709-4077-8645-1463640fa699/condition 200 in 77ms (next.js: 40ms, application-code: 37ms)
+[WebServer]  GET /api/v1/items/475a2a6d-5709-4077-8645-1463640fa699/gradings 200 in 139ms (next.js: 20ms, application-code: 119ms)
+[WebServer]  GET /api/v1/items/475a2a6d-5709-4077-8645-1463640fa699/catalog-link 200 in 102ms (next.js: 6ms, application-code: 96ms)
+[WebServer]  GET /api/v1/items/475a2a6d-5709-4077-8645-1463640fa699/media 200 in 127ms (next.js: 12ms, application-code: 115ms)
+[WebServer] (node:65169) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer]  GET /api/v1/categories?limit=50 200 in 33ms (next.js: 6ms, application-code: 27ms)
+[WebServer]  GET /api/v1/categories?limit=50 200 in 40ms (next.js: 10ms, application-code: 29ms)
+[WebServer] (node:65168) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:65170) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:65171) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:65172) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer]  PATCH /api/v1/items/475a2a6d-5709-4077-8645-1463640fa699 200 in 31ms (next.js: 6ms, application-code: 24ms)
+[WebServer] (node:65173) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer]  PUT /api/v1/items/475a2a6d-5709-4077-8645-1463640fa699/custom-fields/e8d752ac-58cb-4f9a-b5f2-95c7190aeeef 200 in 79ms (next.js: 20ms, application-code: 59ms)
+[WebServer]  PUT /api/v1/items/475a2a6d-5709-4077-8645-1463640fa699/tags 200 in 118ms (next.js: 13ms, application-code: 105ms)
+[WebServer]  PUT /api/v1/items/475a2a6d-5709-4077-8645-1463640fa699/identifiers 200 in 126ms (next.js: 6ms, application-code: 121ms)
+[WebServer] (node:65073) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 unpipe listeners added to [Socket]. MaxListeners is 10. Use emitter.setMaxListeners() to increase limit
+[WebServer] (node:65073) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 error listeners added to [Socket]. MaxListeners is 10. Use emitter.setMaxListeners() to increase limit
+[WebServer] (node:65073) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 close listeners added to [Socket]. MaxListeners is 10. Use emitter.setMaxListeners() to increase limit
+[WebServer] (node:65073) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 finish listeners added to [Socket]. MaxListeners is 10. Use emitter.setMaxListeners() to increase limit
+[WebServer] (node:65073) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 unpipe listeners added to [Socket]. MaxListeners is 10. Use emitter.setMaxListeners() to increase limit
+[WebServer] (node:65073) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 error listeners added to [Socket]. MaxListeners is 10. Use emitter.setMaxListeners() to increase limit
+[WebServer] (node:65073) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 close listeners added to [Socket]. MaxListeners is 10. Use emitter.setMaxListeners() to increase limit
+[WebServer] (node:65073) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 finish listeners added to [Socket]. MaxListeners is 10. Use emitter.setMaxListeners() to increase limit
+[WebServer] (node:65174) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:65176) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:65177) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer]  GET /de/items/475a2a6d-5709-4077-8645-1463640fa699 200 in 267ms (next.js: 15ms, application-code: 252ms)
+[WebServer] (node:65175) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer]  GET /de/items/475a2a6d-5709-4077-8645-1463640fa699 200 in 291ms (next.js: 62ms, application-code: 229ms)
+[WebServer]  GET /api/v1/categories?limit=50 200 in 250ms (next.js: 33ms, application-code: 217ms)
+[WebServer]  GET /api/v1/categories?limit=50 200 in 260ms (next.js: 13ms, application-code: 247ms)
+[WebServer] (node:65178) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer]  GET /api/v1/items/475a2a6d-5709-4077-8645-1463640fa699/condition 200 in 222ms (next.js: 10ms, application-code: 212ms)
+[WebServer]  GET /api/v1/items/475a2a6d-5709-4077-8645-1463640fa699/gradings 200 in 263ms (next.js: 17ms, application-code: 246ms)
+[WebServer]  GET /api/v1/items/475a2a6d-5709-4077-8645-1463640fa699/catalog-link 200 in 258ms (next.js: 53ms, application-code: 204ms)
+[WebServer]  GET /api/v1/locations 200 in 34ms (next.js: 6ms, application-code: 28ms)
+[WebServer]  GET /api/v1/collections 200 in 71ms (next.js: 33ms, application-code: 39ms)
+[WebServer]  GET /api/v1/items/475a2a6d-5709-4077-8645-1463640fa699 200 in 87ms (next.js: 15ms, application-code: 72ms)
+[WebServer]  GET /api/v1/collections/7db37359-8de0-47f4-80bd-3085e4cd06ff/nodes 200 in 59ms (next.js: 19ms, application-code: 41ms)
+[WebServer]  GET /api/v1/collections/7db37359-8de0-47f4-80bd-3085e4cd06ff/custom-fields 200 in 57ms (next.js: 32ms, application-code: 26ms)
+[WebServer] (node:65180) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:65181) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:65182) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer]  POST /api/v1/items/475a2a6d-5709-4077-8645-1463640fa699/archive 200 in 1630ms (next.js: 1615ms, application-code: 16ms)
+[WebServer]  GET /api/v1/categories?limit=50 200 in 6ms (next.js: 1.2ms, application-code: 5ms)
+  ✓  1 [desktop] › e2e/collections-items.spec.ts:236:3 › localized collection and item management › collector creates a nested collection and item with custom field and location (17.9s)
+2026-10-17T23:53:12.703Z pw:webserver Terminating the WebServer
+2026-10-17T23:53:12.811Z pw:webserver Terminated the WebServer
+
+  1 passed (22.6s)

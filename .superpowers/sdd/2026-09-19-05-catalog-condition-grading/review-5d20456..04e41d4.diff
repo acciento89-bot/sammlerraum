@@ -1,0 +1,2888 @@
+# Review package: 5d204568a20c34964c4f058adc9c028bd589aa57..04e41d4ed922cf3e83c209d0d97d051af93252ff
+
+## Commits
+04e41d4 feat: add external grading records
+
+## Files changed
+ .github/workflows/ci.yml                           |   2 +
+ .../logs/task-5-build-final.log                    | 114 +++++
+ .../logs/task-5-dedicated-green.log                |  10 +
+ .../logs/task-5-dedicated-red.log                  |  32 ++
+ .../logs/task-5-delete-body-red.log                |  41 ++
+ .../logs/task-5-domain-concurrency-green.log       |  11 +
+ .../logs/task-5-domain-green.log                   |  35 ++
+ .../logs/task-5-domain-red.log                     | 205 ++++++++
+ .../logs/task-5-finite-migrate.log                 |  16 +
+ .../logs/task-5-focused-complete.log               |  12 +
+ .../logs/task-5-focused-final.log                  |  12 +
+ .../logs/task-5-full-suite-final.log               |  79 +++
+ .../logs/task-5-generate.log                       |   9 +
+ .../logs/task-5-generated-duplicates.log           |   5 +
+ .../logs/task-5-incomplete-scaffold.log            |  17 +
+ .../logs/task-5-lint-final.log                     |  41 ++
+ .../logs/task-5-migrate.log                        |  16 +
+ .../logs/task-5-migration-status.log               |   8 +
+ .../logs/task-5-numeric-prisma-probe.log           |  10 +
+ .../logs/task-5-numeric-sql-red.log                |  49 ++
+ .../logs/task-5-routes-green.log                   |  10 +
+ .../logs/task-5-routes-red.log                     | 140 ++++++
+ .../logs/task-5-schema-drift.log                   |   4 +
+ .../logs/task-5-schema-validate.log                |   4 +
+ .../logs/task-5-typecheck-final.log                |  23 +
+ .../logs/task-5-typecheck-generated-duplicates.log |  33 ++
+ .../logs/task-5-typecheck-initial.log              |  26 +
+ .../task-5-report.md                               |  50 ++
+ .../items/[itemId]/gradings/[gradingId]/route.ts   |  16 +
+ .../app/api/v1/items/[itemId]/gradings/route.ts    |  10 +
+ apps/web/src/lib/grading-route-dependencies.ts     |  12 +
+ .../web/src/lib/grading-routes.integration.test.ts | 336 +++++++++++++
+ apps/web/src/lib/grading-routes.ts                 | 120 +++++
+ packages/contracts/package.json                    |   3 +-
+ packages/contracts/src/grading.ts                  |  65 +++
+ .../20261017225204_grading_records/migration.sql   |  49 ++
+ .../migration.sql                                  |   4 +
+ packages/db/prisma/schema.prisma                   |  26 +
+ packages/domain/package.json                       |   3 +-
+ .../domain/src/grading/grading-service.test.ts     | 559 +++++++++++++++++++++
+ packages/domain/src/grading/grading-service.ts     | 171 +++++++
+ packages/domain/src/items/item-service.ts          |  18 +-
+ 42 files changed, 2402 insertions(+), 4 deletions(-)
+
+## Diff
+diff --git a/.github/workflows/ci.yml b/.github/workflows/ci.yml
+index 31b15db..49c7600 100644
+--- a/.github/workflows/ci.yml
++++ b/.github/workflows/ci.yml
+@@ -134,20 +134,22 @@ jobs:
+           packages/domain/src/media/cleanup-service.test.ts
+           packages/storage/src/staging-lock.integration.test.ts
+           packages/domain/src/media/media-read.integration.test.ts
+           packages/domain/src/media/media-management.integration.test.ts
+           packages/domain/src/items/identifier-service.test.ts
+           packages/domain/src/custom-fields/custom-field-service.test.ts
+           packages/domain/src/catalog/category-template-service.integration.test.ts
+           packages/domain/src/catalog/catalog-service.integration.test.ts
+           packages/domain/src/catalog/proposal-service.test.ts
+           packages/domain/src/condition/condition-service.test.ts
++          packages/domain/src/grading/grading-service.test.ts
++          apps/web/src/lib/grading-routes.integration.test.ts
+           apps/web/src/lib/condition-routes.integration.test.ts
+           apps/web/src/lib/catalog-proposal-routes.integration.test.ts
+           packages/domain/src/locations/location-service.test.ts
+           apps/web/src/lib/security-service.integration.test.ts
+           apps/web/src/app/api/v1/items/resource-route.integration.test.ts
+       - name: Install Chromium for authentication journeys
+         run: pnpm --filter @sammlerraum/web exec playwright install --with-deps chromium
+       # next dev can rewrite .next; verify the label response on the production build first.
+       - name: Run storage label browser journeys against production
+         run: >-
+diff --git a/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-build-final.log b/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-build-final.log
+new file mode 100644
+index 0000000..ed8510d
+--- /dev/null
++++ b/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-build-final.log
+@@ -0,0 +1,114 @@
++
++> sammlerraum@ build /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
++> pnpm -r build
++
++Scope: 9 of 10 workspace projects
++packages/config build$ pnpm typecheck
++packages/contracts build$ pnpm typecheck
++packages/storage build$ pnpm typecheck
++packages/queue build$ pnpm typecheck
++packages/contracts build: > @sammlerraum/contracts@ typecheck /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/contracts
++packages/contracts build: > tsc --noEmit --project ../../tsconfig.base.json
++packages/config build: > @sammlerraum/config@ typecheck /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/config
++packages/config build: > tsc --noEmit --project ../../tsconfig.base.json
++packages/storage build: > @sammlerraum/storage@ typecheck /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/storage
++packages/storage build: > tsc --noEmit --project ../../tsconfig.base.json
++packages/queue build: > @sammlerraum/queue@ typecheck /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/queue
++packages/queue build: > tsc --noEmit --project ../../tsconfig.base.json
++packages/storage build: Done
++packages/testing build$ pnpm typecheck
++packages/config build: Done
++packages/queue build: Done
++packages/contracts build: Done
++packages/testing build: > @sammlerraum/testing@ typecheck /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/testing
++packages/testing build: > tsc --noEmit --project ../../tsconfig.base.json
++packages/testing build: Done
++packages/db build$ pnpm typecheck
++packages/db build: > @sammlerraum/db@ typecheck /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/db
++packages/db build: > tsc --noEmit --project ../../tsconfig.base.json
++packages/db build: Done
++packages/domain build$ pnpm typecheck
++packages/domain build: > @sammlerraum/domain@ typecheck /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/domain
++packages/domain build: > tsc --noEmit --project ../../tsconfig.base.json
++packages/domain build: Done
++apps/web build$ next build
++apps/worker build$ esbuild src/run.ts --bundle --platform=node --format=cjs --external:sharp --outfile=dist/worker.cjs && esbuild src/main.ts --bundle --platform=node --format=cjs --outfile=dist/main.cjs
++apps/worker build:   dist/worker.cjs  6.9mb ⚠️
++apps/worker build: ⚡ Done in 105ms
++apps/worker build:   dist/main.cjs  4.0kb
++apps/worker build: ⚡ Done in 2ms
++apps/worker build: Done
++apps/web build: ▲ Next.js 16.3.5 (Turbopack)
++apps/web build: ✓ Running next.config.ts took 94ms
++apps/web build:   Creating an optimized production build ...
++apps/web build: ✓ Compiled successfully in 2.2s
++apps/web build:   Running TypeScript ...
++apps/web build:   Finished TypeScript in 3.7s ...
++apps/web build:   Collecting page data using 7 workers ...
++apps/web build:   Generating static pages using 7 workers (0/17) ...
++apps/web build:   Generating static pages using 7 workers (4/17) 
++apps/web build:   Generating static pages using 7 workers (8/17) 
++apps/web build:   Generating static pages using 7 workers (12/17) 
++apps/web build: ✓ Generating static pages using 7 workers (17/17) in 164ms
++apps/web build:   Finalizing page optimization ...
++apps/web build: Route (app)
++apps/web build: ┌ ○ /_not-found
++apps/web build: ├   /[locale]
++apps/web build: │ ├ ● /de
++apps/web build: │ └ ● /en
++apps/web build: ├ ƒ /[locale]/account/profile
++apps/web build: ├ ƒ /[locale]/account/security
++apps/web build: ├ ƒ /[locale]/collections
++apps/web build: ├ ƒ /[locale]/collections/[collectionId]
++apps/web build: ├ ƒ /[locale]/items/[itemId]
++apps/web build: ├ ƒ /[locale]/items/new
++apps/web build: ├ ƒ /[locale]/locations/[locationId]
++apps/web build: ├ ƒ /[locale]/locations/[locationId]/label
++apps/web build: ├ ƒ /[locale]/login
++apps/web build: ├ ƒ /[locale]/register
++apps/web build: ├ ƒ /api/auth/[...all]
++apps/web build: ├ ƒ /api/health
++apps/web build: ├ ƒ /api/openapi.json
++apps/web build: ├ ƒ /api/v1/account/profile
++apps/web build: ├ ƒ /api/v1/account/recovery-methods
++apps/web build: ├ ƒ /api/v1/account/sessions
++apps/web build: ├ ƒ /api/v1/catalog/entries/[entryId]/rollback
++apps/web build: ├ ƒ /api/v1/catalog/moderation/proposals
++apps/web build: ├ ƒ /api/v1/catalog/moderation/proposals/[proposalId]
++apps/web build: ├ ƒ /api/v1/catalog/proposals
++apps/web build: ├ ƒ /api/v1/catalog/proposals/[proposalId]
++apps/web build: ├ ƒ /api/v1/catalog/proposals/[proposalId]/decision
++apps/web build: ├ ƒ /api/v1/categories/[categoryId]/condition-scheme
++apps/web build: ├ ƒ /api/v1/collections
++apps/web build: ├ ƒ /api/v1/collections/[collectionId]
++apps/web build: ├ ƒ /api/v1/collections/[collectionId]/custom-fields
++apps/web build: ├ ƒ /api/v1/collections/[collectionId]/nodes
++apps/web build: ├ ƒ /api/v1/collections/[collectionId]/nodes/[nodeId]
++apps/web build: ├ ƒ /api/v1/items
++apps/web build: ├ ƒ /api/v1/items/[itemId]
++apps/web build: ├ ƒ /api/v1/items/[itemId]/archive
++apps/web build: ├ ƒ /api/v1/items/[itemId]/category
++apps/web build: ├ ƒ /api/v1/items/[itemId]/condition
++apps/web build: ├ ƒ /api/v1/items/[itemId]/custom-fields/[fieldId]
++apps/web build: ├ ƒ /api/v1/items/[itemId]/documents
++apps/web build: ├ ƒ /api/v1/items/[itemId]/documents/[linkId]
++apps/web build: ├ ƒ /api/v1/items/[itemId]/gradings
++apps/web build: ├ ƒ /api/v1/items/[itemId]/gradings/[gradingId]
++apps/web build: ├ ƒ /api/v1/items/[itemId]/identifiers
++apps/web build: ├ ƒ /api/v1/items/[itemId]/location
++apps/web build: ├ ƒ /api/v1/items/[itemId]/media
++apps/web build: ├ ƒ /api/v1/items/[itemId]/media/[linkId]
++apps/web build: ├ ƒ /api/v1/items/[itemId]/split
++apps/web build: ├ ƒ /api/v1/items/[itemId]/tags
++apps/web build: ├ ƒ /api/v1/locations
++apps/web build: ├ ƒ /api/v1/locations/[locationId]
++apps/web build: ├ ƒ /api/v1/media/[assetId]/[variant]
++apps/web build: ├ ƒ /api/v1/media/avatar
++apps/web build: ├ ƒ /api/v1/media/documents
++apps/web build: ├ ƒ /api/v1/media/images
++apps/web build: └ ƒ /l/[token]
++apps/web build: ƒ Proxy (Middleware)
++apps/web build: ○  (Static)   prerendered as static content
++apps/web build: ●  (SSG)      prerendered as static HTML (uses generateStaticParams)
++apps/web build: ƒ  (Dynamic)  server-rendered on demand
++apps/web build: Done
+diff --git a/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-dedicated-green.log b/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-dedicated-green.log
+new file mode 100644
+index 0000000..ba5c86a
+--- /dev/null
++++ b/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-dedicated-green.log
+@@ -0,0 +1,10 @@
++
++ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
++
++ ✓ |workspace| packages/domain/src/grading/grading-service.test.ts (1 test) 122ms
++
++ Test Files  1 passed (1)
++      Tests  1 passed (1)
++   Start at  23:58:13
++   Duration  372ms (transform 42ms, setup 5ms, collect 99ms, tests 122ms, environment 0ms, prepare 35ms)
++
+diff --git a/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-dedicated-red.log b/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-dedicated-red.log
+new file mode 100644
+index 0000000..4f6b11c
+--- /dev/null
++++ b/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-dedicated-red.log
+@@ -0,0 +1,32 @@
++
++ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
++
++ ❯ |workspace| packages/domain/src/grading/grading-service.test.ts (1 test | 1 failed) 131ms
++   × personal grading PostgreSQL > allows equal certificate numbers across different providers 25ms
++     → promise rejected "Error: GRADING_CERTIFICATE_CONFLICT" instead of resolving
++
++⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
++
++ FAIL  |workspace| packages/domain/src/grading/grading-service.test.ts > personal grading PostgreSQL > allows equal certificate numbers across different providers
++AssertionError: promise rejected "Error: GRADING_CERTIFICATE_CONFLICT" instead of resolving
++ ❯ packages/domain/src/grading/grading-service.test.ts:24:104
++     22|     const itemB = await item();
++     23|     const first = await service().addGrading(itemA.id, { provider: "PS…
++     24|     await expect(service().addGrading(itemB.id, { provider: "CGC", cer…
++       |                                                                                                        ^
++     25|     const rows = await db!.grading.findMany({ where: { itemId: { in: […
++     26|     expect(rows.map(({ provider, certificateNo, grade }) => ({ provide…
++
++Caused by: Error: GRADING_CERTIFICATE_CONFLICT
++ ❯ database.$transaction.isolationLevel packages/domain/src/grading/grading-service.ts:11:34
++ ❯ Proxy._transactionWithCallback node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:861:18
++ ❯ packages/domain/src/grading/grading-service.test.ts:24:5
++
++⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
++
++
++ Test Files  1 failed (1)
++      Tests  1 failed (1)
++   Start at  23:58:04
++   Duration  420ms (transform 47ms, setup 5ms, collect 119ms, tests 131ms, environment 0ms, prepare 44ms)
++
+diff --git a/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-delete-body-red.log b/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-delete-body-red.log
+new file mode 100644
+index 0000000..953a687
+--- /dev/null
++++ b/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-delete-body-red.log
+@@ -0,0 +1,41 @@
++
++ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
++
++ ❯ |workspace| apps/web/src/lib/grading-routes.integration.test.ts (8 tests | 1 failed) 204ms
++   ✓ grading routes PostgreSQL > persists owner CRUD through the adapter with full replacement and private no-store DTOs 31ms
++   ✓ grading routes PostgreSQL > requires fresh authentication and hides foreign, mismatched and invalid resource IDs 15ms
++   ✓ grading routes PostgreSQL > enforces exact Origin on every mutation 5ms
++   ✓ grading routes PostgreSQL > rejects strict malformed facts and never accepts trusted verification or cross-scale numbers 7ms
++   ✓ grading routes PostgreSQL > bounds actual UTF-8 streams independently of absent or false Content-Length 5ms
++   ✓ grading routes PostgreSQL > returns stable conflicts for duplicate certificates, lifecycle and shared item quantity writes 35ms
++   ✓ grading routes PostgreSQL > does not leak grading or private provenance through anonymous or other-user public item reads 6ms
++   × grading routes PostgreSQL > rejects DELETE payloads within the same independent body bound 6ms
++     → expected 204 to be 400 // Object.is equality
++
++⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
++
++ FAIL  |workspace| apps/web/src/lib/grading-routes.integration.test.ts > grading routes PostgreSQL > rejects DELETE payloads within the same independent body bound
++AssertionError: expected 204 to be 400 // Object.is equality
++
++- Expected
+++ Received
++
++- 400
+++ 204
++
++ ❯ apps/web/src/lib/grading-routes.integration.test.ts:133:83
++    131|     const row=await service().addGrading(itemId,{provider:"Delete body…
++    132|     const api=handlers();
++    133|     expect((await api.DELETE_GRADING(request("DELETE",{}),itemId,row.i…
++       |                                                                                   ^
++    134|     expect((await api.DELETE_GRADING(request("DELETE",{padding:"x".rep…
++    135|     expect((await service().getGrading(itemId,row.id)).grade).toBe("A"…
++
++⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
++
++
++ Test Files  1 failed (1)
++      Tests  1 failed | 7 passed (8)
++   Start at  00:02:50
++   Duration  575ms (transform 107ms, setup 5ms, collect 224ms, tests 204ms, environment 0ms, prepare 34ms)
++
+diff --git a/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-domain-concurrency-green.log b/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-domain-concurrency-green.log
+new file mode 100644
+index 0000000..74fdd10
+--- /dev/null
++++ b/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-domain-concurrency-green.log
+@@ -0,0 +1,11 @@
++
++ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
++
++ ✓ |workspace| packages/domain/src/grading/grading-service.test.ts (14 tests) 450ms
++ ✓ |workspace| packages/domain/src/items/item-service.test.ts (15 tests) 242ms
++
++ Test Files  2 passed (2)
++      Tests  29 passed (29)
++   Start at  00:00:38
++   Duration  1.19s (transform 76ms, setup 5ms, collect 212ms, tests 692ms, environment 0ms, prepare 64ms)
++
+diff --git a/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-domain-green.log b/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-domain-green.log
+new file mode 100644
+index 0000000..7044061
+--- /dev/null
++++ b/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-domain-green.log
+@@ -0,0 +1,35 @@
++
++ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
++
++(node:42229) PromiseRejectionHandledWarning: Promise rejection was handled asynchronously (rejection id: 1)
++(Use `node --trace-warnings ...` to show where the warning was created)
++ ✓ |workspace| packages/domain/src/grading/grading-service.test.ts (11 tests) 436ms
++ ✓ |workspace| packages/domain/src/items/item-service.test.ts (15 tests) 245ms
++⎯⎯⎯⎯⎯⎯ Unhandled Errors ⎯⎯⎯⎯⎯⎯
++
++Vitest caught 1 unhandled error during the test run.
++This might cause false positive tests. Resolve unhandled errors to make sure your tests are not affected.
++
++⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
++GradingServiceError: ITEM_NOT_FOUND
++ ❯ lockItem packages/domain/src/grading/grading-service.ts:31:20
++ ❯ processTicksAndRejections node:internal/process/task_queues:104:5
++ ❯ packages/domain/src/grading/grading-service.ts:81:18
++ ❯ Proxy._transactionWithCallback node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:861:18
++ ❯ within packages/domain/src/grading/grading-service.ts:64:18
++
++⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
++Serialized Error: { code: 'ITEM_NOT_FOUND' }
++This error originated in "packages/domain/src/grading/grading-service.test.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
++The latest test that might've caused the error is "hides foreign and mismatched grading IDs on reads and all mutations". It might mean one of the following:
++- The error was thrown, while Vitest was running this test.
++- If the error occurred after the test had been completed, this was the last documented test before it was thrown.
++⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
++
++
++ Test Files  2 passed (2)
++      Tests  26 passed (26)
++     Errors  1 error
++   Start at  00:00:07
++   Duration  1.20s (transform 85ms, setup 6ms, collect 226ms, tests 681ms, environment 0ms, prepare 74ms)
++
+diff --git a/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-domain-red.log b/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-domain-red.log
+new file mode 100644
+index 0000000..02d5319
+--- /dev/null
++++ b/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-domain-red.log
+@@ -0,0 +1,205 @@
++
++ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
++
++ ❯ |workspace| packages/domain/src/grading/grading-service.test.ts (11 tests | 9 failed) 305ms
++   ✓ personal grading PostgreSQL > allows equal certificate numbers across different providers 27ms
++   × personal grading PostgreSQL > preserves authored facts, leading zeros and exact optional decimal strings 9ms
++     → expected { …(16) } to match object { provider: 'Unknown Provider', …(6) }
++(9 matching properties omitted from actual)
++   × personal grading PostgreSQL > scopes certificate conflicts to one owner and provider without guessing number equivalence 18ms
++     → expected PrismaClientKnownRequestError{ …(7) } to match object { Object (code) }
++(4 matching properties omitted from actual)
++   × personal grading PostgreSQL > supports multiple uncertified records and full replacement/removal releasing a certificate 5ms
++     → service(...).updateGrading is not a function
++   × personal grading PostgreSQL > hides foreign and mismatched grading IDs on reads and all mutations 4ms
++     → foreign.listGradings is not a function
++   × personal grading PostgreSQL > retains inactive item reads but rejects lifecycle mutations and deleted parents 7ms
++     → service(...).updateGrading is not a function
++   × personal grading PostgreSQL > requires split before grading and enforces the shared item quantity mutation path 8ms
++     → expected PrismaClientKnownRequestError{ …(7) } to match object { Object (code) }
++(4 matching properties omitted from actual)
++   × personal grading PostgreSQL > rejects malformed authored facts and never rounds or synthesizes comparable values 3ms
++     → expected PrismaClientKnownRequestError{ …(7) } to match object { code: 'GRADING_INVALID' }
++(4 matching properties omitted from actual)
++   × personal grading PostgreSQL > caps records under the shared item lock and handles racing certificate additions 74ms
++     → promise resolved "{ …(16) }" instead of rejecting
++   ✓ personal grading PostgreSQL > enforces owner, single-specimen, paired scale and provider identity in PostgreSQL 39ms
++   × personal grading PostgreSQL > keeps exact condition and grading independent through condition edits and grading removal 22ms
++     → service(...).getGrading is not a function
++
++⎯⎯⎯⎯⎯⎯⎯ Failed Tests 9 ⎯⎯⎯⎯⎯⎯⎯
++
++ FAIL  |workspace| packages/domain/src/grading/grading-service.test.ts > personal grading PostgreSQL > preserves authored facts, leading zeros and exact optional decimal strings
++AssertionError: expected { …(16) } to match object { provider: 'Unknown Provider', …(6) }
++(9 matching properties omitted from actual)
++
++- Expected
+++ Received
++
++  {
++-   "certificateNo": "00123-A b",
++-   "comparableScale": "Authored scale",
++-   "comparableValue": "99999999.9999",
++-   "grade": "Gem  Mint +",
++-   "gradedAt": "2024-02-29",
++-   "provider": "Unknown Provider",
++-   "source": "Owner's receipt — unverifiziert",
+++   "certificateNo": "  00123-A b  ",
+++   "comparableScale": null,
+++   "comparableValue": null,
+++   "grade": "  Gem  Mint +  ",
+++   "gradedAt": null,
+++   "provider": "  Unknown Provider  ",
+++   "source": null,
++  }
++
++ ❯ packages/domain/src/grading/grading-service.test.ts:44:17
++
++
++⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/9]⎯
++
++ FAIL  |workspace| packages/domain/src/grading/grading-service.test.ts > personal grading PostgreSQL > scopes certificate conflicts to one owner and provider without guessing number equivalence
++AssertionError: expected PrismaClientKnownRequestError{ …(7) } to match object { Object (code) }
++(4 matching properties omitted from actual)
++
++- Expected
+++ Received
++
++- {
++-   "code": "GRADING_CERTIFICATE_CONFLICT",
+++ PrismaClientKnownRequestError {
+++   "code": "P2010",
++  }
++
++ ❯ packages/domain/src/grading/grading-service.test.ts:56:5
++     54|     const a = await item(); const b = await item();
++     55|     await service().addGrading(a.id, { provider: "PSA", grade: "10", c…
++     56|     await expect(service().addGrading(b.id, { provider: "psa", grade: …
++       |     ^
++     57|     await service().addGrading(b.id, { provider: "PSA", grade: "9", ce…
++     58|     for (const certificateNo of ["abc", "ABC", "a bc", "a-bc"]) await …
++
++⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/9]⎯
++
++ FAIL  |workspace| packages/domain/src/grading/grading-service.test.ts > personal grading PostgreSQL > supports multiple uncertified records and full replacement/removal releasing a certificate
++TypeError: service(...).updateGrading is not a function
++ ❯ packages/domain/src/grading/grading-service.test.ts:67:35
++     65|     for (let i = 0; i < 2; i++) expect(await service().addGrading(targ…
++     66|     const before = await service().addGrading(target.id, { provider: "…
++     67|     const after = await service().updateGrading(target.id, before.id, …
++       |                                   ^
++     68|     expect(after).toMatchObject({ id: before.id, createdAt: before.cre…
++     69|     expect(Date.parse(after.updatedAt)).toBeGreaterThanOrEqual(Date.pa…
++
++⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/9]⎯
++
++ FAIL  |workspace| packages/domain/src/grading/grading-service.test.ts > personal grading PostgreSQL > hides foreign and mismatched grading IDs on reads and all mutations
++TypeError: foreign.listGradings is not a function
++ ❯ packages/domain/src/grading/grading-service.test.ts:79:33
++
++
++⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/9]⎯
++
++ FAIL  |workspace| packages/domain/src/grading/grading-service.test.ts > personal grading PostgreSQL > retains inactive item reads but rejects lifecycle mutations and deleted parents
++TypeError: service(...).updateGrading is not a function
++ ❯ packages/domain/src/grading/grading-service.test.ts:88:94
++
++
++⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/9]⎯
++
++ FAIL  |workspace| packages/domain/src/grading/grading-service.test.ts > personal grading PostgreSQL > requires split before grading and enforces the shared item quantity mutation path
++AssertionError: expected PrismaClientKnownRequestError{ …(7) } to match object { Object (code) }
++(4 matching properties omitted from actual)
++
++- Expected
+++ Received
++
++- {
++-   "code": "GRADING_REQUIRES_SINGLE_ITEM",
+++ PrismaClientKnownRequestError {
+++   "code": "P2010",
++  }
++
++ ❯ packages/domain/src/grading/grading-service.test.ts:101:5
++     99|   it("requires split before grading and enforces the shared item quant…
++    100|     const bulk = await item(3);
++    101|     await expect(service().addGrading(bulk.id,{provider:"Bulk",grade:"…
++       |     ^
++    102|     const split = await createItemService(db!,ownerId).splitQuantityIt…
++    103|     const row = await service().addGrading(split.created.id,{provider:…
++
++⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/9]⎯
++
++ FAIL  |workspace| packages/domain/src/grading/grading-service.test.ts > personal grading PostgreSQL > rejects malformed authored facts and never rounds or synthesizes comparable values
++AssertionError: expected PrismaClientKnownRequestError{ …(7) } to match object { code: 'GRADING_INVALID' }
++(4 matching properties omitted from actual)
++
++- Expected
+++ Received
++
++- {
++-   "code": "GRADING_INVALID",
+++ PrismaClientKnownRequestError {
+++   "code": "P2010",
++  }
++
++ ❯ packages/domain/src/grading/grading-service.test.ts:120:8
++
++
++⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/9]⎯
++
++ FAIL  |workspace| packages/domain/src/grading/grading-service.test.ts > personal grading PostgreSQL > caps records under the shared item lock and handles racing certificate additions
++AssertionError: promise resolved "{ …(16) }" instead of rejecting
++
++- Expected
+++ Received
++
++- Error {
++-   "message": "rejected promise",
+++ {
+++   "certificateKey": null,
+++   "certificateNo": null,
+++   "comparableScale": null,
+++   "comparableValue": null,
+++   "createdAt": 2026-10-17T23:59:17.038Z,
+++   "grade": "overflow",
+++   "gradedAt": null,
+++   "id": "e7159132-b295-47c8-9492-9514dd01e2ee",
+++   "itemId": "057933cd-88cf-474d-9ccd-80e212e42349",
+++   "itemQuantity": 1,
+++   "ownerId": "GradingOwner_e1261c89-98e4-485f-a9a6-be433a868e49",
+++   "provider": "Capacity",
+++   "providerKey": "capacity",
+++   "source": null,
+++   "updatedAt": 2026-10-17T23:59:17.038Z,
+++   "verificationUrl": null,
++  }
++
++ ❯ packages/domain/src/grading/grading-service.test.ts:127:88
++    125|     const target = await item();
++    126|     for(let i=0;i<100;i++) await service().addGrading(target.id,{provi…
++    127|     await expect(service().addGrading(target.id,{provider:"Capacity",g…
++       |                                                                                        ^
++    128|     expect(await service().listGradings(target.id)).toHaveLength(100);
++    129|     const a=await item();const b=await item();
++
++⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/9]⎯
++
++ FAIL  |workspace| packages/domain/src/grading/grading-service.test.ts > personal grading PostgreSQL > keeps exact condition and grading independent through condition edits and grading removal
++TypeError: service(...).getGrading is not a function
++ ❯ packages/domain/src/grading/grading-service.test.ts:152:31
++    150|       const row=await service().addGrading(target.id,{provider:"Separa…
++    151|       await condition.setItemCondition(target.id,null);
++    152|       expect((await service().getGrading(target.id,row.id)).grade).toB…
++       |                               ^
++    153|       await condition.setItemCondition(target.id,scheme.options[0]!.id…
++    154|       await service().removeGrading(target.id,row.id);
++
++⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/9]⎯
++
++
++ Test Files  1 failed (1)
++      Tests  9 failed | 2 passed (11)
++   Start at  23:59:16
++   Duration  589ms (transform 60ms, setup 5ms, collect 133ms, tests 305ms, environment 0ms, prepare 33ms)
++
+diff --git a/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-finite-migrate.log b/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-finite-migrate.log
+new file mode 100644
+index 0000000..df6a979
+--- /dev/null
++++ b/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-finite-migrate.log
+@@ -0,0 +1,16 @@
++Loaded Prisma config from packages/db/prisma.config.ts.
++
++Prisma schema loaded from packages/db/prisma/schema.prisma.
++Datasource "db": PostgreSQL database "sammlerraum_test", schema "public" at "localhost:5432"
++
++20 migrations found in prisma/migrations
++
++Applying migration `20261017225205_grading_finite_comparable`
++
++The following migration(s) have been applied:
++
++migrations/
++  └─ 20261017225205_grading_finite_comparable/
++    └─ migration.sql
++
++All migrations have been successfully applied.
+diff --git a/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-focused-complete.log b/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-focused-complete.log
+new file mode 100644
+index 0000000..989bf93
+--- /dev/null
++++ b/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-focused-complete.log
+@@ -0,0 +1,12 @@
++
++ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
++
++ ✓ |workspace| packages/domain/src/grading/grading-service.test.ts (15 tests) 441ms
++ ✓ |workspace| packages/domain/src/items/item-service.test.ts (15 tests) 234ms
++ ✓ |workspace| apps/web/src/lib/grading-routes.integration.test.ts (8 tests) 184ms
++
++ Test Files  3 passed (3)
++      Tests  38 passed (38)
++   Start at  00:04:26
++   Duration  1.63s (transform 130ms, setup 6ms, collect 377ms, tests 859ms, environment 0ms, prepare 92ms)
++
+diff --git a/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-focused-final.log b/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-focused-final.log
+new file mode 100644
+index 0000000..3180cac
+--- /dev/null
++++ b/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-focused-final.log
+@@ -0,0 +1,12 @@
++
++ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
++
++ ✓ |workspace| apps/web/src/lib/grading-routes.integration.test.ts (8 tests) 208ms
++ ✓ |workspace| packages/domain/src/grading/grading-service.test.ts (14 tests) 443ms
++ ✓ |workspace| packages/domain/src/items/item-service.test.ts (15 tests) 247ms
++
++ Test Files  3 passed (3)
++      Tests  37 passed (37)
++   Start at  00:03:02
++   Duration  1.68s (transform 133ms, setup 6ms, collect 381ms, tests 898ms, environment 0ms, prepare 91ms)
++
+diff --git a/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-full-suite-final.log b/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-full-suite-final.log
+new file mode 100644
+index 0000000..7110b2f
+--- /dev/null
++++ b/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-full-suite-final.log
+@@ -0,0 +1,79 @@
++
++ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
++
++ ✓ |workspace| packages/domain/src/catalog/proposal-service.test.ts (16 tests) 4495ms
++   ✓ catalog proposal moderation PostgreSQL > supports corrections, authored translations, variant references, source updates and reference removal  305ms
++   ✓ catalog proposal moderation PostgreSQL > atomically enforces pending, rolling daily and retained-history quotas without deleting audit rows  2128ms
++ ✓ |workspace| packages/domain/src/media/cleanup-service.test.ts (11 tests) 2222ms
++   ✓ retention on real PostgreSQL > does not delete bytes while another media, private document, or avatar reference exists  457ms
++ ✓ |workspace| packages/domain/src/grading/grading-service.test.ts (15 tests) 746ms
++ ✓ |workspace| packages/domain/src/catalog/catalog-service.integration.test.ts (11 tests) 591ms
++ ✓ |workspace| packages/domain/src/condition/condition-service.test.ts (10 tests) 475ms
++ ✓ |workspace| apps/web/src/lib/security-service.integration.test.ts (1 test) 282ms
++ ✓ |workspace| apps/worker/src/jobs/process-image.test.ts (8 tests) 294ms
++ ✓ |workspace| apps/web/src/app/api/v1/items/resource-route.integration.test.ts (2 tests) 284ms
++ ✓ |workspace| packages/domain/src/items/item-service.test.ts (15 tests) 283ms
++ ✓ |workspace| packages/domain/src/custom-fields/custom-field-service.test.ts (36 tests) 268ms
++ ✓ |workspace| apps/worker/src/jobs/image-repository.integration.test.ts (2 tests) 259ms
++ ✓ |workspace| packages/domain/src/media/media-service.test.ts (20 tests) 260ms
++ ✓ |workspace| apps/web/src/lib/catalog-proposal-routes.integration.test.ts (3 tests) 242ms
++ ✓ |workspace| packages/domain/src/locations/location-service.test.ts (17 tests) 231ms
++ ✓ |workspace| apps/web/src/lib/grading-routes.integration.test.ts (8 tests) 222ms
++ ✓ |workspace| packages/domain/src/catalog/category-template-service.integration.test.ts (4 tests) 210ms
++ ✓ |workspace| packages/domain/src/collections/collection-service.test.ts (14 tests) 191ms
++ ✓ |workspace| packages/domain/src/media/media-read.integration.test.ts (1 test) 212ms
++ ✓ |workspace| packages/domain/src/media/media-management.integration.test.ts (1 test) 188ms
++ ✓ |workspace| packages/domain/src/items/identifier-service.test.ts (11 tests) 187ms
++ ✓ |workspace| packages/storage/src/staging-lock.integration.test.ts (3 tests) 190ms
++ ✓ |workspace| apps/web/src/lib/condition-routes.integration.test.ts (5 tests) 197ms
++ ✓ |workspace| packages/domain/src/identity/security-service.test.ts (7 tests) 135ms
++ ✓ |workspace| packages/domain/src/identity/profile-service.test.ts (6 tests) 118ms
++ ✓ |workspace| packages/db/src/media-migration.integration.test.ts (1 test) 82ms
++ ✓ |workspace| packages/db/src/postgres.integration.test.ts (1 test) 102ms
++ ✓ |workspace| packages/queue/src/postgres.integration.test.ts (1 test) 52ms
++ ✓ |workspace| packages/storage/src/local-storage.test.ts (23 tests) 54ms
++ ✓ |workspace| apps/web/src/components/items/item-form-values.test.ts (13 tests) 37ms
++ ✓ |workspace| packages/db/src/test-database.test.ts (4 tests) 41ms
++ ✓ |workspace| packages/config/src/client.test.ts (6 tests) 41ms
++ ✓ |workspace| apps/worker/src/jobs/cleanup-media.test.ts (4 tests) 25ms
++ ✓ |workspace| apps/web/src/lib/media-routes.test.ts (14 tests) 22ms
++ ✓ |workspace| packages/db/src/media-lock.integration.test.ts (1 test) 22ms
++ ✓ |workspace| apps/worker/src/health.test.ts (2 tests) 20ms
++ ✓ |workspace| apps/web/src/lib/catalog-proposal-routes.test.ts (5 tests) 15ms
++ ✓ |workspace| apps/web/src/app/api/v1/items/item-api.test.ts (10 tests) 13ms
++ ✓ |workspace| packages/domain/src/catalog/category-template-service.test.ts (32 tests) 9ms
++ ✓ |workspace| apps/web/src/app/api/v1/collections/collection-api.test.ts (5 tests) 9ms
++ ✓ |workspace| apps/web/src/lib/api/route-handler.test.ts (5 tests) 9ms
++ ✓ |workspace| apps/web/src/lib/auth-api-server-setup.test.ts (1 test) 8ms
++ ✓ |workspace| packages/config/src/server.test.ts (26 tests) 8ms
++ ✓ |workspace| apps/web/src/app/api/v1/account/recovery-methods/route.test.ts (3 tests) 6ms
++ ✓ |workspace| apps/web/src/lib/auth.test.ts (3 tests) 6ms
++ ✓ |workspace| apps/web/src/app/api/v1/media/media-read.test.ts (5 tests) 6ms
++ ✓ |workspace| packages/queue/src/pg-boss-queue.test.ts (10 tests) 6ms
++ ✓ |workspace| apps/web/src/app/api/v1/account/sessions/route.test.ts (4 tests) 6ms
++ ✓ |workspace| apps/web/src/lib/account-profile-routes.test.ts (2 tests) 6ms
++ ✓ |workspace| apps/worker/src/jobs/image-dispatcher.test.ts (2 tests) 4ms
++ ✓ |workspace| packages/testing/src/production-config.test.ts (5 tests) 4ms
++ ✓ |workspace| packages/domain/src/media/media-read.test.ts (8 tests) 4ms
++ ✓ |workspace| apps/web/src/app/api/openapi.json/route.test.ts (1 test) 4ms
++ ✓ |workspace| apps/web/src/proxy.test.ts (3 tests) 4ms
++ ✓ |workspace| packages/contracts/src/catalog-proposals.test.ts (2 tests) 4ms
++ ✓ |workspace| packages/domain/src/locations/label-service.test.ts (2 tests) 4ms
++ ✓ |workspace| packages/domain/src/authz/policy.test.ts (25 tests) 4ms
++ ✓ |workspace| packages/contracts/src/openapi.test.ts (3 tests) 4ms
++ ✓ |workspace| apps/worker/src/main.test.ts (4 tests) 4ms
++ ✓ |workspace| apps/web/src/lib/email.test.ts (2 tests) 3ms
++ ✓ |workspace| apps/web/src/components/auth/account-ui-state.test.ts (9 tests) 3ms
++ ✓ |workspace| apps/web/src/lib/request-id.test.ts (5 tests) 3ms
++ ✓ |workspace| packages/domain/src/api/resource-query.test.ts (2 tests) 2ms
++ ✓ |workspace| packages/db/src/health.test.ts (1 test) 2ms
++ ✓ |workspace| packages/domain/src/catalog/catalog-service.test.ts (2 tests) 1ms
++ ✓ |workspace| apps/web/src/i18n/routing.test.ts (3 tests) 1ms
++ ✓ |workspace| apps/web/src/app/api/health/route.test.ts (2 tests) 1ms
++ ✓ |workspace| packages/testing/src/workspace.test.ts (1 test) 1ms
++
++ Test Files  67 passed (67)
++      Tests  490 passed (490)
++   Start at  00:04:42
++   Duration  28.39s (transform 954ms, setup 68ms, collect 5.53s, tests 13.45s, environment 6ms, prepare 2.26s)
++
+diff --git a/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-generate.log b/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-generate.log
+new file mode 100644
+index 0000000..79644dd
+--- /dev/null
++++ b/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-generate.log
+@@ -0,0 +1,9 @@
++Loaded Prisma config from packages/db/prisma.config.ts.
++
++Prisma schema loaded from packages/db/prisma/schema.prisma.
++
++✔ Generated Prisma Client (v7.10.0) to ./node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client in 216ms
++
++Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
++
++
+diff --git a/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-generated-duplicates.log b/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-generated-duplicates.log
+new file mode 100644
+index 0000000..aa7bbce
+--- /dev/null
++++ b/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-generated-duplicates.log
+@@ -0,0 +1,5 @@
++Pre-existing generated duplicate type files preserved outside compiler include.
++apps/web/.next/types/cache-life.d 2.ts -> /var/folders/tg/78fwjs7j4zd62l39w92v2gtw0000gn/T/sammlerraum-task-5-generated-duplicates-jn8drq_t/cache-life.d 2.ts
++apps/web/.next/types/root-params.d 2.ts -> /var/folders/tg/78fwjs7j4zd62l39w92v2gtw0000gn/T/sammlerraum-task-5-generated-duplicates-jn8drq_t/root-params.d 2.ts
++apps/web/.next/types/routes.d 2.ts -> /var/folders/tg/78fwjs7j4zd62l39w92v2gtw0000gn/T/sammlerraum-task-5-generated-duplicates-jn8drq_t/routes.d 2.ts
++apps/web/.next/types/validator 2.ts -> /var/folders/tg/78fwjs7j4zd62l39w92v2gtw0000gn/T/sammlerraum-task-5-generated-duplicates-jn8drq_t/validator 2.ts
+diff --git a/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-incomplete-scaffold.log b/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-incomplete-scaffold.log
+new file mode 100644
+index 0000000..308769a
+--- /dev/null
++++ b/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-incomplete-scaffold.log
+@@ -0,0 +1,17 @@
++import { randomUUID } from "node:crypto";
++type Query = { $queryRaw<T>(query: TemplateStringsArray, ...values: unknown[]): Promise<T> };
++export type GradingDatabase = Query & { $transaction<T>(work: (tx: Query) => Promise<T>, options: { isolationLevel: "ReadCommitted" }): Promise<T> };
++// Initial runnable new-service scaffold: certificate scope is intentionally incomplete.
++export function createGradingService(database: GradingDatabase, actorUserId: string) {
++  async function addGrading(itemId: string, input: { provider: string; grade: string; certificateNo: string }) {
++    return database.$transaction(async tx => {
++      const [item] = await tx.$queryRaw<Array<{id:string}>>`SELECT id FROM "CollectibleItem" WHERE id=${itemId}::uuid AND "ownerId"=${actorUserId} FOR UPDATE`;
++      if (!item) throw new Error("ITEM_NOT_FOUND");
++      const previous = await tx.$queryRaw<Array<{id:string}>>`SELECT id FROM "Grading" WHERE "ownerId"=${actorUserId} AND "certificateKey"=${input.certificateNo}`;
++      if (previous.length) throw new Error("GRADING_CERTIFICATE_CONFLICT");
++      const [row] = await tx.$queryRaw<Array<{id:string;itemId:string}>>`INSERT INTO "Grading" (id,"itemId","ownerId",provider,"providerKey",grade,"certificateNo","certificateKey","updatedAt") VALUES (${randomUUID()}::uuid,${itemId}::uuid,${actorUserId},${input.provider},${input.provider.toLowerCase()},${input.grade},${input.certificateNo},${input.certificateNo},now()) RETURNING *`;
++      return row!;
++    },{isolationLevel:"ReadCommitted"});
++  }
++  return {addGrading};
++}
+diff --git a/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-lint-final.log b/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-lint-final.log
+new file mode 100644
+index 0000000..7c22a54
+--- /dev/null
++++ b/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-lint-final.log
+@@ -0,0 +1,41 @@
++
++> sammlerraum@ lint /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
++> pnpm -r lint
++
++Scope: 9 of 10 workspace projects
++packages/config lint$ prettier --check .
++packages/contracts lint$ prettier --check .
++packages/queue lint$ prettier --check .
++packages/storage lint$ prettier --check .
++packages/contracts lint: Checking formatting...
++packages/storage lint: Checking formatting...
++packages/config lint: Checking formatting...
++packages/queue lint: Checking formatting...
++packages/config lint: All matched files use Prettier code style!
++packages/config lint: Done
++packages/testing lint$ prettier --check .
++packages/storage lint: All matched files use Prettier code style!
++packages/storage lint: Done
++packages/contracts lint: All matched files use Prettier code style!
++packages/contracts lint: Done
++packages/testing lint: Checking formatting...
++packages/queue lint: All matched files use Prettier code style!
++packages/queue lint: Done
++packages/testing lint: All matched files use Prettier code style!
++packages/testing lint: Done
++packages/db lint$ prettier --check .
++packages/db lint: Checking formatting...
++packages/db lint: All matched files use Prettier code style!
++packages/db lint: Done
++packages/domain lint$ prettier --check .
++packages/domain lint: Checking formatting...
++packages/domain lint: All matched files use Prettier code style!
++packages/domain lint: Done
++apps/web lint$ prettier --check src e2e messages package.json next.config.ts playwright.config.ts tsconfig.json
++apps/worker lint$ prettier --check src package.json
++apps/web lint: Checking formatting...
++apps/worker lint: Checking formatting...
++apps/worker lint: All matched files use Prettier code style!
++apps/worker lint: Done
++apps/web lint: All matched files use Prettier code style!
++apps/web lint: Done
+diff --git a/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-migrate.log b/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-migrate.log
+new file mode 100644
+index 0000000..70f4050
+--- /dev/null
++++ b/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-migrate.log
+@@ -0,0 +1,16 @@
++Loaded Prisma config from packages/db/prisma.config.ts.
++
++Prisma schema loaded from packages/db/prisma/schema.prisma.
++Datasource "db": PostgreSQL database "sammlerraum_test", schema "public" at "localhost:5432"
++
++19 migrations found in prisma/migrations
++
++Applying migration `20261017225204_grading_records`
++
++The following migration(s) have been applied:
++
++migrations/
++  └─ 20261017225204_grading_records/
++    └─ migration.sql
++
++All migrations have been successfully applied.
+diff --git a/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-migration-status.log b/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-migration-status.log
+new file mode 100644
+index 0000000..9c8d22a
+--- /dev/null
++++ b/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-migration-status.log
+@@ -0,0 +1,8 @@
++Loaded Prisma config from packages/db/prisma.config.ts.
++
++Prisma schema loaded from packages/db/prisma/schema.prisma.
++Datasource "db": PostgreSQL database "sammlerraum_test", schema "public" at "localhost:5432"
++
++20 migrations found in prisma/migrations
++
++Database schema is up to date!
+diff --git a/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-numeric-prisma-probe.log b/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-numeric-prisma-probe.log
+new file mode 100644
+index 0000000..408419c
+--- /dev/null
++++ b/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-numeric-prisma-probe.log
+@@ -0,0 +1,10 @@
++
++ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
++
++ ✓ |workspace| packages/domain/src/grading/grading-service.test.ts (15 tests | 14 skipped) 182ms
++
++ Test Files  1 passed (1)
++      Tests  1 passed | 14 skipped (15)
++   Start at  00:03:46
++   Duration  492ms (transform 69ms, setup 5ms, collect 155ms, tests 182ms, environment 0ms, prepare 40ms)
++
+diff --git a/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-numeric-sql-red.log b/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-numeric-sql-red.log
+new file mode 100644
+index 0000000..7ae07d2
+--- /dev/null
++++ b/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-numeric-sql-red.log
+@@ -0,0 +1,49 @@
++
++ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
++
++ ❯ |workspace| packages/domain/src/grading/grading-service.test.ts (15 tests | 1 failed | 14 skipped) 159ms
++   ↓ personal grading PostgreSQL > allows equal certificate numbers across different providers
++   ↓ personal grading PostgreSQL > preserves authored facts, leading zeros and exact optional decimal strings
++   ↓ personal grading PostgreSQL > scopes certificate conflicts to one owner and provider without guessing number equivalence
++   ↓ personal grading PostgreSQL > supports multiple uncertified records and full replacement/removal releasing a certificate
++   ↓ personal grading PostgreSQL > hides foreign and mismatched grading IDs on reads and all mutations
++   ↓ personal grading PostgreSQL > retains inactive item reads but rejects lifecycle mutations and deleted parents
++   ↓ personal grading PostgreSQL > requires split before grading and enforces the shared item quantity mutation path
++   ↓ personal grading PostgreSQL > rejects malformed authored facts and never rounds or synthesizes comparable values
++   ↓ personal grading PostgreSQL > caps records under the shared item lock and handles racing certificate additions
++   × personal grading PostgreSQL > enforces owner, single-specimen, paired scale and provider identity in PostgreSQL 62ms
++     → promise resolved "[ { id: '506fcb97-2a01-48c8-bd13-9…' } ]" instead of rejecting
++   ↓ personal grading PostgreSQL > keeps exact condition and grading independent through condition edits and grading removal
++   ↓ personal grading PostgreSQL > serializes actual item quantity updates behind grading's item lock
++   ↓ personal grading PostgreSQL > rechecks quantity after waiting for a concurrent committed change
++   ↓ personal grading PostgreSQL > uses native FK locking to reject a racing direct SQL quantity change
++   ↓ personal grading PostgreSQL > retains owner-scoped certificate reservations on item soft deletion
++
++⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
++
++ FAIL  |workspace| packages/domain/src/grading/grading-service.test.ts > personal grading PostgreSQL > enforces owner, single-specimen, paired scale and provider identity in PostgreSQL
++AssertionError: promise resolved "[ { id: '506fcb97-2a01-48c8-bd13-9…' } ]" instead of rejecting
++
++- Expected: 
++Error {
++  "message": "rejected promise",
++}
++
+++ Received: 
++[
++  {
++    "id": "506fcb97-2a01-48c8-bd13-99453143fb79",
++  },
++]
++
++ ❯ packages/domain/src/grading/grading-service.test.ts:334:272
++
++
++⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
++
++
++ Test Files  1 failed (1)
++      Tests  1 failed | 14 skipped (15)
++   Start at  00:04:00
++   Duration  451ms (transform 69ms, setup 5ms, collect 141ms, tests 159ms, environment 0ms, prepare 34ms)
++
+diff --git a/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-routes-green.log b/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-routes-green.log
+new file mode 100644
+index 0000000..dce78b9
+--- /dev/null
++++ b/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-routes-green.log
+@@ -0,0 +1,10 @@
++
++ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
++
++ ✓ |workspace| apps/web/src/lib/grading-routes.integration.test.ts (7 tests) 193ms
++
++ Test Files  1 passed (1)
++      Tests  7 passed (7)
++   Start at  00:02:18
++   Duration  598ms (transform 112ms, setup 5ms, collect 246ms, tests 193ms, environment 0ms, prepare 36ms)
++
+diff --git a/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-routes-red.log b/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-routes-red.log
+new file mode 100644
+index 0000000..69a4b2f
+--- /dev/null
++++ b/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-routes-red.log
+@@ -0,0 +1,140 @@
++
++ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
++
++ ❯ |workspace| apps/web/src/lib/grading-routes.integration.test.ts (7 tests | 7 failed) 147ms
++   × grading routes PostgreSQL > persists owner CRUD through the adapter with full replacement and private no-store DTOs 14ms
++     → expected 501 to be 201 // Object.is equality
++   × grading routes PostgreSQL > requires fresh authentication and hides foreign, mismatched and invalid resource IDs 10ms
++     → expected 501 to be 401 // Object.is equality
++   × grading routes PostgreSQL > enforces exact Origin on every mutation 4ms
++     → expected 501 to be 403 // Object.is equality
++   × grading routes PostgreSQL > rejects strict malformed facts and never accepts trusted verification or cross-scale numbers 3ms
++     → expected 501 to be 400 // Object.is equality
++   × grading routes PostgreSQL > bounds actual UTF-8 streams independently of absent or false Content-Length 4ms
++     → expected 501 to be 413 // Object.is equality
++   × grading routes PostgreSQL > returns stable conflicts for duplicate certificates, lifecycle and shared item quantity writes 4ms
++     → expected 501 to be 409 // Object.is equality
++   × grading routes PostgreSQL > does not leak grading or private provenance through anonymous or other-user public item reads 9ms
++     → expected 501 to be 404 // Object.is equality
++
++⎯⎯⎯⎯⎯⎯⎯ Failed Tests 7 ⎯⎯⎯⎯⎯⎯⎯
++
++ FAIL  |workspace| apps/web/src/lib/grading-routes.integration.test.ts > grading routes PostgreSQL > persists owner CRUD through the adapter with full replacement and private no-store DTOs
++AssertionError: expected 501 to be 201 // Object.is equality
++
++- Expected
+++ Received
++
++- 201
+++ 501
++
++ ❯ apps/web/src/lib/grading-routes.integration.test.ts:37:28
++
++
++⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/7]⎯
++
++ FAIL  |workspace| apps/web/src/lib/grading-routes.integration.test.ts > grading routes PostgreSQL > requires fresh authentication and hides foreign, mismatched and invalid resource IDs
++AssertionError: expected 501 to be 401 // Object.is equality
++
++- Expected
+++ Received
++
++- 401
+++ 501
++
++ ❯ apps/web/src/lib/grading-routes.integration.test.ts:58:341
++
++
++⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/7]⎯
++
++ FAIL  |workspace| apps/web/src/lib/grading-routes.integration.test.ts > grading routes PostgreSQL > enforces exact Origin on every mutation
++AssertionError: expected 501 to be 403 // Object.is equality
++
++- Expected
+++ Received
++
++- 403
+++ 501
++
++ ❯ apps/web/src/lib/grading-routes.integration.test.ts:72:102
++     70|     const api=handlers();
++     71|     for(const value of [null,"https://evil.example",`${origin}/`,`${or…
++     72|       expect((await api.POST_GRADING(request("POST",{provider:"X",grad…
++       |                                                                                                      ^
++     73|       expect((await api.PUT_GRADING(request("PUT",{provider:"X",grade:…
++     74|       expect((await api.DELETE_GRADING(request("DELETE",undefined,valu…
++
++⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/7]⎯
++
++ FAIL  |workspace| apps/web/src/lib/grading-routes.integration.test.ts > grading routes PostgreSQL > rejects strict malformed facts and never accepts trusted verification or cross-scale numbers
++AssertionError: expected 501 to be 400 // Object.is equality
++
++- Expected
+++ Received
++
++- 400
+++ 501
++
++ ❯ apps/web/src/lib/grading-routes.integration.test.ts:82:76
++
++
++⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/7]⎯
++
++ FAIL  |workspace| apps/web/src/lib/grading-routes.integration.test.ts > grading routes PostgreSQL > bounds actual UTF-8 streams independently of absent or false Content-Length
++AssertionError: expected 501 to be 413 // Object.is equality
++
++- Expected
+++ Received
++
++- 413
+++ 501
++
++ ❯ apps/web/src/lib/grading-routes.integration.test.ts:100:122
++
++
++⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/7]⎯
++
++ FAIL  |workspace| apps/web/src/lib/grading-routes.integration.test.ts > grading routes PostgreSQL > returns stable conflicts for duplicate certificates, lifecycle and shared item quantity writes
++AssertionError: expected 501 to be 409 // Object.is equality
++
++- Expected
+++ Received
++
++- 409
+++ 501
++
++ ❯ apps/web/src/lib/grading-routes.integration.test.ts:109:30
++    107|     const api=handlers();const row=await service().addGrading(itemId,{…
++    108|     const duplicate=await api.POST_GRADING(request("POST",{provider:"c…
++    109|     expect(duplicate.status).toBe(409);expect(await duplicate.json()).…
++       |                              ^
++    110|     const itemApi=createItemRouteHandlers(createManagementRouteDepende…
++    111|     expect((await itemApi.PATCH_ITEM(request("PATCH",{quantity:2}),ite…
++
++⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/7]⎯
++
++ FAIL  |workspace| apps/web/src/lib/grading-routes.integration.test.ts > grading routes PostgreSQL > does not leak grading or private provenance through anonymous or other-user public item reads
++AssertionError: expected 501 to be 404 // Object.is equality
++
++- Expected
+++ Received
++
++- 404
+++ 501
++
++ ❯ apps/web/src/lib/grading-routes.integration.test.ts:128:70
++    126|       const body=await response.json();expect(body).toEqual({item:{id:…
++    127|     }
++    128|     expect((await handlers().GET_GRADINGS(request(),itemId)).status).t…
++       |                                                                      ^
++    129|   });
++    130| });
++
++⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/7]⎯
++
++
++ Test Files  1 failed (1)
++      Tests  7 failed (7)
++   Start at  00:01:37
++   Duration  539ms (transform 102ms, setup 6ms, collect 237ms, tests 147ms, environment 0ms, prepare 35ms)
++
+diff --git a/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-schema-drift.log b/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-schema-drift.log
+new file mode 100644
+index 0000000..caaf5af
+--- /dev/null
++++ b/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-schema-drift.log
+@@ -0,0 +1,4 @@
++Loaded Prisma config from packages/db/prisma.config.ts.
++
++No difference detected.
++
+diff --git a/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-schema-validate.log b/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-schema-validate.log
+new file mode 100644
+index 0000000..0e4a7fa
+--- /dev/null
++++ b/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-schema-validate.log
+@@ -0,0 +1,4 @@
++Loaded Prisma config from packages/db/prisma.config.ts.
++
++Prisma schema loaded from packages/db/prisma/schema.prisma.
++The schema at packages/db/prisma/schema.prisma is valid 🚀
+diff --git a/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-typecheck-final.log b/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-typecheck-final.log
+new file mode 100644
+index 0000000..36eef2c
+--- /dev/null
++++ b/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-typecheck-final.log
+@@ -0,0 +1,23 @@
++
++> sammlerraum@ typecheck /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
++> pnpm -r typecheck
++
++Scope: 9 of 10 workspace projects
++packages/contracts typecheck$ tsc --noEmit --project ../../tsconfig.base.json
++packages/queue typecheck$ tsc --noEmit --project ../../tsconfig.base.json
++packages/storage typecheck$ tsc --noEmit --project ../../tsconfig.base.json
++packages/config typecheck$ tsc --noEmit --project ../../tsconfig.base.json
++packages/config typecheck: Done
++packages/testing typecheck$ tsc --noEmit --project ../../tsconfig.base.json
++packages/storage typecheck: Done
++packages/queue typecheck: Done
++packages/contracts typecheck: Done
++packages/testing typecheck: Done
++packages/db typecheck$ tsc --noEmit --project ../../tsconfig.base.json
++packages/db typecheck: Done
++packages/domain typecheck$ tsc --noEmit --project ../../tsconfig.base.json
++packages/domain typecheck: Done
++apps/web typecheck$ tsc --noEmit --project tsconfig.json
++apps/worker typecheck$ tsc --noEmit --project ../../tsconfig.base.json
++apps/worker typecheck: Done
++apps/web typecheck: Done
+diff --git a/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-typecheck-generated-duplicates.log b/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-typecheck-generated-duplicates.log
+new file mode 100644
+index 0000000..2abc4de
+--- /dev/null
++++ b/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-typecheck-generated-duplicates.log
+@@ -0,0 +1,33 @@
++
++> sammlerraum@ typecheck /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
++> pnpm -r typecheck
++
++Scope: 9 of 10 workspace projects
++packages/config typecheck$ tsc --noEmit --project ../../tsconfig.base.json
++packages/queue typecheck$ tsc --noEmit --project ../../tsconfig.base.json
++packages/contracts typecheck$ tsc --noEmit --project ../../tsconfig.base.json
++packages/storage typecheck$ tsc --noEmit --project ../../tsconfig.base.json
++packages/queue typecheck: Done
++packages/testing typecheck$ tsc --noEmit --project ../../tsconfig.base.json
++packages/config typecheck: Done
++packages/contracts typecheck: Done
++packages/storage typecheck: Done
++packages/testing typecheck: Done
++packages/db typecheck$ tsc --noEmit --project ../../tsconfig.base.json
++packages/db typecheck: Done
++packages/domain typecheck$ tsc --noEmit --project ../../tsconfig.base.json
++packages/domain typecheck: Done
++apps/web typecheck$ tsc --noEmit --project tsconfig.json
++apps/worker typecheck$ tsc --noEmit --project ../../tsconfig.base.json
++apps/worker typecheck: Done
++apps/web typecheck: .next/types/cache-life.d 2.ts(3,1): error TS6200: Definitions of the following identifiers conflict with those in another file: unstable_cache, updateTag, revalidateTag, revalidatePath, refresh, unstable_noStore, io, cacheTag, unstable_cacheTag, unstable_cacheLife
++apps/web typecheck: .next/types/routes.d 2.ts(86,5): error TS2717: Subsequent property declarations must have the same type.  Property 'params' must be of type 'Promise<ParamMap[AppRoute]>', but here has type 'Promise<ParamMap[AppRoute]>'.
++apps/web typecheck: .next/types/routes.d 2.ts(99,8): error TS2300: Duplicate identifier 'LayoutProps'.
++apps/web typecheck: .next/types/routes.d 2.ts(116,13): error TS2428: All declarations of 'RouteContext' must have identical type parameters.
++apps/web typecheck: .next/types/routes.d 2.ts(117,5): error TS2717: Subsequent property declarations must have the same type.  Property 'params' must be of type 'Promise<ParamMap[AppRouteHandlerRoute]>', but here has type 'Promise<ParamMap[AppRouteHandlerRoute]>'.
++apps/web typecheck: .next/types/routes.d 2.ts(117,21): error TS2536: Type 'AppRouteHandlerRoute' cannot be used to index type 'ParamMap'.
++apps/web typecheck: Failed
++/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web:
++ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @sammlerraum/web@ typecheck: `tsc --noEmit --project tsconfig.json`
++Exit status 2
++ ELIFECYCLE  Command failed with exit code 2.
+diff --git a/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-typecheck-initial.log b/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-typecheck-initial.log
+new file mode 100644
+index 0000000..40d8b71
+--- /dev/null
++++ b/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/logs/task-5-typecheck-initial.log
+@@ -0,0 +1,26 @@
++
++> sammlerraum@ typecheck /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
++> pnpm -r typecheck
++
++Scope: 9 of 10 workspace projects
++packages/config typecheck$ tsc --noEmit --project ../../tsconfig.base.json
++packages/contracts typecheck$ tsc --noEmit --project ../../tsconfig.base.json
++packages/queue typecheck$ tsc --noEmit --project ../../tsconfig.base.json
++packages/storage typecheck$ tsc --noEmit --project ../../tsconfig.base.json
++packages/contracts typecheck: ../../apps/web/src/lib/grading-routes.integration.test.ts(84,16): error TS18046: 'body' is of type 'unknown'.
++packages/contracts typecheck: ../../apps/web/src/lib/grading-routes.integration.test.ts(94,12): error TS18046: 'body' is of type 'unknown'.
++packages/contracts typecheck: ../../apps/web/src/lib/grading-routes.integration.test.ts(95,12): error TS18046: 'body' is of type 'unknown'.
++packages/queue typecheck: ../../apps/web/src/lib/grading-routes.integration.test.ts(84,16): error TS18046: 'body' is of type 'unknown'.
++packages/queue typecheck: ../../apps/web/src/lib/grading-routes.integration.test.ts(94,12): error TS18046: 'body' is of type 'unknown'.
++packages/queue typecheck: ../../apps/web/src/lib/grading-routes.integration.test.ts(95,12): error TS18046: 'body' is of type 'unknown'.
++packages/config typecheck: ../../apps/web/src/lib/grading-routes.integration.test.ts(84,16): error TS18046: 'body' is of type 'unknown'.
++packages/config typecheck: ../../apps/web/src/lib/grading-routes.integration.test.ts(94,12): error TS18046: 'body' is of type 'unknown'.
++packages/config typecheck: ../../apps/web/src/lib/grading-routes.integration.test.ts(95,12): error TS18046: 'body' is of type 'unknown'.
++packages/contracts typecheck: Failed
++/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/packages/contracts:
++ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @sammlerraum/contracts@ typecheck: `tsc --noEmit --project ../../tsconfig.base.json`
++Exit status 2
++packages/testing typecheck$ tsc --noEmit --project ../../tsconfig.base.json
++packages/queue typecheck: Failed
++packages/config typecheck: Failed
++ ELIFECYCLE  Command failed with exit code 2.
+diff --git a/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/task-5-report.md b/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/task-5-report.md
+new file mode 100644
+index 0000000..b24cdba
+--- /dev/null
++++ b/.superpowers/sdd/2026-09-19-05-catalog-condition-grading/task-5-report.md
+@@ -0,0 +1,50 @@
++# Task 5 implementation report
++
++Base: `5d204568a20c34964c4f058adc9c028bd589aa57`. Root GO followed Task 4 independent review, exact-source CI and completion persistence. Task 5 preflight was read-only; no source/schema/test/database/index/commit mutations preceded GO. Root approved the complete design, scoped initial runnable RED scaffold, and retained soft-deletion policy.
++
++## Result and consumer contracts
++
++`createGradingService(database, actorUserId)` supplies `listGradings(itemId)`, `getGrading(itemId, gradingId)`, `addGrading(itemId, input)`, `updateGrading(itemId, gradingId, input)` and `removeGrading(itemId, gradingId)`. Current personally authored records hold provider, normalized display grade, optional exact numeric value and explicit authored scale, optional certificate number, graded date, verification URL, source/provenance, and creation/update timestamps. Multiple records can represent different providers or authored historical dates; no authoritative grade is selected or inferred.
++
++Owner-only routes are GET/POST `/api/v1/items/[itemId]/gradings` and GET/PUT/DELETE `/api/v1/items/[itemId]/gradings/[gradingId]`. POST returns 201 with `{ grading }`; GET/PUT return `{ grading }`, list returns `{ gradings }`, and DELETE returns 204. PUT replaces all facts, so omitted nullable facts become null. Provider and grade remain required. DELETE accepts no body and bounds unexpected bodies before rejecting them. Stream-counted UTF-8 input is limited to 8192 bytes independently of Content-Length. Strict input rejects unknown fields, including ownership, trusted-verification flags and condition bands.
++
++All endpoints require live uncached/unrefreshed sessions and no-store responses; mutations require exact Origin. Domain transactions recheck item and collection ownership/deletion under the shared item row lock. Missing/foreign/deleted items and missing/mismatched/foreign grading IDs produce hidden 404 responses. Archived/disposed items remain owner-readable; all grading mutations reject them with 409. Certificate, capacity and physical-quantity conflicts have stable domain codes and 409 route mapping. Public item DTOs and catalog/proposal payloads remain free of grading and private provenance.
++
++## Identity, normalization and authored numeric semantics
++
++- Provider/grade are NFC-normalized and trimmed, maximum 120 characters; internal whitespace is preserved. Optional certificate is similarly normalized/trimmed, maximum 160 characters, preserving leading zeros, case, punctuation and internal whitespace. Controls are rejected. Provider identity applies generic ASCII case folding only; certificate identity is exact after the documented normalization. No provider aliases or provider-specific number equivalences are invented.
++- Unique `(ownerId, providerKey, certificateKey)` applies to current stored rows, never to all accounts globally. Same-owner/same-provider certificate duplication conflicts; different providers or different owners may independently store the same number. PostgreSQL NULL uniqueness permits multiple records without a certificate. Update/removal releases the old current certificate identity.
++- Optional numeric input is a decimal **string**, never a JS number. Strict unsigned syntax allows at most eight integer and four fractional digits, range 0 through 99999999.9999, without exponent, rounding or automatic grade conversion. An explicit nonempty authored `comparableScale` (maximum 120 characters) is required exactly when numeric value is present. Neither value nor scale establishes trusted comparability, provider equivalence, or quality ordering. No cross-provider conversion/ranking is implemented.
++- Storage is `Decimal(12,4)`; DTOs read the database value as exact decimal text, e.g. `10.0000`. Strict application validation prevents precision loss. Direct database writes retain PostgreSQL's native numeric precision behavior; named checks enforce nonnegative, paired-scale and finite upper bounds.
++- Optional real calendar date uses YYYY-MM-DD. Optional source is bounded to 1000 characters. Verification URL is bounded to 2048 characters and accepts HTTP(S) without credentials/control characters. No URL is fetched, no provider is contacted, and authenticity or real provider verification is never claimed.
++
++## Physical specimen policy and retention costs
++
++Every current grading record requires item quantity=1, including records without certificates. Users split a quantity item into individual specimens before grading. Current records are capped at 100 per item under the item lock. `updateItem` now rejects quantity changes when grading exists; its existing quantity=1 and unrelated edits still work. `splitQuantityItem` explicitly rejects grading-bearing rows before any copy, so a certificate is never silently cloned or moved. Removing all current grading records releases the quantity restriction.
++
++Native enforcement uses the item composite unique index `(id, ownerId, quantity)`, grading's constant `itemQuantity=1` named CHECK, and composite ownership/quantity FK with **ON UPDATE RESTRICT** and ON DELETE CASCADE. Direct SQL and racing quantity changes cannot leave a current grading on a quantity greater than one. Tests observe PostgreSQL lock waits in both service directions and in a direct native-FK race.
++
++Root explicitly ruled that **item soft deletion preserves grading rows and owner-scoped certificate reservations**. The hidden item becomes 404; re-entering the same certificate under the same owner/provider conflicts, while another account remains independent. This prevents silent erasure of personal facts. Remove grading before deleting the item to release the claim now. Recovery of retained items and later permanent erasure belong to Phase 09 trash/restore policy; no recovery endpoint was added here.
++
++There is no bespoke immutable grading history or generic audit framework. Current edits/removal are personal CRUD with timestamps. Phase 09 Task 4 must append grading audit events inside these existing mutation transactions. This task makes no immutable-history guarantee. Category/exact condition and grading remain independent; condition changes preserve grading and grading removal preserves exact condition.
++
++## Genuine test and migration chronology
++
++1. The original dedicated PostgreSQL test was written first. Correct additive schema and real owner/collection/quantity=1 item fixtures were made runnable. The explicitly approved **new-service incomplete scaffold** inserted PSA/123 but used a certificate-only duplicate probe, wrongly rejecting CGC/123. `task-5-dedicated-red.log` records that actual second-call conflict; `task-5-incomplete-scaffold.log` preserves the scaffold. This was not a pre-existing application regression, a wrong applied database constraint, or later fault injection.
++2. Removing the incomplete probe and relying on the correct owner/provider/certificate unique index passed the unchanged second-call and exact two-provider persisted-row assertions (`task-5-dedicated-green.log`). The final application contains no certificate-only probe.
++3. Expanded tests captured nine domain failures for missing normalization, lifecycle/ownership checks, quantity conflict mapping, capacity and CRUD operations (`task-5-domain-red.log`). The first expanded green attempt reported 26 passing tests but one unhandled rejection caused by concurrently started rejection assertions (`task-5-domain-green.log`); it was **not a clean pass**. Sequential test closures fixed that fixture issue. The clean domain/item run including concurrency checks passed 29 tests (`task-5-domain-concurrency-green.log`).
++4. Seven route behavior tests first failed against a runnable 501 route scaffold (`task-5-routes-red.log`), then passed with actual authenticated adapters and handlers (`task-5-routes-green.log`). A further DELETE-body test failed on an unintended 204; bounded rejection fixed it (`task-5-delete-body-red.log`, subsequent focused logs). The complete focused domain/item/route set passed **38 tests** (`task-5-focused-complete.log`).
++5. A Prisma NaN probe passed because the typed client rejected it before PostgreSQL (`task-5-numeric-prisma-probe.log`), so it was insufficient database evidence. The subsequent raw SQL test actually inserted NaN and failed the rejection assertion (`task-5-numeric-sql-red.log`). PostgreSQL treats NaN as greater than ordinary numbers, so a nonnegative check alone was insufficient. A second additive finite-upper-bound constraint fixed the unchanged raw SQL assertion; the complete focused and full suite include this behavior.
++6. Initial SQL generation used a nonexistent root-level Prisma module path and failed before DDL. The corrected pure local executable at `packages/db/node_modules/prisma/build/index.js` generated schema SQL, which was fully inspected before applying `20261017225204_grading_records`. Latest existing migration was 225203 and its timestamp exceeded the actual UTC clock, so the next sortable ID was used. `20261017225205_grading_finite_comparable` adds the discovered finite check; no applied migration was edited or renamed. Both migrations were inspected and deployed only to the synthetic PostgreSQL test database. Client generation succeeded.
++7. Initial typecheck exposed an unknown-typed test JSON response; an explicit response type fixed it. The next typecheck exposed four **pre-existing ignored generated duplicate files** in `.next/types` with ` 2.ts` names and older timestamps. They were preserved outside the compiler include (`task-5-generated-duplicates.log`), and the normal production build regenerated canonical output. No source/config workaround was made. Both failed typecheck logs are preserved.
++
++## Final verification
++
++- Full serial suite, real PostgreSQL enabled: **67 files, 490 tests passed**, zero failures or unhandled errors (`task-5-full-suite-final.log`). This is the complete workspace suite, not only grading tests.
++- Workspace lint: passed (`task-5-lint-final.log`).
++- Production workspace build: passed, including worker bundle and both grading route entrypoints (`task-5-build-final.log`).
++- Final workspace typecheck: passed after generated-output repair and the production build (`task-5-typecheck-final.log`).
++- Prisma schema validation: passed. All **20 migrations** are applied and schema drift reports no difference (`task-5-schema-validate.log`, `task-5-migration-status.log`, `task-5-schema-drift.log`).
++- CI's serial real-database gate registers both grading test files. No new browser UI is part of Task 5; Task 7 owns the browser separation journey. Exact-source CI/browser/container/native Sharp verification remains root-owned; no local Docker is available.
++
++No push, merge, application deployment, production migration, live provider action, global provider registry write, seed, or canonical checklist update was performed. Root-owned progress/context/Task 7 context/canonical ledger edits are excluded from implementer staging. Root owns independent review, exact-source CI, persistence and integration.
+diff --git a/apps/web/src/app/api/v1/items/[itemId]/gradings/[gradingId]/route.ts b/apps/web/src/app/api/v1/items/[itemId]/gradings/[gradingId]/route.ts
+new file mode 100644
+index 0000000..6512eb5
+--- /dev/null
++++ b/apps/web/src/app/api/v1/items/[itemId]/gradings/[gradingId]/route.ts
+@@ -0,0 +1,16 @@
++import { gradingRouteHandlers } from "../../../../../../../lib/grading-route-dependencies";
++type Context = { params: Promise<{ itemId: string; gradingId: string }> };
++export const dynamic = "force-dynamic";
++export const revalidate = 0;
++export async function GET(request: Request, context: Context) {
++  const { itemId, gradingId } = await context.params;
++  return (await gradingRouteHandlers()).GET_GRADING(request, itemId, gradingId);
++}
++export async function PUT(request: Request, context: Context) {
++  const { itemId, gradingId } = await context.params;
++  return (await gradingRouteHandlers()).PUT_GRADING(request, itemId, gradingId);
++}
++export async function DELETE(request: Request, context: Context) {
++  const { itemId, gradingId } = await context.params;
++  return (await gradingRouteHandlers()).DELETE_GRADING(request, itemId, gradingId);
++}
+diff --git a/apps/web/src/app/api/v1/items/[itemId]/gradings/route.ts b/apps/web/src/app/api/v1/items/[itemId]/gradings/route.ts
+new file mode 100644
+index 0000000..854c055
+--- /dev/null
++++ b/apps/web/src/app/api/v1/items/[itemId]/gradings/route.ts
+@@ -0,0 +1,10 @@
++import { gradingRouteHandlers } from "../../../../../../lib/grading-route-dependencies";
++type Context = { params: Promise<{ itemId: string }> };
++export const dynamic = "force-dynamic";
++export const revalidate = 0;
++export async function GET(request: Request, context: Context) {
++  return (await gradingRouteHandlers()).GET_GRADINGS(request, (await context.params).itemId);
++}
++export async function POST(request: Request, context: Context) {
++  return (await gradingRouteHandlers()).POST_GRADING(request, (await context.params).itemId);
++}
+diff --git a/apps/web/src/lib/grading-route-dependencies.ts b/apps/web/src/lib/grading-route-dependencies.ts
+new file mode 100644
+index 0000000..3eee1c5
+--- /dev/null
++++ b/apps/web/src/lib/grading-route-dependencies.ts
+@@ -0,0 +1,12 @@
++import { createGradingRouteDependencies, createGradingRouteHandlers } from "./grading-routes";
++
++export async function gradingRouteHandlers() {
++  const [{ auth }, { prisma }, { serverEnv }] = await Promise.all([
++    import("./auth"),
++    import("@sammlerraum/db/client"),
++    import("@sammlerraum/config/server"),
++  ]);
++  return createGradingRouteHandlers(
++    createGradingRouteDependencies(prisma, auth, serverEnv.APP_ORIGIN),
++  );
++}
+diff --git a/apps/web/src/lib/grading-routes.integration.test.ts b/apps/web/src/lib/grading-routes.integration.test.ts
+new file mode 100644
+index 0000000..aca9284
+--- /dev/null
++++ b/apps/web/src/lib/grading-routes.integration.test.ts
+@@ -0,0 +1,336 @@
++import { randomUUID } from "node:crypto";
++import type { Grading } from "@sammlerraum/contracts/grading";
++import { createTestDatabaseClient } from "@sammlerraum/db/test-database";
++import { createGradingService } from "@sammlerraum/domain/grading/grading-service";
++import { createItemService } from "@sammlerraum/domain/items/item-service";
++import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
++import { createGradingRouteDependencies, createGradingRouteHandlers } from "./grading-routes";
++import { createItemRouteHandlers } from "./collection-item-routes";
++import { createManagementRouteDependencies } from "./management-route-dependencies";
++
++const enabled = process.env.RUN_DATABASE_INTEGRATION === "1";
++const db = enabled ? createTestDatabaseClient() : undefined;
++const ownerId = `GradingRouteOwner_${randomUUID()}`;
++const origin = "https://sammlerraum.example";
++let collectionId: string;
++let itemId: string;
++const session = vi.fn(
++  async (_input: unknown): Promise<{ user: { id: string } } | null> => ({ user: { id: ownerId } }),
++);
++const auth = { api: { getSession: session } };
++const handlers = () =>
++  createGradingRouteHandlers(createGradingRouteDependencies(db!, auth, origin));
++const request = (method = "GET", body?: unknown, requestOrigin: string | null = origin) =>
++  new Request(`${origin}/api/v1/items/${itemId}/gradings`, {
++    method,
++    headers: {
++      ...(requestOrigin === null ? {} : { origin: requestOrigin }),
++      ...(body === undefined ? {} : { "content-type": "application/json" }),
++    },
++    ...(body === undefined ? {} : { body: JSON.stringify(body) }),
++  });
++const service = () => createGradingService(db!, ownerId);
++
++describe.runIf(enabled)("grading routes PostgreSQL", () => {
++  beforeAll(async () => {
++    await db!.user.create({
++      data: {
++        id: ownerId,
++        name: "Grading routes",
++        email: `${ownerId}@example.invalid`,
++        emailVerified: true,
++      },
++    });
++    collectionId = (
++      await db!.collection.create({
++        data: { ownerId, name: "Grading routes", visibility: "PUBLIC" },
++      })
++    ).id;
++  });
++  beforeEach(async () => {
++    session.mockReset();
++    session.mockResolvedValue({ user: { id: ownerId } });
++    itemId = (
++      await createItemService(db!, ownerId).createItem({
++        collectionId,
++        title: "Graded card",
++        visibility: "PUBLIC",
++      })
++    ).id;
++  });
++  afterAll(async () => {
++    if (db) {
++      await db.user.deleteMany({ where: { id: ownerId } });
++      await db.$disconnect();
++    }
++  });
++
++  it("persists owner CRUD through the adapter with full replacement and private no-store DTOs", async () => {
++    const api = handlers();
++    const created = await api.POST_GRADING(
++      request("POST", {
++        provider: " PSA ",
++        grade: "10",
++        certificateNo: "00123",
++        comparableValue: "10",
++        comparableScale: "Authored 1 to 10",
++        source: "Private receipt",
++        verificationUrl: "https://example.invalid/00123",
++      }),
++      itemId.toUpperCase(),
++    );
++    expect(created.status).toBe(201);
++    expect(created.headers.get("cache-control")).toBe("no-store");
++    const body = (await created.json()) as { grading: Grading };
++    const id = body.grading.id as string;
++    expect(body).toMatchObject({
++      grading: {
++        itemId,
++        provider: "PSA",
++        certificateNo: "00123",
++        comparableValue: "10.0000",
++        source: "Private receipt",
++      },
++    });
++    expect(body.grading).not.toHaveProperty("ownerId");
++    expect(body.grading).not.toHaveProperty("certificateKey");
++    expect(await (await api.GET_GRADINGS(request(), itemId)).json()).toMatchObject({
++      gradings: [{ id }],
++    });
++    expect(await (await api.GET_GRADING(request(), itemId, id.toUpperCase())).json()).toEqual(body);
++    const replacement = await api.PUT_GRADING(
++      request("PUT", { provider: "CGC", grade: "9.5" }),
++      itemId,
++      id,
++    );
++    expect(replacement.status).toBe(200);
++    expect(await replacement.json()).toMatchObject({
++      grading: {
++        id,
++        provider: "CGC",
++        grade: "9.5",
++        certificateNo: null,
++        comparableValue: null,
++        comparableScale: null,
++        source: null,
++        verificationUrl: null,
++      },
++    });
++    const removed = await api.DELETE_GRADING(request("DELETE"), itemId, id);
++    expect(removed.status).toBe(204);
++    expect(removed.headers.get("cache-control")).toBe("no-store");
++    expect((await api.GET_GRADING(request(), itemId, id)).status).toBe(404);
++    expect(await service().listGradings(itemId)).toEqual([]);
++    expect(session).toHaveBeenLastCalledWith({
++      headers: expect.any(Headers),
++      query: { disableCookieCache: true, disableRefresh: true },
++    });
++  });
++  it("requires fresh authentication and hides foreign, mismatched and invalid resource IDs", async () => {
++    const row = await service().addGrading(itemId, {
++      provider: "Private",
++      grade: "A",
++      certificateNo: "private-number",
++      source: "Private receipt",
++    });
++    const other = (
++      await createItemService(db!, ownerId).createItem({ collectionId, title: "Other" })
++    ).id;
++    const api = handlers();
++    session.mockResolvedValue(null);
++    for (const work of [
++      () => api.GET_GRADINGS(request(), itemId),
++      () => api.GET_GRADING(request(), itemId, row.id),
++      () => api.POST_GRADING(request("POST", { provider: "X", grade: "A" }), itemId),
++      () => api.PUT_GRADING(request("PUT", { provider: "X", grade: "A" }), itemId, row.id),
++      () => api.DELETE_GRADING(request("DELETE"), itemId, row.id),
++    ])
++      expect((await work()).status).toBe(401);
++    session.mockResolvedValue({ user: { id: "Foreign" } });
++    for (const work of [
++      () => api.GET_GRADINGS(request(), itemId),
++      () => api.GET_GRADING(request(), itemId, row.id),
++      () => api.POST_GRADING(request("POST", { provider: "X", grade: "A" }), itemId),
++      () => api.PUT_GRADING(request("PUT", { provider: "X", grade: "A" }), itemId, row.id),
++      () => api.DELETE_GRADING(request("DELETE"), itemId, row.id),
++    ]) {
++      const response = await work();
++      expect(response.status).toBe(404);
++      const body = await response.json();
++      expect(body).toMatchObject({ error: { code: "NOT_FOUND", requestId: expect.any(String) } });
++      expect(JSON.stringify(body)).not.toContain("private-number");
++      expect(response.headers.get("cache-control")).toBe("no-store");
++    }
++    session.mockResolvedValue({ user: { id: ownerId } });
++    expect((await api.GET_GRADING(request(), other, row.id)).status).toBe(404);
++    expect((await api.GET_GRADINGS(request(), "invalid")).status).toBe(404);
++    expect((await api.GET_GRADING(request(), itemId, "invalid")).status).toBe(404);
++  });
++  it("enforces exact Origin on every mutation", async () => {
++    const row = await service().addGrading(itemId, { provider: "Origin", grade: "A" });
++    const api = handlers();
++    for (const value of [null, "https://evil.example", `${origin}/`, `${origin}.evil.example`]) {
++      expect(
++        (await api.POST_GRADING(request("POST", { provider: "X", grade: "B" }, value), itemId))
++          .status,
++      ).toBe(403);
++      expect(
++        (
++          await api.PUT_GRADING(
++            request("PUT", { provider: "X", grade: "B" }, value),
++            itemId,
++            row.id,
++          )
++        ).status,
++      ).toBe(403);
++      expect(
++        (await api.DELETE_GRADING(request("DELETE", undefined, value), itemId, row.id)).status,
++      ).toBe(403);
++    }
++    expect((await service().getGrading(itemId, row.id)).grade).toBe("A");
++  });
++  it("rejects strict malformed facts and never accepts trusted verification or cross-scale numbers", async () => {
++    const row = await service().addGrading(itemId, { provider: "Strict", grade: "A" });
++    const api = handlers();
++    for (const body of [
++      { provider: "X" },
++      { provider: "X", grade: "A", ownerId },
++      { provider: "X", grade: "A", verified: true },
++      { provider: "X", grade: "A", comparableValue: 10, comparableScale: "ten" },
++      { provider: "X", grade: "A", comparableValue: "1e1", comparableScale: "ten" },
++      { provider: "X", grade: "A", comparableScale: "ten" },
++      { provider: "X", grade: "A", verificationUrl: "javascript:alert(1)" },
++    ]) {
++      expect((await api.POST_GRADING(request("POST", body), itemId)).status).toBe(400);
++      expect((await api.PUT_GRADING(request("PUT", body), itemId, row.id)).status).toBe(400);
++    }
++    for (const method of ["POST", "PUT"]) {
++      for (const contentType of ["text/plain", "application/json"]) {
++        const malformed = new Request(`${origin}/api/v1/items/x/gradings`, {
++          method,
++          headers: { origin, "content-type": contentType },
++          body: "{",
++        });
++        const response =
++          method === "POST"
++            ? await api.POST_GRADING(malformed, itemId)
++            : await api.PUT_GRADING(malformed, itemId, row.id);
++        expect(response.status).toBe(400);
++        expect(response.headers.get("cache-control")).toBe("no-store");
++      }
++    }
++    expect((await service().getGrading(itemId, row.id)).grade).toBe("A");
++  });
++  it("bounds actual UTF-8 streams independently of absent or false Content-Length", async () => {
++    const row = await service().addGrading(itemId, { provider: "Body", grade: "A" });
++    const api = handlers();
++    for (const method of ["POST", "PUT"]) {
++      for (const declared of [null, "1"]) {
++        const body = new TextEncoder().encode(
++          JSON.stringify({ provider: "X", grade: "A", source: "💎".repeat(2100) }),
++        );
++        const input = new Request(`${origin}/api/v1/items/x/gradings`, {
++          method,
++          headers: {
++            origin,
++            "content-type": "application/json",
++            ...(declared === null ? {} : { "content-length": declared }),
++          },
++          body: new ReadableStream({
++            start(controller) {
++              controller.enqueue(body.slice(0, 4000));
++              controller.enqueue(body.slice(4000));
++              controller.close();
++            },
++          }),
++          duplex: "half",
++        } as RequestInit);
++        expect(
++          (method === "POST"
++            ? await api.POST_GRADING(input, itemId)
++            : await api.PUT_GRADING(input, itemId, row.id)
++          ).status,
++        ).toBe(413);
++      }
++    }
++    const invalidUtf8 = new Request(`${origin}/api/v1/items/x/gradings`, {
++      method: "POST",
++      headers: { origin, "content-type": "application/json" },
++      body: new Uint8Array([0xff]),
++    });
++    expect((await api.POST_GRADING(invalidUtf8, itemId)).status).toBe(400);
++  });
++  it("returns stable conflicts for duplicate certificates, lifecycle and shared item quantity writes", async () => {
++    const api = handlers();
++    const row = await service().addGrading(itemId, {
++      provider: "Conflict",
++      grade: "A",
++      certificateNo: "duplicate",
++    });
++    const duplicate = await api.POST_GRADING(
++      request("POST", { provider: "conflict", grade: "B", certificateNo: "duplicate" }),
++      itemId,
++    );
++    expect(duplicate.status).toBe(409);
++    expect(await duplicate.json()).toMatchObject({
++      error: { code: "GRADING_CERTIFICATE_CONFLICT" },
++    });
++    const itemApi = createItemRouteHandlers(createManagementRouteDependencies(db!, auth, origin));
++    expect((await itemApi.PATCH_ITEM(request("PATCH", { quantity: 2 }), itemId)).status).toBe(409);
++    expect((await itemApi.SPLIT_ITEM(request("POST", { quantity: 1 }), itemId)).status).toBe(409);
++    const bulk = (
++      await createItemService(db!, ownerId).createItem({ collectionId, title: "Bulk", quantity: 2 })
++    ).id;
++    const quantity = await api.POST_GRADING(
++      request("POST", { provider: "Bulk", grade: "A" }),
++      bulk,
++    );
++    expect(quantity.status).toBe(409);
++    expect(await quantity.json()).toMatchObject({
++      error: { code: "GRADING_REQUIRES_SINGLE_ITEM" },
++    });
++    await createItemService(db!, ownerId).archiveItem(itemId);
++    expect((await api.GET_GRADING(request(), itemId, row.id)).status).toBe(200);
++    for (const work of [
++      () => api.POST_GRADING(request("POST", { provider: "X", grade: "B" }), itemId),
++      () => api.PUT_GRADING(request("PUT", { provider: "X", grade: "B" }), itemId, row.id),
++      () => api.DELETE_GRADING(request("DELETE"), itemId, row.id),
++    ])
++      expect((await work()).status).toBe(409);
++  });
++  it("does not leak grading or private provenance through anonymous or other-user public item reads", async () => {
++    await service().addGrading(itemId, {
++      provider: "Private provider",
++      grade: "10",
++      certificateNo: "secret-certificate",
++      source: "Secret receipt",
++    });
++    const itemApi = createItemRouteHandlers(createManagementRouteDependencies(db!, auth, origin));
++    for (const viewer of [null, { user: { id: "Other viewer" } }]) {
++      session.mockResolvedValue(viewer);
++      const response = await itemApi.GET_ITEM(request(), itemId);
++      expect(response.status).toBe(200);
++      const body = await response.json();
++      expect(body).toEqual({
++        item: {
++          id: itemId,
++          title: "Graded card",
++          publicDescription: null,
++          quantity: 1,
++          tradeStatus: "NOT_FOR_TRADE",
++        },
++      });
++    }
++    expect((await handlers().GET_GRADINGS(request(), itemId)).status).toBe(404);
++  });
++  it("rejects DELETE payloads within the same independent body bound", async () => {
++    const row = await service().addGrading(itemId, { provider: "Delete body", grade: "A" });
++    const api = handlers();
++    expect((await api.DELETE_GRADING(request("DELETE", {}), itemId, row.id)).status).toBe(400);
++    expect(
++      (await api.DELETE_GRADING(request("DELETE", { padding: "x".repeat(9000) }), itemId, row.id))
++        .status,
++    ).toBe(413);
++    expect((await service().getGrading(itemId, row.id)).grade).toBe("A");
++  });
++});
+diff --git a/apps/web/src/lib/grading-routes.ts b/apps/web/src/lib/grading-routes.ts
+new file mode 100644
+index 0000000..519a070
+--- /dev/null
++++ b/apps/web/src/lib/grading-routes.ts
+@@ -0,0 +1,120 @@
++import {
++  GRADING_MAX_BODY_BYTES,
++  GradingIdSchema,
++  GradingInputSchema,
++} from "@sammlerraum/contracts/grading";
++import { ApiError } from "@sammlerraum/contracts/errors";
++import {
++  createGradingService,
++  GradingServiceError,
++  type GradingDatabase,
++} from "@sammlerraum/domain/grading/grading-service";
++import { apiRoute } from "./api/route-handler";
++import { readBoundedBody } from "./api/read-bounded-body";
++
++type Authentication = {
++  api: {
++    getSession(input: {
++      headers: Headers;
++      query: { disableCookieCache: true; disableRefresh: true };
++    }): Promise<{ user: { id: string } } | null>;
++  };
++};
++export function createGradingRouteDependencies(
++  database: GradingDatabase,
++  auth: Authentication,
++  appOrigin: string,
++) {
++  return {
++    appOrigin,
++    getSession: (headers: Headers) =>
++      auth.api.getSession({ headers, query: { disableCookieCache: true, disableRefresh: true } }),
++    createService: (actor: string) => createGradingService(database, actor),
++  };
++}
++function routeId(value: string) {
++  const parsed = GradingIdSchema.safeParse(value);
++  if (!parsed.success) throw new ApiError("NOT_FOUND", 404, "Resource not found");
++  return parsed.data;
++}
++function mapped(error: unknown): never {
++  if (error instanceof GradingServiceError) {
++    if (error.code === "ITEM_NOT_FOUND" || error.code === "GRADING_NOT_FOUND")
++      throw new ApiError("NOT_FOUND", 404, "Resource not found");
++    if (error.code === "GRADING_INVALID")
++      throw new ApiError("VALIDATION_ERROR", 400, "Invalid grading request");
++    throw new ApiError(error.code, 409, "Grading change cannot be applied");
++  }
++  throw error;
++}
++async function json(request: Request): Promise<unknown> {
++  if (!/^application\/json(?:\s*;|$)/iu.test(request.headers.get("content-type") ?? ""))
++    throw new ApiError("VALIDATION_ERROR", 400, "JSON body required");
++  try {
++    return JSON.parse(
++      new TextDecoder("utf-8", { fatal: true }).decode(
++        await readBoundedBody(request, GRADING_MAX_BODY_BYTES),
++      ),
++    ) as unknown;
++  } catch (error) {
++    if (error instanceof ApiError) throw error;
++    throw new ApiError("VALIDATION_ERROR", 400, "Invalid JSON body");
++  }
++}
++export function createGradingRouteHandlers(
++  dependencies: ReturnType<typeof createGradingRouteDependencies>,
++) {
++  async function actor(request: Request, mutation: boolean) {
++    if (mutation && request.headers.get("origin") !== new URL(dependencies.appOrigin).origin)
++      throw new ApiError("FORBIDDEN", 403, "Cross-origin request rejected");
++    const session = await dependencies.getSession(request.headers);
++    if (!session) throw new ApiError("UNAUTHORIZED", 401, "Authentication required");
++    return dependencies.createService(session.user.id);
++  }
++  async function run(work: () => Promise<unknown>, key: "grading" | "gradings", status = 200) {
++    try {
++      return Response.json(
++        { [key]: await work() },
++        { status, headers: { "cache-control": "no-store" } },
++      );
++    } catch (error) {
++      mapped(error);
++    }
++  }
++  return {
++    GET_GRADINGS: apiRoute(async (request, itemId: string) => {
++      const service = await actor(request, false);
++      return run(() => service.listGradings(routeId(itemId)), "gradings");
++    }),
++    GET_GRADING: apiRoute(async (request, itemId: string, gradingId: string) => {
++      const service = await actor(request, false);
++      return run(() => service.getGrading(routeId(itemId), routeId(gradingId)), "grading");
++    }),
++    POST_GRADING: apiRoute(async (request, itemId: string) => {
++      const service = await actor(request, true);
++      const input = GradingInputSchema.parse(await json(request));
++      return run(() => service.addGrading(routeId(itemId), input), "grading", 201);
++    }),
++    PUT_GRADING: apiRoute(async (request, itemId: string, gradingId: string) => {
++      const service = await actor(request, true);
++      const input = GradingInputSchema.parse(await json(request));
++      return run(
++        () => service.updateGrading(routeId(itemId), routeId(gradingId), input),
++        "grading",
++      );
++    }),
++    DELETE_GRADING: apiRoute(async (request, itemId: string, gradingId: string) => {
++      const service = await actor(request, true);
++      if (request.body !== null) {
++        await readBoundedBody(request, GRADING_MAX_BODY_BYTES);
++        throw new ApiError("VALIDATION_ERROR", 400, "DELETE does not accept a body");
++      }
++      try {
++        await service.removeGrading(routeId(itemId), routeId(gradingId));
++        return new Response(null, { status: 204, headers: { "cache-control": "no-store" } });
++      } catch (error) {
++        mapped(error);
++      }
++    }),
++  };
++}
+diff --git a/packages/contracts/package.json b/packages/contracts/package.json
+index f3d1803..3ccede3 100644
+--- a/packages/contracts/package.json
++++ b/packages/contracts/package.json
+@@ -6,21 +6,22 @@
+     "./errors": "./src/errors.ts",
+     "./collections": "./src/collections.ts",
+     "./custom-fields": "./src/custom-fields.ts",
+     "./media": "./src/media.ts",
+     "./items": "./src/items.ts",
+     "./locations": "./src/locations.ts",
+     "./openapi": "./src/openapi.ts",
+     "./profile": "./src/profile.ts",
+     "./catalog": "./src/catalog.ts",
+     "./catalog-proposals": "./src/catalog-proposals.ts",
+-    "./condition": "./src/condition.ts"
++    "./condition": "./src/condition.ts",
++    "./grading": "./src/grading.ts"
+   },
+   "scripts": {
+     "build": "pnpm typecheck",
+     "lint": "prettier --check .",
+     "typecheck": "tsc --noEmit --project ../../tsconfig.base.json"
+   },
+   "dependencies": {
+     "zod": "4.1.11"
+   }
+ }
+diff --git a/packages/contracts/src/grading.ts b/packages/contracts/src/grading.ts
+new file mode 100644
+index 0000000..17d8c3e
+--- /dev/null
++++ b/packages/contracts/src/grading.ts
+@@ -0,0 +1,65 @@
++import { z } from "zod";
++import { AcquisitionDateSchema, CanonicalTimestampSchema } from "./items";
++
++export const GRADING_MAX_BODY_BYTES = 8192;
++export const GRADING_MAX_RECORDS = 100;
++export const GradingIdSchema = z
++  .string()
++  .uuid()
++  .transform((value) => value.toLowerCase());
++const authoredText = (max: number) =>
++  z
++    .string()
++    .refine((value) => !/[\u0000-\u001f\u007f]/u.test(value), "Control characters are not allowed")
++    .transform((value) => value.normalize("NFC").trim())
++    .pipe(z.string().min(1).max(max));
++// Numeric values are author assertions within an explicit scale, never a conversion or authenticity claim.
++export const GradingComparableValueSchema = z
++  .string()
++  .regex(/^(?:0|[1-9][0-9]{0,7})(?:\.[0-9]{1,4})?$/u);
++const verificationUrl = authoredText(2048).refine((value) => {
++  try {
++    const url = new URL(value);
++    return (
++      ["http:", "https:"].includes(url.protocol) && !!url.hostname && !url.username && !url.password
++    );
++  } catch {
++    return false;
++  }
++}, "Expected an HTTP(S) URL without credentials");
++const facts = z
++  .object({
++    provider: authoredText(120),
++    grade: authoredText(120),
++    comparableValue: GradingComparableValueSchema.nullable().default(null),
++    comparableScale: authoredText(120).nullable().default(null),
++    certificateNo: authoredText(160).nullable().default(null),
++    gradedAt: AcquisitionDateSchema.nullable().default(null),
++    verificationUrl: verificationUrl.nullable().default(null),
++    source: authoredText(1000).nullable().default(null),
++  })
++  .strict();
++const paired = (
++  value: { comparableValue: string | null; comparableScale: string | null },
++  context: z.RefinementCtx,
++) => {
++  if ((value.comparableValue === null) !== (value.comparableScale === null)) {
++    context.addIssue({
++      code: "custom",
++      path: ["comparableValue"],
++      message: "Comparable value and its authored scale must be supplied together",
++    });
++  }
++};
++// PUT uses the same full replacement facts; omitted nullable values are explicitly cleared.
++export const GradingInputSchema = facts.superRefine(paired);
++export const GradingSchema = facts
++  .extend({
++    id: GradingIdSchema,
++    itemId: GradingIdSchema,
++    createdAt: CanonicalTimestampSchema,
++    updatedAt: CanonicalTimestampSchema,
++  })
++  .superRefine(paired);
++export type Grading = z.infer<typeof GradingSchema>;
++export type GradingInput = z.input<typeof GradingInputSchema>;
+diff --git a/packages/db/prisma/migrations/20261017225204_grading_records/migration.sql b/packages/db/prisma/migrations/20261017225204_grading_records/migration.sql
+new file mode 100644
+index 0000000..5436251
+--- /dev/null
++++ b/packages/db/prisma/migrations/20261017225204_grading_records/migration.sql
+@@ -0,0 +1,49 @@
++-- CreateTable
++CREATE TABLE "Grading" (
++    "id" UUID NOT NULL,
++    "itemId" UUID NOT NULL,
++    "ownerId" TEXT NOT NULL,
++    "itemQuantity" INTEGER NOT NULL DEFAULT 1,
++    "provider" VARCHAR(120) NOT NULL,
++    "providerKey" VARCHAR(120) NOT NULL,
++    "grade" VARCHAR(120) NOT NULL,
++    "comparableValue" DECIMAL(12,4),
++    "comparableScale" VARCHAR(120),
++    "certificateNo" VARCHAR(160),
++    "certificateKey" VARCHAR(160),
++    "gradedAt" DATE,
++    "verificationUrl" VARCHAR(2048),
++    "source" VARCHAR(1000),
++    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
++    "updatedAt" TIMESTAMP(3) NOT NULL,
++
++    CONSTRAINT "Grading_pkey" PRIMARY KEY ("id")
++);
++
++-- CreateIndex
++CREATE INDEX "Grading_itemId_ownerId_idx" ON "Grading"("itemId", "ownerId");
++
++-- CreateIndex
++CREATE UNIQUE INDEX "Grading_ownerId_providerKey_certificateKey_key" ON "Grading"("ownerId", "providerKey", "certificateKey");
++
++-- CreateIndex
++CREATE UNIQUE INDEX "CollectibleItem_id_ownerId_quantity_key" ON "CollectibleItem"("id", "ownerId", "quantity");
++
++-- AddForeignKey
++ALTER TABLE "Grading" ADD CONSTRAINT "Grading_itemId_ownerId_itemQuantity_fkey" FOREIGN KEY ("itemId", "ownerId", "itemQuantity") REFERENCES "CollectibleItem"("id", "ownerId", "quantity") ON DELETE CASCADE ON UPDATE RESTRICT;
++
++-- Current grading belongs to one physical specimen, including under direct SQL writes.
++ALTER TABLE "Grading" ADD CONSTRAINT "Grading_single_specimen_check" CHECK ("itemQuantity" = 1);
++ALTER TABLE "Grading" ADD CONSTRAINT "Grading_comparable_pair_check" CHECK (
++  ("comparableValue" IS NULL AND "comparableScale" IS NULL) OR
++  ("comparableValue" IS NOT NULL AND "comparableValue" >= 0 AND "comparableScale" IS NOT NULL AND length(btrim("comparableScale")) > 0)
++);
++ALTER TABLE "Grading" ADD CONSTRAINT "Grading_certificate_identity_check" CHECK (
++  "certificateKey" IS NOT DISTINCT FROM "certificateNo" AND
++  ("certificateNo" IS NULL OR length(btrim("certificateNo")) > 0)
++);
++ALTER TABLE "Grading" ADD CONSTRAINT "Grading_provider_identity_check" CHECK (
++  length(btrim(provider)) > 0 AND
++  "providerKey" = translate(provider, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')
++);
++ALTER TABLE "Grading" ADD CONSTRAINT "Grading_grade_nonempty_check" CHECK (length(btrim(grade)) > 0);
+diff --git a/packages/db/prisma/migrations/20261017225205_grading_finite_comparable/migration.sql b/packages/db/prisma/migrations/20261017225205_grading_finite_comparable/migration.sql
+new file mode 100644
+index 0000000..1ba50c9
+--- /dev/null
++++ b/packages/db/prisma/migrations/20261017225205_grading_finite_comparable/migration.sql
+@@ -0,0 +1,4 @@
++-- PostgreSQL numeric accepts NaN, which also satisfies >= 0. Explicitly bound
++-- authored comparable values so direct SQL cannot persist a non-finite value.
++ALTER TABLE "Grading" ADD CONSTRAINT "Grading_comparable_finite_check"
++  CHECK ("comparableValue" IS NULL OR "comparableValue" <= 99999999.9999);
+diff --git a/packages/db/prisma/schema.prisma b/packages/db/prisma/schema.prisma
+index a47e019..cca3449 100644
+--- a/packages/db/prisma/schema.prisma
++++ b/packages/db/prisma/schema.prisma
+@@ -187,23 +187,25 @@ model CollectibleItem {
+   node                CollectionNode?       @relation(fields: [nodeId, collectionId], references: [id, collectionId], onDelete: Restrict)
+   storageLocation     StorageLocation?      @relation(fields: [storageLocationId, ownerId], references: [id, ownerId], onDelete: Restrict)
+   categoryTemplate    CategoryTemplate?     @relation(fields: [categoryTemplateId], references: [id], onDelete: Restrict)
+   conditionOption     ConditionOption?      @relation(fields: [conditionOptionId, categoryTemplateId], references: [id, categoryTemplateId], onDelete: Restrict)
+   locationHistory     ItemLocationHistory[]
+   identifiers         ItemIdentifier[]
+   itemTags            ItemTag[]
+   customFieldValues   CustomFieldValue[]
+   mediaLinks          MediaLink[]
+   documentLinks       DocumentLink[]
++  gradings            Grading[]
+ 
+   @@unique([id, collectionId])
+   @@unique([id, ownerId])
++  @@unique([id, ownerId, quantity])
+   @@index([collectionId])
+   @@index([collectionId, deletedAt])
+   @@index([nodeId, collectionId])
+   @@index([storageLocationId, ownerId])
+   @@index([categoryTemplateId])
+   @@index([conditionOptionId, categoryTemplateId])
+ }
+ 
+ model StorageLocation {
+   id          String                @id @default(uuid()) @db.Uuid
+@@ -753,10 +755,34 @@ model ConditionOption {
+   normalizedBand     Int?
+   position           Int
+   active             Boolean           @default(true)
+   scheme             ConditionScheme   @relation(fields: [schemeId, categoryTemplateId], references: [id, categoryTemplateId], onDelete: Restrict)
+   items              CollectibleItem[]
+ 
+   @@unique([id, categoryTemplateId])
+   @@unique([schemeId, labelKey])
+   @@unique([schemeId, position])
+ }
++
++// Personally authored external facts. No provider lookup or authenticity verification.
++model Grading {
++  id              String          @id @default(uuid()) @db.Uuid
++  itemId          String          @db.Uuid
++  ownerId         String
++  itemQuantity    Int             @default(1)
++  provider        String          @db.VarChar(120)
++  providerKey     String          @db.VarChar(120)
++  grade           String          @db.VarChar(120)
++  comparableValue Decimal?        @db.Decimal(12, 4)
++  comparableScale String?         @db.VarChar(120)
++  certificateNo   String?         @db.VarChar(160)
++  certificateKey  String?         @db.VarChar(160)
++  gradedAt        DateTime?       @db.Date
++  verificationUrl String?         @db.VarChar(2048)
++  source          String?         @db.VarChar(1000)
++  createdAt       DateTime        @default(now())
++  updatedAt       DateTime        @updatedAt
++  item            CollectibleItem @relation(fields: [itemId, ownerId, itemQuantity], references: [id, ownerId, quantity], onDelete: Cascade, onUpdate: Restrict)
++
++  @@unique([ownerId, providerKey, certificateKey])
++  @@index([itemId, ownerId])
++}
+diff --git a/packages/domain/package.json b/packages/domain/package.json
+index 2f861a3..0cfc9aa 100644
+--- a/packages/domain/package.json
++++ b/packages/domain/package.json
+@@ -16,21 +16,22 @@
+     "./locations/label-service": "./src/locations/label-service.ts",
+     "./identity/profile-service": "./src/identity/profile-service.ts",
+     "./identity/security-service": "./src/identity/security-service.ts",
+     "./items/identifier-service": "./src/items/identifier-service.ts",
+     "./items/tag-service": "./src/items/tag-service.ts",
+     "./media/cleanup-service": "./src/media/cleanup-service.ts",
+     "./catalog/category-template-service": "./src/catalog/category-template-service.ts",
+     "./catalog/catalog-service": "./src/catalog/catalog-service.ts",
+     "./catalog/proposal-service": "./src/catalog/proposal-service.ts",
+     "./authz/application-role": "./src/authz/application-role.ts",
+-    "./condition/condition-service": "./src/condition/condition-service.ts"
++    "./condition/condition-service": "./src/condition/condition-service.ts",
++    "./grading/grading-service": "./src/grading/grading-service.ts"
+   },
+   "scripts": {
+     "build": "pnpm typecheck",
+     "lint": "prettier --check .",
+     "typecheck": "tsc --noEmit --project ../../tsconfig.base.json"
+   },
+   "dependencies": {
+     "@sammlerraum/contracts": "workspace:*",
+     "@sammlerraum/storage": "workspace:*",
+     "file-type": "21.3.4",
+diff --git a/packages/domain/src/grading/grading-service.test.ts b/packages/domain/src/grading/grading-service.test.ts
+new file mode 100644
+index 0000000..ab854b3
+--- /dev/null
++++ b/packages/domain/src/grading/grading-service.test.ts
+@@ -0,0 +1,559 @@
++import { randomUUID } from "node:crypto";
++import { createTestDatabaseClient } from "@sammlerraum/db/test-database";
++import { afterAll, beforeAll, describe, expect, it } from "vitest";
++import { createItemService } from "../items/item-service";
++import {
++  createConditionMaintenanceService,
++  createConditionService,
++} from "../condition/condition-service";
++import { createGradingService, type GradingDatabase } from "./grading-service";
++
++const enabled = process.env.RUN_DATABASE_INTEGRATION === "1";
++const db = enabled ? createTestDatabaseClient() : undefined;
++const ownerId = `GradingOwner_${randomUUID()}`;
++const foreignOwnerId = `ForeignGradingOwner_${randomUUID()}`;
++let collectionId: string;
++let foreignCollectionId: string;
++const service = () => createGradingService(db!, ownerId);
++const item = (quantity = 1) =>
++  createItemService(db!, ownerId).createItem({ collectionId, title: "Grading fixture", quantity });
++
++describe.runIf(enabled)("personal grading PostgreSQL", () => {
++  beforeAll(async () => {
++    await db!.user.create({
++      data: {
++        id: ownerId,
++        name: "Grading fixture",
++        email: `${ownerId}@example.invalid`,
++        emailVerified: true,
++      },
++    });
++    await db!.user.create({
++      data: {
++        id: foreignOwnerId,
++        name: "Foreign grading fixture",
++        email: `${foreignOwnerId}@example.invalid`,
++        emailVerified: true,
++      },
++    });
++    foreignCollectionId = (
++      await db!.collection.create({
++        data: { ownerId: foreignOwnerId, name: "Foreign grading fixture" },
++      })
++    ).id;
++    collectionId = (await db!.collection.create({ data: { ownerId, name: "Grading fixture" } })).id;
++  });
++  afterAll(async () => {
++    if (db) {
++      await db.user.deleteMany({ where: { id: { in: [ownerId, foreignOwnerId] } } });
++      await db.$disconnect();
++    }
++  });
++  it("allows equal certificate numbers across different providers", async () => {
++    const itemA = await item();
++    const itemB = await item();
++    const first = await service().addGrading(itemA.id, {
++      provider: "PSA",
++      certificateNo: "123",
++      grade: "10",
++    });
++    await expect(
++      service().addGrading(itemB.id, { provider: "CGC", certificateNo: "123", grade: "10" }),
++    ).resolves.toBeDefined();
++    const rows = await db!.grading.findMany({
++      where: { itemId: { in: [itemA.id, itemB.id] } },
++      orderBy: { provider: "asc" },
++    });
++    expect(
++      rows.map(({ provider, certificateNo, grade }) => ({ provider, certificateNo, grade })),
++    ).toEqual([
++      { provider: "CGC", certificateNo: "123", grade: "10" },
++      { provider: "PSA", certificateNo: "123", grade: "10" },
++    ]);
++    expect(first.itemId).toBe(itemA.id);
++  });
++  it("preserves authored facts, leading zeros and exact optional decimal strings", async () => {
++    const target = await item();
++    const row = await service().addGrading(target.id.toUpperCase(), {
++      provider: "  Unknown Provider  ",
++      grade: "  Gem  Mint +  ",
++      certificateNo: "  00123-A b  ",
++      comparableValue: "99999999.9999",
++      comparableScale: "  Authored scale  ",
++      gradedAt: "2024-02-29",
++      verificationUrl: "https://example.invalid/certificate/00123",
++      source: "  Owner's receipt — unverifiziert  ",
++    });
++    expect(row).toMatchObject({
++      provider: "Unknown Provider",
++      grade: "Gem  Mint +",
++      certificateNo: "00123-A b",
++      comparableValue: "99999999.9999",
++      comparableScale: "Authored scale",
++      gradedAt: "2024-02-29",
++      source: "Owner's receipt — unverifiziert",
++    });
++    expect(await service().getGrading(target.id, row.id.toUpperCase())).toEqual(row);
++    expect(await service().listGradings(target.id)).toEqual([row]);
++    expect(row).not.toHaveProperty("ownerId");
++    expect(row).not.toHaveProperty("providerKey");
++    expect(row).not.toHaveProperty("verified");
++    const zero = await service().addGrading(target.id, {
++      provider: "Unknown Provider",
++      grade: "zero",
++      certificateNo: "123-A b",
++      comparableValue: "0.0000",
++      comparableScale: "scale",
++    });
++    expect(zero.comparableValue).toBe("0.0000");
++  });
++  it("scopes certificate conflicts to one owner and provider without guessing number equivalence", async () => {
++    const a = await item();
++    const b = await item();
++    await service().addGrading(a.id, { provider: "PSA", grade: "10", certificateNo: "000456" });
++    await expect(
++      service().addGrading(b.id, { provider: "psa", grade: "9", certificateNo: "000456" }),
++    ).rejects.toMatchObject({ code: "GRADING_CERTIFICATE_CONFLICT" });
++    await service().addGrading(b.id, { provider: "PSA", grade: "9", certificateNo: "456" });
++    for (const certificateNo of ["abc", "ABC", "a bc", "a-bc"])
++      await service().addGrading(b.id, { provider: "PSA", grade: "9", certificateNo });
++    const foreign = await createItemService(db!, foreignOwnerId).createItem({
++      collectionId: foreignCollectionId,
++      title: "Foreign certificate",
++    });
++    await expect(
++      createGradingService(db!, foreignOwnerId).addGrading(foreign.id, {
++        provider: "PSA",
++        grade: "10",
++        certificateNo: "000456",
++      }),
++    ).resolves.toMatchObject({ certificateNo: "000456" });
++    await expect(
++      service().addGrading(foreign.id, { provider: "PSA", grade: "10", certificateNo: "000456" }),
++    ).rejects.toMatchObject({ code: "ITEM_NOT_FOUND" });
++  });
++  it("supports multiple uncertified records and full replacement/removal releasing a certificate", async () => {
++    const target = await item();
++    for (let i = 0; i < 2; i++)
++      expect(
++        await service().addGrading(target.id, { provider: "Author", grade: "A" }),
++      ).toMatchObject({ certificateNo: null, comparableValue: null, comparableScale: null });
++    const before = await service().addGrading(target.id, {
++      provider: "History",
++      grade: "A",
++      certificateNo: "old",
++      source: "Original",
++      comparableValue: "9.5",
++      comparableScale: "ten",
++    });
++    const after = await service().updateGrading(target.id, before.id, {
++      provider: "History",
++      grade: "B",
++      certificateNo: "replacement",
++    });
++    expect(after).toMatchObject({
++      id: before.id,
++      createdAt: before.createdAt,
++      source: null,
++      comparableValue: null,
++      comparableScale: null,
++      grade: "B",
++    });
++    expect(Date.parse(after.updatedAt)).toBeGreaterThanOrEqual(Date.parse(before.updatedAt));
++    await service().addGrading(target.id, {
++      provider: "History",
++      grade: "C",
++      certificateNo: "old",
++    });
++    await service().removeGrading(target.id, before.id);
++    await expect(service().getGrading(target.id, before.id)).rejects.toMatchObject({
++      code: "GRADING_NOT_FOUND",
++    });
++    await service().addGrading(target.id, {
++      provider: "History",
++      grade: "D",
++      certificateNo: "replacement",
++    });
++  });
++  it("hides foreign and mismatched grading IDs on reads and all mutations", async () => {
++    const target = await item();
++    const other = await item();
++    const row = await service().addGrading(target.id, { provider: "Owner", grade: "A" });
++    const foreign = createGradingService(db!, foreignOwnerId);
++    for (const call of [
++      () => foreign.listGradings(target.id),
++      () => foreign.getGrading(target.id, row.id),
++      () => foreign.addGrading(target.id, { provider: "A", grade: "A" }),
++      () => foreign.updateGrading(target.id, row.id, { provider: "A", grade: "A" }),
++      () => foreign.removeGrading(target.id, row.id),
++    ])
++      await expect(call()).rejects.toMatchObject({ code: "ITEM_NOT_FOUND" });
++    for (const call of [
++      () => service().getGrading(other.id, row.id),
++      () => service().updateGrading(other.id, row.id, { provider: "A", grade: "A" }),
++      () => service().removeGrading(other.id, row.id),
++    ])
++      await expect(call()).rejects.toMatchObject({ code: "GRADING_NOT_FOUND" });
++    expect((await service().getGrading(target.id, row.id)).grade).toBe("A");
++  });
++  it("retains inactive item reads but rejects lifecycle mutations and deleted parents", async () => {
++    for (const column of ["archivedAt", "disposedAt", "deletedAt"] as const) {
++      const target = await item();
++      const row = await service().addGrading(target.id, { provider: "Lifecycle", grade: "A" });
++      await db!.collectibleItem.update({
++        where: { id: target.id },
++        data: { [column]: new Date() },
++      });
++      const code = column === "deletedAt" ? "ITEM_NOT_FOUND" : "ITEM_INACTIVE";
++      for (const call of [
++        () => service().addGrading(target.id, { provider: "X", grade: "B" }),
++        () => service().updateGrading(target.id, row.id, { provider: "X", grade: "B" }),
++        () => service().removeGrading(target.id, row.id),
++      ])
++        await expect(call()).rejects.toMatchObject({ code });
++      if (column !== "deletedAt") expect(await service().listGradings(target.id)).toHaveLength(1);
++      else await expect(service().listGradings(target.id)).rejects.toMatchObject({ code });
++    }
++    const collection = await db!.collection.create({
++      data: { ownerId, name: "Deleted grading parent" },
++    });
++    const target = await createItemService(db!, ownerId).createItem({
++      collectionId: collection.id,
++      title: "Hidden",
++    });
++    const row = await service().addGrading(target.id, { provider: "Parent", grade: "A" });
++    await db!.collection.update({ where: { id: collection.id }, data: { deletedAt: new Date() } });
++    await expect(service().getGrading(target.id, row.id)).rejects.toMatchObject({
++      code: "ITEM_NOT_FOUND",
++    });
++    await expect(service().removeGrading(target.id, row.id)).rejects.toMatchObject({
++      code: "ITEM_NOT_FOUND",
++    });
++  });
++  it("requires split before grading and enforces the shared item quantity mutation path", async () => {
++    const bulk = await item(3);
++    await expect(
++      service().addGrading(bulk.id, { provider: "Bulk", grade: "10" }),
++    ).rejects.toMatchObject({ code: "GRADING_REQUIRES_SINGLE_ITEM" });
++    const split = await createItemService(db!, ownerId).splitQuantityItem(bulk.id, 1);
++    const row = await service().addGrading(split.created.id, {
++      provider: "Bulk",
++      grade: "10",
++      certificateNo: "physical",
++    });
++    expect(await service().listGradings(split.source.id)).toEqual([]);
++    await expect(
++      createItemService(db!, ownerId).updateItem(split.created.id, { quantity: 2 }),
++    ).rejects.toMatchObject({ code: "ITEM_GRADING_QUANTITY_INVALID" });
++    await expect(
++      createItemService(db!, ownerId).splitQuantityItem(split.created.id, 1),
++    ).rejects.toMatchObject({ code: "ITEM_GRADING_QUANTITY_INVALID" });
++    await createItemService(db!, ownerId).updateItem(split.created.id, {
++      title: "Still graded",
++      quantity: 1,
++    });
++    expect((await service().getGrading(split.created.id, row.id)).certificateNo).toBe("physical");
++    await service().removeGrading(split.created.id, row.id);
++    expect(
++      (await createItemService(db!, ownerId).updateItem(split.created.id, { quantity: 2 }))
++        .quantity,
++    ).toBe(2);
++  });
++  it("rejects malformed authored facts and never rounds or synthesizes comparable values", async () => {
++    const target = await item();
++    const base = { provider: "Bounds", grade: "Gem" };
++    for (const patch of [
++      { provider: " " },
++      { grade: "" },
++      { provider: "x".repeat(121) },
++      { grade: "x".repeat(121) },
++      { certificateNo: "" },
++      { certificateNo: "x".repeat(161) },
++      { comparableValue: 10, comparableScale: "ten" },
++      { comparableValue: "1e1", comparableScale: "ten" },
++      { comparableValue: "-1", comparableScale: "ten" },
++      { comparableValue: "10.00001", comparableScale: "ten" },
++      { comparableValue: "100000000", comparableScale: "large" },
++      { comparableValue: "10" },
++      { comparableScale: "ten" },
++      { comparableValue: "10", comparableScale: " " },
++      { comparableValue: "10", comparableScale: "x".repeat(121) },
++      { verificationUrl: "javascript:alert(1)" },
++      { verificationUrl: "https://user:password@example.invalid" },
++      { verificationUrl: "https://example.invalid/\nattack" },
++      { source: "x".repeat(1001) },
++      { source: "bad\u0000value" },
++      { provider: "bad\u0001value" },
++      { gradedAt: "2023-02-29" },
++      { gradedAt: "2026-13-01" },
++      { ownerId: foreignOwnerId },
++      { verified: true },
++      { normalizedBand: 5 },
++    ])
++      await expect(service().addGrading(target.id, { ...base, ...patch })).rejects.toMatchObject({
++        code: "GRADING_INVALID",
++      });
++    expect(await service().listGradings(target.id)).toEqual([]);
++    await expect(service().listGradings("invalid")).rejects.toMatchObject({
++      code: "GRADING_INVALID",
++    });
++  });
++  it("caps records under the shared item lock and handles racing certificate additions", async () => {
++    const target = await item();
++    for (let i = 0; i < 100; i++)
++      await service().addGrading(target.id, { provider: "Capacity", grade: String(i) });
++    await expect(
++      service().addGrading(target.id, { provider: "Capacity", grade: "overflow" }),
++    ).rejects.toMatchObject({ code: "GRADING_LIMIT_EXCEEDED" });
++    expect(await service().listGradings(target.id)).toHaveLength(100);
++    const a = await item();
++    const b = await item();
++    const result = await Promise.allSettled([
++      service().addGrading(a.id, { provider: "Race", grade: "10", certificateNo: "same" }),
++      service().addGrading(b.id, { provider: "Race", grade: "10", certificateNo: "same" }),
++    ]);
++    expect(result.filter((r) => r.status === "fulfilled")).toHaveLength(1);
++    expect(result.find((r) => r.status === "rejected")).toMatchObject({
++      reason: { code: "GRADING_CERTIFICATE_CONFLICT" },
++    });
++  });
++  it("enforces owner, single-specimen, paired scale and provider identity in PostgreSQL", async () => {
++    const target = await item();
++    const bulk = await item(2);
++    const data = { itemId: target.id, ownerId, provider: "DB", providerKey: "db", grade: "A" };
++    for (const patch of [
++      { ownerId: foreignOwnerId },
++      { itemId: bulk.id },
++      { itemId: bulk.id, itemQuantity: 2 },
++      { comparableValue: "1" },
++      { comparableValue: "-1", comparableScale: "scale" },
++      { certificateNo: "x", certificateKey: "y" },
++      { providerKey: "DB" },
++    ])
++      await expect(db!.grading.create({ data: { ...data, ...patch } })).rejects.toThrow();
++    await expect(
++      db!
++        .$queryRaw`INSERT INTO "Grading" (id,"itemId","ownerId",provider,"providerKey",grade,"comparableValue","comparableScale","updatedAt") VALUES (${randomUUID()}::uuid,${target.id}::uuid,${ownerId},'DB','db','A','NaN'::numeric,'scale',now()) RETURNING id`,
++    ).rejects.toThrow();
++    const row = await service().addGrading(target.id, { provider: "DB", grade: "A" });
++    await expect(
++      db!.collectibleItem.update({ where: { id: target.id }, data: { quantity: 2 } }),
++    ).rejects.toThrow();
++    expect((await db!.grading.findUniqueOrThrow({ where: { id: row.id } })).itemQuantity).toBe(1);
++  });
++  it("keeps exact condition and grading independent through condition edits and grading removal", async () => {
++    const key = `grading_condition_${randomUUID().replaceAll("-", "")}`;
++    const category = await db!.categoryTemplate.create({ data: { key } });
++    try {
++      const scheme = await createConditionMaintenanceService(db!).createConditionScheme({
++        categoryTemplateId: category.id,
++        key,
++        labels: { de: "Zustand", en: "Condition" },
++        options: [
++          {
++            labelKey: "vinyl.vg_plus",
++            labels: { de: "Sehr gut plus", en: "Very good plus" },
++            normalizedBand: 4,
++          },
++        ],
++      });
++      const target = await item();
++      const condition = createConditionService(db!, ownerId);
++      await condition.setItemCategory(target.id, { categoryTemplateId: category.id });
++      await condition.setItemCondition(target.id, scheme.options[0]!.id);
++      const row = await service().addGrading(target.id, {
++        provider: "Separate",
++        grade: "MS 70",
++        source: "Private provenance",
++      });
++      await condition.setItemCondition(target.id, null);
++      expect((await service().getGrading(target.id, row.id)).grade).toBe("MS 70");
++      await condition.setItemCondition(target.id, scheme.options[0]!.id);
++      await service().removeGrading(target.id, row.id);
++      expect(await condition.getItemCondition(target.id)).toMatchObject({
++        conditionOption: { labelKey: "vinyl.vg_plus" },
++        normalizedBand: 4,
++      });
++      await condition.setItemCategory(target.id, {
++        categoryTemplateId: null,
++        clearCondition: true,
++      });
++    } finally {
++      await db!.collectibleItem.updateMany({
++        where: { ownerId, categoryTemplateId: category.id },
++        data: { conditionOptionId: null, categoryTemplateId: null },
++      });
++      await db!.conditionOption.deleteMany({ where: { categoryTemplateId: category.id } });
++      await db!.conditionScheme.deleteMany({ where: { categoryTemplateId: category.id } });
++      await db!.categoryTemplate.delete({ where: { id: category.id } });
++    }
++  });
++
++  it("serializes actual item quantity updates behind grading's item lock", async () => {
++    const target = await item();
++    let release!: () => void;
++    let reached!: () => void;
++    const blocked = new Promise<void>((resolve) => {
++      release = resolve;
++    });
++    const locked = new Promise<void>((resolve) => {
++      reached = resolve;
++    });
++    const wrapped: GradingDatabase = {
++      $queryRaw: db!.$queryRaw.bind(db!),
++      $transaction: (work, options) =>
++        db!.$transaction(
++          (tx) =>
++            work({
++              async $queryRaw<T>(query: TemplateStringsArray, ...values: unknown[]): Promise<T> {
++                const result = await tx.$queryRaw<T>(query, ...values);
++                if (query.join("").includes("FOR UPDATE OF item")) {
++                  reached();
++                  await blocked;
++                }
++                return result;
++              },
++            }),
++          options,
++        ),
++    };
++    const grading = createGradingService(wrapped, ownerId).addGrading(target.id, {
++      provider: "Quantity race",
++      grade: "10",
++    });
++    await locked;
++    const update = createItemService(db!, ownerId)
++      .updateItem(target.id, { quantity: 2 })
++      .then(
++        (value) => ({ value }),
++        (error) => ({ error }),
++      );
++    try {
++      await expectDatabaseWait("CollectibleItem");
++    } finally {
++      release();
++    }
++    await grading;
++    expect(await update).toMatchObject({ error: { code: "ITEM_GRADING_QUANTITY_INVALID" } });
++    expect(
++      (await db!.collectibleItem.findUniqueOrThrow({ where: { id: target.id } })).quantity,
++    ).toBe(1);
++  });
++  it("rechecks quantity after waiting for a concurrent committed change", async () => {
++    const target = await item();
++    let release!: () => void;
++    let reached!: () => void;
++    const blocked = new Promise<void>((resolve) => {
++      release = resolve;
++    });
++    const locked = new Promise<void>((resolve) => {
++      reached = resolve;
++    });
++    const update = db!.$transaction(async (tx) => {
++      await tx.collectibleItem.update({ where: { id: target.id }, data: { quantity: 2 } });
++      reached();
++      await blocked;
++    });
++    await locked;
++    const grading = service()
++      .addGrading(target.id, { provider: "Quantity race inverse", grade: "10" })
++      .then(
++        (value) => ({ value }),
++        (error) => ({ error }),
++      );
++    try {
++      await expectDatabaseWait("CollectibleItem");
++    } finally {
++      release();
++    }
++    await update;
++    expect(await grading).toMatchObject({ error: { code: "GRADING_REQUIRES_SINGLE_ITEM" } });
++    expect(await service().listGradings(target.id)).toEqual([]);
++  });
++  it("uses native FK locking to reject a racing direct SQL quantity change", async () => {
++    const target = await item();
++    let release!: () => void;
++    let reached!: () => void;
++    const blocked = new Promise<void>((resolve) => {
++      release = resolve;
++    });
++    const inserted = new Promise<void>((resolve) => {
++      reached = resolve;
++    });
++    const insert = db!.$transaction(async (tx) => {
++      await tx.grading.create({
++        data: {
++          itemId: target.id,
++          ownerId,
++          provider: "Native race",
++          providerKey: "native race",
++          grade: "10",
++        },
++      });
++      reached();
++      await blocked;
++    });
++    await inserted;
++    const update = db!.collectibleItem
++      .update({ where: { id: target.id }, data: { quantity: 2 } })
++      .then(
++        (value) => ({ value }),
++        (error) => ({ error }),
++      );
++    try {
++      await expectDatabaseWait("CollectibleItem");
++    } finally {
++      release();
++    }
++    await insert;
++    expect(await update).toHaveProperty("error");
++    expect(
++      (await db!.collectibleItem.findUniqueOrThrow({ where: { id: target.id } })).quantity,
++    ).toBe(1);
++  });
++  it("retains owner-scoped certificate reservations on item soft deletion", async () => {
++    const target = await item();
++    const row = await service().addGrading(target.id, {
++      provider: "Retained",
++      grade: "10",
++      certificateNo: "retained-physical",
++    });
++    await createItemService(db!, ownerId).deleteItem(target.id);
++    await expect(service().getGrading(target.id, row.id)).rejects.toMatchObject({
++      code: "ITEM_NOT_FOUND",
++    });
++    expect(await db!.grading.findUniqueOrThrow({ where: { id: row.id } })).toMatchObject({
++      certificateNo: "retained-physical",
++    });
++    const replacement = await item();
++    await expect(
++      service().addGrading(replacement.id, {
++        provider: "Retained",
++        grade: "10",
++        certificateNo: "retained-physical",
++      }),
++    ).rejects.toMatchObject({ code: "GRADING_CERTIFICATE_CONFLICT" });
++    const foreign = await createItemService(db!, foreignOwnerId).createItem({
++      collectionId: foreignCollectionId,
++      title: "Independent retained claim",
++    });
++    await expect(
++      createGradingService(db!, foreignOwnerId).addGrading(foreign.id, {
++        provider: "Retained",
++        grade: "10",
++        certificateNo: "retained-physical",
++      }),
++    ).resolves.toMatchObject({ certificateNo: "retained-physical" });
++  });
++});
++
++async function expectDatabaseWait(table: string) {
++  const until = Date.now() + 3000;
++  while (Date.now() < until) {
++    const [row] = await db!.$queryRaw<
++      Array<{ waiting: boolean }>
++    >`SELECT EXISTS(SELECT 1 FROM pg_stat_activity WHERE datname=current_database() AND wait_event_type='Lock' AND query LIKE ${`%${table}%`}) AS waiting`;
++    if (row!.waiting) return;
++  }
++  throw new Error("Expected PostgreSQL to observe a blocked lock");
++}
+diff --git a/packages/domain/src/grading/grading-service.ts b/packages/domain/src/grading/grading-service.ts
+new file mode 100644
+index 0000000..fc57b79
+--- /dev/null
++++ b/packages/domain/src/grading/grading-service.ts
+@@ -0,0 +1,171 @@
++import { randomUUID } from "node:crypto";
++import {
++  GRADING_MAX_RECORDS,
++  GradingIdSchema,
++  GradingInputSchema,
++  GradingSchema,
++  type Grading,
++} from "@sammlerraum/contracts/grading";
++
++type Query = { $queryRaw<T>(query: TemplateStringsArray, ...values: unknown[]): Promise<T> };
++export type GradingDatabase = Query & {
++  $transaction<T>(
++    work: (tx: Query) => Promise<T>,
++    options: { isolationLevel: "ReadCommitted" },
++  ): Promise<T>;
++};
++type Code =
++  | "GRADING_INVALID"
++  | "ITEM_NOT_FOUND"
++  | "ITEM_INACTIVE"
++  | "GRADING_NOT_FOUND"
++  | "GRADING_REQUIRES_SINGLE_ITEM"
++  | "GRADING_CERTIFICATE_CONFLICT"
++  | "GRADING_LIMIT_EXCEEDED";
++export class GradingServiceError extends Error {
++  constructor(readonly code: Code) {
++    super(code);
++    this.name = "GradingServiceError";
++  }
++}
++type ItemRow = { id: string; quantity: number; archivedAt: Date | null; disposedAt: Date | null };
++type Row = Omit<Grading, "createdAt" | "updatedAt" | "gradedAt"> & {
++  createdAt: Date;
++  updatedAt: Date;
++  gradedAt: Date | null;
++};
++const id = (input: unknown) => {
++  const parsed = GradingIdSchema.safeParse(input);
++  if (!parsed.success) throw new GradingServiceError("GRADING_INVALID");
++  return parsed.data;
++};
++const dto = (row: Row): Grading =>
++  GradingSchema.parse({
++    ...row,
++    gradedAt: row.gradedAt?.toISOString().slice(0, 10) ?? null,
++    createdAt: row.createdAt.toISOString(),
++    updatedAt: row.updatedAt.toISOString(),
++  });
++const providerKey = (value: string) => value.replace(/[A-Z]/gu, (letter) => letter.toLowerCase());
++async function lockItem(tx: Query, itemId: string, actorUserId: string, mutation: boolean) {
++  const [item] = await tx.$queryRaw<ItemRow[]>`
++    SELECT item.id, item.quantity, item."archivedAt", item."disposedAt"
++    FROM "CollectibleItem" item JOIN "Collection" collection ON collection.id=item."collectionId"
++    WHERE item.id=${itemId}::uuid AND item."ownerId"=${actorUserId} AND collection."ownerId"=${actorUserId}
++      AND item."deletedAt" IS NULL AND collection."deletedAt" IS NULL FOR UPDATE OF item
++  `;
++  if (!item) throw new GradingServiceError("ITEM_NOT_FOUND");
++  if (mutation && (item.archivedAt !== null || item.disposedAt !== null))
++    throw new GradingServiceError("ITEM_INACTIVE");
++  return item;
++}
++async function rows(tx: Query, itemId: string, actorUserId: string): Promise<Grading[]> {
++  const result = await tx.$queryRaw<Row[]>`
++    SELECT id,"itemId",provider,grade,"comparableValue"::text AS "comparableValue","comparableScale","certificateNo","gradedAt","verificationUrl",source,"createdAt","updatedAt"
++    FROM "Grading" WHERE "itemId"=${itemId}::uuid AND "ownerId"=${actorUserId}
++    ORDER BY "createdAt",id LIMIT ${GRADING_MAX_RECORDS}
++  `;
++  return result.map(dto);
++}
++async function record(
++  tx: Query,
++  itemId: string,
++  gradingId: string,
++  actorUserId: string,
++): Promise<Grading> {
++  const result = await tx.$queryRaw<Row[]>`
++    SELECT id,"itemId",provider,grade,"comparableValue"::text AS "comparableValue","comparableScale","certificateNo","gradedAt","verificationUrl",source,"createdAt","updatedAt"
++    FROM "Grading" WHERE id=${gradingId}::uuid AND "itemId"=${itemId}::uuid AND "ownerId"=${actorUserId}
++  `;
++  if (!result[0]) throw new GradingServiceError("GRADING_NOT_FOUND");
++  return dto(result[0]);
++}
++function mapped(error: unknown): never {
++  if (typeof error === "object" && error !== null && "meta" in error) {
++    const meta = error.meta as
++      | { code?: string; driverAdapterError?: { cause?: { originalCode?: string } } }
++      | undefined;
++    if (meta?.code === "23505" || meta?.driverAdapterError?.cause?.originalCode === "23505")
++      throw new GradingServiceError("GRADING_CERTIFICATE_CONFLICT");
++  }
++  throw error;
++}
++/** Private authored facts only. The item lock serializes CRUD with quantity/lifecycle changes.
++ * Mutations are one transaction so Phase09 can append the shared audit event atomically.
++ * Current edits/removal have no immutable history guarantee; URLs are never fetched here.
++ */
++export function createGradingService(database: GradingDatabase, actorUserId: string) {
++  const within = async <T>(work: (tx: Query) => Promise<T>) => {
++    try {
++      return await database.$transaction(work, { isolationLevel: "ReadCommitted" });
++    } catch (error) {
++      mapped(error);
++    }
++  };
++  async function listGradings(itemIdInput: string) {
++    const itemId = id(itemIdInput);
++    return within(async (tx) => {
++      await lockItem(tx, itemId, actorUserId, false);
++      return rows(tx, itemId, actorUserId);
++    });
++  }
++  async function getGrading(itemIdInput: string, gradingIdInput: string) {
++    const itemId = id(itemIdInput);
++    const gradingId = id(gradingIdInput);
++    return within(async (tx) => {
++      await lockItem(tx, itemId, actorUserId, false);
++      return record(tx, itemId, gradingId, actorUserId);
++    });
++  }
++  async function save(itemIdInput: string, gradingIdInput: string | null, input: unknown) {
++    const itemId = id(itemIdInput);
++    const gradingId = gradingIdInput === null ? null : id(gradingIdInput);
++    const parsed = GradingInputSchema.safeParse(input);
++    if (!parsed.success) throw new GradingServiceError("GRADING_INVALID");
++    const value = parsed.data;
++    return within(async (tx) => {
++      const item = await lockItem(tx, itemId, actorUserId, true);
++      if (item.quantity !== 1) throw new GradingServiceError("GRADING_REQUIRES_SINGLE_ITEM");
++      const date = value.gradedAt === null ? null : new Date(`${value.gradedAt}T00:00:00.000Z`);
++      let savedId = gradingId;
++      if (gradingId === null) {
++        const [count] = await tx.$queryRaw<
++          Array<{ count: number }>
++        >`SELECT count(*)::int AS count FROM "Grading" WHERE "itemId"=${itemId}::uuid`;
++        if (count!.count >= GRADING_MAX_RECORDS)
++          throw new GradingServiceError("GRADING_LIMIT_EXCEEDED");
++        savedId = randomUUID();
++        await tx.$queryRaw`
++          INSERT INTO "Grading" (id,"itemId","ownerId",provider,"providerKey",grade,"comparableValue","comparableScale","certificateNo","certificateKey","gradedAt","verificationUrl",source,"updatedAt")
++          VALUES (${savedId}::uuid,${itemId}::uuid,${actorUserId},${value.provider},${providerKey(value.provider)},${value.grade},${value.comparableValue}::numeric,${value.comparableScale},${value.certificateNo},${value.certificateNo},${date}::date,${value.verificationUrl},${value.source},now()) RETURNING id
++        `;
++      } else {
++        await record(tx, itemId, gradingId, actorUserId);
++        await tx.$queryRaw`
++          UPDATE "Grading" SET provider=${value.provider},"providerKey"=${providerKey(value.provider)},grade=${value.grade},
++            "comparableValue"=${value.comparableValue}::numeric,"comparableScale"=${value.comparableScale},"certificateNo"=${value.certificateNo},"certificateKey"=${value.certificateNo},
++            "gradedAt"=${date}::date,"verificationUrl"=${value.verificationUrl},source=${value.source},"updatedAt"=now()
++          WHERE id=${gradingId}::uuid AND "itemId"=${itemId}::uuid AND "ownerId"=${actorUserId} RETURNING id
++        `;
++      }
++      return record(tx, itemId, savedId!, actorUserId);
++    });
++  }
++  async function removeGrading(itemIdInput: string, gradingIdInput: string): Promise<void> {
++    const itemId = id(itemIdInput);
++    const gradingId = id(gradingIdInput);
++    await within(async (tx) => {
++      await lockItem(tx, itemId, actorUserId, true);
++      await record(tx, itemId, gradingId, actorUserId);
++      await tx.$queryRaw`DELETE FROM "Grading" WHERE id=${gradingId}::uuid AND "itemId"=${itemId}::uuid AND "ownerId"=${actorUserId} RETURNING id`;
++    });
++  }
++  return {
++    listGradings,
++    getGrading,
++    addGrading: (itemId: string, input: unknown) => save(itemId, null, input),
++    updateGrading: (itemId: string, gradingId: string, input: unknown) =>
++      save(itemId, gradingId, input),
++    removeGrading,
++  };
++}
+diff --git a/packages/domain/src/items/item-service.ts b/packages/domain/src/items/item-service.ts
+index 6cecc7d..541cd25 100644
+--- a/packages/domain/src/items/item-service.ts
++++ b/packages/domain/src/items/item-service.ts
+@@ -264,28 +264,31 @@ export type ItemDatabase = {
+     operation: (transaction: ItemTransaction) => Promise<T>,
+     options: { isolationLevel: "ReadCommitted" },
+   ): Promise<T>;
+ };
+ 
+ export type ItemServiceErrorCode =
+   | "COLLECTION_NOT_FOUND"
+   | "COLLECTION_NODE_NOT_FOUND"
+   | "ITEM_NOT_FOUND"
+   | "ITEM_INACTIVE"
+-  | "ITEM_SPLIT_INVALID";
++  | "ITEM_SPLIT_INVALID"
++  | "ITEM_GRADING_QUANTITY_INVALID";
+ 
+ const errorMessages: Record<ItemServiceErrorCode, string> = {
+   COLLECTION_NOT_FOUND: "Collection not found",
+   COLLECTION_NODE_NOT_FOUND: "Collection node not found",
+   ITEM_NOT_FOUND: "Item not found",
+   ITEM_INACTIVE: "Item is archived or disposed",
+   ITEM_SPLIT_INVALID: "Split quantity must be positive and less than the current quantity",
++  ITEM_GRADING_QUANTITY_INVALID:
++    "Remove grading records before changing physical specimen quantity",
+ };
+ 
+ export class ItemServiceError extends Error {
+   constructor(readonly code: ItemServiceErrorCode) {
+     super(errorMessages[code]);
+     this.name = "ItemServiceError";
+   }
+ }
+ 
+ function toDateOnly(value: Date | string): string {
+@@ -362,20 +365,27 @@ async function lockOwnedItem(
+       AND collection."ownerId" = ${actorUserId}
+       AND item."deletedAt" IS NULL
+       AND collection."deletedAt" IS NULL
+     FOR UPDATE OF item
+   `;
+   const item = rows[0];
+   if (!item) throw new ItemServiceError("ITEM_NOT_FOUND");
+   return item;
+ }
+ 
++async function ensureNoGrading(transaction: ItemTransaction, itemId: string): Promise<void> {
++  const [row] = await transaction.$queryRaw<Array<{ present: boolean }>>`
++    SELECT EXISTS(SELECT 1 FROM "Grading" WHERE "itemId" = ${itemId}::uuid) AS present
++  `;
++  if (row!.present) throw new ItemServiceError("ITEM_GRADING_QUANTITY_INVALID");
++}
++
+ function ensureActive(item: StoredItem): void {
+   if (item.archivedAt !== null || item.disposedAt !== null) {
+     throw new ItemServiceError("ITEM_INACTIVE");
+   }
+ }
+ 
+ async function ensureNodeInCollection(
+   transaction: ItemTransaction,
+   nodeId: string | null,
+   collectionId: string,
+@@ -440,21 +450,24 @@ export function createItemService(
+         ensureActive(existing);
+         if (data.nodeId !== undefined) {
+           await ensureNodeInCollection(transaction, data.nodeId, existing.collectionId);
+         }
+ 
+         const update: ItemUpdateData = {};
+         if (data.nodeId !== undefined) update.nodeId = data.nodeId;
+         if (data.title !== undefined) update.title = data.title;
+         if (data.publicDescription !== undefined) update.publicDescription = data.publicDescription;
+         if (data.privateNotes !== undefined) update.privateNotes = data.privateNotes;
+-        if (data.quantity !== undefined) update.quantity = data.quantity;
++        if (data.quantity !== undefined) {
++          if (data.quantity !== existing.quantity) await ensureNoGrading(transaction, existing.id);
++          update.quantity = data.quantity;
++        }
+         if (data.acquisitionType !== undefined) update.acquisitionType = data.acquisitionType;
+         if (data.acquisitionDate !== undefined) {
+           update.acquisitionDate =
+             data.acquisitionDate === null
+               ? null
+               : new Date(`${data.acquisitionDate}T00:00:00.000Z`);
+         }
+         if (data.purchaseAmountMinor !== undefined) {
+           update.purchaseAmountMinor =
+             data.purchaseAmountMinor === null ? null : BigInt(data.purchaseAmountMinor);
+@@ -516,20 +529,21 @@ export function createItemService(
+     splitQuantityInput: number,
+   ): Promise<SplitQuantityResult> {
+     const itemId = CollectibleItemSchema.shape.id.parse(itemIdInput);
+     const splitQuantity = SplitQuantityInputSchema.safeParse(splitQuantityInput);
+     if (!splitQuantity.success) throw new ItemServiceError("ITEM_SPLIT_INVALID");
+ 
+     return database.$transaction(
+       async (transaction) => {
+         const item = await lockOwnedItem(transaction, itemId, actorUserId);
+         ensureActive(item);
++        await ensureNoGrading(transaction, item.id);
+         if (splitQuantity.data >= item.quantity) {
+           throw new ItemServiceError("ITEM_SPLIT_INVALID");
+         }
+ 
+         const [identifiers, tags, fields, media, documents] = await Promise.all([
+           transaction.itemIdentifier.findMany({
+             where: { itemId: item.id },
+             select: splitIdentifierSelect,
+           }),
+           transaction.itemTag.findMany({ where: { itemId: item.id }, select: { tagId: true } }),

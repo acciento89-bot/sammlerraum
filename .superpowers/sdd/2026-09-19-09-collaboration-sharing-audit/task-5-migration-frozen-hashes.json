@@ -1,0 +1,7 @@
+[
+  {
+    "path": "packages/db/prisma/migrations/20261107060000_audit_subject_erasure/migration.sql",
+    "sha256": "daa4ebce031d5a8e2fa013bd87aacf7fc123e3e709953969f26b334fc77f1d6a",
+    "bytes": 1752
+  }
+]

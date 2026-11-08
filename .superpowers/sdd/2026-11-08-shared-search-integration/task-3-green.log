@@ -1,0 +1,48 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/search/scoped-consumers.test.ts (5 tests | 2 failed) 506ms
+   × live scoped saved definitions and dashboard parity > stores only a symbolic v2 reference and resolves current rows without retaining credentials 142ms
+     → SEARCH_INVARIANT
+   × live scoped saved definitions and dashboard parity > never falls back to owned inventory after revocation or the wrong valid token 24ms
+     → SEARCH_INVARIANT
+   ✓ live scoped saved definitions and dashboard parity > rejects credentials embedded in a persisted definition and keeps original v1 behavior 19ms
+   ✓ live scoped saved definitions and dashboard parity > counts the same selected items and units and marks undisclosed summaries unavailable 21ms
+   ✓ live scoped saved definitions and dashboard parity > executes granted value summaries and preserves empty versus missing states 15ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/search/scoped-consumers.test.ts > live scoped saved definitions and dashboard parity > stores only a symbolic v2 reference and resolves current rows without retaining credentials
+ItemSearchError: SEARCH_INVARIANT
+ ❯ searchFail packages/contracts/src/item-search.ts:24:9
+     22| }
+     23| export function searchFail(code: ItemSearchError["code"]): never {
+     24|   throw new ItemSearchError(code);
+       |         ^
+     25| }
+     26| const textValid = (v: string) =>
+ ❯ runSearchTransaction packages/domain/src/search/search-read.ts:96:14
+ ❯ packages/domain/src/search/scoped-consumers.test.ts:75:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |workspace| packages/domain/src/search/scoped-consumers.test.ts > live scoped saved definitions and dashboard parity > never falls back to owned inventory after revocation or the wrong valid token
+ItemSearchError: SEARCH_INVARIANT
+ ❯ searchFail packages/contracts/src/item-search.ts:24:9
+     22| }
+     23| export function searchFail(code: ItemSearchError["code"]): never {
+     24|   throw new ItemSearchError(code);
+       |         ^
+     25| }
+     26| const textValid = (v: string) =>
+ ❯ runSearchTransaction packages/domain/src/search/search-read.ts:96:14
+ ❯ packages/domain/src/search/scoped-consumers.test.ts:96:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 3 passed (5)
+   Start at  00:34:22
+   Duration  1.12s (transform 252ms, setup 6ms, collect 456ms, tests 506ms, environment 0ms, prepare 35ms)
+

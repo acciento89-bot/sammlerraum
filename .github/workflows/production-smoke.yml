@@ -1,0 +1,33 @@
+name: Read-only production smoke
+on:
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: Owned production HTTPS origin
+        required: true
+        default: https://sammlerraum.de
+        type: string
+permissions:
+  contents: read
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify public endpoints without customer transactions
+        env:
+          SMOKE_BASE_URL: ${{ inputs.base_url }}
+        run: bash scripts/smoke-production.sh --base-url "$SMOKE_BASE_URL"
+
+      - name: Verify actual production SEO and owned privacy fixtures read-only
+        env:
+          BASE_URL: ${{ inputs.base_url }}
+          SEO_FIXTURES_JSON: ${{ secrets.SAMMLERRAUM_SEO_FIXTURES_JSON }}
+        run: |
+          set -euo pipefail
+          test -n "$SEO_FIXTURES_JSON"
+          umask 077
+          manifest=$(mktemp)
+          trap 'rm -f "$manifest"' EXIT
+          printf '%s' "$SEO_FIXTURES_JSON" > "$manifest"
+          bash scripts/verify-seo-production.sh --fixtures "$manifest"

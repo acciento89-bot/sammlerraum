@@ -1,0 +1,33 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/search/scoped-read-budget.test.ts (2 tests | 1 failed) 563ms
+   × one scoped operation deadline across canonical preflight and read > does not reset its outer deadline when a second real transaction begins 259ms
+     → MEMBERSHIP_INTEGRITY
+   ✓ one scoped operation deadline across canonical preflight and read > can never create a larger budget than the production twelve-second maximum 1ms
+ ✓ |workspace| packages/domain/src/search/scoped-read-context.test.ts (9 tests) 984ms
+   ✓ callback-scoped bulk read authority > rechecks wall-clock expiry after asynchronous consumption  327ms
+ ✓ |workspace| packages/domain/src/search/scoped-consumers.test.ts (13 tests) 775ms
+ ✓ |workspace| packages/domain/src/search/scoped-search-service.test.ts (17 tests) 861ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/search/scoped-read-budget.test.ts > one scoped operation deadline across canonical preflight and read > does not reset its outer deadline when a second real transaction begins
+MembershipError: MEMBERSHIP_INTEGRITY
+ ❯ runTransferTransaction packages/domain/src/collaboration/transfer-transaction.ts:86:13
+     84|       if (isReadSerializationFailure(error) && attempt < 2 && performa…
+     85|       if (isReadDependencyFailure(error)) throw new MembershipError("M…
+     86|       throw new MembershipError("MEMBERSHIP_INTEGRITY");
+       |             ^
+     87|     }
+     88|   }
+ ❯ packages/domain/src/search/scoped-read-budget.test.ts:25:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 3 passed (4)
+      Tests  1 failed | 40 passed (41)
+   Start at  01:15:01
+   Duration  4.65s (transform 294ms, setup 7ms, collect 934ms, tests 3.18s, environment 0ms, prepare 127ms)
+

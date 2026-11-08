@@ -1,0 +1,61 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| apps/worker/src/jobs/market-provider-failure.test.ts (2 tests | 2 failed) 2030ms
+   × malformed response through the actual request permit > preserves terminal UTF-8 classification after physical settlement and own clear 1020ms
+     → expected ProviderFailure: TRANSPORT { …(2) } to match object { code: 'INVALID_RESPONSE', …(1) }
+(1 matching property omitted from actual)
+   × malformed response through the actual request permit > acknowledges malformed UTF-8 without a receipt, commit or retry request 1009ms
+     → promise rejected "Error: MARKET_SYNC_RETRY" instead of resolving
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/worker/src/jobs/market-provider-failure.test.ts > malformed response through the actual request permit > preserves terminal UTF-8 classification after physical settlement and own clear
+AssertionError: expected ProviderFailure: TRANSPORT { …(2) } to match object { code: 'INVALID_RESPONSE', …(1) }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+- {
+-   "code": "INVALID_RESPONSE",
+-   "retryable": false,
++ ProviderFailure {
++   "code": "TRANSPORT",
++   "retryable": true,
+  }
+
+ ❯ apps/worker/src/jobs/market-provider-failure.test.ts:46:5
+     44|     const s = setup();
+     45|     const reportFetchedAt = vi.fn();
+     46|     await expect(s.provider.fetch(s.payload, {
+       |     ^
+     47|       signal: new AbortController().signal, reportFetchedAt,
+     48|     })).rejects.toMatchObject({ code: "INVALID_RESPONSE", retryable: f…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |workspace| apps/worker/src/jobs/market-provider-failure.test.ts > malformed response through the actual request permit > acknowledges malformed UTF-8 without a receipt, commit or retry request
+AssertionError: promise rejected "Error: MARKET_SYNC_RETRY" instead of resolving
+ ❯ apps/worker/src/jobs/market-provider-failure.test.ts:72:78
+     70|     });
+     71|     // Resolved handler acknowledges this job; no retry is requested f…
+     72|     await expect(handler(s.payload, { signal: new AbortController().si…
+       |                                                                              ^
+     73|     expect(logger.error).toHaveBeenCalledExactlyOnceWith("Market sync …
+     74|     expect(repository.commit).not.toHaveBeenCalled();
+
+Caused by: Error: MARKET_SYNC_RETRY
+ ❯ apps/worker/src/jobs/sync-market-data.ts:126:13
+ ❯ apps/worker/src/jobs/market-provider-failure.test.ts:72:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed (2)
+   Start at  07:43:09
+   Duration  2.45s (transform 90ms, setup 7ms, collect 139ms, tests 2.03s, environment 0ms, prepare 54ms)
+
+
+EXIT=1

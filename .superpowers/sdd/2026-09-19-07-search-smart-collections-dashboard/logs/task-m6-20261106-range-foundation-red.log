@@ -1,0 +1,132 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/search/legacy-money-query.test.ts (14 tests | 14 failed) 8ms
+   × collects all three monetary families under OR/NOT without treating Boolean scope as authorization 2ms
+     → M6_NOT_IMPLEMENTED
+   × counts one requested path selector once while retaining each distinct range unit/bound 0ms
+     → M6_NOT_IMPLEMENTED
+   × does not require interpretation for presence-only money or unrelated predicates 0ms
+     → M6_NOT_IMPLEMENTED
+   × rejects unsupported unit ZZZ before any candidate read, even under NOT 3ms
+     → expected [Function] to throw error including 'FILTER_UNAVAILABLE' but got 'M6_NOT_IMPLEMENTED'
+   × rejects unsupported unit XXX before any candidate read, even under NOT 0ms
+     → expected [Function] to throw error including 'FILTER_UNAVAILABLE' but got 'M6_NOT_IMPLEMENTED'
+   × never accepts a unit key for a different currency or silently clamps historical scale 0ms
+     → expected [Function] to throw error including 'FILTER_UNAVAILABLE' but got 'M6_NOT_IMPLEMENTED'
+   × native exact legacy-money comparison foundation > compares native raw 1 scale0 currencyAFN without float or bigint-overflow arithmetic 0ms
+     → M6_NOT_IMPLEMENTED
+   × native exact legacy-money comparison foundation > compares native raw 100 scale2 currencyAFN without float or bigint-overflow arithmetic 0ms
+     → M6_NOT_IMPLEMENTED
+   × native exact legacy-money comparison foundation > compares native raw 101 scale2 currencyAFN without float or bigint-overflow arithmetic 0ms
+     → M6_NOT_IMPLEMENTED
+   × native exact legacy-money comparison foundation > compares native raw 0 scale9 currencyAFN without float or bigint-overflow arithmetic 0ms
+     → M6_NOT_IMPLEMENTED
+   × native exact legacy-money comparison foundation > compares native raw null scalenull currencynull without float or bigint-overflow arithmetic 0ms
+     → M6_NOT_IMPLEMENTED
+   × native exact legacy-money comparison foundation > compares native raw 100 scale2 currencyEUR without float or bigint-overflow arithmetic 0ms
+     → M6_NOT_IMPLEMENTED
+   × native exact legacy-money comparison foundation > compares native raw 100 scale2 currencyAFN without float or bigint-overflow arithmetic 0ms
+     → M6_NOT_IMPLEMENTED
+   × native exact legacy-money comparison foundation > compares native raw 9007199254740991 scale0 currencyAFN without float or bigint-overflow arithmetic 0ms
+     → M6_NOT_IMPLEMENTED
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 14 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/search/legacy-money-query.test.ts > collects all three monetary families under OR/NOT without treating Boolean scope as authorization
+Error: M6_NOT_IMPLEMENTED
+ ❯ collectLegacyMoneyRequests packages/domain/src/search/legacy-money-query.ts:9:91
+      7| export type LegacyMoneyRequest = { selector: LegacyMoneySelector; rang…
+      8| export type ResolvedMoneyColumns = { raw: Prisma.Sql; exponent: Prisma…
+      9| export function collectLegacyMoneyRequests(_input: unknown): LegacyMon…
+       |                                                                                           ^
+     10| export function legacyMoneyRangePredicate(_columns: ResolvedMoneyColum…
+     11| 
+ ❯ packages/domain/src/search/legacy-money-query.test.ts:11:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/14]⎯
+
+ FAIL  |workspace| packages/domain/src/search/legacy-money-query.test.ts > counts one requested path selector once while retaining each distinct range unit/bound
+Error: M6_NOT_IMPLEMENTED
+ ❯ collectLegacyMoneyRequests packages/domain/src/search/legacy-money-query.ts:9:91
+      7| export type LegacyMoneyRequest = { selector: LegacyMoneySelector; rang…
+      8| export type ResolvedMoneyColumns = { raw: Prisma.Sql; exponent: Prisma…
+      9| export function collectLegacyMoneyRequests(_input: unknown): LegacyMon…
+       |                                                                                           ^
+     10| export function legacyMoneyRangePredicate(_columns: ResolvedMoneyColum…
+     11| 
+ ❯ packages/domain/src/search/legacy-money-query.test.ts:15:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/14]⎯
+
+ FAIL  |workspace| packages/domain/src/search/legacy-money-query.test.ts > does not require interpretation for presence-only money or unrelated predicates
+Error: M6_NOT_IMPLEMENTED
+ ❯ collectLegacyMoneyRequests packages/domain/src/search/legacy-money-query.ts:9:91
+      7| export type LegacyMoneyRequest = { selector: LegacyMoneySelector; rang…
+      8| export type ResolvedMoneyColumns = { raw: Prisma.Sql; exponent: Prisma…
+      9| export function collectLegacyMoneyRequests(_input: unknown): LegacyMon…
+       |                                                                                           ^
+     10| export function legacyMoneyRangePredicate(_columns: ResolvedMoneyColum…
+     11| 
+ ❯ packages/domain/src/search/legacy-money-query.test.ts:20:10
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/14]⎯
+
+ FAIL  |workspace| packages/domain/src/search/legacy-money-query.test.ts > rejects unsupported unit ZZZ before any candidate read, even under NOT
+ FAIL  |workspace| packages/domain/src/search/legacy-money-query.test.ts > rejects unsupported unit XXX before any candidate read, even under NOT
+AssertionError: expected [Function] to throw error including 'FILTER_UNAVAILABLE' but got 'M6_NOT_IMPLEMENTED'
+
+Expected: "FILTER_UNAVAILABLE"
+Received: "M6_NOT_IMPLEMENTED"
+
+ ❯ packages/domain/src/search/legacy-money-query.test.ts:24:128
+     22| });
+     23| it.each(["ZZZ", "XXX"])("rejects unsupported unit %s before any candid…
+     24|   expect(() => collectLegacyMoneyRequests(envelope({ kind: "not", chil…
+       |                                                                                                                                ^
+     25| });
+     26| it("never accepts a unit key for a different currency or silently clam…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/14]⎯
+
+ FAIL  |workspace| packages/domain/src/search/legacy-money-query.test.ts > never accepts a unit key for a different currency or silently clamps historical scale
+AssertionError: expected [Function] to throw error including 'FILTER_UNAVAILABLE' but got 'M6_NOT_IMPLEMENTED'
+
+Expected: "FILTER_UNAVAILABLE"
+Received: "M6_NOT_IMPLEMENTED"
+
+ ❯ packages/domain/src/search/legacy-money-query.test.ts:27:155
+     25| });
+     26| it("never accepts a unit key for a different currency or silently clam…
+     27|   expect(() => collectLegacyMoneyRequests(envelope({ ...purchase, test…
+       |                                                                                                                                                           ^
+     28|   expect(() => collectLegacyMoneyRequests(envelope({ ...purchase, test…
+     29| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/14]⎯
+
+ FAIL  |workspace| packages/domain/src/search/legacy-money-query.test.ts > native exact legacy-money comparison foundation > compares native raw 1 scale0 currencyAFN without float or bigint-overflow arithmetic
+ FAIL  |workspace| packages/domain/src/search/legacy-money-query.test.ts > native exact legacy-money comparison foundation > compares native raw 100 scale2 currencyAFN without float or bigint-overflow arithmetic
+ FAIL  |workspace| packages/domain/src/search/legacy-money-query.test.ts > native exact legacy-money comparison foundation > compares native raw 101 scale2 currencyAFN without float or bigint-overflow arithmetic
+ FAIL  |workspace| packages/domain/src/search/legacy-money-query.test.ts > native exact legacy-money comparison foundation > compares native raw 0 scale9 currencyAFN without float or bigint-overflow arithmetic
+ FAIL  |workspace| packages/domain/src/search/legacy-money-query.test.ts > native exact legacy-money comparison foundation > compares native raw null scalenull currencynull without float or bigint-overflow arithmetic
+ FAIL  |workspace| packages/domain/src/search/legacy-money-query.test.ts > native exact legacy-money comparison foundation > compares native raw 100 scale2 currencyEUR without float or bigint-overflow arithmetic
+ FAIL  |workspace| packages/domain/src/search/legacy-money-query.test.ts > native exact legacy-money comparison foundation > compares native raw 100 scale2 currencyAFN without float or bigint-overflow arithmetic
+ FAIL  |workspace| packages/domain/src/search/legacy-money-query.test.ts > native exact legacy-money comparison foundation > compares native raw 9007199254740991 scale0 currencyAFN without float or bigint-overflow arithmetic
+Error: M6_NOT_IMPLEMENTED
+ ❯ legacyMoneyRangePredicate packages/domain/src/search/legacy-money-query.ts:10:112
+      8| export type ResolvedMoneyColumns = { raw: Prisma.Sql; exponent: Prisma…
+      9| export function collectLegacyMoneyRequests(_input: unknown): LegacyMon…
+     10| export function legacyMoneyRangePredicate(_columns: ResolvedMoneyColum…
+       |                                                                                                                ^
+     11| 
+ ❯ packages/domain/src/search/legacy-money-query.test.ts:44:23
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/14]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  14 failed (14)
+   Start at  13:41:39
+   Duration  433ms (transform 98ms, setup 6ms, collect 242ms, tests 8ms, environment 0ms, prepare 49ms)
+

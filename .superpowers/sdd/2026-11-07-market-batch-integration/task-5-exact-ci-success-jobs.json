@@ -1,0 +1,204 @@
+[
+  {
+    "id": 128466647621,
+    "name": "verify",
+    "conclusion": "success",
+    "steps": [
+      {
+        "name": "Set up job",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Initialize containers",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Run actions/checkout@v4",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Run pnpm/action-setup@v4",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Run actions/setup-node@v4",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Run pnpm install --frozen-lockfile",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Run pnpm --filter @sammlerraum/db prisma generate",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Apply PostgreSQL migrations",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Install independent PDF verification tools",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Run pnpm test",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Lint workspace",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Capture exact Task 7 formatting diff",
+        "status": "completed",
+        "conclusion": "skipped"
+      },
+      {
+        "name": "Run pnpm typecheck",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Build workspace",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Run real database health and pg-boss singleton integration tests",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Install Chromium for authentication journeys",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Run storage label browser journeys against production",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Run actual collection invitation cookie-session API journey",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Run actual granular sharing browser and cookie-session journeys",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Run actual import, export and insurance browser journeys",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Run protected media browser journey against production",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Run catalog and grading browser journeys against production",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Run immutable catalog money browser lifecycle in an owned disposable database",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Run private valuations and ingestion-generated external transport rendering against production",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Run authentication browser journeys against production",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Run collection and item browser journeys against production",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Run private search browser journeys against production",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Run bash scripts/verify-compose.sh",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Run docker build -f Dockerfile.web --build-arg NEXT_PUBLIC_APP_ORIGIN=https://example.invalid .",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Run docker build -f Dockerfile.worker -t sammlerraum-worker-ci .",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Decode with Sharp in the final worker image",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Verify compiled community cookie API",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Verify community wishes notifications and moderation in desktop and mobile browsers",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Verify collaboration management and restoration in desktop and mobile browsers",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Post Run actions/setup-node@v4",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Post Run pnpm/action-setup@v4",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Post Run actions/checkout@v4",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Stop containers",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Complete job",
+        "status": "completed",
+        "conclusion": "success"
+      }
+    ]
+  }
+]

@@ -1,0 +1,6 @@
+{
+  "frozenMigrationsVerified": 18,
+  "newAppliedMigration": "packages/db/prisma/migrations/20261108010000_scoped_saved_searches/migration.sql",
+  "sha256": "b950632e1cd1cb4970f28677e918495e0a737cccd4b8d851fc1d0b22ed11fed4",
+  "matchesOriginalCommittedBytes": true
+}

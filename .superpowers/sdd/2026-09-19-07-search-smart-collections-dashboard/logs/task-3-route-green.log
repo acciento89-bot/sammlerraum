@@ -1,0 +1,12 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ✓ |workspace| apps/web/src/lib/smart-collection-routes.integration.test.ts (2 tests) 631ms
+   ✓ native saved-query authorized routes > creates/lists/details/replaces/resolves/deletes actual saved definitions  432ms
+ ✓ |workspace| apps/web/src/lib/smart-collection-routes.test.ts (11 tests) 7ms
+
+ Test Files  2 passed (2)
+      Tests  13 passed (13)
+   Start at  10:05:59
+   Duration  1.65s (transform 284ms, setup 12ms, collect 201ms, tests 638ms, environment 0ms, prepare 249ms)
+

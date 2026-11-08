@@ -1,0 +1,19 @@
+
+> sammlerraum@ test /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+> vitest run apps/web/src/components/items/item-form-values.test.ts apps/web/src/components/catalog/catalog-form-values.test.ts packages/contracts/src/grading.test.ts apps/web/src/lib/catalog-proposal-routes.integration.test.ts apps/web/src/lib/grading-routes.integration.test.ts apps/web/src/lib/catalog-proposal-routes.test.ts --no-file-parallelism
+
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ✓ |workspace| apps/web/src/lib/catalog-proposal-routes.test.ts (6 tests) 15ms
+ ✓ |workspace| apps/web/src/components/catalog/catalog-form-values.test.ts (7 tests) 14ms
+ ✓ |workspace| apps/web/src/components/items/item-form-values.test.ts (17 tests) 20ms
+ ✓ |workspace| packages/contracts/src/grading.test.ts (37 tests) 5ms
+ ✓ |workspace| apps/web/src/lib/catalog-proposal-routes.integration.test.ts (4 tests) 271ms
+ ✓ |workspace| apps/web/src/lib/grading-routes.integration.test.ts (10 tests) 296ms
+
+ Test Files  6 passed (6)
+      Tests  81 passed (81)
+   Start at  02:33:53
+   Duration  2.06s (transform 195ms, setup 10ms, collect 595ms, tests 622ms, environment 1ms, prepare 204ms)
+

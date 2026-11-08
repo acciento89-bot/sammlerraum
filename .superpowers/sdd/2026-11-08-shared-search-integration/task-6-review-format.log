@@ -1,0 +1,24 @@
+apps/web/src/components/search/scoped-search-panel.tsx 77ms
+apps/web/src/components/search/shared-search-hub.tsx 15ms
+apps/web/src/components/search/scoped-saved-row.tsx 7ms
+apps/web/src/components/search/scoped-search-client.ts 4ms (unchanged)
+apps/web/src/components/search/market-filter-editor.tsx 10ms
+apps/web/src/components/search/filter-leaf-editor.tsx 32ms
+apps/web/src/components/search/filter-predicate-editor.tsx 21ms (unchanged)
+apps/web/src/components/search/filter-draft.ts 8ms (unchanged)
+apps/web/src/components/search/filter-draft.test.ts 13ms
+apps/web/src/components/community/wishlist-workspace.tsx 17ms
+apps/web/src/lib/item-search-routes.ts 6ms
+apps/web/src/lib/community-wishlist-routes.ts 6ms (unchanged)
+apps/web/src/app/api/v1/search/market-selectors/route.ts 1ms
+apps/web/e2e/scoped-search.spec.ts 26ms
+packages/contracts/src/item-search.ts 6ms
+packages/contracts/src/search.ts 21ms
+packages/contracts/src/wishlist.ts 5ms (unchanged)
+packages/domain/src/wishlist/wishlist-service.ts 13ms
+packages/domain/src/wishlist/wishlist-service.test.ts 19ms
+packages/domain/src/search/item-search-service.ts 7ms
+packages/domain/src/market-data/market-query-policy.ts 12ms
+packages/domain/src/market-data/market-query-policy.test.ts 10ms
+apps/web/messages/de.json 32ms (unchanged)
+apps/web/messages/en.json 12ms (unchanged)

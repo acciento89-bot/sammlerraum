@@ -1,0 +1,52 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/db/src/legacy-money.integration.test.ts (15 tests | 1 failed) 2187ms
+   ✓ legacy money native upgrade > migration_preserves_untracked_raw 143ms
+   ✓ legacy money native behavior > same_pair_sql_invalidates 145ms
+   ✓ legacy money native behavior > aba_and_custom_absence_stale_tokens 138ms
+   ✓ legacy money native behavior > classification_never_changes_raw and rejects mismatched raw facts 133ms
+   ✓ legacy money native behavior > event_failure_rolls_back_raw 135ms
+   ✓ legacy money native behavior > event_and_proposal_immutability 137ms
+   ✓ legacy money native behavior > copy_origin_rejects_cross_owner 132ms
+   ✓ legacy money native erasure and history > native_redaction_content_transitions 146ms
+   ✓ legacy money native erasure and history > native_actor_and_origin_fk_erasure 180ms
+   ✓ legacy money native erasure and history > definition cascade removes personal events without absence resurrection 147ms
+   ✓ legacy money native erasure and history > a classified logical baseline is not hidden by a later raw write 143ms
+   ✓ legacy money native erasure and history > snapshot_target_guard 154ms
+   ✓ legacy money native erasure and history > actual catalog actor FK erasure distinguishes CLASSIFY origin 162ms
+   ✓ legacy money native erasure and history > actual catalog actor FK erasure distinguishes AUTHOR origin 155ms
+   × legacy money native erasure and history > authoring receipts have a native byte bound, including otherwise valid extra content 136ms
+     → expected undefined to match object { code: '23514' }
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/db/src/legacy-money.integration.test.ts > legacy money native erasure and history > authoring receipts have a native byte bound, including otherwise valid extra content
+AssertionError: expected undefined to match object { code: '23514' }
+
+- Expected: 
+{
+  "code": "23514",
+}
+
++ Received: 
+undefined
+
+ ❯ rejects packages/db/src/legacy-money.integration.test.ts:57:17
+     55|   try{await client.query(sql,values);}catch(caught){error=caught;}
+     56|   await client.query("ROLLBACK TO SAVEPOINT expected_rejection");await…
+     57|   expect(error).toMatchObject({code});
+       |                 ^
+     58| }
+     59| const nil="00000000-0000-0000-0000-000000000000";
+ ❯ packages/db/src/legacy-money.integration.test.ts:212:5
+ ❯ upgrade packages/db/src/legacy-money.integration.test.ts:21:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 14 passed (15)
+   Start at  03:01:38
+   Duration  2.44s (transform 29ms, setup 6ms, collect 34ms, tests 2.19s, environment 0ms, prepare 36ms)
+

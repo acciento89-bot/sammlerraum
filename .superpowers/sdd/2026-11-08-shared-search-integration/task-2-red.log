@@ -1,0 +1,27 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/search/scoped-search-service.test.ts [ packages/domain/src/search/scoped-search-service.test.ts ]
+Error: Cannot find module './scoped-search-service' imported from '/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/domain/src/search/scoped-search-service.test.ts'
+ ❯ packages/domain/src/search/scoped-search-service.test.ts:7:1
+      5| import { createShareService } from "../sharing/share-service";
+      6| import { createMembershipService } from "../collaboration/membership-s…
+      7| import { createScopedSearchService } from "./scoped-search-service";
+       | ^
+      8| 
+      9| describe.runIf(process.env.RUN_DATABASE_INTEGRATION === "1")("actual s…
+
+Caused by: Error: Failed to load url ./scoped-search-service (resolved id: ./scoped-search-service) in /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/packages/domain/src/search/scoped-search-service.test.ts. Does the file exist?
+ ❯ loadAndTransform ../../../../SSK%20SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/node_modules/.pnpm/vite@7.3.6_@types+node@24.5.2_jiti@2.7.0/node_modules/vite/dist/node/chunks/config.js:22739:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  no tests
+   Start at  00:25:06
+   Duration  522ms (transform 195ms, setup 6ms, collect 0ms, tests 0ms, environment 0ms, prepare 35ms)
+

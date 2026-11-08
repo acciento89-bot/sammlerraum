@@ -1,0 +1,72 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/search/scoped-read-context.test.ts (6 tests | 2 failed) 526ms
+   ✓ callback-scoped bulk read authority > limits the complete bulk relation to an actual item grant and hides credentials 124ms
+   ✓ callback-scoped bulk read authority > rejects a valid capability supplied for a different stored share reference 17ms
+   ✓ callback-scoped bulk read authority > loads actual membership and excludes every other owner collection 35ms
+   ✓ callback-scoped bulk read authority > expires callback handles and rejects forged context objects 14ms
+   × callback-scoped bulk read authority > rechecks wall-clock expiry after asynchronous consumption 21ms
+     → 
+Invalid `prisma.$executeRaw()` invocation:
+
+
+Raw query failed. Code: `23514`. Message: `Share grant is immutable`
+   × callback-scoped bulk read authority > rejects deleted item targets before an empty query can hide loss of access 30ms
+     → expected ShareError: SHARE_REVOKED { code: 'S…' } to match object { code: 'SHARE_NOT_FOUND' }
+(1 matching property omitted from actual)
+ ✓ |workspace| packages/domain/src/sharing/share-service.test.ts (19 tests) 1331ms
+ ✓ |workspace| packages/domain/src/sharing/share-read-access.test.ts (3 tests) 567ms
+ ✓ |workspace| packages/domain/src/collaboration/membership-service.test.ts (34 tests) 2052ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/search/scoped-read-context.test.ts > callback-scoped bulk read authority > rechecks wall-clock expiry after asynchronous consumption
+PrismaClientKnownRequestError: 
+Invalid `prisma.$executeRaw()` invocation:
+
+
+Raw query failed. Code: `23514`. Message: `Share grant is immutable`
+ ❯ vn.handleRequestError node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:238:13
+ ❯ vn.handleAndLogRequestError node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:184:12
+ ❯ vn.request node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/RequestHandler.ts:153:12
+ ❯ a node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:1014:24
+ ❯ packages/domain/src/search/scoped-read-context.test.ts:67:5
+     65|   it("rechecks wall-clock expiry after asynchronous consumption", asyn…
+     66|     const f = await fixture();
+     67|     await db.$executeRaw`UPDATE "CollectionShare" SET "expiresAt"=time…
+       |     ^
+     68|     await expect(withScopedReadContext(db, null, { kind: "SHARE", acce…
+     69|       expect(await ids(context)).toHaveLength(1);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |workspace| packages/domain/src/search/scoped-read-context.test.ts > callback-scoped bulk read authority > rejects deleted item targets before an empty query can hide loss of access
+AssertionError: expected ShareError: SHARE_REVOKED { code: 'S…' } to match object { code: 'SHARE_NOT_FOUND' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+- {
+-   "code": "SHARE_NOT_FOUND",
++ ShareError {
++   "code": "SHARE_REVOKED",
+  }
+
+ ❯ packages/domain/src/search/scoped-read-context.test.ts:77:5
+     75|     await db.collectibleItem.update({ where: { id: f.item.id }, data: …
+     76|     let called = false;
+     77|     await expect(withScopedReadContext(db, null, { kind: "SHARE", acce…
+       |     ^
+     78|     expect(called).toBe(false);
+     79|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed | 3 passed (4)
+      Tests  2 failed | 60 passed (62)
+   Start at  00:21:17
+   Duration  6.11s (transform 361ms, setup 7ms, collect 1.06s, tests 4.48s, environment 0ms, prepare 127ms)
+

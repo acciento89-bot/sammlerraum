@@ -1,0 +1,17 @@
+{
+  "name": "@sammlerraum/queue",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./testing/in-memory-queue": "./src/testing/in-memory-queue.ts"
+  },
+  "scripts": {
+    "build": "pnpm typecheck",
+    "lint": "prettier --check .",
+    "typecheck": "tsc --noEmit --project ../../tsconfig.base.json"
+  },
+  "dependencies": {
+    "pg-boss": "12.33.2"
+  }
+}

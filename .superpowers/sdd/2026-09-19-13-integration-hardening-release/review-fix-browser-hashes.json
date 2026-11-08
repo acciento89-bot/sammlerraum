@@ -1,0 +1,134 @@
+[
+  {
+    "path": "review-fix-browser-current/screenshots/en-v1-desktop-members.png",
+    "sha256": "a39da8586c6603e9938dceb137090934a6529dbd8006c79338f025cc7013d113"
+  },
+  {
+    "path": "review-fix-browser-current/screenshots/en-v1-mobile-saved-search.png",
+    "sha256": "8e459c7456265ae44e246ee60aa302df63c18e174eb9742cd3dab7c016325339"
+  },
+  {
+    "path": "review-fix-browser-current/screenshots/en-v1-mobile-private-item.png",
+    "sha256": "be53ae58b83ab0f35a6302fcaef12ea353bffeb83efd36cca00fa3d7b92f264a"
+  },
+  {
+    "path": "review-fix-browser-current/screenshots/en-v1-mobile-members.png",
+    "sha256": "854ba92c104d840ff09bfa92afd0d736367783b8b1e81acf1959c9c87eff654a"
+  },
+  {
+    "path": "review-fix-browser-current/screenshots/en-v1-mobile-private-report.png",
+    "sha256": "c5796294ea4ccb3e05d42fc96dda6d93ef97d9282af70747d0131ffd9ee2d530"
+  },
+  {
+    "path": "review-fix-browser-current/screenshots/de-v1-mobile-private-report.png",
+    "sha256": "20c205132b1bab889a123f9062d25acfc6c425bfb7cfb361b6fccef309bbc67e"
+  },
+  {
+    "path": "review-fix-browser-current/screenshots/de-v1-mobile-profile.png",
+    "sha256": "a9bec9d658b2ffbe5649454b3c36046edb47bc7fdb0755f9828ad4662b346db8"
+  },
+  {
+    "path": "review-fix-browser-current/screenshots/de-v1-desktop-private-report.png",
+    "sha256": "f2eb39ebac9e42e9d59c4a2655fffbb6d2054a81bb3d6c16292ed27fa215fe80"
+  },
+  {
+    "path": "review-fix-browser-current/screenshots/de-v1-desktop-profile.png",
+    "sha256": "dfb8fe87bcc882ec72ba6c3d03ba4825aef760d0e34853ff691be4a600e0824d"
+  },
+  {
+    "path": "review-fix-browser-current/screenshots/en-v1-desktop-dashboard.png",
+    "sha256": "60c7a65222337cc0fe9711a4052b7ab41c12e0ded2579171cac9d5cf49cce09e"
+  },
+  {
+    "path": "review-fix-browser-current/screenshots/en-v1-mobile-community-comment.png",
+    "sha256": "fea90509148ba2063430d386432022c0988a355ba15c342483d3d238d6acf5c6"
+  },
+  {
+    "path": "review-fix-browser-current/screenshots/en-v1-desktop-private-item.png",
+    "sha256": "dedf3c891d8a592efb8eb7ef72c405274e670e3226470fbcc29d61a99743fcdb"
+  },
+  {
+    "path": "review-fix-browser-current/screenshots/en-v1-desktop-saved-search.png",
+    "sha256": "4d879ff26544e7a0474da2c5ea740e70b83603748c6d2dc2e3af70eb30e76a96"
+  },
+  {
+    "path": "review-fix-browser-current/screenshots/en-v1-mobile-premium-confirmed.png",
+    "sha256": "3b1c8b1c2cae94e2ee058c5c3aa8fd97050f0df003cf9b41a008aae53d800e0b"
+  },
+  {
+    "path": "review-fix-browser-current/screenshots/de-v1-mobile-private-item.png",
+    "sha256": "f8e10dc574b37cdc6e9a3240082b13897069674b599fa8b60f326bc178c27935"
+  },
+  {
+    "path": "review-fix-browser-current/screenshots/de-v1-mobile-saved-search.png",
+    "sha256": "ffcc0c843e67e238fec5ba616a40486cf158be14155e83a40ade4db32f845a54"
+  },
+  {
+    "path": "review-fix-browser-current/screenshots/de-v1-desktop-dashboard.png",
+    "sha256": "cc120976e93fc19b7dde2c4f9e81f064f00f3fb3db4111ace3ee35ed4fa1d2de"
+  },
+  {
+    "path": "review-fix-browser-current/screenshots/de-v1-mobile-dashboard.png",
+    "sha256": "dcd035fe033fe8d1398268c8b1a45f1f0fbaeef617e09ba9c5dc38314d1fce94"
+  },
+  {
+    "path": "review-fix-browser-current/screenshots/de-v1-mobile-premium-confirmed.png",
+    "sha256": "16c32b976e0d6244c2ac3bd947bdec6760ed433d6f6d076767b4738775cf4483"
+  },
+  {
+    "path": "review-fix-browser-current/screenshots/en-v1-mobile-analysis-confirmed.png",
+    "sha256": "901edf64280f29732921f367da870016d0b47cb985ec689ba81e865079d669a7"
+  },
+  {
+    "path": "review-fix-browser-current/screenshots/en-v1-desktop-premium-confirmed.png",
+    "sha256": "2a213232c36dfb6ee232ae0333daa0db1c04bc212081f2681280d416b374363a"
+  },
+  {
+    "path": "review-fix-browser-current/screenshots/de-v1-desktop-premium-confirmed.png",
+    "sha256": "eb2d3aae2d5d76543a58bff62f648ac0b1271cb94e20b09333579a061237910f"
+  },
+  {
+    "path": "review-fix-browser-current/screenshots/en-v1-desktop-private-report.png",
+    "sha256": "ae678d04b336d7051733fa8c7ea9406249c8b5bfab777368d4d4f398dce74a21"
+  },
+  {
+    "path": "review-fix-browser-current/screenshots/en-v1-desktop-community-comment.png",
+    "sha256": "34359a01eb3162a538663f533d0024b70d075e3569646fcc9dddf3b9edf19211"
+  },
+  {
+    "path": "review-fix-browser-current/screenshots/de-v1-desktop-members.png",
+    "sha256": "48ff2a0847ed92aa87860531538842074b545efd39b4fb40ebabd252419583e6"
+  },
+  {
+    "path": "review-fix-browser-current/screenshots/de-v1-mobile-community-comment.png",
+    "sha256": "8837c242376d624aa88fdf3c928911c7df4bc7241965f20c6f54371801f58812"
+  },
+  {
+    "path": "review-fix-browser-current/screenshots/de-v1-mobile-members.png",
+    "sha256": "b0d6017c1d9d32751b418067f308ad9b296acca2c916b53c1c9da5185e3c7119"
+  },
+  {
+    "path": "review-fix-browser-current/screenshots/de-v1-desktop-private-item.png",
+    "sha256": "83ce49de8ead53ddc82c1c33c6a5d5dc7f8dd9836b927a0f062e17072cdfc47e"
+  },
+  {
+    "path": "review-fix-browser-current/screenshots/de-v1-desktop-saved-search.png",
+    "sha256": "f9d84916f8830a761807ddb73c6cbcf8212fb8888a52bad96342de75cd014dda"
+  },
+  {
+    "path": "review-fix-browser-current/screenshots/de-v1-desktop-community-comment.png",
+    "sha256": "b60cbc8dd9405ab7a2dbf2875811a70e308e54a6ab029ed36100e1dde20717af"
+  },
+  {
+    "path": "review-fix-browser-current/screenshots/en-v1-mobile-dashboard.png",
+    "sha256": "04109746e898bea24d547ead3f1fd4417d633631df09690015d2857a8ed1fb95"
+  },
+  {
+    "path": "review-fix-browser-current/screenshots/en-v1-desktop-profile.png",
+    "sha256": "a55e92ae2950d3c56a40088928e26bd639076cb3584ca6ac304559d8bfd48a40"
+  },
+  {
+    "path": "review-fix-browser-current/screenshots/en-v1-mobile-profile.png",
+    "sha256": "516d6a28095c230d248452f8e6fde785355d5dd41ea8eb0d8a844e6f0876774f"
+  }
+]

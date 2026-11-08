@@ -1,0 +1,16 @@
+# Task2 integration context
+Read task-2-brief.md as exact task requirements and current phase progress.md for rulings.
+
+Existing conventions: authenticated owner APIs in apps/web/src/lib/management-route-dependencies.ts, collection-item-routes.ts and auxiliary route modules derive fresh server sessions (disableCookieCache/disableRefresh), exact Origin, shared errors, no-store and DB-owner checks. Prisma schema packages/db/prisma/schema.prisma; append migration only. QueueClient enqueue in packages/queue/src/types.ts and existing pg-boss client. StorageProvider exported @sammlerraum/storage accepts root path; configserver already validates UPLOADS_DIR.
+
+Implement upload/link API foundation with domain Task2; Task6 later adds gallery ordering/title/document controls and UI. Stream-bounded request body (including absent/lying Content-Length); no reading arbitrary entire uploads before limit. Fresh auth and ownership first. No raw storage paths in public DTO.
+
+Configurable defaults: image20MiB, document25MiB, max40million pixels. Initial image allowlist JPEG/PNG/WebP; documents PDF or those decoded image types. PDF is a document, never an image even when renamed. No SVG/HTML/executable active types. Validate magic and decode fully before durable linking; bounded dimensions/pixel limit before expensive processing. Preserve originals; variants/EXIF stripping Task3.
+
+Models MediaAsset/MediaVariant/MediaLink/DocumentLink must support owner, processing status, bytes/checksum/MIME/dimensions/original metadata, ordering/title purpose and document category/visibility. Use existing Visibility enum and spec document categories. Existing profile avatarAssetId references must enforce owned image and count as a live reference (canonical MediaLink or real FK/ref-aware cleanup). Catalog models don't exist until Phase05; retain extensible media design and deny any unsupported catalog target instead of manufacturing public permissions. Record exact Task3/4/5 interfaces/statuses in report.
+
+Cross-task integrity: existing item-service.splitQuantityItem copies identifiers/tags/typedfields/location atomically. Extend to shared media/document links reusing asset IDs with order/title/category/visibility preserved. Test both portions through owner read API or focused DB test. Use same lock discipline as other item metadata setters.
+
+Failure correctness: bytes and DB aren't one transaction. Track storage keys durably BEFORE writes or use equivalent recoverable intent; failed DB/link/delete/queue must not leave permanently untracked bytes. A durable processing intent/status/outbox with a clear Task3 dispatcher interface is needed so queue outages are recoverable. Don't claim jobs are reliably queued from best-effort enqueue alone. Task5 later does retention cleanup; leave enough persistent state for it.
+
+Tests-first focused spoof/byte/pixel/decode tests plus failure/ownership cases; real DB migration integration registered in dedicated CI command. No local PostgreSQL/Docker/Chromium; report skips honestly. Use corepack pnpm10.17.1. Installing native deps may require pnpm allowedBuiltDependencies update; lockfile must stay frozen compatible. Task3 owns actual worker registration/derivative native packaging; mention native Sharp Docker issue in handoff.

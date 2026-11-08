@@ -1,0 +1,68 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| apps/worker/src/main.test.ts (6 tests | 1 failed) 9ms
+   ✓ startWorker > starts durable dispatch after queue startup and stops it before queue teardown 2ms
+   ✓ startWorker > installs the queue error listener before startup and keeps an emitted error unhealthy 1ms
+   ✓ startWorker > rolls back queue, endpoint, and database resources in reverse lifecycle order 0ms
+   ✓ runWorkerMain > returns exit code 1 and logs a generic startup configuration error 1ms
+   ✓ shares stop completion and never disconnects DB when market work cannot settle 1ms
+   × attempts independent cleanup when market stop throws synchronously 4ms
+     → expected [] to deeply equal [ 'health', 'queue' ]
+ ❯ |workspace| apps/worker/src/jobs/sync-market-data.test.ts (8 tests | 1 failed) 11ms
+   ✓ market synchronization > receipts an empty success and skips a committed retry before catalog validation or fetch 3ms
+   ✓ market synchronization > never fetches a disabled provider 0ms
+   ✓ market synchronization > passes cancellation to the provider and does not commit an aborted fetch 1ms
+   ✓ redacts provider exceptions and leaves failed work without a receipt 1ms
+   ✓ classifies conflicting committed requests without another provider call 1ms
+   ✓ rejects private or malformed payload fields before touching persistence 0ms
+   ✓ propagates cancellation during a real pending fake transport and refuses ingestion 0ms
+   × does not let an adapter mutate the persisted attachment request 4ms
+     → promise resolved "undefined" instead of rejecting
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/worker/src/main.test.ts > attempts independent cleanup when market stop throws synchronously
+AssertionError: expected [] to deeply equal [ 'health', 'queue' ]
+
+- Expected
++ Received
+
+- [
+-   "health",
+-   "queue",
+- ]
++ []
+
+ ❯ apps/worker/src/main.test.ts:151:62
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |workspace| apps/worker/src/jobs/sync-market-data.test.ts > does not let an adapter mutate the persisted attachment request
+AssertionError: promise resolved "undefined" instead of rejecting
+
+- Expected: 
+Error {
+  "message": "rejected promise",
+}
+
++ Received: 
+undefined
+
+ ❯ apps/worker/src/jobs/sync-market-data.test.ts:47:73
+     45| it("does not let an adapter mutate the persisted attachment request",a…
+     46|  const s=setup();s.fetch.mockImplementation((async(request:{target:{re…
+     47|  await expect(s.handler(payload(),{signal:new AbortController().signal…
+       |                                                                         ^
+     48| });
+     49| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  2 failed | 12 passed (14)
+   Start at  04:57:59
+   Duration  344ms (transform 86ms, setup 14ms, collect 138ms, tests 20ms, environment 0ms, prepare 94ms)
+

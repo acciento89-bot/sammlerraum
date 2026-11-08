@@ -1,8 +1,8 @@
 # Sammlerraum.de
 
-> **Status:** Design freigegeben – Implementierung vollständig geplant  
+> **Status:** V1 live unter [sammlerraum.de](https://sammlerraum.de) · 91/91 ursprüngliche Aufgaben geprüft; Belege und bewusst deaktivierte optionale Dienste siehe Fortschritts-Ledger
 > **Repository:** `acciento89-bot/sammlerraum`  
-> **Stand:** 19.09.2026
+> **Stand:** 08.11.2026
 > **Konsolidierte Design-Spezifikation:** `docs/superpowers/specs/2026-09-19-sammlerraum-design.md`
 > **SEO/Search-Console-Spezifikation:** `docs/superpowers/specs/2026-09-19-seo-search-console-design.md`
 > **Implementierungsplan:** `docs/superpowers/plans/2026-09-19-sammlerraum-v1-master-plan.md`
@@ -12,7 +12,7 @@
 
 Sammlerraum.de wird eine universelle Plattform zur digitalen Verwaltung privater Sammlungen mit optionalen Community-Funktionen und später vorbereiteten Marktplatz-/Tauschfunktionen.
 
-Diese README dient während der Konzeptphase als **laufender, verbindlicher Entscheidungsstand** und wird bei neuen Festlegungen aktualisiert.
+Diese README hält die Produktentscheidungen fest. Der Fortschritts-Ledger unterscheidet geprüften Quellcode, tatsächliche Abnahme und noch offene Produktionsschritte; ein geplanter oder lokal bestandener Schritt gilt nicht automatisch als live abgeschlossen.
 
 ---
 

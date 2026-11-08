@@ -1,0 +1,48 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/sharing/share-service.test.ts (10 tests | 1 failed) 783ms
+   ✓ actual explicit granular read shares > excludes private notes, location, insurance, receipt and money data by default and stores only a token hash 131ms
+   ✓ actual explicit granular read shares > stops a known token immediately after revocation 16ms
+   ✓ actual explicit granular read shares > binds registered-user grants without adding membership or broadening a Viewer's edit rights 24ms
+   ✓ actual explicit granular read shares > resolves the selected node subtree without exposing siblings or other private ancestors 18ms
+   ✓ actual explicit granular read shares > permanently revokes the old owner's token during transfer, including a later ownership round trip 51ms
+   ✓ actual explicit granular read shares > rejects a genuinely expired stored grant using the database clock 6ms
+   ✓ actual explicit granular read shares > stores a salted PIN hash and persists a bounded attempt budget before expensive checking 213ms
+   × actual explicit granular read shares > discloses only explicitly selected location, policy, values and document metadata 39ms
+     → expected { …(9) } to match object { storageLocation: { …(3) }, …(3) }
+(5 matching properties omitted from actual)
+   ✓ actual explicit granular read shares > cannot select a document belonging to a different item or a sibling outside the chosen subtree 9ms
+   ✓ actual explicit granular read shares > pages collections with stable bounded cursors and no duplicate or missing item 37ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/sharing/share-service.test.ts > actual explicit granular read shares > discloses only explicitly selected location, policy, values and document metadata
+AssertionError: expected { …(9) } to match object { storageLocation: { …(3) }, …(3) }
+(5 matching properties omitted from actual)
+
+- Expected
++ Received
+
+@@ -22,9 +22,8 @@
+        "currency": "EUR",
+      },
+    },
+    "storageLocation": {
+      "name": "Selected private cabinet",
+-     "qrToken": "HuBy2nqkT-bwl_E_Wg3qydkTGMNve5SdW5eBNRq9aCM",
+      "type": "CABINET",
+    },
+  }
+
+ ❯ packages/domain/src/sharing/share-service.test.ts:99:16
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 9 passed (10)
+   Start at  06:37:43
+   Duration  1.26s (transform 168ms, setup 7ms, collect 319ms, tests 783ms, environment 0ms, prepare 36ms)
+

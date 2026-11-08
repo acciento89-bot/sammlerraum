@@ -1,0 +1,49 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| packages/domain/src/catalog/initialize-catalog.test.ts (2 tests | 2 failed) 104ms
+   × explicit authored catalog initializer > dry-runs without writes, then applies atomically and reruns without changing identities or retirements 95ms
+     → expected [] to have a length of 2 but got +0
+   × explicit authored catalog initializer > fails all semantic conflicts before creating another missing category 1ms
+     → promise resolved "{ applied: false, actions: [] }" instead of rejecting
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/catalog/initialize-catalog.test.ts > explicit authored catalog initializer > dry-runs without writes, then applies atomically and reruns without changing identities or retirements
+AssertionError: expected [] to have a length of 2 but got +0
+
+- Expected
++ Received
+
+- 2
++ 0
+
+ ❯ packages/domain/src/catalog/initialize-catalog.test.ts:10:699
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |workspace| packages/domain/src/catalog/initialize-catalog.test.ts > explicit authored catalog initializer > fails all semantic conflicts before creating another missing category
+AssertionError: promise resolved "{ applied: false, actions: [] }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "actions": [],
++   "applied": false,
+  }
+
+ ❯ packages/domain/src/catalog/initialize-catalog.test.ts:11:383
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed (2)
+   Start at  00:57:36
+   Duration  360ms (transform 47ms, setup 5ms, collect 110ms, tests 104ms, environment 0ms, prepare 33ms)
+

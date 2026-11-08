@@ -1,0 +1,13 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ✓ |workspace| packages/domain/src/money/money.test.ts (50 tests) 5ms
+ ✓ |workspace| packages/domain/src/money/legacy-money-policy.test.ts (4 tests) 6ms
+ ✓ |workspace| packages/contracts/src/catalog-proposals.test.ts (2 tests) 7ms
+ ✓ |workspace| packages/contracts/src/legacy-money.test.ts (2 tests) 6ms
+
+ Test Files  4 passed (4)
+      Tests  58 passed (58)
+   Start at  01:20:00
+   Duration  369ms (transform 150ms, setup 29ms, collect 365ms, tests 25ms, environment 0ms, prepare 238ms)
+

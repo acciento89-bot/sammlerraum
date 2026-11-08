@@ -1,0 +1,64 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/search/duplicate-filter.integration.test.ts (7 tests | 7 skipped) 8ms
+   ↓ actual private duplicate-filter semantics > matches both explicit endpoints and complements false without title or quantity inference
+   ↓ actual private duplicate-filter semantics > supports mixed NOT/OR over current facts and returns no false match for missing declarations
+   ↓ actual private duplicate-filter semantics > retains explicit relations across ordinary partner lifecycle changes while applying candidate lifecycle
+   ↓ actual private duplicate-filter semantics > excludes a deleted partner item instead of retaining a stale flag
+   ↓ actual private duplicate-filter semantics > excludes a deleted partner parent instead of retaining a stale flag
+   ↓ actual private duplicate-filter semantics > rechecks real mark/unmark and pre-cursor totals on an exhausted page
+   ↓ actual private duplicate-filter semantics > does not grant private duplicate inference to a collection member and retires pairs on actual transfer
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/search/duplicate-filter.integration.test.ts > actual private duplicate-filter semantics
+{
+  stack: 'AggregateError: \n' +
+    '    at internalConnectMultiple (node:net:1339:18)\n' +
+    '    at afterConnectMultiple (node:net:1942:7)',
+  errors: [
+    {
+      stack: 'Error: connect ECONNREFUSED ::1:5432\n' +
+        '    at createConnectionError (node:net:1905:14)\n' +
+        '    at afterConnectMultiple (node:net:1935:16)',
+      message: 'connect ECONNREFUSED ::1:5432',
+      errno: -61,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    },
+    {
+      stack: 'Error: connect ECONNREFUSED 127.0.0.1:5432\n' +
+        '    at createConnectionError (node:net:1905:14)\n' +
+        '    at afterConnectMultiple (node:net:1935:16)',
+      message: 'connect ECONNREFUSED 127.0.0.1:5432',
+      errno: -61,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    }
+  ],
+  code: 'ECONNREFUSED',
+  message: '',
+  constructor: 'Function<AggregateError>',
+  name: 'AggregateError',
+  toString: 'Function<toString>',
+  stacks: []
+}
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  7 skipped (7)
+   Start at  23:44:29
+   Duration  765ms (transform 293ms, setup 7ms, collect 540ms, tests 8ms, environment 0ms, prepare 56ms)
+

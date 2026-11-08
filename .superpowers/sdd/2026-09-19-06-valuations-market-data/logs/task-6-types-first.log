@@ -1,0 +1,5 @@
+apps/worker/src/jobs/market-request-permit.integration.test.ts(51,7): error TS18048: 'hourly' is possibly 'undefined'.
+apps/worker/src/jobs/sync-market-data.test.ts(173,109): error TS2493: Tuple type '[p: { providerId: string; pollId: `${string}-${string}-${string}-${string}-${string}`; target: { entryId: `${string}-${string}-${string}-${string}-${string}`; variantId: null; revision: number; identifierId: `${string}-${string}-${string}-${string}-${string}`; namespace: string; identifierType: string; externalId: s...' of length '1' has no element at index '2'.
+packages/market-data/src/exact-json.ts(40,50): error TS2550: Property 'isWellFormed' does not exist on type 'string'. Do you need to change your target library? Try changing the 'lib' compiler option to 'es2024' or later.
+
+EXIT=2

@@ -1,0 +1,58 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| apps/web/src/components/money/custom-money-client.test.ts (3 tests | 3 failed) 6ms
+   × bounded custom money browser adapter > loads every requested field through bounded groups without per-field requests or truncation 2ms
+     → READ_FAILED
+   × bounded custom money browser adapter > rejects wrong scope, duplicate input/output and a later failed chunk instead of returning partial facts 3ms
+     → expected +0 to be 2 // Object.is equality
+   × bounded custom money browser adapter > binds a new item's draft only to genuine absence and never rebases an existing precondition 1ms
+     → READ_FAILED
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/web/src/components/money/custom-money-client.test.ts > bounded custom money browser adapter > loads every requested field through bounded groups without per-field requests or truncation
+Error: READ_FAILED
+ ❯ readCustomMoney apps/web/src/components/money/custom-money-client.ts:4:152
+      2| import type { MoneyDraft } from "./legacy-money-draft";
+      3| import { MoneyClientError, type MoneyTransport } from "./legacy-money-…
+      4| export async function readCustomMoney(_itemId: string, _definitions: s…
+       |                                                                                                                                                        ^
+      5| export function bindCreatedCustomDraft(_draft: MoneyDraft, _view: Mone…
+      6| 
+ ❯ apps/web/src/components/money/custom-money-client.test.ts:12:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  |workspace| apps/web/src/components/money/custom-money-client.test.ts > bounded custom money browser adapter > rejects wrong scope, duplicate input/output and a later failed chunk instead of returning partial facts
+AssertionError: expected +0 to be 2 // Object.is equality
+
+- Expected
++ Received
+
+- 2
++ 0
+
+ ❯ apps/web/src/components/money/custom-money-client.test.ts:20:348
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  |workspace| apps/web/src/components/money/custom-money-client.test.ts > bounded custom money browser adapter > binds a new item's draft only to genuine absence and never rebases an existing precondition
+Error: READ_FAILED
+ ❯ bindCreatedCustomDraft apps/web/src/components/money/custom-money-client.ts:5:98
+      3| import { MoneyClientError, type MoneyTransport } from "./legacy-money-…
+      4| export async function readCustomMoney(_itemId: string, _definitions: s…
+      5| export function bindCreatedCustomDraft(_draft: MoneyDraft, _view: Mone…
+       |                                                                                                  ^
+      6| 
+ ❯ apps/web/src/components/money/custom-money-client.test.ts:24:10
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed (3)
+   Start at  10:01:37
+   Duration  470ms (transform 85ms, setup 8ms, collect 198ms, tests 6ms, environment 0ms, prepare 79ms)
+

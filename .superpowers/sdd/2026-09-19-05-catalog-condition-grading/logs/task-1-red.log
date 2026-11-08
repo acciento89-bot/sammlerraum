@@ -1,0 +1,464 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ❯ |workspace| packages/domain/src/catalog/category-template-service.test.ts (27 tests | 23 failed) 14ms
+   × catalog attribute validation > rejects a catalog attribute value that does not match its definition 4ms
+     → promise resolved "'not-a-number'" instead of rejecting
+   × catalog attribute validation > canonicalizes SHORT_TEXT using the existing primitive semantics 1ms
+     → expected '  Stamp  ' to deeply equal 'Stamp'
+   × catalog attribute validation > canonicalizes LONG_TEXT using the existing primitive semantics 1ms
+     → expected '  Line one\nLine two  ' to deeply equal 'Line one\nLine two'
+   ✓ catalog attribute validation > canonicalizes INTEGER using the existing primitive semantics 0ms
+   × catalog attribute validation > canonicalizes DECIMAL using the existing primitive semantics 0ms
+     → expected '0012.3400' to deeply equal '12.34'
+   ✓ catalog attribute validation > canonicalizes DATE using the existing primitive semantics 0ms
+   ✓ catalog attribute validation > canonicalizes BOOLEAN using the existing primitive semantics 0ms
+   × catalog attribute validation > canonicalizes SINGLE_SELECT using the existing primitive semantics 0ms
+     → expected ' MINT ' to deeply equal 'mint'
+   × catalog attribute validation > canonicalizes MULTI_SELECT using the existing primitive semantics 1ms
+     → expected [ 'used', 'MINT', 'used' ] to deeply equal [ 'used', 'mint' ]
+   × catalog attribute validation > canonicalizes URL using the existing primitive semantics 0ms
+     → expected 'https://example.com' to deeply equal 'https://example.com/'
+   ✓ catalog attribute validation > canonicalizes MONEY using the existing primitive semantics 0ms
+   × catalog attribute validation > rejects invalid INTEGER values with a stable catalog error 0ms
+     → promise resolved "9007199254740992" instead of rejecting
+   × catalog attribute validation > rejects invalid DECIMAL values with a stable catalog error 0ms
+     → promise resolved "'0.1234567890123456789'" instead of rejecting
+   × catalog attribute validation > rejects invalid DECIMAL values with a stable catalog error 0ms
+     → promise resolved "'1e3'" instead of rejecting
+   × catalog attribute validation > rejects invalid DATE values with a stable catalog error 0ms
+     → promise resolved "'2023-02-29'" instead of rejecting
+   × catalog attribute validation > rejects invalid URL values with a stable catalog error 0ms
+     → promise resolved "'javascript:alert(1)'" instead of rejecting
+   × catalog attribute validation > rejects invalid SHORT_TEXT values with a stable catalog error 0ms
+     → promise resolved "'has\u0000nul'" instead of rejecting
+   × catalog attribute validation > rejects invalid MONEY values with a stable catalog error 1ms
+     → promise resolved "{ amountMinor: 2, currency: 'eur' }" instead of rejecting
+   × catalog attribute validation > rejects invalid SINGLE_SELECT values with a stable catalog error 0ms
+     → promise resolved "'Neuwertig'" instead of rejecting
+   × catalog attribute validation > rejects invalid MULTI_SELECT values with a stable catalog error 1ms
+     → promise resolved "[ 'mint', 'mint', 'mint', …(98) ]" instead of rejecting
+   × catalog attribute validation > rejects malformed definitions before validating values 0ms
+     → promise resolved "1" instead of rejecting
+   × catalog attribute validation > rejects malformed definitions before validating values 0ms
+     → promise resolved "1" instead of rejecting
+   × catalog attribute validation > rejects malformed definitions before validating values 0ms
+     → promise resolved "1" instead of rejecting
+   × catalog attribute validation > rejects malformed definitions before validating values 0ms
+     → promise resolved "1" instead of rejecting
+   × catalog attribute validation > rejects malformed definitions before validating values 0ms
+     → promise resolved "1" instead of rejecting
+   × catalog attribute validation > rejects malformed definitions before validating values 0ms
+     → promise resolved "1" instead of rejecting
+   × catalog attribute validation > rejects malformed definitions before validating values 0ms
+     → promise resolved "1" instead of rejecting
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 23 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/catalog/category-template-service.test.ts > catalog attribute validation > rejects a catalog attribute value that does not match its definition
+AssertionError: promise resolved "'not-a-number'" instead of rejecting
+
+- Expected: 
+Error {
+  "message": "rejected promise",
+}
+
++ Received: 
+"not-a-number"
+
+ ❯ packages/domain/src/catalog/category-template-service.test.ts:12:79
+     10| describe("catalog attribute validation", () => {
+     11|   it("rejects a catalog attribute value that does not match its defini…
+     12|     await expect(validateAttributeValue(definition("INTEGER"), "not-a-…
+       |                                                                               ^
+     13|       .rejects.toMatchObject({ code: "CATALOG_ATTRIBUTE_TYPE_MISMATCH"…
+     14|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/23]⎯
+
+ FAIL  |workspace| packages/domain/src/catalog/category-template-service.test.ts > catalog attribute validation > canonicalizes SHORT_TEXT using the existing primitive semantics
+AssertionError: expected '  Stamp  ' to deeply equal 'Stamp'
+
+Expected: "Stamp"
+Received: "  Stamp  "
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/23]⎯
+
+ FAIL  |workspace| packages/domain/src/catalog/category-template-service.test.ts > catalog attribute validation > canonicalizes LONG_TEXT using the existing primitive semantics
+AssertionError: expected '  Line one\nLine two  ' to deeply equal 'Line one\nLine two'
+
+- Expected
++ Received
+
+- Line one
++   Line one
+- Line two
++ Line two  
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/23]⎯
+
+ FAIL  |workspace| packages/domain/src/catalog/category-template-service.test.ts > catalog attribute validation > canonicalizes DECIMAL using the existing primitive semantics
+AssertionError: expected '0012.3400' to deeply equal '12.34'
+
+Expected: "12.34"
+Received: "0012.3400"
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/23]⎯
+
+ FAIL  |workspace| packages/domain/src/catalog/category-template-service.test.ts > catalog attribute validation > canonicalizes SINGLE_SELECT using the existing primitive semantics
+AssertionError: expected ' MINT ' to deeply equal 'mint'
+
+Expected: "mint"
+Received: " MINT "
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/23]⎯
+
+ FAIL  |workspace| packages/domain/src/catalog/category-template-service.test.ts > catalog attribute validation > canonicalizes MULTI_SELECT using the existing primitive semantics
+AssertionError: expected [ 'used', 'MINT', 'used' ] to deeply equal [ 'used', 'mint' ]
+
+- Expected
++ Received
+
+  [
+    "used",
+-   "mint",
++   "MINT",
++   "used",
+  ]
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/23]⎯
+
+ FAIL  |workspace| packages/domain/src/catalog/category-template-service.test.ts > catalog attribute validation > canonicalizes URL using the existing primitive semantics
+AssertionError: expected 'https://example.com' to deeply equal 'https://example.com/'
+
+Expected: "https://example.com/"
+Received: "https://example.com"
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/23]⎯
+
+ FAIL  |workspace| packages/domain/src/catalog/category-template-service.test.ts > catalog attribute validation > rejects invalid INTEGER values with a stable catalog error
+AssertionError: promise resolved "9007199254740992" instead of rejecting
+
+- Expected: 
+Error {
+  "message": "rejected promise",
+}
+
++ Received: 
+9007199254740992
+
+ ❯ packages/domain/src/catalog/category-template-service.test.ts:47:74
+     45|   ])("rejects invalid %s values with a stable catalog error", async (t…
+     46|     const options = type.includes("SELECT") ? [{ key: "mint", labels }…
+     47|     await expect(validateAttributeValue(definition(type, options), val…
+       |                                                                          ^
+     48|       .rejects.toMatchObject({ code: "CATALOG_ATTRIBUTE_VALUE_INVALID"…
+     49|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/23]⎯
+
+ FAIL  |workspace| packages/domain/src/catalog/category-template-service.test.ts > catalog attribute validation > rejects invalid DECIMAL values with a stable catalog error
+AssertionError: promise resolved "'0.1234567890123456789'" instead of rejecting
+
+- Expected: 
+Error {
+  "message": "rejected promise",
+}
+
++ Received: 
+"0.1234567890123456789"
+
+ ❯ packages/domain/src/catalog/category-template-service.test.ts:47:74
+     45|   ])("rejects invalid %s values with a stable catalog error", async (t…
+     46|     const options = type.includes("SELECT") ? [{ key: "mint", labels }…
+     47|     await expect(validateAttributeValue(definition(type, options), val…
+       |                                                                          ^
+     48|       .rejects.toMatchObject({ code: "CATALOG_ATTRIBUTE_VALUE_INVALID"…
+     49|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/23]⎯
+
+ FAIL  |workspace| packages/domain/src/catalog/category-template-service.test.ts > catalog attribute validation > rejects invalid DECIMAL values with a stable catalog error
+AssertionError: promise resolved "'1e3'" instead of rejecting
+
+- Expected: 
+Error {
+  "message": "rejected promise",
+}
+
++ Received: 
+"1e3"
+
+ ❯ packages/domain/src/catalog/category-template-service.test.ts:47:74
+     45|   ])("rejects invalid %s values with a stable catalog error", async (t…
+     46|     const options = type.includes("SELECT") ? [{ key: "mint", labels }…
+     47|     await expect(validateAttributeValue(definition(type, options), val…
+       |                                                                          ^
+     48|       .rejects.toMatchObject({ code: "CATALOG_ATTRIBUTE_VALUE_INVALID"…
+     49|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/23]⎯
+
+ FAIL  |workspace| packages/domain/src/catalog/category-template-service.test.ts > catalog attribute validation > rejects invalid DATE values with a stable catalog error
+AssertionError: promise resolved "'2023-02-29'" instead of rejecting
+
+- Expected: 
+Error {
+  "message": "rejected promise",
+}
+
++ Received: 
+"2023-02-29"
+
+ ❯ packages/domain/src/catalog/category-template-service.test.ts:47:74
+     45|   ])("rejects invalid %s values with a stable catalog error", async (t…
+     46|     const options = type.includes("SELECT") ? [{ key: "mint", labels }…
+     47|     await expect(validateAttributeValue(definition(type, options), val…
+       |                                                                          ^
+     48|       .rejects.toMatchObject({ code: "CATALOG_ATTRIBUTE_VALUE_INVALID"…
+     49|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/23]⎯
+
+ FAIL  |workspace| packages/domain/src/catalog/category-template-service.test.ts > catalog attribute validation > rejects invalid URL values with a stable catalog error
+AssertionError: promise resolved "'javascript:alert(1)'" instead of rejecting
+
+- Expected: 
+Error {
+  "message": "rejected promise",
+}
+
++ Received: 
+"javascript:alert(1)"
+
+ ❯ packages/domain/src/catalog/category-template-service.test.ts:47:74
+     45|   ])("rejects invalid %s values with a stable catalog error", async (t…
+     46|     const options = type.includes("SELECT") ? [{ key: "mint", labels }…
+     47|     await expect(validateAttributeValue(definition(type, options), val…
+       |                                                                          ^
+     48|       .rejects.toMatchObject({ code: "CATALOG_ATTRIBUTE_VALUE_INVALID"…
+     49|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/23]⎯
+
+ FAIL  |workspace| packages/domain/src/catalog/category-template-service.test.ts > catalog attribute validation > rejects invalid SHORT_TEXT values with a stable catalog error
+AssertionError: promise resolved "'has\u0000nul'" instead of rejecting
+
+- Expected: 
+Error {
+  "message": "rejected promise",
+}
+
++ Received: 
+"has nul"
+
+ ❯ packages/domain/src/catalog/category-template-service.test.ts:47:74
+     45|   ])("rejects invalid %s values with a stable catalog error", async (t…
+     46|     const options = type.includes("SELECT") ? [{ key: "mint", labels }…
+     47|     await expect(validateAttributeValue(definition(type, options), val…
+       |                                                                          ^
+     48|       .rejects.toMatchObject({ code: "CATALOG_ATTRIBUTE_VALUE_INVALID"…
+     49|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/23]⎯
+
+ FAIL  |workspace| packages/domain/src/catalog/category-template-service.test.ts > catalog attribute validation > rejects invalid MONEY values with a stable catalog error
+AssertionError: promise resolved "{ amountMinor: 2, currency: 'eur' }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "amountMinor": 2,
++   "currency": "eur",
+  }
+
+ ❯ packages/domain/src/catalog/category-template-service.test.ts:47:74
+     45|   ])("rejects invalid %s values with a stable catalog error", async (t…
+     46|     const options = type.includes("SELECT") ? [{ key: "mint", labels }…
+     47|     await expect(validateAttributeValue(definition(type, options), val…
+       |                                                                          ^
+     48|       .rejects.toMatchObject({ code: "CATALOG_ATTRIBUTE_VALUE_INVALID"…
+     49|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/23]⎯
+
+ FAIL  |workspace| packages/domain/src/catalog/category-template-service.test.ts > catalog attribute validation > rejects invalid SINGLE_SELECT values with a stable catalog error
+AssertionError: promise resolved "'Neuwertig'" instead of rejecting
+
+- Expected: 
+Error {
+  "message": "rejected promise",
+}
+
++ Received: 
+"Neuwertig"
+
+ ❯ packages/domain/src/catalog/category-template-service.test.ts:47:74
+     45|   ])("rejects invalid %s values with a stable catalog error", async (t…
+     46|     const options = type.includes("SELECT") ? [{ key: "mint", labels }…
+     47|     await expect(validateAttributeValue(definition(type, options), val…
+       |                                                                          ^
+     48|       .rejects.toMatchObject({ code: "CATALOG_ATTRIBUTE_VALUE_INVALID"…
+     49|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/23]⎯
+
+ FAIL  |workspace| packages/domain/src/catalog/category-template-service.test.ts > catalog attribute validation > rejects invalid MULTI_SELECT values with a stable catalog error
+AssertionError: promise resolved "[ 'mint', 'mint', 'mint', …(98) ]" instead of rejecting
+
+- Expected: 
+Error {
+  "message": "rejected promise",
+}
+
++ Received: 
+[
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+  "mint",
+]
+
+ ❯ packages/domain/src/catalog/category-template-service.test.ts:47:74
+     45|   ])("rejects invalid %s values with a stable catalog error", async (t…
+     46|     const options = type.includes("SELECT") ? [{ key: "mint", labels }…
+     47|     await expect(validateAttributeValue(definition(type, options), val…
+       |                                                                          ^
+     48|       .rejects.toMatchObject({ code: "CATALOG_ATTRIBUTE_VALUE_INVALID"…
+     49|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/23]⎯
+
+ FAIL  |workspace| packages/domain/src/catalog/category-template-service.test.ts > catalog attribute validation > rejects malformed definitions before validating values
+ FAIL  |workspace| packages/domain/src/catalog/category-template-service.test.ts > catalog attribute validation > rejects malformed definitions before validating values
+ FAIL  |workspace| packages/domain/src/catalog/category-template-service.test.ts > catalog attribute validation > rejects malformed definitions before validating values
+ FAIL  |workspace| packages/domain/src/catalog/category-template-service.test.ts > catalog attribute validation > rejects malformed definitions before validating values
+ FAIL  |workspace| packages/domain/src/catalog/category-template-service.test.ts > catalog attribute validation > rejects malformed definitions before validating values
+ FAIL  |workspace| packages/domain/src/catalog/category-template-service.test.ts > catalog attribute validation > rejects malformed definitions before validating values
+ FAIL  |workspace| packages/domain/src/catalog/category-template-service.test.ts > catalog attribute validation > rejects malformed definitions before validating values
+AssertionError: promise resolved "1" instead of rejecting
+
+- Expected: 
+Error {
+  "message": "rejected promise",
+}
+
++ Received: 
+1
+
+ ❯ packages/domain/src/catalog/category-template-service.test.ts:60:50
+     58|     definition("MULTI_SELECT", [{ key: "mint", labels }, { key: "mint"…
+     59|   ])("rejects malformed definitions before validating values", async (…
+     60|     await expect(validateAttributeValue(field, 1))
+       |                                                  ^
+     61|       .rejects.toMatchObject({ code: "CATALOG_ATTRIBUTE_DEFINITION_INV…
+     62|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/23]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  23 failed | 4 passed (27)
+   Start at  22:15:00
+   Duration  285ms (transform 21ms, setup 6ms, collect 15ms, tests 14ms, environment 0ms, prepare 48ms)
+

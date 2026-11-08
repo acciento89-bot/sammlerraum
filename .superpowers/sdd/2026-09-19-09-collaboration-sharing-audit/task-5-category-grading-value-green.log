@@ -1,0 +1,83 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/audit/core-audit-integration.test.ts (5 tests | 1 failed) 579ms
+   ✓ actual core mutations append their real audit in the same transaction > records actual condition and location changes with the real user and before/after values 163ms
+   ✓ actual core mutations append their real audit in the same transaction > a genuine default audit INSERT failure rolls the actual condition write back 51ms
+   ✓ actual core mutations append their real audit in the same transaction > records category changes and condition clearing without inventing a second unchanged event 22ms
+   ✓ actual core mutations append their real audit in the same transaction > audits grading create/update/delete with selected authored facts and excludes verification URLs/source text 22ms
+   × actual core mutations append their real audit in the same transaction > keeps a manual valuation's exact bigint, stored scale, basis and true author in audit 20ms
+     → expected [ { …(10) }, { …(10) } ] to deep equally contain ObjectContaining{…}
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/audit/core-audit-integration.test.ts > actual core mutations append their real audit in the same transaction > keeps a manual valuation's exact bigint, stored scale, basis and true author in audit
+AssertionError: expected [ { …(10) }, { …(10) } ] to deep equally contain ObjectContaining{…}
+
+- Expected: 
+ObjectContaining {
+  "action": "ITEM_VALUATION_ADDED",
+  "actorId": "73523a60-1f4c-4829-b9c4-676745a43f22",
+  "after": ObjectContaining {
+    "amountMinor": 9007199254740993n,
+    "basis": "PER_UNIT",
+    "currency": "JPY",
+    "id": "63167079-dd5b-43d4-970a-a8d05e0a070e",
+    "minorUnitExponent": 0,
+  },
+  "before": null,
+  "source": "USER",
+}
+
++ Received: 
+[
+  {
+    "action": "ITEM_VALUATION_ADDED",
+    "actorId": "73523a60-1f4c-4829-b9c4-676745a43f22",
+    "after": {
+      "amountMinor": "9007199254740993",
+      "basis": "PER_UNIT",
+      "currency": "JPY",
+      "id": "63167079-dd5b-43d4-970a-a8d05e0a070e",
+      "minorUnitExponent": 0,
+      "observedAt": "2026-11-07T07:15:13.056Z",
+    },
+    "before": null,
+    "createdAt": "2026-11-07T07:15:13.059Z",
+    "id": "1a726b67-8fd5-4e69-ae4c-5e6cc831508f",
+    "resourceId": "d8454fac-8bfa-4202-9246-7916e72bc8ad",
+    "resourceType": "ITEM",
+    "sequence": "15",
+    "source": "USER",
+  },
+  {
+    "action": "ITEM_CATEGORY_CHANGED",
+    "actorId": "73523a60-1f4c-4829-b9c4-676745a43f22",
+    "after": {
+      "categoryTemplateId": "0f804908-6f4e-41b1-8c2a-763b2c8f7b3f",
+      "conditionOptionId": null,
+    },
+    "before": {
+      "categoryTemplateId": null,
+      "conditionOptionId": null,
+    },
+    "createdAt": "2026-11-07T07:15:13.052Z",
+    "id": "935d7960-7b8d-4deb-8c58-cfca99519d75",
+    "resourceId": "d8454fac-8bfa-4202-9246-7916e72bc8ad",
+    "resourceType": "ITEM",
+    "sequence": "14",
+    "source": "USER",
+  },
+]
+
+ ❯ packages/domain/src/audit/core-audit-integration.test.ts:54:18
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 4 passed (5)
+   Start at  08:15:12
+   Duration  1.12s (transform 174ms, setup 6ms, collect 329ms, tests 579ms, environment 0ms, prepare 58ms)
+

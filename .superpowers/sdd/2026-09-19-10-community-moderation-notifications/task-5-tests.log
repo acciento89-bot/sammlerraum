@@ -1,0 +1,11 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ✓ |workspace| packages/domain/src/notifications/notification-service.test.ts (6 tests) 580ms
+ ✓ |workspace| apps/web/src/lib/notification-routes.test.ts (7 tests) 11ms
+
+ Test Files  2 passed (2)
+      Tests  13 passed (13)
+   Start at  13:44:47
+   Duration  1.52s (transform 289ms, setup 6ms, collect 613ms, tests 591ms, environment 0ms, prepare 79ms)
+

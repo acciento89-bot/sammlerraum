@@ -1,0 +1,23 @@
+All commands run from the repository root after `source ../sammlerraum-test-env.sh`.
+Pinned runner: npm exec --yes --package=node@24.19.0 --package=pnpm@10.17.1 --
+No environment secret values printed or copied.
+
+Initial RED (exit 1): RUN_DATABASE_INTEGRATION=1 <runner> pnpm vitest run --no-file-parallelism packages/domain/src/dashboard/dashboard-service.test.ts packages/domain/src/dashboard/dashboard-input.test.ts -t 'unsupported|mismatched|invalid .* output denomination'
+Log: task-4-fix1-red.log. 8 failed, 1 passed, 25 skipped. Four new native fixtures failed earlier at producer timestamp validation (Date instead of required ISO string); four pure cases reached the intended missing defense.
+Corrected RED (exit 1): RUN_DATABASE_INTEGRATION=1 <runner> pnpm vitest run --no-file-parallelism packages/domain/src/dashboard/dashboard-service.test.ts packages/domain/src/dashboard/dashboard-input.test.ts -t 'unsupported latest|mismatched latest|unsupported immediate|mismatched immediate|invalid .* output denomination'
+Log: task-4-fix1-red-corrected-fixture.log. 8 failed, 26 skipped. Four actual SQL/service calls unexpectedly resolved; four final-output checks did not throw.
+Focused GREEN (exit 0): same corrected RED command after implementation.
+Log: task-4-fix1-focused-green.log. 8 passed, 26 diagnostic skips.
+Format (exit 0): <runner> pnpm exec prettier --write packages/domain/src/dashboard/dashboard-input.test.ts packages/domain/src/dashboard/dashboard-result.ts packages/domain/src/dashboard/dashboard-service.test.ts packages/domain/src/dashboard/dashboard-service.ts packages/domain/src/dashboard/dashboard-sql.ts
+Log: task-4-fix1-format.log.
+Native frozen gate (exit 0): RUN_DATABASE_INTEGRATION=1 <runner> pnpm vitest run --no-file-parallelism packages/domain/src/dashboard apps/web/src/lib/dashboard-routes.integration.test.ts
+Log: task-4-fix1-final-native.log. 3 files, 46 passed, zero skipped.
+Types (exit 0): <runner> pnpm typecheck
+Log: task-4-fix1-final-types.log.
+Lint (exit 0): <runner> pnpm lint
+Log: task-4-fix1-final-lint.log.
+Build (exit 0): NODE_ENV=production <runner> pnpm build
+Log: task-4-fix1-final-build.log.
+Regular frozen gate (exit 0): RUN_DATABASE_INTEGRATION=0 NODE_ENV=test <runner> pnpm test
+Log: task-4-fix1-final-regular.log. 74 files passed/38 skipped; 794 tests passed/424 expected integration/browser skips.
+Source hash verification: all five working files matched the frozen SHA256 manifest before source commit; only those five paths were staged. git diff --check passed.

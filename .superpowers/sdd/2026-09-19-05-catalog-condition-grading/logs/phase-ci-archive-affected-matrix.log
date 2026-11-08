@@ -1,0 +1,155 @@
+[WebServer] (node:82472) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 86 tests using 1 worker
+
+(node:82475) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [auth] › e2e/auth.spec.ts:106:3 › password authentication API › registers, verifies, signs in, and lists the authenticated session (317ms)
+[WebServer] 2026-10-18T01:31:30.610Z ERROR [Better Auth]: Error Error: aborted
+[WebServer]     at ignore-listed frames {
+[WebServer]   code: 'ECONNRESET'
+[WebServer] }
+[WebServer] # SERVER_ERROR:  Error: aborted
+[WebServer]     at ignore-listed frames {
+[WebServer]   code: 'ECONNRESET'
+[WebServer] }
+  ✓   2 [auth] › e2e/auth.spec.ts:172:3 › localized authentication and account UI › offers localized password and social authentication (563ms)
+[WebServer] 2026-10-18T01:31:30.666Z ERROR [Better Auth]: Error Error: aborted
+[WebServer]     at ignore-listed frames {
+[WebServer]   code: 'ECONNRESET'
+[WebServer] }
+[WebServer] # SERVER_ERROR:  Error: aborted
+[WebServer]     at ignore-listed frames {
+[WebServer]   code: 'ECONNRESET'
+[WebServer] }
+  ✓   3 [auth] › e2e/auth.spec.ts:197:3 › localized authentication and account UI › user can reset a password through the emailed recovery link (1.2s)
+  ✘   4 [auth] › e2e/auth.spec.ts:220:3 › localized authentication and account UI › user can register, verify, sign in, edit profile, add and use a passkey, and revoke another session (7.8s)
+(node:82494) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   5 [desktop] › e2e/catalog-grading.spec.ts:15:5 › catalog, personal condition and external grading › unsaved condition survives a grading refresh (de) (949ms)
+  ✓   6 [desktop] › e2e/catalog-grading.spec.ts:102:5 › catalog, personal condition and external grading › unsaved category and explicit clear survive link refreshes (de) (843ms)
+  ✓   7 [desktop] › e2e/catalog-grading.spec.ts:203:5 › catalog, personal condition and external grading › changing own condition preserves external grading (de) (628ms)
+  ✓   8 [desktop] › e2e/catalog-grading.spec.ts:15:5 › catalog, personal condition and external grading › unsaved condition survives a grading refresh (en) (690ms)
+  ✓   9 [desktop] › e2e/catalog-grading.spec.ts:102:5 › catalog, personal condition and external grading › unsaved category and explicit clear survive link refreshes (en) (867ms)
+  ✓  10 [desktop] › e2e/catalog-grading.spec.ts:203:5 › catalog, personal condition and external grading › changing own condition preserves external grading (en) (537ms)
+  ✓  11 [desktop] › e2e/catalog-grading.spec.ts:261:5 › catalog reference workflow de › owner chooses a disambiguated variant, unlinks and keeps personal facts (972ms)
+  ✓  12 [desktop] › e2e/catalog-grading.spec.ts:368:5 › catalog reference workflow de › ordinary proposal is reviewed using a real grant and a reasoned revision rollback (1.7s)
+  ✓  13 [desktop] › e2e/catalog-grading.spec.ts:261:5 › catalog reference workflow en › owner chooses a disambiguated variant, unlinks and keeps personal facts (1.1s)
+  ✓  14 [desktop] › e2e/catalog-grading.spec.ts:368:5 › catalog reference workflow en › ordinary proposal is reviewed using a real grant and a reasoned revision rollback (1.6s)
+  ✓  15 [desktop] › e2e/catalog-grading.spec.ts:552:5 › independent personal metadata de › explicit category clearing, authored grading, retained archive facts and owner privacy (1.4s)
+  ✓  16 [desktop] › e2e/catalog-grading.spec.ts:552:5 › independent personal metadata en › explicit category clearing, authored grading, retained archive facts and owner privacy (1.3s)
+  ✓  17 [desktop] › e2e/catalog-grading.spec.ts:795:5 › authored catalog operation forms de › ordinary forms submit variants, references, translations and sources without private item facts (1.6s)
+  ✓  18 [desktop] › e2e/catalog-grading.spec.ts:795:5 › authored catalog operation forms en › ordinary forms submit variants, references, translations and sources without private item facts (1.5s)
+  ✓  19 [desktop] › e2e/catalog-grading.spec.ts:980:5 › moderation conflicts and authority de › review handles stale proposals, rejection, replay and revoked authority (2.0s)
+  ✓  20 [desktop] › e2e/catalog-grading.spec.ts:980:5 › moderation conflicts and authority en › review handles stale proposals, rejection, replay and revoked authority (2.1s)
+  ✓  21 [desktop] › e2e/catalog-grading.spec.ts:1172:3 › grading save recovery › retry after a saved grading and failed refresh updates the known record (1.1s)
+  ✓  22 [desktop] › e2e/catalog-grading.spec.ts:1233:3 › proposal read cancellation › changing proposal state filter releases a superseded detail request (429ms)
+  ✓  23 [desktop] › e2e/catalog-grading.spec.ts:1304:7 › phase integration de › accepted proposals retain own detail and rejection with missing future base context (756ms)
+  ✓  24 [desktop] › e2e/catalog-grading.spec.ts:1304:7 › phase integration de › accepted proposals retain own detail and rejection with missing category context (748ms)
+  ✓  25 [desktop] › e2e/catalog-grading.spec.ts:1437:5 › phase integration de › proposal and revision previews expose every authored entry and variant description (1.4s)
+  ✓  26 [desktop] › e2e/catalog-grading.spec.ts:1581:5 › phase integration de › clearing category releases delayed scheme and proposal template reads (664ms)
+  ✓  27 [desktop] › e2e/catalog-grading.spec.ts:1710:5 › phase integration de › cancel invalidates delayed catalog selection without unlocking a link mutation (802ms)
+  ✓  28 [desktop] › e2e/catalog-grading.spec.ts:1304:7 › phase integration en › accepted proposals retain own detail and rejection with missing future base context (781ms)
+  ✓  29 [desktop] › e2e/catalog-grading.spec.ts:1304:7 › phase integration en › accepted proposals retain own detail and rejection with missing category context (786ms)
+  ✓  30 [desktop] › e2e/catalog-grading.spec.ts:1437:5 › phase integration en › proposal and revision previews expose every authored entry and variant description (1.4s)
+  ✓  31 [desktop] › e2e/catalog-grading.spec.ts:1581:5 › phase integration en › clearing category releases delayed scheme and proposal template reads (628ms)
+  ✓  32 [desktop] › e2e/catalog-grading.spec.ts:1710:5 › phase integration en › cancel invalidates delayed catalog selection without unlocking a link mutation (802ms)
+  ✓  33 [desktop] › e2e/catalog-grading.spec.ts:1833:5 › phase context requests de › slow and stale enrichment cannot hide rejection, replace selection or unlock decisions (704ms)
+  ✓  34 [desktop] › e2e/catalog-grading.spec.ts:1833:5 › phase context requests en › slow and stale enrichment cannot hide rejection, replace selection or unlock decisions (726ms)
+[WebServer] ⨯ Error: The destination stream closed early.
+[WebServer]     at ignore-listed frames {
+[WebServer]   digest: '4277776922'
+[WebServer] }
+  ✓  35 [desktop] › e2e/collections-items.spec.ts:236:3 › localized collection and item management › collector creates a nested collection and item with custom field and location (1.7s)
+  ✓  36 [desktop] › e2e/collections-items.spec.ts:388:3 › localized collection and item management › unrelated edits preserve nested placement, currencies, and canonical tags (1.4s)
+  ✓  37 [desktop] › e2e/collections-items.spec.ts:485:3 › localized collection and item management › a rejected core request releases the form for retry (493ms)
+  ✓  38 [desktop] › e2e/collections-items.spec.ts:510:3 › localized collection and item management › failed collection options can retry without losing the item draft (494ms)
+  ✓  39 [desktop] › e2e/collections-items.spec.ts:544:3 › localized collection and item management › failed collection detail load shows a retry instead of endless loading (466ms)
+  ✓  40 [desktop] › e2e/collections-items.spec.ts:577:3 › localized collection and item management › metadata retry reuses the item and does not repeat a successful location (674ms)
+  ✓  41 [desktop] › e2e/collections-items.spec.ts:650:3 › localized collection and item management › invalid later custom fields cause zero writes before correction (789ms)
+  ✓  42 [desktop] › e2e/collections-items.spec.ts:718:3 › localized collection and item management › concurrent scanner starts acquire at most one fully disposable stream (514ms)
+  ✓  43 [desktop] › e2e/collections-items.spec.ts:829:5 › localized collection and item management › acknowledged archive ignores an older active item snapshot (de) (646ms)
+  ✓  44 [desktop] › e2e/collections-items.spec.ts:829:5 › localized collection and item management › acknowledged archive ignores an older active item snapshot (en) (654ms)
+  ✓  45 [desktop] › e2e/collections-items.spec.ts:983:3 › localized collection and item management › acknowledged creation and archive survive snapshot refresh failures (922ms)
+(node:82617) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  46 [mobile] › e2e/catalog-grading.spec.ts:15:5 › catalog, personal condition and external grading › unsaved condition survives a grading refresh (de) (731ms)
+  ✓  47 [mobile] › e2e/catalog-grading.spec.ts:102:5 › catalog, personal condition and external grading › unsaved category and explicit clear survive link refreshes (de) (851ms)
+  ✓  48 [mobile] › e2e/catalog-grading.spec.ts:203:5 › catalog, personal condition and external grading › changing own condition preserves external grading (de) (581ms)
+  ✓  49 [mobile] › e2e/catalog-grading.spec.ts:15:5 › catalog, personal condition and external grading › unsaved condition survives a grading refresh (en) (673ms)
+  ✓  50 [mobile] › e2e/catalog-grading.spec.ts:102:5 › catalog, personal condition and external grading › unsaved category and explicit clear survive link refreshes (en) (756ms)
+  ✓  51 [mobile] › e2e/catalog-grading.spec.ts:203:5 › catalog, personal condition and external grading › changing own condition preserves external grading (en) (545ms)
+  ✓  52 [mobile] › e2e/catalog-grading.spec.ts:261:5 › catalog reference workflow de › owner chooses a disambiguated variant, unlinks and keeps personal facts (1.2s)
+  ✓  53 [mobile] › e2e/catalog-grading.spec.ts:368:5 › catalog reference workflow de › ordinary proposal is reviewed using a real grant and a reasoned revision rollback (1.6s)
+  ✓  54 [mobile] › e2e/catalog-grading.spec.ts:261:5 › catalog reference workflow en › owner chooses a disambiguated variant, unlinks and keeps personal facts (1.3s)
+  ✓  55 [mobile] › e2e/catalog-grading.spec.ts:368:5 › catalog reference workflow en › ordinary proposal is reviewed using a real grant and a reasoned revision rollback (1.6s)
+  ✓  56 [mobile] › e2e/catalog-grading.spec.ts:552:5 › independent personal metadata de › explicit category clearing, authored grading, retained archive facts and owner privacy (1.5s)
+  ✓  57 [mobile] › e2e/catalog-grading.spec.ts:552:5 › independent personal metadata en › explicit category clearing, authored grading, retained archive facts and owner privacy (1.4s)
+  ✓  58 [mobile] › e2e/catalog-grading.spec.ts:795:5 › authored catalog operation forms de › ordinary forms submit variants, references, translations and sources without private item facts (1.5s)
+  ✓  59 [mobile] › e2e/catalog-grading.spec.ts:795:5 › authored catalog operation forms en › ordinary forms submit variants, references, translations and sources without private item facts (1.5s)
+  ✓  60 [mobile] › e2e/catalog-grading.spec.ts:980:5 › moderation conflicts and authority de › review handles stale proposals, rejection, replay and revoked authority (1.9s)
+  ✓  61 [mobile] › e2e/catalog-grading.spec.ts:980:5 › moderation conflicts and authority en › review handles stale proposals, rejection, replay and revoked authority (1.9s)
+  ✓  62 [mobile] › e2e/catalog-grading.spec.ts:1172:3 › grading save recovery › retry after a saved grading and failed refresh updates the known record (698ms)
+  ✓  63 [mobile] › e2e/catalog-grading.spec.ts:1233:3 › proposal read cancellation › changing proposal state filter releases a superseded detail request (440ms)
+  ✓  64 [mobile] › e2e/catalog-grading.spec.ts:1304:7 › phase integration de › accepted proposals retain own detail and rejection with missing future base context (729ms)
+  ✓  65 [mobile] › e2e/catalog-grading.spec.ts:1304:7 › phase integration de › accepted proposals retain own detail and rejection with missing category context (745ms)
+  ✓  66 [mobile] › e2e/catalog-grading.spec.ts:1437:5 › phase integration de › proposal and revision previews expose every authored entry and variant description (1.5s)
+  ✓  67 [mobile] › e2e/catalog-grading.spec.ts:1581:5 › phase integration de › clearing category releases delayed scheme and proposal template reads (594ms)
+  ✓  68 [mobile] › e2e/catalog-grading.spec.ts:1710:5 › phase integration de › cancel invalidates delayed catalog selection without unlocking a link mutation (770ms)
+  ✓  69 [mobile] › e2e/catalog-grading.spec.ts:1304:7 › phase integration en › accepted proposals retain own detail and rejection with missing future base context (720ms)
+  ✓  70 [mobile] › e2e/catalog-grading.spec.ts:1304:7 › phase integration en › accepted proposals retain own detail and rejection with missing category context (718ms)
+  ✓  71 [mobile] › e2e/catalog-grading.spec.ts:1437:5 › phase integration en › proposal and revision previews expose every authored entry and variant description (1.5s)
+  ✓  72 [mobile] › e2e/catalog-grading.spec.ts:1581:5 › phase integration en › clearing category releases delayed scheme and proposal template reads (623ms)
+  ✓  73 [mobile] › e2e/catalog-grading.spec.ts:1710:5 › phase integration en › cancel invalidates delayed catalog selection without unlocking a link mutation (790ms)
+  ✓  74 [mobile] › e2e/catalog-grading.spec.ts:1833:5 › phase context requests de › slow and stale enrichment cannot hide rejection, replace selection or unlock decisions (731ms)
+  ✓  75 [mobile] › e2e/catalog-grading.spec.ts:1833:5 › phase context requests en › slow and stale enrichment cannot hide rejection, replace selection or unlock decisions (727ms)
+[WebServer] ⨯ Error: The destination stream closed early.
+[WebServer]     at ignore-listed frames {
+[WebServer]   digest: '4277776922'
+[WebServer] }
+  ✓  76 [mobile] › e2e/collections-items.spec.ts:236:3 › localized collection and item management › collector creates a nested collection and item with custom field and location (1.6s)
+  ✓  77 [mobile] › e2e/collections-items.spec.ts:388:3 › localized collection and item management › unrelated edits preserve nested placement, currencies, and canonical tags (1.4s)
+  ✓  78 [mobile] › e2e/collections-items.spec.ts:485:3 › localized collection and item management › a rejected core request releases the form for retry (492ms)
+  ✓  79 [mobile] › e2e/collections-items.spec.ts:510:3 › localized collection and item management › failed collection options can retry without losing the item draft (499ms)
+  ✓  80 [mobile] › e2e/collections-items.spec.ts:544:3 › localized collection and item management › failed collection detail load shows a retry instead of endless loading (452ms)
+  ✓  81 [mobile] › e2e/collections-items.spec.ts:577:3 › localized collection and item management › metadata retry reuses the item and does not repeat a successful location (658ms)
+  ✓  82 [mobile] › e2e/collections-items.spec.ts:650:3 › localized collection and item management › invalid later custom fields cause zero writes before correction (758ms)
+  ✓  83 [mobile] › e2e/collections-items.spec.ts:718:3 › localized collection and item management › concurrent scanner starts acquire at most one fully disposable stream (507ms)
+  ✓  84 [mobile] › e2e/collections-items.spec.ts:829:5 › localized collection and item management › acknowledged archive ignores an older active item snapshot (de) (638ms)
+  ✓  85 [mobile] › e2e/collections-items.spec.ts:829:5 › localized collection and item management › acknowledged archive ignores an older active item snapshot (en) (630ms)
+  ✓  86 [mobile] › e2e/collections-items.spec.ts:983:3 › localized collection and item management › acknowledged creation and archive survive snapshot refresh failures (800ms)
+
+
+  1) [auth] › e2e/auth.spec.ts:220:3 › localized authentication and account UI › user can register, verify, sign in, edit profile, add and use a passkey, and revoke another session 
+
+    Error: expect(page).toHaveURL(expected) failed
+
+    Expected pattern: /\/de\/account\/profile$/
+    Received string:  "http://localhost:3000/de/login"
+    Timeout: 5000ms
+
+    Call log:
+      - Expect "toHaveURL" with timeout 5000ms
+        14 × locator resolved to <html lang="de">…</html>
+           - unexpected value "http://localhost:3000/de/login"
+
+
+      73 |   await page.getByLabel("Passwort").fill(credentials.password);
+      74 |   await page.getByRole("button", { name: "Anmelden", exact: true }).click();
+    > 75 |   await expect(page).toHaveURL(/\/de\/account\/profile$/);
+         |                      ^
+      76 |   return context;
+      77 | }
+      78 |
+        at signInAnotherSession (/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/auth.spec.ts:75:22)
+        at /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/auth.spec.ts:327:26
+
+    Error Context: test-results/auth-localized-authenticat-8c641--and-revoke-another-session-auth/error-context.md
+
+  1 failed
+    [auth] › e2e/auth.spec.ts:220:3 › localized authentication and account UI › user can register, verify, sign in, edit profile, add and use a passkey, and revoke another session 
+  85 passed (1.5m)
+undefined
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test auth.spec.ts collections-items.spec.ts catalog-grading.spec.ts --project=auth --project=desktop --project=mobile --workers=1

@@ -1,0 +1,19 @@
+{
+  "name": "@sammlerraum/config",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./client": "./src/client.ts",
+    "./server": "./src/server.ts",
+    "./billing": "./src/billing.ts"
+  },
+  "scripts": {
+    "build": "pnpm typecheck",
+    "lint": "prettier --check .",
+    "typecheck": "tsc --noEmit --project ../../tsconfig.base.json"
+  },
+  "dependencies": {
+    "zod": "4.1.11",
+    "@sammlerraum/contracts": "workspace:*"
+  }
+}

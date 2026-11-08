@@ -1,0 +1,180 @@
+[WebServer] (node:8931) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 40 tests using 1 worker
+
+(node:8934) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [desktop] › e2e/search-dashboard.spec.ts:19:3 › de: authenticated collector can discover search and filter actual owned inventory (2.1s)
+  ✓   2 [desktop] › e2e/search-dashboard.spec.ts:19:3 › en: authenticated collector can discover search and filter actual owned inventory (951ms)
+  ✓   3 [desktop] › e2e/search-dashboard.spec.ts:154:3 › de: real Next history, item Back, locale and reload keep private query tokens (2.0s)
+  ✓   4 [desktop] › e2e/search-dashboard.spec.ts:216:3 › de: unauthenticated and malformed query locations never run all-owned (1.1s)
+  ✓   5 [desktop] › e2e/search-dashboard.spec.ts:249:3 › de: bounded tab eviction, blocked storage and actor replacement are honest (2.7s)
+  ✓   6 [desktop] › e2e/search-dashboard.spec.ts:295:3 › de: actual delayed response, failure/stale states and 401 clearing (1.2s)
+  ✓   7 [desktop] › e2e/search-dashboard.spec.ts:383:3 › de: keyboard nesting, discard, drawer focus and 320px/200% overflow (1.0s)
+  ✘   8 [desktop] › e2e/search-dashboard.spec.ts:463:3 › de: actual lifecycle and reference selectors with typed family matrix (11.3s)
+(node:8975) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   9 [desktop] › e2e/search-dashboard.spec.ts:154:3 › en: real Next history, item Back, locale and reload keep private query tokens (1.3s)
+  ✓  10 [desktop] › e2e/search-dashboard.spec.ts:216:3 › en: unauthenticated and malformed query locations never run all-owned (1.1s)
+  ✓  11 [desktop] › e2e/search-dashboard.spec.ts:249:3 › en: bounded tab eviction, blocked storage and actor replacement are honest (2.6s)
+  ✓  12 [desktop] › e2e/search-dashboard.spec.ts:295:3 › en: actual delayed response, failure/stale states and 401 clearing (1.1s)
+  ✓  13 [desktop] › e2e/search-dashboard.spec.ts:383:3 › en: keyboard nesting, discard, drawer focus and 320px/200% overflow (998ms)
+  ✘  14 [desktop] › e2e/search-dashboard.spec.ts:463:3 › en: actual lifecycle and reference selectors with typed family matrix (11.3s)
+(node:9015) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  15 [desktop] › e2e/search-dashboard.spec.ts:637:3 › de: Back requires deliberate discard of a meaningful draft (832ms)
+  ✓  16 [desktop] › e2e/search-dashboard.spec.ts:637:3 › en: Back requires deliberate discard of a meaningful draft (653ms)
+  ✓  17 [desktop] › e2e/search-dashboard.spec.ts:666:3 › de: real pagination replaces rows and query edits reset the cursor (1.2s)
+  ✓  18 [desktop] › e2e/search-dashboard.spec.ts:732:3 › de: unavailable full tree remains repairable and metadata retries stay bounded (955ms)
+  ✓  19 [desktop] › e2e/search-dashboard.spec.ts:666:3 › en: real pagination replaces rows and query edits reset the cursor (973ms)
+  ✓  20 [desktop] › e2e/search-dashboard.spec.ts:732:3 › en: unavailable full tree remains repairable and metadata retries stay bounded (901ms)
+(node:9029) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  21 [mobile] › e2e/search-dashboard.spec.ts:19:3 › de: authenticated collector can discover search and filter actual owned inventory (1.2s)
+  ✓  22 [mobile] › e2e/search-dashboard.spec.ts:19:3 › en: authenticated collector can discover search and filter actual owned inventory (1.0s)
+  ✓  23 [mobile] › e2e/search-dashboard.spec.ts:154:3 › de: real Next history, item Back, locale and reload keep private query tokens (1.1s)
+  ✓  24 [mobile] › e2e/search-dashboard.spec.ts:216:3 › de: unauthenticated and malformed query locations never run all-owned (1.0s)
+  ✓  25 [mobile] › e2e/search-dashboard.spec.ts:249:3 › de: bounded tab eviction, blocked storage and actor replacement are honest (2.9s)
+  ✓  26 [mobile] › e2e/search-dashboard.spec.ts:295:3 › de: actual delayed response, failure/stale states and 401 clearing (1.3s)
+  ✓  27 [mobile] › e2e/search-dashboard.spec.ts:383:3 › de: keyboard nesting, discard, drawer focus and 320px/200% overflow (2.0s)
+  ✘  28 [mobile] › e2e/search-dashboard.spec.ts:463:3 › de: actual lifecycle and reference selectors with typed family matrix (11.5s)
+(node:9067) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  29 [mobile] › e2e/search-dashboard.spec.ts:154:3 › en: real Next history, item Back, locale and reload keep private query tokens (1.3s)
+  ✓  30 [mobile] › e2e/search-dashboard.spec.ts:216:3 › en: unauthenticated and malformed query locations never run all-owned (1.1s)
+  ✓  31 [mobile] › e2e/search-dashboard.spec.ts:249:3 › en: bounded tab eviction, blocked storage and actor replacement are honest (3.1s)
+  ✓  32 [mobile] › e2e/search-dashboard.spec.ts:295:3 › en: actual delayed response, failure/stale states and 401 clearing (1.3s)
+  ✓  33 [mobile] › e2e/search-dashboard.spec.ts:383:3 › en: keyboard nesting, discard, drawer focus and 320px/200% overflow (2.1s)
+  ✘  34 [mobile] › e2e/search-dashboard.spec.ts:463:3 › en: actual lifecycle and reference selectors with typed family matrix (11.7s)
+(node:9093) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  35 [mobile] › e2e/search-dashboard.spec.ts:637:3 › de: Back requires deliberate discard of a meaningful draft (897ms)
+  ✓  36 [mobile] › e2e/search-dashboard.spec.ts:637:3 › en: Back requires deliberate discard of a meaningful draft (779ms)
+  ✓  37 [mobile] › e2e/search-dashboard.spec.ts:666:3 › de: real pagination replaces rows and query edits reset the cursor (1.5s)
+  ✓  38 [mobile] › e2e/search-dashboard.spec.ts:732:3 › de: unavailable full tree remains repairable and metadata retries stay bounded (1.0s)
+  ✓  39 [mobile] › e2e/search-dashboard.spec.ts:666:3 › en: real pagination replaces rows and query edits reset the cursor (1.4s)
+  ✓  40 [mobile] › e2e/search-dashboard.spec.ts:732:3 › en: unavailable full tree remains repairable and metadata retries stay bounded (987ms)
+
+
+  1) [desktop] › e2e/search-dashboard.spec.ts:463:3 › de: actual lifecycle and reference selectors with typed family matrix 
+
+    TimeoutError: locator.click: Timeout 10000ms exceeded.
+    Call log:
+      - waiting for getByRole('button', { name: 'Bearbeiten', exact: true }).first()
+
+
+      562 |         if (kind === "media") {
+      563 |           await panel(page, locale);
+    > 564 |           await page.getByRole("button", { name: c.edit, exact: true }).first().click();
+          |                                                                                 ^
+      565 |           await page.getByLabel(c.mediaKind, { exact: true }).selectOption("DOCUMENT");
+      566 |           await page.getByLabel(c.documentCategory, { exact: true }).selectOption("OTHER_PRIVATE");
+      567 |           await apply(page, locale, 1);
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/search-dashboard.spec.ts:564:81
+
+    Error Context: test-results/search-dashboard-de-actual-5ea50-rs-with-typed-family-matrix-desktop/error-context.md
+
+    Error Context: test-results/search-dashboard-de-actual-5ea50-rs-with-typed-family-matrix-desktop/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/search-dashboard-de-actual-5ea50-rs-with-typed-family-matrix-desktop/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/search-dashboard-de-actual-5ea50-rs-with-typed-family-matrix-desktop/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [desktop] › e2e/search-dashboard.spec.ts:463:3 › en: actual lifecycle and reference selectors with typed family matrix 
+
+    TimeoutError: locator.click: Timeout 10000ms exceeded.
+    Call log:
+      - waiting for getByRole('button', { name: 'Edit', exact: true }).first()
+
+
+      562 |         if (kind === "media") {
+      563 |           await panel(page, locale);
+    > 564 |           await page.getByRole("button", { name: c.edit, exact: true }).first().click();
+          |                                                                                 ^
+      565 |           await page.getByLabel(c.mediaKind, { exact: true }).selectOption("DOCUMENT");
+      566 |           await page.getByLabel(c.documentCategory, { exact: true }).selectOption("OTHER_PRIVATE");
+      567 |           await apply(page, locale, 1);
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/search-dashboard.spec.ts:564:81
+
+    Error Context: test-results/search-dashboard-en-actual-9a99f-rs-with-typed-family-matrix-desktop/error-context.md
+
+    Error Context: test-results/search-dashboard-en-actual-9a99f-rs-with-typed-family-matrix-desktop/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/search-dashboard-en-actual-9a99f-rs-with-typed-family-matrix-desktop/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/search-dashboard-en-actual-9a99f-rs-with-typed-family-matrix-desktop/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [mobile] › e2e/search-dashboard.spec.ts:463:3 › de: actual lifecycle and reference selectors with typed family matrix 
+
+    TimeoutError: locator.click: Timeout 10000ms exceeded.
+    Call log:
+      - waiting for getByRole('button', { name: 'Bearbeiten', exact: true }).first()
+
+
+      562 |         if (kind === "media") {
+      563 |           await panel(page, locale);
+    > 564 |           await page.getByRole("button", { name: c.edit, exact: true }).first().click();
+          |                                                                                 ^
+      565 |           await page.getByLabel(c.mediaKind, { exact: true }).selectOption("DOCUMENT");
+      566 |           await page.getByLabel(c.documentCategory, { exact: true }).selectOption("OTHER_PRIVATE");
+      567 |           await apply(page, locale, 1);
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/search-dashboard.spec.ts:564:81
+
+    Error Context: test-results/search-dashboard-de-actual-5ea50-rs-with-typed-family-matrix-mobile/error-context.md
+
+    Error Context: test-results/search-dashboard-de-actual-5ea50-rs-with-typed-family-matrix-mobile/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/search-dashboard-de-actual-5ea50-rs-with-typed-family-matrix-mobile/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/search-dashboard-de-actual-5ea50-rs-with-typed-family-matrix-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4) [mobile] › e2e/search-dashboard.spec.ts:463:3 › en: actual lifecycle and reference selectors with typed family matrix 
+
+    TimeoutError: locator.click: Timeout 10000ms exceeded.
+    Call log:
+      - waiting for getByRole('button', { name: 'Edit', exact: true }).first()
+
+
+      562 |         if (kind === "media") {
+      563 |           await panel(page, locale);
+    > 564 |           await page.getByRole("button", { name: c.edit, exact: true }).first().click();
+          |                                                                                 ^
+      565 |           await page.getByLabel(c.mediaKind, { exact: true }).selectOption("DOCUMENT");
+      566 |           await page.getByLabel(c.documentCategory, { exact: true }).selectOption("OTHER_PRIVATE");
+      567 |           await apply(page, locale, 1);
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/search-dashboard.spec.ts:564:81
+
+    Error Context: test-results/search-dashboard-en-actual-9a99f-rs-with-typed-family-matrix-mobile/error-context.md
+
+    Error Context: test-results/search-dashboard-en-actual-9a99f-rs-with-typed-family-matrix-mobile/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/search-dashboard-en-actual-9a99f-rs-with-typed-family-matrix-mobile/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/search-dashboard-en-actual-9a99f-rs-with-typed-family-matrix-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4 failed
+    [desktop] › e2e/search-dashboard.spec.ts:463:3 › de: actual lifecycle and reference selectors with typed family matrix 
+    [desktop] › e2e/search-dashboard.spec.ts:463:3 › en: actual lifecycle and reference selectors with typed family matrix 
+    [mobile] › e2e/search-dashboard.spec.ts:463:3 › de: actual lifecycle and reference selectors with typed family matrix 
+    [mobile] › e2e/search-dashboard.spec.ts:463:3 › en: actual lifecycle and reference selectors with typed family matrix 
+  36 passed (1.7m)
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/search-dashboard.spec.ts --workers=1 --trace=retain-on-failure

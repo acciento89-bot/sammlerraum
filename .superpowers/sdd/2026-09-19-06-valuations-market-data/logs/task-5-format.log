@@ -1,0 +1,23 @@
+src/components/valuations/manual-valuation-form.tsx 42ms
+src/components/valuations/manual-valuation-history.tsx 6ms
+src/components/valuations/market-observation-history.tsx 13ms
+src/components/valuations/valuation-client.test.ts 5ms
+src/components/valuations/valuation-client.ts 8ms
+src/components/valuations/valuation-money.test.ts 8ms
+src/components/valuations/valuation-money.ts 7ms
+src/components/valuations/valuation-page.tsx 15ms
+src/components/valuations/valuation-state.test.ts 10ms
+src/components/valuations/valuation-state.ts 14ms
+src/components/catalog/catalog-money.ts 1ms
+src/components/catalog/catalog-facts.tsx 8ms (unchanged)
+src/components/items/item-form.tsx 42ms (unchanged)
+src/app/[locale]/(app)/items/[itemId]/values/page.tsx 3ms
+src/app/globals.css 39ms
+e2e/valuations.spec.ts 32ms
+e2e/support/valuation-fixture.ts 9ms
+messages/de.json 20ms (unchanged)
+messages/en.json 5ms (unchanged)
+playwright.config.ts 1ms (unchanged)
+packages/domain/package.json 13ms (unchanged)
+packages/domain/src/money/currencies.ts 31ms (unchanged)
+.github/workflows/ci.yml 17ms (unchanged)

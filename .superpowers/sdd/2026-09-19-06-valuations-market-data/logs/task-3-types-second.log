@@ -1,0 +1,6 @@
+apps/worker/src/jobs/market-sync.integration.test.ts(45,28): error TS2322: Type '{ getDb: () => IDatabase; send: (name: string, data?: object | null | undefined, options?: SendOptions | undefined) => Promise<never>; }' is not assignable to type 'TransactionalProducerBackend'.
+  Types of property 'send' are incompatible.
+    Type '(name: string, data?: object | null | undefined, options?: SendOptions | undefined) => Promise<never>' is not assignable to type '{ (request: Request): Promise<string | null>; (name: string, data?: object | null | undefined, options?: SendOptions | undefined): Promise<string | null>; }'.
+      Types of parameters 'name' and 'request' are incompatible.
+        Type 'Request' is not assignable to type 'string'.
+apps/worker/src/run-wiring.test.ts(14,50): error TS2493: Tuple type '[]' of length '0' has no element at index '0'.

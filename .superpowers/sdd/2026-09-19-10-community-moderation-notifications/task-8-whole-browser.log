@@ -1,0 +1,40 @@
+[WebServer] (node:90437) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 218 tests using 1 worker
+(node:90438) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+····(node:90461) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+····(node:90479) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+F
+Testing stopped early after 1 maximum allowed failures.
+
+
+  1) [community-api] › e2e/community-api.spec.ts:13:1 › compiled community endpoints bind real cookies, enforce current public visibility and block cleanup 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 0
+    Received: 2
+
+      138 |       ).status(),
+      139 |     ).toBe(400);
+    > 140 |     expect((await (await owner.get("/api/v1/notifications")).json()).unreadCount).toBe(0);
+          |                                                                                   ^
+      141 |     const commentTarget = { type: "ITEM", id: item.id };
+      142 |     const createdComment = await actor.post("/api/v1/community/comments", {
+      143 |       data: { target: commentTarget, body: "Own compiled cookie comment" },
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/community-api.spec.ts:140:83
+
+    Error Context: test-results/community-api-compiled-com-56fbd-isibility-and-block-cleanup-community-api/error-context.md
+
+  1 failed
+    [community-api] › e2e/community-api.spec.ts:13:1 › compiled community endpoints bind real cookies, enforce current public visibility and block cleanup 
+  209 did not run
+  8 passed (22.9s)
+  1 error was not a part of any test, see above for details
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/public-profile.spec.ts e2e/community.spec.ts e2e/community-api.spec.ts e2e/collaboration-sharing.spec.ts e2e/collaboration-management.spec.ts e2e/sharing.spec.ts e2e/collaboration-api.spec.ts e2e/collections-items.spec.ts e2e/search-dashboard.spec.ts --project=community-ui-desktop --project=community-ui-mobile --project=community-api --project=collaboration-ui-desktop --project=collaboration-ui-mobile --project=sharing-desktop --project=sharing-mobile --project=collaboration-api --project=desktop --project=mobile --workers=1 --max-failures=1

@@ -1,0 +1,46 @@
+[WebServer] (node:89789) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:89790) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:89802) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [desktop] › e2e/import-report.spec.ts:20:3 › real import, export and private report flow › import conflict requires an explicit row decision before commit (12.0s)
+
+
+  1) [desktop] › e2e/import-report.spec.ts:20:3 › real import, export and private report flow › import conflict requires an explicit row decision before commit 
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 2
+    + Received  + 2
+
+      Array [
+        Object {
+    -     "mappingProfileId": "5b606ccb-a890-4907-9291-c424bfc4c676",
+    -     "mappingProfileRevision": 1,
+    +     "mappingProfileId": null,
+    +     "mappingProfileRevision": null,
+        },
+      ]
+
+      90 |       await page.getByRole("button", { name: "Vorschau erstellen", exact: true }).click();
+      91 |       await expect(page.getByText("Konflikt", { exact: true }).first()).toBeVisible();
+    > 92 |       expect(await db.$queryRaw`SELECT "mappingProfileId","mappingProfileRevision" FROM "ImportJob" WHERE "ownerId"=${userId}`).toEqual([{mappingProfileId:savedProfile.id,mappingProfileRevision:savedProfile.revision}]);
+         |                                                                                                                                 ^
+      93 |
+      94 |       await expect(
+      95 |         page.getByRole("button", { name: "Import starten", exact: true }),
+        at /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web/e2e/import-report.spec.ts:92:129
+
+    Error Context: test-results/import-report-real-import--554ff--row-decision-before-commit-desktop/error-context.md
+
+    Error Context: test-results/import-report-real-import--554ff--row-decision-before-commit-desktop/error-context.md
+
+  1 failed
+    [desktop] › e2e/import-report.spec.ts:20:3 › real import, export and private report flow › import conflict requires an explicit row decision before commit 
+undefined
+/Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/import-report.spec.ts --project=desktop --workers=1 --grep import conflict

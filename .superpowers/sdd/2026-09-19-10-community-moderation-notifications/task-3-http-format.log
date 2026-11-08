@@ -1,0 +1,12 @@
+apps/web/src/lib/comment-routes.ts 50ms
+apps/web/src/lib/comment-dependencies.ts 2ms
+apps/web/src/lib/comment-routes.test.ts 9ms
+apps/web/src/lib/comment-routes.integration.test.ts 13ms
+apps/web/src/lib/api/read-private-json.ts 4ms (unchanged)
+apps/web/src/app/api/v1/community/blocks/route.ts 1ms
+apps/web/src/app/api/v1/community/comments/[commentId]/route.ts 2ms
+apps/web/src/app/api/v1/community/comments/policy/route.ts 1ms
+apps/web/src/app/api/v1/community/comments/route.ts 1ms
+apps/web/src/app/api/v1/community/favorites/route.ts 1ms (unchanged)
+apps/web/src/app/api/v1/community/follows/route.ts 1ms (unchanged)
+apps/web/src/app/api/v1/community/reports/route.ts 1ms

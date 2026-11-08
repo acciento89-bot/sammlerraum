@@ -1,0 +1,50 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| apps/web/src/lib/legacy-money-routes.integration.test.ts (2 tests | 2 failed) 107ms
+   × personal money HTTP real database boundary > creates and reads explicit money only after fresh authentication, with no-store and request IDs 88ms
+     → expected 400 to be 201 // Object.is equality
+   × personal money HTTP real database boundary > rejects cross-origin before session access and duplicate nested keys/invalid bytes before mutation 4ms
+     → expected 400 to be 403 // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| apps/web/src/lib/legacy-money-routes.integration.test.ts > personal money HTTP real database boundary > creates and reads explicit money only after fresh authentication, with no-store and request IDs
+AssertionError: expected 400 to be 201 // Object.is equality
+
+- Expected
++ Received
+
+- 201
++ 400
+
+ ❯ apps/web/src/lib/legacy-money-routes.integration.test.ts:22:27
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |workspace| apps/web/src/lib/legacy-money-routes.integration.test.ts > personal money HTTP real database boundary > rejects cross-origin before session access and duplicate nested keys/invalid bytes before mutation
+AssertionError: expected 400 to be 403 // Object.is equality
+
+- Expected
++ Received
+
+- 403
++ 400
+
+ ❯ apps/web/src/lib/legacy-money-routes.integration.test.ts:29:113
+     27|  it("rejects cross-origin before session access and duplicate nested k…
+     28|   const f=await fixture();
+     29|   const denied=await f.api.CREATE(request("POST",{}, {origin:"https://…
+       |                                                                                                                 ^
+     30|   for(const body of ['{"schemaVersion":1,"item":{"title":"a","title":"…
+     31|    const response=await f.api.CREATE(request("POST",body));expect(resp…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed (2)
+   Start at  04:18:49
+   Duration  398ms (transform 41ms, setup 7ms, collect 137ms, tests 107ms, environment 0ms, prepare 36ms)
+

@@ -1,0 +1,11 @@
+
+ RUN  v3.2.7 /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum
+
+ ✓ |workspace| packages/storage/src/staging-lock.integration.test.ts (3 tests) 195ms
+ ✓ |workspace| packages/domain/src/media/cleanup-service.test.ts (11 tests) 677ms
+
+ Test Files  2 passed (2)
+      Tests  14 passed (14)
+   Start at  21:16:48
+   Duration  1.20s (transform 145ms, setup 13ms, collect 336ms, tests 873ms, environment 0ms, prepare 115ms)
+

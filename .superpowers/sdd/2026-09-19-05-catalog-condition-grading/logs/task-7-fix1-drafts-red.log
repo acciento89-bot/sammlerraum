@@ -1,0 +1,143 @@
+[WebServer] (node:62120) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 4 tests using 1 worker
+
+(node:62123) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [desktop] › e2e/catalog-grading.spec.ts:15:5 › catalog, personal condition and external grading › unsaved condition survives a grading refresh (de) (7.1s)
+(node:62158) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  2 [desktop] › e2e/catalog-grading.spec.ts:97:5 › catalog, personal condition and external grading › unsaved category and explicit clear survive link refreshes (de) (5.9s)
+(node:62177) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  3 [desktop] › e2e/catalog-grading.spec.ts:15:5 › catalog, personal condition and external grading › unsaved condition survives a grading refresh (en) (5.7s)
+(node:62216) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  4 [desktop] › e2e/catalog-grading.spec.ts:97:5 › catalog, personal condition and external grading › unsaved category and explicit clear survive link refreshes (en) (6.0s)
+
+
+  1) [desktop] › e2e/catalog-grading.spec.ts:15:5 › catalog, personal condition and external grading › unsaved condition survives a grading refresh (de) 
+
+    Error: expect(locator).toHaveValue(expected) failed
+
+    Locator:  getByLabel('Eigener Zustand', { exact: true })
+    Expected: "278e99a6-3b8b-4c6c-b09b-6ce47c3e5708"
+    Received: "a003fd14-84e4-4a16-8ba6-ee6fdc6fb01b"
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveValue" getByLabel('Eigener Zustand', { exact: true }) with timeout 5000ms
+      - waiting for getByLabel('Eigener Zustand', { exact: true })
+        14 × locator resolved to <select aria-label="Eigener Zustand">…</select>
+           - unexpected value "a003fd14-84e4-4a16-8ba6-ee6fdc6fb01b"
+
+
+      52 |           locale === "de" ? "Grading gespeichert" : "Grading saved",
+      53 |         );
+    > 54 |         await expect(condition).toHaveValue(fixture.scheme.options[1]!.id);
+         |                                 ^
+      55 |         expect(
+      56 |           (await (await page.request.get(`/api/v1/items/${fixture.item.id}/condition`)).json())
+      57 |             .condition.conditionOption.id,
+        at /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/catalog-grading.spec.ts:54:33
+
+    Error Context: test-results/catalog-grading-catalog-pe-5242f-vives-a-grading-refresh-de--desktop/error-context.md
+
+    Error Context: test-results/catalog-grading-catalog-pe-5242f-vives-a-grading-refresh-de--desktop/error-context.md
+
+  2) [desktop] › e2e/catalog-grading.spec.ts:97:5 › catalog, personal condition and external grading › unsaved category and explicit clear survive link refreshes (de) 
+
+    Error: expect(locator).toHaveValue(expected) failed
+
+    Locator:  getByLabel('Kategorie', { exact: true })
+    Expected: ""
+    Received: "cad44a4f-2284-4b3c-9904-23f157c49782"
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveValue" getByLabel('Kategorie', { exact: true }) with timeout 5000ms
+      - waiting for getByLabel('Kategorie', { exact: true })
+        14 × locator resolved to <select disabled aria-label="Kategorie">…</select>
+           - unexpected value "cad44a4f-2284-4b3c-9904-23f157c49782"
+
+
+      153 |           locale === "de" ? "Katalogverknüpfung gespeichert" : "Catalog reference saved",
+      154 |         );
+    > 155 |         await expect(category).toHaveValue("");
+          |                                ^
+      156 |         await expect(clear).toBeChecked();
+      157 |         expect(
+      158 |           (await (await page.request.get(`/api/v1/items/${fixture.item.id}`)).json()).item,
+        at /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/catalog-grading.spec.ts:155:32
+
+    Error Context: test-results/catalog-grading-catalog-pe-fdb15--survive-link-refreshes-de--desktop/error-context.md
+
+    Error Context: test-results/catalog-grading-catalog-pe-fdb15--survive-link-refreshes-de--desktop/error-context.md
+
+  3) [desktop] › e2e/catalog-grading.spec.ts:15:5 › catalog, personal condition and external grading › unsaved condition survives a grading refresh (en) 
+
+    Error: expect(locator).toHaveValue(expected) failed
+
+    Locator:  getByLabel('Personal condition', { exact: true })
+    Expected: "4e43a121-25b9-4e77-8fa0-c6908c3306b3"
+    Received: "ac59c4f1-9da4-4f88-a298-63ac84f01428"
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveValue" getByLabel('Personal condition', { exact: true }) with timeout 5000ms
+      - waiting for getByLabel('Personal condition', { exact: true })
+        14 × locator resolved to <select aria-label="Personal condition">…</select>
+           - unexpected value "ac59c4f1-9da4-4f88-a298-63ac84f01428"
+
+
+      52 |           locale === "de" ? "Grading gespeichert" : "Grading saved",
+      53 |         );
+    > 54 |         await expect(condition).toHaveValue(fixture.scheme.options[1]!.id);
+         |                                 ^
+      55 |         expect(
+      56 |           (await (await page.request.get(`/api/v1/items/${fixture.item.id}/condition`)).json())
+      57 |             .condition.conditionOption.id,
+        at /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/catalog-grading.spec.ts:54:33
+
+    Error Context: test-results/catalog-grading-catalog-pe-1cddd-vives-a-grading-refresh-en--desktop/error-context.md
+
+    Error Context: test-results/catalog-grading-catalog-pe-1cddd-vives-a-grading-refresh-en--desktop/error-context.md
+
+  4) [desktop] › e2e/catalog-grading.spec.ts:97:5 › catalog, personal condition and external grading › unsaved category and explicit clear survive link refreshes (en) 
+
+    Error: expect(locator).toHaveValue(expected) failed
+
+    Locator:  getByLabel('Category', { exact: true })
+    Expected: ""
+    Received: "f80489e2-b604-46ff-8d6e-8e3e4c87f998"
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveValue" getByLabel('Category', { exact: true }) with timeout 5000ms
+      - waiting for getByLabel('Category', { exact: true })
+        14 × locator resolved to <select disabled aria-label="Category">…</select>
+           - unexpected value "f80489e2-b604-46ff-8d6e-8e3e4c87f998"
+
+
+      153 |           locale === "de" ? "Katalogverknüpfung gespeichert" : "Catalog reference saved",
+      154 |         );
+    > 155 |         await expect(category).toHaveValue("");
+          |                                ^
+      156 |         await expect(clear).toBeChecked();
+      157 |         expect(
+      158 |           (await (await page.request.get(`/api/v1/items/${fixture.item.id}`)).json()).item,
+        at /Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web/e2e/catalog-grading.spec.ts:155:32
+
+    Error Context: test-results/catalog-grading-catalog-pe-859c8--survive-link-refreshes-en--desktop/error-context.md
+
+    Error Context: test-results/catalog-grading-catalog-pe-859c8--survive-link-refreshes-en--desktop/error-context.md
+
+  4 failed
+    [desktop] › e2e/catalog-grading.spec.ts:15:5 › catalog, personal condition and external grading › unsaved condition survives a grading refresh (de) 
+    [desktop] › e2e/catalog-grading.spec.ts:97:5 › catalog, personal condition and external grading › unsaved category and explicit clear survive link refreshes (de) 
+    [desktop] › e2e/catalog-grading.spec.ts:15:5 › catalog, personal condition and external grading › unsaved condition survives a grading refresh (en) 
+    [desktop] › e2e/catalog-grading.spec.ts:97:5 › catalog, personal condition and external grading › unsaved category and explicit clear survive link refreshes (en) 
+undefined
+/Users/piotrkaminski/Documents/Codex/2026-10-17/so/work/sammlerraum/apps/web:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: playwright test e2e/catalog-grading.spec.ts --project=desktop --grep unsaved --workers=1

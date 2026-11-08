@@ -1,0 +1,80 @@
+
+ RUN  v3.2.7 /Volumes/SSK SSD/Kamilunavo/Projects/Sammlerraum-SourceRecovery-20261105
+
+ ❯ |workspace| packages/domain/src/search/scoped-read-context.test.ts (12 tests | 1 failed) 1219ms
+   ✓ callback-scoped bulk read authority > limits the complete bulk relation to an actual item grant and hides credentials 129ms
+   × callback-scoped bulk read authority > canonicalizes an uppercase UUID reference for the same actual share 32ms
+     → SHARE_NOT_FOUND
+   ✓ callback-scoped bulk read authority > rejects a valid capability supplied for a different stored share reference 33ms
+   ✓ callback-scoped bulk read authority > loads actual membership and excludes every other owner collection 25ms
+   ✓ callback-scoped bulk read authority > expires callback handles and rejects forged context objects 13ms
+   ✓ callback-scoped bulk read authority > rechecks wall-clock expiry after asynchronous consumption  320ms
+   ✓ callback-scoped bulk read authority > rejects deleted item targets before an empty query can hide loss of access 29ms
+   ✓ callback-scoped bulk read authority > uses the actual recursive node boundary without widening to its parent collection 28ms
+   ✓ callback-scoped bulk read authority > holds canonical parent locks through consumption and denies a subsequently removed member 83ms
+   ✓ callback-scoped bulk read authority > does not retarget after caller mutation or retain a usable transaction handle 17ms
+   ✓ callback-scoped bulk read authority > retries a genuine PostgreSQL serialization conflict with fresh MEMBER access 21ms
+   ✓ callback-scoped bulk read authority > retries a genuine PostgreSQL serialization conflict with fresh SHARE access 96ms
+ ❯ |workspace| packages/domain/src/search/scoped-consumers.test.ts (13 tests | 1 failed) 772ms
+   ✓ live scoped saved definitions and dashboard parity > stores only a symbolic v2 reference and resolves current rows without retaining credentials 169ms
+   ✓ live scoped saved definitions and dashboard parity > never falls back to owned inventory after revocation or the wrong valid token 45ms
+   ✓ live scoped saved definitions and dashboard parity > rejects credentials embedded in a persisted definition and keeps original v1 behavior 16ms
+   ✓ live scoped saved definitions and dashboard parity > counts the same selected items and units and marks undisclosed summaries unavailable 20ms
+   ✓ live scoped saved definitions and dashboard parity > executes granted value summaries and preserves empty versus missing states 16ms
+   ✓ live scoped saved definitions and dashboard parity > rejects malformed or credential-bearing v2 rows at the actual database boundary: topSecret 19ms
+   ✓ live scoped saved definitions and dashboard parity > rejects malformed or credential-bearing v2 rows at the actual database boundary: scopeSecret 19ms
+   ✓ live scoped saved definitions and dashboard parity > rejects malformed or credential-bearing v2 rows at the actual database boundary: nullKind 19ms
+   ✓ live scoped saved definitions and dashboard parity > rejects malformed or credential-bearing v2 rows at the actual database boundary: nullLifecycle 19ms
+   ✓ live scoped saved definitions and dashboard parity > binds saved cursors to revisions and preserves explicit update conflicts 56ms
+   ✓ live scoped saved definitions and dashboard parity > sums actual granted latest manual points exactly, including zero and missing estimates 34ms
+   × live scoped saved definitions and dashboard parity > stores membership queries without secrets and reauthorizes after actual membership removal 28ms
+     → expected { kind: 'MEMBER_COLLECTION', …(1) } to deeply equal { kind: 'MEMBER_COLLECTION', …(1) }
+   ✓ live scoped saved definitions and dashboard parity > keeps owned saved discovery separate from explicitly scoped definitions 20ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |workspace| packages/domain/src/search/scoped-consumers.test.ts > live scoped saved definitions and dashboard parity > stores membership queries without secrets and reauthorizes after actual membership removal
+AssertionError: expected { kind: 'MEMBER_COLLECTION', …(1) } to deeply equal { kind: 'MEMBER_COLLECTION', …(1) }
+
+- Expected
++ Received
+
+  {
+-   "collectionId": "6e8de00c-af74-4882-87ba-6d29a26e40f6",
++   "collectionId": "6E8DE00C-AF74-4882-87BA-6D29A26E40F6",
+    "kind": "MEMBER_COLLECTION",
+  }
+
+ ❯ packages/domain/src/search/scoped-consumers.test.ts:277:42
+    275|         ...definition, scope: { kind: "MEMBER_COLLECTION", collectionI…
+    276|       }});
+    277|       expect(uppercase.definition.scope).toEqual(definition.scope);
+       |                                          ^
+    278|       expect((await db.smartCollection.findUniqueOrThrow({where: {id: …
+    279|       await createSmartCollectionService(db).deleteSmartCollection(f.a…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |workspace| packages/domain/src/search/scoped-read-context.test.ts > callback-scoped bulk read authority > canonicalizes an uppercase UUID reference for the same actual share
+ShareError: SHARE_NOT_FOUND
+ ❯ packages/domain/src/search/scoped-read-context.ts:125:15
+    123|       const row = await port.authorized(tx, target.access, userId);
+    124|       if (target.expectedShareId && target.expectedShareId !== row.id)
+    125|         throw new ShareError("SHARE_NOT_FOUND");
+       |               ^
+    126|       await port.checkPinAccess(tx, row, target.access, verifiedPinHas…
+    127|       await assertTarget(tx, row);
+ ❯ database.$transaction.isolationLevel packages/domain/src/search/search-read.ts:62:26
+ ❯ Proxy._transactionWithCallback node_modules/.pnpm/@prisma+client@7.10.0_prisma@7.10.0_@types+react-dom@19.2.3_@types+react@19.3.0__@types_5e69aee47f032c5b60b003a807e976a0/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:861:18
+ ❯ Object.$transaction packages/domain/src/search/scoped-read-budget.ts:21:24
+ ❯ runSearchTransaction packages/domain/src/search/search-read.ts:34:22
+ ❯ packages/domain/src/search/scoped-read-context.test.ts:76:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  2 failed | 23 passed (25)
+   Start at  01:36:06
+   Duration  3.06s (transform 328ms, setup 6ms, collect 747ms, tests 1.99s, environment 0ms, prepare 80ms)
+
