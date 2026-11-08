@@ -142,14 +142,14 @@ export function createSmartCollectionService(
       const cursor = query.cursor ? decodeSearchCursor(query.cursor, hash) : null;
       return runSearchTransaction(database, async (tx) => {
         const [count] = await tx.$queryRaw<{ total: bigint }[]>(
-          Prisma.sql`SELECT count(*) AS total FROM "SmartCollection" WHERE "ownerId"=${owner} AND "deletedAt" IS NULL`,
+          Prisma.sql`SELECT count(*) AS total FROM "SmartCollection" WHERE "ownerId"=${owner} AND "deletedAt" IS NULL AND definition->'version' IS DISTINCT FROM '2'::jsonb`,
         );
         const total = checkedSearchTotal(count!.total);
         const after = cursor
           ? Prisma.sql`("createdAt",id)<(${cursor.after.createdAt}::timestamp,${cursor.after.id}::uuid)`
           : Prisma.sql`TRUE`;
         const rows = await tx.$queryRaw<SavedRow[]>(
-          Prisma.sql`SELECT id,name,revision,"createdAt","updatedAt" FROM "SmartCollection" WHERE "ownerId"=${owner} AND "deletedAt" IS NULL AND ${after} ORDER BY "createdAt" DESC,id DESC LIMIT ${query.limit + 1}`,
+          Prisma.sql`SELECT id,name,revision,"createdAt","updatedAt" FROM "SmartCollection" WHERE "ownerId"=${owner} AND "deletedAt" IS NULL AND definition->'version' IS DISTINCT FROM '2'::jsonb AND ${after} ORDER BY "createdAt" DESC,id DESC LIMIT ${query.limit + 1}`,
         );
         const items = rows.slice(0, query.limit).map(summary),
           last = items.at(-1);

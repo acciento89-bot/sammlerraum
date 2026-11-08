@@ -1,3 +1,7 @@
+import {
+  ScopedSearchCapabilitiesSchema,
+  ScopedFilterFamilySchema,
+} from "@sammlerraum/contracts/scoped-search";
 import { Prisma } from "@sammlerraum/db/search-sql";
 import {
   FilterValidationError,
@@ -12,6 +16,13 @@ import { prepareLegacyMoneyPredicates } from "./legacy-money-query";
 import { validateCurrentFilterAvailability } from "./filter-ast";
 import { disabledSearchMarket, withItemSelection } from "./search-selection";
 
+const MEMBER_FIELDS = [
+  "collection",
+  "visibility",
+  "tradeStatus",
+  "updatedAt",
+  "acquisitionDate",
+] as const;
 const unavailable = (): never => {
   throw new FilterValidationError("FILTER_UNAVAILABLE");
 };
@@ -23,8 +34,7 @@ export function validateScopedFields(context: ScopedReadContext, query: Normaliz
     if (leaf.kind === "marketMoney") unavailable(); // No shared redistribution grant exists.
     if (state.mode === "OWNER_COLLECTION") continue;
     if (state.mode === "MEMBER_COLLECTION") {
-      if (["visibility", "tradeStatus", "updatedAt", "acquisitionDate"].includes(leaf.kind))
-        continue;
+      if (MEMBER_FIELDS.some((kind) => kind !== "collection" && kind === leaf.kind)) continue;
       if (leaf.kind === "collection" && state.reference.kind === "MEMBER_COLLECTION") {
         const values = leaf.test.op === "eq" ? [leaf.test.value] : leaf.test.values;
         const collectionId = state.reference.collectionId;
@@ -137,5 +147,35 @@ export async function withScopedSelection<T>(
       query.text ? basicText(query.text) : TRUE,
     ]),
     readAt: clock.now.toISOString(),
+  });
+}
+
+/** Explicit UI hints only; each query still rechecks actual server-side fields. */
+export function scopedSearchCapabilities(
+  context: ScopedReadContext,
+  canonicalMoneyEnabled: boolean,
+) {
+  const state = scopedReadState(context),
+    rights = state.permissions;
+  const families =
+    state.mode === "OWNER_COLLECTION"
+      ? ScopedFilterFamilySchema.options.filter((kind) => kind !== "marketMoney")
+      : state.mode === "MEMBER_COLLECTION"
+        ? [...MEMBER_FIELDS]
+        : [
+            ...(rights?.values ? ["purchaseMoney" as const, "manualMoney" as const] : []),
+            ...(rights?.images || rights?.documents.length ? ["media" as const] : []),
+          ];
+  const mediaKinds =
+    state.mode === "OWNER_COLLECTION"
+      ? ["IMAGE", "DOCUMENT"]
+      : [...(rights?.images ? ["IMAGE"] : []), ...(rights?.documents.length ? ["DOCUMENT"] : [])];
+  return ScopedSearchCapabilitiesSchema.parse({
+    scope: state.mode,
+    reference: state.reference,
+    families,
+    mediaKinds,
+    receiptCategories: state.mode === "OWNER_COLLECTION" || rights?.purchaseReceipts === true,
+    canonicalMoneyEnabled,
   });
 }

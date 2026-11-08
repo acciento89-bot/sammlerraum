@@ -213,3 +213,19 @@ export function parseScopedSmartCollectionMutation(input: unknown, update = fals
       : {}),
   };
 }
+
+export const ScopedSmartCollectionDetailSchema = SmartCollectionSummarySchema.extend({
+  definition: ScopedSmartCollectionDefinitionSchema,
+})
+  .strict()
+  .transform((value) => ({
+    ...value,
+    definition: parseScopedSmartCollectionDefinition(value.definition),
+  }));
+export const ScopedSmartCollectionListSchema = z
+  .object({
+    items: z.array(ScopedSmartCollectionDetailSchema).max(50),
+    total: z.number().int().nonnegative().safe(),
+    nextCursor: z.string().max(2048).nullable(),
+  })
+  .strict();

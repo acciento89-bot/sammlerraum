@@ -1,3 +1,4 @@
+import { z } from "zod";
 import { createHash, randomUUID } from "node:crypto";
 import { Prisma } from "@sammlerraum/db/search-sql";
 import { FilterValidationError } from "@sammlerraum/contracts/search";
@@ -198,13 +199,28 @@ export function createScopedSavedSearchService(
       input: unknown = {},
       access?: unknown,
     ) {
+      const expected = z
+        .object({
+          limit: z.number().int().min(1).max(50).optional(),
+          cursor: z
+            .string()
+            .regex(/^[A-Za-z0-9_-]{1,2048}$/u)
+            .optional(),
+          expectedRevision: z.number().int().min(1).max(SMART_COLLECTION_MAX_REVISION).optional(),
+        })
+        .strict()
+        .safeParse(input);
+      if (!expected.success) return smartFail("SMART_COLLECTION_INVALID");
+      const { expectedRevision, ...pageInput } = expected.data;
       const owner = ownerId(actor),
         id = parseSmartCollectionId(idInput),
-        page = parseSmartCollectionPageInput(input);
+        page = parseSmartCollectionPageInput(pageInput);
       // Read only the caller's own symbolic reference before durable PIN preflight.
       const initial = await runSearchRead(database, async (tx) =>
         detail(await load(tx, owner, id)),
       );
+      if (expectedRevision !== undefined && initial.revision !== expectedRevision)
+        return smartFail("SMART_COLLECTION_CONFLICT");
       try {
         return await withScopedReadContext(
           database,

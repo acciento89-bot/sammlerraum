@@ -1,4 +1,5 @@
 "use client";
+import { ScopedSearchPanel } from "../search/scoped-search-panel";
 import { CollectionSettings } from "./collection-settings";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
@@ -108,6 +109,10 @@ export function CollaborativeWorkspace({
       {status && <p role="status">{status}</p>}
       {data && (
         <div className="management-grid">
+          <ScopedSearchPanel
+            locale={locale === "de" ? "de" : "en"}
+            target={{ kind: "MEMBER_COLLECTION", collectionId }}
+          />
           <CollectionSettings data={data} onSaved={() => load()} />
           {data.actorRole !== "VIEWER" && (
             <section className="management-card">

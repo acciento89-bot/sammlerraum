@@ -833,7 +833,9 @@
     "navDashboard": "Dashboard",
     "openDashboard": "Open selection dashboard",
     "canonicalRangeHelp": "Amount bounds compare evidenced prices exactly, including different recorded decimal places. Unresolved prices anywhere in the checked owned inventory prevent this search.",
-    "duplicateHelp": "Uses your explicit duplicate marks while both entries and their collections remain yours and have not been deleted."
+    "duplicateHelp": "Uses your explicit duplicate marks while both entries and their collections remain yours and have not been deleted.",
+    "navShared": "Shared search",
+    "scopeSelectedCollection": "Selected collection"
   },
   "SavedSearches": {
     "title": "Saved searches",
@@ -1554,5 +1556,59 @@
     "items": "Collectibles",
     "empty": "There are no public entries here yet.",
     "next": "Show more"
+  },
+  "ScopedSearch": {
+    "title": "Search shared selection",
+    "open": "Open search",
+    "close": "Close search",
+    "intro": "Search and summaries apply only to the selected authorized area.",
+    "loginRequired": "Sign in to save a view or use a personal share.",
+    "unavailable": "A condition uses a field that is not shared here. Change or remove that condition.",
+    "openOriginal": "Reopen the original sharing link and enter its PIN if required. Saved views never retain an access key.",
+    "gone": "Access to this area is no longer available.",
+    "error": "This selection could not be loaded. Please try again.",
+    "login": "Sign in",
+    "savedUnavailable": "Saved views could not be loaded.",
+    "saved": "The shared view has been saved.",
+    "scopes": {
+      "OWNER_COLLECTION": "Your selected collection",
+      "MEMBER_COLLECTION": "Collection membership",
+      "SHARE": "Shared selection"
+    },
+    "text": "Title or public description",
+    "filterHelp": "Only fields visible in this area can be used. Unavailable saved conditions remain available for repair.",
+    "apply": "Apply search",
+    "overview": "Overview",
+    "results": "Search results",
+    "draftChanged": "Conditions changed. Apply them before loading more results.",
+    "count": "{count} matching {itemCount, plural, one {item} other {items}}",
+    "quantity": "Quantity: {count}",
+    "empty": "No matching items in this selection.",
+    "more": "More results",
+    "summary": "{items} {itemCount, plural, one {item} other {items}} · {units} units",
+    "valuesUnavailable": "Values are not shared for this selection.",
+    "manual": "Personal estimates",
+    "manualStates": {
+      "EMPTY": "No items in this selection.",
+      "NO_ESTIMATES": "This selection has no personal estimates.",
+      "PARTIAL": "Some selected items have personal estimates.",
+      "COMPLETE": "All selected items have personal estimates."
+    },
+    "purchaseUnavailable": "Acquisition costs cannot be summarized without confirmed monetary units.",
+    "saveName": "Shared view name",
+    "save": "Save view",
+    "savedTitle": "Saved shared views",
+    "moreSaved": "More saved views",
+    "loading": "Checking access and loading selection …",
+    "hubTitle": "Search shared collections",
+    "hubIntro": "Choose a collection membership or a personal share. Sharing links can be searched directly in their own view.",
+    "chooseScope": "Choose area",
+    "selectedScope": "Selected area",
+    "protectedShare": "Personal share · PIN required",
+    "namedShare": "Personal share",
+    "moreScopes": "More areas",
+    "noScopes": "No further areas are currently available here. Open an existing sharing link directly.",
+    "openShare": "Open sharing link",
+    "reopen": "Reopen selection"
   }
 }

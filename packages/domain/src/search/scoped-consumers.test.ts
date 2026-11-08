@@ -289,5 +289,23 @@ describe.runIf(process.env.RUN_DATABASE_INTEGRATION === "1")(
       });
       expect((await f.saved.list(f.actor)).total).toBe(0);
     });
+    it("keeps owned saved discovery separate from explicitly scoped definitions", async () => {
+      const f = await fixture();
+      const shared = await f.saved.create(
+        f.actor,
+        { name: "Shared view", definition: f.definition },
+        f.access,
+      );
+      const owned = await createSmartCollectionService(db).createSmartCollection(f.actor, {
+        name: "Own view",
+        definition: { version: 1, text: "", filter: null, lifecycle: "ACTIVE" },
+      });
+      expect(
+        (await createSmartCollectionService(db).listSmartCollections(f.actor)).items.map(
+          (item) => item.id,
+        ),
+      ).toEqual([owned.id]);
+      expect((await f.saved.list(f.actor)).items.map((item) => item.id)).toEqual([shared.id]);
+    });
   },
 );

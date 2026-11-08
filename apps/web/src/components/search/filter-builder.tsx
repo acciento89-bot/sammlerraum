@@ -1,4 +1,6 @@
 "use client";
+import type { ScopedSearchCapabilities } from "@sammlerraum/contracts/scoped-search";
+import { newScopedLeaf } from "./scoped-capabilities";
 import { DeferredFocus } from "./deferred-focus";
 import { SearchLabel } from "./search-label";
 import { useEffect, useRef, useState } from "react";
@@ -13,12 +15,14 @@ export function FilterBuilder({
   locale,
   cache,
   helpText,
+  capabilities,
 }: {
   value: DraftNode | null;
   onChange: (value: DraftNode | null) => void;
   locale: "de" | "en";
   cache: MetadataCache;
   helpText?: string;
+  capabilities?: ScopedSearchCapabilities | undefined;
 }) {
   const t = useTranslations("Search");
   const [active, setActive] = useState<string | null>(value?.key ?? null);
@@ -48,7 +52,8 @@ export function FilterBuilder({
     if (value) change(replaceNode(value, key, next));
   }
   function add(parent: DraftNode | null, group = false) {
-    const leaf = newLeaf();
+    if (capabilities && !capabilities.families.length) return;
+    const leaf = capabilities ? newScopedLeaf(capabilities.families[0]!, capabilities) : newLeaf();
     const added: DraftNode = group ? { key: draftKey(), kind: "and", children: [leaf] } : leaf;
     if (!value) change(added, leaf.key);
     else if (parent && (parent.kind === "and" || parent.kind === "or"))
@@ -114,6 +119,7 @@ export function FilterBuilder({
               onChange={(leaf) => replace(node.key, { ...node, value: leaf })}
               locale={locale}
               cache={cache}
+              capabilities={capabilities}
             />
           ) : (
             <p>{t("collapsedLeaf")}</p>
@@ -136,10 +142,20 @@ export function FilterBuilder({
             </SearchLabel>
             {node.children.map((child) => render(child, level + 1))}
             <div className="search-actions">
-              <button type="button" className="secondary-button" onClick={() => add(node)}>
+              <button
+                type="button"
+                className="secondary-button"
+                disabled={capabilities?.families.length === 0}
+                onClick={() => add(node)}
+              >
                 {t("addCondition")}
               </button>
-              <button type="button" className="secondary-button" onClick={() => add(node, true)}>
+              <button
+                type="button"
+                className="secondary-button"
+                disabled={capabilities?.families.length === 0}
+                onClick={() => add(node, true)}
+              >
                 {t("addGroup")}
               </button>
             </div>
@@ -154,10 +170,20 @@ export function FilterBuilder({
       {value && render(value, 1)}
       {(!value || value.kind === "leaf" || value.kind === "not") && (
         <div className="search-actions">
-          <button type="button" className="secondary-button" onClick={() => add(null)}>
+          <button
+            type="button"
+            className="secondary-button"
+            disabled={capabilities?.families.length === 0}
+            onClick={() => add(null)}
+          >
             {t("addCondition")}
           </button>
-          <button type="button" className="secondary-button" onClick={() => add(null, true)}>
+          <button
+            type="button"
+            className="secondary-button"
+            disabled={capabilities?.families.length === 0}
+            onClick={() => add(null, true)}
+          >
             {t("addGroup")}
           </button>
         </div>

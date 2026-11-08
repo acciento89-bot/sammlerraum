@@ -288,5 +288,28 @@ describe.runIf(process.env.RUN_DATABASE_INTEGRATION === "1")(
         .parse(await denied.json());
       expect(code.error.code).toBe("FILTER_UNAVAILABLE");
     });
+    it("returns only current usable field families without exposing hidden grant metadata", async () => {
+      const f = await fixture();
+      const response = await f.handlers(null).routes.CAPABILITIES(post({ target: f.target }));
+      expect(response.status).toBe(200);
+      const value = await response.json();
+      expect(value).toMatchObject({
+        scope: "SHARE",
+        families: [],
+        mediaKinds: [],
+        receiptCategories: false,
+      });
+      const wire = JSON.stringify(value);
+      for (const hidden of [
+        f.owner,
+        f.collection.id,
+        f.item.id,
+        f.share.token!,
+        "permissions",
+        "tokenHash",
+        "documents",
+      ])
+        expect(wire).not.toContain(hidden);
+    });
   },
 );

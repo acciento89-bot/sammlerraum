@@ -6,7 +6,7 @@ export function CollectorNavigation({
   current = "search",
 }: {
   locale: string;
-  current?: "search" | "saved" | "dashboard" | "milestones";
+  current?: "search" | "saved" | "dashboard" | "milestones" | "shared";
 }) {
   const t = useTranslations("Search");
   const collaboration = useTranslations("Collaboration");
@@ -25,6 +25,13 @@ export function CollectorNavigation({
         aria-current={current === "search" ? "page" : undefined}
       >
         {t("navSearch")}
+      </Link>
+      <Link
+        href={`/${locale}/shared-search`}
+        prefetch={false}
+        aria-current={current === "shared" ? "page" : undefined}
+      >
+        {t("navShared")}
       </Link>
       <Link
         href={`/${locale}/dashboard`}

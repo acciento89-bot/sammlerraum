@@ -16,7 +16,7 @@ import {
   scopedReadState,
   type ScopedReadContext,
 } from "./scoped-read-context";
-import { withScopedSelection } from "./scoped-selection";
+import { withScopedSelection, scopedSearchCapabilities } from "./scoped-selection";
 import { decodeReferenceCursor, encodeReferenceCursor } from "./search-reference-cursor";
 import { candidateFrom, TRUE } from "./search-compiler";
 import { checkedSearchTotal } from "./item-search-service";
@@ -79,6 +79,11 @@ export function createScopedSearchService(
   options: { canonicalMoneyEnabled?: boolean } = {},
 ) {
   return {
+    async capabilities(actor: { userId: string } | null, target: unknown) {
+      return withScopedReadContext(database, actor, target, async (context) =>
+        scopedSearchCapabilities(context, options.canonicalMoneyEnabled === true),
+      );
+    },
     async search(actor: { userId: string } | null, target: unknown, input: unknown) {
       const query = parseScopedSearchQuery(input);
       return withScopedReadContext(database, actor, target, (context) =>

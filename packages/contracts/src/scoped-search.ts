@@ -82,3 +82,34 @@ export const ScopedDiscoveryPageSchema = z
     nextCursor: z.string().max(2048).nullable(),
   })
   .strict();
+
+export const ScopedFilterFamilySchema = z.enum([
+  "collection",
+  "category",
+  "condition",
+  "grading",
+  "purchaseMoney",
+  "manualMoney",
+  "marketMoney",
+  "tags",
+  "duplicate",
+  "tradeStatus",
+  "visibility",
+  "media",
+  "createdAt",
+  "updatedAt",
+  "acquisitionDate",
+  "customField",
+  "catalogAttribute",
+]);
+export const ScopedSearchCapabilitiesSchema = z
+  .object({
+    scope: z.enum(["OWNER_COLLECTION", "MEMBER_COLLECTION", "SHARE"]),
+    reference: ScopedSearchReferenceSchema,
+    families: z.array(ScopedFilterFamilySchema).max(17),
+    mediaKinds: z.array(z.enum(["IMAGE", "DOCUMENT"])).max(2),
+    receiptCategories: z.boolean(),
+    canonicalMoneyEnabled: z.boolean(),
+  })
+  .strict();
+export type ScopedSearchCapabilities = z.infer<typeof ScopedSearchCapabilitiesSchema>;

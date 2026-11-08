@@ -1,4 +1,6 @@
 "use client";
+import type { ScopedSearchCapabilities } from "@sammlerraum/contracts/scoped-search";
+import { newScopedLeaf } from "./scoped-capabilities";
 import { useMoneyConsumers } from "./money-consumer-context";
 import { SearchLabel } from "./search-label";
 import { useEffect, useRef, useState } from "react";
@@ -32,11 +34,13 @@ export function FilterLeafEditor({
   onChange,
   locale,
   cache,
+  capabilities,
 }: {
   value: LeafValue;
   onChange: (value: LeafValue) => void;
   locale: "de" | "en";
   cache: MetadataCache;
+  capabilities?: ScopedSearchCapabilities | undefined;
 }) {
   const canonicalMoneyEnabled = useMoneyConsumers();
   const t = useTranslations("Search");
@@ -59,17 +63,34 @@ export function FilterLeafEditor({
         {t("family")}
         <select
           value={kind}
-          onChange={(e) => onChange(newLeaf(e.target.value as LeafValue["kind"]).value)}
+          onChange={(e) =>
+            onChange(
+              capabilities
+                ? newScopedLeaf(e.target.value as LeafValue["kind"], capabilities).value
+                : newLeaf(e.target.value as LeafValue["kind"]).value,
+            )
+          }
         >
           {families.map((f) => (
-            <option key={f} value={f} disabled={f === "marketMoney"}>
+            <option
+              key={f}
+              value={f}
+              disabled={f === "marketMoney" || (capabilities && !capabilities.families.includes(f))}
+            >
               {t(`families.${f}`)}
-              {f === "marketMoney" ? ` · ${t("notAvailable")}` : ""}
+              {f === "marketMoney" || (capabilities && !capabilities.families.includes(f))
+                ? ` · ${t("notAvailable")}`
+                : ""}
             </option>
           ))}
         </select>
       </SearchLabel>
-      {kind === "duplicate" ? (
+      {capabilities && !capabilities.families.includes(kind) ? (
+        <div role="status">
+          <p>{t("unavailableFamily")}</p>
+          <pre className="scoped-retained-condition">{JSON.stringify(value, null, 2)}</pre>
+        </div>
+      ) : kind === "duplicate" ? (
         <>
           <SearchLabel>
             {t("value")}
@@ -157,7 +178,64 @@ export function FilterLeafEditor({
                 </select>
               </SearchLabel>
               {!["present", "missing"].includes(test.op) &&
-                (kind !== "condition" || value.categoryTemplateId) && (
+                (kind !== "condition" || value.categoryTemplateId) &&
+                (capabilities?.scope === "MEMBER_COLLECTION" &&
+                kind === "collection" &&
+                capabilities.reference.kind === "MEMBER_COLLECTION" ? (
+                  <SearchLabel>
+                    {t("families.collection")}
+                    <select
+                      value={
+                        ids(test).length > 0 &&
+                        ids(test).every(
+                          (id) =>
+                            id ===
+                            (capabilities.reference.kind === "MEMBER_COLLECTION"
+                              ? capabilities.reference.collectionId
+                              : ""),
+                        )
+                          ? capabilities.reference.collectionId
+                          : "__unavailable"
+                      }
+                      onChange={() =>
+                        setTest(
+                          test.op === "in"
+                            ? {
+                                op: "in",
+                                values: [
+                                  capabilities.reference.kind === "MEMBER_COLLECTION"
+                                    ? capabilities.reference.collectionId
+                                    : "",
+                                ],
+                              }
+                            : {
+                                op: "eq",
+                                value:
+                                  capabilities.reference.kind === "MEMBER_COLLECTION"
+                                    ? capabilities.reference.collectionId
+                                    : "",
+                              },
+                        )
+                      }
+                    >
+                      {(!ids(test).length ||
+                        ids(test).some(
+                          (id) =>
+                            id !==
+                            (capabilities.reference.kind === "MEMBER_COLLECTION"
+                              ? capabilities.reference.collectionId
+                              : ""),
+                        )) && (
+                        <option value="__unavailable" disabled>
+                          {t("notAvailable")}
+                        </option>
+                      )}
+                      <option value={capabilities.reference.collectionId}>
+                        {t("scopeSelectedCollection")}
+                      </option>
+                    </select>
+                  </SearchLabel>
+                ) : (
                   <ReferencePicker
                     source={
                       kind === "collection"
@@ -180,7 +258,7 @@ export function FilterLeafEditor({
                     cache={cache}
                     label={t(`families.${kind}`)}
                   />
-                )}
+                ))}
             </>
           ) : kind === "grading" ? (
             <>
@@ -258,8 +336,18 @@ export function FilterLeafEditor({
                         onChange(next);
                       }}
                     >
-                      <option value="IMAGE">{t("image")}</option>
-                      <option value="DOCUMENT">{t("document")}</option>
+                      <option
+                        value="IMAGE"
+                        disabled={capabilities && !capabilities.mediaKinds.includes("IMAGE")}
+                      >
+                        {t("image")}
+                      </option>
+                      <option
+                        value="DOCUMENT"
+                        disabled={capabilities && !capabilities.mediaKinds.includes("DOCUMENT")}
+                      >
+                        {t("document")}
+                      </option>
                     </select>
                   </SearchLabel>
                   {value.mediaKind === "DOCUMENT" && (
@@ -276,7 +364,15 @@ export function FilterLeafEditor({
                       >
                         <option value="">{t("anyDocumentCategory")}</option>
                         {DocumentCategorySchema.options.map((category) => (
-                          <option key={category} value={category}>
+                          <option
+                            key={category}
+                            value={category}
+                            disabled={
+                              capabilities &&
+                              !capabilities.receiptCategories &&
+                              (category === "PURCHASE_RECEIPT" || category === "INVOICE")
+                            }
+                          >
                             {t(`documents.${category}`)}
                           </option>
                         ))}

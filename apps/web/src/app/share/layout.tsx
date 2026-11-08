@@ -1,3 +1,5 @@
+import { NextIntlClientProvider } from "next-intl";
+import { getMessages } from "next-intl/server";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { headers } from "next/headers";
@@ -11,9 +13,15 @@ export const metadata: Metadata = {
 export default async function ShareLayout({ children }: { children: ReactNode }) {
   const h = await headers(),
     cookie = h.get("cookie")?.match(/(?:^|;\s*)NEXT_LOCALE=(de|en)(?:;|$)/)?.[1];
+  const locale = selectLocale(cookie, h.get("accept-language"));
+  const messages = await getMessages({ locale });
   return (
-    <html lang={selectLocale(cookie, h.get("accept-language"))}>
-      <body>{children}</body>
+    <html lang={locale}>
+      <body>
+        <NextIntlClientProvider locale={locale} messages={messages}>
+          {children}
+        </NextIntlClientProvider>
+      </body>
     </html>
   );
 }

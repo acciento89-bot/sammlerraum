@@ -2386,3 +2386,78 @@ body:has(.transfer-shell) .skip-link:not(:focus) {
 .market-reference-values li {
   overflow-wrap: anywhere;
 }
+
+.scoped-search-panel {
+  grid-column: 1 / -1;
+  min-width: 0;
+}
+.scoped-search-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.scoped-search-panel input,
+.scoped-search-panel select {
+  max-width: 100%;
+}
+.scoped-search-panel .search-builder {
+  margin-block: 1rem;
+}
+.scoped-result-list,
+.scoped-saved-list {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 0.75rem;
+}
+.scoped-result-list {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+}
+.scoped-result-list li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+  overflow-wrap: anywhere;
+}
+.scoped-saved-list button {
+  text-align: start;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.scoped-save-form {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  align-items: end;
+  margin-block: 1.5rem;
+}
+.scoped-save-form label {
+  flex: 1 1 15rem;
+  display: grid;
+  gap: 0.4rem;
+}
+.scoped-retained-condition {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  max-width: 100%;
+  font-size: 0.8rem;
+}
+@media (max-width: 640px) {
+  .scoped-search-heading {
+    align-items: stretch;
+  }
+  .scoped-search-heading button,
+  .scoped-save-form button {
+    width: 100%;
+  }
+}
+.scoped-search-panel .shared-badge {
+  float: none;
+  display: inline-block;
+  margin: 0 0 1rem;
+}

@@ -169,6 +169,21 @@ export function createScopedSearchRouteHandlers(
       }),
     );
   return {
+    CAPABILITIES: secure((request: Request) =>
+      run(async () => {
+        const who = await actor(request, false),
+          input = parse(z.object({ target: z.unknown() }).strict(), await body(request));
+        if (
+          input.target &&
+          typeof input.target === "object" &&
+          "kind" in input.target &&
+          input.target.kind === "MEMBER_COLLECTION" &&
+          !who
+        )
+          throw new ApiError("UNAUTHORIZED", 401, "Authentication required");
+        return dependencies.search.capabilities(who, input.target);
+      }),
+    ),
     SEARCH: read(false),
     DASHBOARD: read(true),
     SCOPES: secure((request: Request) =>

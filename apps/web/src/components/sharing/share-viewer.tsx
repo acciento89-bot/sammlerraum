@@ -1,4 +1,5 @@
 "use client";
+import { ScopedSearchPanel } from "../search/scoped-search-panel";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { z } from "zod";
 import { ShareResolutionSchema, type ResolveShareSchema } from "@sammlerraum/contracts/sharing";
@@ -300,6 +301,7 @@ export function ShareViewer({ identifier, locale }: { identifier: string; locale
       )}
       {view && (
         <>
+          <ScopedSearchPanel locale={locale} target={{ kind: "SHARE", access }} />
           <div className="shared-actions">
             <span>
               {view.items.length}{" "}

@@ -833,7 +833,9 @@
     "navDashboard": "Übersicht",
     "openDashboard": "Auswahl als Übersicht öffnen",
     "canonicalRangeHelp": "Betragsgrenzen vergleichen belegte Preise exakt, auch wenn sie mit unterschiedlichen Nachkommastellen erfasst wurden. Nicht eindeutig erklärte Preise im geprüften eigenen Bestand verhindern diese Suche.",
-    "duplicateHelp": "Berücksichtigt deine markierten Dubletten, solange beide Einträge und ihre Sammlungen weiterhin zu deinem Bestand gehören und nicht gelöscht sind."
+    "duplicateHelp": "Berücksichtigt deine markierten Dubletten, solange beide Einträge und ihre Sammlungen weiterhin zu deinem Bestand gehören und nicht gelöscht sind.",
+    "navShared": "Geteilte Suche",
+    "scopeSelectedCollection": "Ausgewählte Sammlung"
   },
   "SavedSearches": {
     "title": "Gespeicherte Suchen",
@@ -1554,5 +1556,59 @@
     "items": "Sammlerstücke",
     "empty": "Hier gibt es noch keine öffentlichen Einträge.",
     "next": "Weitere anzeigen"
+  },
+  "ScopedSearch": {
+    "title": "Geteilte Auswahl durchsuchen",
+    "open": "Suche öffnen",
+    "close": "Suche schließen",
+    "intro": "Suche und Auswertung gelten nur für den ausgewählten freigegebenen Bereich.",
+    "loginRequired": "Zum Speichern oder für persönliche Freigaben bitte anmelden.",
+    "unavailable": "Mindestens eine Bedingung verwendet ein hier nicht freigegebenes Feld. Bitte ändern oder entfernen.",
+    "openOriginal": "Bitte den ursprünglichen Freigabelink erneut öffnen und gegebenenfalls die PIN eingeben. Gespeicherte Ansichten behalten keinen Zugangsschlüssel.",
+    "gone": "Der Zugriff auf diesen Bereich ist nicht mehr verfügbar.",
+    "error": "Die Auswahl konnte gerade nicht geladen werden. Bitte erneut versuchen.",
+    "login": "Anmelden",
+    "savedUnavailable": "Gespeicherte Ansichten konnten gerade nicht geladen werden.",
+    "saved": "Die geteilte Ansicht wurde gespeichert.",
+    "scopes": {
+      "OWNER_COLLECTION": "Eigene ausgewählte Sammlung",
+      "MEMBER_COLLECTION": "Sammlung mit Mitgliedschaft",
+      "SHARE": "Freigegebene Auswahl"
+    },
+    "text": "Titel oder öffentliche Beschreibung",
+    "filterHelp": "Nur in diesem Bereich sichtbare Felder sind verwendbar. Nicht verfügbare gespeicherte Bedingungen bleiben zur Reparatur erhalten.",
+    "apply": "Suche anwenden",
+    "overview": "Übersicht",
+    "results": "Suchergebnisse",
+    "draftChanged": "Bedingungen geändert. Bitte anwenden, bevor weitere Treffer geladen werden.",
+    "count": "{count} {itemCount, plural, one {passendes Objekt} other {passende Objekte}}",
+    "quantity": "Anzahl: {count}",
+    "empty": "Keine passenden Objekte in dieser Auswahl.",
+    "more": "Weitere Treffer",
+    "summary": "{items} {itemCount, plural, one {Objekt} other {Objekte}} · {units} Stück",
+    "valuesUnavailable": "Werte sind für diese Auswahl nicht freigegeben.",
+    "manual": "Eigene Schätzungen",
+    "manualStates": {
+      "EMPTY": "Keine Objekte in dieser Auswahl.",
+      "NO_ESTIMATES": "Für diese Auswahl liegen keine eigenen Schätzungen vor.",
+      "PARTIAL": "Ein Teil der Objekte hat eine eigene Schätzung.",
+      "COMPLETE": "Alle ausgewählten Objekte haben eine eigene Schätzung."
+    },
+    "purchaseUnavailable": "Anschaffungskosten sind ohne bestätigte Geldeinheiten nicht auswertbar.",
+    "saveName": "Name der geteilten Ansicht",
+    "save": "Ansicht speichern",
+    "savedTitle": "Gespeicherte geteilte Ansichten",
+    "moreSaved": "Weitere gespeicherte Ansichten",
+    "loading": "Auswahl wird geprüft und geladen …",
+    "hubTitle": "Suche in geteilten Sammlungen",
+    "hubIntro": "Eine Sammlung mit Mitgliedschaft oder eine persönliche Freigabe auswählen. Freigabelinks können direkt in ihrer eigenen Ansicht durchsucht werden.",
+    "chooseScope": "Bereich auswählen",
+    "selectedScope": "Ausgewählter Bereich",
+    "protectedShare": "Persönliche Freigabe · PIN erforderlich",
+    "namedShare": "Persönliche Freigabe",
+    "moreScopes": "Weitere Bereiche",
+    "noScopes": "Hier sind derzeit keine weiteren Bereiche verfügbar. Einen erhaltenen Freigabelink bitte direkt öffnen.",
+    "openShare": "Freigabe öffnen",
+    "reopen": "Auswahl neu öffnen"
   }
 }
