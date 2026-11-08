@@ -1,0 +1,14 @@
+FROM postgres@sha256:665dc7b37ac52a17e298511414c21d23ffa4e6a6ef6225b3e5d59c7afb35e994
+RUN apt-get update && apt-get install -y --no-install-recommends python3 openssl \
+    && rm -rf /var/lib/apt/lists/* \
+    && useradd --uid 1000 --user-group --no-create-home sammlerraum-backup \
+    && install -d -o 1000 -g 1000 -m 700 /backups
+WORKDIR /app
+COPY scripts/recovery.py scripts/backup_scheduler.py /app/
+ENV TZ=UTC PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1
+VOLUME ["/backups"]
+USER 1000:1000
+HEALTHCHECK --interval=60s --timeout=10s --start-period=1h --retries=1 \
+    CMD ["python3", "/app/backup_scheduler.py", "health"]
+ENTRYPOINT ["python3", "/app/backup_scheduler.py"]
+CMD ["run"]

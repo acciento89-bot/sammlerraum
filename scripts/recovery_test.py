@@ -13,6 +13,8 @@ import tempfile
 import threading
 import unittest
 import uuid
+from types import SimpleNamespace
+from unittest import mock
 from urllib.parse import urlsplit, urlunsplit
 
 spec = importlib.util.spec_from_file_location('recovery', Path(__file__).with_name('recovery.py'))
@@ -236,6 +238,100 @@ class RecoveryDrill(unittest.TestCase):
         root.chmod(0o777)
         r.private_directory(root, empty=True)
         self.assertEqual(root.stat().st_mode & 0o077, 0)
+
+    def test_10_referenced_only_backup_omits_uncommitted_unreferenced_files(self):
+        transient = self.uploads / '.storage-owned-transient.tmp'
+        transient.write_bytes(b'not committed to any database record')
+        try:
+            folder = self.area / 'referenced-only'
+            result = self.run_cli('backup', folder, self.uploads, ('--referenced-only',))
+            self.assertEqual(result.returncode, 0, result.stderr)
+            manifest = json.loads((folder / 'manifest.json').read_text())
+            self.assertNotIn(transient.name, manifest['uploads'])
+            self.assertEqual(set(manifest['uploads']), {o['key'] for o in manifest['objects']})
+        finally:
+            transient.unlink()
+
+    def test_11_exported_snapshot_remains_consistent_with_a_concurrent_committed_writer(self):
+        source_env = r.pg_env(self.source_url)
+        r.sql('CREATE TABLE recovery_concurrent_probe (id integer); INSERT INTO recovery_concurrent_probe VALUES(1)', source_env)
+        real_command = r.command
+        inserted = False
+        def command_with_writer(args, env, **kwargs):
+            nonlocal inserted
+            if Path(args[0]).name == 'pg_dump' and any(a.startswith('--snapshot=') for a in args) and not inserted:
+                inserted = True
+                r.sql('INSERT INTO recovery_concurrent_probe VALUES(2)', source_env)
+            return real_command(args, env, **kwargs)
+        folder = self.area / 'live-snapshot'
+        with mock.patch.dict(os.environ, self.env), mock.patch.object(r, 'command', command_with_writer):
+            r.backup(SimpleNamespace(backup=str(folder), uploads=str(self.uploads), referenced_only=True))
+        self.assertTrue(inserted)
+        self.assertEqual(r.sql('SELECT count(*) FROM recovery_concurrent_probe', source_env), '2')
+        manifest = json.loads((folder / 'manifest.json').read_text())
+        self.assertEqual(next(t['rows'] for t in manifest['tables'] if t['table']=='recovery_concurrent_probe'), 1)
+        scratch = 'sammlerraum_live_restore_' + uuid.uuid4().hex[:10] + '_test'
+        r.sql('CREATE DATABASE ' + r.quote(scratch), self.base_env)
+        self.created.append(scratch)
+        target_url = urlunsplit(urlsplit(self.base_url)._replace(path='/' + scratch))
+        env = dict(self.env, RESTORE_DATABASE_URL=target_url, RESTORE_SCRATCH_DATABASE=scratch)
+        result = self.run_cli('restore', folder, self.area / 'live-restored', env=env)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(r.sql('SELECT count(*) FROM recovery_concurrent_probe', r.pg_env(target_url)), '1')
+
+    def test_12_scheduled_encrypted_snapshot_restores_real_database_and_private_bytes(self):
+        try:
+            import backup_scheduler as scheduler
+        except ImportError:
+            scheduler = None
+        self.assertIsNotNone(scheduler, 'Actual encrypted scheduler must exist')
+        key, cert = self.area/'scheduled-key.pem', self.area/'scheduled-public.pem'
+        subprocess.run(['openssl','req','-x509','-newkey','rsa:2048','-nodes','-days','1',
+                        '-subj','/CN=Owned scheduled recovery test','-keyout',str(key),'-out',str(cert)],
+                       check=True,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+        root = self.area/'scheduled'
+        with mock.patch.dict(os.environ,self.env):
+            result = scheduler.run_once(root,self.uploads,cert,'2026-11-08')
+        self.assertTrue(scheduler.healthy(root, r.dt.datetime.now(r.dt.timezone.utc)))
+        self.assertFalse(any(root.glob('.stage-*')))
+        plain = self.area/'scheduled-plain'
+        scheduler.decrypt_backup(root/result['file'],plain,key,cert)
+        scratch = 'sammlerraum_scheduled_restore_' + uuid.uuid4().hex[:10] + '_test'
+        r.sql('CREATE DATABASE ' + r.quote(scratch),self.base_env)
+        self.created.append(scratch)
+        target_url = urlunsplit(urlsplit(self.base_url)._replace(path='/' + scratch))
+        env = dict(self.env,RESTORE_DATABASE_URL=target_url,RESTORE_SCRATCH_DATABASE=scratch)
+        restored = self.area/'scheduled-restored'
+        proof = self.run_cli('restore',plain,restored,env=env)
+        self.assertEqual(proof.returncode,0,proof.stderr)
+        self.assertEqual((restored/self.keys[2]).read_bytes(),self.bytes[2])
+
+    def test_13_active_import_source_is_bound_to_its_database_checksum(self):
+        env = r.pg_env(self.source_url)
+        owner = r.sql('SELECT id FROM "user" LIMIT 1',env)
+        collection, job = str(uuid.uuid4()), str(uuid.uuid4())
+        key = 'imports/' + job + '/source'
+        file = self.uploads/key
+        file.parent.mkdir(parents=True)
+        original = b'title,quantity\nowned committed upload,1\n'
+        file.write_bytes(original)
+        digest = r.file_digest(file)
+        r.sql(f'''INSERT INTO "Collection" (id,"ownerId",name,"updatedAt") VALUES
+            ('{collection}','{owner}','Own source checksum fixture',now());
+            INSERT INTO "ImportJob" (id,"ownerId","collectionId",locale,"sourceFormat",
+            "sourceFileName","sourceByteSize","sourceChecksumSha256","sourceStorageKey",
+            "uploadCompletedAt","parserOptions","updatedAt") VALUES ('{job}','{owner}','{collection}','de','CSV',
+            'owned.csv',{digest['bytes']},'{digest['sha256']}','{key}',now(),'{{}}'::jsonb,now());
+            INSERT INTO "ImportSourceObject" (id,"jobId","storageKey","expiresAt") VALUES
+            ('{job}','{job}','{key}',now()+interval '1 day');''',env)
+        try:
+            file.write_bytes(b'changed source must not become a valid backup')
+            folder = self.area/'changed-import'
+            result = self.run_cli('backup',folder,self.uploads,('--referenced-only',))
+            self.assertNotEqual(result.returncode,0)
+            self.assertFalse((folder/'manifest.json').exists())
+        finally:
+            file.write_bytes(original)
 
 
 if __name__ == '__main__':

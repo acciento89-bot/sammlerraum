@@ -304,6 +304,9 @@ jobs:
           AI_OPENAI_API_KEY: fixture-not-a-real-key
           AI_OPENAI_MODEL: fixture-vision
           AI_MONTHLY_REQUEST_LIMIT: "3"
+          EXTERNAL_MONTHLY_BUDGET_EUR_CENTS: "2500"
+          EXTERNAL_FIXED_MONTHLY_EUR_CENTS: "0"
+          AI_CALL_RESERVATION_EUR_CENTS: "25"
         run: >-
           pnpm --filter @sammlerraum/web exec playwright test e2e/ai-capture.spec.ts e2e/ai-catalog-review.spec.ts
           --project=ai-desktop --project=ai-mobile --workers=1
@@ -369,6 +372,9 @@ jobs:
           AI_OPENAI_API_KEY: fixture-not-a-real-key
           AI_OPENAI_MODEL: fixture-vision
           AI_MONTHLY_REQUEST_LIMIT: "3"
+          EXTERNAL_MONTHLY_BUDGET_EUR_CENTS: "2500"
+          EXTERNAL_FIXED_MONTHLY_EUR_CENTS: "0"
+          AI_CALL_RESERVATION_EUR_CENTS: "25"
         run: >-
           pnpm --filter @sammlerraum/web exec playwright test e2e/v1-critical-paths.spec.ts
           --project=v1-desktop --project=v1-mobile --workers=1
@@ -377,6 +383,10 @@ jobs:
         run: |
           docker compose -f docker-compose.restore-test.yml config --quiet
           docker build -f Dockerfile.recovery-test -t sammlerraum-recovery-test .
+          docker build -f Dockerfile.backup -t sammlerraum-encrypted-backup-ci .
+          docker run --rm --read-only --tmpfs /tmp:rw,nosuid,nodev,size=256m \
+            --entrypoint python3 -v "$GITHUB_WORKSPACE:/workspace:ro" \
+            sammlerraum-encrypted-backup-ci /workspace/scripts/backup_scheduler_test.py
           docker run --rm --network host \
             -e RECOVERY_TEST_DATABASE_URL=postgresql://test:test@127.0.0.1:5432/sammlerraum_test \
             -v "$GITHUB_WORKSPACE:/workspace:ro" sammlerraum-recovery-test

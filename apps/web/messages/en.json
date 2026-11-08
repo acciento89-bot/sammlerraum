@@ -1659,7 +1659,7 @@
     "noPhotos": "No suitable gallery photos are available yet.",
     "addPhotos": "Add photos",
     "photo": "Photo {number}",
-    "consent": "I want to send exactly these photos to the analysis provider for advisory suggestions. Personal notes and documents will not be sent.",
+    "consent": "I want to send exactly these photos to OpenAI for advisory suggestions. Processing may take place in the USA. Personal notes and documents will not be sent.",
     "analyze": "Analyze selected photos",
     "working": "Working …",
     "imageCount": "{count} selected photos",
@@ -1706,7 +1706,7 @@
     },
     "errors": {
       "AI_ITEM_CHANGED": "Your details changed meanwhile. Reload and select again; newer entries will not be overwritten.",
-      "AI_LIMIT_REACHED": "Your monthly analysis allowance has been used.",
+      "AI_LIMIT_REACHED": "The currently available monthly analysis allowance has been used.",
       "AI_SOURCE_NOT_AUTHORIZED": "The selected photos are no longer available for this analysis.",
       "AI_ITEM_NOT_FOUND": "This item or request is no longer available to you.",
       "AI_REQUEST_CONFLICT": "Another decision was already saved for this request. Reload the current state.",

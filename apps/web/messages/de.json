@@ -1659,7 +1659,7 @@
     "noPhotos": "Es sind noch keine geeigneten Galeriefotos vorhanden.",
     "addPhotos": "Fotos hinzufügen",
     "photo": "Foto {number}",
-    "consent": "Ich möchte genau diese Fotos für eine unverbindliche Analyse an den Analyseanbieter senden. Persönliche Notizen und Dokumente werden nicht mitgesendet.",
+    "consent": "Ich möchte genau diese Fotos zur unverbindlichen Analyse an OpenAI senden. Die Verarbeitung kann in den USA stattfinden. Persönliche Notizen und Dokumente werden nicht mitgesendet.",
     "analyze": "Ausgewählte Fotos analysieren",
     "working": "Wird verarbeitet …",
     "imageCount": "{count} ausgewählte Fotos",
@@ -1706,7 +1706,7 @@
     },
     "errors": {
       "AI_ITEM_CHANGED": "Deine Angaben haben sich inzwischen geändert. Lade die aktuellen Angaben und wähle erneut aus; neuere Eingaben werden nicht überschrieben.",
-      "AI_LIMIT_REACHED": "Dein monatliches Analysekontingent ist aufgebraucht.",
+      "AI_LIMIT_REACHED": "Das derzeit verfügbare monatliche Analysekontingent ist aufgebraucht.",
       "AI_SOURCE_NOT_AUTHORIZED": "Die ausgewählten Fotos stehen für diese Analyse nicht mehr zur Verfügung.",
       "AI_ITEM_NOT_FOUND": "Dieser Gegenstand oder Auftrag steht dir nicht mehr zur Verfügung.",
       "AI_REQUEST_CONFLICT": "Für diesen Auftrag wurde bereits eine andere Entscheidung gespeichert. Lade den aktuellen Stand.",

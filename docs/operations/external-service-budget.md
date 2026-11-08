@@ -25,3 +25,34 @@ authorized provider response. Do not enable another paid adapter until it uses t
 reservation mechanism and its fixed/per-call fees fit the remaining envelope. Current
 Scrydex and PriceCharting paid sources remain disabled; no subscription has been purchased.
 Do not silently increase the budget or substitute fabricated market prices.
+
+
+## Initial own OpenAI activation quote (8November2026)
+
+Pinned model: `gpt-5.4-mini-2026-03-17`, verified against the official model page
+https://developers.openai.com/api/docs/models/gpt-5.4-mini and image-token rules
+https://developers.openai.com/api/docs/guides/images-vision . Standard global input
+USD0.75/million, outputUSD4.50/million. No regional uplift, tools or fixed paid
+subscription is enabled. `detail:high` is bounded at2500patches per image with a
+1.2multiplier (allow one rounding token); at most4images therefore <=12004image
+tokens even if processing upstream changes the current640px outputs. Bounded
+categories (100x64ASCII),20candidate titles (200Unicode characters each), IDs,
+JSON framing, fixed instruction and wire schema fit conservatively below48000
+text tokens; total conservative input bound60000tokens. Maximum output8192.
+Thus upper standard charge <=60000*0.75/1e6+8192*4.5/1e6 = USD0.081864.
+
+Reserve EUR0.25 before each attempt. At an intentionally conservative conversion
+allowance of EUR2 perUSD and25%additional tax/fee headroom, the boundEUR0.20466
+remains below the reservation. Stop/requote before any tariff/model/input/output
+change, a conversion rate above that allowance or additional fixed fees. This
+calculation is admission headroom, not the actual provider invoice or liveFXquote.
+November includes EUR0.25fixed aggregate reservation for the one own synthetic
+operator probe (552input/112output), so at most99additional25centattempts fit.
+Future months have zero current subscription fees but retain configured fixed
+headroom conservatively until deliberately re-evaluated. No real user photographs
+were used for this probe. The key is restricted to Responses and stored only in
+protected operator/backend configuration, never client code. Actual worker/user
+flow and matching release activation must still be verified independently.
+
+Owner explicitly deferred all paid market-data subscriptions until real users
+exist; keep these integrations disabled and omit fabricated live valuations.

@@ -34,7 +34,7 @@ function optionalSection(de: boolean, flags: OptionalIntegrations): LegalSection
     paragraphs: de
       ? [
           flags.ai
-            ? "Wenn du eine KI-Bildanalyse ausdrücklich startest, werden das ausgewählte verarbeitete Bild und begrenzte Erkennungshinweise an OpenAI übermittelt. Das Ergebnis ist ein Vorschlag; Änderungen an deiner Sammlung bestätigst du selbst. Lade dafür keine unnötigen personenbezogenen Angaben hoch."
+            ? "Wenn du eine KI-Bildanalyse ausdrücklich startest, werden das ausgewählte verarbeitete Bild und begrenzte Erkennungshinweise an OpenAI übermittelt. Das Projekt verwendet globale Verarbeitung; eine Verarbeitung in den USA ist möglich. Wir fordern keine Speicherung der Analyseantworten an (store: false); dies schließt die Sicherheitsaufbewahrung des Anbieters nicht aus. Das Ergebnis ist ein Vorschlag; Änderungen an deiner Sammlung bestätigst du selbst. Lade dafür keine unnötigen personenbezogenen Angaben hoch."
             : "Die optionale OpenAI-Bildanalyse ist derzeit nicht aktiviert. Es werden dafür keine Sammlungsbilder automatisch an OpenAI gesendet.",
           flags.billing
             ? "Wenn du einen angebotenen Premium-Kauf oder die Zahlungsverwaltung startest, verarbeitet Stripe die dafür erforderlichen Kunden-, Zahlungs- und Abonnementdaten. Zahlungsdetails gibst du bei Stripe ein; Sammlerraum erhält Zuordnungen und Zahlungs-/Tarifstatus, keine vollständigen Kartendaten."
@@ -45,7 +45,7 @@ function optionalSection(de: boolean, flags: OptionalIntegrations): LegalSection
         ]
       : [
           flags.ai
-            ? "When you explicitly start image analysis, the selected processed image and limited identification context are sent to OpenAI. Results are suggestions; you approve changes to your collection. Do not upload unnecessary personal information for analysis."
+            ? "When you explicitly start image analysis, the selected processed image and limited identification context are sent to OpenAI. The project uses global processing, which may take place in the USA. We request no storage of analysis responses (store: false); this does not exclude provider security retention. Results are suggestions; you approve changes to your collection. Do not upload unnecessary personal information for analysis."
             : "Optional OpenAI image analysis is not enabled. Collection images are not automatically sent to OpenAI for this feature.",
           flags.billing
             ? "When you start an available Premium purchase or payment-management flow, Stripe processes the necessary customer, payment and subscription information. Payment details are entered with Stripe; Sammlerraum receives references and payment/plan status, not complete card details."

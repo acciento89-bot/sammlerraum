@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Offline PostgreSQL17 + uploads recovery. No dependency or secret export."""
+"""Verified PostgreSQL17 snapshot + uploads recovery. No dependency or secret export."""
 import argparse
 import datetime as dt
 import hashlib
@@ -153,8 +153,11 @@ def db_inventory(snapshot):
         'sha256', "checksumSha256") FROM "MediaAsset"
         UNION ALL SELECT json_build_object('key', "storageKey", 'bytes', "byteSize"::text,
         'sha256', "checksumSha256") FROM "MediaVariant"
-        UNION ALL SELECT json_build_object('key', "storageKey") FROM "ImportSourceObject"
-        WHERE "deletedAt" IS NULL;''')
+        UNION ALL SELECT CASE WHEN j.id IS NULL THEN json_build_object('key', o."storageKey")
+        ELSE json_build_object('key',o."storageKey",'expectedKey',j."sourceStorageKey",
+        'bytes',j."sourceByteSize"::text,'sha256',j."sourceChecksumSha256") END
+        FROM "ImportSourceObject" o LEFT JOIN "ImportJob" j ON j.id=o."jobId"
+        WHERE o."deletedAt" IS NULL;''')
     objects = [json.loads(row) for row in rows]
     for item in objects:
         key_path(item['key'])
@@ -184,6 +187,7 @@ def check_references(objects, index):
     for item in objects:
         key = item['key']
         key_path(key)
+        require(item.get('expectedKey', key) == key, 'Referenced import key mismatch')
         require(key in index, 'Referenced object missing')
         if 'bytes' in item:
             require(int(item['bytes']) == index[key]['bytes'] and item['sha256'] == index[key]['sha256'],
@@ -206,13 +210,23 @@ def backup(args):
                  '--snapshot=' + snapshot.id, '--file=' + str(destination / 'database.dump')],
                 env, timeout=1800)
         with tarfile.open(destination / 'uploads.tar', 'w') as archive:
-            for base, dirs, files in os.walk(root, followlinks=False):
-                for name in dirs + files:
-                    require(not (Path(base) / name).is_symlink(), 'Uploads symlink refused')
-                for name in sorted(files):
-                    path = Path(base) / name
-                    require(path.is_file(), 'Special uploads entry refused')
-                    archive.add(path, arcname=path.relative_to(root).as_posix(), recursive=False)
+            if getattr(args, 'referenced_only', False):
+                # The exported snapshot, not a moving filesystem walk, defines this
+                # archive. New uploads/temporary files after the snapshot are excluded.
+                for key in sorted({item['key'] for item in objects}):
+                    path = root / key_path(key)
+                    require(not any(p.is_symlink() for p in [path, *path.parents]),
+                            'Referenced uploads symlink refused')
+                    require(path.is_file(), 'Referenced uploads file missing')
+                    archive.add(path, arcname=key, recursive=False)
+            else:
+                for base, dirs, files in os.walk(root, followlinks=False):
+                    for name in dirs + files:
+                        require(not (Path(base) / name).is_symlink(), 'Uploads symlink refused')
+                    for name in sorted(files):
+                        path = Path(base) / name
+                        require(path.is_file(), 'Special uploads entry refused')
+                        archive.add(path, arcname=path.relative_to(root).as_posix(), recursive=False)
         with tarfile.open(destination / 'uploads.tar', 'r:') as archive:
             index = archive_index(archive)
         check_references(objects, index)
@@ -310,6 +324,8 @@ def main():
     parser.add_argument('backup', help='Private backup directory; empty for backup creation')
     parser.add_argument('--uploads', required=True, help='Explicit uploads/empty scratch restore root')
     parser.add_argument('--health-url', help='Recovered service health URL (required for verify)')
+    parser.add_argument('--referenced-only', action='store_true',
+                        help='Archive only objects referenced by the exported SQL snapshot')
     args = parser.parse_args()
     if args.operation == 'verify':
         require(args.health_url, '--health-url is required')

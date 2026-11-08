@@ -32,3 +32,48 @@ CI runs the same drill inside `Dockerfile.recovery-test` with PostgreSQL17 clien
 
 
 The complete CI application-recovery stage now connects these proofs: it seeds only an owned verified fixture account and private original/variant, obtains a real session, stops writers, takes the real consistent backup, restores a separate DB/uploads and starts the exact non-root web image against them. Real recovered `/api/health`, authenticated exact original/variant bytes and anonymous404 are mandatory. It keeps outbound integrations and all recovered dispatchers disabled. Restores run as the application's numeric storage UID/GID (1000:1000 in the provided images); private modes are preserved. A root-run restore producing root-only files is not considered app-ready. The source and backup volumes are retained, never overwritten. These tests still prove only isolated CI recovery, not recovery of a live customer's backup.
+
+
+## Own nightly encrypted service (format v2)
+
+`Dockerfile.backup` runs as UID/GID1000, with only the own database connection,
+read-only own uploads and its separate private backup volume. No Docker socket,
+other application volume or private recovery key belongs in this service.
+`RECOVERY_PUBLIC_CERTIFICATE` holds only a public X509 recipient certificate.
+The existing protected RSA private recovery key remains outside the server.
+
+`python3 scripts/backup_scheduler.py run` immediately catches up the current daily
+slot, then runs at03:00UTC. Each slot has at most8 attempts,15minutes apart. The
+health check fails without a recent successful ciphertext (36hours), after a
+failed attempt, or when its completed file is missing. Monitor unhealthy state.
+
+The scheduled mode uses `recovery.py backup --referenced-only`: one exported SQL
+snapshot determines both the dump and exact immutable object inventory. Uncommitted
+staging objects are excluded, while busy uploads/processing/cleanup still refuse
+a backup. Original/variant/import/report bytes must match that snapshot. Storage
+races cause a refusal, never a partially completed successful backup. Offline
+maintenance remains the preferred retry when continuous writers prevent success.
+
+Only the three verified backup artifacts are streamed into authenticated CMS
+AES256GCM with RSAOAEP-SHA256. A hash-bound v2 JSON completion receipt accompanies
+each ciphertext. Plaintext staging is private and removed on completion/failure;
+a restarted scheduler removes only its own marked incomplete staging directories.
+The newest7 verified completed backups for the current recipient are retained.
+Unknown files and other-recipient backups are not adopted or deleted. Old
+ciphertexts are checked before any retention deletion; corruption refuses rotation.
+Keep independent encrypted copies off the server and perform regular restore drills.
+
+For recovery, supply the trusted ciphertext and its adjacent receipt, matching
+public certificate and protected private key to:
+`python3 scripts/backup_scheduler.py decrypt --encrypted /private/backup.cms --root /private/empty-recovery --certificate /private/recipient.pem --private-key /private/recovery-private.pem`.
+Authentication, ciphertext and recipient verification precede extraction of only
+three allowlisted regular artifacts. Existing destinations are not overwritten.
+Then use the existing isolated scratch restore and application verification above.
+A same-server encrypted backup does not replace independent key custody or an
+independent failure-domain copy. Neither is complete merely because source tests pass.
+
+Local proof8November:9 real encryption/retention tests (including a34MiB streaming
+roundtrip, altered ciphertext and safe recovery), plus13 PostgreSQL17 recovery
+tests including concurrent writers and an encrypted scheduled backup restored to
+an independent scratch database. Production installation/restore is separately
+recorded in the release evidence; this paragraph does not claim it already happened.
