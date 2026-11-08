@@ -1,3 +1,4 @@
+import { BillingPolicySchema } from "@sammlerraum/contracts/billing";
 import { isAbsolute } from "node:path";
 
 import { z } from "zod";
@@ -215,4 +216,17 @@ export function parseNotificationEmailEnv(input: Record<string, string | undefin
       ...new Set(smtp.error.issues.map((i) => String(i.path[0]))),
     ]);
   return smtp.data;
+}
+
+/** Required central product policy; never substitute guessed Free/Premium quotas. */
+export function parseBillingPolicyEnv(input: Record<string, string | undefined>) {
+  try {
+    if (!input.BILLING_PLAN_LIMITS || Buffer.byteLength(input.BILLING_PLAN_LIMITS, "utf8") > 8192)
+      throw new Error();
+    const parsed = BillingPolicySchema.safeParse(JSON.parse(input.BILLING_PLAN_LIMITS));
+    if (!parsed.success) throw new Error();
+    return parsed.data;
+  } catch {
+    throw new EnvironmentConfigurationError(["BILLING_PLAN_LIMITS"]);
+  }
 }

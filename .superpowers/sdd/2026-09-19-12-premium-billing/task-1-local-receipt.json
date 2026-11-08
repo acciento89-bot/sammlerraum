@@ -1,0 +1,14 @@
+{
+  "base": "8957121f7698067415c8271514c6aff09be89c64",
+  "frozenPriorMigrationFiles": 70,
+  "regularPassed": 1698,
+  "regularNativeDisabled": 1222,
+  "nativePassed": 2920,
+  "nativeSkipped": 0,
+  "files": 265,
+  "nativeSeconds": 267.81,
+  "rootTypes": "PASS",
+  "prismaValidate": "PASS",
+  "providerActivated": false,
+  "accepted": false
+}

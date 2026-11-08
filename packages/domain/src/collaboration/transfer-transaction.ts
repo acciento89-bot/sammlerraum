@@ -1,3 +1,4 @@
+import { BillingError } from "@sammlerraum/contracts/billing";
 import { AIAnalysisError } from "@sammlerraum/contracts/ai";
 import { RestoreError } from "@sammlerraum/contracts/restore";
 import { AuditError } from "@sammlerraum/contracts/audit";
@@ -74,6 +75,7 @@ export async function runTransferTransaction<T>(
       );
     } catch (error) {
       if (
+        error instanceof BillingError ||
         error instanceof AIAnalysisError ||
         error instanceof RestoreError ||
         error instanceof AuditError ||

@@ -12,6 +12,7 @@
     "typecheck": "tsc --noEmit --project ../../tsconfig.base.json"
   },
   "dependencies": {
-    "zod": "4.1.11"
+    "zod": "4.1.11",
+    "@sammlerraum/contracts": "workspace:*"
   }
 }

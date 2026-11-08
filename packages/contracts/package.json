@@ -45,7 +45,8 @@
     "./notifications": "./src/notifications.ts",
     "./scoped-search": "./src/scoped-search.ts",
     "./scoped-dashboard": "./src/scoped-dashboard.ts",
-    "./ai": "./src/ai.ts"
+    "./ai": "./src/ai.ts",
+    "./billing": "./src/billing.ts"
   },
   "scripts": {
     "build": "pnpm typecheck",

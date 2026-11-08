@@ -75,7 +75,8 @@
     "./dashboard/scoped-dashboard-service": "./src/dashboard/scoped-dashboard-service.ts",
     "./ai/ai-analysis-service": "./src/ai/ai-analysis-service.ts",
     "./ai/suggestion-apply-service": "./src/ai/suggestion-apply-service.ts",
-    "./ai/usage-service": "./src/ai/usage-service.ts"
+    "./ai/usage-service": "./src/ai/usage-service.ts",
+    "./billing/entitlement-service": "./src/billing/entitlement-service.ts"
   },
   "scripts": {
     "build": "pnpm typecheck",

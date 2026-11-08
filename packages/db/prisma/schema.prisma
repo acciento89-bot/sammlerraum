@@ -99,6 +99,7 @@ model UserProfile {
 }
 
 model User {
+  billingAccounts            BillingAccount[]
   id                         String                             @id
   name                       String
   email                      String
@@ -1888,4 +1889,44 @@ model AIAnalysisDecision {
   accepted      Json
   createdAt     DateTime      @default(now())
   job           AIAnalysisJob @relation(fields: [jobId], references: [id], onDelete: Cascade)
+}
+
+enum BillingSubscriptionStatus {
+  ACTIVE
+  TRIALING
+  PAST_DUE
+  CANCELED
+  UNPAID
+  INCOMPLETE
+  INCOMPLETE_EXPIRED
+  PAUSED
+}
+
+model BillingAccount {
+  subjectId          String
+  provider           String
+  providerCustomerId String?
+  createdAt          DateTime              @default(now())
+  user               User                  @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  subscriptions      BillingSubscription[]
+
+  @@id([subjectId, provider])
+  @@unique([provider, providerCustomerId])
+}
+
+model BillingSubscription {
+  id                     String                    @id @default(uuid()) @db.Uuid
+  subjectId              String
+  provider               String
+  providerSubscriptionId String
+  status                 BillingSubscriptionStatus
+  currentPeriodStart     DateTime
+  currentPeriodEnd       DateTime
+  cancelAtPeriodEnd      Boolean                   @default(false)
+  providerUpdatedAt      DateTime
+  syncedAt               DateTime                  @default(now())
+  account                BillingAccount            @relation(fields: [subjectId, provider], references: [subjectId, provider], onDelete: Cascade)
+
+  @@unique([provider, providerSubscriptionId])
+  @@index([subjectId, currentPeriodEnd])
 }
