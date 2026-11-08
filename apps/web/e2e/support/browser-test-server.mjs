@@ -175,7 +175,12 @@ const next = spawn(
       ...process.env,
       NODE_ENV: production ? "production" : process.env.NODE_ENV,
       HOSTNAME: "localhost",
-      APP_ORIGIN: "http://localhost:3000",
+      // Read-only marketing proof deliberately uses a different ordinary runtime origin
+      // from the build. No application policy or handler is replaced.
+      APP_ORIGIN:
+        process.env.RUN_MARKETING_E2E === "1"
+          ? "https://runtime-seo.example.test"
+          : "http://localhost:3000",
       NODE_EXTRA_CA_CERTS: certificatePath,
       // Avoid DNS resolution of localhost escaping the synthetic loopback mail fixture.
       SMTP_HOST: "127.0.0.1",

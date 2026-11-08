@@ -2688,3 +2688,37 @@ body:has(.transfer-shell) .skip-link:not(:focus) {
   width: 100%;
   accent-color: #226b5d;
 }
+
+.marketing-shell {
+  width: min(70rem, calc(100% - 2rem));
+  margin: 0 auto;
+  padding: clamp(3rem, 7vw, 6rem) 0;
+}
+.marketing-shell h1 {
+  max-width: 18ch;
+}
+.marketing-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  gap: 1.2rem;
+  margin: 2.5rem 0;
+}
+.marketing-card {
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  background: var(--surface);
+  padding: 1.5rem;
+  box-shadow: 0 1rem 2rem rgb(51 42 29 / 5%);
+  overflow-wrap: anywhere;
+}
+.marketing-card h2 {
+  margin-top: 0;
+  font-size: 1.3rem;
+}
+.marketing-card p {
+  margin-bottom: 0;
+  color: var(--muted);
+}
+.marketing-actions {
+  margin-bottom: 2rem;
+}

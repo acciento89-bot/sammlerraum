@@ -12,8 +12,8 @@
     "eyebrow": "Digital collection archive",
     "title": "What matters to us deserves a good place.",
     "intro": "Sammlerraum helps document collections clearly and preserve the stories behind them.",
-    "status": "The platform is being prepared.",
-    "detail": "The first tools for collections, objects, and shared work are coming soon.",
+    "status": "Your collection. A clearer view.",
+    "detail": "Document objects, find their details and work together on selected content.",
     "pricing": "Explore Free & Premium"
   },
   "Auth": {
@@ -1786,5 +1786,38 @@
     },
     "serviceAvailability": "Market data requires an available, enabled data source. AI analysis requires an available analysis service.",
     "comparisonScroll": "If some columns are hidden, scroll the comparison sideways to see every plan."
+  },
+  "SEO": {
+    "home": {
+      "title": "Sammlerraum – Organise your collections clearly",
+      "description": "Document collections, objects and their stories. With private images, structured details, search and controlled collaboration."
+    },
+    "features": {
+      "title": "Tools for your collection · Sammlerraum",
+      "description": "Record objects, attach images and documents, search precisely, review imports and share collections with clear permissions."
+    },
+    "pricing": {
+      "title": "Free & Premium for your collection · Sammlerraum",
+      "description": "Compare collection features and storage limits. Available Premium offers display their actual terms."
+    },
+    "imageAlt": "Sammlerraum – Collections and their stories",
+    "featuresTitle": "A good place for every detail.",
+    "featuresIntro": "From the first note to a shared archive: tools that keep your collection understandable.",
+    "featuresLink": "Explore features",
+    "register": "Create your collection",
+    "signIn": "Sign in",
+    "homeLink": "Back to home",
+    "featureInventoryTitle": "A clearer structure",
+    "featureInventoryBody": "Keep collections, objects, identifiers, conditions and storage locations connected.",
+    "featureMediaTitle": "Images & private records",
+    "featureMediaBody": "Attach images and documents. Permissions protect private notes, records and storage locations.",
+    "featureSearchTitle": "Find what you need",
+    "featureSearchBody": "Use filters, saved searches and an overview of your own collection.",
+    "featureImportTitle": "Review before committing",
+    "featureImportBody": "Check import previews and decisions before data is committed. Create selected exports and insurance reports.",
+    "featureSharingTitle": "Controlled collaboration",
+    "featureSharingBody": "Invite collaborators with clear roles or share selected content. Visibility and permissions remain explicit.",
+    "featureAssistTitle": "Suggestions stay suggestions",
+    "featureAssistBody": "Optional photo analysis uses selected images. Review suggested details and apply only what you explicitly confirm."
   }
 }

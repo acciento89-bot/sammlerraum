@@ -137,6 +137,12 @@ jobs:
       - name: Install Chromium for authentication journeys
         run: pnpm --filter @sammlerraum/web exec playwright install --with-deps chromium
       # All browser suites exercise the same production build without dev compilation.
+      - name: Verify bilingual marketing metadata on desktop and mobile
+        run: >-
+          RUN_MARKETING_E2E=1 RUN_AUTH_E2E=1 RUN_PRODUCTION_E2E=1
+          BILLING_ENABLED=false AI_ANALYSIS_ENABLED=false
+          pnpm --filter @sammlerraum/web exec playwright test e2e/marketing-seo.spec.ts
+          --project=marketing-desktop --project=marketing-mobile --workers=1
       - name: Run storage label browser journeys against production
         run: >-
           RUN_AUTH_E2E=1 RUN_PRODUCTION_E2E=1 pnpm --filter @sammlerraum/web exec playwright test

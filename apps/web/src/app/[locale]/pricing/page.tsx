@@ -1,9 +1,20 @@
 import Link from "next/link";
+import { notFound } from "next/navigation";
+import { marketingMetadata } from "../../../seo/page-metadata";
+import { isPublicLocale } from "../../../seo/public-pages";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { publicBillingCatalog } from "../../../lib/billing-ui-runtime";
 import { PricePlans } from "../../../components/billing/price-plans";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  if (!isPublicLocale(locale)) notFound();
+  return {
+    ...marketingMetadata("pricing", locale),
+    robots: { index: locale === "en", follow: true },
+  };
+}
 export default async function PricingPage({
   params,
 }: {

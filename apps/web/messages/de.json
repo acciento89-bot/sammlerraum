@@ -12,8 +12,8 @@
     "eyebrow": "Digitales Sammlungsarchiv",
     "title": "Was uns wichtig ist, verdient einen guten Platz.",
     "intro": "Sammlerraum hilft dabei, Sammlungen übersichtlich zu dokumentieren und ihre Geschichten zu bewahren.",
-    "status": "Die Plattform wird vorbereitet.",
-    "detail": "Erste Funktionen für Sammlungen, Objekte und gemeinsame Arbeit folgen bald.",
+    "status": "Deine Sammlung. Dein Überblick.",
+    "detail": "Objekte dokumentieren, Details wiederfinden und ausgewählte Inhalte gemeinsam bearbeiten.",
     "pricing": "Free & Premium ansehen"
   },
   "Auth": {
@@ -1786,5 +1786,38 @@
     },
     "serviceAvailability": "Marktdaten setzen eine verfügbare und freigeschaltete Datenquelle voraus. KI-Analysen benötigen einen verfügbaren Analysedienst.",
     "comparisonScroll": "Falls nicht alle Spalten sichtbar sind, kannst du den Tarifvergleich seitlich verschieben."
+  },
+  "SEO": {
+    "home": {
+      "title": "Sammlerraum – Sammlungen übersichtlich organisieren",
+      "description": "Dokumentiere Sammlungen, Objekte und ihre Geschichten. Mit privaten Bildern, strukturierten Details, Suche und kontrollierter Zusammenarbeit."
+    },
+    "features": {
+      "title": "Funktionen für deine Sammlung · Sammlerraum",
+      "description": "Objekte erfassen, Bilder und Dokumente zuordnen, gezielt suchen, Importe prüfen und Sammlungen mit klaren Berechtigungen teilen."
+    },
+    "pricing": {
+      "title": "Free & Premium für deine Sammlung · Sammlerraum",
+      "description": "Vergleiche Funktionen und Speichergrenzen für deine Sammlung. Verfügbare Premium-Angebote werden mit ihren tatsächlichen Konditionen angezeigt."
+    },
+    "imageAlt": "Sammlerraum – Sammlungen und ihre Geschichten",
+    "featuresTitle": "Ein guter Platz für alle Details.",
+    "featuresIntro": "Von der ersten Notiz bis zum gemeinsamen Archiv: Werkzeuge, die deine Sammlung nachvollziehbar halten.",
+    "featuresLink": "Funktionen entdecken",
+    "register": "Sammlung anlegen",
+    "signIn": "Anmelden",
+    "homeLink": "Zur Startseite",
+    "featureInventoryTitle": "Ordnung mit Struktur",
+    "featureInventoryBody": "Sammlungen, Objekte, Kennungen, Zustände und Lagerorte gehören nachvollziehbar zusammen.",
+    "featureMediaTitle": "Bilder & private Belege",
+    "featureMediaBody": "Ordne Bilder und Dokumente zu. Private Notizen, Belege und Lagerorte bleiben durch Berechtigungen geschützt.",
+    "featureSearchTitle": "Gezielt wiederfinden",
+    "featureSearchBody": "Nutze Filter, gespeicherte Suchen und eine Übersicht über die eigene Sammlung.",
+    "featureImportTitle": "Prüfen vor dem Übernehmen",
+    "featureImportBody": "Kontrolliere Importvorschauen und Entscheidungen, bevor Daten übernommen werden. Erstelle gezielte Exporte und Versicherungsberichte.",
+    "featureSharingTitle": "Zusammenarbeit mit Kontrolle",
+    "featureSharingBody": "Lade Mitwirkende mit klaren Rollen ein oder teile ausgewählte Inhalte. Sichtbarkeit und Berechtigungen bleiben ausdrücklich festgelegt.",
+    "featureAssistTitle": "Vorschläge bleiben Vorschläge",
+    "featureAssistBody": "Die optionale Fotoanalyse arbeitet mit ausgewählten Bildern. Prüfe vorgeschlagene Merkmale und übernimm nur, was du selbst bestätigst."
   }
 }

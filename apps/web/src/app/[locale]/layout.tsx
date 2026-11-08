@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { siteOrigin } from "../../seo/page-metadata";
 import Link from "next/link";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getMessages, getTranslations, setRequestLocale } from "next-intl/server";
@@ -22,7 +23,12 @@ export async function generateMetadata({ params }: Omit<Props, "children">): Pro
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) return {};
   const t = await getTranslations({ locale, namespace: "Shell" });
-  return { title: t("brand"), description: t("tagline") };
+  return {
+    metadataBase: siteOrigin(),
+    title: t("brand"),
+    description: t("tagline"),
+    robots: { index: false, follow: false },
+  };
 }
 
 export default async function LocaleLayout({ children, params }: Props) {
