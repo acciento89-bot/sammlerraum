@@ -127,7 +127,7 @@ export const ApplyAISuggestionsSchema = z
       .array(z.number().int().min(0).max(19))
       .max(20)
       .refine((values) => new Set(values).size === values.length),
-    catalogCandidateIndex: z.number().int().min(0).max(9).nullable(),
+    catalogCandidateIndex: z.number().int().min(0).max(19).nullable(),
   })
   .strict()
   .superRefine((value, context) => {
@@ -218,12 +218,22 @@ export const AIReviewSchema = z
       .max(100),
     catalogCandidates: z
       .array(
-        CollectibleAnalysisSchema.shape.catalogCandidates.element
-          .extend({ index: z.number().int().min(0).max(9), title: z.string().max(500).nullable() })
+        z
+          .object({
+            index: z.number().int().min(0).max(19),
+            catalogEntryId: AIIdSchema,
+            catalogVariantId: AIIdSchema.nullable(),
+            title: z.string().max(500).nullable(),
+            confidence: z.number().min(0).max(1).nullable(),
+            evidence: z.array(text(256)).max(8),
+            matchSource: z.enum(["MODEL", "VISIBLE_IDENTIFIER", "SUGGESTED_TITLE"]),
+          })
           .strict(),
       )
-      .max(10),
+      .max(20),
     decision: AIApplyReceiptSchema.nullable(),
   })
   .strict();
 export type AIReview = z.infer<typeof AIReviewSchema>;
+
+export type AIReviewCatalogCandidate = AIReview["catalogCandidates"][number];

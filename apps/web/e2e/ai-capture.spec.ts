@@ -312,3 +312,104 @@ test("retrying a finished failed job uses a new nonce without a page reload", as
     await f.cleanup();
   }
 });
+
+test("a slower ready cancellation acknowledgement cannot orphan an already loading review", async ({
+  page,
+}) => {
+  test.skip(!enabled || process.env.RUN_AI_E2E !== "1", "Requires owned AI browser fixture");
+  const f = await aiCaptureFixture(page, false);
+  let releaseCancel!: () => void,
+    releaseReview!: () => void,
+    cancelHeld = false,
+    reviewHeld = false,
+    holdFirstReview = true;
+  const cancelGate = new Promise<void>((resolve) => (releaseCancel = resolve)),
+    reviewGate = new Promise<void>((resolve) => (releaseReview = resolve));
+  try {
+    await page.route(`**/api/v1/ai/analyses/*/cancel`, async (route) => {
+      cancelHeld = true;
+      await cancelGate;
+      const response = await route.fetch();
+      await route.fulfill({ response });
+    });
+    await page.route(`**/api/v1/ai/analyses/*/review`, async (route) => {
+      if (holdFirstReview) {
+        holdFirstReview = false;
+        reviewHeld = true;
+        await reviewGate;
+      }
+      await route.continue().catch(() => undefined);
+    });
+    await page.goto(`/de/items/${f.itemId}/ai`);
+    const job = await startPhoto(page, "de", f.itemId);
+    await page.getByRole("button", { name: de.AI.cancel, exact: true }).click();
+    await expect.poll(() => cancelHeld).toBe(true);
+    const handler = createAnalyzeItemJob(
+      f.service,
+      {
+        id: "openai",
+        model: "fixture-vision",
+        analyzeCollectible: async () => ({
+          analysis: f.analysis,
+          usage: { inputTokens: 12, outputTokens: 5 },
+        }),
+      },
+      f.storage,
+    );
+    await handler({ analysisJobId: job.id });
+    await expect.poll(() => reviewHeld).toBe(true);
+    releaseCancel();
+    await expect(page.getByRole("button", { name: de.AI.analyze, exact: true })).toBeEnabled();
+    releaseReview();
+    await expect(page.getByTestId("ai-review")).toBeVisible();
+    expect((await db!.aIAnalysisJob.findUniqueOrThrow({ where: { id: job.id } })).status).toBe(
+      "READY",
+    );
+  } finally {
+    releaseCancel();
+    releaseReview();
+    await page.unrouteAll({ behavior: "wait" });
+    await f.cleanup();
+  }
+});
+test("a transient first capture failure can reload and recover the actual pending job in place", async ({
+  page,
+}) => {
+  test.skip(!enabled || process.env.RUN_AI_E2E !== "1", "Requires owned AI browser fixture");
+  const f = await aiCaptureFixture(page, false);
+  let fail = true;
+  try {
+    const job = await f.service.requestItemAnalysis(
+      { userId: f.ownerId },
+      f.itemId,
+      [f.asset.id],
+      crypto.randomUUID(),
+    );
+    await page.route(`**/api/v1/items/${f.itemId}/ai`, async (route) => {
+      if (fail) {
+        fail = false;
+        await route.fulfill({
+          status: 503,
+          contentType: "application/json",
+          body: JSON.stringify({ error: { code: "AI_UNAVAILABLE" } }),
+        });
+      } else await route.continue();
+    });
+    await page.goto(`/de/items/${f.itemId}/ai`);
+    await expect(page.locator(".ai-shell > [role=alert]")).toContainText(
+      de.AI.errors.AI_UNAVAILABLE,
+    );
+    await page.getByRole("button", { name: de.AI.refresh, exact: true }).click();
+    await expect(
+      page.getByRole("heading", { name: de.AI.status.PENDING, exact: true }),
+    ).toBeVisible();
+    expect(
+      await db!.aIAnalysisJob.count({ where: { requesterId: f.ownerId, itemId: f.itemId } }),
+    ).toBe(1);
+    expect((await db!.aIAnalysisJob.findUniqueOrThrow({ where: { id: job.id } })).status).toBe(
+      "PENDING",
+    );
+  } finally {
+    await f.cleanup();
+  }
+});

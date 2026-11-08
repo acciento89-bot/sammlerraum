@@ -359,5 +359,5 @@ jobs:
           AI_OPENAI_MODEL: fixture-vision
           AI_MONTHLY_REQUEST_LIMIT: "3"
         run: >-
-          pnpm --filter @sammlerraum/web exec playwright test e2e/ai-capture.spec.ts
+          pnpm --filter @sammlerraum/web exec playwright test e2e/ai-capture.spec.ts e2e/ai-catalog-review.spec.ts
           --project=ai-desktop --project=ai-mobile --workers=1

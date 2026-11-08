@@ -2,7 +2,7 @@
 
 The item editor links to **Photo analysis / Fotoanalyse**. The owner chooses one to four processed gallery photos and explicitly requests analysis. Documents, original filenames, private notes and arbitrary remote image URLs are excluded. Processed photos are decoded and re-encoded without metadata before they are sent.
 
-The result is advisory and does not establish authenticity, price, rarity, condition, grading or provenance. No personal item changes occur while the analysis runs. A separate review lets the owner select title, category, individual visible identifiers and an independent catalog candidate. Manufacturer, series and year require an explicit compatible personal field destination. Existing identifiers are retained. Creating a destination field does not apply its suggestion.
+The result is advisory and does not establish authenticity, price, rarity, condition, grading or provenance. No personal item changes occur while the analysis runs. A separate review lets the owner select title, category, individual visible identifiers and an independent catalog candidate. Manufacturer, series and year require an explicit compatible personal field destination. Existing identifiers are retained. At the identifier boundary, accepting an already existing code does not consume another slot. Creating a destination field does not apply its suggestion.
 
 Confirmation checks current item ownership, current selected photo links, the immutable result and an optimistic item/field/catalog baseline in one real audited transaction. A changed baseline must be reloaded and selected again. The final decision is immutable and identical retries do not apply it twice. Rejecting every suggestion preserves the item and its custom values.
 
@@ -21,3 +21,9 @@ Provider-reported token counts remain nullable. Append-only reports retain a lat
 Native tests use guarded disposable PostgreSQL schemas. The official SDK adapter uses fake HTTP only. Compiled browser tests use a dedicated synthetic opt-in configuration and manually invoke the real worker with a fake provider over owned stored image bytes; they never start a background AI worker or call OpenAI. The CI workflow explicitly runs these checks.
 
 Existing migrations are immutable; changes are additive. Keep private image/job/usage/decision erasure within the existing owner deletion process. Media assets retain their existing restrictive cleanup rules. Test fixtures explicitly remove only their own links, variants and assets before erasing their synthetic users.
+
+## Local catalog evidence
+
+Review can also retrieve bounded local public catalog references from visible typed identifiers or the exact proposed title, even if the personal title is only a placeholder. These references are distinct from model candidates and carry no invented model score. Different identifier namespaces/editions can remain ambiguous; the owner still explicitly selects the actual reference. The immutable provider result is not rewritten. The review baseline binds the current derived choices and reference state, and the saved decision retains the actual selected IDs/source. This is exact advisory lookup, not a promise of complete visual identification or variant authenticity.
+
+Transient initial loading failures have an in-page reload/resume action. A ready result acknowledged during cancellation explicitly restarts review loading; stale responses cannot strand the review or overwrite a later intent.

@@ -1707,6 +1707,8 @@
       "AI_INVALID_SELECTION": "Die Auswahl konnte nicht übernommen werden. Prüfe die Zielfelder und lade bei Bedarf den aktuellen Stand.",
       "AI_RESPONSE_REFUSED": "Der Anbieter konnte für diese Fotos keine Vorschläge liefern.",
       "AI_UNAVAILABLE": "Die Fotoanalyse ist gerade nicht erreichbar. Deine bestehenden Gegenstandsdaten bleiben erhalten."
-    }
+    },
+    "identifierMatch": "Gleiche sichtbare Kennung im Katalog · Zuordnung selbst prüfen",
+    "titleMatch": "Katalogname entspricht dem Titelvorschlag · Zuordnung selbst prüfen"
   }
 }

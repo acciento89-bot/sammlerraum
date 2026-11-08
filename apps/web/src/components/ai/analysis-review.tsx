@@ -182,6 +182,7 @@ export function AnalysisCapture({
       if (mounted.current) {
         generation.current++;
         setJob(result.job);
+        if (result.job.status === "READY") setReviewCycle((value) => value + 1);
         requestKey.current = null;
         setCapture(await load());
       }
@@ -189,6 +190,24 @@ export function AnalysisCapture({
       if (mounted.current) setError(errorCode(error));
     } finally {
       if (mounted.current) setBusy(false);
+    }
+  }
+  async function reloadCapture() {
+    if (busy) return;
+    setBusy(true);
+    setError(null);
+    const epoch = ++generation.current;
+    try {
+      const value = await load();
+      if (mounted.current && epoch === generation.current) {
+        setCapture(value);
+        setJob(value.latestJob);
+        setReviewCycle((value) => value + 1);
+      }
+    } catch (error) {
+      if (mounted.current && epoch === generation.current) setError(errorCode(error));
+    } finally {
+      if (mounted.current && epoch === generation.current) setBusy(false);
     }
   }
   const message = (code: string) =>
@@ -218,11 +237,16 @@ export function AnalysisCapture({
       {error && (
         <div role="alert" className="notice">
           <p>{message(error)}</p>
-          {job?.status === "READY" && (
+          {(!capture || job?.status === "READY") && (
             <button
               className="secondary-button"
               type="button"
+              disabled={busy}
               onClick={() => {
+                if (!capture) {
+                  void reloadCapture();
+                  return;
+                }
                 setError(null);
                 setReviewCycle((value) => value + 1);
               }}
@@ -642,7 +666,15 @@ function AnalysisReview({
                     />
                     {value.title ?? t("catalogReference")}
                   </label>
-                  <p>{t("confidence", { percent: Math.round(value.confidence * 100) })}</p>
+                  <p>
+                    {value.matchSource === "MODEL" && value.confidence !== null
+                      ? t("confidence", { percent: Math.round(value.confidence * 100) })
+                      : t(
+                          value.matchSource === "VISIBLE_IDENTIFIER"
+                            ? "identifierMatch"
+                            : "titleMatch",
+                        )}
+                  </p>
                   <ul>
                     {value.evidence.map((text, index) => (
                       <li key={index}>{text}</li>

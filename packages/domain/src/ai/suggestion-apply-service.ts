@@ -27,7 +27,8 @@ import {
   setItemCategoryInTransaction,
   ConditionServiceError,
 } from "../condition/condition-service";
-import { parseItemIdentifiers } from "../items/identifier-service";
+import { parseItemIdentifiers, IdentifierServiceError } from "../items/identifier-service";
+import { resolveReviewCatalogCandidates } from "./catalog-suggestions";
 import { lockCatalogParents } from "../catalog/item-catalog-locks";
 import { createTrustedAuditContext } from "../audit/audit-context";
 import {
@@ -95,8 +96,9 @@ async function capture(
     Prisma.sql`SELECT type,value,"normalizedValue" FROM "ItemIdentifier" WHERE "itemId"=${item.id}::uuid ORDER BY type,"normalizedValue",id LIMIT 101`,
   );
   if (identifiers.length > 100) return fail("AI_INVALID_SELECTION");
-  const ids = detail.analysis.catalogCandidates.map((candidate) => candidate.catalogEntryId),
-    variantIds = detail.analysis.catalogCandidates.flatMap((candidate) =>
+  const catalogCandidates = await resolveReviewCatalogCandidates(raw, detail.analysis);
+  const ids = catalogCandidates.map((candidate) => candidate.catalogEntryId),
+    variantIds = catalogCandidates.flatMap((candidate) =>
       candidate.catalogVariantId ? [candidate.catalogVariantId] : [],
     );
   const entries = await raw.$queryRaw<
@@ -124,6 +126,7 @@ async function capture(
     variants,
     categories,
     analysis: detail.analysis,
+    catalogCandidates,
   });
   return {
     item,
@@ -133,6 +136,7 @@ async function capture(
     entries,
     variants,
     categories,
+    catalogCandidates,
     baseline,
   };
 }
@@ -181,7 +185,11 @@ export function createSuggestionApplyService(database: AIApplyDatabase) {
           return fail(
             error.code === "ITEM_NOT_FOUND" ? "AI_ITEM_NOT_FOUND" : "AI_INVALID_SELECTION",
           );
-        if (error instanceof CustomFieldServiceError || error instanceof ConditionServiceError)
+        if (
+          error instanceof CustomFieldServiceError ||
+          error instanceof ConditionServiceError ||
+          error instanceof IdentifierServiceError
+        )
           return fail("AI_INVALID_SELECTION");
         throw error;
       }
@@ -211,8 +219,7 @@ export function createSuggestionApplyService(database: AIApplyDatabase) {
           fields: state.fields,
           fieldsTruncated: state.fieldsTruncated,
           identifiers: state.identifiers.map(({ type, value }) => ({ type, value })),
-          catalogCandidates: detail.analysis.catalogCandidates.map((candidate, index) => ({
-            index,
+          catalogCandidates: state.catalogCandidates.map((candidate) => ({
             ...candidate,
             title:
               state.entries.find((entry) => entry.id === candidate.catalogEntryId)?.title ?? null,
@@ -240,16 +247,30 @@ export function createSuggestionApplyService(database: AIApplyDatabase) {
           if (prior.requestDigest !== digest) return fail("AI_REQUEST_CONFLICT");
           return receipt(prior);
         }
-        const analysis = parseAnalysis(preview.payload),
-          candidate =
-            input.catalogCandidateIndex === null
-              ? undefined
-              : analysis.catalogCandidates[input.catalogCandidateIndex];
-        if (input.catalogCandidateIndex !== null && !candidate) return fail("AI_INVALID_SELECTION");
+        const analysis = parseAnalysis(preview.payload);
+        const previewCandidates =
+          input.catalogCandidateIndex === null
+            ? []
+            : await resolveReviewCatalogCandidates(raw, analysis);
+        const candidate =
+          input.catalogCandidateIndex === null
+            ? undefined
+            : previewCandidates[input.catalogCandidateIndex];
+
         if (candidate) await lockCatalogParents(tx, candidate);
         const detail = await readOwnedAIAnalysisInTransaction(raw, { userId: who }, id),
           state = await capture(tx, raw, who, detail);
         if (state.baseline !== input.baseline) return fail("AI_ITEM_CHANGED");
+        if (input.catalogCandidateIndex !== null && !candidate) return fail("AI_INVALID_SELECTION");
+        if (candidate) {
+          const fresh = state.catalogCandidates[input.catalogCandidateIndex!];
+          if (
+            !fresh ||
+            fresh.catalogEntryId !== candidate.catalogEntryId ||
+            fresh.catalogVariantId !== candidate.catalogVariantId
+          )
+            return fail("AI_ITEM_CHANGED");
+        }
         if (state.item.archivedAt !== null || state.item.disposedAt !== null)
           return fail("AI_INVALID_SELECTION");
         const selected: {
@@ -323,9 +344,17 @@ export function createSuggestionApplyService(database: AIApplyDatabase) {
           const additions = parseItemIdentifiers(
             input.identifierIndices.map((index) => analysis.identifiers[index]!),
           );
-          if (parseItemIdentifiers([...state.identifiers, ...additions]).length > 100)
+          const existing = new Set(
+            parseItemIdentifiers(state.identifiers).map(
+              (identifier) => identifier.type + "\0" + identifier.normalizedValue,
+            ),
+          );
+          const newAdditions = additions.filter(
+            (identifier) => !existing.has(identifier.type + "\0" + identifier.normalizedValue),
+          );
+          if (state.identifiers.length + newAdditions.length > 100)
             return fail("AI_INVALID_SELECTION");
-          for (const identifier of additions)
+          for (const identifier of newAdditions)
             await raw.$queryRaw(
               Prisma.sql`INSERT INTO "ItemIdentifier" (id,"itemId",type,value,"normalizedValue") VALUES (${randomUUID()}::uuid,${state.item.id}::uuid,${identifier.type},${identifier.value},${identifier.normalizedValue}) ON CONFLICT ("itemId",type,"normalizedValue") DO NOTHING`,
             );
@@ -339,7 +368,7 @@ export function createSuggestionApplyService(database: AIApplyDatabase) {
           after: { analysisId: id, accepted },
         });
         const [saved] = await raw.$queryRaw<Decision[]>(
-          Prisma.sql`INSERT INTO "AIAnalysisDecision" ("jobId","requestKey","requestDigest",selections,accepted) VALUES (${id}::uuid,${input.requestKey}::uuid,${digest},${JSON.stringify(input)}::jsonb,${JSON.stringify(accepted)}::jsonb) RETURNING "jobId","requestKey","requestDigest",accepted,"createdAt"`,
+          Prisma.sql`INSERT INTO "AIAnalysisDecision" ("jobId","requestKey","requestDigest",selections,accepted) VALUES (${id}::uuid,${input.requestKey}::uuid,${digest},${JSON.stringify({ ...input, catalogSelection: candidate ? { catalogEntryId: candidate.catalogEntryId, catalogVariantId: candidate.catalogVariantId, matchSource: candidate.matchSource } : null })}::jsonb,${JSON.stringify(accepted)}::jsonb) RETURNING "jobId","requestKey","requestDigest",accepted,"createdAt"`,
         );
         if (!saved) return fail("AI_UNAVAILABLE");
         return receipt(saved);

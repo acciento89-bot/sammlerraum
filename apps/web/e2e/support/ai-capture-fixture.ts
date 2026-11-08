@@ -4,7 +4,11 @@ import sharp from "sharp";
 import { LocalPersistentStorage } from "@sammlerraum/storage";
 import { createAIAnalysisService } from "@sammlerraum/domain/ai/ai-analysis-service";
 import { searchFixture, cleanupSearchFixture, db, origin } from "./search-fixture";
-export async function aiCaptureFixture(page: Page, ready = true) {
+export async function aiCaptureFixture(
+  page: Page,
+  ready = true,
+  options: { identifierValue?: string } = {},
+) {
   if (!db || !process.env.UPLOADS_DIR) throw Error("Guarded fixture required");
   const f = await searchFixture(),
     storage = new LocalPersistentStorage(process.env.UPLOADS_DIR),
@@ -93,7 +97,7 @@ export async function aiCaptureFixture(page: Page, ready = true) {
       manufacturer: "Visible workshop",
       seriesOrSet: null,
       year: 2020,
-      identifiers: [{ type: "MARKING", value: "A-100" }],
+      identifiers: [{ type: "MARKING", value: options.identifierValue ?? "A-100" }],
       catalogCandidates: [],
       warnings: ["Visible evidence only. Please check the markings yourself."],
     };

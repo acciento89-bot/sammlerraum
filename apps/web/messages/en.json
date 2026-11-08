@@ -1707,6 +1707,8 @@
       "AI_INVALID_SELECTION": "Your choices could not be applied. Check the destination fields or reload current details.",
       "AI_RESPONSE_REFUSED": "The provider could not suggest details for these photos.",
       "AI_UNAVAILABLE": "Photo analysis is temporarily unavailable. Your existing item data is retained."
-    }
+    },
+    "identifierMatch": "Matching visible identifier in the catalog · verify the identity yourself",
+    "titleMatch": "Catalog name matches the suggested title · verify the identity yourself"
   }
 }

@@ -16,7 +16,14 @@ describe.runIf(process.env.RUN_DATABASE_INTEGRATION === "1")(
       await db?.$disconnect();
       await isolated?.cleanup();
     });
-    async function fixture() {
+    async function fixture(
+      options: {
+        noModelCandidates?: boolean;
+        badIdentifier?: boolean;
+        useCatalogTitle?: boolean;
+        visibleCode?: string;
+      } = {},
+    ) {
       const owner = `ai-confirm-${randomUUID()}`;
       await db.user.create({
         data: {
@@ -39,7 +46,7 @@ describe.runIf(process.env.RUN_DATABASE_INTEGRATION === "1")(
         data: {
           categoryTemplateId: category.id,
           authored: {
-            text: { language: "de", title: "Public reference", translations: [] },
+            text: { language: "de", title: `Public reference ${randomUUID()}`, translations: [] },
             sources: [],
           },
         },
@@ -130,6 +137,13 @@ describe.runIf(process.env.RUN_DATABASE_INTEGRATION === "1")(
         ],
         warnings: ["Confirm every suggestion."],
       };
+      if (options.noModelCandidates) analysis.catalogCandidates = [];
+      if (options.visibleCode) analysis.identifiers[0]!.value = options.visibleCode;
+      if (options.badIdentifier) analysis.identifiers = [{ type: "EAN", value: "---" }];
+      if (options.useCatalogTitle) {
+        analysis.title = (entry.authored as { text: { title: string } }).text.title;
+        analysis.identifiers = [];
+      }
       await analysisService.storeAnalysisResult(claim!, analysis);
       const path = "./suggestion-apply-service",
         module = await import(path).catch(() => null);
@@ -301,6 +315,227 @@ describe.runIf(process.env.RUN_DATABASE_INTEGRATION === "1")(
       ).rejects.toThrow();
       await db.collection.delete({ where: { id: f.collection.id } });
       expect(await db.aIAnalysisDecision.count({ where: { jobId: f.job.id } })).toBe(0);
+    });
+    it("accepts an existing identifier at the supported100 boundary without rejecting a selected title", async () => {
+      const f = await fixture();
+      await db.itemIdentifier.deleteMany({ where: { itemId: f.item.id } });
+      await db.itemIdentifier.createMany({
+        data: Array.from({ length: 100 }, (_, index) => ({
+          itemId: f.item.id,
+          type: index === 0 ? "MARKING" : "SERIAL",
+          value: index === 0 ? "A-100" : `ID-${index}`,
+          normalizedValue: index === 0 ? "A-100" : `ID-${index}`,
+        })),
+      });
+      const before = await db.itemIdentifier.findMany({
+          where: { itemId: f.item.id },
+          orderBy: { id: "asc" },
+        }),
+        review = await f.service.getReview(f.actor, f.job.id);
+      const result = await f.service.applySuggestions(
+        f.actor,
+        f.job.id,
+        f.input({ baseline: review.baseline, title: true, identifierIndices: [0] }),
+      );
+      expect(result.accepted).toContain("title");
+      expect(
+        await db.itemIdentifier.findMany({ where: { itemId: f.item.id }, orderBy: { id: "asc" } }),
+      ).toEqual(before);
+      expect((await db.collectibleItem.findUniqueOrThrow({ where: { id: f.item.id } })).title).toBe(
+        "Suggested title",
+      );
+    });
+    it("returns a correctable selection error for a malformed visible identifier and rolls the title back", async () => {
+      const f = await fixture({ badIdentifier: true });
+      await expect(
+        f.service.applySuggestions(
+          f.actor,
+          f.job.id,
+          f.input({ title: true, identifierIndices: [0] }),
+        ),
+      ).rejects.toMatchObject({ code: "AI_INVALID_SELECTION" });
+      expect((await db.collectibleItem.findUniqueOrThrow({ where: { id: f.item.id } })).title).toBe(
+        "Original title",
+      );
+      expect(await db.aIAnalysisDecision.count({ where: { jobId: f.job.id } })).toBe(0);
+    });
+    it("finds bounded explicit catalog choices from a visible code despite an unrelated personal title", async () => {
+      const f = await fixture({ noModelCandidates: true });
+      await db.catalogExternalIdentifier.create({
+        data: {
+          entryId: f.entry.id,
+          namespace: "fixture",
+          type: "marking",
+          value: "A-100",
+          sources: [],
+        },
+      });
+      const other = await db.catalogEntry.create({
+        data: {
+          categoryTemplateId: f.category.id,
+          authored: {
+            text: { language: "en", title: "Ambiguous public reference", translations: [] },
+            sources: [],
+          },
+        },
+      });
+      await db.catalogExternalIdentifier.create({
+        data: {
+          entryId: other.id,
+          namespace: "another",
+          type: "marking",
+          value: "A-100",
+          sources: [],
+        },
+      });
+      const review = await f.service.getReview(f.actor, f.job.id);
+      expect(review.catalogCandidates).toHaveLength(2);
+      expect(review.catalogCandidates).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            catalogEntryId: f.entry.id,
+            matchSource: "VISIBLE_IDENTIFIER",
+            confidence: null,
+          }),
+          expect.objectContaining({
+            catalogEntryId: other.id,
+            matchSource: "VISIBLE_IDENTIFIER",
+            confidence: null,
+          }),
+        ]),
+      );
+      expect(
+        (await db.collectibleItem.findUniqueOrThrow({ where: { id: f.item.id } })).catalogEntryId,
+      ).toBeNull();
+      const chosen = review.catalogCandidates.find(
+        (candidate: any) => candidate.catalogEntryId === f.entry.id,
+      )!;
+      await f.service.applySuggestions(
+        f.actor,
+        f.job.id,
+        f.input({ baseline: review.baseline, catalogCandidateIndex: chosen.index }),
+      );
+      expect(
+        (await db.collectibleItem.findUniqueOrThrow({ where: { id: f.item.id } })).catalogEntryId,
+      ).toBe(f.entry.id);
+      expect(
+        (await f.analysisService.getAnalysis(f.actor, f.job.id)).analysis!.catalogCandidates,
+      ).toEqual([]);
+    });
+    it("retrieves an exact public suggested title without requiring the old personal title to match", async () => {
+      const f = await fixture({ noModelCandidates: true, useCatalogTitle: true }),
+        review = await f.service.getReview(f.actor, f.job.id);
+      expect(review.catalogCandidates).toEqual([
+        expect.objectContaining({
+          catalogEntryId: f.entry.id,
+          matchSource: "SUGGESTED_TITLE",
+          confidence: null,
+        }),
+      ]);
+      expect(
+        (await db.collectibleItem.findUniqueOrThrow({ where: { id: f.item.id } })).catalogEntryId,
+      ).toBeNull();
+    });
+    it("rejects a retired derived match with a stale baseline before applying a selected title", async () => {
+      const code = `photo-${randomUUID()}`,
+        f = await fixture({ noModelCandidates: true, visibleCode: code });
+      const identifier = await db.catalogExternalIdentifier.create({
+        data: {
+          entryId: f.entry.id,
+          namespace: "fixture",
+          type: "marking",
+          value: code,
+          sources: [],
+        },
+      });
+      const review = await f.service.getReview(f.actor, f.job.id);
+      expect(review.catalogCandidates).toHaveLength(1);
+      await db.catalogExternalIdentifier.update({
+        where: { id: identifier.id },
+        data: { active: false },
+      });
+      await expect(
+        f.service.applySuggestions(
+          f.actor,
+          f.job.id,
+          f.input({ baseline: review.baseline, title: true, catalogCandidateIndex: 0 }),
+        ),
+      ).rejects.toMatchObject({ code: "AI_ITEM_CHANGED" });
+      expect(await db.collectibleItem.findUnique({ where: { id: f.item.id } })).toMatchObject({
+        title: "Original title",
+        catalogEntryId: null,
+      });
+    });
+    it("bounds local matches, permits a derived index beyond model indices and freezes its actual selected identity", async () => {
+      const code = `photo-${randomUUID()}`,
+        f = await fixture({ visibleCode: code });
+      for (let index = 0; index < 20; index++) {
+        const entry = await db.catalogEntry.create({
+          data: {
+            categoryTemplateId: f.category.id,
+            authored: {
+              text: { language: "en", title: `Bounded local reference ${index}`, translations: [] },
+              sources: [],
+            },
+          },
+        });
+        await db.catalogExternalIdentifier.create({
+          data: {
+            entryId: entry.id,
+            namespace: "fixture",
+            type: "marking",
+            value: code,
+            sources: [],
+          },
+        });
+      }
+      const review = await f.service.getReview(f.actor, f.job.id);
+      expect(review.catalogCandidates).toHaveLength(11);
+      const selected = review.catalogCandidates[10]!;
+      expect(selected.matchSource).toBe("VISIBLE_IDENTIFIER");
+      expect(selected.confidence).toBeNull();
+      await f.service.applySuggestions(
+        f.actor,
+        f.job.id,
+        f.input({ baseline: review.baseline, catalogCandidateIndex: 10 }),
+      );
+      expect(
+        (await db.collectibleItem.findUniqueOrThrow({ where: { id: f.item.id } })).catalogEntryId,
+      ).toBe(selected.catalogEntryId);
+      expect(
+        (await db.aIAnalysisDecision.findUniqueOrThrow({ where: { jobId: f.job.id } })).selections,
+      ).toMatchObject({
+        catalogSelection: {
+          catalogEntryId: selected.catalogEntryId,
+          catalogVariantId: null,
+          matchSource: "VISIBLE_IDENTIFIER",
+        },
+      });
+    });
+    it("uses the additive public exact-title index on a realistically populated local lookup", async () => {
+      const f = await fixture({ noModelCandidates: true, useCatalogTitle: true });
+      await db.catalogEntry.createMany({
+        data: Array.from({ length: 2000 }, (_, index) => ({
+          categoryTemplateId: f.category.id,
+          authored: {
+            text: {
+              language: "en",
+              title: `Other public lookup reference ${index}`,
+              translations: [],
+            },
+            sources: [],
+          },
+        })),
+      });
+      await db.$executeRaw`ANALYZE "CatalogEntry"`;
+      const plan = await db.$queryRaw<
+        unknown[]
+      >`EXPLAIN (ANALYZE,BUFFERS,FORMAT JSON) SELECT id FROM "CatalogEntry" WHERE lower(authored#>>'{text,title}')=lower(${f.analysis.title}) ORDER BY id LIMIT 10`;
+      expect(JSON.stringify(plan)).toContain("CatalogEntry_ai_exact_title_idx");
+      const review = await f.service.getReview(f.actor, f.job.id);
+      expect(review.catalogCandidates).toEqual([
+        expect.objectContaining({ catalogEntryId: f.entry.id, matchSource: "SUGGESTED_TITLE" }),
+      ]);
     });
   },
 );
