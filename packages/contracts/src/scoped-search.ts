@@ -10,8 +10,18 @@ import { CanonicalTimestampSchema } from "./items";
 
 /** Symbolic saved/discovery target only; never a bearer credential. */
 export const ScopedSearchReferenceSchema = z.discriminatedUnion("kind", [
-  z.object({ kind: z.literal("MEMBER_COLLECTION"), collectionId: z.uuid() }).strict(),
-  z.object({ kind: z.literal("SHARE"), shareId: z.uuid() }).strict(),
+  z
+    .object({
+      kind: z.literal("MEMBER_COLLECTION"),
+      collectionId: z.uuid().transform((value) => value.toLowerCase()),
+    })
+    .strict(),
+  z
+    .object({
+      kind: z.literal("SHARE"),
+      shareId: z.uuid().transform((value) => value.toLowerCase()),
+    })
+    .strict(),
 ]);
 export type ScopedSearchReference = z.infer<typeof ScopedSearchReferenceSchema>;
 export function parseScopedSearchQuery(input: unknown) {
@@ -69,12 +79,16 @@ export const ScopedDiscoveryPageSchema = z
           z
             .object({
               kind: z.literal("MEMBER_COLLECTION"),
-              collectionId: z.uuid(),
+              collectionId: z.uuid().transform((value) => value.toLowerCase()),
               name: z.string().min(1).max(200),
             })
             .strict(),
           z
-            .object({ kind: z.literal("SHARE"), shareId: z.uuid(), pinRequired: z.boolean() })
+            .object({
+              kind: z.literal("SHARE"),
+              shareId: z.uuid().transform((value) => value.toLowerCase()),
+              pinRequired: z.boolean(),
+            })
             .strict(),
         ]),
       )

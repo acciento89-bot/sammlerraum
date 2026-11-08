@@ -271,6 +271,20 @@ describe.runIf(process.env.RUN_DATABASE_INTEGRATION === "1")(
         lifecycle: "ACTIVE",
       };
       const saved = await f.saved.create(f.actor, { name: "Member workspace", definition });
+      const uppercase = await f.saved.create(f.actor, {
+        name: "Canonical reference",
+        definition: {
+          ...definition,
+          scope: { kind: "MEMBER_COLLECTION", collectionId: f.collection.id.toUpperCase() },
+        },
+      });
+      expect(uppercase.definition.scope).toEqual(definition.scope);
+      expect(
+        (await db.smartCollection.findUniqueOrThrow({ where: { id: uppercase.id } })).definition,
+      ).toMatchObject({ scope: definition.scope });
+      await createSmartCollectionService(db).deleteSmartCollection(f.actor, uppercase.id, {
+        expectedRevision: 1,
+      });
       expect((await f.saved.resolve(f.actor, saved.id)).total).toBe(1);
       const overview = await f.dashboard.get(f.actor, definition.scope, { lifecycle: "ACTIVE" });
       expect(overview.trade).toEqual([

@@ -14,12 +14,20 @@ import { shareItemPredicate, shareScopeCte } from "../sharing/share-scope";
 import { runSearchRead, type BoundedSearchReadTransaction } from "./search-read";
 
 const TargetSchema = z.discriminatedUnion("kind", [
-  z.object({ kind: z.literal("MEMBER_COLLECTION"), collectionId: z.uuid() }).strict(),
+  z
+    .object({
+      kind: z.literal("MEMBER_COLLECTION"),
+      collectionId: z.uuid().transform((value) => value.toLowerCase()),
+    })
+    .strict(),
   z
     .object({
       kind: z.literal("SHARE"),
       access: ResolveShareSchema,
-      expectedShareId: z.uuid().optional(),
+      expectedShareId: z
+        .uuid()
+        .transform((value) => value.toLowerCase())
+        .optional(),
     })
     .strict(),
 ]);

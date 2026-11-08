@@ -71,6 +71,25 @@ describe.runIf(process.env.RUN_DATABASE_INTEGRATION === "1")(
         },
       );
     });
+    it("canonicalizes an uppercase UUID reference for the same actual share", async () => {
+      const f = await fixture();
+      await withScopedReadContext(
+        db,
+        null,
+        {
+          kind: "SHARE",
+          expectedShareId: f.share.share.id.toUpperCase(),
+          access: { token: f.share.token! },
+        },
+        async (context) => {
+          expect(await ids(context)).toEqual([{ id: f.item.id }]);
+          expect(scopedReadState(context).reference).toEqual({
+            kind: "SHARE",
+            shareId: f.share.share.id,
+          });
+        },
+      );
+    });
     it("rejects a valid capability supplied for a different stored share reference", async () => {
       const f = await fixture();
       let called = false;

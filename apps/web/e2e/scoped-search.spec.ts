@@ -1,3 +1,4 @@
+import { createValuationService } from "@sammlerraum/domain/valuations/valuation-service";
 import { expect, test, type Page } from "@playwright/test";
 import { resolve } from "node:path";
 import { createCollectionService } from "@sammlerraum/domain/collections/collection-service";
@@ -270,6 +271,51 @@ for (const locale of ["de", "en"] as const) {
       expect(repaired.definition).toMatchObject({ version: 2, filter: null });
       expect(await db!.smartCollection.count({ where: { ownerId: f.ownerId, name } })).toBe(1);
       await capture(page, `scoped-repaired-${locale}-${info.project.name}`);
+    } finally {
+      await cleanup(f);
+    }
+  });
+  test(`${locale}: explicit shared value grants execute actual controls and exact manual totals`, async ({
+    page,
+  }, info) => {
+    test.skip(!enabled, "Guarded native cookie database required");
+    const f = await fixture();
+    try {
+      await db!.collectibleItem.update({
+        where: { id: f.sharedItem },
+        data: { purchaseAmountMinor: 0n, purchaseCurrency: "EUR" },
+      });
+      await createValuationService(db!, f.foreignId).addManualValuation(f.sharedItem, {
+        amountMinor: 100n,
+        currency: "EUR",
+      });
+      const grant = await createShareService(db!).createShare(
+        { userId: f.foreignId },
+        {
+          target: { kind: "ITEM", id: f.sharedItem },
+          recipient: { kind: "TOKEN" },
+          expectedRevision: 0,
+          permissions: { values: true, images: true },
+        },
+      );
+      await page.context().addCookies([{ name: "NEXT_LOCALE", value: locale, url: origin }]);
+      await page.goto(`/share/${grant.token}`);
+      const panel = page.getByTestId("scoped-search-panel");
+      await panel.getByRole("button", { name: t.open, exact: true }).click();
+      await expect(panel.locator(".scoped-result-list li")).toHaveCount(1);
+      await panel.getByRole("button", { name: t.add, exact: true }).click();
+      await panel.getByRole("button", { name: t.apply, exact: true }).click();
+      // The default granted purchase presence condition must count raw zero.
+      await expect(panel.locator(".scoped-result-list li")).toHaveCount(1);
+      await panel.getByRole("button", { name: t.overview, exact: true }).click();
+      const overview = panel.getByRole("region", { name: t.overview });
+      await expect(overview).toContainText(locale === "de" ? "2,00 EUR" : "2.00 EUR");
+      await expect(overview).not.toContainText(
+        locale === "de"
+          ? "Werte sind für diese Auswahl nicht freigegeben"
+          : "Values are not shared",
+      );
+      await capture(page, `scoped-values-${locale}-${info.project.name}`);
     } finally {
       await cleanup(f);
     }
