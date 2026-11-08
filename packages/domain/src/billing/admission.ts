@@ -60,9 +60,9 @@ export async function assertQuotaInTransaction(
     feature === "ITEM_CREATE"
       ? Prisma.sql`SELECT count(*)::text AS used FROM "CollectibleItem" i JOIN "Collection" c ON c.id=i."collectionId" AND c."ownerId"=i."ownerId" WHERE i."ownerId"=${subjectId} AND i."deletedAt" IS NULL AND c."deletedAt" IS NULL`
       : feature === "MEDIA_COUNT"
-        ? Prisma.sql`SELECT count(*)::text AS used FROM "MediaAsset" WHERE "ownerId"=${subjectId}`
+        ? Prisma.sql`SELECT count(*)::text AS used FROM "MediaAsset" WHERE NOT "generatedArtifact" AND "ownerId"=${subjectId}`
         : feature === "MEDIA_BYTES"
-          ? Prisma.sql`SELECT COALESCE(sum("byteSize"),0)::text AS used FROM "MediaAsset" WHERE "ownerId"=${subjectId}`
+          ? Prisma.sql`SELECT COALESCE(sum("byteSize"),0)::text AS used FROM "MediaAsset" WHERE NOT "generatedArtifact" AND "ownerId"=${subjectId}`
           : feature === "IMPORT_PROFILES"
             ? Prisma.sql`SELECT count(*)::text AS used FROM "ImportMappingProfile" WHERE "ownerId"=${subjectId}`
             : Prisma.sql`SELECT count(*)::text AS used FROM "AIAnalysisAdmission" WHERE "ownerId"=${subjectId} AND "admittedAt">=date_trunc('month',clock_timestamp() AT TIME ZONE 'UTC') AND "admittedAt"<date_trunc('month',clock_timestamp() AT TIME ZONE 'UTC')+interval '1 month'`;

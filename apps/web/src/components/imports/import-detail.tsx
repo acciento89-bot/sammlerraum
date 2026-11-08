@@ -295,14 +295,24 @@ export function ImportDetail({ locale, jobId }: { locale: "de" | "en"; jobId: st
         {job.progress.committedRows} {text("bearbeitete Datenzeilen", "processed data rows")}
       </p>
       {error && <p role="alert">{error}</p>}
-      {state.errorCode && state.approved === false && (
+      {state.errorCode === "IMPORT_PLAN_LIMIT_REACHED" && (
         <p role="alert">
           {text(
-            "Die Quelle oder der aktuelle Bestand konnte nicht sicher verarbeitet werden. Bitte einen neuen Import mit korrigierter Datei starten.",
-            "The source or current inventory could not be processed safely. Start a new import with a corrected file.",
+            "Import am Tariflimit gestoppt. Bereits abgeschlossene Stapel bleiben erhalten. Bitte freien Platz schaffen oder den Tarif erweitern und nur die übrigen Zeilen neu importieren.",
+            "Import stopped at the plan limit. Completed batches are retained. Free capacity or upgrade your plan, then import only the remaining rows.",
           )}
         </p>
       )}
+      {state.errorCode &&
+        state.errorCode !== "IMPORT_PLAN_LIMIT_REACHED" &&
+        state.approved === false && (
+          <p role="alert">
+            {text(
+              "Die Quelle oder der aktuelle Bestand konnte nicht sicher verarbeitet werden. Bitte einen neuen Import mit korrigierter Datei starten.",
+              "The source or current inventory could not be processed safely. Start a new import with a corrected file.",
+            )}
+          </p>
+        )}
       {!complete && job.status !== "CANCELLED" && (
         <button
           disabled={busy || dirty}

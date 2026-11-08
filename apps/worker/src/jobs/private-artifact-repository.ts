@@ -104,7 +104,7 @@ export function createPrismaPrivateArtifactRepository(
         const token = randomUUID(),
           assetId = randomUUID(),
           key = `${kind === "TABULAR" ? "exports" : "reports"}/${job.id}/${token}/data.${job.format.toLowerCase()}`;
-        await tx.$queryRaw`INSERT INTO "MediaAsset" (id,"ownerId",kind,status,"storageKey","mimeType","byteSize","checksumSha256","originalFileName","processingToken","processingLeaseUntil","processingAttempts","updatedAt") VALUES (${assetId}::uuid,${job.ownerId},'DOCUMENT','PROCESSING',${key},${mime(job.format)},0,${"0".repeat(64)},${`sammlerraum-${job.id}.${job.format.toLowerCase()}`},${token}::uuid,now()+interval '90 seconds',1,now()) RETURNING id`;
+        await tx.$queryRaw`INSERT INTO "MediaAsset" ("generatedArtifact",id,"ownerId",kind,status,"storageKey","mimeType","byteSize","checksumSha256","originalFileName","processingToken","processingLeaseUntil","processingAttempts","updatedAt") VALUES (true,${assetId}::uuid,${job.ownerId},'DOCUMENT','PROCESSING',${key},${mime(job.format)},0,${"0".repeat(64)},${`sammlerraum-${job.id}.${job.format.toLowerCase()}`},${token}::uuid,now()+interval '90 seconds',1,now()) RETURNING id`;
         await tx.$queryRaw`UPDATE ${table} SET status='BUILDING',"artifactId"=${assetId}::uuid,"processingToken"=${token}::uuid,"processingLeaseUntil"=now()+interval '90 seconds',"processingAttempts"="processingAttempts"+1,"errorCode"=NULL,revision=revision+1,"updatedAt"=now() WHERE id=${job.id}::uuid RETURNING id`;
         return {
           id: job.id,

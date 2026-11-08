@@ -1,3 +1,4 @@
+import { BillingError } from "@sammlerraum/contracts/billing";
 import { randomUUID } from "node:crypto";
 import { expect, it, vi } from "vitest";
 import { ImportCommitRejected } from "@sammlerraum/domain/imports/import-commit-service";
@@ -57,4 +58,17 @@ it("normalizes a dependency rejection while recording a permanent failure", asyn
   await expect(createImportCommitter(service)({ jobId: randomUUID() })).rejects.toThrow(
     "Import commit temporarily unavailable",
   );
+});
+
+it("keeps genuine billing dependency failures retryable without permanently stopping the import", async () => {
+  const service = {
+    commitNextBatch: vi.fn(async () => {
+      throw new BillingError("BILLING_UNAVAILABLE");
+    }),
+    failCommit: vi.fn(async () => true),
+  };
+  await expect(createImportCommitter(service)({ jobId: randomUUID() })).rejects.toThrow(
+    "Import commit temporarily unavailable",
+  );
+  expect(service.failCommit).not.toHaveBeenCalled();
 });

@@ -1,3 +1,13 @@
+import { mkdtemp, rm } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { createMediaAssetLocker } from "@sammlerraum/db/media-lock";
+import { LocalPersistentStorage } from "@sammlerraum/storage";
+import { createBillingOverviewService } from "./billing-overview";
+import { createTabularExportJob } from "../../../../apps/worker/src/jobs/tabular-export-runtime";
+import { createPrismaTabularExportRepository } from "../../../../apps/worker/src/jobs/tabular-export-repository";
+import { createInsuranceReportJob } from "../../../../apps/worker/src/jobs/insurance-report-runtime";
+import { createPrismaReportRepository } from "../../../../apps/worker/src/jobs/insurance-report-repository";
 import { randomUUID } from "node:crypto";
 import sharp from "sharp";
 import { beforeAll, afterAll, afterEach, describe, it, expect, vi } from "vitest";
@@ -20,6 +30,7 @@ import { createItemSearchService } from "../search/item-search-service";
 import { createRestoreService } from "../audit/restore-service";
 import { createAIAnalysisService } from "../ai/ai-analysis-service";
 import { createAIUsageService } from "../ai/usage-service";
+import { createReportService } from "../reports/report-service";
 import { createExportService } from "../exports/export-service";
 import type { StorageProvider } from "@sammlerraum/storage";
 const free = {
@@ -587,6 +598,241 @@ describe.runIf(process.env.RUN_DATABASE_INTEGRATION === "1")(
       expect(
         (await db.mediaAsset.findUniqueOrThrow({ where: { id: photo.asset.id } })).ownerId,
       ).toBe(source.userId);
+    });
+    it("rejects advanced-filter Free export and report before creating jobs or artifacts", async () => {
+      const f = await fixture();
+      const input = {
+        scope: { kind: "ALL" },
+        locale: "de",
+        query: {
+          filter: { version: 1, root: { kind: "acquisitionDate", test: { op: "missing" } } },
+        },
+      };
+      await expect(
+        createExportService(db).requestExport({ userId: f.userId }, { ...input, format: "CSV" }),
+      ).rejects.toMatchObject({ code: "PREMIUM_REQUIRED" });
+      await expect(
+        createReportService(db).requestInsuranceReport({ userId: f.userId }, input),
+      ).rejects.toMatchObject({ code: "PREMIUM_REQUIRED" });
+      expect(await db.exportJob.count({ where: { ownerId: f.userId } })).toBe(0);
+      expect(await db.reportJob.count({ where: { ownerId: f.userId } })).toBe(0);
+      expect(await db.mediaAsset.count({ where: { ownerId: f.userId } })).toBe(0);
+    });
+    it.each(["TABULAR", "REPORT"] as const)(
+      "completes an admitted %s after downgrade, without consuming original-upload capacity",
+      async (kind) => {
+        const f = await fixture(true),
+          actor = { userId: f.userId };
+        const exports = createExportService(db),
+          reports = createReportService(db);
+        const input = {
+          scope: { kind: "ALL" },
+          locale: "de",
+          query: {
+            filter: { version: 1, root: { kind: "acquisitionDate", test: { op: "missing" } } },
+          },
+        };
+        const job =
+          kind === "TABULAR"
+            ? await exports.requestExport(actor, { ...input, format: "XLSX" })
+            : await reports.requestInsuranceReport(actor, input);
+        await db.$executeRaw`UPDATE "BillingSubscription" SET status='CANCELED' WHERE "subjectId"=${f.userId}`;
+        const folder = await mkdtemp(join(tmpdir(), "billing-artifact-")),
+          lock = createMediaAssetLocker(isolated.databaseUrl),
+          storage = new LocalPersistentStorage(folder, lock);
+        try {
+          if (kind === "TABULAR")
+            await createTabularExportJob(
+              createPrismaTabularExportRepository(db),
+              exports,
+              storage,
+              lock,
+            )({ jobId: job.id });
+          else
+            await createInsuranceReportJob(
+              createPrismaReportRepository(db),
+              reports,
+              storage,
+              lock,
+            )({ jobId: job.id });
+          const row =
+            kind === "TABULAR"
+              ? await db.exportJob.findUniqueOrThrow({ where: { id: job.id } })
+              : await db.reportJob.findUniqueOrThrow({ where: { id: job.id } });
+          expect(row.status).toBe("READY");
+          const artifact = await db.mediaAsset.findUniqueOrThrow({
+            where: { id: row.artifactId! },
+          });
+          expect(
+            Buffer.from(
+              await storage.read(artifact.storageKey, { maxBytes: Number(artifact.byteSize) }),
+            ),
+          ).toHaveLength(Number(artifact.byteSize));
+          expect(artifact.byteSize).toBeGreaterThan(0n);
+          expect(
+            (
+              await createBillingOverviewService(
+                db,
+                { FREE: free, PREMIUM: premium },
+                { providerIds: ["stripe_test"] },
+              ).getOverview(f.userId)
+            ).usage,
+          ).toMatchObject({ MEDIA_COUNT: "0", MEDIA_BYTES: "0" });
+          const policy = {
+            FREE: { ...free, MEDIA_COUNT: 1, MEDIA_BYTES: 100000 },
+            PREMIUM: premium,
+          };
+          vi.stubEnv("BILLING_PLAN_LIMITS", JSON.stringify(policy));
+          const image = await sharp({
+            create: { width: 2, height: 2, channels: 3, background: "#609060" },
+          })
+            .png()
+            .toBuffer();
+          await expect(
+            createMediaService(db, storage).createImageUpload(f.userId, image, {
+              fileName: "owned.png",
+              claimedMime: "image/png",
+            }),
+          ).resolves.toBeDefined();
+        } finally {
+          await rm(folder, { recursive: true, force: true });
+        }
+      },
+    );
+    it("generated basic CSV leaves original upload usage at zero", async () => {
+      const f = await fixture(),
+        actor = { userId: f.userId },
+        service = createExportService(db);
+      const job = await service.requestExport(actor, {
+        scope: { kind: "ALL" },
+        locale: "en",
+        format: "CSV",
+      });
+      const folder = await mkdtemp(join(tmpdir(), "billing-csv-")),
+        lock = createMediaAssetLocker(isolated.databaseUrl),
+        storage = new LocalPersistentStorage(folder, lock);
+      try {
+        await expect(
+          createTabularExportJob(
+            createPrismaTabularExportRepository(db),
+            service,
+            {
+              ...storage,
+              put: async () => {
+                throw Error("Owned synthetic storage failure");
+              },
+            } as unknown as StorageProvider,
+            lock,
+          )({ jobId: job.id }),
+        ).rejects.toThrow("Export temporarily unavailable");
+        await createTabularExportJob(
+          createPrismaTabularExportRepository(db),
+          service,
+          storage,
+          lock,
+        )({ jobId: job.id });
+        expect(await db.mediaAsset.count({ where: { ownerId: f.userId } })).toBe(2);
+        expect((await db.exportJob.findUniqueOrThrow({ where: { id: job.id } })).status).toBe(
+          "READY",
+        );
+        expect(
+          (
+            await createBillingOverviewService(
+              db,
+              { FREE: free, PREMIUM: premium },
+              { providerIds: ["stripe_test"] },
+            ).getOverview(f.userId)
+          ).usage,
+        ).toMatchObject({ MEDIA_COUNT: "0", MEDIA_BYTES: "0" });
+      } finally {
+        await rm(folder, { recursive: true, force: true });
+      }
+    });
+    it("a retained artifact admission cannot authorize another owner, changed query or an unadmitted job", async () => {
+      const f = await fixture(true),
+        foreign = await fixture(),
+        service = createExportService(db),
+        actor = { userId: f.userId };
+      const job = await service.requestExport(actor, {
+        scope: { kind: "ALL" },
+        locale: "de",
+        format: "CSV",
+        query: {
+          filter: { version: 1, root: { kind: "acquisitionDate", test: { op: "missing" } } },
+        },
+      });
+      const row = await db.exportJob.findUniqueOrThrow({ where: { id: job.id } });
+      await db.$executeRaw`UPDATE "BillingSubscription" SET status='CANCELED' WHERE "subjectId"=${f.userId}`;
+      const permit = { kind: "TABULAR" as const, jobId: job.id, request: row.request };
+      await expect(
+        service.captureExportSource({ userId: foreign.userId }, row.request, permit),
+      ).rejects.toMatchObject({ code: "PREMIUM_REQUIRED" });
+      await expect(
+        service.captureExportSource(
+          actor,
+          {
+            ...(row.request as object),
+            query: {
+              filter: { version: 1, root: { kind: "acquisitionDate", test: { op: "present" } } },
+            },
+          },
+          permit,
+        ),
+      ).rejects.toBeDefined();
+      await db.$executeRaw`UPDATE "ExportJob" SET "billingAdmitted"=false WHERE id=${job.id}::uuid`;
+      await expect(service.captureExportSource(actor, row.request, permit)).rejects.toMatchObject({
+        code: "PREMIUM_REQUIRED",
+      });
+    });
+    it("does not charge generated document originals during an otherwise authorized ownership transfer", async () => {
+      const source = await fixture(true),
+        recipient = await fixture(),
+        members = createMembershipService(db),
+        assetId = randomUUID();
+      vi.stubEnv(
+        "BILLING_PLAN_LIMITS",
+        JSON.stringify({ FREE: { ...free, ITEM_CREATE: 10 }, PREMIUM: premium }),
+      );
+      await db.$executeRaw`INSERT INTO "MediaAsset" (id,"ownerId",kind,status,"storageKey","mimeType","byteSize","checksumSha256","originalFileName","generatedArtifact","updatedAt") VALUES (${assetId}::uuid,${source.userId},'DOCUMENT','READY',${"reports/" + randomUUID()},'application/pdf',500,${"a".repeat(64)},'retained.pdf',true,now())`;
+      await db.documentLink.create({
+        data: {
+          ownerId: source.userId,
+          itemId: source.item.id,
+          assetId,
+          category: "OTHER_PRIVATE",
+          visibility: "PRIVATE",
+          position: 0,
+        },
+      });
+      await members.addMember(
+        { userId: source.userId },
+        {
+          collectionId: source.collection.id,
+          userId: recipient.userId,
+          role: "EDITOR",
+          expectedRevision: 0,
+        },
+      );
+      await expect(
+        members.transferOwnership(
+          { userId: source.userId },
+          {
+            collectionId: source.collection.id,
+            newOwnerId: recipient.userId,
+            expectedRevision: 1,
+            confirmPrivateTransfer: true,
+          },
+        ),
+      ).resolves.toBeDefined();
+      expect(
+        (
+          await createBillingOverviewService(
+            db,
+            { FREE: free, PREMIUM: premium },
+            { providerIds: ["stripe_test"] },
+          ).getOverview(recipient.userId)
+        ).usage,
+      ).toMatchObject({ MEDIA_COUNT: "0", MEDIA_BYTES: "0" });
     });
   },
 );

@@ -1,3 +1,4 @@
+import { BillingError } from "@sammlerraum/contracts/billing";
 import { assertReadFeatureInTransaction } from "../billing/admission";
 import type { ItemFilterNode } from "@sammlerraum/contracts/search";
 import { ProviderRegistry } from "@sammlerraum/market-data/provider-registry";
@@ -54,6 +55,26 @@ export async function assertFilterEntitlement(
   if (filter && advancedFilter(filter.root))
     await assertReadFeatureInTransaction(tx, subjectId, "ADVANCED_FILTERS");
 }
+/** Internal worker hint: authority is re-read from an exact owner/request-bound durable job. */
+export type ArtifactFilterAdmission = {
+  kind: "TABULAR" | "REPORT";
+  jobId: string;
+  request: unknown;
+};
+async function verifyArtifactAdmission(
+  tx: BoundedSearchReadTransaction,
+  ownerId: string,
+  admission: ArtifactFilterAdmission,
+  query: Pick<NormalizedItemSearchQuery, "text" | "filter" | "lifecycle">,
+) {
+  if (!["TABULAR", "REPORT"].includes(admission.kind) || !/^[0-9a-f-]{36}$/u.test(admission.jobId))
+    throw new BillingError("BILLING_INVALID_REQUEST");
+  const table = Prisma.raw(admission.kind === "TABULAR" ? '"ExportJob"' : '"ReportJob"');
+  const [job] = await tx.$queryRaw<{ id: string }[]>(
+    Prisma.sql`SELECT id FROM ${table} WHERE id=${admission.jobId}::uuid AND "ownerId"=${ownerId} AND "billingAdmitted" AND request=${JSON.stringify(admission.request)}::jsonb AND request->'query'=${JSON.stringify(query)}::jsonb AND status IN ('PENDING','BUILDING','READY') AND "expiresAt">CURRENT_TIMESTAMP`,
+  );
+  if (!job) throw new BillingError("PREMIUM_REQUIRED");
+}
 /** Internal SQL selection in the caller's bounded snapshot; never a persisted permission. */
 async function prepareSelection(
   tx: BoundedSearchReadTransaction,
@@ -62,12 +83,14 @@ async function prepareSelection(
   canonicalMoneyEnabled = false,
   trustedOuterRestriction?: { predicate: Prisma.Sql },
   market?: PreparedMarketBatch,
+  admission?: ArtifactFilterAdmission,
 ) {
   if (!actor || typeof actor.userId !== "string" || !actor.userId || actor.userId.includes("\0"))
     return searchFail("SEARCH_INVALID");
   if (query.filter)
     validateCurrentFilterAvailability(query.filter, canonicalMoneyEnabled, !!market);
-  await assertFilterEntitlement(tx, actor.userId, query.filter);
+  if (admission) await verifyArtifactAdmission(tx, actor.userId, admission, query);
+  else await assertFilterEntitlement(tx, actor.userId, query.filter);
   const [clock] = await tx.$queryRaw<{ now: Date; collation: boolean }[]>(
     Prisma.sql`SELECT date_trunc('milliseconds',transaction_timestamp()) AS now,EXISTS(SELECT 1 FROM pg_collation WHERE collname='und-x-icu' AND collprovider='i' AND collisdeterministic AND collnamespace='pg_catalog'::regnamespace) AS collation`,
   );
@@ -111,7 +134,17 @@ export const prepareItemSelection = (
   query: Pick<NormalizedItemSearchQuery, "text" | "filter" | "lifecycle">,
   canonicalMoneyEnabled = false,
   trustedOuterRestriction?: { predicate: Prisma.Sql },
-) => prepareSelection(tx, actor, query, canonicalMoneyEnabled, trustedOuterRestriction);
+  admission?: ArtifactFilterAdmission,
+) =>
+  prepareSelection(
+    tx,
+    actor,
+    query,
+    canonicalMoneyEnabled,
+    trustedOuterRestriction,
+    undefined,
+    admission,
+  );
 type Selection = Awaited<ReturnType<typeof prepareSelection>> & { prefix: Prisma.Sql };
 /** All executable market fragments are consumed before the private scoped handle expires. */
 export async function withItemSelection<T>(

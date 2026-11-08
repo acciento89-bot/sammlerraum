@@ -45,8 +45,8 @@ export function createBillingOverviewService(
           }[]
         >(Prisma.sql`SELECT
     (SELECT count(*)::text FROM "CollectibleItem" i JOIN "Collection" c ON c.id=i."collectionId" AND c."ownerId"=i."ownerId" WHERE i."ownerId"=${who.data} AND i."deletedAt" IS NULL AND c."deletedAt" IS NULL) AS "ITEM_CREATE",
-    (SELECT count(*)::text FROM "MediaAsset" WHERE "ownerId"=${who.data}) AS "MEDIA_COUNT",
-    (SELECT COALESCE(sum("byteSize"),0)::text FROM "MediaAsset" WHERE "ownerId"=${who.data}) AS "MEDIA_BYTES",
+    (SELECT count(*)::text FROM "MediaAsset" WHERE NOT "generatedArtifact" AND "ownerId"=${who.data}) AS "MEDIA_COUNT",
+    (SELECT COALESCE(sum("byteSize"),0)::text FROM "MediaAsset" WHERE NOT "generatedArtifact" AND "ownerId"=${who.data}) AS "MEDIA_BYTES",
     (SELECT count(*)::text FROM "AIAnalysisAdmission" WHERE "ownerId"=${who.data} AND "admittedAt">=date_trunc('month',${clock?.readAt}::timestamp) AND "admittedAt"<${clock?.nextMonthlyResetAt}::timestamp) AS "AI_MONTHLY",
     (SELECT count(*)::text FROM "ImportMappingProfile" WHERE "ownerId"=${who.data}) AS "IMPORT_PROFILES"`);
         if (!clock || !usage) throw new BillingError("BILLING_UNAVAILABLE");

@@ -117,6 +117,57 @@ export async function assertNoExistingStripeSubscription(client: Stripe, custome
   }
   throw new BillingError("BILLING_UNAVAILABLE");
 }
+/** Invoice.period_end is an association timestamp, not the purchased service period. */
+async function refundedServicePeriodEnd(
+  client: Stripe,
+  invoiceId: string,
+  subscriptionId: string,
+  priceIds: readonly string[],
+  signal: AbortSignal,
+): Promise<Date> {
+  let after: string | undefined,
+    through = 0;
+  const seen = new Set<string>();
+  for (let page = 0; page < 10; page++) {
+    signal.throwIfAborted();
+    const lines = await client.invoices.listLineItems(invoiceId, {
+      limit: 100,
+      ...(after ? { starting_after: after } : {}),
+    });
+    for (const line of lines.data) {
+      if (!id(line.id) || seen.has(line.id) || id(line.invoice) !== invoiceId)
+        throw new BillingError("BILLING_UNAVAILABLE");
+      seen.add(line.id);
+      const subscription =
+        line.parent?.type === "subscription_item_details"
+          ? id(line.parent.subscription_item_details?.subscription)
+          : null;
+      const price =
+        line.pricing?.type === "price_details" ? id(line.pricing.price_details?.price) : null;
+      if (subscription !== subscriptionId || !price || !priceIds.includes(price)) continue;
+      if (
+        !Number.isSafeInteger(line.period.start) ||
+        !Number.isSafeInteger(line.period.end) ||
+        line.period.start < 0 ||
+        line.period.end <= line.period.start ||
+        !Number.isSafeInteger(line.amount) ||
+        line.amount < 0
+      )
+        throw new BillingError("BILLING_UNAVAILABLE");
+      through = Math.max(through, line.period.end);
+    }
+    if (!lines.has_more) {
+      const result = new Date(through * 1000);
+      if (!through || !Number.isFinite(result.getTime()))
+        throw new BillingError("BILLING_UNAVAILABLE");
+      return result;
+    }
+    const last = lines.data.at(-1)?.id;
+    if (!last || last === after) throw new BillingError("BILLING_UNAVAILABLE");
+    after = last;
+  }
+  throw new BillingError("BILLING_UNAVAILABLE");
+}
 export async function readStripeEventState(
   client: Stripe,
   event: VerifiedBillingEvent,
@@ -202,14 +253,12 @@ export async function readStripeEventState(
       if (!subscriptionId) continue;
       const state = await readStripeSubscription(client, subscriptionId, customerId, priceIds);
       if (reason) {
-        if (
-          reason === "REFUND" &&
-          (!Number.isSafeInteger(invoice.period_end) || invoice.period_end <= 0)
-        )
-          throw new BillingError("BILLING_UNAVAILABLE");
         state.risk = {
           reason,
-          through: reason === "REFUND" ? new Date(invoice.period_end * 1000) : null,
+          through:
+            reason === "REFUND"
+              ? await refundedServicePeriodEnd(client, invoiceId, subscriptionId, priceIds, signal)
+              : null,
         };
         const prior = states.get(subscriptionId)?.risk;
         if (

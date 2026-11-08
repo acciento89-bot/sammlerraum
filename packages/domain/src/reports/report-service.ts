@@ -1,3 +1,4 @@
+import type { ArtifactFilterAdmission } from "../search/search-selection";
 import { randomUUID } from "node:crypto";
 import { Prisma } from "@sammlerraum/db/search-sql";
 import { ExportError } from "@sammlerraum/contracts/exports";
@@ -107,12 +108,18 @@ export function createReportService(
     tx: BoundedSearchReadTransaction,
     actor: { userId: string },
     input: unknown,
+    admission?: ArtifactFilterAdmission,
   ) {
     return mapped(async () => {
       const owner = actorId(actor),
         request = parseInsuranceReportOptions(input),
         fields = new Set(request.include),
-        source = await exports.captureExportSourceInTransaction(tx, actor, exportInput(request));
+        source = await exports.captureExportSourceInTransaction(
+          tx,
+          actor,
+          exportInput(request),
+          admission,
+        );
       const itemIds = source.money.rows.map((row) => row.itemId).sort(),
         collections = [...new Set(source.metadata.map((meta) => meta.collectionId))].sort();
       if (request.scope.kind === "COLLECTION" && !collections.includes(request.scope.collectionId))
@@ -189,9 +196,13 @@ export function createReportService(
       });
     });
   }
-  async function captureReportSource(actor: { userId: string }, input: unknown) {
+  async function captureReportSource(
+    actor: { userId: string },
+    input: unknown,
+    admission?: ArtifactFilterAdmission,
+  ) {
     return runSearchTransaction(database, (tx) =>
-      captureReportSourceInTransaction(tx, actor, input),
+      captureReportSourceInTransaction(tx, actor, input, admission),
     );
   }
   async function requestInsuranceReport(actor: { userId: string }, input: unknown) {
@@ -201,7 +212,7 @@ export function createReportService(
       runSearchTransaction(database, async (tx) => {
         await exports.validateExportRequestInTransaction(tx, actor, exportInput(request));
         const [user] = await tx.$queryRaw<{ id: string }[]>(
-          Prisma.sql`UPDATE "user" SET id=id WHERE id=${owner} RETURNING id`,
+          Prisma.sql`UPDATE "user" SET "updatedAt"="updatedAt" WHERE id=${owner} RETURNING id`,
         );
         if (!user) throw new ReportError("REPORT_NOT_FOUND");
         const [active] = await tx.$queryRaw<{ count: bigint }[]>(
@@ -209,7 +220,7 @@ export function createReportService(
         );
         if (Number(active?.count ?? 0) >= 3) throw new ReportError("REPORT_LIMIT_EXCEEDED");
         const [job] = await tx.$queryRaw<{ id: string; status: string }[]>(
-          Prisma.sql`INSERT INTO "ReportJob" (id,"ownerId",format,locale,request,"expiresAt","updatedAt") VALUES (${randomUUID()}::uuid,${owner},'PDF',${request.locale},${JSON.stringify(request)}::jsonb,CURRENT_TIMESTAMP+interval '24 hours',date_trunc('milliseconds',clock_timestamp())) RETURNING id,status`,
+          Prisma.sql`INSERT INTO "ReportJob" ("billingAdmitted",id,"ownerId",format,locale,request,"expiresAt","updatedAt") VALUES (true,${randomUUID()}::uuid,${owner},'PDF',${request.locale},${JSON.stringify(request)}::jsonb,CURRENT_TIMESTAMP+interval '24 hours',date_trunc('milliseconds',clock_timestamp())) RETURNING id,status`,
         );
         if (!job) throw new ReportError("REPORT_INTEGRITY");
         return job;

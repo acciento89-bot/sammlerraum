@@ -416,5 +416,68 @@ describe.runIf(process.env.RUN_DATABASE_INTEGRATION === "1")(
         core.cancelImport(f.actor, { jobId: parsed.id, expectedRevision: failed.revision }),
       ).rejects.toMatchObject({ code: "IMPORT_NOT_READY" });
     });
+    it.each([false, true])(
+      "stops quota-blocked approved import with preserved prior batches: %s",
+      async (priorBatch) => {
+        const f = await fixture(),
+          core = createImportService(db),
+          commit = createImportCommitService(db);
+        const uploaded = await createImportWorkflowService(db, storage, lock).uploadImport(
+          f.actor,
+          f.input,
+          Buffer.from(
+            "Title\n" +
+              Array.from({ length: priorBatch ? 11 : 2 }, (_, i) => `Row ${i}`).join("\n") +
+              "\n",
+          ),
+        );
+        await createImportParser(
+          createPrismaImportParserRepository(db),
+          storage,
+          {},
+          lock,
+        )({ jobId: uploaded.job.id });
+        const parsed = await core.getImportJob(f.actor, uploaded.job.id);
+        const preview = await core.buildImportPreview(f.actor, {
+          jobId: parsed.id,
+          expectedRevision: parsed.revision,
+          mapping: { schemaVersion: 1, locale: "de", columns: { title: 0 } },
+        });
+        const saved = await commit.saveDecisions(f.actor, {
+          jobId: parsed.id,
+          expectedRevision: preview.job.revision,
+          previewGeneration: preview.job.previewGeneration,
+          decisions: Array.from({ length: priorBatch ? 11 : 2 }, (_, i) => i + 1).map(
+            (rowNumber) => ({ rowNumber, action: "CREATE" }),
+          ),
+        });
+        await commit.approveCommit(f.actor, {
+          jobId: parsed.id,
+          expectedRevision: saved.revision,
+          previewGeneration: preview.job.previewGeneration,
+        });
+        if (priorBatch) await commit.commitNextBatch(parsed.id);
+        const policy = JSON.parse(process.env.BILLING_PLAN_LIMITS!);
+        policy.FREE.ITEM_CREATE = priorBatch ? 10 : 1;
+        const previous = process.env.BILLING_PLAN_LIMITS;
+        process.env.BILLING_PLAN_LIMITS = JSON.stringify(policy);
+        try {
+          await expect(
+            createImportCommitter(commit)({ jobId: parsed.id }),
+          ).resolves.toBeUndefined();
+          const stopped = await core.getImportJob(f.actor, parsed.id);
+          expect(stopped.status).toBe("FAILED");
+          const [row] = await db.$queryRaw<
+            { errorCode: string }[]
+          >`SELECT "errorCode" FROM "ImportJob" WHERE id=${parsed.id}::uuid`;
+          expect(row?.errorCode).toBe("IMPORT_PLAN_LIMIT_REACHED");
+          expect(await db.collectibleItem.count({ where: { ownerId: f.owner } })).toBe(
+            priorBatch ? 10 : 0,
+          );
+        } finally {
+          process.env.BILLING_PLAN_LIMITS = previous;
+        }
+      },
+    );
   },
 );

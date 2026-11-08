@@ -518,6 +518,7 @@ model RateLimit {
 // check storageKey for stale rows before cleaning them; PENDING is a durable
 // processing intent consumed by the Task 3 dispatcher.
 model MediaAsset {
+  generatedArtifact    Boolean               @default(false)
   id                   String                @id @default(uuid()) @db.Uuid
   ownerId              String
   kind                 MediaKind
@@ -1300,6 +1301,7 @@ enum ExportJobStatus {
 }
 
 model ExportJob {
+  billingAdmitted      Boolean         @default(false)
   id                   String          @id @default(uuid()) @db.Uuid
   ownerId              String
   format               ExportFormat
@@ -1351,6 +1353,7 @@ model InsuranceRecord {
 }
 
 model ReportJob {
+  billingAdmitted      Boolean         @default(false)
   id                   String          @id @default(uuid()) @db.Uuid
   ownerId              String
   format               String          @default("PDF") @db.VarChar(3)

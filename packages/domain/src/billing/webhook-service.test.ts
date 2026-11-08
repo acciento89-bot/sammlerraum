@@ -1,3 +1,4 @@
+import { StripeBillingProvider } from "@sammlerraum/billing/stripe-provider";
 import { randomUUID, createHash } from "node:crypto";
 import { beforeAll, afterAll, describe, it, expect } from "vitest";
 import { createLegacyMoneyTestSchema } from "@sammlerraum/db/test-legacy-money-schema";
@@ -295,6 +296,113 @@ describe.runIf(process.env.RUN_DATABASE_INTEGRATION === "1")(
       expect(await f.service.dispatchCandidates(32)).toContain(r.id);
       await f.service.processReceipt(r.id, f.provider);
       expect(await f.service.dispatchCandidates(32)).not.toContain(r.id);
+    });
+    it("a real SDK full-refund graph revokes the current purchased line period even when invoice.period_end equals its start", async () => {
+      const f = await fixture(),
+        start = Math.floor(Date.now() / 1000) - 1000,
+        end = start + 7200;
+      const adapter = new StripeBillingProvider({
+        apiKey: "fixture-not-a-real-key",
+        appOrigin: "https://sammlerraum.example",
+        monthlyPriceId: "price_monthly_fixture",
+        yearlyPriceId: "price_yearly_fixture",
+        fetch: async (input, init) => {
+          const path = new URL(new Request(input, init).url).pathname;
+          if (path.includes("/charges/"))
+            return Response.json({
+              id: "ch_owned",
+              customer: f.customerId,
+              amount: 1000,
+              amount_refunded: 1000,
+              payment_intent: "pi_owned",
+            });
+          if (path.endsWith("/invoice_payments"))
+            return Response.json({
+              data: [
+                {
+                  id: "inpay_owned",
+                  status: "paid",
+                  invoice: "in_owned",
+                  payment: { type: "payment_intent", payment_intent: "pi_owned" },
+                },
+              ],
+              has_more: false,
+            });
+          if (path.endsWith("/lines"))
+            return Response.json({
+              data: [
+                {
+                  id: "il_owned",
+                  invoice: "in_owned",
+                  amount: 1000,
+                  parent: {
+                    type: "subscription_item_details",
+                    subscription_item_details: { subscription: f.subscriptionId },
+                  },
+                  pricing: {
+                    type: "price_details",
+                    price_details: { price: "price_monthly_fixture" },
+                  },
+                  period: { start, end },
+                },
+              ],
+              has_more: false,
+            });
+          if (path.includes("/invoices/"))
+            return Response.json({
+              id: "in_owned",
+              customer: f.customerId,
+              period_end: start,
+              parent: {
+                type: "subscription_details",
+                subscription_details: { subscription: f.subscriptionId },
+              },
+            });
+          if (path.includes("/subscriptions/"))
+            return Response.json({
+              id: f.subscriptionId,
+              customer: f.customerId,
+              status: "active",
+              cancel_at_period_end: false,
+              items: {
+                data: [
+                  {
+                    id: "si_owned",
+                    price: { id: "price_monthly_fixture" },
+                    quantity: 1,
+                    current_period_start: start,
+                    current_period_end: end,
+                  },
+                ],
+                has_more: false,
+              },
+            });
+          throw Error("Unexpected offline refund graph request");
+        },
+      });
+      const event = {
+        ...f.event(),
+        type: "charge.refunded",
+        objectId: "ch_owned",
+        chargeId: "ch_owned",
+      };
+      const provider = {
+        id: "stripe",
+        resolveCustomer: async () => f.customerId,
+        readEventState: adapter.readEventState.bind(adapter),
+      };
+      await f.service.processReceipt((await f.service.receiveEvent(event)).id, provider);
+      expect(
+        (
+          await createEntitlementService(db, policy, { providerIds: ["stripe"] }).getEntitlements(
+            f.owner,
+          )
+        ).plan,
+      ).toBe("FREE");
+      const [row] = await db.$queryRaw<
+        { riskThrough: Date }[]
+      >`SELECT "riskThrough" FROM "BillingSubscription" WHERE "subjectId"=${f.owner}`;
+      expect(row?.riskThrough).toEqual(new Date(end * 1000));
     });
   },
 );

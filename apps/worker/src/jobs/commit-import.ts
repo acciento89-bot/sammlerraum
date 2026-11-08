@@ -20,7 +20,15 @@ export function createImportCommitter(
       } catch (error) {
         if (error instanceof ImportCommitRejected) {
           try {
-            if (await service.failCommit(request.data.jobId, error.expectedJobRevision)) return;
+            const stopped =
+              error.failureCode === "IMPORT_COMMIT_CONFLICT"
+                ? await service.failCommit(request.data.jobId, error.expectedJobRevision)
+                : await service.failCommit(
+                    request.data.jobId,
+                    error.expectedJobRevision,
+                    error.failureCode,
+                  );
+            if (stopped) return;
           } catch {
             // Failure recording has the same private dependency boundary as the write.
             // Keep the revision CAS and let the broker retry with a controlled message.

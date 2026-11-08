@@ -127,7 +127,7 @@ it("ignores unsupported signed events without storing arbitrary customer content
   expect(provider.verifyWebhook(Buffer.from(payload), signed(payload))).toBeNull();
 });
 
-async function riskFixture(type = "charge.refunded", fullRefund = true) {
+async function riskFixture(type = "charge.refunded", fullRefund = true, currentPeriod = false) {
   const requests: Request[] = [],
     now = Math.floor(Date.now() / 1000);
   const path = "./stripe-provider",
@@ -168,11 +168,41 @@ async function riskFixture(type = "charge.refunded", fullRefund = true) {
           ],
           has_more: !url.searchParams.has("starting_after"),
         });
+      if (url.pathname.endsWith("/lines"))
+        return Response.json({
+          object: "list",
+          has_more: !url.searchParams.has("starting_after"),
+          data: [
+            {
+              id: url.searchParams.has("starting_after") ? "il_paid" : "il_unrelated",
+              invoice: url.pathname.split("/").at(-2),
+              amount: 1000,
+              parent: {
+                type: "subscription_item_details",
+                subscription_item_details: {
+                  subscription: url.pathname.includes("in_one") ? "sub_one" : "sub_two",
+                },
+              },
+              pricing: {
+                type: "price_details",
+                price_details: {
+                  price: url.searchParams.has("starting_after")
+                    ? "price_monthly_fixture"
+                    : "price_other",
+                },
+              },
+              period: {
+                start: currentPeriod ? now - 1000 : now - 5000,
+                end: currentPeriod ? now + 3600 : now - 2000,
+              },
+            },
+          ],
+        });
       if (url.pathname.includes("/invoices/"))
         return Response.json({
           id: last,
           customer: "cus_owned",
-          period_end: now - 2000,
+          period_end: currentPeriod ? now - 1000 : now - 2000,
           parent: {
             type: "subscription_details",
             subscription_details: { subscription: last === "in_one" ? "sub_one" : "sub_two" },
@@ -358,4 +388,14 @@ it("an unpaid canonical Checkout cannot fulfill even if its signed hint says an 
   expect(
     await provider.readEventState(event, "cus_owned", { signal: new AbortController().signal }),
   ).toEqual([]);
+});
+
+it("uses every matching paid invoice-line service period, not the invoice association timestamp", async () => {
+  const f = await riskFixture("charge.refunded", true, true);
+  const states = await f.provider.readEventState(f.event, "cus_owned", {
+    signal: new AbortController().signal,
+  });
+  expect(states).toHaveLength(2);
+  for (const state of states) expect(state.risk?.through).toEqual(state.currentPeriodEnd);
+  expect(f.requests.filter((r) => new URL(r.url).pathname.endsWith("/lines"))).toHaveLength(4);
 });

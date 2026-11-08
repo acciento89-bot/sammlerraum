@@ -88,7 +88,11 @@ export function createInsuranceReportJob(
           throw new ReportError("REPORT_INTEGRITY");
         }
       } else {
-        source = await service.captureReportSource({ userId: claim.ownerId }, request);
+        source = await service.captureReportSource({ userId: claim.ownerId }, request, {
+          kind: "REPORT",
+          jobId: claim.id,
+          request,
+        });
         check();
         const json = JSON.stringify(source);
         if (!(await repository.storeSource(claim, json, hash(json), source.reportAsOf))) return;
@@ -128,6 +132,7 @@ export function createInsuranceReportJob(
                 tx,
                 { userId: claim.ownerId },
                 request,
+                { kind: "REPORT", jobId: claim.id, request },
               );
               if (sourceDigest(fresh) !== sourceDigest(source))
                 throw new ReportError("REPORT_STALE");

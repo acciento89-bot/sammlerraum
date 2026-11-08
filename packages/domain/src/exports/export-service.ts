@@ -15,7 +15,11 @@ import {
   type SearchDatabase,
   type BoundedSearchReadTransaction,
 } from "../search/search-read";
-import { prepareItemSelection } from "../search/search-selection";
+import {
+  assertFilterEntitlement,
+  type ArtifactFilterAdmission,
+  prepareItemSelection,
+} from "../search/search-selection";
 import { leaves, referencePredicate } from "../search/search-compiler";
 import { validateCurrentFilterAvailability } from "../search/filter-ast";
 import { captureMoneyExport } from "../money/money-transfer";
@@ -64,13 +68,21 @@ export function createExportService(
     tx: BoundedSearchReadTransaction,
     actor: { userId: string },
     input: unknown,
+    admission?: ArtifactFilterAdmission,
   ) {
     const owner = who(actor),
       request = requestValue(input);
     const scope = await scopeRestriction(tx, owner, request),
-      selection = await prepareItemSelection(tx, actor, request.query, canonical, {
-        predicate: scope,
-      });
+      selection = await prepareItemSelection(
+        tx,
+        actor,
+        request.query,
+        canonical,
+        {
+          predicate: scope,
+        },
+        admission,
+      );
     const money = await captureMoneyExport(
       tx,
       {
@@ -166,9 +178,13 @@ export function createExportService(
     tx.checkBudget();
     return snapshot.data;
   }
-  async function captureExportSource(actor: { userId: string }, input: unknown) {
+  async function captureExportSource(
+    actor: { userId: string },
+    input: unknown,
+    admission?: ArtifactFilterAdmission,
+  ) {
     return runSearchTransaction(database, (tx) =>
-      captureExportSourceInTransaction(tx, actor, input),
+      captureExportSourceInTransaction(tx, actor, input, admission),
     );
   }
   async function validateExportRequestInTransaction(
@@ -183,6 +199,7 @@ export function createExportService(
       Prisma.sql`SELECT ${referencePredicate(leaves(request.query.filter?.root ?? null), owner)} AS valid`,
     );
     if (!refs?.valid) throw new ExportError("EXPORT_NOT_FOUND");
+    await assertFilterEntitlement(tx, owner, request.query.filter);
     return request;
   }
   async function requestExport(actor: { userId: string }, input: unknown) {
@@ -198,6 +215,7 @@ export function createExportService(
         Prisma.sql`UPDATE "user" SET "updatedAt"="updatedAt" WHERE id=${owner} RETURNING id`,
       );
       if (!user) throw new ExportError("EXPORT_NOT_FOUND");
+      await assertFilterEntitlement(tx, owner, request.query.filter);
       if (request.format === "XLSX") await assertFeatureInTransaction(tx, owner, "XLSX");
       const [active] = await tx.$queryRaw<{ count: bigint }[]>(
         Prisma.sql`SELECT count(*) AS count FROM "ExportJob" WHERE "ownerId"=${owner} AND status IN ('PENDING','BUILDING') AND "expiresAt">CURRENT_TIMESTAMP`,
@@ -205,7 +223,7 @@ export function createExportService(
       if (Number(active?.count ?? 0) >= 3) throw new ExportError("EXPORT_LIMIT_EXCEEDED");
       const id = randomUUID(),
         [job] = await tx.$queryRaw<{ id: string; status: string }[]>(
-          Prisma.sql`INSERT INTO "ExportJob" (id,"ownerId",format,locale,request,"expiresAt","updatedAt") VALUES (${id}::uuid,${owner},${request.format}::"ExportFormat",${request.locale},${JSON.stringify(request)}::jsonb,CURRENT_TIMESTAMP+interval '24 hours',date_trunc('milliseconds',clock_timestamp())) RETURNING id,status`,
+          Prisma.sql`INSERT INTO "ExportJob" ("billingAdmitted",id,"ownerId",format,locale,request,"expiresAt","updatedAt") VALUES (true,${id}::uuid,${owner},${request.format}::"ExportFormat",${request.locale},${JSON.stringify(request)}::jsonb,CURRENT_TIMESTAMP+interval '24 hours',date_trunc('milliseconds',clock_timestamp())) RETURNING id,status`,
         );
       if (!job) throw new ExportError("EXPORT_INTEGRITY");
       return job;

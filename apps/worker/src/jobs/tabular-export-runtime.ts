@@ -89,7 +89,11 @@ export function createTabularExportJob(
           throw new ExportError("EXPORT_INTEGRITY");
         }
       } else {
-        source = await service.captureExportSource({ userId: claim.ownerId }, request);
+        source = await service.captureExportSource({ userId: claim.ownerId }, request, {
+          kind: "TABULAR",
+          jobId: claim.id,
+          request,
+        });
         check();
         const json = JSON.stringify(source);
         if (!(await repository.storeSource(claim, json, hash(json), source.money.asOf))) return;
@@ -129,6 +133,7 @@ export function createTabularExportJob(
                 tx,
                 { userId: claim.ownerId },
                 request,
+                { kind: "TABULAR", jobId: claim.id, request },
               );
               if (sourceDigest(fresh) !== sourceDigest(source))
                 throw new ExportError("EXPORT_STALE");

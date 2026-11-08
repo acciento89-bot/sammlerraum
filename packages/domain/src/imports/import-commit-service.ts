@@ -1,3 +1,4 @@
+import { BillingError } from "@sammlerraum/contracts/billing";
 import { communityEventHandlers } from "../notifications/community-event-handlers";
 import {
   beginMutationAudit,
@@ -49,12 +50,18 @@ import {
 } from "@sammlerraum/contracts/money-transfer";
 import { previewImportRow } from "./import-service";
 export class ImportCommitRejected extends ImportServiceError {
-  constructor(readonly expectedJobRevision: number) {
+  constructor(
+    readonly expectedJobRevision: number,
+    readonly failureCode:
+      | "IMPORT_COMMIT_CONFLICT"
+      | "IMPORT_PLAN_LIMIT_REACHED" = "IMPORT_COMMIT_CONFLICT",
+  ) {
     super("IMPORT_CONFLICT");
   }
 }
 function permanent(error: unknown) {
   return (
+    (error instanceof BillingError && error.code === "PLAN_LIMIT_REACHED") ||
     error instanceof ImportServiceError ||
     error instanceof MoneyTransferError ||
     error instanceof ItemServiceError ||
@@ -683,11 +690,22 @@ export function createImportCommitService(database: ImportCommitDatabase) {
       });
     } catch (error) {
       if (observedRevision !== undefined && permanent(error))
-        throw new ImportCommitRejected(observedRevision);
+        throw new ImportCommitRejected(
+          observedRevision,
+          error instanceof BillingError && error.code === "PLAN_LIMIT_REACHED"
+            ? "IMPORT_PLAN_LIMIT_REACHED"
+            : "IMPORT_COMMIT_CONFLICT",
+        );
       throw error;
     }
   }
-  async function failCommit(input: unknown, expectedJobRevision: number) {
+  async function failCommit(
+    input: unknown,
+    expectedJobRevision: number,
+    failureCode: "IMPORT_COMMIT_CONFLICT" | "IMPORT_PLAN_LIMIT_REACHED" = "IMPORT_COMMIT_CONFLICT",
+  ) {
+    if (!["IMPORT_COMMIT_CONFLICT", "IMPORT_PLAN_LIMIT_REACHED"].includes(failureCode))
+      return false;
     const jobId = parse(idSchema, input);
     return run(async (tx) => {
       const job = await lockJob(tx, jobId);
@@ -699,7 +717,7 @@ export function createImportCommitService(database: ImportCommitDatabase) {
         return false;
       await q(
         tx,
-        Prisma.sql`UPDATE "ImportJob" SET status='FAILED',"errorCode"='IMPORT_COMMIT_CONFLICT',revision=revision+1,"updatedAt"=date_trunc('milliseconds',clock_timestamp()) WHERE id=${job.id}::uuid RETURNING id`,
+        Prisma.sql`UPDATE "ImportJob" SET status='FAILED',"errorCode"=${failureCode},revision=revision+1,"updatedAt"=date_trunc('milliseconds',clock_timestamp()) WHERE id=${job.id}::uuid RETURNING id`,
       );
       return true;
     });
