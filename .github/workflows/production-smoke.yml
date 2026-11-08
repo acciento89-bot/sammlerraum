@@ -1,0 +1,20 @@
+name: Read-only production smoke
+on:
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: Owned production HTTPS origin
+        required: true
+        default: https://sammlerraum.de
+        type: string
+permissions:
+  contents: read
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify public endpoints without customer transactions
+        env:
+          SMOKE_BASE_URL: ${{ inputs.base_url }}
+        run: bash scripts/smoke-production.sh --base-url "$SMOKE_BASE_URL"
