@@ -1,0 +1,18 @@
+{
+  "base": "8e0da50",
+  "localContracts": {
+    "adversarialResolvedConfigTests": 4,
+    "migrationPreconditionTests": 1,
+    "shellSyntax": "pass",
+    "nodeSyntax": "pass",
+    "pythonCompile": "pass"
+  },
+  "actualComposeRendering": "pending exact CI; Docker unavailable locally",
+  "actualMigrationAndContainerHealth": "pending exact CI",
+  "persistentVolumeRestartReceipt": "pending exact CI",
+  "sourceOnly": true,
+  "productionTouched": false,
+  "taskComplete": false,
+  "wholePhaseReview": "pending",
+  "acceptedTaskCredit": false
+}

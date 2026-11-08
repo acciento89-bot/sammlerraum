@@ -299,7 +299,7 @@ jobs:
           pnpm --filter @sammlerraum/db exec prisma migrate deploy
           RUN_AUTH_E2E=1 RUN_PRODUCTION_E2E=1 pnpm --filter @sammlerraum/web exec playwright test e2e/search-dashboard.spec.ts e2e/personal-milestone-api.spec.ts e2e/personal-milestones.spec.ts --workers=1
       - run: bash scripts/verify-compose.sh
-      - run: docker build -f Dockerfile.web --build-arg NEXT_PUBLIC_APP_ORIGIN=https://example.invalid .
+      - run: docker build -f Dockerfile.web -t sammlerraum-web-ci --build-arg NEXT_PUBLIC_APP_ORIGIN=https://example.invalid .
       - run: docker build -f Dockerfile.worker -t sammlerraum-worker-ci .
       - name: Decode with Sharp in the final worker image
         run: >-
@@ -436,3 +436,10 @@ jobs:
             -v "$GITHUB_WORKSPACE:/workspace:ro" sammlerraum-recovery-test
         env:
           RESTORE_TEST_PASSWORD: disposable-ci-restore-only
+
+      - name: Verify immutable production-like stack and non-destructive restart
+        run: |
+          python3 scripts/verify-production_test.py
+          node --test scripts/migrate-production.test.mjs
+          docker build -f Dockerfile.migrate -t sammlerraum-migration-ci .
+          bash scripts/test-production-stack.sh

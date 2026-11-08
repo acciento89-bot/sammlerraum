@@ -1,0 +1,119 @@
+# Resolve privately: docker compose --env-file /private/compose.env -f docker-compose.prod.yml config
+# Every image must be a verified immutable digest or local immutable image ID.
+x-app: &app
+  restart: unless-stopped
+  env_file:
+    - ${SAMMLERRAUM_ENV_FILE:?Set private application environment file}
+  environment:
+    NODE_ENV: production
+    UPLOADS_DIR: /data/uploads
+  volumes:
+    - uploads:/data/uploads
+  read_only: true
+  tmpfs:
+    - /tmp:rw,noexec,nosuid,size=268435456,uid=1000,gid=1000
+  security_opt: ["no-new-privileges:true"]
+  cap_drop: ["ALL"]
+  pids_limit: 256
+  depends_on:
+    db:
+      condition: service_healthy
+    migrate:
+      condition: service_completed_successfully
+
+services:
+  db:
+    image: ${SAMMLERRAUM_DB_IMAGE:?Pin a PostgreSQL17 image digest}
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:?Set database name}
+      POSTGRES_USER: ${POSTGRES_USER:?Set database user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set database password}
+    volumes:
+      - database:/var/lib/postgresql/data
+    shm_size: 128m
+    mem_limit: 768m
+    cpus: 1.0
+    pids_limit: 256
+    stop_grace_period: 1m
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 10s
+
+  migrate:
+    image: ${SAMMLERRAUM_MIGRATION_IMAGE:?Pin the matching migration image digest}
+    restart: "no"
+    environment:
+      DATABASE_URL: ${DATABASE_URL:?Set database URL}
+      MIGRATION_MODE: ${MIGRATION_MODE:-production}
+      SAMMLERRAUM_MIGRATION_APPROVED_SHA: ${SAMMLERRAUM_MIGRATION_APPROVED_SHA:?Set reviewed source commit}
+      SAMMLERRAUM_BACKUP_MANIFEST_SHA256: ${SAMMLERRAUM_BACKUP_MANIFEST_SHA256:-}
+    depends_on:
+      db:
+        condition: service_healthy
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=67108864,uid=1000,gid=1000
+    cap_drop: ["ALL"]
+    security_opt: ["no-new-privileges:true"]
+    mem_limit: 512m
+    cpus: 1.0
+    pids_limit: 128
+
+  web:
+    <<: *app
+    image: ${SAMMLERRAUM_WEB_IMAGE:?Pin the reviewed web image digest}
+    ports:
+      - "127.0.0.1:${SAMMLERRAUM_WEB_PORT:-3000}:3000"
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=134217728,uid=1000,gid=1000
+      - /app/apps/web/.next/cache:rw,noexec,nosuid,size=67108864,uid=1000,gid=1000
+    mem_limit: 768m
+    cpus: 1.0
+    stop_grace_period: 45s
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://127.0.0.1:3000/api/health').then(async r=>{if(!r.ok||(await r.json()).status!=='ok')process.exit(1)}).catch(()=>process.exit(1))",
+        ]
+      interval: 5s
+      timeout: 4s
+      retries: 20
+      start_period: 20s
+
+  worker:
+    <<: *app
+    image: ${SAMMLERRAUM_WORKER_IMAGE:?Pin the matching worker image digest}
+    environment:
+      NODE_ENV: production
+      UPLOADS_DIR: /data/uploads
+      WORKER_HEALTH_PORT: "3001"
+    mem_limit: 1g
+    cpus: 1.5
+    stop_grace_period: 12m
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://127.0.0.1:3001/health').then(async r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))",
+        ]
+      interval: 5s
+      timeout: 4s
+      retries: 20
+      start_period: 20s
+
+volumes:
+  database:
+    external: true
+    name: ${SAMMLERRAUM_DB_VOLUME:?Set existing persistent database volume}
+  uploads:
+    external: true
+    name: ${SAMMLERRAUM_UPLOADS_VOLUME:?Set existing persistent uploads volume}
