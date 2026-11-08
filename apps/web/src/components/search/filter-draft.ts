@@ -69,7 +69,7 @@ export function available(node: ItemFilterNode, canonicalMoneyEnabled = false): 
   if (node.kind === "and" || node.kind === "or")
     return node.children.every((child) => available(child, canonicalMoneyEnabled));
   if (node.kind === "not") return available(node.child, canonicalMoneyEnabled);
-  if (node.kind === "marketMoney") return false;
+  if (node.kind === "marketMoney") return true;
   if (node.kind === "purchaseMoney")
     return (
       node.test.op !== "range" ||

@@ -2424,6 +2424,18 @@ body:has(.transfer-shell) .skip-link:not(:focus) {
   border-radius: 0.75rem;
   overflow-wrap: anywhere;
 }
+.scoped-saved-list > li {
+  display: grid;
+  gap: 0.65rem;
+  padding: 0.9rem;
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+  overflow-wrap: anywhere;
+}
+.scoped-saved-list > li > span {
+  color: var(--muted);
+  font-size: 0.875rem;
+}
 .scoped-saved-list button {
   text-align: start;
   white-space: normal;

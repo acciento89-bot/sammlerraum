@@ -4,6 +4,7 @@ import { FilterValidationError } from "@sammlerraum/contracts/search";
 import { emptyMarketDisplayPolicy } from "../valuations/market-display-policy";
 import {
   captureMarketRights,
+  listMarketFilterSelectors,
   withMarketRights,
   emptyMarketQueryPolicy,
   marketSelectorKey,
@@ -284,4 +285,15 @@ describe("independent exact market query capabilities", () => {
     });
     expect(consume).toHaveBeenCalledTimes(1);
   });
+});
+
+it("discovers only current FILTER selectors admitted by independent display and query rights", () => {
+  const f = fixture();
+  expect(listMarketFilterSelectors(actor, f)).toEqual([selector]);
+  f.grants.queryGrants = [];
+  expect(listMarketFilterSelectors(actor, f)).toEqual([]);
+  expect(
+    listMarketFilterSelectors(actor, { ...f, displayPolicy: emptyMarketDisplayPolicy }),
+  ).toEqual([]);
+  expect(f.fetch).not.toHaveBeenCalled();
 });

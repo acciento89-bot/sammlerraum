@@ -1,3 +1,4 @@
+import { SearchTextSchema } from "./item-search";
 import { z } from "zod";
 import { validUnicode } from "./search-parser";
 export type WishlistErrorCode =
@@ -40,6 +41,7 @@ export const CreateWishlistEntrySchema = z
   .refine((value) => value.catalogVariantId === null || value.catalogEntryId !== null);
 export const WishlistListQuerySchema = z
   .object({
+    text: SearchTextSchema,
     limit: z.number().int().min(1).max(50).default(20),
     afterId: WishlistIdSchema.optional(),
     status: z.enum(["ALL", "OPEN", "FULFILLED"]).default("ALL"),

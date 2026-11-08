@@ -1,10 +1,11 @@
 "use client";
 import Link from "next/link";
-import { useCallback, useEffect, useState, type FormEvent } from "react";
+import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
 import { useTranslations } from "next-intl";
 import type { createWishlistService } from "@sammlerraum/domain/wishlist/wishlist-service";
 import { CommunityNavigation, CommunityHero } from "./community-navigation";
 import { communityRequest, communityError } from "./community-request";
+import { RequestChannel } from "../search/search-state";
 import { parseWishPrice, formatWishPrice } from "./wish-price";
 type Wishes = Awaited<ReturnType<ReturnType<typeof createWishlistService>["listWishlistEntries"]>>;
 type Duplicates = Awaited<
@@ -20,18 +21,27 @@ export function WishlistWorkspace({
   itemId?: string;
 }) {
   const t = useTranslations("Community"),
+    [searchText, setSearchText] = useState(""),
+    [appliedSearch, setAppliedSearch] = useState(""),
     [data, setData] = useState<Wishes | null>(null),
     [duplicates, setDuplicates] = useState<Duplicates | null>(null),
     [busy, setBusy] = useState(false),
     [error, setError] = useState(""),
     [status, setStatus] = useState(""),
     [removing, setRemoving] = useState<string | null>(null);
+  const listChannel = useRef(new RequestChannel());
   const load = useCallback(
     async (after?: string) => {
+      const request = listChannel.current.begin();
       try {
-        const value = await communityRequest<Wishes>(
-          `/api/v1/wishlist${after ? `?afterId=${after}` : ""}`,
-        );
+        const params = new URLSearchParams({
+          text: appliedSearch,
+          ...(after ? { afterId: after } : {}),
+        });
+        const value = await communityRequest<Wishes>(`/api/v1/wishlist?${params}`, {
+          signal: request.signal,
+        });
+        if (!listChannel.current.current(request.id)) return;
         setData((previous) =>
           after && previous
             ? {
@@ -45,11 +55,12 @@ export function WishlistWorkspace({
         );
         setError("");
       } catch (e) {
+        if (!listChannel.current.current(request.id)) return;
         setData(null);
         setError(communityError(e, t));
       }
     },
-    [t],
+    [t, appliedSearch],
   );
   const loadDuplicates = useCallback(
     async (after?: string) => {
@@ -73,6 +84,7 @@ export function WishlistWorkspace({
   useEffect(() => {
     void load();
     void loadDuplicates();
+    return () => listChannel.current.cancel();
   }, [load, loadDuplicates]);
   async function create(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -95,11 +107,7 @@ export function WishlistWorkspace({
           notes: String(form.get("notes")) || null,
         },
       });
-      setData((previous) =>
-        previous
-          ? { ...previous, entries: [created, ...previous.entries] }
-          : { entries: [created], next: null },
-      );
+      await load();
       element.reset();
       setStatus(t("wishSaved"));
     } catch (e) {
@@ -174,6 +182,29 @@ export function WishlistWorkspace({
         title={t("wishlistTitle")}
         intro={t("wishlistIntro")}
       />
+      <form
+        className="management-card search-actions"
+        role="search"
+        onSubmit={(event) => {
+          event.preventDefault();
+          setData(null);
+          setAppliedSearch(searchText.normalize("NFKC").trim());
+          if (searchText.normalize("NFKC").trim() === appliedSearch) void load();
+        }}
+      >
+        <label>
+          {t("searchWishes")}
+          <input
+            type="search"
+            value={searchText}
+            maxLength={200}
+            onChange={(event) => setSearchText(event.target.value)}
+          />
+        </label>
+        <button type="submit" className="secondary-button">
+          {t("searchWishesAction")}
+        </button>
+      </form>
       <p className="community-privacy-line">◈ {t("privateWishlist")}</p>
       {error && (
         <p role="alert" className="form-error">

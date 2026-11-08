@@ -1,3 +1,8 @@
+import { ProviderRegistry } from "@sammlerraum/market-data/provider-registry";
+import type { createItemSearchService } from "@sammlerraum/domain/search/item-search-service";
+type MarketBatchDependencies = NonNullable<
+  NonNullable<Parameters<typeof createItemSearchService>[1]>["market"]
+>;
 import { randomUUID } from "node:crypto";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { createTestDatabaseClient } from "@sammlerraum/db/test-database";
@@ -18,7 +23,7 @@ describe.runIf(enabled)("native authorized item search route", () => {
     await db?.user.delete({ where: { id: owner } });
     await db?.$disconnect();
   });
-  async function handlers(authenticated = true) {
+  async function handlers(authenticated = true, market?: MarketBatchDependencies) {
     const path = "./item-search-routes";
     const m = await import(path).catch(() => null);
     expect(m?.createItemSearchRouteHandlers, "native search route must exist").toBeTypeOf(
@@ -32,10 +37,86 @@ describe.runIf(enabled)("native authorized item search route", () => {
           db!,
           { api: { getSession } },
           "https://example.invalid",
+          market ? { market } : {},
         ),
       ),
     };
   }
+  it("discovers and executes only current permitted market selectors using the same actual route composition", async () => {
+    const selector = {
+      mode: "CURRENT_ITEM_MAPPING" as const,
+      providerId: "fixture",
+      identifierNamespace: "fixture",
+      identifierType: "product",
+      kind: "LAST_SOLD" as const,
+      currency: "EUR",
+      minorUnitExponent: 2,
+      sourceMetric: "sold_item",
+      qualifiers: {},
+    };
+    const fetch = vi.fn(async () => []);
+    let allowed = true;
+    const market: MarketBatchDependencies = {
+      registry: new ProviderRegistry([
+        {
+          provider: { id: "fixture", fetch },
+          identifierNamespace: "fixture",
+          identifierType: "product",
+        },
+      ]),
+      displayPolicy: {
+        snapshotForOwner: () => [
+          {
+            providerId: "fixture",
+            identifierNamespace: "fixture",
+            identifierType: "product",
+            allowHistorical: false,
+          },
+        ],
+      },
+      queryPolicy: {
+        snapshotForOwner: (actor) => ({
+          queryGrants: allowed && actor === owner ? [{ selector, purposes: ["FILTER"] }] : [],
+          aggregateGrants: [],
+        }),
+      },
+    };
+    const { handler } = await handlers(true, market);
+    const options = await handler.MARKET_SELECTORS(
+      new Request("https://example.invalid/api/v1/search/market-selectors"),
+    );
+    expect(options.status).toBe(200);
+    expect(options.headers.get("cache-control")).toBe("private, no-store");
+    expect(options.headers.get("x-robots-tag")).toContain("noindex");
+    expect(await options.json()).toEqual({ selectors: [selector] });
+    const response = await handler.POST(
+      new Request("https://example.invalid/api/v1/search/items", {
+        method: "POST",
+        headers: { origin: "https://example.invalid", "content-type": "application/json" },
+        body: JSON.stringify({
+          text: "",
+          f: JSON.stringify({
+            version: 1,
+            root: { kind: "marketMoney", selector, test: { op: "present" } },
+          }),
+        }),
+      }),
+    );
+    expect(response.status).toBe(200);
+    expect((await response.json()).total).toBe(0);
+    allowed = false;
+    expect(
+      await (await handler.MARKET_SELECTORS(new Request("https://example.invalid/"))).json(),
+    ).toEqual({ selectors: [] });
+    expect(
+      (
+        await (
+          await handlers(false, market)
+        ).handler.MARKET_SELECTORS(new Request("https://example.invalid/"))
+      ).status,
+    ).toBe(401);
+    expect(fetch).not.toHaveBeenCalled();
+  });
   it("returns only owned summaries with fresh authentication and no-store/request ID", async () => {
     const { handler, getSession } = await handlers();
     const r = await handler.GET(

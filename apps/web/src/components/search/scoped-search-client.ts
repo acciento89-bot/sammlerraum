@@ -11,7 +11,7 @@ export async function scopedRequest<T>(
     safeParse(input: unknown): { success: true; data: T } | { success: false; error: unknown };
   },
   signal?: AbortSignal,
-  method: "POST" | "PATCH" = "POST",
+  method: "POST" | "PATCH" | "DELETE" = "POST",
 ): Promise<T> {
   const response = await fetch(path, {
     method: body === undefined ? "GET" : method,

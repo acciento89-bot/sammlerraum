@@ -1,4 +1,5 @@
 "use client";
+import { ScopedSavedRow } from "./scoped-saved-row";
 import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import {
@@ -153,6 +154,11 @@ export function SharedSearchHub({
           target={target}
           initialOpen
           initialSavedId={savedId}
+          onSavedChanged={() =>
+            void loadSaved(undefined, control.current?.signal).catch(() =>
+              setError(t("savedUnavailable")),
+            )
+          }
         />
       )}
       {!!saved.length && (
@@ -160,18 +166,31 @@ export function SharedSearchHub({
           <h2>{t("savedTitle")}</h2>
           <ul className="scoped-saved-list">
             {saved.map((entry) => (
-              <li key={entry.id}>
-                <button
-                  type="button"
-                  className="secondary-button"
-                  onClick={() => {
-                    setSelected(entry.definition.scope);
-                    setSavedId(entry.id);
-                  }}
-                >
-                  {entry.name}
-                </button>
-              </li>
+              <ScopedSavedRow
+                key={entry.id}
+                entry={entry}
+                scopeLabel={
+                  choices.find(
+                    (choice) =>
+                      key(choice) === key(entry.definition.scope) &&
+                      choice.kind === "MEMBER_COLLECTION",
+                  )?.kind === "MEMBER_COLLECTION"
+                    ? (
+                        choices.find(
+                          (choice) => key(choice) === key(entry.definition.scope),
+                        ) as Extract<Choice, { kind: "MEMBER_COLLECTION" }>
+                      ).name
+                    : undefined
+                }
+                onOpen={() => {
+                  setSelected(entry.definition.scope);
+                  setSavedId(entry.id);
+                }}
+                onRemoved={() => {
+                  setSaved((entries) => entries.filter((item) => item.id !== entry.id));
+                  if (savedId === entry.id) setSavedId(undefined);
+                }}
+              />
             ))}
           </ul>
           {savedCursor && (

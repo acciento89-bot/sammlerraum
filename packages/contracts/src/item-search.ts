@@ -25,14 +25,15 @@ export function searchFail(code: ItemSearchError["code"]): never {
 }
 const textValid = (v: string) =>
   validUnicode(v) && !v.includes("\0") && [...v].length <= 200 && utf8Length(v) <= 800;
+export const SearchTextSchema = z
+  .string()
+  .refine(textValid)
+  .transform((v) => v.normalize("NFKC").trim())
+  .refine(textValid)
+  .default("");
 const querySchema = z
   .object({
-    text: z
-      .string()
-      .refine(textValid)
-      .transform((v) => v.normalize("NFKC").trim())
-      .refine(textValid)
-      .default(""),
+    text: SearchTextSchema,
     filter: z.unknown().optional(),
     lifecycle: SearchLifecycleSchema.default("ACTIVE"),
     limit: z.number().int().min(1).max(50).default(20),

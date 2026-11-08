@@ -239,11 +239,13 @@ export function MoneyRange({
   onChange,
   locale,
   legacy = false,
+  fixedUnit = false,
 }: {
   test: TestDraft;
   onChange: (test: TestDraft) => void;
   locale: "de" | "en";
   legacy?: boolean;
+  fixedUnit?: boolean;
 }) {
   const t = useTranslations("Search");
   const currency = test.unit?.currency ?? "EUR";
@@ -272,11 +274,12 @@ export function MoneyRange({
   }
   return (
     <>
-      <p>{t(legacy ? "canonicalRangeHelp" : "moneyHelp")}</p>
+      <p>{t(fixedUnit ? "marketRangeHelp" : legacy ? "canonicalRangeHelp" : "moneyHelp")}</p>
       <SearchLabel>
         {t("currency")}
         <select
           value={currency}
+          disabled={fixedUnit}
           onChange={(e) => {
             const nextCurrency = e.target.value;
             const nextExponent = currencyMinorUnitExponent(nextCurrency);

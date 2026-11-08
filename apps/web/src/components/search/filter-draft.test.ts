@@ -214,3 +214,25 @@ it.each([true, false])(
     expect(available({ kind: "not", child: leaf })).toBe(true);
   },
 );
+
+it("permits well-formed market drafts for live server authorization instead of a permanent UI ban", () => {
+  const root = parseItemFilter({
+    version: 1,
+    root: {
+      kind: "marketMoney",
+      selector: {
+        mode: "CURRENT_ITEM_MAPPING",
+        providerId: "fixture",
+        identifierNamespace: "fixture",
+        identifierType: "product",
+        kind: "LAST_SOLD",
+        currency: "EUR",
+        minorUnitExponent: 2,
+        sourceMetric: "sold_item",
+        qualifiers: {},
+      },
+      test: { op: "present" },
+    },
+  }).root;
+  expect(available(root)).toBe(true);
+});

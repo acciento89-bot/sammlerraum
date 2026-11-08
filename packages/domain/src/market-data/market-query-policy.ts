@@ -169,6 +169,28 @@ function admitted(
       return unavailable("QUERY_RIGHTS_DISABLED");
   }
 }
+/** Safe selector discovery: only independently registered display+FILTER rights, never provider I/O. */
+export function listMarketFilterSelectors(
+  actor: string,
+  deps: MarketBatchDependencies,
+): readonly MarketSelector[] {
+  if (!MembershipActorIdSchema.safeParse(actor).success) return invariant();
+  const current = snapshot(actor, deps);
+  return Object.freeze(
+    current.query
+      .filter(
+        (grant) =>
+          grant.purposes.includes("FILTER") &&
+          current.display.some(
+            (display) =>
+              display.providerId === grant.selector.providerId &&
+              display.identifierNamespace === grant.selector.identifierNamespace &&
+              display.identifierType === grant.selector.identifierType,
+          ),
+      )
+      .map((grant) => grant.selector),
+  );
+}
 /** Rights receipt only, not proof of catalog eligibility, transaction scope, or executable SQL. */
 export function captureMarketRights(
   actor: string,

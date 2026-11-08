@@ -835,7 +835,22 @@
     "canonicalRangeHelp": "Amount bounds compare evidenced prices exactly, including different recorded decimal places. Unresolved prices anywhere in the checked owned inventory prevent this search.",
     "duplicateHelp": "Uses your explicit duplicate marks while both entries and their collections remain yours and have not been deleted.",
     "navShared": "Shared search",
-    "scopeSelectedCollection": "Selected collection"
+    "scopeSelectedCollection": "Selected collection",
+    "marketSource": "Market source and measure",
+    "marketNoSources": "No market source is currently enabled for your searches.",
+    "marketSourcesFailed": "Could not load permitted market sources.",
+    "marketSourceUnit": "Source in {currency}, {exponent} decimal places.",
+    "marketRetained": "The saved source is currently unavailable. Replace it or remove the condition.",
+    "marketRangeHelp": "Bounds apply only to the selected source and currency. Prices from different sources are kept separate.",
+    "marketKinds": {
+      "LAST_SOLD": "Last sold",
+      "SOLD_AVERAGE": "Sold average",
+      "SOLD_MEDIAN": "Sold median",
+      "ASKING_PRICE": "Asking price",
+      "PRICE_RANGE": "Price range",
+      "CATALOG_VALUE": "Catalog value",
+      "DEALER_PRICE": "Dealer price"
+    }
   },
   "SavedSearches": {
     "title": "Saved searches",
@@ -1546,7 +1561,9 @@
     "restoreComment": "Restore comment",
     "commentRestored": "The comment is visible again.",
     "commentHidden": "The comment is hidden from others.",
-    "ownerHiddenNote": "Hidden by you · visible only to you for management."
+    "ownerHiddenNote": "Hidden by you · visible only to you for management.",
+    "searchWishes": "Search my wishlist",
+    "searchWishesAction": "Search wishes"
   },
   "PublicCollector": {
     "navigation": "Public profile",
@@ -1609,6 +1626,16 @@
     "moreScopes": "More areas",
     "noScopes": "No further areas are currently available here. Open an existing sharing link directly.",
     "openShare": "Open sharing link",
-    "reopen": "Reopen selection"
+    "reopen": "Reopen selection",
+    "updateView": "Update view",
+    "editingView": "Editing view: {name}",
+    "saveAsNew": "Save as new view",
+    "savedShareScope": "Shared area",
+    "savedMemberScope": "Collection view",
+    "deleteView": "Delete view",
+    "deleteViewPrompt": "Delete the saved view “{name}”? Your items are kept.",
+    "confirmDeleteView": "Confirm deletion",
+    "cancelDeleteView": "Cancel",
+    "deleteViewFailed": "Could not delete the view. Reload the list."
   }
 }

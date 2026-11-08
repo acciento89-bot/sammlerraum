@@ -835,7 +835,22 @@
     "canonicalRangeHelp": "Betragsgrenzen vergleichen belegte Preise exakt, auch wenn sie mit unterschiedlichen Nachkommastellen erfasst wurden. Nicht eindeutig erklärte Preise im geprüften eigenen Bestand verhindern diese Suche.",
     "duplicateHelp": "Berücksichtigt deine markierten Dubletten, solange beide Einträge und ihre Sammlungen weiterhin zu deinem Bestand gehören und nicht gelöscht sind.",
     "navShared": "Geteilte Suche",
-    "scopeSelectedCollection": "Ausgewählte Sammlung"
+    "scopeSelectedCollection": "Ausgewählte Sammlung",
+    "marketSource": "Marktquelle und Messwert",
+    "marketNoSources": "Zurzeit ist keine Marktquelle für deine Suche freigegeben.",
+    "marketSourcesFailed": "Die freigegebenen Marktquellen konnten nicht geladen werden.",
+    "marketSourceUnit": "Quelle in {currency}, {exponent} Nachkommastellen.",
+    "marketRetained": "Die gespeicherte Quelle ist derzeit nicht verfügbar. Du kannst sie ersetzen oder die Bedingung entfernen.",
+    "marketRangeHelp": "Grenzen gelten nur für die ausgewählte Quelle und Währung. Preise verschiedener Quellen werden nicht vermischt.",
+    "marketKinds": {
+      "LAST_SOLD": "Letzter Verkauf",
+      "SOLD_AVERAGE": "Verkaufsdurchschnitt",
+      "SOLD_MEDIAN": "Verkaufsmedian",
+      "ASKING_PRICE": "Angebotspreis",
+      "PRICE_RANGE": "Preisspanne",
+      "CATALOG_VALUE": "Katalogwert",
+      "DEALER_PRICE": "Händlerpreis"
+    }
   },
   "SavedSearches": {
     "title": "Gespeicherte Suchen",
@@ -1546,7 +1561,9 @@
     "restoreComment": "Wieder anzeigen",
     "commentRestored": "Der Beitrag ist wieder sichtbar.",
     "commentHidden": "Der Beitrag ist für andere ausgeblendet.",
-    "ownerHiddenNote": "Von dir ausgeblendet · nur für dich zur Verwaltung sichtbar."
+    "ownerHiddenNote": "Von dir ausgeblendet · nur für dich zur Verwaltung sichtbar.",
+    "searchWishes": "In meiner Wunschliste suchen",
+    "searchWishesAction": "Wünsche suchen"
   },
   "PublicCollector": {
     "navigation": "Öffentliches Profil",
@@ -1609,6 +1626,16 @@
     "moreScopes": "Weitere Bereiche",
     "noScopes": "Hier sind derzeit keine weiteren Bereiche verfügbar. Einen erhaltenen Freigabelink bitte direkt öffnen.",
     "openShare": "Freigabe öffnen",
-    "reopen": "Auswahl neu öffnen"
+    "reopen": "Auswahl neu öffnen",
+    "updateView": "Ansicht aktualisieren",
+    "editingView": "Bearbeitete Ansicht: {name}",
+    "saveAsNew": "Als neue Ansicht speichern",
+    "savedShareScope": "Freigegebener Bereich",
+    "savedMemberScope": "Sammlungsansicht",
+    "deleteView": "Ansicht löschen",
+    "deleteViewPrompt": "„{name}“ als gespeicherte Ansicht löschen? Deine Stücke bleiben erhalten.",
+    "confirmDeleteView": "Löschen bestätigen",
+    "cancelDeleteView": "Abbrechen",
+    "deleteViewFailed": "Die Ansicht konnte nicht gelöscht werden. Lade die Liste erneut."
   }
 }

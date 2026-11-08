@@ -1,5 +1,6 @@
 "use client";
 import type { ScopedSearchCapabilities } from "@sammlerraum/contracts/scoped-search";
+import { MarketFilterEditor } from "./market-filter-editor";
 import { newScopedLeaf } from "./scoped-capabilities";
 import { useMoneyConsumers } from "./money-consumer-context";
 import { SearchLabel } from "./search-label";
@@ -72,15 +73,9 @@ export function FilterLeafEditor({
           }
         >
           {families.map((f) => (
-            <option
-              key={f}
-              value={f}
-              disabled={f === "marketMoney" || (capabilities && !capabilities.families.includes(f))}
-            >
+            <option key={f} value={f} disabled={capabilities && !capabilities.families.includes(f)}>
               {t(`families.${f}`)}
-              {f === "marketMoney" || (capabilities && !capabilities.families.includes(f))
-                ? ` · ${t("notAvailable")}`
-                : ""}
+              {capabilities && !capabilities.families.includes(f) ? ` · ${t("notAvailable")}` : ""}
             </option>
           ))}
         </select>
@@ -105,43 +100,7 @@ export function FilterLeafEditor({
           <p>{t("duplicateHelp")}</p>
         </>
       ) : kind === "marketMoney" ? (
-        <div role="status">
-          <p>{t("unavailableFamily")}</p>
-          <dl>
-            {Object.entries(value.selector ?? {})
-              .filter(([, v]) => typeof v === "string" || typeof v === "number")
-              .map(([key, v]) => (
-                <div key={key}>
-                  <dt>{t(`marketFields.${key}`)}</dt>
-                  <dd>{String(v)}</dd>
-                </div>
-              ))}
-            <div>
-              <dt>{t("operator")}</dt>
-              <dd>{t(`operators.${test.op}`)}</dd>
-            </div>
-            {test.minMinor !== undefined && (
-              <div>
-                <dt>{t("minimumMinor")}</dt>
-                <dd>{test.minMinor}</dd>
-              </div>
-            )}
-            {test.maxMinor !== undefined && (
-              <div>
-                <dt>{t("maximumMinor")}</dt>
-                <dd>{test.maxMinor}</dd>
-              </div>
-            )}
-            {!!value.selector?.qualifiers &&
-              typeof value.selector.qualifiers === "object" &&
-              Object.entries(value.selector.qualifiers).map(([key, v]) => (
-                <div key={key}>
-                  <dt>{key}</dt>
-                  <dd>{typeof v === "boolean" ? t(v ? "true" : "false") : String(v)}</dd>
-                </div>
-              ))}
-          </dl>
-        </div>
+        <MarketFilterEditor value={value} onChange={onChange} locale={locale} />
       ) : kind === "customField" || kind === "catalogAttribute" ? (
         <DefinitionEditor value={value} onChange={onChange} locale={locale} cache={cache} />
       ) : (

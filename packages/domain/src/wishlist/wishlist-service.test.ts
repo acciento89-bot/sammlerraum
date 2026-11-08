@@ -67,6 +67,34 @@ describe.runIf(process.env.RUN_DATABASE_INTEGRATION === "1")(
       ).toEqual(before);
       expect(await db.collectibleItem.count({ where: { id: { in: [a.id, b.id] } } })).toBe(2);
     });
+    it("searches only own wishes with bounded normalized literal title and note text", async () => {
+      const actor = await user(),
+        foreign = await user(),
+        service = createWishlistService(db);
+      const a = await service.createWishlistEntry(actor, {
+        title: "Ｃａｒｄ 100%_rare",
+        notes: "Private blue ceramic",
+      });
+      await service.createWishlistEntry(actor, { title: "Unrelated item" });
+      await service.createWishlistEntry(foreign, { title: "Card 100%_rare" });
+      expect(
+        (await service.listWishlistEntries(actor, { text: "card" })).entries.map((v) => v.id),
+      ).toEqual([a.id]);
+      expect(
+        (await service.listWishlistEntries(actor, { text: "%_" })).entries.map((v) => v.id),
+      ).toEqual([a.id]);
+      expect(
+        (await service.listWishlistEntries(actor, { text: "blue CERAMIC" })).entries.map(
+          (v) => v.id,
+        ),
+      ).toEqual([a.id]);
+      expect(
+        (await service.listWishlistEntries(foreign, { text: "blue ceramic" })).entries,
+      ).toEqual([]);
+      await expect(
+        service.listWishlistEntries(actor, { text: "x".repeat(201) }),
+      ).rejects.toMatchObject({ code: "WISHLIST_INVALID" });
+    });
     it("keeps wishlists private and preserves declared prospective money independently of historical amounts", async () => {
       const actor = await user(),
         foreign = await user(),

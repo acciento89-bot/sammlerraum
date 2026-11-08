@@ -101,7 +101,26 @@ export function mapItemSearchError(error: unknown): never {
 export function createItemSearchRouteHandlers(
   dependencies: ReturnType<typeof createItemSearchRouteDependencies>,
 ) {
+  const marketSelectors = apiRoute(async (request) => {
+    try {
+      const session = await dependencies.getSession(request.headers);
+      if (!session) throw new ApiError("UNAUTHORIZED", 401, "Authentication required");
+      readSearchQueryMap(request, []);
+      return Response.json({
+        selectors: dependencies.service.marketFilterSelectors({ userId: session.user.id }),
+      });
+    } catch (error) {
+      return mapItemSearchError(error);
+    }
+  });
   return {
+    MARKET_SELECTORS: async (request: Request) => {
+      const result = await marketSelectors(request);
+      result.headers.set("cache-control", "private, no-store");
+      result.headers.set("x-robots-tag", "noindex, nofollow, noarchive");
+      result.headers.set("referrer-policy", "no-referrer");
+      return result;
+    },
     GET: apiRoute(async (request) => {
       try {
         const session = await dependencies.getSession(request.headers);

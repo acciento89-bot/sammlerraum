@@ -90,7 +90,7 @@ export function createCommunityWorkspaceHandlers(
         const who = await actor(request);
         return deps.wishlist.listWishlistEntries(
           who,
-          WishlistListQuerySchema.parse(query(request, ["status", "limit", "afterId"])),
+          WishlistListQuerySchema.parse(query(request, ["status", "limit", "afterId", "text"])),
         );
       }),
     ),

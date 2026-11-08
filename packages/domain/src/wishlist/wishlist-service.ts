@@ -147,9 +147,13 @@ export function createWishlistService(database: WishlistDatabase) {
     },
     async listWishlistEntries(who: Actor, input: unknown = {}) {
       const query = parse(WishlistListQuerySchema, input);
+      const pattern = `%${query.text.replace(/[\\%_]/gu, (value) => `\\${value}`)}%`;
+      const search = query.text
+        ? Prisma.sql`AND (normalize(title,NFKC) COLLATE pg_catalog."und-x-icu" ILIKE ${pattern} ESCAPE ${"\\"} OR normalize(COALESCE(notes,''),NFKC) COLLATE pg_catalog."und-x-icu" ILIKE ${pattern} ESCAPE ${"\\"})`
+        : Prisma.empty;
       return run(who, async (tx, userId) => {
         const rows = await tx.$queryRaw<WishRow[]>(
-          Prisma.sql`SELECT * FROM "WishlistEntry" WHERE "ownerId"=${userId} ${query.afterId ? Prisma.sql`AND id>${query.afterId}::uuid` : Prisma.empty} ${query.status === "OPEN" ? Prisma.sql`AND "fulfilledAt" IS NULL` : query.status === "FULFILLED" ? Prisma.sql`AND "fulfilledAt" IS NOT NULL` : Prisma.empty} ORDER BY id LIMIT ${query.limit + 1}`,
+          Prisma.sql`SELECT * FROM "WishlistEntry" WHERE "ownerId"=${userId} ${search} ${query.afterId ? Prisma.sql`AND id>${query.afterId}::uuid` : Prisma.empty} ${query.status === "OPEN" ? Prisma.sql`AND "fulfilledAt" IS NULL` : query.status === "FULFILLED" ? Prisma.sql`AND "fulfilledAt" IS NOT NULL` : Prisma.empty} ORDER BY id LIMIT ${query.limit + 1}`,
         );
         return {
           entries: rows.slice(0, query.limit).map(wish),

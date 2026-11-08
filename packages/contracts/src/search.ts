@@ -231,6 +231,9 @@ export const MarketSelectorSchema = object({
   qualifiers,
   minorUnitExponent: canonicalExponent,
 });
+export const MarketFilterOptionsSchema = object({
+  selectors: z.array(MarketSelectorSchema).max(50),
+});
 const marketRange = object({ op: z.literal("range"), ...rangeFields }).refine(validRange);
 const marketInterval = object({
   op: z.enum(["overlaps", "containedBy"]),

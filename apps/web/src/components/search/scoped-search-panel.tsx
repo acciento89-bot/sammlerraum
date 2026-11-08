@@ -30,6 +30,7 @@ import { MetadataCache, RequestChannel } from "./search-state";
 import { scopedRequest, ScopedSearchHttpError } from "./scoped-search-client";
 import { MoneyConsumerProvider } from "./money-consumer-context";
 import { formatDashboardInteger, formatDashboardMoney } from "./dashboard-format";
+import { ScopedSavedRow } from "./scoped-saved-row";
 import { PurchaseCosts } from "./purchase-costs";
 export type ScopedPanelTarget =
   | { kind: "MEMBER_COLLECTION"; collectionId: string }
@@ -39,11 +40,13 @@ export function ScopedSearchPanel({
   target,
   initialOpen = false,
   initialSavedId,
+  onSavedChanged,
 }: {
   locale: "de" | "en";
   target: ScopedPanelTarget;
   initialOpen?: boolean;
   initialSavedId?: string | undefined;
+  onSavedChanged?: (() => void) | undefined;
 }) {
   const t = useTranslations("ScopedSearch"),
     st = useTranslations("Search");
@@ -70,6 +73,11 @@ export function ScopedSearchPanel({
   const [editingSaved, setEditingSaved] = useState<ScopedSmartCollectionDetail | null>(null);
   const applied = useRef<NormalizedItemSearchQuery | null>(null),
     activeSaved = useRef<{ id: string; revision: number } | null>(null);
+  const draftGeneration = useRef(0);
+  function edited() {
+    draftGeneration.current++;
+    setDirty(true);
+  }
   const targetKey = JSON.stringify(target); // dependency identity only; never rendered or persisted.
   const access = target.kind === "SHARE" ? target.access : undefined;
   const integer = (value: string | number) => formatDashboardInteger(String(value), locale);
@@ -128,6 +136,7 @@ export function ScopedSearchPanel({
     savedId: { id: string; revision: number } | null = null,
   ) {
     const request = channel.current.begin();
+    const submittedGeneration = draftGeneration.current;
     setBusy(true);
     setError("");
     setNotice("");
@@ -200,7 +209,7 @@ export function ScopedSearchPanel({
       if (channel.current.current(request.id)) {
         applied.current = next;
         activeSaved.current = savedId;
-        setDirty(false);
+        setDirty(draftGeneration.current !== submittedGeneration);
       }
     } catch (problem) {
       if (channel.current.current(request.id)) failed(problem);
@@ -208,7 +217,7 @@ export function ScopedSearchPanel({
       if (channel.current.current(request.id)) setBusy(false);
     }
   }
-  async function loadSaved(id: string) {
+  async function loadSaved(id: string, currentCaps = caps) {
     const request = channel.current.begin();
     setBusy(true);
     setError("");
@@ -220,13 +229,17 @@ export function ScopedSearchPanel({
         request.signal,
       );
       if (!channel.current.current(request.id)) return;
-      if (caps && JSON.stringify(entry.definition.scope) !== JSON.stringify(caps.reference))
+      if (
+        !currentCaps ||
+        JSON.stringify(entry.definition.scope) !== JSON.stringify(currentCaps.reference)
+      )
         throw new ScopedSearchHttpError("SMART_COLLECTION_UNRESOLVABLE");
       const next = parseScopedSearchQuery({
         text: entry.definition.text,
         filter: entry.definition.filter,
         lifecycle: entry.definition.lifecycle,
       });
+      draftGeneration.current++;
       setText(next.text);
       setDraft(toDraft(next.filter));
       setLifecycle(next.lifecycle);
@@ -250,6 +263,8 @@ export function ScopedSearchPanel({
     setError("");
     setSaved([]);
     setSavedCursor(null);
+    setEditingSaved(null);
+    setName("");
     if (!open) return;
     const request = channel.current.begin();
     setBusy(true);
@@ -263,7 +278,7 @@ export function ScopedSearchPanel({
         if (!channel.current.current(request.id)) return;
         setCaps(current);
         void listSaved();
-        if (initialSavedId) await loadSaved(initialSavedId);
+        if (initialSavedId) await loadSaved(initialSavedId, current);
         else
           await run(
             parseScopedSearchQuery({ text, filter: fromDraft(draft), lifecycle }),
@@ -292,12 +307,13 @@ export function ScopedSearchPanel({
       failed(problem);
     }
   }
-  async function save(event: FormEvent) {
+  async function save(event: FormEvent, asNew = false) {
     event.preventDefault();
     if (!caps) return;
     const request = channel.current.begin();
     try {
       const next = query();
+      const updating = asNew ? null : editingSaved;
       if (!scopedFilterAvailable(next.filter, caps)) {
         setError(t("unavailable"));
         return;
@@ -305,13 +321,13 @@ export function ScopedSearchPanel({
       setBusy(true);
       setError("");
       const stored = await scopedRequest(
-        editingSaved
-          ? `/api/v1/scoped-smart-collections/${editingSaved.id}`
+        updating
+          ? `/api/v1/scoped-smart-collections/${updating.id}`
           : "/api/v1/scoped-smart-collections",
         {
           mutation: {
             name,
-            ...(editingSaved ? { expectedRevision: editingSaved.revision } : {}),
+            ...(updating ? { expectedRevision: updating.revision } : {}),
             definition: {
               version: 2,
               scope: caps.reference,
@@ -324,12 +340,13 @@ export function ScopedSearchPanel({
         },
         ScopedSmartCollectionDetailSchema,
         request.signal,
-        editingSaved ? "PATCH" : "POST",
+        updating ? "PATCH" : "POST",
       );
       if (!channel.current.current(request.id)) return;
       setEditingSaved(stored);
       setNotice(t("saved"));
       await listSaved();
+      onSavedChanged?.();
     } catch (problem) {
       if (channel.current.current(request.id)) failed(problem);
     } finally {
@@ -390,7 +407,7 @@ export function ScopedSearchPanel({
                     maxLength={200}
                     onChange={(event) => {
                       setText(event.target.value);
-                      setDirty(true);
+                      edited();
                     }}
                   />
                 </label>
@@ -401,7 +418,7 @@ export function ScopedSearchPanel({
                       value={lifecycle}
                       onChange={(event) => {
                         setLifecycle(event.target.value as SearchLifecycle);
-                        setDirty(true);
+                        edited();
                       }}
                     >
                       {["ALL", "ACTIVE", "ARCHIVED", "DISPOSED"].map((value) => (
@@ -416,7 +433,7 @@ export function ScopedSearchPanel({
                   value={draft}
                   onChange={(next) => {
                     setDraft(next);
-                    setDirty(true);
+                    edited();
                   }}
                   locale={locale}
                   cache={cache}
@@ -528,24 +545,39 @@ export function ScopedSearchPanel({
                   />
                 </label>
                 <button type="submit" className="secondary-button" disabled={busy}>
-                  {t("save")}
+                  {editingSaved ? t("updateView") : t("save")}
                 </button>
+                {editingSaved && (
+                  <>
+                    <p>{t("editingView", { name: editingSaved.name })}</p>
+                    <button
+                      type="button"
+                      className="secondary-button"
+                      disabled={busy}
+                      onClick={(event) => void save(event, true)}
+                    >
+                      {t("saveAsNew")}
+                    </button>
+                  </>
+                )}
               </form>
               {!!selectedSaved.length && (
                 <section>
                   <h3>{t("savedTitle")}</h3>
                   <ul className="scoped-saved-list">
                     {selectedSaved.map((entry) => (
-                      <li key={entry.id}>
-                        <button
-                          type="button"
-                          className="secondary-button"
-                          disabled={busy}
-                          onClick={() => void loadSaved(entry.id)}
-                        >
-                          {entry.name}
-                        </button>
-                      </li>
+                      <ScopedSavedRow
+                        key={entry.id}
+                        entry={entry}
+                        disabled={busy}
+                        onOpen={() => void loadSaved(entry.id)}
+                        onRemoved={() => {
+                          setSaved((entries) => entries.filter((item) => item.id !== entry.id));
+                          if (editingSaved?.id === entry.id) setEditingSaved(null);
+                          if (activeSaved.current?.id === entry.id) activeSaved.current = null;
+                          onSavedChanged?.();
+                        }}
+                      />
                     ))}
                   </ul>
                 </section>

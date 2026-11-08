@@ -1,3 +1,4 @@
+import { listMarketFilterSelectors } from "../market-data/market-query-policy";
 import { Prisma } from "@sammlerraum/db/search-sql";
 import {
   parseItemSearchQuery,
@@ -112,6 +113,8 @@ export function createItemSearchService(
 ) {
   const canonicalMoneyEnabled = options.canonicalMoneyEnabled === true;
   return {
+    marketFilterSelectors: (actor: SearchActor) =>
+      listMarketFilterSelectors(actor.userId, options.market ?? disabledSearchMarket),
     searchItems: async (actor: SearchActor, input: unknown): Promise<SearchPage<ItemSummary>> => {
       if (
         !actor ||
