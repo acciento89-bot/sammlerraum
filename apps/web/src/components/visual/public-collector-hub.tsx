@@ -5,6 +5,7 @@ import type { IconName } from "./workspace-navigation";
 import { CATEGORY_PAGES } from "../../seo/category-pages";
 import { categoryPath } from "../../seo/category-routes";
 import { PUBLIC_MARKETING_PAGES } from "../../seo/public-pages";
+import { KamilunavoProducts } from "./kamilunavo-products";
 export async function PublicCollectorHub({ locale }: { locale: "de" | "en" }) {
   const t = await getTranslations({ locale, namespace: "CollectorHub" });
   const links: { key: string; href: string; icon: IconName }[] = [
@@ -228,6 +229,7 @@ export async function PublicCollectorHub({ locale }: { locale: "de" | "en" }) {
             </section>
           </aside>
         </div>
+        <KamilunavoProducts locale={locale} />
       </div>
     </div>
   );
