@@ -671,34 +671,81 @@ button:disabled {
   border-radius: 9px;
   margin-bottom: 23px;
 }
-.category-links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
+/* Only the illustration is round. Copy has its own unclipped solid surface. */
+.category-links-section .category-links {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+  align-items: stretch;
+  gap: 20px;
 }
-.category-links img {
-  width: 100%;
-  height: 145px;
-  object-fit: cover;
+.category-links-section .category-links li {
+  min-width: 0;
+}
+.category-links-section .category-links a {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 20px 18px 18px;
+  border: 1px solid #ded7c8;
+  border-radius: 20px;
+  background: #fffdf8;
+  color: #17243c;
+  text-decoration: none;
+  box-shadow: 0 4px 16px #24314b08;
+  overflow: visible;
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease;
+}
+.category-links-section .category-links a:hover {
+  border-color: #aa822d;
+  box-shadow: 0 8px 24px #24314b14;
+}
+.category-links-section .category-links a:focus-visible {
+  outline: 3px solid #80601b;
+  outline-offset: 4px;
+}
+.category-links .category-card-art {
   display: block;
+  width: min(100%, 184px);
+  aspect-ratio: 1;
+  margin: 0 auto 18px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #eee5d6;
+  box-shadow:
+    0 0 0 5px #f4eee3,
+    0 8px 18px #17243c12;
+}
+.category-links .category-card-art img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 .category-links .category-card-label {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
-  gap: 16px;
-  padding: 13px;
-  font-size: 12px;
+  gap: 10px;
+  padding: 0 0 10px;
+  color: #17243c;
+  font-size: 1rem;
+  font-weight: 750;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
 }
-.category-links a {
-  overflow: hidden;
+.category-card-label > span {
+  min-width: 0;
 }
-.category-links svg {
-  width: 15px;
-  height: 15px;
-}
-.category-links .collector-illustration {
-  height: 145px;
+.category-links .category-card-label svg {
+  flex: 0 0 18px;
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  color: #8b681f;
 }
 .section-title {
   display: flex;
@@ -925,15 +972,16 @@ button:disabled {
 
 .category-card-description {
   display: block;
-  padding: 0 1.2rem 1rem;
-  font-size: 0.86rem;
+  padding: 0 0 14px;
+  font-size: 0.9rem;
   line-height: 1.5;
   color: var(--collector-muted, #596376);
 }
 .category-card-start {
   display: block;
-  padding: 0 1.2rem 1.2rem;
-  font-size: 0.8rem;
+  padding: 0;
+  margin-top: auto;
+  font-size: 0.85rem;
   font-weight: 700;
   color: #80601b;
 }
@@ -952,4 +1000,37 @@ button:disabled {
   width: 1rem;
   height: 1rem;
   flex: none;
+}
+
+/* Category names stay on solid cream, outside the circular illustrations. */
+.hub-category-card li a > span {
+  overflow: hidden;
+  border-radius: 50%;
+}
+.hub-category-card li a > span img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+@media (max-width: 560px) {
+  .category-links-section .category-links {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 10rem), 1fr));
+    gap: 12px;
+  }
+  .category-links-section .category-links a {
+    padding: 16px 12px;
+    border-radius: 16px;
+  }
+  .category-links .category-card-art {
+    width: min(100%, 128px);
+  }
+  .category-links .category-card-label {
+    gap: 6px;
+    font-size: 0.95rem;
+  }
+  .category-links .category-card-label svg {
+    flex-basis: 14px;
+    width: 14px;
+  }
 }

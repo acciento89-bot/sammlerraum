@@ -17,11 +17,11 @@ export async function PublicCollectorHub({ locale }: { locale: "de" | "en" }) {
     { key: "pricing", href: PUBLIC_MARKETING_PAGES.pricing[locale], icon: "spark" },
   ];
   const categories = [
-    { key: "tradingCards", image: "modern-cards", icon: "layers" as const },
+    { key: "tradingCards", image: "trading_cards", icon: "layers" as const },
     { key: "coins", image: "coins", icon: "star" as const },
-    { key: "watches", image: "modern-watch", icon: "clock" as const },
+    { key: "watches", image: "watches", icon: "clock" as const },
     { key: "vinyl", image: "vinyl", icon: "compass" as const },
-    { key: "comics", image: "modern-figure", icon: "book" as const },
+    { key: "comics", image: "comics", icon: "book" as const },
     { key: "stamps", image: "stamps", icon: "grid" as const },
   ];
   const stories = [
@@ -189,7 +189,13 @@ export async function PublicCollectorHub({ locale }: { locale: "de" | "en" }) {
                     <li key={item.key}>
                       <Link href={categoryPath(locale, page[locale].slug)}>
                         <span>
-                          <Icon name={item.icon} />
+                          <img
+                            src={`/art/categories/${item.image}.webp`}
+                            width="40"
+                            height="40"
+                            alt=""
+                            loading="lazy"
+                          />
                         </span>
                         {page[locale].name}
                         <Icon name="arrow" />

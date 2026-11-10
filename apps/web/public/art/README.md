@@ -9,3 +9,16 @@ These illustrations were generated specifically for Kamilunavo/Sammlerraum with 
 Original outputs remain in the owner's local generated-image library. Public assets are converted/cropped to WebP for page performance. The UI identifies editorial content; illustrations are not evidence of actual user holdings, activity or financial values.
 
 The owner-supplied `Sammlerraum_ Deine Welt zum Sammeln.png` is the visual layout reference. Its branded collectible imagery and sample member/activity counts were not copied into production.
+
+## Complete category artwork — 10 November 2026
+
+`categories/*.webp` contains 36 original editorial category illustrations generated with the built-in image generation tool, then exported as 416×416 WebP crops. They show representative collectibles, not real member items, signatures, currency, endorsements or activity. Generic objects were requested without logos, readable writing or franchise characters. They are decorative and their category names remain real, accessible UI text outside each circular picture.
+
+The four original 3×3 source sheets are retained in the owner's generated-image library:
+
+1. `exec-f85723a4-8f44-462f-b250-92f3163e02bc.png`: trading cards, vinyl, coins, banknotes, stamps, postcards, comics, books, CDs/cassettes.
+2. `exec-67e5ec07-a187-447e-9e85-3642c260826c.png`: movies, video games, consoles, figures, model cars, model railways, model building, construction toys, dolls.
+3. `exec-6f6ece08-f911-4319-91a6-aebb3bde7636.png`: plush toys, board games, watches, jewelry, art, antiques, porcelain/glass, cameras, technology.
+4. `exec-fd70ebd4-8a3d-42e8-95b5-3ccf949a428b.png`: sports/music memorabilia, autographs, minerals/fossils, patches/badges, keyrings, advertising, paper ephemera, other.
+
+Prompt set and crop/hash manifest: `Artifacts/SammlerraumCategoryArt-20261110/prompts.json` and `category-assets.json` in the owner's private evidence folder. No external photo service or new paid subscription was used.
