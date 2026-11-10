@@ -1,6 +1,5 @@
 import { COLLECTING_CATEGORIES } from "@sammlerraum/contracts/catalog";
 import { Icon } from "../visual/icon";
-import { CollectorIllustration } from "../visual/collector-illustration";
 import { StructuredData } from "../seo/structured-data";
 import { websiteJsonLd } from "../../seo/structured-data";
 import { siteOrigin } from "../../seo/page-metadata";
@@ -34,7 +33,6 @@ export async function renderCategoryRoute(props: Props, expected: PublicLocale) 
 export async function CategoryLinks({ locale }: { locale: PublicLocale }) {
   const t = await getTranslations({ locale, namespace: "Categories" });
   const visual = await getTranslations({ locale, namespace: "Visual" });
-  const artwork: Record<string, string> = { coins: "coins", stamps: "stamps", vinyl: "vinyl" };
   return (
     <section
       className="marketing-shell category-links-section"
@@ -51,23 +49,21 @@ export async function CategoryLinks({ locale }: { locale: PublicLocale }) {
         {COLLECTING_CATEGORIES.map((area) => {
           const page = CATEGORY_PAGES.find((page) => page.key === area.pageKey);
           const href = page ? categoryPath(locale, page[locale].slug) : `/${locale}/collections`;
-          const artKey = area.pageKey ?? area.key;
           return (
             <li key={area.key}>
               <Link href={href}>
-                {artwork[artKey] ? (
+                <span className="category-card-art">
                   <img
-                    src={`/art/${artwork[artKey]}.webp`}
-                    width="640"
-                    height="480"
+                    src={`/art/categories/${area.key}.webp`}
+                    width="416"
+                    height="416"
                     alt=""
                     loading="lazy"
+                    decoding="async"
                   />
-                ) : (
-                  <CollectorIllustration seed={area.key} />
-                )}
+                </span>
                 <span className="category-card-label">
-                  {area.labels[locale]}
+                  <span>{area.labels[locale]}</span>
                   <Icon name="arrow" />
                 </span>
                 <span className="category-card-description">{area.examples[locale]}</span>
