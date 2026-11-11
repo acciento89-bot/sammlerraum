@@ -49,6 +49,30 @@ for (const locale of ["de", "en"])
     expect(external).toEqual([]);
   });
 
+test("ordinary pages do not prompt for campaign measurement; preferences remain available", async ({
+  page,
+}) => {
+  for (const path of ["/de", "/en/register", "/de/sammlung-verwalten"]) {
+    await page.goto(path);
+    await expect(
+      page.getByRole("button", {
+        name: /Werbemessung verwalten|Advertising measurement/,
+        exact: true,
+      }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("region", {
+        name: /Optionale Werbemessung|Optional advertising measurement/,
+        exact: true,
+      }),
+    ).toHaveCount(0);
+  }
+  await page.getByRole("button", { name: "Werbemessung verwalten", exact: true }).click();
+  await expect(
+    page.getByRole("region", { name: "Optionale Werbemessung", exact: true }),
+  ).toBeVisible();
+});
+
 test("real verified account and first item produce deduplicated events only after opt-in; withdrawal stops measurement", async ({
   page,
   context,

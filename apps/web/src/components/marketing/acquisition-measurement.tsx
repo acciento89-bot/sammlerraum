@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import {
+  CAMPAIGN,
   CONSENT_KEY,
   VISIT_KEY,
   SENT_KEY,
@@ -85,12 +86,18 @@ export function AcquisitionMeasurement({ locale }: { locale: string }) {
   const processed = useRef(new Set<string>());
   const [choice, setChoice] = useState<Choice>("unset"),
     [ready, setReady] = useState(false),
+    [campaignEntry, setCampaignEntry] = useState(false),
     [open, setOpen] = useState(false),
     [visit, setVisit] = useState<Visit | null>(null);
   useEffect(() => {
     try {
       const now = Date.now(),
         current = measurementChoice(localStorage.getItem(CONSENT_KEY), now);
+      const url = new URL(location.href);
+      setCampaignEntry(
+        ["/de/sammlung-verwalten", "/en/collection-manager"].includes(url.pathname) &&
+          url.searchParams.get("utm_campaign") === CAMPAIGN,
+      );
       setChoice(current);
       setReady(true);
       const attribution = campaignVisit(
@@ -219,7 +226,7 @@ export function AcquisitionMeasurement({ locale }: { locale: string }) {
       <button type="button" className={styles.preferences} onClick={() => setOpen(true)}>
         {de ? "Werbemessung verwalten" : "Advertising measurement"}
       </button>
-      {ready && (open || choice === "unset") && (
+      {ready && (open || (choice === "unset" && campaignEntry)) && (
         <section
           className={styles.consent}
           aria-label={de ? "Optionale Werbemessung" : "Optional advertising measurement"}
