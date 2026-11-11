@@ -1,8 +1,9 @@
 import { spawn, spawnSync } from "node:child_process";
-import { readFile, symlink, unlink, writeFile } from "node:fs/promises";
+import { readFile, unlink, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { createServer } from "node:tls";
 import { fileURLToPath } from "node:url";
+import { ensureStandaloneAssets } from "../../../../scripts/standalone-assets.mjs";
 
 // Explicit legacy-regression product configuration; application code has no test-mode bypass.
 process.env.BILLING_PLAN_LIMITS ??= await readFile(
@@ -140,14 +141,8 @@ await new Promise((resolve, reject) => {
 const production = process.env.RUN_PRODUCTION_E2E === "1";
 const webRoot = join(dirname(fileURLToPath(import.meta.url)), "../..");
 if (production) {
-  // Standalone output omits static assets; keep browser hydration assets on the built server.
-  await symlink(
-    join(webRoot, ".next/static"),
-    join(webRoot, ".next/standalone/apps/web/.next/static"),
-    "dir",
-  ).catch((error) => {
-    if (error.code !== "EEXIST") throw error;
-  });
+  // Match the image and SEO audit: both public artwork and hydration assets are required.
+  await ensureStandaloneAssets(webRoot);
 }
 const next = spawn(
   production ? process.execPath : "npm",

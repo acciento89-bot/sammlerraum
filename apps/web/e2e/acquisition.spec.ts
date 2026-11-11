@@ -81,6 +81,7 @@ test("public welcome artwork decodes with a smaller mobile transfer", async ({ p
     .toBe(true);
   const src = await hero.evaluate((img: HTMLImageElement) => img.currentSrc);
   const original = await page.request.get("/art/community-hero.webp");
+  expect(original.status()).toBe(200);
   const delivered = await page.request.get(src, { headers: { accept: "image/webp" } });
   expect(delivered.status()).toBe(200);
   expect(delivered.headers()["content-type"]).toMatch(/^image\//);
