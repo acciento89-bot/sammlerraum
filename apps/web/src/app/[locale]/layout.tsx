@@ -6,6 +6,7 @@ import { getMessages, getTranslations, setRequestLocale } from "next-intl/server
 import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
 
+import { AcquisitionMeasurement } from "../../components/marketing/acquisition-measurement";
 import { SiteHeader } from "../../components/visual/site-header";
 import { routing } from "../../i18n/routing";
 import { legalHref } from "../../seo/legal-routes";
@@ -58,6 +59,7 @@ export default async function LocaleLayout({ children, params }: Props) {
               <Link href={legalHref(locale, "imprint")}>{t("imprint")}</Link>
             </nav>
           </footer>
+          <AcquisitionMeasurement locale={locale} />
         </NextIntlClientProvider>
       </body>
     </html>

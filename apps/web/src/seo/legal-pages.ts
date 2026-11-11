@@ -71,7 +71,7 @@ export function legalDocument(
   if (kind === "imprint") {
     return {
       title: de ? "Impressum" : "Legal notice",
-      updated: "2026-11-08",
+      updated: "2026-11-11",
       sections: [
         controller(de),
         {
@@ -95,7 +95,7 @@ export function legalDocument(
   }
   return {
     title: de ? "Datenschutzerklärung" : "Privacy notice",
-    updated: "2026-11-08",
+    updated: "2026-11-11",
     sections: [
       controller(de),
       {
@@ -157,6 +157,29 @@ export function legalDocument(
         ],
       },
       optionalSection(de, flags),
+      {
+        id: "advertising",
+        title: de
+          ? "Freiwillige Werbemessung mit Google Ads"
+          : "Optional Google Ads advertising measurement",
+        paragraphs: de
+          ? [
+              "Nur nach deiner ausdrücklichen Einwilligung laden wir das Google-Ads-Tag (Google Ireland Limited). Es misst, ob ein über unsere gekennzeichnete Kampagne neu angelegtes Konto bestätigt wurde und ob danach ein erstes Sammlerstück angelegt wurde. Unsere Server prüfen diese Ereignisse; eigene, technische und privilegierte Konten sowie bereits bestehende Konten werden nicht als neue Registrierungen gezählt.",
+              "Google verarbeitet hierfür Werbe-Klickkennungen, Cookie-Kennungen, IP-Adresse, Browser-/Verbindungsdaten und die beiden Ereignisse mit einer nicht rückrechenbaren Ereigniskennung. Wir senden keine Namen, E-Mail-Adressen, Passwörter oder Sammlungsinhalte und aktivieren keine erweiterten Conversions, Analytics oder personalisierte Werbung. Trotz dieser Begrenzung kann Google die Daten mit vorhandenen Werbeinformationen verknüpfen. Eine Verarbeitung in den USA ist möglich.",
+              "Rechtsgrundlage ist deine freiwillige Einwilligung nach Art. 6 Abs. 1 lit. a DSGVO und § 25 Abs. 1 TDDDG. Deine Auswahl und die Kampagnenzuordnung werden bis zu 30 Tage lokal gespeichert; Google-Werbecookies werden auf 30 Tage begrenzt. Ohne Zustimmung laden wir das Tag nicht, senden keine Messereignisse an Google und speichern keine Kampagnenzuordnung. Registrierung und Nutzung bleiben möglich.",
+              "Über ‚Werbemessung verwalten‘ am Seitenende kannst du die Auswahl jederzeit ändern oder für die Zukunft widerrufen. Dabei löschen wir die lokale Kampagnenzuordnung und die von unserer Domain erreichbaren Google-Werbecookies. Bereits rechtmäßig an Google übermittelte Daten werden dadurch nicht rückwirkend gelöscht; weitere Informationen und Löschmöglichkeiten findest du bei Google. Ablehnung und Zustimmung sind gleich einfach zugänglich.",
+            ]
+          : [
+              "Only with your explicit consent do we load the Google Ads tag (Google Ireland Limited). It measures confirmed new accounts and first created items following our marked campaign. Our server verifies these events; existing, internal, technical and privileged accounts are excluded from new registrations.",
+              "Google processes advertising click and cookie identifiers, IP address, browser/connection information and the two events with opaque one-way event identifiers. We send no names, email addresses, passwords or collection contents, and enable no enhanced conversions, Analytics or personalized advertising. Google may still associate measurement with existing advertising information. Processing in the USA is possible.",
+              "The basis is your voluntary consent under Article 6(1)(a) GDPR and section 25(1) TDDDG. Your choice and campaign association are stored locally for up to 30 days; Google advertising cookies are limited to 30 days. Without consent no Google tag loads, no measurement events are sent and no campaign association is stored. Registration and use remain available.",
+              "Use ‚Advertising measurement‘ at the bottom of the page to change your choice or withdraw future consent at any time. We clear local campaign association and accessible Google advertising cookies from our domain. Withdrawal does not retroactively erase data already lawfully sent to Google; see Google's information for further controls. Accepting and declining are equally accessible.",
+            ],
+        links: [
+          { label: "Google privacy", href: "https://policies.google.com/privacy" },
+          { label: "Google advertising data", href: "https://business.safety.google/privacy/" },
+        ],
+      },
       {
         id: "retention",
         title: de ? "Aufbewahrung und Löschanfragen" : "Retention and erasure requests",
