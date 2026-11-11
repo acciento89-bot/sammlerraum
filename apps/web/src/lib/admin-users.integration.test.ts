@@ -1,7 +1,10 @@
 import { randomUUID } from "node:crypto";
 import { beforeAll, afterAll, describe, it, expect } from "vitest";
 import { createTestDatabaseClient } from "@sammlerraum/db/test-database";
-import { createAdminUsersHandler } from "./admin-users";
+import { createAdminUsersHandler, type adminUsers } from "./admin-users";
+
+type Listing = Awaited<ReturnType<typeof adminUsers>>;
+const listing = async (response: Response) => (await response.json()) as Listing;
 
 const enabled = process.env.RUN_DATABASE_INTEGRATION === "1";
 const db = enabled ? createTestDatabaseClient() : undefined;
@@ -46,22 +49,22 @@ describe.runIf(enabled)("owner administration with real PostgreSQL authority", (
   it("reads only the public account projection and paginates deterministic filtered rows", async () => {
     const first = await handler()(request());
     expect(first.status).toBe(200);
-    const firstData = await first.json();
+    const firstData = await listing(first);
     expect(firstData.matched).toBe(27);
     expect(firstData.users).toHaveLength(25);
-    expect(Object.keys(firstData.users[0]).sort()).toEqual([
+    expect(Object.keys(firstData.users[0]!).sort()).toEqual([
       "createdAt",
       "email",
       "emailVerified",
       "id",
       "name",
     ]);
-    const second = await (await handler()(request("&page=2"))).json();
+    const second = await listing(await handler()(request("&page=2")));
     expect(second.users).toHaveLength(2);
     const ids = [...firstData.users, ...second.users].map((user: { id: string }) => user.id);
     expect(new Set(ids).size).toBe(27);
-    expect((await (await handler()(request("&verified=yes"))).json()).matched).toBe(14);
-    expect((await (await handler()(request("&verified=no"))).json()).matched).toBe(13);
+    expect((await listing(await handler()(request("&verified=yes")))).matched).toBe(14);
+    expect((await listing(await handler()(request("&verified=no")))).matched).toBe(13);
   });
   it("refuses unverified admins and respects role revocation in the actual database", async () => {
     await db!.user.update({ where: { id: owner }, data: { emailVerified: false } });
