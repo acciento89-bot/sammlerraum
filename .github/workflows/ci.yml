@@ -136,6 +136,11 @@ jobs:
         run: bash scripts/test-native-complete.sh
       - name: Install Chromium for authentication journeys
         run: pnpm --filter @sammlerraum/web exec playwright install --with-deps chromium
+      - name: Verify private owner administration and verified grant
+        run: |
+          node --test scripts/grant-owner-admin.test.mjs
+          RUN_DATABASE_INTEGRATION=1 pnpm exec vitest run apps/web/src/lib/admin-users.test.ts apps/web/src/lib/admin-users.integration.test.ts
+          RUN_AUTH_E2E=1 RUN_PRODUCTION_E2E=1 pnpm --filter @sammlerraum/web exec playwright test e2e/admin-users.spec.ts --workers=1
       # All browser suites exercise the same production build without dev compilation.
       - name: Verify bilingual marketing metadata on desktop and mobile
         run: >-

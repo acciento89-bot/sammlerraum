@@ -5,7 +5,15 @@ import { useTranslations } from "next-intl";
 import { useEffect, useRef, type ReactNode } from "react";
 import { workspaceLinks, workspaceSection } from "./workspace-navigation";
 import { Icon } from "./icon";
-export function WorkspaceShell({ locale, children }: { locale: "de" | "en"; children: ReactNode }) {
+export function WorkspaceShell({
+  locale,
+  children,
+  administrator = false,
+}: {
+  locale: "de" | "en";
+  children: ReactNode;
+  administrator?: boolean;
+}) {
   const t = useTranslations("Visual");
   const pathname = usePathname();
   const active = workspaceSection(pathname ?? "");
@@ -38,6 +46,15 @@ export function WorkspaceShell({ locale, children }: { locale: "de" | "en"; chil
             ))}
         </div>
       ))}
+      {administrator && (
+        <Link
+          href={`/${locale}/admin`}
+          prefetch={false}
+          aria-current={pathname === `/${locale}/admin` ? "page" : undefined}
+        >
+          {locale === "de" ? "Administration" : "Administration"}
+        </Link>
+      )}
     </nav>
   );
   return (

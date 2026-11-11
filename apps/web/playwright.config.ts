@@ -23,6 +23,16 @@ export default defineConfig({
     baseURL: "http://localhost:3000",
   },
   projects: [
+    {
+      name: "admin-desktop",
+      testMatch: "**/admin-users.spec.ts",
+      use: { viewport: { width: 1440, height: 1000 } },
+    },
+    {
+      name: "admin-mobile",
+      testMatch: "**/admin-users.spec.ts",
+      use: { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true },
+    },
     { name: "seo-release-api", testMatch: "**/seo-release-verifier.spec.ts" },
     {
       name: "seo-desktop",
