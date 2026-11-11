@@ -24,6 +24,16 @@ export default defineConfig({
   },
   projects: [
     {
+      name: "acquisition-desktop",
+      testMatch: "**/acquisition.spec.ts",
+      use: { viewport: { width: 1440, height: 1000 } },
+    },
+    {
+      name: "acquisition-mobile",
+      testMatch: "**/acquisition.spec.ts",
+      use: { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true },
+    },
+    {
       name: "admin-desktop",
       testMatch: "**/admin-users.spec.ts",
       use: { viewport: { width: 1440, height: 1000 } },
