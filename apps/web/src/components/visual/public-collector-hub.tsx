@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { Icon } from "./icon";
 import type { IconName } from "./workspace-navigation";
@@ -58,12 +59,13 @@ export async function PublicCollectorHub({ locale }: { locale: "de" | "en" }) {
       </aside>
       <div className="hub-main">
         <section className="hub-welcome" aria-labelledby="page-title">
-          <img
+          <Image
             src="/art/community-hero.webp"
-            width="1800"
-            height="600"
+            width={1800}
+            height={600}
             alt=""
-            fetchPriority="high"
+            sizes="(max-width: 520px) 960px, (max-width: 1000px) 100vw, calc(100vw - 280px)"
+            preload
           />
           <div className="hub-welcome-copy">
             <p className="hub-kicker">{t("eyebrow")}</p>

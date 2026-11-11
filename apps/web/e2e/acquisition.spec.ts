@@ -73,6 +73,20 @@ test("ordinary pages do not prompt for campaign measurement; preferences remain 
   ).toBeVisible();
 });
 
+test("public welcome artwork decodes with a smaller mobile transfer", async ({ page }) => {
+  await page.goto("/de");
+  const hero = page.locator(".hub-welcome > img");
+  await expect
+    .poll(() => hero.evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0))
+    .toBe(true);
+  const src = await hero.evaluate((img: HTMLImageElement) => img.currentSrc);
+  const original = await page.request.get("/art/community-hero.webp");
+  const delivered = await page.request.get(src, { headers: { accept: "image/webp" } });
+  expect(delivered.status()).toBe(200);
+  expect(delivered.headers()["content-type"]).toMatch(/^image\//);
+  expect((await delivered.body()).length).toBeLessThan((await original.body()).length * 0.8);
+});
+
 test("real verified account and first item produce deduplicated events only after opt-in; withdrawal stops measurement", async ({
   page,
   context,
