@@ -4,12 +4,10 @@ import { createAdminUsersHandler, berlinDayStart, requireAdmin } from "./admin-u
 function fixture(role: string | null = "ADMIN", verified = true) {
   const db = {
     user: {
-      findUnique: vi
-        .fn()
-        .mockResolvedValue({
-          emailVerified: verified,
-          applicationRoleGrant: role ? { role } : null,
-        }),
+      findUnique: vi.fn().mockResolvedValue({
+        emailVerified: verified,
+        applicationRoleGrant: role ? { role } : null,
+      }),
       count: vi.fn().mockResolvedValue(7),
       findMany: vi.fn().mockResolvedValue([]),
     },
