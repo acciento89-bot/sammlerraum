@@ -1,4 +1,60 @@
 import { test, expect } from "@playwright/test";
+
+test("email confirmation reports registration without another login", async ({ page }) => {
+  const { randomUUID } = await import("node:crypto");
+  const { readFile } = await import("node:fs/promises");
+  const { createTestDatabaseClient } = await import("@sammlerraum/db/test-database");
+  const db = createTestDatabaseClient();
+  const email = `confirmed-${randomUUID()}@example.org`;
+  try {
+    // Do not consume the separate authentication suite's shared loopback quota.
+    await page.setExtraHTTPHeaders({ "x-forwarded-for": "198.18.202.26" });
+    // Keep synthetic activity outside Google's live conversion transport.
+    await page.route("https://www.googletagmanager.com/gtag/js**", (route) =>
+      route.fulfill({
+        contentType: "application/javascript",
+        body: `window.__measurementEvents=[];const process=(a)=>{if(a[0]==='event'&&a[1]==='conversion'){window.__measurementEvents.push({send_to:a[2].send_to,transaction_id:a[2].transaction_id});a[2].event_callback?.();}};for(const args of window.dataLayer||[])process(args);window.gtag=function(){process(arguments)};`,
+      }),
+    );
+    await page.goto("/de/sammlung-verwalten?utm_campaign=sammlerraum-search-30-20261112");
+    await page.getByRole("button", { name: "Werbemessung erlauben", exact: true }).click();
+    await page.getByRole("link", { name: "Kostenlos starten", exact: true }).first().click();
+    await page.getByLabel("Name", { exact: true }).fill("Synthetic confirmed collector");
+    await page.getByLabel("E-Mail-Adresse", { exact: true }).fill(email);
+    await page.getByLabel("Passwort", { exact: true }).fill("Synthetic-local-password-only-123");
+    await page.getByRole("button", { name: "Registrieren", exact: true }).click();
+    await expect(page.getByText("Prüfe jetzt dein E-Mail-Postfach.")).toBeVisible();
+    expect(
+      (await page.request.get("/api/v1/acquisition/status?started=" + Date.now())).status(),
+    ).toBe(401);
+    let link = "";
+    await expect
+      .poll(async () => {
+        const mailbox = JSON.parse(
+          await readFile("/tmp/sammlerraum-auth-e2e-mailbox.json", "utf8"),
+        );
+        link = mailbox[email]?.url ?? "";
+        return Boolean(link);
+      })
+      .toBe(true);
+    await page.goto(link);
+    await expect(page).toHaveURL(/\/de\/account\/profile$/);
+    await expect.poll(() => page.evaluate("window.__measurementEvents?.length??0")).toBe(1);
+    const event = await page.evaluate<{ send_to: string; transaction_id: string }>(
+      "window.__measurementEvents[0]",
+    );
+    expect(event.send_to).toBe("AW-18427442933/d7UmCMe20LYdEPXt8dJE");
+    expect(event.transaction_id).toMatch(/^sr_[a-f0-9]{40}$/);
+    const saved = await db.user.findUniqueOrThrow({ where: { email } });
+    expect(saved.emailVerified).toBe(true);
+    expect(JSON.stringify(event)).not.toContain(email);
+    expect(JSON.stringify(event)).not.toContain(saved.id);
+  } finally {
+    await db.user.deleteMany({ where: { email } });
+    await db.rateLimit.deleteMany({ where: { key: "198.18.202.26|/sign-up/email" } });
+    await db.$disconnect();
+  }
+});
 for (const locale of ["de", "en"])
   test(`${locale}: collector landing has focused signup and measurement is optional`, async ({
     page,
