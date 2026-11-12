@@ -112,7 +112,7 @@ for (const locale of ["de", "en"] as const)
     );
     try {
       await page.setExtraHTTPHeaders({ "x-forwarded-for": address.ip });
-      await test.step("register verify sign in and set profile", async () => {
+      await test.step("register verify automatic sign in and set profile", async () => {
         await page.goto(`/${locale}/register`);
         await page.getByLabel(copy.Auth.name, { exact: true }).fill(f.name);
         await page.getByLabel(copy.Auth.email, { exact: true }).fill(f.email);
@@ -120,10 +120,15 @@ for (const locale of ["de", "en"] as const)
         await page.getByRole("button", { name: copy.Auth.register, exact: true }).click();
         await expect(page.getByText(copy.Auth.checkEmail, { exact: true })).toBeVisible();
         await page.goto(await verification(f.email));
+        await expect(page).toHaveURL(new RegExp(`/${locale}/account/profile$`));
+        const verifiedSession = await page.request.get("/api/auth/get-session");
+        expect(verifiedSession.status()).toBe(200);
+        expect((await verifiedSession.json()).user).toMatchObject({
+          email: f.email,
+          emailVerified: true,
+        });
+        // A verified browser already has a session; the login page returns it to its profile.
         await page.goto(`/${locale}/login`);
-        await page.getByLabel(copy.Auth.email, { exact: true }).fill(f.email);
-        await page.getByLabel(copy.Auth.password, { exact: true }).fill(f.password);
-        await page.getByRole("button", { name: copy.Auth.login, exact: true }).click();
         await expect(page).toHaveURL(new RegExp(`/${locale}/account/profile$`));
         ownerId = (await db!.user.findUniqueOrThrow({ where: { email: f.email } })).id;
         await page.getByLabel(copy.Profile.handle, { exact: true }).fill(f.handle);
