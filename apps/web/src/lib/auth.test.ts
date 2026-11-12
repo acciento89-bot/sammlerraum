@@ -3,6 +3,7 @@ import { betterAuth } from "better-auth";
 import { memoryAdapter } from "better-auth/adapters/memory";
 
 import { buildAuthOptions } from "./auth";
+import { acquisitionEligibility } from "./acquisition";
 
 const testEnv = {
   APP_ORIGIN: "https://example.test",
@@ -14,6 +15,65 @@ const testEnv = {
 };
 
 describe("Better Auth configuration", () => {
+  it("makes a newly confirmed registration measurable without a second password login", async () => {
+    const database: Record<string, Record<string, unknown>[]> = {
+      user: [],
+      session: [],
+      account: [],
+      verification: [],
+      rateLimit: [],
+    };
+    let verificationUrl = "";
+    const instance = betterAuth(
+      buildAuthOptions(testEnv, {
+        database: memoryAdapter(database),
+        sendEmail: async (message) => {
+          verificationUrl = message.text.match(/https?:\/\/\S+/)?.[0] ?? "";
+        },
+      }),
+    );
+    const started = new Date();
+    const signup = await instance.handler(
+      new Request(`${testEnv.APP_ORIGIN}/api/auth/sign-up/email`, {
+        method: "POST",
+        headers: { origin: testEnv.APP_ORIGIN, "content-type": "application/json" },
+        body: JSON.stringify({
+          name: "Synthetic collector",
+          email: "confirmed-collector@example.org",
+          password: "Synthetic-local-password-only-123",
+          callbackURL: "/de/login",
+        }),
+      }),
+    );
+    expect(signup.status).toBe(200);
+    expect(await instance.api.getSession({ headers: new Headers() })).toBeNull();
+    expect(verificationUrl).toContain("/api/auth/verify-email?");
+    const verified = await instance.handler(new Request(verificationUrl));
+    expect([200, 302]).toContain(verified.status);
+    const cookie = verified.headers
+      .getSetCookie()
+      .map((v) => v.split(";")[0])
+      .join("; ");
+    const session = await instance.api.getSession({ headers: new Headers({ cookie }) });
+    expect(session?.user.emailVerified).toBe(true);
+    expect(
+      acquisitionEligibility(session ? { ...session.user, applicationRoleGrant: null } : null, {
+        start: started,
+        now: new Date(),
+        secret: "synthetic-acquisition-secret",
+        firstItemAt: null,
+      }).events.map((event) => event.kind),
+    ).toEqual(["registration"]);
+    const replay = await instance.handler(new Request(verificationUrl));
+    expect(replay.headers.getSetCookie()).toEqual([]);
+    expect(database.session).toHaveLength(1);
+    const invalid = new URL(verificationUrl);
+    invalid.searchParams.set("token", "invalid-token");
+    const denied = await instance.handler(new Request(invalid));
+    expect(denied.headers.getSetCookie()).toEqual([]);
+    expect(database.session).toHaveLength(1);
+  });
+
   it("enables the required authentication methods and safe account linking", () => {
     const options = buildAuthOptions(testEnv, {
       database: {} as never,

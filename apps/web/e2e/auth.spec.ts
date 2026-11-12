@@ -51,12 +51,6 @@ async function registerWithPassword(page: Page, locale: "de" | "en") {
     })
     .click();
   await page.goto(await verificationUrlFor(email));
-  await page.goto(`/${locale}/login`);
-  await page.getByLabel(locale === "de" ? "E-Mail-Adresse" : "Email address").fill(email);
-  await page.getByLabel(locale === "de" ? "Passwort" : "Password").fill(password);
-  await page
-    .getByRole("button", { name: locale === "de" ? "Anmelden" : "Sign in", exact: true })
-    .click();
   await expect(page).toHaveURL(new RegExp(`/${locale}/account/profile$`));
 
   return { email, password };
@@ -130,11 +124,7 @@ test.describe("password authentication API", () => {
       const verification = await request.get(verificationUrl, { maxRedirects: 0 });
       expect([200, 302]).toContain(verification.status());
 
-      const login = await request.post(`${server.origin}/api/auth/sign-in/email`, {
-        data: { email, password },
-      });
-      expect(login.ok()).toBe(true);
-
+      // The email-verification response establishes the first real session.
       const sessions = await request.get(`${server.origin}/api/v1/account/sessions`, {
         headers: { "x-request-id": "auth-e2e-sessions" },
       });
@@ -170,6 +160,14 @@ test.describe("localized authentication and account UI", () => {
   });
 
   test("offers localized password and social authentication", async ({ page }) => {
+    // Real local OAuth initiation, isolated external providers: synthetic client
+    // IDs must not race a live Google/Apple error page against our next navigation.
+    await page.route("https://accounts.google.com/**", (route) =>
+      route.fulfill({ contentType: "text/html", body: "Synthetic Google OAuth boundary" }),
+    );
+    await page.route("https://appleid.apple.com/**", (route) =>
+      route.fulfill({ contentType: "text/html", body: "Synthetic Apple OAuth boundary" }),
+    );
     await page.goto("/en/login");
     await expect(page.getByRole("heading", { name: "Sign in" })).toBeVisible();
     await expect(page.getByRole("button", { name: "Continue with Google" })).toBeVisible();
@@ -182,6 +180,7 @@ test.describe("localized authentication and account UI", () => {
     );
     await page.getByRole("button", { name: "Continue with Google" }).click();
     await googleRequest;
+    await page.waitForURL("https://accounts.google.com/**");
 
     await page.goto("/de/login");
     await expect(page.getByRole("heading", { name: "Anmelden" })).toBeVisible();
@@ -192,6 +191,7 @@ test.describe("localized authentication and account UI", () => {
     );
     await page.getByRole("button", { name: "Mit Apple fortfahren" }).click();
     await appleRequest;
+    await page.waitForURL("https://appleid.apple.com/**");
   });
 
   test("user can reset a password through the emailed recovery link", async ({ page }) => {

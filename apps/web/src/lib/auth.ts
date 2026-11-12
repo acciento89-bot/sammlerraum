@@ -50,7 +50,9 @@ export function buildAuthOptions(
     emailVerification: {
       sendOnSignUp: true,
       sendOnSignIn: true,
-      autoSignInAfterVerification: false,
+      // The verified browser continues straight into the account and can report
+      // the consented confirmed-registration event without a second login.
+      autoSignInAfterVerification: true,
       expiresIn: 60 * 60,
       sendVerificationEmail: async ({ user, url }) => {
         await dependencies.sendEmail({
